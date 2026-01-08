@@ -100,24 +100,3 @@ export const ButtonContainer = styled.div`
     min-height: 56px;
   }
 `
-
-export const ConsentLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(${UI.COLOR_PRIMARY});
-  font-size: 13px;
-  text-decoration: none;
-  opacity: 0.8;
-  transition: opacity 0.15s ease-in-out;
-
-  &:hover {
-    opacity: 1;
-    text-decoration: underline;
-  }
-
-  > svg {
-    width: 12px;
-    height: 12px;
-  }
-`

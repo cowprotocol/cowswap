@@ -1,9 +1,14 @@
-import { formatSymbol, formatTokenAmount, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import {
+  areAddressesEqual,
+  formatSymbol,
+  formatTokenAmount,
+  isSellOrder,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
-import JSBI from 'jsbi'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -12,73 +17,103 @@ import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getUiOrderType, getUiOrderTypeTitles, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function stringToCurrency(amount: string, currency: Currency) {
-  return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(amount))
-}
+import { UltimateOrderData } from '../../hooks/useUltimateOrder'
+import { TradeAmounts } from '../../types'
 
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export function computeOrderSummary({
-  orderFromStore,
-  orderFromApi,
-}: {
-  orderFromStore?: Order
-  orderFromApi: EnrichedOrder | null
-}) {
-  if (!orderFromStore && !orderFromApi) return undefined
+export function computeOrderSummary(ultimateOrder: UltimateOrderData): string | undefined {
+  const { orderFromStore } = ultimateOrder
+  const orderFromApi = orderFromStore.apiAdditionalInfo
+  const genericOrder = orderFromApi ?? orderFromStore
 
-  const buyToken = orderFromApi?.buyToken || orderFromStore?.buyToken
-  const sellToken = orderFromApi?.sellToken || orderFromStore?.sellToken
-  const sellAmount = (orderFromApi?.sellAmount || orderFromStore?.sellAmount) as string
-  const feeAmount = (orderFromApi?.feeAmount || orderFromStore?.feeAmount) as string
-  const buyAmount = (orderFromApi?.buyAmount || orderFromStore?.buyAmount) as string
-  const executedBuyAmount = (orderFromApi?.executedBuyAmount ||
-    orderFromStore?.apiAdditionalInfo?.executedBuyAmount) as string
-  const executedSellAmount = (orderFromApi?.executedSellAmount ||
-    orderFromStore?.apiAdditionalInfo?.executedSellAmount) as string
-  const owner = orderFromApi?.owner || orderFromStore?.owner
-  const receiver = orderFromApi?.receiver || orderFromStore?.receiver
-
-  const uiOrderType = getUiOrderType((orderFromStore || orderFromApi) as UiOrderTypeParams)
+  const owner = genericOrder?.owner
+  const receiver = genericOrder?.receiver
+  const uiOrderType = getUiOrderType(genericOrder as UiOrderTypeParams)
   const orderTitle = getUiOrderTypeTitles()[uiOrderType]
 
-  let summary: string | undefined = undefined
+  const recipientSuffix = receiver && !areAddressesEqual(receiver, owner) ? t`to` + ` ${shortenAddress(receiver)}` : ''
 
-  if (orderFromStore) {
-    const { inputToken, outputToken, status, kind } = orderFromStore
-    const isFulfilled = status === OrderStatus.FULFILLED
+  const summaryAmounts = getOrderSummary(genericOrder, getOrderTradeAmounts(ultimateOrder))
 
-    if (!inputToken || !outputToken) return undefined
+  // ${Swap} ${10 DAI at least 10 USDC} ${to 0x000..aaa}
+  return `${orderTitle} ${summaryAmounts} ${recipientSuffix}`.trim()
+}
 
-    // don't show amounts in atoms
-    const inputAmount = isFulfilled
-      ? stringToCurrency(executedSellAmount, inputToken)
-      : // sellAmount doesn't include the fee, so we add it back to not show a different value when the order is traded
-        stringToCurrency(sellAmount, inputToken).add(stringToCurrency(feeAmount, inputToken))
-    const outputAmount = stringToCurrency(isFulfilled ? executedBuyAmount : buyAmount, outputToken)
+function getOrderTradeAmounts({
+  orderFromStore,
+  bridgeOrderFromStore,
+  bridgeOrderFromApi,
+}: UltimateOrderData): TradeAmounts {
+  const genericOrder = orderFromStore.apiAdditionalInfo ?? orderFromStore
+  const { status } = genericOrder
 
+  const { inputToken, outputToken } = orderFromStore
+  const executedBuyAmount = orderFromStore.apiAdditionalInfo?.executedBuyAmount
+  const executedSellAmount = orderFromStore.apiAdditionalInfo?.executedSellAmount
+  const isFulfilled = status === OrderStatus.FULFILLED && executedBuyAmount && executedSellAmount
+
+  // Bridge order
+  if (bridgeOrderFromStore) {
+    // Executed order
+    if (bridgeOrderFromApi?.bridgingParams.outputAmount) {
+      return {
+        inputAmount: bridgeOrderFromStore.quoteAmounts.swapSellAmount,
+        outputAmount: CurrencyAmount.fromRawAmount(
+          bridgeOrderFromStore.quoteAmounts.bridgeMinReceiveAmount.currency,
+          bridgeOrderFromApi.bridgingParams.outputAmount.toString(),
+        ),
+      }
+    }
+
+    return {
+      inputAmount: bridgeOrderFromStore.quoteAmounts.swapSellAmount,
+      outputAmount: bridgeOrderFromStore.quoteAmounts.bridgeMinReceiveAmount,
+    }
+  }
+
+  // Executed swap order
+  if (isFulfilled) {
+    return {
+      inputAmount: stringToCurrency(executedSellAmount, inputToken),
+      outputAmount: stringToCurrency(executedBuyAmount, outputToken),
+    }
+  }
+
+  const sellAmount = genericOrder.sellAmount
+  const feeAmount = genericOrder.feeAmount
+  const buyAmount = genericOrder.buyAmount
+
+  // Any other swap orders
+  return {
+    inputAmount: stringToCurrency(sellAmount, inputToken).add(stringToCurrency(feeAmount, inputToken)),
+    outputAmount: stringToCurrency(buyAmount, outputToken),
+  }
+}
+
+function getOrderSummary(genericOrder: EnrichedOrder | Order, { inputAmount, outputAmount }: TradeAmounts): string {
+  const { status, kind } = genericOrder
+
+  const isFulfilled = status === OrderStatus.FULFILLED
+
+  if (isFulfilled) {
+    return `${stringifyAmount(inputAmount)} ` + t`for` + ` ${stringifyAmount(outputAmount)}`
+  } else {
     const isSell = isSellOrder(kind)
 
-    const inputPrefix = !isFulfilled && !isSell ? t`at most` + ` ` : ''
-    const outputPrefix = !isFulfilled && isSell ? t`at least` + ` ` : ''
+    const inputPrefix = !isSell ? t`at most` + ` ` : ''
+    const outputPrefix = isSell ? t`at least` + ` ` : ''
 
-    summary =
-      `${orderTitle} ${inputPrefix}${formatTokenAmount(inputAmount)} ${formatSymbol(inputAmount.currency.symbol)} ` +
-      t`for` +
-      ` ${outputPrefix}${formatTokenAmount(outputAmount)} ${formatSymbol(outputAmount.currency.symbol)}`
-  } else {
-    // We only have the API order info, let's at least use that
-    summary = `${orderTitle} ${sellToken} ` + t`for` + ` ${buyToken}`
+    return (
+      `${inputPrefix}${stringifyAmount(inputAmount)} ` + t`for` + ` ${outputPrefix}${stringifyAmount(outputAmount)}`
+    )
   }
+}
 
-  if (owner && receiver && receiver !== owner) {
-    summary += ` ` + t`to` + ` ${shortenAddress(receiver)}`
-  }
+function stringToCurrency(amount: string, currency: Currency): CurrencyAmount<Currency> {
+  return CurrencyAmount.fromRawAmount(currency, amount)
+}
 
-  return summary
+function stringifyAmount(amount: CurrencyAmount<Currency>): string {
+  return `${formatTokenAmount(amount)} ${formatSymbol(amount.currency.symbol)}`
 }
 
 type PopupData = {

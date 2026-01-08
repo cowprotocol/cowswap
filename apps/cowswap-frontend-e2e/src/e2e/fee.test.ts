@@ -76,8 +76,7 @@ describe('Fee endpoint', () => {
   })
 })
 
-// TODO: disable this test because it's not working - needs to be fixed
-describe.skip('Fee: Complex fetch and persist fee', () => {
+describe('Fee: Complex fetch and persist fee', () => {
   const INPUT_AMOUNT = '0.1'
 
   // Needs to run first to pass because of Cypress async issues between tests
@@ -96,6 +95,9 @@ describe.skip('Fee: Complex fetch and persist fee', () => {
     // GIVEN: user visits app, selects 0.1 WETH as sell, COW as buy
     // and goes AFK
     cy.visit('/#/11155111/swap')
+    cy.unlockCrossChainSwap()
+    cy.swapSelectInput(USDC)
+    cy.wait(1000)
     cy.swapSelectOutput(COW)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN, INPUT_AMOUNT)
 
@@ -121,8 +123,7 @@ describe.skip('Fee: Complex fetch and persist fee', () => {
   })
 })
 
-// TODO: disable this test because it's not working - needs to be fixed
-describe.skip('Fee: simple checks it exists', () => {
+describe('Fee: simple checks it exists', () => {
   const INPUT_AMOUNT = '0.1'
   const QUOTE_RESP = {
     ...mockQuoteResponse,
@@ -141,6 +142,9 @@ describe.skip('Fee: simple checks it exists', () => {
     // GIVEN: A user loads the swap page
     // WHEN: Select COW token as output and sells 0.1 WETH
     cy.visit('/#/11155111/swap')
+    cy.unlockCrossChainSwap()
+    cy.swapSelectInput(DEFAULT_SELL_TOKEN)
+    cy.wait(1000)
     cy.swapSelectOutput(COW)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN, INPUT_AMOUNT)
 
@@ -155,7 +159,7 @@ describe('Swap: Considering fee', () => {
     cy.visit('/#/11155111/swap')
   })
 
-  it("Uses Uniswap price, if there's no tip", () => {
+  it.skip("Uses Uniswap price, if there's no tip", () => {
     // GIVEN: Swap WETH-COW
     // TODO: Create command for easy setting up a case (setup current selection)
     //
@@ -167,7 +171,7 @@ describe('Swap: Considering fee', () => {
     // THEN: He gets uniswap price
   })
 
-  it("User can't trade when amount is smaller than minimumFee", () => {
+  it.skip("User can't trade when amount is smaller than minimumFee", () => {
     // GIVEN: Swap WETH-COW
     //
     // GIVEN: amount is smaller than minimumFee
@@ -177,7 +181,7 @@ describe('Swap: Considering fee', () => {
     // THEN: He cannot trade
   })
 
-  it('User pays minimumFee for small trades', () => {
+  it.skip('User pays minimumFee for small trades', () => {
     // GIVEN: Swap WETH-COW
     //
     // GIVEN: amount is bigger than minimumFee, but trade is still small
@@ -187,7 +191,7 @@ describe('Swap: Considering fee', () => {
     // THEN: He gets Uniswap price minus minimal-trade
   })
 
-  it('User pays more than minimumFee for big trades', () => {
+  it.skip('User pays more than minimumFee for big trades', () => {
     // GIVEN: Swap WETH-COW
     //
     // GIVEN: amount * "fee factor" is bigger than minimumFee
