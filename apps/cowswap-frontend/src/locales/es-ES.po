@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-30 09:56\n"
+"PO-Revision-Date: 2026-01-08 15:18\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2992,7 +2992,7 @@ msgstr "Ajustes de la interfaz"
 msgid "Enter a price"
 msgstr "Introduzca un precio"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Couldn't verify {accountProxyLabel}, please try later"
 msgstr "No se pudo verificar {accountProxyLabel}, por favor inténtalo más tarde"
 
@@ -3408,7 +3408,7 @@ msgstr "Ver cuenta"
 msgid "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 msgstr "Cuando intercambias (venta) <0/>, los solucionadores manejan la transacción comprando los tokens requeridos, depositarlos en la piscina y emitir tokens de LP a cambio — todo en una operación sin gas."
 
-#: apps/cowswap-frontend/src/common/hooks/useBlockNumber.tsx
+#: apps/cowswap-frontend/src/common/hooks/useBlockNumber/useBlockNumber.ts
 msgid "BlockNumber hooks must be wrapped in a"
 msgstr "Los ganchos BlockNumber deben estar envueltos en un"
 
@@ -6001,7 +6001,7 @@ msgstr "Órdenes límite más largas - Realizar órdenes hasta un año."
 msgid "User rejected signing the cancellation"
 msgstr "Usuario rechazó la firma de la cancelación"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
 msgstr "Cargando {accountProxyLabel}"
 
