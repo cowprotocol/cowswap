@@ -82,7 +82,12 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   ),
   [SwapFormState.RegularEthFlowSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <Wrapper>
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
+      <ButtonError
+        id="do-trade-button"
+        buttonSize={ButtonSize.BIG}
+        onClick={props.openSwapConfirm}
+        disabled={isDisabled}
+      >
         <div>{props.confirmText}</div>
       </ButtonError>
       <EthFlowBanner
