@@ -83,7 +83,7 @@ export interface TradeFormButtonContext {
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
-  enablePartialApprove?: boolean
+  supportsPartialApprove?: boolean
   customTokenError?: string
   minAmountToSignForSwap?: CurrencyAmount<Currency>
 

@@ -284,18 +284,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
-    const { amountToApprove, enablePartialApprove, defaultText } = context
+    const { amountToApprove, supportsPartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
     return (
       <TradeApproveButton
         isDisabled={isDisabled}
         amountToApprove={amountToApprove}
-        enablePartialApprove={enablePartialApprove}
+        supportsPartialApprove={supportsPartialApprove}
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
       >
-        <TradeFormBlankButton disabled={!enablePartialApprove}>{defaultText}</TradeFormBlankButton>
+        <TradeFormBlankButton disabled={!supportsPartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>
     )
   },

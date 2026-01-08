@@ -48,7 +48,7 @@ export function useTradeFormButtonContext(
       supportsPartialApprove,
       customTokenError,
       minAmountToSignForSwap,
-    }
+    } satisfies TradeFormButtonContext
   }, [
     defaultText,
     amountToApprove,
