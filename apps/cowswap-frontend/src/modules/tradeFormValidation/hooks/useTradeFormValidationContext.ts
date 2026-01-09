@@ -7,8 +7,9 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
@@ -56,6 +57,12 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
 
+  const { status: rwaStatus } = useRwaTokenStatus({
+    inputCurrency,
+    outputCurrency,
+  })
+  const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
+
   return useMemo(() => {
     if (!derivedTradeState) return null
 
@@ -78,6 +85,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isAccountProxyLoading,
       isProxySetupValid,
       customTokenError,
+      isRestrictedForCountry,
     }
   }, [
     account,
@@ -91,6 +99,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isInsufficientBalanceOrderAllowed,
     isOnline,
     isProviderNetworkUnsupported,
+    isRestrictedForCountry,
     isSafeReadonlyUser,
     isSupportedWallet,
     isSwapUnsupported,

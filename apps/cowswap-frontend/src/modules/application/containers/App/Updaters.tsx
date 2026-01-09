@@ -2,7 +2,12 @@ import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { MultiCallUpdater } from '@cowprotocol/multicall'
-import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
+import {
+  RestrictedTokensListUpdater,
+  TokensListsTagsUpdater,
+  TokensListsUpdater,
+  UnsupportedTokensUpdater,
+} from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
@@ -26,7 +31,8 @@ import {
   ProgressBarExecutingOrdersUpdater,
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { useSourceChainId } from 'modules/tokensList'
+import { GeoDataUpdater } from 'modules/rwa'
+import { BlockedListSourcesUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
@@ -56,7 +62,7 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
   const { standaloneMode } = useInjectedWidgetParams()
-  const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
+  const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
@@ -109,6 +115,9 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
+      <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
+      <BlockedListSourcesUpdater />
+      <GeoDataUpdater />
       <TokensListsTagsUpdater />
 
       <WidgetTokensUpdater />

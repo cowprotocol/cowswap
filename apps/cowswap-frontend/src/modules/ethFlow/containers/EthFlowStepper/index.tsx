@@ -9,14 +9,11 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { isOrderExpired } from 'legacy/state/orders/utils'
 
+import { SmartOrderStatus } from 'modules/ethFlow/pure/EthFlowStepper/constants'
+
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import {
-  EthFlowStepper as Pure,
-  EthFlowStepperProps as PureProps,
-  SmartOrderStatus,
-  TxState,
-} from '../../pure/EthFlowStepper'
+import { EthFlowStepper as Pure, EthFlowStepperProps as PureProps, TxState } from '../../pure/EthFlowStepper'
 
 interface CreationState {
   state: TxState

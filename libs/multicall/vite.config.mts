@@ -2,6 +2,7 @@
 import { lingui } from '@lingui/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
+import macrosPlugin from 'vite-plugin-babel-macros'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
@@ -12,6 +13,7 @@ export default defineConfig({
   cacheDir: '../../node_modules/.vite/multicall',
 
   plugins: [
+    macrosPlugin(), // required for @cowprotocol/ui
     dts({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),

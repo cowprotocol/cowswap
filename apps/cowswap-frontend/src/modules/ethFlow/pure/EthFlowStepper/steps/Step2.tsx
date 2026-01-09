@@ -7,7 +7,8 @@ import X from '@cowprotocol/assets/cow-swap/x.svg'
 
 import { t } from '@lingui/core/macro'
 
-import { EthFlowStepperProps, SmartOrderStatus } from '../index'
+import { SmartOrderStatus } from '../constants'
+import { EthFlowStepperProps } from '../index'
 import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 type Step2Config = StepProps & { error?: string }

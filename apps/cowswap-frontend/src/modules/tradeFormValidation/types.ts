@@ -47,6 +47,9 @@ export enum TradeFormValidation {
   ProxyAccountLoading,
   ProxyAccountUnknown,
   CustomTokenError,
+
+  // RWA/Geo restrictions
+  RestrictedForCountry,
 }
 
 export interface TradeFormValidationCommonContext {
@@ -68,6 +71,7 @@ export interface TradeFormValidationCommonContext {
   isAccountProxyLoading: boolean
   isProxySetupValid: boolean | null | undefined
   customTokenError?: string
+  isRestrictedForCountry: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}

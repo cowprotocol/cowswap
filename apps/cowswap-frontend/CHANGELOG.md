@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.127.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.126.0...cowswap-v1.127.0) (2025-12-24)
+
+
+### Features
+
+* **bridge:** add feature flag for widget in Safe app ([#6747](https://github.com/cowprotocol/cowswap/issues/6747)) ([557257d](https://github.com/cowprotocol/cowswap/commit/557257dc16d6e6579cebc5bb222df71af9a66673))
+
+
+### Bug Fixes
+
+* button label in safe operation: wrap & swap & bridge ([#6752](https://github.com/cowprotocol/cowswap/issues/6752)) ([f4ee169](https://github.com/cowprotocol/cowswap/commit/f4ee169a38a2a66230433dbc1d57c6937f7094b3))
+* mismatch in order submitted amount for safe wallets ([#6750](https://github.com/cowprotocol/cowswap/issues/6750)) ([2a83ffe](https://github.com/cowprotocol/cowswap/commit/2a83ffe9a0acf1645351c72f5f3265089fb707db))
+
 ## [1.126.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.8...cowswap-v1.126.0) (2025-12-22)
 
 

@@ -1,7 +1,9 @@
 import { useSelect } from 'react-cosmos/client'
 import styled from 'styled-components/macro'
 
-import { EthFlowStepper, EthFlowStepperProps, SmartOrderStatus } from './index'
+import { SmartOrderStatus } from './constants'
+
+import { EthFlowStepper, EthFlowStepperProps } from './index'
 
 const ORDER_ID =
   '0xfc5646178d29fe6412c26aaa216dba86fedcf4ebb1e49d9e3a05c5e58d59cc6a9d98c4ff9724040269bdbe3eb2078fa2cb6a21f8636ecb32'

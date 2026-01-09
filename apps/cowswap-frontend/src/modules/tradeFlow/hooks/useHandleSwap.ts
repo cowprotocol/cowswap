@@ -10,6 +10,7 @@ import { logTradeFlow } from 'modules/trade/utils/logger'
 import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useSafeBundleFlowContext } from './useSafeBundleFlowContext'
 import { TradeFlowParams, useTradeFlowContext } from './useTradeFlowContext'
@@ -26,7 +27,11 @@ export function useHandleSwap(
   const tradeFlowType = useTradeFlowType()
   const tradeFlowContext = useTradeFlowContext(params)
   const safeBundleFlowContext = useSafeBundleFlowContext()
-  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
+  const isBridge = getAreBridgeCurrencies(
+    tradeFlowContext?.context.inputAmount.currency,
+    tradeFlowContext?.context.outputAmount.currency,
+  )
+  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee(isBridge)
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const { onUserInput, onChangeRecipient } = actions
