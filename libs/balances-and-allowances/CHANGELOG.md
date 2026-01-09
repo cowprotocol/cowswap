@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.10.0...balances-and-allowances-v1.11.0) (2026-01-09)
+
+
+### Features
+
+* reset balances update on account change ([#6745](https://github.com/cowprotocol/cowswap/issues/6745)) ([92c2a49](https://github.com/cowprotocol/cowswap/commit/92c2a49fda2d7f045a1898012573640dcea50603))
+
+
+### Bug Fixes
+
+* hide couldnt load balances msg when balances are loading ([#6779](https://github.com/cowprotocol/cowswap/issues/6779)) ([54269cc](https://github.com/cowprotocol/cowswap/commit/54269ccb815c75f064febc8bc45a4fbe6cac9f5a))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.9.0...balances-and-allowances-v1.10.0) (2025-11-10)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-const",
-  "version": "1.31.0",
+  "version": "1.32.0",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
