@@ -1,3 +1,4 @@
+import { SMALL_TIMEOUT } from '../config'
 import { handleNativeBalance, mockSendCall } from '../support/mocks/mockSendCall'
 
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
@@ -78,10 +79,11 @@ describe('Swap (mod)', () => {
   it('can find COW and swap Native for COW', () => {
     cy.visit('/#/11155111/swap', {
       onBeforeLoad: async (win) => {
+        const address = await win.ethereum.signer.getAddress()
         mockSendCall(win.ethereum, [
           handleNativeBalance(
             win.ethereum,
-            await win.ethereum.signer.getAddress(),
+            address,
             50n * 10n ** 18n, // 18 decimals
           ),
         ])
@@ -91,7 +93,7 @@ describe('Swap (mod)', () => {
     cy.swapEnterInputAmount(ETH, '0.5', true)
     cy.swapSelectOutput(COW)
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
-    cy.get('#do-trade-button').should('contain.text', 'Swap').click({ timeout: 10000 })
+    cy.get('#do-trade-button').should('contain.text', 'Swap').click({ timeout: SMALL_TIMEOUT })
     cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 
