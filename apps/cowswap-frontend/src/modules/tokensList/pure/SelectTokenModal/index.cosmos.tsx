@@ -45,6 +45,8 @@ const defaultProps: SelectTokenModalProps = {
     isLoading: false,
     chainId: SupportedChainId.SEPOLIA,
     fromCache: false,
+    hasFirstLoad: true,
+    error: null,
   },
   selectedToken,
   isRouteAvailable: true,
