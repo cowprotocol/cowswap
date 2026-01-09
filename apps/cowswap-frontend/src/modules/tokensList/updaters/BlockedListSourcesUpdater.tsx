@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { blockedListSourcesAtom, getCountryAsKey, restrictedListsAtom } from '@cowprotocol/tokens'
 
 import { useGeoStatus } from 'modules/rwa'
@@ -11,11 +12,18 @@ import { useGeoStatus } from 'modules/rwa'
  * - does not block when country is unknown (consent check happens at trade/import time)
  */
 export function BlockedListSourcesUpdater(): null {
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
   const restrictedLists = useAtomValue(restrictedListsAtom)
   const setBlockedListSources = useSetAtom(blockedListSourcesAtom)
 
   useEffect(() => {
+    // Skip blocking if feature flag is disabled
+    if (!isRwaGeoblockEnabled) {
+      setBlockedListSources(new Set<string>())
+      return
+    }
+
     if (!restrictedLists.isLoaded) {
       return
     }
@@ -35,7 +43,7 @@ export function BlockedListSourcesUpdater(): null {
     }
 
     setBlockedListSources(blockedSources)
-  }, [geoStatus, restrictedLists, setBlockedListSources])
+  }, [isRwaGeoblockEnabled, geoStatus, restrictedLists, setBlockedListSources])
 
   return null
 }
