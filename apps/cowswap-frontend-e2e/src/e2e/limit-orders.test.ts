@@ -1,9 +1,11 @@
+import { SMALL_TIMEOUT } from '../config'
+
 const CHAIN_ID = 11155111
 const SELL_TOKEN = 'WETH'
 const BUY_TOKEN = 'COW'
 
 function unlock(): void {
-  cy.get('#unlock-limit-orders-btn', { timeout: 10000 }).click()
+  cy.get('#unlock-limit-orders-btn', { timeout: SMALL_TIMEOUT }).click()
 }
 
 function navigate(path = '', unlockLimitOrders = true): void {

@@ -12,11 +12,16 @@ function parseFiatAmountText(text: string): number {
 
 describe('Fiat amounts', () => {
   beforeEach(() => {
+    cy.intercept('GET', '**/tokens/**/usdPrice', {
+      statusCode: 200,
+      body: { price: 2000 },
+    }).as('usdPrice')
     cy.visit('/#/11155111/swap/WETH/COW')
   })
 
   it('Should change fiat amount after changing currency amount', () => {
     cy.unlockCrossChainSwap()
+    cy.wait('@usdPrice')
     getInputToken().type('1')
 
     // Get fiat amount for 1 WETH
@@ -27,7 +32,7 @@ describe('Fiat amounts', () => {
       getInputToken().clear().type('2')
 
       // Get fiat amount for 2 WETH
-      getInputFiatAmount().then((fiatAmountTwoText) => {
+      getInputFiatAmount().should((fiatAmountTwoText) => {
         const fiatAmountTwo = parseFiatAmountText(fiatAmountTwoText)
         const onePercent = fiatAmountOne * 0.01
 
