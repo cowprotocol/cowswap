@@ -69,7 +69,7 @@ export function useFaqData(): FaqItem[] {
           </Link>
           ,{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -132,7 +132,7 @@ export function useFaqData(): FaqItem[] {
           <br />
           CoW Protocol groups user orders into batches and auctions them off to bonded third parties known as{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -157,7 +157,7 @@ export function useFaqData(): FaqItem[] {
         <>
           CoW Protocol is powered by a decentralized network of bonded third parties known as{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -219,7 +219,7 @@ export function useFaqData(): FaqItem[] {
           such as trading a token, minting an NFT, entering or exiting a LP position etc. These intents can then be
           executed by third parties, such as CoW Protocol&#39;s{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -234,7 +234,7 @@ export function useFaqData(): FaqItem[] {
           MEV protection. Intent-based trading has recently surged in popularity across DeFi. CoW Protocol is the
           largest intent-based meta DEX aggregator, with the largest{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -254,7 +254,7 @@ export function useFaqData(): FaqItem[] {
       answer: (
         <>
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -343,7 +343,7 @@ export function useFaqData(): FaqItem[] {
           </Link>{' '}
           messages which are grouped together in batches and settled onchain by{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({

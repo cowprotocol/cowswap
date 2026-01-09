@@ -134,7 +134,7 @@ export const FAQ_DATA = [
         (MEV). It is the first UI built on top of CoW Protocol. As the leading intents-based DEX, CoW Swap leverages a
         network of bonded third parties known as{' '}
         <Link
-          href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+          href="https://docs.cow.fi/category/solver"
           external
           utmContent="cow-protocol-introduction-solvers"
           onClick={() =>
@@ -240,7 +240,7 @@ export const FAQ_DATA = [
         against whichever DEX is lowest at the time of quoting, CoW Swap seeks to find the best execution price. CoW
         Swap groups user orders into batches and auctions them off to bonded third parties known as{' '}
         <Link
-          href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+          href="https://docs.cow.fi/category/solver"
           external
           utmContent="cow-protocol-introduction-solvers"
           onClick={() =>
