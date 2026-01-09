@@ -141,8 +141,5 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
 
   const isLoading = rawTrades === null
 
-  return useMemo(
-    () => ({ trades, error, isLoading, hasNextPage }),
-    [trades, error, isLoading, hasNextPage],
-  )
+  return useMemo(() => ({ trades, error, isLoading, hasNextPage }), [trades, error, isLoading, hasNextPage])
 }

@@ -1,11 +1,9 @@
 import { ReactElement, ReactNode } from 'react'
 
-import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -15,6 +13,8 @@ import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
+
+import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
@@ -85,23 +85,6 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
       </CompatibilityIssuesWarningWrapper>
     </>
   ) : null
-}
-
-const ProxyAccountLoading = (): ReactNode => {
-  const accountProxyLabel = i18n._(ACCOUNT_PROXY_LABEL)
-  return (
-    <>
-      <span>
-        <Trans>Loading {accountProxyLabel}</Trans>
-      </span>
-      <CenteredDots smaller />
-    </>
-  )
-}
-
-const ProxyAccountUnknown = (): ReactNode => {
-  const accountProxyLabel = i18n._(ACCOUNT_PROXY_LABEL)
-  return <Trans>Couldn't verify {accountProxyLabel}, please try later</Trans>
 }
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
@@ -271,8 +254,23 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
-  [TradeFormValidation.BalancesNotLoaded]: {
-    text: <Trans>Couldn't load balances</Trans>,
+  [TradeFormValidation.BalancesLoading]: {
+    text: (
+      <>
+        <Trans>Fetching balances</Trans>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
+  [TradeFormValidation.BalancesNotLoaded]: (context) => {
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <>
+          <Trans>Couldn't load balances</Trans>
+          {context.balancesError ? <HelpTooltip text={<div>{context.balancesError}</div>} /> : null}
+        </>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.BalanceInsufficient]: (context) => {
     const inputCurrency = context.derivedState.inputCurrency
@@ -301,18 +299,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
-    const { amountToApprove, enablePartialApprove, defaultText } = context
+    const { amountToApprove, supportsPartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
     return (
       <TradeApproveButton
         isDisabled={isDisabled}
         amountToApprove={amountToApprove}
-        enablePartialApprove={enablePartialApprove}
+        supportsPartialApprove={supportsPartialApprove}
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
       >
-        <TradeFormBlankButton disabled={!enablePartialApprove}>{defaultText}</TradeFormBlankButton>
+        <TradeFormBlankButton disabled={!supportsPartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>
     )
   },
@@ -337,5 +335,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.ProxyAccountUnknown]: {
     text: <ProxyAccountUnknown />,
+  },
+  [TradeFormValidation.RestrictedForCountry]: {
+    text: <Trans>This token is not available in your region</Trans>,
   },
 }

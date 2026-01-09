@@ -9,6 +9,8 @@ export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
+export { RestrictedTokensListUpdater } from './updaters/RestrictedTokensListUpdater'
+export type { RestrictedTokensListUpdaterProps } from './updaters/RestrictedTokensListUpdater'
 
 // Pure components
 export { TokenLogo, TokenLogoWrapper } from './pure/TokenLogo'
@@ -19,6 +21,8 @@ export * from './types'
 export type { TokensByAddress, TokensBySymbol } from './state/tokens/allTokensAtom'
 export type { ListSearchResponse } from './hooks/lists/useSearchList'
 export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
+export type { RestrictedTokenListState, TokenId } from './state/restrictedTokens/restrictedTokensAtom'
+export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
 
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
@@ -52,8 +56,12 @@ export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
+export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from './hooks/tokens/useRestrictedToken'
+export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTokens/restrictedTokensAtom'
+export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
 
 // Utils
+export { getTokenId } from './state/restrictedTokens/restrictedTokensAtom'
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
@@ -65,4 +73,11 @@ export { fetchTokenList } from './services/fetchTokenList'
 
 // Consts
 export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
+export { RWA_CONSENT_HASH } from './updaters/RestrictedTokensListUpdater'
 export { useIsAnyOfTokensOndo } from './hooks/lists/useIsAnyOfTokensOndo'
+export { useFilterBlockedLists } from './hooks/lists/useFilterBlockedLists'
+export { useIsListBlocked, getSourceAsKey, getCountryAsKey } from './hooks/lists/useIsListBlocked'
+export { useRestrictedListInfo } from './hooks/lists/useRestrictedListInfo'
+
+// Types
+export type { RestrictedListInfo } from './hooks/lists/useRestrictedListInfo'

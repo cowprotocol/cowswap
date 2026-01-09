@@ -28,10 +28,9 @@ jest.mock('common/favicon', () => {
   }
 })
 
+import { shouldAnimateInProgress } from 'modules/application/utils/faviconAnimation/logic'
 import { OrderProgressBarStepName } from 'modules/orderProgressBar'
 import { OrderProgressBarState } from 'modules/orderProgressBar/types'
-
-import { shouldAnimateInProgress } from './FaviconAnimationUpdater'
 
 describe('FaviconAnimationUpdater – shouldAnimateInProgress', () => {
   const NOW = 1_000_000

@@ -83,6 +83,8 @@ export function BalancesCacheUpdater({ chainId, account, excludedTokens }: Balan
         fromCache: true,
         chainId,
         isLoading: state.isLoading,
+        hasFirstLoad: state.hasFirstLoad,
+        error: state.error,
         values: {
           ...state.values,
           ...cacheKeys.reduce(

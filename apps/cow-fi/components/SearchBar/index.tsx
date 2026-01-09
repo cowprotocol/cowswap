@@ -109,6 +109,8 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
 
     startTransition(async () => {
       try {
+        // NOTE: Next.js client runs every server action sequentially, thus here is NO race condition problem
+        // if you want to run multiple Next.js server actions in parallel, use https://github.com/icflorescu/next-server-actions-parallel
         const result = await searchArticlesAction({ searchTerm: trimmedQuery, page: 0, pageSize: PAGE_SIZE })
         startTransition(() => {
           if (result.success && result.data) {

@@ -21,7 +21,6 @@ import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
 interface OrderFillabilityWarningProps {
   fillability: OrderFillability
   inputAmount: CurrencyAmount<Token>
-  enablePartialApprove?: boolean
   enablePartialApproveBySettings?: boolean
   orderId?: string
 }
@@ -29,7 +28,6 @@ interface OrderFillabilityWarningProps {
 export function OrderFillabilityWarning({
   fillability,
   inputAmount,
-  enablePartialApprove,
   enablePartialApproveBySettings,
   orderId,
 }: OrderFillabilityWarningProps): ReactNode {
@@ -76,13 +74,11 @@ export function OrderFillabilityWarning({
               </Trans>
             </Subtitle>
             <ApproveWrapper>
-              {enablePartialApprove && (
-                <OrderPartialApprove
-                  orderId={orderId}
-                  isPartialApproveEnabledBySettings={enablePartialApproveBySettings}
-                  amountToApprove={inputAmount}
-                />
-              )}
+              <OrderPartialApprove
+                orderId={orderId}
+                isPartialApproveEnabledBySettings={enablePartialApproveBySettings}
+                amountToApprove={inputAmount}
+              />
             </ApproveWrapper>
           </OrderActionsWrapper>
         </WrappedAccordionBanner>

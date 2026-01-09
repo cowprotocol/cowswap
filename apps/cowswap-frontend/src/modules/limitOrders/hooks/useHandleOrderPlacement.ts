@@ -26,6 +26,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
+import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {
@@ -51,7 +52,11 @@ export function useHandleOrderPlacement(
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions,
 ): () => Promise<void> {
-  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
+  const isBridge = getAreBridgeCurrencies(
+    tradeContext.postOrderParams.inputAmount.currency,
+    tradeContext.postOrderParams.outputAmount.currency,
+  )
+  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee(isBridge)
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}

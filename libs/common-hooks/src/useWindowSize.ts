@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 
+interface WindowSize {
+  width?: number
+  height?: number
+}
+
 const isClient = typeof window === 'object'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getSize() {
+function getSize(): WindowSize {
   return {
     width: isClient ? window.innerWidth : undefined,
     height: isClient ? window.innerHeight : undefined,
@@ -12,15 +15,11 @@ function getSize() {
 }
 
 // https://usehooks.com/useWindowSize/
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useWindowSize() {
+export function useWindowSize(): WindowSize {
   const [windowSize, setWindowSize] = useState(getSize)
 
   useEffect(() => {
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    function handleResize() {
+    function handleResize(): void {
       setWindowSize(getSize())
     }
 

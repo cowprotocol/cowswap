@@ -13,12 +13,14 @@ import {
   useSetUserApproveAmountModalState,
 } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
+import { RwaConsentModalContainer, useRwaConsentModalState } from 'modules/rwa'
 import {
   ImportTokenModal,
   SelectTokenWidget,
   useSelectTokenWidgetState,
   useTokenListAddingError,
   useUpdateSelectTokenWidgetState,
+  useRestrictedTokensImportStatus,
 } from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
@@ -61,10 +63,14 @@ export function TradeWidgetModals({
   const { isModalOpen: changeApproveAmountInProgress } = useGetUserApproveAmountState()
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
+  const { isModalOpen: isRwaConsentModalOpen, closeModal: closeRwaConsentModal } = useRwaConsentModalState()
   const {
     tokensToImport,
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
   } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
+  const { isImportDisabled, blockReason, requiresConsent, restrictedTokenInfo, tokenNeedingConsent } =
+    useRestrictedTokensImportStatus(tokensToImport)
+  const { openModal: openRwaConsentModal } = useRwaConsentModalState()
 
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
@@ -75,6 +81,7 @@ export function TradeWidgetModals({
     (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
       closeTradeConfirm()
       closeZeroApprovalModal()
+      closeRwaConsentModal()
       if (shouldCloseAutoImportModal) closeAutoImportModal()
       if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
       setWrapNativeScreenState({ isOpen: false })
@@ -85,6 +92,7 @@ export function TradeWidgetModals({
     [
       closeTradeConfirm,
       closeZeroApprovalModal,
+      closeRwaConsentModal,
       closeAutoImportModal,
       updateSelectTokenWidgetState,
       setWrapNativeScreenState,
@@ -115,8 +123,44 @@ export function TradeWidgetModals({
     resetAllScreens(isOutputTokenSelectorRef.current)
   }, [chainId, resetAllScreens])
 
+  /**
+   * If auto-import modal is open and consent is required,
+   * open the RWA consent modal instead
+   */
+  useEffect(() => {
+    if (isAutoImportModalOpen && requiresConsent && restrictedTokenInfo && tokenNeedingConsent) {
+      openRwaConsentModal({
+        consentHash: restrictedTokenInfo.consentHash,
+        token: tokenNeedingConsent,
+        pendingImportTokens: tokensToImport,
+        onImportSuccess: () => {
+          // After consent, import the tokens
+          importTokenCallback(tokensToImport)
+          closeAutoImportModal()
+        },
+        onDismiss: () => {
+          // If consent is rejected, close the auto-import modal too
+          closeAutoImportModal()
+        },
+      })
+    }
+  }, [
+    isAutoImportModalOpen,
+    requiresConsent,
+    restrictedTokenInfo,
+    tokenNeedingConsent,
+    tokensToImport,
+    openRwaConsentModal,
+    importTokenCallback,
+    closeAutoImportModal,
+  ])
+
   if (genericModal) {
     return genericModal
+  }
+
+  if (isRwaConsentModalOpen) {
+    return <RwaConsentModalContainer />
   }
 
   if (isTradeReviewOpen || pendingTrade) {
@@ -131,8 +175,18 @@ export function TradeWidgetModals({
     return selectTokenWidget
   }
 
-  if (isAutoImportModalOpen) {
-    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
+  // Show import modal only if consent is not required
+  // (if consent is required, the useEffect above will open the consent modal)
+  if (isAutoImportModalOpen && !requiresConsent) {
+    return (
+      <ImportTokenModal
+        tokens={tokensToImport}
+        onDismiss={closeAutoImportModal}
+        onImport={importTokenCallback}
+        isImportDisabled={isImportDisabled}
+        blockReason={blockReason}
+      />
+    )
   }
 
   if (isWrapNativeOpen) {

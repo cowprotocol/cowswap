@@ -10,7 +10,7 @@ import { COW_PROTOCOL_NAME } from '../../constants'
 import { SwapAndBridgeStatus, SwapResultContext } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { SwapResultContent } from '../contents/SwapResultContent'
-import { SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
+import { swapStatusIcons, swapStatusTitlePrefixes } from '../StopStatus'
 
 interface SwapStepRowProps {
   swapResultContext: SwapResultContext | undefined
@@ -31,7 +31,7 @@ export function SwapStepRow({
   const { i18n } = useLingui()
   const isPending = !swapResultContext
   const swapStatus = isPending ? SwapAndBridgeStatus.PENDING : SwapAndBridgeStatus.DONE
-  const titlePrefix: string = i18n._(SwapStatusTitlePrefixes[swapStatus])
+  const titlePrefix: string = i18n._(swapStatusTitlePrefixes[swapStatus])
 
   return (
     <SwapSummaryRow>
@@ -43,7 +43,7 @@ export function SwapStepRow({
           isCollapsible
           defaultExpanded={isPending}
           status={swapStatus}
-          statusIcon={SwapStatusIcons[swapStatus]}
+          statusIcon={swapStatusIcons[swapStatus]}
           protocolIconShowOnly="first"
           protocolIconSize={21}
           circleSize={21}
