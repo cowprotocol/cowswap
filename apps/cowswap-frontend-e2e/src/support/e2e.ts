@@ -55,6 +55,12 @@ Cypress.on('window:before:load', (win) => {
   }
 })
 
+Cypress.on('uncaught:exception', (err) => {
+  if (err.message.includes('ResizeObserver loop completed with undelivered notifications')) {
+    return false
+  }
+})
+
 const skippedUrls = [
   // analytics
   /ads-twitter.com/,
@@ -89,7 +95,6 @@ beforeEach(() => {
     req.headers['origin'] = Cypress.config('baseUrl')!
     req.continue()
   })
-
   skippedUrls.forEach((url) => {
     cy.intercept(url, (req) => {
       req.reply({ statusCode: 404 })
