@@ -3603,7 +3603,7 @@ msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> y
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokenImportStatus.ts
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokensImportStatus.ts
 msgid "This token is not available in your region."
-msgstr "This token is not available in your region.>>>>>>> Stashed changes>>>>>>> Stashed changes"
+msgstr "This token is not available in your region."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "No signatures yet"
