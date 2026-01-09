@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { Media, UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 

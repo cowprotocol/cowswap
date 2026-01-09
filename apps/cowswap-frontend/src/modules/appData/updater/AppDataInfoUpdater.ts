@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
 import { UtmParams } from '@cowprotocol/common-utils'
-import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEnv } from '@cowprotocol/cow-sdk'
 
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 
@@ -14,7 +14,6 @@ import { getAppData } from '../utils/fullAppData'
 
 export type UseAppDataParams = {
   appCodeWithWidgetMetadata: AppCodeWithWidgetMetadata | null
-  chainId: SupportedChainId
   slippageBips: number
   isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
@@ -23,6 +22,7 @@ export type UseAppDataParams = {
   volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
   userConsent?: UserConsentsMetadata
+  referrerCode?: string
 }
 
 /**
@@ -33,7 +33,6 @@ export type UseAppDataParams = {
 
 export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
-  chainId,
   slippageBips,
   isSmartSlippage,
   orderClass,
@@ -42,6 +41,7 @@ export function AppDataInfoUpdater({
   volumeFee,
   replacedOrderUid,
   userConsent,
+  referrerCode,
 }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -57,7 +57,6 @@ export function AppDataInfoUpdater({
 
     const { appCode, environment, widget } = appCodeWithWidgetMetadata
     const params: BuildAppDataParams = {
-      chainId,
       slippageBips,
       isSmartSlippage,
       appCode,
@@ -69,6 +68,7 @@ export function AppDataInfoUpdater({
       widget,
       replacedOrderUid,
       userConsent,
+      referrerCode,
     }
 
     const updateAppData = async (): Promise<void> => {
@@ -88,7 +88,6 @@ export function AppDataInfoUpdater({
     updateAppDataPromiseRef.current = updateAppDataPromiseRef.current.finally(updateAppData)
   }, [
     appCodeWithWidgetMetadata,
-    chainId,
     setAppDataInfo,
     slippageBips,
     orderClass,
@@ -98,6 +97,7 @@ export function AppDataInfoUpdater({
     replacedOrderUid,
     isSmartSlippage,
     userConsent,
+    referrerCode,
   ])
 }
 

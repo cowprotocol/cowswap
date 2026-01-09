@@ -118,6 +118,16 @@ export interface WalletReferralStatusResponse {
   }
 }
 
+export interface AffiliateCodeResponse {
+  code: string
+}
+
+export interface AffiliateCreateRequest {
+  code: string
+  walletAddress: string
+  signedMessage: string
+}
+
 export interface ReferralContextValue extends ReferralDomainState {
   cancelVerification: () => void
   actions: ReferralActions

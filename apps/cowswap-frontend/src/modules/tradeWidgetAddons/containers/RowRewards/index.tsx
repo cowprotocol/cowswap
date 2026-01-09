@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useReferral, useReferralActions } from 'modules/affiliate'
 

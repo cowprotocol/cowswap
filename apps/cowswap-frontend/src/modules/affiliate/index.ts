@@ -6,7 +6,8 @@ export { useReferralActions } from './hooks/useReferralActions'
 export { useReferralModalState } from './hooks/useReferralModalState'
 export {
   verifyReferralCode,
-  getWalletReferralStatus,
+  getAffiliateCode,
+  createAffiliateCode,
   isSupportedReferralNetwork,
   getReferralApiConfig,
 } from './services/referralApi'

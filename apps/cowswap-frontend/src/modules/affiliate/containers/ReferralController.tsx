@@ -11,9 +11,9 @@ import {
   useReferralVerification,
   usePendingVerificationHandler,
 } from './verificationEffects'
-import { useReferralWalletStatus, useReferralWalletSync } from './walletEffects'
 
 import { useReferral } from '../hooks/useReferral'
+import { useReferralWalletSync } from '../hooks/useReferralWalletSync'
 import { isSupportedReferralNetwork } from '../services/referralApi'
 
 export function ReferralController(): ReactNode {
@@ -28,14 +28,13 @@ export function ReferralController(): ReactNode {
     [chainId],
   )
 
-  useReferralWalletSync({ account, chainId, supportedNetwork, actions: referral.actions })
-  useReferralWalletStatus({
+  useReferralWalletSync({
     account,
     chainId,
     supportedNetwork,
-    referral,
+    actions: referral.actions,
+    savedCode: referral.savedCode,
   })
-
   const { runVerification } = useReferralVerification({
     account,
     chainId,

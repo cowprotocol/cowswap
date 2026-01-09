@@ -23,6 +23,8 @@ const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId): MenuItem[] => {
     { title: msg`Overview`, url: '/account' },
     { title: msg`Tokens`, url: '/account/tokens' },
     { title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) },
+    { title: msg`My rewards`, url: '/account/my-rewards' },
+    { title: msg`Affiliate`, url: '/account/affiliate' },
   ]
 }
 

@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import REFERRAL_ILLUSTRATION from '@cowprotocol/assets/images/image-profit.svg'
 import { ButtonPrimary, LinkStyledButton, ModalHeader } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { ReferralCodeForm } from './ReferralCodeForm'
 import { ReferralStatusMessages, getModalTitle } from './ReferralStatusMessages'
@@ -14,17 +14,8 @@ import { REFERRAL_HOW_IT_WORKS_URL } from '../../constants'
 import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 
 export function ReferralModalContent(props: ReferralModalContentProps): ReactNode {
-  const {
-    uiState,
-    onPrimaryClick,
-    helperText,
-    primaryCta,
-    onDismiss,
-    inputRef,
-    ctaRef,
-    linkedMessage,
-    hasRejection,
-  } = props
+  const { uiState, onPrimaryClick, helperText, primaryCta, onDismiss, inputRef, ctaRef, linkedMessage, hasRejection } =
+    props
 
   const howItWorksLink = (
     <LinkStyledButton as="a" href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">

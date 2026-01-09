@@ -5,7 +5,8 @@ import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import PendingIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import LinkedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 
-import { t, Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { InputWrapper, StyledInput, TrailingIcon } from './styles'
@@ -78,9 +79,7 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
           {renderIconWithLabel(PendingIcon, t`Checking`, <Trans>Checking</Trans>)}
         </TrailingIcon>
       ) : (
-        trailingIconKind && (
-          <TrailingIcon kind={trailingIconKind}>{renderTrailingIcon(trailingIconKind)}</TrailingIcon>
-        )
+        trailingIconKind && <TrailingIcon kind={trailingIconKind}>{renderTrailingIcon(trailingIconKind)}</TrailingIcon>
       )}
     </InputWrapper>
   )

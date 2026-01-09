@@ -2,7 +2,8 @@ import { ReactNode, RefObject, useEffect, useMemo, useRef } from 'react'
 
 import { CowAnalytics } from '@cowprotocol/analytics'
 
-import { t, Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { PrimaryCta, StatusCopyResult } from './types'
 
@@ -165,7 +166,10 @@ export function useReferralModalAnalytics(
   }, [analytics, referral.modalOpen, referral.modalSource, uiState])
 }
 
-export function useReferralMessages(codeForDisplay?: string, reason?: ReferralIncomingCodeReason): {
+export function useReferralMessages(
+  codeForDisplay?: string,
+  reason?: ReferralIncomingCodeReason,
+): {
   linkedMessage: ReactNode
 } {
   return useMemo(() => {

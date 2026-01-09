@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper } from '../styled'
 

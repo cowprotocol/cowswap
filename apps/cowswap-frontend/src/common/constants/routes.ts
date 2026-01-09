@@ -25,6 +25,8 @@ export const Routes = {
   ACCOUNT_TOKENS: '/account/tokens',
   ACCOUNT_TOKENS_SINGLE: '/account/tokens/:address',
   ACCOUNT_GOVERNANCE: '/account/governance',
+  ACCOUNT_AFFILIATE: '/account/affiliate',
+  ACCOUNT_MY_REWARDS: '/account/my-rewards',
   ABOUT: '/about',
   PRIVACY_POLICY: '/privacy-policy',
   COOKIE_POLICY: '/cookie-policy',

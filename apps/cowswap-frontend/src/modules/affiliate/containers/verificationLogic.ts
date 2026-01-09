@@ -78,9 +78,6 @@ export async function performVerification(params: PerformVerificationParams): Pr
   const requestId = startVerificationRequest({ sanitizedCode, baseParams })
 
   try {
-    // TODO: remove artificial delay once real referral verification API is wired (simulates network latency).
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-
     const response = await verifyReferralCode({
       code: sanitizedCode,
       account: baseParams.account,
@@ -265,10 +262,7 @@ function handleVerificationResponse(params: {
   })
 }
 
-function shouldPreserveExistingCode(
-  currentVerification: ReferralVerificationStatus,
-  savedCode?: string,
-): boolean {
+function shouldPreserveExistingCode(currentVerification: ReferralVerificationStatus, savedCode?: string): boolean {
   if (!savedCode) {
     return false
   }

@@ -1,10 +1,10 @@
 import { AFFILIATE_SUPPORTED_CHAIN_IDS, CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { defineMessage } from '@lingui/macro'
+import { defineMessage } from '@lingui/core/macro'
 
-export const REFERRAL_STORAGE_KEY = 'cowswap:referral-code:v1'
-export const REFERRAL_SOURCE_STORAGE_KEY = 'cowswap:referral-source:v1'
+export const REFERRAL_STORAGE_KEY = 'cowswap:referral-code:v2'
+export const REFERRAL_SOURCE_STORAGE_KEY = 'cowswap:referral-source:v2'
 
 export const REFERRAL_SUPPORTED_NETWORKS: SupportedChainId[] = [...AFFILIATE_SUPPORTED_CHAIN_IDS]
 
@@ -15,9 +15,6 @@ export const REFERRAL_PROGRAM_RULES_COPY = defineMessage({
   message: 'Earn 10 USDC per 50k eligible volume in 90 days.',
   comment: 'Explains how much a referrer earns for referred trading volume within 90 days.',
 })
-
-// TODO: replace placeholder URL once the referral API endpoint is provisioned
-export const DEFAULT_REFERRAL_API_URL = 'https://affiliate.api.cow.fi'
 
 // Timeout applied to referral service requests so UI fails fast on network issues
 export const REFERRAL_API_TIMEOUT_MS = 10_000

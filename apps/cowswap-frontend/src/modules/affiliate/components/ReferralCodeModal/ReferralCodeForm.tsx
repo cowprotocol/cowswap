@@ -3,7 +3,8 @@ import { FormEvent, ReactNode, RefObject } from 'react'
 import SaveIcon from '@cowprotocol/assets/images/icon-save.svg'
 import { Badge } from '@cowprotocol/ui'
 
-import { t, Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
@@ -122,10 +123,10 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
         onPrimaryClick={onPrimaryClick}
         onSave={onSave}
         inputRef={inputRef}
-      isLoading={isChecking}
-    />
-  </FormGroup>
-)
+        isLoading={isChecking}
+      />
+    </FormGroup>
+  )
 }
 
 interface DeriveFormFlagsParams {

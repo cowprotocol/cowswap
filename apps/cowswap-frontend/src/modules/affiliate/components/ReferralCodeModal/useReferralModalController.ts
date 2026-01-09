@@ -283,7 +283,7 @@ function usePrimaryClickHandler(params: {
     if (primaryCta.action === 'viewRewards') {
       analytics.sendEvent({ category: 'referral', action: 'cta_clicked', label: 'view_rewards' })
       onClose()
-      navigate(Routes.ACCOUNT)
+      navigate(Routes.ACCOUNT_MY_REWARDS)
       return
     }
 
@@ -291,5 +291,15 @@ function usePrimaryClickHandler(params: {
       analytics.sendEvent({ category: 'referral', action: 'cta_clicked', label: 'go_back' })
       onClose()
     }
-  }, [account, actions, analytics, displayCode, navigate, onClose, primaryCta.action, primaryCta.disabled, toggleWalletModal])
+  }, [
+    account,
+    actions,
+    analytics,
+    displayCode,
+    navigate,
+    onClose,
+    primaryCta.action,
+    primaryCta.disabled,
+    toggleWalletModal,
+  ])
 }

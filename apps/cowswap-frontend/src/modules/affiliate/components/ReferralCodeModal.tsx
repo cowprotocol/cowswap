@@ -10,7 +10,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import { CowModal } from 'common/pure/Modal'
 
 import { ReferralModalContent } from './ReferralCodeModal/content'
-import { useReferralModalController } from './ReferralCodeModal/controller'
+import { useReferralModalController } from './ReferralCodeModal/useReferralModalController'
 
 import { useReferralActions } from '../hooks/useReferralActions'
 import { useReferralModalState } from '../hooks/useReferralModalState'

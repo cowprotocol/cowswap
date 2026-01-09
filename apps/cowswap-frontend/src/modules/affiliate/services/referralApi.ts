@@ -1,10 +1,10 @@
-import {
-  DEFAULT_REFERRAL_API_URL,
-  REFERRAL_API_TIMEOUT_MS,
-  REFERRAL_SUPPORTED_NETWORKS,
-} from '../constants'
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
+
+import { REFERRAL_API_TIMEOUT_MS, REFERRAL_SUPPORTED_NETWORKS } from '../constants'
 import {
   ReferralApiConfig,
+  AffiliateCodeResponse,
+  AffiliateCreateRequest,
   ReferralVerificationApiResponse,
   ReferralVerificationRequest,
   WalletReferralStatusRequest,
@@ -13,7 +13,7 @@ import {
 
 export function getReferralApiConfig(): ReferralApiConfig {
   return {
-    baseUrl: DEFAULT_REFERRAL_API_URL,
+    baseUrl: BFF_BASE_URL,
     timeoutMs: REFERRAL_API_TIMEOUT_MS,
   }
 }
@@ -32,31 +32,172 @@ function withTimeout<T>(promise: Promise<T>, timeout: number, errorMessage: stri
   return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId))
 }
 
-async function fetchJson<T>(input: RequestInfo, init: RequestInit, timeout?: number): Promise<T> {
+type FetchJsonResponse<T> = {
+  response: Response
+  data?: T
+  text: string
+}
+
+async function fetchJsonResponse<T>(
+  input: RequestInfo,
+  init: RequestInit,
+  timeout?: number,
+): Promise<FetchJsonResponse<T>> {
   const response = await withTimeout(
     fetch(input, init),
     timeout ?? REFERRAL_API_TIMEOUT_MS,
     'Unable to reach referral service',
   )
 
-  if (!response.ok) {
-    const text = await response.text().catch(() => '')
-    const error = new Error(text || `Referral service error (${response.status})`)
-    ;(error as Error & { status?: number }).status = response.status
-    throw error
+  const text = await response.text().catch(() => '')
+  let data: T | undefined
+
+  if (text) {
+    try {
+      data = JSON.parse(text) as T
+    } catch {
+      data = undefined
+    }
   }
 
-  return (await response.json()) as T
+  return { response, data, text }
+}
+
+function buildReferralError(status: number, text: string, data?: { message?: string }): Error {
+  const message = data?.message || text || `Referral service error (${status})`
+  const error = new Error(message)
+  ;(error as Error & { status?: number }).status = status
+  return error
 }
 
 export async function verifyReferralCode(
   request: ReferralVerificationRequest,
   config = getReferralApiConfig(),
 ): Promise<ReferralVerificationApiResponse> {
-  const url = `${config.baseUrl.replace(/\/$/, '')}/api/v1/referrals/verify`
+  const { code } = request
+  const url = `${config.baseUrl.replace(/\/$/, '')}/ref-codes/${encodeURIComponent(code)}`
+
+  const { response, data, text } = await fetchJsonResponse<AffiliateCodeResponse>(
+    url,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    config.timeoutMs,
+  )
+
+  if (response.ok) {
+    return {
+      code: {
+        value: data?.code ?? code,
+        status: 'valid',
+        programActive: true,
+      },
+      wallet: {
+        eligible: true,
+      },
+    }
+  }
+
+  if (response.status === 404) {
+    return {
+      code: {
+        value: code,
+        status: 'invalid',
+        programActive: true,
+      },
+      wallet: {
+        eligible: true,
+      },
+    }
+  }
+
+  if (response.status === 403) {
+    return {
+      code: {
+        value: code,
+        status: 'expired',
+        programActive: false,
+      },
+      wallet: {
+        eligible: true,
+      },
+    }
+  }
+
+  throw buildReferralError(response.status, text, data as { message?: string } | undefined)
+}
+
+export async function getWalletReferralStatus(
+  request: WalletReferralStatusRequest,
+  config = getReferralApiConfig(),
+): Promise<WalletReferralStatusResponse> {
+  const { account } = request
+  const url = `${config.baseUrl.replace(/\/$/, '')}/affiliate/${account}`
+
+  const { response, data, text } = await fetchJsonResponse<AffiliateCodeResponse>(
+    url,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    config.timeoutMs,
+  )
+
+  if (response.ok) {
+    return {
+      wallet: {
+        linkedCode: data?.code,
+      },
+    }
+  }
+
+  if (response.status === 404) {
+    return { wallet: {} }
+  }
+
+  throw buildReferralError(response.status, text, data as { message?: string } | undefined)
+}
+
+export async function getAffiliateCode(
+  account: string,
+  config = getReferralApiConfig(),
+): Promise<AffiliateCodeResponse | null> {
+  const url = `${config.baseUrl.replace(/\/$/, '')}/affiliate/${account}`
+  const { response, data, text } = await fetchJsonResponse<AffiliateCodeResponse>(
+    url,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    config.timeoutMs,
+  )
+
+  if (response.ok) {
+    return data ?? { code: '' }
+  }
+
+  if (response.status === 404) {
+    return null
+  }
+
+  throw buildReferralError(response.status, text, data as { message?: string } | undefined)
+}
+
+export async function createAffiliateCode(
+  request: AffiliateCreateRequest,
+  config = getReferralApiConfig(),
+): Promise<AffiliateCodeResponse> {
+  const url = `${config.baseUrl.replace(/\/$/, '')}/affiliate/${request.walletAddress}`
   const body = JSON.stringify(request)
 
-  return fetchJson<ReferralVerificationApiResponse>(
+  const { response, data, text } = await fetchJsonResponse<AffiliateCodeResponse>(
     url,
     {
       method: 'POST',
@@ -67,25 +208,12 @@ export async function verifyReferralCode(
     },
     config.timeoutMs,
   )
-}
 
-export async function getWalletReferralStatus(
-  request: WalletReferralStatusRequest,
-  config = getReferralApiConfig(),
-): Promise<WalletReferralStatusResponse> {
-  const { account } = request
-  const url = `${config.baseUrl.replace(/\/$/, '')}/api/v1/referrals/wallets/${account}`
+  if (response.ok) {
+    return data ?? { code: request.code }
+  }
 
-  return fetchJson<WalletReferralStatusResponse>(
-    url,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-    config.timeoutMs,
-  )
+  throw buildReferralError(response.status, text, data as { message?: string } | undefined)
 }
 
 export function isSupportedReferralNetwork(chainId: number | undefined | null): boolean {
