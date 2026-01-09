@@ -12,8 +12,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
-import { useTokenDataSources } from '../containers/SelectTokenWidget/tokenDataHooks'
-import { useRecentTokenSection, useTokenSelectionHandler } from '../containers/SelectTokenWidget/tokenSelectionHooks'
+import { useRecentTokenSection } from '../containers/SelectTokenWidget/hooks/useRecentTokenSection'
+import { useTokenDataSources } from '../containers/SelectTokenWidget/hooks/useTokenDataSources'
+import { useTokenSelectionHandler } from '../containers/SelectTokenWidget/hooks/useTokenSelectionHandler'
 import { SelectTokenContext } from '../types'
 
 export interface TokenListData {

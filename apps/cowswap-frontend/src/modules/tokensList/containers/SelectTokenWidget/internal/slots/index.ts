@@ -1,11 +1,15 @@
-// Pure slot components
-export { Header, ConnectedHeader } from './Header'
-export { Search, ConnectedSearch } from './Search'
-export { TokenList, ConnectedTokenList } from './TokenList'
+export { Header } from './Header'
+export { ConnectedHeader } from './ConnectedHeader'
+export { Search } from './Search'
+export { ConnectedSearch } from './ConnectedSearch'
+export { TokenList } from './TokenList'
+export { ConnectedTokenList } from './ConnectedTokenList'
 export { NetworkPanel } from './NetworkPanel'
-export { ChainSelector, DesktopChainPanel, ConnectedChainSelector, ConnectedDesktopChainPanel } from './ChainSelector'
+export { ChainSelector } from './ChainSelector'
+export { ConnectedChainSelector } from './ConnectedChainSelector'
+export { DesktopChainPanel } from './DesktopChainPanel'
+export { ConnectedDesktopChainPanel } from './ConnectedDesktopChainPanel'
 
-// Blocking views (each with its own focused hook)
 export { ImportTokenView } from './ImportTokenView'
 export { ImportListView } from './ImportListView'
 export { ManageView } from './ManageView'

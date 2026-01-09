@@ -1,15 +1,26 @@
-// Main internal modal component
-export { SelectTokenModal, useActiveBlockingView } from './SelectTokenModal'
+export { SelectTokenModal } from './SelectTokenModal'
 export type { SelectTokenModalProps } from './SelectTokenModal'
 
-// Slot components (use with props directly)
-export { Header, Search, ChainSelector, DesktopChainPanel, TokenList } from './SelectTokenModal'
+export {
+  Header,
+  ConnectedHeader,
+  Search,
+  ConnectedSearch,
+  TokenList,
+  ConnectedTokenList,
+  NetworkPanel,
+  ChainSelector,
+  ConnectedChainSelector,
+  DesktopChainPanel,
+  ConnectedDesktopChainPanel,
+  ImportTokenView,
+  ImportListView,
+  ManageView,
+  LpTokenView,
+} from './slots'
 
-// Blocking view slots (each with its own focused hook)
-export { ImportTokenView, ImportListView, ManageView, LpTokenView } from './SelectTokenModal'
-
-// Slot prop types
 export type { HeaderProps } from './slots/Header'
 export type { SearchProps } from './slots/Search'
-export type { ChainSelectorProps, DesktopChainPanelProps } from './slots/ChainSelector'
+export type { ChainSelectorProps } from './slots/ChainSelector'
+export type { DesktopChainPanelProps } from './slots/DesktopChainPanel'
 export type { TokenListProps } from './slots/TokenList'

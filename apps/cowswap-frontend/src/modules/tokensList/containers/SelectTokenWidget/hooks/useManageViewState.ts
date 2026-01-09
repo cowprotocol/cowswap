@@ -1,12 +1,11 @@
-/**
- * useManageViewState - State for ManageListsAndTokens
- */
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ListState } from '@cowprotocol/tokens'
 
+import { useDismissHandler } from './useDismissHandler'
+import { useManageWidgetVisibility } from './useManageWidgetVisibility'
+import { useTokenDataSources } from './useTokenDataSources'
+
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
-import { useTokenDataSources } from '../tokenDataHooks'
-import { useDismissHandler, useManageWidgetVisibility } from '../widgetUIState'
 
 export interface ManageViewState {
   lists: ListState[]

@@ -1,13 +1,11 @@
-/**
- * useHeaderState - Header slot state
- */
 import { t } from '@lingui/core/macro'
 
 import { Field } from 'legacy/state/types'
 
+import { useManageWidgetVisibility } from './useManageWidgetVisibility'
+import { resolveModalTitle } from './useWidgetMetadata'
+
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
-import { resolveModalTitle } from '../tokenDataHooks'
-import { useManageWidgetVisibility } from '../widgetUIState'
 
 export interface HeaderState {
   title: string

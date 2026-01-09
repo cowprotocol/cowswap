@@ -1,10 +1,13 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
+import { useDismissHandler } from './useDismissHandler'
+import { useManageWidgetVisibility } from './useManageWidgetVisibility'
+import { usePoolPageHandlers } from './usePoolPageHandlers'
+import { useTokenSelectionHandler } from './useTokenSelectionHandler'
+
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 import { useUpdateSelectTokenWidgetState } from '../../../hooks/useUpdateSelectTokenWidgetState'
-import { useTokenSelectionHandler } from '../tokenSelectionHooks'
-import { useDismissHandler, useManageWidgetVisibility, usePoolPageHandlers } from '../widgetUIState'
 
 export interface LpTokenViewState {
   poolAddress: string

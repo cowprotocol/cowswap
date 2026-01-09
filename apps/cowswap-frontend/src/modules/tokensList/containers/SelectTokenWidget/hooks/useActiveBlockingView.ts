@@ -1,8 +1,6 @@
-/**
- * useActiveBlockingView - Determines which blocking view should be shown
- */
+import { useManageWidgetVisibility } from './useManageWidgetVisibility'
+
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
-import { useManageWidgetVisibility } from '../widgetUIState'
 
 export type BlockingViewType = 'importToken' | 'importList' | 'manage' | 'lpToken' | null
 

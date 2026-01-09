@@ -11,28 +11,28 @@ import { Media } from '@cowprotocol/ui'
 import { createPortal } from 'react-dom'
 
 import {
-  ChainSelector,
   ConnectedChainSelector,
   ConnectedDesktopChainPanel,
   ConnectedHeader,
   ConnectedSearch,
   ConnectedTokenList,
-  DesktopChainPanel,
-  Header,
   ImportListView,
   ImportTokenView,
   LpTokenView,
   ManageView,
   NetworkPanel,
-  Search,
-  TokenList,
 } from './slots'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
-import { useActiveBlockingView, useChainPanelState, useWidgetEffects, useWidgetOpenState } from '../hooks'
+import {
+  useChainPanelState,
+  useDismissHandler,
+  useManageWidgetVisibility,
+  useWidgetEffects,
+  useWidgetOpenState,
+} from '../hooks'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
-import { useDismissHandler, useManageWidgetVisibility } from '../widgetUIState'
 
 export interface SelectTokenModalProps {
   children: ReactNode
@@ -77,21 +77,13 @@ export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode
   return typeof document === 'undefined' ? overlay : createPortal(overlay, document.body)
 }
 
-// Re-export useActiveBlockingView for convenience
-export { useActiveBlockingView }
-
 SelectTokenModal.Header = ConnectedHeader
 SelectTokenModal.Search = ConnectedSearch
 SelectTokenModal.TokenList = ConnectedTokenList
 SelectTokenModal.NetworkPanel = NetworkPanel
 SelectTokenModal.ChainSelector = ConnectedChainSelector
 SelectTokenModal.DesktopChainPanel = ConnectedDesktopChainPanel
-
-// Blocking view slots (each with its own focused hook)
 SelectTokenModal.ImportTokenView = ImportTokenView
 SelectTokenModal.ImportListView = ImportListView
 SelectTokenModal.ManageView = ManageView
 SelectTokenModal.LpTokenView = LpTokenView
-
-export { Header, Search, ChainSelector, DesktopChainPanel, TokenList }
-export { ImportTokenView, ImportListView, ManageView, LpTokenView }

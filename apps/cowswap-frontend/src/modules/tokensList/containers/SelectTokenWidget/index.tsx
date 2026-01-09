@@ -1,7 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
-import { SelectTokenModal, useActiveBlockingView } from './internal'
+import { useActiveBlockingView } from './hooks'
+import { SelectTokenModal } from './internal'
 
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'

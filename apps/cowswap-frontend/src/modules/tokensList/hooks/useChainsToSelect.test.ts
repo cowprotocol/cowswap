@@ -42,6 +42,10 @@ jest.mock('./useSelectTokenWidgetState', () => ({
   useSelectTokenWidgetState: jest.fn(),
 }))
 
+jest.mock('common/hooks/useShouldHideNetworkSelector', () => ({
+  useShouldHideNetworkSelector: jest.fn(),
+}))
+
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 
@@ -54,6 +58,11 @@ const mockUseBridgeSupportedNetworks = useBridgeSupportedNetworks as jest.Mocked
   typeof useBridgeSupportedNetworks
 >
 const mockUseRoutesAvailability = useRoutesAvailability as jest.MockedFunction<typeof useRoutesAvailability>
+
+const { useShouldHideNetworkSelector } = require('common/hooks/useShouldHideNetworkSelector')
+const mockUseShouldHideNetworkSelector = useShouldHideNetworkSelector as jest.MockedFunction<
+  typeof useShouldHideNetworkSelector
+>
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
 const createWidgetState = (override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState => {
@@ -291,6 +300,7 @@ describe('useChainsToSelect hook', () => {
       isLoading: false,
     })
     mockUseRoutesAvailability.mockReturnValue(DEFAULT_ROUTES_AVAILABILITY)
+    mockUseShouldHideNetworkSelector.mockReturnValue(false)
   })
 
   it('returns undefined for LIMIT_ORDER + OUTPUT (buy token)', () => {

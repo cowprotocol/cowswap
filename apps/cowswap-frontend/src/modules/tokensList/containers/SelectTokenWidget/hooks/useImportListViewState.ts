@@ -1,15 +1,16 @@
-/**
- * useImportListViewState - State for ImportListModal
- */
 import { ListState } from '@cowprotocol/tokens'
+
+import { useDismissHandler } from './useDismissHandler'
+import { useImportFlowCallbacks } from './useImportFlowCallbacks'
+import { useManageWidgetVisibility } from './useManageWidgetVisibility'
+import { useTokenAdminActions } from './useTokenAdminActions'
+import { useTokenDataSources } from './useTokenDataSources'
+import { useTokenSelectionHandler } from './useTokenSelectionHandler'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { useOnTokenListAddingError } from '../../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 import { useUpdateSelectTokenWidgetState } from '../../../hooks/useUpdateSelectTokenWidgetState'
-import { useTokenAdminActions, useTokenDataSources } from '../tokenDataHooks'
-import { useImportFlowCallbacks, useTokenSelectionHandler } from '../tokenSelectionHooks'
-import { useDismissHandler, useManageWidgetVisibility } from '../widgetUIState'
 
 export interface ImportListViewState {
   list: ListState
