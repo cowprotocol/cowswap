@@ -19,22 +19,23 @@ export const Contents = styled.div`
 
 export const TokenBlock = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
-  padding: 20px;
+  gap: 12px;
+  padding: 16px;
   background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
-  text-align: center;
 `
 
 export const TokenSymbolName = styled.div`
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
   font-size: 16px;
   font-weight: 600;
   color: inherit;
+  text-align: left;
 `
 
 export const TokenSymbol = styled.span`
