@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getSourceAsKey, ListState, restrictedListsAtom, useToggleList } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -18,6 +19,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 // wrap toggle list functionality with consent checking
 export function useConsentAwareToggleList(): (list: ListState, enabled: boolean) => void {
   const { account } = useWalletInfo()
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
   const restrictedLists = useAtomValue(restrictedListsAtom)
   const consentCache = useAtomValue(rwaConsentCacheAtom)
@@ -34,6 +36,12 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
 
   return useCallback(
     (list: ListState, enabled: boolean) => {
+      // skip consent check if ff is disabled
+      if (!isRwaGeoblockEnabled) {
+        baseToggleList(list, enabled)
+        return
+      }
+
       // always allow disabling a list without consent
       if (!enabled) {
         baseToggleList(list, enabled)
@@ -74,6 +82,14 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
       // no consent required or consent already given
       baseToggleList(list, enabled)
     },
-    [baseToggleList, geoStatus.country, restrictedLists, account, consentCache, openRwaConsentModal],
+    [
+      baseToggleList,
+      isRwaGeoblockEnabled,
+      geoStatus.country,
+      restrictedLists,
+      account,
+      consentCache,
+      openRwaConsentModal,
+    ],
   )
 }

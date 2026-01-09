@@ -59,6 +59,14 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   }, [setBalances, isBalancesLoading, targetChainId, targetAccount])
 
   useEffect(() => {
+    if (!error) return
+
+    const message = error instanceof Error ? error.message : String(error)
+
+    setBalances((state) => ({ ...state, error: message, isLoading: false }))
+  }, [error, setBalances])
+
+  useEffect(() => {
     setIsBffFailed(!!error)
   }, [error, setIsBffFailed])
 
@@ -77,6 +85,8 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
         ...state,
         chainId: targetChainId,
         fromCache: false,
+        hasFirstLoad: true,
+        error: null,
         values: balancesState,
         isLoading: false,
       }

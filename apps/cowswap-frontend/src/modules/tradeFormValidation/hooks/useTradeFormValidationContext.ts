@@ -8,6 +8,7 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
@@ -21,12 +22,14 @@ import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
 
+// eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isOnline = useIsOnline()
+  const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
@@ -86,8 +89,11 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isProxySetupValid,
       customTokenError,
       isRestrictedForCountry,
+      isBalancesLoading: !hasFirstLoad || isBalancesLoading,
+      balancesError,
     }
   }, [
+    hasFirstLoad,
     account,
     approvalState,
     customTokenError,
@@ -102,12 +108,14 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isRestrictedForCountry,
     isSafeReadonlyUser,
     isSupportedWallet,
+    isBalancesLoading,
     isSwapUnsupported,
     isWrapUnwrap,
     isProxySetupValid,
     recipientEnsAddress,
     toBeImported,
     tradeQuote,
+    balancesError,
   ])
 }
 

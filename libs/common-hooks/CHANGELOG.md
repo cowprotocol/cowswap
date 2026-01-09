@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.13.0...common-hooks-v1.14.0) (2026-01-09)
+
+
+### Features
+
+* default partial approvals setting to true and the form to full-approval ([#6791](https://github.com/cowprotocol/cowswap/issues/6791)) ([db3ce9a](https://github.com/cowprotocol/cowswap/commit/db3ce9a746f690017f3a19943d8fcf39a33b3488))
+
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.12.0...common-hooks-v1.13.0) (2025-11-24)
 
 

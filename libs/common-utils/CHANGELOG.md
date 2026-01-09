@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.25.0...common-utils-v1.26.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
 ## [1.25.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.24.0...common-utils-v1.25.0) (2025-12-24)
 
 

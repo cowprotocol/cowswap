@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.32.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.31.0...common-const-v1.32.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** adjust price impact warnings for bridging ([#6754](https://github.com/cowprotocol/cowswap/issues/6754)) ([9f5f85b](https://github.com/cowprotocol/cowswap/commit/9f5f85be18b07f8ef0078d20c1cf29933fa4d80f))
+
+
+### Bug Fixes
+
+* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+
 ## [1.31.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.30.0...common-const-v1.31.0) (2025-12-16)
 
 

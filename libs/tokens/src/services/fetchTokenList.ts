@@ -97,7 +97,12 @@ function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): L
 
 async function sanitizeList(list: TokenList): Promise<TokenList> {
   // Remove tokens from the list that don't have valid addresses
-  const tokens = list.tokens.filter(({ address }) => isAddress(address))
+  const tokens = list.tokens.reduce<TokenList['tokens']>((acc, token) => {
+    const checksummed = isAddress(token.address.toLowerCase())
+    if (!checksummed) return acc
+    acc.push({ ...token, address: checksummed })
+    return acc
+  }, [])
 
   const cleanedList = { ...list, tokens }
 

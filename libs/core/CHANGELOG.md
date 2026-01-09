@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/core-v1.10.1...core-v1.11.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
 ## [1.10.1](https://github.com/cowprotocol/cowswap/compare/core-v1.10.0...core-v1.10.1) (2025-12-16)
 
 
