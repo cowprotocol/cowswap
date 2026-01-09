@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.61.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.60.0...explorer-v2.61.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+
+### Bug Fixes
+
+* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+* to address tooltip for bridge orders ([#6766](https://github.com/cowprotocol/cowswap/issues/6766)) ([b1ef329](https://github.com/cowprotocol/cowswap/commit/b1ef32998e603b48c4f8f7f40889ad541e03df3d))
+
 ## [2.60.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.3...explorer-v2.60.0) (2025-12-24)
 
 
