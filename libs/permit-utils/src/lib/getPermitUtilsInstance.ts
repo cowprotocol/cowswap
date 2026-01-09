@@ -1,9 +1,9 @@
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
-import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-
 import { PERMIT_SIGNER } from '../const'
 import { PermitProviderConnector } from '../utils/PermitProviderConnector'
+
+import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 /**
  * Cache by network. Here we don't care about the provider as a static account will be used for the signature
@@ -14,11 +14,11 @@ const CHAIN_UTILS_CACHE = new Map<number, Eip2612PermitUtils>()
  */
 const PROVIDER_UTILS_CACHE = new Map<string, Eip2612PermitUtils>()
 
-export function getPermitUtilsInstance(
+export async function getPermitUtilsInstance(
   chainId: number,
   provider: JsonRpcProvider,
-  account?: string | undefined
-): Eip2612PermitUtils {
+  account?: string | undefined,
+): Promise<Eip2612PermitUtils> {
   const chainCache = CHAIN_UTILS_CACHE.get(chainId)
 
   if (!account && chainCache) {
@@ -33,7 +33,8 @@ export function getPermitUtilsInstance(
 
   // TODO: allow to receive the signer as a parameter
   const web3ProviderConnector = new PermitProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
-  const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector, { enabledCheckSalt: true })
+  const Eip2612PermitUtilsClass = await import('../imports/1inchPermitUtils').then((r) => r.Eip2612PermitUtils)
+  const eip2612PermitUtils = new Eip2612PermitUtilsClass(web3ProviderConnector, { enabledCheckSalt: true })
 
   if (!account) {
     console.log(`[getPermitUtilsInstance] Set cached chain utils for chain ${chainId}`, eip2612PermitUtils)
@@ -41,7 +42,7 @@ export function getPermitUtilsInstance(
   } else {
     console.log(
       `[getPermitUtilsInstance] Set cached provider utils for chain ${chainId}-${account}`,
-      eip2612PermitUtils
+      eip2612PermitUtils,
     )
     PROVIDER_UTILS_CACHE.set(providerCacheKey, eip2612PermitUtils)
   }

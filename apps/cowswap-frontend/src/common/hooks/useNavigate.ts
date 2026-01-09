@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-// eslint-disable-next-line no-restricted-imports
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NavigateOptions, To, useNavigate as useNavigateOriginal } from 'react-router'
 
 export type NavigateFunction = (to: To, options?: NavigateOptions) => void | Promise<void>

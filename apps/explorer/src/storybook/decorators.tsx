@@ -4,7 +4,7 @@ import { Network } from '@cowprotocol/cow-sdk'
 import { Color } from '@cowprotocol/ui'
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-// eslint-disable-next-line no-restricted-imports
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { StoryFnReactReturnType } from '@storybook/react/dist/ts3.9/client/preview/types'
 import { Frame } from 'components/common/Frame'
 import { withGlobalContext } from 'hooks/useGlobalState'

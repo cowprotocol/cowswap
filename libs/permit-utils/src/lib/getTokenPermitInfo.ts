@@ -1,9 +1,8 @@
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
-import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
+import { oneInchPermitUtilsConsts } from '..'
 import { DEFAULT_MIN_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
 import { GetTokenPermitInfoParams, GetTokenPermitIntoResult, PermitInfo, PermitType } from '../types'
 import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
@@ -11,6 +10,8 @@ import { Eip712Domain, getEip712Domain } from '../utils/getEip712Domain'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { getTokenName } from '../utils/getTokenName'
 import { getTokenPermitVersion } from '../utils/getTokenPermitVersion'
+
+import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 const EIP_2612_PERMIT_PARAMS = {
   nonce: 0,
@@ -51,7 +52,7 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
 async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { spender, tokenAddress, chainId, provider, minGasLimit, amount } = params
 
-  const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
+  const eip2612PermitUtils = await getPermitUtilsInstance(chainId, provider)
 
   const owner = PERMIT_SIGNER.address
 
@@ -250,7 +251,7 @@ async function getEip2612CallData(params: BaseParams): Promise<string> {
 async function isDaiLikeTypeHash(tokenAddress: string, eip2612PermitUtils: Eip2612PermitUtils): Promise<boolean> {
   const permitTypeHash = await eip2612PermitUtils.getPermitTypeHash(tokenAddress)
 
-  return permitTypeHash === DAI_LIKE_PERMIT_TYPEHASH
+  return permitTypeHash === oneInchPermitUtilsConsts.DAI_LIKE_PERMIT_TYPEHASH
 }
 
 async function getDaiLikeCallData(params: BaseParams): Promise<string | false> {
@@ -258,7 +259,7 @@ async function getDaiLikeCallData(params: BaseParams): Promise<string | false> {
 
   const permitTypeHash = await eip2612PermitUtils.getPermitTypeHash(tokenAddress)
 
-  if (permitTypeHash === DAI_LIKE_PERMIT_TYPEHASH) {
+  if (permitTypeHash === oneInchPermitUtilsConsts.DAI_LIKE_PERMIT_TYPEHASH) {
     return buildDaiLikePermitCallData({
       eip2612Utils: eip2612PermitUtils,
       callDataParams: [

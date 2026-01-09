@@ -1,5 +1,4 @@
-import { DAI_PERMIT_SELECTOR, EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
-
+import { oneInchPermitUtilsConsts } from '..'
 import { BuildDaiLikePermitCallDataParams, BuildEip2612PermitCallDataParams } from '../types'
 
 export async function buildEip2612PermitCallData({
@@ -12,7 +11,7 @@ export async function buildEip2612PermitCallData({
   // For some reason, the method above removes the permit selector prefix
   // https://github.com/1inch/permit-signed-approvals-utils/blob/master/src/eip-2612-permit.utils.ts#L92
   // Adding it back
-  return callData.replace('0x', EIP_2612_PERMIT_SELECTOR)
+  return callData.replace('0x', oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR)
 }
 
 export async function buildDaiLikePermitCallData({
@@ -23,5 +22,5 @@ export async function buildDaiLikePermitCallData({
 
   // Same as above, but for dai like
   // https://github.com/1inch/permit-signed-approvals-utils/blob/master/src/eip-2612-permit.utils.ts#L140
-  return callData.replace('0x', DAI_PERMIT_SELECTOR)
+  return callData.replace('0x', oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR)
 }

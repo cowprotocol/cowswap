@@ -1,4 +1,4 @@
-import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import { createAction } from '@reduxjs/toolkit'
 

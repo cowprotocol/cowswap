@@ -6,4 +6,6 @@ export { getPermitUtilsInstance } from './lib/getPermitUtilsInstance'
 export { getTokenPermitInfo } from './lib/getTokenPermitInfo'
 export { isSupportedPermitInfo } from './utils/isSupportedPermitInfo'
 
+export * as oneInchPermitUtilsConsts from './consts/1inchPermitUtils'
+
 export type { GetTokenPermitIntoResult, PermitHookData, PermitHookParams, PermitInfo, PermitType } from './types'

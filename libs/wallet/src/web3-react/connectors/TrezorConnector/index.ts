@@ -76,8 +76,10 @@ export class TrezorConnector extends Connector {
     try {
       this.activatedNetwork = desiredChainId
 
-      const { default: trezorConnect } = await import('@trezor/connect-web')
-      const { default: transformTypedData } = await import('@trezor/connect-plugin-ethereum')
+      const [{ default: trezorConnect }, { default: transformTypedData }] = await Promise.all([
+        import('@trezor/connect-web'),
+        import('@trezor/connect-plugin-ethereum'),
+      ])
 
       this.trezorConnect = trezorConnect
 

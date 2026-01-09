@@ -1,6 +1,6 @@
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/types-kit'
 import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
