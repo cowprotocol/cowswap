@@ -41,7 +41,7 @@ if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-function Main(): ReactNode {
+export function Main(): ReactNode {
   return (
     <StrictMode>
       <SvgCacheProvider>

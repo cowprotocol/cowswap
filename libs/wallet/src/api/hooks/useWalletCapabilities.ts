@@ -60,10 +60,10 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
               resolve(undefined)
               return
             }
-
             const chainIdHex = '0x' + (+chainId).toString(16)
 
-            resolve(result[chainIdHex])
+            // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
+            resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
           .catch(() => {
             clearInterval(timeout)

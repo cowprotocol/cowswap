@@ -1,7 +1,15 @@
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useFeatureFlags() {
-  return useFlags()
+export interface FeatureFlags {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
+}
+
+// const defaults: Partial<FeatureFlags> = {
+// }
+
+export function useFeatureFlags(): FeatureFlags {
+  const flags = useFlags<FeatureFlags>()
+  return flags
+  // return { ...defaults, ...flags }
 }

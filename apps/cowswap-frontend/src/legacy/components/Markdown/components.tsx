@@ -5,13 +5,13 @@ import styled from 'styled-components/macro'
 
 import { headingToId } from './utils'
 
-const LinkScrollableStyled = styled(Link)`
+export const LinkScrollableStyled = styled(Link)`
   color: ${({ theme }) => theme.blue1} !important;
 `
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function Table({ children }: { children: ReactElement }) {
+export function Table({ children }: { children: ReactElement }) {
   return (
     <div id="table-container">
       <table>{children}</table>
@@ -21,7 +21,7 @@ function Table({ children }: { children: ReactElement }) {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function H2({ children }: { children: ReactElement }) {
+export function H2({ children }: { children: ReactElement }) {
   const ref = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
@@ -34,5 +34,3 @@ function H2({ children }: { children: ReactElement }) {
 
   return <h2 ref={ref}>{children}</h2>
 }
-
-export const markdownComponents = { table: Table, h2: H2, a: LinkScrollableStyled }

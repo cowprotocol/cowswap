@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "buildCommand": "cd ../../ && yarn build:sdk-tools",
+  "outputDirectory": "../../build/sdk-tools",
+  "installCommand": "cd ../../ && yarn run install:ci"
+}

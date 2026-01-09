@@ -2,7 +2,6 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -59,12 +58,10 @@ export function EthFlowModal({
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
   const { amountSetByUser } = usePartialApproveAmountModalState() || {}
   const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
-  const currencyToApprove =
-    isPartialApproveEnabled && isPartialApproveSelectedByUser ? (amountSetByUser ?? wrappedAmount) : undefined
+  const currencyToApprove = isPartialApproveSelectedByUser ? (amountSetByUser ?? wrappedAmount) : undefined
 
   const approveCallback = useTradeApproveCallback(wrapped)
 

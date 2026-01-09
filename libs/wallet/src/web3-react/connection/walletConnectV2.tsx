@@ -43,11 +43,11 @@ function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnec
                   showQrModal: true,
                   rpcMap: RPC_URLS,
                 },
-              })
+              }),
           ),
         actions,
-        onError
-      )
+        onError,
+      ),
   )
 }
 
@@ -67,7 +67,7 @@ function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnec
  * To overcome this problem we proxy WC2 connection and change it's implementation on flight on network changes.
  */
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactConnection {
   let [web3WalletConnectV2, web3WalletConnectV2Hooks] = createWalletConnectV2Connector(chainId)
 
@@ -88,7 +88,7 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
       getOwnPropertyDescriptor: (target, p) => Reflect.getOwnPropertyDescriptor(web3WalletConnectV2, p),
       getPrototypeOf: () => AsyncConnector.prototype,
       set: (target, p, receiver) => Reflect.set(web3WalletConnectV2, p, receiver),
-    }
+    },
   ) as typeof web3WalletConnectV2
 
   const proxyHooks = new Proxy(
@@ -104,12 +104,12 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
               onActivate = onChange
               return () => (onActivate = undefined)
             },
-            () => web3WalletConnectV2Hooks
+            () => web3WalletConnectV2Hooks,
           )
           return Reflect.get(hooks, p, receiver)()
         }
       },
-    }
+    },
   ) as typeof web3WalletConnectV2Hooks
 
   return {

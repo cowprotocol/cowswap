@@ -2,8 +2,6 @@ import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { computeOrderSummary } from 'common/updaters/orders/utils'
-
 import { emulateTwapAsOrder } from './emulateTwapAsOrder'
 
 import { TwapOrderItem, TwapOrderStatus } from '../types'
@@ -25,7 +23,7 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
 
   if (!inputToken || !outputToken) return null
 
-  const storeOrder: Order = {
+  return {
     ...enrichedOrder,
     id: enrichedOrder.uid,
     composableCowInfo: {
@@ -35,15 +33,8 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
     inputToken,
     outputToken,
     creationTime: enrichedOrder.creationDate,
-    summary: '',
     status,
     apiAdditionalInfo: enrichedOrder,
     isCancelling: order.status === TwapOrderStatus.Cancelling,
   }
-
-  const summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: enrichedOrder })
-
-  storeOrder.summary = summary || ''
-
-  return storeOrder
 }

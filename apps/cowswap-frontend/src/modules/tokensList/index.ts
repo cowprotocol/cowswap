@@ -1,4 +1,5 @@
 export { SelectTokenWidget } from './containers/SelectTokenWidget'
+export { BlockedListSourcesUpdater } from './updaters/BlockedListSourcesUpdater'
 
 export { ImportTokenModal } from './pure/ImportTokenModal'
 export { AddIntermediateToken } from './pure/AddIntermediateToken'
@@ -11,3 +12,4 @@ export { useUpdateSelectTokenWidgetState } from './hooks/useUpdateSelectTokenWid
 export { useOnTokenListAddingError } from './hooks/useOnTokenListAddingError'
 export { useTokenListAddingError } from './hooks/useTokenListAddingError'
 export { useSourceChainId } from './hooks/useSourceChainId'
+export { useRestrictedTokensImportStatus } from './hooks/useRestrictedTokensImportStatus'

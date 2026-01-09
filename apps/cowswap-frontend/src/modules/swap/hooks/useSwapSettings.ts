@@ -40,20 +40,14 @@ export function useSwapRecipientToggleState(): StatefulValue<boolean> {
   )
 }
 
-const emptyState: [null, null] = [null, null]
-
-export function useSwapPartialApprovalToggleState(isFeatureEnabled: boolean): StatefulValue<boolean> | [null, null] {
+export function useSwapPartialApprovalToggleState(): StatefulValue<boolean> {
   const updateState = useSetAtom(updateSwapSettingsAtom)
   const settings = useSwapSettings()
 
   return useMemo(() => {
-    if (!isFeatureEnabled) {
-      return emptyState
-    }
-
     return [
       settings.enablePartialApprovalBySettings,
       (enablePartialApproval: boolean) => updateState({ enablePartialApprovalBySettings: enablePartialApproval }),
     ]
-  }, [settings.enablePartialApprovalBySettings, updateState, isFeatureEnabled])
+  }, [settings.enablePartialApprovalBySettings, updateState])
 }

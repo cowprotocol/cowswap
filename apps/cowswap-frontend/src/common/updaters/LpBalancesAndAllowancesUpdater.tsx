@@ -1,4 +1,4 @@
-import { atom, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { BalancesRpcCallUpdater } from '@cowprotocol/balances-and-allowances'
@@ -8,6 +8,8 @@ import { LP_TOKEN_LIST_CATEGORIES, useAllLpTokens } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
 
+import { areLpBalancesLoadedAtom } from './lpBalancesState'
+
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const LP_BALANCES_SWR_CONFIG = { refreshInterval: ms`32s`, revalidateIfStale: false }
 const LP_MULTICALL_OPTIONS = { consequentExecution: true }
@@ -15,8 +17,6 @@ const LP_MULTICALL_OPTIONS = { consequentExecution: true }
 // To avoid high load to the node at the same time
 // We start the updater with a delay
 const LP_UPDATER_START_DELAY = ms`3s`
-
-export const areLpBalancesLoadedAtom = atom(false)
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined

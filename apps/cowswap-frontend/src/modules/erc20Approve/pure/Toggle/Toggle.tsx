@@ -11,13 +11,13 @@ import { Option } from './Option'
 import * as styledEl from './styled'
 
 export function Toggle({
-  isPartialApproveEnabled,
-  enablePartialApprove,
+  isPartialApproveSelected,
+  selectPartialApprove,
   amountToApprove,
   changeApproveAmount,
 }: {
-  isPartialApproveEnabled: boolean
-  enablePartialApprove: (isPartialApproveEnabled: boolean) => void
+  isPartialApproveSelected: boolean
+  selectPartialApprove: (isPartialApproveEnabled: boolean) => void
   amountToApprove: CurrencyAmount<Currency>
   changeApproveAmount?: () => void
 }): ReactNode {
@@ -25,10 +25,14 @@ export function Toggle({
 
   return (
     <styledEl.ToggleWrapper>
-      <Option isActive={isPartialApproveEnabled} onClick={() => enablePartialApprove(true)} title={t`Partial approval`}>
+      <Option
+        isActive={isPartialApproveSelected}
+        onClick={() => selectPartialApprove(true)}
+        title={t`Partial approval`}
+      >
         <styledEl.PartialAmountWrapper
           onClick={() => {
-            if (isPartialApproveEnabled && changeApproveAmount) {
+            if (isPartialApproveSelected && changeApproveAmount) {
               changeApproveAmount()
             }
           }}
@@ -39,7 +43,7 @@ export function Toggle({
           </styledEl.EditIcon>
         </styledEl.PartialAmountWrapper>
       </Option>
-      <Option isActive={!isPartialApproveEnabled} onClick={() => enablePartialApprove(false)} title={t`Full approval`}>
+      <Option isActive={!isPartialApproveSelected} onClick={() => selectPartialApprove(false)} title={t`Full approval`}>
         <Trans>Unlimited one-time</Trans>
       </Option>
     </styledEl.ToggleWrapper>

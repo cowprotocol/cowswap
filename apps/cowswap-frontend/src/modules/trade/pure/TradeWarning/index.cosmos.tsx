@@ -1,4 +1,6 @@
-import { TradeWarning, TradeWarningType } from './index'
+import { TradeWarningType } from './constants'
+
+import { TradeWarning } from './index'
 
 const text = (
   <span>

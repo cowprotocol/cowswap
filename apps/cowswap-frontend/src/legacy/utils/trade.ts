@@ -54,7 +54,6 @@ export type PostOrderParams = {
 
 export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'signer' | 'validTo'> & {
   orderId: string
-  summary: string
   signature: string
   signingScheme: SigningScheme
   isOnChain?: boolean
@@ -98,7 +97,6 @@ export function getOrderSubmitSummary(
 }
 
 export type SignOrderParams = {
-  summary: string
   quoteId: number | undefined
   order: UnsignedOrder
 }
@@ -131,12 +129,9 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
   // slippage adjusted output amount
   const buyAmount = outputAmount.quotient.toString(RADIX_DECIMAL)
 
-  // Prepare order
-  const summary = getOrderSubmitSummary(params)
   const receiver = recipient
 
   return {
-    summary,
     quoteId,
     order: {
       sellToken: sellTokenAddress,
@@ -162,7 +157,6 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
   const {
     orderId,
     account,
-    summary,
     sellToken,
     buyToken,
     allowsOffchainSigning,
@@ -183,7 +177,6 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     // Basic order params
     id: orderId,
     owner: account,
-    summary,
     inputToken: sellToken,
     outputToken: buyToken,
     quoteId,

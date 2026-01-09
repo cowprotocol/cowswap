@@ -7,7 +7,7 @@ import { I18nProvider } from '@lingui/react'
 
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 
-export async function dynamicActivate(locale: SupportedLocale, isInternationalizationEnabled?: boolean): Promise<void> {
+async function dynamicActivate(locale: SupportedLocale, isInternationalizationEnabled?: boolean): Promise<void> {
   try {
     // Load default (en-US) catalog if internationalization is disabled
     if (!isInternationalizationEnabled) {

@@ -27,7 +27,6 @@ export const getOrderMock = (chainId: SupportedChainId): Order => {
     partiallyFillable: false,
     id: '0x62baf4be8adec4766d26a2169999cc170c3ead90ae11a28d658e6d75edc05b185b0abe214ab7875562adee331deff0fe1912fe42644d2bb7',
     owner: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
-    summary: 'Summary',
     class: OrderClass.LIMIT,
     status: OrderStatus.PENDING,
     creationTime,

@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
@@ -76,11 +75,9 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     return hashes
   }, [approveTxHash, wrapTxHash])
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
-  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
 
-  const showPartialApprovalFunctionality =
-    isPartialApproveEnabled && isApproveNeeded && !wrapInProgress && isPartialApproveEnabledBySettings
+  const showPartialApprovalFunctionality = isApproveNeeded && !wrapInProgress && isPartialApproveEnabledBySettings
   const amountToApprove = wrappingPreview.amount ? currencyAmountToTokenAmount(wrappingPreview.amount) : null
 
   return (

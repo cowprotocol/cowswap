@@ -5,7 +5,8 @@ import { ProductVariant, ProductLogo, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
-import { ProtocolIcon, ProtocolIconsContainer, getBorderWidth } from './styled'
+import { ProtocolIcon, ProtocolIconsContainer } from './styled'
+import { getBorderWidth } from './utils'
 
 const STACKED_ICON_OVERLAP_RATIO = 0.4 // This drives both visual overlap and mask calculation
 

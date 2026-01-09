@@ -11,7 +11,7 @@ import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { CollapsibleBridgeRoute } from '../CollapsibleBridgeRoute'
 import { QuoteBridgeContent } from '../contents/QuoteBridgeContent'
 import { QuoteSwapContent } from '../contents/QuoteSwapContent'
-import { BridgeStatusTitlePrefixes, SwapStatusTitlePrefixes } from '../StopStatus'
+import { bridgeStatusTitlePrefixes, swapStatusTitlePrefixes } from '../StopStatus'
 
 interface QuoteDetailsProps {
   isCollapsible?: boolean
@@ -55,7 +55,7 @@ function SwapStep({
       statusIcon={null}
       protocolIconShowOnly="first"
       protocolIconSize={21}
-      titlePrefix={i18n._(SwapStatusTitlePrefixes[status])}
+      titlePrefix={i18n._(swapStatusTitlePrefixes[status])}
       protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={swapContext.chainName}
@@ -79,7 +79,7 @@ function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeS
       stopNumber={2}
       statusIcon={null}
       protocolIconShowOnly="second"
-      titlePrefix={i18n._(BridgeStatusTitlePrefixes[status])}
+      titlePrefix={i18n._(bridgeStatusTitlePrefixes[status])}
       protocolName={bridgeProvider.name}
       bridgeProvider={bridgeProvider}
       chainName={bridgeContext.chainName}

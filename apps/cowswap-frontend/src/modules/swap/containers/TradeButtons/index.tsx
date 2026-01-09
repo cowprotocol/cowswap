@@ -1,17 +1,15 @@
-import React, { ReactNode, useCallback } from 'react'
+import React, { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { useRwaConsentModalState, RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
+  useConfirmTradeWithRwaCheck,
   useIsCurrentTradeBridging,
   useIsNoImpactWarningAccepted,
-  useTradeConfirmActions,
   useWrappedToken,
 } from 'modules/trade'
 import {
@@ -46,7 +44,6 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -55,12 +52,10 @@ export function TradeButtons({
   intermediateBuyToken,
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
-  const { inputCurrency, outputCurrency } = useSwapDerivedState()
-  const { openModal: openRwaConsentModal } = useRwaConsentModalState()
+  const { inputCurrency } = useSwapDerivedState()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
-  const tradeConfirmActions = useTradeConfirmActions()
   const { feeWarningAccepted } = useHighFeeWarning()
   const isNoImpactWarningAccepted = useIsNoImpactWarningAccepted()
   const localFormValidation = useSwapFormState()
@@ -73,33 +68,12 @@ export function TradeButtons({
 
   const { t } = useLingui()
 
-  // Check RWA token status for consent modal
-  const { status: rwaStatus, rwaTokenInfo } = useRwaTokenStatus({
-    inputCurrency,
-    outputCurrency,
-  })
-
-  const confirmTrade = useCallback(
-    (forcePriceConfirmation?: boolean) => {
-      // Show consent modal if country unknown and consent not given
-      if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
-        openRwaConsentModal({
-          consentHash: rwaTokenInfo.consentHash,
-          token: TokenWithLogo.fromToken(rwaTokenInfo.token),
-        })
-        return
-      }
-
-      tradeConfirmActions.onOpen(forcePriceConfirmation)
-    },
-    [rwaStatus, rwaTokenInfo, openRwaConsentModal, tradeConfirmActions],
-  )
+  const { confirmTrade } = useConfirmTradeWithRwaCheck()
 
   const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
   // enable partial approve only for swap
-  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
+  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, true)
 
   const context = useSafeMemoObject({
     wrappedToken,

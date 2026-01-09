@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
@@ -34,7 +33,6 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   currentAllowance: Nullish<bigint>
 } {
   const amountToApprove = useGetAmountToSignApprove()
-  const { isPartialApproveEnabled } = useFeatureFlags()
   const { state: approvalState, currentAllowance } = useApproveState(amountToApprove)
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
@@ -58,7 +56,7 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
 
     if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
 
-    if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
+    if (!isNewApproveFlowEnabled(tradeType)) {
       return ApproveRequiredReason.NotRequired
     }
 
@@ -89,8 +87,8 @@ function isApprovalRequired(approvalState: ApprovalState): boolean {
   return approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
 }
 
-function isNewApproveFlowEnabled(tradeType?: Nullish<TradeType>, isPartialApproveEnabled?: boolean): boolean {
-  return tradeType === TradeType.SWAP && isPartialApproveEnabled === true
+function isNewApproveFlowEnabled(tradeType?: Nullish<TradeType>): boolean {
+  return tradeType === TradeType.SWAP
 }
 
 function getPermitRequirements(type?: PermitType): ApproveRequiredReason {

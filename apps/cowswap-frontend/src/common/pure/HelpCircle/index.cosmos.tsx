@@ -1,8 +1,8 @@
 import { HelpCircle } from '.'
 
-const fixtures = {
+const Fixtures = {
   default: () => <HelpCircle />,
   size16: <HelpCircle size={16} />,
 }
 
-export default fixtures
+export default Fixtures

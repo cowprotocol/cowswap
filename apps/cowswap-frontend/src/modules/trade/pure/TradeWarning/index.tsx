@@ -7,11 +7,7 @@ import { t } from '@lingui/core/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-export enum TradeWarningType {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-}
+import { TradeWarningType } from './constants'
 
 export interface TradeWarningProps {
   text: ReactNode

@@ -9,7 +9,7 @@ import { BANNER_IDS } from 'common/constants/banners'
 import { useCriticalAnnouncements, useNonCriticalAnnouncements } from 'common/hooks/useAnnouncements'
 import { GlobalWarning } from 'common/pure/GlobalWarning'
 
-import { markdownComponents } from '../../Markdown/components'
+import { H2, LinkScrollableStyled, Table } from '../../Markdown/components'
 
 function useGetCmsAnnouncement(chainId: number): string | undefined {
   const critical = useCriticalAnnouncements(chainId)
@@ -28,6 +28,8 @@ function useGetCmsAnnouncement(chainId: number): string | undefined {
 
   return
 }
+
+const markdownComponents = { table: Table, h2: H2, a: LinkScrollableStyled }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

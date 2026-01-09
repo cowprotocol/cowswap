@@ -27,13 +27,13 @@ const swrOptions: SWRConfiguration<CrossChainOrder | null> = {
 }
 
 export function useCrossChainOrder(
-  chainId: SupportedChainId,
+  chainId: SupportedChainId | undefined,
   orderUid: string | undefined,
 ): SWRResponse<CrossChainOrder | null> {
   return useSWR(
     [chainId, orderUid, 'useCrossChainOrder'],
     ([chainId, orderUid]) => {
-      if (!orderUid) return null
+      if (!chainId || !orderUid) return null
 
       return bridgingSdk.getOrder({
         chainId,

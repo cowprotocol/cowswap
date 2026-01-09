@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
@@ -22,7 +21,6 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
   const partialAmountToSign = useGetPartialAmountToSignApprove()
   const isApprovalNeeded = useNeedsApproval(partialAmountToSign)
   const isPartialApprovalSelectedByUser = useIsPartialApproveSelectedByUser()
-  const { isPartialApproveEnabled } = useFeatureFlags()
   const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
 
   return useMemo(() => {
@@ -30,16 +28,10 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
 
     if (!isApprovalNeeded) return CurrencyAmount.fromRawAmount(partialAmountToSign.currency, '0')
 
-    if (isPartialApproveEnabled && isPartialApprovalSelectedByUser && isPartialApprovalEnabledInSettings) {
+    if (isPartialApprovalSelectedByUser && isPartialApprovalEnabledInSettings) {
       return partialAmountToSign
     }
 
     return CurrencyAmount.fromRawAmount(partialAmountToSign.currency, MAX_APPROVE_AMOUNT.toString())
-  }, [
-    partialAmountToSign,
-    isApprovalNeeded,
-    isPartialApproveEnabled,
-    isPartialApprovalSelectedByUser,
-    isPartialApprovalEnabledInSettings,
-  ])
+  }, [partialAmountToSign, isApprovalNeeded, isPartialApprovalSelectedByUser, isPartialApprovalEnabledInSettings])
 }

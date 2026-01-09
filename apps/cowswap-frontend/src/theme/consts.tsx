@@ -28,7 +28,7 @@ export const WIDGET_MAX_WIDTH = {
   tokenSelectSidebar: '700px',
 }
 
-export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolean }>`
+const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolean }>`
   color: ${({ color, theme, override }) => {
     // TODO: Replace any with proper type definitions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

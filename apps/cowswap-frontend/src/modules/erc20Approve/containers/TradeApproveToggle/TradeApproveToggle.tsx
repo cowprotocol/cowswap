@@ -16,8 +16,8 @@ export function TradeApproveToggle({ amountToApprove, updateModalState }: TradeA
 
   return (
     <Toggle
-      isPartialApproveEnabled={isPartialApproveSelectedByUser}
-      enablePartialApprove={setIsPartialApproveSelectedByUser}
+      isPartialApproveSelected={isPartialApproveSelectedByUser}
+      selectPartialApprove={setIsPartialApproveSelectedByUser}
       amountToApprove={amountToApprove}
       changeApproveAmount={updateModalState}
     />

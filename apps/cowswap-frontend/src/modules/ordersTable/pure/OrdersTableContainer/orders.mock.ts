@@ -1,5 +1,5 @@
 import { COW_TOKEN_TO_CHAIN, DAI, GNO_GNOSIS_CHAIN, USDC, WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
-import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -116,7 +116,7 @@ export const ordersMock: ParsedOrder[] = [
       invalidated: false,
       class: OrderClass.LIMIT,
       signingScheme: SigningScheme.EIP712,
-    },
+    } as never as EnrichedOrder,
   },
   {
     id: '5',

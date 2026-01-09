@@ -12,13 +12,11 @@ export interface ConfirmationModalContentProps {
   styles?: React.CSSProperties
   className?: string
   onDismiss: Command
-  topContent: () => ReactNode
-  bottomContent?: () => ReactNode | undefined
+  topContent: ReactNode
+  bottomContent?: ReactNode
 }
 
 // @deprecated use common/pure/NewModal instead
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LegacyConfirmationModalContent({
   title,
   titleSize,
@@ -27,7 +25,7 @@ export function LegacyConfirmationModalContent({
   bottomContent,
   onDismiss,
   topContent,
-}: ConfirmationModalContentProps) {
+}: ConfirmationModalContentProps): ReactNode {
   return (
     <ContentWrapper className={className}>
       <Section>
@@ -37,9 +35,9 @@ export function LegacyConfirmationModalContent({
           </Text>
           <CloseIconWrapper onClick={() => onDismiss()} />
         </GPModalHeader>
-        {topContent()}
+        {topContent}
       </Section>
-      {bottomContent && <BottomSection gap="12px">{bottomContent()}</BottomSection>}
+      {bottomContent && <BottomSection gap="12px">{bottomContent}</BottomSection>}
     </ContentWrapper>
   )
 }

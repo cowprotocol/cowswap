@@ -6,7 +6,7 @@ import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 
-import { SwapStatusIcons } from 'modules/bridge/pure/StopStatus'
+import { swapStatusIcons } from 'modules/bridge/pure/StopStatus'
 import { SwapAndBridgeStatus } from 'modules/bridge/types'
 
 import * as styledEl from './styled'
@@ -53,7 +53,7 @@ export function BridgingStatusHeader({ stepName, sellToken, buyToken }: Bridging
     <styledEl.Header $step={stepName}>
       <styledEl.HeaderState>
         {!isBridgingFailed && sellTokenEl}
-        <styledEl.StatusIcon $step={stepName}>{SwapStatusIcons[stepToStatusMap[stepName]]}</styledEl.StatusIcon>
+        <styledEl.StatusIcon $step={stepName}>{swapStatusIcons[stepToStatusMap[stepName]]}</styledEl.StatusIcon>
         {!isBridgingFailed ? buyTokenEl : sellTokenEl}
       </styledEl.HeaderState>
       <h3>{i18n._(titles[stepName])}</h3>

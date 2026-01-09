@@ -10,7 +10,8 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { EthFlowStepperProps, SmartOrderStatus } from '../index'
+import { SmartOrderStatus } from '../constants'
+import { EthFlowStepperProps } from '../index'
 import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 const RefundMessage = styled.span`

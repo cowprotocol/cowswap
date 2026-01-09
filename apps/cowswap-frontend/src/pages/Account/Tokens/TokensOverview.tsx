@@ -58,7 +58,7 @@ const TokensLoader = styled(CardsLoader)`
 type TokenBalancesMap = ReturnType<typeof useTokensBalances>['values']
 type WalletProvider = ReturnType<typeof useWalletProvider>
 
-export enum PageViewKeys {
+enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
   FAVORITE_TOKENS = 'FAVORITE_TOKENS',
 }

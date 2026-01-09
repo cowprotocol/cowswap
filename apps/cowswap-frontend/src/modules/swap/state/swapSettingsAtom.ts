@@ -13,9 +13,9 @@ export interface SwapSettingsState {
 export const defaultSwapSettings: SwapSettingsState = {
   showRecipient: false,
   deadline: DEFAULT_DEADLINE_FROM_NOW,
-  enablePartialApprovalBySettings: false,
+  enablePartialApprovalBySettings: true,
 }
 
 export const { atom: swapSettingsAtom, updateAtom: updateSwapSettingsAtom } = atomWithPartialUpdate(
-  atomWithStorage<SwapSettingsState>('swapSettingsAtom:v0', defaultSwapSettings, getJotaiIsolatedStorage()),
+  atomWithStorage<SwapSettingsState>('swapSettingsAtom:v1', defaultSwapSettings, getJotaiIsolatedStorage()),
 )

@@ -200,6 +200,7 @@ jobs:
           working-directory: apps/cowswap-frontend-e2e
         env:
           CYPRESS_INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.CYPRESS_INTEGRATION_TEST_PRIVATE_KEY }}
+          CYPRESS_INTEGRATION_TESTS_ALCHEMY_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_ALCHEMY_KEY }}
           CYPRESS_INTEGRATION_TESTS_INFURA_KEY: ${{ secrets.CYPRESS_INTEGRATION_TESTS_INFURA_KEY }}
 
       # - uses: actions/upload-artifact@v3

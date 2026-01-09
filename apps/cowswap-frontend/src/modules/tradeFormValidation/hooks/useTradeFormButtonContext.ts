@@ -16,7 +16,7 @@ import { TradeFormButtonContext } from '../types'
 export function useTradeFormButtonContext(
   defaultText: string,
   confirmTrade: () => void,
-  enablePartialApprove = false,
+  supportsPartialApprove = false,
 ): TradeFormButtonContext | null {
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
@@ -45,7 +45,7 @@ export function useTradeFormButtonContext(
       wrapNativeFlow,
       connectWallet: toggleWalletModal,
       widgetStandaloneMode: standaloneMode,
-      enablePartialApprove,
+      supportsPartialApprove,
       customTokenError,
       minAmountToSignForSwap,
     }
@@ -59,7 +59,7 @@ export function useTradeFormButtonContext(
     wrapNativeFlow,
     toggleWalletModal,
     standaloneMode,
-    enablePartialApprove,
+    supportsPartialApprove,
     customTokenError,
     minAmountToSignForSwap,
   ])

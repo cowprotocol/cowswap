@@ -14,7 +14,8 @@ import { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialog
 
 import { openModalState } from '../../state/openModalState'
 
-export * from './styled'
+export { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay, CloseIcon } from './styled'
+
 interface ModalProps {
   isOpen: boolean
   onDismiss: Command

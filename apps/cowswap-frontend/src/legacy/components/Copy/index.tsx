@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { CopyIcon } from './CopyMod'
+import Copy, { CopyIcon } from './CopyMod'
 
 export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -14,5 +14,6 @@ export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`
   }
 `
 
-export * from './CopyMod'
-export { default } from './CopyMod'
+export { CopyIcon }
+
+export default Copy

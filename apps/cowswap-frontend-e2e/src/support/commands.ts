@@ -8,9 +8,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     /**
      * Select token output in the swap page
@@ -69,6 +67,13 @@ declare namespace Cypress {
     pickToken(symbol: string, role: 'input' | 'output'): Chainable<Subject>
 
     /**
+     * Click unlock-cross-chain-swap-btn
+     *
+     * @example cy.unlockCrossChainSwap()
+     */
+    unlockCrossChainSwap(): Chainable<Subject>
+
+    /**
      * Set a stubbing intercept on route specified
      *
      * @example cy.stubResponse({ url: '/api/v1/someEndpoint/', alias: 'endpoint', body: { foo: 'foo' } })
@@ -92,18 +97,20 @@ declare namespace Cypress {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _clickOnToken(inputOrOutput: string) {
-  cy.get(`#${inputOrOutput}-currency-input .open-currency-select-button`, { timeout: 20_000 })
-    .should('not.be.disabled')
-    .click()
+  const buttonSelector = `#${inputOrOutput}-currency-input .open-currency-select-button`
+
+  cy.get(buttonSelector, { timeout: 20_000 }).should('not.be.disabled')
+  cy.get(buttonSelector).click()
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
-  cy.get(`#tokens-list button[data-address="${tokenAddress.toLowerCase()}"]`)
-    .scrollIntoView()
-    .should('be.visible')
-    .click({ force: true })
+  const tokenSelector = `#token-search-results div[data-address="${tokenAddress.toLowerCase()}"]`
+  const searchSelector = '#token-search-input'
+
+  cy.get(searchSelector, { timeout: 20_000 }).should('be.visible').clear().type(tokenAddress)
+  cy.get(tokenSelector, { timeout: 20_000 }).should('be.visible').click({ force: true })
 
   cy.get(`#${inputOrOutput}-currency-input .token-amount-input`).should('be.visible')
 }
@@ -177,6 +184,10 @@ function enterOutputAmount(tokenAddress: string, amount: number | string, select
   cy.get('#input-currency-input .token-amount-output').type(amount.toString(), { force: true, delay: 400 })
 }
 
+function unlockCrossChainSwap(): Cypress.Chainable {
+  return cy.get('#unlock-cross-chain-swap-btn').should('be.visible').click()
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function stubResponse({
@@ -202,4 +213,5 @@ Cypress.Commands.add('swapSelectOutput', selectOutput)
 Cypress.Commands.add('swapEnterInputAmount', enterInputAmount)
 Cypress.Commands.add('swapEnterOutputAmount', enterOutputAmount)
 Cypress.Commands.add('pickToken', pickToken)
+Cypress.Commands.add('unlockCrossChainSwap', unlockCrossChainSwap)
 Cypress.Commands.add('stubResponse', stubResponse)

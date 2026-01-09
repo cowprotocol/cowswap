@@ -3,8 +3,6 @@ import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { computeOrderSummary } from 'common/updaters/orders/utils'
-
 import { getIsLastPartOrder } from './getIsLastPartOrder'
 import { getPartOrderStatus } from './getPartOrderStatus'
 
@@ -16,7 +14,7 @@ export function mapPartOrderToStoreOrder(
   enrichedOrder: EnrichedOrder,
   isVirtualPart: boolean,
   parent: TwapOrderItem,
-  tokensByAddress: TokensByAddress
+  tokensByAddress: TokensByAddress,
 ): Order | null {
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
@@ -26,7 +24,7 @@ export function mapPartOrderToStoreOrder(
 
   if (!inputToken || !outputToken) return null
 
-  const storeOrder: Order = {
+  return {
     ...enrichedOrder,
     id: enrichedOrder.uid,
     composableCowInfo: {
@@ -38,19 +36,8 @@ export function mapPartOrderToStoreOrder(
     inputToken,
     outputToken,
     creationTime: enrichedOrder.creationDate,
-    summary: '',
     status,
     apiAdditionalInfo: enrichedOrder,
     isCancelling,
   }
-
-  const summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: enrichedOrder })
-
-  storeOrder.summary = summary || ''
-
-  return storeOrder
-}
-
-export function isOrder(order: Order | undefined): order is Order {
-  return !!order
 }
