@@ -14,30 +14,44 @@ const initialGeoData: GeoData = {
 
 export const geoDataAtom = atom<GeoData>(initialGeoData)
 
-export const fetchGeoDataAtom = atom(null, async (get, set) => {
-  const current = get(geoDataAtom)
-
-  // Don't fetch if already loaded or loading
-  if (current.country !== null || current.isLoading) {
-    return
-  }
-
-  set(geoDataAtom, { ...current, isLoading: true })
+async function doFetchGeoData(set: (update: GeoData) => void, current: GeoData): Promise<void> {
+  set({ ...current, isLoading: true })
 
   try {
     const response = await fetch('https://api.country.is')
     const data = await response.json()
 
-    set(geoDataAtom, {
+    set({
       country: data.country || null,
       isLoading: false,
       error: null,
     })
   } catch (error) {
-    set(geoDataAtom, {
+    set({
       country: null,
       isLoading: false,
       error: error instanceof Error ? error.message : 'Failed to fetch geo data',
     })
   }
+}
+
+export const fetchGeoDataAtom = atom(null, async (get, set) => {
+  const current = get(geoDataAtom)
+
+  if (current.country !== null || current.isLoading) {
+    return
+  }
+
+  await doFetchGeoData((update) => set(geoDataAtom, update), current)
+})
+
+// for cases when user changes wallet
+export const refetchGeoDataAtom = atom(null, async (get, set) => {
+  const current = get(geoDataAtom)
+
+  if (current.isLoading) {
+    return
+  }
+
+  await doFetchGeoData((update) => set(geoDataAtom, update), current)
 })
