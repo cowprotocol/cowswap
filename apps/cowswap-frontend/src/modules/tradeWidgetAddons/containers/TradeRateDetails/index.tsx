@@ -23,6 +23,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { RowDeadline } from '../RowDeadline'
+import { RowRewards } from '../RowRewards'
 import { RowSlippage } from '../RowSlippage'
 
 interface TradeRateDetailsProps {
@@ -98,6 +99,7 @@ export function TradeRateDetails({
       />
       {/* Always show slippage inside accordion */}
       {slippageRow}
+      <RowRewards />
       <RowDeadline deadline={deadline} />
     </>
   )
