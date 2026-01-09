@@ -82,7 +82,7 @@ export function useFaqData(): FaqItem[] {
           </Link>
           ,{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
             data-click-event={toCowFiGtmEvent({
@@ -280,7 +280,7 @@ export function useFaqData(): FaqItem[] {
           </Link>
           , CoW Protocol groups that intent alongside other intents in a{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
             data-click-event={toCowFiGtmEvent({
@@ -309,7 +309,7 @@ export function useFaqData(): FaqItem[] {
           This makes for a robust solver competition that ensures users have access to the best liquidity and best
           prices. CoW Protocol is always accepting new solvers. To learn how to deploy a solver, check out the{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-tutorials-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -358,7 +358,7 @@ export function useFaqData(): FaqItem[] {
           <br />
           To determine which solver should settle a given batch, the protocol runs a{' '}
           <Link
-            href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
             data-click-event={toCowFiGtmEvent({
