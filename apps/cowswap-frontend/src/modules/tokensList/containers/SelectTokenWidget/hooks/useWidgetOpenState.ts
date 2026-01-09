@@ -10,7 +10,7 @@ export function useWidgetOpenState(): boolean {
   const widgetState = useSelectTokenWidgetState()
   const isOpen = Boolean(widgetState.onSelectToken && (widgetState.open || widgetState.forceOpen))
 
-  // Reset atom when modal closes
+  // Reset search state when modal closes
   const resetTokenListView = useResetTokenListViewState()
   const prevIsOpenRef = useRef(isOpen)
 

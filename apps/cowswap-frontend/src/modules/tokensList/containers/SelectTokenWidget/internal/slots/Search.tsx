@@ -1,9 +1,3 @@
-/**
- * Search Slot - Token search input
- *
- * Manages search state internally via tokenListViewAtom (shared with TokensContent).
- * Only needs onPressEnter callback from parent.
- */
 import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
@@ -14,6 +8,7 @@ import { t } from '@lingui/core/macro'
 import { useUpdateTokenListViewState } from '../../../../hooks/useUpdateTokenListViewState'
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
 import { tokenListViewAtom } from '../../../../state/tokenListViewAtom'
+import { useSearchState } from '../../hooks'
 
 export interface SearchProps {
   onPressEnter?: () => void
@@ -51,4 +46,9 @@ export function Search({ onPressEnter, placeholder }: SearchProps): ReactNode {
       </styledEl.SearchInputWrapper>
     </styledEl.SearchRow>
   )
+}
+
+export function ConnectedSearch(): ReactNode {
+  const onPressEnter = useSearchState()
+  return <Search onPressEnter={onPressEnter} />
 }

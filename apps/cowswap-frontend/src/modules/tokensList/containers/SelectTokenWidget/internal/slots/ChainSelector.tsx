@@ -1,18 +1,14 @@
-/**
- * ChainSelector Slot - Mobile chain selection chip and panel
- *
- * Manages mobile panel visibility internally.
- * Only needs chains data and onSelectChain callback from parent.
- */
 import { ReactNode, useState, useCallback } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
+import { useSelectTokenWidgetState } from '../../../../hooks/useSelectTokenWidgetState'
 import { ChainPanel } from '../../../../pure/ChainPanel'
 import { MobileChainSelector } from '../../../../pure/SelectTokenModal/MobileChainSelector'
 import { ChainsToSelectState } from '../../../../types'
+import { useChainPanelState } from '../../hooks'
 import { MobileChainPanelPortal } from '../../MobileChainPanelPortal'
 
 export interface ChainSelectorProps {
@@ -81,4 +77,23 @@ export function DesktopChainPanel({
   }
 
   return <ChainPanel title={title} chainsState={chains} onSelectChain={onSelectChain} />
+}
+
+export function ConnectedChainSelector(): ReactNode {
+  const widgetState = useSelectTokenWidgetState()
+  const chainPanel = useChainPanelState(widgetState.tradeType)
+
+  if (!chainPanel.isEnabled) return null
+
+  return <ChainSelector chains={chainPanel.chainsToSelect} onSelectChain={chainPanel.onSelectChain} />
+}
+
+export function ConnectedDesktopChainPanel(): ReactNode {
+  const widgetState = useSelectTokenWidgetState()
+  const chainPanel = useChainPanelState(widgetState.tradeType)
+  const isCompactLayout = useMediaQuery(Media.upToMedium(false))
+
+  if (!chainPanel.isEnabled || isCompactLayout) return null
+
+  return <DesktopChainPanel chains={chainPanel.chainsToSelect} onSelectChain={chainPanel.onSelectChain} />
 }
