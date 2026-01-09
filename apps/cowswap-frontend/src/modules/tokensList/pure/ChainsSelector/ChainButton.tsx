@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
-import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
@@ -27,11 +26,11 @@ export function ChainButton({
   isDisabled,
   isLoading,
 }: ChainButtonProps): ReactNode {
-  const { i18n } = useLingui()
+  const { t } = useLingui()
   const logoSrc = isDarkMode ? chain.logo.dark : chain.logo.light
   const accent = getChainAccent(chain.id)
-  const disabledTooltip = i18n._(msg`This destination is not supported for this source chain`)
-  const loadingTooltip = i18n._(msg`Checking route availability...`)
+  const disabledTooltip = t`This destination is not supported for this source chain`
+  const loadingTooltip = t`Checking route availability...`
 
   const handleClick = (): void => {
     if (!isDisabled && !isLoading) {
