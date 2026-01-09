@@ -39,10 +39,9 @@ export function ListItem(props: TokenListItemProps): ReactNode {
   }, [enabled])
 
   const toggle = (): void => {
-    toggleList(list, enabled)
-    setIsActive((state) => !state)
-
     const newState = !enabled
+    toggleList(list, newState)
+    setIsActive(newState)
     cowAnalytics.sendEvent({
       category: CowSwapAnalyticsCategory.LIST,
       action: `List ${newState ? 'Enabled' : 'Disabled'}`,
