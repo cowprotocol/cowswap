@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { findRestrictedToken, restrictedTokensAtom } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -17,6 +18,7 @@ import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetSta
 
 export function useAddTokenImportCallback(): (tokenToImport: TokenWithLogo) => void {
   const { account } = useWalletInfo()
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { openModal: openRwaConsentModal } = useRwaConsentModalState()
   const restrictedList = useAtomValue(restrictedTokensAtom)
@@ -25,6 +27,12 @@ export function useAddTokenImportCallback(): (tokenToImport: TokenWithLogo) => v
 
   return useCallback(
     (tokenToImport: TokenWithLogo) => {
+      // skip rwa checks if ff is disabled
+      if (!isRwaGeoblockEnabled) {
+        updateSelectTokenWidget({ tokenToImport })
+        return
+      }
+
       if (!restrictedList.isLoaded || geoStatus.isLoading) {
         updateSelectTokenWidget({ tokenToImport })
         return
@@ -67,6 +75,14 @@ export function useAddTokenImportCallback(): (tokenToImport: TokenWithLogo) => v
         },
       })
     },
-    [account, updateSelectTokenWidget, openRwaConsentModal, restrictedList, consentCache, geoStatus],
+    [
+      account,
+      isRwaGeoblockEnabled,
+      updateSelectTokenWidget,
+      openRwaConsentModal,
+      restrictedList,
+      consentCache,
+      geoStatus,
+    ],
   )
 }

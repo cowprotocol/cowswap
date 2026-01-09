@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getCountryAsKey, RestrictedTokenInfo, useRestrictedToken } from '@cowprotocol/tokens'
 
 import { t } from '@lingui/core/macro'
@@ -27,10 +28,16 @@ const NOT_RESTRICTED_RESULT: RestrictedTokenImportResult = {
 }
 
 export function useRestrictedTokenImportStatus(token: TokenWithLogo | undefined): RestrictedTokenImportResult {
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
   const restrictedInfo = useRestrictedToken(token)
 
   return useMemo(() => {
+    // skip restriction check if ff is disabled
+    if (!isRwaGeoblockEnabled) {
+      return NOT_RESTRICTED_RESULT
+    }
+
     // if geo is loading or token is not restricted, allow import
     if (geoStatus.isLoading || !restrictedInfo) {
       return NOT_RESTRICTED_RESULT
@@ -52,5 +59,5 @@ export function useRestrictedTokenImportStatus(token: TokenWithLogo | undefined)
     }
 
     return NOT_RESTRICTED_RESULT
-  }, [geoStatus, restrictedInfo])
+  }, [isRwaGeoblockEnabled, geoStatus, restrictedInfo])
 }
