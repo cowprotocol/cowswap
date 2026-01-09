@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -36,11 +35,9 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
   const { chainId } = useWalletInfo()
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
-  const { isPartialApproveEnabled } = useFeatureFlags()
-
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
-  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
 
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
@@ -69,10 +66,9 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
     }
 
     const approve = (): Promise<void> => {
-      const unitsToApprove =
-        isPartialApproveEnabled && isPartialApproveEnabledBySettings
-          ? amountToApprove || MAX_APPROVE_AMOUNT
-          : MAX_APPROVE_AMOUNT
+      const unitsToApprove = isPartialApproveEnabledBySettings
+        ? amountToApprove || MAX_APPROVE_AMOUNT
+        : MAX_APPROVE_AMOUNT
       return sendTransaction('approve', () => {
         return callbacks.approve(unitsToApprove).then((res) => res?.txResponse.hash)
       })
@@ -104,7 +100,6 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
     onCurrencySelection,
     chainId,
     openSwapConfirmModal,
-    isPartialApproveEnabled,
     isPartialApproveEnabledBySettings,
     amountToApprove,
   ])

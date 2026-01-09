@@ -27205,12 +27205,12 @@ qs@6.14.0, qs@^6.12.3:
   dependencies:
     side-channel "^1.1.0"
 
-qs@^6.12.1:
-  version "6.12.1"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.12.1.tgz#39422111ca7cbdb70425541cba20c7d7b216599a"
-  integrity sha512-zWmv4RSuB9r2mYQw3zxQuHWeU+42aKi1wWig/j4ele4ygELZ7PEO6MM7rim9oAQH2A5MWfsAVf/jPvTPgCbvUQ==
+qs@^6.14.1:
+  version "6.14.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.14.1.tgz#a41d85b9d3902f31d27861790506294881871159"
+  integrity sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==
   dependencies:
-    side-channel "^1.0.6"
+    side-channel "^1.1.0"
 
 qs@^6.4.0, qs@^6.5.1:
   version "6.11.2"
