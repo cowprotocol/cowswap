@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { BALANCES_SSE_URL } from '@cowprotocol/common-const'
+import { BALANCES_WATCHER_URL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const RECONNECT_DELAY_MS = 3000
@@ -31,7 +31,7 @@ async function createSession(
   tokensListsUrls: string[],
   customTokens?: string[],
 ): Promise<void> {
-  const url = `${BALANCES_SSE_URL}/${chainId}/sessions/${account}`
+  const url = `${BALANCES_WATCHER_URL}/${chainId}/sessions/${account}`
   console.debug('[SSE] Creating session:', url)
 
   const response = await fetch(url, {
@@ -156,7 +156,7 @@ export function useSseBalances(params: UseSseBalancesParams): SseBalancesState {
 
       if (cancelled) return
 
-      esRef.current = setupEventSource(`${BALANCES_SSE_URL}/sse/${chainId}/balances/${account}`, {
+      esRef.current = setupEventSource(`${BALANCES_WATCHER_URL}/sse/${chainId}/balances/${account}`, {
         onAllBalances,
         onBalanceUpdate,
         onError,
