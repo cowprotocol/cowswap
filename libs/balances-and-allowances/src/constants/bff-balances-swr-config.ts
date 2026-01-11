@@ -2,6 +2,7 @@ import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
 import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
+import { isUnsupportedChainMessage } from '../utils/UnsupportedChainError'
 
 let focusLostTimestamp: number | null = null
 const FOCUS_HIDDEN_DELAY = ms`20s`
@@ -46,7 +47,12 @@ export const BFF_BALANCES_SWR_CONFIG: SWRConfiguration = {
     // Pause only if focus has been lost for more than ${FOCUS_HIDDEN_DELAY} seconds
     return Date.now() - focusLostTimestamp > FOCUS_HIDDEN_DELAY
   },
-  onErrorRetry: (_: unknown, __key, config, revalidate, { retryCount }) => {
+  onErrorRetry: (error: unknown, _key, config, revalidate, { retryCount }) => {
+    // Don't retry if error is "Unsupported chain"
+    if (error instanceof Error && isUnsupportedChainMessage(error.message)) {
+      return
+    }
+
     const timeout = config.errorRetryInterval * Math.pow(2, retryCount - 1)
 
     setTimeout(() => revalidate({ retryCount }), timeout)
