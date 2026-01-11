@@ -2,34 +2,16 @@ import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
-  isBffSupportedNetwork,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
-  useIsBffFailed,
+  useIsSseFailed,
 } from '@cowprotocol/balances-and-allowances'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
 import { useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
-
-import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
-
-function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
-  // Early exit for 100%, meaning should be enabled for everyone
-  if (percentage === 100) {
-    return true
-  }
-
-  // Falsy conditions
-  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) {
-    return false
-  }
-
-  return BigInt(account) % 100n < percentage
-}
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const sourceChainId = useSourceChainId().chainId
@@ -44,6 +26,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const priorityTokenCount = priorityTokenAddressesAsArray.length
 
   const [skipFirstPriorityUpdate, setSkipFirstPriorityUpdate] = useState(true)
+  const isSseFailed = useIsSseFailed()
 
   /**
    * Reset skipFirstPriorityUpdate on every network change
@@ -67,32 +50,20 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
     }
   }, [account, priorityTokenCount])
 
-  const { bffBalanceEnabledPercentage } = useFeatureFlags()
-  const isBffFailed = useIsBffFailed()
-  const isBffSupportNetwork = isBffSupportedNetwork(sourceChainId)
-  const isBffEnabled = shouldApplyBffBalances(account, bffBalanceEnabledPercentage)
-  const isBffSwitchedOn = isBffEnabled && !isBffFailed && isBffSupportNetwork
-  const invalidateCacheTrigger = useOrdersFilledEventsTrigger()
-
   return (
     <>
-      {!isBffSwitchedOn ? (
+      {/* Priority tokens use RPC when SSE fails */}
+      {isSseFailed && (
         <PriorityTokensUpdater
-          // We can and should save one RPC call at the very beginning
-          // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
-          // We can skip first update for PriorityTokensUpdater
           account={skipFirstPriorityUpdate ? undefined : balancesAccount}
           chainId={sourceChainId}
           tokenAddresses={priorityTokenAddressesAsArray}
         />
-      ) : null}
+      )}
       <BalancesAndAllowancesUpdater
         account={balancesAccount}
         chainId={sourceChainId}
-        isBffSwitchedOn={isBffSwitchedOn}
-        isBffEnabled={isBffEnabled}
         excludedTokens={priorityTokenAddresses}
-        invalidateCacheTrigger={invalidateCacheTrigger}
       />
     </>
   )
