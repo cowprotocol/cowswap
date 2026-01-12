@@ -3,11 +3,10 @@ import { useMemo } from 'react'
 
 import { TokensByAddress } from '@cowprotocol/tokens'
 
+import { twapOrdersListAtom } from 'entities/twap'
 import { useAsyncMemo } from 'use-async-memo'
 
 import { useTokensForOrdersList, getTokensListFromOrders } from 'modules/orders'
-
-import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
 
 export function useTwapOrdersTokens(): TokensByAddress | undefined {
   const allTwapOrders = useAtomValue(twapOrdersListAtom)

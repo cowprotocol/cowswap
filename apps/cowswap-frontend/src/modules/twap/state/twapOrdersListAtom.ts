@@ -12,20 +12,6 @@ import { TWAP_FINAL_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
-export const twapOrdersListAtom = atom<TwapOrderItem[]>((get) => {
-  const { account, chainId } = get(walletInfoAtom)
-
-  if (!account || !chainId) return []
-
-  const accountLowerCase = account.toLowerCase()
-
-  const orders = Object.values(get(twapOrdersAtom))
-
-  return orders
-    .flat()
-    .filter((order) => order.safeAddress.toLowerCase() === accountLowerCase && order.chainId === chainId)
-})
-
 export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrdersList) => {
   const currentState = get(twapOrdersAtom)
   const newState = updateTwapOrdersList(currentState, nextState)
