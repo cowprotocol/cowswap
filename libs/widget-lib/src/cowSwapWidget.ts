@@ -25,6 +25,13 @@ const DEFAULT_WIDTH = '450px'
  */
 const HEIGHT_THRESHOLD = 20
 
+const noopHandler: CowSwapWidgetHandler = {
+  updateParams: () => void 0,
+  updateListeners: () => void 0,
+  updateProvider: () => void 0,
+  destroy: () => void 0,
+}
+
 /**
  * Callback function signature for updating the CoW Swap Widget.
  */
@@ -58,6 +65,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     console.error('Iframe does not contain a window', iframe)
     throw new Error('Iframe does not contain a window!')
   }
+
+  if (typeof window === 'undefined') return noopHandler
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
   const windowListeners: WindowListener[] = []
@@ -207,9 +216,7 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
 /**
  * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function interceptDeepLinks() {
+function interceptDeepLinks(): (payload: MessageEvent<unknown>) => void {
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
     WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
