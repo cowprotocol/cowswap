@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useAddUserToken } from '@cowprotocol/tokens'
@@ -9,8 +8,8 @@ import { t } from '@lingui/core/macro'
 
 import {
   CustomFlowContext,
+  CustomFlowResult,
   CustomFlowsRegistry,
-  importRestrictionAtom,
   TokenSelectorView,
   useCloseTokenSelectWidget,
   useSelectTokenWidgetState,
@@ -26,15 +25,14 @@ import { RwaConsentKey } from '../types/rwaConsent'
  * Hook that provides custom flows for the token selector with RWA consent support.
  *
  * Handles two cases:
- * - RequiredConsent: shows consent modal before import (pre-flow)
- * - Restricted: shows import modal with disabled button and alert
+ * - RequiredConsent: shows consent modal before import (pre-flow with content)
+ * - Restricted: shows import modal with disabled button and alert (pre-flow with data)
  */
 export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
   const { account } = useWalletInfo()
   const widgetState = useSelectTokenWidgetState()
   const closeWidget = useCloseTokenSelectWidget()
   const importTokenCallback = useAddUserToken()
-  const setImportRestriction = useSetAtom(importRestrictionAtom)
 
   const tokenToImport = widgetState.tokenToImport
   const onSelectToken = widgetState.onSelectToken
@@ -55,53 +53,53 @@ export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
 
   const { confirmConsent } = useRwaConsentStatus(consentKey)
 
-  // set import restriction when token is blocked
-  useEffect(() => {
-    if (rwaStatus === RwaTokenStatus.Restricted && tokenToImport) {
-      setImportRestriction({
-        isBlocked: true,
-        message: t`This token is not available in your region.`,
-      })
-    } else {
-      setImportRestriction(null)
-    }
-
-    return () => {
-      setImportRestriction(null)
-    }
-  }, [rwaStatus, tokenToImport, setImportRestriction])
-
-  // create the pre-flow for ImportToken (consent modal)
+  // pre-flow for ImportToken - handles both consent modal and restriction
   const importTokenPreFlow = useCallback(
-    (context: CustomFlowContext): ReactNode => {
-      // only show consent if required
-      if (rwaStatus !== RwaTokenStatus.RequiredConsent || !rwaTokenInfo || !tokenToImport) {
-        return null
+    (context: CustomFlowContext): CustomFlowResult<TokenSelectorView.ImportToken> | null => {
+      // token is restricted - pass restriction data to the modal
+      if (rwaStatus === RwaTokenStatus.Restricted && tokenToImport) {
+        return {
+          content: null, // show the base view
+          data: {
+            restriction: {
+              isBlocked: true,
+              message: t`This token is not available in your region.`,
+            },
+          },
+        }
       }
 
-      const handleDismiss = (): void => {
-        context.onCancel()
-      }
-
-      const handleConfirm = (): void => {
-        if (!account || !consentKey) return
-
-        // save consent
-        confirmConsent()
-
-        // import the token and select it
-        importTokenCallback([tokenToImport])
-
-        if (onSelectToken) {
-          onSelectToken(tokenToImport)
+      // case 2: consent required - show consent modal
+      if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo && tokenToImport) {
+        const handleDismiss = (): void => {
+          context.onCancel()
         }
 
-        closeWidget()
+        const handleConfirm = (): void => {
+          if (!account || !consentKey) return
+
+          // save consent
+          confirmConsent()
+
+          // import the token and select it
+          importTokenCallback([tokenToImport])
+
+          if (onSelectToken) {
+            onSelectToken(tokenToImport)
+          }
+
+          closeWidget()
+        }
+
+        const displayToken = TokenWithLogo.fromToken(tokenToImport)
+
+        return {
+          content: <RwaConsentModal onDismiss={handleDismiss} onConfirm={handleConfirm} token={displayToken} />,
+        }
       }
 
-      const displayToken = TokenWithLogo.fromToken(tokenToImport)
-
-      return <RwaConsentModal onDismiss={handleDismiss} onConfirm={handleConfirm} token={displayToken} />
+      // no flow needed
+      return null
     },
     [
       rwaStatus,

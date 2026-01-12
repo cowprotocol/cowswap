@@ -25,10 +25,3 @@ export const { atom: selectTokenModalUIAtom, updateAtom: updateSelectTokenModalU
  * Allows external code to inject pre/post flows for any token selector view.
  */
 export const customFlowsRegistryAtom = atom<CustomFlowsRegistry>({})
-
-export interface ImportRestriction {
-  isBlocked: boolean
-  message: string
-}
-
-export const importRestrictionAtom = atom<ImportRestriction | null>(null)

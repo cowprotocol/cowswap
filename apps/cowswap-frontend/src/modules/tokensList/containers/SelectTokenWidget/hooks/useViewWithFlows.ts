@@ -1,11 +1,11 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useActiveBlockingView } from './useActiveBlockingView'
 
 import { useUpdateSelectTokenWidgetState } from '../../../hooks/useUpdateSelectTokenWidgetState'
 import { customFlowsRegistryAtom } from '../atoms'
-import { CustomFlowContext, TokenSelectorView } from '../types'
+import { CustomFlowContext, CustomFlowResult, TokenSelectorView } from '../types'
 
 /**
  * Result from useViewWithFlows hook
@@ -13,24 +13,24 @@ import { CustomFlowContext, TokenSelectorView } from '../types'
 export interface ViewWithFlowsResult {
   /** The base view (the current blocking view) */
   baseView: TokenSelectorView
-  /** Pre-flow content to render, or null if no pre-flow */
-  preFlowContent: ReactNode
-  /** Post-flow content to render, or null if no post-flow */
-  postFlowContent: ReactNode
+  /** Pre-flow result with content and typed data */
+  preFlowResult: CustomFlowResult | null
+  /** Post-flow result with content and typed data */
+  postFlowResult: CustomFlowResult | null
 }
 
 /**
  * Hook that determines the current view and checks for custom pre/post flows.
  *
- * The custom flows are provided externally via props
- * This hook just checks the registry and renders the appropriate content.
+ * The custom flows are provided externally via props.
+ * This hook checks the registry and returns the flow results.
  */
 export function useViewWithFlows(): ViewWithFlowsResult {
   const baseView = useActiveBlockingView()
   const registry = useAtomValue(customFlowsRegistryAtom)
   const updateWidgetState = useUpdateSelectTokenWidgetState()
 
-  // Create the flow context with callbacks
+  // create the flow context with callbacks
   const onDone = useCallback(() => {
     // pre-flow completed - the main view will now render
     // nothing to do here, the flow slot returns null when done
@@ -52,15 +52,15 @@ export function useViewWithFlows(): ViewWithFlowsResult {
 
   // check for custom flows
   const flowConfig = registry[baseView]
-  const preFlowContent = flowConfig?.preFlow?.(flowContext) ?? null
-  const postFlowContent = flowConfig?.postFlow?.(flowContext) ?? null
+  const preFlowResult = flowConfig?.preFlow?.(flowContext) ?? null
+  const postFlowResult = flowConfig?.postFlow?.(flowContext) ?? null
 
   return useMemo(
     (): ViewWithFlowsResult => ({
       baseView,
-      preFlowContent,
-      postFlowContent,
+      preFlowResult,
+      postFlowResult,
     }),
-    [baseView, preFlowContent, postFlowContent],
+    [baseView, preFlowResult, postFlowResult],
   )
 }

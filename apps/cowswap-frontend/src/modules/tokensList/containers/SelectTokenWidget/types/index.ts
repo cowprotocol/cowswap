@@ -1,2 +1,9 @@
 export { TokenSelectorView } from './TokenSelectorView'
-export type { CustomFlowContext, CustomFlowSlot, ViewFlowConfig, CustomFlowsRegistry } from './ViewFlowConfig'
+export type {
+  CustomFlowContext,
+  CustomFlowResult,
+  CustomFlowSlot,
+  ViewPropsMap,
+  ViewFlowConfig,
+  CustomFlowsRegistry,
+} from './ViewFlowConfig'

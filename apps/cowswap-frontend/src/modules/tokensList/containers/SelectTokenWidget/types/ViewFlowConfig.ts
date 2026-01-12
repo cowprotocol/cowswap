@@ -2,6 +2,9 @@ import { ReactNode } from 'react'
 
 import { TokenSelectorView } from './TokenSelectorView'
 
+import { ImportListModalProps } from '../../../pure/ImportListModal'
+import { ImportTokenModalProps } from '../../../pure/ImportTokenModal'
+
 /**
  * Context passed to custom flow components.
  * Contains information about the current flow and callbacks to control it.
@@ -16,37 +19,52 @@ export interface CustomFlowContext {
 }
 
 /**
- * A custom flow slot that can render before or after a target view.
- * Returns ReactNode to render, or null to skip this flow.
+ * Maps each view to its modal props type.
  */
-export type CustomFlowSlot = (context: CustomFlowContext) => ReactNode
+export interface ViewPropsMap {
+  [TokenSelectorView.ImportToken]: ImportTokenModalProps
+  [TokenSelectorView.ImportList]: ImportListModalProps
+  [TokenSelectorView.Main]: never
+  [TokenSelectorView.Manage]: never
+  [TokenSelectorView.LpToken]: never
+}
+
+/**
+ * result of a custom flow slot.
+ * - content: component to render (or null to show base view)
+ * - data: additional props to pass to the modal
+ */
+export interface CustomFlowResult<TView extends TokenSelectorView = TokenSelectorView> {
+  content: ReactNode | null
+  /** Additional props to merge into the modal */
+  data?: Partial<ViewPropsMap[TView]>
+}
+
+/**
+ * A custom flow slot that can render before or after a target view.
+ * returns CustomFlowResult or null to skip this flow entirely.
+ */
+export type CustomFlowSlot<TView extends TokenSelectorView = TokenSelectorView> = (
+  context: CustomFlowContext,
+) => CustomFlowResult<TView> | null
 
 /**
  * Configuration for custom flows for a specific view.
- * Allows injecting views before or after the main view.
  */
-export interface ViewFlowConfig {
-  /** Custom flow to show before the main view. Return null to skip. */
-  preFlow?: CustomFlowSlot
-  /** Custom flow to show after the main view. Return null to skip. */
-  postFlow?: CustomFlowSlot
+export interface ViewFlowConfig<TView extends TokenSelectorView = TokenSelectorView> {
+  /** Custom flow to show before the main view. */
+  preFlow?: CustomFlowSlot<TView>
+  /** Custom flow to show after the main view. */
+  postFlow?: CustomFlowSlot<TView>
 }
 
 /**
  * Registry mapping view names to their custom flow configurations.
- * This is passed from outside the token selector to configure custom flows.
- *
- * @example
- * // In trade module or other consumer:
- * const customFlows: CustomFlowsRegistry = {
- *   [TokenSelectorView.ImportToken]: {
- *     preFlow: (context) => {
- *       if (needsConsent) {
- *         return <ConsentModal onConfirm={context.onDone} onCancel={context.onCancel} />
- *       }
- *       return null
- *     }
- *   }
- * }
  */
-export type CustomFlowsRegistry = Partial<Record<TokenSelectorView, ViewFlowConfig>>
+export type CustomFlowsRegistry = {
+  [TokenSelectorView.ImportToken]?: ViewFlowConfig<TokenSelectorView.ImportToken>
+  [TokenSelectorView.ImportList]?: ViewFlowConfig<TokenSelectorView.ImportList>
+  [TokenSelectorView.Main]?: ViewFlowConfig<TokenSelectorView.Main>
+  [TokenSelectorView.Manage]?: ViewFlowConfig<TokenSelectorView.Manage>
+  [TokenSelectorView.LpToken]?: ViewFlowConfig<TokenSelectorView.LpToken>
+}

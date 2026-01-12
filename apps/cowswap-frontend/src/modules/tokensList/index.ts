@@ -4,12 +4,13 @@ export type { SelectTokenWidgetProps } from './containers/SelectTokenWidget'
 export { TokenSelectorView } from './containers/SelectTokenWidget/types'
 export type {
   CustomFlowContext,
+  CustomFlowResult,
   CustomFlowSlot,
+  ViewPropsMap,
   ViewFlowConfig,
   CustomFlowsRegistry,
 } from './containers/SelectTokenWidget/types'
-export { customFlowsRegistryAtom, importRestrictionAtom } from './containers/SelectTokenWidget/atoms'
-export type { ImportRestriction } from './containers/SelectTokenWidget/atoms'
+export { customFlowsRegistryAtom } from './containers/SelectTokenWidget/atoms'
 
 export { ImportTokenModal } from './pure/ImportTokenModal'
 export { AddIntermediateToken } from './pure/AddIntermediateToken'

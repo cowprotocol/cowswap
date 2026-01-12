@@ -3,10 +3,14 @@
  */
 import { ReactNode } from 'react'
 
-import { ImportTokenModal } from '../../../../pure/ImportTokenModal'
+import { ImportTokenModal, ImportTokenModalProps } from '../../../../pure/ImportTokenModal'
 import { useImportTokenViewState } from '../../hooks'
 
-export function ImportTokenView(): ReactNode {
+export interface ImportTokenViewProps {
+  flowData?: Partial<ImportTokenModalProps>
+}
+
+export function ImportTokenView({ flowData }: ImportTokenViewProps): ReactNode {
   const state = useImportTokenViewState()
 
   if (!state) return null
@@ -14,10 +18,10 @@ export function ImportTokenView(): ReactNode {
   return (
     <ImportTokenModal
       tokens={[state.token]}
-      restriction={state.restriction}
       onDismiss={state.onDismiss}
       onBack={state.onBack}
       onImport={state.onImport}
+      {...flowData}
     />
   )
 }

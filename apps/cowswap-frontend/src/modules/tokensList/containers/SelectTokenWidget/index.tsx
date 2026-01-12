@@ -60,20 +60,22 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone, customFlows
 }
 
 function SelectTokenWidgetContent(): ReactNode {
-  const { baseView, preFlowContent, postFlowContent } = useViewWithFlows()
+  const { baseView, preFlowResult, postFlowResult } = useViewWithFlows()
 
-  // If there's a pre-flow, render it instead of the base view
-  if (preFlowContent) {
-    return preFlowContent
+  // if there's pre-flow content, render it instead of the base view
+  if (preFlowResult?.content) {
+    return preFlowResult.content
   }
 
-  // Blocking views
-  if (baseView === TokenSelectorView.ImportToken) return <SelectTokenModal.ImportToken />
+  // blocking views - pass flow data as additional props
+  if (baseView === TokenSelectorView.ImportToken) {
+    return <SelectTokenModal.ImportToken flowData={preFlowResult?.data} />
+  }
   if (baseView === TokenSelectorView.ImportList) return <SelectTokenModal.ImportList />
   if (baseView === TokenSelectorView.Manage) return <SelectTokenModal.Manage />
   if (baseView === TokenSelectorView.LpToken) return <SelectTokenModal.LpToken />
 
-  // Default token list view
+  // default token list view
   const mainContent = (
     <>
       <styledEl.Wrapper>
@@ -90,12 +92,12 @@ function SelectTokenWidgetContent(): ReactNode {
     </>
   )
 
-  // If there's a post-flow, render it after main content
-  if (postFlowContent) {
+  // if there's post-flow content, render it after main content
+  if (postFlowResult?.content) {
     return (
       <>
         {mainContent}
-        {postFlowContent}
+        {postFlowResult.content}
       </>
     )
   }
