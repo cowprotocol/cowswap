@@ -4,6 +4,7 @@ import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useAmountsToSignFromQuote, useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
@@ -31,6 +32,7 @@ export function useTradeFormButtonContext(
     derivedState?.outputCurrency,
     quote.error,
   )
+  const { error: balancesError } = useTokensBalancesCombined()
 
   return useMemo(() => {
     if (!derivedState) return null
@@ -48,7 +50,8 @@ export function useTradeFormButtonContext(
       supportsPartialApprove,
       customTokenError,
       minAmountToSignForSwap,
-    }
+      balancesError,
+    } satisfies TradeFormButtonContext
   }, [
     defaultText,
     amountToApprove,
@@ -62,5 +65,6 @@ export function useTradeFormButtonContext(
     supportsPartialApprove,
     customTokenError,
     minAmountToSignForSwap,
+    balancesError,
   ])
 }

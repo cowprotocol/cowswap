@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/cowprotocol/cowswap/compare/multicall-v1.3.1...multicall-v1.3.2) (2026-01-09)
+
+
+### Bug Fixes
+
+* **multicall:** build fix ([#6776](https://github.com/cowprotocol/cowswap/issues/6776)) ([#6777](https://github.com/cowprotocol/cowswap/issues/6777)) ([e94a3d9](https://github.com/cowprotocol/cowswap/commit/e94a3d94e19245c3b5861f756673d257f3c159b4))
+
 ## [1.3.1](https://github.com/cowprotocol/cowswap/compare/multicall-v1.3.0...multicall-v1.3.1) (2025-12-24)
 
 

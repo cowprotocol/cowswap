@@ -12,6 +12,8 @@ export type {
 } from './containers/SelectTokenWidget/types'
 export { customFlowsRegistryAtom } from './containers/SelectTokenWidget/atoms'
 
+export { BlockedListSourcesUpdater } from './updaters/BlockedListSourcesUpdater'
+
 export { ImportTokenModal } from './pure/ImportTokenModal'
 export { AddIntermediateToken } from './pure/AddIntermediateToken'
 export { AddIntermediateTokenModal } from './pure/AddIntermediateTokenModal'
@@ -25,3 +27,4 @@ export { useTokenListAddingError } from './hooks/useTokenListAddingError'
 export { useSourceChainId } from './hooks/useSourceChainId'
 export { useChainsToSelect } from './hooks/useChainsToSelect'
 export { useCloseTokenSelectWidget } from './hooks/useCloseTokenSelectWidget'
+export { useRestrictedTokensImportStatus } from './hooks/useRestrictedTokensImportStatus'

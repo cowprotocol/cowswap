@@ -2,12 +2,8 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { RwaConsentKey, RwaConsentModal, useRwaConsentModalState, useRwaConsentStatus } from 'modules/rwa'
 import { useTradeConfirmActions } from 'modules/trade'
-
-import { useRwaConsentModalState } from '../../hooks/useRwaConsentModalState'
-import { useRwaConsentStatus } from '../../hooks/useRwaConsentStatus'
-import { RwaConsentModal } from '../../pure/RwaConsentModal'
-import { RwaConsentKey } from '../../types/rwaConsent'
 
 export function RwaConsentModalContainer(): ReactNode {
   const { account } = useWalletInfo()
@@ -28,7 +24,8 @@ export function RwaConsentModalContainer(): ReactNode {
 
   const onDismiss = useCallback(() => {
     closeModal()
-  }, [closeModal])
+    context?.onDismiss?.()
+  }, [closeModal, context])
 
   const onConfirm = useCallback(() => {
     if (!account || !context || !consentKey) {
@@ -37,7 +34,14 @@ export function RwaConsentModalContainer(): ReactNode {
 
     confirmConsent()
     closeModal()
-    tradeConfirmActions.onOpen()
+
+    // if this is a token import flow, call the success callback to proceed to import modal
+    // if this is a trade flow, open the trade confirmation
+    if (context.onImportSuccess) {
+      context.onImportSuccess()
+    } else {
+      tradeConfirmActions.onOpen()
+    }
   }, [account, context, consentKey, confirmConsent, closeModal, tradeConfirmActions])
 
   if (!isModalOpen || !context) {

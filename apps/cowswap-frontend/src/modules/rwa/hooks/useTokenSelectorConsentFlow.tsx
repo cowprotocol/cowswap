@@ -69,7 +69,7 @@ export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
         }
       }
 
-      // case 2: consent required - show consent modal
+      // consent required - show consent modal
       if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo && tokenToImport) {
         const handleDismiss = (): void => {
           context.onCancel()
@@ -94,7 +94,14 @@ export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
         const displayToken = TokenWithLogo.fromToken(tokenToImport)
 
         return {
-          content: <RwaConsentModal onDismiss={handleDismiss} onConfirm={handleConfirm} token={displayToken} />,
+          content: (
+            <RwaConsentModal
+              onDismiss={handleDismiss}
+              onConfirm={handleConfirm}
+              token={displayToken}
+              consentHash={rwaTokenInfo.consentHash}
+            />
+          ),
         }
       }
 

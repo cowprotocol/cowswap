@@ -62,7 +62,7 @@ export function OrderPartialApprove({
         </>
       )}
       <TradeApproveButton
-        enablePartialApprove
+        supportsPartialApprove
         useModals={false}
         amountToApprove={finalAmountToApprove}
         buttonSize={ButtonSize.SMALL}

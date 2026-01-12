@@ -6,6 +6,7 @@ import { useViewWithFlows } from './hooks'
 import { SelectTokenModal } from './internal'
 import { CustomFlowsRegistry, TokenSelectorView } from './types'
 
+import { ImportTokenModalProps } from '../../pure/ImportTokenModal'
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 
@@ -69,7 +70,7 @@ function SelectTokenWidgetContent(): ReactNode {
 
   // blocking views - pass flow data as additional props
   if (baseView === TokenSelectorView.ImportToken) {
-    return <SelectTokenModal.ImportToken flowData={preFlowResult?.data} />
+    return <SelectTokenModal.ImportToken flowData={preFlowResult?.data as Partial<ImportTokenModalProps>} />
   }
   if (baseView === TokenSelectorView.ImportList) return <SelectTokenModal.ImportList />
   if (baseView === TokenSelectorView.Manage) return <SelectTokenModal.Manage />
