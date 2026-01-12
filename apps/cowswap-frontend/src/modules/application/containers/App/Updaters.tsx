@@ -20,6 +20,7 @@ import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
+import { BalancesDevtools } from 'modules/balancesAndAllowances/updaters/BalancesDevtools'
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
@@ -129,6 +130,7 @@ export function Updaters(): ReactNode {
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />
       <BalancesCombinedUpdater />
+      <BalancesDevtools />
       <CorrelatedTokensUpdater />
       <BridgeOrdersCleanUpdater />
       <PendingBridgeOrdersUpdater />

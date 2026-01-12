@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getSourceAsKey, restrictedListsAtom } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -15,11 +16,17 @@ export interface ListConsentResult {
 // check if a list requires consent before it can be shown/imported
 export function useIsListRequiresConsent(listSource: string | undefined): ListConsentResult {
   const { account } = useWalletInfo()
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
   const restrictedLists = useAtomValue(restrictedListsAtom)
   const consentCache = useAtomValue(rwaConsentCacheAtom)
 
   return useMemo(() => {
+    // skip consent check if ff is disabled
+    if (!isRwaGeoblockEnabled) {
+      return { requiresConsent: false, consentHash: null, isLoading: false }
+    }
+
     // If no source, no consent required
     if (!listSource) {
       return { requiresConsent: false, consentHash: null, isLoading: false }
@@ -58,5 +65,5 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
       consentHash,
       isLoading: false,
     }
-  }, [listSource, restrictedLists, geoStatus, account, consentCache])
+  }, [isRwaGeoblockEnabled, listSource, restrictedLists, geoStatus, account, consentCache])
 }
