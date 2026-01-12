@@ -11,9 +11,8 @@ import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
-import { TwapOrderExecutionInfo, TwapOrderInfo } from '../types'
+import { TwapOrderInfo, TwapOrdersExecution } from '../types'
 
-export type TwapOrdersExecution = { info: TwapOrderExecutionInfo; confirmedPartsCount: number }
 export type TwapOrdersExecutionMap = { [id: string]: TwapOrdersExecution }
 
 type PartsIdsInfo = {

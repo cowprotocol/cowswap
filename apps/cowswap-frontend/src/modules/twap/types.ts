@@ -3,8 +3,6 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { SafeTransactionParams } from 'common/types'
 
-import { TwapOrdersExecution } from './hooks/useTwapOrdersExecutions'
-
 // Read more: https://github.com/rndlabs/composable-cow#data-structure
 export interface TWAPOrder {
   sellAmount: CurrencyAmount<Token>
@@ -52,6 +50,8 @@ export interface TwapOrderExecutionInfo {
   executedBuyAmount: string
   executedFeeAmount: string
 }
+
+export type TwapOrdersExecution = { info: TwapOrderExecutionInfo; confirmedPartsCount: number }
 
 export interface TwapOrderItem {
   order: TWAPOrderStruct

@@ -6,8 +6,8 @@ import { getTwapOrderStatus } from './getTwapOrderStatus'
 import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
 import { DEFAULT_TWAP_EXECUTION } from '../const'
-import { TwapOrdersExecution, TwapOrdersExecutionMap } from '../hooks/useTwapOrdersExecutions'
-import { TwapOrderInfo, TwapOrderItem, TwapOrdersAuthResult, TwapOrdersSafeData } from '../types'
+import { TwapOrdersExecutionMap } from '../hooks/useTwapOrdersExecutions'
+import { TwapOrderInfo, TwapOrderItem, TwapOrdersAuthResult, TwapOrdersExecution, TwapOrdersSafeData } from '../types'
 
 export function buildTwapOrdersItems(
   chainId: SupportedChainId,
