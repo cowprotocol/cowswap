@@ -1,5 +1,6 @@
 import { JSX, useEffect } from 'react'
 
+import { useTokenSelectorConsentFlow } from 'modules/rwa'
 import { SelectTokenWidget, useChainsToSelect, useSelectTokenWidgetState } from 'modules/tokensList'
 import { useSetShouldUseAutoSlippage } from 'modules/tradeSlippage'
 
@@ -23,7 +24,10 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   const isTokenSelectWide =
     isTokenSelectOpen && !!chainsToSelect && (chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0)
 
-  const selectTokenWidgetNode = slots.selectTokenWidget ?? <SelectTokenWidget displayLpTokenLists />
+  const consentFlow = useTokenSelectorConsentFlow()
+  const selectTokenWidgetNode = slots.selectTokenWidget ?? (
+    <SelectTokenWidget displayLpTokenLists customFlows={consentFlow} />
+  )
 
   const setShouldUseAutoSlippage = useSetShouldUseAutoSlippage()
 
