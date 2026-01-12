@@ -8,7 +8,8 @@ export type {
   ViewFlowConfig,
   CustomFlowsRegistry,
 } from './containers/SelectTokenWidget/types'
-export { customFlowsRegistryAtom } from './containers/SelectTokenWidget/atoms'
+export { customFlowsRegistryAtom, importRestrictionAtom } from './containers/SelectTokenWidget/atoms'
+export type { ImportRestriction } from './containers/SelectTokenWidget/atoms'
 
 export { ImportTokenModal } from './pure/ImportTokenModal'
 export { AddIntermediateToken } from './pure/AddIntermediateToken'

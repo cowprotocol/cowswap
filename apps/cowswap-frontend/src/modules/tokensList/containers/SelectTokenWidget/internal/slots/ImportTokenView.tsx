@@ -14,6 +14,7 @@ export function ImportTokenView(): ReactNode {
   return (
     <ImportTokenModal
       tokens={[state.token]}
+      restriction={state.restriction}
       onDismiss={state.onDismiss}
       onBack={state.onBack}
       onImport={state.onImport}

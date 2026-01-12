@@ -1,12 +1,16 @@
-import { ReactNode, useCallback, useMemo } from 'react'
+import { useSetAtom } from 'jotai'
+import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 import {
   CustomFlowContext,
   CustomFlowsRegistry,
+  importRestrictionAtom,
   TokenSelectorView,
   useCloseTokenSelectWidget,
   useSelectTokenWidgetState,
@@ -21,15 +25,16 @@ import { RwaConsentKey } from '../types/rwaConsent'
 /**
  * Hook that provides custom flows for the token selector with RWA consent support.
  *
- * When a user tries to import a restricted token and their country is unknown,
- * this shows the consent modal before proceeding to the import.
- *
+ * Handles two cases:
+ * - RequiredConsent: shows consent modal before import (pre-flow)
+ * - Restricted: shows import modal with disabled button and alert
  */
 export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
   const { account } = useWalletInfo()
   const widgetState = useSelectTokenWidgetState()
   const closeWidget = useCloseTokenSelectWidget()
   const importTokenCallback = useAddUserToken()
+  const setImportRestriction = useSetAtom(importRestrictionAtom)
 
   const tokenToImport = widgetState.tokenToImport
   const onSelectToken = widgetState.onSelectToken
@@ -50,7 +55,23 @@ export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
 
   const { confirmConsent } = useRwaConsentStatus(consentKey)
 
-  // create the pre-flow for ImportToken
+  // set import restriction when token is blocked
+  useEffect(() => {
+    if (rwaStatus === RwaTokenStatus.Restricted && tokenToImport) {
+      setImportRestriction({
+        isBlocked: true,
+        message: t`This token is not available in your region.`,
+      })
+    } else {
+      setImportRestriction(null)
+    }
+
+    return () => {
+      setImportRestriction(null)
+    }
+  }, [rwaStatus, tokenToImport, setImportRestriction])
+
+  // create the pre-flow for ImportToken (consent modal)
   const importTokenPreFlow = useCallback(
     (context: CustomFlowContext): ReactNode => {
       // only show consent if required
