@@ -1,11 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { TwapOrdersList } from 'entities/twap'
+
 import { getTwapOrderStatus } from './getTwapOrderStatus'
 import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
 import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { TwapOrdersExecution, TwapOrdersExecutionMap } from '../hooks/useTwapOrdersExecutions'
-import { TwapOrdersList } from '../state/twapOrdersListAtom'
 import { TwapOrderInfo, TwapOrderItem, TwapOrdersAuthResult, TwapOrdersSafeData } from '../types'
 
 export function buildTwapOrdersItems(
