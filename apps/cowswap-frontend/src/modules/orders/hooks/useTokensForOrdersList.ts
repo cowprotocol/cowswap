@@ -46,7 +46,14 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
       const fetchedTokens = await _fetchTokens(tokensToFetch, getToken)
 
       // Add fetched tokens to the user-added tokens store to avoid re-fetching them
-      addUserTokens(Object.values(fetchedTokens).filter(isTruthy))
+      const tokensToAdd = Object.values(fetchedTokens).filter(isTruthy)
+
+      if (tokensToAdd.length > 0) {
+        // FIXME: this might be a cause of the problem when we get listed tokens as user-added tokens
+        // Since we use allTokensRef which is not a part of the hooks deps, there might be a race condition
+        console.log('Add missing tokens from orders as user-added: ', tokensToAdd)
+        addUserTokens(tokensToAdd)
+      }
 
       // Merge fetched tokens with what's currently loaded
       return { ...tokens, ...fetchedTokens }
