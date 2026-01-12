@@ -24,6 +24,7 @@ export function FullAmountQuoteUpdater() {
   const partQuoteAmount = quote?.quoteResults.quoteResponse.quote.buyAmount
 
   const quoteParams = useQuoteParams(fullQuoteAmount)?.quoteParams
+  console.log('📜 LOG > FullAmountQuoteUpdater > quoteParams:', quoteParams)
   const updateQuoteState = useSetAtom(fullAmountQuoteAtom)
 
   useEffect(() => {
