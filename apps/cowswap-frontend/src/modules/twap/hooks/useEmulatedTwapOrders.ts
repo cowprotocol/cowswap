@@ -5,12 +5,12 @@ import { useMachineTimeMs } from '@cowprotocol/common-hooks'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { mapTwapOrderToStoreOrder } from 'entities/twap'
 import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { mapTwapOrderToStoreOrder } from '../utils/mapTwapOrderToStoreOrder'
 
 const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
