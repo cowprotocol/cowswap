@@ -3,12 +3,13 @@ import { useMemo } from 'react'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useTwapOrdersTokens } from 'entities/twap'
+
 import { Order } from 'legacy/state/orders/actions'
 import { useOrders } from 'legacy/state/orders/hooks'
 
 import { useEmulatedPartOrders } from './useEmulatedPartOrders'
 import { useEmulatedTwapOrders } from './useEmulatedTwapOrders'
-import { useTwapOrdersTokens } from './useTwapOrdersTokens'
 
 export function useAllEmulatedOrders(): Order[] {
   const { chainId, account } = useWalletInfo()
