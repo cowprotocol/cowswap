@@ -24,6 +24,15 @@ export function quoteUsingSameParameters(
   if (currentQuote.bridgeQuote) {
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
     const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails?.preAuthorizedBridgingHook?.postHook
+    console.log(
+      '📜 LOG > quoteUsingSameParameters >',
+      compareAppDataWithoutQuoteData(
+        removeBridgePostHook(currentAppData, bridgePostHook),
+        removeBridgePostHook(appData, bridgePostHook),
+      ),
+      currentAppData ? removeQuoteMetadata(currentAppData) : null,
+      appData ? removeQuoteMetadata(appData) : null,
+    )
 
     const cases = [
       compareAppDataWithoutQuoteData(

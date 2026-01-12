@@ -41,6 +41,8 @@ const shouldSkipFeeAtom = atom<boolean>((get) => {
 
   if (!inputCurrency || !outputCurrency) return false
 
+  if (inputCurrency.chainId !== outputCurrency.chainId) return false
+
   const inputCurrencyAddress = getCurrencyAddress(inputCurrency).toLowerCase()
   const outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
 
