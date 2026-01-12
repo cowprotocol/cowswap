@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { ListState } from '@cowprotocol/tokens'
 
 import { CustomFlowsRegistry } from '../types'
 
@@ -25,3 +26,16 @@ export const { atom: selectTokenModalUIAtom, updateAtom: updateSelectTokenModalU
  * Allows external code to inject pre/post flows for any token selector view.
  */
 export const customFlowsRegistryAtom = atom<CustomFlowsRegistry>({})
+
+/**
+ * Pending list toggle consent state.
+ * Set when user tries to enable a restricted list and consent is required.
+ */
+export interface PendingListToggleConsent {
+  list: ListState
+  consentHash: string
+  onConfirm: () => void
+  onCancel: () => void
+}
+
+export const pendingListToggleConsentAtom = atom<PendingListToggleConsent | null>(null)

@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -6,24 +6,24 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getSourceAsKey, ListState, restrictedListsAtom, useToggleList } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import {
-  getConsentFromCache,
-  rwaConsentCacheAtom,
-  RwaConsentKey,
-  useGeoStatus,
-  useRwaConsentModalState,
-} from 'modules/rwa'
+import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-// wrap toggle list functionality with consent checking
+import { pendingListToggleConsentAtom } from '../containers/SelectTokenWidget/atoms'
+
+/**
+ * Wrap toggle list functionality with consent checking.
+ * When consent is required, sets the pendingListToggleConsentAtom
+ * which triggers the consent modal inside the token selector.
+ */
 export function useConsentAwareToggleList(): (list: ListState, enabled: boolean) => void {
   const { account } = useWalletInfo()
   const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
   const restrictedLists = useAtomValue(restrictedListsAtom)
   const consentCache = useAtomValue(rwaConsentCacheAtom)
-  const { openModal: openRwaConsentModal } = useRwaConsentModalState()
+  const setPendingConsent = useSetAtom(pendingListToggleConsentAtom)
   const cowAnalytics = useCowAnalytics()
 
   const baseToggleList = useToggleList((enable, source) => {
@@ -66,12 +66,18 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
           const existingConsent = getConsentFromCache(consentCache, consentKey)
 
           if (!existingConsent?.acceptedAt) {
-            // wallet connected but no consent - open modal
-            openRwaConsentModal({
+            // wallet connected but no consent - set pending consent state
+            // the token selector's postFlow will show the consent modal
+            setPendingConsent({
+              list,
               consentHash,
-              onImportSuccess: () => {
-                // after consent, toggle the list on
+              onConfirm: () => {
                 baseToggleList(list, enabled)
+                setPendingConsent(null)
+              },
+              onCancel: () => {
+                // don't toggle, just clear the pending state
+                setPendingConsent(null)
               },
             })
             return
@@ -89,7 +95,7 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
       restrictedLists,
       account,
       consentCache,
-      openRwaConsentModal,
+      setPendingConsent,
     ],
   )
 }

@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -10,6 +11,7 @@ import {
   CustomFlowContext,
   CustomFlowResult,
   CustomFlowsRegistry,
+  pendingListToggleConsentAtom,
   TokenSelectorView,
   useCloseTokenSelectWidget,
   useSelectTokenWidgetState,
@@ -24,10 +26,11 @@ import { RwaConsentKey } from '../types/rwaConsent'
 /**
  * Hook that provides custom flows for the token selector with RWA consent support.
  *
- * Handles two cases:
- * - RequiredConsent: shows consent modal before import (pre-flow with content)
- * - Restricted: shows import modal with disabled button and alert (pre-flow with data)
+ * Handles:
+ * - ImportToken preFlow: consent modal or restriction data
+ * - Manage postFlow: consent modal for list toggle
  */
+// eslint-disable-next-line max-lines-per-function
 export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
   const { account } = useWalletInfo()
   const widgetState = useSelectTokenWidgetState()
@@ -43,23 +46,28 @@ export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
     outputCurrency: undefined,
   })
 
-  const consentKey: RwaConsentKey | null = useMemo(() => {
+  // pending list toggle consent (set by useConsentAwareToggleList)
+  const pendingListConsent = useAtomValue(pendingListToggleConsentAtom)
+
+  const tokenConsentKey: RwaConsentKey | null = useMemo(() => {
     if (!account || !rwaTokenInfo) return null
-    return {
-      wallet: account,
-      ipfsHash: rwaTokenInfo.consentHash,
-    }
+    return { wallet: account, ipfsHash: rwaTokenInfo.consentHash }
   }, [account, rwaTokenInfo])
 
-  const { confirmConsent } = useRwaConsentStatus(consentKey)
+  const listConsentKey: RwaConsentKey | null = useMemo(() => {
+    if (!account || !pendingListConsent) return null
+    return { wallet: account, ipfsHash: pendingListConsent.consentHash }
+  }, [account, pendingListConsent])
+
+  const { confirmConsent: confirmTokenConsent } = useRwaConsentStatus(tokenConsentKey)
+  const { confirmConsent: confirmListConsent } = useRwaConsentStatus(listConsentKey)
 
   // pre-flow for ImportToken - handles both consent modal and restriction
   const importTokenPreFlow = useCallback(
     (context: CustomFlowContext): CustomFlowResult<TokenSelectorView.ImportToken> | null => {
-      // token is restricted - pass restriction data to the modal
       if (rwaStatus === RwaTokenStatus.Restricted && tokenToImport) {
         return {
-          content: null, // show the base view
+          content: null,
           data: {
             restriction: {
               isBlocked: true,
@@ -69,30 +77,17 @@ export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
         }
       }
 
-      // consent required - show consent modal
       if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo && tokenToImport) {
-        const handleDismiss = (): void => {
-          context.onCancel()
-        }
-
+        const handleDismiss = (): void => context.onCancel()
         const handleConfirm = (): void => {
-          if (!account || !consentKey) return
-
-          // save consent
-          confirmConsent()
-
-          // import the token and select it
+          if (!account || !tokenConsentKey) return
+          confirmTokenConsent()
           importTokenCallback([tokenToImport])
-
-          if (onSelectToken) {
-            onSelectToken(tokenToImport)
-          }
-
+          if (onSelectToken) onSelectToken(tokenToImport)
           closeWidget()
         }
 
         const displayToken = TokenWithLogo.fromToken(tokenToImport)
-
         return {
           content: (
             <RwaConsentModal
@@ -105,7 +100,6 @@ export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
         }
       }
 
-      // no flow needed
       return null
     },
     [
@@ -113,20 +107,49 @@ export function useTokenSelectorConsentFlow(): CustomFlowsRegistry {
       rwaTokenInfo,
       tokenToImport,
       account,
-      consentKey,
-      confirmConsent,
+      tokenConsentKey,
+      confirmTokenConsent,
       importTokenCallback,
       onSelectToken,
       closeWidget,
     ],
   )
 
+  // post-flow for Manage view - shows consent modal for list toggle
+  const managePostFlow = useCallback((): CustomFlowResult<TokenSelectorView.Manage> | null => {
+    if (!pendingListConsent) return null
+
+    const handleDismiss = (): void => {
+      pendingListConsent.onCancel()
+    }
+
+    const handleConfirm = (): void => {
+      if (!account || !listConsentKey) return
+      confirmListConsent()
+      pendingListConsent.onConfirm()
+    }
+
+    return {
+      content: (
+        <RwaConsentModal
+          onDismiss={handleDismiss}
+          onConfirm={handleConfirm}
+          listName={pendingListConsent.list.list.name}
+          consentHash={pendingListConsent.consentHash}
+        />
+      ),
+    }
+  }, [pendingListConsent, account, listConsentKey, confirmListConsent])
+
   return useMemo(
     (): CustomFlowsRegistry => ({
       [TokenSelectorView.ImportToken]: {
         preFlow: importTokenPreFlow,
       },
+      [TokenSelectorView.Manage]: {
+        postFlow: managePostFlow,
+      },
     }),
-    [importTokenPreFlow],
+    [importTokenPreFlow, managePostFlow],
   )
 }

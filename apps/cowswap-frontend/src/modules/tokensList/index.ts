@@ -10,7 +10,8 @@ export type {
   ViewFlowConfig,
   CustomFlowsRegistry,
 } from './containers/SelectTokenWidget/types'
-export { customFlowsRegistryAtom } from './containers/SelectTokenWidget/atoms'
+export { customFlowsRegistryAtom, pendingListToggleConsentAtom } from './containers/SelectTokenWidget/atoms'
+export type { PendingListToggleConsent } from './containers/SelectTokenWidget/atoms'
 
 export { BlockedListSourcesUpdater } from './updaters/BlockedListSourcesUpdater'
 

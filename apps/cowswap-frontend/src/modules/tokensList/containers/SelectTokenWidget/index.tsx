@@ -63,12 +63,18 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone, customFlows
 function SelectTokenWidgetContent(): ReactNode {
   const { baseView, preFlowResult, postFlowResult } = useViewWithFlows()
 
-  // if there's pre-flow content, render it instead of the base view
+  // Generic flow content checks - applies to ALL views
+  // If there's pre-flow content, render it instead of the base view
   if (preFlowResult?.content) {
     return preFlowResult.content
   }
 
-  // blocking views - pass flow data as additional props
+  // If there's post-flow content, render it instead of the base view
+  if (postFlowResult?.content) {
+    return postFlowResult.content
+  }
+
+  // Render the base view with optional flow data
   if (baseView === TokenSelectorView.ImportToken) {
     return <SelectTokenModal.ImportToken flowData={preFlowResult?.data as Partial<ImportTokenModalProps>} />
   }
@@ -76,8 +82,8 @@ function SelectTokenWidgetContent(): ReactNode {
   if (baseView === TokenSelectorView.Manage) return <SelectTokenModal.Manage />
   if (baseView === TokenSelectorView.LpToken) return <SelectTokenModal.LpToken />
 
-  // default token list view
-  const mainContent = (
+  // Default: Main token list view
+  return (
     <>
       <styledEl.Wrapper>
         <SelectTokenModal.Header />
@@ -92,18 +98,6 @@ function SelectTokenWidgetContent(): ReactNode {
       <SelectTokenModal.DesktopChainPanel />
     </>
   )
-
-  // if there's post-flow content, render it after main content
-  if (postFlowResult?.content) {
-    return (
-      <>
-        {mainContent}
-        {postFlowResult.content}
-      </>
-    )
-  }
-
-  return mainContent
 }
 
 // re-export for external use
