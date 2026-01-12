@@ -92,7 +92,7 @@ export const PRODUCT_LIST = [
 export const CHANNEL_LIST = [
   {
     title: 'Discord',
-    href: 'https://discord.com/invite/cowprotocol?utm_source=cow.fi&utm_medium=web&utm_content=link',
+    href: 'https://discord.com/invite/cowprotocol',
     linkEvent: 'click-discord',
     iconColor: Color.cowfi_discord_pink,
     textColor: `var(${UI.COLOR_NEUTRAL_10})`,
@@ -100,7 +100,7 @@ export const CHANNEL_LIST = [
   },
   {
     title: 'Forum',
-    href: 'https://forum.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=link',
+    href: 'https://forum.cow.fi/',
     linkEvent: 'click-forum',
     iconColor: Color.cowamm_dark_green,
     textColor: Color.neutral98,
@@ -108,7 +108,7 @@ export const CHANNEL_LIST = [
   },
   {
     title: 'Snapshot',
-    href: 'https://snapshot.org/#/cow.eth?utm_source=cow.fi&utm_medium=web&utm_content=link',
+    href: 'https://snapshot.org/#/cow.eth',
     linkEvent: 'click-snapshot',
     iconColor: Color.cowfi_snapshot_red,
     textColor: Color.neutral98,
