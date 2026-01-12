@@ -280,9 +280,8 @@ msgid "Bridge via"
 msgstr "Bridge via"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useHeaderState.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/Header.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 msgid "Select token"
 msgstr "Select token"
 
@@ -302,7 +301,7 @@ msgstr "EOA wallets"
 msgid "Unwrapping {amountStr} {wrapped} to {native}"
 msgstr "Unwrapping {amountStr} {wrapped} to {native}"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "From network"
 msgstr "From network"
 
@@ -870,7 +869,7 @@ msgstr "Tokens"
 msgid "Copied"
 msgstr "Copied"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "To network"
 msgstr "To network"
 
@@ -884,8 +883,6 @@ msgstr "icon"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/Header.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/Header.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
 msgid "Manage token lists"
 msgstr "Manage token lists"
 
@@ -1007,7 +1004,6 @@ msgid "Min received (incl. costs)"
 msgstr "Min received (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/Search.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/SelectTokenModalShell.tsx
 msgid "Search name or paste address..."
 msgstr "Search name or paste address..."
 
@@ -2137,7 +2133,7 @@ msgstr "Reset USDT allowance to 0 before setting new spending cap"
 #~ msgid "Enable notifications"
 #~ msgstr "Enable notifications"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Sell token"
 msgstr "Sell token"
 
@@ -2381,8 +2377,8 @@ msgid "dialog content"
 msgstr "dialog content"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
-msgid "Cross chain swap"
-msgstr "Cross chain swap"
+#~ msgid "Cross chain swap"
+#~ msgstr "Cross chain swap"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
@@ -2604,7 +2600,7 @@ msgstr "All"
 msgid "batched together"
 msgstr "batched together"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Swap to"
 msgstr "Swap to"
 
@@ -3249,8 +3245,8 @@ msgstr "Search hooks"
 msgid "down"
 msgstr "down"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/ChainButton.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/ChainChip.tsx
 msgid "This destination is not supported for this source chain"
 msgstr "This destination is not supported for this source chain"
 
@@ -4550,8 +4546,8 @@ msgstr "Your Metamask extension (<0>v{currentVersion}</0>) is out of date. "
 msgid "Turn on Expert mode?"
 msgstr "Turn on Expert mode?"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/ChainButton.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/ChainChip.tsx
 msgid "Checking route availability..."
 msgstr "Checking route availability..."
 
@@ -5249,7 +5245,7 @@ msgstr "Post Hooks"
 msgid "Not compatible with current wallet type"
 msgstr "Not compatible with current wallet type"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Swap from"
 msgstr "Swap from"
 
@@ -5382,7 +5378,7 @@ msgstr "The good news"
 msgid "yield"
 msgstr "yield"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Buy token"
 msgstr "Buy token"
 
@@ -5501,7 +5497,6 @@ msgid "Attention"
 msgstr "Attention"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/TokenList.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/SelectTokenModalContent.tsx
 msgid "This route is not yet supported."
 msgstr "This route is not yet supported."
 
@@ -5574,7 +5569,7 @@ msgstr "Limit price"
 msgid "Buy"
 msgstr "Buy"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Select network"
 msgstr "Select network"
 

@@ -15,7 +15,7 @@ export interface SelectTokenWidgetProps {
 /**
  * SelectTokenWidget - Token selector modal
  *
- * Uses slot-based composition. Slots read from widget state atom directly.
+ * Uses slot-based composition
  */
 export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): ReactNode {
   const updateWidgetState = useSetAtom(updateSelectTokenWidgetAtom)
@@ -26,9 +26,9 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   }, [displayLpTokenLists, standalone, updateWidgetState])
 
   return (
-    <SelectTokenModal>
+    <SelectTokenModal.Root>
       <SelectTokenWidgetContent />
-    </SelectTokenModal>
+    </SelectTokenModal.Root>
   )
 }
 
@@ -36,10 +36,10 @@ function SelectTokenWidgetContent(): ReactNode {
   const activeView = useActiveBlockingView()
 
   // Blocking views
-  if (activeView === 'importToken') return <SelectTokenModal.ImportTokenView />
-  if (activeView === 'importList') return <SelectTokenModal.ImportListView />
-  if (activeView === 'manage') return <SelectTokenModal.ManageView />
-  if (activeView === 'lpToken') return <SelectTokenModal.LpTokenView />
+  if (activeView === 'importToken') return <SelectTokenModal.ImportToken />
+  if (activeView === 'importList') return <SelectTokenModal.ImportList />
+  if (activeView === 'manage') return <SelectTokenModal.Manage />
+  if (activeView === 'lpToken') return <SelectTokenModal.LpToken />
 
   // Default token list view
   return (
@@ -59,5 +59,5 @@ function SelectTokenWidgetContent(): ReactNode {
   )
 }
 
-// Re-export internal components for external use
+// re-export for external use
 export { SelectTokenModal }

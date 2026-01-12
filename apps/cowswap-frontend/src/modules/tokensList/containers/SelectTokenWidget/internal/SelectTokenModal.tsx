@@ -1,8 +1,3 @@
-/**
- * SelectTokenModal - Internal token selector modal
- *
- * Each slot uses its own domain hook. No context, no prop drilling.
- */
 import { MouseEvent, ReactNode } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
@@ -34,11 +29,11 @@ import {
 } from '../hooks'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
 
-export interface SelectTokenModalProps {
+export interface RootProps {
   children: ReactNode
 }
 
-export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode {
+export function Root({ children }: RootProps): ReactNode {
   const isOpen = useWidgetOpenState()
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const widgetState = useSelectTokenWidgetState()
@@ -46,7 +41,6 @@ export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
 
-  // Chain panel state
   const chainPanel = useChainPanelState(widgetState.tradeType)
   const isChainPanelVisible = chainPanel.isEnabled && !isCompactLayout
 
@@ -77,13 +71,18 @@ export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode
   return typeof document === 'undefined' ? overlay : createPortal(overlay, document.body)
 }
 
-SelectTokenModal.Header = ConnectedHeader
-SelectTokenModal.Search = ConnectedSearch
-SelectTokenModal.TokenList = ConnectedTokenList
-SelectTokenModal.NetworkPanel = NetworkPanel
-SelectTokenModal.ChainSelector = ConnectedChainSelector
-SelectTokenModal.DesktopChainPanel = ConnectedDesktopChainPanel
-SelectTokenModal.ImportTokenView = ImportTokenView
-SelectTokenModal.ImportListView = ImportListView
-SelectTokenModal.ManageView = ManageView
-SelectTokenModal.LpTokenView = LpTokenView
+Root.displayName = 'SelectTokenModal.Root'
+
+// Slot components
+export const Header: typeof ConnectedHeader = ConnectedHeader
+export const Search: typeof ConnectedSearch = ConnectedSearch
+export const TokenList: typeof ConnectedTokenList = ConnectedTokenList
+export const Panel: typeof NetworkPanel = NetworkPanel
+export const ChainSelector: typeof ConnectedChainSelector = ConnectedChainSelector
+export const DesktopChainPanel: typeof ConnectedDesktopChainPanel = ConnectedDesktopChainPanel
+
+// Blocking views
+export const ImportToken: typeof ImportTokenView = ImportTokenView
+export const ImportList: typeof ImportListView = ImportListView
+export const Manage: typeof ManageView = ManageView
+export const LpToken: typeof LpTokenView = LpTokenView
