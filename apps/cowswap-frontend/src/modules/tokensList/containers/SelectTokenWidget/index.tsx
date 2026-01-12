@@ -1,8 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
-import { useActiveBlockingView } from './hooks'
+import { customFlowsRegistryAtom } from './atoms'
+import { useViewWithFlows } from './hooks'
 import { SelectTokenModal } from './internal'
+import { CustomFlowsRegistry, TokenSelectorView } from './types'
 
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
@@ -10,20 +12,45 @@ import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 export interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
   standalone?: boolean
+  /**
+   * Custom flows registry - allows injecting pre/post flow views from outside.
+   * This keeps the token selector domain-agnostic.
+   *
+   * @example
+   * ```tsx
+   * const customFlows: CustomFlowsRegistry = {
+   *   [TokenSelectorView.ImportToken]: {
+   *     preFlow: (context) => needsConsent
+   *       ? <ConsentModal onConfirm={context.onDone} onCancel={context.onCancel} />
+   *       : null
+   *   }
+   * }
+   *
+   * <SelectTokenWidget customFlows={customFlows} />
+   * ```
+   */
+  customFlows?: CustomFlowsRegistry
 }
 
 /**
  * SelectTokenWidget - Token selector modal
  *
- * Uses slot-based composition
+ * Uses slot-based composition with configurable custom flows.
+ * Custom flows (like consent) are provided externally via the customFlows prop.
  */
-export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): ReactNode {
+export function SelectTokenWidget({ displayLpTokenLists, standalone, customFlows }: SelectTokenWidgetProps): ReactNode {
   const updateWidgetState = useSetAtom(updateSelectTokenWidgetAtom)
+  const setCustomFlows = useSetAtom(customFlowsRegistryAtom)
 
-  // Sync config props to atom
+  // Sync config props to atoms
   useEffect(() => {
     updateWidgetState({ displayLpTokenLists, standalone })
   }, [displayLpTokenLists, standalone, updateWidgetState])
+
+  // Sync custom flows to atom
+  useEffect(() => {
+    setCustomFlows(customFlows ?? {})
+  }, [customFlows, setCustomFlows])
 
   return (
     <SelectTokenModal.Root>
@@ -33,16 +60,21 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 }
 
 function SelectTokenWidgetContent(): ReactNode {
-  const activeView = useActiveBlockingView()
+  const { baseView, preFlowContent, postFlowContent } = useViewWithFlows()
+
+  // If there's a pre-flow, render it instead of the base view
+  if (preFlowContent) {
+    return preFlowContent
+  }
 
   // Blocking views
-  if (activeView === 'importToken') return <SelectTokenModal.ImportToken />
-  if (activeView === 'importList') return <SelectTokenModal.ImportList />
-  if (activeView === 'manage') return <SelectTokenModal.Manage />
-  if (activeView === 'lpToken') return <SelectTokenModal.LpToken />
+  if (baseView === TokenSelectorView.ImportToken) return <SelectTokenModal.ImportToken />
+  if (baseView === TokenSelectorView.ImportList) return <SelectTokenModal.ImportList />
+  if (baseView === TokenSelectorView.Manage) return <SelectTokenModal.Manage />
+  if (baseView === TokenSelectorView.LpToken) return <SelectTokenModal.LpToken />
 
   // Default token list view
-  return (
+  const mainContent = (
     <>
       <styledEl.Wrapper>
         <SelectTokenModal.Header />
@@ -57,6 +89,18 @@ function SelectTokenWidgetContent(): ReactNode {
       <SelectTokenModal.DesktopChainPanel />
     </>
   )
+
+  // If there's a post-flow, render it after main content
+  if (postFlowContent) {
+    return (
+      <>
+        {mainContent}
+        {postFlowContent}
+      </>
+    )
+  }
+
+  return mainContent
 }
 
 // re-export for external use

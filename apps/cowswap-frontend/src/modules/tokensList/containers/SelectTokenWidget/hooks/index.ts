@@ -1,7 +1,8 @@
 // Widget core
 export { useWidgetOpenState } from './useWidgetOpenState'
 export { useWidgetEffects } from './useWidgetEffects'
-export { useActiveBlockingView, type BlockingViewType } from './useActiveBlockingView'
+export { useActiveBlockingView } from './useActiveBlockingView'
+export { useViewWithFlows, type ViewWithFlowsResult } from './useViewWithFlows'
 
 // Slot state hooks
 export { useHeaderState, type HeaderState } from './useHeaderState'
