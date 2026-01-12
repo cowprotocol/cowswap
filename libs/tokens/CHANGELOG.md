@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.32.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.1...tokens-v1.32.0) (2026-01-09)
+
+
+### Features
+
+* implement consent for all flows ([#6769](https://github.com/cowprotocol/cowswap/issues/6769)) ([ba12026](https://github.com/cowprotocol/cowswap/commit/ba12026ef8a73fde2f38f448e0a581476518e843))
+* show consents before import modal ([#6770](https://github.com/cowprotocol/cowswap/issues/6770)) ([e928b80](https://github.com/cowprotocol/cowswap/commit/e928b806c45b435f830e8ebfa18090319c58659b))
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+
+### Bug Fixes
+
+* ondo tokens with bad formatting ([#6794](https://github.com/cowprotocol/cowswap/issues/6794)) ([c967eae](https://github.com/cowprotocol/cowswap/commit/c967eaef997cf168a37ec87d92fa834e44d5e1f2))
+* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+
 ## [1.31.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.0...tokens-v1.31.1) (2025-12-16)
 
 

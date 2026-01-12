@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.16.1...wallet-v1.16.2) (2026-01-09)
+
+
+### Bug Fixes
+
+* batch breaks on safe wallets after network change ([#6763](https://github.com/cowprotocol/cowswap/issues/6763)) ([fdcbea7](https://github.com/cowprotocol/cowswap/commit/fdcbea78c6681edfa981ac7316bafbb6437f6887))
+
 ## [1.16.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.16.0...wallet-v1.16.1) (2025-12-24)
 
 
