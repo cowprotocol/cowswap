@@ -55,7 +55,8 @@ export const NAV_ITEMS: MenuItem[] = [
       },
       {
         label: 'MEV Blocker',
-        href: '/mev-blocker',
+        href: 'https://mevblocker.io',
+        external: true,
       },
       {
         label: 'More',
