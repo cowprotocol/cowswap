@@ -211,7 +211,7 @@ export default function Page() {
                 <Link
                   bgColor={Color.cowfi_purple3}
                   color={Color.cowfi_purple_bright}
-                  href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+                  href="https://docs.cow.fi/category/solver"
                   external
                   data-click-event={toCowFiGtmEvent({
                     category: CowFiCategory.COWPROTOCOL,
@@ -596,7 +596,7 @@ export default function Page() {
             <Link
               bgColor={Color.cowfi_purple3}
               color={Color.cowfi_purple_bright}
-              href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
+              href="https://docs.cow.fi/category/solver"
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-protocol-solvers"
