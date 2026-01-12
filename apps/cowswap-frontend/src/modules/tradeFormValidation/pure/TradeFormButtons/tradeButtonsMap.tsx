@@ -266,7 +266,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     let errorMessage: string | undefined = undefined
 
     if (context.balancesError?.includes('rate limit')) {
-      errorMessage = 'Request is being rate limited'
+      errorMessage = t`Request is being rate limited`
     }
 
     return (
