@@ -29,7 +29,7 @@ const tokensIconsRequire =
     ? RequireContextMock
     : import.meta.glob('../../../assets/img/tokens/*.png', { eager: true })
 
-const TOKEN_ICON_FILENAME_REGEX = /(0x\w{40}|eth|xdai|avax|pol|bnb)/
+const TOKEN_ICON_FILENAME_REGEX = /(0x\w{40}|eth|xdai|avax|pol|bnb|xpl)/
 
 const tokensIconsFilesByAddress: Record<string, string> = Object.keys(tokensIconsRequire).reduce((acc, file) => {
   const address = TOKEN_ICON_FILENAME_REGEX.exec(file)?.[0]

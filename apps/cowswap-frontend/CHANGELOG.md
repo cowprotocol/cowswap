@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.128.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.127.0...cowswap-v1.128.0) (2026-01-09)
+
+
+### Features
+
+* default partial approvals setting to true and the form to full-approval ([#6791](https://github.com/cowprotocol/cowswap/issues/6791)) ([db3ce9a](https://github.com/cowprotocol/cowswap/commit/db3ce9a746f690017f3a19943d8fcf39a33b3488))
+* implement consent for all flows ([#6769](https://github.com/cowprotocol/cowswap/issues/6769)) ([ba12026](https://github.com/cowprotocol/cowswap/commit/ba12026ef8a73fde2f38f448e0a581476518e843))
+* show consents before import modal ([#6770](https://github.com/cowprotocol/cowswap/issues/6770)) ([e928b80](https://github.com/cowprotocol/cowswap/commit/e928b806c45b435f830e8ebfa18090319c58659b))
+* **trade:** adjust price impact warnings for bridging ([#6754](https://github.com/cowprotocol/cowswap/issues/6754)) ([9f5f85b](https://github.com/cowprotocol/cowswap/commit/9f5f85be18b07f8ef0078d20c1cf29933fa4d80f))
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+
+### Bug Fixes
+
+* add 'fees' to limit order receipt ([#6765](https://github.com/cowprotocol/cowswap/issues/6765)) ([0e8bdc3](https://github.com/cowprotocol/cowswap/commit/0e8bdc3244ffb4bbe6b051464d894698e8cd58dd))
+* approve & swap bug introduced in [#6791](https://github.com/cowprotocol/cowswap/issues/6791) ([#6796](https://github.com/cowprotocol/cowswap/issues/6796)) ([d29ac71](https://github.com/cowprotocol/cowswap/commit/d29ac716cc4c2735a71526d684d09bf09b9ad94a))
+* button label in sc wallets doing wrap & swap & bridge ([#6759](https://github.com/cowprotocol/cowswap/issues/6759)) ([db0765a](https://github.com/cowprotocol/cowswap/commit/db0765a3b6b2f2e649db57be6ecff626342c616d))
+* display correct cross-chain order summary ([#6768](https://github.com/cowprotocol/cowswap/issues/6768)) ([d09b211](https://github.com/cowprotocol/cowswap/commit/d09b2114441b860850e529196b12a19e3e9dbb0d))
+* hide consent logic under ff ([#6801](https://github.com/cowprotocol/cowswap/issues/6801)) ([a6ef0e4](https://github.com/cowprotocol/cowswap/commit/a6ef0e47ae7a4b301582b4c96e53689f93ef3531))
+* hide couldnt load balances msg when balances are loading ([#6779](https://github.com/cowprotocol/cowswap/issues/6779)) ([54269cc](https://github.com/cowprotocol/cowswap/commit/54269ccb815c75f064febc8bc45a4fbe6cac9f5a))
+* **trade:** clean up params even for orderkind ([#6746](https://github.com/cowprotocol/cowswap/issues/6746)) ([02e6844](https://github.com/cowprotocol/cowswap/commit/02e68448ae251b25dbf2f032a23349befa9af7f5))
+
 ## [1.127.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.126.0...cowswap-v1.127.0) (2025-12-24)
 
 

@@ -10,6 +10,7 @@ export interface RwaConsentModalProps {
   onDismiss(): void
   onConfirm(): void
   token?: TokenWithLogo
+  consentHash?: string
 }
 
 export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {

@@ -2819,6 +2819,10 @@ msgstr "Native currency (e.g ETH)"
 msgid "<0><1/> Experimental:</0> Add DeFI interactions before and after your trade."
 msgstr "<0><1/> Experimental:</0> Add DeFI interactions before and after your trade."
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
+msgid "This token list is not available in your region."
+msgstr "This token list is not available in your region."
+
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Protocol fee"
 msgstr "Protocol fee"
@@ -3594,7 +3598,12 @@ msgstr "CoW Protocol covers the fees and costs by executing your order at a slig
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HooksStoreWidget/index.tsx
 msgid "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap."
-msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap."
+msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap.<<<<<<< Updated upstream"
+
+#: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokenImportStatus.ts
+#: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokensImportStatus.ts
+msgid "This token is not available in your region."
+msgstr "This token is not available in your region."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "No signatures yet"
@@ -3623,6 +3632,10 @@ msgstr "Approving <0>{currencySymbolOrContext}</0> for trading"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Couldn't load balances"
 msgstr "Couldn't load balances"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenListItem/index.tsx
+msgid "Not available in your region"
+msgstr "Not available in your region"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate"
@@ -4303,6 +4316,10 @@ msgstr "before that time."
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 msgid "View transaction"
 msgstr "View transaction"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/index.tsx
+msgid "This list requires consent before importing."
+msgstr "This list requires consent before importing."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "is"
@@ -5620,6 +5637,10 @@ msgstr "Order cannot be filled due to insufficient balance on the current accoun
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "required"
 msgstr "required"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Fetching balances"
+msgstr "Fetching balances"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
 msgid "Wallet"
