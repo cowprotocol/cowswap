@@ -135,7 +135,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
-    amount: outputCurrencyAmount,
+    amount: isRateLoading ? null : outputCurrencyAmount,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
