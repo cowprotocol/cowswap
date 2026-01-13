@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getCurrencyAddress, getIsWrapOrUnwrap, isFractionFalsy } from '@cowprotocol/common-utils'
+import { getIsWrapOrUnwrap, isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -33,11 +33,7 @@ export function useTradeUsdAmounts(
   const isWrapOrUnwrap = Boolean(
     inputAmount &&
       outputAmount &&
-      getIsWrapOrUnwrap(
-        inputAmount.currency.chainId,
-        getCurrencyAddress(inputAmount.currency),
-        getCurrencyAddress(outputAmount.currency),
-      ),
+      getIsWrapOrUnwrap(inputAmount.currency.chainId, inputAmount.currency, outputAmount.currency),
   )
   const areAmountsReady = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
   const isTradeReady = !isWrapOrUnwrap && (dontWaitBothAmounts || areAmountsReady)
