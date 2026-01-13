@@ -39,7 +39,15 @@ export function createAvailabilitySwrKey(params: RoutesAvailabilityKeyParams): R
     return null
   }
 
-  return [sourceChainId, chainsToCheck.sort((a, b) => a - b).join(','), providersKey, 'routesAvailability']
+  return [
+    sourceChainId,
+    chainsToCheck
+      .slice()
+      .sort((a, b) => a - b)
+      .join(','),
+    providersKey,
+    'routesAvailability',
+  ]
 }
 
 export async function fetchRoutesAvailability(key: RoutesAvailabilityKey): Promise<RouteCheckResult[]> {
