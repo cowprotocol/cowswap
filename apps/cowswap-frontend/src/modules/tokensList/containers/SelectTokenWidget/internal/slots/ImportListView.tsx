@@ -1,6 +1,3 @@
-/**
- * ImportListView Slot - Modal for importing a token list
- */
 import { ReactNode } from 'react'
 
 import { ImportListModal } from '../../../../pure/ImportListModal'

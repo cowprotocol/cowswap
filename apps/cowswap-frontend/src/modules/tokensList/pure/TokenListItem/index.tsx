@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { areAddressesEqual, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, getCurrencyAddress, getTokenId } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
@@ -14,7 +14,6 @@ import * as styledEl from './styled'
 
 import { useDeferredVisibility } from '../../hooks/useDeferredVisibility'
 import { TokenSelectionHandler } from '../../types'
-import { getTokenUniqueKey } from '../../utils/tokenKey'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
@@ -61,7 +60,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     className,
   } = props
 
-  const tokenKey = getTokenUniqueKey(token)
+  const tokenKey = getTokenId(token)
   // Defer heavyweight UI (tooltips, formatted numbers) until the row is about to enter the viewport.
   const { ref: visibilityRef, isVisible: hasIntersected } = useDeferredVisibility<HTMLDivElement>({
     resetKey: tokenKey,

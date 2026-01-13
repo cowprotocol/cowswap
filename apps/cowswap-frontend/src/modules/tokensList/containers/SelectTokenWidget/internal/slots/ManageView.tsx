@@ -1,6 +1,3 @@
-/**
- * ManageView Slot - Modal for managing token lists and custom tokens
- */
 import { ReactNode } from 'react'
 
 import { ManageListsAndTokens } from '../../../ManageListsAndTokens'

@@ -1,6 +1,3 @@
-/**
- * ImportTokenView Slot - Modal for importing a single token
- */
 import { ReactNode } from 'react'
 
 import { ImportTokenModal, ImportTokenModalProps } from '../../../../pure/ImportTokenModal'

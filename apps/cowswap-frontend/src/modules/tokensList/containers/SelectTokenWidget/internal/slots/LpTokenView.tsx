@@ -1,6 +1,3 @@
-/**
- * LpTokenView Slot - Modal for LP token details
- */
 import { ReactNode } from 'react'
 
 import { LpTokenPage } from '../../../LpTokenPage'

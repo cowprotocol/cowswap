@@ -1,11 +1,11 @@
 import { ReactNode, useMemo } from 'react'
 
+import { getTokenId } from '@cowprotocol/common-utils'
 import { Loader } from '@cowprotocol/ui'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { useTokenListData } from '../../hooks/useTokenListData'
 import { useTokenListViewState } from '../../hooks/useTokenListViewState'
-import { getTokenUniqueKey } from '../../utils/tokenKey'
 import * as styledEl from '../SelectTokenModal/styled'
 import { TokensVirtualList } from '../TokensVirtualList'
 
@@ -30,7 +30,7 @@ export function TokensContent(): ReactNode {
     const pinned = new Set<string>()
 
     if (shouldShowRecentsInline && recentTokens) {
-      recentTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
+      recentTokens.forEach((token) => pinned.add(getTokenId(token)))
     }
 
     return pinned
@@ -41,7 +41,7 @@ export function TokensContent(): ReactNode {
       return allTokens
     }
 
-    return allTokens.filter((token) => !pinnedTokenKeys.has(getTokenUniqueKey(token)))
+    return allTokens.filter((token) => !pinnedTokenKeys.has(getTokenId(token)))
   }, [allTokens, pinnedTokenKeys])
 
   const favoriteTokensInline = shouldShowFavoritesInline ? favoriteTokens : undefined

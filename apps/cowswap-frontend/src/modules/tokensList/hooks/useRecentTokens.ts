@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getTokenId } from '@cowprotocol/common-utils'
 
 import {
   RECENT_TOKENS_LIMIT,
@@ -13,9 +14,7 @@ import {
   persistStoredTokens,
   readStoredTokens,
   type StoredRecentTokensByChain,
-} from './recentTokensStorage'
-
-import { getTokenUniqueKey } from '../utils/tokenKey'
+} from '../utils/recentTokensStorage'
 
 interface UseRecentTokensParams {
   allTokens: TokenWithLogo[]
@@ -96,7 +95,7 @@ export function useRecentTokens({
 
   const addRecentToken = useCallback(
     (token: TokenWithLogo) => {
-      if (favoriteKeys.has(getTokenUniqueKey(token))) return
+      if (favoriteKeys.has(getTokenId(token))) return
 
       setStoredTokensByChain((prev) => {
         const next = buildNextStoredTokens(prev, token, maxItems)

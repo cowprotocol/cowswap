@@ -1,6 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-
-import { getTokenUniqueKey } from '../utils/tokenKey'
+import { getTokenId } from '@cowprotocol/common-utils'
 
 export const RECENT_TOKENS_LIMIT = 4
 // Storage schema: { [chainId: number]: StoredRecentToken[] } serialized under this key.
@@ -23,7 +22,7 @@ export function buildTokensByKey(tokens: TokenWithLogo[]): Map<string, TokenWith
   const map = new Map<string, TokenWithLogo>()
 
   for (const token of tokens) {
-    map.set(getTokenUniqueKey(token), token)
+    map.set(getTokenId(token), token)
   }
 
   return map
@@ -33,7 +32,7 @@ export function buildFavoriteTokenKeys(tokens: TokenWithLogo[]): Set<string> {
   const set = new Set<string>()
 
   for (const token of tokens) {
-    set.add(getTokenUniqueKey(token))
+    set.add(getTokenId(token))
   }
 
   return set
@@ -61,7 +60,7 @@ export function hydrateStoredToken(entry: StoredRecentToken, canonical?: TokenWi
 }
 
 export function getStoredTokenKey(token: StoredRecentToken): string {
-  return getTokenUniqueKey(token)
+  return getTokenId(token)
 }
 
 export function readStoredTokens(limit: number): StoredRecentTokensByChain {
@@ -127,7 +126,7 @@ export function persistRecentTokenSelection(
 ): void {
   const favoriteKeys = buildFavoriteTokenKeys(favoriteTokens)
 
-  if (favoriteKeys.has(getTokenUniqueKey(token))) {
+  if (favoriteKeys.has(getTokenId(token))) {
     return
   }
 
@@ -197,8 +196,8 @@ function sanitizeStoredToken(token: unknown): StoredRecentToken | null {
 }
 
 function insertToken(tokens: StoredRecentToken[], token: StoredRecentToken, limit: number): StoredRecentToken[] {
-  const key = getTokenUniqueKey(token)
-  const withoutToken = tokens.filter((entry) => getTokenUniqueKey(entry) !== key)
+  const key = getTokenId(token)
+  const withoutToken = tokens.filter((entry) => getTokenId(entry) !== key)
 
   return [token, ...withoutToken].slice(0, limit)
 }

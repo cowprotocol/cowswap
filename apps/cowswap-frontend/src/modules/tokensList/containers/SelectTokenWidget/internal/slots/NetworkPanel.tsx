@@ -1,8 +1,3 @@
-/**
- * NetworkPanel Slot - Chain/network selection
- *
- * Props-based for flexibility.
- */
 import { ReactNode } from 'react'
 
 import { ChainInfo } from '@cowprotocol/cow-sdk'
