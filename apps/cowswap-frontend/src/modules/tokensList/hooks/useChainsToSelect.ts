@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useAvailableChains, useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
@@ -16,8 +16,12 @@ import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkS
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
+import { createOutputChainsState } from '../utils/chainsState'
 import { mapChainInfo } from '../utils/mapChainInfo'
 import { sortChainsByDisplayOrder } from '../utils/sortChainsByDisplayOrder'
+
+// Re-export for tests and external usage
+export { createInputChainsState, createOutputChainsState } from '../utils/chainsState'
 
 /**
  * Returns an array of chains to select in the token selector widget.
@@ -89,114 +93,4 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     routesAvailability,
     shouldHideNetworkSelector,
   ])
-}
-
-function filterDestinationChains(bridgeSupportedNetworks: ChainInfo[] | undefined): ChainInfo[] | undefined {
-  // Show only chains the app supports.
-  return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId)
-}
-
-// Sell-side selector intentionally limits chains to the wallet-supported list; bridge destinations never appear here.
-export function createInputChainsState(
-  selectedTargetChainId: SupportedChainId | number,
-  supportedChains: ChainInfo[],
-): ChainsToSelectState {
-  return {
-    defaultChainId: selectedTargetChainId,
-    chains: sortChainsByDisplayOrder(supportedChains),
-    isLoading: false,
-  }
-}
-
-interface CreateOutputChainsOptions {
-  selectedTargetChainId: SupportedChainId | number
-  chainId: SupportedChainId
-  currentChainInfo: ChainInfo
-  bridgeSupportedNetworks: ChainInfo[] | undefined
-  supportedChains: ChainInfo[]
-  isLoading: boolean
-  routesAvailability: {
-    unavailableChainIds: Set<number>
-    loadingChainIds: Set<number>
-    isLoading: boolean
-  }
-}
-
-function computeDisabledChainIds(
-  orderedChains: ChainInfo[],
-  chainId: SupportedChainId,
-  destinationIds: Set<number>,
-  sourceSupported: boolean,
-  isLoading: boolean,
-): Set<number> {
-  // During loading, don't apply disabled states - wait for bridge data
-  if (isLoading) return new Set()
-
-  return new Set(
-    orderedChains
-      .filter((chain) => {
-        if (chain.id === chainId) return false // Source always enabled
-        if (!sourceSupported) return true // All disabled when source not supported
-        return !destinationIds.has(chain.id) // Disable if not a valid bridge destination
-      })
-      .map((c) => c.id),
-  )
-}
-
-function resolveDefaultChainId(
-  orderedChains: ChainInfo[],
-  selectedTargetChainId: number,
-  chainId: SupportedChainId,
-  disabledChainIds: Set<number>,
-): number {
-  const isSelectedTargetValid =
-    orderedChains.some((c) => c.id === selectedTargetChainId) && !disabledChainIds.has(selectedTargetChainId)
-  if (isSelectedTargetValid) return selectedTargetChainId
-
-  const sourceInList = orderedChains.some((c) => c.id === chainId)
-  if (sourceInList) return chainId
-
-  const firstEnabledChain = orderedChains.find((c) => !disabledChainIds.has(c.id))
-  return firstEnabledChain?.id ?? orderedChains[0]?.id
-}
-
-export function createOutputChainsState({
-  selectedTargetChainId,
-  chainId,
-  currentChainInfo,
-  bridgeSupportedNetworks,
-  supportedChains,
-  isLoading,
-  routesAvailability,
-}: CreateOutputChainsOptions): ChainsToSelectState {
-  // Use all app-supported chains as the base list (consistent with SELL selector)
-  // Always include the current chain for same-chain swaps, even if feature-flagged off
-  const chainSet = new Set(supportedChains.map((c) => c.id))
-  const chainsWithCurrent = chainSet.has(chainId) ? supportedChains : [...supportedChains, currentChainInfo]
-  const orderedChains = sortChainsByDisplayOrder(chainsWithCurrent)
-
-  const destinationIds = new Set(filterDestinationChains(bridgeSupportedNetworks)?.map((c) => c.id) ?? [])
-  const sourceSupported = destinationIds.has(chainId)
-
-  // Compute base disabled chains from bridge network data
-  const baseDisabledChainIds = computeDisabledChainIds(
-    orderedChains,
-    chainId,
-    destinationIds,
-    sourceSupported,
-    isLoading,
-  )
-
-  // Merge with unavailable routes from pre-check (chains with no valid route)
-  const disabledChainIds = new Set([...baseDisabledChainIds, ...routesAvailability.unavailableChainIds])
-
-  const resolvedDefaultChainId = resolveDefaultChainId(orderedChains, selectedTargetChainId, chainId, disabledChainIds)
-
-  return {
-    defaultChainId: resolvedDefaultChainId,
-    chains: orderedChains,
-    isLoading,
-    disabledChainIds: disabledChainIds.size > 0 ? disabledChainIds : undefined,
-    loadingChainIds: routesAvailability.loadingChainIds.size > 0 ? routesAvailability.loadingChainIds : undefined,
-  }
 }
