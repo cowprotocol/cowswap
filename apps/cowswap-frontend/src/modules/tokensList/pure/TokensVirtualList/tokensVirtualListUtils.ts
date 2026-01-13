@@ -1,3 +1,4 @@
+import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 
@@ -7,7 +8,7 @@ import { TokensVirtualRow } from './types'
 
 import { tokensListSorter } from '../../utils/tokensListSorter'
 
-type BalancesMap = Record<string, unknown> | undefined
+type BalancesMap = BalancesState['values'] | undefined
 
 export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
   if (!balances) {
