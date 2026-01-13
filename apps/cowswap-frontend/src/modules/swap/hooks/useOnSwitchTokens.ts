@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { getCurrencyAddress, getIsNativeToken, getIsWrapOrUnwrap, isSellOrder } from '@cowprotocol/common-utils'
+import { getIsNativeToken, getIsWrapOrUnwrap, isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
@@ -44,7 +44,7 @@ function getEthFlowOverridesOnSwitch(
 ): Partial<ExtendedTradeRawState> {
   const isSell = isSellOrder(orderKind)
   const isNativeOut = getIsNativeToken(outputCurrency)
-  const isWrapUnwrap = getIsWrapOrUnwrap(chainId, getCurrencyAddress(inputCurrency), getCurrencyAddress(outputCurrency))
+  const isWrapUnwrap = getIsWrapOrUnwrap(chainId, inputCurrency, outputCurrency)
 
   // If the sell token was Native, and it's not a wrap, and it was a SELL order
   // It would normally become a buy order, but there are no Native buy orders!
