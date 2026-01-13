@@ -9,7 +9,12 @@ import { useAllOrdersMap } from 'legacy/state/orders/hooks'
 import { useBridgeOrders } from './useBridgeOrders'
 import { BRIDGING_FINAL_STATUSES } from './useCrossChainOrder'
 
-const FAILED_ORDER_STATES = [OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
+const NOT_PENDING_ORDER_STATUSES = [
+  OrderStatus.PRESIGNATURE_PENDING,
+  OrderStatus.EXPIRED,
+  OrderStatus.CANCELLED,
+  OrderStatus.FAILED,
+]
 
 export function usePendingBridgeOrders(): BridgeOrderData[] | null {
   const { chainId } = useWalletInfo()
@@ -22,7 +27,7 @@ export function usePendingBridgeOrders(): BridgeOrderData[] | null {
         ? bridgeOrders.filter((order) => {
             const regularOrder = allOrdersMap[order.orderUid]
             const status = regularOrder?.order.status
-            const isSwapWontHappen = status ? FAILED_ORDER_STATES.includes(status) : false
+            const isSwapWontHappen = status ? NOT_PENDING_ORDER_STATUSES.includes(status) : false
 
             if (isSwapWontHappen) return false
 
