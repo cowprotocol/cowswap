@@ -8,7 +8,6 @@ export { useViewWithFlows, type ViewWithFlowsResult } from './useViewWithFlows'
 export { useHeaderState, type HeaderState } from './useHeaderState'
 export { useSearchState } from './useSearchState'
 export { useChainPanelState, type ChainPanelState } from './useChainPanelState'
-export { useTokenListState } from './useTokenListState'
 
 // Blocking view state hooks
 export { useImportTokenViewState, type ImportTokenViewState } from './useImportTokenViewState'

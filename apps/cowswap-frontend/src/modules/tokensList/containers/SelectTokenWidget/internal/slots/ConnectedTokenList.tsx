@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import { TokenList } from './TokenList'
 
-import { useTokenListState } from '../../hooks'
+import { useTokensToSelect } from '../../../../hooks/useTokensToSelect'
 
 export function ConnectedTokenList(): ReactNode {
-  const isRouteAvailable = useTokenListState()
+  const { isRouteAvailable } = useTokensToSelect()
   return <TokenList isRouteAvailable={isRouteAvailable} />
 }
