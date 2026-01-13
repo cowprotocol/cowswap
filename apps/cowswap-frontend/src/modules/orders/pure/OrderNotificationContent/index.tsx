@@ -9,12 +9,12 @@ import { Trans } from '@lingui/react/macro'
 
 import { OrderSummary } from 'common/pure/OrderSummary'
 import type { SellForAtLeastTemplate } from 'common/pure/OrderSummary/summaryTemplates'
+import { ReceiverInfo } from 'common/pure/ReceiverInfo'
 
 import { getToastMessageCallback } from './utils'
 
 import { TransactionContentWithLink } from '../../containers/TransactionContentWithLink'
 import { OrderNotificationInfo } from '../../types'
-import { ReceiverInfo } from '../ReceiverInfo'
 
 export interface OrderNotificationContentProps {
   title: ReactNode
@@ -25,7 +25,6 @@ export interface OrderNotificationContentProps {
   actionTitle?: string
   customTemplate?: typeof SellForAtLeastTemplate
   skipExplorerLink?: boolean
-  hideReceiver?: boolean
   transactionHash?: string
   bottomContent?: ReactNode
   children?: ReactNode
@@ -41,7 +40,6 @@ export function OrderNotificationContent({
   customTemplate,
   transactionHash,
   skipExplorerLink,
-  hideReceiver,
   bottomContent,
   children,
 }: OrderNotificationContentProps): ReactNode {
@@ -65,7 +63,7 @@ export function OrderNotificationContent({
           dstChainData={dstChainData}
         />
       )}
-      {!hideReceiver && <ReceiverInfo receiver={orderInfo.receiver} owner={orderInfo.owner} />}
+      <ReceiverInfo receiver={orderInfo.receiver} owner={orderInfo.owner} />
       {bottomContent}
     </div>
   )

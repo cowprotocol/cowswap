@@ -60,7 +60,6 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<OrderStatusEvents, OrdersNotif
           title={bridgeOrder ? t`Swap order filled` : t`Order filled`}
           chainId={chainId}
           orderUid={order.uid}
-          hideReceiver={!!bridgeOrder}
           messageType={ToastMessageType.ORDER_FULFILLED}
         >
           <FulfilledOrderInfo chainId={chainId} orderUid={order.uid} />
@@ -80,7 +79,6 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<OrderStatusEvents, OrdersNotif
           orderUid={order.uid}
           transactionHash={transactionHash}
           messageType={ToastMessageType.ORDER_CANCELLED}
-          hideReceiver
         />
       )
     },
@@ -96,7 +94,6 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<OrderStatusEvents, OrdersNotif
           chainId={chainId}
           orderUid={order.uid}
           messageType={ToastMessageType.ORDER_EXPIRED}
-          hideReceiver
         />
       )
     },

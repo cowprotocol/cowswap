@@ -8,6 +8,7 @@ import { CancellationModal as Pure } from 'common/pure/CancellationModal'
 import { OrderSummary } from 'common/pure/OrderSummary'
 
 import { useUltimateOrder } from '../../hooks/useUltimateOrder'
+import { ReceiverInfo } from '../../pure/ReceiverInfo'
 import { getUltimateOrderTradeAmounts } from '../../updaters/orders/utils'
 
 export type CancellationModalProps = {
@@ -25,9 +26,14 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
     if (!ultimateOrder) return undefined
 
     const { inputAmount, outputAmount } = getUltimateOrderTradeAmounts(ultimateOrder)
+    const receiver = ultimateOrder.bridgeOrderFromStore?.recipient ?? ultimateOrder.orderFromStore.receiver
+    const owner = ultimateOrder.orderFromStore.owner
 
     return (
-      <OrderSummary inputAmount={inputAmount} outputAmount={outputAmount} kind={ultimateOrder.orderFromStore.kind} />
+      <>
+        <OrderSummary inputAmount={inputAmount} outputAmount={outputAmount} kind={ultimateOrder.orderFromStore.kind} />
+        <ReceiverInfo receiver={receiver} owner={owner} />
+      </>
     )
   }, [ultimateOrder])
 
