@@ -1,15 +1,12 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { useDismissHandler } from './useDismissHandler'
-import { useImportFlowCallbacks } from './useImportFlowCallbacks'
+import { useImportTokenAndClose } from './useImportTokenAndClose'
 import { useManageWidgetVisibility } from './useManageWidgetVisibility'
-import { useTokenAdminActions } from './useTokenAdminActions'
-import { useTokenDataSources } from './useTokenDataSources'
-import { useTokenSelectionHandler } from './useTokenSelectionHandler'
+import { useResetTokenImport } from './useResetTokenImport'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
-import { useUpdateSelectTokenWidgetState } from '../../../hooks/useUpdateSelectTokenWidgetState'
 
 export interface ImportTokenViewState {
   token: TokenWithLogo
@@ -22,29 +19,17 @@ export function useImportTokenViewState(): ImportTokenViewState | null {
   const widgetState = useSelectTokenWidgetState()
   const { closeManageWidget } = useManageWidgetVisibility()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
-  const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const tokenData = useTokenDataSources()
-  const tokenAdminActions = useTokenAdminActions()
 
-  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
   const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
-
-  const importFlows = useImportFlowCallbacks(
-    tokenAdminActions.importTokenCallback,
-    handleSelectToken,
-    onDismiss,
-    tokenAdminActions.addCustomTokenLists,
-    () => {}, // onTokenListAddingError not needed for token import
-    updateSelectTokenWidget,
-    tokenData.favoriteTokens,
-  )
+  const importTokenAndClose = useImportTokenAndClose()
+  const resetTokenImport = useResetTokenImport()
 
   if (!widgetState.tokenToImport) return null
 
   return {
     token: widgetState.tokenToImport,
     onDismiss,
-    onBack: importFlows.resetTokenImport,
-    onImport: importFlows.importTokenAndClose,
+    onBack: resetTokenImport,
+    onImport: importTokenAndClose,
   }
 }
