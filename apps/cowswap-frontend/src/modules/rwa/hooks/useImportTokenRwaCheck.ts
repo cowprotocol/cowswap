@@ -12,9 +12,6 @@ interface UseImportTokenRwaCheckResult {
   rwaTokenInfo: RwaTokenInfo | null
 }
 
-/**
- * Hook that checks RWA status for the token being imported.
- */
 export function useImportTokenRwaCheck(): UseImportTokenRwaCheckResult {
   const { tokenToImport } = useSelectTokenWidgetState()
 
