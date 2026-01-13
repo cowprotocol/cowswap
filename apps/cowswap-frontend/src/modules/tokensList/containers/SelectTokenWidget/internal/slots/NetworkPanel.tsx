@@ -7,6 +7,8 @@ import { ReactNode } from 'react'
 
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
+import { t } from '@lingui/core/macro'
+
 import { ChainPanel } from '../../../../pure/ChainPanel'
 import { ChainsToSelectState } from '../../../../types'
 
@@ -16,10 +18,12 @@ export interface NetworkPanelProps {
   onSelectChain: (chain: ChainInfo) => void
 }
 
-export function NetworkPanel({ chains, title = 'Select network', onSelectChain }: NetworkPanelProps): ReactNode {
+export function NetworkPanel({ chains, title, onSelectChain }: NetworkPanelProps): ReactNode {
+  const resolvedTitle = title ?? t`Select network`
+
   if (!chains) {
     return null
   }
 
-  return <ChainPanel title={title} chainsState={chains} onSelectChain={onSelectChain} />
+  return <ChainPanel title={resolvedTitle} chainsState={chains} onSelectChain={onSelectChain} />
 }

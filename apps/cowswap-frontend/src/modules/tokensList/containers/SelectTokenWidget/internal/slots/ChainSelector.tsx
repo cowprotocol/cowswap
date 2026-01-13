@@ -4,6 +4,8 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+
 import { MobileChainSelector } from '../../../../pure/SelectTokenModal/MobileChainSelector'
 import { ChainsToSelectState } from '../../../../types'
 import { MobileChainPanelPortal } from '../../MobileChainPanelPortal'
@@ -14,7 +16,8 @@ export interface ChainSelectorProps {
   onSelectChain: (chain: ChainInfo) => void
 }
 
-export function ChainSelector({ chains, title = 'Select network', onSelectChain }: ChainSelectorProps): ReactNode {
+export function ChainSelector({ chains, title, onSelectChain }: ChainSelectorProps): ReactNode {
+  const resolvedTitle = title ?? t`Select network`
   const [isMobilePanelOpen, setMobilePanelOpen] = useState(false)
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
 
@@ -37,14 +40,14 @@ export function ChainSelector({ chains, title = 'Select network', onSelectChain 
     <>
       <MobileChainSelector
         chainsState={chains}
-        label={title}
+        label={resolvedTitle}
         onSelectChain={handleSelectChain}
         onOpenPanel={openPanel}
       />
 
       {isMobilePanelOpen && (
         <MobileChainPanelPortal
-          chainsPanelTitle={title}
+          chainsPanelTitle={resolvedTitle}
           chainsToSelect={chains}
           onSelectChain={handleSelectChain}
           onClose={closePanel}

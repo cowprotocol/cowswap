@@ -4,6 +4,8 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+
 import { ChainPanel } from '../../../../pure/ChainPanel'
 import { ChainsToSelectState } from '../../../../types'
 
@@ -13,16 +15,13 @@ export interface DesktopChainPanelProps {
   onSelectChain: (chain: ChainInfo) => void
 }
 
-export function DesktopChainPanel({
-  chains,
-  title = 'Select network',
-  onSelectChain,
-}: DesktopChainPanelProps): ReactNode {
+export function DesktopChainPanel({ chains, title, onSelectChain }: DesktopChainPanelProps): ReactNode {
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
+  const resolvedTitle = title ?? t`Select network`
 
   if (isCompactLayout || !chains) {
     return null
   }
 
-  return <ChainPanel title={title} chainsState={chains} onSelectChain={onSelectChain} />
+  return <ChainPanel title={resolvedTitle} chainsState={chains} onSelectChain={onSelectChain} />
 }
