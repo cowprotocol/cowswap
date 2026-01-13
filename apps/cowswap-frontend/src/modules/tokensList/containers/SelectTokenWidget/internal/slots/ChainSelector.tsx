@@ -49,7 +49,7 @@ export function ChainSelector({ chains, title, onSelectChain }: ChainSelectorPro
         <MobileChainPanelPortal
           chainsPanelTitle={resolvedTitle}
           chainsToSelect={chains}
-          onSelectChain={handleSelectChain}
+          onSelectChain={onSelectChain}
           onClose={closePanel}
         />
       )}
