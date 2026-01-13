@@ -38,10 +38,17 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
 
   const { formattedFilledAmount, formattedSwappedAmount } = useGetExecutedBridgeSummary(order) || {}
 
-  if (!order || !formattedSwappedAmount) return null
+  if (!order || !formattedSwappedAmount || !formattedFilledAmount) return null
 
   const inputToken = isSellOrder(order.kind) ? order.inputToken : formattedSwappedAmount.currency
-  const outputToken = isSellOrder(order.kind) ? formattedSwappedAmount.currency : order.inputToken
+  const outputToken = isSellOrder(order.kind) ? formattedSwappedAmount.currency : order.outputToken
+
+  const sellAmount = isSellOrder(order.kind)
+    ? formattedFilledAmount.quotient.toString()
+    : formattedSwappedAmount.quotient.toString()
+  const buyAmount = isSellOrder(order.kind)
+    ? formattedSwappedAmount.quotient.toString()
+    : formattedFilledAmount.quotient.toString()
 
   return (
     <>
@@ -50,8 +57,8 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
           kind={order.kind}
           inputToken={inputToken as TokenInfo}
           outputToken={outputToken as TokenInfo}
-          sellAmount={formattedFilledAmount.quotient.toString()}
-          buyAmount={formattedSwappedAmount.quotient.toString()}
+          sellAmount={sellAmount}
+          buyAmount={buyAmount}
           customTemplate={FulfilledSummaryTemplate}
         />
       )}
