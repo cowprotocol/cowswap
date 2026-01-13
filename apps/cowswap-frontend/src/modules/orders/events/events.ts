@@ -22,6 +22,7 @@ export type OnPostedOrderPayload = {
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
   orderDetails: GenericOnPostedOrderPayload
+  isEthFlow?: boolean
 }
 
 // Define types for event payloads

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
@@ -37,9 +39,13 @@ export interface OrderSubmittedContentProps {
   hash: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, onDismiss }: OrderSubmittedContentProps) {
+export function OrderSubmittedContent({
+  chainId,
+  account,
+  isSafeWallet,
+  hash,
+  onDismiss,
+}: OrderSubmittedContentProps): ReactNode {
   const tx = {
     hash,
     hashType: isSafeWallet && !isCowOrder('transaction', hash) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,

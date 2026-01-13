@@ -46,6 +46,7 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams): vo
     inputAmount,
     outputAmount,
     orderDetails: postedOrderPayload,
+    isEthFlow,
   })
 }
 

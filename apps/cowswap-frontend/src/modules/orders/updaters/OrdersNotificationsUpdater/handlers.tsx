@@ -1,5 +1,7 @@
 import { ReactElement } from 'react'
 
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   OnBridgingSuccessPayload,
   OnCancelledOrderPayload,
@@ -9,6 +11,7 @@ import {
   ToastMessageType,
 } from '@cowprotocol/events'
 import { IconType } from '@cowprotocol/snackbars'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 
@@ -27,10 +30,21 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<OrderStatusEvents, OrdersNotif
   [OrderStatusEvents.ON_POSTED_ORDER]: {
     icon: 'success',
     handler: (payload: OnPostedOrderPayload) => {
+      const nativeCurrency = NATIVE_CURRENCIES[payload.inputAmount.currency.chainId as SupportedChainId]
+
+      const payloadFixed: OnPostedOrderPayload = {
+        ...payload,
+        // Force inputAmount currency override for Safe "Wrap and Swap" case
+        inputAmount:
+          payload.isEthFlow && nativeCurrency
+            ? CurrencyAmount.fromRawAmount(nativeCurrency, payload.inputAmount.quotient.toString())
+            : payload.inputAmount,
+      }
+
       return (
         <PostedOrderNotification
           title={t`Order submitted`}
-          payload={payload}
+          payload={payloadFixed}
           messageType={ToastMessageType.ORDER_CREATED}
         />
       )

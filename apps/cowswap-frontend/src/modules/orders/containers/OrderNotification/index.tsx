@@ -23,6 +23,8 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
   const ultimateOrder = useUltimateOrder(chainId, orderUid)
 
   const orderInfo: OrderNotificationInfo | undefined = useMemo(() => {
+    if (_orderInfo) return _orderInfo
+
     if (ultimateOrder) {
       const { id, kind, owner, receiver } = ultimateOrder.orderFromStore
 
@@ -36,8 +38,6 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
         receiver: ultimateOrder.bridgeOrderFromStore?.recipient ?? receiver,
       }
     }
-
-    if (_orderInfo) return _orderInfo
 
     return undefined
   }, [ultimateOrder, _orderInfo])
