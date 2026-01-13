@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
@@ -16,7 +18,9 @@ interface Web3ProviderProps {
 export function Web3Provider({ children }: Web3ProviderProps) {
   return (
     <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <SafeProvider>{children}</SafeProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   )
 }

@@ -1,21 +1,21 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { Address } from 'viem'
 import { useConnection, useEnsName } from 'wagmi'
 
-import { useWalletMetaData } from './hooks/useWalletMetadata'
+import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
+import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
-import { useIsSmartContractWallet } from '../web3-react/hooks/useIsSmartContractWallet'
-import { useIsSafeApp } from '../web3-react/hooks/useWalletMetadata'
 
 function useWalletInfo(): WalletInfo {
   const { address, chainId, isConnected } = useConnection()
@@ -40,9 +40,9 @@ function checkIsSupportedWallet(walletName?: string): boolean {
 
 function useWalletDetails(account?: Address): WalletDetails {
   const { data: ensName } = useEnsName({ address: account })
-  const isSmartContractWallet = useIsSmartContractWallet() // TODO
+  const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData()
-  const isSafeApp = useIsSafeApp() // TODO
+  const isSafeApp = useIsSafeApp()
 
   return useMemo(() => {
     return {
@@ -62,85 +62,19 @@ function useWalletDetails(account?: Address): WalletDetails {
 
 // TODO use safe sdk
 function useSafeInfo(_walletInfo: WalletInfo): GnosisSafeInfo | undefined {
-  //   const { provider } = useWeb3React()
-  //   const { account, chainId } = walletInfo
-  const [safeInfo, _setSafeInfo] = useState<GnosisSafeInfo>()
-  //   const safeAppsSdk = useSafeAppsSdk()
+  const { connected, safe } = useSafeAppsSDK()
 
-  // TODO: Break down this large function into smaller functions
-
-  //   useEffect(() => {
-  //     // TODO: Add proper return type annotation
-  //     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  //     const updateSafeInfo = async () => {
-  //       if (safeAppsSdk) {
-  //         try {
-  //           const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
-  //           setSafeInfo((prevSafeInfo) => {
-  //             const { safeAddress, threshold, owners, isReadOnly, nonce } = appsSdkSafeInfo
-  //             return {
-  //               ...prevSafeInfo,
-  //               address: safeAddress,
-  //               chainId,
-  //               threshold,
-  //               owners,
-  //               nonce,
-  //               isReadOnly,
-  //             }
-  //           })
-  //         } catch {
-  //           console.debug(`[WalletUpdater] Error fetching safe info over iframe ${account}`)
-  //           setSafeInfo(undefined)
-  //         }
-  //       } else {
-  //         if (chainId && account && provider) {
-  //           try {
-  //             const _safeInfo = await getSafeInfo(chainId, account, provider)
-  //             const { address, threshold, owners, nonce } = _safeInfo
-  //             setSafeInfo((prevSafeInfo) => ({
-  //               ...prevSafeInfo,
-  //               chainId,
-  //               address,
-  //               threshold,
-  //               owners,
-  //               nonce,
-  //               isReadOnly: false,
-  //             }))
-  //           } catch {
-  //             console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
-  //             setSafeInfo(undefined)
-  //           }
-  //         } else {
-  //           setSafeInfo(undefined)
-  //         }
-  //       }
-  //     }
-
-  //     if (safeAppsSdk) {
-  //       // If we are here, we are running as a safe app. The safe app getInfo call doesn't do network requests
-  //       // but uses the local data, so we can use a shorter interval
-  //       clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
-  //       longSafeInfoInterval = null
-  //       shortSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_SHORT_INTERVAL)
-  //     } else {
-  //       // If we don't have a safeAppsSdk, we are running maybe in walletconnect mode and protocol-kit's
-  //       // getSafeInfo call does network requests, so we use a longer interval to not spam the servers too much
-  //       clearInterval(shortSafeInfoInterval !== null ? shortSafeInfoInterval : undefined)
-  //       shortSafeInfoInterval = null
-  //       longSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_LONG_INTERVAL)
-  //     }
-
-  //     updateSafeInfo()
-
-  //     return () => {
-  //       clearInterval(shortSafeInfoInterval !== null ? shortSafeInfoInterval : undefined)
-  //       shortSafeInfoInterval = null
-  //       clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
-  //       longSafeInfoInterval = null
-  //     }
-  //   }, [setSafeInfo, chainId, account, provider, safeAppsSdk])
-
-  return safeInfo
+  return useMemo(
+    () =>
+      connected
+        ? {
+            ...safe,
+            address: safe.safeAddress,
+            nonce: '0', // TODO
+          }
+        : undefined,
+    [connected, safe],
+  ) // TODO try fetching info if not connected through safe
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
