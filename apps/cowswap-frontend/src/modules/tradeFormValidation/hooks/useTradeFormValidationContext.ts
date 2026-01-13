@@ -5,8 +5,12 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy'
+import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
+
+import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
@@ -18,12 +22,14 @@ import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
 
+// eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isOnline = useIsOnline()
+  const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
@@ -37,7 +43,10 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
+  const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
+  const isAccountProxyLoading = hasHookBridgeProvidersEnabled ? isLoading : false
+  const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
@@ -51,36 +60,63 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
 
-  const commonContext = {
-    account,
-    isWrapUnwrap,
-    isBundlingSupported: !!isBundlingSupported,
-    isSupportedWallet,
-    isSwapUnsupported,
-    isSafeReadonlyUser,
-    recipientEnsAddress,
-    approvalState,
-    tradeQuote,
-    isApproveRequired,
-    isInsufficientBalanceOrderAllowed,
-    isProviderNetworkUnsupported,
-    isOnline,
-    derivedTradeState,
-    intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
-    isAccountProxyLoading: isLoading,
-    isProxySetupValid: proxyAccount?.isProxySetupValid,
-    customTokenError,
-  }
+  const { status: rwaStatus } = useRwaTokenStatus({
+    inputCurrency,
+    outputCurrency,
+  })
+  const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
 
   return useMemo(() => {
     if (!derivedTradeState) return null
 
     return {
-      ...commonContext,
+      account,
+      isWrapUnwrap,
+      isBundlingSupported: !!isBundlingSupported,
+      isSupportedWallet,
+      isSwapUnsupported,
+      isSafeReadonlyUser,
+      recipientEnsAddress,
+      approvalState,
+      tradeQuote,
+      isApproveRequired,
+      isInsufficientBalanceOrderAllowed,
+      isProviderNetworkUnsupported,
+      isOnline,
       derivedTradeState,
+      intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
+      isAccountProxyLoading,
+      isProxySetupValid,
+      customTokenError,
+      isRestrictedForCountry,
+      isBalancesLoading: !hasFirstLoad || isBalancesLoading,
+      balancesError,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...Object.values(commonContext), derivedTradeState])
+  }, [
+    hasFirstLoad,
+    account,
+    approvalState,
+    customTokenError,
+    derivedTradeState,
+    intermediateBuyToken,
+    isAccountProxyLoading,
+    isApproveRequired,
+    isBundlingSupported,
+    isInsufficientBalanceOrderAllowed,
+    isOnline,
+    isProviderNetworkUnsupported,
+    isRestrictedForCountry,
+    isSafeReadonlyUser,
+    isSupportedWallet,
+    isBalancesLoading,
+    isSwapUnsupported,
+    isWrapUnwrap,
+    isProxySetupValid,
+    recipientEnsAddress,
+    toBeImported,
+    tradeQuote,
+    balancesError,
+  ])
 }
 
 function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/core-v1.10.1...core-v1.11.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/core-v1.10.0...core-v1.10.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* remove duplicates in token lists by migrating the state ([#6636](https://github.com/cowprotocol/cowswap/issues/6636)) ([8ea5005](https://github.com/cowprotocol/cowswap/commit/8ea5005d9a32ba360c3e846f6a75e4a9fca193b5))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/core-v1.9.0...core-v1.10.0) (2025-11-24)
 
 

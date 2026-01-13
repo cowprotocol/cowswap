@@ -33,33 +33,50 @@ const BridgeCosts: React.FC = () => (
   </Trans>
 )
 
-export function QuoteBridgeContent({
-  isQuoteDisplay = false,
-  isFinished = false,
-  quoteContext: {
-    recipient,
-    bridgeFee,
-    estimatedTime,
-    buyAmount,
-    buyAmountUsd,
-    bridgeMinReceiveAmount,
-    bridgeMinDepositAmount,
-    bridgeMinDepositAmountUsd,
-  },
-  children,
-}: QuoteBridgeContentProps): ReactNode {
+export function QuoteBridgeContent(props: QuoteBridgeContentProps): ReactNode {
+  const {
+    isQuoteDisplay = false,
+    quoteContext: {
+      recipient,
+      bridgeFee,
+      estimatedTime,
+      buyAmount,
+      bridgeMinDepositAmount,
+      bridgeMinDepositAmountUsd,
+      expectedToReceive,
+      expectedToReceiveUsd,
+    },
+    children,
+  } = props
   const bridgeFeeUsd = useUsdAmount(bridgeFee).value
-  const minReceiveAmountEl = (
-    <TokenAmountDisplay
-      displaySymbol
-      usdValue={bridgeMinReceiveAmount ? null : buyAmountUsd}
-      currencyAmount={bridgeMinReceiveAmount || buyAmount}
-    />
-  )
-  const MIN_RECEIVE_TITLE = t`Min. to receive`
 
   return (
     <>
+      {estimatedTime && (
+        <ConfirmDetailsItem withTimelineDot label={<EstBridgeTimeTooltip />}>
+          ~ {displayTime(estimatedTime * 1000, true)}
+        </ConfirmDetailsItem>
+      )}
+      {bridgeFee && (
+        <ConfirmDetailsItem withTimelineDot label={<BridgeCosts />}>
+          {bridgeFee.equalTo(0) ? (
+            <SuccessTextBold>
+              <Trans>FREE</Trans>
+            </SuccessTextBold>
+          ) : (
+            <TokenAmountDisplay displaySymbol currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
+          )}
+        </ConfirmDetailsItem>
+      )}
+      {expectedToReceive && (
+        <ConfirmDetailsItem
+          withTimelineDot
+          label={t`Expected to receive`}
+          tooltip={t`The estimated amount you'll receive after bridge costs.`}
+        >
+          <TokenAmountDisplay displaySymbol usdValue={expectedToReceiveUsd} currencyAmount={expectedToReceive} />
+        </ConfirmDetailsItem>
+      )}
       {isQuoteDisplay && (
         <ConfirmDetailsItem
           withTimelineDot
@@ -73,40 +90,42 @@ export function QuoteBridgeContent({
           />
         </ConfirmDetailsItem>
       )}
-      {bridgeFee && (
-        <ConfirmDetailsItem withTimelineDot label={<BridgeCosts />}>
-          {bridgeFee.equalTo(0) ? (
-            <SuccessTextBold>
-              <Trans>FREE</Trans>
-            </SuccessTextBold>
-          ) : (
-            <TokenAmountDisplay currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
-          )}
-        </ConfirmDetailsItem>
-      )}
-      {estimatedTime && (
-        <ConfirmDetailsItem withTimelineDot label={<EstBridgeTimeTooltip />}>
-          ~ {displayTime(estimatedTime * 1000, true)}
-        </ConfirmDetailsItem>
-      )}
       <RecipientDetailsItem recipient={recipient} chainId={buyAmount.currency.chainId} />
-      {(!isFinished || !isQuoteDisplay) && (
-        <ConfirmDetailsItem
-          withTimelineDot={!isQuoteDisplay}
-          label={
-            isQuoteDisplay ? (
-              <ReceiveAmountTitle>
-                <b>{MIN_RECEIVE_TITLE}</b>
-              </ReceiveAmountTitle>
-            ) : (
-              MIN_RECEIVE_TITLE
-            )
-          }
-        >
-          {isQuoteDisplay ? <b>{minReceiveAmountEl}</b> : minReceiveAmountEl}
-        </ConfirmDetailsItem>
-      )}
+      <MinReceive {...props} />
       {children}
     </>
   )
+}
+
+function MinReceive({
+  isQuoteDisplay = false,
+  isFinished = false,
+  quoteContext: { buyAmount, buyAmountUsd, bridgeMinReceiveAmount, bridgeMinReceiveAmountUsd },
+}: QuoteBridgeContentProps): ReactNode {
+  const MIN_RECEIVE_TITLE = t`Min. to receive`
+
+  const minReceiveAmountEl = (
+    <TokenAmountDisplay
+      displaySymbol
+      usdValue={bridgeMinReceiveAmount ? bridgeMinReceiveAmountUsd : buyAmountUsd}
+      currencyAmount={bridgeMinReceiveAmount || buyAmount}
+    />
+  )
+
+  return !isFinished || !isQuoteDisplay ? (
+    <ConfirmDetailsItem
+      withTimelineDot={!isQuoteDisplay}
+      label={
+        isQuoteDisplay ? (
+          <ReceiveAmountTitle>
+            <b>{MIN_RECEIVE_TITLE}</b>
+          </ReceiveAmountTitle>
+        ) : (
+          MIN_RECEIVE_TITLE
+        )
+      }
+    >
+      {isQuoteDisplay ? <b>{minReceiveAmountEl}</b> : minReceiveAmountEl}
+    </ConfirmDetailsItem>
+  ) : null
 }

@@ -116,7 +116,7 @@ export function LimitOrdersWidget(): ReactElement {
   return <LimitOrders {...props} />
 }
 
-export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
+const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: msg`Set any limit price and time horizon` },
   { content: msg`FREE order placement and cancellation` },
   { content: msg`Place multiple orders using the same balance` },

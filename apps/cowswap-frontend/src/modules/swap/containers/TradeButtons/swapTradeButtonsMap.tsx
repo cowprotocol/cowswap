@@ -26,12 +26,34 @@ interface SwapTradeButtonsContext {
   hasEnoughWrappedBalanceForSwap: boolean
   onCurrencySelection: (field: Field, currency: Currency) => void
   confirmText: string
+  isSafeWallet: boolean
+  isCurrentTradeBridging: boolean
 }
 
 type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
 
 export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => {
+    // When using Safe wallet (e.g., Safe+Rabby or Safe mobile + WC), the flow will wrap first
+    // So we should show "Wrap WETH and Swap" or "Wrap WETH and Swap and Bridge" instead of "Swap with WETH"
+    if (props.isSafeWallet) {
+      return (
+        <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow} disabled={isDisabled}>
+          <div>
+            {props.isCurrentTradeBridging ? (
+              <Trans>
+                Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap and Bridge
+              </Trans>
+            ) : (
+              <Trans>
+                Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap
+              </Trans>
+            )}
+          </div>
+        </ButtonError>
+      )
+    }
+
     return (
       <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow} disabled={isDisabled}>
         <div>
@@ -49,9 +71,23 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
       </div>
     </ButtonError>
   ),
+  [SwapFormState.WrapAndSwapAndBridge]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
+      <div>
+        <Trans>
+          Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap and Bridge
+        </Trans>
+      </div>
+    </ButtonError>
+  ),
   [SwapFormState.RegularEthFlowSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <Wrapper>
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
+      <ButtonError
+        id="do-trade-button"
+        buttonSize={ButtonSize.BIG}
+        onClick={props.openSwapConfirm}
+        disabled={isDisabled}
+      >
         <div>{props.confirmText}</div>
       </ButtonError>
       <EthFlowBanner

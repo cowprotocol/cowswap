@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -16,6 +18,8 @@ const ExternalLinkStyled = styled(ExternalLink)`
 
 export interface ImportTokenModalProps {
   tokens: TokenWithLogo[]
+  isImportDisabled?: boolean
+  blockReason?: string | null
 
   onBack?(): void
 
@@ -24,10 +28,8 @@ export interface ImportTokenModalProps {
   onImport(tokens: TokenWithLogo[]): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ImportTokenModal(props: ImportTokenModalProps) {
-  const { tokens, onBack, onDismiss, onImport } = props
+export function ImportTokenModal(props: ImportTokenModalProps): ReactElement {
+  const { tokens, onBack, onDismiss, onImport, isImportDisabled, blockReason } = props
 
   return (
     <styledEl.Wrapper>
@@ -61,7 +63,13 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
             </styledEl.UnknownSourceWarning>
           </styledEl.TokenInfo>
         ))}
-        <ButtonPrimary onClick={() => onImport(tokens)}>
+        {blockReason && (
+          <styledEl.UnknownSourceWarning>
+            <AlertCircle size={14} />
+            <span>{blockReason}</span>
+          </styledEl.UnknownSourceWarning>
+        )}
+        <ButtonPrimary onClick={() => onImport(tokens)} disabled={isImportDisabled}>
           <Trans>Import</Trans>
         </ButtonPrimary>
       </styledEl.Contents>

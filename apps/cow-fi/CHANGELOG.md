@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.31.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.30.0...cow-fi-v1.31.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.29.0...cow-fi-v1.30.0) (2025-12-24)
+
+
+### Features
+
+* disable develop.cow.fi SEO indexing ([#6614](https://github.com/cowprotocol/cowswap/issues/6614)) ([6ce7c57](https://github.com/cowprotocol/cowswap/commit/6ce7c57534e275b57be97a425cd7e7692c2fa07d))
+
+## [1.29.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.1...cow-fi-v1.29.0) (2025-12-16)
+
+
+### Features
+
+* add link to bug bounty program ([#6612](https://github.com/cowprotocol/cowswap/issues/6612)) ([3cf7a8d](https://github.com/cowprotocol/cowswap/commit/3cf7a8dbb04bc512da0494701d70555239d0d473))
+* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
+
 ## [1.28.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.0...cow-fi-v1.28.1) (2025-11-25)
 
 

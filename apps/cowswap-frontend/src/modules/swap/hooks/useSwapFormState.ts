@@ -11,6 +11,7 @@ export enum SwapFormState {
   SwapWithWrappedToken = 'SwapWithWrappedToken',
   RegularEthFlowSwap = 'EthFlowSwap',
   WrapAndSwap = 'WrapAndSwap',
+  WrapAndSwapAndBridge = 'WrapAndSwapAndBridge',
   SellNativeInHooks = 'SellNativeInHooks',
 }
 
@@ -24,10 +25,13 @@ export function useSwapFormState(): SwapFormState | null {
     if (state.inputCurrency && getIsNativeToken(state.inputCurrency)) {
       if (isHooksStore) return SwapFormState.SellNativeInHooks
 
+      const isBridging =
+        state.inputCurrency && state.outputCurrency && state.inputCurrency.chainId !== state.outputCurrency.chainId
+
       if (!isSmartContractWallet) {
         return SwapFormState.RegularEthFlowSwap
       } else if (isBundlingSupported) {
-        return SwapFormState.WrapAndSwap
+        return isBridging ? SwapFormState.WrapAndSwapAndBridge : SwapFormState.WrapAndSwap
       } else {
         return SwapFormState.SwapWithWrappedToken
       }

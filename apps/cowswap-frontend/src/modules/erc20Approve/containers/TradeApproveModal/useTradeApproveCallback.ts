@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import type { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -53,7 +52,6 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const updateApproveProgressModalState = useUpdateApproveProgressModalState()
   const resetApproveProgressModalState = useResetApproveProgressModalState()
   const spender = useTradeSpenderAddress()
-  const { isPartialApproveEnabled } = useFeatureFlags()
   const { chainId, account } = useWalletInfo()
   const setOptimisticAllowance = useSetOptimisticAllowance()
 
@@ -73,13 +71,12 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       try {
         const response = await approveCallback(amount)
 
-        // if ff is disabled - use old flow, hide modal when tx is sent
-        if (!response || !isPartialApproveEnabled) {
+        if (!response) {
           resetApproveProgressModalState()
           return undefined
-        } else {
-          updateApproveProgressModalState({ isPendingInProgress: true })
         }
+
+        updateApproveProgressModalState({ isPendingInProgress: true })
 
         approvalAnalytics('Sign', symbol)
 
@@ -119,7 +116,6 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       currency,
       updateApproveProgressModalState,
       approveCallback,
-      isPartialApproveEnabled,
       resetApproveProgressModalState,
       account,
       spender,

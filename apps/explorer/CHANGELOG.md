@@ -1,5 +1,43 @@
 # Changelog
 
+## [2.61.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.60.0...explorer-v2.61.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+
+### Bug Fixes
+
+* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+* to address tooltip for bridge orders ([#6766](https://github.com/cowprotocol/cowswap/issues/6766)) ([b1ef329](https://github.com/cowprotocol/cowswap/commit/b1ef32998e603b48c4f8f7f40889ad541e03df3d))
+
+## [2.60.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.3...explorer-v2.60.0) (2025-12-24)
+
+
+### Features
+
+* add offset & limit params to getTrades ([#6567](https://github.com/cowprotocol/cowswap/issues/6567)) ([57d738d](https://github.com/cowprotocol/cowswap/commit/57d738de29b466d9c29b61cb3fd82936f760a336))
+
+## [2.59.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.2...explorer-v2.59.3) (2025-12-19)
+
+
+### Bug Fixes
+
+* add user context on launch darkly initialization ([#6726](https://github.com/cowprotocol/cowswap/issues/6726)) ([fa02aa4](https://github.com/cowprotocol/cowswap/commit/fa02aa4cf7f951464049cb4f3a92544de457e760))
+
+## [2.59.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.1...explorer-v2.59.2) (2025-12-16)
+
+
+### Bug Fixes
+
+* bnb coin image missing in explorer ([#6643](https://github.com/cowprotocol/cowswap/issues/6643)) ([5d05589](https://github.com/cowprotocol/cowswap/commit/5d05589377722ed3b16f652e944a414f1d32435c))
+* **bridge:** display executed amount in bridge details ([#6671](https://github.com/cowprotocol/cowswap/issues/6671)) ([8c5772c](https://github.com/cowprotocol/cowswap/commit/8c5772cba710c43007c9ac925eb28b5d5c3c3d20))
+* **bridge:** fix displayed bridge quote amounts ([#6670](https://github.com/cowprotocol/cowswap/issues/6670)) ([623e0e5](https://github.com/cowprotocol/cowswap/commit/623e0e5b09c33132debdfd06493c357c0af8aa80))
+* from & to labels for near bridging ([#6653](https://github.com/cowprotocol/cowswap/issues/6653)) ([7a2cfa8](https://github.com/cowprotocol/cowswap/commit/7a2cfa8477936222e019373971111a919e54c85f))
+* update schema reference for app data ([#6626](https://github.com/cowprotocol/cowswap/issues/6626)) ([93e78e6](https://github.com/cowprotocol/cowswap/commit/93e78e69454039fc89eeeb170f076a7957db604f))
+
 ## [2.59.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.0...explorer-v2.59.1) (2025-12-09)
 
 

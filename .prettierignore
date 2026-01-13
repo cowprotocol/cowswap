@@ -3,3 +3,6 @@
 /coverage
 /static-files
 .cursor/
+
+/libs/abis/src/generated
+CHANGELOG.md

@@ -9,12 +9,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import {
-  getOrderSubmitSummary,
-  mapUnsignedOrderToOrder,
-  type PostOrderParams,
-  wrapErrorInOperatorError,
-} from 'legacy/utils/trade'
+import { mapUnsignedOrderToOrder, type PostOrderParams, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -39,7 +34,15 @@ export async function safeBundleEthFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
-  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks, tradeQuote } = tradeContext
+  const {
+    context,
+    callbacks,
+    swapFlowAnalyticsContext,
+    tradeConfirmActions,
+    typedHooks,
+    tradeQuote,
+    bridgeQuoteAmounts,
+  } = tradeContext
 
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
@@ -124,11 +127,19 @@ export async function safeBundleEthFlow(
       additionalParams: {
         ...orderParams,
         orderId,
-        summary: getOrderSubmitSummary(orderParams),
         signature,
         signingScheme,
       },
     })
+
+    if (bridgeQuoteAmounts) {
+      tradeContext.callbacks.addBridgeOrder({
+        orderUid: orderId,
+        quoteAmounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
+      })
+    }
 
     const { isSafeWallet } = orderParams
     addPendingOrderStep(
@@ -165,9 +176,10 @@ export async function safeBundleEthFlow(
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
-      outputAmount,
+      outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
+      isEthFlow: true,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')

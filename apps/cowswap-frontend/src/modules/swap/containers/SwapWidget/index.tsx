@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useTryFindToken } from '@cowprotocol/tokens'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -126,7 +125,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
-    amount: inputCurrencyAmount,
+    amount: !isSellTrade && isRateLoading ? null : inputCurrencyAmount,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
@@ -136,7 +135,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
-    amount: outputCurrencyAmount,
+    amount: isSellTrade && isRateLoading ? null : outputCurrencyAmount,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
@@ -172,8 +171,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
-  const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+  const enablePartialApprovalState = useSwapPartialApprovalToggleState()
 
   const isConnected = Boolean(account)
   const isNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -203,7 +201,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
           <>
             {bottomContent}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
-            {isPrimaryValidationPassed && isPartialApproveEnabled && <TradeApproveWithAffectedOrderList />}
+            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -228,7 +226,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         toBeImported,
         intermediateBuyToken,
         isPrimaryValidationPassed,
-        isPartialApproveEnabled,
       ],
     ),
   }

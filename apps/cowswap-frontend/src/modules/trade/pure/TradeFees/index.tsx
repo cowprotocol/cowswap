@@ -68,7 +68,9 @@ export function TradeFees({
   if (hasBothFees) {
     return (
       <>
-        {showTotalRow && totalFeeUsd ? <TotalFeeRow totalFeeUsd={totalFeeUsd} /> : null}
+        {showTotalRow && totalFeeUsd ? (
+          <TotalFeeRow withTimelineDot={withTimelineDot} totalFeeUsd={totalFeeUsd} />
+        ) : null}
         <ProtocolFeeRow
           withTimelineDot={withTimelineDot}
           protocolFeeUsd={protocolFeeUsd}

@@ -1,6 +1,5 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Token } from '@uniswap/sdk-core'
@@ -38,10 +37,6 @@ jest.mock('./approveUtils', () => ({
   processApprovalTransaction: jest.fn(),
 }))
 
-jest.mock('@cowprotocol/common-hooks', () => ({
-  useFeatureFlags: jest.fn(),
-}))
-
 jest.mock('../../hooks', () => ({
   useApproveCallback: jest.fn(),
 }))
@@ -53,7 +48,6 @@ jest.mock('../../state', () => ({
 
 const mockUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
-const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockUseApproveCallback = useApproveCallback as jest.MockedFunction<typeof useApproveCallback>
 const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
   typeof useUpdateApproveProgressModalState
@@ -127,7 +121,6 @@ describe('useTradeApproveCallback', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockUseCowAnalytics.mockReturnValue({ sendEvent: mockSendEvent } as any)
     mockUseTradeSpenderAddress.mockReturnValue(mockSpenderAddress)
-    mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
     mockUseApproveCallback.mockReturnValue(mockApproveCallback)
     mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
     mockUseResetApproveProgressModalState.mockReturnValue(mockResetApproveProgressModalState)
@@ -148,7 +141,6 @@ describe('useTradeApproveCallback', () => {
         blockNumber: 123456,
         chainId: mockChainId,
       })
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
@@ -179,7 +171,6 @@ describe('useTradeApproveCallback', () => {
         blockNumber: 123456,
         chainId: mockChainId,
       })
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
@@ -202,7 +193,6 @@ describe('useTradeApproveCallback', () => {
       const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null) // No approval data found
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
@@ -225,7 +215,6 @@ describe('useTradeApproveCallback', () => {
       const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
@@ -282,7 +271,6 @@ describe('useTradeApproveCallback', () => {
       mockTxResponse.wait = mockWait
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
@@ -302,7 +290,6 @@ describe('useTradeApproveCallback', () => {
       mockProcessApprovalTransaction.mockImplementation(() => {
         throw new Error('Approval transaction failed')
       })
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
@@ -382,52 +369,6 @@ describe('useTradeApproveCallback', () => {
           category: CowSwapAnalyticsCategory.TRADE,
           action: 'Error',
           label: mockToken.symbol,
-        })
-      })
-    })
-  })
-
-  describe('partial approval feature flag behavior', () => {
-    it('should hide modal immediately when feature is disabled and transaction is sent', async () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
-      const mockTxResponse = createMockTransactionResponse(1)
-      mockApproveCallback.mockResolvedValue(mockTxResponse)
-      mockProcessApprovalTransaction.mockReturnValue(null)
-
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
-
-      await result.current(mockAmount)
-
-      await waitFor(() => {
-        // When feature is disabled, only "Send" event is tracked, not "Sign"
-        expect(mockSendEvent).toHaveBeenCalledWith({
-          category: CowSwapAnalyticsCategory.TRADE,
-          action: 'Send',
-          label: mockToken.symbol,
-        })
-        // Modal should be hidden immediately after response
-        expect(mockResetApproveProgressModalState).toHaveBeenCalled()
-      })
-    })
-
-    it('should not hide modal early when feature is enabled', async () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      const mockTxResponse = createMockTransactionResponse(1)
-      mockApproveCallback.mockResolvedValue(mockTxResponse)
-      mockProcessApprovalTransaction.mockReturnValue(null)
-
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
-
-      await result.current(mockAmount)
-
-      await waitFor(() => {
-        expect(mockSendEvent).toHaveBeenCalledWith({
-          category: CowSwapAnalyticsCategory.TRADE,
-          action: 'Sign',
-          label: mockToken.symbol,
-        })
-        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          isPendingInProgress: true,
         })
       })
     })

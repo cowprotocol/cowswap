@@ -7,7 +7,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -33,8 +33,16 @@ export async function safeBundleApprovalFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
-  const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks, tradeQuote } =
-    tradeContext
+  const {
+    context,
+    callbacks,
+    orderParams,
+    swapFlowAnalyticsContext,
+    tradeConfirmActions,
+    typedHooks,
+    tradeQuote,
+    bridgeQuoteAmounts,
+  } = tradeContext
 
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
@@ -89,11 +97,19 @@ export async function safeBundleApprovalFlow(
       additionalParams: {
         ...orderParams,
         orderId,
-        summary: getOrderSubmitSummary(orderParams),
         signature,
         signingScheme,
       },
     })
+
+    if (bridgeQuoteAmounts) {
+      tradeContext.callbacks.addBridgeOrder({
+        orderUid: orderId,
+        quoteAmounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
+      })
+    }
 
     addPendingOrderStep(
       {
@@ -146,7 +162,7 @@ export async function safeBundleApprovalFlow(
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
-      outputAmount,
+      outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
     })

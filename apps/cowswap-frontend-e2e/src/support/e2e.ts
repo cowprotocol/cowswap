@@ -14,11 +14,12 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
+import { CyHttpMessages } from 'cypress/types/net-stubbing'
+
 import './commands'
 import { injected } from './ethereum'
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface ApplicationWindow {
       ethereum: typeof injected
@@ -46,16 +47,79 @@ Cypress.Commands.overwrite(
   },
 )
 
-beforeEach(() => {
-  cy.on('window:load', (win) => {
-    win.localStorage.clear()
-    win.ethereum = injected
-  })
+// serviceWorker breaks safary-sdk and window.load event, so we disable it
+Cypress.on('window:before:load', (win) => {
+  if (win.navigator?.serviceWorker) {
+    // @ts-expect-error
+    delete win.navigator.__proto__.serviceWorker
+  }
+})
 
+Cypress.on('uncaught:exception', (err) => {
+  if (err.message.includes('ResizeObserver loop completed with undelivered notifications')) {
+    return false
+  }
+})
+
+const skippedUrls = [
+  // analytics
+  /ads-twitter.com/,
+  /doubleclick.net/,
+  /google-analytics.com/,
+  /clarity.ms/,
+  /googletagmanager.com/,
+
+  // other
+  /telegram.org/,
+  // /hypelab.com/,
+  // /apiarydata.net/,
+  // /launchdarkly.com/,
+]
+
+const cypressCache = new Map<string, CyHttpMessages.IncomingHttpResponse<unknown>>()
+
+const cachedUrls = [
+  /raw.githubusercontent.com\/cowprotocol\/cowswap/,
+  /files.cow.fi\/token-lists\/.*.json/,
+  /files.cow.fi\/tokens\/.*.json/,
+  /cms.cow.fi\/api\/solvers/,
+  /cms.cow.fi\/api\/announcements/,
+  /cms.cow.fi\/api\/correlated-tokens/,
+  /cms.cow.fi\/api\/notification-list/,
+]
+
+beforeEach(() => {
   // Infura security policies are based on Origin headers.
   // These are stripped by cypress because chromeWebSecurity === false; this adds them back in.
-  cy.intercept(/infura.io/, (res) => {
-    res.headers['origin'] = 'http://localhost:3000'
-    res.continue()
+  cy.intercept(/infura.io/, (req) => {
+    req.headers['origin'] = Cypress.config('baseUrl')!
+    req.continue()
+  })
+  skippedUrls.forEach((url) => {
+    cy.intercept(url, (req) => {
+      req.reply({ statusCode: 404 })
+    })
+  })
+
+  // hard cache static files within test file
+  cachedUrls.forEach((url) => {
+    cy.intercept(url, (req) => {
+      const cached = cypressCache.get(req.url)
+      if (cached) {
+        req.reply(cached)
+      } else {
+        req.continue((res) => {
+          cypressCache.set(req.url, {
+            ...res,
+            headers: {}, // original headers break req.reply
+          })
+        })
+      }
+    })
+  })
+
+  cy.on('window:before:load', (win) => {
+    win.localStorage.clear()
+    win.ethereum = injected
   })
 })

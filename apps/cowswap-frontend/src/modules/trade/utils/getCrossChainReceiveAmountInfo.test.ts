@@ -42,7 +42,7 @@ const bridgeFeeAmounts = {
   amountInSellCurrency: 4694n,
   feeBps: 14,
 }
-const bridgeBuyAmount = 3353244n
+const expectedToReceiveAmount = CurrencyAmount.fromRawAmount(outputCurrency, 3353244n.toString())
 
 function stringifyTokenAmount(amount: CurrencyAmount<Currency> | undefined): string {
   if (!amount) return ''
@@ -68,7 +68,7 @@ describe('getCrossChainReceiveAmountInfo - adjusts SDK getQuoteAmountsAndCosts()
       intermediateCurrency,
       bridgeFeeAmounts,
       protocolFeeBps,
-      bridgeBuyAmount,
+      expectedToReceiveAmount,
     })
 
     const {

@@ -18,6 +18,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
   areCurrenciesLoading: false,
   bothCurrenciesSet: true,
   isChainIdUnsupported: false,
+  isBridging: false,
   showSetMax: true,
   allowsOffchainSigning: true,
   currencyInfo: {

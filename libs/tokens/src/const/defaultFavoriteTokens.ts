@@ -39,6 +39,7 @@ import {
   WBTC_ARBITRUM_ONE,
   WBTC_GNOSIS_CHAIN,
   WETH_GNOSIS_CHAIN,
+  WETH_PLASMA,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -128,5 +129,9 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDC_LINEA,
     USDT_LINEA,
   ]),
-  [SupportedChainId.PLASMA]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.PLASMA], USDT_PLASMA]),
+  [SupportedChainId.PLASMA]: tokensListToMap([
+    WRAPPED_NATIVE_CURRENCIES[SupportedChainId.PLASMA],
+    USDT_PLASMA,
+    WETH_PLASMA,
+  ]),
 }
