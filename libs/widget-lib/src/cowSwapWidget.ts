@@ -53,6 +53,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   let provider = providerAux
   let currentParams = params
 
+  if (typeof window === 'undefined') return noopHandler
+
   // 1. Create a brand new iframe
   const iframe = createIframe(params)
 
@@ -65,8 +67,6 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     console.error('Iframe does not contain a window', iframe)
     throw new Error('Iframe does not contain a window!')
   }
-
-  if (typeof window === 'undefined') return noopHandler
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
   const windowListeners: WindowListener[] = []
