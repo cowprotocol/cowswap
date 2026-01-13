@@ -18,12 +18,10 @@ export interface NetworkPanelProps {
   onSelectChain: (chain: ChainInfo) => void
 }
 
-export function NetworkPanel({ chains, title, onSelectChain }: NetworkPanelProps): ReactNode {
-  const resolvedTitle = title ?? t`Select network`
-
+export function NetworkPanel({ chains, title = t`Select network`, onSelectChain }: NetworkPanelProps): ReactNode {
   if (!chains) {
     return null
   }
 
-  return <ChainPanel title={resolvedTitle} chainsState={chains} onSelectChain={onSelectChain} />
+  return <ChainPanel title={title} chainsState={chains} onSelectChain={onSelectChain} />
 }

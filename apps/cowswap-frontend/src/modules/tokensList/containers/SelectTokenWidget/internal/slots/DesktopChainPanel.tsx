@@ -15,13 +15,16 @@ export interface DesktopChainPanelProps {
   onSelectChain: (chain: ChainInfo) => void
 }
 
-export function DesktopChainPanel({ chains, title, onSelectChain }: DesktopChainPanelProps): ReactNode {
+export function DesktopChainPanel({
+  chains,
+  title = t`Select network`,
+  onSelectChain,
+}: DesktopChainPanelProps): ReactNode {
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
-  const resolvedTitle = title ?? t`Select network`
 
   if (isCompactLayout || !chains) {
     return null
   }
 
-  return <ChainPanel title={resolvedTitle} chainsState={chains} onSelectChain={onSelectChain} />
+  return <ChainPanel title={title} chainsState={chains} onSelectChain={onSelectChain} />
 }

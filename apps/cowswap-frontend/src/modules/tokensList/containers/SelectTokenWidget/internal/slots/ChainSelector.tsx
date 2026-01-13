@@ -16,8 +16,7 @@ export interface ChainSelectorProps {
   onSelectChain: (chain: ChainInfo) => void
 }
 
-export function ChainSelector({ chains, title, onSelectChain }: ChainSelectorProps): ReactNode {
-  const resolvedTitle = title ?? t`Select network`
+export function ChainSelector({ chains, title = t`Select network`, onSelectChain }: ChainSelectorProps): ReactNode {
   const [isMobilePanelOpen, setMobilePanelOpen] = useState(false)
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
 
@@ -40,14 +39,14 @@ export function ChainSelector({ chains, title, onSelectChain }: ChainSelectorPro
     <>
       <MobileChainSelector
         chainsState={chains}
-        label={resolvedTitle}
+        label={title}
         onSelectChain={handleSelectChain}
         onOpenPanel={openPanel}
       />
 
       {isMobilePanelOpen && (
         <MobileChainPanelPortal
-          chainsPanelTitle={resolvedTitle}
+          chainsPanelTitle={title}
           chainsToSelect={chains}
           onSelectChain={onSelectChain}
           onClose={closePanel}
