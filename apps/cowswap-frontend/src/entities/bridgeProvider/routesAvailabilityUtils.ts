@@ -32,7 +32,7 @@ export interface RoutesAvailabilityKeyParams {
   providersKey: string
 }
 
-export function createRoutesAvailabilityKey(params: RoutesAvailabilityKeyParams): RoutesAvailabilityKey | null {
+export function createAvailabilitySwrKey(params: RoutesAvailabilityKeyParams): RoutesAvailabilityKey | null {
   const { isBridgingEnabled, sourceChainId, chainsToCheck, providersKey } = params
 
   if (!isBridgingEnabled || !sourceChainId || chainsToCheck.length === 0) {

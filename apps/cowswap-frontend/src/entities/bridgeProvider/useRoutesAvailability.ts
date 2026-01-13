@@ -8,7 +8,7 @@ import useSWR from 'swr'
 
 import {
   buildRoutesAvailabilityResult,
-  createRoutesAvailabilityKey,
+  createAvailabilitySwrKey,
   fetchRoutesAvailability,
   filterDestinationChains,
   RouteCheckResult,
@@ -37,7 +37,7 @@ export function useRoutesAvailability(
   )
 
   const swrKey = useMemo(
-    () => createRoutesAvailabilityKey({ isBridgingEnabled, sourceChainId, chainsToCheck, providersKey }),
+    () => createAvailabilitySwrKey({ isBridgingEnabled, sourceChainId, chainsToCheck, providersKey }),
     [isBridgingEnabled, sourceChainId, chainsToCheck, providersKey],
   )
 
