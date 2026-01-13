@@ -6,7 +6,6 @@ import { useViewWithFlows } from './hooks'
 import { SelectTokenModal } from './internal'
 import { CustomFlowsRegistry, TokenSelectorView } from './types'
 
-import { ImportTokenModalProps } from '../../pure/ImportTokenModal'
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 
@@ -61,43 +60,48 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone, customFlows
 }
 
 function SelectTokenWidgetContent(): ReactNode {
-  const { baseView, preFlowResult, postFlowResult } = useViewWithFlows()
+  const flowResult = useViewWithFlows()
 
   // Generic flow content checks - applies to ALL views
   // If there's pre-flow content, render it instead of the base view
-  if (preFlowResult?.content) {
-    return preFlowResult.content
+  if (flowResult.preFlowResult?.content) {
+    return flowResult.preFlowResult.content
   }
 
   // If there's post-flow content, render it instead of the base view
-  if (postFlowResult?.content) {
-    return postFlowResult.content
+  if (flowResult.postFlowResult?.content) {
+    return flowResult.postFlowResult.content
   }
 
   // Render the base view with optional flow data
-  if (baseView === TokenSelectorView.ImportToken) {
-    return <SelectTokenModal.ImportToken flowData={preFlowResult?.data as Partial<ImportTokenModalProps>} />
-  }
-  if (baseView === TokenSelectorView.ImportList) return <SelectTokenModal.ImportList />
-  if (baseView === TokenSelectorView.Manage) return <SelectTokenModal.Manage />
-  if (baseView === TokenSelectorView.LpToken) return <SelectTokenModal.LpToken />
 
-  // Default: Main token list view
-  return (
-    <>
-      <styledEl.Wrapper>
-        <SelectTokenModal.Header />
-        <SelectTokenModal.Search />
-        <SelectTokenModal.ChainSelector />
-        <styledEl.Body>
-          <styledEl.TokenColumn>
-            <SelectTokenModal.TokenList />
-          </styledEl.TokenColumn>
-        </styledEl.Body>
-      </styledEl.Wrapper>
-      <SelectTokenModal.DesktopChainPanel />
-    </>
-  )
+  switch (flowResult.baseView) {
+    case TokenSelectorView.ImportToken:
+      return <SelectTokenModal.ImportToken flowData={flowResult.preFlowResult?.data} />
+    case TokenSelectorView.ImportList:
+      return <SelectTokenModal.ImportList />
+    case TokenSelectorView.Manage:
+      return <SelectTokenModal.Manage />
+    case TokenSelectorView.LpToken:
+      return <SelectTokenModal.LpToken />
+    default:
+      // Main token list view
+      return (
+        <>
+          <styledEl.Wrapper>
+            <SelectTokenModal.Header />
+            <SelectTokenModal.Search />
+            <SelectTokenModal.ChainSelector />
+            <styledEl.Body>
+              <styledEl.TokenColumn>
+                <SelectTokenModal.TokenList />
+              </styledEl.TokenColumn>
+            </styledEl.Body>
+          </styledEl.Wrapper>
+          <SelectTokenModal.DesktopChainPanel />
+        </>
+      )
+  }
 }
 
 // re-export for external use

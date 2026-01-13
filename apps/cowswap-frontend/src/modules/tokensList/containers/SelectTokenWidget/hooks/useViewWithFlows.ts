@@ -8,16 +8,24 @@ import { customFlowsRegistryAtom } from '../atoms'
 import { CustomFlowContext, CustomFlowResult, TokenSelectorView } from '../types'
 
 /**
- * Result from useViewWithFlows hook
+ * Helper type to create a view result with proper typing.
  */
-export interface ViewWithFlowsResult {
-  /** The base view (the current blocking view) */
-  baseView: TokenSelectorView
-  /** Pre-flow result with content and typed data */
-  preFlowResult: CustomFlowResult | null
-  /** Post-flow result with content and typed data */
-  postFlowResult: CustomFlowResult | null
+type ViewResult<TView extends TokenSelectorView> = {
+  baseView: TView
+  preFlowResult: CustomFlowResult<TView> | null
+  postFlowResult: CustomFlowResult<TView> | null
 }
+
+/**
+ * Discriminated union for view with flows result.
+ * Each union member has baseView as discriminant, allowing TypeScript to narrow flow result types.
+ */
+export type ViewWithFlowsResult =
+  | ViewResult<TokenSelectorView.Main>
+  | ViewResult<TokenSelectorView.ImportToken>
+  | ViewResult<TokenSelectorView.ImportList>
+  | ViewResult<TokenSelectorView.Manage>
+  | ViewResult<TokenSelectorView.LpToken>
 
 /**
  * Hook that determines the current view and checks for custom pre/post flows.
@@ -55,12 +63,15 @@ export function useViewWithFlows(): ViewWithFlowsResult {
   const preFlowResult = flowConfig?.preFlow?.(flowContext) ?? null
   const postFlowResult = flowConfig?.postFlow?.(flowContext) ?? null
 
+  // The cast is safe here because we're creating a consistent tuple:
+  // baseView determines the type, and flow results come from the same view's config
   return useMemo(
-    (): ViewWithFlowsResult => ({
-      baseView,
-      preFlowResult,
-      postFlowResult,
-    }),
+    () =>
+      ({
+        baseView,
+        preFlowResult,
+        postFlowResult,
+      }) as ViewWithFlowsResult,
     [baseView, preFlowResult, postFlowResult],
   )
 }
