@@ -302,7 +302,6 @@ function handleCodeStatusResponse(params: {
       return
     }
 
-    actions.setSavedCode(sanitizedCode)
     applyVerificationResult({ kind: 'invalid', code: sanitizedCode })
     trackVerifyResult('invalid', false)
     return
@@ -320,7 +319,6 @@ function handleCodeStatusResponse(params: {
       return
     }
 
-    actions.setSavedCode(sanitizedCode)
     applyVerificationResult({ kind: 'expired', code: sanitizedCode })
     trackVerifyResult('expired', false)
     return

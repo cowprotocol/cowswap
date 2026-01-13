@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import REFERRAL_ILLUSTRATION from '@cowprotocol/assets/images/image-profit.svg'
+import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { ButtonPrimary, ButtonSecondary, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -13,6 +13,7 @@ import styled from 'styled-components/macro'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { REFERRAL_HOW_IT_WORKS_URL, useReferral, useReferralActions } from 'modules/affiliate'
+import { Illustration } from 'modules/affiliate/components/ReferralCodeModal/styles'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
@@ -31,8 +32,11 @@ export default function AccountMyRewards() {
 
   const isConnected = Boolean(account)
   const isIneligible = referral.wallet.status === 'ineligible' && isConnected
-  const traderLinkedCode = referral.wallet.status === 'linked' ? referral.wallet.code : undefined
-  const traderHasLinkedCode = Boolean(traderLinkedCode)
+  const isLinked = referral.wallet.status === 'linked'
+  const traderCode = isLinked
+    ? referral.wallet.code
+    : (referral.savedCode ?? (referral.verification.kind === 'valid' ? referral.verification.code : undefined))
+  const traderHasCode = Boolean(traderCode)
   const incomingIneligibleCode = useMemo(() => {
     if (referral.incomingCode) {
       return referral.incomingCode
@@ -73,9 +77,8 @@ export default function AccountMyRewards() {
               <ArrowLeft size={20} />
             </BackButton>
           </IneligibleHeader>
-          <IneligibleIllustration>
-            <img src={REFERRAL_ILLUSTRATION} alt="" role="presentation" />
-          </IneligibleIllustration>
+          <Illustration src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+
           <IneligibleTitle>
             <Trans>Your wallet is ineligible</Trans>
           </IneligibleTitle>
@@ -105,10 +108,10 @@ export default function AccountMyRewards() {
             </ButtonPrimary>
           </IneligibleActions>
         </IneligibleCard>
-      ) : !traderHasLinkedCode ? (
+      ) : !traderHasCode ? (
         <HeroCard>
           <HeroContent>
-            <HeroIcon />
+            <Illustration src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
             <HeroTitle>
               <Trans>Earn while you trade</Trans>
             </HeroTitle>
@@ -143,28 +146,32 @@ export default function AccountMyRewards() {
           <RewardsGrid>
             <CardStack>
               <Header>
-                <Title>
-                  <Trans>Active referral code</Trans>
-                </Title>
+                <Title>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</Title>
               </Header>
               <LinkedHeader>
-                <CodeBadge>{traderLinkedCode}</CodeBadge>
-                <Badge $tone="success">
-                  <Trans>Linked</Trans>
-                </Badge>
+                <CodeBadge>{traderCode}</CodeBadge>
+                {isLinked ? (
+                  <Badge $tone="success">
+                    <Trans>Linked</Trans>
+                  </Badge>
+                ) : (
+                  <Badge $tone="info">
+                    <Trans>Pending</Trans>
+                  </Badge>
+                )}
               </LinkedHeader>
               <InfoList>
                 <InfoItem>
                   <span>
                     <Trans>Linked since</Trans>
                   </span>
-                  <span>{linkedSinceLabel}</span>
+                  <span>{isLinked ? linkedSinceLabel : '--'}</span>
                 </InfoItem>
                 <InfoItem>
                   <span>
                     <Trans>Rewards end</Trans>
                   </span>
-                  <span>{rewardsEndLabel}</span>
+                  <span>{isLinked ? rewardsEndLabel : '--'}</span>
                 </InfoItem>
               </InfoList>
               <InlineActions>
@@ -294,14 +301,6 @@ const HeroContent = styled.div`
   align-items: center;
 `
 
-const HeroIcon = styled.div`
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #f6d66d, #d43f2c 70%);
-  box-shadow: 0 16px 24px rgba(0, 0, 0, 0.08);
-`
-
 const IneligibleCard = styled(Card)`
   max-width: 640px;
   margin: 0 auto;
@@ -332,21 +331,6 @@ const BackButton = styled.button`
   &:hover,
   &:focus-visible {
     background: var(${UI.COLOR_PAPER_DARKER});
-  }
-`
-
-const IneligibleIllustration = styled.div`
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 72px;
-    height: 72px;
   }
 `
 

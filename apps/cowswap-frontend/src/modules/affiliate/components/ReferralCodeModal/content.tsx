@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import REFERRAL_ILLUSTRATION from '@cowprotocol/assets/images/image-profit.svg'
+import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, LinkStyledButton, ModalHeader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -30,7 +30,7 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
       </ModalHeader>
 
       <Body>
-        <Illustration src={REFERRAL_ILLUSTRATION} alt="" role="presentation" />
+        <Illustration src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
         <Title>{getModalTitle(uiState, { hasRejection })}</Title>
         <ReferralSubtitle
           uiState={uiState}
@@ -86,14 +86,17 @@ function ReferralSubtitle({ uiState, linkedMessage, howItWorksLink, hasRejection
     <Subtitle>
       {isPostValidation ? (
         <>
-          <Trans>Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days.</Trans>{' '}
+          <Trans>
+            Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days. Payouts happen on
+            Ethereum mainnet.
+          </Trans>{' '}
           {howItWorksLink}
         </>
       ) : (
         <>
           <Trans>
             Connect to verify eligibility. Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume
-            in 90 days.
+            in 90 days. Payouts happen on Ethereum mainnet.
           </Trans>{' '}
           {howItWorksLink}
         </>

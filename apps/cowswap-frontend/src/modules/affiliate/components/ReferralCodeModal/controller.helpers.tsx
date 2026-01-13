@@ -25,7 +25,7 @@ export function computePrimaryCta(params: {
 
   if (uiState === 'editing') {
     return disabledCta(
-      hasValidLength && hasCode ? t`Save to verify code` : t`Enter a referral code with 4 to 16 characters`,
+      hasValidLength && hasCode ? t`Save to verify code` : t`Enter a referral code with 6 to 12 characters`,
     )
   }
 
@@ -85,7 +85,9 @@ function verifyCta(
 }
 
 export function getHelperText(uiState: ReferralModalUiState): string | undefined {
-  return uiState === 'empty' ? t`Referral codes contain 4-16 letters or numbers` : undefined
+  return uiState === 'empty'
+    ? t`Referral codes contain 6-12 uppercase letters, numbers, dashes, or underscores`
+    : undefined
 }
 
 export function getStatusCopy(verification: ReferralVerificationStatus): StatusCopyResult {

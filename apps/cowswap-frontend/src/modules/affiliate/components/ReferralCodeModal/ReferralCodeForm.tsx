@@ -181,15 +181,21 @@ interface BaseFlags {
   isUnsupported: boolean
 }
 
+// eslint-disable-next-line complexity
 function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
   const { uiState, verification, savedCode, displayCode } = params
 
   // Unsupported network deliberately hides every edit affordance to avoid no-op buttons.
   const isUnsupported = uiState === 'unsupported'
-  const isEditing = uiState === 'editing'
+  const isEditing =
+    uiState === 'editing' ||
+    uiState === 'invalid' ||
+    uiState === 'expired' ||
+    uiState === 'ineligible' ||
+    uiState === 'error'
   const isLinked = uiState === 'linked'
   const hasError = VERIFICATION_ERROR_KINDS.has(verification.kind)
-  const isInputDisabled = isUnsupported || (uiState !== 'editing' && uiState !== 'empty')
+  const isInputDisabled = isUnsupported || (!isEditing && uiState !== 'empty')
   const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
   const canEdit = !isUnsupported && !isEditing && !isLinked && uiState !== 'empty'
   const showEdit = canEdit && Boolean(savedCode)

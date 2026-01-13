@@ -2484,8 +2484,8 @@ msgid "link"
 msgstr "link"
 
 #: apps/cowswap-frontend/src/modules/affiliate/components/ReferralCodeModal/content.tsx
-msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days."
-msgstr "Connect to verify eligibility. Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days."
+msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days. Payouts happen on Ethereum mainnet."
+msgstr "Connect to verify eligibility. Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days. Payouts happen on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
@@ -5358,8 +5358,8 @@ msgstr "Information"
 #~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/affiliate/components/ReferralCodeModal/content.tsx
-msgid "Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days."
-msgstr "Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days."
+msgid "Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days. Payouts happen on Ethereum mainnet."
+msgstr "Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days. Payouts happen on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
@@ -5629,8 +5629,8 @@ msgid "Approve {symbol}"
 msgstr "Approve {symbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/components/ReferralCodeModal/controller.helpers.tsx
-msgid "Referral codes contain 4-16 letters or numbers"
-msgstr "Referral codes contain 4-16 letters or numbers"
+msgid "Referral codes contain 6-12 uppercase letters, numbers, dashes, or underscores"
+msgstr "Referral codes contain 6-12 uppercase letters, numbers, dashes, or underscores"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Must be after {minDateStr} {timeZone}"
@@ -6038,8 +6038,8 @@ msgid "Simulation Successful"
 msgstr "Simulation Successful"
 
 #: apps/cowswap-frontend/src/modules/affiliate/components/ReferralCodeModal/controller.helpers.tsx
-msgid "Enter a referral code with 4 to 16 characters"
-msgstr "Enter a referral code with 4 to 16 characters"
+msgid "Enter a referral code with 6 to 12 characters"
+msgstr "Enter a referral code with 6 to 12 characters"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "Partial approval may block <0>{ordersWithPermitLength}</0> other {orderWord}"

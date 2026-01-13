@@ -20,7 +20,7 @@ export const Body = styled.div`
 `
 
 export const Illustration = styled.img`
-  --size: 100px;
+  --size: 145px;
   align-self: center;
   width: auto;
   height: var(--size);

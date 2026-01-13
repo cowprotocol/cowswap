@@ -17,8 +17,7 @@ export function reduceOpenModal(
 
   const nextInputCode = resolveInputCode(prev, sanitizedIncoming, isLinked)
   const nextVerification = resolveVerification(prev, sanitizedIncoming, isLinked)
-  const nextPreviousVerification =
-    sanitizedIncoming && !isLinked ? prev.verification : prev.previousVerification
+  const nextPreviousVerification = sanitizedIncoming && !isLinked ? prev.verification : prev.previousVerification
 
   return {
     ...prev,
@@ -101,7 +100,6 @@ export function reduceSaveCode(prev: ReferralDomainState, value: string): Referr
 
   return {
     ...prev,
-    savedCode: sanitized,
     inputCode: sanitized,
     verification: { kind: 'pending', code: sanitized },
     editMode: false,

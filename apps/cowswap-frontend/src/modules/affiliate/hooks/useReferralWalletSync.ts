@@ -18,7 +18,6 @@ interface WalletSyncParams {
 export function useReferralWalletSync(params: WalletSyncParams): void {
   const { account, chainId, supportedNetwork, actions, savedCode } = params
   const ordersMap = useAllOrdersMap({ chainId: chainId as SupportedChainId | undefined })
-  console.log('📜 LOG > useReferralWalletSync > ordersMap:', ordersMap)
   const hasOrders = useMemo(() => {
     if (!account) {
       return false
@@ -26,7 +25,6 @@ export function useReferralWalletSync(params: WalletSyncParams): void {
 
     return Object.values(ordersMap).some((order) => order?.order.owner && areAddressesEqual(order.order.owner, account))
   }, [account, ordersMap])
-  console.log('📜 LOG > useReferralWalletSync > hasOrders:', hasOrders)
 
   useEffect(() => {
     if (!account) {

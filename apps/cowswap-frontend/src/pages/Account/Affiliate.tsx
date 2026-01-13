@@ -1,7 +1,9 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
+import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
-import { ButtonPrimary, ButtonSecondary, Media, UI } from '@cowprotocol/ui'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ButtonPrimary, ButtonSecondary, HelpTooltip, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -14,18 +16,12 @@ import styled from 'styled-components/macro'
 import CopyHelper from 'legacy/components/Copy'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import {
-  createAffiliateCode,
-  getAffiliateCode,
-  isSupportedReferralNetwork,
-  REFERRAL_HOW_IT_WORKS_URL,
-  REFERRAL_SUPPORTED_NETWORK_NAMES,
-  verifyReferralCode,
-} from 'modules/affiliate'
+import { createAffiliateCode, getAffiliateCode, REFERRAL_HOW_IT_WORKS_URL, verifyReferralCode } from 'modules/affiliate'
 import { buildAffiliateTypedData } from 'modules/affiliate/utils/typedData'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useModalState } from 'common/hooks/useModalState'
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { CowModal } from 'common/pure/Modal'
 import { CardsLoader, CardsSpinner, Card, ExtLink } from 'pages/Account/styled'
 
@@ -46,7 +42,8 @@ export default function AccountAffiliate() {
   const { account, chainId } = useWalletInfo()
   const provider = useWalletProvider()
   const toggleWalletModal = useToggleWalletModal()
-  const supportedNetwork = useMemo(() => isSupportedReferralNetwork(chainId), [chainId])
+  const onSelectNetwork = useOnSelectNetwork()
+  const isMainnet = useMemo(() => chainId === SupportedChainId.MAINNET, [chainId])
 
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -66,12 +63,13 @@ export default function AccountAffiliate() {
 
   const normalizedCode = useMemo(() => normalizeAffiliateCode(inputCode), [inputCode])
   const isCodeValid = useMemo(() => isAffiliateCodeValid(normalizedCode), [normalizedCode])
+  const codeTooltip = t`UPPERCASE | 6-12 chars | A-Z 0-9 - _`
 
   const isConnected = Boolean(account)
   const isSignerAvailable = Boolean(provider)
-  const showCreateForm = isConnected && supportedNetwork && !existingCode && isSignerAvailable
-  const showLinkedFlow = isConnected && supportedNetwork && Boolean(existingCode)
-  const showUnsupported = isConnected && !supportedNetwork
+  const showCreateForm = isConnected && isMainnet && !existingCode && isSignerAvailable
+  const showLinkedFlow = isConnected && isMainnet && Boolean(existingCode)
+  const showUnsupported = isConnected && !isMainnet
 
   const referralLink = useMemo(() => {
     if (!existingCode) {
@@ -172,7 +170,7 @@ export default function AccountAffiliate() {
   useEffect(() => {
     let cancelled = false
 
-    if (!account || !supportedNetwork) {
+    if (!account || !isMainnet) {
       setExistingCode(null)
       setLoading(false)
       return
@@ -208,14 +206,14 @@ export default function AccountAffiliate() {
     return () => {
       cancelled = true
     }
-  }, [account, supportedNetwork])
+  }, [account, isMainnet])
 
   useEffect(() => {
     if (!showCreateForm || hasEdited || inputCode) {
       return
     }
 
-    const suggested = generateSuggestedCode(account)
+    const suggested = generateSuggestedCode()
     setInputCode(suggested)
   }, [account, hasEdited, inputCode, showCreateForm])
 
@@ -279,13 +277,13 @@ export default function AccountAffiliate() {
       return
     }
 
-    if (!supportedNetwork) {
-      setErrorMessage(t`Switch to a supported network to create a code.`)
+    if (!isMainnet) {
+      setErrorMessage(t`Switch to Ethereum mainnet to create a code.`)
       return
     }
 
     if (!isCodeValid) {
-      setErrorMessage(t`Enter a code with 3-32 letters, numbers, or dashes.`)
+      setErrorMessage(t`Enter a code with 6-12 characters (A-Z, 0-9, - or _).`)
       return
     }
 
@@ -308,6 +306,7 @@ export default function AccountAffiliate() {
       const typedData = buildAffiliateTypedData({
         walletAddress: account,
         code: normalizedCode,
+        chainId: SupportedChainId.MAINNET,
       })
 
       const signedMessage = await signer._signTypedData(typedData.domain, typedData.types, typedData.message)
@@ -344,11 +343,15 @@ export default function AccountAffiliate() {
     } finally {
       setSubmitting(false)
     }
-  }, [account, availability, isCodeValid, normalizedCode, provider, supportedNetwork])
+  }, [account, availability, isCodeValid, isMainnet, normalizedCode, provider])
 
   const handleConnect = useCallback(() => {
     toggleWalletModal()
   }, [toggleWalletModal])
+
+  const handleSwitchToMainnet = useCallback(() => {
+    onSelectNetwork(SupportedChainId.MAINNET)
+  }, [onSelectNetwork])
 
   const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setHasEdited(true)
@@ -363,8 +366,8 @@ export default function AccountAffiliate() {
     setConfirming(false)
     setErrorMessage(null)
     setSuccessMessage(null)
-    setInputCode(generateSuggestedCode(account))
-  }, [account])
+    setInputCode(generateSuggestedCode())
+  }, [])
 
   const handleOpenQr = useCallback(() => {
     if (!referralLink) {
@@ -377,7 +380,7 @@ export default function AccountAffiliate() {
 
   const handleStartConfirm = useCallback(() => {
     if (!isCodeValid) {
-      setErrorMessage(t`Enter a code with 3-32 letters, numbers, or dashes.`)
+      setErrorMessage(t`Enter a code with 6-12 characters (A-Z, 0-9, - or _).`)
       return
     }
 
@@ -420,7 +423,7 @@ export default function AccountAffiliate() {
           {showHero ? (
             <HeroCard>
               <HeroContent>
-                <HeroIcon />
+                <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
                 <HeroTitle>
                   <Trans>Invite your friends and earn rewards</Trans>
                 </HeroTitle>
@@ -434,8 +437,8 @@ export default function AccountAffiliate() {
                     </ButtonPrimary>
                   )}
                   {isConnected && showUnsupported && (
-                    <ButtonPrimary disabled>
-                      <Trans>Switch to a supported network</Trans>
+                    <ButtonPrimary onClick={handleSwitchToMainnet}>
+                      <Trans>Switch to Ethereum mainnet</Trans>
                     </ButtonPrimary>
                   )}
                   {isConnected && !showUnsupported && !isSignerAvailable && !showLinkedFlow && (
@@ -455,7 +458,7 @@ export default function AccountAffiliate() {
                 </HeroLinks>
                 {showUnsupported && (
                   <InlineNote>
-                    <Trans>Supported networks: {REFERRAL_SUPPORTED_NETWORK_NAMES.join(', ')}</Trans>
+                    <Trans>Affiliate payouts happen on Ethereum mainnet.</Trans>
                   </InlineNote>
                 )}
               </HeroContent>
@@ -539,7 +542,10 @@ export default function AccountAffiliate() {
                         <>
                           <LabelRow>
                             <Label htmlFor="affiliate-code">
-                              <Trans>Referral code</Trans>
+                              <LabelContent>
+                                <Trans>Referral code</Trans>
+                                <HelpTooltip text={codeTooltip} />
+                              </LabelContent>
                             </Label>
                             <Badge $tone={availabilityTone}>{availabilityLabel}</Badge>
                           </LabelRow>
@@ -560,7 +566,7 @@ export default function AccountAffiliate() {
                           )}
                           {showInvalidFormat && (
                             <InlineError>
-                              <Trans>Only A-Z, 0-9, and dashes are allowed.</Trans>
+                              <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
                             </InlineError>
                           )}
                           <PrimaryAction
@@ -648,7 +654,6 @@ export default function AccountAffiliate() {
                     <Trans>Last updated: --</Trans>
                   </MetaRow>
                 </CardStack>
-
                 <CardStack>
                   <CardHeader>
                     <CardTitle>
@@ -737,13 +742,12 @@ function normalizeAffiliateCode(code: string): string {
 }
 
 function isAffiliateCodeValid(code: string): boolean {
-  return /^[A-Z0-9-]{3,32}$/.test(code)
+  return /^[A-Z0-9_-]{6,12}$/.test(code)
 }
 
-function generateSuggestedCode(seed?: string | null): string {
-  const seedPart = seed ? seed.replace('0x', '').slice(0, 4).toUpperCase() : randomDigits(4)
+function generateSuggestedCode(): string {
   const suffix = randomDigits(4)
-  return `COW-${seedPart}${suffix}`
+  return `COW-${suffix}`
 }
 
 function randomDigits(length: number): string {
@@ -792,15 +796,6 @@ const HeroContent = styled.div`
   gap: 16px;
   align-items: center;
 `
-
-const HeroIcon = styled.div`
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #f6d66d, #d43f2c 70%);
-  box-shadow: 0 16px 24px rgba(0, 0, 0, 0.08);
-`
-
 const HeroTitle = styled.h3`
   margin: 0;
   font-size: 22px;
@@ -852,6 +847,12 @@ const LabelRow = styled.div`
 const Label = styled.label`
   font-size: 14px;
   color: var(${UI.COLOR_TEXT});
+`
+
+const LabelContent = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 `
 
 const MiniAction = styled.button`

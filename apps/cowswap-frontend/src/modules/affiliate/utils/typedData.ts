@@ -9,11 +9,12 @@ export const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
   AffiliateCode: [
     { name: 'walletAddress', type: 'address' },
     { name: 'code', type: 'string' },
+    { name: 'chainId', type: 'uint256' },
   ],
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function buildAffiliateTypedData(params: { walletAddress: string; code: string }) {
+export function buildAffiliateTypedData(params: { walletAddress: string; code: string; chainId: number }) {
   return {
     domain: {
       ...AFFILIATE_TYPED_DATA_DOMAIN,
@@ -22,6 +23,7 @@ export function buildAffiliateTypedData(params: { walletAddress: string; code: s
     message: {
       walletAddress: params.walletAddress,
       code: params.code,
+      chainId: params.chainId,
     },
   }
 }
