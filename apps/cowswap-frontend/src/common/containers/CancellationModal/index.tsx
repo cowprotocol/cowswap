@@ -3,6 +3,8 @@ import React, { ReactNode, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
+import { Trans } from '@lingui/react/macro'
+
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { CancellationModal as Pure } from 'common/pure/CancellationModal'
 import { OrderSummary } from 'common/pure/OrderSummary'
@@ -32,7 +34,7 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
     return (
       <>
         <OrderSummary inputAmount={inputAmount} outputAmount={outputAmount} kind={ultimateOrder.orderFromStore.kind} />
-        <ReceiverInfo receiver={receiver} owner={owner} />
+        <ReceiverInfo receiver={receiver} owner={owner} customPrefix={<Trans>to receiver</Trans>} />
       </>
     )
   }, [ultimateOrder])
