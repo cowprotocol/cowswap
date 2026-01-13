@@ -643,7 +643,7 @@ msgstr "I received surplus on"
 msgid "View jobs"
 msgstr "View jobs"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/FavoriteTokensTooltip.tsx
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
 msgstr "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
 
@@ -5588,6 +5588,9 @@ msgid "Buy"
 msgstr "Buy"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/ChainSelector.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/DesktopChainPanel.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/NetworkPanel.tsx
 msgid "Select network"
 msgstr "Select network"
 

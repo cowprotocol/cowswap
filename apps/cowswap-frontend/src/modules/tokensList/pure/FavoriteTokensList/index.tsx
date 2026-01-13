@@ -1,13 +1,12 @@
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { areAddressesEqual, getCurrencyAddress } from '@cowprotocol/common-utils'
-import { TokenLogo } from '@cowprotocol/tokens'
-import { TokenSymbol } from '@cowprotocol/ui'
+import { getTokenId } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/react/macro'
-import { Link } from 'react-router'
 
+import { FavoriteTokenItem } from './FavoriteTokenItem'
+import { FavoriteTokensTooltip } from './FavoriteTokensTooltip'
 import * as styledEl from './styled'
 
 import { SelectTokenContext } from '../../types'
@@ -34,77 +33,10 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
         {!hideTooltip && <FavoriteTokensTooltip />}
       </styledEl.TitleRow>
       <styledEl.List>
-        <FavoriteTokenItems tokens={tokens} selectTokenContext={selectTokenContext} />
+        {tokens.map((token) => (
+          <FavoriteTokenItem key={getTokenId(token)} token={token} selectTokenContext={selectTokenContext} />
+        ))}
       </styledEl.List>
     </styledEl.Section>
-  )
-}
-
-function FavoriteTokensTooltip(): ReactNode {
-  return (
-    <styledEl.FavoriteTooltip
-      text={
-        <Trans>
-          Your favorite saved tokens. Edit this list in the <Link to="/account/tokens">Tokens page</Link>.
-        </Trans>
-      }
-    />
-  )
-}
-
-interface FavoriteTokenItemProps {
-  token: TokenWithLogo
-  selectTokenContext: SelectTokenContext
-}
-
-function FavoriteTokenItem({ token, selectTokenContext }: FavoriteTokenItemProps): ReactNode {
-  const { selectedToken, onTokenListItemClick, onSelectToken } = selectTokenContext
-  const selectedAddress = selectedToken ? getCurrencyAddress(selectedToken) : undefined
-
-  const isSelected =
-    !!selectedToken &&
-    token.chainId === selectedToken.chainId &&
-    !!selectedAddress &&
-    areAddressesEqual(token.address, selectedAddress)
-
-  const handleClick = (): void => {
-    if (isSelected) {
-      return
-    }
-    onTokenListItemClick?.(token)
-    onSelectToken(token)
-  }
-
-  return (
-    <styledEl.TokenButton
-      data-address={token.address.toLowerCase()}
-      data-token-symbol={token.symbol || ''}
-      data-token-name={token.name || ''}
-      data-element-type="token-selection"
-      disabled={isSelected}
-      onClick={handleClick}
-    >
-      <TokenLogo token={token} size={24} />
-      <TokenSymbol token={token} />
-    </styledEl.TokenButton>
-  )
-}
-
-interface FavoriteTokenItemsProps {
-  tokens: TokenWithLogo[]
-  selectTokenContext: SelectTokenContext
-}
-
-function FavoriteTokenItems({ tokens, selectTokenContext }: FavoriteTokenItemsProps): ReactNode {
-  return (
-    <>
-      {tokens.map((token) => (
-        <FavoriteTokenItem
-          key={`${token.chainId}:${token.address}`}
-          token={token}
-          selectTokenContext={selectTokenContext}
-        />
-      ))}
-    </>
   )
 }

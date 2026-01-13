@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, getTokenId } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, ExternalLink, ModalHeader, UI } from '@cowprotocol/ui'
 
@@ -63,7 +63,7 @@ export function ImportTokenModal(props: ImportTokenModalProps): ReactNode {
           </Trans>
         </p>
         {tokens.map((token) => (
-          <styledEl.TokenInfo key={token.address.toLowerCase()}>
+          <styledEl.TokenInfo key={getTokenId(token)}>
             <TokenLogo token={token} size={24} />
             <styledEl.StyledTokenSymbol token={token} />
             <styledEl.StyledTokenName token={token} />
