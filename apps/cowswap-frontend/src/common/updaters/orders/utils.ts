@@ -27,7 +27,11 @@ export function computeOrderSummary(ultimateOrder: UltimateOrderData): string | 
 
   const owner = genericOrder?.owner
   const receiver = genericOrder?.receiver
-  const uiOrderType = getUiOrderType(genericOrder as UiOrderTypeParams)
+  const uiOrderType = getUiOrderType(
+    // For TWAP orders use orderFromStore, because it has composableCowInfo
+    // Which helps to detect correct order UI type
+    orderFromStore?.composableCowInfo ? orderFromStore : (genericOrder as UiOrderTypeParams),
+  )
   const orderTitle = getUiOrderTypeTitles()[uiOrderType]
 
   const recipientSuffix = receiver && !areAddressesEqual(receiver, owner) ? t`to` + ` ${shortenAddress(receiver)}` : ''

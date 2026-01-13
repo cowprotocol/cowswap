@@ -44,9 +44,9 @@ export class IframeRpcProviderBridge {
   /**
    * Disconnects the JSON-RPC bridge from the Ethereum provider.
    */
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  disconnect() {
+  disconnect(): void {
+    if (typeof window === 'undefined') return
+
     // Disconnect provider
     this.ethereumProvider = null
     iframeRpcProviderTransport.stopListeningToMessageFromWindow(
@@ -66,9 +66,9 @@ export class IframeRpcProviderBridge {
    * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
    * @param newProvider - The Ethereum provider to connect.
    */
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  onConnect(newProvider: EthereumProvider) {
+  onConnect(newProvider: EthereumProvider): void {
+    if (typeof window === 'undefined') return
+
     // Disconnect the previous provider
     if (this.ethereumProvider) {
       this.disconnect()

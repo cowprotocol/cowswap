@@ -4,13 +4,13 @@ import { useMemo } from 'react'
 import { useMachineTimeMs } from '@cowprotocol/common-hooks'
 import { TokensByAddress } from '@cowprotocol/tokens'
 
+import { twapOrdersAtom, TwapOrdersList } from 'entities/twap'
 import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { useTwapPartOrdersList } from './useTwapPartOrdersList'
 
-import { twapOrdersAtom, TwapOrdersList } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
