@@ -7,19 +7,16 @@ import { useAsyncMemo } from 'use-async-memo'
 
 import { useTokensForOrdersList, getTokensListFromOrders } from 'modules/orders'
 
-import { useTwapPartOrdersList } from './useTwapPartOrdersList'
-
-import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
+import { twapOrdersListAtom } from '../index'
 
 export function useTwapOrdersTokens(): TokensByAddress | undefined {
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
-  const twapPartOrders = useTwapPartOrdersList()
 
   const getTokensForOrdersList = useTokensForOrdersList()
 
   const tokensToFetch = useMemo(() => {
-    return getTokensListFromOrders([...allTwapOrders, ...twapPartOrders])
-  }, [allTwapOrders, twapPartOrders])
+    return getTokensListFromOrders(allTwapOrders)
+  }, [allTwapOrders])
 
   return useAsyncMemo(() => getTokensForOrdersList(tokensToFetch), [getTokensForOrdersList, tokensToFetch])
 }

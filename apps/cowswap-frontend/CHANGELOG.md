@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.128.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.1...cowswap-v1.128.2) (2026-01-12)
+
+
+### Bug Fixes
+
+* improve form validation regarding loading balances ([#6814](https://github.com/cowprotocol/cowswap/issues/6814)) ([68c5c3d](https://github.com/cowprotocol/cowswap/commit/68c5c3d3ceab8ad58cbf51c5fd2a8141aaec37ab))
+
+## [1.128.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.0...cowswap-v1.128.1) (2026-01-12)
+
+
+### Bug Fixes
+
+* message for balances error ([#6809](https://github.com/cowprotocol/cowswap/issues/6809)) ([ca09312](https://github.com/cowprotocol/cowswap/commit/ca093120481d63451136321ee2a526a5ccae4513))
+
 ## [1.128.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.127.0...cowswap-v1.128.0) (2026-01-09)
 
 

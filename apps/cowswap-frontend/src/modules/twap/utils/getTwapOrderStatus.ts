@@ -1,7 +1,6 @@
 import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
 
-import { TwapOrdersExecution } from '../hooks/useTwapOrdersExecutions'
-import { TwapOrderStatus, TWAPOrderStruct } from '../types'
+import { TwapOrdersExecution, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,

@@ -40,14 +40,14 @@ export function getUiOrderType({ fullAppData, composableCowInfo, class: orderCla
   const appDataOrderClass = parsedAppData?.metadata?.orderClass as AppDataMetadataOrderClass | undefined
   const typeFromAppData = APPDATA_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[appDataOrderClass?.orderClass || '']
 
-  // 1. AppData info has priority as it's what's more precise
-  if (typeFromAppData) {
-    return typeFromAppData
-  }
-
-  // 2. If composableCowInfo is available, we know it to be a twap
+  // 1. Only TWAP orders have composableCowInfo, so it take presence
   if (composableCowInfo) {
     return UiOrderType.TWAP
+  }
+
+  // 2. Take value from AppData if presented
+  if (typeFromAppData) {
+    return typeFromAppData
   }
 
   // 3. As a last resort, map it to API classification.

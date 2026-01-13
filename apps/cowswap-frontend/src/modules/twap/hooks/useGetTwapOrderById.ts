@@ -3,8 +3,8 @@ import { useCallback } from 'react'
 
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
-import { twapOrdersAtom } from '../state/twapOrdersListAtom'
-import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
+import { twapOrdersAtom } from 'entities/twap'
+import { emulateTwapAsOrder } from 'entities/twap'
 
 export function useGetTwapOrderById(): (orderId: string) => EnrichedOrder | null {
   const twapOrdersList = useAtomValue(twapOrdersAtom)
@@ -14,6 +14,6 @@ export function useGetTwapOrderById(): (orderId: string) => EnrichedOrder | null
       const item = twapOrdersList[orderId]
       return item ? emulateTwapAsOrder(item) : null
     },
-    [twapOrdersList]
+    [twapOrdersList],
   )
 }
