@@ -14,6 +14,29 @@ import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 import { TokenSelectionHandler } from '../../../types'
 
+function isSupportedChainId(chainId: number | undefined): chainId is SupportedChainId {
+  return typeof chainId === 'number' && chainId in SupportedChainId
+}
+
+interface ShouldSwitchNetworkParams {
+  field: Field | undefined
+  tradeType: TradeType | undefined
+  targetChainId: number | undefined
+  walletChainId: SupportedChainId
+}
+
+function getNetworkToSwitch(params: ShouldSwitchNetworkParams): SupportedChainId | null {
+  const { field, tradeType, targetChainId, walletChainId } = params
+
+  const shouldSwitch =
+    field === Field.INPUT &&
+    (tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS) &&
+    isSupportedChainId(targetChainId) &&
+    targetChainId !== walletChainId
+
+  return shouldSwitch ? targetChainId : null
+}
+
 export function useTokenSelectionHandler(
   onSelectToken: TokenSelectionHandler | undefined,
   widgetState: ReturnType<typeof useSelectTokenWidgetState>,
@@ -23,16 +46,16 @@ export function useTokenSelectionHandler(
 
   return useCallback(
     async (token: TokenWithLogo) => {
-      const targetChainId = widgetState.selectedTargetChainId
-      const shouldSwitchWalletNetwork =
-        widgetState.field === Field.INPUT &&
-        (widgetState.tradeType === TradeType.LIMIT_ORDER || widgetState.tradeType === TradeType.ADVANCED_ORDERS) &&
-        typeof targetChainId === 'number' &&
-        targetChainId !== walletChainId
+      const chainToSwitch = getNetworkToSwitch({
+        field: widgetState.field,
+        tradeType: widgetState.tradeType,
+        targetChainId: widgetState.selectedTargetChainId,
+        walletChainId,
+      })
 
-      if (shouldSwitchWalletNetwork && targetChainId in SupportedChainId) {
+      if (chainToSwitch) {
         try {
-          await onSelectNetwork(targetChainId as SupportedChainId, true)
+          await onSelectNetwork(chainToSwitch, true)
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error)
           log(`Failed to switch network after token selection: ${message}`)

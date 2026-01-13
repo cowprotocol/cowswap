@@ -4,18 +4,15 @@
  * Replaces the atom hydration pattern. Components call this directly
  * instead of reading from a hydrated atom.
  */
-import { useMemo } from 'react'
-
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useSelectTokenContext } from './useSelectTokenContext'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useTokensToSelect } from './useTokensToSelect'
 
 import { useRecentTokenSection } from '../containers/SelectTokenWidget/hooks/useRecentTokenSection'
-import { useTokenDataSources } from '../containers/SelectTokenWidget/hooks/useTokenDataSources'
-import { useTokenSelectionHandler } from '../containers/SelectTokenWidget/hooks/useTokenSelectionHandler'
 import { SelectTokenContext } from '../types'
 
 export interface TokenListData {
@@ -41,14 +38,10 @@ export interface TokenListData {
 }
 
 export function useTokenListData(): TokenListData {
-  const { account, chainId: walletChainId } = useWalletInfo()
+  const { chainId: walletChainId } = useWalletInfo()
   const widgetState = useSelectTokenWidgetState()
   const tokensState = useTokensToSelect()
-  const tokenData = useTokenDataSources()
   const standalone = widgetState.standalone ?? false
-
-  // Token selection handler (wraps widgetState.onSelectToken with network switching logic)
-  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
 
   // Active chain for recent tokens
   const activeChainId = widgetState.selectedTargetChainId ?? walletChainId
@@ -64,28 +57,7 @@ export function useTokenListData(): TokenListData {
   const favoriteTokens = standalone ? [] : tokensState.favoriteTokens
 
   // Build context for token list items
-  const selectTokenContext: SelectTokenContext = useMemo(
-    () => ({
-      balancesState: tokenData.balancesState,
-      selectedToken: widgetState.selectedToken,
-      onSelectToken: handleSelectToken,
-      onTokenListItemClick: handleTokenListItemClick,
-      unsupportedTokens: tokenData.unsupportedTokens,
-      permitCompatibleTokens: tokenData.permitCompatibleTokens,
-      tokenListTags: tokenData.tokenListTags,
-      isWalletConnected: !!account,
-    }),
-    [
-      tokenData.balancesState,
-      widgetState.selectedToken,
-      handleSelectToken,
-      handleTokenListItemClick,
-      tokenData.unsupportedTokens,
-      tokenData.permitCompatibleTokens,
-      tokenData.tokenListTags,
-      account,
-    ],
-  )
+  const selectTokenContext = useSelectTokenContext({ onTokenListItemClick: handleTokenListItemClick })
 
   return {
     allTokens: tokensState.tokens,

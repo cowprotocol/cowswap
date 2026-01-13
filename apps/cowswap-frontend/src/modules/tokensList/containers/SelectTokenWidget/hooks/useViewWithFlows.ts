@@ -16,10 +16,6 @@ type ViewResult<TView extends TokenSelectorView> = {
   postFlowResult: CustomFlowResult<TView> | null
 }
 
-/**
- * Discriminated union for view with flows result.
- * Each union member has baseView as discriminant, allowing TypeScript to narrow flow result types.
- */
 export type ViewWithFlowsResult =
   | ViewResult<TokenSelectorView.Main>
   | ViewResult<TokenSelectorView.ImportToken>
