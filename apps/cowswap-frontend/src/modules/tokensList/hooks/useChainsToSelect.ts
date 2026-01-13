@@ -28,8 +28,6 @@ export { createInputChainsState, createOutputChainsState } from '../utils/chains
  * The array depends on sell/buy token selection.
  * For the sell token we return all supported chains.
  * For the buy token we return all app-supported chains with disabled state for non-bridgeable targets.
- *
- * Note: `isBridgingEnabled` reads from a Jotai atom, controlled by BridgingEnabledUpdater
  * based on runtime checks (swap route + wallet compatibility).
  */
 export function useChainsToSelect(): ChainsToSelectState | undefined {
