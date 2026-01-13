@@ -20,7 +20,8 @@ export function useImportListAndBack(): (list: ListState) => void {
         addCustomTokenLists(list)
       } catch (error) {
         closeWidget()
-        onTokenListAddingError(error as Error)
+        const errorToReport = error instanceof Error ? error : new Error(String(error))
+        onTokenListAddingError(errorToReport)
       }
       updateWidget({ listToImport: undefined })
     },
