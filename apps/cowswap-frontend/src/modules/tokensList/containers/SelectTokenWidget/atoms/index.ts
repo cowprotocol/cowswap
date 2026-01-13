@@ -25,6 +25,3 @@ export const { atom: selectTokenModalUIAtom, updateAtom: updateSelectTokenModalU
  * Allows external code to inject pre/post flows for any token selector view.
  */
 export const customFlowsRegistryAtom = atom<CustomFlowsRegistry>({})
-
-export { pendingListToggleConsentAtom } from './pendingListToggleConsentAtom'
-export type { PendingListToggleConsent } from './pendingListToggleConsentAtom'

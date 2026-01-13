@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -10,11 +10,11 @@ import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus }
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-import { pendingListToggleConsentAtom } from '../containers/SelectTokenWidget/atoms'
+import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
 /**
  * Wrap toggle list functionality with consent checking.
- * When consent is required, sets the pendingListToggleConsentAtom
+ * When consent is required, sets listToToggle in widget state
  * which triggers the consent modal inside the token selector.
  */
 export function useConsentAwareToggleList(): (list: ListState, enabled: boolean) => void {
@@ -23,7 +23,7 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
   const geoStatus = useGeoStatus()
   const restrictedLists = useAtomValue(restrictedListsAtom)
   const consentCache = useAtomValue(rwaConsentCacheAtom)
-  const setPendingConsent = useSetAtom(pendingListToggleConsentAtom)
+  const updateWidgetState = useUpdateSelectTokenWidgetState()
   const cowAnalytics = useCowAnalytics()
 
   const baseToggleList = useToggleList((enable, source) => {
@@ -66,20 +66,9 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
           const existingConsent = getConsentFromCache(consentCache, consentKey)
 
           if (!existingConsent?.acceptedAt) {
-            // wallet connected but no consent - set pending consent state
+            // wallet connected but no consent - set pending state (data only, no callbacks)
             // the token selector's postFlow will show the consent modal
-            setPendingConsent({
-              list,
-              consentHash,
-              onConfirm: () => {
-                baseToggleList(list, enabled)
-                setPendingConsent(null)
-              },
-              onCancel: () => {
-                // don't toggle, just clear the pending state
-                setPendingConsent(null)
-              },
-            })
+            updateWidgetState({ listToToggle: { list, consentHash } })
             return
           }
         }
@@ -95,7 +84,7 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
       restrictedLists,
       account,
       consentCache,
-      setPendingConsent,
+      updateWidgetState,
     ],
   )
 }

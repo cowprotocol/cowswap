@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
@@ -58,7 +58,8 @@ export function useImportTokenConsentFlow(): ViewFlowConfig<TokenSelectorView.Im
     [tokenToImport, rwaStatus, rwaTokenInfo, importWithConsent],
   )
 
-  if (!tokenToImport) return null
-
-  return { preFlow }
+  return useMemo(() => {
+    if (!tokenToImport) return null
+    return { preFlow }
+  }, [tokenToImport, preFlow])
 }

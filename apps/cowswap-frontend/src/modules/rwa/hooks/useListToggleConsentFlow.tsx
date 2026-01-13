@@ -1,9 +1,15 @@
-import { useAtomValue } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
+import { useToggleList } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { CustomFlowResult, pendingListToggleConsentAtom, TokenSelectorView, ViewFlowConfig } from 'modules/tokensList'
+import {
+  CustomFlowResult,
+  TokenSelectorView,
+  useSelectTokenWidgetState,
+  useUpdateSelectTokenWidgetState,
+  ViewFlowConfig,
+} from 'modules/tokensList'
 
 import { useRwaConsentStatus } from './useRwaConsentStatus'
 
@@ -16,26 +22,34 @@ import { RwaConsentKey } from '../types/rwaConsent'
  */
 export function useListToggleConsentFlow(): ViewFlowConfig<TokenSelectorView.Manage> | null {
   const { account } = useWalletInfo()
-  const pendingListConsent = useAtomValue(pendingListToggleConsentAtom)
+  const { listToToggle } = useSelectTokenWidgetState()
+  const updateWidgetState = useUpdateSelectTokenWidgetState()
+  const toggleList = useToggleList(() => {})
 
   const consentKey: RwaConsentKey | null = useMemo(() => {
-    if (!account || !pendingListConsent) return null
-    return { wallet: account, ipfsHash: pendingListConsent.consentHash }
-  }, [account, pendingListConsent])
+    if (!account || !listToToggle) return null
+    return { wallet: account, ipfsHash: listToToggle.consentHash }
+  }, [account, listToToggle])
 
   const { confirmConsent } = useRwaConsentStatus(consentKey)
 
   const postFlow = useCallback((): CustomFlowResult<TokenSelectorView.Manage> | null => {
-    if (!pendingListConsent) return null
+    if (!listToToggle) return null
+
+    const clearPendingState = (): void => {
+      updateWidgetState({ listToToggle: undefined })
+    }
 
     const handleDismiss = (): void => {
-      pendingListConsent.onCancel()
+      // don't toggle, just clear the pending state
+      clearPendingState()
     }
 
     const handleConfirm = (): void => {
       if (!account || !consentKey) return
       confirmConsent()
-      pendingListConsent.onConfirm()
+      toggleList(listToToggle.list, true)
+      clearPendingState()
     }
 
     return {
@@ -43,15 +57,15 @@ export function useListToggleConsentFlow(): ViewFlowConfig<TokenSelectorView.Man
         <RwaConsentModal
           onDismiss={handleDismiss}
           onConfirm={handleConfirm}
-          listName={pendingListConsent.list.list.name}
-          consentHash={pendingListConsent.consentHash}
+          listName={listToToggle.list.list.name}
+          consentHash={listToToggle.consentHash}
         />
       ),
     }
-  }, [pendingListConsent, account, consentKey, confirmConsent])
+  }, [listToToggle, account, consentKey, confirmConsent, toggleList, updateWidgetState])
 
-  // Only return config if there's a pending consent
-  if (!pendingListConsent) return null
-
-  return { postFlow }
+  return useMemo(() => {
+    if (!listToToggle) return null
+    return { postFlow }
+  }, [listToToggle, postFlow])
 }
