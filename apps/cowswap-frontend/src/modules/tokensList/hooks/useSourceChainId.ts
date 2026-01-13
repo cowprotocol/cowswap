@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
@@ -18,18 +18,12 @@ export function useSourceChainId(): { chainId: number; source: 'wallet' | 'selec
     if (
       !open ||
       !isSelectingSellChain ||
-      !(selectedTargetChainId in SupportedChainId) ||
+      !isSupportedChainId(selectedTargetChainId) ||
       selectedTargetChainId === chainId
     ) {
-      return {
-        chainId,
-        source: 'wallet',
-      }
+      return { chainId, source: 'wallet' }
     }
 
-    return {
-      chainId: selectedTargetChainId,
-      source: 'selector',
-    }
+    return { chainId: selectedTargetChainId, source: 'selector' }
   }, [open, field, chainId, selectedTargetChainId])
 }
