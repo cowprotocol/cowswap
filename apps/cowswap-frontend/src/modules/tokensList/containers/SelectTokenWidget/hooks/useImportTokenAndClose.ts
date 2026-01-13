@@ -3,17 +3,16 @@ import { useCallback } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useAddUserToken } from '@cowprotocol/tokens'
 
-import { useTokenDataSources } from './useTokenDataSources'
-
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { persistRecentTokenSelection } from '../../../hooks/useRecentTokens'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
+import { useTokensToSelect } from '../../../hooks/useTokensToSelect'
 
 export function useImportTokenAndClose(): (tokens: TokenWithLogo[]) => void {
   const { onSelectToken } = useSelectTokenWidgetState()
   const closeWidget = useCloseTokenSelectWidget()
   const importToken = useAddUserToken()
-  const { favoriteTokens } = useTokenDataSources()
+  const { favoriteTokens } = useTokensToSelect()
 
   return useCallback(
     (tokens: TokenWithLogo[]) => {

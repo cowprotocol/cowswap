@@ -11,6 +11,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
+import { useTokensToSelect } from './useTokensToSelect'
 
 import { useRecentTokenSection } from '../containers/SelectTokenWidget/hooks/useRecentTokenSection'
 import { useTokenDataSources } from '../containers/SelectTokenWidget/hooks/useTokenDataSources'
@@ -42,6 +43,7 @@ export interface TokenListData {
 export function useTokenListData(): TokenListData {
   const { account, chainId: walletChainId } = useWalletInfo()
   const widgetState = useSelectTokenWidgetState()
+  const tokensState = useTokensToSelect()
   const tokenData = useTokenDataSources()
   const standalone = widgetState.standalone ?? false
 
@@ -53,13 +55,13 @@ export function useTokenListData(): TokenListData {
 
   // Recent tokens section
   const { recentTokens, handleTokenListItemClick, clearRecentTokens } = useRecentTokenSection(
-    tokenData.allTokens,
-    tokenData.favoriteTokens,
+    tokensState.tokens,
+    tokensState.favoriteTokens,
     activeChainId,
   )
 
   // Favorite tokens (empty in standalone mode)
-  const favoriteTokens = standalone ? [] : tokenData.favoriteTokens
+  const favoriteTokens = standalone ? [] : tokensState.favoriteTokens
 
   // Build context for token list items
   const selectTokenContext: SelectTokenContext = useMemo(
@@ -86,11 +88,11 @@ export function useTokenListData(): TokenListData {
   )
 
   return {
-    allTokens: tokenData.allTokens,
+    allTokens: tokensState.tokens,
     favoriteTokens,
     recentTokens,
-    areTokensLoading: tokenData.areTokensLoading,
-    areTokensFromBridge: tokenData.areTokensFromBridge,
+    areTokensLoading: tokensState.isLoading,
+    areTokensFromBridge: tokensState.areTokensFromBridge,
     hideFavoriteTokensTooltip: isInjectedWidget(),
     selectedTargetChainId: widgetState.selectedTargetChainId,
     onClearRecentTokens: clearRecentTokens,

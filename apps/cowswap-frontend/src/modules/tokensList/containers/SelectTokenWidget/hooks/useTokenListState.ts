@@ -1,6 +1,6 @@
-import { useTokenDataSources } from './useTokenDataSources'
+import { useTokensToSelect } from '../../../hooks/useTokensToSelect'
 
 export function useTokenListState(): boolean | undefined {
-  const { isRouteAvailable } = useTokenDataSources()
+  const { isRouteAvailable } = useTokensToSelect()
   return isRouteAvailable
 }
