@@ -1,7 +1,6 @@
 import { getTwapOrderStatus } from './getTwapOrderStatus'
 
-import { TwapOrdersExecution } from '../hooks/useTwapOrdersExecutions'
-import { TwapOrderStatus, TWAPOrderStruct } from '../types'
+import { TwapOrdersExecution, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 const orderStruct: TWAPOrderStruct = {
   sellToken: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
