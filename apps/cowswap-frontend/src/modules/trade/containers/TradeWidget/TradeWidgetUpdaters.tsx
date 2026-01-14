@@ -8,6 +8,7 @@ import { useResetRecipient } from '../../hooks/useResetRecipient'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
 import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
+import { ForbidSwapSameTokenUpdater } from '../../updaters/ForbidSwapSameTokenUpdater'
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
 import { RecipientAddressUpdater } from '../../updaters/RecipientAddressUpdater'
 
@@ -16,6 +17,7 @@ interface TradeWidgetUpdatersProps {
   disableNativeSelling: boolean
   enableSmartSlippage?: boolean
   disableSuggestedSlippageApi?: boolean
+  allowSwapSameToken: boolean
   children: ReactNode
   onChangeRecipient: (recipient: string | null) => void
 }
@@ -25,6 +27,7 @@ export function TradeWidgetUpdaters({
   disableNativeSelling,
   disableSuggestedSlippageApi,
   onChangeRecipient,
+  allowSwapSameToken,
   children,
 }: TradeWidgetUpdatersProps): JSX.Element {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
@@ -45,6 +48,7 @@ export function TradeWidgetUpdaters({
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />
+      {!allowSwapSameToken && <ForbidSwapSameTokenUpdater />}
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
       {children}
     </>

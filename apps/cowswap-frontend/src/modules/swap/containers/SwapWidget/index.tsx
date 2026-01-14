@@ -54,11 +54,12 @@ import { Warnings } from '../Warnings'
 export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
+  allowSwapSameToken?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function,complexity
-export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
+export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
@@ -235,6 +236,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     enableSmartSlippage: true,
     isMarketOrderWidget: true,
     isSellingEthSupported: true,
+    allowSwapSameToken,
     recipient,
     showRecipient,
     isTradePriceUpdating: isRateLoading,
