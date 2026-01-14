@@ -1,13 +1,17 @@
 'use client'
 
+import type { ReactNode } from 'react'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import { Font, Media, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 
 import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
+import { LazyImage } from '@/components/LazyImage'
 import LazySVG from '@/components/LazySVG'
 import { SearchBar } from '@/components/SearchBar'
 import {
@@ -34,9 +38,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
-
-import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
 
 const PODCASTS = [
   {
@@ -156,8 +157,7 @@ const Wrapper = styled.div`
   }
 `
 
-export function LearnPageComponent({ categories, featuredArticles }: PageProps) {
-  const { LazyImage } = useLazyLoadImages()
+export function LearnPageComponent({ categories, featuredArticles }: PageProps): ReactNode {
   const analytics = useCowAnalytics()
 
   return (
