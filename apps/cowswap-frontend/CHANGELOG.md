@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.128.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.3...cowswap-v1.128.4) (2026-01-14)
+
+
+### Bug Fixes
+
+* **swap:** use input/outputCurrencyAmount for calculating rateInfo which wont be reset while loading ([#6828](https://github.com/cowprotocol/cowswap/issues/6828)) ([94ecf48](https://github.com/cowprotocol/cowswap/commit/94ecf4802a127fe631377040ff9abe5695e518ed))
+
 ## [1.128.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.2...cowswap-v1.128.3) (2026-01-13)
 
 
