@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { areAddressesEqual } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
@@ -14,7 +15,7 @@ export interface FavoriteTokensListProps {
   hideTooltip?: boolean
   selectedToken?: string
 
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken?(token: TokenWithLogo): void
 }
 
 export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
@@ -38,7 +39,7 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
       </styledEl.Header>
       <styledEl.List>
         {tokens.map((token) => {
-          const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
+          const isTokenSelected = areAddressesEqual(token.address, selectedToken)
 
           return (
             <styledEl.TokensItem
@@ -48,7 +49,7 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
               data-token-name={token.name || ''}
               data-element-type="token-selection"
               disabled={isTokenSelected}
-              onClick={() => onSelectToken(token)}
+              onClick={() => onSelectToken?.(token)}
             >
               <TokenLogo token={token} size={24} />
               <TokenSymbol token={token} />
