@@ -186,7 +186,6 @@ interface DropdownProps {
   interaction: 'hover' | 'click'
   mobileMode?: boolean
   isNavItemDropdown?: boolean
-  rootDomain: string
   LinkComponent: LinkComponentType
 }
 
@@ -197,7 +196,6 @@ interface NavItemProps {
   closeDropdown: () => void
   setOpenDropdown: React.Dispatch<React.SetStateAction<string | null>>
   LinkComponent: LinkComponentType
-  rootDomain: string
 }
 
 const NavItem = ({
@@ -206,7 +204,6 @@ const NavItem = ({
   openDropdown,
   closeDropdown,
   setOpenDropdown,
-  rootDomain,
   LinkComponent,
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -221,9 +218,7 @@ const NavItem = ({
     })
   }
 
-  const href = item.external
-    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, extractedLabel)
-    : item.href
+  const href = item.href
 
   return item.children ? (
     <GenericDropdown
@@ -234,7 +229,6 @@ const NavItem = ({
       mobileMode={mobileMode}
       isNavItemDropdown={true}
       closeDropdown={closeDropdown}
-      rootDomain={rootDomain}
       LinkComponent={LinkComponent}
     />
   ) : href ? (
@@ -249,12 +243,11 @@ const NavItem = ({
 const DropdownContentItem: React.FC<{
   item: DropdownMenuItem
   closeMenu: () => void
-  rootDomain: string
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line max-lines-per-function, complexity
-}> = ({ item, closeMenu, rootDomain, LinkComponent }) => {
+}> = ({ item, closeMenu, LinkComponent }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
   // TODO: Add proper return type annotation
@@ -311,9 +304,7 @@ const DropdownContentItem: React.FC<{
 
   const itemClassName = item.hasDivider ? 'hasDivider' : ''
 
-  const href = item.external
-    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
-    : item.href
+  const href = item.href
 
   if (item.isButton && item.href) {
     return (
@@ -355,7 +346,6 @@ const DropdownContentItem: React.FC<{
             content={{ title: undefined, items: item.children }}
             mobileMode={true}
             closeDropdown={closeMenu}
-            rootDomain={rootDomain}
             LinkComponent={LinkComponent}
           />
         )}
@@ -390,10 +380,9 @@ const NavDaoTrigger: React.FC<{
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   mobileMode: boolean
-  rootDomain: string
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
-}> = ({ isOpen, setIsOpen, mobileMode, rootDomain, LinkComponent }) => {
+}> = ({ isOpen, setIsOpen, mobileMode, LinkComponent }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
 
@@ -428,25 +417,13 @@ const NavDaoTrigger: React.FC<{
             ref={dropdownRef as unknown as React.RefObject<HTMLDivElement>}
           >
             {DAO_NAV_ITEMS.map((item, index) => (
-              <DropdownContentItem
-                key={index}
-                item={item}
-                closeMenu={closeMenu}
-                rootDomain={rootDomain}
-                LinkComponent={LinkComponent}
-              />
+              <DropdownContentItem key={index} item={item} closeMenu={closeMenu} LinkComponent={LinkComponent} />
             ))}
           </MobileDropdownContainer>
         ) : (
           <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
             {DAO_NAV_ITEMS.map((item, index) => (
-              <DropdownContentItem
-                key={index}
-                item={item}
-                closeMenu={closeMenu}
-                rootDomain={rootDomain}
-                LinkComponent={LinkComponent}
-              />
+              <DropdownContentItem key={index} item={item} closeMenu={closeMenu} LinkComponent={LinkComponent} />
             ))}
           </DropdownContent>
         ))}
@@ -462,7 +439,6 @@ const GenericDropdown: React.FC<DropdownProps> = ({
   mobileMode,
   isNavItemDropdown,
   closeDropdown,
-  rootDomain,
   LinkComponent,
 }) => {
   if (!item.label) {
@@ -497,7 +473,6 @@ const GenericDropdown: React.FC<DropdownProps> = ({
           mobileMode={mobileMode}
           isNavItemDropdown={isNavItemDropdown}
           closeDropdown={closeDropdown}
-          rootDomain={rootDomain}
           LinkComponent={LinkComponent}
         />
       )}
@@ -512,7 +487,6 @@ interface DropdownContentWrapperProps {
   mobileMode?: boolean
   isNavItemDropdown?: boolean
   closeDropdown: () => void
-  rootDomain: string
   LinkComponent: LinkComponentType
 }
 
@@ -525,7 +499,6 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
   mobileMode = false,
   isNavItemDropdown = false,
   closeDropdown,
-  rootDomain,
   LinkComponent,
 }) => {
   const [visibleThirdLevel, setVisibleThirdLevel] = useState<number | null>(null)
@@ -558,10 +531,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
-        const extractedLabel = item.label
-        const href = !hasChildren
-          ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external, extractedLabel)
-          : undefined
+        const href = !hasChildren ? item.href : undefined
 
         const content = (
           <>
@@ -589,7 +559,6 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
                 mobileMode={mobileMode}
                 isNavItemDropdown={isNavItemDropdown}
                 closeDropdown={closeDropdown}
-                rootDomain={rootDomain}
                 LinkComponent={LinkComponent}
               />
             )}
@@ -622,40 +591,6 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
       })}
     </DropdownContent>
   )
-}
-
-const appendUtmParams = (
-  href: string,
-  utmSource: string | undefined,
-  utmContent: string | undefined,
-  rootDomain: string,
-  isExternal: boolean,
-  label: string | undefined,
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-) => {
-  const defaultUtm = {
-    utmSource: rootDomain,
-    utmMedium: 'web',
-    utmContent: `menubar-nav-button-${label?.toLowerCase().replace(/\s+/g, '-')}`,
-  }
-  const finalUtmSource = utmSource || defaultUtm.utmSource
-  const finalUtmContent = utmContent || defaultUtm.utmContent
-
-  if (isExternal) {
-    const url = href.startsWith('http') ? new URL(href) : new URL(href, `https://${rootDomain}`)
-
-    const hash = url.hash
-    url.hash = '' // Remove the hash temporarily to prevent it from interfering with the search params
-    url.searchParams.set('utm_source', finalUtmSource)
-    url.searchParams.set('utm_medium', defaultUtm.utmMedium)
-    url.searchParams.set('utm_content', finalUtmContent)
-    url.hash = hash // Re-attach the hash
-
-    return url.toString()
-  }
-
-  return href
 }
 
 interface LanguagesDropdownItemsProps {
@@ -778,11 +713,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
 
   const settingsItems = settingsNavItems.map((item, index) => {
     const mobileHref = item.href ? `${new URL(item.href, `https://${rootDomain}`).pathname}` : undefined
-    const to = item.external
-      ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
-      : mobileMode
-        ? mobileHref
-        : item.href
+    const to = item.external ? item.href : mobileMode ? mobileHref : item.href
 
     const content = (
       <>
@@ -995,7 +926,6 @@ export const MenuBar = (props: MenuBarProps) => {
           isOpen={isDaoOpen}
           setIsOpen={setIsDaoOpen}
           mobileMode={isMedium}
-          rootDomain={rootDomain}
           LinkComponent={LinkComponent}
         />
         <ProductLogo
@@ -1019,7 +949,6 @@ export const MenuBar = (props: MenuBarProps) => {
                   openDropdown={openDropdown}
                   closeDropdown={() => setOpenDropdown(null)}
                   setOpenDropdown={setOpenDropdown}
-                  rootDomain={rootDomain}
                 />
               ))}
             </NavItems>
@@ -1033,9 +962,7 @@ export const MenuBar = (props: MenuBarProps) => {
             isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
-              const href = item.external
-                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
-                : item.href
+              const href = item.href
 
               if (!href) return null
 
@@ -1118,7 +1045,6 @@ export const MenuBar = (props: MenuBarProps) => {
                   setOpenDropdown(null)
                 }}
                 setOpenDropdown={setOpenDropdown}
-                rootDomain={rootDomain}
                 LinkComponent={LinkComponent}
               />
             ))}
@@ -1135,16 +1061,7 @@ export const MenuBar = (props: MenuBarProps) => {
                       hoverColor={item.hoverColor}
                       as={item.isButton ? 'button' : 'div'}
                     >
-                      <LinkComponent
-                        href={appendUtmParams(
-                          item.href!,
-                          item.utmSource,
-                          item.utmContent,
-                          rootDomain,
-                          !!item.external,
-                          item.label,
-                        )}
-                      >
+                      <LinkComponent href={item.href!}>
                         <DropdownContentItemText>
                           <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
                         </DropdownContentItemText>
