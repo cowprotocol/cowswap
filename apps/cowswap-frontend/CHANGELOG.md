@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.128.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.2...cowswap-v1.128.3) (2026-01-13)
+
+
+### Bug Fixes
+
+* order fill notification - wrong amount & token for buy orders ([#6822](https://github.com/cowprotocol/cowswap/issues/6822)) ([e9dd9df](https://github.com/cowprotocol/cowswap/commit/e9dd9dfa34989bd330b77bf585d4ed0d066c8e83))
+* **swap:** break quote updating loop ([#6819](https://github.com/cowprotocol/cowswap/issues/6819)) ([64f6d34](https://github.com/cowprotocol/cowswap/commit/64f6d348f87579e4b07ee1f6beb8a5d48f4915ec))
+* **twap:** display summary in cancellation modal ([#6817](https://github.com/cowprotocol/cowswap/issues/6817)) ([87f5600](https://github.com/cowprotocol/cowswap/commit/87f56007dfafff42be0606bae9c1ab7bc2c350a0))
+
 ## [1.128.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.1...cowswap-v1.128.2) (2026-01-12)
 
 
