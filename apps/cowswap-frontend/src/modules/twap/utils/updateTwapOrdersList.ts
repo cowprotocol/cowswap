@@ -1,7 +1,8 @@
 import { deepEqual } from '@cowprotocol/common-utils'
 
+import { TwapOrdersList } from 'entities/twap'
+
 import { TWAP_FINAL_STATUSES } from '../const'
-import { TwapOrdersList } from '../state/twapOrdersListAtom'
 import { TwapOrderStatus } from '../types'
 
 /**

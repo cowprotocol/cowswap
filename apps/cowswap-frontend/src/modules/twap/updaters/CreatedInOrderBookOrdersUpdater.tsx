@@ -6,6 +6,7 @@ import { isTruthy } from '@cowprotocol/common-utils'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { twapOrdersAtom } from 'entities/twap'
 import { useAsyncMemo } from 'use-async-memo'
 
 import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
@@ -13,7 +14,6 @@ import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } from 'modules/orders'
 
 import { useTwapPartOrdersList } from '../hooks/useTwapPartOrdersList'
-import { twapOrdersAtom } from '../state/twapOrdersListAtom'
 import { TwapPartOrderItem, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'

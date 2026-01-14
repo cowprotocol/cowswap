@@ -232,11 +232,11 @@ interface FooterLinkProps {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const FooterLink = ({ href, external, label, utmSource, utmContent, rootDomain }: FooterLinkProps) => {
+const FooterLink = ({ href, external, label, utmSource: _utmSource, utmContent, rootDomain }: FooterLinkProps) => {
   const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
 
   const finalHref = external
-    ? appendUtmParams(href, utmSource, utmContent, finalRootDomain, external, label)
+    ? href
     : (() => {
         try {
           return `${new URL(href, `https://${finalRootDomain}`).pathname}`
@@ -259,42 +259,6 @@ const FooterLink = ({ href, external, label, utmSource, utmContent, rootDomain }
       {label}
     </Link>
   )
-}
-
-const appendUtmParams = (
-  href: string,
-  utmSource: string | undefined,
-  utmContent: string | undefined,
-  rootDomain: string,
-  isExternal: boolean,
-  label: string | undefined,
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-) => {
-  const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
-
-  const defaultUtm = {
-    utmSource: finalRootDomain,
-    utmMedium: 'web',
-    utmContent: `footer-nav-button-${label?.toLowerCase().replace(/\s+/g, '-')}`,
-  }
-  const finalUtmSource = utmSource || defaultUtm.utmSource
-  const finalUtmContent = utmContent || defaultUtm.utmContent
-
-  if (isExternal) {
-    const url = href.startsWith('http') ? new URL(href) : new URL(href, `https://${finalRootDomain}`)
-
-    const hash = url.hash
-    url.hash = '' // Remove the hash temporarily to prevent it from interfering with the search params
-    url.searchParams.set('utm_source', finalUtmSource)
-    url.searchParams.set('utm_medium', defaultUtm.utmMedium)
-    url.searchParams.set('utm_content', finalUtmContent)
-    url.hash = hash // Re-attach the hash
-
-    return url.toString()
-  }
-
-  return href
 }
 
 // TODO: Break down this large function into smaller functions
