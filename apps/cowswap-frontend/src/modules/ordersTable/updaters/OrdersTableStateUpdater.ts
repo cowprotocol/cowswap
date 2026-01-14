@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
-import { ReactNode, useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo, useRef } from 'react'
 
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'

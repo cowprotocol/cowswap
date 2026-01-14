@@ -190,7 +190,7 @@ export function useCreateTwapOrder() {
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
 
         // Navigate to all orders after successful placement
-        navigateToOrdersTableTab(OrderTabId.all)
+        navigateToOrdersTableTab(OrderTabId.open)
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
         const errorMessage = getErrorMessage(error)

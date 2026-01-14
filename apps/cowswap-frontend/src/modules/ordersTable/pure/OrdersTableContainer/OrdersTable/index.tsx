@@ -9,15 +9,17 @@ import { TableHeader } from './TableHeader'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../../hooks/useGetBuildOrdersTableUrl'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
+import { OrderTableItem } from '../../../types'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../../OrdersTablePagination'
 import { TABLE_HEADERS } from '../tableHeaders'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
+  filteredOrdersOverride?: OrderTableItem[]
 }
 
-export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
+export function OrdersTable({ currentTab, filteredOrdersOverride }: OrdersTableProps): ReactNode {
   const {
     selectedOrders,
     allowsOffchainSigning,
@@ -32,8 +34,9 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
+  const ordersToUse = filteredOrdersOverride || filteredOrders || []
 
-  const ordersPage = (filteredOrders || []).slice(step - ORDERS_TABLE_PAGE_SIZE, step)
+  const ordersPage = ordersToUse.slice(step - ORDERS_TABLE_PAGE_SIZE, step)
 
   const onScroll = useCallback(() => {
     // Emit event to close OrderContextMenu
@@ -106,11 +109,11 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
       </TableBox>
 
       {/* Only show pagination if more than 1 page available */}
-      {filteredOrders && filteredOrders.length > ORDERS_TABLE_PAGE_SIZE && (
+      {ordersToUse && ordersToUse.length > ORDERS_TABLE_PAGE_SIZE && (
         <OrdersTablePagination
           getPageUrl={getPageUrl}
           pageSize={ORDERS_TABLE_PAGE_SIZE}
-          totalCount={filteredOrders.length}
+          totalCount={ordersToUse.length}
           currentPage={currentPageNumber}
         />
       )}

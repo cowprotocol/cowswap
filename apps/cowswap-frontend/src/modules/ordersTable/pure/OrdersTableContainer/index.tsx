@@ -22,7 +22,7 @@ export function OrdersTableContainer({ searchTerm, children, isDarkMode }: Order
 
   const currentTab = useMemo(() => {
     const activeTab = tabs?.find((tab) => tab.isActive)
-    return activeTab?.id || OrderTabId.all
+    return activeTab?.id || OrderTabId.open
   }, [tabs])
 
   return (

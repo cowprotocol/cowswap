@@ -4,30 +4,37 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ORDERS_TABLE_TABS, OrderTabId } from '../const/tabs'
 import { OrdersTableList, TabParams } from '../types'
-
-const DEFAULT_STATE: TabParams[] = [{ ...ORDERS_TABLE_TABS[0], count: 0, isActive: true }]
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 export function useTabs(ordersList: OrdersTableList, currentTabId: OrderTabId): TabParams[] {
   const { account } = useWalletInfo()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   return useMemo(() => {
-    // If no account, just return the ALL_ORDERS_TAB with count 0
-    if (!account) {
-      return DEFAULT_STATE
+    // If no account, return empty array (no tabs shown)
+    if (!account || isProviderNetworkUnsupported) {
+      return []
     }
 
     return ORDERS_TABLE_TABS.filter((tab) => {
+      // Always show OPEN and HISTORY tabs
+      if (tab.id === OrderTabId.open || tab.id === OrderTabId.history) {
+        return true
+      }
+
       // Only include the unfillable tab if there are unfillable orders
       if (tab.id === OrderTabId.unfillable) {
         return ordersList[tab.id].length > 0
       }
+
       // Only include the signing tab if there are signing orders
       if (tab.id === OrderTabId.signing) {
         return ordersList[tab.id].length > 0
       }
-      return true
+      
+      return false
     }).map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: ordersList[tab.id].length }
     })
-  }, [currentTabId, ordersList, account])
+  }, [currentTabId, ordersList, account, isProviderNetworkUnsupported])
 }

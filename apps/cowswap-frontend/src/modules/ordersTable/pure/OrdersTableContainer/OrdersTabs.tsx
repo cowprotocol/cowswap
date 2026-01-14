@@ -166,10 +166,15 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps):
     navigate(buildOrdersTableUrl({ tabId, pageNumber: 1 }))
   }
 
+  // Don't render tabs if there are no tabs to show
+  if (!tabs || tabs.length === 0) {
+    return null
+  }
+
   return (
     <>
       <SelectContainer>
-        <Select value={tabs[activeTabIndex].id} onChange={handleSelectChange}>
+        <Select value={tabs[activeTabIndex]?.id || tabs[0]?.id} onChange={handleSelectChange}>
           {tabs.map((tab) => {
             const isUnfillable = tab.id === 'unfillable'
             const isSigning = tab.id === 'signing'

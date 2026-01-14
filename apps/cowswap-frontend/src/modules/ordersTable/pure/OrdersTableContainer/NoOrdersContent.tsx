@@ -42,7 +42,7 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
   ) : (
     <>
       <Trans>You don't have any {orderStatusText} orders at the moment.</Trans>{' '}
-      {(currentTab === OrderTabId.open || currentTab === OrderTabId.all) && (
+      {currentTab === OrderTabId.open && (
         <>
           <br />
           <Trans>Time to create a new one!</Trans>{' '}
@@ -59,13 +59,10 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
 })
 
 function getSectionTitle(currentTab: OrderTabId): string {
-  return currentTab === OrderTabId.all
-    ? t`No orders`
-    : currentTab === OrderTabId.unfillable
-      ? t`No unfillable orders`
-      : currentTab === OrderTabId.open
-        ? t`No open orders`
-        : t`No order history`
+  if (currentTab === OrderTabId.unfillable)  return t`No unfillable orders`
+  if (currentTab === OrderTabId.open)  return t`No open orders`
+  if (currentTab === OrderTabId.signing)  return t`No signing orders`
+  return t`No order history`
 }
 
 interface NoOrdersContentProps {

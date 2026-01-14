@@ -154,8 +154,8 @@ export function useHandleOrderPlacement(
         setPartiallyFillableOverride(undefined)
         // Reset alternative mode if any
         hideAlternativeOrderModal()
-        // Navigate to all orders
-        navigateToOrdersTableTab(OrderTabId.all)
+        // Navigate to open orders
+        navigateToOrdersTableTab(OrderTabId.open)
         // Close receipt modal
         closeReceiptModal()
 

@@ -127,6 +127,7 @@ export const TopContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 3px;
+  min-height: 36px;
 
   ${Media.upToMedium()} {
     display: block;

@@ -10,7 +10,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon } from './styled'
+import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon, Checkbox, CheckboxLabel } from './styled'
 
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
@@ -20,6 +20,8 @@ import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
+import { Trans } from '@lingui/react/macro'
+import { Toggle } from 'legacy/components/Toggle'
 
 function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
   const start = (pageNumber - 1) * pageSize
@@ -27,7 +29,7 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
   return orders.slice(start, end)
 }
 
-const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.all, OrderTabId.unfillable] as const
+const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
 interface OrdersTableWidgetProps extends OrdersTableParams {
   children?: ReactNode
@@ -39,7 +41,18 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const { account } = useWalletInfo()
   const { darkMode } = useTheme()
 
+  // TODO: Move show only filled orders filter here and into useOrdersTableState
+
   const [searchTerm, setSearchTerm] = useState('')
+  const [showOnlyFilled, setShowOnlyFilled] = useState(true)
+
+  const handleShowOnlyFilledChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setShowOnlyFilled(e.target.checked)
+  }
+
+  // const toggleShowOnlyFilled = (): void => {
+  //   setShowOnlyFilled(showOnlyFilled => !showOnlyFilled)
+  // }
 
   const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
 
@@ -61,6 +74,8 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
 
   const hasPendingOrders = !!pendingOrders?.length
 
+  // TODO: SearchInput's height = 36px, but parent is 32px, so this shifts the layout when Order history is selected.
+  
   return (
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
@@ -68,6 +83,18 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
       {children}
       <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
+
+        { /* Should only filled checkbox in history tab (if there are orders) */}
+        { currentTabId === OrderTabId.history && !!orders?.length && (
+          <CheckboxLabel>
+            <Checkbox type="checkbox" checked={showOnlyFilled} onChange={handleShowOnlyFilledChange} />
+            { /* <Toggle
+              isActive={showOnlyFilled}
+              toggle={toggleShowOnlyFilled}
+            />*/}
+            <Trans>Show only filled orders</Trans>
+          </CheckboxLabel>
+        )}     
 
         {/* If account is not connected, don't show the search input */}
         {!!account && !!orders?.length && (
