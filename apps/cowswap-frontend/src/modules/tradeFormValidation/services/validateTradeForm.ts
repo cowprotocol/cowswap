@@ -28,7 +28,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     customTokenError,
     isRestrictedForCountry,
     isBalancesLoading,
-    balancesError,
   } = context
 
   const {
@@ -121,16 +120,16 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
 
     if (!canPlaceOrderWithoutBalance && !!account) {
-      if (isBalancesLoading) {
+      if (!inputCurrencyBalance && isBalancesLoading) {
         validations.push(TradeFormValidation.BalancesLoading)
-      } else {
-        if (!inputCurrencyBalance && balancesError) {
-          validations.push(TradeFormValidation.BalancesNotLoaded)
-        }
+      }
 
-        if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
-          validations.push(TradeFormValidation.BalanceInsufficient)
-        }
+      if (!inputCurrencyBalance && !isBalancesLoading) {
+        validations.push(TradeFormValidation.BalancesNotLoaded)
+      }
+
+      if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+        validations.push(TradeFormValidation.BalanceInsufficient)
       }
     }
 

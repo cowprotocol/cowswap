@@ -1,8 +1,9 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { twapOrdersAtom } from '../state/twapOrdersListAtom'
-import { TwapOrderItem } from '../types'
+import type { TwapOrderItem } from 'modules/twap/types'
+
+import { twapOrdersAtom } from '../state/twapOrdersAtom'
 
 export function useTwapOrderById(orderId: string | undefined): TwapOrderItem | null {
   const twapOrdersList = useAtomValue(twapOrdersAtom)
