@@ -156,7 +156,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     label: isSellTrade ? t`Receive (before fees)` : t`Buy exactly`,
   }
 
-  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+  const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const buyingFiatAmount = useMemo(
     () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
