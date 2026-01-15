@@ -52,7 +52,7 @@ function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnec
 }
 
 /**
- * Copy-pasted solution from https://github.com/Uniswap/interface/blob/main/src/connection/index.ts#L85
+ * Copy-pasted solution from https://github.com/Uniswap/interface/blob/36986579dc413ff57bfe48ff209d96a13d4666ec/src/connection/index.ts#L85
  *
  * Why do we need this:
  * WC2 connector can be created once per network
@@ -121,6 +121,7 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
     },
     type: ConnectionType.WALLET_CONNECT_V2,
     overrideActivate(chainId: SupportedChainId) {
+      return false
       const update = createWalletConnectV2Connector(chainId)
       web3WalletConnectV2 = update[0]
       web3WalletConnectV2Hooks = update[1]
