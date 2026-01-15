@@ -2,9 +2,10 @@ import { ReactNode } from 'react'
 
 import { Search } from './Search'
 
-import { useSearchState } from '../../hooks'
+import { useSelectTokenWidgetState } from '../../../../hooks/useSelectTokenWidgetState'
 
 export function ConnectedSearch(): ReactNode {
-  const onPressEnter = useSearchState()
-  return <Search onPressEnter={onPressEnter} />
+  const { onInputPressEnter } = useSelectTokenWidgetState()
+
+  return <Search onPressEnter={onInputPressEnter} />
 }

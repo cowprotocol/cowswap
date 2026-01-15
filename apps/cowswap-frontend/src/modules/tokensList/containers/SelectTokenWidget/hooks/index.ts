@@ -6,7 +6,6 @@ export { useViewWithFlows, type ViewWithFlowsResult } from './useViewWithFlows'
 
 // Slot state hooks
 export { useHeaderState, type HeaderState } from './useHeaderState'
-export { useSearchState } from './useSearchState'
 export { useChainPanelState, type ChainPanelState } from './useChainPanelState'
 
 // Blocking view state hooks
