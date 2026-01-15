@@ -45,6 +45,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
   const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
 
   useEffect(() => {
+    // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
     if (currentTabId !== OrderTabId.history) setShowOnlyFilled(false)
   }, [currentTabId])
 
@@ -65,8 +66,6 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
   }, [currentTabId, filteredOrders, currentPageNumber])
 
   const hasPendingOrders = !!pendingOrders?.length
-
-  // TODO: SearchInput's height = 36px, but parent is 32px, so this shifts the layout when Order history is selected.
 
   // Just render the OrdersTableContainer with nothing else if the user is not connected or the network is unsupported:
   return isProviderNetworkUnsupported || !account ? (
