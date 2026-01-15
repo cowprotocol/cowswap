@@ -159,6 +159,8 @@ export function useHandleOrderPlacement(
         // Close receipt modal
         closeReceiptModal()
 
+        // TODO: Clear filters if the new order is not visible.
+
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
           alternativeModalAnalytics(isAlternativeOrderEdit)

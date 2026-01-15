@@ -12,11 +12,17 @@ import { useShouldDisplayProtocolFeeBanner } from '../../hooks/useShouldDisplayP
 
 interface OrdersTableContainerProps {
   searchTerm?: string
+  showOnlyFilled?: boolean
   children: ReactNode
   isDarkMode: boolean
 }
 
-export function OrdersTableContainer({ searchTerm, children, isDarkMode }: OrdersTableContainerProps): ReactNode {
+export function OrdersTableContainer({
+  searchTerm,
+  showOnlyFilled,
+  children,
+  isDarkMode,
+}: OrdersTableContainerProps): ReactNode {
   const { tabs, isWalletConnected } = useOrdersTableState() || {}
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
@@ -38,7 +44,12 @@ export function OrdersTableContainer({ searchTerm, children, isDarkMode }: Order
           <ProtocolFeeInfoBanner margin="0" />
         </styledEl.BannerContainer>
       )}
-      <OrdersTableContent searchTerm={searchTerm} currentTab={currentTab} isDarkMode={isDarkMode} />
+      <OrdersTableContent
+        searchTerm={searchTerm}
+        showOnlyFilled={showOnlyFilled}
+        currentTab={currentTab}
+        isDarkMode={isDarkMode}
+      />
     </styledEl.Wrapper>
   )
 }

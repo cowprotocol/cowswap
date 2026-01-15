@@ -1,9 +1,12 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import { Search, X} from 'react-feather'
+import { Search, X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { CloseIcon } from 'common/pure/CloseIcon'
+import {
+  SelectContainer as OrdersTableSelectContainer,
+  Select as OrdersTableSelect,
+} from 'modules/ordersTable/pure/OrdersTableContainer/OrdersTabs'
 
 export const SearchInputContainer = styled.label`
   position: relative;
@@ -48,6 +51,7 @@ export const SearchInput = styled.input`
   font-size: 13px;
   font-weight: 500;
   min-height: 36px;
+  min-width: 240px;
 
   ${Media.upToMedium()} {
     padding: 8px 32px;
@@ -71,28 +75,10 @@ export const SearchInput = styled.input`
   }
 `
 
-export const CheckboxLabel = styled.label`
-  font-size: 14px;
-  color: var(${UI.COLOR_TEXT});
-  cursor: pointer;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 14px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  padding: 0 8px;
-  min-height: 36px;  
-  margin: 0 0 0 8px;
-
-  ${Media.upToMedium()} {
-    margin 0;
-  }
+export const SelectContainer = styled(OrdersTableSelectContainer)`
+  display: block !important;
 `
 
-export const Checkbox = styled.input`
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: var(${UI.COLOR_PRIMARY});
+export const Select = styled(OrdersTableSelect)`
+  min-width: 120px;
 `

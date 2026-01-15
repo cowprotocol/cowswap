@@ -13,10 +13,16 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 interface OrdersTableContentProps {
   currentTab: OrderTabId
   searchTerm?: string
+  showOnlyFilled?: boolean
   isDarkMode: boolean
 }
 
-export function OrdersTableContent({ searchTerm, currentTab, isDarkMode }: OrdersTableContentProps): ReactNode {
+export function OrdersTableContent({
+  searchTerm,
+  showOnlyFilled,
+  currentTab,
+  isDarkMode,
+}: OrdersTableContentProps): ReactNode {
   const { filteredOrders, isWalletConnected, hasHydratedOrders } = useOrdersTableState() || {}
   const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -29,13 +35,12 @@ export function OrdersTableContent({ searchTerm, currentTab, isDarkMode }: Order
     return <UnsupportedNetworkContent />
   }
 
-  // TODO: Message in NoOrdersContent should be different if it's because of the filter.
-
   if (filteredOrders?.length === 0) {
     return (
       <NoOrdersContent
         currentTab={currentTab}
         searchTerm={searchTerm}
+        showOnlyFilled={showOnlyFilled}
         hasHydratedOrders={isHydrated}
         isDarkMode={isDarkMode}
       />

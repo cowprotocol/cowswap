@@ -15,16 +15,18 @@ import { TabOrderTypes } from '../../types'
 
 interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
-  orderType: TabOrderTypes | undefined
-  searchTerm: string | undefined
-  isSafeViaWc: boolean | undefined
-  displayOrdersOnlyForSafeApp: boolean | undefined
+  orderType?: TabOrderTypes
+  searchTerm?: string
+  showOnlyFilled?: boolean
+  isSafeViaWc?: boolean
+  displayOrdersOnlyForSafeApp?: boolean
 }
 
 const NoOrdersDescription = memo(function NoOrdersDescription({
   currentTab,
   orderType,
   searchTerm,
+  showOnlyFilled,
   isSafeViaWc,
   displayOrdersOnlyForSafeApp,
 }: NoOrdersDescriptionProps): ReactNode {
@@ -37,7 +39,7 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
     <Trans>
       Use the <CowSwapSafeAppLink /> to see {currentTabText}
     </Trans>
-  ) : searchTerm ? (
+  ) : searchTerm || showOnlyFilled ? (
     <Trans>Try adjusting your search term or clearing the filter</Trans>
   ) : (
     <>
@@ -59,15 +61,16 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
 })
 
 function getSectionTitle(currentTab: OrderTabId): string {
-  if (currentTab === OrderTabId.unfillable)  return t`No unfillable orders`
-  if (currentTab === OrderTabId.open)  return t`No open orders`
-  if (currentTab === OrderTabId.signing)  return t`No signing orders`
+  if (currentTab === OrderTabId.unfillable) return t`No unfillable orders`
+  if (currentTab === OrderTabId.open) return t`No open orders`
+  if (currentTab === OrderTabId.signing) return t`No signing orders`
   return t`No order history`
 }
 
 interface NoOrdersContentProps {
   currentTab: OrderTabId
   searchTerm?: string
+  showOnlyFilled?: boolean
   hasHydratedOrders: boolean
   isDarkMode: boolean
 }
@@ -75,6 +78,7 @@ interface NoOrdersContentProps {
 export function NoOrdersContent({
   currentTab,
   searchTerm,
+  showOnlyFilled,
   hasHydratedOrders,
   isDarkMode,
 }: NoOrdersContentProps): ReactNode {
@@ -85,12 +89,13 @@ export function NoOrdersContent({
 
   return (
     <styledEl.Content>
-      <h3>{searchTerm ? t`No matching orders found` : getSectionTitle(currentTab)}</h3>
+      <h3>{searchTerm || showOnlyFilled ? t`No matching orders found` : getSectionTitle(currentTab)}</h3>
       <p>
         <NoOrdersDescription
           currentTab={currentTab}
           orderType={orderType}
           searchTerm={searchTerm}
+          showOnlyFilled={showOnlyFilled}
           isSafeViaWc={isSafeViaWc}
           displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
         />

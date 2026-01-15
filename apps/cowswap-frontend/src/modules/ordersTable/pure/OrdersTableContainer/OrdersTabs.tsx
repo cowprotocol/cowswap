@@ -26,7 +26,7 @@ const Tabs = styled.div`
   }
 `
 
-const SelectContainer = styled.div`
+export const SelectContainer = styled.div`
   display: none;
   width: 100%;
   margin: 0;
@@ -55,7 +55,7 @@ const SelectContainer = styled.div`
   }
 `
 
-const Select = styled.select`
+export const Select = styled.select`
   width: 100%;
   padding: 10px 40px 10px 10px;
   border-radius: 14px;

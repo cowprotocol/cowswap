@@ -1,17 +1,17 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { ReactNode, useMemo, useState, useEffect } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon, Checkbox, CheckboxLabel } from './styled'
+import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon, SelectContainer, Select } from './styled'
 
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
@@ -35,6 +35,8 @@ interface OrdersTableWidgetProps extends OrdersTableParams {
 }
 
 export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
+  const { i18n } = useLingui()
+
   const { children, ...stateParams } = props
 
   const { account } = useWalletInfo()
@@ -43,15 +45,19 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const [searchTerm, setSearchTerm] = useState('')
   const [showOnlyFilled, setShowOnlyFilled] = useState(false)
 
-  const handleShowOnlyFilledChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setShowOnlyFilled(e.target.checked)
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    setShowOnlyFilled(e.target.value === 'filled')
   }
 
   const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
 
-  const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
+  useEffect(() => {
+    if (currentTabId !== OrderTabId.history) setShowOnlyFilled(false)
+  }, [currentTabId])
 
   const pendingOrders = useMemo(() => {
+    const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
+
     if (!isTabWithPending || !filteredOrders || typeof currentPageNumber !== 'number') return undefined
 
     const currentPageItems = getOrdersPageChunk(
@@ -63,7 +69,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
     return currentPageItems.filter((order) => {
       return order.status === OrderStatus.PENDING
     })
-  }, [isTabWithPending, filteredOrders, currentPageNumber])
+  }, [currentTabId, filteredOrders, currentPageNumber])
 
   const hasPendingOrders = !!pendingOrders?.length
 
@@ -72,35 +78,39 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   return (
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
+
       <OrdersTableStateUpdater searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} {...stateParams} />
+
       {children}
-      <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
+
+      <OrdersTableContainer searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} isDarkMode={darkMode}>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
-        {/* Should only filled checkbox in history tab (if there are orders) */}
-        {currentTabId === OrderTabId.history && !!orders?.length && (
-          <CheckboxLabel>
-            <Checkbox type="checkbox" checked={showOnlyFilled} onChange={handleShowOnlyFilledChange} />
-            {/* <Toggle
-              isActive={showOnlyFilled}
-              toggle={toggleShowOnlyFilled}
-            />*/}
-            <Trans>Show only filled orders</Trans>
-          </CheckboxLabel>
-        )}
-
-        {/* If account is not connected, don't show the search input */}
+        {/* Show filters only if account is connected and there are orders */}
         {!!account && !!orders?.length && (
-          <SearchInputContainer>
-            <SearchIcon />
-            <SearchInput
-              type="text"
-              placeholder={t`Token symbol, address`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
-          </SearchInputContainer>
+          <>
+            {/* Show onlyFilled select only in history tab */}
+            {currentTabId === OrderTabId.history && (
+              <SelectContainer>
+                <Select name="onlyFilled" value={showOnlyFilled ? 'filled' : 'all'} onChange={handleSelectChange}>
+                  <option value="all">{i18n._('All')}</option>
+                  <option value="filled">{i18n._('Filled only')}</option>
+                </Select>
+              </SelectContainer>
+            )}
+
+            <SearchInputContainer>
+              <SearchIcon />
+              <SearchInput
+                type="text"
+                placeholder={t`Token symbol, address`}
+                name="searchTerm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
+            </SearchInputContainer>
+          </>
         )}
       </OrdersTableContainer>
 
