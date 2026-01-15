@@ -97,16 +97,12 @@ export function ShareBlock({ url, title, onShare }: ShareBlockProps): ReactNode 
         <ShareButtons
           shareUrl={shareUrl}
           webShareSupported={webShareSupported}
+          copied={copied}
           onShareTarget={handleShare}
           onCopy={handleCopy}
           onWebShare={handleWebShare}
         />
       </ShareRow>
-      {copied && (
-        <ShareNote role="status" aria-live="polite">
-          Copied URL.
-        </ShareNote>
-      )}
     </ShareBlockContainer>
   )
 }
@@ -114,6 +110,7 @@ export function ShareBlock({ url, title, onShare }: ShareBlockProps): ReactNode 
 interface ShareButtonsProps {
   shareUrl: string
   webShareSupported: boolean
+  copied: boolean
   onShareTarget: (target: ShareTarget) => void
   onCopy: () => void | Promise<void>
   onWebShare: () => void | Promise<void>
@@ -122,6 +119,7 @@ interface ShareButtonsProps {
 function ShareButtons({
   shareUrl,
   webShareSupported,
+  copied,
   onShareTarget,
   onCopy,
   onWebShare,
@@ -149,6 +147,10 @@ function ShareButtons({
         if (id === 'web-share' && !webShareSupported) return null
 
         const onClick = id === 'copy' ? onCopy : id === 'email' ? () => onShareTarget('email') : onWebShare
+        const isCopied = id === 'copy' && copied
+        const copiedColor = `var(${UI.COLOR_SUCCESS_TEXT})`
+        const defaultColor = `var(${UI.COLOR_NEUTRAL_100})`
+        const buttonText = isCopied ? 'Copied!' : text
 
         return (
           <ShareButton
@@ -156,15 +158,15 @@ function ShareButtons({
             type="button"
             onClick={onClick}
             disabled={!shareUrl}
-            $bg={`var(${UI.COLOR_NEUTRAL_20})`}
-            $bgHover={`var(${UI.COLOR_NEUTRAL_30})`}
-            $color={`var(${UI.COLOR_NEUTRAL_100})`}
-            $iconOnly={!text}
-            aria-label={text ? undefined : label}
-            title={text ? undefined : label}
+            $bg={isCopied ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_NEUTRAL_20})`}
+            $bgHover={isCopied ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_NEUTRAL_30})`}
+            $color={isCopied ? copiedColor : defaultColor}
+            $iconOnly={!buttonText}
+            aria-label={buttonText ? undefined : label}
+            title={buttonText ? undefined : label}
           >
-            <ShareIcon $color={`var(${UI.COLOR_NEUTRAL_100})`} src={icon} aria-hidden="true" />
-            {text && <span>{text}</span>}
+            <ShareIcon $color={isCopied ? copiedColor : defaultColor} src={icon} aria-hidden="true" />
+            {buttonText && <span>{buttonText}</span>}
           </ShareButton>
         )
       })}
@@ -333,10 +335,4 @@ const ShareIcon = styled(SVG)<{ $color?: string }>`
     width: 100%;
     height: 100%;
   }
-`
-
-const ShareNote = styled.div`
-  font-size: 1.6rem;
-  font-weight: ${Font.weight.medium};
-  color: var(${UI.COLOR_NEUTRAL_40});
 `
