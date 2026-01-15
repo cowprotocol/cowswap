@@ -54,12 +54,6 @@ export function useOpenTokenSelectWidget(): (
         },
       })
     },
-    [
-      closeTokenSelectWidget,
-      updateSelectTokenWidget,
-      isBridgingEnabled,
-      shouldLockTargetChain,
-      tradeType,
-    ],
+    [closeTokenSelectWidget, updateSelectTokenWidget, isBridgingEnabled, shouldLockTargetChain, tradeType],
   )
 }

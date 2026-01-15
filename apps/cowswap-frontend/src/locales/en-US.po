@@ -3649,7 +3649,7 @@ msgstr "CoW Protocol covers the fees and costs by executing your order at a slig
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HooksStoreWidget/index.tsx
 msgid "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap."
-msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap.<<<<<<< Updated upstream"
+msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/FavoriteTokens.tsx
 #~ msgid "Favorites"
