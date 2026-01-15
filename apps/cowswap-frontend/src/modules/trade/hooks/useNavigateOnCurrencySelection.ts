@@ -66,11 +66,20 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       const targetChainMismatch = targetChainId !== chainId
       const isInputField = field === Field.INPUT
 
-      const inputCurrencyId = (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? null
-      const outputCurrencyId = (outputCurrency && resolveCurrencyAddressOrSymbol(outputCurrency)) ?? null
-
       const targetInputCurrency = isInputField ? currency : inputCurrency
       const targetOutputCurrency = isInputField ? outputCurrency : currency
+
+      const isBridge = Boolean(
+        targetInputCurrency && targetOutputCurrency && targetInputCurrency.chainId !== targetOutputCurrency.chainId,
+      )
+
+      const inputCurrencyId = (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? null
+      const outputCurrencyId = outputCurrency
+        ? // For cross-chain order always use address for outputCurrencyId
+          isBridge
+          ? getCurrencyAddress(outputCurrency)
+          : resolveCurrencyAddressOrSymbol(outputCurrency)
+        : null
 
       const targetInputCurrencyId = isInputField ? tokenSymbolOrAddress : inputCurrencyId
       const targetOutputCurrencyId = isInputField
