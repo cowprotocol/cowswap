@@ -112,19 +112,19 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
    * Because network might be changed from the widget inside
    */
   useEffect(() => {
-    const chainChanged = previousChainId !== chainId
+    const isActualChainChange = previousChainId !== null && previousChainId !== chainId
 
-    if (!chainChanged && !isInitialRenderRef.current) {
+    if (!isActualChainChange && !isInitialRenderRef.current) {
       return
     }
 
     isInitialRenderRef.current = false
 
-    const shouldCloseTokenSelectWidget = chainChanged
+    const shouldCloseTokenSelectWidget = isActualChainChange
       ? isOutputTokenSelector
       : (previousIsOutputTokenSelector ?? isOutputTokenSelector)
 
-    resetAllScreens(shouldCloseTokenSelectWidget)
+    resetAllScreens(shouldCloseTokenSelectWidget, isActualChainChange)
   }, [chainId, isOutputTokenSelector, previousChainId, previousIsOutputTokenSelector, resetAllScreens])
 
   if (genericModal) {
