@@ -50,9 +50,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
 
   const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
-  const notEnoughBalance = Boolean(
-    inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount),
-  )
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = fetchParams?.priceQuality === PriceQuality.FAST
@@ -106,6 +103,20 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.InputAmountNotSet)
   }
 
+  if (!canPlaceOrderWithoutBalance && !!account) {
+    if (!inputCurrencyBalance && isBalancesLoading) {
+      validations.push(TradeFormValidation.BalancesLoading)
+    }
+
+    if (!inputCurrencyBalance && !isBalancesLoading) {
+      validations.push(TradeFormValidation.BalancesNotLoaded)
+    }
+
+    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+      validations.push(TradeFormValidation.BalanceInsufficient)
+    }
+  }
+
   if (!isWrapUnwrap) {
     const isRecipientAddress = Boolean(recipient && isAddress(recipient))
 
@@ -120,20 +131,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (isSwapUnsupported) {
       validations.push(TradeFormValidation.CurrencyNotSupported)
-    }
-
-    if (!canPlaceOrderWithoutBalance && !!account) {
-      if (!inputCurrencyBalance && isBalancesLoading) {
-        validations.push(TradeFormValidation.BalancesLoading)
-      }
-
-      if (!inputCurrencyBalance && !isBalancesLoading) {
-        validations.push(TradeFormValidation.BalancesNotLoaded)
-      }
-
-      if (notEnoughBalance) {
-        validations.push(TradeFormValidation.BalanceInsufficient)
-      }
     }
 
     if (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading)) {
@@ -161,10 +158,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (isWrapUnwrap) {
-    if (notEnoughBalance) {
-      validations.push(TradeFormValidation.BalanceInsufficient)
-    }
-
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
