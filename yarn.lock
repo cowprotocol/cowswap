@@ -1918,6 +1918,13 @@
     "@cowprotocol/sdk-order-signing" "0.1.23"
     deepmerge "^4.3.1"
 
+"@cowprotocol/sdk-viem-adapter@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-viem-adapter/-/sdk-viem-adapter-0.3.0.tgz#4340d3f90b493ad087979009c46bc12e3256aa9b"
+  integrity sha512-IDCrdSBKaLJsgJR8kPFb5wjIt8Hk3dw4hqZg7nIkHAz36N+feHA2DYucgGOC0r1iuAy0EC+F/XXiemqGMb+nXg==
+  dependencies:
+    "@cowprotocol/sdk-common" "0.4.0"
+
 "@cowprotocol/sdk-weiroll@0.1.11":
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-weiroll/-/sdk-weiroll-0.1.11.tgz#1ab0826eb8ac85d473948eff98effaf57b8a3d15"
