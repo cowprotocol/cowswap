@@ -10,6 +10,7 @@ import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
+import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
@@ -46,6 +47,8 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
 export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   const { chainId } = useWalletInfo()
   const { state } = useTradeState()
+  const stateTargetChainId = state?.targetChainId
+  const { inputCurrency, outputCurrency, orderKind } = useDerivedTradeState() || {}
   const navigate = useTradeNavigate()
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
@@ -53,9 +56,6 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line complexity
     (field: Field, currency: Currency | null, stateUpdateCallback?: Command, searchParams?: TradeSearchParams) => {
-      if (!state) return
-
-      const { inputCurrencyId, outputCurrencyId, orderKind } = state
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
       /**
@@ -66,15 +66,21 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       const targetChainMismatch = targetChainId !== chainId
       const isInputField = field === Field.INPUT
 
-      const targetInputCurrencyId = isInputField ? tokenSymbolOrAddress : inputCurrencyId
+      const inputCurrencyId = (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? null
+      const outputCurrencyId = (outputCurrency && resolveCurrencyAddressOrSymbol(outputCurrency)) ?? null
 
+      const targetInputCurrency = isInputField ? currency : inputCurrency
+      const targetOutputCurrency = isInputField ? outputCurrency : currency
+
+      const targetInputCurrencyId = isInputField ? tokenSymbolOrAddress : inputCurrencyId
       const targetOutputCurrencyId = isInputField
         ? outputCurrencyId
         : targetChainMismatch && currency
           ? getCurrencyAddress(currency)
           : tokenSymbolOrAddress
 
-      const areCurrenciesTheSame = targetInputCurrencyId === targetOutputCurrencyId
+      const areCurrenciesTheSame =
+        targetInputCurrency && targetOutputCurrency && targetInputCurrency.equals(targetOutputCurrency)
 
       /**
        * If selected sell token doesn't match current network
@@ -90,8 +96,8 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       /**
        * Keep the target chain id in the search params when input token changed
        */
-      if (isInputField && state.targetChainId) {
-        searchParams = { ...searchParams, targetChainId: state.targetChainId }
+      if (isInputField && stateTargetChainId) {
+        searchParams = { ...searchParams, targetChainId: stateTargetChainId }
       }
 
       if (shouldSetTargetChain) {
@@ -120,6 +126,6 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
 
       stateUpdateCallback?.()
     },
-    [navigate, chainId, state, resolveCurrencyAddressOrSymbol],
+    [navigate, chainId, orderKind, inputCurrency, outputCurrency, stateTargetChainId, resolveCurrencyAddressOrSymbol],
   )
 }
