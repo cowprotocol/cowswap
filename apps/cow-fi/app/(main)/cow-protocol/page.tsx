@@ -434,7 +434,7 @@ export default function Page() {
                 contentAlign={'center'}
                 bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
                 padding={'42px'}
-                href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
+                href={logo.url}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
                 data-click-event={toCowFiGtmEvent({
@@ -495,7 +495,7 @@ export default function Page() {
                 contentAlign={'center'}
                 bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
                 padding={'42px'}
-                href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
+                href={logo.url}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
                 data-click-event={toCowFiGtmEvent({

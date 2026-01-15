@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.26.0...common-utils-v1.26.1) (2026-01-13)
+
+
+### Bug Fixes
+
+* **swap:** break quote updating loop ([#6819](https://github.com/cowprotocol/cowswap/issues/6819)) ([64f6d34](https://github.com/cowprotocol/cowswap/commit/64f6d348f87579e4b07ee1f6beb8a5d48f4915ec))
+
 ## [1.26.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.25.0...common-utils-v1.26.0) (2026-01-09)
 
 

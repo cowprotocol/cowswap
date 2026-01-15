@@ -4,7 +4,6 @@ import { UtmParams } from '@cowprotocol/common-utils'
 
 import Link, { LinkProps } from 'next/link'
 
-import { useUtm } from './hooks'
 import { addUtmToUrl } from './utils'
 
 export const defaultUtm: UtmParams = {
@@ -20,16 +19,14 @@ export interface LinkWithUtmProps
 }
 
 export function LinkWithUtmComponent(p: LinkWithUtmProps): React.ReactNode {
-  const { href, as, children, defaultUtm: providedUtm = defaultUtm, ...props } = p
-  const utm = useUtm()
+  const { href, as, children, defaultUtm: providedUtm, ...props } = p
 
   const newHref = useMemo(() => {
-    const mergedUtm = { ...defaultUtm, ...providedUtm, ...utm }
-    if (mergedUtm && typeof href === 'string') {
-      return addUtmToUrl(href, mergedUtm)
+    if (providedUtm && typeof href === 'string') {
+      return addUtmToUrl(href, providedUtm)
     }
     return href
-  }, [providedUtm, utm, href])
+  }, [providedUtm, href])
 
   return (
     <Link href={newHref} as={as} target="_blank" rel="noopener nofollow" {...props}>
