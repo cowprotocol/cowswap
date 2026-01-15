@@ -5,6 +5,7 @@ import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 import * as styledEl from './OrdersTableContainer.styled'
 
@@ -72,7 +73,6 @@ interface NoOrdersContentProps {
   searchTerm?: string
   showOnlyFilled?: boolean
   hasHydratedOrders: boolean
-  isDarkMode: boolean
 }
 
 export function NoOrdersContent({
@@ -80,8 +80,8 @@ export function NoOrdersContent({
   searchTerm,
   showOnlyFilled,
   hasHydratedOrders,
-  isDarkMode,
 }: NoOrdersContentProps): ReactNode {
+  const { darkMode: isDarkMode } = useTheme()
   const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })

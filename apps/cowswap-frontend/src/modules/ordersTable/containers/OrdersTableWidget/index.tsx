@@ -1,6 +1,5 @@
 import { ReactNode, useMemo, useState, useEffect } from 'react'
 
-import { useTheme } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -21,6 +20,7 @@ import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
   const start = (pageNumber - 1) * pageSize
@@ -30,17 +30,10 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
-interface OrdersTableWidgetProps extends OrdersTableParams {
-  children?: ReactNode
-}
-
-export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
+export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
   const { i18n } = useLingui()
-
-  const { children, ...stateParams } = props
-
   const { account } = useWalletInfo()
-  const { darkMode } = useTheme()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const [searchTerm, setSearchTerm] = useState('')
   const [showOnlyFilled, setShowOnlyFilled] = useState(false)
@@ -75,19 +68,20 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
 
   // TODO: SearchInput's height = 36px, but parent is 32px, so this shifts the layout when Order history is selected.
 
-  return (
+  // Just render the OrdersTableContainer with nothing else if the user is not connected or the network is unsupported:
+  return isProviderNetworkUnsupported || !account ? (
+    <OrdersTableContainer />
+  ) : (
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
 
-      <OrdersTableStateUpdater searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} {...stateParams} />
+      <OrdersTableStateUpdater searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} {...ordersTableParams} />
 
-      {children}
-
-      <OrdersTableContainer searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} isDarkMode={darkMode}>
+      <OrdersTableContainer searchTerm={searchTerm} showOnlyFilled={showOnlyFilled}>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
-        {/* Show filters only if account is connected and there are orders */}
-        {!!account && !!orders?.length && (
+        {/* Show filters only if there are orders */}
+        {!!orders?.length && (
           <>
             {/* Show onlyFilled select only in history tab */}
             {currentTabId === OrderTabId.history && (

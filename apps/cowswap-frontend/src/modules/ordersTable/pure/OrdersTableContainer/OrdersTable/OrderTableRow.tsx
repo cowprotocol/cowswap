@@ -8,6 +8,7 @@ import { OrderTableItem } from '../../../types'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 import { TableGroup } from '../TableGroup'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
@@ -15,6 +16,7 @@ interface OrderTableRowProps {
 }
 
 export function OrderTableRow({ item, currentTab }: OrderTableRowProps): ReactNode {
+  const { chainId } = useWalletInfo()
   const tableState = useOrdersTableState()
   const selectedOrders = tableState?.selectedOrders
   const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
@@ -33,7 +35,6 @@ export function OrderTableRow({ item, currentTab }: OrderTableRowProps): ReactNo
   if (!tableState) return null
 
   const {
-    chainId,
     pendingOrdersPrices,
     balancesAndAllowances,
     getSpotPrice,

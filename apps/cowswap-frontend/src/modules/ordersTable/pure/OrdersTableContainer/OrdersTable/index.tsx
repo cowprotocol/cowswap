@@ -12,16 +12,17 @@ import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../../OrdersTablePagination'
 import { TABLE_HEADERS } from '../tableHeaders'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
 }
 
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
+  const { chainId } = useWalletInfo()
   const {
     selectedOrders,
     allowsOffchainSigning,
-    chainId,
     filteredOrders,
     pendingOrdersPrices,
     balancesAndAllowances,

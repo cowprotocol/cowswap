@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react'
+import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
 
@@ -10,20 +10,17 @@ import { OrderTabId } from '../../const/tabs'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { useShouldDisplayProtocolFeeBanner } from '../../hooks/useShouldDisplayProtocolFeeBanner'
 
-interface OrdersTableContainerProps {
+interface OrdersTableContainerProps extends PropsWithChildren {
   searchTerm?: string
   showOnlyFilled?: boolean
-  children: ReactNode
-  isDarkMode: boolean
 }
 
 export function OrdersTableContainer({
   searchTerm,
   showOnlyFilled,
   children,
-  isDarkMode,
 }: OrdersTableContainerProps): ReactNode {
-  const { tabs, isWalletConnected } = useOrdersTableState() || {}
+  const { tabs } = useOrdersTableState() || {}
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
   const currentTab = useMemo(() => {
@@ -35,7 +32,7 @@ export function OrdersTableContainer({
     <styledEl.Wrapper>
       <styledEl.TopContainer>
         <styledEl.TabsContainer>
-          {tabs && <OrdersTabs tabs={tabs} isWalletConnected={!!isWalletConnected} />}
+          {tabs && <OrdersTabs tabs={tabs} />}
           {children && <styledEl.RightContainer>{children}</styledEl.RightContainer>}
         </styledEl.TabsContainer>
       </styledEl.TopContainer>
@@ -48,7 +45,6 @@ export function OrdersTableContainer({
         searchTerm={searchTerm}
         showOnlyFilled={showOnlyFilled}
         currentTab={currentTab}
-        isDarkMode={isDarkMode}
       />
     </styledEl.Wrapper>
   )

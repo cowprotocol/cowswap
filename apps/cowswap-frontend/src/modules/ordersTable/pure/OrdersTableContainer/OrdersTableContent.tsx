@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ConnectWalletContent } from './ConnectWalletContent'
 import { NoOrdersContent } from './NoOrdersContent'
@@ -14,20 +15,21 @@ interface OrdersTableContentProps {
   currentTab: OrderTabId
   searchTerm?: string
   showOnlyFilled?: boolean
-  isDarkMode: boolean
 }
 
 export function OrdersTableContent({
   searchTerm,
   showOnlyFilled,
   currentTab,
-  isDarkMode,
 }: OrdersTableContentProps): ReactNode {
-  const { filteredOrders, isWalletConnected, hasHydratedOrders } = useOrdersTableState() || {}
+  const { filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
   const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const { account } = useWalletInfo()
 
-  if (!isWalletConnected) {
+  // TODO: If isProviderNetworkUnsupported === true, then isWalletConnected === true even if connected. Should this be the case?
+
+  if (!account) {
     return <ConnectWalletContent />
   }
 
@@ -42,7 +44,6 @@ export function OrdersTableContent({
         searchTerm={searchTerm}
         showOnlyFilled={showOnlyFilled}
         hasHydratedOrders={isHydrated}
-        isDarkMode={isDarkMode}
       />
     )
   }

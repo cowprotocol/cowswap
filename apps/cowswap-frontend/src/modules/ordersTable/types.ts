@@ -64,13 +64,11 @@ export interface OrderActions {
 
 export interface OrdersTableState {
   currentTabId: OrderTabId
-  isWalletConnected: boolean
   isSafeViaWc: boolean
   displayOrdersOnlyForSafeApp: boolean
   orderType: TabOrderTypes
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
   tabs: TabParams[]
-  chainId: SupportedChainId
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]
   hasHydratedOrders: boolean

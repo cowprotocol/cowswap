@@ -14,6 +14,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { OrderTab, OrderTabId } from '../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 const Tabs = styled.div`
   display: flex;
@@ -149,11 +150,11 @@ const TabButton = styled(Link)<{
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]
-  isWalletConnected: boolean
 }
 
-export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps): ReactNode {
+export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
   const { i18n } = useLingui()
+  const { account } = useWalletInfo()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const navigate = useNavigate()
   const activeTabIndex = Math.max(
@@ -182,7 +183,7 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps):
               <option key={tab.id} value={tab.id}>
                 {isUnfillable && '⚠️ '}
                 {isSigning && '⏳ '}
-                {i18n._(tab.title)} {isWalletConnected && `(${tab.count})`}
+                {i18n._(tab.title)} {account && `(${tab.count})`}
               </option>
             )
           })}
@@ -199,12 +200,12 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps):
               active={(index === activeTabIndex).toString()}
               $isUnfillable={isUnfillable}
               $isSigning={isSigning}
-              $isDisabled={!isWalletConnected}
+              $isDisabled={!account}
               to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
             >
               {isUnfillable && <SVG src={alertCircle} description={t`warning`} />}
               {isSigning && <SVG src={orderPresignaturePending} description={t`signing`} />}
-              {i18n._(tab.title)} {isWalletConnected && <span>({tab.count})</span>}
+              {i18n._(tab.title)} {account && <span>({tab.count})</span>}
             </TabButton>
           )
         })}

@@ -53,7 +53,7 @@ export function OrdersTableStateUpdater({
   displayOrdersOnlyForSafeApp = false,
   syncWithUrl = true,
 }: OrdersTableStateUpdaterProps): ReactNode {
-  const { chainId, account } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const navigate = useNavigate()
   const location = useLocation()
@@ -84,7 +84,6 @@ export function OrdersTableStateUpdater({
   useEffect(() => {
     setOrdersTableState({
       currentTabId,
-      chainId,
       tabs,
       orders,
       filteredOrders,
@@ -93,7 +92,6 @@ export function OrdersTableStateUpdater({
       currentPageNumber,
       pendingOrdersPrices,
       balancesAndAllowances,
-      isWalletConnected: !!account,
       orderActions,
       getSpotPrice,
       allowsOffchainSigning,
@@ -106,7 +104,6 @@ export function OrdersTableStateUpdater({
     })
   }, [
     setOrdersTableState,
-    chainId,
     tabs,
     orders,
     filteredOrders,
@@ -116,7 +113,6 @@ export function OrdersTableStateUpdater({
     currentPageNumber,
     pendingOrdersPrices,
     balancesAndAllowances,
-    account,
     orderActions,
     getSpotPrice,
     allowsOffchainSigning,
