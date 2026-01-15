@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.128.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.4...cowswap-v1.128.5) (2026-01-15)
+
+
+### Bug Fixes
+
+* check balance sufficiency it case of wrap/unwrap ([#6835](https://github.com/cowprotocol/cowswap/issues/6835)) ([df9adf9](https://github.com/cowprotocol/cowswap/commit/df9adf9e3722ad51ce2e5d65de7819aebef98b58))
+
 ## [1.128.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.3...cowswap-v1.128.4) (2026-01-14)
 
 

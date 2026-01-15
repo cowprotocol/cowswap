@@ -1,48 +1,16 @@
-import {
-  areAddressesEqual,
-  formatSymbol,
-  formatTokenAmount,
-  isSellOrder,
-  shortenAddress,
-} from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
-import { t } from '@lingui/core/macro'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
-import { getUiOrderType, getUiOrderTypeTitles, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
 
 import { UltimateOrderData } from '../../hooks/useUltimateOrder'
 import { TradeAmounts } from '../../types'
 
-export function computeOrderSummary(ultimateOrder: UltimateOrderData): string | undefined {
-  const { orderFromStore } = ultimateOrder
-  const orderFromApi = orderFromStore.apiAdditionalInfo
-  const genericOrder = orderFromApi ?? orderFromStore
-
-  const owner = genericOrder?.owner
-  const receiver = genericOrder?.receiver
-  const uiOrderType = getUiOrderType(
-    // For TWAP orders use orderFromStore, because it has composableCowInfo
-    // Which helps to detect correct order UI type
-    orderFromStore?.composableCowInfo ? orderFromStore : (genericOrder as UiOrderTypeParams),
-  )
-  const orderTitle = getUiOrderTypeTitles()[uiOrderType]
-
-  const recipientSuffix = receiver && !areAddressesEqual(receiver, owner) ? t`to` + ` ${shortenAddress(receiver)}` : ''
-
-  const summaryAmounts = getOrderSummary(genericOrder, getOrderTradeAmounts(ultimateOrder))
-
-  // ${Swap} ${10 DAI at least 10 USDC} ${to 0x000..aaa}
-  return `${orderTitle} ${summaryAmounts} ${recipientSuffix}`.trim()
-}
-
-function getOrderTradeAmounts({
+export function getUltimateOrderTradeAmounts({
   orderFromStore,
   bridgeOrderFromStore,
   bridgeOrderFromApi,
@@ -93,31 +61,8 @@ function getOrderTradeAmounts({
   }
 }
 
-function getOrderSummary(genericOrder: EnrichedOrder | Order, { inputAmount, outputAmount }: TradeAmounts): string {
-  const { status, kind } = genericOrder
-
-  const isFulfilled = status === OrderStatus.FULFILLED
-
-  if (isFulfilled) {
-    return `${stringifyAmount(inputAmount)} ` + t`for` + ` ${stringifyAmount(outputAmount)}`
-  } else {
-    const isSell = isSellOrder(kind)
-
-    const inputPrefix = !isSell ? t`at most` + ` ` : ''
-    const outputPrefix = isSell ? t`at least` + ` ` : ''
-
-    return (
-      `${inputPrefix}${stringifyAmount(inputAmount)} ` + t`for` + ` ${outputPrefix}${stringifyAmount(outputAmount)}`
-    )
-  }
-}
-
 function stringToCurrency(amount: string, currency: Currency): CurrencyAmount<Currency> {
   return CurrencyAmount.fromRawAmount(currency, amount)
-}
-
-function stringifyAmount(amount: CurrencyAmount<Currency>): string {
-  return `${formatTokenAmount(amount)} ${formatSymbol(amount.currency.symbol)}`
 }
 
 type PopupData = {
