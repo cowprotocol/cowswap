@@ -1,7 +1,7 @@
 import { JSX, useEffect } from 'react'
 
 import { useTokenSelectorConsentFlow } from 'modules/rwa'
-import { SelectTokenWidget, useChainsToSelect, useSelectTokenWidgetState } from 'modules/tokensList'
+import { SelectTokenWidget, useSelectTokenWidgetState } from 'modules/tokensList'
 import { useSetShouldUseAutoSlippage } from 'modules/tradeSlippage'
 
 import * as styledEl from './styled'
@@ -9,6 +9,8 @@ import { TradeWidgetForm } from './TradeWidgetForm'
 import { TradeWidgetModals } from './TradeWidgetModals'
 import { TradeWidgetUpdaters } from './TradeWidgetUpdaters'
 import { TradeWidgetProps } from './types'
+
+import { useIsTokenSelectWide } from '../../hooks/useIsTokenSelectWide'
 
 export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   const { id, slots, params, confirmModal, genericModal } = props
@@ -20,9 +22,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   } = params
   const modals = TradeWidgetModals({ confirmModal, genericModal })
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
-  const chainsToSelect = useChainsToSelect()
-  const isTokenSelectWide =
-    isTokenSelectOpen && !!chainsToSelect && (chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0)
+  const isTokenSelectWide = useIsTokenSelectWide()
 
   const consentFlow = useTokenSelectorConsentFlow()
   const selectTokenWidgetNode = slots.selectTokenWidget ?? <SelectTokenWidget customFlows={consentFlow} />
