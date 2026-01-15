@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
-import { ReactNode, useEffect, useMemo, useRef } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -38,6 +38,7 @@ function getOrdersInputTokens(allOrders: Order[]): string[] {
 
 interface OrdersTableStateUpdaterProps extends OrdersTableParams {
   searchTerm?: string
+  showOnlyFilled?: boolean
   syncWithUrl?: boolean
 }
 
@@ -47,6 +48,7 @@ export function OrdersTableStateUpdater({
   orders: allOrders,
   orderType,
   searchTerm = '',
+  showOnlyFilled = false,
   isTwapTable = false,
   displayOrdersOnlyForSafeApp = false,
   syncWithUrl = true,
@@ -72,7 +74,7 @@ export function OrdersTableStateUpdater({
   const { currentTabId, currentPageNumber } = useCurrentTab(ordersList)
 
   const orders = ordersList[currentTabId]
-  const filteredOrders = useFilteredOrders(orders, searchTerm)
+  const filteredOrders = useFilteredOrders(orders, { searchTerm, showOnlyFilled })
   const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
 
   const tabs = useTabs(ordersList, currentTabId)

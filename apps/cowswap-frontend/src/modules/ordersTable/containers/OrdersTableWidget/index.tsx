@@ -4,6 +4,7 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -20,8 +21,6 @@ import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
-import { Trans } from '@lingui/react/macro'
-import { Toggle } from 'legacy/components/Toggle'
 
 function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
   const start = (pageNumber - 1) * pageSize
@@ -41,18 +40,12 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const { account } = useWalletInfo()
   const { darkMode } = useTheme()
 
-  // TODO: Move show only filled orders filter here and into useOrdersTableState
-
   const [searchTerm, setSearchTerm] = useState('')
-  const [showOnlyFilled, setShowOnlyFilled] = useState(true)
+  const [showOnlyFilled, setShowOnlyFilled] = useState(false)
 
   const handleShowOnlyFilledChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setShowOnlyFilled(e.target.checked)
   }
-
-  // const toggleShowOnlyFilled = (): void => {
-  //   setShowOnlyFilled(showOnlyFilled => !showOnlyFilled)
-  // }
 
   const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
 
@@ -75,26 +68,26 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const hasPendingOrders = !!pendingOrders?.length
 
   // TODO: SearchInput's height = 36px, but parent is 32px, so this shifts the layout when Order history is selected.
-  
+
   return (
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
-      <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
+      <OrdersTableStateUpdater searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} {...stateParams} />
       {children}
       <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
-        { /* Should only filled checkbox in history tab (if there are orders) */}
-        { currentTabId === OrderTabId.history && !!orders?.length && (
+        {/* Should only filled checkbox in history tab (if there are orders) */}
+        {currentTabId === OrderTabId.history && !!orders?.length && (
           <CheckboxLabel>
             <Checkbox type="checkbox" checked={showOnlyFilled} onChange={handleShowOnlyFilledChange} />
-            { /* <Toggle
+            {/* <Toggle
               isActive={showOnlyFilled}
               toggle={toggleShowOnlyFilled}
             />*/}
             <Trans>Show only filled orders</Trans>
           </CheckboxLabel>
-        )}     
+        )}
 
         {/* If account is not connected, don't show the search input */}
         {!!account && !!orders?.length && (
