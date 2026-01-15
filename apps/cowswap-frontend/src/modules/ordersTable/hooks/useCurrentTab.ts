@@ -41,8 +41,6 @@ export function useCurrentTab(ordersList: OrdersTableList): CurrentTabState {
       }
     }
 
-    // TODO: Needed? What happens if I change the URL manually?
-
     return {
       currentTabId: params.tabId || OrderTabId.open,
       currentPageNumber: params.pageNumber || 1,
