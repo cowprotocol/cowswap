@@ -46,7 +46,10 @@ export function useListToggleConsentFlow(): ViewFlowConfig<TokenSelectorView.Man
     }
 
     const handleConfirm = (): void => {
-      if (!account || !consentKey) return
+      if (!account || !consentKey) {
+        clearPendingState()
+        return
+      }
       confirmConsent()
       toggleList(listToToggle.list, true)
       clearPendingState()
