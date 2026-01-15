@@ -263,11 +263,17 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     ),
   },
   [TradeFormValidation.BalancesNotLoaded]: (context) => {
+    let errorMessage: string | undefined = undefined
+
+    if (context.balancesError?.includes('rate limit')) {
+      errorMessage = t`Request is being rate limited`
+    }
+
     return (
       <TradeFormBlankButton disabled={true}>
         <>
           <Trans>Couldn't load balances</Trans>
-          {context.balancesError ? <HelpTooltip text={<div>{context.balancesError}</div>} /> : null}
+          {errorMessage ? <HelpTooltip text={<div>{errorMessage}</div>} /> : null}
         </>
       </TradeFormBlankButton>
     )

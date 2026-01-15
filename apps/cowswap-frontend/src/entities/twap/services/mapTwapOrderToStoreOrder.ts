@@ -2,9 +2,9 @@ import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { emulateTwapAsOrder } from './emulateTwapAsOrder'
+import { TwapOrderItem, TwapOrderStatus } from 'modules/twap/types'
 
-import { TwapOrderItem, TwapOrderStatus } from '../types'
+import { emulateTwapAsOrder } from './emulateTwapAsOrder'
 
 const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,

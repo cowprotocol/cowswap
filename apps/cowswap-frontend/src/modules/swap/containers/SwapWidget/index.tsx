@@ -125,7 +125,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
-    amount: inputCurrencyAmount,
+    amount: !isSellTrade && isRateLoading ? null : inputCurrencyAmount,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
@@ -135,7 +135,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
-    amount: outputCurrencyAmount,
+    amount: isSellTrade && isRateLoading ? null : outputCurrencyAmount,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
@@ -156,7 +156,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     label: isSellTrade ? t`Receive (before fees)` : t`Buy exactly`,
   }
 
-  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+  const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const buyingFiatAmount = useMemo(
     () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
