@@ -27,8 +27,6 @@ export function OrdersTableContent({
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { account } = useWalletInfo()
 
-  // TODO: If isProviderNetworkUnsupported === true, then isWalletConnected === true even if connected. Should this be the case?
-
   if (!account) {
     return <ConnectWalletContent />
   }

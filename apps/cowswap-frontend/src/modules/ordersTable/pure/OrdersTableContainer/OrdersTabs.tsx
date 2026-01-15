@@ -167,11 +167,6 @@ export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
     navigate(buildOrdersTableUrl({ tabId, pageNumber: 1 }))
   }
 
-  // Don't render tabs if there are no tabs to show
-  if (!tabs || tabs.length === 0) {
-    return null
-  }
-
   return (
     <>
       <SelectContainer>
