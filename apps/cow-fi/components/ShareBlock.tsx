@@ -38,19 +38,19 @@ const shareButtons: {
     color: '#fff',
   },
   {
-    id: 'linkedin',
-    label: 'LinkedIn',
-    icon: `${ICON_PATH}/linkedin.svg`,
-    bg: '#0a66c2',
-    bgHover: '#1f74cf',
-    color: '#fff',
-  },
-  {
     id: 'reddit',
     label: 'Reddit',
     icon: `${ICON_PATH}/reddit.svg`,
     bg: '#ff4500',
     bgHover: '#ff5d24',
+    color: '#fff',
+  },
+  {
+    id: 'linkedin',
+    label: 'LinkedIn',
+    icon: `${ICON_PATH}/linkedin.svg`,
+    bg: '#0a66c2',
+    bgHover: '#1f74cf',
     color: '#fff',
   },
   {
@@ -61,18 +61,9 @@ const shareButtons: {
     bgHover: '#3adb74',
     color: '#fff',
   },
-  {
-    id: 'facebook',
-    label: 'Facebook',
-    icon: `${ICON_PATH}/facebook.svg`,
-    bg: '#1877f2',
-    bgHover: '#2b86f6',
-    color: '#fff',
-  },
 ]
 
-const actionButtons: { id: 'copy' | 'email' | 'web-share'; label: string; text?: string; icon: string }[] = [
-  { id: 'email', label: 'Email', text: 'Email', icon: `${ICON_PATH}/email.svg` },
+const actionButtons: { id: 'copy' | 'web-share'; label: string; text?: string; icon: string }[] = [
   { id: 'copy', label: 'Copy URL', text: 'Copy', icon: `${ICON_PATH}/copy-url.svg` },
   { id: 'web-share', label: 'Web Share', icon: `${ICON_PATH}/web-share.svg` },
 ]
@@ -146,7 +137,7 @@ function ShareButtons({
       {actionButtons.map(({ id, label, text, icon }) => {
         if (id === 'web-share' && !webShareSupported) return null
 
-        const onClick = id === 'copy' ? onCopy : id === 'email' ? () => onShareTarget('email') : onWebShare
+        const onClick = id === 'copy' ? onCopy : onWebShare
         const isCopied = id === 'copy' && copied
         const copiedColor = `var(${UI.COLOR_SUCCESS_TEXT})`
         const defaultColor = `var(${UI.COLOR_NEUTRAL_100})`
