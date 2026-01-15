@@ -25,9 +25,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     isTokenSelectOpen && !!chainsToSelect && (chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0)
 
   const consentFlow = useTokenSelectorConsentFlow()
-  const selectTokenWidgetNode = slots.selectTokenWidget ?? (
-    <SelectTokenWidget displayLpTokenLists customFlows={consentFlow} />
-  )
+  const selectTokenWidgetNode = slots.selectTokenWidget ?? <SelectTokenWidget customFlows={consentFlow} />
 
   const setShouldUseAutoSlippage = useSetShouldUseAutoSlippage()
 
