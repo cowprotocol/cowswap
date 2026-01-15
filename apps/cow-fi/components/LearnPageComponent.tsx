@@ -9,8 +9,6 @@ import { Font, Media, UI } from '@cowprotocol/ui'
 import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 
-import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
-
 import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { LazyImage } from '@/components/LazyImage'
