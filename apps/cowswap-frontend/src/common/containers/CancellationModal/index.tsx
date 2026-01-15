@@ -1,13 +1,17 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
+import { Trans } from '@lingui/react/macro'
+
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { CancellationModal as Pure } from 'common/pure/CancellationModal'
+import { OrderSummary } from 'common/pure/OrderSummary'
 
 import { useUltimateOrder } from '../../hooks/useUltimateOrder'
-import { computeOrderSummary } from '../../updaters/orders/utils'
+import { ReceiverInfo } from '../../pure/ReceiverInfo'
+import { getUltimateOrderTradeAmounts } from '../../updaters/orders/utils'
 
 export type CancellationModalProps = {
   isOpen: boolean
@@ -22,7 +26,17 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
 
   const orderSummary = useMemo(() => {
     if (!ultimateOrder) return undefined
-    return computeOrderSummary(ultimateOrder)
+
+    const { inputAmount, outputAmount } = getUltimateOrderTradeAmounts(ultimateOrder)
+    const receiver = ultimateOrder.bridgeOrderFromStore?.recipient ?? ultimateOrder.orderFromStore.receiver
+    const owner = ultimateOrder.orderFromStore.owner
+
+    return (
+      <>
+        <OrderSummary inputAmount={inputAmount} outputAmount={outputAmount} kind={ultimateOrder.orderFromStore.kind} />
+        <ReceiverInfo receiver={receiver} owner={owner} customPrefix={<Trans>to receiver</Trans>} />
+      </>
+    )
   }, [ultimateOrder])
 
   return <Pure isOpen={isOpen} onDismiss={onDismiss} context={context} orderSummary={orderSummary} />
