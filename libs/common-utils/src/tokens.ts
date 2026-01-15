@@ -26,7 +26,7 @@ export interface TokenIdentifier {
   chainId: number
 }
 
-export type TokenId = `${number}:${string}`
+export type TokenId = `${number}:${AddressKey}`
 
 export function getTokenId(token: TokenIdentifier): TokenId {
   return `${token.chainId}:${getTokenAddressKey(token.address)}`
