@@ -1779,10 +1779,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^7.2.9":
-  version "7.2.9"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-7.2.9.tgz#c437e5860ea9e6a3898023da05cccad9edcaa805"
-  integrity sha512-rAy7cG2xz+1z/jUU6avKNmViJWNE//JYxUojPz44kzwkMlrfistFHqO3J6CWyzrfoKdLcN1ZI5PiBX+sgxb1og==
+"@cowprotocol/cow-sdk@^7.2.10":
+  version "7.2.10"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-7.2.10.tgz#d043cb826c1d205aeb15d7a735e142f62c72dbd8"
+  integrity sha512-a3ePsKC20scYYqeBORNHMsjVh+Fe0lKMdWP+ztdwuyV7hKe+X/3Bf/4FXqS+hhbcNz9Iv8IDpdYT4GaeRCsCYg==
   dependencies:
     "@cowprotocol/sdk-app-data" "4.5.0"
     "@cowprotocol/sdk-common" "0.4.0"
@@ -1804,10 +1804,10 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/sdk-bridging@^1.1.2":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-1.2.0.tgz#ff1a376134137fa90a9e93c5dc67169323c5c70f"
-  integrity sha512-tt2MOEIO2+Wg/u0vEgAkKpp130yI/vpAkESsp1mWBEndtWsXjrK4/2UloKtM8wW6+47zYZHTRfIrhGIF5YtfRg==
+"@cowprotocol/sdk-bridging@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-1.3.0.tgz#ed5c73b1086f21f12499878b078c7caf14d27085"
+  integrity sha512-vUgV+JrIJPNNcF6pHmsidz4+x4eqXWacbZoauA0pYujwCrI/j6/bI+GfFcHPdEJuOS+6ypR6VbIYE2/JswtomQ==
   dependencies:
     "@cowprotocol/sdk-app-data" "4.5.0"
     "@cowprotocol/sdk-common" "0.4.0"
