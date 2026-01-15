@@ -3326,7 +3326,7 @@ msgstr "Details"
 
 #: apps/cowswap-frontend/src/legacy/state/orders/helpers.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
-#: apps/cowswap-frontend/src/modules/orders/pure/OrderNotificationContent/index.tsx
+#: apps/cowswap-frontend/src/modules/orders/containers/OrderNotification/index.tsx
 msgid "Order"
 msgstr "Order"
 
@@ -3707,8 +3707,8 @@ msgid "Please enter the base URL of your dapp, not the direct manifest.json path
 msgstr "Please enter the base URL of your dapp, not the direct manifest.json path"
 
 #: apps/cowswap-frontend/src/modules/orders/pure/PendingOrderNotification/index.tsx
-#~ msgid "submitted"
-#~ msgstr "submitted"
+msgid "submitted"
+msgstr "submitted"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix.tsx
 msgid "Because you are selling {nativeSymbol} (native currency)"
@@ -3842,7 +3842,7 @@ msgstr "first."
 msgid "No routes found"
 msgstr "No routes found"
 
-#: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
+#: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
 msgid "for at most"
 msgstr "for at most"
 
@@ -4219,6 +4219,7 @@ msgstr "Order surplus"
 msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts} parts</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
 msgstr "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts} parts</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "to"
@@ -4629,6 +4630,7 @@ msgstr "Add <0/> to {walletName}"
 msgid "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
 msgstr "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at least"
 msgstr "at least"
@@ -5384,7 +5386,7 @@ msgstr "Provided proxy address does not match {accountProxyLabelString} address!
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
 msgstr "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
 
-#: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
+#: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
 msgid "for at least"
 msgstr "for at least"
 
@@ -5494,7 +5496,7 @@ msgstr "Must be after {minDateStr} {timeZone}"
 msgid "Limit price"
 msgstr "Limit price"
 
-#: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
+#: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Buy"
 msgstr "Buy"
@@ -5617,6 +5619,7 @@ msgstr "Reset favorites"
 msgid "Wrap {nativeSymbol} failed"
 msgstr "Wrap {nativeSymbol} failed"
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at most"
 msgstr "at most"
@@ -5625,6 +5628,8 @@ msgstr "at most"
 msgid "View on explorer"
 msgstr "View on explorer"
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "for"
 msgstr "for"
@@ -6101,9 +6106,9 @@ msgstr "(also known as CoW Shed)"
 msgid "Loading bridge data <0/>"
 msgstr "Loading bridge data <0/>"
 
-#: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
+#: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Sell"
 msgstr "Sell"
