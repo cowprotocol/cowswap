@@ -1825,7 +1825,7 @@
   resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.4.0-pr-768-726fa70b.0/5994a4eb5d315b8ae97f29e231a121e2c012bd0e#5994a4eb5d315b8ae97f29e231a121e2c012bd0e"
   integrity sha512-9AR8gH7xxm/8oG/Qg6rWDLk0tGkXZ0bJZ5oTrx5q4hVaseSWYXcQparKnJoxoBj2qbTbGIQyK7CwBPc+beYx5w==
 
-"@cowprotocol/sdk-composable@0.1.23-pr-768-726fa70b.0\n":
+"@cowprotocol/sdk-composable@0.1.23-pr-768-726fa70b.0":
   version "0.1.23-pr-768-726fa70b.0"
   resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/0.1.23-pr-768-726fa70b.0/8ae9517a60b9ffc3510662f9ec761f42ac7252ad#8ae9517a60b9ffc3510662f9ec761f42ac7252ad"
   integrity sha512-0TtKRYjmZgzH7ZmfyqX1QGgi2eRgeGEYztCivlWYR7fkh+BVa+/xXqcbhVxlACstcKbjqhw5CQhCoDMz3vOifA==
