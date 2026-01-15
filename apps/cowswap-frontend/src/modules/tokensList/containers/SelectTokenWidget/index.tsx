@@ -2,10 +2,11 @@ import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
 import { customFlowsRegistryAtom } from './atoms'
-import { useViewWithFlows } from './hooks'
+import { useChainPanelState, useViewWithFlows } from './hooks'
 import { SelectTokenModal } from './internal'
 import { CustomFlowsRegistry, TokenSelectorView } from './types'
 
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 
@@ -61,6 +62,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone, customFlows
 
 function SelectTokenWidgetContent(): ReactNode {
   const flowResult = useViewWithFlows()
+  const { tradeType } = useSelectTokenWidgetState()
+  const { isEnabled: isChainPanelEnabled } = useChainPanelState(tradeType)
 
   // Generic flow content checks - applies to ALL views
   // If there's pre-flow content, render it instead of the base view
@@ -88,7 +91,7 @@ function SelectTokenWidgetContent(): ReactNode {
       // Main token list view
       return (
         <>
-          <styledEl.Wrapper>
+          <styledEl.Wrapper $hasChainPanel={isChainPanelEnabled}>
             <SelectTokenModal.Header />
             <SelectTokenModal.Search />
             <SelectTokenModal.ChainSelector />
