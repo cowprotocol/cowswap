@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
@@ -14,13 +15,20 @@ import {
 } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
 import { RwaConsentModalContainer, useRwaConsentModalState } from 'modules/rwa'
-import { useCloseTokenSelectWidget, useSelectTokenWidgetState, useTokenListAddingError } from 'modules/tokensList'
+import {
+  ImportTokenModal,
+  useCloseTokenSelectWidget,
+  useSelectTokenWidgetState,
+  useTokenListAddingError,
+} from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
+import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+import { useTradeState } from '../../hooks/useTradeState'
 import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 import { WrapNativeModal } from '../WrapNativeModal'
 
@@ -33,6 +41,8 @@ interface TradeWidgetModalsProps {
 // eslint-disable-next-line max-lines-per-function
 export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetModalsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
+  const { state: rawState } = useTradeState()
+  const importTokenCallback = useAddUserToken()
 
   const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
   const { field } = useSelectTokenWidgetState()
@@ -48,6 +58,10 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const { isModalOpen: isRwaConsentModalOpen, closeModal: closeRwaConsentModal } = useRwaConsentModalState()
+  const {
+    tokensToImport,
+    modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
+  } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
 
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
@@ -55,10 +69,11 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
   const updateApproveAmountState = useSetUserApproveAmountModalState()
 
   const resetAllScreens = useCallback(
-    (shouldCloseTokenSelectWidget = true) => {
+    (shouldCloseTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
       closeTradeConfirm()
       closeZeroApprovalModal()
       closeRwaConsentModal()
+      if (shouldCloseAutoImportModal) closeAutoImportModal()
       if (shouldCloseTokenSelectWidget) closeTokenSelectWidget()
       setWrapNativeScreenState({ isOpen: false })
       resetApproveModalState()
@@ -69,6 +84,7 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
       closeTradeConfirm,
       closeZeroApprovalModal,
       closeRwaConsentModal,
+      closeAutoImportModal,
       closeTokenSelectWidget,
       setWrapNativeScreenState,
       resetApproveModalState,
@@ -85,10 +101,10 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
   const error = tokenListAddingError || approveError || confirmError
 
   /**
-   * Close all modals on account change
+   * Close all modals besides auto-import on account change
    */
   useEffect(() => {
-    resetAllScreens(true)
+    resetAllScreens(true, false)
   }, [account, resetAllScreens])
 
   /**
@@ -125,6 +141,10 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
 
   if (changeApproveAmountInProgress) {
     return <TradeChangeApproveAmountModal />
+  }
+
+  if (isAutoImportModalOpen) {
+    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
   }
 
   if (isWrapNativeOpen) {
