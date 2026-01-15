@@ -54,9 +54,9 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone, customFlows
   }, [customFlows, setCustomFlows])
 
   return (
-    <SelectTokenModal.Root>
+    <SelectTokenModal>
       <SelectTokenWidgetContent />
-    </SelectTokenModal.Root>
+    </SelectTokenModal>
   )
 }
 

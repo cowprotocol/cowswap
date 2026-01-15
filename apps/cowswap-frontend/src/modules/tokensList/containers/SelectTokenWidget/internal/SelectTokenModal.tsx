@@ -29,11 +29,11 @@ import {
 } from '../hooks'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
 
-export interface RootProps {
+export interface SelectTokenModalProps {
   children: ReactNode
 }
 
-export function Root({ children }: RootProps): ReactNode {
+export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode {
   const isOpen = useWidgetOpenState()
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const widgetState = useSelectTokenWidgetState()
@@ -71,18 +71,16 @@ export function Root({ children }: RootProps): ReactNode {
   return typeof document === 'undefined' ? overlay : createPortal(overlay, document.body)
 }
 
-Root.displayName = 'SelectTokenModal.Root'
-
 // Slot components
-export const Header: typeof ConnectedHeader = ConnectedHeader
-export const Search: typeof ConnectedSearch = ConnectedSearch
-export const TokenList: typeof ConnectedTokenList = ConnectedTokenList
-export const Panel: typeof NetworkPanel = NetworkPanel
-export const ChainSelector: typeof ConnectedChainSelector = ConnectedChainSelector
-export const DesktopChainPanel: typeof ConnectedDesktopChainPanel = ConnectedDesktopChainPanel
+SelectTokenModal.Header = ConnectedHeader
+SelectTokenModal.Search = ConnectedSearch
+SelectTokenModal.TokenList = ConnectedTokenList
+SelectTokenModal.Panel = NetworkPanel
+SelectTokenModal.ChainSelector = ConnectedChainSelector
+SelectTokenModal.DesktopChainPanel = ConnectedDesktopChainPanel
 
 // Blocking views
-export const ImportToken: typeof ImportTokenView = ImportTokenView
-export const ImportList: typeof ImportListView = ImportListView
-export const Manage: typeof ManageView = ManageView
-export const LpToken: typeof LpTokenView = LpTokenView
+SelectTokenModal.ImportToken = ImportTokenView
+SelectTokenModal.ImportList = ImportListView
+SelectTokenModal.Manage = ManageView
+SelectTokenModal.LpToken = LpTokenView

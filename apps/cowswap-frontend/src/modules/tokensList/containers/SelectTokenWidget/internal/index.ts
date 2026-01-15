@@ -1,5 +1,5 @@
-export * as SelectTokenModal from './SelectTokenModal'
-export type { RootProps as SelectTokenModalProps } from './SelectTokenModal'
+export { SelectTokenModal } from './SelectTokenModal'
+export type { SelectTokenModalProps } from './SelectTokenModal'
 
 export {
   Header,
