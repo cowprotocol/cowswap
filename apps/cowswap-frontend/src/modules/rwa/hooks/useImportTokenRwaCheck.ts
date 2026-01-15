@@ -12,6 +12,13 @@ interface UseImportTokenRwaCheckResult {
   rwaTokenInfo: RwaTokenInfo | null
 }
 
+const RWA_STATUS_MAP: Readonly<Record<RwaTokenStatus, ImportTokenRwaStatus>> = {
+  [RwaTokenStatus.Allowed]: 'allowed',
+  [RwaTokenStatus.Restricted]: 'restricted',
+  [RwaTokenStatus.RequiredConsent]: 'requires-consent',
+  [RwaTokenStatus.ConsentIsSigned]: 'allowed',
+}
+
 export function useImportTokenRwaCheck(): UseImportTokenRwaCheckResult {
   const { tokenToImport } = useSelectTokenWidgetState()
 
@@ -20,21 +27,7 @@ export function useImportTokenRwaCheck(): UseImportTokenRwaCheckResult {
     outputCurrency: undefined,
   })
 
-  const rwaStatus = mapStatus(status)
+  const rwaStatus = RWA_STATUS_MAP[status] ?? null
 
   return { tokenToImport, rwaStatus, rwaTokenInfo }
-}
-
-function mapStatus(status: RwaTokenStatus): ImportTokenRwaStatus {
-  switch (status) {
-    case RwaTokenStatus.Restricted:
-      return 'restricted'
-    case RwaTokenStatus.RequiredConsent:
-      return 'requires-consent'
-    case RwaTokenStatus.Allowed:
-    case RwaTokenStatus.ConsentIsSigned:
-      return 'allowed'
-    default:
-      return null
-  }
 }
