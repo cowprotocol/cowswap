@@ -27,7 +27,7 @@ export function useChainPanelState(tradeType: TradeType | undefined): ChainPanel
   const isBridgeFeatureEnabled = useIsBridgingEnabled()
 
   const shouldDisableForYield = tradeType === TradeType.YIELD && !ENABLE_YIELD_CHAIN_PANEL
-  const isEnabled = isBridgeFeatureEnabled && Boolean(chainsToSelect) && !shouldDisableForYield
+  const isEnabled = isBridgeFeatureEnabled && Boolean(chainsToSelect?.chains?.length) && !shouldDisableForYield
 
   return useMemo(
     () => ({
