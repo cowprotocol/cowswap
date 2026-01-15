@@ -15,8 +15,10 @@ export function isNativeAddress(tokenAddress: string, chainId: ChainId): boolean
   return native && doesTokenMatchSymbolOrAddress(native, tokenAddressLower)
 }
 
-export function getTokenAddressKey(address: string): string {
-  return address.toLowerCase()
+export type AddressKey = `0x${string}`
+
+export function getTokenAddressKey(address: string): AddressKey {
+  return `0x${address.toLowerCase()}` as AddressKey
 }
 
 export interface TokenIdentifier {
