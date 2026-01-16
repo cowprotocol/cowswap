@@ -2,9 +2,10 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import { ORDERS_TABLE_TABS, OrderTabId } from '../const/tabs'
 import { OrdersTableList, TabParams } from '../types'
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 export function useTabs(ordersList: OrdersTableList, currentTabId: OrderTabId): TabParams[] {
   const { account } = useWalletInfo()
@@ -31,7 +32,7 @@ export function useTabs(ordersList: OrdersTableList, currentTabId: OrderTabId): 
       if (tab.id === OrderTabId.signing) {
         return ordersList[tab.id].length > 0
       }
-      
+
       return false
     }).map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: ordersList[tab.id].length }

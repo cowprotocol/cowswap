@@ -1,5 +1,7 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { OrderTableRow } from './OrderTableRow'
@@ -12,7 +14,6 @@ import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../../OrdersTablePagination'
 import { TABLE_HEADERS } from '../tableHeaders'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId

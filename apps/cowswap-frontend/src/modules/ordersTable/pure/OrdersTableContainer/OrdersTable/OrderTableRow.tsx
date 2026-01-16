@@ -1,5 +1,7 @@
 import React, { ReactNode, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { OrderTabId } from '../../../const/tabs'
 import { OrderRow } from '../../../containers/OrderRow'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
@@ -8,7 +10,6 @@ import { OrderTableItem } from '../../../types'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 import { TableGroup } from '../TableGroup'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
@@ -34,14 +35,8 @@ export function OrderTableRow({ item, currentTab }: OrderTableRowProps): ReactNo
 
   if (!tableState) return null
 
-  const {
-    pendingOrdersPrices,
-    balancesAndAllowances,
-    getSpotPrice,
-    orderActions,
-    isTwapTable,
-    allowsOffchainSigning,
-  } = tableState
+  const { pendingOrdersPrices, balancesAndAllowances, getSpotPrice, orderActions, isTwapTable, allowsOffchainSigning } =
+    tableState
 
   const isRowSelectable = allowsOffchainSigning
 

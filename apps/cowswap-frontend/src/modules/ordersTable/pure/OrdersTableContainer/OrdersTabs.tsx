@@ -3,6 +3,7 @@ import { ReactNode, ChangeEvent } from 'react'
 import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Media, UI } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -14,7 +15,6 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { OrderTab, OrderTabId } from '../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 const Tabs = styled.div`
   display: flex;

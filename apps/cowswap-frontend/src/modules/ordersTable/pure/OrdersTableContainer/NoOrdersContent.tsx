@@ -1,11 +1,11 @@
 import { ReactNode, memo } from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
-import { useTheme } from '@cowprotocol/common-hooks'
 
 import * as styledEl from './OrdersTableContainer.styled'
 

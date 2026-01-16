@@ -1,5 +1,4 @@
-import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import type { Command } from '@cowprotocol/types'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import type { Currency, Price, Token } from '@uniswap/sdk-core'

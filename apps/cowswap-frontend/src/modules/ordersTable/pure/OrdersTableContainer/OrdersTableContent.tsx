@@ -1,7 +1,8 @@
 import { ReactNode } from 'react'
 
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { ConnectWalletContent } from './ConnectWalletContent'
 import { NoOrdersContent } from './NoOrdersContent'
@@ -17,11 +18,7 @@ interface OrdersTableContentProps {
   showOnlyFilled?: boolean
 }
 
-export function OrdersTableContent({
-  searchTerm,
-  showOnlyFilled,
-  currentTab,
-}: OrdersTableContentProps): ReactNode {
+export function OrdersTableContent({ searchTerm, showOnlyFilled, currentTab }: OrdersTableContentProps): ReactNode {
   const { filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
   const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
