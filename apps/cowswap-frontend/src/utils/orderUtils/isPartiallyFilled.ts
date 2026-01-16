@@ -1,7 +1,9 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
+
 import { ParsedOrder, isParsedOrder } from './parseOrder'
+
 const CANT_BE_PARTIALLY_FILLED_STATUSES = [OrderStatus.FULFILLED, OrderStatus.PENDING]
 
 export function isPartiallyFilled(order: Order | ParsedOrder): boolean {
@@ -17,7 +19,5 @@ export function isPartiallyFilled(order: Order | ParsedOrder): boolean {
 
   const { executedSellAmount, executedBuyAmount } = apiAdditionalInfo
 
-  return isSellOrder(order.kind)
-    ? +executedSellAmount > 0
-    : +executedBuyAmount > 0
+  return isSellOrder(order.kind) ? +executedSellAmount > 0 : +executedBuyAmount > 0
 }
