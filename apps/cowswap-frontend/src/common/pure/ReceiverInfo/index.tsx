@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { areAddressesEqual, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/react/macro'
@@ -8,18 +10,24 @@ import { ExplorerLink } from 'legacy/components/ExplorerLink'
 interface ReceiverInfoProps {
   receiver: Nullish<string>
   owner: string
+  customPrefix?: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ReceiverInfo({ receiver, owner }: ReceiverInfoProps) {
+export function ReceiverInfo({ receiver, owner, customPrefix }: ReceiverInfoProps): ReactNode {
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
 
   return (
     <>
       {toAddress && receiver && !areAddressesEqual(receiver, owner) && (
         <div>
-          <Trans>Receiver</Trans>: <ExplorerLink id={receiver} label={toAddress} type="address" />
+          {customPrefix ? (
+            customPrefix
+          ) : (
+            <>
+              <Trans>Receiver</Trans>:
+            </>
+          )}{' '}
+          <ExplorerLink id={receiver} label={toAddress} type="address" />
         </div>
       )}
     </>
