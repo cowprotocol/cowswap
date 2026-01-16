@@ -13,6 +13,7 @@ export type {
 export { customFlowsRegistryAtom } from './containers/SelectTokenWidget/atoms'
 
 export { BlockedListSourcesUpdater } from './updaters/BlockedListSourcesUpdater'
+export { RecentTokensStorageUpdater } from './updaters/RecentTokensStorageUpdater'
 
 export { ImportTokenModal } from './pure/ImportTokenModal'
 export { AddIntermediateToken } from './pure/AddIntermediateToken'

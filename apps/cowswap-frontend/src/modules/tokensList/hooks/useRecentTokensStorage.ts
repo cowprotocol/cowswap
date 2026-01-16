@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getTokenId } from '@cowprotocol/common-utils'
 
+import { recentTokensStorageAtom } from '../state/recentTokensStorageAtom'
 import {
   buildNextStoredTokens,
-  getStoredTokenKey,
-  persistStoredTokens,
-  readStoredTokens,
   RECENT_TOKENS_LIMIT,
   type StoredRecentTokensByChain,
 } from '../utils/recentTokensStorage'
@@ -23,61 +22,37 @@ interface UseRecentTokensStorageParams {
   maxItems?: number
 }
 
+/**
+ * Hook that provides recent tokens storage state and callbacks.
+ * Side-effects (persistence, favorites sync) are handled by RecentTokensStorageUpdater.
+ */
 export function useRecentTokensStorage({
   favoriteKeys,
   maxItems = RECENT_TOKENS_LIMIT,
 }: UseRecentTokensStorageParams): RecentTokensStorageState {
-  const [storedTokensByChain, setStoredTokensByChain] = useState<StoredRecentTokensByChain>(() =>
-    readStoredTokens(maxItems),
-  )
-
-  // Persist to localStorage when state changes
-  useEffect(() => {
-    persistStoredTokens(storedTokensByChain)
-  }, [storedTokensByChain])
-
-  // Remove tokens that became favorites
-  useEffect(() => {
-    setStoredTokensByChain((prev) => {
-      const nextEntries: StoredRecentTokensByChain = {}
-      let didChange = false
-
-      for (const [chainKey, tokens] of Object.entries(prev)) {
-        const chainId = Number(chainKey)
-        const filtered = tokens.filter((token) => !favoriteKeys.has(getStoredTokenKey(token)))
-
-        if (filtered.length) {
-          nextEntries[chainId] = filtered
-        }
-
-        didChange = didChange || filtered.length !== tokens.length
-      }
-
-      return didChange ? nextEntries : prev
-    })
-  }, [favoriteKeys])
+  const [storedTokensByChain, setStoredTokensByChain] = useAtom(recentTokensStorageAtom)
 
   const addRecentToken = useCallback(
     (token: TokenWithLogo) => {
       if (favoriteKeys.has(getTokenId(token))) return
 
-      setStoredTokensByChain((prev) => {
-        const next = buildNextStoredTokens(prev, token, maxItems)
-        persistStoredTokens(next)
-        return next
-      })
+      setStoredTokensByChain((prev) => buildNextStoredTokens(prev, token, maxItems))
     },
-    [favoriteKeys, maxItems],
+    [favoriteKeys, maxItems, setStoredTokensByChain],
   )
 
-  const clearRecentTokens = useCallback((chainId: number) => {
-    setStoredTokensByChain((prev) => {
-      if (!prev[chainId]?.length) return prev
-      const next: StoredRecentTokensByChain = { ...prev, [chainId]: [] }
-      persistStoredTokens(next)
-      return next
-    })
-  }, [])
+  const clearRecentTokens = useCallback(
+    (chainId: number) => {
+      setStoredTokensByChain((prev) => {
+        if (!prev[chainId]?.length) return prev
+        return { ...prev, [chainId]: [] }
+      })
+    },
+    [setStoredTokensByChain],
+  )
 
-  return { storedTokensByChain, addRecentToken, clearRecentTokens }
+  return useMemo(
+    () => ({ storedTokensByChain, addRecentToken, clearRecentTokens }),
+    [storedTokensByChain, addRecentToken, clearRecentTokens],
+  )
 }
