@@ -1,6 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
 
 import { SelectTokenContext } from '../../types'
 import { TokenListItem } from '../TokenListItem'
@@ -22,7 +23,7 @@ export function TokenListItemContainer({ token, context }: TokenListItemContaine
     isWalletConnected,
   } = context
 
-  const addressLowerCase = token.address.toLowerCase()
+  const addressKey = getTokenAddressKey(token.address)
   const handleSelectToken = useCallback(
     (tokenToSelect: TokenWithLogo) => {
       onTokenListItemClick?.(tokenToSelect)
@@ -33,11 +34,11 @@ export function TokenListItemContainer({ token, context }: TokenListItemContaine
 
   return (
     <TokenListItem
-      isUnsupported={!!unsupportedTokens[addressLowerCase]}
-      isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
+      isUnsupported={!!unsupportedTokens[addressKey]}
+      isPermitCompatible={permitCompatibleTokens[addressKey]}
       selectedToken={selectedToken}
       token={token}
-      balance={balances ? balances[addressLowerCase] : undefined}
+      balance={balances ? balances[addressKey] : undefined}
       onSelectToken={handleSelectToken}
       isWalletConnected={isWalletConnected}
       tokenListTags={tokenListTags}
