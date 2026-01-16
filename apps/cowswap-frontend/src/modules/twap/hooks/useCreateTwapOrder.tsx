@@ -191,7 +191,7 @@ export function useCreateTwapOrder() {
 
         // TODO: Clear filters if the new order is not visible.
 
-        // Navigate to all orders after successful placement
+        // Navigate to open orders after successful placement
         navigateToOrdersTableTab(OrderTabId.open)
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)

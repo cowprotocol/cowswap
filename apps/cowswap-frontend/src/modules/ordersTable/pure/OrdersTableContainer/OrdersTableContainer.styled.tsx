@@ -47,7 +47,7 @@ export const Content = styled.div`
   }
 `
 
-export const ConnecWalletIconWrapper = styled.span`
+export const ConnectWalletIconWrapper = styled.span`
   --size: 130px;
   --backgroundColor: var(${UI.COLOR_PAPER_DARKER});
   --iconFillColor: var(${UI.COLOR_TEXT});
@@ -97,7 +97,7 @@ export const ConnecWalletIconWrapper = styled.span`
   }
 `
 
-export const UnsupportedNetworkIconWrapper = styled(ConnecWalletIconWrapper)`
+export const UnsupportedNetworkIconWrapper = styled(ConnectWalletIconWrapper)`
   --backgroundColor: var(${UI.COLOR_DANGER_BG});
   --iconFillColor: transparent;
   --iconColor: var(${UI.COLOR_DANGER_TEXT});

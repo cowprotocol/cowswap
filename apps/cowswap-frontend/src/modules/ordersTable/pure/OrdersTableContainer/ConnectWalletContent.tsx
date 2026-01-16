@@ -20,9 +20,9 @@ export function ConnectWalletContent(): ReactNode {
   return (
     <styledEl.Content>
       {walletIcon ? (
-        <styledEl.ConnecWalletIconWrapper>
+        <styledEl.ConnectWalletIconWrapper>
           <SVG src={walletIcon} description={t`connect wallet`} />
-        </styledEl.ConnecWalletIconWrapper>
+        </styledEl.ConnectWalletIconWrapper>
       ) : null}
       <h4>
         <Trans>Connect a wallet</Trans>
