@@ -2,7 +2,7 @@
  * tokenListViewAtom - Minimal UI state for the token list
  *
  * Only holds local UI state (searchInput). Token data is fetched
- * directly by components via useTokenListData hook.
+ * directly by components via useTokenListContext hook.
  */
 import { atom } from 'jotai'
 

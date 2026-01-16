@@ -1752,7 +1752,7 @@ msgstr "Unlimited one-time"
 msgid "Use Safe web app"
 msgstr "Use Safe web app"
 
-#: apps/cowswap-frontend/src/modules/orders/pure/ReceiverInfo/index.tsx
+#: apps/cowswap-frontend/src/common/pure/ReceiverInfo/index.tsx
 msgid "Receiver"
 msgstr "Receiver"
 
@@ -2140,6 +2140,10 @@ msgstr "Sell token"
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/AccountIcon.tsx
 msgid "Warning sign. Wallet not supported"
 msgstr "Warning sign. Wallet not supported"
+
+#: apps/cowswap-frontend/src/common/containers/CancellationModal/index.tsx
+msgid "to receiver"
+msgstr "to receiver"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Show progress"

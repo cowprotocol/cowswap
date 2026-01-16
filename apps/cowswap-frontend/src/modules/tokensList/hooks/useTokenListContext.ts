@@ -1,5 +1,5 @@
 /**
- * useTokenListData - Direct hook that combines token data from source hooks
+ * useTokenListContext - Direct hook that combines token data from source hooks
  *
  * Replaces the atom hydration pattern. Components call this directly
  * instead of reading from a hydrated atom.
@@ -15,7 +15,7 @@ import { useTokensToSelect } from './useTokensToSelect'
 import { useRecentTokenSection } from '../containers/SelectTokenWidget/hooks/useRecentTokenSection'
 import { SelectTokenContext } from '../types'
 
-export interface TokenListData {
+export interface TokenListContext {
   // Token lists
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
@@ -37,7 +37,7 @@ export interface TokenListData {
   selectTokenContext: SelectTokenContext
 }
 
-export function useTokenListData(): TokenListData {
+export function useTokenListContext(): TokenListContext {
   const { chainId: walletChainId } = useWalletInfo()
   const widgetState = useSelectTokenWidgetState()
   const tokensState = useTokensToSelect()

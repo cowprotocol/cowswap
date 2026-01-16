@@ -4,7 +4,7 @@ import { getTokenId } from '@cowprotocol/common-utils'
 import { Loader } from '@cowprotocol/ui'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
-import { useTokenListData } from '../../hooks/useTokenListData'
+import { useTokenListContext } from '../../hooks/useTokenListContext'
 import { useTokenListViewState } from '../../hooks/useTokenListViewState'
 import * as styledEl from '../SelectTokenModal/styled'
 import { TokensVirtualList } from '../TokensVirtualList'
@@ -14,7 +14,7 @@ export function TokensContent(): ReactNode {
   const { searchInput } = useTokenListViewState()
 
   // Token data directly from source hooks
-  const { favoriteTokens, recentTokens, areTokensLoading, allTokens, onClearRecentTokens } = useTokenListData()
+  const { favoriteTokens, recentTokens, areTokensLoading, allTokens, onClearRecentTokens } = useTokenListContext()
 
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
   const shouldShowRecentsInline = !areTokensLoading && !searchInput && recentTokens.length > 0

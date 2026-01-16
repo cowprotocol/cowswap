@@ -12,7 +12,7 @@ import { buildVirtualRows, sortTokensByBalance } from './tokensVirtualListUtils'
 import { TokensVirtualRowRenderer } from './TokensVirtualRowRenderer'
 import { TokensVirtualRow } from './types'
 
-import { useTokenListData } from '../../hooks/useTokenListData'
+import { useTokenListContext } from '../../hooks/useTokenListContext'
 
 export interface TokensVirtualListProps {
   tokensToDisplay: TokenWithLogo[]
@@ -27,7 +27,7 @@ export function TokensVirtualList({
   recentTokens,
   onClearRecentTokens,
 }: TokensVirtualListProps): ReactNode {
-  const { selectTokenContext, hideFavoriteTokensTooltip, selectedTargetChainId } = useTokenListData()
+  const { selectTokenContext, hideFavoriteTokensTooltip, selectedTargetChainId } = useTokenListContext()
   const { values: balances } = selectTokenContext.balancesState
   const { isYieldEnabled } = useFeatureFlags()
 
