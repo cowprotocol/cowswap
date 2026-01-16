@@ -108,8 +108,5 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
     return RwaTokenStatus.RequiredConsent
   }, [isRwaGeoblockEnabled, rwaTokenInfo, geoStatus.country, consentStatus])
 
-  return {
-    status,
-    rwaTokenInfo,
-  }
+  return useMemo(() => ({ status, rwaTokenInfo }), [status, rwaTokenInfo])
 }

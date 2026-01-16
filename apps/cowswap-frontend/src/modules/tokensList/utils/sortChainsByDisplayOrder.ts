@@ -1,10 +1,13 @@
 import { SORTED_CHAIN_IDS } from '@cowprotocol/common-const'
 import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-const CHAIN_ORDER = SORTED_CHAIN_IDS.reduce<Record<SupportedChainId, number>>((acc, chainId, index) => {
-  acc[chainId] = index
-  return acc
-}, {} as Record<SupportedChainId, number>)
+const CHAIN_ORDER = SORTED_CHAIN_IDS.reduce<Record<SupportedChainId, number>>(
+  (acc, chainId, index) => {
+    acc[chainId] = index
+    return acc
+  },
+  {} as Record<SupportedChainId, number>,
+)
 
 interface SortOptions {
   pinChainId?: ChainInfo['id']

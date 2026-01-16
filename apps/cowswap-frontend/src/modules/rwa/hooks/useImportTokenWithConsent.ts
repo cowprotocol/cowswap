@@ -49,5 +49,5 @@ export function useImportTokenWithConsent({
     [account, consentKey, confirmConsent, importToken, onSelectToken, closeWidget],
   )
 
-  return { importWithConsent }
+  return useMemo(() => ({ importWithConsent }), [importWithConsent])
 }

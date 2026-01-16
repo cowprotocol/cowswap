@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { useSelectTokenWidgetState } from 'modules/tokensList'
@@ -29,5 +31,5 @@ export function useImportTokenRwaCheck(): UseImportTokenRwaCheckResult {
 
   const rwaStatus = RWA_STATUS_MAP[status] ?? null
 
-  return { tokenToImport, rwaStatus, rwaTokenInfo }
+  return useMemo(() => ({ tokenToImport, rwaStatus, rwaTokenInfo }), [tokenToImport, rwaStatus, rwaTokenInfo])
 }
