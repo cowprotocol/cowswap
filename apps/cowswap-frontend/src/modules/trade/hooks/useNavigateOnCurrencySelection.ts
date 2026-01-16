@@ -10,6 +10,8 @@ import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
+import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
+
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
@@ -69,9 +71,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       const targetInputCurrency = isInputField ? currency : inputCurrency
       const targetOutputCurrency = isInputField ? outputCurrency : currency
 
-      const isBridge = Boolean(
-        targetInputCurrency && targetOutputCurrency && targetInputCurrency.chainId !== targetOutputCurrency.chainId,
-      )
+      const isBridge = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
 
       const inputCurrencyId = (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? null
       const outputCurrencyId = outputCurrency
