@@ -6,6 +6,16 @@ export interface DisabledChainTooltipState {
   hideTooltip(): void
 }
 
+/**
+ * Manages tooltip visibility for disabled chain selectors.
+ *
+ * Provides toggle behavior where clicking the same chain hides the tooltip,
+ * and clicking a different chain switches to that tooltip. The tooltip
+ * automatically hides after the specified duration.
+ *
+ * @param durationMs - milliseconds before the tooltip auto-hides
+ * @returns State and handlers for controlling tooltip visibility
+ */
 export function useDisabledChainTooltip(durationMs: number): DisabledChainTooltipState {
   const [activeTooltipChainId, setActiveTooltipChainId] = useState<number | null>(null)
   const hideTimerRef = useRef<number | null>(null)
