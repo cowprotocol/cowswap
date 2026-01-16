@@ -1,4 +1,4 @@
-export type ShareTarget = 'x' | 'facebook' | 'linkedin' | 'reddit' | 'telegram' | 'whatsapp' | 'email'
+export type ShareTarget = 'x' | 'linkedin' | 'reddit' | 'telegram' | 'whatsapp' | 'email'
 
 const enc = encodeURIComponent
 
@@ -6,8 +6,6 @@ export function buildShareHref(target: ShareTarget, url: string, title: string):
   switch (target) {
     case 'x':
       return `https://twitter.com/intent/tweet?url=${enc(url)}&text=${enc(title)}`
-    case 'facebook':
-      return `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`
     case 'linkedin':
       return `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`
     case 'reddit':
