@@ -55,9 +55,6 @@ export function useOrdersTableList(
             return acc
           }
 
-          // Add to 'all' list regardless of status
-          acc.all.push(item)
-
           const isPending = PENDING_STATES.includes(order.status)
           const isSigning = order.status === OrderStatus.PRESIGNATURE_PENDING
 
@@ -110,7 +107,7 @@ export function useOrdersTableList(
 
           return acc
         },
-        { open: [], history: [], unfillable: [], signing: [], all: [] },
+        { open: [], history: [], unfillable: [], signing: [] },
       ),
     [
       allSortedOrders,
