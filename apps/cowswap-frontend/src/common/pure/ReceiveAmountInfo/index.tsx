@@ -51,7 +51,6 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
   const hasProtocolFee = hasValidFee(protocolFeeAmount, protocolFeeBps)
   const hasAnyFee = hasPartnerFee || hasProtocolFee
   const hasNetworkFee = !isFractionFalsy(networkFeeAmount)
-  const hasFee = hasNetworkFee || hasAnyFee
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
 
@@ -72,7 +71,9 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
       {hasPartnerFee && <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
 
-      <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
+      {hasNetworkFee && (
+        <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasAnyFee} />
+      )}
 
       {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
 
