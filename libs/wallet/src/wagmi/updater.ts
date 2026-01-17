@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
@@ -50,7 +50,7 @@ function useWalletDetails(account?: Address): WalletDetails {
       walletName,
       icon,
       ensName: ensName || undefined,
-      isSupportedWallet: checkIsSupportedWallet(walletName), // TODO do we need to keep not supporting those?
+      isSupportedWallet: checkIsSupportedWallet(walletName),
 
       // TODO: For now, all SC wallets use pre-sign instead of offchain signing
       // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
@@ -60,21 +60,21 @@ function useWalletDetails(account?: Address): WalletDetails {
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
-// TODO use safe sdk
 function useSafeInfo(_walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { connected, safe } = useSafeAppsSDK()
 
-  return useMemo(
-    () =>
-      connected
-        ? {
-            ...safe,
-            address: safe.safeAddress,
-            nonce: '0', // TODO
-          }
-        : undefined,
-    [connected, safe],
-  ) // TODO try fetching info if not connected through safe
+  const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
+
+  useEffect(() => {
+    if (connected) {
+      setSafeInfo({ ...safe, address: safe.safeAddress, nonce: '0' })
+    } else {
+      // TODO M-3 COW-569
+      // fetch safe info from api
+    }
+  }, [connected, safe])
+
+  return safeInfo
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
