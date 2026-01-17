@@ -1,9 +1,10 @@
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { LAUNCH_DARKLY_VIEM_MIGRATION, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
+import { useCapabilities } from 'wagmi'
 
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 
@@ -11,7 +12,7 @@ import { useIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
 import { useWalletInfo } from '../hooks'
 
 export type WalletCapabilities = {
-  atomicBatch?: { supported: boolean }
+  atomic?: { status: 'supported' | 'ready' | 'unsupported' }
 }
 
 const requestTimeout = ms`10s`
@@ -41,7 +42,10 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
 
-  return useSWR(
+  const capabilities = useCapabilities({ account, chainId })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const swrResponse = useSWR<WalletCapabilities | undefined, any, any>(
     shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId
       ? [provider, account, chainId]
       : null,
@@ -73,4 +77,11 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
     },
     SWR_NO_REFRESH_OPTIONS,
   )
+
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    // TODO the return type for this function will be adjusted on M-7 COW-572
+    return { ...capabilities, mutate: async () => undefined, isValidating: false }
+  }
+
+  return swrResponse
 }

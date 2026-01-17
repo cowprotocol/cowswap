@@ -11,11 +11,12 @@ import { useWalletInfo } from '../hooks'
 export type SendBatchTxCallback = (txs: MetaTransactionData[]) => Promise<string>
 
 export function useSendBatchTransactions(): SendBatchTxCallback {
+  // TODO this will be fixed in M-3 COW-569
   const safeAppsSdk = useSafeAppsSdk()
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const { data: capabilities } = useWalletCapabilities()
-  const isAtomicBatchSupported = !!capabilities?.atomicBatch?.supported
+  const isAtomicBatchSupported = capabilities?.atomic?.status === 'supported'
 
   return useCallback(
     async (txs: MetaTransactionData[]) => {
