@@ -38,10 +38,10 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
-function useWalletDetails(account?: Address): WalletDetails {
+function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
   const { data: ensName } = useEnsName({ address: account })
   const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData()
+  const { walletName, icon } = useWalletMetaData(standaloneMode)
   const isSafeApp = useIsSafeApp()
 
   return useMemo(() => {
@@ -77,10 +77,15 @@ function useSafeInfo(_walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   return safeInfo
 }
 
+interface WalletUpdaterProps {
+  standaloneMode?: boolean
+}
+
+// TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function WalletUpdater() {
+export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
   const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account)
+  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
   const gnosisSafeInfo = useSafeInfo(walletInfo)
 
   const setWalletInfo = useSetAtom(walletInfoAtom)

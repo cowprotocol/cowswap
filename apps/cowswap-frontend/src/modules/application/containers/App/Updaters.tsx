@@ -83,7 +83,7 @@ export function Updaters(): ReactNode {
       {/*Set custom chainId only when it differs from the wallet chainId*/}
       {/*MultiCallUpdater will use wallet network by default if custom chainId is not provided*/}
       <MultiCallUpdater chainId={sourceChainSource === 'wallet' ? undefined : sourceChainId} />
-      <WalletUpdater />
+      <WalletUpdater standaloneMode={standaloneMode} />
       <LegacyWalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />
