@@ -8,7 +8,8 @@ import { useCapabilities } from 'wagmi'
 
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 
-import { useIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
+import { useIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
+import { useIsWalletConnect as legacyUseIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
 import { useWalletInfo } from '../hooks'
 
 export type WalletCapabilities = {
@@ -38,11 +39,17 @@ function shouldCheckCapabilities(
 
 export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefined> {
   const provider = useWalletProvider()
-  const isWalletConnect = useIsWalletConnect()
+  const newIsWalletConnect = useIsWalletConnect()
+  const legacyIsWalletConnect = legacyUseIsWalletConnect()
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
 
   const capabilities = useCapabilities({ account, chainId })
+
+  let isWalletConnect = legacyIsWalletConnect
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isWalletConnect = newIsWalletConnect
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const swrResponse = useSWR<WalletCapabilities | undefined, any, any>(
