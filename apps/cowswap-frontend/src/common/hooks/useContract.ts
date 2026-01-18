@@ -44,6 +44,7 @@ export function useContract<T extends Contract = Contract>(
   withSignerIfPossible = true,
   customProvider?: Web3Provider,
 ): UseContractResult<T> {
+  // TODO M-6 COW-573
   const defaultProvider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const provider = customProvider || defaultProvider

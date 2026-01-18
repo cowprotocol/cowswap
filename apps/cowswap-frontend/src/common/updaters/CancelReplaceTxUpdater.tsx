@@ -72,6 +72,7 @@ function unwatchTxChanges(_pendingHashes: string[], _chainId: number) {
  * TODO: find a new provider https://github.com/cowprotocol/cowswap/issues/4901
  */
 export function CancelReplaceTxUpdater(): null {
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()

@@ -16,6 +16,7 @@ export function useGetCachedPermit(): (
   customSpender?: string,
 ) => Promise<PermitHookData | undefined> {
   const { chainId, account } = useWalletInfo()
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const getCachedPermit = useSetAtom(getPermitCacheAtom)
 

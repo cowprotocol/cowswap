@@ -86,6 +86,7 @@ export default function TokensOverview(): ReactNode {
   useScrollToTop()
 
   const { chainId, account } = useWalletInfo()
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const { selectedView, isMenuOpen, toggleMenu, selectView, menuRef } = useTokensView()
   const [page, setPage] = useState<number>(1)

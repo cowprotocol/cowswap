@@ -19,6 +19,7 @@ export type TransactionAdder = (params: AddTransactionHookParams) => void
  */
 export function useTransactionAdder(): TransactionAdder {
   const { chainId, account } = useWalletInfo()
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const dispatch = useAppDispatch()
   const isSafeWallet = useIsSafeWallet()
@@ -45,13 +46,13 @@ export function useTransactionAdder(): TransactionAdder {
             chainId,
             ...addTransactionParams,
             nonce,
-          })
+          }),
         )
       } catch (e) {
         console.error('Cannot add a transaction', e)
       }
     },
-    [dispatch, chainId, account, isSafeWallet, provider]
+    [dispatch, chainId, account, isSafeWallet, provider],
   )
 }
 

@@ -41,6 +41,7 @@ export function useRecoverFundsFromProxy(
 ): RecoverFundsContext {
   const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks(proxyVersion)

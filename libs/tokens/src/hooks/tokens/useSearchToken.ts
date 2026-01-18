@@ -174,6 +174,7 @@ function useFetchTokenFromBlockchain(
   isTokenAlreadyFoundByAddress: boolean,
 ): SWRResponse<TokenWithLogo | null> {
   const { chainId } = useAtomValue(environmentAtom)
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
 
   return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', input], () => {

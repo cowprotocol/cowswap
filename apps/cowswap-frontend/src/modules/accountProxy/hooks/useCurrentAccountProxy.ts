@@ -84,6 +84,7 @@ const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount | undefined> = {
 export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefined, unknown, typeof SWR_OPTIONS> {
   const { account, chainId } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
 
   return useSWR(

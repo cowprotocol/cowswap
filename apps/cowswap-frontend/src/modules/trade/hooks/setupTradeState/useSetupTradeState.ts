@@ -30,6 +30,7 @@ export function useSetupTradeState(): void {
 
   const isWindowVisible = useIsWindowVisible()
   const prevIsWindowVisible = usePrevious(isWindowVisible)
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()

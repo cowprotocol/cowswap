@@ -8,8 +8,9 @@ import useSWR, { SWRResponse } from 'swr'
 
 export function useTokenBalanceForAccount(
   token: TokenWithLogo | undefined,
-  account: string | undefined
+  account: string | undefined,
 ): SWRResponse<BigNumber | undefined> {
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
 
   return useSWR<BigNumber | undefined>(['useTokenBalanceForAccount', token, account], async () => {

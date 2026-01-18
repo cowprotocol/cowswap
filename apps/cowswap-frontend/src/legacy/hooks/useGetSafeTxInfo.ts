@@ -14,6 +14,7 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 export type GetSafeTxInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
 
 export function useGetSafeTxInfo(): GetSafeTxInfo {
+  // TODO M-3 COW-569
   const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
 

@@ -34,6 +34,7 @@ export interface QuoteParams {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()

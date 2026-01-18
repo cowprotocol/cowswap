@@ -55,6 +55,7 @@ const BLOCKS_TO_WAIT = 2
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export default function Profile() {
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)

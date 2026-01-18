@@ -65,6 +65,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(true)
 
+  // TODO M-6 COW-573
   const walletProvider = useWalletProvider()
 
   // eslint-disable-next-line react-hooks/refs

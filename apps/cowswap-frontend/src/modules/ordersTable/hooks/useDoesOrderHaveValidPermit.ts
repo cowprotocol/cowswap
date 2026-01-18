@@ -23,6 +23,7 @@ const SWR_CONFIG: SWRConfiguration = {
 
 export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: TradeType): boolean | undefined {
   const { chainId, account } = useWalletInfo()
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const permit = order ? getOrderPermitIfExists(order) : null
   const tokenPermitInfo = usePermitInfo(order?.inputToken, tradeType)

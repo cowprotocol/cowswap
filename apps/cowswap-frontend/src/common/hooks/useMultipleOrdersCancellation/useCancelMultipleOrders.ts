@@ -10,6 +10,7 @@ import { orderBookApi } from 'cowSdk'
 import { CancellableOrder, isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promise<void> {
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
 

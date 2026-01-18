@@ -8,6 +8,7 @@ import SafeApiKit from '@safe-global/api-kit'
 export function useSafeApiKit(): SafeApiKit | null {
   const [safeApiClient, setSafeApiClient] = useState<SafeApiKit | null>(null)
   const { chainId } = useWalletInfo()
+  // TODO M-3 COW-569
   const provider = useWalletProvider()
   const isSafeWallet = useIsSafeWallet()
 

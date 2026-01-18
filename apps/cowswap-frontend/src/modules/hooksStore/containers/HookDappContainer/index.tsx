@@ -37,6 +37,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const orderParams = useOrderParams()
   const isSmartContract = useIsSmartContractWallet()
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()

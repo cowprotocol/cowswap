@@ -14,6 +14,8 @@ const ENS_REGISTRAR_ADDRESSES: Record<SupportedChainId, string | null> = {
 }
 
 export function useENSRegistrarContract(): EnsRegistrar | undefined {
+  // CHECK IF STILL USED
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const chainId = useWalletChainId()
 

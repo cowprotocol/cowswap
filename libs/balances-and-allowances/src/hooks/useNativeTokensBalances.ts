@@ -13,6 +13,7 @@ export function useNativeTokensBalances(
   chainId: SupportedChainId,
   accounts: string[] | undefined,
 ): NativeBalances | undefined {
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const contract = provider ? getMulticallContract(provider) : undefined
   const params = useMemo(() => accounts?.map((account) => [account]), [accounts])

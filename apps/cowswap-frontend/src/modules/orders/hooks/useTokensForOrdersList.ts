@@ -11,6 +11,7 @@ import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<TokensByAddress> {
   const { chainId } = useWalletInfo()
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const allTokens = useTokensByAddressMap()
   const addUserTokens = useAddUserToken()

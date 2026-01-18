@@ -10,6 +10,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { multiCallContextAtom } from '../state/multiCallContextAtom'
 
 export function useMultiCallRpcProvider(): Nullish<JsonRpcProvider> {
+  // TODO M-6 COW-573
   const provider = useWalletProvider()
   const walletChainId = useWalletChainId()
   const context = useAtomValue(multiCallContextAtom)

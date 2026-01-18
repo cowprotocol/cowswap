@@ -122,6 +122,7 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
 
   const isMetamask = isMetamaskBrowserExtension || isWidgetMetamaskBrowserExtension
 
+  // TODO M-2 COW-568
   const provider = useWalletProvider()
 
   useEffect(() => {
