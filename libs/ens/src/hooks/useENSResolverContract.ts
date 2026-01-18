@@ -6,7 +6,6 @@ import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provide
 import useSWR from 'swr'
 
 export function useENSResolverContract(address: string | undefined): EnsPublicResolver | undefined {
-  // CHECK IF STILL USED
   // TODO M-6 COW-573
   const provider = useWalletProvider()
   const chainId = useWalletChainId()

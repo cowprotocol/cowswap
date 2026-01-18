@@ -172,7 +172,6 @@ function useERC1155Uri(
 
 function useERC721Contract(address: string | undefined): Erc721 | undefined {
   const chainId = useWalletChainId()
-  // CHECK IF STILL USED
   // TODO M-6 COW-573
   const provider = useWalletProvider()
 
@@ -186,7 +185,6 @@ function useERC721Contract(address: string | undefined): Erc721 | undefined {
 
 function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
   const chainId = useWalletChainId()
-  // CHECK IF STILL USED
   // TODO M-6 COW-573
   const provider = useWalletProvider()
 
