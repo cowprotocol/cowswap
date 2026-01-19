@@ -69,7 +69,6 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     onSelectToken,
     tokenToImport,
     listToImport,
-    selectedToken,
     onInputPressEnter,
     selectedPoolAddress,
     field,
@@ -244,12 +243,10 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             standalone={standalone}
             displayLpTokenLists={displayLpTokenLists}
             unsupportedTokens={unsupportedTokens}
-            selectedToken={selectedToken}
             allTokens={allTokens}
             favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
-            onSelectToken={onSelectToken}
             onInputPressEnter={onInputPressEnter}
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}

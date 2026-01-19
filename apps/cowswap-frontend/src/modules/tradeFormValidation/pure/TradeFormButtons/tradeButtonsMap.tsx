@@ -138,15 +138,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     const quoteErrorTexts = getQuoteErrorTexts()
 
-    const quoteErrorTextsForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
-      [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Not yet supported`,
-    }
-
     const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
-
-    const errorTooltipContentForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
-      [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Bridging without swapping is not yet supported. Let us know if you want this feature!`,
-    }
 
     const { quote } = context
 
@@ -160,35 +152,19 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       const isBridge = quote.isBridgeQuote
       const errorText = (() => {
         const quoteErrorText = quoteErrorTexts[errorType]
-        const bridgeQuoteErrorText = quoteErrorTextsForBridges[errorType]
 
-        if (isBridge && bridgeQuoteErrorText) {
-          // Do not display "Not yet supported" when sell and intermediate tokens are the same
-          // Because user doesn't see intermediate token
-          if (errorType === QuoteApiErrorCodes.SameBuyAndSellToken) {
-            const areSwapAssetsDifferent =
-              context.derivedState.inputCurrency?.symbol?.toLowerCase() !==
-              context.derivedState.outputCurrency?.symbol?.toLowerCase()
-
-            if (areSwapAssetsDifferent) {
-              return bridgeQuoteErrorTexts[BridgeQuoteErrors.NO_ROUTES]
-            }
-          }
-
-          return bridgeQuoteErrorText
+        // There should not be SameBuyAndSellToken case for cross-chain swaps
+        // If any, we should display NO_ROUTES instead
+        if (isBridge && errorType === QuoteApiErrorCodes.SameBuyAndSellToken) {
+          return bridgeQuoteErrorTexts[BridgeQuoteErrors.NO_ROUTES]
         }
 
         return quoteErrorText || DEFAULT_QUOTE_ERROR
       })()
 
-      const errorTooltipText = isBridge && errorTooltipContentForBridges[errorType]
-
       return (
         <TradeFormBlankButton disabled={true}>
-          <>
-            {errorText}
-            {errorTooltipText && <HelpTooltip text={errorTooltipText} />}
-          </>
+          <>{errorText}</>
         </TradeFormBlankButton>
       )
     }

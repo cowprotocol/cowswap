@@ -10,7 +10,7 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-interface SelectTokenWidgetState {
+export interface SelectTokenWidgetState {
   open: boolean
   field?: Field
   oppositeToken?: TokenWithLogo | LpToken | Currency
