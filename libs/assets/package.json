@@ -10,7 +10,14 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts",
       "default": "./src/index.ts"
-    }
+    },
+    "./cow-swap/*": "./src/cow-swap/*",
+    "./fonts/*": "./src/fonts/*",
+    "./images/*": "./src/images/*",
+    "./lottie/*": "./src/lottie/*",
+    "./svg/*": "./src/svg/*",
+    "./video/*": "./src/video/*",
+    "./lazy-loaders.ts": "./src/lazy-loaders.ts"
   },
   "publishConfig": {
     "main": "./index.js",
