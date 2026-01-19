@@ -1,30 +1,24 @@
 import { useEffect } from 'react'
 
-import { useFeatureFlags, useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { useIsSafeApp } from '@cowprotocol/wallet'
+import { useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTradeTypeInfo } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
+import { useShouldEnableBridging } from 'common/hooks/featureFlags/useShouldEnableBridging'
 
 export function BridgingEnabledUpdater(): null {
   const tradeTypeInfo = useTradeTypeInfo()
   const setIsBridgingEnabled = useSetIsBridgingEnabled()
-  const { isBridgingInSafeWidgetEnabled } = useFeatureFlags()
-  const isSafeApp = useIsSafeApp()
-  const { disableCrossChainSwap = false } = useInjectedWidgetParams()
 
   const isSwapPage = tradeTypeInfo?.route === Routes.SWAP || tradeTypeInfo?.route === Routes.BRIDGE
-  const widgetInSafeApp = isSafeApp && isInjectedWidget()
-  const shouldEnableInWidgetSafe = isBridgingInSafeWidgetEnabled ? true : !widgetInSafeApp
 
-  const shouldEnableBridging = isSwapPage && !disableCrossChainSwap && shouldEnableInWidgetSafe
+  const shouldEnableBridging = useShouldEnableBridging()
+  const enableBridging = isSwapPage && shouldEnableBridging
 
   useEffect(() => {
-    setIsBridgingEnabled(shouldEnableBridging)
-  }, [setIsBridgingEnabled, shouldEnableBridging])
+    setIsBridgingEnabled(enableBridging)
+  }, [setIsBridgingEnabled, enableBridging])
 
   return null
 }

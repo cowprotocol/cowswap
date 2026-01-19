@@ -1,10 +1,12 @@
 import { useCallback } from 'react'
 
-import { useFeatureFlags, useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { useLingui } from '@lingui/react/macro'
 
 import { useHooksEnabled } from 'legacy/state/user/hooks'
+
+import { useShouldEnableBridging } from './featureFlags/useShouldEnableBridging'
 
 import {
   HOOKS_STORE_MENU_ITEM,
@@ -18,7 +20,7 @@ import {
 export function useMenuItems(): IMenuItem[] {
   const isHooksEnabled = useHooksEnabled()
   const { isYieldEnabled } = useFeatureFlags()
-  const isBridgingEnabled = useIsBridgingEnabled()
+  const shouldEnableBridging = useShouldEnableBridging()
   const { i18n } = useLingui()
 
   const extractMenuItem = useCallback(
@@ -42,7 +44,7 @@ export function useMenuItems(): IMenuItem[] {
     items.push(extractMenuItem(HOOKS_STORE_MENU_ITEM))
   }
 
-  if (isBridgingEnabled) {
+  if (shouldEnableBridging) {
     items.push(extractMenuItem(BRIDGING_MENU_ITEM))
   }
 
