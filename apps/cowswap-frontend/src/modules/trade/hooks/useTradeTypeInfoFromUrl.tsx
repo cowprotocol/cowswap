@@ -9,11 +9,13 @@ import { TradeType, TradeTypeInfo } from '../types'
 export function useTradeTypeInfoFromUrl(): TradeTypeInfo | null {
   const swapMatch = !!useMatchTradeRoute('swap')
   const hooksMatch = !!useMatchTradeRoute('swap/hooks')
+  const bridgeMatch = !!useMatchTradeRoute('bridge')
   const limitOrderMatch = !!useMatchTradeRoute('limit')
   const advancedOrdersMatch = !!useMatchTradeRoute('advanced')
   const yieldMatch = !!useMatchTradeRoute('yield')
 
   return useMemo(() => {
+    if (bridgeMatch) return { tradeType: TradeType.SWAP, route: Routes.BRIDGE }
     if (hooksMatch) return { tradeType: TradeType.SWAP, route: Routes.HOOKS }
     if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }
     if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDER }
@@ -21,7 +23,7 @@ export function useTradeTypeInfoFromUrl(): TradeTypeInfo | null {
     if (yieldMatch) return { tradeType: TradeType.YIELD, route: Routes.YIELD }
 
     return null
-  }, [swapMatch, hooksMatch, limitOrderMatch, advancedOrdersMatch, yieldMatch])
+  }, [swapMatch, hooksMatch, bridgeMatch, limitOrderMatch, advancedOrdersMatch, yieldMatch])
 }
 
 function useMatchTradeRoute(route: string): PathMatch<'chainId'> | null {

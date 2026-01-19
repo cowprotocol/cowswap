@@ -97,6 +97,7 @@ export function RoutesApp(): ReactNode {
 
       {/*Swap*/}
       <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
+      <Route path={RoutesEnum.BRIDGE} element={<SwapPage />} />
       <Route path={RoutesEnum.LIMIT_ORDER} element={<LimitOrderPage />} />
       <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />

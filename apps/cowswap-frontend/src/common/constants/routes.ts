@@ -11,6 +11,7 @@ export const Routes = {
   HOME: '/',
   SWAP: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/:inputCurrencyId?/:outputCurrencyId?`,
   HOOKS: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/hooks/:inputCurrencyId?/:outputCurrencyId?`,
+  BRIDGE: `/:chainId?${TRADE_WIDGET_PREFIX}/bridge/:inputCurrencyId?/:outputCurrencyId?`,
   LIMIT_ORDER: `/:chainId?${TRADE_WIDGET_PREFIX}/limit/:inputCurrencyId?/:outputCurrencyId?`,
   YIELD: `/:chainId?${TRADE_WIDGET_PREFIX}/yield/:inputCurrencyId?/:outputCurrencyId?`,
   ADVANCED_ORDERS: `/:chainId?${TRADE_WIDGET_PREFIX}/advanced/:inputCurrencyId?/:outputCurrencyId?`,
@@ -101,7 +102,7 @@ export const YIELD_MENU_ITEM: I18nIMenuItem = {
 }
 
 export const BRIDGING_MENU_ITEM: I18nIMenuItem = {
-  route: Routes.SWAP,
+  route: Routes.BRIDGE,
   label: msg`Bridge`,
   fullLabel: msg`Bridge`,
   description: msg`Send assets across different chains`,

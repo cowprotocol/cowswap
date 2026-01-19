@@ -83,9 +83,7 @@ export function useTradeState(): {
   ])
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useGetTradeStateByRoute() {
+export function useGetTradeStateByRoute(): (route: RoutesValues) => ExtendedTradeRawState {
   const limitOrdersState = useLimitOrdersRawState()
   const advancedOrdersState = useAdvancedOrdersRawState()
   const swapTradeState = useSwapRawState()
@@ -93,7 +91,7 @@ export function useGetTradeStateByRoute() {
 
   return useCallback(
     (route: RoutesValues) => {
-      if (route === Routes.SWAP || route === Routes.HOOKS) return swapTradeState
+      if (route === Routes.SWAP || route === Routes.HOOKS || route === Routes.BRIDGE) return swapTradeState
       if (route === Routes.ABOUT) return advancedOrdersState
       if (route === Routes.YIELD) return yieldRawState
       return limitOrdersState

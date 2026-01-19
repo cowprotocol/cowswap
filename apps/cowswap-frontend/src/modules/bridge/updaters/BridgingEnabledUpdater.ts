@@ -16,7 +16,7 @@ export function BridgingEnabledUpdater(): null {
   const isSafeApp = useIsSafeApp()
   const { disableCrossChainSwap = false } = useInjectedWidgetParams()
 
-  const isSwapPage = tradeTypeInfo?.route === Routes.SWAP
+  const isSwapPage = tradeTypeInfo?.route === Routes.SWAP || tradeTypeInfo?.route === Routes.BRIDGE
   const widgetInSafeApp = isSafeApp && isInjectedWidget()
   const shouldEnableInWidgetSafe = isBridgingInSafeWidgetEnabled ? true : !widgetInSafeApp
 
