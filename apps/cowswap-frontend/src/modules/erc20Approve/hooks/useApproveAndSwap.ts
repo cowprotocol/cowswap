@@ -78,7 +78,7 @@ export function useApproveAndSwap({
           updateTradeApproveState({ error: t`Approved amount is not sufficient!` })
         }
       } else {
-        onApproveConfirm(tx.transactionHash)
+        onApproveConfirm(normalizeTransactionHash(tx.transactionHash))
       }
     }
   }, [
@@ -91,4 +91,8 @@ export function useApproveAndSwap({
     minAmountToSignForSwap,
     t,
   ])
+}
+
+function normalizeTransactionHash(txHash: string | null): string | undefined {
+  return txHash ?? undefined
 }
