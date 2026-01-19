@@ -43,7 +43,11 @@ export function OrdersTableContainer({
           <styledEl.TopContainer>
             <styledEl.TabsContainer>
               {tabs && <OrdersTabs tabs={tabs} />}
-              {children && <styledEl.RightContainer>{children}</styledEl.RightContainer>}
+              {children && (
+                <styledEl.RightContainer $isHistoryTab={currentTab === OrderTabId.history}>
+                  {children}
+                </styledEl.RightContainer>
+              )}
             </styledEl.TabsContainer>
           </styledEl.TopContainer>
 

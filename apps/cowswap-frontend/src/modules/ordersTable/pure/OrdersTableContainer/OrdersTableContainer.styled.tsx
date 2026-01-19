@@ -188,14 +188,14 @@ export const ExternalArrow = styled.span`
   }
 `
 
-export const RightContainer = styled.div`
+export const RightContainer = styled.div<{ $isHistoryTab: boolean }>`
   display: flex;
   flex-flow: row nowrap;
 
   ${Media.upToMedium()} {
     width: 100%;
     gap: 10px;
-    flex-flow: column-reverse wrap;
+    flex-flow: ${({ $isHistoryTab }) => ($isHistoryTab ? 'column wrap' : 'column-reverse wrap')};
   }
 `
 
