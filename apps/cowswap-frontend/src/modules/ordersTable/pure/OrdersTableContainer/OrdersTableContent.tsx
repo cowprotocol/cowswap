@@ -16,8 +16,8 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 
 interface OrdersTableContentProps {
   currentTab: OrderTabId
-  searchTerm?: string
-  historyStatusFilter?: HistoryStatusFilter
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
 }
 
 export function OrdersTableContent({

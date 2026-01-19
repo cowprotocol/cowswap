@@ -16,8 +16,8 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { useShouldDisplayProtocolFeeBanner } from '../../hooks/useShouldDisplayProtocolFeeBanner'
 
 interface OrdersTableContainerProps extends PropsWithChildren {
-  searchTerm?: string
-  historyStatusFilter?: HistoryStatusFilter
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
 }
 
 export function OrdersTableContainer({

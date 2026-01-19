@@ -19,8 +19,8 @@ import { TabOrderTypes } from '../../types'
 interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
   orderType?: TabOrderTypes
-  searchTerm?: string
-  historyStatusFilter?: HistoryStatusFilter
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
   isSafeViaWc?: boolean
   displayOrdersOnlyForSafeApp?: boolean
 }
@@ -72,8 +72,8 @@ function getSectionTitle(currentTab: OrderTabId): string {
 
 interface NoOrdersContentProps {
   currentTab: OrderTabId
-  searchTerm?: string
-  historyStatusFilter?: HistoryStatusFilter
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
   hasHydratedOrders: boolean
 }
 
