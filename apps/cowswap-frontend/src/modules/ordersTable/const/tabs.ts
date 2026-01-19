@@ -3,8 +3,8 @@ import { msg } from '@lingui/core/macro'
 
 export enum OrderTabId {
   signing = 'signing',
-  unfillable = 'unfillable',
   open = 'open',
+  unfillable = 'unfillable',
   history = 'history',
 }
 
