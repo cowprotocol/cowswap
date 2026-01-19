@@ -300,6 +300,37 @@ function getPackageInfo(packageName) {
 }
 
 /**
+ * Get the @types/* package name for a given package
+ * For scoped packages like @scope/package, the types package is @types/scope__package
+ */
+function getTypesPackageName(packageName) {
+  if (!packageName) return null
+
+  // Handle scoped packages: @scope/package -> @types/scope__package
+  if (packageName.startsWith('@')) {
+    const withoutAt = packageName.slice(1) // Remove @
+    const typesName = withoutAt.replace('/', '__') // Replace / with __
+    return `@types/${typesName}`
+  }
+
+  // Regular packages: package -> @types/package
+  return `@types/${packageName}`
+}
+
+/**
+ * Get the @types/* package info if it exists in root devDependencies
+ */
+function getTypesPackageInfo(packageName) {
+  const typesPackageName = getTypesPackageName(packageName)
+  if (!typesPackageName) return null
+
+  if (rootDevDeps[typesPackageName]) {
+    return { name: typesPackageName, version: rootDevDeps[typesPackageName] }
+  }
+  return null
+}
+
+/**
  * Process a single app or lib
  */
 function processPackage(packageDir) {
@@ -340,6 +371,7 @@ function processPackage(packageDir) {
   const newDeps = {}
   const newDevDeps = {}
   const missingFromRoot = []
+  let typesPackagesAdded = 0
 
   for (const dep of allNpmDeps) {
     const info = getPackageInfo(dep)
@@ -348,6 +380,13 @@ function processPackage(packageDir) {
         newDeps[dep] = info.version
       } else {
         newDevDeps[dep] = info.version
+      }
+
+      // Check for corresponding @types/* package
+      const typesInfo = getTypesPackageInfo(dep)
+      if (typesInfo) {
+        newDevDeps[typesInfo.name] = typesInfo.version
+        typesPackagesAdded++
       }
     } else {
       missingFromRoot.push(dep)
@@ -393,7 +432,9 @@ function processPackage(packageDir) {
   const addedDeps = Object.keys(finalDeps).length
   const addedDevDeps = Object.keys(finalDevDeps).length
   const workspaceCount = allWorkspaceDeps.size
-  console.log(`  Added ${addedDeps} dependencies (${workspaceCount} workspace), ${addedDevDeps} devDependencies`)
+  console.log(
+    `  Added ${addedDeps} dependencies (${workspaceCount} workspace), ${addedDevDeps} devDependencies (${typesPackagesAdded} @types)`
+  )
 }
 
 /**
