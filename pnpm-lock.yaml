@@ -484,12 +484,21 @@ importers:
       '@cowprotocol/sdk-bridging':
         specifier: 1.4.0
         version: 1.4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-contracts-ts':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@cowprotocol/sdk-cow-shed':
         specifier: 0.2.10
         version: 0.2.10
       '@cowprotocol/sdk-ethers-v5-adapter':
         specifier: 0.3.1
         version: 0.3.1(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      '@cowprotocol/sdk-order-book':
+        specifier: ^0.5.1
+        version: 0.5.1(encoding@0.1.13)
+      '@cowprotocol/sdk-trading':
+        specifier: ^0.8.1
+        version: 0.8.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/snackbars':
         specifier: workspace:*
         version: link:../../libs/snackbars
@@ -586,9 +595,15 @@ importers:
       '@safe-global/safe-core-sdk-types':
         specifier: ^2.2.0
         version: 2.2.0(encoding@0.1.13)
+      '@sentry/browser':
+        specifier: ^7.80.0
+        version: 7.80.0
       '@sentry/react':
         specifier: ^7.80.0
         version: 7.80.0(react@19.1.2)
+      '@sentry/types':
+        specifier: ^7.80.0
+        version: 7.80.0
       '@tanstack/react-virtual':
         specifier: ^3.0.2
         version: 3.13.12(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -604,9 +619,18 @@ importers:
       '@web3-react/core':
         specifier: ^8.2.3
         version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
+      bignumber.js:
+        specifier: ^9.1.2
+        version: 9.1.2
       color2k:
         specifier: ^2.0.2
         version: 2.0.2
+      csstype:
+        specifier: ^3.1.3
+        version: 3.1.3
+      entities:
+        specifier: ^6.0.0
+        version: 6.0.0
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -715,6 +739,21 @@ importers:
       viem:
         specifier: ^1.16.6
         version: 1.21.4(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.22.4)
+      workbox-core:
+        specifier: ^6.6.1
+        version: 6.6.1
+      workbox-expiration:
+        specifier: ^6.6.1
+        version: 6.6.1
+      workbox-precaching:
+        specifier: ^6.6.1
+        version: 6.6.1
+      workbox-routing:
+        specifier: ^6.6.1
+        version: 6.6.1
+      workbox-strategies:
+        specifier: ^6.6.1
+        version: 6.6.1
     devDependencies:
       '@testing-library/react':
         specifier: 16.3.0
@@ -725,6 +764,9 @@ importers:
       '@types/ms.macro':
         specifier: ^2.0.0
         version: 2.0.3
+      '@types/qs':
+        specifier: ^6.9.7
+        version: 6.9.7
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -858,9 +900,18 @@ importers:
       '@uniswap/token-lists':
         specifier: ^1.0.0-beta.30
         version: 1.0.0-beta.33
+      bignumber.js:
+        specifier: ^9.1.2
+        version: 9.1.2
+      bn.js:
+        specifier: ^5.2.1
+        version: 5.2.1
       combine-reducers:
         specifier: ^1.0.0
         version: 1.0.0
+      csstype:
+        specifier: ^3.1.3
+        version: 3.1.3
       cytoscape:
         specifier: ^3.31.2
         version: 3.33.1
@@ -891,6 +942,9 @@ importers:
       jotai:
         specifier: 2.2.0
         version: 2.2.0(react@19.1.2)
+      json-schema:
+        specifier: ^0.4.0
+        version: 0.4.0
       launchdarkly-react-client-sdk:
         specifier: ^3.0.4
         version: 3.0.8(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -936,6 +990,18 @@ importers:
       swr:
         specifier: ^2.3.3
         version: 2.3.3(react@19.1.2)
+      web3:
+        specifier: ^1.10.3
+        version: 1.10.3(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10)
+      web3-core:
+        specifier: ^1.10.3
+        version: 1.10.3(encoding@0.1.13)
+      web3-utils:
+        specifier: ^1.10.3
+        version: 1.10.3
+      yaml:
+        specifier: ^2.8.1
+        version: 2.8.1
     devDependencies:
       '@testing-library/react':
         specifier: 16.3.0
@@ -1297,6 +1363,9 @@ importers:
       '@types/ms.macro':
         specifier: ^2.0.0
         version: 2.0.3
+      '@types/qs':
+        specifier: ^6.9.7
+        version: 6.9.7
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -1354,12 +1423,18 @@ importers:
       '@lingui/react':
         specifier: ^5.4.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)(react@19.1.2)
+      '@sentry/browser':
+        specifier: ^7.80.0
+        version: 7.80.0
       '@sentry/react':
         specifier: ^7.80.0
         version: 7.80.0(react@19.1.2)
       '@uniswap/sdk-core':
         specifier: ^3.0.1
         version: 3.2.6
+      bignumber.js:
+        specifier: ^9.1.2
+        version: 9.1.2
       cids:
         specifier: ^1.0.0
         version: 1.1.9
@@ -1369,6 +1444,9 @@ importers:
       fast-safe-stringify:
         specifier: ^2.0.8
         version: 2.1.1
+      jotai:
+        specifier: ^2.2.0
+        version: 2.2.0(react@19.1.2)
       jsbi:
         specifier: ^3.1.4
         version: 3.2.5
@@ -1436,6 +1514,10 @@ importers:
       qs:
         specifier: ^6.14.1
         version: 6.14.1
+    devDependencies:
+      '@types/qs':
+        specifier: ^6.9.7
+        version: 6.9.7
 
   libs/ens:
     dependencies:
@@ -1671,6 +1753,9 @@ importers:
       '@lingui/core':
         specifier: ^5.4.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)
+      '@sentry/browser':
+        specifier: ^7.80.0
+        version: 7.80.0
       '@uniswap/sdk-core':
         specifier: ^3.0.1
         version: 3.2.6
@@ -1787,6 +1872,9 @@ importers:
       '@uniswap/sdk-core':
         specifier: ^3.0.1
         version: 3.2.6
+      bignumber.js:
+        specifier: ^9.1.2
+        version: 9.1.2
       color2k:
         specifier: ^2.0.2
         version: 2.0.2
@@ -1896,6 +1984,9 @@ importers:
       '@safe-global/safe-core-sdk-types':
         specifier: ^2.2.0
         version: 2.2.0(encoding@0.1.13)
+      '@trezor/connect':
+        specifier: ^9.0.11
+        version: 9.0.11(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10)
       '@trezor/connect-plugin-ethereum':
         specifier: ^9.0.1
         version: 9.0.1(@metamask/eth-sig-util@5.1.0)
@@ -1920,6 +2011,9 @@ importers:
       '@web3-react/walletconnect-v2':
         specifier: ^8.5.1
         version: 8.5.1(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
+      ethereumjs-util:
+        specifier: ^7.1.5
+        version: 7.1.5
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -17109,6 +17203,7 @@ packages:
   tar@4.4.19:
     resolution: {integrity: sha512-a20gEsvHnWe0ygBY8JbxoM4w3SJdhc7ZAuxkLqh+nvNQN2IOt0B5lLgM490X5Hl8FF0dl0tOf2ewFYAlIFgzVA==}
     engines: {node: '>=4.5'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
@@ -25263,11 +25358,11 @@ snapshots:
 
   '@types/bn.js@4.11.6':
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
 
   '@types/bn.js@5.1.1':
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
 
   '@types/body-parser@1.19.2':
     dependencies:
@@ -25282,7 +25377,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
       '@types/responselike': 1.0.0
 
   '@types/chai@5.2.2':
@@ -25495,7 +25590,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.6':
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
 
   '@types/hast@2.3.7':
     dependencies:
@@ -25551,7 +25646,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
 
   '@types/lodash@4.17.0': {}
 
@@ -25593,7 +25688,7 @@ snapshots:
 
   '@types/pbkdf2@3.1.0':
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
 
   '@types/prettier@2.7.3': {}
 
@@ -25653,7 +25748,7 @@ snapshots:
 
   '@types/responselike@1.0.0':
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
 
   '@types/retry@0.12.0': {}
 
@@ -25661,7 +25756,7 @@ snapshots:
 
   '@types/secp256k1@4.0.3':
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
 
   '@types/semver@7.5.8': {}
 
@@ -33258,7 +33353,7 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -33486,7 +33581,7 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
       jsdom: 16.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -33513,7 +33608,7 @@ snapshots:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
 
@@ -33576,7 +33671,7 @@ snapshots:
       '@jest/source-map': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
       chalk: 4.1.2
       co: 4.6.0
       expect: 27.5.1
@@ -33828,7 +33923,7 @@ snapshots:
 
   jest-serializer@27.5.1:
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
       graceful-fs: 4.2.11
 
   jest-snapshot@27.5.1:
@@ -33997,7 +34092,7 @@ snapshots:
 
   jest-worker@26.6.2:
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.7.1
       merge-stream: 2.0.0
       supports-color: 7.2.0
 
