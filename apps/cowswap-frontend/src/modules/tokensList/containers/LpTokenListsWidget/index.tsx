@@ -1,7 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
   getTokenSearchFilter,
   LP_TOKEN_LIST_CATEGORIES,
@@ -26,7 +25,6 @@ interface LpTokenListsProps<T = TokenListCategory[] | null> {
   children: ReactNode
   search: string
   disableErc20?: boolean
-  onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
   tokenListCategoryState: [T, (category: T) => void]
 }
@@ -52,17 +50,14 @@ const getTabs = (): { id: string; title: string | ReactNode; value: null | Token
   },
 ]
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LpTokenListsWidget({
   account,
   search,
   children,
-  onSelectToken,
   openPoolPage,
   tokenListCategoryState,
   disableErc20,
-}: LpTokenListsProps) {
+}: LpTokenListsProps): ReactNode {
   const tabs = getTabs()
   const [listsCategories, setListsCategories] = tokenListCategoryState
   const lpTokens = useAllLpTokens(listsCategories)
@@ -100,7 +95,6 @@ export function LpTokenListsWidget({
           displayCreatePoolBanner={listsCategories === tabs[2].value}
           balancesState={balancesState}
           lpTokens={sortedTokens}
-          onSelectToken={onSelectToken}
           openPoolPage={openPoolPage}
           poolsInfo={poolsInfo}
         />

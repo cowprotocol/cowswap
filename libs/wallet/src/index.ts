@@ -42,7 +42,6 @@ export { Web3Provider } from './web3-react/Web3Provider'
 export { injectedWalletConnection } from './web3-react/connection/injectedWallet'
 export { networkConnection } from './web3-react/connection/network'
 export { gnosisSafeConnection } from './web3-react/connection/safe'
-export { walletConnectConnectionV2 } from './web3-react/connection/walletConnectV2'
 
 // Connect options
 export { InjectedOption, Eip6963Option } from './web3-react/connection/injectedOptions'
