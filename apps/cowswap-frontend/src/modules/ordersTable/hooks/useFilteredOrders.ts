@@ -7,10 +7,14 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { OrderTableItem } from '../types'
 import { getParsedOrderFromTableItem } from '../utils/orderTableGroupUtils'
 
-function filterOnlyFilled(parsedOrder: ParsedOrder, showOnlyFilled: boolean): boolean {
-  if (!showOnlyFilled) return true
+function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {
+  if (status === HistoryStatusFilter.FILLED) return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
 
-  return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
+  //if (status === HistoryStatusFilter.CANCELLED) return isOrderCancelled(parsedOrder)
+
+  //if (status === HistoryStatusFilter.EXPIRED) return isOrderExpired(parsedOrder)
+
+  return true
 }
 
 function filterBySymbolExact(parsedOrder: ParsedOrder, searchTermLower: string): boolean {
@@ -61,24 +65,31 @@ function filterByAddress(parsedOrder: ParsedOrder, searchTermLower: string): boo
   return false
 }
 
+export enum HistoryStatusFilter {
+  FILLED = 'filled',
+  CANCELLED = 'cancelled',
+  EXPIRED = 'expired',
+  ALL = 'all',
+}
+
 export interface UseFilteredOrdersFilters {
   searchTerm: string
-  showOnlyFilled: boolean
+  historyStatusFilter: HistoryStatusFilter
 }
 
 export function useFilteredOrders(
   orders: OrderTableItem[],
-  { searchTerm, showOnlyFilled }: UseFilteredOrdersFilters,
+  { searchTerm, historyStatusFilter }: UseFilteredOrdersFilters,
 ): OrderTableItem[] {
   return useMemo(() => {
-    if (!searchTerm && !showOnlyFilled) return orders
+    if (!searchTerm && historyStatusFilter === HistoryStatusFilter.ALL) return orders
 
     const searchTermLower = searchTerm.toLowerCase().trim()
 
     // First try exact symbol matches (case-insensitive)
     const exactMatches = orders.filter((order) => {
       const parsedOrder = getParsedOrderFromTableItem(order)
-      const displayBasedOnFilled = filterOnlyFilled(parsedOrder, showOnlyFilled)
+      const displayBasedOnFilled = filterByStatus(parsedOrder, historyStatusFilter)
 
       return displayBasedOnFilled && filterBySymbolExact(parsedOrder, searchTermLower)
     })
@@ -91,7 +102,7 @@ export function useFilteredOrders(
     // Otherwise, fall back to partial matches and address search
     return orders.filter((order) => {
       const parsedOrder = getParsedOrderFromTableItem(order)
-      const displayBasedOnFilled = filterOnlyFilled(parsedOrder, showOnlyFilled)
+      const displayBasedOnFilled = filterByStatus(parsedOrder, historyStatusFilter)
 
       if (!displayBasedOnFilled) return false
 
@@ -101,5 +112,5 @@ export function useFilteredOrders(
 
       return filterByAddress(parsedOrder, searchTermLower)
     })
-  }, [orders, searchTerm, showOnlyFilled])
+  }, [orders, searchTerm, historyStatusFilter])
 }

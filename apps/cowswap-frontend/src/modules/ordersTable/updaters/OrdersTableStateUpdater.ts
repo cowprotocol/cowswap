@@ -10,6 +10,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
+import { OrderTabId } from 'modules/ordersTable/const/tabs'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useNavigate } from 'common/hooks/useNavigate'
@@ -18,7 +19,7 @@ import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCoun
 import { useOrdersTableList } from '../containers/OrdersTableWidget/hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from '../containers/OrdersTableWidget/hooks/useValidatePageUrlParams'
 import { useCurrentTab } from '../hooks/useCurrentTab'
-import { useFilteredOrders } from '../hooks/useFilteredOrders'
+import { HistoryStatusFilter, useFilteredOrders } from '../hooks/useFilteredOrders'
 import { useOrderActions } from '../hooks/useOrderActions'
 import { useOrdersHydrationState } from '../hooks/useOrdersHydrationState'
 import { useTabs } from '../hooks/useTabs'
@@ -38,7 +39,7 @@ function getOrdersInputTokens(allOrders: Order[]): string[] {
 
 interface OrdersTableStateUpdaterProps extends OrdersTableParams {
   searchTerm?: string
-  showOnlyFilled?: boolean
+  historyStatusFilter?: HistoryStatusFilter
   syncWithUrl?: boolean
 }
 
@@ -48,7 +49,7 @@ export function OrdersTableStateUpdater({
   orders: allOrders,
   orderType,
   searchTerm = '',
-  showOnlyFilled = false,
+  historyStatusFilter = HistoryStatusFilter.FILLED,
   isTwapTable = false,
   displayOrdersOnlyForSafeApp = false,
   syncWithUrl = true,
@@ -74,9 +75,11 @@ export function OrdersTableStateUpdater({
   const { currentTabId, currentPageNumber } = useCurrentTab(ordersList)
 
   const orders = ordersList[currentTabId]
-  const filteredOrders = useFilteredOrders(orders, { searchTerm, showOnlyFilled })
+  const filteredOrders = useFilteredOrders(orders, {
+    searchTerm,
+    historyStatusFilter: currentTabId === OrderTabId.history ? historyStatusFilter : HistoryStatusFilter.ALL,
+  })
   const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
-
   const tabs = useTabs(ordersList, currentTabId)
 
   const orderActions = useOrderActions(allOrders)

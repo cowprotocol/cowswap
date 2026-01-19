@@ -5,6 +5,10 @@ import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
+import { useGetBuildOrdersTableUrl } from 'modules/ordersTable/hooks/useGetBuildOrdersTableUrl'
+
+import { useNavigate } from 'common/hooks/useNavigate'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -29,20 +33,37 @@ const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfilla
 
 export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
   const { i18n } = useLingui()
+  const navigate = useNavigate()
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [showOnlyFilled, setShowOnlyFilled] = useState(false)
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<HistoryStatusFilter>(HistoryStatusFilter.FILLED)
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    setShowOnlyFilled(e.target.value === 'filled')
+    setHistoryStatusFilter(e.target.value as HistoryStatusFilter)
   }
 
   const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
+  const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
 
   useEffect(() => {
     // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
-    if (currentTabId !== OrderTabId.history) setShowOnlyFilled(false)
+    if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
   }, [currentTabId])
+
+  useEffect(() => {
+    if (!currentPageNumber || currentPageNumber === 1 || !filteredOrders) return
+
+    const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
+    const ordersPage = (filteredOrders || []).slice(step - ORDERS_TABLE_PAGE_SIZE, step)
+
+    if (ordersPage.length === 0 && filteredOrders.length > 0) {
+      // If we have no orders to show IN THE CURRENT PAGE (but we do in some other page), reset pagination:
+
+      const url = buildOrdersTableUrl({ pageNumber: 1 })
+
+      navigate(url, { replace: true })
+    }
+  }, [currentPageNumber, searchTerm, historyStatusFilter, filteredOrders, buildOrdersTableUrl, navigate])
 
   const pendingOrders = useMemo(() => {
     const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
@@ -66,9 +87,13 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
 
-      <OrdersTableStateUpdater searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} {...ordersTableParams} />
+      <OrdersTableStateUpdater
+        searchTerm={searchTerm}
+        historyStatusFilter={historyStatusFilter}
+        {...ordersTableParams}
+      />
 
-      <OrdersTableContainer searchTerm={searchTerm} showOnlyFilled={showOnlyFilled}>
+      <OrdersTableContainer searchTerm={searchTerm} historyStatusFilter={historyStatusFilter}>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
         {/* Show filters only if there are orders */}
@@ -77,9 +102,11 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
             {/* Show onlyFilled select only in history tab */}
             {currentTabId === OrderTabId.history && (
               <SelectContainer>
-                <Select name="onlyFilled" value={showOnlyFilled ? 'filled' : 'all'} onChange={handleSelectChange}>
-                  <option value="all">{i18n._('All')}</option>
-                  <option value="filled">{i18n._('Filled only')}</option>
+                <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
+                  <option value="filled">{i18n._('Filled orders')}</option>
+                  <option value="cancelled">{i18n._('Cancelled orders')}</option>
+                  <option value="expired">{i18n._('Expired orders')}</option>
+                  <option value="all">{i18n._('All orders')}</option>
                 </Select>
               </SelectContainer>
             )}

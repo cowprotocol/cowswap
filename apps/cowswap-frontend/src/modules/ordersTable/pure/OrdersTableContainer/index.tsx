@@ -3,6 +3,7 @@ import { PropsWithChildren, ReactNode, useMemo } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
+import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -16,10 +17,14 @@ import { useShouldDisplayProtocolFeeBanner } from '../../hooks/useShouldDisplayP
 
 interface OrdersTableContainerProps extends PropsWithChildren {
   searchTerm?: string
-  showOnlyFilled?: boolean
+  historyStatusFilter?: HistoryStatusFilter
 }
 
-export function OrdersTableContainer({ searchTerm, showOnlyFilled, children }: OrdersTableContainerProps): ReactNode {
+export function OrdersTableContainer({
+  searchTerm,
+  historyStatusFilter,
+  children,
+}: OrdersTableContainerProps): ReactNode {
   const { account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
@@ -50,7 +55,7 @@ export function OrdersTableContainer({ searchTerm, showOnlyFilled, children }: O
         </>
       )}
 
-      <OrdersTableContent searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} currentTab={currentTab} />
+      <OrdersTableContent searchTerm={searchTerm} historyStatusFilter={historyStatusFilter} currentTab={currentTab} />
     </styledEl.Wrapper>
   )
 }

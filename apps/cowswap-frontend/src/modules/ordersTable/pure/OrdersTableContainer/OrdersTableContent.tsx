@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
+
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { ConnectWalletContent } from './ConnectWalletContent'
@@ -15,10 +17,14 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 interface OrdersTableContentProps {
   currentTab: OrderTabId
   searchTerm?: string
-  showOnlyFilled?: boolean
+  historyStatusFilter?: HistoryStatusFilter
 }
 
-export function OrdersTableContent({ searchTerm, showOnlyFilled, currentTab }: OrdersTableContentProps): ReactNode {
+export function OrdersTableContent({
+  searchTerm,
+  historyStatusFilter,
+  currentTab,
+}: OrdersTableContentProps): ReactNode {
   const { filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
   const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -37,7 +43,7 @@ export function OrdersTableContent({ searchTerm, showOnlyFilled, currentTab }: O
       <NoOrdersContent
         currentTab={currentTab}
         searchTerm={searchTerm}
-        showOnlyFilled={showOnlyFilled}
+        historyStatusFilter={historyStatusFilter}
         hasHydratedOrders={isHydrated}
       />
     )

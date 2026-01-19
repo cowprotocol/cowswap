@@ -7,6 +7,8 @@ import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 
+import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
+
 import * as styledEl from './OrdersTableContainer.styled'
 
 import { OrderTabId } from '../../const/tabs'
@@ -18,7 +20,7 @@ interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
   orderType?: TabOrderTypes
   searchTerm?: string
-  showOnlyFilled?: boolean
+  historyStatusFilter?: HistoryStatusFilter
   isSafeViaWc?: boolean
   displayOrdersOnlyForSafeApp?: boolean
 }
@@ -27,7 +29,7 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
   currentTab,
   orderType,
   searchTerm,
-  showOnlyFilled,
+  historyStatusFilter,
   isSafeViaWc,
   displayOrdersOnlyForSafeApp,
 }: NoOrdersDescriptionProps): ReactNode {
@@ -40,7 +42,7 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
     <Trans>
       Use the <CowSwapSafeAppLink /> to see {currentTabText}
     </Trans>
-  ) : searchTerm || showOnlyFilled ? (
+  ) : searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL ? (
     <Trans>Try adjusting your search term or clearing the filter</Trans>
   ) : (
     <>
@@ -71,14 +73,14 @@ function getSectionTitle(currentTab: OrderTabId): string {
 interface NoOrdersContentProps {
   currentTab: OrderTabId
   searchTerm?: string
-  showOnlyFilled?: boolean
+  historyStatusFilter?: HistoryStatusFilter
   hasHydratedOrders: boolean
 }
 
 export function NoOrdersContent({
   currentTab,
   searchTerm,
-  showOnlyFilled,
+  historyStatusFilter,
   hasHydratedOrders,
 }: NoOrdersContentProps): ReactNode {
   const { darkMode: isDarkMode } = useTheme()
@@ -89,13 +91,17 @@ export function NoOrdersContent({
 
   return (
     <styledEl.Content>
-      <h3>{searchTerm || showOnlyFilled ? t`No matching orders found` : getSectionTitle(currentTab)}</h3>
+      <h3>
+        {searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL
+          ? t`No matching orders found`
+          : getSectionTitle(currentTab)}
+      </h3>
       <p>
         <NoOrdersDescription
           currentTab={currentTab}
           orderType={orderType}
           searchTerm={searchTerm}
-          showOnlyFilled={showOnlyFilled}
+          historyStatusFilter={historyStatusFilter}
           isSafeViaWc={isSafeViaWc}
           displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
         />
