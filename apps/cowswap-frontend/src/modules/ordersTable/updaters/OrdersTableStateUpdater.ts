@@ -77,6 +77,7 @@ export function OrdersTableStateUpdater({
   const orders = ordersList[currentTabId]
   const filteredOrders = useFilteredOrders(orders, {
     searchTerm,
+    // The status filter select is only visible in the story tab:
     historyStatusFilter: currentTabId === OrderTabId.history ? historyStatusFilter : HistoryStatusFilter.ALL,
   })
   const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
