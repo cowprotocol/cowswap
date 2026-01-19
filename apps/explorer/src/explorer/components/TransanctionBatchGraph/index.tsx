@@ -33,6 +33,7 @@ import { Network } from '../../../types'
 import { DropdownOption, DropdownPosition } from '../common/Dropdown'
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
+// @ts-ignore
 Cytoscape.use(popper)
 // eslint-disable-next-line react-hooks/rules-of-hooks
 Cytoscape.use(noOverlap)
