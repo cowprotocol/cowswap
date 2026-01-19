@@ -99,8 +99,8 @@ const PrimaryLink = styled.a`
   background: ${Color.cowfi_orange_bright};
   color: ${Color.cowfi_orange_pale};
   font-size: 2.1rem;
-  line-height: 1.2;
   text-align: center;
+  line-height: 1.2;
   font-weight: ${Font.weight.bold};
   text-decoration: none;
   transition:
