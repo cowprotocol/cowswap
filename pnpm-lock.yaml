@@ -421,9 +421,409 @@ importers:
 
   apps/cow-fi:
     dependencies:
+      '@1inch/permit-signed-approvals-utils':
+        specifier: ^1.4.10
+        version: 1.4.10(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10)
+      '@apollo/client':
+        specifier: ^3.1.5
+        version: 3.8.8(graphql@16.12.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@cowprotocol/analytics':
         specifier: workspace:*
         version: link:../../libs/analytics
+      '@cowprotocol/assets':
+        specifier: workspace:*
+        version: link:../../libs/assets
+      '@cowprotocol/balances-and-allowances':
+        specifier: workspace:*
+        version: link:../../libs/balances-and-allowances
+      '@cowprotocol/cms':
+        specifier: ^0.11.0
+        version: 0.11.0
+      '@cowprotocol/common-const':
+        specifier: workspace:*
+        version: link:../../libs/common-const
+      '@cowprotocol/common-hooks':
+        specifier: workspace:*
+        version: link:../../libs/common-hooks
+      '@cowprotocol/common-utils':
+        specifier: workspace:*
+        version: link:../../libs/common-utils
+      '@cowprotocol/core':
+        specifier: workspace:*
+        version: link:../../libs/core
+      '@cowprotocol/cow-runner-game':
+        specifier: ^0.2.9
+        version: 0.2.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      '@cowprotocol/cow-sdk':
+        specifier: 7.2.11
+        version: 7.2.11(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/cowswap-abis':
+        specifier: workspace:*
+        version: link:../../libs/abis
+      '@cowprotocol/ens':
+        specifier: workspace:*
+        version: link:../../libs/ens
+      '@cowprotocol/events':
+        specifier: workspace:*
+        version: link:../../libs/events
+      '@cowprotocol/hook-dapp-lib':
+        specifier: workspace:*
+        version: link:../../libs/hook-dapp-lib
+      '@cowprotocol/iframe-transport':
+        specifier: workspace:*
+        version: link:../../libs/iframe-transport
+      '@cowprotocol/multicall':
+        specifier: workspace:*
+        version: link:../../libs/multicall
+      '@cowprotocol/permit-utils':
+        specifier: workspace:*
+        version: link:../../libs/permit-utils
+      '@cowprotocol/sdk-bridging':
+        specifier: 1.4.0
+        version: 1.4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-contracts-ts':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@cowprotocol/sdk-cow-shed':
+        specifier: 0.2.10
+        version: 0.2.10
+      '@cowprotocol/sdk-ethers-v5-adapter':
+        specifier: 0.3.1
+        version: 0.3.1(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      '@cowprotocol/sdk-order-book':
+        specifier: ^0.5.1
+        version: 0.5.1(encoding@0.1.13)
+      '@cowprotocol/sdk-trading':
+        specifier: ^0.8.1
+        version: 0.8.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/snackbars':
+        specifier: workspace:*
+        version: link:../../libs/snackbars
+      '@cowprotocol/tokens':
+        specifier: workspace:*
+        version: link:../../libs/tokens
+      '@cowprotocol/types':
+        specifier: workspace:*
+        version: link:../../libs/types
+      '@cowprotocol/ui':
+        specifier: workspace:*
+        version: link:../../libs/ui
+      '@cowprotocol/ui-utils':
+        specifier: workspace:*
+        version: link:../../libs/ui-utils
+      '@cowprotocol/wallet':
+        specifier: workspace:*
+        version: link:../../libs/wallet
+      '@cowprotocol/wallet-provider':
+        specifier: workspace:*
+        version: link:../../libs/wallet-provider
+      '@cowprotocol/widget-lib':
+        specifier: workspace:*
+        version: link:../../libs/widget-lib
+      '@cowprotocol/widget-react':
+        specifier: workspace:*
+        version: link:../../libs/widget-react
+      '@ethersproject/abi':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/abstract-provider':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/abstract-signer':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/address':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/bignumber':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/bytes':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/constants':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/contracts':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/hash':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/keccak256':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/providers':
+        specifier: 5.7.2
+        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@ethersproject/solidity':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/strings':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/units':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@ethersproject/wallet':
+        specifier: 5.7.0
+        version: 5.7.0
+      '@lingui/core':
+        specifier: ^5.4.1
+        version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)
+      '@lingui/macro':
+        specifier: ^5.4.1
+        version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)(react@19.1.2)
+      '@lingui/react':
+        specifier: ^5.4.1
+        version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)(react@19.1.2)
+      '@reach/dialog':
+        specifier: ^0.18.0
+        version: 0.18.0(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      '@reach/menu-button':
+        specifier: ^0.18.0
+        version: 0.18.0(react-dom@19.1.2(react@19.1.2))(react-is@19.1.2)(react@19.1.2)
+      '@react-spring/web':
+        specifier: ^9.6.1
+        version: 9.7.3(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      '@reduxjs/toolkit':
+        specifier: ^1.8.0
+        version: 1.9.5(react-redux@8.1.2(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(redux@4.2.1))(react@19.1.2)
+      '@safe-global/api-kit':
+        specifier: ^1.3.0
+        version: 1.3.0(encoding@0.1.13)
+      '@safe-global/safe-core-sdk-types':
+        specifier: ^2.2.0
+        version: 2.2.0(encoding@0.1.13)
+      '@sentry/browser':
+        specifier: ^7.80.0
+        version: 7.80.0
+      '@sentry/react':
+        specifier: ^7.80.0
+        version: 7.80.0(react@19.1.2)
+      '@sentry/types':
+        specifier: ^7.80.0
+        version: 7.80.0
+      '@tanstack/react-virtual':
+        specifier: ^3.0.2
+        version: 3.13.12(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      '@uniswap/sdk-core':
+        specifier: ^3.0.1
+        version: 3.2.6
+      '@uniswap/token-lists':
+        specifier: ^1.0.0-beta.30
+        version: 1.0.0-beta.33
+      '@use-gesture/react':
+        specifier: ^10.2.23
+        version: 10.3.1(react@19.1.2)
+      '@visx/axis':
+        specifier: ^3.10.1
+        version: 3.12.0(react@19.1.2)
+      '@visx/event':
+        specifier: ^3.3.0
+        version: 3.3.0
+      '@visx/glyph':
+        specifier: ^3.3.0
+        version: 3.3.0(react@19.1.2)
+      '@visx/group':
+        specifier: ^3.3.0
+        version: 3.12.0(react@19.1.2)
+      '@visx/responsive':
+        specifier: ^3.10.2
+        version: 3.10.2(react@19.1.2)
+      '@visx/shape':
+        specifier: ^3.5.0
+        version: 3.12.0(react@19.1.2)
+      '@web3-react/core':
+        specifier: ^8.2.3
+        version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
+      bignumber.js:
+        specifier: ^9.1.2
+        version: 9.1.2
+      color2k:
+        specifier: ^2.0.2
+        version: 2.0.2
+      csstype:
+        specifier: ^3.1.3
+        version: 3.1.3
+      date-fns:
+        specifier: ^2.29.3
+        version: 2.30.0
+      entities:
+        specifier: ^6.0.0
+        version: 6.0.0
+      ethers:
+        specifier: 5.7.2
+        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      exponential-backoff:
+        specifier: ^3.1.1
+        version: 3.1.3
+      fraction.js:
+        specifier: ^4.2.0
+        version: 4.3.7
+      framer-motion:
+        specifier: ^11.3.29
+        version: 11.3.29(@emotion/is-prop-valid@1.3.1)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      jotai:
+        specifier: 2.2.0
+        version: 2.2.0(react@19.1.2)
+      jsbi:
+        specifier: ^3.1.4
+        version: 3.2.5
+      json-stringify-deterministic:
+        specifier: ^1.0.12
+        version: 1.0.12
+      launchdarkly-react-client-sdk:
+        specifier: ^3.0.4
+        version: 3.0.8(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      limiter:
+        specifier: ^3.0.0
+        version: 3.0.0
+      lottie-react:
+        specifier: ^2.4.0
+        version: 2.4.0(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
+      ms.macro:
+        specifier: ^2.0.0
+        version: 2.0.0
+      next:
+        specifier: 15.2.8
+        version: 15.2.8(@babel/core@7.28.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(sass@1.88.0)
+      polished:
+        specifier: ^4.0.5
+        version: 4.2.2
+      qs:
+        specifier: ^6.14.1
+        version: 6.14.1
+      quick-lru:
+        specifier: ^7.0.0
+        version: 7.0.0
+      react:
+        specifier: 19.1.2
+        version: 19.1.2
+      react-appzi:
+        specifier: ^1.0.4
+        version: 1.0.4
+      react-dom:
+        specifier: 19.1.2
+        version: 19.1.2(react@19.1.2)
+      react-feather:
+        specifier: ^2.0.10
+        version: 2.0.10(react@19.1.2)
+      react-helmet-async:
+        specifier: ^2.0.5
+        version: 2.0.5(react@19.1.2)
+      react-icons:
+        specifier: ^5.2.1
+        version: 5.2.1(react@19.1.2)
+      react-inlinesvg:
+        specifier: ^4.1.5
+        version: 4.2.0(react@19.1.2)
+      react-markdown:
+        specifier: ^10.1.0
+        version: 10.1.0(@types/react@19.1.3)(react@19.1.2)
+      react-redux:
+        specifier: ^8.0.2
+        version: 8.1.2(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(redux@4.2.1)
+      react-router:
+        specifier: 7.5.2
+        version: 7.5.2(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      react-snowfall:
+        specifier: ^2.2.0
+        version: 2.2.0(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      rebass:
+        specifier: ^4.0.7
+        version: 4.0.7(react@19.1.2)
+      redux:
+        specifier: ^4.1.2
+        version: 4.2.1
+      redux-localstorage-simple:
+        specifier: ^2.3.1
+        version: 2.5.1
+      sortablejs:
+        specifier: ^1.15.3
+        version: 1.15.3
+      styled-components:
+        specifier: 5.3.11
+        version: 5.3.11(@babel/core@7.28.4)(react-dom@19.1.2(react@19.1.2))(react-is@19.1.2)(react@19.1.2)
+      swr:
+        specifier: ^2.3.3
+        version: 2.3.3(react@19.1.2)
+      timeago.js:
+        specifier: ^4.0.2
+        version: 4.0.2
+      tiny-invariant:
+        specifier: ^1.2.0
+        version: 1.3.3
+      use-async-memo:
+        specifier: ^1.2.4
+        version: 1.2.4(react@19.1.2)
+      uuid:
+        specifier: ^13.0.0
+        version: 13.0.0
+      viem:
+        specifier: ^1.16.6
+        version: 1.21.4(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.22.4)
+      workbox-core:
+        specifier: ^6.6.1
+        version: 6.6.1
+      workbox-expiration:
+        specifier: ^6.6.1
+        version: 6.6.1
+      workbox-precaching:
+        specifier: ^6.6.1
+        version: 6.6.1
+      workbox-routing:
+        specifier: ^6.6.1
+        version: 6.6.1
+      workbox-strategies:
+        specifier: ^6.6.1
+        version: 6.6.1
+    devDependencies:
+      '@testing-library/react':
+        specifier: 16.3.0
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      '@types/ms':
+        specifier: ^2.1.0
+        version: 2.1.0
+      '@types/ms.macro':
+        specifier: ^2.0.0
+        version: 2.0.3
+      '@types/qs':
+        specifier: ^6.9.7
+        version: 6.9.7
+      '@types/react':
+        specifier: 19.1.3
+        version: 19.1.3
+      '@types/react-dom':
+        specifier: 19.1.3
+        version: 19.1.3(@types/react@19.1.3)
+      '@types/rebass':
+        specifier: ^4.0.10
+        version: 4.0.15
+      '@types/sortablejs':
+        specifier: ^1.15.8
+        version: 1.15.8
+      '@types/styled-components':
+        specifier: 5.1.34
+        version: 5.1.34
+      '@web3-react/types':
+        specifier: ^8.2.3
+        version: 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
+      jest-fetch-mock:
+        specifier: ^3.0.3
+        version: 3.0.3(encoding@0.1.13)
+      jotai-devtools:
+        specifier: 0.8.0
+        version: 0.8.0(@emotion/react@11.14.0(@types/react@19.1.3)(react@19.1.2))(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(redux@4.2.1)
+      react-cosmos:
+        specifier: ^7.0.0
+        version: 7.0.0(@types/express@4.17.21)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      ts-mockito:
+        specifier: ^2.6.1
+        version: 2.6.1
 
   apps/cowswap-frontend:
     dependencies:
@@ -21164,12 +21564,12 @@ snapshots:
       '@ethersproject/hash': 5.7.0
       '@ethersproject/logger': 5.8.0
       '@ethersproject/networks': 5.8.0
-      '@ethersproject/properties': 5.8.0
+      '@ethersproject/properties': 5.7.0
       '@ethersproject/random': 5.8.0
       '@ethersproject/rlp': 5.8.0
-      '@ethersproject/sha2': 5.8.0
+      '@ethersproject/sha2': 5.7.0
       '@ethersproject/strings': 5.7.0
-      '@ethersproject/transactions': 5.8.0
+      '@ethersproject/transactions': 5.7.0
       '@ethersproject/web': 5.8.0
       bech32: 1.1.4
       ws: 7.4.6(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -26148,6 +26548,18 @@ snapshots:
       prop-types: 15.8.1
       react: 16.14.0
 
+  '@visx/axis@3.12.0(react@19.1.2)':
+    dependencies:
+      '@types/react': 19.1.3
+      '@visx/group': 3.12.0(react@19.1.2)
+      '@visx/point': 3.12.0
+      '@visx/scale': 3.12.0
+      '@visx/shape': 3.12.0(react@19.1.2)
+      '@visx/text': 3.12.0(react@19.1.2)
+      classnames: 2.5.1
+      prop-types: 15.8.1
+      react: 19.1.2
+
   '@visx/curve@3.12.0':
     dependencies:
       '@types/d3-shape': 1.3.12
@@ -26168,6 +26580,16 @@ snapshots:
       prop-types: 15.8.1
       react: 16.14.0
 
+  '@visx/glyph@3.3.0(react@19.1.2)':
+    dependencies:
+      '@types/d3-shape': 1.3.12
+      '@types/react': 19.1.3
+      '@visx/group': 3.3.0(react@19.1.2)
+      classnames: 2.5.1
+      d3-shape: 1.3.7
+      prop-types: 15.8.1
+      react: 19.1.2
+
   '@visx/group@3.12.0(react@16.14.0)':
     dependencies:
       '@types/react': 19.1.3
@@ -26175,12 +26597,26 @@ snapshots:
       prop-types: 15.8.1
       react: 16.14.0
 
+  '@visx/group@3.12.0(react@19.1.2)':
+    dependencies:
+      '@types/react': 19.1.3
+      classnames: 2.5.1
+      prop-types: 15.8.1
+      react: 19.1.2
+
   '@visx/group@3.3.0(react@16.14.0)':
     dependencies:
       '@types/react': 19.1.3
       classnames: 2.5.1
       prop-types: 15.8.1
       react: 16.14.0
+
+  '@visx/group@3.3.0(react@19.1.2)':
+    dependencies:
+      '@types/react': 19.1.3
+      classnames: 2.5.1
+      prop-types: 15.8.1
+      react: 19.1.2
 
   '@visx/point@3.12.0': {}
 
@@ -26193,6 +26629,14 @@ snapshots:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 16.14.0
+
+  '@visx/responsive@3.10.2(react@19.1.2)':
+    dependencies:
+      '@types/lodash': 4.17.0
+      '@types/react': 19.1.3
+      lodash: 4.17.21
+      prop-types: 15.8.1
+      react: 19.1.2
 
   '@visx/scale@3.12.0':
     dependencies:
@@ -26214,6 +26658,22 @@ snapshots:
       prop-types: 15.8.1
       react: 16.14.0
 
+  '@visx/shape@3.12.0(react@19.1.2)':
+    dependencies:
+      '@types/d3-path': 1.0.11
+      '@types/d3-shape': 1.3.12
+      '@types/lodash': 4.17.0
+      '@types/react': 19.1.3
+      '@visx/curve': 3.12.0
+      '@visx/group': 3.12.0(react@19.1.2)
+      '@visx/scale': 3.12.0
+      classnames: 2.5.1
+      d3-path: 1.0.9
+      d3-shape: 1.3.7
+      lodash: 4.17.21
+      prop-types: 15.8.1
+      react: 19.1.2
+
   '@visx/text@3.12.0(react@16.14.0)':
     dependencies:
       '@types/lodash': 4.17.0
@@ -26222,6 +26682,16 @@ snapshots:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 16.14.0
+      reduce-css-calc: 1.3.0
+
+  '@visx/text@3.12.0(react@19.1.2)':
+    dependencies:
+      '@types/lodash': 4.17.0
+      '@types/react': 19.1.3
+      classnames: 2.5.1
+      lodash: 4.17.21
+      prop-types: 15.8.1
+      react: 19.1.2
       reduce-css-calc: 1.3.0
 
   '@visx/vendor@3.12.0':
@@ -35723,6 +36193,32 @@ snapshots:
       postcss: 8.4.31
       react: 19.1.2
       react-dom: 16.14.0(react@16.14.0)
+      styled-jsx: 5.1.6(@babel/core@7.28.4)(babel-plugin-macros@3.1.0)(react@19.1.2)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 15.2.5
+      '@next/swc-darwin-x64': 15.2.5
+      '@next/swc-linux-arm64-gnu': 15.2.5
+      '@next/swc-linux-arm64-musl': 15.2.5
+      '@next/swc-linux-x64-gnu': 15.2.5
+      '@next/swc-linux-x64-musl': 15.2.5
+      '@next/swc-win32-arm64-msvc': 15.2.5
+      '@next/swc-win32-x64-msvc': 15.2.5
+      sass: 1.88.0
+      sharp: 0.33.5
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+
+  next@15.2.8(@babel/core@7.28.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(sass@1.88.0):
+    dependencies:
+      '@next/env': 15.2.8
+      '@swc/counter': 0.1.3
+      '@swc/helpers': 0.5.15
+      busboy: 1.6.0
+      caniuse-lite: 1.0.30001749
+      postcss: 8.4.31
+      react: 19.1.2
+      react-dom: 19.1.2(react@19.1.2)
       styled-jsx: 5.1.6(@babel/core@7.28.4)(babel-plugin-macros@3.1.0)(react@19.1.2)
     optionalDependencies:
       '@next/swc-darwin-arm64': 15.2.5
