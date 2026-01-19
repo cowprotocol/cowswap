@@ -10,10 +10,10 @@ import IMAGE_ICON_QUESTIONBALLOON from '@cowprotocol/assets/images/icon-question
 import IMAGE_SANDWICH_GUY from '@cowprotocol/assets/images/image-sandwich-guy.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
-import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
+import { RainbowKitProvider, getDefaultWallets, Chain } from '@rainbow-me/rainbowkit'
 import Script from 'next/script'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
+import { WagmiConfig, createConfig, configureChains, mainnet, Connector } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
 
 import useWebShare from '../../../hooks/useWebShare'
@@ -61,13 +61,13 @@ const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
 const { connectors } = getDefaultWallets({
   appName: 'Your App Name',
   projectId: 'YOUR_PROJECT_ID', // TODO: Add project ID here
-  chains,
+  chains: chains as Chain[],
 })
 
 // Create the Wagmi client
 const wagmiClient = createConfig({
   autoConnect: isClient,
-  connectors,
+  connectors: connectors as unknown as () => Connector[],
   publicClient,
 })
 
