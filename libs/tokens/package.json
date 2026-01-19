@@ -33,6 +33,8 @@
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
+    "@ethersproject/address": "5.7.0",
+    "@ethersproject/providers": "5.7.0",
     "@lingui/core": "^5.4.1",
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/token-lists": "^1.0.0-beta.30",

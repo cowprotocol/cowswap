@@ -29,6 +29,9 @@
     "@cowprotocol/cow-sdk": "7.2.11",
     "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
+    "@ethersproject/bignumber": "5.7.0",
+    "@ethersproject/bytes": "5.7.0",
+    "@ethersproject/hash": "5.7.0",
     "ethers": "5.7.2",
     "react": "19.1.2",
     "swr": "^2.3.3"
