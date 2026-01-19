@@ -65,24 +65,24 @@ export interface I18nIMenuItem extends Omit<IMenuItem, 'label' | 'fullLabel' | '
   badge?: MessageDescriptor
 }
 
-export const MENU_ITEMS: I18nIMenuItem[] = [
-  {
-    route: Routes.SWAP,
-    label: msg`Swap`,
-    description: msg`Trade tokens`,
-  },
-  {
-    route: Routes.LIMIT_ORDER,
-    label: msg`Limit`,
-    fullLabel: msg`Limit order`,
-    description: msg`Set your own price`,
-  },
-  {
-    route: Routes.ADVANCED_ORDERS,
-    label: msg`TWAP`,
-    description: msg`Place orders with a time-weighted average price`,
-  },
-]
+export const SWAP_MENU_ITEM: I18nIMenuItem = {
+  route: Routes.SWAP,
+  label: msg`Swap`,
+  description: msg`Trade tokens`,
+}
+
+export const LIMIT_MENU_ITEM: I18nIMenuItem = {
+  route: Routes.LIMIT_ORDER,
+  label: msg`Limit`,
+  fullLabel: msg`Limit order`,
+  description: msg`Set your own price`,
+}
+
+export const ADVANCED_MENU_ITEM: I18nIMenuItem = {
+  route: Routes.ADVANCED_ORDERS,
+  label: msg`TWAP`,
+  description: msg`Place orders with a time-weighted average price`,
+}
 
 export const HOOKS_STORE_MENU_ITEM: I18nIMenuItem = {
   route: Routes.HOOKS,

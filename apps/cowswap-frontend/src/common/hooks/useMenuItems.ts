@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isTruthy } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -10,11 +11,13 @@ import { useShouldEnableBridging } from './featureFlags/useShouldEnableBridging'
 
 import {
   HOOKS_STORE_MENU_ITEM,
-  MENU_ITEMS,
   IMenuItem,
   I18nIMenuItem,
   YIELD_MENU_ITEM,
   BRIDGING_MENU_ITEM,
+  SWAP_MENU_ITEM,
+  LIMIT_MENU_ITEM,
+  ADVANCED_MENU_ITEM,
 } from '../constants/routes'
 
 export function useMenuItems(): IMenuItem[] {
@@ -38,19 +41,14 @@ export function useMenuItems(): IMenuItem[] {
     [i18n],
   )
 
-  const items: IMenuItem[] = MENU_ITEMS.map((item) => extractMenuItem(item))
-
-  if (isHooksEnabled) {
-    items.push(extractMenuItem(HOOKS_STORE_MENU_ITEM))
-  }
-
-  if (shouldEnableBridging) {
-    items.push(extractMenuItem(BRIDGING_MENU_ITEM))
-  }
-
-  if (isYieldEnabled) {
-    items.push(extractMenuItem(YIELD_MENU_ITEM))
-  }
-
-  return items
+  return [
+    SWAP_MENU_ITEM,
+    shouldEnableBridging ? BRIDGING_MENU_ITEM : null,
+    LIMIT_MENU_ITEM,
+    ADVANCED_MENU_ITEM,
+    isHooksEnabled ? HOOKS_STORE_MENU_ITEM : null,
+    isYieldEnabled ? YIELD_MENU_ITEM : null,
+  ]
+    .filter(isTruthy)
+    .map(extractMenuItem)
 }
