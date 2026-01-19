@@ -22,5 +22,18 @@
         "require": "./index.js"
       }
     }
+  },
+  "dependencies": {
+    "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/common-utils": "workspace:*",
+    "@cowprotocol/cow-sdk": "7.2.11",
+    "@cowprotocol/cowswap-abis": "workspace:*",
+    "@cowprotocol/wallet-provider": "workspace:*",
+    "ethers": "5.7.2",
+    "react": "19.1.2",
+    "swr": "^2.3.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.3"
   }
 }

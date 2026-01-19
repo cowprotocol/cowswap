@@ -24,7 +24,12 @@
     "dex",
     "widget-lib"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@cowprotocol/cow-sdk": "7.2.11",
+    "@cowprotocol/sdk-bridging": "1.4.0",
+    "@uniswap/sdk-core": "^3.0.1",
+    "eventemitter3": "^4.0.0"
+  },
   "types": "./src/index.ts",
   "publishConfig": {
     "main": "./index.js",
@@ -36,5 +41,8 @@
         "require": "./index.js"
       }
     }
+  },
+  "devDependencies": {
+    "@web3-react/types": "^8.2.3"
   }
 }

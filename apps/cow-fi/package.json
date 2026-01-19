@@ -21,7 +21,9 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@cowprotocol/analytics": "workspace:*"
+  },
   "devDependencies": {},
   "nx": {}
 }

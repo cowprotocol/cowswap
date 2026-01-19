@@ -25,8 +25,9 @@
     "widget-lib"
   ],
   "dependencies": {
-    "@cowprotocol/events": "^2.1.0",
-    "@cowprotocol/iframe-transport": "^1.1.1"
+    "@cowprotocol/cow-sdk": "7.2.11",
+    "@cowprotocol/events": "workspace:*",
+    "@cowprotocol/iframe-transport": "workspace:*"
   },
   "types": "./src/index.ts",
   "publishConfig": {

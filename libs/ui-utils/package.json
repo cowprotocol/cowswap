@@ -2,5 +2,8 @@
   "name": "@cowprotocol/ui-utils",
   "version": "1.1.1",
   "type": "commonjs",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "color2k": "^2.0.2"
+  }
 }
