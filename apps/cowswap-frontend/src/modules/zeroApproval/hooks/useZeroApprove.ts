@@ -6,7 +6,7 @@ import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import SafeApiKit from '@safe-global/api-kit'
-import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useApproveCallback } from 'modules/erc20Approve'

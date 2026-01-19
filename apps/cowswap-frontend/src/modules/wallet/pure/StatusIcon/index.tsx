@@ -37,7 +37,7 @@ export function StatusIcon({ connectionType, account, size = 16 }: StatusIconPro
       case ConnectorType.INJECTED:
         image = <Identicon account={account} />
         break
-      case ConnectorType.WALLET_CONNECT:
+      case ConnectorType.WALLET_CONNECT_V2:
         image = <img src={WalletConnectIcon} alt={t`WalletConnect`} />
         break
     }

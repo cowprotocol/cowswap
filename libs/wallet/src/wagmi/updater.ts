@@ -61,18 +61,23 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
 }
 
 function useSafeInfo(_walletInfo: WalletInfo): GnosisSafeInfo | undefined {
-  const { connected, safe } = useSafeAppsSDK()
+  const { connected, safe, sdk } = useSafeAppsSDK()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
 
   useEffect(() => {
     if (connected) {
-      setSafeInfo({ ...safe, address: safe.safeAddress, nonce: '0' })
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      const getInfo = async () => {
+        const fetchedInfo = await sdk.safe.getInfo()
+        setSafeInfo({ ...fetchedInfo, address: fetchedInfo.safeAddress })
+      }
+      getInfo()
     } else {
       // TODO M-3 COW-569
       // fetch safe info from api
     }
-  }, [connected, safe])
+  }, [connected, sdk, safe])
 
   return safeInfo
 }

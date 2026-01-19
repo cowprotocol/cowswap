@@ -95,7 +95,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
               chainId,
               threshold,
               owners,
-              nonce: nonce.toString(),
+              nonce,
               isReadOnly,
             }
           })
@@ -106,7 +106,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
       } else {
         if (chainId && account && provider) {
           try {
-            const _safeInfo = await getSafeInfo(chainId, account, provider)
+            const _safeInfo = await getSafeInfo(chainId, account)
             const { address, threshold, owners, nonce } = _safeInfo
             setSafeInfo((prevSafeInfo) => ({
               ...prevSafeInfo,
@@ -114,7 +114,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
               address,
               threshold,
               owners,
-              nonce,
+              nonce: Number(nonce),
               isReadOnly: false,
             }))
           } catch {

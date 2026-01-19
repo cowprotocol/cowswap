@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { SafeInfoResponse } from '@safe-global/api-kit'
+import { SafeInfo } from '@safe-global/safe-apps-sdk'
 
 import { injected, walletConnect, coinbaseWallet, safe } from '@wagmi/connectors'
 import { Address } from 'viem'
@@ -44,9 +44,9 @@ export interface WalletDetails {
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners' | 'nonce'> & {
-  isReadOnly?: boolean
-  chainId: number
+export type GnosisSafeInfo = Omit<SafeInfo, 'safeAddress'> & {
+  address: string
+  nonce: number
 }
 
 export enum WalletType {
