@@ -1,13 +1,10 @@
 import { ReactNode, useMemo, useState, useEffect } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -32,8 +29,6 @@ const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfilla
 
 export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
   const { i18n } = useLingui()
-  const { account } = useWalletInfo()
-  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const [searchTerm, setSearchTerm] = useState('')
   const [showOnlyFilled, setShowOnlyFilled] = useState(false)
@@ -67,10 +62,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
 
   const hasPendingOrders = !!pendingOrders?.length
 
-  // Just render the OrdersTableContainer with nothing else if the user is not connected or the network is unsupported:
-  return isProviderNetworkUnsupported || !account ? (
-    <OrdersTableContainer />
-  ) : (
+  return (
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
 

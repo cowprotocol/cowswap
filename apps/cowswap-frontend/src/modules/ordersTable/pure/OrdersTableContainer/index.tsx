@@ -1,6 +1,10 @@
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
+
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import * as styledEl from './OrdersTableContainer.styled'
 import { OrdersTableContent } from './OrdersTableContent'
@@ -15,11 +19,10 @@ interface OrdersTableContainerProps extends PropsWithChildren {
   showOnlyFilled?: boolean
 }
 
-export function OrdersTableContainer({
-  searchTerm,
-  showOnlyFilled,
-  children,
-}: OrdersTableContainerProps): ReactNode {
+export function OrdersTableContainer({ searchTerm, showOnlyFilled, children }: OrdersTableContainerProps): ReactNode {
+  const { account } = useWalletInfo()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+
   const { tabs } = useOrdersTableState() || {}
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
@@ -30,22 +33,24 @@ export function OrdersTableContainer({
 
   return (
     <styledEl.Wrapper>
-      <styledEl.TopContainer>
-        <styledEl.TabsContainer>
-          {tabs && <OrdersTabs tabs={tabs} />}
-          {children && <styledEl.RightContainer>{children}</styledEl.RightContainer>}
-        </styledEl.TabsContainer>
-      </styledEl.TopContainer>
-      {shouldDisplayProtocolFeeBanner && (
-        <styledEl.BannerContainer>
-          <ProtocolFeeInfoBanner margin="0" />
-        </styledEl.BannerContainer>
+      {!account || isProviderNetworkUnsupported ? null : (
+        <>
+          <styledEl.TopContainer>
+            <styledEl.TabsContainer>
+              {tabs && <OrdersTabs tabs={tabs} />}
+              {children && <styledEl.RightContainer>{children}</styledEl.RightContainer>}
+            </styledEl.TabsContainer>
+          </styledEl.TopContainer>
+
+          {shouldDisplayProtocolFeeBanner && (
+            <styledEl.BannerContainer>
+              <ProtocolFeeInfoBanner margin="0" />
+            </styledEl.BannerContainer>
+          )}
+        </>
       )}
-      <OrdersTableContent
-        searchTerm={searchTerm}
-        showOnlyFilled={showOnlyFilled}
-        currentTab={currentTab}
-      />
+
+      <OrdersTableContent searchTerm={searchTerm} showOnlyFilled={showOnlyFilled} currentTab={currentTab} />
     </styledEl.Wrapper>
   )
 }
