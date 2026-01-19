@@ -1189,6 +1189,9 @@ importers:
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.0(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      react:
+        specifier: 19.1.2
+        version: 19.1.2
 
   libs/balances-and-allowances:
     dependencies:
