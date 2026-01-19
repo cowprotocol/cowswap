@@ -5,11 +5,9 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { TokenListCategory, TokenListTags, UnsupportedTokensState } from '@cowprotocol/tokens'
 import { SearchInput } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { X } from 'react-feather'
-import { Nullish } from 'types'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
@@ -27,7 +25,6 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   favoriteTokens: TokenWithLogo[]
   balancesState: BalancesState
   unsupportedTokens: UnsupportedTokensState
-  selectedToken?: Nullish<Currency>
   permitCompatibleTokens: PermitCompatibleTokens
   hideFavoriteTokensTooltip?: boolean
   displayLpTokenLists?: boolean
@@ -42,7 +39,6 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
 
-  onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
   onInputPressEnter?(): void
   onOpenManageWidget(): void
@@ -51,34 +47,23 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
 }
 
 function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext {
-  const {
-    selectedToken,
-    balancesState,
-    unsupportedTokens,
-    permitCompatibleTokens,
-    onSelectToken,
-    account,
-    tokenListTags,
-  } = props
+  const { balancesState, unsupportedTokens, permitCompatibleTokens, account, tokenListTags } = props
 
   return useMemo(
     () => ({
       balancesState,
-      selectedToken,
-      onSelectToken,
       unsupportedTokens,
       permitCompatibleTokens,
       tokenListTags,
       isWalletConnected: !!account,
     }),
-    [balancesState, selectedToken, onSelectToken, unsupportedTokens, permitCompatibleTokens, tokenListTags, account],
+    [balancesState, unsupportedTokens, permitCompatibleTokens, tokenListTags, account],
   )
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
   const {
     defaultInputValue = '',
-    onSelectToken,
     onDismiss,
     onInputPressEnter,
     account,
@@ -124,7 +109,6 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         <LpTokenListsWidget
           account={account}
           search={inputValue}
-          onSelectToken={onSelectToken}
           openPoolPage={openPoolPage}
           disableErc20={disableErc20}
           tokenListCategoryState={tokenListCategoryState}
