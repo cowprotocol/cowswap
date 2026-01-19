@@ -150,7 +150,7 @@ export function useSetupTradeState(): void {
       return
     }
 
-    const { inputCurrencyId, outputCurrencyId } = tradeStateFromUrl
+    const { inputCurrencyId, outputCurrencyId, chainId, targetChainId } = tradeStateFromUrl
     const providerAndUrlChainIdMismatch = currentChainId !== prevProviderChainId
 
     const onlyChainIdIsChanged =
@@ -163,6 +163,8 @@ export function useSetupTradeState(): void {
     const sameTokens =
       inputCurrencyId !== EMPTY_TOKEN_ID &&
       (inputCurrencyId || outputCurrencyId) &&
+      // Not cross-chain swap
+      (!targetChainId || chainId === targetChainId) &&
       inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
 
     const defaultState = getDefaultTradeRawState(currentChainId)

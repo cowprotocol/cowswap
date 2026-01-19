@@ -2,14 +2,13 @@ import React, { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { Edit } from 'react-feather'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { SelectTokenContext } from '../../types'
 import { FavoriteTokensList } from '../FavoriteTokensList'
 import * as styledEl from '../SelectTokenModal/styled'
@@ -19,23 +18,18 @@ export interface TokensContentProps {
   displayLpTokenLists?: boolean
   selectTokenContext: SelectTokenContext
   favoriteTokens: TokenWithLogo[]
-  selectedToken?: Nullish<Currency>
   hideFavoriteTokensTooltip?: boolean
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
   searchInput: string
   standalone?: boolean
   areTokensFromBridge: boolean
-
-  onSelectToken(token: TokenWithLogo): void
   onOpenManageWidget(): void
 }
 
 export function TokensContent({
   selectTokenContext,
-  onSelectToken,
   onOpenManageWidget,
-  selectedToken,
   favoriteTokens,
   hideFavoriteTokensTooltip,
   areTokensLoading,
@@ -45,6 +39,8 @@ export function TokensContent({
   standalone,
   areTokensFromBridge,
 }: TokensContentProps): ReactNode {
+  const { onSelectToken, selectedToken } = useSelectTokenWidgetState()
+
   return (
     <>
       {!areTokensLoading && !!favoriteTokens.length && (
