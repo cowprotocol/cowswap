@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { OrderStatus } from 'legacy/state/orders/actions'
+
 import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'
 import { isPartiallyFilled } from 'utils/orderUtils/isPartiallyFilled'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -10,9 +12,11 @@ import { getParsedOrderFromTableItem } from '../utils/orderTableGroupUtils'
 function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {
   if (status === HistoryStatusFilter.FILLED) return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
 
-  //if (status === HistoryStatusFilter.CANCELLED) return isOrderCancelled(parsedOrder)
+  if (status === HistoryStatusFilter.CANCELLED) return parsedOrder.status === OrderStatus.CANCELLED
 
-  //if (status === HistoryStatusFilter.EXPIRED) return isOrderExpired(parsedOrder)
+  if (status === HistoryStatusFilter.EXPIRED) return parsedOrder.status === OrderStatus.EXPIRED
+
+  if (status === HistoryStatusFilter.FAILED) return parsedOrder.status === OrderStatus.FAILED
 
   return true
 }
@@ -69,6 +73,7 @@ export enum HistoryStatusFilter {
   FILLED = 'filled',
   CANCELLED = 'cancelled',
   EXPIRED = 'expired',
+  FAILED = 'failed',
   ALL = 'all',
 }
 
