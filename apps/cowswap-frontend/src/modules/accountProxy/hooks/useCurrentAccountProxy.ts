@@ -12,6 +12,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
 import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
+import { Address } from 'viem'
 
 import { useCowShedHooks } from './useCowShedHooks'
 
@@ -57,7 +58,7 @@ interface CoWShedContract extends BaseContract {
 interface ProxyAndAccount {
   chainId: SupportedChainId
   proxyAddress: string
-  account: string
+  account: Address
   isProxyDeployed: boolean
   isProxySetupValid: boolean | null
 }

@@ -1,5 +1,5 @@
 import { Nullish } from '@cowprotocol/types'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import { GenerecTradeApproveResult } from '../containers'
 
