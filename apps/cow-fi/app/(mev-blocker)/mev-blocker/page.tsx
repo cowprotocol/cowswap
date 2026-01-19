@@ -1,13 +1,15 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 import { Color, Font, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { REDIRECT_SECONDS } from './constants'
+
 const REDIRECT_URL = 'https://mevblocker.io'
-const REDIRECT_SECONDS = 10
 
 const Page = styled.main`
   display: flex;
@@ -123,7 +125,7 @@ const InlineLink = styled.a`
   font-weight: ${Font.weight.bold};
 `
 
-export default function MevBlockerRedirectPage(): JSX.Element {
+export default function MevBlockerRedirectPage(): ReactNode {
   const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS)
 
   useEffect(() => {
