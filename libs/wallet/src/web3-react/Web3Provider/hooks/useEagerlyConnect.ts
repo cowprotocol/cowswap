@@ -1,10 +1,16 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { Connector } from '@web3-react/types'
 
-import { useSelectedEip6963ProviderInfo, useSetEip6963Provider, useBeginEagerConnect, useEndEagerConnect } from '../../../api/hooks'
+import {
+  useSelectedEip6963ProviderInfo,
+  useSetEip6963Provider,
+  useBeginEagerConnect,
+  useEndEagerConnect,
+  useWalletInfo,
+} from '../../../api/hooks'
 import { selectedEip6963ProviderRdnsAtom } from '../../../api/state/multiInjectedProvidersAtom'
 import { ConnectionType } from '../../../api/types'
 import { getIsInjectedMobileBrowser } from '../../../api/utils/connection'
@@ -24,21 +30,28 @@ async function connect(connector: Connector) {
     } else {
       await connector.activate(chainId)
     }
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.debug(`web3-react eager connection error: ${error}`)
   }
 }
 
-
 export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, standaloneMode?: boolean): void {
   const [tryConnectEip6963Provider, setTryConnectEip6963Provider] = useState(false)
   const eagerlyConnectInitRef = useRef(false)
+  const { active: isActive } = useWalletInfo()
   const selectedEip6963ProviderInfo = useSelectedEip6963ProviderInfo()
   const setEip6963Provider = useSetEip6963Provider()
   const beginEagerConnect = useBeginEagerConnect()
   const endEagerConnect = useEndEagerConnect()
+  const start = useCallback(
+    (p: Promise<void>): void => {
+      beginEagerConnect()
+      void p.finally(() => endEagerConnect())
+    },
+    [beginEagerConnect, endEagerConnect],
+  )
 
   useEffect(() => {
     // Initialize EagerlyConnect once
@@ -47,11 +60,6 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, st
     const isIframe = window.top !== window.self
 
     // autoConnect is set to true in the e2e tests
-    const start = (p: Promise<void>): void => {
-      beginEagerConnect()
-      void p.finally(() => endEagerConnect())
-    }
-
     if (isInjectedWidget() || getIsInjectedMobileBrowser() || window.ethereum?.autoConnect) {
       start(connect(injectedWalletConnection.connector))
     }
@@ -80,7 +88,26 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, st
 
     eagerlyConnectInitRef.current = true
     // The dependency list is empty so this is only run once on mount
-  }, [selectedWallet, beginEagerConnect, endEagerConnect])
+  }, [selectedWallet, start])
+
+  useEffect(() => {
+    const isIframe = window.top !== window.self
+    if (!isIframe) return
+
+    const reconnectSafeIfNeeded = (): void => {
+      if (document.visibilityState === 'hidden') return
+      if (isActive) return
+      start(connect(gnosisSafeConnection.connector))
+    }
+
+    window.addEventListener('focus', reconnectSafeIfNeeded)
+    document.addEventListener('visibilitychange', reconnectSafeIfNeeded)
+
+    return () => {
+      window.removeEventListener('focus', reconnectSafeIfNeeded)
+      document.removeEventListener('visibilitychange', reconnectSafeIfNeeded)
+    }
+  }, [isActive, start])
 
   /**
    * Activate the selected eip6963 provider

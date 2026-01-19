@@ -1,13 +1,17 @@
 'use client'
 
+import type { ReactNode } from 'react'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import { Font, Media, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 
 import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
+import { LazyImage } from '@/components/LazyImage'
 import LazySVG from '@/components/LazySVG'
 import { SearchBar } from '@/components/SearchBar'
 import {
@@ -34,9 +38,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
-
-import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
 
 const PODCASTS = [
   {
@@ -156,8 +157,7 @@ const Wrapper = styled.div`
   }
 `
 
-export function LearnPageComponent({ categories, featuredArticles }: PageProps) {
-  const { LazyImage } = useLazyLoadImages()
+export function LearnPageComponent({ categories, featuredArticles }: PageProps): ReactNode {
   const analytics = useCowAnalytics()
 
   return (
@@ -256,7 +256,7 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps) 
                 {PODCASTS.map((podcast, index) => (
                   <LinkItem
                     key={index}
-                    href={`${podcast.link}?utm_source=cow.fi&utm_medium=web&utm_content=podcast-${podcast.title}`}
+                    href={podcast.link}
                     rel="noopener noreferrer nofollow"
                     target="_blank"
                     onClick={() =>
@@ -277,7 +277,7 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps) 
                 {SPACES.map((space, index) => (
                   <LinkItem
                     key={index}
-                    href={`${space.link}?utm_source=cow.fi&utm_medium=web&utm_content=space-${space.title}`}
+                    href={space.link}
                     rel="noopener noreferrer nofollow"
                     target="_blank"
                     onClick={() =>
@@ -303,7 +303,7 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps) 
               {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (
                 <ArticleCard
                   key={index}
-                  href={`${link}?utm_source=cow.fi&utm_medium=web&utm_content=media-${title}`}
+                  href={link}
                   target={linkExternal ? '_blank' : '_self'}
                   rel={linkExternal ? 'noopener' : ''}
                   onClick={() =>
@@ -331,7 +331,7 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps) 
           <CTASubtitle>Explore, learn, integrate</CTASubtitle>
           <CTATitle>CoW DAO documentation</CTATitle>
           <CTAButton
-            href="https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs"
+            href="https://docs.cow.fi/"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() =>

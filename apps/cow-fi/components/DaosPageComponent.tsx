@@ -9,6 +9,7 @@ import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
@@ -39,7 +40,6 @@ import {
   TopicTitle,
   TrustedBy,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 export function DaosPageComponent() {
   const analytics = useCowAnalytics()
@@ -361,7 +361,7 @@ export function DaosPageComponent() {
                   contentAlign={'center'}
                   bgColor={`var(${UI.COLOR_NEUTRAL_20})`}
                   padding={'10px'}
-                  href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
+                  href={dao.link}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() =>
