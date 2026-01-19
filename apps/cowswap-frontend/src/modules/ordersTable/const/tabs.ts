@@ -22,13 +22,13 @@ export const ORDERS_TABLE_TABS: OrderTab[] = [
     count: 0,
   },
   {
-    id: OrderTabId.unfillable,
-    title: msg`Unfillable`,
+    id: OrderTabId.open,
+    title: msg`Open`,
     count: 0,
   },
   {
-    id: OrderTabId.open,
-    title: msg`Open`,
+    id: OrderTabId.unfillable,
+    title: msg`Unfillable`,
     count: 0,
   },
   {
