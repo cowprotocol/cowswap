@@ -1,1 +1,1 @@
-export const REDIRECT_SECONDS = 5
+export const REDIRECT_SECONDS = 10
