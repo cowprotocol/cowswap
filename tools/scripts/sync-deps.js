@@ -49,6 +49,9 @@ const COWPROTOCOL_NPM_PACKAGES = new Set([
   '@cowprotocol/sdk-cow-shed',
   '@cowprotocol/sdk-ethers-v5-adapter',
   '@cowprotocol/sdk-subgraph',
+  '@cowprotocol/sdk-contracts-ts',
+  '@cowprotocol/sdk-order-book',
+  '@cowprotocol/sdk-trading'
 ])
 
 // Node.js built-in modules
