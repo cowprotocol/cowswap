@@ -99,3 +99,12 @@ export const YIELD_MENU_ITEM: I18nIMenuItem = {
   badge: msg`New`,
   badgeType: BadgeTypes.ALERT,
 }
+
+export const BRIDGING_MENU_ITEM: I18nIMenuItem = {
+  route: Routes.SWAP,
+  label: msg`Bridge`,
+  fullLabel: msg`Bridge`,
+  description: msg`Send assets across different chains`,
+  badge: msg`New`,
+  badgeType: BadgeTypes.ALERT,
+}
