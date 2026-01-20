@@ -7,6 +7,7 @@ import { TokenSymbol } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { SelectTokenContext } from '../../types'
 
 export interface FavoriteTokenItemProps {
@@ -15,7 +16,9 @@ export interface FavoriteTokenItemProps {
 }
 
 export function FavoriteTokenItem({ token, selectTokenContext }: FavoriteTokenItemProps): ReactNode {
-  const { selectedToken, onTokenListItemClick, onSelectToken } = selectTokenContext
+  const { onTokenListItemClick } = selectTokenContext
+
+  const { selectedToken, onSelectToken } = useSelectTokenWidgetState()
 
   const isSelected = selectedToken?.isToken && getTokenId(token) === getTokenId(selectedToken)
 
@@ -24,7 +27,7 @@ export function FavoriteTokenItem({ token, selectTokenContext }: FavoriteTokenIt
       return
     }
     onTokenListItemClick?.(token)
-    onSelectToken(token)
+    onSelectToken?.(token)
   }
 
   return (

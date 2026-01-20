@@ -18,6 +18,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     disableQuotePolling = false,
     disableNativeSelling = false,
     disableSuggestedSlippageApi = false,
+    allowSwapSameToken = false,
     enableSmartSlippage,
   } = params
   const modals = TradeWidgetModals({ confirmModal, genericModal })
@@ -37,6 +38,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     <>
       <styledEl.Container id={id} isTokenSelectOpen={isTokenSelectOpen} isTokenSelectWide={isTokenSelectWide}>
         <TradeWidgetUpdaters
+          allowSwapSameToken={allowSwapSameToken}
           disableQuotePolling={disableQuotePolling}
           disableNativeSelling={disableNativeSelling}
           disableSuggestedSlippageApi={disableSuggestedSlippageApi}

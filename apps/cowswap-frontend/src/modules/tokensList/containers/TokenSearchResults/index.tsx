@@ -4,6 +4,7 @@ import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokenListContext } from '../../hooks/useTokenListContext'
 import { useTokenListViewState } from '../../hooks/useTokenListViewState'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
@@ -15,7 +16,9 @@ export function TokenSearchResults(): ReactNode {
 
   const { selectTokenContext, areTokensFromBridge, allTokens } = useTokenListContext()
 
-  const { onSelectToken, onTokenListItemClick } = selectTokenContext
+  const { onTokenListItemClick } = selectTokenContext
+
+  const { onSelectToken } = useSelectTokenWidgetState()
 
   // Do not make search when tokens are from bridge
   const defaultSearchResults = useSearchToken(areTokensFromBridge ? null : searchInput)
@@ -52,7 +55,7 @@ export function TokenSearchResults(): ReactNode {
 
       if (tokenToSelect) {
         onTokenListItemClick?.(tokenToSelect)
-        onSelectToken(tokenToSelect)
+        onSelectToken?.(tokenToSelect)
       }
     }
   }, [searchInput, activeListsResult, matchedTokens, onSelectToken, onTokenListItemClick])
