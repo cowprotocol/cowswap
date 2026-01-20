@@ -34,7 +34,7 @@ export function useLoadMoreOrders(): UseLoadMoreOrdersReturn {
     setOrdersLimit((prev) => ({ limit: prev.limit + ORDERS_LIMIT_INCREMENT, isLoading: true }))
   }
 
-  const hasMoreOrders = orders && orders.length > limit - ORDERS_LIMIT_INCREMENT
+  const hasMoreOrders = orders && orders.length >= limit - ORDERS_LIMIT_INCREMENT
 
   return {
     limit,

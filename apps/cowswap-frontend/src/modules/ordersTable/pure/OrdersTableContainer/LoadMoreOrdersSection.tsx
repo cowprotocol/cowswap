@@ -18,12 +18,6 @@ export function LoadMoreOrdersSection({ currentTab }: LoadMoreOrdersSectionProps
   const { loadMore, hasMoreOrders, isLoading } = useLoadMoreOrders()
   const orders = useApiOrders()
 
-  // if (orderType !== TabOrderTypes.LIMIT && orderType !== TabOrderTypes.ADVANCED) return false
-
-  // if (!hasHydratedOrders && (!orders || orders.length === 0)) return false
-
-  console.log(currentTab === OrderTabId.open, hasMoreOrders, orders.length > 0)
-
   return currentTab === OrderTabId.open && hasMoreOrders && orders.length > 0 ? (
     <LoadMoreButton onClick={loadMore} disabled={isLoading}>
       <Trans>Load More</Trans>

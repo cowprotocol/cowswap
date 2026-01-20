@@ -3191,8 +3191,8 @@ msgid "Read how to prevent losing funds"
 msgstr "Read how to prevent losing funds"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
-msgid "No open orders found. You can try again by clicking the \"Load More\" button."
-msgstr "No open orders found. You can try again by clicking the \"Load More\" button."
+#~ msgid "No open orders found. You can try again by clicking the \"Load More\" button."
+#~ msgstr "No open orders found. You can try again by clicking the \"Load More\" button."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time each part of your TWAP order will remain active."
@@ -3247,8 +3247,8 @@ msgid "View on Explorer"
 msgstr "View on Explorer"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
-msgid "No open orders found in your orders history."
-msgstr "No open orders found in your orders history."
+#~ msgid "No open orders found in your orders history."
+#~ msgstr "No open orders found in your orders history."
 
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
