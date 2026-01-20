@@ -7,5 +7,5 @@
   ],
   "buildCommand": "cd ../../ && pnpm run build:explorer",
   "outputDirectory": "../../build/explorer",
-  "installCommand": "cd ../../ && pnpm run run install:ci"
+  "installCommand": "cd ../../ && pnpm run install:ci"
 }
