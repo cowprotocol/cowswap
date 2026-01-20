@@ -85,7 +85,6 @@ function getHistoryTitle(historyStatusFilter: HistoryStatusFilter): string {
   if (historyStatusFilter === HistoryStatusFilter.EXECUTED) return t`No executed orders found`
   if (historyStatusFilter === HistoryStatusFilter.CANCELLED) return t`No cancelled orders found`
   if (historyStatusFilter === HistoryStatusFilter.EXPIRED) return t`No expired orders found`
-  if (historyStatusFilter === HistoryStatusFilter.FAILED) return t`No failed orders found`
 
   return t`No matching orders found`
 }

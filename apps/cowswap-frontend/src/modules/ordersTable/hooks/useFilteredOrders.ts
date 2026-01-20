@@ -20,8 +20,6 @@ function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): 
   if (status === HistoryStatusFilter.EXPIRED)
     return parsedOrder.status === OrderStatus.EXPIRED && !(isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder))
 
-  if (status === HistoryStatusFilter.FAILED) return parsedOrder.status === OrderStatus.FAILED
-
   return true
 }
 
@@ -77,7 +75,6 @@ export enum HistoryStatusFilter {
   EXECUTED = 'executed',
   CANCELLED = 'cancelled',
   EXPIRED = 'expired',
-  FAILED = 'failed',
   ALL = 'all',
 }
 
