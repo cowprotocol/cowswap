@@ -1802,8 +1802,8 @@ msgstr "Cancel multiple orders: {ordersCount}"
 
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/index.tsx
-msgid "Failed orders"
-msgstr "Failed orders"
+#~ msgid "Failed orders"
+#~ msgstr "Failed orders"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Wrap my {nativeSymbol} and swap"
@@ -2599,8 +2599,8 @@ msgid "Your position has 0 liquidity, and is not earning fees."
 msgstr "Your position has 0 liquidity, and is not earning fees."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "No failed orders found"
-msgstr "No failed orders found"
+#~ msgid "No failed orders found"
+#~ msgstr "No failed orders found"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "You can avoid price impact on large trades by using TWAP orders on CoW Swap."
