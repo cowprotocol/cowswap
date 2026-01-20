@@ -12,8 +12,6 @@ import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
-import { getDefaultCurrencies } from '../types'
-
 // Mock dependencies
 jest.mock('@cowprotocol/tokens', () => ({
   useAreThereTokensWithSameSymbol: jest.fn(),
@@ -35,11 +33,6 @@ jest.mock('./useTradeState', () => ({
   useTradeState: jest.fn(),
 }))
 
-jest.mock('../types', () => ({
-  ...jest.requireActual('../types'),
-  getDefaultCurrencies: jest.fn(),
-}))
-
 const mockedUseAreThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol as jest.MockedFunction<
   typeof useAreThereTokensWithSameSymbol
 >
@@ -47,7 +40,6 @@ const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalle
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockedUseTradeNavigate = useTradeNavigate as jest.MockedFunction<typeof useTradeNavigate>
 const mockedUseTradeState = useTradeState as jest.MockedFunction<typeof useTradeState>
-const mockedGetDefaultCurrencies = getDefaultCurrencies as jest.MockedFunction<typeof getDefaultCurrencies>
 
 // Test tokens
 const WETH_MAINNET = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
@@ -84,11 +76,6 @@ describe('useNavigateOnCurrencySelection', () => {
       outputCurrency: USDC_MAINNET,
       orderKind: OrderKind.SELL,
     } as never)
-
-    mockedGetDefaultCurrencies.mockReturnValue({
-      inputCurrency: WETH_MAINNET,
-      outputCurrency: USDC_MAINNET,
-    })
   })
 
   describe('Basic currency selection', () => {
@@ -230,12 +217,7 @@ describe('useNavigateOnCurrencySelection', () => {
   })
 
   describe('Chain switching scenarios', () => {
-    it('should switch chain and reset buy token when selecting input currency from different chain', () => {
-      mockedGetDefaultCurrencies.mockReturnValue({
-        inputCurrency: WETH_GNOSIS,
-        outputCurrency: USDC_GNOSIS,
-      })
-
+    it('should switch chain and keep buy token when selecting input currency from different chain', () => {
       const { result } = renderHook(() => useNavigateOnCurrencySelection())
 
       // Select token from Gnosis Chain as input
@@ -245,9 +227,9 @@ describe('useNavigateOnCurrencySelection', () => {
         SupportedChainId.GNOSIS_CHAIN,
         {
           inputCurrencyId: WETH_GNOSIS.symbol,
-          outputCurrencyId: USDC_GNOSIS.address,
+          outputCurrencyId: USDC_MAINNET.address,
         },
-        undefined,
+        { targetChainId: SupportedChainId.MAINNET },
       )
     })
 
