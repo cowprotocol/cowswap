@@ -1,6 +1,7 @@
 import { JSX, useEffect } from 'react'
 
-import { useSelectTokenWidgetState } from 'modules/tokensList'
+import { useTokenSelectorConsentFlow } from 'modules/rwa'
+import { SelectTokenWidget, useSelectTokenWidgetState } from 'modules/tokensList'
 import { useSetShouldUseAutoSlippage } from 'modules/tradeSlippage'
 
 import * as styledEl from './styled'
@@ -8,6 +9,8 @@ import { TradeWidgetForm } from './TradeWidgetForm'
 import { TradeWidgetModals } from './TradeWidgetModals'
 import { TradeWidgetUpdaters } from './TradeWidgetUpdaters'
 import { TradeWidgetProps } from './types'
+
+import { useIsTokenSelectWide } from '../../hooks/useIsTokenSelectWide'
 
 export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   const { id, slots, params, confirmModal, genericModal } = props
@@ -18,8 +21,12 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     allowSwapSameToken = false,
     enableSmartSlippage,
   } = params
-  const modals = TradeWidgetModals({ confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget })
+  const modals = TradeWidgetModals({ confirmModal, genericModal })
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
+  const isTokenSelectWide = useIsTokenSelectWide()
+
+  const consentFlow = useTokenSelectorConsentFlow()
+  const selectTokenWidgetNode = slots.selectTokenWidget ?? <SelectTokenWidget customFlows={consentFlow} />
 
   const setShouldUseAutoSlippage = useSetShouldUseAutoSlippage()
 
@@ -28,18 +35,22 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   }, [enableSmartSlippage, setShouldUseAutoSlippage])
 
   return (
-    <styledEl.Container id={id} isTokenSelectOpen={isTokenSelectOpen}>
-      <TradeWidgetUpdaters
-        allowSwapSameToken={allowSwapSameToken}
-        disableQuotePolling={disableQuotePolling}
-        disableNativeSelling={disableNativeSelling}
-        disableSuggestedSlippageApi={disableSuggestedSlippageApi}
-        onChangeRecipient={props.actions.onChangeRecipient}
-      >
-        {slots.updaters}
-      </TradeWidgetUpdaters>
+    <>
+      <styledEl.Container id={id} isTokenSelectOpen={isTokenSelectOpen} isTokenSelectWide={isTokenSelectWide}>
+        <TradeWidgetUpdaters
+          allowSwapSameToken={allowSwapSameToken}
+          disableQuotePolling={disableQuotePolling}
+          disableNativeSelling={disableNativeSelling}
+          disableSuggestedSlippageApi={disableSuggestedSlippageApi}
+          onChangeRecipient={props.actions.onChangeRecipient}
+        >
+          {slots.updaters}
+        </TradeWidgetUpdaters>
 
-      {modals || <TradeWidgetForm {...props} />}
-    </styledEl.Container>
+        {modals || <TradeWidgetForm {...props} />}
+      </styledEl.Container>
+
+      {selectTokenWidgetNode}
+    </>
   )
 }

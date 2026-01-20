@@ -33,7 +33,7 @@ import {
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { GeoDataUpdater } from 'modules/rwa'
-import { BlockedListSourcesUpdater, useSourceChainId } from 'modules/tokensList'
+import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
@@ -119,6 +119,7 @@ export function Updaters(): ReactNode {
       />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
       <BlockedListSourcesUpdater />
+      <RecentTokensStorageUpdater />
       <GeoDataUpdater />
       <TokensListsTagsUpdater />
 

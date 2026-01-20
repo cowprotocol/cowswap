@@ -22,7 +22,7 @@ export function findRestrictedToken(
 ): RestrictedTokenInfo | undefined {
   if (!token) return undefined
 
-  const tokenId = getTokenId(token.chainId, token.address)
+  const tokenId = getTokenId({ chainId: token.chainId, address: token.address })
   const foundToken = restrictedList.tokensMap[tokenId]
 
   if (!foundToken) return undefined
