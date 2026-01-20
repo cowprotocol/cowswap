@@ -1,12 +1,12 @@
-import { ReactElement } from 'react'
+import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, getTokenId } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, ExternalLink, ModalHeader } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink, ModalHeader, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { AlertCircle } from 'react-feather'
+import { AlertCircle, AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import * as styledEl from './styled'
@@ -16,10 +16,29 @@ const ExternalLinkStyled = styled(ExternalLink)`
   color: inherit;
 `
 
+const BlockedAlert = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(${UI.COLOR_DANGER_BG});
+  color: var(${UI.COLOR_DANGER_TEXT});
+  border-radius: 10px;
+  font-size: 13px;
+
+  > svg {
+    flex-shrink: 0;
+  }
+`
+
+export interface ImportRestriction {
+  isBlocked: boolean
+  message: string
+}
+
 export interface ImportTokenModalProps {
   tokens: TokenWithLogo[]
-  isImportDisabled?: boolean
-  blockReason?: string | null
+  restriction?: ImportRestriction | null
 
   onBack?(): void
 
@@ -28,8 +47,8 @@ export interface ImportTokenModalProps {
   onImport(tokens: TokenWithLogo[]): void
 }
 
-export function ImportTokenModal(props: ImportTokenModalProps): ReactElement {
-  const { tokens, onBack, onDismiss, onImport, isImportDisabled, blockReason } = props
+export function ImportTokenModal(props: ImportTokenModalProps): ReactNode {
+  const { tokens, restriction, onBack, onDismiss, onImport } = props
 
   return (
     <styledEl.Wrapper>
@@ -44,7 +63,7 @@ export function ImportTokenModal(props: ImportTokenModalProps): ReactElement {
           </Trans>
         </p>
         {tokens.map((token) => (
-          <styledEl.TokenInfo key={token.address.toLowerCase()}>
+          <styledEl.TokenInfo key={getTokenId(token)}>
             <TokenLogo token={token} size={24} />
             <styledEl.StyledTokenSymbol token={token} />
             <styledEl.StyledTokenName token={token} />
@@ -63,13 +82,13 @@ export function ImportTokenModal(props: ImportTokenModalProps): ReactElement {
             </styledEl.UnknownSourceWarning>
           </styledEl.TokenInfo>
         ))}
-        {blockReason && (
-          <styledEl.UnknownSourceWarning>
-            <AlertCircle size={14} />
-            <span>{blockReason}</span>
-          </styledEl.UnknownSourceWarning>
+        {restriction?.isBlocked && (
+          <BlockedAlert>
+            <AlertTriangle size={20} />
+            <span>{restriction.message}</span>
+          </BlockedAlert>
         )}
-        <ButtonPrimary onClick={() => onImport(tokens)} disabled={isImportDisabled}>
+        <ButtonPrimary onClick={() => onImport(tokens)} disabled={restriction?.isBlocked}>
           <Trans>Import</Trans>
         </ButtonPrimary>
       </styledEl.Contents>
