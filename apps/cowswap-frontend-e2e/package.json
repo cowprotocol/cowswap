@@ -6,6 +6,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cypress": "^15.4.0",
     "@cowprotocol/cow-sdk": "7.2.11",
     "@ethersproject/abi": "5.7.0",
     "@ethersproject/bytes": "5.7.0",
@@ -13,8 +14,5 @@
     "@ethersproject/providers": "5.7.0",
     "@ethersproject/wallet": "5.7.0",
     "ethers": "5.7.2"
-  },
-  "devDependencies": {
-    "cypress": "^15.4.0"
   }
 }
