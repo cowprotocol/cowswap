@@ -1,10 +1,10 @@
 import { bungeeAffiliateCode } from '@cowprotocol/common-const'
 import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import {
-  NearIntentsBridgeProvider,
+  AcrossBridgeProvider,
   BridgingSdk,
   BungeeBridgeProvider,
-  AcrossBridgeProvider,
+  NearIntentsBridgeProvider,
 } from '@cowprotocol/sdk-bridging'
 
 import { orderBookApi } from 'cowSdk'
@@ -24,7 +24,10 @@ export const bungeeBridgeProvider = new BungeeBridgeProvider({
 
 export const acrossBridgeProvider = new AcrossBridgeProvider()
 
-export const nearIntentsBridgeProvider = new NearIntentsBridgeProvider()
+// TODO: remove log before merging, for testing only!
+console.log('Near api key is set:', !!process.env.REACT_APP_NEAR_API_KEY)
+
+export const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey: process.env.REACT_APP_NEAR_API_KEY })
 
 export const bridgingSdk = new BridgingSdk({
   providers: [bungeeBridgeProvider, acrossBridgeProvider, nearIntentsBridgeProvider],
