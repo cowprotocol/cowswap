@@ -13,10 +13,12 @@ import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 const eip6963Providers: EIP6963ProviderDetail[] = []
 
-window.addEventListener('eip6963:announceProvider', (event: Event) => {
-  const providerEvent = event as EIP6963AnnounceProviderEvent
-  eip6963Providers.push(providerEvent.detail)
-})
+if (typeof window !== 'undefined') {
+  window.addEventListener('eip6963:announceProvider', (event: Event) => {
+    const providerEvent = event as EIP6963AnnounceProviderEvent
+    eip6963Providers.push(providerEvent.detail)
+  })
+}
 
 /**
  * Handles JSON-RPC request coming from an iFrame by delegating to a given Ethereum provider.
