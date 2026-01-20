@@ -14,7 +14,8 @@ function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): 
 
   if (status === HistoryStatusFilter.CANCELLED) return parsedOrder.status === OrderStatus.CANCELLED
 
-  if (status === HistoryStatusFilter.EXPIRED) return parsedOrder.status === OrderStatus.EXPIRED
+  if (status === HistoryStatusFilter.EXPIRED)
+    return parsedOrder.status === OrderStatus.EXPIRED && !(isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder))
 
   if (status === HistoryStatusFilter.FAILED) return parsedOrder.status === OrderStatus.FAILED
 
