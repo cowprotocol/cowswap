@@ -271,6 +271,9 @@ importers:
       jest-environment-jsdom:
         specifier: ^30.2.0
         version: 30.2.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      jest-fetch-mock:
+        specifier: ^3.0.3
+        version: 3.0.3(encoding@0.1.13)
       jest-styled-components:
         specifier: ^7.1.1
         version: 7.2.0(styled-components@5.3.11(@babel/core@7.28.4)(react-dom@19.1.2(react@19.1.2))(react-is@19.1.2)(react@19.1.2))
