@@ -9,10 +9,11 @@ interface DataLayerEvent extends Record<string, unknown> {
 
 type DataLayer = DataLayerEvent[]
 
-const sanitizeRecord = (record: Record<string, unknown>): Record<string, unknown> =>
-  Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
+function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
+}
 
-const getAdditionalEventParams = (event: GtmEvent<Category>): Record<string, unknown> => {
+function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unknown> {
   const {
     category: _category,
     action: _action,
@@ -108,7 +109,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
   private dataLayer: DataLayer = []
   private previousAccount: string | undefined = undefined
 
-  private cleanup = (): void => {
+  private cleanup(): void {
     window.cowAnalyticsInstance = undefined
   }
 
