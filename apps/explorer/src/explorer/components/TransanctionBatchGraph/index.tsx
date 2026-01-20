@@ -12,7 +12,7 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Cytoscape from 'cytoscape'
+import Cytoscape, { Ext } from 'cytoscape'
 import fcose from 'cytoscape-fcose'
 import klay from 'cytoscape-klay'
 import noOverlap from 'cytoscape-no-overlap'
@@ -33,8 +33,7 @@ import { Network } from '../../../types'
 import { DropdownOption, DropdownPosition } from '../common/Dropdown'
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-// @ts-ignore
-Cytoscape.use(popper)
+Cytoscape.use(popper as never as Ext)
 // eslint-disable-next-line react-hooks/rules-of-hooks
 Cytoscape.use(noOverlap)
 // eslint-disable-next-line react-hooks/rules-of-hooks
