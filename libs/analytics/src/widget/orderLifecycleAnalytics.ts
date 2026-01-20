@@ -227,7 +227,7 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
 
   const { inputToken, outputToken } = extractTokenMeta(p.order)
 
-  const hasBridgeOrder = Boolean(p.bridgeOrder ?? (p.order as { bridgeOrder?: unknown } | undefined)?.bridgeOrder)
+  const hasBridgeOrder = Boolean(p.bridgeOrder)
 
   const executedSellAmountUnits = formatTokenUnitsExact(inputToken, executedSellAmountAtoms)
   const executedBuyAmountUnits = formatTokenUnitsExact(outputToken, executedBuyAmountAtoms)
@@ -249,7 +249,7 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
     fromAmount: executedSellAmountUnits,
     toAmount: executedBuyAmountUnits,
 
-    // Note: bridge providers tag actual widget orders via isBridgeOrder; this flag only captures the token selection being cross-chain.
+    // Note: bridge providers tag actual widget orders via bridgeOrder; this flag (isCrossChain) only captures the token selection being cross-chain.
     isCrossChain: hasBridgeOrder,
   }
 }
