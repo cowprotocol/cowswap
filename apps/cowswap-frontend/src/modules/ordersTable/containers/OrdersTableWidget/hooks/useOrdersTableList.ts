@@ -116,7 +116,6 @@ export function useOrdersTableList(
       balancesAndAllowances,
       orderType,
       setIsOrderUnfillable,
-      orderLimit,
       pendingOrdersPermitValidityState,
     ],
   )
