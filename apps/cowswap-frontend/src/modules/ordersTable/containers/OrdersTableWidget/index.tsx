@@ -106,6 +106,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
                   <option value="executed">{i18n._('Executed orders')}</option>
                   <option value="cancelled">{i18n._('Cancelled orders')}</option>
                   <option value="expired">{i18n._('Expired orders')}</option>
+                  <option value="failed">{i18n._('Failed orders')}</option>
                   <option value="all">{i18n._('All orders')}</option>
                 </Select>
               </SelectContainer>
