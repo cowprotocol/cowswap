@@ -53,16 +53,11 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
   useEffect(() => {
     if (!currentPageNumber || currentPageNumber === 1 || !filteredOrders) return
 
-    const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
-    const ordersPage = (filteredOrders || []).slice(step - ORDERS_TABLE_PAGE_SIZE, step)
+    // If any filter changes, reset pagination:
 
-    if (ordersPage.length === 0 && filteredOrders.length > 0) {
-      // If we have no orders to show IN THE CURRENT PAGE (but we do in some other page), reset pagination:
+    const url = buildOrdersTableUrl({ pageNumber: 1 })
 
-      const url = buildOrdersTableUrl({ pageNumber: 1 })
-
-      navigate(url, { replace: true })
-    }
+    navigate(url, { replace: true })
   }, [currentPageNumber, searchTerm, historyStatusFilter, filteredOrders, buildOrdersTableUrl, navigate])
 
   const pendingOrders = useMemo(() => {
