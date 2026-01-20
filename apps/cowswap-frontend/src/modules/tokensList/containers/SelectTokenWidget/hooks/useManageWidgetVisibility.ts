@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
-import { selectTokenModalUIAtom, updateSelectTokenModalUIAtom } from '../atoms'
+import { selectTokenModalUIAtom, updateSelectTokenModalUIAtom } from '../state'
 
 export interface ManageWidgetVisibility {
   isManageWidgetOpen: boolean

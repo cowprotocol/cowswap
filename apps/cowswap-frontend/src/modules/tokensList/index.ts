@@ -10,7 +10,7 @@ export type {
   ViewFlowConfig,
   CustomFlowsRegistry,
 } from './containers/SelectTokenWidget/types'
-export { customFlowsRegistryAtom } from './containers/SelectTokenWidget/atoms'
+export { customFlowsRegistryAtom } from './containers/SelectTokenWidget/state'
 
 export { BlockedListSourcesUpdater } from './updaters/BlockedListSourcesUpdater'
 export { RecentTokensStorageUpdater } from './updaters/RecentTokensStorageUpdater'

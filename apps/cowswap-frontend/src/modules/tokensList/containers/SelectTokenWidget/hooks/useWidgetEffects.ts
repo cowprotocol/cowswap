@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
-import { DEFAULT_MODAL_UI_STATE, updateSelectTokenModalUIAtom } from '../atoms'
+import { DEFAULT_MODAL_UI_STATE, updateSelectTokenModalUIAtom } from '../state'
 
 export function useWidgetEffects(isOpen: boolean): void {
   const closeTokenSelectWidget = useCloseTokenSelectWidget()

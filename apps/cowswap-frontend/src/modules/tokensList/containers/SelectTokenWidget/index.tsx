@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
-import { customFlowsRegistryAtom } from './atoms'
 import { useChainPanelState, useViewWithFlows } from './hooks'
 import { SelectTokenModal } from './internal'
+import { customFlowsRegistryAtom } from './state'
 import { CustomFlowsRegistry, TokenSelectorView } from './types'
 
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'

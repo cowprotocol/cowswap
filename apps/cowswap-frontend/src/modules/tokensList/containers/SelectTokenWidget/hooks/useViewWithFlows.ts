@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react'
 import { useActiveBlockingView } from './useActiveBlockingView'
 
 import { useUpdateSelectTokenWidgetState } from '../../../hooks/useUpdateSelectTokenWidgetState'
-import { customFlowsRegistryAtom } from '../atoms'
+import { customFlowsRegistryAtom } from '../state'
 import { CustomFlowContext, CustomFlowResult, TokenSelectorView } from '../types'
 
 /**
