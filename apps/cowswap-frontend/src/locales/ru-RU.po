@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-01-15 10:38\n"
+"PO-Revision-Date: 2026-01-20 12:19\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -280,6 +280,12 @@ msgstr "заменено"
 msgid "Bridge via"
 msgstr "Мост через"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useHeaderState.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/Header.tsx
+msgid "Select token"
+msgstr "Выбрать токен"
+
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Trade your way - personalize the interface and customize your limit orders"
 msgstr "Торгуйте своим способом - персонализируйте интерфейс и настройте лимитные ордера"
@@ -295,6 +301,10 @@ msgstr "EOA кошельки"
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Unwrapping {amountStr} {wrapped} to {native}"
 msgstr "Перенос {amountStr} {wrapped} на {native}"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+msgid "From network"
+msgstr "Исходная сеть"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Set any limit price and time horizon"
@@ -470,7 +480,6 @@ msgid "View details"
 msgstr "Детали"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
 msgid "More"
 msgstr "Ещё"
 
@@ -631,7 +640,7 @@ msgstr "Я получил(а) экстра"
 msgid "View jobs"
 msgstr "Просмотр вакансий"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/FavoriteTokensTooltip.tsx
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
 msgstr "Ваши любимые сохраненные маркеры. Редактировать этот список на странице <0>Жетоны</0>."
 
@@ -650,6 +659,10 @@ msgstr "Добавление этого приложения/хука предо
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
 msgid "(View on Explorer)"
 msgstr "(Просмотр в проводнике)"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
+msgid "View all {totalChains} networks"
+msgstr "Показать все сети ({totalChains})"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Loading {ACCOUNT_PROXY_LABEL}"
@@ -853,6 +866,10 @@ msgstr "Токены"
 msgid "Copied"
 msgstr "Скопировано"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+msgid "To network"
+msgstr "Целевая сеть"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
 #~ msgid "Can't find your token on the list?"
 #~ msgstr "Can't find your token on the list?"
@@ -860,6 +877,11 @@ msgstr "Скопировано"
 #: apps/cowswap-frontend/src/modules/trade/pure/ReceiveAmountTitle/index.tsx
 msgid "icon"
 msgstr "иконка"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/Header.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/Header.tsx
+msgid "Manage token lists"
+msgstr "Управление списками токенов"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 #~ msgid "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
@@ -978,7 +1000,7 @@ msgstr "Действия"
 msgid "Min received (incl. costs)"
 msgstr "Мин. получено (включая затраты)"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/Search.tsx
 msgid "Search name or paste address..."
 msgstr "Поиск по названию или вставить адрес..."
 
@@ -1264,8 +1286,8 @@ msgid "Partner fee can not be more than {PARTNER_FEE_MAX_BPS} BPS!"
 msgstr "Партнерская комиссия не может быть больше, чем {PARTNER_FEE_MAX_BPS} BPS!"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensContent/index.tsx
-msgid "Manage Token Lists"
-msgstr "Управление списками токенов"
+#~ msgid "Manage Token Lists"
+#~ msgstr "Manage Token Lists"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "No results found"
@@ -1412,6 +1434,10 @@ msgstr "Центр поддержки"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!"
 #~ msgstr "Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
+msgid "Recent"
+msgstr "Недавние"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/tableHeaders.tsx
 msgid "Market price"
@@ -1719,7 +1745,7 @@ msgstr "Неограниченное единоразовое"
 msgid "Use Safe web app"
 msgstr "Безопасное веб-приложение"
 
-#: apps/cowswap-frontend/src/modules/orders/pure/ReceiverInfo/index.tsx
+#: apps/cowswap-frontend/src/common/pure/ReceiverInfo/index.tsx
 msgid "Receiver"
 msgstr "Приемник"
 
@@ -1918,6 +1944,10 @@ msgstr "Создать пул"
 #~ msgid "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
 #~ msgstr "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
+msgid "View all ({totalChains})"
+msgstr "Показать все ({totalChains})"
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "To continue, click SWAP below to use your existing {wrappedSymbol} balance and trade."
 msgstr "Чтобы продолжить, нажмите SWAP ниже, чтобы использовать существующий баланс и торговую операцию {wrappedSymbol}."
@@ -2096,9 +2126,17 @@ msgstr "Сброс USDT разрешения на 0 перед установк�
 #~ msgid "Enable notifications"
 #~ msgstr "Enable notifications"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+msgid "Sell token"
+msgstr "Продать токен"
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/AccountIcon.tsx
 msgid "Warning sign. Wallet not supported"
 msgstr "Предупреждающий знак. Кошелёк не поддерживается"
+
+#: apps/cowswap-frontend/src/common/containers/CancellationModal/index.tsx
+msgid "to receiver"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Show progress"
@@ -2131,6 +2169,10 @@ msgstr "доступно для вашего пула {poolName}"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "Native"
 msgstr "Родной"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/AllTokens.tsx
+#~ msgid "Loading tokens..."
+#~ msgstr "Loading tokens..."
 
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/GlobalContent/index.tsx
 msgid "Pool analytics"
@@ -2330,6 +2372,10 @@ msgstr "Отклонить сообщение о найме"
 #: apps/cowswap-frontend/src/common/pure/Modal/index.tsx
 msgid "dialog content"
 msgstr "содержимое диалогового окна"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
+#~ msgid "Cross chain swap"
+#~ msgstr "Cross chain swap"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
@@ -2532,8 +2578,8 @@ msgid "No order history"
 msgstr "Нет истории ордеров"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
-msgstr "Мост без обмена еще не поддерживается. Дайте нам знать, если вы хотите эту функцию!"
+#~ msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
+#~ msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "The input token cannot be transferred. There may be an issue with the input token."
@@ -2550,6 +2596,10 @@ msgstr "Все"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/InitialStep.tsx
 msgid "batched together"
 msgstr "загружено вместе"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+msgid "Swap to"
+msgstr "Свап в сеть"
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 msgid "Select a pool"
@@ -3196,6 +3246,11 @@ msgstr "Поиск хуков"
 msgid "down"
 msgstr "вниз"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/ChainButton.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/ChainChip.tsx
+msgid "This destination is not supported for this source chain"
+msgstr "Сеть назначения не доступна для выбранной исходной сети"
+
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #~ msgid "Wrap <0/> and Swap"
 #~ msgstr "Wrap <0/> and Swap"
@@ -3591,6 +3646,11 @@ msgstr "Протокол CoW покрывает комиссии и сборы, 
 msgid "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap."
 msgstr "С помощью хуков вы можете добавить конкретные действия <0>раньше</0> и <1>после</1> ваш своп."
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/FavoriteTokens.tsx
+#~ msgid "Favorites"
+#~ msgstr "Favorites"
+
+#: apps/cowswap-frontend/src/modules/rwa/hooks/useImportTokenConsentFlow.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokenImportStatus.ts
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokensImportStatus.ts
 msgid "This token is not available in your region."
@@ -3852,6 +3912,10 @@ msgstr "подключить кошелек"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowDeadline/index.tsx
 msgid "Transaction expiration"
 msgstr "Срок действия транзакции"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
+msgid "Search network"
+msgstr "Поиск сети"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
@@ -4309,8 +4373,8 @@ msgid "View transaction"
 msgstr "Просмотр транзакции"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/index.tsx
-msgid "This list requires consent before importing."
-msgstr ""
+#~ msgid "This list requires consent before importing."
+#~ msgstr "This list requires consent before importing."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "is"
@@ -4333,6 +4397,7 @@ msgstr "Включить частичные утверждения"
 msgid "Version"
 msgstr "Версии"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
 msgstr "Все токены"
@@ -4493,6 +4558,11 @@ msgstr "Ваше расширение Metamask (<0>v{currentVersion}</0>) уст
 msgid "Turn on Expert mode?"
 msgstr "Включить Экспертный режим?"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/ChainButton.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/ChainChip.tsx
+msgid "Checking route availability..."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDetailHeader/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
@@ -4536,6 +4606,10 @@ msgstr "Уменьшить значение"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Balance"
 msgstr "Баланс"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
+msgid "No networks match {chainQuery}."
+msgstr "Нет сетей, соответствующих {chainQuery}."
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
@@ -4935,6 +5009,10 @@ msgstr "Цена исполнения"
 msgid "No tokens found"
 msgstr "Маркеры не найдены"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
+msgid "No networks available for this trade."
+msgstr "Нет доступных сетей для этой сделки."
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/index.tsx
 msgid "Unsupported"
 msgstr "Не поддерживается"
@@ -5018,6 +5096,10 @@ msgstr "Страница {page} из {maxPage}"
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Each time you claim, you will receive the entire claimable amount."
 msgstr "Каждый раз, когда вы заказываете, вы получите всю подлежащую возмещению сумму."
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
+msgid "Selected network {activeChainLabel}"
+msgstr "Выбранная сеть {activeChainLabel}"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenItem/index.tsx
@@ -5174,6 +5256,10 @@ msgstr "Хуки поста"
 msgid "Not compatible with current wallet type"
 msgstr "Не совместимо с текущим типом кошелька"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+msgid "Swap from"
+msgstr "Свап из сети"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #~ msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of<2>{parts} parts</2>placed every<3>{partDurationDisplay}</3>, the total time to complete the order is<4>{totalDurationDisplay}</4>. Each limit order remains open for<5>{partDurationDisplay}</5>until the next part becomes active."
 #~ msgstr "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of<2>{parts} parts</2>placed every<3>{partDurationDisplay}</3>, the total time to complete the order is<4>{totalDurationDisplay}</4>. Each limit order remains open for<5>{partDurationDisplay}</5>until the next part becomes active."
@@ -5303,6 +5389,10 @@ msgstr "Хорошие новости"
 msgid "yield"
 msgstr "доходность"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+msgid "Buy token"
+msgstr "Купить токен"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Swap completed"
 msgstr "Обмен завершен"
@@ -5417,7 +5507,7 @@ msgstr "Ошибка загрузки подлежащей возмещению 
 msgid "Attention"
 msgstr "Внимание"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/SelectTokenModalContent.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/TokenList.tsx
 msgid "This route is not yet supported."
 msgstr "Этот маршрут еще не поддерживается."
 
@@ -5489,6 +5579,13 @@ msgstr "Ограничить цену"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Buy"
 msgstr "Купить"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/ChainSelector.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/DesktopChainPanel.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/NetworkPanel.tsx
+msgid "Select network"
+msgstr "Выбрать сеть"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
@@ -5677,8 +5774,8 @@ msgid "Advanced"
 msgstr "Расширенные"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Not yet supported"
-msgstr "Ещё не поддерживается"
+#~ msgid "Not yet supported"
+#~ msgstr "Not yet supported"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "Remove"
@@ -6076,6 +6173,10 @@ msgstr "Имитация"
 msgid "Start time"
 msgstr "Время начала"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
+msgid "Clear"
+msgstr "Очистить"
+
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/index.tsx
 msgid "Continue"
 msgstr "Продолжить"
@@ -6150,8 +6251,8 @@ msgid "You sold <0/>"
 msgstr "Вы продали <0/>"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-msgid "Less"
-msgstr "Меньше"
+#~ msgid "Less"
+#~ msgstr "Less"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Claim your LlamaPay vesting contract funds"
