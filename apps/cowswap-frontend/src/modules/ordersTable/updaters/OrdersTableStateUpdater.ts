@@ -38,8 +38,8 @@ function getOrdersInputTokens(allOrders: Order[]): string[] {
 }
 
 interface OrdersTableStateUpdaterProps extends OrdersTableParams {
-  searchTerm?: string
-  historyStatusFilter?: HistoryStatusFilter
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
   syncWithUrl?: boolean
 }
 
@@ -49,7 +49,7 @@ export function OrdersTableStateUpdater({
   orders: allOrders,
   orderType,
   searchTerm = '',
-  historyStatusFilter = HistoryStatusFilter.FILLED,
+  historyStatusFilter,
   isTwapTable = false,
   displayOrdersOnlyForSafeApp = false,
   syncWithUrl = true,

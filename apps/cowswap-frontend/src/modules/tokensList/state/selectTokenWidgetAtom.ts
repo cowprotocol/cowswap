@@ -10,6 +10,17 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
+import { TradeType } from 'modules/trade/types'
+
+/**
+ * Pending list toggle state.
+ * Set when user tries to enable a restricted list and consent is required.
+ */
+export interface ListToToggle {
+  list: ListState
+  consentHash: string
+}
+
 export interface SelectTokenWidgetState {
   open: boolean
   field?: Field
@@ -18,9 +29,15 @@ export interface SelectTokenWidgetState {
   selectedPoolAddress?: string
   tokenToImport?: TokenWithLogo
   listToImport?: ListState
+  listToToggle?: ListToToggle
   onSelectToken?: (currency: Currency) => void
   onInputPressEnter?: Command
   selectedTargetChainId?: number
+  tradeType?: TradeType
+  forceOpen?: boolean
+  // UI config
+  standalone?: boolean
+  displayLpTokenLists?: boolean
 }
 
 export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
@@ -30,8 +47,13 @@ export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
   onSelectToken: undefined,
   tokenToImport: undefined,
   listToImport: undefined,
+  listToToggle: undefined,
   selectedPoolAddress: undefined,
   selectedTargetChainId: undefined,
+  tradeType: undefined,
+  forceOpen: false,
+  standalone: false,
+  displayLpTokenLists: false,
 }
 
 export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetAtom } = atomWithPartialUpdate(

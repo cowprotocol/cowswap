@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
+
 import * as styledEl from './styled'
 
 import { usePendingOrdersPrices } from '../../../orders'
@@ -20,7 +22,15 @@ export function AffectedPermitOrdersTable({ orders }: AffectedPermitOrdersTableP
   return (
     <>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
-      <OrdersTableStateUpdater searchTerm={''} orders={orders} orderType={TabOrderTypes.LIMIT} syncWithUrl={false} />
+
+      <OrdersTableStateUpdater
+        searchTerm=""
+        historyStatusFilter={HistoryStatusFilter.ALL}
+        orders={orders}
+        orderType={TabOrderTypes.LIMIT}
+        syncWithUrl={false}
+      />
+
       {orders.map((order) => (
         <styledEl.OrderWrapper key={order.id}>
           <AffectedPermitOrderWithActions order={order} />

@@ -18,6 +18,7 @@ import { TabOrderTypes } from '../../types'
 
 interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
+  hasOrders: boolean
   orderType?: TabOrderTypes
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
@@ -27,6 +28,7 @@ interface NoOrdersDescriptionProps {
 
 const NoOrdersDescription = memo(function NoOrdersDescription({
   currentTab,
+  hasOrders,
   orderType,
   searchTerm,
   historyStatusFilter,
@@ -38,36 +40,54 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
   const orderStatusText =
     currentTab === OrderTabId.unfillable ? t`unfillable` : currentTab === OrderTabId.open ? t`open` : ''
 
-  return displayOrdersOnlyForSafeApp && isSafeViaWc ? (
-    <Trans>
-      Use the <CowSwapSafeAppLink /> to see {currentTabText}
-    </Trans>
-  ) : searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL ? (
-    <Trans>Try adjusting your search term or clearing the filter</Trans>
-  ) : (
-    <>
-      <Trans>You don't have any {orderStatusText} orders at the moment.</Trans>{' '}
-      {currentTab === OrderTabId.open && (
-        <>
-          <br />
-          <Trans>Time to create a new one!</Trans>{' '}
-          {orderType === TabOrderTypes.LIMIT ? (
-            <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
-              <Trans>Learn more</Trans>
-              <styledEl.ExternalArrow />
-            </styledEl.ExternalLinkStyled>
-          ) : null}
-        </>
-      )}
-    </>
-  )
+  if (displayOrdersOnlyForSafeApp && isSafeViaWc) {
+    return (
+      <Trans>
+        Use the <CowSwapSafeAppLink /> to see {currentTabText}
+      </Trans>
+    )
+  }
+
+  if (!hasOrders) {
+    return (
+      <>
+        <Trans>You don't have any {orderStatusText} orders at the moment.</Trans>{' '}
+        {currentTab === OrderTabId.open && (
+          <>
+            <br />
+            <Trans>Time to create a new one!</Trans>{' '}
+            {orderType === TabOrderTypes.LIMIT ? (
+              <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
+                <Trans>Learn more</Trans>
+                <styledEl.ExternalArrow />
+              </styledEl.ExternalLinkStyled>
+            ) : null}
+          </>
+        )}
+      </>
+    )
+  }
+
+  if (searchTerm && historyStatusFilter !== HistoryStatusFilter.ALL)
+    return <Trans>Try adjusting your search term or filters</Trans>
+
+  return searchTerm ? <Trans>Try adjusting your search term</Trans> : <Trans>Try adjusting your filters</Trans>
 })
 
-function getSectionTitle(currentTab: OrderTabId): string {
+function getTabTitle(currentTab: OrderTabId): string {
   if (currentTab === OrderTabId.unfillable) return t`No unfillable orders`
   if (currentTab === OrderTabId.open) return t`No open orders`
   if (currentTab === OrderTabId.signing) return t`No signing orders`
   return t`No order history`
+}
+
+function getHistoryTitle(historyStatusFilter: HistoryStatusFilter): string {
+  if (historyStatusFilter === HistoryStatusFilter.EXECUTED) return t`No executed orders found`
+  if (historyStatusFilter === HistoryStatusFilter.CANCELLED) return t`No cancelled orders found`
+  if (historyStatusFilter === HistoryStatusFilter.EXPIRED) return t`No expired orders found`
+  if (historyStatusFilter === HistoryStatusFilter.FAILED) return t`No failed orders found`
+
+  return t`No matching orders found`
 }
 
 interface NoOrdersContentProps {
@@ -84,21 +104,29 @@ export function NoOrdersContent({
   hasHydratedOrders,
 }: NoOrdersContentProps): ReactNode {
   const { darkMode: isDarkMode } = useTheme()
-  const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
+  const {
+    orderType,
+    isSafeViaWc,
+    displayOrdersOnlyForSafeApp,
+    injectedWidgetParams,
+    orders = [],
+  } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
+  const hasOrders = orders.length > 0
 
   return (
     <styledEl.Content>
       <h3>
-        {searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL
-          ? t`No matching orders found`
-          : getSectionTitle(currentTab)}
+        {hasOrders && (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL)
+          ? getHistoryTitle(historyStatusFilter)
+          : getTabTitle(currentTab)}
       </h3>
       <p>
         <NoOrdersDescription
           currentTab={currentTab}
+          hasOrders={hasOrders}
           orderType={orderType}
           searchTerm={searchTerm}
           historyStatusFilter={historyStatusFilter}
