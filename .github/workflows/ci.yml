@@ -185,21 +185,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
-      # Install deps only
-      - name: Cypress install dependencies
-        id: cypress-deps
-        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c # v6.10.2
-        # Do not consider failure a failure. Well, sort of.
-        # See https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context
-        continue-on-error: true
-        with:
-          runTests: false
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Install Cypress binary
-        id: cypress-bin
-        # Only run if previous step failed
-        if: steps.cypress-deps.outcome == 'failure'
-        run: npx cypress install
+        run: pnpm exec cypress install
 
       - name: Start server in the background
         run: pnpm run start &

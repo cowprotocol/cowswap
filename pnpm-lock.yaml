@@ -978,12 +978,13 @@ importers:
       '@ethersproject/wallet':
         specifier: 5.7.0
         version: 5.7.0
-      cypress:
-        specifier: ^15.4.0
-        version: 15.4.0
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+    devDependencies:
+      cypress:
+        specifier: ^15.4.0
+        version: 15.4.0
 
   apps/explorer:
     dependencies:
