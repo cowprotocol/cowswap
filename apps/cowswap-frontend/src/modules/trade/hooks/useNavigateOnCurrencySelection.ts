@@ -16,7 +16,6 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
-import { getDefaultCurrencies } from '../types'
 import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
 
 export type CurrencySelectionCallback = (
@@ -91,16 +90,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       const areCurrenciesTheSame =
         targetInputCurrency && targetOutputCurrency && targetInputCurrency.equals(targetOutputCurrency)
 
-      /**
-       * If selected sell token doesn't match current network
-       * It means that it was selected from another chain, and we are switching network
-       * So, we should reset the buy token corresponding to the new network
-       */
-      const shouldResetBuyToken = isInputField && targetChainMismatch
-      const shouldSetTargetChain = !isInputField && targetChainMismatch
-      const shouldResetBuyOrder = !isInputField && targetChainMismatch && orderKind === OrderKind.BUY
-
-      const defaultOutputCurrency = getDefaultCurrencies(targetChainId).outputCurrency
+      const shouldResetBuyOrder = targetChainMismatch && orderKind === OrderKind.BUY
 
       /**
        * Keep the target chain id in the search params when input token changed
@@ -109,8 +99,8 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
         searchParams = { ...searchParams, targetChainId: stateTargetChainId }
       }
 
-      if (shouldSetTargetChain) {
-        searchParams = { ...searchParams, targetChainId: targetChainId }
+      if (targetChainMismatch) {
+        searchParams = { ...searchParams, targetChainId: isInputField ? chainId : targetChainId }
       }
 
       /**
@@ -128,7 +118,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
           : {
               inputCurrencyId: targetInputCurrencyId,
-              outputCurrencyId: shouldResetBuyToken ? defaultOutputCurrency?.address || null : targetOutputCurrencyId,
+              outputCurrencyId: targetOutputCurrencyId,
             },
         searchParams,
       )
