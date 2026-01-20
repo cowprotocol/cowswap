@@ -98,7 +98,7 @@ describe('orderLifecycleAnalytics', () => {
 
     const result = mapPostedOrder(payload)
     expect(result.sellAmountUnits).toBe('1')
-    expect(result).toMatchObject({ from_amount: '1', to_amount: '2.5', from_currency: 'SELL' })
+    expect(result).toMatchObject({ fromAmount: '1', toAmount: '2.5', fromCurrency: 'SELL' })
   })
 
   it('formats fulfilled order amounts and cross-chain flag', () => {
@@ -113,8 +113,8 @@ describe('orderLifecycleAnalytics', () => {
     }
 
     const result = mapFulfilledOrder(payload)
-    expect(result.from_amount).toBe('1')
-    expect(result.to_amount).toBe('0.99941')
+    expect(result.fromAmount).toBe('1')
+    expect(result.toAmount).toBe('0.99941')
     expect(result.executedSellAmountUnits).toBe('1')
     expect(result.executedBuyAmountUnits).toBe('0.99941')
     expect(result.isCrossChain).toBe(true)
@@ -130,8 +130,8 @@ describe('orderLifecycleAnalytics', () => {
     const result = mapCancelledOrder(payload)
     expect(result.reason).toBe('cancelled')
     expect(result.transactionHash).toBe('0xdeadbeef')
-    expect(result.from_currency_address).toBe(defaultInputToken.address)
-    expect(result.to_currency_address).toBe(defaultOutputToken.address)
+    expect(result.fromCurrencyAddress).toBe(defaultInputToken.address)
+    expect(result.toCurrencyAddress).toBe(defaultOutputToken.address)
   })
 
   it('marks expired orders with reason and aliases', () => {
@@ -142,7 +142,7 @@ describe('orderLifecycleAnalytics', () => {
 
     const result = mapExpiredOrder(payload)
     expect(result.reason).toBe('expired')
-    expect(result.from_currency_address).toBe(defaultInputToken.address)
-    expect(result.to_currency_address).toBe(defaultOutputToken.address)
+    expect(result.fromCurrencyAddress).toBe(defaultInputToken.address)
+    expect(result.toCurrencyAddress).toBe(defaultOutputToken.address)
   })
 })

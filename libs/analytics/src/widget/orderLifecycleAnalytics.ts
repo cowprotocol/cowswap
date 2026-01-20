@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { formatTokenAmount } from '@cowprotocol/common-utils'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
@@ -98,7 +98,7 @@ function normalizeRawAmount(rawAmount: RawAmount): string | undefined {
   return trimmed === '' ? undefined : trimmed
 }
 
-function formatTokenUnits(meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined {
+function formatTokenUnitsExact(meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined {
   const normalizedRaw = normalizeRawAmount(rawAmount)
   if (!normalizedRaw) {
     return undefined
@@ -111,8 +111,9 @@ function formatTokenUnits(meta: Tokenish | undefined, rawAmount: RawAmount): str
 
   try {
     const amount = CurrencyAmount.fromRawAmount(currency, normalizedRaw)
-    const formatted = formatTokenAmount(amount)
-    return formatted || undefined
+    // Use exact units for Safary; formatTokenAmount can add locale/suffix output.
+    const exact = FractionUtils.fractionLikeToExactString(amount)
+    return exact || undefined
   } catch {
     return undefined
   }
@@ -140,30 +141,27 @@ function buildTokenFields(
     buyTokenSymbol: meta.outputToken?.symbol || '',
     sellTokenDecimals,
     buyTokenDecimals,
-    sellAmountUnits: formatTokenUnits(meta.inputToken, sellAmountAtoms),
-    buyAmountUnits: formatTokenUnits(meta.outputToken, buyAmountAtoms),
+    sellAmountUnits: formatTokenUnitsExact(meta.inputToken, sellAmountAtoms),
+    buyAmountUnits: formatTokenUnitsExact(meta.outputToken, buyAmountAtoms),
   }
 }
 
-// Build generic analytics-friendly alias fields for currency/amounts.
-// The current keys align with Safary's lexicon, but the helper name is
-// provider-agnostic so we can evolve the mapping without touching call sites.
+// Build analytics-friendly alias fields for currency/amounts.
+// These keys align with Safary's camelCase lexicon.
 export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPayload {
   const sellTokenAddress = String(fields.sellToken || '')
   const buyTokenAddress = String(fields.buyToken || '')
 
   const sellAmountUnits = typeof fields.sellAmountUnits === 'string' ? fields.sellAmountUnits : undefined
   const buyAmountUnits = typeof fields.buyAmountUnits === 'string' ? fields.buyAmountUnits : undefined
-  const sellAmountRaw = normalizeRawAmount(fields.sellAmount as RawAmount)
-  const buyAmountRaw = normalizeRawAmount(fields.buyAmount as RawAmount)
 
   return {
-    from_currency_address: sellTokenAddress,
-    to_currency_address: buyTokenAddress,
-    from_currency: String(fields.sellTokenSymbol || ''),
-    to_currency: String(fields.buyTokenSymbol || ''),
-    from_amount: sellAmountUnits ?? sellAmountRaw,
-    to_amount: buyAmountUnits ?? buyAmountRaw,
+    fromCurrencyAddress: sellTokenAddress,
+    toCurrencyAddress: buyTokenAddress,
+    fromCurrency: String(fields.sellTokenSymbol || ''),
+    toCurrency: String(fields.buyTokenSymbol || ''),
+    fromAmount: sellAmountUnits,
+    toAmount: buyAmountUnits,
   }
 }
 
@@ -201,8 +199,8 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
     buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
     sellTokenDecimals: p.inputToken?.decimals,
     buyTokenDecimals: p.outputToken?.decimals,
-    sellAmountUnits: formatTokenUnits(p.inputToken, p.inputAmount),
-    buyAmountUnits: formatTokenUnits(p.outputToken, p.outputAmount),
+    sellAmountUnits: formatTokenUnitsExact(p.inputToken, p.inputAmount),
+    buyAmountUnits: formatTokenUnitsExact(p.outputToken, p.outputAmount),
   }
 
   return {
@@ -231,11 +229,9 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
 
   const hasBridgeOrder = Boolean(p.bridgeOrder ?? (p.order as { bridgeOrder?: unknown } | undefined)?.bridgeOrder)
 
-  const executedSellAmountUnits = formatTokenUnits(inputToken, executedSellAmountAtoms)
-  const executedBuyAmountUnits = formatTokenUnits(outputToken, executedBuyAmountAtoms)
-  const executedFeeAmountUnits = formatTokenUnits(inputToken, executedFeeAmountAtoms)
-  const executedSellAmountRaw = normalizeRawAmount(executedSellAmountAtoms)
-  const executedBuyAmountRaw = normalizeRawAmount(executedBuyAmountAtoms)
+  const executedSellAmountUnits = formatTokenUnitsExact(inputToken, executedSellAmountAtoms)
+  const executedBuyAmountUnits = formatTokenUnitsExact(outputToken, executedBuyAmountAtoms)
+  const executedFeeAmountUnits = formatTokenUnitsExact(inputToken, executedFeeAmountAtoms)
 
   return {
     ...base,
@@ -250,8 +246,8 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
     executedFeeAmountUnits,
 
     // Safary-lexicon style fields (explicit for fulfillment amounts)
-    from_amount: executedSellAmountUnits ?? executedSellAmountRaw,
-    to_amount: executedBuyAmountUnits ?? executedBuyAmountRaw,
+    fromAmount: executedSellAmountUnits,
+    toAmount: executedBuyAmountUnits,
 
     // Note: bridge providers tag actual widget orders via isBridgeOrder; this flag only captures the token selection being cross-chain.
     isCrossChain: hasBridgeOrder,
