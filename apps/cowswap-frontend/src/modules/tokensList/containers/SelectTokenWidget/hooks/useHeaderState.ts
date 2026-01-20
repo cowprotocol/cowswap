@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { t } from '@lingui/core/macro'
 
 import { Field } from 'legacy/state/types'
@@ -21,9 +23,12 @@ export function useHeaderState(): HeaderState {
 
   const title = resolveModalTitle(resolvedField, widgetState.tradeType) ?? t`Select token`
 
-  return {
-    title,
-    showManageButton: !standalone,
-    onOpenManageWidget: openManageWidget,
-  }
+  return useMemo(
+    () => ({
+      title,
+      showManageButton: !standalone,
+      onOpenManageWidget: openManageWidget,
+    }),
+    [title, standalone, openManageWidget],
+  )
 }

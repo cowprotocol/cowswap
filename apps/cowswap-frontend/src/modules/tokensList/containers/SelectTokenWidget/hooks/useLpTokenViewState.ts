@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { useDismissHandler } from './useDismissHandler'
@@ -26,12 +28,14 @@ export function useLpTokenViewState(): LpTokenViewState | null {
   const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
   const { closePoolPage } = usePoolPageHandlers(updateSelectTokenWidget)
 
-  if (!widgetState.selectedPoolAddress) return null
+  return useMemo(() => {
+    if (!widgetState.selectedPoolAddress) return null
 
-  return {
-    poolAddress: widgetState.selectedPoolAddress,
-    onDismiss,
-    onBack: closePoolPage,
-    onSelectToken: handleSelectToken,
-  }
+    return {
+      poolAddress: widgetState.selectedPoolAddress,
+      onDismiss,
+      onBack: closePoolPage,
+      onSelectToken: handleSelectToken,
+    }
+  }, [widgetState.selectedPoolAddress, onDismiss, closePoolPage, handleSelectToken])
 }

@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ListState, useAddList, useAddUserToken } from '@cowprotocol/tokens'
@@ -21,5 +23,5 @@ export function useTokenAdminActions(): TokenAdminActions {
   })
   const importTokenCallback = useAddUserToken()
 
-  return { addCustomTokenLists, importTokenCallback }
+  return useMemo(() => ({ addCustomTokenLists, importTokenCallback }), [addCustomTokenLists, importTokenCallback])
 }

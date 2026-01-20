@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { selectTokenModalUIAtom, updateSelectTokenModalUIAtom } from '../atoms'
 
@@ -16,5 +16,8 @@ export function useManageWidgetVisibility(): ManageWidgetVisibility {
   const openManageWidget = useCallback(() => updateModalUI({ isManageWidgetOpen: true }), [updateModalUI])
   const closeManageWidget = useCallback(() => updateModalUI({ isManageWidgetOpen: false }), [updateModalUI])
 
-  return { isManageWidgetOpen, openManageWidget, closeManageWidget }
+  return useMemo(
+    () => ({ isManageWidgetOpen, openManageWidget, closeManageWidget }),
+    [isManageWidgetOpen, openManageWidget, closeManageWidget],
+  )
 }

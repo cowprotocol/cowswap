@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { useDismissHandler } from './useDismissHandler'
@@ -24,12 +26,14 @@ export function useImportTokenViewState(): ImportTokenViewState | null {
   const importTokenAndClose = useImportTokenAndClose()
   const resetTokenImport = useResetTokenImport()
 
-  if (!widgetState.tokenToImport) return null
+  return useMemo(() => {
+    if (!widgetState.tokenToImport) return null
 
-  return {
-    token: widgetState.tokenToImport,
-    onDismiss,
-    onBack: resetTokenImport,
-    onImport: importTokenAndClose,
-  }
+    return {
+      token: widgetState.tokenToImport,
+      onDismiss,
+      onBack: resetTokenImport,
+      onImport: importTokenAndClose,
+    }
+  }, [widgetState.tokenToImport, onDismiss, resetTokenImport, importTokenAndClose])
 }

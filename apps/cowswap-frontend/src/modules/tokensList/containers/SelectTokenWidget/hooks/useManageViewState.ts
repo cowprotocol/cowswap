@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ListState } from '@cowprotocol/tokens'
 
@@ -14,11 +16,13 @@ export function useManageViewState(): ManageViewState | null {
   const { isManageWidgetOpen, closeManageWidget } = useManageWidgetVisibility()
   const tokenData = useTokenDataSources()
 
-  if (!isManageWidgetOpen) return null
+  return useMemo(() => {
+    if (!isManageWidgetOpen) return null
 
-  return {
-    lists: tokenData.allTokenLists,
-    customTokens: tokenData.userAddedTokens,
-    onBack: closeManageWidget,
-  }
+    return {
+      lists: tokenData.allTokenLists,
+      customTokens: tokenData.userAddedTokens,
+      onBack: closeManageWidget,
+    }
+  }, [isManageWidgetOpen, tokenData.allTokenLists, tokenData.userAddedTokens, closeManageWidget])
 }

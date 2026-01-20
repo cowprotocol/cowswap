@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { ListState } from '@cowprotocol/tokens'
 
 import { useDismissHandler } from './useDismissHandler'
@@ -24,12 +26,14 @@ export function useImportListViewState(): ImportListViewState | null {
   const importListAndBack = useImportListAndBack()
   const resetListImport = useResetListImport()
 
-  if (!widgetState.listToImport) return null
+  return useMemo(() => {
+    if (!widgetState.listToImport) return null
 
-  return {
-    list: widgetState.listToImport,
-    onDismiss,
-    onBack: resetListImport,
-    onImport: importListAndBack,
-  }
+    return {
+      list: widgetState.listToImport,
+      onDismiss,
+      onBack: resetListImport,
+      onImport: importListAndBack,
+    }
+  }, [widgetState.listToImport, onDismiss, resetListImport, importListAndBack])
 }

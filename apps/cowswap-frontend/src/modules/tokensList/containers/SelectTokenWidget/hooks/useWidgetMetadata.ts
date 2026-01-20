@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
 import { TokenListCategory } from '@cowprotocol/tokens'
 
@@ -34,7 +34,10 @@ export function useWidgetMetadata(
   const chainsPanelTitle =
     field === Field.INPUT ? t`From network` : field === Field.OUTPUT ? t`To network` : t`Select network`
 
-  return { disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }
+  return useMemo(
+    () => ({ disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }),
+    [disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle],
+  )
 }
 
 export function resolveModalTitle(field: Field, tradeType: TradeType | undefined): string {

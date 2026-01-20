@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import type { useUpdateSelectTokenWidgetState } from '../../../hooks/useUpdateSelectTokenWidgetState'
 
@@ -21,5 +21,5 @@ export function usePoolPageHandlers(updateSelectTokenWidget: UpdateSelectTokenWi
     updateSelectTokenWidget({ selectedPoolAddress: undefined })
   }, [updateSelectTokenWidget])
 
-  return { openPoolPage, closePoolPage }
+  return useMemo(() => ({ openPoolPage, closePoolPage }), [openPoolPage, closePoolPage])
 }
