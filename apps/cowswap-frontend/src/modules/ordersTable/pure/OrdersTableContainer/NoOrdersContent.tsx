@@ -18,6 +18,7 @@ import { TabOrderTypes } from '../../types'
 
 interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
+  hasOrders: boolean
   orderType?: TabOrderTypes
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
@@ -27,6 +28,7 @@ interface NoOrdersDescriptionProps {
 
 const NoOrdersDescription = memo(function NoOrdersDescription({
   currentTab,
+  hasOrders,
   orderType,
   searchTerm,
   historyStatusFilter,
@@ -42,7 +44,7 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
     <Trans>
       Use the <CowSwapSafeAppLink /> to see {currentTabText}
     </Trans>
-  ) : searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL ? (
+  ) : hasOrders && (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL) ? (
     <Trans>Try adjusting your search term or clearing the filter</Trans>
   ) : (
     <>
@@ -84,21 +86,29 @@ export function NoOrdersContent({
   hasHydratedOrders,
 }: NoOrdersContentProps): ReactNode {
   const { darkMode: isDarkMode } = useTheme()
-  const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
+  const {
+    orderType,
+    isSafeViaWc,
+    displayOrdersOnlyForSafeApp,
+    injectedWidgetParams,
+    orders = [],
+  } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
+  const hasOrders = orders.length > 0
 
   return (
     <styledEl.Content>
       <h3>
-        {searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL
+        {hasOrders && (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL)
           ? t`No matching orders found`
           : getSectionTitle(currentTab)}
       </h3>
       <p>
         <NoOrdersDescription
           currentTab={currentTab}
+          hasOrders={hasOrders}
           orderType={orderType}
           searchTerm={searchTerm}
           historyStatusFilter={historyStatusFilter}
