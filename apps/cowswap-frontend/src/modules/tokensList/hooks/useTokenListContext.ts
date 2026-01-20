@@ -4,6 +4,8 @@
  * Replaces the atom hydration pattern. Components call this directly
  * instead of reading from a hydrated atom.
  */
+import { useMemo } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -54,21 +56,37 @@ export function useTokenListContext(): TokenListContext {
   )
 
   // Favorite tokens (empty in standalone mode)
-  const favoriteTokens = standalone ? [] : tokensState.favoriteTokens
+  const favoriteTokens = useMemo(
+    () => (standalone ? [] : tokensState.favoriteTokens),
+    [standalone, tokensState.favoriteTokens],
+  )
 
   // Build context for token list items
   const selectTokenContext = useSelectTokenContext({ onTokenListItemClick: handleTokenListItemClick })
 
-  return {
-    allTokens: tokensState.tokens,
-    favoriteTokens,
-    recentTokens,
-    areTokensLoading: tokensState.isLoading,
-    areTokensFromBridge: tokensState.areTokensFromBridge,
-    hideFavoriteTokensTooltip: isInjectedWidget(),
-    selectedTargetChainId: widgetState.selectedTargetChainId,
-    onClearRecentTokens: clearRecentTokens,
-    onTokenListItemClick: handleTokenListItemClick,
-    selectTokenContext,
-  }
+  return useMemo(
+    () => ({
+      allTokens: tokensState.tokens,
+      favoriteTokens,
+      recentTokens,
+      areTokensLoading: tokensState.isLoading,
+      areTokensFromBridge: tokensState.areTokensFromBridge,
+      hideFavoriteTokensTooltip: isInjectedWidget(),
+      selectedTargetChainId: widgetState.selectedTargetChainId,
+      onClearRecentTokens: clearRecentTokens,
+      onTokenListItemClick: handleTokenListItemClick,
+      selectTokenContext,
+    }),
+    [
+      tokensState.tokens,
+      tokensState.isLoading,
+      tokensState.areTokensFromBridge,
+      favoriteTokens,
+      recentTokens,
+      widgetState.selectedTargetChainId,
+      clearRecentTokens,
+      handleTokenListItemClick,
+      selectTokenContext,
+    ],
+  )
 }

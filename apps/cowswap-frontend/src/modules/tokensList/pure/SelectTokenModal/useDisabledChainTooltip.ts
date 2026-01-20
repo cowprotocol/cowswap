@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 export interface DisabledChainTooltipState {
   activeTooltipChainId: number | null
@@ -54,5 +54,8 @@ export function useDisabledChainTooltip(durationMs: number): DisabledChainToolti
     return hideTooltip
   }, [hideTooltip])
 
-  return { activeTooltipChainId, toggleTooltip, hideTooltip }
+  return useMemo(
+    () => ({ activeTooltipChainId, toggleTooltip, hideTooltip }),
+    [activeTooltipChainId, toggleTooltip, hideTooltip],
+  )
 }
