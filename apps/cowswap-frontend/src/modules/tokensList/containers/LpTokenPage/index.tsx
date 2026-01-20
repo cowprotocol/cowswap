@@ -20,7 +20,7 @@ import {
   Wrapper,
 } from './styled'
 
-function renderValue<T>(value: T | undefined, template: (v: T) => string, defaultValue?: string): string | undefined {
+function formatValue<T>(value: T | undefined, template: (v: T) => string, defaultValue?: string): string | undefined {
   return value ? template(value) : defaultValue
 }
 
@@ -84,7 +84,7 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
             <Trans>Fee tier</Trans>
           </div>
           <div>
-            <span>{renderValue(info?.feeTier, (t) => `${t}%`, '-')}</span>
+            <span>{formatValue(info?.feeTier, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
@@ -92,7 +92,7 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
             <Trans>Volume (24h)</Trans>
           </div>
           <div>
-            <span>{renderValue(info?.volume24h, (t) => `$${t}`, '-')}</span>
+            <span>{formatValue(info?.volume24h, (t) => `$${t}`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
@@ -100,7 +100,7 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
             <Trans>APR</Trans>
           </div>
           <div>
-            <span>{renderValue(info?.apy, (t) => `${t}%`, '-')}</span>
+            <span>{formatValue(info?.apy, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
@@ -108,7 +108,7 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
             <Trans>TVL</Trans>
           </div>
           <div>
-            <span>{renderValue(info?.tvl, (t) => `$${t}`, '-')}</span>
+            <span>{formatValue(info?.tvl, (t) => `$${t}`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>

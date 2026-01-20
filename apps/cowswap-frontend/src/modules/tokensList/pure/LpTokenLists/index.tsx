@@ -3,6 +3,7 @@ import { MouseEventHandler, ReactNode, useCallback } from 'react'
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { getTokenId } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -108,7 +109,7 @@ export function LpTokenLists({
       if (isMobile) {
         return (
           <MobileCard
-            key={token.address}
+            key={getTokenId(token)}
             data-address={token.address}
             data-token-symbol={token.symbol || ''}
             data-token-name={token.name || ''}
@@ -133,7 +134,7 @@ export function LpTokenLists({
 
       return (
         <ListItem
-          key={token.address}
+          key={getTokenId(token)}
           data-address={token.address}
           data-token-symbol={token.symbol || ''}
           data-token-name={token.name || ''}
