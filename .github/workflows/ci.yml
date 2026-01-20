@@ -189,7 +189,8 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Cypress binary
-        run: pnpm --filter cowswap-frontend-e2e exec cypress install
+        working-directory: apps/cowswap-frontend-e2e
+        run: npx cypress install
 
       - name: Start server in the background
         run: pnpm run start &
