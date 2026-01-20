@@ -38,6 +38,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const orderParams = useOrderParams()
   const isSmartContract = useIsSmartContractWallet()
   // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()

@@ -123,6 +123,7 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
   const isMetamask = isMetamaskBrowserExtension || isWidgetMetamaskBrowserExtension
 
   // TODO M-2 COW-568
+  // Wallet connection (and warnings) through wagmi will be handled in a future task
   const provider = useWalletProvider()
 
   useEffect(() => {

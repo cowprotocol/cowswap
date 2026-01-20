@@ -66,6 +66,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const [isLoading, setIsLoading] = useState(true)
 
   // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const walletProvider = useWalletProvider()
 
   // eslint-disable-next-line react-hooks/refs

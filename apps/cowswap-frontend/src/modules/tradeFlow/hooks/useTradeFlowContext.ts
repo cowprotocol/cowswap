@@ -41,6 +41,7 @@ export interface TradeFlowParams {
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const { account } = useWalletInfo()
   // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()

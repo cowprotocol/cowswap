@@ -73,6 +73,7 @@ function unwatchTxChanges(_pendingHashes: string[], _chainId: number) {
  */
 export function CancelReplaceTxUpdater(): null {
   // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()

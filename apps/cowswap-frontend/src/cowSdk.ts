@@ -10,8 +10,6 @@ import { useWeb3React } from '@web3-react/core'
 
 import { usePublicClient, useWalletClient } from 'wagmi'
 
-// import { useConnection } from 'wagmi'
-
 const chainId = getCurrentChainIdFromUrl()
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)

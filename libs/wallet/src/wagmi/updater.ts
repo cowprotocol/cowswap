@@ -75,7 +75,7 @@ function useSafeInfo(_walletInfo: WalletInfo): GnosisSafeInfo | undefined {
       getInfo()
     } else {
       // TODO M-3 COW-569
-      // fetch safe info from api
+      // Wagmi connection to safe will be refined in a future task
     }
   }, [connected, sdk, safe])
 

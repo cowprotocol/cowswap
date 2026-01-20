@@ -29,6 +29,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const { currency, shortLabel, className, fallback } = props
   const { icon, walletName } = useWalletDetails()
   // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isAssetWatchingSupported = useIsAssetWatchingSupported()

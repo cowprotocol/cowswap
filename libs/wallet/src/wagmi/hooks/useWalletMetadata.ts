@@ -50,6 +50,7 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
 
   if (connector.type === ConnectorType.WALLET_CONNECT_V2) {
     // TODO M-2 COW-568
+    // Wallet connection (and warnings) through wagmi will be handled in a future task
   }
 
   if (connector.type === ConnectorType.GNOSIS_SAFE) {

@@ -45,6 +45,7 @@ export function useContract<T extends Contract = Contract>(
   customProvider?: Web3Provider,
 ): UseContractResult<T> {
   // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const defaultProvider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const provider = customProvider || defaultProvider

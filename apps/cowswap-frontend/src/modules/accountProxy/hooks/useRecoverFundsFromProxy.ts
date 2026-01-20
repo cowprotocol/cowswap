@@ -42,6 +42,7 @@ export function useRecoverFundsFromProxy(
   const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
   // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks(proxyVersion)

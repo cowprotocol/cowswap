@@ -26,7 +26,7 @@ export interface TradeApproveButtonProps {
   children?: ReactNode
   isDisabled?: boolean
   supportsPartialApprove?: boolean
-  onApproveConfirm?: (txHash?: string) => void
+  onApproveConfirm?: (txHash?: string | null) => void
   label?: string
   buttonSize?: ButtonSize
   useModals?: boolean

@@ -17,7 +17,7 @@ import { getIsTradeApproveResult } from '../utils/getIsTradeApproveResult'
 export interface ApproveAndSwapProps {
   amountToApprove: CurrencyAmount<Currency>
   minAmountToSignForSwap?: CurrencyAmount<Currency>
-  onApproveConfirm?: (transactionHash?: string) => void
+  onApproveConfirm?: (transactionHash?: string | null) => void
   ignorePermit?: boolean
   useModals?: boolean
 }
@@ -78,7 +78,7 @@ export function useApproveAndSwap({
           updateTradeApproveState({ error: t`Approved amount is not sufficient!` })
         }
       } else {
-        onApproveConfirm(normalizeTransactionHash(tx.transactionHash))
+        onApproveConfirm(tx.transactionHash)
       }
     }
   }, [
@@ -91,8 +91,4 @@ export function useApproveAndSwap({
     minAmountToSignForSwap,
     t,
   ])
-}
-
-function normalizeTransactionHash(txHash: string | null): string | undefined {
-  return txHash ?? undefined
 }
