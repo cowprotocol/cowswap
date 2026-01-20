@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import {
   rwaConsentModalStateAtom,
@@ -39,10 +39,13 @@ export function useRwaConsentModalState(): {
     })
   }, [updateState])
 
-  return {
-    isModalOpen: state.isModalOpen,
-    context: state.context,
-    openModal,
-    closeModal,
-  }
+  return useMemo(
+    () => ({
+      isModalOpen: state.isModalOpen,
+      context: state.context,
+      openModal,
+      closeModal,
+    }),
+    [state.isModalOpen, state.context, openModal, closeModal],
+  )
 }
