@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.2](https://github.com/cowprotocol/cowswap/compare/multicall-v1.3.1...multicall-v1.3.2) (2026-01-09)
+
+
+### Bug Fixes
+
+* **multicall:** build fix ([#6776](https://github.com/cowprotocol/cowswap/issues/6776)) ([#6777](https://github.com/cowprotocol/cowswap/issues/6777)) ([e94a3d9](https://github.com/cowprotocol/cowswap/commit/e94a3d94e19245c3b5861f756673d257f3c159b4))
+
+## [1.3.1](https://github.com/cowprotocol/cowswap/compare/multicall-v1.3.0...multicall-v1.3.1) (2025-12-24)
+
+
+### Bug Fixes
+
+* brave mobile browser and wallet connection ([#6619](https://github.com/cowprotocol/cowswap/issues/6619)) ([a0bbe9e](https://github.com/cowprotocol/cowswap/commit/a0bbe9e682fff2c86af4e1a66d1c59111c61dd75))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/multicall-v1.2.3...multicall-v1.3.0) (2025-11-24)
 
 

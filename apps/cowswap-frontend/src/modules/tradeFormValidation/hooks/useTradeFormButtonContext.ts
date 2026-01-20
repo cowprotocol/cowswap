@@ -4,6 +4,7 @@ import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useAmountsToSignFromQuote, useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
@@ -16,7 +17,7 @@ import { TradeFormButtonContext } from '../types'
 export function useTradeFormButtonContext(
   defaultText: string,
   confirmTrade: () => void,
-  enablePartialApprove = false,
+  supportsPartialApprove = false,
 ): TradeFormButtonContext | null {
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
@@ -31,6 +32,7 @@ export function useTradeFormButtonContext(
     derivedState?.outputCurrency,
     quote.error,
   )
+  const { error: balancesError } = useTokensBalancesCombined()
 
   return useMemo(() => {
     if (!derivedState) return null
@@ -45,10 +47,11 @@ export function useTradeFormButtonContext(
       wrapNativeFlow,
       connectWallet: toggleWalletModal,
       widgetStandaloneMode: standaloneMode,
-      enablePartialApprove,
+      supportsPartialApprove,
       customTokenError,
       minAmountToSignForSwap,
-    }
+      balancesError,
+    } satisfies TradeFormButtonContext
   }, [
     defaultText,
     amountToApprove,
@@ -59,8 +62,9 @@ export function useTradeFormButtonContext(
     wrapNativeFlow,
     toggleWalletModal,
     standaloneMode,
-    enablePartialApprove,
+    supportsPartialApprove,
     customTokenError,
     minAmountToSignForSwap,
+    balancesError,
   ])
 }

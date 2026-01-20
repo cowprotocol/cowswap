@@ -18,6 +18,8 @@ import IMG_LEADING from '@cowprotocol/assets/images/image-leading.svg'
 import IMG_SOLVERS from '@cowprotocol/assets/images/image-solvers.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+
 import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
@@ -54,7 +56,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 export default function Page() {
   const faqData = useFaqData()
@@ -210,7 +211,7 @@ export default function Page() {
                 <Link
                   bgColor={Color.cowfi_purple3}
                   color={Color.cowfi_purple_bright}
-                  href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+                  href="https://docs.cow.fi/category/solver"
                   external
                   data-click-event={toCowFiGtmEvent({
                     category: CowFiCategory.COWPROTOCOL,
@@ -433,7 +434,7 @@ export default function Page() {
                 contentAlign={'center'}
                 bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
                 padding={'42px'}
-                href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
+                href={logo.url}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
                 data-click-event={toCowFiGtmEvent({
@@ -494,7 +495,7 @@ export default function Page() {
                 contentAlign={'center'}
                 bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
                 padding={'42px'}
-                href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
+                href={logo.url}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
                 data-click-event={toCowFiGtmEvent({
@@ -595,7 +596,7 @@ export default function Page() {
             <Link
               bgColor={Color.cowfi_purple3}
               color={Color.cowfi_purple_bright}
-              href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
+              href="https://docs.cow.fi/category/solver"
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-protocol-solvers"

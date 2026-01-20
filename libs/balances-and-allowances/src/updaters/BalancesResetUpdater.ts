@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
-import { balancesAtom, balancesCacheAtom, DEFAULT_BALANCES_STATE } from '../state/balancesAtom'
+import { balancesAtom, balancesCacheAtom, balancesUpdateAtom, DEFAULT_BALANCES_STATE } from '../state/balancesAtom'
 
 interface BalancesResetUpdaterProps {
   account: string | undefined
@@ -17,14 +17,16 @@ export function BalancesResetUpdater({ account, chainId }: BalancesResetUpdaterP
   const setBalancesCache = useSetAtom(balancesCacheAtom)
 
   const setBalances = useSetAtom(balancesAtom)
+  const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
   // Reset states when wallet is not connected
   useEffect(() => {
     if (prevAccount && prevAccount !== account) {
       setBalances(DEFAULT_BALANCES_STATE)
       setBalancesCache(mapSupportedNetworks({}))
+      setBalancesUpdate(mapSupportedNetworks({}))
     }
-  }, [chainId, account, prevAccount, setBalances, setBalancesCache])
+  }, [chainId, account, prevAccount, setBalances, setBalancesCache, setBalancesUpdate])
 
   /**
    * Reset balances and allowances when chainId is changed.

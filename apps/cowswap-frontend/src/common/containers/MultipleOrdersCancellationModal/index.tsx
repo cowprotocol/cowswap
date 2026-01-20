@@ -102,24 +102,20 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
       <LegacyConfirmationModalContent
         title={t`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}
-        // TODO: Extract nested component outside render function
-        // eslint-disable-next-line react/no-unstable-nested-components
-        topContent={() => (
+        topContent={
           <div>
             <p>
               <Trans>Are you sure you want to cancel {ordersCount} orders?</Trans>
             </p>
           </div>
-        )}
-        // TODO: Extract nested component outside render function
-        // eslint-disable-next-line react/no-unstable-nested-components
-        bottomContent={() => (
+        }
+        bottomContent={
           <div>
             <ButtonPrimary onClick={signAndSendCancellation}>
               <Trans>Request cancellations</Trans>
             </ButtonPrimary>
           </div>
-        )}
+        }
       />
     </Modal>
   )

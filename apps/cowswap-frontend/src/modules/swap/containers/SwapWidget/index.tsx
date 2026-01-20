@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useTryFindToken } from '@cowprotocol/tokens'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -55,11 +54,12 @@ import { Warnings } from '../Warnings'
 export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
+  allowSwapSameToken?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function,complexity
-export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
+export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
@@ -126,7 +126,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
-    amount: inputCurrencyAmount,
+    amount: !isSellTrade && isRateLoading ? null : inputCurrencyAmount,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
@@ -136,7 +136,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
-    amount: outputCurrencyAmount,
+    amount: isSellTrade && isRateLoading ? null : outputCurrencyAmount,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
@@ -157,7 +157,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     label: isSellTrade ? t`Receive (before fees)` : t`Buy exactly`,
   }
 
-  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+  const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const buyingFiatAmount = useMemo(
     () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
@@ -172,8 +172,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
-  const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+  const enablePartialApprovalState = useSwapPartialApprovalToggleState()
 
   const isConnected = Boolean(account)
   const isNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -203,7 +202,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
           <>
             {bottomContent}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
-            {isPrimaryValidationPassed && isPartialApproveEnabled && <TradeApproveWithAffectedOrderList />}
+            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -228,7 +227,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         toBeImported,
         intermediateBuyToken,
         isPrimaryValidationPassed,
-        isPartialApproveEnabled,
       ],
     ),
   }
@@ -238,6 +236,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     enableSmartSlippage: true,
     isMarketOrderWidget: true,
     isSellingEthSupported: true,
+    allowSwapSameToken,
     recipient,
     showRecipient,
     isTradePriceUpdating: isRateLoading,

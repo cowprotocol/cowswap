@@ -26,6 +26,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isAccountProxyLoading,
     isProxySetupValid,
     customTokenError,
+    isRestrictedForCountry,
+    isBalancesLoading,
   } = context
 
   const {
@@ -63,6 +65,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.CustomTokenError)
   }
 
+  if (isRestrictedForCountry) {
+    validations.push(TradeFormValidation.RestrictedForCountry)
+  }
+
   if (!isWrapUnwrap && tradeQuote.error) {
     if (inputAmountIsNotSet) {
       validations.push(TradeFormValidation.InputAmountNotSet)
@@ -95,6 +101,20 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (inputAmountIsNotSet) {
     validations.push(TradeFormValidation.InputAmountNotSet)
+  }
+
+  if (!canPlaceOrderWithoutBalance && !!account) {
+    if (!inputCurrencyBalance && isBalancesLoading) {
+      validations.push(TradeFormValidation.BalancesLoading)
+    }
+
+    if (!inputCurrencyBalance && !isBalancesLoading) {
+      validations.push(TradeFormValidation.BalancesNotLoaded)
+    }
+
+    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+      validations.push(TradeFormValidation.BalanceInsufficient)
+    }
   }
 
   if (!isWrapUnwrap) {
@@ -134,16 +154,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       if (isProxySetupValid === null) {
         validations.push(TradeFormValidation.ProxyAccountUnknown)
       }
-    }
-  }
-
-  if (!canPlaceOrderWithoutBalance) {
-    if (!inputCurrencyBalance) {
-      validations.push(TradeFormValidation.BalancesNotLoaded)
-    }
-
-    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
-      validations.push(TradeFormValidation.BalanceInsufficient)
     }
   }
 

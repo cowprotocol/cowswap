@@ -1,18 +1,18 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Order, OrderInfoApi } from 'legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 import { useOrdersById } from 'legacy/state/orders/hooks'
 
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
-import { TwapOrderExecutionInfo, TwapOrderInfo } from '../types'
+import { TwapOrderInfo, TwapOrdersExecution } from '../types'
 
-export type TwapOrdersExecution = { info: TwapOrderExecutionInfo; confirmedPartsCount: number }
 export type TwapOrdersExecutionMap = { [id: string]: TwapOrdersExecution }
 
 type PartsIdsInfo = {
@@ -36,7 +36,7 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
 
         return acc
       },
-      { sets: {}, ids: [] }
+      { sets: {}, ids: [] },
     )
   }, [twapPartOrders])
 
@@ -74,7 +74,7 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
   }, [allOrdersInfo, partSets, allDiscreteOrders])
 }
 
-function sumChildrenAmount(children: Order[], key: keyof OrderInfoApi): bigint {
+function sumChildrenAmount(children: Order[], key: keyof EnrichedOrder): bigint {
   return children.reduce((acc, order) => {
     return acc + BigInt((order.apiAdditionalInfo?.[key] || '0') as string)
   }, BigInt(0))
@@ -122,7 +122,7 @@ function getConfirmedPartsCount(twapOrderInfo: TwapOrderInfo, discreteOrders: Or
   const finalizedDiscreteOrders = discreteOrders.filter((order) => getIsFinalizedOrder(order))
   const lastOrderValidTo = finalizedDiscreteOrders.reduce(
     (maxValidTo, { validTo }) => (validTo > maxValidTo ? validTo : maxValidTo),
-    0
+    0,
   )
 
   if (!lastOrderValidTo) return partsPassed

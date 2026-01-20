@@ -1,6 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getTokenId } from '@cowprotocol/common-utils'
 
 import { useAddTokenImportCallback } from 'modules/tokensList/hooks/useAddTokenImportCallback'
 import { ImportTokenItem } from 'modules/tokensList/pure/ImportTokenItem'
@@ -25,7 +26,7 @@ export function AddIntermediateToken({ intermediateBuyToken, onImport }: AddInte
 
   return (
     <styledEl.AddIntermediateTokenWrapper>
-      <ImportTokenItem key={intermediateBuyToken.address} token={intermediateBuyToken} importToken={handleImport} />
+      <ImportTokenItem key={getTokenId(intermediateBuyToken)} token={intermediateBuyToken} importToken={handleImport} />
     </styledEl.AddIntermediateTokenWrapper>
   )
 }

@@ -4,13 +4,11 @@ import { bpsToPercent } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from 'modules/trade'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 
 export function useLimitOrderProtocolFeeAmount(): CurrencyAmount<Currency> | null {
   const state = useDerivedTradeState()
-  const { quote } = useTradeQuote()
-  const quoteResponse = quote?.quoteResults.quoteResponse
-  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
+  const protocolFeeBps = useTradeQuoteProtocolFee()
   const outputCurrencyAmount = state?.outputCurrencyAmount
 
   return useMemo(() => {
@@ -21,4 +19,3 @@ export function useLimitOrderProtocolFeeAmount(): CurrencyAmount<Currency> | nul
       : CurrencyAmount.fromRawAmount(outputCurrencyAmount.currency, 0)
   }, [outputCurrencyAmount, protocolFeeBps])
 }
-

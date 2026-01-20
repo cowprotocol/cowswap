@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.61.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.60.0...explorer-v2.61.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+
+### Bug Fixes
+
+* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+* to address tooltip for bridge orders ([#6766](https://github.com/cowprotocol/cowswap/issues/6766)) ([b1ef329](https://github.com/cowprotocol/cowswap/commit/b1ef32998e603b48c4f8f7f40889ad541e03df3d))
+
+## [2.60.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.3...explorer-v2.60.0) (2025-12-24)
+
+
+### Features
+
+* add offset & limit params to getTrades ([#6567](https://github.com/cowprotocol/cowswap/issues/6567)) ([57d738d](https://github.com/cowprotocol/cowswap/commit/57d738de29b466d9c29b61cb3fd82936f760a336))
+
+## [2.59.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.2...explorer-v2.59.3) (2025-12-19)
+
+
+### Bug Fixes
+
+* add user context on launch darkly initialization ([#6726](https://github.com/cowprotocol/cowswap/issues/6726)) ([fa02aa4](https://github.com/cowprotocol/cowswap/commit/fa02aa4cf7f951464049cb4f3a92544de457e760))
+
 ## [2.59.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.1...explorer-v2.59.2) (2025-12-16)
 
 

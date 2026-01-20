@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/wallet",
-  "version": "1.16.0",
+  "version": "1.16.2",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {

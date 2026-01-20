@@ -1,5 +1,91 @@
 # Changelog
 
+## [1.128.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.4...cowswap-v1.128.5) (2026-01-15)
+
+
+### Bug Fixes
+
+* check balance sufficiency it case of wrap/unwrap ([#6835](https://github.com/cowprotocol/cowswap/issues/6835)) ([df9adf9](https://github.com/cowprotocol/cowswap/commit/df9adf9e3722ad51ce2e5d65de7819aebef98b58))
+
+## [1.128.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.3...cowswap-v1.128.4) (2026-01-14)
+
+
+### Bug Fixes
+
+* **swap:** use input/outputCurrencyAmount for calculating rateInfo which wont be reset while loading ([#6828](https://github.com/cowprotocol/cowswap/issues/6828)) ([94ecf48](https://github.com/cowprotocol/cowswap/commit/94ecf4802a127fe631377040ff9abe5695e518ed))
+
+## [1.128.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.2...cowswap-v1.128.3) (2026-01-13)
+
+
+### Bug Fixes
+
+* order fill notification - wrong amount & token for buy orders ([#6822](https://github.com/cowprotocol/cowswap/issues/6822)) ([e9dd9df](https://github.com/cowprotocol/cowswap/commit/e9dd9dfa34989bd330b77bf585d4ed0d066c8e83))
+* **swap:** break quote updating loop ([#6819](https://github.com/cowprotocol/cowswap/issues/6819)) ([64f6d34](https://github.com/cowprotocol/cowswap/commit/64f6d348f87579e4b07ee1f6beb8a5d48f4915ec))
+* **twap:** display summary in cancellation modal ([#6817](https://github.com/cowprotocol/cowswap/issues/6817)) ([87f5600](https://github.com/cowprotocol/cowswap/commit/87f56007dfafff42be0606bae9c1ab7bc2c350a0))
+
+## [1.128.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.1...cowswap-v1.128.2) (2026-01-12)
+
+
+### Bug Fixes
+
+* improve form validation regarding loading balances ([#6814](https://github.com/cowprotocol/cowswap/issues/6814)) ([68c5c3d](https://github.com/cowprotocol/cowswap/commit/68c5c3d3ceab8ad58cbf51c5fd2a8141aaec37ab))
+
+## [1.128.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.0...cowswap-v1.128.1) (2026-01-12)
+
+
+### Bug Fixes
+
+* message for balances error ([#6809](https://github.com/cowprotocol/cowswap/issues/6809)) ([ca09312](https://github.com/cowprotocol/cowswap/commit/ca093120481d63451136321ee2a526a5ccae4513))
+
+## [1.128.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.127.0...cowswap-v1.128.0) (2026-01-09)
+
+
+### Features
+
+* default partial approvals setting to true and the form to full-approval ([#6791](https://github.com/cowprotocol/cowswap/issues/6791)) ([db3ce9a](https://github.com/cowprotocol/cowswap/commit/db3ce9a746f690017f3a19943d8fcf39a33b3488))
+* implement consent for all flows ([#6769](https://github.com/cowprotocol/cowswap/issues/6769)) ([ba12026](https://github.com/cowprotocol/cowswap/commit/ba12026ef8a73fde2f38f448e0a581476518e843))
+* show consents before import modal ([#6770](https://github.com/cowprotocol/cowswap/issues/6770)) ([e928b80](https://github.com/cowprotocol/cowswap/commit/e928b806c45b435f830e8ebfa18090319c58659b))
+* **trade:** adjust price impact warnings for bridging ([#6754](https://github.com/cowprotocol/cowswap/issues/6754)) ([9f5f85b](https://github.com/cowprotocol/cowswap/commit/9f5f85be18b07f8ef0078d20c1cf29933fa4d80f))
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+
+### Bug Fixes
+
+* add 'fees' to limit order receipt ([#6765](https://github.com/cowprotocol/cowswap/issues/6765)) ([0e8bdc3](https://github.com/cowprotocol/cowswap/commit/0e8bdc3244ffb4bbe6b051464d894698e8cd58dd))
+* approve & swap bug introduced in [#6791](https://github.com/cowprotocol/cowswap/issues/6791) ([#6796](https://github.com/cowprotocol/cowswap/issues/6796)) ([d29ac71](https://github.com/cowprotocol/cowswap/commit/d29ac716cc4c2735a71526d684d09bf09b9ad94a))
+* button label in sc wallets doing wrap & swap & bridge ([#6759](https://github.com/cowprotocol/cowswap/issues/6759)) ([db0765a](https://github.com/cowprotocol/cowswap/commit/db0765a3b6b2f2e649db57be6ecff626342c616d))
+* display correct cross-chain order summary ([#6768](https://github.com/cowprotocol/cowswap/issues/6768)) ([d09b211](https://github.com/cowprotocol/cowswap/commit/d09b2114441b860850e529196b12a19e3e9dbb0d))
+* hide consent logic under ff ([#6801](https://github.com/cowprotocol/cowswap/issues/6801)) ([a6ef0e4](https://github.com/cowprotocol/cowswap/commit/a6ef0e47ae7a4b301582b4c96e53689f93ef3531))
+* hide couldnt load balances msg when balances are loading ([#6779](https://github.com/cowprotocol/cowswap/issues/6779)) ([54269cc](https://github.com/cowprotocol/cowswap/commit/54269ccb815c75f064febc8bc45a4fbe6cac9f5a))
+* **trade:** clean up params even for orderkind ([#6746](https://github.com/cowprotocol/cowswap/issues/6746)) ([02e6844](https://github.com/cowprotocol/cowswap/commit/02e68448ae251b25dbf2f032a23349befa9af7f5))
+
+## [1.127.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.126.0...cowswap-v1.127.0) (2025-12-24)
+
+
+### Features
+
+* **bridge:** add feature flag for widget in Safe app ([#6747](https://github.com/cowprotocol/cowswap/issues/6747)) ([557257d](https://github.com/cowprotocol/cowswap/commit/557257dc16d6e6579cebc5bb222df71af9a66673))
+
+
+### Bug Fixes
+
+* button label in safe operation: wrap & swap & bridge ([#6752](https://github.com/cowprotocol/cowswap/issues/6752)) ([f4ee169](https://github.com/cowprotocol/cowswap/commit/f4ee169a38a2a66230433dbc1d57c6937f7094b3))
+* mismatch in order submitted amount for safe wallets ([#6750](https://github.com/cowprotocol/cowswap/issues/6750)) ([2a83ffe](https://github.com/cowprotocol/cowswap/commit/2a83ffe9a0acf1645351c72f5f3265089fb707db))
+
+## [1.126.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.8...cowswap-v1.126.0) (2025-12-22)
+
+
+### Features
+
+* **widget:** option to disable bridging ([#6730](https://github.com/cowprotocol/cowswap/issues/6730)) ([7fc3949](https://github.com/cowprotocol/cowswap/commit/7fc3949f5d656709e3f812499870313cc3b41b9f))
+
+## [1.125.8](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.7...cowswap-v1.125.8) (2025-12-19)
+
+
+### Bug Fixes
+
+* add user context on launch darkly initialization ([#6726](https://github.com/cowprotocol/cowswap/issues/6726)) ([fa02aa4](https://github.com/cowprotocol/cowswap/commit/fa02aa4cf7f951464049cb4f3a92544de457e760))
+
 ## [1.125.7](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.6...cowswap-v1.125.7) (2025-12-18)
 
 

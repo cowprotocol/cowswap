@@ -1,4 +1,4 @@
-import React, { ReactElement, useMemo } from 'react'
+import React, { ReactElement, ReactNode, useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
@@ -18,23 +18,13 @@ export type CancellationModalProps = {
   isOpen: boolean
   onDismiss: Command
   context: CancellationModalContext
+  orderSummary: ReactNode | undefined
 }
 
-// TODO: Break down this large function into smaller functions
-
 export function CancellationModal(props: CancellationModalProps): ReactElement | null {
-  const { isOpen, onDismiss, context } = props
-  const {
-    chainId,
-    orderId,
-    summary,
-    error,
-    defaultType,
-    isPendingSignature,
-    triggerCancellation,
-    txCost,
-    nativeCurrency,
-  } = context
+  const { isOpen, onDismiss, context, orderSummary } = props
+  const { chainId, orderId, error, defaultType, isPendingSignature, triggerCancellation, txCost, nativeCurrency } =
+    context
 
   const shortId = shortenOrderId(orderId || '')
 
@@ -56,7 +46,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
             <Trans>
               Cancelling order with id {shortId}:
               <br />
-              <em>{summary}</em>
+              <em>{orderSummary}</em>
             </Trans>
           }
           description={t`Canceling your order`}
@@ -68,7 +58,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
         <RequestCancellationModal
           onDismiss={onDismiss}
           triggerCancellation={triggerCancellation}
-          summary={summary ?? ''}
+          summary={orderSummary}
           shortId={shortId}
           defaultType={defaultType}
           txCost={txCost}
@@ -84,7 +74,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
     defaultType,
     onDismiss,
     isPendingSignature,
-    summary,
+    orderSummary,
     shortId,
     txCost,
     nativeCurrency,

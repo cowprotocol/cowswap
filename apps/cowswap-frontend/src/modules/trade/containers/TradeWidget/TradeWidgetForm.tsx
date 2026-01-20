@@ -158,6 +158,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     tokenSelectorDisabled: shouldLockForAlternativeOrder,
     displayTokenName,
     displayChainName,
+    isBridging: isCurrentTradeBridging,
   }
 
   const openSellTokenSelect = useCallback(
@@ -268,7 +269,13 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     {...currencyInputCommonProps}
                   />
                 </div>
-                {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
+                {withRecipient && (
+                  <SetRecipient
+                    recipient={recipient || ''}
+                    onChangeRecipient={onChangeRecipient}
+                    targetChainId={buyToken?.chainId as SupportedChainId}
+                  />
+                )}
 
                 {isWrapOrUnwrap ? (
                   sellToken ? (

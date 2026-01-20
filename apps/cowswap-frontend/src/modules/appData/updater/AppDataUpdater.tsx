@@ -11,6 +11,7 @@ import { AppDataHooksUpdater } from './AppDataHooksUpdater'
 import { AppDataInfoUpdater, UseAppDataParams } from './AppDataInfoUpdater'
 
 import { useAppCode, useAppDataHooks } from '../hooks'
+import { useRwaConsentForAppData } from '../hooks/useRwaConsentForAppData'
 import { AppDataOrderClass } from '../types'
 
 interface AppDataUpdaterProps {
@@ -28,6 +29,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
+  const userConsent = useRwaConsentForAppData()
 
   if (!chainId) return null
 
@@ -42,6 +44,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
       typedHooks={typedHooks}
       volumeFee={volumeFee}
       replacedOrderUid={replacedOrderUid}
+      userConsent={userConsent}
     />
   )
 })

@@ -3,7 +3,8 @@ import { useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
+import { twapOrdersListAtom } from 'entities/twap'
+
 import { setPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { generateTwapOrderParts } from '../utils/buildTwapParts'
 

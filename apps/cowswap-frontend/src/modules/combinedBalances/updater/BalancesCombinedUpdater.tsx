@@ -61,5 +61,7 @@ function applyBalanceDiffs(
     values: normalizedValues,
     chainId,
     fromCache: false,
+    hasFirstLoad: currentBalances.hasFirstLoad,
+    error: currentBalances.error,
   }
 }

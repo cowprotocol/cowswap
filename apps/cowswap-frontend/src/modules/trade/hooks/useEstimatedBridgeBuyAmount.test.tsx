@@ -57,65 +57,63 @@ describe('useEstimatedBridgeBuyAmount', () => {
     jest.clearAllMocks()
   })
 
-  it('should calculate estimated bridge amounts correctly', () => {
-    const derivedState = {
-      inputCurrency: USDT_BNB,
-      outputCurrency: USDC_BASE,
-    }
+  describe('Calculates correct bridge amounts', () => {
+    it('should calculate estimated bridge amounts correctly', () => {
+      const derivedState = {
+        inputCurrency: USDT_BNB,
+        outputCurrency: USDC_BASE,
+      }
 
-    mockedUseDerivedTradeState.mockReturnValue(derivedState as never)
-    mockedUseTryFindToken.mockReturnValue({ token: intermediateCurrency } as never)
-    mockedGetBridgeIntermediateTokenAddress.mockReturnValue('0xIntermediateAddress')
+      mockedUseDerivedTradeState.mockReturnValue(derivedState as never)
+      mockedUseTryFindToken.mockReturnValue({ token: intermediateCurrency } as never)
+      mockedGetBridgeIntermediateTokenAddress.mockReturnValue('0xIntermediateAddress')
 
-    mockedUseTradeQuote.mockReturnValue({
-      bridgeQuote: {
-        amountsAndCosts: {
-          beforeFee: {
-            sellAmount: bridgeSellAmountRaw,
-            buyAmount: bridgeBuyAmountRaw,
-          },
-          costs: {
-            bridgingFee: {
-              amountInSellCurrency: feeAmountRaw,
-            },
-          },
-        },
-      },
-      quote: {
-        quoteResults: {
+      mockedUseTradeQuote.mockReturnValue({
+        bridgeQuote: {
           amountsAndCosts: {
-            beforeAllFees: {
-              buyAmount: swapBuyAmountRaw,
+            beforeFee: {
+              sellAmount: bridgeSellAmountRaw,
+              buyAmount: bridgeBuyAmountRaw,
+            },
+            costs: {
+              bridgingFee: {
+                amountInSellCurrency: feeAmountRaw,
+              },
             },
           },
         },
-      },
-    } as TradeQuoteState)
+        quote: {
+          quoteResults: {
+            amountsAndCosts: {
+              afterPartnerFees: {
+                buyAmount: swapBuyAmountRaw,
+              },
+            },
+          },
+        },
+      } as TradeQuoteState)
 
-    const { result } = renderHook(() => useEstimatedBridgeBuyAmount())
+      const { result } = renderHook(() => useEstimatedBridgeBuyAmount())
 
-    expect(result.current).not.toBeNull()
-    expect(result.current?.intermediateCurrency).toEqual(intermediateCurrency)
+      expect(result.current).not.toBeNull()
+      expect(result.current?.intermediateCurrency).toEqual(intermediateCurrency)
 
-    // Verify sellAmount (bridge sell amount in intermediate currency)
-    expect(result.current?.sellAmount.currency).toEqual(intermediateCurrency)
-    expect(result.current?.sellAmount.quotient.toString()).toBe(bridgeSellAmountRaw.toString())
+      // Verify expectedToReceiveAmount calculation
+      // expectedToReceiveAmount = bridgePrice.quote(swapBuyAmount)
+      // bridgePrice = bridgeBuyAmount / bridgeSellAmount
+      // expectedToReceiveAmount = swapBuyAmount * bridgeBuyAmount / bridgeSellAmount
+      const expectedAmount = (swapBuyAmountRaw * bridgeBuyAmountRaw) / bridgeSellAmountRaw
+      expect(result.current?.expectedToReceiveAmount.quotient.toString()).toBe(expectedAmount.toString())
+      expect(result.current?.expectedToReceiveAmount.currency).toEqual(USDC_BASE)
 
-    // Verify expectedToReceiveAmount calculation
-    // expectedToReceiveAmount = bridgePrice.quote(swapBuyAmount)
-    // bridgePrice = bridgeBuyAmount / bridgeSellAmount
-    // expectedToReceiveAmount = swapBuyAmount * bridgeBuyAmount / bridgeSellAmount
-    const expectedAmount = (swapBuyAmountRaw * bridgeBuyAmountRaw) / bridgeSellAmountRaw
-    expect(result.current?.expectedToReceiveAmount.quotient.toString()).toBe(expectedAmount.toString())
-    expect(result.current?.expectedToReceiveAmount.currency).toEqual(USDC_BASE)
+      // Verify feeAmount
+      expect(result.current?.feeAmount.quotient.toString()).toBe(feeAmountRaw.toString())
+      expect(result.current?.feeAmount.currency).toEqual(USDC_BASE)
 
-    // Verify feeAmount
-    expect(result.current?.feeAmount.quotient.toString()).toBe(feeAmountRaw.toString())
-    expect(result.current?.feeAmount.currency).toEqual(USDC_BASE)
-
-    // Verify minToReceiveAmount = expectedToReceiveAmount - feeAmount
-    const expectedMinAmount = expectedAmount - feeAmountRaw
-    expect(result.current?.minToReceiveAmount.quotient.toString()).toBe(expectedMinAmount.toString())
-    expect(result.current?.minToReceiveAmount.currency).toEqual(USDC_BASE)
+      // Verify minToReceiveAmount = expectedToReceiveAmount - feeAmount
+      const expectedMinAmount = expectedAmount - feeAmountRaw
+      expect(result.current?.minToReceiveAmount.quotient.toString()).toBe(expectedMinAmount.toString())
+      expect(result.current?.minToReceiveAmount.currency).toEqual(USDC_BASE)
+    })
   })
 })

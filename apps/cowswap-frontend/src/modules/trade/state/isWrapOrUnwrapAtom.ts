@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { getCurrencyAddress, getIsWrapOrUnwrap } from '@cowprotocol/common-utils'
+import { getIsWrapOrUnwrap } from '@cowprotocol/common-utils'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { derivedTradeStateAtom } from './derivedTradeStateAtom'
@@ -13,8 +13,5 @@ export const isWrapOrUnwrapAtom = atom((get) => {
 
   if (inputCurrency.chainId !== outputCurrency.chainId) return false
 
-  const onputCurrencyId = getCurrencyAddress(inputCurrency)
-  const outputCurrencyId = getCurrencyAddress(outputCurrency)
-
-  return getIsWrapOrUnwrap(chainId, onputCurrencyId, outputCurrencyId)
+  return getIsWrapOrUnwrap(chainId, inputCurrency, outputCurrency)
 })

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.31.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.30.0...cow-fi-v1.31.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.29.0...cow-fi-v1.30.0) (2025-12-24)
+
+
+### Features
+
+* disable develop.cow.fi SEO indexing ([#6614](https://github.com/cowprotocol/cowswap/issues/6614)) ([6ce7c57](https://github.com/cowprotocol/cowswap/commit/6ce7c57534e275b57be97a425cd7e7692c2fa07d))
+
 ## [1.29.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.1...cow-fi-v1.29.0) (2025-12-16)
 
 
