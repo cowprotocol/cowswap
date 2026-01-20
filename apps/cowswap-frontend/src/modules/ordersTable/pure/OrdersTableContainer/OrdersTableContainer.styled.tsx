@@ -202,3 +202,22 @@ export const RightContainer = styled.div<{ $isHistoryTab: boolean }>`
 export const BannerContainer = styled.div`
   width: 100%;
 `
+
+export const LoadMoreSection = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 16px;
+  width: 100%;
+`
+
+export const LoadMoreMessage = styled.p`
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 0;
+  font-weight: 400;
+  text-align: center;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+`

@@ -7,6 +7,7 @@ import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { ConnectWalletContent } from './ConnectWalletContent'
+import { LoadMoreOrdersSection } from './LoadMoreOrdersSection'
 import { NoOrdersContent } from './NoOrdersContent'
 import { OrdersTable } from './OrdersTable'
 import { UnsupportedNetworkContent } from './UnsupportedNetworkContent'
@@ -38,16 +39,21 @@ export function OrdersTableContent({
     return <UnsupportedNetworkContent />
   }
 
-  if (filteredOrders?.length === 0) {
-    return (
-      <NoOrdersContent
-        currentTab={currentTab}
-        searchTerm={searchTerm}
-        historyStatusFilter={historyStatusFilter}
-        hasHydratedOrders={isHydrated}
-      />
-    )
-  }
+  return (
+    <>
+      {filteredOrders?.length === 0 ? (
+        <NoOrdersContent
+          currentTab={currentTab}
+          searchTerm={searchTerm}
+          historyStatusFilter={historyStatusFilter}
+          hasHydratedOrders={isHydrated}
+        />
+      ) : (
+        <OrdersTable currentTab={currentTab} />
+      )}
 
-  return <OrdersTable currentTab={currentTab} />
+      {/* Load More section - shown at bottom of table */}
+      <LoadMoreOrdersSection currentTab={currentTab} />
+    </>
+  )
 }
