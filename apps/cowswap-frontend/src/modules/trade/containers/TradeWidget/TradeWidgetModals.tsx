@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -16,11 +17,9 @@ import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApprove
 import { RwaConsentModalContainer, useRwaConsentModalState } from 'modules/rwa'
 import {
   ImportTokenModal,
-  SelectTokenWidget,
+  useCloseTokenSelectWidget,
   useSelectTokenWidgetState,
   useTokenListAddingError,
-  useUpdateSelectTokenWidgetState,
-  useRestrictedTokensImportStatus,
 } from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
@@ -36,22 +35,17 @@ import { WrapNativeModal } from '../WrapNativeModal'
 interface TradeWidgetModalsProps {
   confirmModal: ReactNode | undefined
   genericModal: ReactNode | undefined
-  selectTokenWidget: ReactNode | undefined
 }
 
 // todo refactor it
-// eslint-disable-next-line complexity,max-lines-per-function
-export function TradeWidgetModals({
-  confirmModal,
-  genericModal,
-  selectTokenWidget = <SelectTokenWidget />,
-}: TradeWidgetModalsProps): ReactNode {
+// eslint-disable-next-line max-lines-per-function
+export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetModalsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { state: rawState } = useTradeState()
   const importTokenCallback = useAddUserToken()
 
   const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
-  const { open: isTokenSelectOpen, field } = useSelectTokenWidgetState()
+  const { field } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const {
     approveInProgress,
@@ -68,22 +62,19 @@ export function TradeWidgetModals({
     tokensToImport,
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
   } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
-  const { isImportDisabled, blockReason, requiresConsent, restrictedTokenInfo, tokenNeedingConsent } =
-    useRestrictedTokensImportStatus(tokensToImport)
-  const { openModal: openRwaConsentModal } = useRwaConsentModalState()
 
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
-  const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const resetApproveModalState = useResetApproveProgressModalState()
   const updateApproveAmountState = useSetUserApproveAmountModalState()
 
   const resetAllScreens = useCallback(
-    (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
+    (shouldCloseTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
       closeTradeConfirm()
       closeZeroApprovalModal()
       closeRwaConsentModal()
       if (shouldCloseAutoImportModal) closeAutoImportModal()
-      if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
+      if (shouldCloseTokenSelectWidget) closeTokenSelectWidget()
       setWrapNativeScreenState({ isOpen: false })
       resetApproveModalState()
       setTokenListAddingError(null)
@@ -94,7 +85,7 @@ export function TradeWidgetModals({
       closeZeroApprovalModal,
       closeRwaConsentModal,
       closeAutoImportModal,
-      updateSelectTokenWidgetState,
+      closeTokenSelectWidget,
       setWrapNativeScreenState,
       resetApproveModalState,
       updateApproveAmountState,
@@ -103,8 +94,9 @@ export function TradeWidgetModals({
   )
 
   const isOutputTokenSelector = field === Field.OUTPUT
-  const isOutputTokenSelectorRef = useRef(isOutputTokenSelector)
-  isOutputTokenSelectorRef.current = isOutputTokenSelector
+  const previousIsOutputTokenSelector = usePrevious(isOutputTokenSelector)
+  const previousChainId = usePrevious(chainId)
+  const isInitialRenderRef = useRef(true)
 
   const error = tokenListAddingError || approveError || confirmError
 
@@ -120,40 +112,20 @@ export function TradeWidgetModals({
    * Because network might be changed from the widget inside
    */
   useEffect(() => {
-    resetAllScreens(isOutputTokenSelectorRef.current)
-  }, [chainId, resetAllScreens])
+    const isActualChainChange = previousChainId !== null && previousChainId !== chainId
 
-  /**
-   * If auto-import modal is open and consent is required,
-   * open the RWA consent modal instead
-   */
-  useEffect(() => {
-    if (isAutoImportModalOpen && requiresConsent && restrictedTokenInfo && tokenNeedingConsent) {
-      openRwaConsentModal({
-        consentHash: restrictedTokenInfo.consentHash,
-        token: tokenNeedingConsent,
-        pendingImportTokens: tokensToImport,
-        onImportSuccess: () => {
-          // After consent, import the tokens
-          importTokenCallback(tokensToImport)
-          closeAutoImportModal()
-        },
-        onDismiss: () => {
-          // If consent is rejected, close the auto-import modal too
-          closeAutoImportModal()
-        },
-      })
+    if (!isActualChainChange && !isInitialRenderRef.current) {
+      return
     }
-  }, [
-    isAutoImportModalOpen,
-    requiresConsent,
-    restrictedTokenInfo,
-    tokenNeedingConsent,
-    tokensToImport,
-    openRwaConsentModal,
-    importTokenCallback,
-    closeAutoImportModal,
-  ])
+
+    isInitialRenderRef.current = false
+
+    const shouldCloseTokenSelectWidget = isActualChainChange
+      ? isOutputTokenSelector
+      : (previousIsOutputTokenSelector ?? isOutputTokenSelector)
+
+    resetAllScreens(shouldCloseTokenSelectWidget, isActualChainChange)
+  }, [chainId, isOutputTokenSelector, previousChainId, previousIsOutputTokenSelector, resetAllScreens])
 
   if (genericModal) {
     return genericModal
@@ -171,22 +143,8 @@ export function TradeWidgetModals({
     return <TradeChangeApproveAmountModal />
   }
 
-  if (isTokenSelectOpen) {
-    return selectTokenWidget
-  }
-
-  // Show import modal only if consent is not required
-  // (if consent is required, the useEffect above will open the consent modal)
-  if (isAutoImportModalOpen && !requiresConsent) {
-    return (
-      <ImportTokenModal
-        tokens={tokensToImport}
-        onDismiss={closeAutoImportModal}
-        onImport={importTokenCallback}
-        isImportDisabled={isImportDisabled}
-        blockReason={blockReason}
-      />
-    )
+  if (isAutoImportModalOpen) {
+    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
   }
 
   if (isWrapNativeOpen) {

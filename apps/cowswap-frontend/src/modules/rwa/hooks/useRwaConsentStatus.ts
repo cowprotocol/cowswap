@@ -46,10 +46,13 @@ export function useRwaConsentStatus(key: RwaConsentKey | null): UseRwaConsentSta
     removeConsent(key)
   }, [removeConsent, key])
 
-  return {
-    consentStatus,
-    consentRecord,
-    confirmConsent,
-    resetConsent,
-  }
+  return useMemo(
+    () => ({
+      consentStatus,
+      consentRecord,
+      confirmConsent,
+      resetConsent,
+    }),
+    [consentStatus, consentRecord, confirmConsent, resetConsent],
+  )
 }

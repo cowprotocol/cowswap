@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, getTokenId } from '@cowprotocol/common-utils'
 import { TokenLogo, TokenSearchResponse, useRemoveUserToken, useResetUserTokens } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
@@ -55,11 +55,11 @@ export function ManageTokens(props: ManageTokensProps) {
       {(!!activeListsResult?.length || !!tokensToImport?.length) && (
         <styledEl.SearchResults>
           {activeListsResult?.map((token) => {
-            return <ImportTokenItem key={token.address} token={token} existing={true} />
+            return <ImportTokenItem key={getTokenId(token)} token={token} existing={true} />
           })}
           {!activeListsResult?.length &&
             tokensToImport?.map((token) => {
-              return <ImportTokenItem key={token.address} token={token} importToken={addTokenImportCallback} />
+              return <ImportTokenItem key={getTokenId(token)} token={token} importToken={addTokenImportCallback} />
             })}
         </styledEl.SearchResults>
       )}
@@ -76,7 +76,7 @@ export function ManageTokens(props: ManageTokensProps) {
       <CommonListContainer>
         {tokens.map((token) => {
           return (
-            <styledEl.TokenItem key={token.address}>
+            <styledEl.TokenItem key={getTokenId(token)}>
               <styledEl.TokenInfo>
                 <TokenLogo token={token} size={20} />
                 <TokenSymbol token={token} />
