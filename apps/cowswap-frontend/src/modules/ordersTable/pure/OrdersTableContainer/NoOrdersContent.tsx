@@ -118,7 +118,9 @@ export function NoOrdersContent({
   return (
     <styledEl.Content>
       <h3>
-        {hasOrders && (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL)
+        {hasOrders &&
+        (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL) &&
+        currentTab === OrderTabId.history
           ? getHistoryTitle(historyStatusFilter)
           : getTabTitle(currentTab)}
       </h3>
