@@ -1,20 +1,16 @@
 import { useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { useWeb3React } from '@web3-react/core'
 
-// TODO: Add proper return type annotation
+import { useDisconnect } from '@reown/appkit/react'
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useDisconnectWallet(onDisconnect?: Command) {
-  const { connector } = useWeb3React()
+  const { disconnect } = useDisconnect()
 
   return useCallback(async () => {
-    if (connector.deactivate) {
-      connector.deactivate()
-    } else {
-      connector.resetState()
-    }
+    await disconnect()
 
     onDisconnect?.()
-  }, [onDisconnect, connector])
+  }, [disconnect, onDisconnect])
 }

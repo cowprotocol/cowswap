@@ -1,13 +1,15 @@
 import { ReactNode } from 'react'
 
+import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { useConnectionType, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useAppKit } from '@reown/appkit/react'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
-
 
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
@@ -21,6 +23,7 @@ export interface Web3StatusProps {
 }
 
 export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
+  const { open } = useAppKit()
   const connectionType = useConnectionType()
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -37,7 +40,7 @@ export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
         pendingCount={pendingCount}
         account={account}
         ensName={ensName}
-        connectWallet={toggleWalletModal}
+        connectWallet={LAUNCH_DARKLY_VIEM_MIGRATION ? () => open() : toggleWalletModal}
         connectionType={connectionType}
       />
       <WalletModal />

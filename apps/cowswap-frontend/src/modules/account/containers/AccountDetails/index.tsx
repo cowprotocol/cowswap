@@ -109,8 +109,8 @@ export function AccountDetails({
   // When name is not set, it defaults to WalletConnect already
   const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ` ` + t`(via WalletConnect)` : ''
 
-  const handleDisconnectClick = (): void => {
-    disconnectWallet()
+  const handleDisconnectClick = async (): Promise<void> => {
+    await disconnectWallet()
     handleCloseOrdersPanel()
     dispatch(updateSelectedWallet({ wallet: undefined }))
   }
