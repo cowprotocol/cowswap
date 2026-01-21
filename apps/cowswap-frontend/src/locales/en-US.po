@@ -365,8 +365,8 @@ msgid "SWAP order"
 msgstr "SWAP order"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "No executed orders found"
-msgstr "No executed orders found"
+#~ msgid "No executed orders found"
+#~ msgstr "No executed orders found"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "y"
@@ -470,6 +470,10 @@ msgstr "Max. swap slippage"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartVolumeWarning.tsx
 msgid "The sell amount per part of your TWAP order should be at least <0>$<1/></0>. Decrease the number of parts or increase the total sell amount."
 msgstr "The sell amount per part of your TWAP order should be at least <0>$<1/></0>. Decrease the number of parts or increase the total sell amount."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
+msgid "No filled orders found"
+msgstr "No filled orders found"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Surplus"
@@ -1748,8 +1752,8 @@ msgstr "Order type"
 
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/index.tsx
-msgid "Executed orders"
-msgstr "Executed orders"
+#~ msgid "Executed orders"
+#~ msgstr "Executed orders"
 
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/index.tsx
@@ -1847,8 +1851,8 @@ msgstr "Enable order alerts"
 
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/index.tsx
-#~ msgid "Filled orders"
-#~ msgstr "Filled orders"
+msgid "Filled orders"
+msgstr "Filled orders"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
