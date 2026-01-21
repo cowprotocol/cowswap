@@ -57,7 +57,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
   const isOutputCurrencyBridgeSupported = Boolean(
-    outputCurrency && bridgeSupportedNetworks?.some((network) => network.id === outputCurrency?.chainId),
+    outputCurrency ? bridgeSupportedNetworks?.some((network) => network.id === outputCurrency?.chainId) : true,
   )
 
   return useCallback(
