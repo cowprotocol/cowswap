@@ -78,7 +78,6 @@
     "jotai": "2.2.0",
     "launchdarkly-react-client-sdk": "^3.0.4",
     "next": "15.2.8",
-    "next-sitemap": "^4.2.3",
     "polished": "^4.0.5",
     "remark-gfm": "^4.0.1",
     "rehype-raw": "^7.0.0",

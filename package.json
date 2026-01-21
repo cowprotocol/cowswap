@@ -153,6 +153,7 @@
     "lint-staged": "^16.2.7",
     "node-stdlib-browser": "^1.2.0",
     "nx": "21.6.4",
+    "next-sitemap": "^4.2.3",
     "patch-package": "^8.0.0",
     "prettier": "^3.3.3",
     "react-cosmos-plugin-vite": "^7.0.0",
