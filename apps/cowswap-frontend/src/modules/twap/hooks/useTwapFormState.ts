@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -22,7 +22,7 @@ export function useTwapFormState(): TwapFormState | null {
   const partTime = useAtomValue(twapTimeIntervalAtom)
 
   const verification = useFallbackHandlerVerification()
-  const isTxBundlingSupported = useIsTxBundlingSupported()
+  const isTxBundlingSupported = useIsSafeTxBundlingSupported()
 
   return getTwapFormState({
     isTxBundlingSupported,

@@ -227,6 +227,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </>
     ),
   },
+  [TradeFormValidation.WalletCapabilitiesLoading]: {
+    text: (
+      <>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
