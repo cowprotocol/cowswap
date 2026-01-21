@@ -65,9 +65,7 @@ const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const unsupportedTokenButton = (context: TradeFormButtonContext) => {
+const unsupportedTokenButton = (context: TradeFormButtonContext): ReactNode => {
   const { derivedState, isSupportedWallet } = context
   const { inputCurrency, outputCurrency } = derivedState
 
