@@ -1,6 +1,9 @@
 import { useMemo } from 'react'
 
+import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { useWalletDetails } from '@cowprotocol/wallet'
+
+import { useAppKit } from '@reown/appkit/react'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -19,6 +22,7 @@ export function useTradeFormButtonContext(
   confirmTrade: () => void,
   supportsPartialApprove = false,
 ): TradeFormButtonContext | null {
+  const { open } = useAppKit()
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
   const quote = useTradeQuote()
@@ -45,7 +49,7 @@ export function useTradeFormButtonContext(
       isSupportedWallet,
       confirmTrade,
       wrapNativeFlow,
-      connectWallet: toggleWalletModal,
+      connectWallet: LAUNCH_DARKLY_VIEM_MIGRATION ? () => open() : toggleWalletModal,
       widgetStandaloneMode: standaloneMode,
       supportsPartialApprove,
       customTokenError,
@@ -60,6 +64,7 @@ export function useTradeFormButtonContext(
     isSupportedWallet,
     confirmTrade,
     wrapNativeFlow,
+    open,
     toggleWalletModal,
     standaloneMode,
     supportsPartialApprove,
