@@ -38,8 +38,26 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
   const [searchTerm, setSearchTerm] = useState('')
   const [historyStatusFilter, setHistoryStatusFilter] = useState<HistoryStatusFilter>(HistoryStatusFilter.EXECUTED)
 
+  const resetPagination = (): void => {
+    if (!currentPageNumber || currentPageNumber === 1 || !filteredOrders) return
+
+    const url = buildOrdersTableUrl({ pageNumber: 1 })
+
+    navigate(url, { replace: true })
+  }
+
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchTerm(e.target.value)
+
+    // If any filter changes, reset pagination:
+    resetPagination()
+  }
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     setHistoryStatusFilter(e.target.value as HistoryStatusFilter)
+
+    // If any filter changes, reset pagination:
+    resetPagination()
   }
 
   const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
@@ -49,16 +67,6 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
     // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
     if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.EXECUTED)
   }, [currentTabId])
-
-  useEffect(() => {
-    if (!currentPageNumber || currentPageNumber === 1 || !filteredOrders) return
-
-    // If any filter changes, reset pagination:
-
-    const url = buildOrdersTableUrl({ pageNumber: 1 })
-
-    navigate(url, { replace: true })
-  }, [currentPageNumber, searchTerm, historyStatusFilter, filteredOrders, buildOrdersTableUrl, navigate])
 
   const pendingOrders = useMemo(() => {
     const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
@@ -113,7 +121,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
                 placeholder={t`Token symbol, address`}
                 name="searchTerm"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchTermChange}
               />
               {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
             </SearchInputContainer>
