@@ -24,9 +24,6 @@ export const bungeeBridgeProvider = new BungeeBridgeProvider({
 
 export const acrossBridgeProvider = new AcrossBridgeProvider()
 
-// TODO: remove log before merging, for testing only!
-console.log('Near api key is set:', !!process.env.REACT_APP_NEAR_API_KEY)
-
 export const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey: process.env.REACT_APP_NEAR_API_KEY })
 
 export const bridgingSdk = new BridgingSdk({
