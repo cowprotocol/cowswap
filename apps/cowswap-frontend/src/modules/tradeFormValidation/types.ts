@@ -90,6 +90,8 @@ export interface TradeFormButtonContext {
   customTokenError?: string
   minAmountToSignForSwap?: CurrencyAmount<Currency>
   balancesError: string | null
+  confirmClickEvent?: string
+  approveClickEvent?: string
 
   confirmTrade(): void
 

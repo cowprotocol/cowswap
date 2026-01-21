@@ -5,10 +5,8 @@ import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useLingui } from '@lingui/react/macro'
-
 import { useHasCachedPermit } from 'modules/permit'
-import { useIsCurrentTradeBridging } from 'modules/trade'
+import { useGetConfirmButtonLabel, useIsCurrentTradeBridging } from 'modules/trade'
 
 import * as styledEl from './styled'
 import { ButtonWrapper } from './styled'
@@ -30,10 +28,10 @@ export interface TradeApproveButtonProps {
   label?: string
   buttonSize?: ButtonSize
   useModals?: boolean
+  clickEvent?: string
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { t } = useLingui()
   const {
     amountToApprove,
     children,
@@ -41,6 +39,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     isDisabled,
     buttonSize = ButtonSize.DEFAULT,
     useModals = true,
+    clickEvent,
   } = props
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
 
@@ -50,6 +49,8 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const approveAndSwap = useApproveAndSwap(props)
   const { callback: approveWithPreventedDoubleExecution, isExecuting } = usePreventDoubleExecution(approveAndSwap)
   const { data: cachedPermit, isLoading: cachedPermitLoading } = useHasCachedPermit(amountToApprove)
+  const approveLabel = useGetConfirmButtonLabel('approve', isCurrentTradeBridging)
+  const swapLabel = useGetConfirmButtonLabel('swap', isCurrentTradeBridging)
 
   if (!supportsPartialApprove) {
     return (
@@ -59,6 +60,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           state={approvalState}
           isDisabled={isDisabled}
           onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
+          clickEvent={clickEvent}
         />
         {children}
       </>
@@ -68,9 +70,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const isPending = isExecuting || approvalState === ApprovalState.PENDING
   const noCachedPermit = !cachedPermitLoading && !cachedPermit
 
-  const label =
-    props.label ||
-    (noCachedPermit ? (isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`) : t`Swap`)
+  const label = props.label || (noCachedPermit ? approveLabel : swapLabel)
 
   return (
     <ButtonWrapper
@@ -79,6 +79,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
       onClick={approveWithPreventedDoubleExecution}
       altDisabledStyle={isPending}
       id="approve-trade-button"
+      data-click-event={clickEvent}
     >
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}

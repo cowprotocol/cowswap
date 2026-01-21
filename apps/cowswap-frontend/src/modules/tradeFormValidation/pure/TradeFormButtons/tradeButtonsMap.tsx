@@ -271,7 +271,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const contextDefaultText = context.defaultText
 
     return (
-      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade} clickEvent={context.approveClickEvent}>
         <span>
           <Trans>
             Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {contextDefaultText}
@@ -291,6 +291,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         supportsPartialApprove={supportsPartialApprove}
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
+        clickEvent={context.approveClickEvent}
       >
         <TradeFormBlankButton disabled={!supportsPartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>
