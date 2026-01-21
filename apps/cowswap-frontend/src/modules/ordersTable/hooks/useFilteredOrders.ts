@@ -10,7 +10,7 @@ import { OrderTableItem } from '../types'
 import { getParsedOrderFromTableItem } from '../utils/orderTableGroupUtils'
 
 function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {
-  if (status === HistoryStatusFilter.EXECUTED) return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
+  if (status === HistoryStatusFilter.FILLED) return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
 
   if (status === HistoryStatusFilter.CANCELLED)
     return (
@@ -72,7 +72,7 @@ function filterByAddress(parsedOrder: ParsedOrder, searchTermLower: string): boo
 }
 
 export enum HistoryStatusFilter {
-  EXECUTED = 'executed',
+  FILLED = 'filled',
   CANCELLED = 'cancelled',
   EXPIRED = 'expired',
   ALL = 'all',

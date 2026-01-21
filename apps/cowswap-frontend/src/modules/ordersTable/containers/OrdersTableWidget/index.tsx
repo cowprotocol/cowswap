@@ -36,10 +36,28 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
   const navigate = useNavigate()
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [historyStatusFilter, setHistoryStatusFilter] = useState<HistoryStatusFilter>(HistoryStatusFilter.EXECUTED)
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<HistoryStatusFilter>(HistoryStatusFilter.FILLED)
+
+  const resetPagination = (): void => {
+    if (!currentPageNumber || currentPageNumber === 1 || !filteredOrders) return
+
+    const url = buildOrdersTableUrl({ pageNumber: 1 })
+
+    navigate(url, { replace: true })
+  }
+
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchTerm(e.target.value)
+
+    // If any filter changes, reset pagination:
+    resetPagination()
+  }
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     setHistoryStatusFilter(e.target.value as HistoryStatusFilter)
+
+    // If any filter changes, reset pagination:
+    resetPagination()
   }
 
   const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
@@ -47,18 +65,8 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
 
   useEffect(() => {
     // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
-    if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.EXECUTED)
+    if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
   }, [currentTabId])
-
-  useEffect(() => {
-    if (!currentPageNumber || currentPageNumber === 1 || !filteredOrders) return
-
-    // If any filter changes, reset pagination:
-
-    const url = buildOrdersTableUrl({ pageNumber: 1 })
-
-    navigate(url, { replace: true })
-  }, [currentPageNumber, searchTerm, historyStatusFilter, filteredOrders, buildOrdersTableUrl, navigate])
 
   const pendingOrders = useMemo(() => {
     const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
@@ -98,7 +106,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
             {currentTabId === OrderTabId.history && (
               <SelectContainer>
                 <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
-                  <option value="executed">{i18n._('Executed orders')}</option>
+                  <option value="filled">{i18n._('Filled orders')}</option>
                   <option value="cancelled">{i18n._('Cancelled orders')}</option>
                   <option value="expired">{i18n._('Expired orders')}</option>
                   <option value="all">{i18n._('All orders')}</option>
@@ -113,7 +121,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
                 placeholder={t`Token symbol, address`}
                 name="searchTerm"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchTermChange}
               />
               {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
             </SearchInputContainer>
