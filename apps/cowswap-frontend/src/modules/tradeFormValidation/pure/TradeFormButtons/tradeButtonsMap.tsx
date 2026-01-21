@@ -230,7 +230,6 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.WalletCapabilitiesLoading]: {
     text: (
       <>
-        <Trans>Inspecting wallet</Trans>
         <CenteredDots smaller />
       </>
     ),
