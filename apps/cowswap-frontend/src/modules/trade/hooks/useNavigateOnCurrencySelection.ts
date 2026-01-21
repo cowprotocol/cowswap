@@ -8,6 +8,8 @@ import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
+import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+
 import { Field } from 'legacy/state/types'
 
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
@@ -51,7 +53,12 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   const stateTargetChainId = state?.targetChainId
   const { inputCurrency, outputCurrency, orderKind } = useDerivedTradeState() || {}
   const navigate = useTradeNavigate()
+  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
+
+  const isOutputCurrencyBridgeSupported = Boolean(
+    outputCurrency && bridgeSupportedNetworks?.some((network) => network.id === outputCurrency?.chainId),
+  )
 
   return useCallback(
     // TODO: Reduce function complexity by extracting logic
@@ -103,6 +110,10 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
         searchParams = { ...searchParams, targetChainId: isInputField ? chainId : targetChainId }
       }
 
+      if (!isOutputCurrencyBridgeSupported) {
+        delete searchParams?.targetChainId
+      }
+
       /**
        * Buy orders are not allowed in bridging mode
        * Because of that, we reset order kind and amount to defaults
@@ -118,13 +129,22 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
           : {
               inputCurrencyId: targetInputCurrencyId,
-              outputCurrencyId: targetOutputCurrencyId,
+              outputCurrencyId: isOutputCurrencyBridgeSupported ? targetOutputCurrencyId : null,
             },
         searchParams,
       )
 
       stateUpdateCallback?.()
     },
-    [navigate, chainId, orderKind, inputCurrency, outputCurrency, stateTargetChainId, resolveCurrencyAddressOrSymbol],
+    [
+      navigate,
+      chainId,
+      orderKind,
+      inputCurrency,
+      outputCurrency,
+      stateTargetChainId,
+      isOutputCurrencyBridgeSupported,
+      resolveCurrencyAddressOrSymbol,
+    ],
   )
 }
