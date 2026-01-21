@@ -56,6 +56,8 @@ function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
     class: OrderClass.LIMIT,
     owner: '0xowner',
     uid: '0xuid',
+    inputToken: defaultInputToken,
+    outputToken: defaultOutputToken,
     executedSellAmount: '0',
     executedSellAmountBeforeFees: '0',
     executedBuyAmount: '0',
@@ -63,8 +65,6 @@ function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
     invalidated: false,
     status: OrderStatus.OPEN,
     totalFee: '0',
-    inputToken: defaultInputToken,
-    outputToken: defaultOutputToken,
     ...overrides,
   } as unknown as EnrichedOrder
 }
@@ -108,6 +108,8 @@ describe('orderLifecycleAnalytics', () => {
         executedSellAmount: '1000000000000000000',
         executedBuyAmount: '999410',
         executedFeeAmount: '1234',
+        inputToken: { ...defaultInputToken, symbol: '' },
+        outputToken: { ...defaultOutputToken, symbol: '' },
       }),
       bridgeOrder: { id: 'bridge' } as unknown as OnFulfilledOrderPayload['bridgeOrder'],
     }
@@ -115,6 +117,8 @@ describe('orderLifecycleAnalytics', () => {
     const result = mapFulfilledOrder(payload)
     expect(result.fromAmount).toBe('1')
     expect(result.toAmount).toBe('0.99941')
+    expect(result.fromCurrency).toBe(defaultInputToken.address)
+    expect(result.toCurrency).toBe(defaultOutputToken.address)
     expect(result.executedSellAmountUnits).toBe('1')
     expect(result.executedBuyAmountUnits).toBe('0.99941')
     expect(result.isCrossChain).toBe(true)

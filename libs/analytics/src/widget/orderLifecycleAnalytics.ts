@@ -33,13 +33,12 @@ export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undef
   inputToken?: TokenInfo
   outputToken?: TokenInfo
 } {
-  if (!order) {
-    return {}
-  }
+  const inputToken = order?.inputToken
+  const outputToken = order?.outputToken
 
   return {
-    inputToken: order.inputToken?.address ? order.inputToken : undefined,
-    outputToken: order.outputToken?.address ? order.outputToken : undefined,
+    inputToken: inputToken?.address ? inputToken : undefined,
+    outputToken: outputToken?.address ? outputToken : undefined,
   }
 }
 
@@ -151,6 +150,8 @@ function buildTokenFields(
 export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPayload {
   const sellTokenAddress = String(fields.sellToken || '')
   const buyTokenAddress = String(fields.buyToken || '')
+  const sellTokenSymbol = typeof fields.sellTokenSymbol === 'string' ? fields.sellTokenSymbol.trim() : ''
+  const buyTokenSymbol = typeof fields.buyTokenSymbol === 'string' ? fields.buyTokenSymbol.trim() : ''
 
   const sellAmountUnits = typeof fields.sellAmountUnits === 'string' ? fields.sellAmountUnits : undefined
   const buyAmountUnits = typeof fields.buyAmountUnits === 'string' ? fields.buyAmountUnits : undefined
@@ -158,8 +159,9 @@ export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): Analyti
   return {
     fromCurrencyAddress: sellTokenAddress,
     toCurrencyAddress: buyTokenAddress,
-    fromCurrency: String(fields.sellTokenSymbol || ''),
-    toCurrency: String(fields.buyTokenSymbol || ''),
+    // Fall back to token addresses when symbols are missing.
+    fromCurrency: sellTokenSymbol || sellTokenAddress,
+    toCurrency: buyTokenSymbol || buyTokenAddress,
     fromAmount: sellAmountUnits,
     toAmount: buyAmountUnits,
   }
