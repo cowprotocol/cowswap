@@ -44,7 +44,7 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
   const orderStatusText =
     currentTab === OrderTabId.unfillable ? t`unfillable` : currentTab === OrderTabId.open ? t`open` : ''
 
-  if (displayOrdersOnlyForSafeApp && isSafeViaWc) {
+  if (currentTab !== OrderTabId.history && displayOrdersOnlyForSafeApp && isSafeViaWc) {
     return (
       <p>
         <Trans>
