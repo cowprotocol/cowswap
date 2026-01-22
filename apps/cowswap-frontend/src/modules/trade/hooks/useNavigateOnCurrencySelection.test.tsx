@@ -276,9 +276,14 @@ describe('useNavigateOnCurrencySelection', () => {
     })
 
     it('should preserve targetChainId when selecting input currency', () => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: WETH_MAINNET,
+        outputCurrency: USDC_GNOSIS,
+        orderKind: OrderKind.SELL,
+      } as never)
       mockedUseTradeState.mockReturnValue({
         state: {
-          targetChainId: SupportedChainId.BASE,
+          targetChainId: USDC_GNOSIS.chainId,
         },
       } as never)
 
@@ -301,9 +306,9 @@ describe('useNavigateOnCurrencySelection', () => {
         SupportedChainId.MAINNET,
         {
           inputCurrencyId: 'DAI',
-          outputCurrencyId: USDC_MAINNET.symbol,
+          outputCurrencyId: USDC_GNOSIS.address,
         },
-        { targetChainId: SupportedChainId.BASE },
+        { targetChainId: USDC_GNOSIS.chainId },
       )
     })
   })
