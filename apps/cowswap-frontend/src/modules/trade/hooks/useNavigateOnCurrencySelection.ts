@@ -16,7 +16,6 @@ import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeNavigate } from './useTradeNavigate'
-import { useTradeState } from './useTradeState'
 
 import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
 
@@ -49,8 +48,6 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
  */
 export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   const { chainId } = useWalletInfo()
-  const { state } = useTradeState()
-  const stateTargetChainId = state?.targetChainId
   const { inputCurrency, outputCurrency, orderKind } = useDerivedTradeState() || {}
   const navigate = useTradeNavigate()
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
@@ -99,15 +96,14 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
 
       const shouldResetBuyOrder = targetChainMismatch && orderKind === OrderKind.BUY
 
-      /**
-       * Keep the target chain id in the search params when input token changed
-       */
-      if (isInputField && stateTargetChainId) {
-        searchParams = { ...searchParams, targetChainId: stateTargetChainId }
-      }
-
+      // When sell and buy tokens are on different chains
       if (targetChainMismatch) {
-        searchParams = { ...searchParams, targetChainId: isInputField ? chainId : targetChainId }
+        searchParams = {
+          ...searchParams,
+          targetChainId: isInputField
+            ? outputCurrency?.chainId // When sell token is changed, then set output token chainId as targetChainId
+            : currency?.chainId, // When buy token is changed, then set the selected token chainid  as targetChainId
+        }
       }
 
       if (!isOutputCurrencyBridgeSupported) {
@@ -142,7 +138,6 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       orderKind,
       inputCurrency,
       outputCurrency,
-      stateTargetChainId,
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
     ],
