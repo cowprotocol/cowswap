@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PermitInfo } from '@cowprotocol/permit-utils'
@@ -34,7 +35,7 @@ export const addPermitInfoForTokenAtom = atom(
 
     permittableTokens[chainId] = {
       ...permittableTokensForChain,
-      [tokenAddress.toLowerCase()]: permitInfo,
+      [getTokenAddressKey(tokenAddress)]: permitInfo,
     }
 
     set(permittableTokensAtom, permittableTokens)

@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { getIsNativeToken, getTokenAddressKey, getWrappedToken } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -133,6 +133,6 @@ function usePermitInfoState(chainId: SupportedChainId, tokenAddress: string | un
   return useMemo(() => {
     if (!tokenAddress) return undefined
 
-    return permitableTokens[chainId]?.[tokenAddress.toLowerCase()]
+    return permitableTokens[chainId]?.[getTokenAddressKey(tokenAddress)]
   }, [chainId, permitableTokens, tokenAddress])
 }

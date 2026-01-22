@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -14,7 +15,7 @@ export function WidgetPageTitle(): ReactNode {
   const { tokenAddress } = useParams()
   const location = useLocation()
   const tokensByAddress = useTokensByAddressMap()
-  const token = tokenAddress ? tokensByAddress[tokenAddress.toLowerCase()] : null
+  const token = tokenAddress ? tokensByAddress[getTokenAddressKey(tokenAddress)] : null
   const isWalletConnected = !!account
   const isHelpPage = location.pathname.endsWith('/help')
   const isRecoverPage = !!tokenAddress

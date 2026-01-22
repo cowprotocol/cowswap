@@ -1,3 +1,5 @@
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
+
 import { PostBundleSimulationParams } from './bundleSimulation'
 
 import { BalancesDiff, SimulationData } from '../types'
@@ -20,10 +22,10 @@ export function generateSimulationDataToError(
 
 function convertBalanceDiffToLowerCaseKeys(data: BalancesDiff): BalancesDiff {
   return Object.entries(data).reduce((acc, [tokenHolder, tokenHolderDiffs]) => {
-    const lowerOuterKey = tokenHolder.toLowerCase()
+    const lowerOuterKey = getTokenAddressKey(tokenHolder)
 
     const processedInnerObj = Object.entries(tokenHolderDiffs || {}).reduce((innerAcc, [tokenAddress, balanceDiff]) => {
-      const lowerInnerKey = tokenAddress.toLowerCase()
+      const lowerInnerKey = getTokenAddressKey(tokenAddress)
       return {
         ...innerAcc,
         [lowerInnerKey]: balanceDiff,
