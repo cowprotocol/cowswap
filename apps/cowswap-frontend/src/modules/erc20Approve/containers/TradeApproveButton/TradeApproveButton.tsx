@@ -28,7 +28,8 @@ export interface TradeApproveButtonProps {
   label?: string
   buttonSize?: ButtonSize
   useModals?: boolean
-  clickEvent?: string
+  approveClickEvent?: string
+  swapClickEvent?: string
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
@@ -39,7 +40,8 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     isDisabled,
     buttonSize = ButtonSize.DEFAULT,
     useModals = true,
-    clickEvent,
+    approveClickEvent,
+    swapClickEvent,
   } = props
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
 
@@ -60,7 +62,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           state={approvalState}
           isDisabled={isDisabled}
           onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
-          clickEvent={clickEvent}
+          clickEvent={approveClickEvent}
         />
         {children}
       </>
@@ -71,6 +73,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const noCachedPermit = !cachedPermitLoading && !cachedPermit
 
   const label = props.label || (noCachedPermit ? approveLabel : swapLabel)
+  const clickEvent = noCachedPermit ? approveClickEvent : (swapClickEvent ?? approveClickEvent)
 
   return (
     <ButtonWrapper
