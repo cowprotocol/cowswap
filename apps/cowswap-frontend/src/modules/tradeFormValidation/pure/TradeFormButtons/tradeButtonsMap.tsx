@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
@@ -25,7 +25,7 @@ interface ButtonErrorConfig {
 }
 
 interface ButtonCallback {
-  (context: TradeFormButtonContext, isDisabled?: boolean): ReactElement | null
+  (context: TradeFormButtonContext, isDisabled?: boolean): ReactNode
 }
 
 function getDefaultQuoteError(): string {
