@@ -74,12 +74,12 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       const targetInputCurrency = isInputField ? currency : inputCurrency
       const targetOutputCurrency = isInputField ? outputCurrency : currency
 
-      const isBridge = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
+      const isBridgeTrade = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
 
       const inputCurrencyId = (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? null
       const outputCurrencyId = outputCurrency
         ? // For cross-chain order always use address for outputCurrencyId
-          isBridge || targetChainMismatch
+          isBridgeTrade || targetChainMismatch
           ? getCurrencyAddress(outputCurrency)
           : resolveCurrencyAddressOrSymbol(outputCurrency)
         : null
@@ -97,7 +97,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       const shouldResetBuyOrder = targetChainMismatch && orderKind === OrderKind.BUY
 
       // When sell and buy tokens are on different chains
-      if (targetChainMismatch) {
+      if (isBridgeTrade) {
         searchParams = {
           ...searchParams,
           targetChainId: isInputField
