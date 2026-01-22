@@ -51,7 +51,7 @@ describe('useSourceChainId', () => {
     expect(result.current).toEqual({ chainId: SupportedChainId.MAINNET, source: 'wallet' })
   })
 
-  it('keeps wallet chain for output selection even while open', () => {
+  it('uses selector chain for output selection when open on a different chain (for bridging balance fetching)', () => {
     mockUseSelectTokenWidgetState.mockReturnValue(
       createWidgetState({
         open: true,
@@ -62,7 +62,7 @@ describe('useSourceChainId', () => {
 
     const { result } = renderHook(() => useSourceChainId())
 
-    expect(result.current).toEqual({ chainId: SupportedChainId.MAINNET, source: 'wallet' })
+    expect(result.current).toEqual({ chainId: SupportedChainId.GNOSIS_CHAIN, source: 'selector' })
   })
 
   it('uses selector chain for input selection when open on a supported chain', () => {
