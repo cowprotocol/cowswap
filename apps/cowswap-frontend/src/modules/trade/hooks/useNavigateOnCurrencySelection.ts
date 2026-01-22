@@ -82,7 +82,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       const inputCurrencyId = (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? null
       const outputCurrencyId = outputCurrency
         ? // For cross-chain order always use address for outputCurrencyId
-          isBridge
+          isBridge || targetChainMismatch
           ? getCurrencyAddress(outputCurrency)
           : resolveCurrencyAddressOrSymbol(outputCurrency)
         : null
