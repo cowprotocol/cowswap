@@ -11,6 +11,8 @@ export function useTabs(ordersList: OrdersTableList, currentTabId: OrderTabId): 
   const { account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
+  console.log({ ordersList })
+
   return useMemo(() => {
     // If no account, return empty array (no tabs shown)
     if (!account || isProviderNetworkUnsupported) {

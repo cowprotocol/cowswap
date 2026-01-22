@@ -46,6 +46,20 @@ export const Content = styled.div`
     color: inherit;
   }
 `
+export const ContentDescription = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  > p {
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 0 auto;
+    font-weight: 400;
+    text-align: center;
+    color: inherit;
+  }
+`
 
 export const ConnectWalletIconWrapper = styled.span`
   --size: 130px;

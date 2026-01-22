@@ -15,6 +15,8 @@ export function useOrdersFromOrderBook(): EnrichedOrder[] {
 
   const requestParams = useSWROrdersRequest()
 
+  // TODO: Keep the previous one while the new batch fetches...
+
   // Fetch orders for the current environment
   const { data: currentEnvOrders } = useSWR(
     requestParams && chainId ? ['orders', requestParams, chainId] : null,

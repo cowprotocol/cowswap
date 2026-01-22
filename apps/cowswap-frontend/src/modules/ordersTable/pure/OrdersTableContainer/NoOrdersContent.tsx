@@ -1,5 +1,6 @@
 import { ReactNode, memo } from 'react'
 
+import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
@@ -7,7 +8,9 @@ import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 
+import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
 import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
+import { LoadMoreOrdersButton } from 'modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersButton'
 
 import * as styledEl from './OrdersTableContainer.styled'
 
@@ -36,34 +39,69 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
   displayOrdersOnlyForSafeApp,
 }: NoOrdersDescriptionProps): ReactNode {
   const { t } = useLingui()
+  const { limit, hasMoreOrders } = useLoadMoreOrders()
   const currentTabText = currentTab === OrderTabId.history ? t`orders history` : t`your orders`
   const orderStatusText =
     currentTab === OrderTabId.unfillable ? t`unfillable` : currentTab === OrderTabId.open ? t`open` : ''
 
   if (displayOrdersOnlyForSafeApp && isSafeViaWc) {
     return (
-      <Trans>
-        Use the <CowSwapSafeAppLink /> to see {currentTabText}
-      </Trans>
+      <p>
+        <Trans>
+          Use the <CowSwapSafeAppLink /> to see {currentTabText}
+        </Trans>
+      </p>
+    )
+  }
+
+  if (currentTab === OrderTabId.open) {
+    // TODO: Add No more orders to search message...
+
+    return hasMoreOrders ? (
+      <styledEl.ContentDescription>
+        <p>
+          {limit === AMOUNT_OF_ORDERS_TO_FETCH ? (
+            <Trans>Only the {limit} most recent orders were searched.</Trans>
+          ) : (
+            <Trans>No open orders found in the {limit} most recent one.</Trans>
+          )}
+        </p>
+        <p>
+          <Trans>Press the button below to search older orders, or create a new one!</Trans>{' '}
+          {orderType === TabOrderTypes.LIMIT ? (
+            <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
+              <Trans>Learn more</Trans>
+              <styledEl.ExternalArrow />
+            </styledEl.ExternalLinkStyled>
+          ) : null}
+        </p>
+
+        <p>
+          <LoadMoreOrdersButton />
+        </p>
+      </styledEl.ContentDescription>
+    ) : (
+      <styledEl.ContentDescription>
+        <p>
+          <Trans>You don't have any open orders at the moment.</Trans>
+        </p>
+        <p>
+          <Trans>Time to create a new one!</Trans>{' '}
+          {orderType === TabOrderTypes.LIMIT ? (
+            <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
+              <Trans>Learn more</Trans>
+              <styledEl.ExternalArrow />
+            </styledEl.ExternalLinkStyled>
+          ) : null}
+        </p>
+      </styledEl.ContentDescription>
     )
   }
 
   if (!hasOrders) {
     return (
       <>
-        <Trans>You don't have any {orderStatusText} orders at the moment.</Trans>{' '}
-        {currentTab === OrderTabId.open && (
-          <>
-            <br />
-            <Trans>Time to create a new one!</Trans>{' '}
-            {orderType === TabOrderTypes.LIMIT ? (
-              <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
-                <Trans>Learn more</Trans>
-                <styledEl.ExternalArrow />
-              </styledEl.ExternalLinkStyled>
-            ) : null}
-          </>
-        )}
+        <Trans>You don't have any {orderStatusText} orders at the moment.</Trans>
       </>
     )
   }
@@ -74,9 +112,10 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
   return searchTerm ? <Trans>Try adjusting your search term</Trans> : <Trans>Try adjusting your filters</Trans>
 })
 
-function getTabTitle(currentTab: OrderTabId): string {
+function getTabTitle(currentTab: OrderTabId, limit: number, hasMoreOrders: boolean): string {
   if (currentTab === OrderTabId.unfillable) return t`No unfillable orders`
-  if (currentTab === OrderTabId.open) return t`No open orders`
+  if (currentTab === OrderTabId.open)
+    return hasMoreOrders ? t`No open orders found in your last ${limit} orders` : t`No open orders found`
   if (currentTab === OrderTabId.signing) return t`No signing orders`
   return t`No order history`
 }
@@ -113,7 +152,10 @@ export function NoOrdersContent({
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
+  const { limit, hasMoreOrders } = useLoadMoreOrders()
   const hasOrders = orders.length > 0
+
+  console.log(hasOrders)
 
   return (
     <styledEl.Content>
@@ -122,19 +164,19 @@ export function NoOrdersContent({
         (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL) &&
         currentTab === OrderTabId.history
           ? getHistoryTitle(historyStatusFilter)
-          : getTabTitle(currentTab)}
+          : getTabTitle(currentTab, limit, hasMoreOrders)}
       </h3>
-      <p>
-        <NoOrdersDescription
-          currentTab={currentTab}
-          hasOrders={hasOrders}
-          orderType={orderType}
-          searchTerm={searchTerm}
-          historyStatusFilter={historyStatusFilter}
-          isSafeViaWc={isSafeViaWc}
-          displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
-        />
-      </p>
+
+      <NoOrdersDescription
+        currentTab={currentTab}
+        hasOrders={hasOrders}
+        orderType={orderType}
+        searchTerm={searchTerm}
+        historyStatusFilter={historyStatusFilter}
+        isSafeViaWc={isSafeViaWc}
+        displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
+      />
+
       <styledEl.NoOrdersAnimation>
         {emptyOrdersImage ? (
           <img src={emptyOrdersImage} alt={t`There are no orders`} />

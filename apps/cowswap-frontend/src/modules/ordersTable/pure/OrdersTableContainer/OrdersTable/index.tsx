@@ -1,6 +1,8 @@
-import React, { ReactNode, useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { LoadMoreOrdersSection } from 'modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection'
 
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
@@ -19,6 +21,7 @@ export interface OrdersTableProps {
   currentTab: OrderTabId
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const { chainId } = useWalletInfo()
   const {
@@ -83,6 +86,8 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
 
   if (!chainId || !balancesAndAllowances || !orderActions || !pendingOrdersPrices) return null
 
+  const lastPageNumber = Math.ceil((filteredOrders || []).length / ORDERS_TABLE_PAGE_SIZE)
+
   return (
     <>
       <TableBox>
@@ -116,6 +121,8 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
           currentPage={currentPageNumber}
         />
       )}
+
+      {currentTab === OrderTabId.open && currentPageNumber === lastPageNumber && <LoadMoreOrdersSection />}
     </>
   )
 }
