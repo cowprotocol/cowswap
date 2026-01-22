@@ -67,8 +67,6 @@ export function OrdersTableStateUpdater({
   const injectedWidgetParams = useInjectedWidgetParams()
   const pendingActivitiesCount = usePendingActivitiesCount()
 
-  console.log('allOrders', { allOrders })
-
   const ordersTokens = useMemo(() => getOrdersInputTokens(allOrders), [allOrders])
 
   const balancesAndAllowances = useBalancesAndAllowances(ordersTokens)

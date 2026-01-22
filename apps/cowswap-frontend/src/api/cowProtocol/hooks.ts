@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { ORDER_BOOK_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -15,14 +17,20 @@ export function useOrdersFromOrderBook(): EnrichedOrder[] {
 
   const requestParams = useSWROrdersRequest()
 
-  // TODO: Keep the previous one while the new batch fetches...
-
   // Fetch orders for the current environment
-  const { data: currentEnvOrders } = useSWR(
+  const { data: currentEnvOrders, isLoading } = useSWR(
     requestParams && chainId ? ['orders', requestParams, chainId] : null,
     ([, params, _chainId]) => getOrders(params, { chainId: _chainId }),
     { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL, fallbackData: emptyOrders },
   )
 
-  return currentEnvOrders
+  const [prevEnvOrders, setPrevEnvOrders] = useState<EnrichedOrder[]>(emptyOrders)
+
+  useEffect(() => {
+    if (!isLoading) setPrevEnvOrders(currentEnvOrders)
+  }, [currentEnvOrders, isLoading])
+
+  // Because we now keep expanding the limit param to be able to load older orders, we want to keep displaying the
+  // previous smaller batch while the new larger one is being fetched:
+  return isLoading ? prevEnvOrders : currentEnvOrders
 }

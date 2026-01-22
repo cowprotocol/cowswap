@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { ReactNode, memo } from 'react'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
@@ -156,8 +157,6 @@ export function NoOrdersContent({
   const { t } = useLingui()
   const { limit, hasMoreOrders } = useLoadMoreOrders()
   const hasOrders = orders.length > 0
-
-  console.log(hasOrders)
 
   return (
     <styledEl.Content>

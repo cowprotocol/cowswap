@@ -7,11 +7,13 @@ import { Trans } from '@lingui/react/macro'
 import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
 import { LoadMoreOrdersButton } from 'modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersButton'
 
+import * as styledEl from './OrdersTableContainer.styled'
+
 export function LoadMoreOrdersSection(): ReactNode {
   const { limit, hasMoreOrders } = useLoadMoreOrders()
 
   return hasMoreOrders ? (
-    <>
+    <styledEl.ContentDescription>
       <p>
         {limit === AMOUNT_OF_ORDERS_TO_FETCH ? (
           <Trans>Only the {limit} most recent orders were searched.</Trans>
@@ -22,10 +24,12 @@ export function LoadMoreOrdersSection(): ReactNode {
       <p>
         <LoadMoreOrdersButton />
       </p>
-    </>
+    </styledEl.ContentDescription>
   ) : (
-    <p>
-      <Trans>No more orders to fetch.</Trans>
-    </p>
+    <styledEl.ContentDescription>
+      <p>
+        <Trans>No more orders to fetch.</Trans>
+      </p>
+    </styledEl.ContentDescription>
   )
 }
