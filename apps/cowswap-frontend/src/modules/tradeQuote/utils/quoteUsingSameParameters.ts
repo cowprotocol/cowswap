@@ -25,46 +25,61 @@ export function quoteUsingSameParameters(
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
     const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails?.preAuthorizedBridgingHook?.postHook
 
+    const { isChanged: isAppDataChanged, diff: appDataDiff } = compareAppDataWithoutQuoteData(
+      removeBridgePostHook(currentAppData, bridgePostHook),
+      removeBridgePostHook(appData, bridgePostHook),
+    )
     const cases = [
-      compareAppDataWithoutQuoteData(
-        removeBridgePostHook(currentAppData, bridgePostHook),
-        removeBridgePostHook(appData, bridgePostHook),
-      ),
-      currentParams.owner === nextParams.owner,
-      currentParams.kind === nextParams.kind,
-      currentParams.amount === nextParams.amount.toString(),
-      bridgeTradeParams.validFor === nextParams.validFor,
-      bridgeTradeParams.receiver === nextParams.receiver,
+      [isAppDataChanged, 'appData', appDataDiff],
+      [currentParams.owner === nextParams.owner, 'owner'],
+      [currentParams.kind === nextParams.kind, 'kind'],
+      [currentParams.amount === nextParams.amount.toString(), 'amount'],
+      [bridgeTradeParams.validFor === nextParams.validFor, 'validFor'],
+      [bridgeTradeParams.receiver === nextParams.receiver, 'receiver'],
       // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
-      compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps),
-      currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
-      bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
-      bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
-      bridgeTradeParams.buyTokenChainId === nextParams.buyTokenChainId,
+      [compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps), 'slippageBps'],
+      [currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(), 'sellToken'],
+      [bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId, 'sellTokenChainId'],
+      [bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(), 'buyTokenAddress'],
+      [bridgeTradeParams.buyTokenChainId === nextParams.buyTokenChainId, 'buyTokenChainId'],
     ]
 
-    return cases.every(Boolean)
+    const changes = cases.filter((i) => !Boolean(i[0]))
+
+    if (changes.length) {
+      console.debug('[QUOTE FETCHING] bridge quote params has changes: ', changes)
+    }
+
+    return changes.length === 0
   }
 
+  const { isChanged: isAppDataChanged, diff: appDataDiff } = compareAppDataWithoutQuoteData(currentAppData, appData)
+
   const cases = [
-    compareAppDataWithoutQuoteData(currentAppData, appData),
-    currentParams.owner === nextParams.owner,
-    currentParams.kind === nextParams.kind,
-    currentParams.amount === nextParams.amount.toString(),
-    currentParams.validFor === nextParams.validFor,
-    currentParams.receiver === nextParams.receiver,
+    [isAppDataChanged, 'appData', appDataDiff],
+    [currentParams.owner === nextParams.owner, 'owner'],
+    [currentParams.kind === nextParams.kind, 'kind'],
+    [currentParams.amount === nextParams.amount.toString(), 'amount'],
+    [currentParams.validFor === nextParams.validFor, 'validFor'],
+    [currentParams.receiver === nextParams.receiver, 'receiver'],
     /**
      * Check slippage only if it is set in nextParams
      * Because we should refetch quote only when a user changed slippage
      * Auto-slippage should not trigger quote refetching
      * See how slippageBps is defined in `useQuoteParams()`
      */
-    compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps),
-    currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
-    currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
+    [compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps), 'slippageBps'],
+    [currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(), 'sellToken'],
+    [currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(), 'buyToken'],
   ]
 
-  return cases.every(Boolean)
+  const changes = cases.filter((i) => !Boolean(i[0]))
+
+  if (changes.length) {
+    console.debug('[QUOTE FETCHING] swap quote params has changes: ', changes)
+  }
+
+  return changes.length === 0
 }
 
 /**
@@ -78,14 +93,20 @@ function compareSlippage(currentSlippage: number | undefined, nextSlippage: numb
 /**
  * Compares appData without taking into account the `quote` metadata
  */
-function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: AppDataInfo['doc'] | undefined): boolean {
-  if (a === b) return true
+function compareAppDataWithoutQuoteData(
+  a: AppDataInfo['doc'] | undefined,
+  b: AppDataInfo['doc'] | undefined,
+): { isChanged: boolean; diff?: string[] } {
+  if (a === b) return { isChanged: true }
 
   if (!a || !b) {
-    return a === b
+    return { isChanged: a === b }
   }
 
-  return removeQuoteMetadata(a) === removeQuoteMetadata(b)
+  const aMetaData = removeQuoteMetadata(a)
+  const bMetaData = removeQuoteMetadata(b)
+
+  return { isChanged: aMetaData === bMetaData, diff: [aMetaData, bMetaData] }
 }
 
 /**
