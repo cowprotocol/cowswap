@@ -17,6 +17,11 @@ export { useTokenAllowances } from './hooks/useTokenAllowances'
 export { useBalancesAndAllowances } from './hooks/useBalancesAndAllowances'
 export { useTradeSpenderAddress } from './hooks/useTradeSpenderAddress'
 export { useSseBalances } from './hooks/useSseBalances'
+export { useBalancesWatcherSession } from './hooks/useBalancesWatcherSession'
+
+// Services
+export { createSession, updateSession, getSseUrl } from './services/balancesWatcherApi'
+export type { SessionTokensPayload } from './services/balancesWatcherApi'
 
 // State hooks
 export { useIsSseFailed } from './state/isSseFailedAtom'
