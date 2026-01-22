@@ -28,6 +28,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     customTokenError,
     isRestrictedForCountry,
     isBalancesLoading,
+    isBundlingSupported,
   } = context
 
   const {
@@ -101,6 +102,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (inputAmountIsNotSet) {
     validations.push(TradeFormValidation.InputAmountNotSet)
+  }
+
+  if (!!account && isBundlingSupported === null) {
+    validations.push(TradeFormValidation.WalletCapabilitiesLoading)
   }
 
   if (!canPlaceOrderWithoutBalance && !!account) {
