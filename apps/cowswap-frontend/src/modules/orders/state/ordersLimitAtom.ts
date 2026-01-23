@@ -23,13 +23,17 @@ export const DEFAULT_ORDERS_LIMIT_STATE: OrdersLimitState = {
  */
 export const ordersLimitAtom = atom<OrdersLimitState>(DEFAULT_ORDERS_LIMIT_STATE)
 
-// Reset ordersLimitAtom every time the network or the wallet address change:
+// Reset ordersLimitAtom every time the network or the wallet address change, and make sure we are only observing
+// walletKeyAtom if we are also observing ordersLimitAtom.
 
-const walletKeyAtom = atom((get) => `${get(walletInfoAtom).account}-${get(walletInfoAtom).chainId}`)
+const walletKeyAtom = atom((get) => {
+  const { chainId, account } = get(walletInfoAtom)
+  return `${chainId}::${account ?? ''}`
+})
 
-// Set up global effect to reset ordersLimitAtom when walletInfoAtom changes
-
-observe((get, set) => {
-  get(walletKeyAtom)
-  set(ordersLimitAtom, DEFAULT_ORDERS_LIMIT_STATE)
-}, jotaiStore)
+ordersLimitAtom.onMount = () => {
+  return observe((get, set) => {
+    get(walletKeyAtom)
+    set(ordersLimitAtom, DEFAULT_ORDERS_LIMIT_STATE)
+  }, jotaiStore)
+}
