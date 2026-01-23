@@ -12,8 +12,8 @@ import * as styledEl from './OrdersTableContainer.styled'
 export function LoadMoreOrdersSection(): ReactNode {
   const { limit, hasMoreOrders } = useLoadMoreOrders()
 
-  return hasMoreOrders ? (
-    <styledEl.ContentDescription>
+  const paragraphs = hasMoreOrders ? (
+    <>
       <p>
         {limit === AMOUNT_OF_ORDERS_TO_FETCH ? (
           <Trans>Only the {limit} most recent orders were searched.</Trans>
@@ -24,12 +24,12 @@ export function LoadMoreOrdersSection(): ReactNode {
       <p>
         <LoadMoreOrdersButton />
       </p>
-    </styledEl.ContentDescription>
+    </>
   ) : (
-    <styledEl.ContentDescription>
-      <p>
-        <Trans>No more orders to fetch.</Trans>
-      </p>
-    </styledEl.ContentDescription>
+    <p>
+      <Trans>That's all your open orders.</Trans>
+    </p>
   )
+
+  return <styledEl.ContentDescription>{paragraphs}</styledEl.ContentDescription>
 }

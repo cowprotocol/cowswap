@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { ORDERS_LIMIT_INCREMENT } from '@cowprotocol/common-const'
+import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 
 import { useApiOrders } from './useApiOrders'
 
@@ -15,7 +15,6 @@ interface UseLoadMoreOrdersReturn {
 }
 
 export function useLoadMoreOrders(): UseLoadMoreOrdersReturn {
-  // const { account, chainId } = useWalletInfo()
   const { limit, isLoading } = useAtomValue(ordersLimitAtom)
   const setOrdersLimit = useSetAtom(ordersLimitAtom)
   const orders = useApiOrders()
@@ -25,10 +24,10 @@ export function useLoadMoreOrders(): UseLoadMoreOrdersReturn {
   }, [orders, setOrdersLimit])
 
   const loadMore = (): void => {
-    setOrdersLimit((prev) => ({ limit: prev.limit + ORDERS_LIMIT_INCREMENT, isLoading: true }))
+    setOrdersLimit((prev) => ({ limit: prev.limit + AMOUNT_OF_ORDERS_TO_FETCH, isLoading: true }))
   }
 
-  const hasMoreOrders = isLoading || (orders && orders.length > 0 && orders.length >= limit - ORDERS_LIMIT_INCREMENT)
+  const hasMoreOrders = isLoading || (orders && orders.length > 0 && orders.length >= limit - AMOUNT_OF_ORDERS_TO_FETCH)
 
   return {
     limit,
