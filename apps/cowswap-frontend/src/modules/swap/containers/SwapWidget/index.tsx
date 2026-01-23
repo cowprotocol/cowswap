@@ -205,9 +205,15 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         return (
           <>
             {bottomContent}
-            {!hideQuoteAmount && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
+            {!isRateLoading && (
+              <SwapRateDetails
+                rateInfoParams={rateInfoParams}
+                deadline={deadlineState[0]}
+                hideQuoteAmount={hideQuoteAmount}
+              />
+            )}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
-            <Warnings buyingFiatAmount={buyingFiatAmount} />
+            <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
             <TradeButtons
               isTradeContextReady={doTrade.contextIsReady}
@@ -232,6 +238,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         intermediateBuyToken,
         isPrimaryValidationPassed,
         hideQuoteAmount,
+        isRateLoading,
       ],
     ),
   }
