@@ -48,7 +48,7 @@ export const wagmiAdapter = new WagmiAdapter({
   projectId,
 })
 
-createAppKit({
+const appKit = createAppKit({
   adapters: [wagmiAdapter],
   // TODO M-7 COW-572
   // this will become false once the feature flag is removed
@@ -56,7 +56,12 @@ createAppKit({
   defaultNetwork: networks[0],
   enableEIP6963: true,
   enableWalletGuide: false,
-  featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
+  featuredWalletIds: [
+    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // metamask
+    'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393', // phantom
+    '18388be9ac2d02726dbac9777c96efaac06d744b2f6d580fccdd4127a6d01fd1', // rabby
+    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // coinbase
+  ],
   features: {
     analytics: false,
     email: false,
@@ -67,4 +72,8 @@ createAppKit({
   projectId,
   termsConditionsUrl:
     'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
+})
+
+appKit.updateFeatures({
+  connectorTypeOrder: ['recent', 'injected', 'featured', 'custom', 'external', 'recommended', 'walletConnect'],
 })
