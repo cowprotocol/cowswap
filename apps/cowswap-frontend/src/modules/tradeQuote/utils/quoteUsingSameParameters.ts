@@ -17,9 +17,13 @@ export function quoteUsingSameParameters(
   nextParams: Nullish<QuoteBridgeRequest>,
   currentAppData: AppDataInfo['doc'] | undefined,
   appData: AppDataInfo['doc'] | undefined,
+  hasSmartSlippage: boolean | undefined,
 ): boolean {
   const currentParams = currentQuote.quote?.quoteResults.tradeParameters
   if (!currentParams || !nextParams) return false
+
+  // Do not compare slippage if the request contains smart slippage
+  const slippageCheck = hasSmartSlippage ? true : compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps)
 
   if (currentQuote.bridgeQuote) {
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
@@ -29,6 +33,7 @@ export function quoteUsingSameParameters(
       removeBridgePostHook(currentAppData, bridgePostHook),
       removeBridgePostHook(appData, bridgePostHook),
     )
+
     const cases = [
       [isAppDataChanged, 'appData', appDataDiff],
       [currentParams.owner === nextParams.owner, 'owner'],
@@ -37,7 +42,7 @@ export function quoteUsingSameParameters(
       [bridgeTradeParams.validFor === nextParams.validFor, 'validFor'],
       [bridgeTradeParams.receiver === nextParams.receiver, 'receiver'],
       // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
-      [compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps), 'slippageBps'],
+      [slippageCheck, 'slippageBps', currentParams.slippageBps, nextParams.swapSlippageBps],
       [currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(), 'sellToken'],
       [bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId, 'sellTokenChainId'],
       [bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(), 'buyTokenAddress'],
@@ -68,7 +73,7 @@ export function quoteUsingSameParameters(
      * Auto-slippage should not trigger quote refetching
      * See how slippageBps is defined in `useQuoteParams()`
      */
-    [compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps), 'slippageBps'],
+    [slippageCheck, 'slippageBps', currentParams.slippageBps, nextParams.swapSlippageBps],
     [currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(), 'sellToken'],
     [currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(), 'buyToken'],
   ]

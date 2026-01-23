@@ -31,6 +31,7 @@ export interface QuoteParams {
   quoteParams: QuoteBridgeRequest | undefined
   inputCurrency: Currency
   appData: AppDataInfo['doc'] | undefined
+  hasSmartSlippage?: boolean
 }
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
@@ -114,7 +115,12 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       swapSlippageBps: userSlippageBps ?? smartSlippageBpsRef.current,
     }
 
-    return { quoteParams, inputCurrency, appData: appDataDoc }
+    return {
+      quoteParams,
+      inputCurrency,
+      appData: appDataDoc,
+      hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
+    }
   }, [
     provider,
     inputCurrency,
