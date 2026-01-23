@@ -5,7 +5,7 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
-import useSWR, { SWRResponse } from 'swr'
+import useSWR from 'swr'
 
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 
@@ -18,7 +18,7 @@ export type WalletCapabilities = {
 
 const requestTimeout = ms`10s`
 
-const EMPTY_SWR_RESPONSE: SWRResponse<undefined> = { data: undefined, isLoading: true }
+const EMPTY_SWR_RESPONSE = { data: undefined, isLoading: true }
 
 /**
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
@@ -39,7 +39,7 @@ function shouldCheckCapabilities(
   return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }
 
-export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefined> {
+export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
   const provider = useWalletProvider()
   const isWalletConnect = useIsWalletConnect()
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
