@@ -18,6 +18,8 @@ export type WalletCapabilities = {
 
 const requestTimeout = ms`10s`
 
+const EMPTY_SWR_RESPONSE: SWRResponse<undefined> = { data: undefined, isLoading: true }
+
 /**
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
  * to get the capabilities. It breaks the flow with perpetual requests.
@@ -73,7 +75,8 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
             // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
             resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
-          .catch(() => {
+          .catch((error) => {
+            console.error('useWalletCapabilities() error', error)
             clearTimeout(timeout)
             resolve(undefined)
           })
@@ -83,7 +86,7 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
   )
 
   if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
-    return { ...swrResponse, isLoading: true }
+    return EMPTY_SWR_RESPONSE
   }
 
   return swrResponse
