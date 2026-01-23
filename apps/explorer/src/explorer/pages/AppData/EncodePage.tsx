@@ -189,6 +189,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
       <div className="form-container">
         <Form
           className="data-form"
+          idPrefix="appdata-encode"
           liveOmit
           liveValidate={invalidFormDataAttempted.appData}
           omitExtraData

@@ -71,6 +71,7 @@ const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
         <div className="left-panel">
           <Form
             className="data-form"
+            idPrefix="appdata-decode"
             showErrorList={false}
             onChange={handleOnChange}
             formData={formData}
