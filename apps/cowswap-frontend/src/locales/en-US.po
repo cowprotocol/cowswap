@@ -4617,7 +4617,6 @@ msgstr "Unknown quote error"
 msgid "Read more about unsupported wallets"
 msgstr "Read more about unsupported wallets"
 
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No open orders found in the {limit} most recent one."
 msgstr "No open orders found in the {limit} most recent one."
@@ -6599,6 +6598,10 @@ msgstr "yield over average"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
 msgstr "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
+msgid "Found {totalOpenOrders} open orders in the {limit} most recent ones."
+msgstr "Found {totalOpenOrders} open orders in the {limit} most recent ones."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Entered amount is invalid"
