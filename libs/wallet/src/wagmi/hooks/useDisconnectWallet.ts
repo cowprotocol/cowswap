@@ -4,8 +4,7 @@ import { Command } from '@cowprotocol/types'
 
 import { useDisconnect } from 'wagmi'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useDisconnectWallet(onDisconnect?: Command) {
+export function useDisconnectWallet(onDisconnect?: Command): () => Promise<void> {
   const { mutateAsync: disconnect } = useDisconnect()
 
   return useCallback(async () => {

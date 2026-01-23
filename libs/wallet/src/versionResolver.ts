@@ -3,20 +3,24 @@ import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import * as useDisconnectWalletFile from './wagmi/hooks/useDisconnectWallet'
 import * as useIsSmartContractWalletFile from './wagmi/hooks/useIsSmartContractWallet'
 import * as useIsWalletConnectFile from './wagmi/hooks/useIsWalletConnect'
+import * as useSwitchNetworkFile from './wagmi/hooks/useSwitchNetwork'
 import * as useWalletMetadataFile from './wagmi/hooks/useWalletMetadata'
 import * as legacyUseDisconnectWalletFile from './web3-react/hooks/useDisconnectWallet'
 import * as legacyUseIsSmartContractWalletFile from './web3-react/hooks/useIsSmartContractWallet'
 import * as legacyUseIsWalletConnectFile from './web3-react/hooks/useIsWalletConnect'
+import * as legacyUseSwitchNetwork from './web3-react/hooks/useSwitchNetwork'
 import * as legacyUseWalletMetadataFile from './web3-react/hooks/useWalletMetadata'
 
 let useDisconnectWalletImplementation = legacyUseDisconnectWalletFile
 let useIsSmartContractWalletImplementation = legacyUseIsSmartContractWalletFile
 let useIsWalletConnectImplementation = legacyUseIsWalletConnectFile
+let useSwitchNetworkImplementation = legacyUseSwitchNetwork
 let useWalletMetaDataImplementation = legacyUseWalletMetadataFile
 if (LAUNCH_DARKLY_VIEM_MIGRATION) {
   useDisconnectWalletImplementation = useDisconnectWalletFile
   useIsSmartContractWalletImplementation = useIsSmartContractWalletFile
   useIsWalletConnectImplementation = useIsWalletConnectFile
+  useSwitchNetworkImplementation = useSwitchNetworkFile
   useWalletMetaDataImplementation = useWalletMetadataFile
 }
 
@@ -34,7 +38,7 @@ export const useIsWalletConnect = useIsWalletConnectImplementation.useIsWalletCo
 
 export * from './web3-react/hooks/useSafeAppsSdk'
 
-export * from './web3-react/hooks/useSwitchNetwork'
+export const useSwitchNetwork = useSwitchNetworkImplementation.useSwitchNetwork
 
 export const useIsSafeApp = useWalletMetaDataImplementation.useIsSafeApp
 export const useIsSafeViaWc = useWalletMetaDataImplementation.useIsSafeViaWc
