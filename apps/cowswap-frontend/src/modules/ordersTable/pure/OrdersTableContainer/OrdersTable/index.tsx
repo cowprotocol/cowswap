@@ -88,7 +88,8 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
 
   if (!chainId || !balancesAndAllowances || !orderActions || !pendingOrdersPrices) return null
 
-  const lastPageNumber = Math.ceil((filteredOrders || []).length / ORDERS_TABLE_PAGE_SIZE)
+  const totalFilteredOrders = filteredOrders?.length || 0
+  const lastPageNumber = Math.ceil(totalFilteredOrders / ORDERS_TABLE_PAGE_SIZE)
 
   return (
     <>
@@ -115,17 +116,17 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
       </TableBox>
 
       {/* Only show pagination if more than 1 page available */}
-      {filteredOrders && filteredOrders.length > ORDERS_TABLE_PAGE_SIZE && (
+      {totalFilteredOrders > ORDERS_TABLE_PAGE_SIZE && (
         <OrdersTablePagination
           getPageUrl={getPageUrl}
           pageSize={ORDERS_TABLE_PAGE_SIZE}
-          totalCount={filteredOrders.length}
+          totalCount={totalFilteredOrders}
           currentPage={currentPageNumber}
         />
       )}
 
       {currentTab === OrderTabId.open && currentPageNumber === lastPageNumber && orderType === TabOrderTypes.LIMIT && (
-        <LoadMoreOrdersSection />
+        <LoadMoreOrdersSection totalOpenOrders={totalFilteredOrders} />
       )}
     </>
   )

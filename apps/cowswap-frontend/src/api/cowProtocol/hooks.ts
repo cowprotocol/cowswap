@@ -26,6 +26,13 @@ export function useOrdersFromOrderBook(): EnrichedOrder[] {
 
   const [prevEnvOrders, setPrevEnvOrders] = useState<EnrichedOrder[]>(emptyOrders)
 
+  const owner = requestParams?.owner
+
+  useEffect(() => {
+    // Reset prevEnvOrders if chain or account change.
+    setPrevEnvOrders(emptyOrders)
+  }, [chainId, owner])
+
   useEffect(() => {
     if (!isLoading) setPrevEnvOrders(currentEnvOrders)
   }, [currentEnvOrders, isLoading])

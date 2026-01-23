@@ -9,7 +9,11 @@ import { LoadMoreOrdersButton } from 'modules/ordersTable/pure/OrdersTableContai
 
 import * as styledEl from './OrdersTableContainer.styled'
 
-export function LoadMoreOrdersSection(): ReactNode {
+export interface LoadMoreOrdersSectionProps {
+  totalOpenOrders: number
+}
+
+export function LoadMoreOrdersSection({ totalOpenOrders }: LoadMoreOrdersSectionProps): ReactNode {
   const { limit, hasMoreOrders } = useLoadMoreOrders()
 
   const paragraphs = hasMoreOrders ? (
@@ -18,7 +22,9 @@ export function LoadMoreOrdersSection(): ReactNode {
         {limit === AMOUNT_OF_ORDERS_TO_FETCH ? (
           <Trans>Only the {limit} most recent orders were searched.</Trans>
         ) : (
-          <Trans>No open orders found in the {limit} most recent one.</Trans>
+          <Trans>
+            Found {totalOpenOrders} open orders in the {limit} most recent ones.
+          </Trans>
         )}
       </p>
       <p>

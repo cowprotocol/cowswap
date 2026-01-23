@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
+import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 
 import { useLingui } from '@lingui/react/macro'
@@ -39,15 +40,16 @@ export function NoOrdersContent({
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
-  const { limit, hasMoreOrders } = useLoadMoreOrders()
+  const { limit, isLoading, hasMoreOrders } = useLoadMoreOrders()
   const hasOrders = orders.length > 0
+  const displayLimit = isLoading ? limit - AMOUNT_OF_ORDERS_TO_FETCH : limit
 
   const { title, description } = useMemo(
     () => ({
       title: getTitle({
         currentTab,
         hasOrders,
-        limit,
+        limit: displayLimit,
         hasMoreOrders,
         orderType,
         searchTerm,
@@ -56,7 +58,7 @@ export function NoOrdersContent({
       description: getDescription({
         currentTab,
         hasOrders,
-        limit,
+        limit: displayLimit,
         hasMoreOrders,
         orderType,
         searchTerm,
@@ -68,7 +70,7 @@ export function NoOrdersContent({
     [
       currentTab,
       hasOrders,
-      limit,
+      displayLimit,
       hasMoreOrders,
       orderType,
       searchTerm,

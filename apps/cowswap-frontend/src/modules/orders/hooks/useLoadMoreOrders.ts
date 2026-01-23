@@ -27,7 +27,7 @@ export function useLoadMoreOrders(): UseLoadMoreOrdersReturn {
     setOrdersLimit((prev) => ({ limit: prev.limit + AMOUNT_OF_ORDERS_TO_FETCH, isLoading: true }))
   }
 
-  const hasMoreOrders = isLoading || (orders && orders.length > 0 && orders.length >= limit - AMOUNT_OF_ORDERS_TO_FETCH)
+  const hasMoreOrders = isLoading || orders.length >= limit
 
   return {
     limit,
