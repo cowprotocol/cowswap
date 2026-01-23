@@ -1,6 +1,8 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
@@ -41,10 +43,16 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
 
-  return useSWR(
-    shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId
-      ? [provider, account, chainId]
-      : null,
+  const shouldFetchCapabilities = Boolean(
+    shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId,
+  )
+
+  const swrResponse = useSWR<
+    WalletCapabilities | undefined,
+    unknown,
+    readonly [Web3Provider, string, SupportedChainId] | null
+  >(
+    shouldFetchCapabilities ? [provider!, account!, chainId] : null,
     ([provider, account, chainId]) => {
       return new Promise((resolve) => {
         const timeout = setTimeout(() => {
@@ -54,7 +62,7 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
         provider
           .send('wallet_getCapabilities', [account])
           .then((result: { [chainIdHex: string]: WalletCapabilities }) => {
-            clearInterval(timeout)
+            clearTimeout(timeout)
 
             if (!result) {
               resolve(undefined)
@@ -66,11 +74,17 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
             resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
           .catch(() => {
-            clearInterval(timeout)
+            clearTimeout(timeout)
             resolve(undefined)
           })
       })
     },
     SWR_NO_REFRESH_OPTIONS,
   )
+
+  if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
+    return { ...swrResponse, isLoading: true }
+  }
+
+  return swrResponse
 }

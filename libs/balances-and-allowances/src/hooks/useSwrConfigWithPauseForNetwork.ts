@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -28,11 +28,12 @@ export function useSwrConfigWithPauseForNetwork(
 
   const lastUpdateTimestampRef = useRef(lastUpdateTimestamp)
 
-  // Update lastUpdateTimestampRef only when balances state chainId in sync with current chainId
-  if (!balancesChainId || balancesChainId === chainId) {
-    // eslint-disable-next-line react-hooks/refs
-    lastUpdateTimestampRef.current = lastUpdateTimestamp
-  }
+  // update lastUpdateTimestampRef only when balances state chainId in sync with current chainId
+  useEffect(() => {
+    if (!balancesChainId || balancesChainId === chainId) {
+      lastUpdateTimestampRef.current = lastUpdateTimestamp
+    }
+  }, [balancesChainId, chainId, lastUpdateTimestamp])
 
   return useMemo(
     () => ({
@@ -40,9 +41,9 @@ export function useSwrConfigWithPauseForNetwork(
       isPaused: () => {
         if (config.isPaused?.()) return true
 
-        const lastUpdateTimestamp = lastUpdateTimestampRef.current
+        const timestamp = lastUpdateTimestampRef.current
 
-        return !!lastUpdateTimestamp && Date.now() - lastUpdateTimestamp < effectiveValidityPeriod
+        return !!timestamp && Date.now() - timestamp < effectiveValidityPeriod
       },
     }),
     [config, effectiveValidityPeriod],
