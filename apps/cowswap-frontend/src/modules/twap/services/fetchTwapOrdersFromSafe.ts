@@ -82,7 +82,7 @@ async function fetchSafeTransactionsChunk(
 }
 
 function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string, offset: number): string {
-  return `${SAFE_TRANSACTION_SERVICE_URL[chainId]}/api/v1/safes/${safeAddress}/all-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
+  return `${SAFE_TRANSACTION_SERVICE_URL[chainId]}/v1/safes/${safeAddress}/all-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
 }
 
 function parseSafeTransactionsResult(
