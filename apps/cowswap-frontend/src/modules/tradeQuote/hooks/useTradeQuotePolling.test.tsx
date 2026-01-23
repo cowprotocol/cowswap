@@ -116,7 +116,6 @@ describe('useTradeQuotePolling()', () => {
       )
 
       // Wait for Web3ReactProvider to finish initializing and getQuote to be called
-      // waitFor already handles act() internally
       await waitFor(() => {
         expect(bridgingSdkMock.getQuote).toHaveBeenCalled()
       })
@@ -147,7 +146,6 @@ describe('useTradeQuotePolling()', () => {
       )
 
       // Wait for Web3ReactProvider to finish initializing and getQuote to be called
-      // waitFor already handles act() internally
       await waitFor(() => {
         expect(bridgingSdkMock.getQuote).toHaveBeenCalled()
       })
