@@ -4,6 +4,8 @@ import { useIsEoaEthFlow } from 'modules/trade'
 
 import { useTradeQuote } from './useTradeQuote'
 
+import { getIsFastQuote } from '../utils/getIsFastQuote'
+
 export const useSmartSlippageFromQuote = (): number | null => {
   const tradeQuote = useTradeQuote()
   const isEthFlow = useIsEoaEthFlow()
@@ -12,7 +14,7 @@ export const useSmartSlippageFromQuote = (): number | null => {
   const slippageTopCap = MAX_SLIPPAGE_BPS
 
   if (tradeQuote.error) return null
-
+  if (getIsFastQuote(tradeQuote.fetchParams)) return null
   const slippage = tradeQuote?.quote?.quoteResults.suggestedSlippageBps ?? null
 
   if (typeof slippage === 'number') {
