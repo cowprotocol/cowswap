@@ -61,7 +61,7 @@ export function useIsTxBundlingSupported(): boolean | null {
 
   if (isCapabilitiesLoading) return null
 
-  return !!capabilities?.atomic?.status === 'supported'
+  return capabilities?.atomic?.status === 'supported'
 }
 
 export function useIsSafeTxBundlingSupported(): boolean | null {
