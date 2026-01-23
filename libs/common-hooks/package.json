@@ -26,7 +26,7 @@
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
-    "@cowprotocol/cow-sdk": "7.2.11",
+    "@cowprotocol/cow-sdk": "7.2.13",
     "@cowprotocol/types": "workspace:*",
     "@ethersproject/abstract-provider": "5.7.0",
     "@ethersproject/properties": "5.7.0",

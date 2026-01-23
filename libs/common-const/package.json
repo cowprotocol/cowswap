@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.2.11",
+    "@cowprotocol/cow-sdk": "7.2.13",
     "@cowprotocol/types": "workspace:*",
     "@ethersproject/providers": "5.7.0",
     "@lingui/core": "^5.4.1",

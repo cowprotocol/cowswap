@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
-    "@cowprotocol/cow-sdk": "7.2.11",
-    "@cowprotocol/sdk-composable": "0.1.24",
+    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/sdk-composable": "0.1.26",
     "@cowprotocol/sdk-ethers-v5-adapter": "0.3.1",
     "inter-ui": "^3.19.3",
     "react": "19.1.2",
