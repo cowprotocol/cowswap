@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { TabOrderTypes } from 'modules/ordersTable'
 import { LoadMoreOrdersSection } from 'modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection'
 
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
@@ -25,6 +26,7 @@ export interface OrdersTableProps {
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const { chainId } = useWalletInfo()
   const {
+    orderType,
     selectedOrders,
     allowsOffchainSigning,
     filteredOrders,
@@ -122,7 +124,9 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
         />
       )}
 
-      {currentTab === OrderTabId.open && currentPageNumber === lastPageNumber && <LoadMoreOrdersSection />}
+      {currentTab === OrderTabId.open && currentPageNumber === lastPageNumber && orderType === TabOrderTypes.LIMIT && (
+        <LoadMoreOrdersSection />
+      )}
     </>
   )
 }
