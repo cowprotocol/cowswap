@@ -11,6 +11,8 @@ export const useSmartSlippageFromQuote = (): number | null => {
   const slippageBottomCap = isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : 0
   const slippageTopCap = MAX_SLIPPAGE_BPS
 
+  if (tradeQuote.error) return null
+
   const slippage = tradeQuote?.quote?.quoteResults.suggestedSlippageBps ?? null
 
   if (typeof slippage === 'number') {
