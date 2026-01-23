@@ -1,5 +1,5 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import { createReducer } from '@reduxjs/toolkit'
 
@@ -219,7 +219,7 @@ export default createReducer(initialState, (builder) =>
       updateBlockNumber(tx, blockNumber)
 
       // Update tx hash (if present)
-      tx.transactionHash = transactionHash
+      tx.transactionHash = transactionHash ?? undefined
 
       // Update safe info
       tx.safeTransaction = safeTransaction

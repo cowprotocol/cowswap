@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -17,11 +18,18 @@ export function TradingSdkUpdater() {
   const { chainId } = useWalletInfo()
 
   useEffect(() => {
-    const signer = provider?.getSigner()
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      if (appCode) {
+        tradingSdk.setTraderParams({ chainId, appCode, env: isBarnBackendEnv ? 'staging' : 'prod' })
+        orderBookApi.context.chainId = chainId
+      }
+    } else {
+      const signer = provider?.getSigner()
 
-    if (signer && appCode) {
-      tradingSdk.setTraderParams({ signer, chainId, appCode, env: isBarnBackendEnv ? 'staging' : 'prod' })
-      orderBookApi.context.chainId = chainId
+      if (signer && appCode) {
+        tradingSdk.setTraderParams({ signer, chainId, appCode, env: isBarnBackendEnv ? 'staging' : 'prod' })
+        orderBookApi.context.chainId = chainId
+      }
     }
   }, [chainId, provider, appCode])
 

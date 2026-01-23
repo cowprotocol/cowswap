@@ -1,6 +1,6 @@
 import { EnrichedOrder, OrderClass, OrderCreation, SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 import { BigNumberish } from '@ethersproject/bignumber'
-import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { createAction } from '@reduxjs/toolkit'
