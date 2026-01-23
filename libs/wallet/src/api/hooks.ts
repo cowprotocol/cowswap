@@ -103,7 +103,7 @@ export function useIsAssetWatchingSupported(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType !== ConnectionType.INJECTED
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     isInjectedConnection = connector?.type === ConnectorType.INJECTED
   }
@@ -119,7 +119,7 @@ export function useIsRabbyWallet(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType !== ConnectionType.INJECTED
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     isInjectedConnection = connector?.type === ConnectorType.INJECTED
   }
@@ -134,7 +134,7 @@ export function useIsBraveWallet(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType !== ConnectionType.INJECTED
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     isInjectedConnection = connector?.type === ConnectorType.INJECTED
   }
@@ -150,7 +150,7 @@ export function useIsMetamaskBrowserExtensionWallet(): boolean {
   const info = useSelectedEip6963ProviderInfo()
 
   let isMetamaskConnection = connectionType === ConnectionType.METAMASK
-  let isInjectedConnection = connectionType !== ConnectionType.INJECTED
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
     isInjectedConnection = connector?.type === ConnectorType.INJECTED

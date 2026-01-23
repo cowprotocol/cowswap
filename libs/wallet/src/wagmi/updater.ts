@@ -112,8 +112,8 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
     }
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
-      walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
       ...walletDetails,
+      walletName: getWalletTypeLabel(walletType) || walletDetails.walletName,
     })
   }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 

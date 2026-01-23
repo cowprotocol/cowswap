@@ -44,7 +44,6 @@ export * from './web3-react/hooks/useSwitchNetwork'
 export function useIsSafeApp(): boolean {
   const newIsSafeApp = newUseWalletMetadata.useIsSafeApp()
   const legacyIsSafeApp = legacyUseWalletMetadata.useIsSafeApp()
-  console.log('LAUNCH_DARKLY_VIEM_MIGRATION', LAUNCH_DARKLY_VIEM_MIGRATION)
   return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsSafeApp : legacyIsSafeApp
 }
 export function useIsSafeViaWc(): boolean {
