@@ -55,16 +55,23 @@ export function useEndEagerConnect(): () => void {
   return useCallback(() => set((prev) => (prev > 0 ? prev - 1 : 0)), [set])
 }
 
-// TODO: if you want to test TWAP with others EIP-5792 wallets - keep only atomicBatch.supported
 export function useIsTxBundlingSupported(): boolean | null {
   // TODO this will be fixed in M-3 COW-569
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
-  const isSafeApp = useIsSafeApp()
-  const isSafeViaWc = useIsSafeViaWc()
 
   if (isCapabilitiesLoading) return null
 
-  return isSafeApp || (isSafeViaWc && capabilities?.atomic?.status === 'supported')
+  return capabilities?.atomic?.status === 'supported'
+}
+
+export function useIsSafeTxBundlingSupported(): boolean | null {
+  const isBundlingSupported = useIsTxBundlingSupported()
+  const isSafeApp = useIsSafeApp()
+  const isSafeViaWc = useIsSafeViaWc()
+
+  if (isBundlingSupported === null) return null
+
+  return isSafeApp || (isSafeViaWc && isBundlingSupported)
 }
 
 // TODO: Add proper return type annotation

@@ -82,10 +82,10 @@
     "@coinbase/wallet-sdk": "^3.3.0",
     "@cowprotocol/cms": "^0.11.0",
     "@cowprotocol/cow-runner-game": "^0.2.9",
-    "@cowprotocol/cow-sdk": "7.2.11",
-    "@cowprotocol/sdk-bridging": "1.4.0",
-    "@cowprotocol/sdk-composable": "0.1.24",
-    "@cowprotocol/sdk-cow-shed": "0.2.10",
+    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/sdk-bridging": "1.5.0",
+    "@cowprotocol/sdk-composable": "0.1.26",
+    "@cowprotocol/sdk-cow-shed": "0.2.12",
     "@cowprotocol/sdk-ethers-v5-adapter": "0.3.1",
     "@cowprotocol/sdk-subgraph": "0.2.7",
     "@cowprotocol/sdk-viem-adapter": "^0.3.0",
@@ -357,5 +357,5 @@
     "vite-tsconfig-paths": "~5.1.4",
     "vitest": "~3.2.4"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

@@ -1,11 +1,11 @@
-/**
- * useWidgetOpenState - Returns widget visibility and resets on close
- */
 import { useEffect, useRef } from 'react'
 
 import { useResetTokenListViewState } from '../../../hooks/useResetTokenListViewState'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 
+/**
+ * useWidgetOpenState - Returns widget visibility and resets on close
+ */
 export function useWidgetOpenState(): boolean {
   const widgetState = useSelectTokenWidgetState()
   const isOpen = Boolean(widgetState.onSelectToken && (widgetState.open || widgetState.forceOpen))
