@@ -1,4 +1,4 @@
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DAI_LIKE_PERMIT_TYPEHASH, Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'

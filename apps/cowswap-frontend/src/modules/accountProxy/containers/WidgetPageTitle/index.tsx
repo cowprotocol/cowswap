@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 
 import { environmentAtom } from '../../state/environmentAtom'
 import { activeTokensMapAtom } from '../../state/tokens/allTokensAtom'

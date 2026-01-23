@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { COW_CDN, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 import { ALL_SUPPORTED_CHAIN_IDS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 

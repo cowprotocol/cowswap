@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 
 import {
   CachedPermitData,

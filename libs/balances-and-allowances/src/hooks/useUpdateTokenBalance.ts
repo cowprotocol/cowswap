@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback } from 'react'
 
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { balancesAtom } from '../state/balancesAtom'

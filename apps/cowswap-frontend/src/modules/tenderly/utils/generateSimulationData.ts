@@ -1,4 +1,4 @@
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 
 import { PostBundleSimulationParams } from './bundleSimulation'
 

@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PermitInfo } from '@cowprotocol/permit-utils'
 import { PersistentStateByChain } from '@cowprotocol/types'

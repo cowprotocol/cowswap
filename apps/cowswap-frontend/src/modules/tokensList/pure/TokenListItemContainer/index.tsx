@@ -1,7 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { SelectTokenContext } from '../../types'

@@ -1,5 +1,5 @@
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../types'
 

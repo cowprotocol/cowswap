@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, getTokenId } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 import { TokenLogo, TokenSearchResponse, useRemoveUserToken, useResetUserTokens } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
