@@ -5,7 +5,7 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -99,7 +99,7 @@ describe('useTradeQuotePolling()', () => {
   })
 
   describe('When wallet is connected', () => {
-    it('Then should put account address into "receiver" field in the quote request', () => {
+    it('Then should put account address into "receiver" field in the quote request', async () => {
       // Arrange
       const mocks = [...jotaiMock, [walletInfoAtom, walletInfoMock]]
 
@@ -115,6 +115,12 @@ describe('useTradeQuotePolling()', () => {
         { wrapper: Wrapper(mocks) },
       )
 
+      // Wait for Web3ReactProvider to finish initializing and getQuote to be called
+      // waitFor already handles act() internally
+      await waitFor(() => {
+        expect(bridgingSdkMock.getQuote).toHaveBeenCalled()
+      })
+
       // Assert
       const callParams = bridgingSdkMock.getQuote.mock.calls[0]
 
@@ -125,7 +131,7 @@ describe('useTradeQuotePolling()', () => {
   })
 
   describe('When wallet is NOT connected', () => {
-    it('Then the "receiver" field in the quote request should be undefined', () => {
+    it('Then the "receiver" field in the quote request should be undefined', async () => {
       // Arrange
       const mocks = [...jotaiMock, [walletInfoAtom, { ...walletInfoMock, account: undefined }]]
 
@@ -139,6 +145,12 @@ describe('useTradeQuotePolling()', () => {
           }),
         { wrapper: Wrapper(mocks) },
       )
+
+      // Wait for Web3ReactProvider to finish initializing and getQuote to be called
+      // waitFor already handles act() internally
+      await waitFor(() => {
+        expect(bridgingSdkMock.getQuote).toHaveBeenCalled()
+      })
 
       // Assert
       const { signer: _, ...callParams } = bridgingSdkMock.getQuote.mock.calls[0][0]

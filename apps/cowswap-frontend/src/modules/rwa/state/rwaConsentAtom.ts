@@ -6,7 +6,7 @@ import { buildRwaConsentKey, RwaConsentKey, RwaConsentRecord } from '../types/rw
 type RwaConsentCache = Record<string, string>
 
 export const rwaConsentCacheAtom = atomWithStorage<RwaConsentCache>('rwaConsentCache:v1', {}, undefined, {
-  unstable_getOnInit: true,
+  getOnInit: true,
 })
 
 export const storeRwaConsentAtom = atom(null, (get, set, params: RwaConsentKey) => {

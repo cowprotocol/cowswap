@@ -28,6 +28,7 @@ export const ordersLimitAtom = atom<OrdersLimitState>(DEFAULT_ORDERS_LIMIT_STATE
 const walletKeyAtom = atom((get) => `${get(walletInfoAtom).account}-${get(walletInfoAtom).chainId}`)
 
 // Set up global effect to reset ordersLimitAtom when walletInfoAtom changes
+
 observe((get, set) => {
   get(walletKeyAtom)
   set(ordersLimitAtom, DEFAULT_ORDERS_LIMIT_STATE)
