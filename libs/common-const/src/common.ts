@@ -150,7 +150,7 @@ export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/refe
 export const FEE_SIZE_THRESHOLD = 10 as const // 10%
 
 export const MAXIMUM_ORDERS_TO_DISPLAY = 10 as const
-export const AMOUNT_OF_ORDERS_TO_FETCH = 10 as const
+export const AMOUNT_OF_ORDERS_TO_FETCH = 100 as const
 
 // Start date of COW vesting for locked GNO
 export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')
