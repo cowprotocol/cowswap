@@ -72,7 +72,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     return {
       account,
       isWrapUnwrap,
-      isBundlingSupported: !!isBundlingSupported,
+      isBundlingSupported,
       isSupportedWallet,
       isSwapUnsupported,
       isSafeReadonlyUser,
