@@ -3,7 +3,7 @@ import React, { RefObject } from 'react'
 import { LATEST_APP_DATA_VERSION } from '@cowprotocol/cow-sdk'
 
 import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
-import { JSONSchema7 } from 'json-schema'
+import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 
 import { HelpTooltip } from '../../../components/Tooltip'
 import { metadataApiSDK } from '../../../cowSdk'
@@ -31,10 +31,63 @@ export const getSchema = async (): Promise<JSONSchema7> => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .then((m) => (m as any).default)) as JSONSchema7
 
-  return makeSchemaCopy(latestSchema)
+  const schemaCopy = makeSchemaCopy(latestSchema)
+  return normalizePartnerFeeRefs(schemaCopy)
 }
 
-const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => structuredClone(schema)
+const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => {
+  if (typeof structuredClone === 'function') {
+    return structuredClone(schema)
+  }
+
+  return JSON.parse(JSON.stringify(schema)) as JSONSchema7
+}
+
+const PARTNER_FEE_REF_PREFIX = '#/properties/metadata/properties/partnerFee/definitions/'
+
+const isObjectSchema = (value: JSONSchema7Definition | undefined): value is JSONSchema7 => {
+  return typeof value === 'object' && value !== null
+}
+
+const normalizePartnerFeeRefs = (schema: JSONSchema7): JSONSchema7 => {
+  const metadata = schema.properties?.metadata
+  if (!isObjectSchema(metadata)) {
+    return schema
+  }
+
+  const partnerFee = metadata.properties?.partnerFee
+  if (!isObjectSchema(partnerFee)) {
+    return schema
+  }
+
+  const partnerFeeDefinitions = partnerFee.definitions as Record<string, JSONSchema7Definition> | undefined
+
+  if (partnerFeeDefinitions && typeof partnerFeeDefinitions === 'object') {
+    schema.definitions = {
+      ...(schema.definitions || {}),
+      ...partnerFeeDefinitions,
+    }
+  }
+
+  const rewriteRefs = (node: unknown): void => {
+    if (!node || typeof node !== 'object') return
+
+    if (Array.isArray(node)) {
+      node.forEach(rewriteRefs)
+      return
+    }
+
+    const record = node as Record<string, unknown>
+    if (typeof record.$ref === 'string' && record.$ref.startsWith(PARTNER_FEE_REF_PREFIX)) {
+      record.$ref = `#/definitions/${record.$ref.slice(PARTNER_FEE_REF_PREFIX.length)}`
+    }
+
+    Object.values(record).forEach(rewriteRefs)
+  }
+
+  rewriteRefs(schema)
+  return schema
+}
 
 export const transformErrors = (errors: AjvError[]): AjvError[] => {
   return errors.reduce<AjvError[]>((errorsList, error) => {
