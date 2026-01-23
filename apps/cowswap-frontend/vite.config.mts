@@ -137,6 +137,15 @@ export default defineConfig(({ mode }) => {
       },
     },
 
+    optimizeDeps: {
+      include: [
+        '@walletconnect/ethereum-provider',
+        '@walletconnect/universal-provider',
+        '@walletconnect/utils',
+        '@walletconnect/sign-client',
+      ],
+    },
+
     build: {
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
