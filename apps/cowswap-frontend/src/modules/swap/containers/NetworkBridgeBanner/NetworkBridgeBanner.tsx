@@ -56,6 +56,7 @@ const SHOULD_SHOW_ALERT = {
   [SupportedChainId.LENS]: true,
   [SupportedChainId.LINEA]: true,
   [SupportedChainId.PLASMA]: true,
+  [SupportedChainId.INK]: true,
 }
 
 type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT

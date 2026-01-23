@@ -20,6 +20,7 @@ export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global',
   [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global',
   [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global',
+  [SupportedChainId.INK]: 'https://safe-transaction-ink.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'

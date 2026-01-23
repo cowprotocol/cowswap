@@ -41,6 +41,9 @@ import {
   WETH_GNOSIS_CHAIN,
   WETH_PLASMA,
   WRAPPED_NATIVE_CURRENCIES,
+  USDT_INK,
+  USDC_INK,
+  WETH_INK,
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -133,5 +136,11 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.PLASMA],
     USDT_PLASMA,
     WETH_PLASMA,
+  ]),
+  [SupportedChainId.INK]: tokensListToMap([
+    WRAPPED_NATIVE_CURRENCIES[SupportedChainId.INK],
+    USDT_INK,
+    USDC_INK,
+    WETH_INK,
   ]),
 }

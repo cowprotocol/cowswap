@@ -1,5 +1,7 @@
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+// TODO: Refaactor to only have the false ones.
+
 export const TENDERLY_AVAILABLE: Record<SupportedChainId, boolean> = {
   ...mapSupportedNetworks(true),
   [SupportedChainId.LENS]: false, // Lens is not fully supported by Tenderly ATM (2025-08)

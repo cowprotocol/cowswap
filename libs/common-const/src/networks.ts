@@ -15,6 +15,7 @@ const RPC_URL_ENVS: Record<SupportedChainId, string | undefined> = {
   [SupportedChainId.BNB]: process.env.REACT_APP_NETWORK_URL_56 || undefined,
   [SupportedChainId.LINEA]: process.env.REACT_APP_NETWORK_URL_59144 || undefined,
   [SupportedChainId.PLASMA]: process.env.REACT_APP_NETWORK_URL_9745 || undefined,
+  [SupportedChainId.INK]: process.env.REACT_APP_NETWORK_URL_57073 || undefined,
 }
 
 const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boolean }> = {
@@ -29,6 +30,7 @@ const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boole
   [SupportedChainId.LENS]: { url: `https://rpc.lens.xyz`, usesInfura: false },
   [SupportedChainId.LINEA]: { url: `https://rpc.linea.build`, usesInfura: false },
   [SupportedChainId.PLASMA]: { url: `https://rpc.plasma.to`, usesInfura: false },
+  [SupportedChainId.INK]: { url: `https://rpc-ten.inkonchain.com`, usesInfura: false }, // TODO: Which one do we prefer to use? https://docs.inkonchain.com/tools/rpc
 }
 
 /**

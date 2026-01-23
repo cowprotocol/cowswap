@@ -11,6 +11,7 @@ import {
   plasma,
   polygon,
   sepolia,
+  ink,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 
@@ -132,6 +133,12 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'plasma',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.PLASMA],
   },
+  [SupportedChainId.INK]: {
+    ...mapChainInfoToBaseChainInfo(ink),
+    name: 'ink',
+    urlAlias: 'ink',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.INK],
+  },
   [SupportedChainId.SEPOLIA]: {
     ...mapChainInfoToBaseChainInfo(sepolia),
     name: 'sepolia',
@@ -142,6 +149,7 @@ export const CHAIN_INFO: ChainInfoMap = {
 
 /**
  * Sorted array of chain IDs in order of relevance.
+ * TODO: Sort by TVL? Reference: https://defillama.com/chain/gnosis
  */
 export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.MAINNET,
@@ -152,6 +160,7 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.AVALANCHE,
   SupportedChainId.LINEA, // TODO: decide where to place Linea
   SupportedChainId.PLASMA, // TODO: decide where to place Plasma
+  SupportedChainId.INK, // TODO: decide where to place Ink
   SupportedChainId.GNOSIS_CHAIN,
   SupportedChainId.LENS,
   SupportedChainId.SEPOLIA,

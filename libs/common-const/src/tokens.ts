@@ -535,12 +535,44 @@ export const WETH_PLASMA = new TokenWithLogo(
   'WETH',
 )
 
+// Ink
+
+export const USDT_INK = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.INK,
+  //https://explorer.inkonchain.com/token/0x0200C29006150606B650577BBE7B6248F58470c1
+  '0x0200C29006150606B650577BBE7B6248F58470c1',
+  6,
+  'USDT0',
+  'USDT0',
+)
+
+export const USDC_INK = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.INK,
+  // https://explorer.inkonchain.com/token/0x2D270e6886d130D724215A266106e6832161EAEd
+  '0x2D270e6886d130D724215A266106e6832161EAEd',
+  6,
+  'USDC',
+  'USDC',
+)
+
+export const WETH_INK = new TokenWithLogo(
+  WETH_MAINNET.logoURI,
+  SupportedChainId.INK,
+  // https://explorer.inkonchain.com/token/0x4200000000000000000000000000000000000006
+  '0x4200000000000000000000000000000000000006',
+  18,
+  'WETH',
+  'WETH',
+)
+
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   AdditionalTargetChainId.OPTIMISM,
-  // https://optimistic.etherscan.io/address/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85
+  // https://explorer.inkonchain.com/token/0x4200000000000000000000000000000000000006
   '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
   6,
   'USDC',
@@ -564,6 +596,7 @@ export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithL
    * This might break assumptions elsewhere in the code
    */
   [SupportedChainId.PLASMA]: USDT_PLASMA,
+  [SupportedChainId.INK]: USDC_INK,
 }
 
 /**
@@ -638,6 +671,7 @@ export const COW_TOKEN_LENS = getCowTokenForChain(SupportedChainId.LENS, COW_TOK
 export const COW_TOKEN_BNB = getCowTokenForChain(SupportedChainId.BNB, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_LINEA = getCowTokenForChain(SupportedChainId.LINEA, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_PLASMA = getCowTokenForChain(SupportedChainId.PLASMA, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_INK = getCowTokenForChain(SupportedChainId.INK, COW_TOKEN_MAINNET?.logoURI)
 
 export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
@@ -651,6 +685,7 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.BNB]: COW_TOKEN_BNB,
   [SupportedChainId.LINEA]: COW_TOKEN_LINEA,
   [SupportedChainId.PLASMA]: COW_TOKEN_PLASMA,
+  [SupportedChainId.INK]: COW_TOKEN_INK,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
@@ -731,6 +766,8 @@ const LINEA_STABLECOINS = [USDC_LINEA.address].map((t) => t.toLowerCase())
 
 const PLASMA_STABLECOINS = [USDT_PLASMA.address].map((t) => t.toLowerCase())
 
+const INK_STABLECOINS = [USDC_INK.address, USDT_INK.address].map((t) => t.toLowerCase())
+
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
@@ -745,6 +782,7 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.BNB]: new Set(BNB_STABLECOINS),
   [SupportedChainId.LINEA]: new Set(LINEA_STABLECOINS),
   [SupportedChainId.PLASMA]: new Set(PLASMA_STABLECOINS),
+  [SupportedChainId.INK]: new Set(INK_STABLECOINS),
 }
 
 /**
