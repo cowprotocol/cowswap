@@ -2,4 +2,5 @@ export { useBridgeSupportedNetworks, useBridgeSupportedNetwork } from './useBrid
 export { useBridgeSupportedTokens } from './useBridgeSupportedTokens'
 export { useRoutesAvailability } from './useRoutesAvailability'
 export { useHasHookBridgeProvidersEnabled } from './useHasHookBridgeProvidersEnabled'
+export { useHasBridgeProviders } from './useHasBridgeProviders'
 export { BridgeProvidersUpdater } from './BridgeProvidersUpdater'

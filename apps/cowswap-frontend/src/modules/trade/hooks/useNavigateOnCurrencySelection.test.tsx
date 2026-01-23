@@ -1,9 +1,10 @@
 import { TokenWithLogo, USDC, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAINS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { renderHook } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
+import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
@@ -12,8 +13,6 @@ import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
-import { getDefaultCurrencies } from '../types'
-
 // Mock dependencies
 jest.mock('@cowprotocol/tokens', () => ({
   useAreThereTokensWithSameSymbol: jest.fn(),
@@ -21,6 +20,10 @@ jest.mock('@cowprotocol/tokens', () => ({
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
+}))
+
+jest.mock('entities/bridgeProvider', () => ({
+  useBridgeSupportedNetworks: jest.fn(),
 }))
 
 jest.mock('./useDerivedTradeState', () => ({
@@ -35,11 +38,6 @@ jest.mock('./useTradeState', () => ({
   useTradeState: jest.fn(),
 }))
 
-jest.mock('../types', () => ({
-  ...jest.requireActual('../types'),
-  getDefaultCurrencies: jest.fn(),
-}))
-
 const mockedUseAreThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol as jest.MockedFunction<
   typeof useAreThereTokensWithSameSymbol
 >
@@ -47,7 +45,9 @@ const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalle
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockedUseTradeNavigate = useTradeNavigate as jest.MockedFunction<typeof useTradeNavigate>
 const mockedUseTradeState = useTradeState as jest.MockedFunction<typeof useTradeState>
-const mockedGetDefaultCurrencies = getDefaultCurrencies as jest.MockedFunction<typeof getDefaultCurrencies>
+const mockedUseBridgeSupportedNetworks = useBridgeSupportedNetworks as jest.MockedFunction<
+  typeof useBridgeSupportedNetworks
+>
 
 // Test tokens
 const WETH_MAINNET = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
@@ -85,10 +85,7 @@ describe('useNavigateOnCurrencySelection', () => {
       orderKind: OrderKind.SELL,
     } as never)
 
-    mockedGetDefaultCurrencies.mockReturnValue({
-      inputCurrency: WETH_MAINNET,
-      outputCurrency: USDC_MAINNET,
-    })
+    mockedUseBridgeSupportedNetworks.mockReturnValue({ data: ALL_SUPPORTED_CHAINS } as never)
   })
 
   describe('Basic currency selection', () => {
@@ -104,7 +101,9 @@ describe('useNavigateOnCurrencySelection', () => {
         'Dai Stablecoin',
       )
 
-      result.current(Field.INPUT, newToken)
+      act(() => {
+        result.current(Field.INPUT, newToken)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
@@ -130,7 +129,9 @@ describe('useNavigateOnCurrencySelection', () => {
         'USD Coin',
       )
 
-      result.current(Field.INPUT, newToken)
+      act(() => {
+        result.current(Field.INPUT, newToken)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
@@ -154,7 +155,9 @@ describe('useNavigateOnCurrencySelection', () => {
         'Dai Stablecoin',
       )
 
-      result.current(Field.OUTPUT, newToken)
+      act(() => {
+        result.current(Field.OUTPUT, newToken)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
@@ -180,7 +183,9 @@ describe('useNavigateOnCurrencySelection', () => {
         'USD Coin',
       )
 
-      result.current(Field.OUTPUT, newToken)
+      act(() => {
+        result.current(Field.OUTPUT, newToken)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
@@ -199,7 +204,9 @@ describe('useNavigateOnCurrencySelection', () => {
 
       // Current state is WETH/USDC
       // Select USDC as input (currently it's the output)
-      result.current(Field.INPUT, USDC_MAINNET)
+      act(() => {
+        result.current(Field.INPUT, USDC_MAINNET)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
@@ -216,7 +223,9 @@ describe('useNavigateOnCurrencySelection', () => {
 
       // Current state is WETH/USDC
       // Select WETH as output (currently it's the input)
-      result.current(Field.OUTPUT, WETH_MAINNET)
+      act(() => {
+        result.current(Field.OUTPUT, WETH_MAINNET)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
@@ -230,24 +239,21 @@ describe('useNavigateOnCurrencySelection', () => {
   })
 
   describe('Chain switching scenarios', () => {
-    it('should switch chain and reset buy token when selecting input currency from different chain', () => {
-      mockedGetDefaultCurrencies.mockReturnValue({
-        inputCurrency: WETH_GNOSIS,
-        outputCurrency: USDC_GNOSIS,
-      })
-
+    it('should switch chain and keep buy token when selecting input currency from different chain', () => {
       const { result } = renderHook(() => useNavigateOnCurrencySelection())
 
       // Select token from Gnosis Chain as input
-      result.current(Field.INPUT, WETH_GNOSIS)
+      act(() => {
+        result.current(Field.INPUT, WETH_GNOSIS)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.GNOSIS_CHAIN,
         {
           inputCurrencyId: WETH_GNOSIS.symbol,
-          outputCurrencyId: USDC_GNOSIS.address,
+          outputCurrencyId: USDC_MAINNET.address,
         },
-        undefined,
+        { targetChainId: SupportedChainId.MAINNET },
       )
     })
 
@@ -255,7 +261,9 @@ describe('useNavigateOnCurrencySelection', () => {
       const { result } = renderHook(() => useNavigateOnCurrencySelection())
 
       // Select token from Gnosis Chain as output
-      result.current(Field.OUTPUT, USDC_GNOSIS)
+      act(() => {
+        result.current(Field.OUTPUT, USDC_GNOSIS)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
@@ -268,9 +276,14 @@ describe('useNavigateOnCurrencySelection', () => {
     })
 
     it('should preserve targetChainId when selecting input currency', () => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: WETH_MAINNET,
+        outputCurrency: USDC_GNOSIS,
+        orderKind: OrderKind.SELL,
+      } as never)
       mockedUseTradeState.mockReturnValue({
         state: {
-          targetChainId: SupportedChainId.BASE,
+          targetChainId: USDC_GNOSIS.chainId,
         },
       } as never)
 
@@ -285,15 +298,17 @@ describe('useNavigateOnCurrencySelection', () => {
         'Dai Stablecoin',
       )
 
-      result.current(Field.INPUT, newToken)
+      act(() => {
+        result.current(Field.INPUT, newToken)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
         {
           inputCurrencyId: 'DAI',
-          outputCurrencyId: USDC_MAINNET.symbol,
+          outputCurrencyId: USDC_GNOSIS.address,
         },
-        { targetChainId: SupportedChainId.BASE },
+        { targetChainId: USDC_GNOSIS.chainId },
       )
     })
   })
@@ -309,8 +324,9 @@ describe('useNavigateOnCurrencySelection', () => {
       const { result } = renderHook(() => useNavigateOnCurrencySelection())
 
       // Select token from Gnosis Chain as output with BUY order
-      result.current(Field.OUTPUT, USDC_GNOSIS)
-
+      act(() => {
+        result.current(Field.OUTPUT, USDC_GNOSIS)
+      })
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
         {
@@ -334,7 +350,9 @@ describe('useNavigateOnCurrencySelection', () => {
 
       const { result } = renderHook(() => useNavigateOnCurrencySelection())
 
-      result.current(Field.OUTPUT, USDC_GNOSIS)
+      act(() => {
+        result.current(Field.OUTPUT, USDC_GNOSIS)
+      })
 
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.MAINNET,
