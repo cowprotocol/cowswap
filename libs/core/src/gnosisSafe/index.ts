@@ -4,17 +4,17 @@ import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
-  [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
-  [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global',
-  [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global',
-  [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
-  [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global',
-  [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global',
-  [SupportedChainId.LENS]: 'https://safe-transaction-lens.safe.global',
-  [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global',
-  [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global',
-  [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global',
+  [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global/api',
+  [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global/api',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global/api',
+  [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global/api',
+  [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global/api',
+  [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global/api',
+  [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global/api',
+  [SupportedChainId.LENS]: 'https://safe-transaction-lens.safe.global/api',
+  [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global/api',
+  [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global/api',
+  [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global/api',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'
