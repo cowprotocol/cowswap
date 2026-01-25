@@ -281,6 +281,7 @@ For example, the label for the widget-configurator is `preview-widget-cfg`:
 node tools/scripts/ignore-build-step.js --app=preview-widget-cfg
 ```
 
+
 List of applications and their labels:
 
 - widget-configurator: `preview-widget-cfg`
