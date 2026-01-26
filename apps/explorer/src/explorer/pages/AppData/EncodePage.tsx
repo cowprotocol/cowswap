@@ -64,6 +64,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
 
     return normalizePartnerFeeSchema(schema)
   }, [schema])
+  const schemaKey = schemaForForm.$id ?? 'appdata-schema-loading'
 
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
@@ -212,6 +213,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
           ref={formRef}
           autoComplete="off"
           onError={(): void => toggleInvalid({ appData: true })}
+          key={schemaKey}
           schema={schemaForForm}
           uiSchema={uiSchema}
         />
