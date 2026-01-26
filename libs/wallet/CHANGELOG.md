@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.16.2...wallet-v1.17.0) (2026-01-26)
+
+
+### Features
+
+* reconnect to safe wallet on window focus ([#6830](https://github.com/cowprotocol/cowswap/issues/6830)) ([8c114bd](https://github.com/cowprotocol/cowswap/commit/8c114bd61a66f2b06c262e151f7779a1d5c7a1fa))
+* show loading wallet capabilities state ([#6852](https://github.com/cowprotocol/cowswap/issues/6852)) ([474e784](https://github.com/cowprotocol/cowswap/commit/474e78476489d677fc59490b564e4ef7b000f33d))
+
+
+### Bug Fixes
+
+* bring safeApp to wallets who support TxBundling ([#6872](https://github.com/cowprotocol/cowswap/issues/6872)) ([25f8836](https://github.com/cowprotocol/cowswap/commit/25f8836fbfcbfe741b32dcdd9f1ee0fe11894bdb))
+* wallet connect v2 reconnection ([#6840](https://github.com/cowprotocol/cowswap/issues/6840)) ([74303b5](https://github.com/cowprotocol/cowswap/commit/74303b5867bccce4447cdda63e85f4b29e9b1901))
+
 ## [1.16.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.16.1...wallet-v1.16.2) (2026-01-09)
 
 

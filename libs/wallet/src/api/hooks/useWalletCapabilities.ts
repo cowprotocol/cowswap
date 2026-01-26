@@ -5,7 +5,7 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
-import useSWR, { SWRResponse } from 'swr'
+import useSWR from 'swr'
 import { useCapabilities } from 'wagmi'
 
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
@@ -19,6 +19,8 @@ export type WalletCapabilities = {
 }
 
 const requestTimeout = ms`10s`
+
+const EMPTY_SWR_RESPONSE = { data: undefined, isLoading: true }
 
 /**
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
@@ -39,7 +41,7 @@ function shouldCheckCapabilities(
   return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }
 
-export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefined> {
+export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
   const provider = useWalletProvider()
   const newIsWalletConnect = useIsWalletConnect()
   const legacyIsWalletConnect = legacyUseIsWalletConnect()
@@ -83,7 +85,8 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
             // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
             resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
-          .catch(() => {
+          .catch((error) => {
+            console.error('useWalletCapabilities() error', error)
             clearTimeout(timeout)
             resolve(undefined)
           })
@@ -93,10 +96,9 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
   )
 
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    // TODO the return type for this function will be adjusted on M-7 COW-572
-    return { ...capabilities, mutate: async () => undefined, isValidating: false }
+    return capabilities
   } else if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
-    return { ...swrResponse, isLoading: true }
+    return EMPTY_SWR_RESPONSE
   }
 
   return swrResponse

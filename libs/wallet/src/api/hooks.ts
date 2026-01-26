@@ -58,20 +58,14 @@ export function useEndEagerConnect(): () => void {
 export function useIsTxBundlingSupported(): boolean | null {
   // TODO this will be fixed in M-3 COW-569
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
-
-  if (isCapabilitiesLoading) return null
-
-  return capabilities?.atomic?.status === 'supported'
-}
-
-export function useIsSafeTxBundlingSupported(): boolean | null {
-  const isBundlingSupported = useIsTxBundlingSupported()
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
 
-  if (isBundlingSupported === null) return null
+  if (isSafeApp) return true
 
-  return isSafeApp || (isSafeViaWc && isBundlingSupported)
+  if (isCapabilitiesLoading) return null
+
+  return isSafeViaWc && capabilities?.atomic?.status === 'supported'
 }
 
 // TODO: Add proper return type annotation
