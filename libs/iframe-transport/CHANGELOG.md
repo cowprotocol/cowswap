@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v1.1.1...iframe-transport-v1.2.0) (2026-01-26)
+
+
+### Features
+
+* fix types in iframe-transport lib ([#6882](https://github.com/cowprotocol/cowswap/issues/6882)) ([f419e21](https://github.com/cowprotocol/cowswap/commit/f419e219fefdd007101ba61053dcce6c218eeee0))
+
 ## [1.1.1](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v1.1.0...iframe-transport-v1.1.1) (2026-01-26)
 
 
