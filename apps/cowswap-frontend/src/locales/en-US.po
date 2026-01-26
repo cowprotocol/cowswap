@@ -2635,8 +2635,8 @@ msgid "No order history"
 msgstr "No order history"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#~ msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
-#~ msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
+msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
+msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "The input token cannot be transferred. There may be an issue with the input token."
@@ -5855,8 +5855,8 @@ msgid "Advanced"
 msgstr "Advanced"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#~ msgid "Not yet supported"
-#~ msgstr "Not yet supported"
+msgid "Not yet supported"
+msgstr "Not yet supported"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "Remove"

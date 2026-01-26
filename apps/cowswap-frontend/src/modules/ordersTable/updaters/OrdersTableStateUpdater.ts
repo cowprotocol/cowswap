@@ -10,12 +10,12 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
-import { OrderTabId } from 'modules/ordersTable/const/tabs'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useNavigate } from 'common/hooks/useNavigate'
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
+import { OrderTabId } from '../const/tabs'
 import { useOrdersTableList } from '../containers/OrdersTableWidget/hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from '../containers/OrdersTableWidget/hooks/useValidatePageUrlParams'
 import { useCurrentTab } from '../hooks/useCurrentTab'

@@ -3,7 +3,6 @@ import { PropsWithChildren, ReactNode, useMemo } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
-import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -12,6 +11,7 @@ import { OrdersTableContent } from './OrdersTableContent'
 import { OrdersTabs } from './OrdersTabs'
 
 import { OrderTabId } from '../../const/tabs'
+import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { useShouldDisplayProtocolFeeBanner } from '../../hooks/useShouldDisplayProtocolFeeBanner'
 
