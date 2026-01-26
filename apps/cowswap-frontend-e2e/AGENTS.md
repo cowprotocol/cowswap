@@ -8,4 +8,4 @@ This file is additive. Follow the repo root `AGENTS.md` for full rules.
 - Lint: `yarn nx run cowswap-frontend-e2e:lint`
 
 ## Notes
-- This project depends on `cowswap-frontend` (see `implicitDependencies`). Ensure the app is running before e2e runs when required.
+- This project depends on `cowswap-frontend` (see `implicitDependencies` in `apps/cowswap-frontend-e2e/project.json`). Ensure the app is running before e2e runs when required.
