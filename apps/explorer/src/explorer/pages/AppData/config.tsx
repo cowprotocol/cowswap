@@ -51,6 +51,7 @@ const normalizePartnerFeeRefs = (schema: JSONSchema7): JSONSchema7 => {
   }
 
   const partnerFeeDefinitions = (partnerFee as JSONSchema7).definitions as Record<string, JSONSchema7> | undefined
+  const hoistedDefinitionKeys = new Set<string>()
 
   if (partnerFeeDefinitions && typeof partnerFeeDefinitions === 'object') {
     const rootDefinitions = (schema.definitions ?? {}) as Record<string, JSONSchema7>
@@ -58,13 +59,12 @@ const normalizePartnerFeeRefs = (schema: JSONSchema7): JSONSchema7 => {
     Object.entries(partnerFeeDefinitions).forEach(([key, value]) => {
       if (!(key in rootDefinitions)) {
         rootDefinitions[key] = value
+        hoistedDefinitionKeys.add(key)
       }
     })
 
     schema.definitions = rootDefinitions
   }
-
-  const rootDefinitions = schema.definitions ?? {}
 
   const rewriteRefs = (node: unknown): void => {
     if (!node || typeof node !== 'object') return
@@ -77,7 +77,7 @@ const normalizePartnerFeeRefs = (schema: JSONSchema7): JSONSchema7 => {
     const record = node as Record<string, unknown>
     if (typeof record.$ref === 'string' && record.$ref.startsWith(PARTNER_FEE_REF_PREFIX)) {
       const definitionKey = record.$ref.slice(PARTNER_FEE_REF_PREFIX.length)
-      if (rootDefinitions[definitionKey]) {
+      if (hoistedDefinitionKeys.has(definitionKey)) {
         record.$ref = `#/definitions/${definitionKey}`
       }
     }
