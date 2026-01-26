@@ -138,6 +138,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     const quoteErrorTexts = getQuoteErrorTexts()
 
+    {
+      /*TODO: sell=buy feature. Remove all SameBuyAndSellToken usages once feature is ready */
+    }
     const quoteErrorTextsForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
       [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Not yet supported`,
     }
@@ -248,6 +251,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
             </div>
           }
         />
+      </>
+    ),
+  },
+  [TradeFormValidation.WalletCapabilitiesLoading]: {
+    text: (
+      <>
+        <CenteredDots smaller />
       </>
     ),
   },

@@ -8,39 +8,61 @@ import { VirtualItem } from '@tanstack/react-virtual'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { VirtualList } from 'common/pure/VirtualList'
 
-import { SelectTokenContext } from '../../types'
-import { tokensListSorter } from '../../utils/tokensListSorter'
-import { TokenListItemContainer } from '../TokenListItemContainer'
+import { buildVirtualRows, sortTokensByBalance } from './tokensVirtualListUtils'
+import { TokensVirtualRowRenderer } from './TokensVirtualRowRenderer'
+import { TokensVirtualRow } from './types'
+
+import { useTokenListContext } from '../../hooks/useTokenListContext'
 
 export interface TokensVirtualListProps {
-  allTokens: TokenWithLogo[]
-  displayLpTokenLists?: boolean
-  selectTokenContext: SelectTokenContext
+  tokensToDisplay: TokenWithLogo[]
+  favoriteTokens?: TokenWithLogo[]
+  recentTokens?: TokenWithLogo[]
+  onClearRecentTokens: () => void
 }
 
-export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
-  const { allTokens, selectTokenContext, displayLpTokenLists } = props
+export function TokensVirtualList({
+  tokensToDisplay,
+  favoriteTokens,
+  recentTokens,
+  onClearRecentTokens,
+}: TokensVirtualListProps): ReactNode {
+  const { selectTokenContext, hideFavoriteTokensTooltip, selectedTargetChainId } = useTokenListContext()
   const { values: balances } = selectTokenContext.balancesState
-
   const { isYieldEnabled } = useFeatureFlags()
 
-  const sortedTokens = useMemo(
-    () => (balances ? allTokens.sort(tokensListSorter(balances)) : allTokens),
-    [allTokens, balances],
+  const sortedTokens = useMemo(() => sortTokensByBalance(tokensToDisplay, balances), [tokensToDisplay, balances])
+
+  const rows = useMemo<TokensVirtualRow[]>(
+    () =>
+      buildVirtualRows({
+        sortedTokens,
+        favoriteTokens,
+        recentTokens,
+        hideFavoriteTokensTooltip,
+        onClearRecentTokens,
+      }),
+    [favoriteTokens, hideFavoriteTokensTooltip, onClearRecentTokens, recentTokens, sortedTokens],
   )
 
   const getItemView = useCallback(
-    (sortedTokens: TokenWithLogo[], virtualRow: VirtualItem) => {
-      const token = sortedTokens[virtualRow.index]
-
-      return <TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />
-    },
+    (virtualRows: TokensVirtualRow[], virtualItem: VirtualItem) => (
+      <TokensVirtualRowRenderer row={virtualRows[virtualItem.index]} selectTokenContext={selectTokenContext} />
+    ),
     [selectTokenContext],
   )
 
+  const virtualListKey = selectedTargetChainId ?? 'tokens-list'
+
   return (
-    <VirtualList id="tokens-list" items={sortedTokens} getItemView={getItemView}>
-      {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
+    <VirtualList
+      key={virtualListKey}
+      id="tokens-list"
+      items={rows}
+      getItemView={getItemView}
+      scrollResetKey={selectedTargetChainId}
+    >
+      {isYieldEnabled ? <CoWAmmBanner isTokenSelectorView /> : null}
     </VirtualList>
   )
 }

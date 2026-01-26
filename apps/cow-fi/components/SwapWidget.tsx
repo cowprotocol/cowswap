@@ -6,10 +6,7 @@ import Image from 'next/image'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { LinkWithUtmComponent } from 'modules/utm'
-
 import { Button } from '@/components/Button'
-import { CONFIG } from '@/const/meta'
 import {
   Network,
   NETWORK_DEFAULT_BUY_TOKEN_MAP,
@@ -283,7 +280,7 @@ function getNetworkFromPlatforms(platforms: Platforms): Network {
   return 'ethereum'
 }
 
-export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: SwapWidgetProps): JSX.Element => {
+export const SwapWidget = ({ tokenSymbol, tokenImage, platforms }: SwapWidgetProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState<Tab>(DEFAULT_TAB)
   const [network, setNetwork] = useState<Network>(DEFAULT_NETWORK)
   const [amount, setAmount] = useState(0)
@@ -353,16 +350,14 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         </div>
       </InputLabel>
 
-      <LinkWithUtmComponent
-        defaultUtm={{
-          ...CONFIG.utm,
-          utmContent: 'utm_content=swap-widget-token__' + encodeURI(tokenId),
-        }}
+      <Button
+        label={`Swap ${tokenSymbol}`}
+        fontSize={1.6}
+        minHeight={4.2}
         href={getSwapUrl()}
-        passHref
-      >
-        <Button label={`Swap ${tokenSymbol}`} fontSize={1.6} minHeight={4.2} />
-      </LinkWithUtmComponent>
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+      />
     </Wrapper>
   )
 }

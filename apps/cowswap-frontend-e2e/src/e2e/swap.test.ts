@@ -60,10 +60,11 @@ describe('Swap (custom)', () => {
   it('can swap ETH for USDC', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`, {
       onBeforeLoad: async (win) => {
+        const address = await win.ethereum.signer.getAddress()
         mockSendCall(win.ethereum, [
           handleNativeBalance(
             win.ethereum,
-            await win.ethereum.signer.getAddress(),
+            address,
             5n * 10n ** 18n, // 18 decimals
           ),
         ])
@@ -83,10 +84,11 @@ describe('Swap (custom)', () => {
   it('Swap ETH for USDC - shows optional Switch to WETH', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`, {
       onBeforeLoad: async (win) => {
+        const address = await win.ethereum.signer.getAddress()
         mockSendCall(win.ethereum, [
           handleNativeBalance(
             win.ethereum,
-            await win.ethereum.signer.getAddress(),
+            address,
             5n * 10n ** 18n, // 18 decimals
           ),
         ])
@@ -100,8 +102,11 @@ describe('Swap (custom)', () => {
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
     cy.wait(1000)
-    cy.get('#classic-eth-flow-banner').should('contain', 'Wrap your ETH and use the classic WETH experience').click()
-    cy.get('#wrap-native').should('contain', 'Wrap my ETH and swap').click()
+    cy.get('#classic-eth-flow-banner')
+      .should('contain', 'Switch to the classic')
+      .and('contain', 'experience and benefit!')
+      .click()
+    cy.get('#switch-to-wrapped').should('contain', 'Switch to WETH').click()
   })
 
   describe('url params', () => {

@@ -31,7 +31,7 @@ export function useBuildTradeDerivedState(
   const orderKind = rawState.orderKind
   const sellChainId = rawState.chainId
 
-  const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId)
+  const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId, sellChainId)
 
   const buyTokensParams: BuyTokensParams | undefined = useMemo(() => {
     if (!targetChainId) return undefined
@@ -43,7 +43,7 @@ export function useBuildTradeDerivedState(
   }, [sellChainId, targetChainId])
 
   const outputCurrencyFromBridge = useTokenForTargetChain(buyTokensParams, outputCurrencyId)
-  const outputCurrencyFromTokenLists = useTokenBySymbolOrAddress(targetChainId ? null : outputCurrencyId)
+  const outputCurrencyFromTokenLists = useTokenBySymbolOrAddress(targetChainId ? null : outputCurrencyId, sellChainId)
 
   const outputCurrency = outputCurrencyFromBridge || outputCurrencyFromTokenLists
 

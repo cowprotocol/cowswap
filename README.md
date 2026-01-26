@@ -117,7 +117,8 @@ yarn run cosmos
 > your root `.env.local` file with:
 >
 > - `CYPRESS_INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
-> - `CYPRESS_INTEGRATION_TESTS_ALCHEMY_KEY=<your-alchemy-key>`: Alchemy key
+> - `CYPRESS_INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
+> - `CYPRESS_INTEGRATION_TESTS_ALCHEMY_KEY=<your-alchemy-key>`: Alchemy key (preferred if both are set)
 
 To launch it with our development server (so you have live-reloading):
 
@@ -171,7 +172,7 @@ REACT_APP_NETWORK_URL_43114: https://...
 Additionally, if you plan to run the integration tests locally you must define:
 
 ```ini
-INTEGRATION_TESTS_ALCHEMY_KEY: YOUR_ALCHEMY_KEY
+INTEGRATION_TESTS_INFURA_KEY: YOUR_INFURA_KEY
 INTEGRATION_TESTS_PRIVATE_KEY: YOUR_TEST_WALLET_PRIVATE_KEY
 ```
 
