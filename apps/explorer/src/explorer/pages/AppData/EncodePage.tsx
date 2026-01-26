@@ -59,18 +59,15 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
       const latestSchema = await getSchema()
+      if (typeof window !== 'undefined') {
+        ;(window as typeof window & { __appDataSchemaRender?: JSONSchema7 }).__appDataSchemaRender = latestSchema
+      }
       setSchema(latestSchema)
       setAppDataForm(INITIAL_FORM_VALUES)
     }
 
     if (!Object.keys(schema).length) {
       fetchSchema()
-    }
-  }, [schema])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      ;(window as typeof window & { __appDataSchemaRender?: JSONSchema7 }).__appDataSchemaRender = schema
     }
   }, [schema])
 
