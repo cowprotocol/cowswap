@@ -154,15 +154,15 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 - Replace inline factories with extracted components or memoized callbacks; obey `react/no-unstable-nested-components`.
 - Memoize render-prop wrappers (e.g., accordion `feeWrapper`) with `useCallback` for referential stability.
 
-### Render/Agent stability rules
+### Render stability rules
 
-- **Define once, reuse always (MUST):** Keep architecture creation (components, agents, helpers) out of render/execution loops. If a helper needs data, pass it in via props/params instead of redefining the helper each cycle.
-- **Stable references (MUST):** Avoid inline component/agent creation in returns or array operations unless memoized. Prefer extracted components or memoized factories so React (and orchestrators) can rely on referential equality.
-- **Separation of phases (SHOULD):** Treat render ticks like agent cycles - initialization happens once, execution reuses existing instances. Mutate state or props, not object identity.
-- **Cache or memoize dynamic creations (SHOULD):** When dynamic instantiation is unavoidable, funnel it through registries/factories that deduplicate by key so identical inputs reuse the same instance.
-- **List identity (MUST):** When rendering or iterating over agent collections, supply stable keys/IDs that survive across cycles. Never generate random keys per render, and only fall back to indices when the order is static.
-- **No hot-path factories (MUST):** Do not instantiate agents, strategies, or registries inside `.map`/loop bodies. Hoist their creation to module scope or memoize via a cache keyed by stable identifiers - verify-rules.sh will flag inline `new Agent()` patterns when available.
-- **Document exceptions (MUST):** Any unavoidable nested helper must come with a comment + PR justification; expect verify-rules.sh to flag it automatically when available.
+- **Define once, reuse always (MUST):** Keep component/helper creation out of render/execution loops. If a helper needs data, pass it in via props/params instead of redefining it each cycle.
+- **Stable references (MUST):** Avoid inline component creation in returns or array operations unless memoized. Prefer extracted components or memoized factories so React can rely on referential equality.
+- **Separation of phases (SHOULD):** Initialize expensive objects once (module scope or `useMemo`), and update via state/props instead of changing object identity.
+- **Cache or memoize dynamic creations (SHOULD):** When dynamic instantiation is unavoidable, cache by a stable key so identical inputs reuse the same instance.
+- **List identity (MUST):** Supply stable keys/IDs. Never generate random keys per render, and only fall back to indices when the order is static.
+- **No hot-path factories (MUST):** Do not instantiate classes/services inside `.map`/loop bodies. Hoist creation to module scope or memoize via a cache keyed by stable identifiers.
+- **Document exceptions (MUST):** Any unavoidable nested helper must come with a comment and PR justification.
 
 ### Rendering patterns
 
@@ -332,7 +332,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 - **Post-implementation command (if available):**
   ```bash
-  ./verify-rules.sh && yarn lint && yarn typecheck
+  yarn lint && yarn typecheck
   ```
   If a project provides a typecheck target instead of a script, run `yarn nx run <project>:typecheck`.
 
