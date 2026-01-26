@@ -24,20 +24,24 @@ export function useOrdersFromOrderBook(): EnrichedOrder[] {
     { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL, fallbackData: emptyOrders },
   )
 
-  const [prevEnvOrders, setPrevEnvOrders] = useState<EnrichedOrder[]>(emptyOrders)
+  const [prevEnvOrdersState, setPrevEnvOrdersState] = useState<{
+    orders: EnrichedOrder[]
+    key: string
+  }>({ orders: emptyOrders, key: '' })
 
   const owner = requestParams?.owner
+  const currentKey = `${chainId}::${owner ?? ''}`
 
   useEffect(() => {
     // Reset prevEnvOrders if chain or account change.
-    setPrevEnvOrders(emptyOrders)
+    setPrevEnvOrdersState({ orders: emptyOrders, key: '' })
   }, [chainId, owner])
 
   useEffect(() => {
-    if (!isLoading) setPrevEnvOrders(currentEnvOrders)
-  }, [currentEnvOrders, isLoading])
+    if (!isLoading) setPrevEnvOrdersState({ orders: currentEnvOrders, key: currentKey })
+  }, [currentEnvOrders, isLoading, currentKey])
 
   // Because we now keep expanding the limit param to be able to load older orders, we want to keep displaying the
   // previous smaller batch while the new larger one is being fetched:
-  return isLoading ? prevEnvOrders : currentEnvOrders
+  return isLoading && prevEnvOrdersState.key === currentKey ? prevEnvOrdersState.orders : currentEnvOrders
 }
