@@ -5,9 +5,6 @@ import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
-import { useGetBuildOrdersTableUrl } from 'modules/ordersTable/hooks/useGetBuildOrdersTableUrl'
-
 import { useNavigate } from 'common/hooks/useNavigate'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -15,6 +12,8 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon, SelectContainer, Select } from './styled'
 
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
+import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
+import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { OrdersTableParams } from '../../types'
@@ -31,6 +30,7 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
+// eslint-disable-next-line max-lines-per-function
 export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
   const { i18n } = useLingui()
   const navigate = useNavigate()
@@ -44,6 +44,13 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
     const url = buildOrdersTableUrl({ pageNumber: 1 })
 
     navigate(url, { replace: true })
+  }
+
+  const resetSearchTerm = (): void => {
+    setSearchTerm('')
+
+    // If any filter changes, reset pagination:
+    resetPagination()
   }
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -123,7 +130,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
                 value={searchTerm}
                 onChange={handleSearchTermChange}
               />
-              {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
+              {searchTerm && <StyledCloseIcon onClick={resetSearchTerm} />}
             </SearchInputContainer>
           </>
         )}

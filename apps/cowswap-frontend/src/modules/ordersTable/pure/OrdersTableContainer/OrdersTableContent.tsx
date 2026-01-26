@@ -2,8 +2,6 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
-
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { ConnectWalletContent } from './ConnectWalletContent'
@@ -12,6 +10,7 @@ import { OrdersTable } from './OrdersTable'
 import { UnsupportedNetworkContent } from './UnsupportedNetworkContent'
 
 import { OrderTabId } from '../../const/tabs'
+import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 
 interface OrdersTableContentProps {

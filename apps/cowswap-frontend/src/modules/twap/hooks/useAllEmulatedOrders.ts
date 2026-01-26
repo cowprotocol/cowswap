@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsSafeTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTwapOrdersTokens } from 'entities/twap'
 
@@ -16,7 +16,7 @@ export function useAllEmulatedOrders(): Order[] {
   const twapOrdersTokens = useTwapOrdersTokens()
   const emulatedTwapOrders = useEmulatedTwapOrders(twapOrdersTokens)
   const emulatedPartOrders = useEmulatedPartOrders(twapOrdersTokens)
-  const isBundlingSupported = useIsSafeTxBundlingSupported()
+  const isBundlingSupported = useIsTxBundlingSupported()
 
   const twapOrders = useOrders(chainId, account, UiOrderType.TWAP)
 

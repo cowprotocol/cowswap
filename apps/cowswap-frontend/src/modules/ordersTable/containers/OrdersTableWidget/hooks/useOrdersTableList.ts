@@ -5,11 +5,10 @@ import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
-import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
-
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
+import { useGetPendingOrdersPermitValidityState } from '../../../hooks/usePendingOrderPermitValidity'
 import { OrdersTableList, OrderTableItem, TabOrderTypes } from '../../../types'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'

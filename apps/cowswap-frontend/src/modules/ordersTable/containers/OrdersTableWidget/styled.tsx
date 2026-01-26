@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import {
   SelectContainer as OrdersTableSelectContainer,
   Select as OrdersTableSelect,
-} from 'modules/ordersTable/pure/OrdersTableContainer/OrdersTabs'
+} from '../../pure/OrdersTableContainer/OrdersTabs'
 
 export const SearchInputContainer = styled.label`
   position: relative;
