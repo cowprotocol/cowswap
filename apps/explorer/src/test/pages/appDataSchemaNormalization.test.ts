@@ -106,6 +106,6 @@ describe('normalizePartnerFeeRefs', () => {
     const recipientSchema = partnerFee?.properties?.recipient as JSONSchema7 | undefined
 
     expect(normalizedRecipient.pattern).toBe('^root$')
-    expect(recipientSchema?.$ref).toBe('#/properties/metadata/properties/partnerFee/definitions/recipient')
+    expect(recipientSchema?.$ref).toBe('#/definitions/recipient')
   })
 })
