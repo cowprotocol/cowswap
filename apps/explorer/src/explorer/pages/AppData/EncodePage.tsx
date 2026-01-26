@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { AppDataInfo, stringifyDeterministic } from '@cowprotocol/cow-sdk'
 
@@ -11,6 +11,7 @@ import {
   getSchema,
   handleErrors,
   INITIAL_FORM_VALUES,
+  normalizePartnerFeeSchema,
   transformErrors,
   uiSchema,
 } from './config'
@@ -56,12 +57,17 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   const [error, setError] = useState<string | undefined>(encode.options.error)
   const formRef = React.useRef<Form<FormProps>>(null)
 
+  const schemaForForm = useMemo(() => {
+    if (!Object.keys(schema).length) {
+      return schema
+    }
+
+    return normalizePartnerFeeSchema(schema)
+  }, [schema])
+
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
       const latestSchema = await getSchema()
-      if (typeof window !== 'undefined') {
-        ;(window as typeof window & { __appDataSchemaRender?: JSONSchema7 }).__appDataSchemaRender = latestSchema
-      }
       setSchema(latestSchema)
       setAppDataForm(INITIAL_FORM_VALUES)
     }
@@ -206,7 +212,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
           ref={formRef}
           autoComplete="off"
           onError={(): void => toggleInvalid({ appData: true })}
-          schema={schema}
+          schema={schemaForForm}
           uiSchema={uiSchema}
         />
         <AppDataWrapper>
