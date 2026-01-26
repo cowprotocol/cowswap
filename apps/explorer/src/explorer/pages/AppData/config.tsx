@@ -32,6 +32,9 @@ export const getSchema = async (): Promise<JSONSchema7> => {
     .then((m) => (m as any).default)) as JSONSchema7
 
   const schemaCopy = makeSchemaCopy(latestSchema)
+  if (typeof window !== 'undefined') {
+    ;(window as typeof window & { __appDataSchemaRaw?: JSONSchema7 }).__appDataSchemaRaw = schemaCopy
+  }
   const normalizedSchema = normalizePartnerFeeRefs(schemaCopy)
 
   if (typeof window !== 'undefined') {

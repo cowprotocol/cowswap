@@ -69,6 +69,12 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   }, [schema])
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      ;(window as typeof window & { __appDataSchemaRender?: JSONSchema7 }).__appDataSchemaRender = schema
+    }
+  }, [schema])
+
+  useEffect(() => {
     setTabData((prevState) => ({
       ...prevState,
       encode: {
