@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/iframe-transport",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "commonjs",
   "description": "CoW Swap iframe-transport",
   "main": "./src/index.ts",

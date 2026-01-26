@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.1...widget-lib-v0.22.2) (2026-01-26)
+
+
+### Bug Fixes
+
+* **widget-lib:** add compatibility with server rendering ([#6813](https://github.com/cowprotocol/cowswap/issues/6813)) ([76bd736](https://github.com/cowprotocol/cowswap/commit/76bd736f17d722f0a639542d4fcbd5e3f0be57b2))
+
 ## [0.22.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.0...widget-lib-v0.22.1) (2025-12-24)
 
 

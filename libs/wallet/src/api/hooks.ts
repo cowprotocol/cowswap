@@ -53,20 +53,17 @@ export function useEndEagerConnect(): () => void {
 
 export function useIsTxBundlingSupported(): boolean | null {
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
-
-  if (isCapabilitiesLoading) return null
-
-  return !!capabilities?.atomicBatch?.supported
-}
-
-export function useIsSafeTxBundlingSupported(): boolean | null {
-  const isBundlingSupported = useIsTxBundlingSupported()
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
 
-  if (isBundlingSupported === null) return null
+  /**
+   * Safe app doesn't return WalletCapabilities, but it supports tx bundling
+   */
+  if (isSafeApp) return true
 
-  return isSafeApp || (isSafeViaWc && isBundlingSupported)
+  if (isCapabilitiesLoading) return null
+
+  return isSafeViaWc && !!capabilities?.atomicBatch?.supported
 }
 
 // TODO: Add proper return type annotation
