@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/hook-dapp-lib",
-  "version": "1.14.2",
+  "version": "1.14.3",
   "type": "commonjs",
   "description": "CoW Swap Hook Dapp Library. Allows you to develop pre/post hooks dapps for CoW Protocol.",
   "main": "index.js",
@@ -21,6 +21,6 @@
     "hook-dapp-lib"
   ],
   "dependencies": {
-    "@cowprotocol/iframe-transport": "^1.0.0"
+    "@cowprotocol/iframe-transport": "^1.1.1"
   }
 }
