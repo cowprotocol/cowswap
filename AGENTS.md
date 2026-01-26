@@ -214,9 +214,12 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 ### Data fetching & caching
 
-- SWR keys must include every parameter affecting the response (chain IDs, addresses, accounts, quote IDs, etc.).
-- Memoize parameter objects passed to SWR.
-- Use `SWR_NO_REFRESH_OPTIONS` when revalidation would cause flicker.
+- **SWR is deprecated.** New data fetching must use Jotai `atomWithQuery` (jotai/query). See [atomWithQuery usage][jotai-atomWithQuery].
+- When touching an existing SWR-backed flow, migrate it to `atomWithQuery` unless there is a documented blocker.
+- If a temporary SWR usage is unavoidable, keep to these legacy rules:
+  - SWR keys must include every parameter affecting the response (chain IDs, addresses, accounts, quote IDs, etc.).
+  - Memoize parameter objects passed to SWR.
+  - Use `SWR_NO_REFRESH_OPTIONS` when revalidation would cause flicker.
 - Surface remote data through shared hooks (`useBridgeOrderQuote`, `useSwapAndBridgeContext`, etc.) instead of prop-drilling.
 - Store normalized response shapes under `common/types/<domain>.ts`.
 - Cache long-lived responses (quotes, solver data) and rehydrate via hooks instead of re-fetching.
@@ -225,6 +228,8 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 - Deduplicate merged datasets (e.g., pending activities + bridge orders) before counting or rendering.
 - Handle provider quirks gracefully - fallback to cached data when remote results are incomplete (e.g., ETH vs WETH).
 - Use domain sentinel constants (`BRIDGE_QUOTE_ACCOUNT`) instead of magic zero addresses.
+
+[jotai-atomWithQuery]: https://jotai.org/docs/extensions/query#atomwithquery-usage
 
 ### Entities & shared state
 
