@@ -23,6 +23,7 @@ export interface QuoteUpdateContext {
   isBrowserOnline: boolean
   isConfirmOpen: boolean
   fastQuote?: boolean
+  hasSmartSlippage?: boolean
 }
 
 export function doQuotePolling({
@@ -35,6 +36,7 @@ export function doQuotePolling({
   isConfirmOpen,
   fastQuote,
   fetchQuote,
+  hasSmartSlippage,
 }: QuoteUpdateContext): boolean {
   const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo.doc
 
@@ -44,7 +46,7 @@ export function doQuotePolling({
     // Important! We should skip quote updating only if there is no quote response
     if (
       isQuoteCached(currentQuote) &&
-      quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
+      quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData, hasSmartSlippage)
     ) {
       return false
     }
