@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.33.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.32.0...tokens-v1.33.0) (2026-01-26)
+
+
+### Features
+
+* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
+
+
+### Bug Fixes
+
+* **bridge:** do not reset assets when change sell token ([#6851](https://github.com/cowprotocol/cowswap/issues/6851)) ([b30ca82](https://github.com/cowprotocol/cowswap/commit/b30ca8234f1e1d2d07eca7804b76157344328470))
+
 ## [1.32.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.1...tokens-v1.32.0) (2026-01-09)
 
 

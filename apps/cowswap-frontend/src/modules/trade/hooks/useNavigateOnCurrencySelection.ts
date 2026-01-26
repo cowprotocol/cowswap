@@ -125,7 +125,11 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
           : {
               inputCurrencyId: targetInputCurrencyId,
-              outputCurrencyId: isOutputCurrencyBridgeSupported ? targetOutputCurrencyId : null,
+              outputCurrencyId: isBridgeTrade
+                ? isOutputCurrencyBridgeSupported
+                  ? targetOutputCurrencyId
+                  : null
+                : targetOutputCurrencyId,
             },
         searchParams,
       )
