@@ -30,6 +30,7 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
+// eslint-disable-next-line max-lines-per-function
 export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
   const { i18n } = useLingui()
   const navigate = useNavigate()
@@ -43,6 +44,13 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
     const url = buildOrdersTableUrl({ pageNumber: 1 })
 
     navigate(url, { replace: true })
+  }
+
+  const resetSearchTerm = (): void => {
+    setSearchTerm('')
+
+    // If any filter changes, reset pagination:
+    resetPagination()
   }
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -122,7 +130,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
                 value={searchTerm}
                 onChange={handleSearchTermChange}
               />
-              {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
+              {searchTerm && <StyledCloseIcon onClick={resetSearchTerm} />}
             </SearchInputContainer>
           </>
         )}
