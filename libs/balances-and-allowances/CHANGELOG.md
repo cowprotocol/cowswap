@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.11.0...balances-and-allowances-v1.11.1) (2026-01-26)
+
+
+### Bug Fixes
+
+* request balances from view chain id in selector ([#6859](https://github.com/cowprotocol/cowswap/issues/6859)) ([8428aaa](https://github.com/cowprotocol/cowswap/commit/8428aaa4402c90e68d38b8d832577c301bbf49ad))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.10.0...balances-and-allowances-v1.11.0) (2026-01-09)
 
 

@@ -61,6 +61,8 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<OrderStatusEvents, OrdersNotif
           chainId={chainId}
           orderUid={order.uid}
           messageType={ToastMessageType.ORDER_FULFILLED}
+          // Do not display a receiver for bridge order, because it will always by a proxy address
+          hideReceiver={!!bridgeOrder}
         >
           <FulfilledOrderInfo chainId={chainId} orderUid={order.uid} />
         </OrderNotification>
