@@ -174,6 +174,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 ### Shared contexts & selectors
 
+- Utilize Jotai for state memoization and slicing. Prefer using Jotai tools instead of React hooks for state manipulations (memoization, slicing, etc.).
 - Split large context providers or shared stores into focused slices. Consumers should only subscribe to the slice they need so unrelated updates do not cascade through the tree.
 - Memoize provider values - wrap object literals, callbacks, or service references in `useMemo`/`useCallback` so referential stability prevents unnecessary reruns downstream.
 - Prefer selector/filtered subscription APIs (e.g., `useSwapContext(selector)`) instead of broadcasting whole context payloads to every consumer.
