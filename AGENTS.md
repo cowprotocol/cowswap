@@ -57,7 +57,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 - **Red Flags - STOP if creating:**
   - Ref-based caches for "stability" -> inspect the root cause of instability first.
   - Complex bespoke state managers -> investigate the trigger chain instead of layering abstractions.
-  - 50+ lines to treat a visual glitch -> root cause is usually 1-2 lines.
+  - Complicated JS logic to prevent visual glitches -> prioritize CSS-based solutions first.
   - Hook dependency cascades -> verify control flow before tweaking dependency arrays.
   - Hardcoded environment-specific lists/toggles when shared config/enums exist.
   - Shipping `eslint-disable` or "TODO add return type" scaffolding instead of providing explicit types.
