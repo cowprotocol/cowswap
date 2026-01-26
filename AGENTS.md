@@ -181,7 +181,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 ### Styling & imports
 
 - Import order: core -> external -> internal -> relative.
-- Forbidden imports: `@ethersproject/*`, raw `styled-components` (use the macro), package `dist/`, router's `useNavigate`.
+- Forbidden imports: raw `styled-components` (use the macro), package `dist/`, router's `useNavigate`.
 - Styled components: optional booleans defaulted, props typed, and meaningful wrappers only.
 
 ### Fixture hygiene
