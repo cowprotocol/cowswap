@@ -148,7 +148,11 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 - **Render/helper antipattern:** Never declare components inside render bodies or rely on `render*`/`get*` helpers that return JSX. Hoist subcomponents to module scope, or convert them into proper components so every render cycle reuses the same identity.
 - Export named function components and return `ReactNode`.
-- Pure components must not use hooks; the only allowed exceptions are React built-in hooks (e.g. `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef`) plus app-level globals such as `useLocation` and `useMediaQuery`. Hoist any other dependencies or data loaders into callers and pass results via props instead. Theme context in particular must be provided to pure components through props.
+- Pure components can use only the following hooks:
+  - built-in hooks (e.g. `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef`)
+  - hooks which provide the state of the current module (e.g. `useOrdersTableState()` can be used in pure components of `modules/ordersTable`)
+  - common state providing hooks (e.g. `useTheme()`)
+  Hoist any other dependencies or data loaders into callers and pass results via props instead.
 - Decompose large components into `modules/<feature>/pure/` pieces; prefer composition over configuration enums.
 - Avoid wrapper components that pass props through without logic.
 - Replace inline factories with extracted components or memoized callbacks; obey `react/no-unstable-nested-components`.
