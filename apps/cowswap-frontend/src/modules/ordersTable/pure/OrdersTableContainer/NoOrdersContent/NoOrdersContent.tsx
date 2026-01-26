@@ -7,11 +7,11 @@ import { useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 
 import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
-import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
 
 import { getTitle, getDescription } from './NoOrdersContent.utils'
 
 import { OrderTabId } from '../../../const/tabs'
+import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
 import { useNoOrdersAnimation } from '../../../hooks/useNoOrdersAnimation'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import * as styledEl from '../OrdersTableContainer.styled'

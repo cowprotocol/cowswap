@@ -2,9 +2,6 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { TabOrderTypes } from 'modules/ordersTable'
-import { LoadMoreOrdersSection } from 'modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection'
-
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { OrderTableRow } from './OrderTableRow'
@@ -14,8 +11,10 @@ import { TableHeader } from './TableHeader'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../../hooks/useGetBuildOrdersTableUrl'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
+import { TabOrderTypes } from '../../../types'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../../OrdersTablePagination'
+import { LoadMoreOrdersSection } from '../LoadMoreOrdersSection'
 import { TABLE_HEADERS } from '../tableHeaders'
 
 export interface OrdersTableProps {
