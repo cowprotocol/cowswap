@@ -180,7 +180,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 ### Styling & imports
 
-- Import order: core -> external -> internal -> relative.
+- Satisfy the `import/order` eslint rule. The config of the rule is defined in the root `eslint.config.js`.
 - Forbidden imports: raw `styled-components` (use the macro), package `dist/`, router's `useNavigate`.
 - Styled components: optional booleans defaulted, props typed, and meaningful wrappers only.
 
