@@ -49,6 +49,8 @@ export async function fetchAndProcessQuote(
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
     getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
     getCorrelatedTokens,
+    // TODO: sell=buy feature. Set allowIntermediateEqSellToken: true once the feature is ready
+    // allowIntermediateEqSellToken: true
   }
 
   const processQuoteError = (error: Error): void => {
@@ -147,7 +149,8 @@ async function fetchBridgingQuote(
       return
     }
 
-    const error = data?.error
+    // TODO: remove after resting
+    const error = localStorage.getItem('EMULATE_QUOTE_ERROR') ? new Error('QUOTE ERROR') : data?.error
 
     if (error) {
       // Skip state update when another quote already started

@@ -27,7 +27,7 @@ const bungeeBridgeProvider = new BungeeBridgeProvider({
 
 const acrossBridgeProvider = new AcrossBridgeProvider()
 
-const nearIntentsBridgeProvider = new NearIntentsBridgeProvider()
+const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey: process.env.REACT_APP_NEAR_API_KEY })
 
 export const knownBridgeProviders = [bungeeBridgeProvider, acrossBridgeProvider, nearIntentsBridgeProvider]
 

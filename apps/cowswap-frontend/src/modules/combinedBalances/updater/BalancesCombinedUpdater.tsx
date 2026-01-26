@@ -29,7 +29,8 @@ export function BalancesCombinedUpdater() {
       return
     }
     const accountBalancesDiff = preHooksBalancesDiff[account.toLowerCase()] || {}
-    setBalancesCombined(applyBalanceDiffs(tokenBalances, accountBalancesDiff, chainId))
+    const balancesChainId = tokenBalances.chainId ?? chainId
+    setBalancesCombined(applyBalanceDiffs(tokenBalances, accountBalancesDiff, balancesChainId))
   }, [account, chainId, preHooksBalancesDiff, isHooksTradeType, tokenBalances, preHooks.length, setBalancesCombined])
 
   return null
