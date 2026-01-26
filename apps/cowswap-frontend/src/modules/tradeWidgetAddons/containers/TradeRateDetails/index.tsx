@@ -49,6 +49,7 @@ export function TradeRateDetails({
   const swapReceiveAmountInfo = useGetSwapReceiveAmountInfo()
   const shouldPayGas = useShouldPayGas()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
+  const { error: quoteError } = useTradeQuote()
 
   const networkFeeAmount = useNetworkFeeAmount()
 
@@ -58,7 +59,7 @@ export function TradeRateDetails({
     setFeeDetailsOpen((prev) => !prev)
   }, [])
 
-  if (!receiveAmountInfo || !swapReceiveAmountInfo) {
+  if (!receiveAmountInfo || !swapReceiveAmountInfo || quoteError) {
     if (!networkFeeAmount) return null
 
     return (
