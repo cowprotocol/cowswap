@@ -159,7 +159,7 @@ export default defineConfig(({ mode }) => {
     build: {
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
-      // sourcemap: true, // disabled for now, as this is causing vercel builds to fail
+      sourcemap: true,
       rollupOptions: {
         output: {
           // Remove hash for font files to enable preloading
