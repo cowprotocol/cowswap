@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.14.6](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.14.5...widget-react-v0.14.6) (2026-01-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped from ^0.22.2 to ^0.22.3
+
 ## [0.14.5](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.14.4...widget-react-v0.14.5) (2026-01-26)
 
 
