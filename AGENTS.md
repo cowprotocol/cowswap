@@ -100,6 +100,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 - Shared hooks belong under a `hooks/` directory, not inside components.
 - Prefer existing helpers (e.g., `withTimeout`/`fetchWithTimeout` from `@cowprotocol/common-utils`) over local copies; avoid aliasing unless names collide.
 - Export static configs as `const` instead of factory functions.
+- Use `.const.ts` suffixes for files that only define constants/configs (component/model/etc.) for readability.
 - Reuse chain/network lists from shared constants (`AFFILIATE_SUPPORTED_CHAIN_IDS`, etc.) rather than cloning arrays.
 - Lingui: import macros from `@lingui/core/macro` and drop unused imports immediately.
 - UI components like `LinkStyledButton` come from `@cowprotocol/ui` (not `theme`).
