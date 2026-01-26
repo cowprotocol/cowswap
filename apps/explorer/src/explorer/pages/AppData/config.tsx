@@ -3,7 +3,7 @@ import React, { RefObject } from 'react'
 import { LATEST_APP_DATA_VERSION } from '@cowprotocol/cow-sdk'
 
 import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
-import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
+import { JSONSchema7 } from 'json-schema'
 
 import { HelpTooltip } from '../../../components/Tooltip'
 import { metadataApiSDK } from '../../../cowSdk'
@@ -35,39 +35,36 @@ export const getSchema = async (): Promise<JSONSchema7> => {
   return normalizePartnerFeeRefs(schemaCopy)
 }
 
-const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => {
-  if (typeof structuredClone === 'function') {
-    return structuredClone(schema)
-  }
-
-  return JSON.parse(JSON.stringify(schema)) as JSONSchema7
-}
+const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => structuredClone(schema)
 
 const PARTNER_FEE_REF_PREFIX = '#/properties/metadata/properties/partnerFee/definitions/'
 
-const isObjectSchema = (value: JSONSchema7Definition | undefined): value is JSONSchema7 => {
-  return typeof value === 'object' && value !== null
-}
-
 const normalizePartnerFeeRefs = (schema: JSONSchema7): JSONSchema7 => {
   const metadata = schema.properties?.metadata
-  if (!isObjectSchema(metadata)) {
+  if (!metadata || typeof metadata !== 'object') {
     return schema
   }
 
-  const partnerFee = metadata.properties?.partnerFee
-  if (!isObjectSchema(partnerFee)) {
+  const partnerFee = (metadata as JSONSchema7).properties?.partnerFee
+  if (!partnerFee || typeof partnerFee !== 'object') {
     return schema
   }
 
-  const partnerFeeDefinitions = partnerFee.definitions as Record<string, JSONSchema7Definition> | undefined
+  const partnerFeeDefinitions = (partnerFee as JSONSchema7).definitions as Record<string, JSONSchema7> | undefined
 
   if (partnerFeeDefinitions && typeof partnerFeeDefinitions === 'object') {
-    schema.definitions = {
-      ...(schema.definitions || {}),
-      ...partnerFeeDefinitions,
-    }
+    const rootDefinitions = (schema.definitions ?? {}) as Record<string, JSONSchema7>
+
+    Object.entries(partnerFeeDefinitions).forEach(([key, value]) => {
+      if (!(key in rootDefinitions)) {
+        rootDefinitions[key] = value
+      }
+    })
+
+    schema.definitions = rootDefinitions
   }
+
+  const rootDefinitions = schema.definitions ?? {}
 
   const rewriteRefs = (node: unknown): void => {
     if (!node || typeof node !== 'object') return
@@ -79,7 +76,10 @@ const normalizePartnerFeeRefs = (schema: JSONSchema7): JSONSchema7 => {
 
     const record = node as Record<string, unknown>
     if (typeof record.$ref === 'string' && record.$ref.startsWith(PARTNER_FEE_REF_PREFIX)) {
-      record.$ref = `#/definitions/${record.$ref.slice(PARTNER_FEE_REF_PREFIX.length)}`
+      const definitionKey = record.$ref.slice(PARTNER_FEE_REF_PREFIX.length)
+      if (rootDefinitions[definitionKey]) {
+        record.$ref = `#/definitions/${definitionKey}`
+      }
     }
 
     Object.values(record).forEach(rewriteRefs)
