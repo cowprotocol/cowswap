@@ -32,7 +32,13 @@ export const getSchema = async (): Promise<JSONSchema7> => {
     .then((m) => (m as any).default)) as JSONSchema7
 
   const schemaCopy = makeSchemaCopy(latestSchema)
-  return normalizePartnerFeeRefs(schemaCopy)
+  const normalizedSchema = normalizePartnerFeeRefs(schemaCopy)
+
+  if (typeof window !== 'undefined') {
+    ;(window as typeof window & { __appDataSchema?: JSONSchema7 }).__appDataSchema = normalizedSchema
+  }
+
+  return normalizedSchema
 }
 
 const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => structuredClone(schema)
