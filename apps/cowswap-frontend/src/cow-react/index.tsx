@@ -51,18 +51,18 @@ export function Main(): ReactNode {
               <ThemeProvider>
                 <HashRouter>
                   <LanguageProvider>
-                    <Web3ProviderInstance>
-                      <BlockNumberProvider>
-                        <WithLDProvider>
+                    <WithLDProvider>
+                      <Web3ProviderInstance>
+                        <BlockNumberProvider>
                           <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                             <WalletUnsupportedNetworkBanner />
                             <Updaters />
                             <Toasts />
                             <App />
                           </CowAnalyticsProvider>
-                        </WithLDProvider>
-                      </BlockNumberProvider>
-                    </Web3ProviderInstance>
+                        </BlockNumberProvider>
+                      </Web3ProviderInstance>
+                    </WithLDProvider>
                   </LanguageProvider>
                 </HashRouter>
               </ThemeProvider>

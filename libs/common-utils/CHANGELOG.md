@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.26.1...common-utils-v1.27.0) (2026-01-26)
+
+
+### Features
+
+* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
+
 ## [1.26.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.26.0...common-utils-v1.26.1) (2026-01-13)
 
 

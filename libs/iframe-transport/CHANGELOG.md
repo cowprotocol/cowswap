@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v1.1.0...iframe-transport-v1.1.1) (2026-01-26)
+
+
+### Bug Fixes
+
+* add a guard for ssr in eip6963 listener ([#6849](https://github.com/cowprotocol/cowswap/issues/6849)) ([aeaf7e8](https://github.com/cowprotocol/cowswap/commit/aeaf7e810648214252359620f7bb63b0b207c227))
+* **widget-lib:** add compatibility with server rendering ([#6813](https://github.com/cowprotocol/cowswap/issues/6813)) ([76bd736](https://github.com/cowprotocol/cowswap/commit/76bd736f17d722f0a639542d4fcbd5e3f0be57b2))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v1.0.3...iframe-transport-v1.1.0) (2025-08-12)
 
 
