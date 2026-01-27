@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { Airdrop, AirdropAbi } from '@cowprotocol/abis'
 import { formatTokenAmount } from '@cowprotocol/common-utils'
+import { Airdrop, AirdropAbi } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction } from '@uniswap/sdk-core'
 

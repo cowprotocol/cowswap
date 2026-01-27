@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import type { Multicall3 } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { Multicall3 } from '@cowprotocol/cowswap-abis'
 import { Interface, Result } from '@ethersproject/abi'
 import type { Web3Provider } from '@ethersproject/providers'
 

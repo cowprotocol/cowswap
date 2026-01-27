@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { Erc20 } from '@cowprotocol/abis'
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
+import { Erc20 } from '@cowprotocol/cowswap-abis'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'

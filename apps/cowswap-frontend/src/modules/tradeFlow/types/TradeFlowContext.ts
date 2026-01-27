@@ -1,5 +1,5 @@
-import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/cowswap-abis'
 import type { Command } from '@cowprotocol/types'
 import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
