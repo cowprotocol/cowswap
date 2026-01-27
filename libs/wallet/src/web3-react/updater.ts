@@ -86,7 +86,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
               chainId,
               threshold,
               owners,
-              nonce: String(nonce),
+              nonce,
               isReadOnly,
             }
           })
