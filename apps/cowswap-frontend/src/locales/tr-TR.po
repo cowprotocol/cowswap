@@ -8,7 +8,7 @@ msgstr ""
 "Language: tr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-01-27 09:33\n"
+"PO-Revision-Date: 2026-01-27 11:54\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2573,8 +2573,8 @@ msgid "No order history"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#~ msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
-#~ msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
+msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
+msgstr ""
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "The input token cannot be transferred. There may be an issue with the input token."
@@ -5763,8 +5763,8 @@ msgid "Advanced"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#~ msgid "Not yet supported"
-#~ msgstr "Not yet supported"
+msgid "Not yet supported"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "Remove"
@@ -5941,8 +5941,8 @@ msgid "Tokens must be different"
 msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/hooks/useGetSafeTxInfo.ts
-msgid "There is no provider to get Gnosis safe info"
-msgstr ""
+#~ msgid "There is no provider to get Gnosis safe info"
+#~ msgstr "There is no provider to get Gnosis safe info"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Expired order"
