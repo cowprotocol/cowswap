@@ -2,7 +2,13 @@ import { useEffect } from 'react'
 
 import { getRpcProvider, LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
-import { DEFAULT_BACKOFF_OPTIONS, MetadataApi, OrderBookApi, setGlobalAdapter } from '@cowprotocol/cow-sdk'
+import {
+  DEFAULT_BACKOFF_OPTIONS,
+  MetadataApi,
+  OrderBookApi,
+  setGlobalAdapter,
+  AbstractProviderAdapter,
+} from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
@@ -38,9 +44,10 @@ export function CowSdkUpdater(): null {
     if (!LAUNCH_DARKLY_VIEM_MIGRATION) return
     if (!publicClient) return
     if (walletClient) {
-      setGlobalAdapter(new ViemAdapter({ provider: publicClient, walletClient }))
+      // TODO: fix the type casting
+      setGlobalAdapter(new ViemAdapter({ provider: publicClient, walletClient }) as AbstractProviderAdapter)
     } else {
-      setGlobalAdapter(new ViemAdapter({ provider: publicClient, signer: PERMIT_ACCOUNT }))
+      setGlobalAdapter(new ViemAdapter({ provider: publicClient, signer: PERMIT_ACCOUNT }) as AbstractProviderAdapter)
     }
   }, [publicClient, walletClient])
 
