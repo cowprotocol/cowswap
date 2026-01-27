@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { ComposableCoW } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 
 import ms from 'ms.macro'
 
