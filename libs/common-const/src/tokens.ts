@@ -557,6 +557,8 @@ export const USDC_INK = new TokenWithLogo(
   'USDC',
 )
 
+// TODO: Why are these not imported from WRAPPED_NATIVE_CURRENCIES?
+
 export const WETH_INK = new TokenWithLogo(
   WETH_MAINNET.logoURI,
   SupportedChainId.INK,
