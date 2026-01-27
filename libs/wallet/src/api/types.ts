@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { SafeInfoResponse } from '@safe-global/api-kit'
+import type { SafeInfoResponse } from '@safe-global/api-kit'
 
 export enum ConnectionType {
   NETWORK = 'NETWORK',
@@ -32,9 +32,10 @@ export interface WalletDetails {
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners' | 'nonce'> & {
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
   isReadOnly?: boolean
   chainId: number
+  nonce: number
 }
 
 export enum WalletType {

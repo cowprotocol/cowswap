@@ -1,11 +1,11 @@
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20__factory } from '@cowprotocol/cowswap-abis'
+import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import { EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
 import { renderHook } from '@testing-library/react'
 import useSWR from 'swr'
 
@@ -77,7 +77,7 @@ function createEip2612PermitCallData(owner: string, spender: string, value: Ethe
     '0x0000000000000000000000000000000000000000000000000000000000000000', // s
   ])
   // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with EIP_2612_PERMIT_SELECTOR
-  return EIP_2612_PERMIT_SELECTOR + permitData.slice(10)
+  return oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + permitData.slice(10)
 }
 
 describe('useDoesOrderHaveValidPermit', () => {

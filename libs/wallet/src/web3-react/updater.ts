@@ -69,7 +69,6 @@ function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDet
 }
 
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
-  const { provider } = useWeb3React()
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
   const safeAppsSdk = useSafeAppsSdk()
@@ -87,7 +86,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
               chainId,
               threshold,
               owners,
-              nonce,
+              nonce: Number(nonce),
               isReadOnly,
             }
           })
@@ -96,9 +95,9 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
           setSafeInfo(undefined)
         }
       } else {
-        if (chainId && account && provider) {
+        if (chainId && account) {
           try {
-            const _safeInfo = await getSafeInfo(chainId, account, provider)
+            const _safeInfo = await getSafeInfo(chainId, account)
             const { address, threshold, owners, nonce } = _safeInfo
             setSafeInfo((prevSafeInfo) => ({
               ...prevSafeInfo,
@@ -142,7 +141,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
       clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
       longSafeInfoInterval = null
     }
-  }, [chainId, account, provider, safeAppsSdk])
+  }, [chainId, account, safeAppsSdk])
 
   return safeInfo
 }

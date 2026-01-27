@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
@@ -85,7 +85,11 @@ async function _updatePresignGnosisSafeTx(
            * If an order has a nonce lower than the current Safe nonce, it means that the proposed transaction was replaced by another one.
            * In this case, we should cancel the order.
            */
-          const isOrderTxReplaced = !!(safeNonce && safeTransaction.nonce < safeNonce && !safeTransaction.isExecuted)
+          const isOrderTxReplaced = !!(
+            safeNonce &&
+            BigInt(safeTransaction.nonce) < BigInt(safeNonce) &&
+            !safeTransaction.isExecuted
+          )
 
           if (CREATING_STATES.includes(order.status) && isOrderTxReplaced) {
             cancelOrdersBatch({
