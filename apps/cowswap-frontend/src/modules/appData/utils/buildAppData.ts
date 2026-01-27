@@ -56,7 +56,9 @@ export async function buildAppData({
   replacedOrderUid,
   userConsent,
 }: BuildAppDataParams): Promise<AppDataInfo> {
-  const referrerParams = referrerCode ? { code: referrerCode } : undefined
+  const referrerParams = referrerCode
+    ? ({ code: referrerCode } as unknown as AppDataRootSchema['metadata']['referrer'])
+    : undefined
 
   const quoteParams = {
     slippageBips,

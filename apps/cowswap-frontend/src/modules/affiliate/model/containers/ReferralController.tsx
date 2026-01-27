@@ -12,9 +12,9 @@ import {
   usePendingVerificationHandler,
 } from './verificationEffects'
 
+import { isSupportedReferralNetwork } from '../../api/referralApi'
 import { useReferral } from '../hooks/useReferral'
 import { useReferralWalletSync } from '../hooks/useReferralWalletSync'
-import { isSupportedReferralNetwork } from '../services/referralApi'
 
 export function ReferralController(): ReactNode {
   const referral = useReferral()

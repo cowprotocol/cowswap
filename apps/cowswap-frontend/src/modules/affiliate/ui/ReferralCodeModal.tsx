@@ -12,9 +12,9 @@ import { CowModal } from 'common/pure/Modal'
 import { ReferralModalContent } from './ReferralCodeModal/content'
 import { useReferralModalController } from './ReferralCodeModal/useReferralModalController'
 
-import { useReferralActions } from '../hooks/useReferralActions'
-import { useReferralModalState } from '../hooks/useReferralModalState'
-import { isSupportedReferralNetwork } from '../services/referralApi'
+import { isSupportedReferralNetwork } from '../api/referralApi'
+import { useReferralActions } from '../model/hooks/useReferralActions'
+import { useReferralModalState } from '../model/hooks/useReferralModalState'
 
 export function ReferralCodeModal(): ReactNode {
   const modalState = useReferralModalState()

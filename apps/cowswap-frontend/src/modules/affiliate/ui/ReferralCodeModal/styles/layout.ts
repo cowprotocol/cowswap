@@ -19,20 +19,6 @@ export const Body = styled.div`
   overflow-y: auto;
 `
 
-export const Illustration = styled.img`
-  --size: 145px;
-  align-self: center;
-  width: auto;
-  height: var(--size);
-  display: block;
-  object-fit: contain;
-  margin: 0 0 24px;
-
-  ${Media.upToSmall()} {
-    --size: 80px;
-  }
-`
-
 export const Title = styled.h2`
   margin: 0 auto 16px;
   width: 100%;

@@ -6,14 +6,14 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { handleDebugVerification } from './verificationDebug'
 
-import { verifyReferralCode } from '../services/referralApi'
+import { verifyReferralCode } from '../../api/referralApi'
+import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/code'
 import {
   ReferralContextValue,
   ReferralVerificationApiResponse,
   ReferralVerificationStatus,
   WalletReferralState,
 } from '../types'
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../utils/code'
 
 export interface PerformVerificationParams {
   rawCode: string
@@ -326,7 +326,13 @@ function handleCodeStatusResponse(params: {
 
   actions.setIncomingCodeReason(undefined)
   actions.setSavedCode(sanitizedCode)
-  applyVerificationResult({ kind: 'valid', code: sanitizedCode, eligible: true, programActive })
+  applyVerificationResult({
+    kind: 'valid',
+    code: sanitizedCode,
+    eligible: true,
+    programActive,
+    programParams: response.code.params,
+  })
   trackVerifyResult('valid', true)
 }
 
@@ -350,6 +356,7 @@ function restoreExistingVerificationState(params: {
       code: currentVerification.code,
       eligible: currentVerification.eligible,
       programActive: currentVerification.programActive,
+      programParams: currentVerification.programParams,
     })
     return
   }

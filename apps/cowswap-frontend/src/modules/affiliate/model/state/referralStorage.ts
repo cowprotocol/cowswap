@@ -4,9 +4,9 @@ import { isProdLike } from '@cowprotocol/common-utils'
 
 import { reduceRemoveCode, reduceSetSavedCode } from './referralReducers'
 
-import { REFERRAL_STORAGE_KEY } from '../constants'
+import { REFERRAL_STORAGE_KEY } from '../../config/constants'
+import { sanitizeReferralCode } from '../../lib/code'
 import { ReferralDomainState } from '../types'
-import { sanitizeReferralCode } from '../utils/code'
 
 type SetReferralState = Dispatch<SetStateAction<ReferralDomainState>>
 type SetHydratedState = Dispatch<SetStateAction<boolean>>

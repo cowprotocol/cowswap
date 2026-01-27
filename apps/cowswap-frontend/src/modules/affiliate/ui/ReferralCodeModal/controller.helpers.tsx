@@ -7,8 +7,8 @@ import { Trans } from '@lingui/react/macro'
 
 import { PrimaryCta, StatusCopyResult } from './types'
 
-import { useReferralModalState, ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { ReferralIncomingCodeReason, ReferralVerificationStatus, WalletReferralState } from '../../types'
+import { useReferralModalState, ReferralModalUiState } from '../../model/hooks/useReferralModalState'
+import { ReferralIncomingCodeReason, ReferralVerificationStatus, WalletReferralState } from '../../model/types'
 
 type VerificationKind = ReturnType<typeof useReferralModalState>['verification']['kind']
 type WalletStatus = WalletReferralState['status']
@@ -34,8 +34,7 @@ export function computePrimaryCta(params: {
   }
 
   if (uiState === 'ineligible') {
-    // Product copy requests the CTA stay disabled here so users understand they must try a different code.
-    return disabledCta(t`Wallet ineligible. Try another code`)
+    return { label: t`Go back`, disabled: false, action: 'goBack' }
   }
 
   if (uiState === 'error') {
@@ -90,10 +89,12 @@ export function getHelperText(uiState: ReferralModalUiState): string | undefined
     : undefined
 }
 
-export function getStatusCopy(verification: ReferralVerificationStatus): StatusCopyResult {
+export function getStatusCopy(verification: ReferralVerificationStatus, timeCapDays?: number): StatusCopyResult {
   return {
     shouldShowInfo: verification.kind === 'valid' && verification.eligible,
-    infoMessage: t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for 90 days.`,
+    infoMessage: timeCapDays
+      ? t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for ${timeCapDays} days.`
+      : t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for the program window.`,
   }
 }
 
@@ -108,7 +109,7 @@ export function useReferralModalFocus(
       return
     }
 
-    if (uiState === 'valid' || uiState === 'linked') {
+    if (uiState === 'valid' || uiState === 'linked' || uiState === 'ineligible') {
       ctaRef.current?.focus()
       return
     }

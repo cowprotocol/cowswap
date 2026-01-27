@@ -3,7 +3,7 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary, ButtonSecondary, HelpTooltip, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSecondary, ButtonSize, HelpTooltip, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -16,8 +16,9 @@ import styled from 'styled-components/macro'
 import CopyHelper from 'legacy/components/Copy'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { createAffiliateCode, getAffiliateCode, REFERRAL_HOW_IT_WORKS_URL, verifyReferralCode } from 'modules/affiliate'
-import { buildAffiliateTypedData } from 'modules/affiliate/utils/typedData'
+import { createAffiliateCode, getAffiliateCode, verifyReferralCode } from 'modules/affiliate/api/referralApi'
+import { REFERRAL_HOW_IT_WORKS_URL } from 'modules/affiliate/config/constants'
+import { buildAffiliateTypedData } from 'modules/affiliate/lib/typedData'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useModalState } from 'common/hooks/useModalState'
@@ -425,19 +426,23 @@ export default function AccountAffiliate() {
               <HeroContent>
                 <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
                 <HeroTitle>
-                  <Trans>Invite your friends and earn rewards</Trans>
+                  <Trans>
+                    Invite your friends <br /> and earn rewards
+                  </Trans>
                 </HeroTitle>
                 <HeroSubtitle>
-                  <Trans>For every $50k eligible volume, you and the trader each earn $10.</Trans>
+                  <Trans>
+                    For every $50k eligible volume, <br /> you and the trader each earn $10.
+                  </Trans>
                 </HeroSubtitle>
                 <HeroActions>
                   {!isConnected && (
-                    <ButtonPrimary onClick={handleConnect} data-testid="affiliate-connect">
+                    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleConnect} data-testid="affiliate-connect">
                       <Trans>Connect wallet</Trans>
                     </ButtonPrimary>
                   )}
                   {isConnected && showUnsupported && (
-                    <ButtonPrimary onClick={handleSwitchToMainnet}>
+                    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleSwitchToMainnet}>
                       <Trans>Switch to Ethereum mainnet</Trans>
                     </ButtonPrimary>
                   )}
@@ -784,7 +789,6 @@ const RewardsGrid = styled.div`
 
 const HeroCard = styled(Card)`
   max-width: 520px;
-  margin: 0 auto;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -793,24 +797,23 @@ const HeroCard = styled(Card)`
 const HeroContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   align-items: center;
 `
-const HeroTitle = styled.h3`
+const HeroTitle = styled.h1`
   margin: 0;
-  font-size: 22px;
   color: var(${UI.COLOR_TEXT});
 `
 
 const HeroSubtitle = styled.p`
   margin: 0;
-  font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 const HeroActions = styled.div`
   display: flex;
   justify-content: center;
+  min-width: 320px;
 `
 
 const HeroLinks = styled.div`

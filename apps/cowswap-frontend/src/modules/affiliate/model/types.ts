@@ -1,5 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { AffiliateProgramParams } from '../config/programParams'
+
 /**
  * Flags how the referral modal was launched:
  * - 'ui': user clicked through our surfaces (header CTA, rewards hub, etc.)
@@ -32,7 +34,7 @@ export type ReferralVerificationStatus =
   | { kind: 'idle' }
   | { kind: 'pending'; code: string }
   | { kind: 'checking'; code: string }
-  | { kind: 'valid'; code: string; eligible: boolean; programActive: boolean }
+  | { kind: 'valid'; code: string; eligible: boolean; programActive: boolean; programParams?: AffiliateProgramParams }
   | { kind: 'invalid'; code: string }
   | { kind: 'expired'; code: string }
   | { kind: 'linked'; code: string; linkedCode: string }
@@ -99,6 +101,7 @@ export interface ReferralVerificationApiResponse {
     value: string
     status: 'valid' | 'invalid' | 'expired'
     programActive: boolean
+    params?: AffiliateProgramParams
   }
   wallet: {
     eligible: boolean
@@ -118,8 +121,23 @@ export interface WalletReferralStatusResponse {
   }
 }
 
+export interface ReferralCodeResponse {
+  code: string
+  traderRewardAmount?: number
+  triggerVolume?: number
+  timeCapDays?: number
+  volumeCap?: number
+}
+
 export interface AffiliateCodeResponse {
   code: string
+  rewardAmount: number
+  triggerVolume: number
+  timeCapDays: number
+  volumeCap: number
+  revenueSplitAffiliatePct: number
+  revenueSplitTraderPct: number
+  revenueSplitDaoPct: number
 }
 
 export interface AffiliateCreateRequest {

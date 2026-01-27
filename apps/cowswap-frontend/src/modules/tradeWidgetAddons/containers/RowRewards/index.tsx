@@ -4,7 +4,8 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/react/macro'
 
-import { useReferral, useReferralActions } from 'modules/affiliate'
+import { useReferral } from 'modules/affiliate/model/hooks/useReferral'
+import { useReferralActions } from 'modules/affiliate/model/hooks/useReferralActions'
 
 import { Routes } from 'common/constants/routes'
 

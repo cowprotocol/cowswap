@@ -8,10 +8,10 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
+import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/code'
 import { useReferral } from '../hooks/useReferral'
 import { useReferralActions } from '../hooks/useReferralActions'
 import { ReferralContextValue } from '../types'
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../utils/code'
 
 export function ReferralDeepLinkHandler(): ReactNode {
   const { isAffiliateRewardsEnabled = true } = useFeatureFlags()

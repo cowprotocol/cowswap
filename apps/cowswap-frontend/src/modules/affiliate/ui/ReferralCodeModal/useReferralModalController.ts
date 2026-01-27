@@ -15,10 +15,11 @@ import {
 } from './controller.helpers'
 import { FocusableElement, PrimaryCta, ReferralModalContentProps } from './types'
 
-import { useReferralActions } from '../../hooks/useReferralActions'
-import { useReferralModalState } from '../../hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../types'
-import { isReferralCodeLengthValid } from '../../utils/code'
+import { isReferralCodeLengthValid } from '../../lib/code'
+import { getIncomingIneligibleCode } from '../../lib/ineligible'
+import { useReferralActions } from '../../model/hooks/useReferralActions'
+import { useReferralModalState } from '../../model/hooks/useReferralModalState'
+import { ReferralVerificationStatus } from '../../model/types'
 
 export interface ReferralModalControllerParams {
   modalState: ReturnType<typeof useReferralModalState>
@@ -37,6 +38,7 @@ export interface ReferralModalControllerResult {
   contentProps: Omit<ReferralModalContentProps, 'onDismiss'>
 }
 
+// eslint-disable-next-line complexity
 export function useReferralModalController(params: ReferralModalControllerParams): ReferralModalControllerResult {
   const { modalState, actions, account, supportedNetwork, toggleWalletModal, navigate, analytics } = params
   const { referral, uiState, displayCode, savedCode, hasCode, hasValidLength, verification, incomingCode, wallet } =
@@ -77,14 +79,16 @@ export function useReferralModalController(params: ReferralModalControllerParams
   })
 
   const helperText = getHelperText(uiState)
-  const statusCopy = getStatusCopy(verification)
+  const timeCapDays = verification.kind === 'valid' ? verification.programParams?.timeCapDays : undefined
+  const statusCopy = getStatusCopy(verification, timeCapDays)
   const verificationCode = 'code' in verification ? verification.code : undefined
   const codeForDisplay = incomingCode || verificationCode || savedCode || displayCode
+  const incomingIneligibleCode = getIncomingIneligibleCode(incomingCode, verification)
   const { linkedMessage } = useReferralMessages(codeForDisplay, referral.incomingCodeReason)
   const hasRejection = Boolean(referral.incomingCodeReason)
 
   const initialFocusRef =
-    uiState === 'valid' || uiState === 'linked'
+    uiState === 'valid' || uiState === 'linked' || uiState === 'ineligible'
       ? (ctaRef as RefObject<FocusableElement>)
       : (inputRef as RefObject<FocusableElement>)
 
@@ -97,6 +101,7 @@ export function useReferralModalController(params: ReferralModalControllerParams
       savedCode,
       displayCode,
       verification,
+      incomingIneligibleCode,
       onPrimaryClick: handlers.onPrimaryClick,
       onEdit: handlers.onEdit,
       onRemove: handlers.onRemove,

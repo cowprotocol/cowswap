@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
@@ -12,8 +12,11 @@ import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { REFERRAL_HOW_IT_WORKS_URL, useReferral, useReferralActions } from 'modules/affiliate'
-import { Illustration } from 'modules/affiliate/components/ReferralCodeModal/styles'
+import { REFERRAL_HOW_IT_WORKS_URL } from 'modules/affiliate/config/constants'
+import { getIncomingIneligibleCode } from 'modules/affiliate/lib/ineligible'
+import { useReferral } from 'modules/affiliate/model/hooks/useReferral'
+import { useReferralActions } from 'modules/affiliate/model/hooks/useReferralActions'
+import { ReferralIneligibleCopy } from 'modules/affiliate/ui/ReferralIneligibleCopy'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
@@ -34,20 +37,11 @@ export default function AccountMyRewards() {
   const isIneligible = referral.wallet.status === 'ineligible' && isConnected
   const isLinked = referral.wallet.status === 'linked'
   const traderCode = isLinked
-    ? referral.wallet.code
+    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (referral as any).wallet.code
     : (referral.savedCode ?? (referral.verification.kind === 'valid' ? referral.verification.code : undefined))
   const traderHasCode = Boolean(traderCode)
-  const incomingIneligibleCode = useMemo(() => {
-    if (referral.incomingCode) {
-      return referral.incomingCode
-    }
-
-    if (referral.verification.kind === 'ineligible') {
-      return referral.verification.code
-    }
-
-    return undefined
-  }, [referral.incomingCode, referral.verification])
+  const incomingIneligibleCode = getIncomingIneligibleCode(referral.incomingCode, referral.verification)
 
   const rewardsProgress = 0
   const rewardsProgressPercent = Math.min(100, Math.round((rewardsProgress / DEFAULT_REWARDS_TARGET) * 100))
@@ -77,30 +71,20 @@ export default function AccountMyRewards() {
               <ArrowLeft size={20} />
             </BackButton>
           </IneligibleHeader>
-          <Illustration src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+          <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
 
           <IneligibleTitle>
             <Trans>Your wallet is ineligible</Trans>
           </IneligibleTitle>
           <IneligibleSubtitle>
-            {incomingIneligibleCode ? (
-              <>
-                <Trans>
-                  The code <strong>{incomingIneligibleCode}</strong> from your link wasn't applied because this wallet
-                  has already traded on CoW Swap.
-                </Trans>{' '}
-                <Trans>Referral rewards are for new wallets only.</Trans>{' '}
-              </>
-            ) : (
-              <>
-                <Trans>
-                  This wallet has already traded on CoW Swap. Referral rewards are for new wallets only.
-                </Trans>{' '}
-              </>
-            )}
-            <ExtLink href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
-              <Trans>How it works</Trans>
-            </ExtLink>
+            <ReferralIneligibleCopy
+              incomingCode={incomingIneligibleCode}
+              howItWorksLink={
+                <ExtLink href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
+                  <Trans>How it works</Trans>
+                </ExtLink>
+              }
+            />
           </IneligibleSubtitle>
           <IneligibleActions>
             <ButtonPrimary onClick={handleGoBack}>
@@ -111,25 +95,30 @@ export default function AccountMyRewards() {
       ) : !traderHasCode ? (
         <HeroCard>
           <HeroContent>
-            <Illustration src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+            <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
             <HeroTitle>
               <Trans>Earn while you trade</Trans>
             </HeroTitle>
             <HeroSubtitle>
-              <Trans>Use a referral code to earn 10 USDC for every $50k in eligible volume within 90 days.</Trans>
+              <Trans>
+                Use a referral code to earn 10 USDC for
+                <br />
+                every $50k in eligible volume within 90 days.
+                <br />
+                New wallets only.
+              </Trans>
             </HeroSubtitle>
-            <NoticeBlock>
-              <Trans>New wallets only.</Trans>
-            </NoticeBlock>
-            {!isConnected ? (
-              <ButtonPrimary onClick={handleConnect}>
-                <Trans>Connect wallet</Trans>
-              </ButtonPrimary>
-            ) : (
-              <ButtonPrimary onClick={handleOpenRewardsModal}>
-                <Trans>Add code</Trans>
-              </ButtonPrimary>
-            )}
+            <HeroActions>
+              {!isConnected ? (
+                <ButtonPrimary onClick={handleConnect}>
+                  <Trans>Connect wallet</Trans>
+                </ButtonPrimary>
+              ) : (
+                <ButtonPrimary onClick={handleOpenRewardsModal}>
+                  <Trans>Add code</Trans>
+                </ButtonPrimary>
+              )}
+            </HeroActions>
             <HeroLinks>
               <ExtLink href="https://cow.fi/legal/cowswap-terms" target="_blank" rel="noopener noreferrer">
                 <Trans>Terms</Trans>
@@ -288,7 +277,6 @@ const RewardsGrid = styled.div`
 
 const HeroCard = styled(Card)`
   max-width: 520px;
-  margin: 0 auto;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -297,13 +285,12 @@ const HeroCard = styled(Card)`
 const HeroContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   align-items: center;
 `
 
 const IneligibleCard = styled(Card)`
   max-width: 640px;
-  margin: 0 auto;
   flex-direction: column;
   align-items: center;
   text-align: center;
@@ -342,7 +329,6 @@ const IneligibleTitle = styled.h3`
 
 const IneligibleSubtitle = styled.p`
   margin: 0;
-  font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   max-width: 520px;
 
@@ -359,16 +345,20 @@ const IneligibleActions = styled.div`
   }
 `
 
-const HeroTitle = styled.h3`
+const HeroTitle = styled.h1`
   margin: 0;
-  font-size: 22px;
   color: var(${UI.COLOR_TEXT});
 `
 
 const HeroSubtitle = styled.p`
   margin: 0;
-  font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+`
+
+const HeroActions = styled.div`
+  display: flex;
+  justify-content: center;
+  min-width: 320px;
 `
 
 const HeroLinks = styled.div`
@@ -406,12 +396,6 @@ const Subtitle = styled.p`
   margin: 0;
   font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const NoticeBlock = styled.p`
-  margin: 0;
-  font-size: 14px;
-  color: var(${UI.COLOR_TEXT});
 `
 
 const FullWidthCard = styled(Card)`

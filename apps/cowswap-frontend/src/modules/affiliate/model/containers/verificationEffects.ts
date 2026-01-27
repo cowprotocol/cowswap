@@ -4,8 +4,8 @@ import type { CowAnalytics } from '@cowprotocol/analytics'
 
 import { performVerification } from './verificationLogic'
 
+import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/code'
 import { ReferralContextValue, ReferralVerificationStatus, WalletReferralState } from '../types'
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../utils/code'
 
 interface VerificationParams {
   referral: ReferralContextValue

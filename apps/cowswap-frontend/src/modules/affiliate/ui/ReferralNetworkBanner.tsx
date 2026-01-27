@@ -6,8 +6,8 @@ import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { REFERRAL_SUPPORTED_NETWORK_NAMES } from '../constants'
-import { useReferral } from '../hooks/useReferral'
+import { REFERRAL_SUPPORTED_NETWORK_NAMES } from '../config/constants'
+import { useReferral } from '../model/hooks/useReferral'
 
 const Wrapper = styled.div`
   position: fixed;

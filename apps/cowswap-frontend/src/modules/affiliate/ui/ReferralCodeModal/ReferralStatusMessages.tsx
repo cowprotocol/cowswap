@@ -7,7 +7,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { InlineAlert, StatusMessage, TitleAccent } from './styles'
 
-import { ReferralModalUiState } from '../../hooks/useReferralModalState'
+import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
 
 export interface ReferralStatusMessagesProps {
   infoMessage: string

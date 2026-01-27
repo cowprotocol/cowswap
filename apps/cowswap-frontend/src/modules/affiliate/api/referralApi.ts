@@ -1,15 +1,17 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 
-import { REFERRAL_API_TIMEOUT_MS, REFERRAL_SUPPORTED_NETWORKS } from '../constants'
+import { REFERRAL_API_TIMEOUT_MS, REFERRAL_SUPPORTED_NETWORKS } from '../config/constants'
+import { AffiliateProgramParams } from '../config/programParams'
 import {
   ReferralApiConfig,
   AffiliateCodeResponse,
   AffiliateCreateRequest,
   ReferralVerificationApiResponse,
   ReferralVerificationRequest,
+  ReferralCodeResponse,
   WalletReferralStatusRequest,
   WalletReferralStatusResponse,
-} from '../types'
+} from '../model/types'
 
 export function getReferralApiConfig(): ReferralApiConfig {
   return {
@@ -70,6 +72,30 @@ function buildReferralError(status: number, text: string, data?: { message?: str
   return error
 }
 
+function toAffiliateProgramParams(data?: ReferralCodeResponse): AffiliateProgramParams | undefined {
+  if (!data) {
+    return undefined
+  }
+
+  const { traderRewardAmount, triggerVolume, timeCapDays, volumeCap } = data
+
+  if (
+    typeof traderRewardAmount !== 'number' ||
+    typeof triggerVolume !== 'number' ||
+    typeof timeCapDays !== 'number' ||
+    typeof volumeCap !== 'number'
+  ) {
+    return undefined
+  }
+
+  return {
+    traderRewardAmount,
+    triggerVolumeUsd: triggerVolume,
+    timeCapDays,
+    volumeCapUsd: volumeCap,
+  }
+}
+
 export async function verifyReferralCode(
   request: ReferralVerificationRequest,
   config = getReferralApiConfig(),
@@ -77,7 +103,7 @@ export async function verifyReferralCode(
   const { code } = request
   const url = `${config.baseUrl.replace(/\/$/, '')}/ref-codes/${encodeURIComponent(code)}`
 
-  const { response, data, text } = await fetchJsonResponse<AffiliateCodeResponse>(
+  const { response, data, text } = await fetchJsonResponse<ReferralCodeResponse>(
     url,
     {
       method: 'GET',
@@ -94,6 +120,7 @@ export async function verifyReferralCode(
         value: data?.code ?? code,
         status: 'valid',
         programActive: true,
+        params: toAffiliateProgramParams(data),
       },
       wallet: {
         eligible: true,
@@ -180,7 +207,10 @@ export async function getAffiliateCode(
   )
 
   if (response.ok) {
-    return data ?? { code: '' }
+    if (!data) {
+      throw buildReferralError(response.status, text, { message: 'Affiliate response missing' })
+    }
+    return data
   }
 
   if (response.status === 404) {
@@ -210,7 +240,10 @@ export async function createAffiliateCode(
   )
 
   if (response.ok) {
-    return data ?? { code: request.code }
+    if (!data) {
+      throw buildReferralError(response.status, text, { message: 'Affiliate response missing' })
+    }
+    return data
   }
 
   throw buildReferralError(response.status, text, data as { message?: string } | undefined)

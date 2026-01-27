@@ -1,3 +1,4 @@
+import { sanitizeReferralCode } from '../../lib/code'
 import {
   ReferralDomainState,
   ReferralIncomingCodeReason,
@@ -5,7 +6,6 @@ import {
   ReferralVerificationStatus,
   WalletReferralState,
 } from '../types'
-import { sanitizeReferralCode } from '../utils/code'
 
 export function reduceOpenModal(
   prev: ReferralDomainState,

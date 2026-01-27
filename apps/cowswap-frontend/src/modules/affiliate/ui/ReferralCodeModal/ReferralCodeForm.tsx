@@ -20,9 +20,9 @@ import {
   TagGroup,
 } from './styles'
 
-import { ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../types'
-import { isReferralCodeLengthValid } from '../../utils/code'
+import { isReferralCodeLengthValid } from '../../lib/code'
+import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
+import { ReferralVerificationStatus } from '../../model/types'
 
 type TrailingIconKind = 'error' | 'lock' | 'pending' | 'success'
 

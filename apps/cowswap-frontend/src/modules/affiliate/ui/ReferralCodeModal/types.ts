@@ -1,7 +1,7 @@
 import { FormEvent, ReactNode, RefObject } from 'react'
 
-import { ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../types'
+import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
+import { ReferralVerificationStatus } from '../../model/types'
 
 export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElement | null
 
@@ -16,6 +16,7 @@ export interface ReferralModalContentProps {
   savedCode?: string
   displayCode: string
   verification: ReferralVerificationStatus
+  incomingIneligibleCode?: string
   onPrimaryClick(): void
   onEdit(): void
   onRemove(): void

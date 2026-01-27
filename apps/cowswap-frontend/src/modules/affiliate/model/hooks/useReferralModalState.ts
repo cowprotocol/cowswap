@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useReferral } from './useReferral'
 
-import { isReferralCodeLengthValid } from '../utils/code'
+import { isReferralCodeLengthValid } from '../../lib/code'
 
 export type ReferralModalUiState =
   | 'empty'
@@ -48,7 +48,7 @@ function buildReferralModalState(referral: ReferralSnapshot): ReferralModalState
   const verificationCode = 'code' in verification ? verification.code : undefined
   // Prefer the code the user is actively verifying (incoming/verification) so the UI
   // reflects what the backend is checking even if a different value lives in storage.
-  const displayCode = editMode ? inputCode : verificationCode ?? savedCode ?? inputCode
+  const displayCode = editMode ? inputCode : (verificationCode ?? savedCode ?? inputCode)
   const hasCode = hasAnyCode(verificationCode, incomingCode, savedCode, inputCode)
   const hasValidLength = isReferralCodeLengthValid(displayCode || '')
   const isEditing = editMode || (!savedCode && hasCode)
@@ -76,12 +76,7 @@ function buildReferralModalState(referral: ReferralSnapshot): ReferralModalState
   }
 }
 
-function hasAnyCode(
-  verificationCode?: string,
-  incomingCode?: string,
-  savedCode?: string,
-  inputCode?: string,
-): boolean {
+function hasAnyCode(verificationCode?: string, incomingCode?: string, savedCode?: string, inputCode?: string): boolean {
   return Boolean(verificationCode || incomingCode || savedCode || inputCode)
 }
 
