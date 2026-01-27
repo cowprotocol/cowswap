@@ -1,20 +1,14 @@
 import { areAddressesEqual } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20__factory, type Erc20Interface } from '@cowprotocol/cowswap-abis'
+import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 
-import {
-  DAI_EIP_2612_PERMIT_ABI,
-  DAI_PERMIT_SELECTOR,
-  EIP_2612_PERMIT_SELECTOR,
-} from '@1inch/permit-signed-approvals-utils'
-
 const erc20Interface = Erc20__factory.createInterface()
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const daiInterface = new Interface(DAI_EIP_2612_PERMIT_ABI as any) as Erc20Interface
+
+const daiInterface = new Interface(oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI) as Erc20Interface
 
 export interface PermitValidationResult {
   isValid: boolean
@@ -83,10 +77,10 @@ export function isPermitDecodedCalldataValid(
   const defaultSpenderAddress = (spenderAddress || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]).toLowerCase()
   const normalizedOwnerAddress = ownerAddress.toLowerCase()
 
-  if (callData.startsWith(EIP_2612_PERMIT_SELECTOR)) {
+  if (callData.startsWith(oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR)) {
     const result = validateEip2612Permit(callData, defaultSpenderAddress, normalizedOwnerAddress)
     if (result) return result
-  } else if (callData.startsWith(DAI_PERMIT_SELECTOR)) {
+  } else if (callData.startsWith(oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR)) {
     const result = validateDaiPermit(callData, defaultSpenderAddress, normalizedOwnerAddress)
     if (result) return result
   }
