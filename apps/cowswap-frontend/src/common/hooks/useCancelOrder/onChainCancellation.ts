@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
 import { BigNumber } from '@ethersproject/bignumber'

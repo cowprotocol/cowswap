@@ -56,7 +56,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         return
       }
 
-      const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
+      const eip2612Utils = await getPermitUtilsInstance(chainId, provider, account)
       const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
       // Always get the nonce for the real account, to know whether the cache should be invalidated

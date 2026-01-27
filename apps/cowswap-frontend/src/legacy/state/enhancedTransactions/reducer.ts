@@ -1,5 +1,5 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
+import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import { createReducer } from '@reduxjs/toolkit'
 
@@ -22,7 +22,7 @@ export enum HashType {
 export interface EnhancedTransactionDetails {
   hash: string // The hash of the transaction, normally Ethereum one, but not necessarily
   hashType: HashType // Transaction hash: could be Ethereum tx, or for multisigs could be some kind of hash identifying the order (i.e. Gnosis Safe)
-  transactionHash?: string // Transaction hash. For EOA this field is immediately available, however, other wallets go through a process of offchain signing before the transactionHash is available
+  transactionHash: string | null // Transaction hash. For EOA this field is immediately available, however, other wallets go through a process of offchain signing before the transactionHash is available
   nonce: number
 
   // Params using for polling handling
@@ -122,7 +122,7 @@ export default createReducer(initialState, (builder) =>
         const txs = transactions[chainId] ?? {}
         txs[hash] = {
           hash,
-          transactionHash: hashType === HashType.ETHEREUM_TX ? hash : undefined,
+          transactionHash: hashType === HashType.ETHEREUM_TX ? hash : null,
           nonce,
           hashType,
           addedTime: now(),
@@ -219,7 +219,7 @@ export default createReducer(initialState, (builder) =>
       updateBlockNumber(tx, blockNumber)
 
       // Update tx hash (if present)
-      tx.transactionHash = transactionHash ?? undefined
+      tx.transactionHash = transactionHash
 
       // Update safe info
       tx.safeTransaction = safeTransaction

@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { retry, RetryOptions } from '@cowprotocol/common-utils'
 import { getSafeTransaction } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
+import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import { RetryResult } from 'types'
 
@@ -16,7 +16,9 @@ export function useGetSafeTxInfo(): GetSafeTxInfo {
 
   const getSafeInfo = useCallback<GetSafeTxInfo>(
     (hash) => {
-      return retry(() => getSafeTransaction(chainId, hash), DEFAULT_RETRY_OPTIONS)
+      return retry(() => {
+        return getSafeTransaction(chainId, hash)
+      }, DEFAULT_RETRY_OPTIONS)
     },
     [chainId],
   )

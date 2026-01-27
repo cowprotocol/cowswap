@@ -4,9 +4,9 @@ import { BigNumber } from '@ethersproject/bignumber'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
-import { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
-
 import { getContract } from './getContract'
+
+import type { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
 
 export class PermitProviderConnector implements ProviderConnector {
   constructor(
@@ -57,11 +57,9 @@ export class PermitProviderConnector implements ProviderConnector {
       const copy: Record<string, unknown> = {}
 
       Object.keys(decodedValues).forEach((key) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const value = decodedValues[key]
         if (BigNumber.isBigNumber(value)) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           copy[key] = value.toHexString()
         } else {

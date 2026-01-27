@@ -17,7 +17,7 @@ export interface SafeTxFieldsProps {
   chainId: SupportedChainId
   safeAddress: string
   safeTxHash: string
-  nonce: number
+  nonce: string
   confirmations: number
   confirmationsRequired: number
 }
