@@ -9,9 +9,9 @@
     "@ethersproject/abi": "5.7.0",
     "@ethersproject/bytes": "5.7.0",
     "@ethersproject/experimental": "5.7.0",
-    "@ethersproject/providers": "5.7.0",
+    "@ethersproject/providers": "5.8.0",
     "@ethersproject/wallet": "5.7.0",
-    "ethers": "5.7.2"
+    "ethers": "6.0.0"
   },
   "devDependencies": {
     "cypress": "^15.4.0"
