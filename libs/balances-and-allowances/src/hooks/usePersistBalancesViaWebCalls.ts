@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 

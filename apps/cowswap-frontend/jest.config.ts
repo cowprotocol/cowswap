@@ -9,7 +9,7 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/cowswap',
-  setupFilesAfterEnv: ['../../jest.setup.ts'],
+  setupFilesAfterEnv: ['./jest.setup.ts'],
   setupFiles: ['dotenv/config'],
   transformIgnorePatterns: ['/node_modules/(?!react-dnd|dnd-core|@react-dnd)'],
 }
