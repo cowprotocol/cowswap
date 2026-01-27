@@ -6,7 +6,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.2.13",
     "@ethersproject/abi": "5.7.0",
     "@ethersproject/bytes": "5.7.0",
     "@ethersproject/experimental": "5.7.0",

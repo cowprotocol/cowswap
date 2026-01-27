@@ -3,8 +3,8 @@
   "version": "1.0.1",
   "type": "module",
   "dependencies": {
-    "@1inch/permit-signed-approvals-utils": "^1.4.10",
     "@cowprotocol/cow-sdk": "7.2.13",
+    "@1inch/permit-signed-approvals-utils": "^1.4.10",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@ethersproject/abi": "5.7.0",
     "@ethersproject/abstract-signer": "5.7.0",

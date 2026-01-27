@@ -24,9 +24,9 @@
     }
   },
   "dependencies": {
+    "@cowprotocol/cow-sdk": "7.2.13",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
-    "@cowprotocol/cow-sdk": "7.2.13",
     "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
     "@ethersproject/bignumber": "5.7.0",

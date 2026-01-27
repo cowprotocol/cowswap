@@ -24,8 +24,8 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/wallet": "workspace:*",

@@ -24,11 +24,11 @@
     }
   },
   "dependencies": {
+    "@cowprotocol/cow-sdk": "7.2.13",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cow-sdk": "7.2.13",
     "@cowprotocol/ens": "workspace:*",
     "@cowprotocol/iframe-transport": "workspace:*",
     "@cowprotocol/types": "workspace:*",
