@@ -42,7 +42,7 @@
     "bignumber.js": "^9.1.2",
     "color2k": "^2.0.2",
     "jotai": "2.2.0",
-    "next": "15.2.8",
+    "next": "15.4.10",
     "polished": "^4.0.5",
     "react": "19.1.2",
     "react-confetti": "^6.1.0",
