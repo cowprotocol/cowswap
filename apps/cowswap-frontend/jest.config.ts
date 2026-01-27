@@ -11,5 +11,7 @@ export default {
   coverageDirectory: '../../coverage/cowswap',
   setupFilesAfterEnv: ['./jest.setup.ts'],
   setupFiles: ['dotenv/config'],
-  transformIgnorePatterns: ['/node_modules/(?!(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|@wagmi/connectors|viem)/)'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|@wagmi/connectors|@wagmi/core|viem)/)',
+  ],
 }
