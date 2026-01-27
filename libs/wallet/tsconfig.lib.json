@@ -2,10 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "ox": ["src/types/ox"],
-      "ox/*": ["src/types/ox-exports"]
-    },
     "outDir": "../../dist/out-tsc",
     "types": ["node", "vite/client"]
   },
