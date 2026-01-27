@@ -29,6 +29,7 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.BNB]: `${TOKEN_LIST_SRC}/Uniswap.56.json`,
   [SupportedChainId.LINEA]: `${TOKEN_LIST_SRC}/Uniswap.59144.json`, // TODO: create lists if possible
   [SupportedChainId.PLASMA]: `${TOKEN_LIST_SRC}/Uniswap.9745.json`, // TODO: create lists if possible
+  [SupportedChainId.INK]: `${TOKEN_LIST_SRC}/Uniswap.57073.json`, // TODO: create lists if possible
 }
 
 const curatedListSourceAtom = atom((get) => {

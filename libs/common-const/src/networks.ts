@@ -30,7 +30,7 @@ const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boole
   [SupportedChainId.LENS]: { url: `https://rpc.lens.xyz`, usesInfura: false },
   [SupportedChainId.LINEA]: { url: `https://rpc.linea.build`, usesInfura: false },
   [SupportedChainId.PLASMA]: { url: `https://rpc.plasma.to`, usesInfura: false },
-  [SupportedChainId.INK]: { url: `https://rpc-ten.inkonchain.com`, usesInfura: false }, // TODO: Which one do we prefer to use? https://docs.inkonchain.com/tools/rpc
+  [SupportedChainId.INK]: { url: `https://rpc-ten.inkonchain.com`, usesInfura: false },
 }
 
 /**
