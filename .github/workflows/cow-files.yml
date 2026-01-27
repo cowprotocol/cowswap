@@ -13,9 +13,6 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  NODE_VERSION: lts/jod
-
 jobs:
   deploy:
     name: Deploy to files.cow.fi

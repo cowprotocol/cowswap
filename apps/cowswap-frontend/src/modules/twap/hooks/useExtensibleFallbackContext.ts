@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Web3Provider } from '@ethersproject/providers'
