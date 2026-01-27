@@ -35,7 +35,7 @@ export interface WalletDetails {
 export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
   isReadOnly?: boolean
   chainId: number
-  nonce?: number
+  nonce: number
 }
 
 export enum WalletType {
