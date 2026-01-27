@@ -50,8 +50,6 @@ yalc.lock
 # vercel
 .vercel
 
-analyse.html
-
 # NX
 .nx
 
