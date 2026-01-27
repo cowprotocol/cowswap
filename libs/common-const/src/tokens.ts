@@ -572,7 +572,7 @@ export const WETH_INK = new TokenWithLogo(
 export const USDC_OPTIMISM = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   AdditionalTargetChainId.OPTIMISM,
-  // https://explorer.inkonchain.com/token/0x4200000000000000000000000000000000000006
+  // https://optimistic.etherscan.io/address/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85
   '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
   6,
   'USDC',
