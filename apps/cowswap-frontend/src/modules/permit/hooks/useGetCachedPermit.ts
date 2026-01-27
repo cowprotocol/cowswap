@@ -29,7 +29,7 @@ export function useGetCachedPermit(): (
       const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
       try {
-        const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
+        const eip2612Utils = await getPermitUtilsInstance(chainId, provider, account)
 
         // TODO: it might add unwanted node RPC requests
         // Always get the nonce for the real account, to know whether the cache should be invalidated

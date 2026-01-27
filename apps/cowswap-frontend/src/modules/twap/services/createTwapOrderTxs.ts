@@ -1,5 +1,5 @@
 import { MaxUint256 } from '@ethersproject/constants'
-import { MetaTransactionData } from '@safe-global/types-kit'
+import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../types'

@@ -1,4 +1,4 @@
-import { MetaTransactionData } from '@safe-global/types-kit'
+import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { COMPOSABLE_COW_ADDRESS, SAFE_EXTENSIBLE_HANDLER_ADDRESS } from 'modules/advancedOrders/const'
 

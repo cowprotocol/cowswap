@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { MetaTransactionData } from '@safe-global/types-kit'
+import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { useWalletCapabilities } from './useWalletCapabilities'
 

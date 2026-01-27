@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "@1inch/permit-signed-approvals-utils": "^1.4.10",
+    "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "@cowprotocol/cow-runner-game": "^0.2.9",
     "@cowprotocol/cms": "^0.11.0",
     "@cowprotocol/cow-sdk": "7.2.13",
@@ -157,6 +157,7 @@
     "jest-fetch-mock": "^3.0.3",
     "jotai-devtools": "0.8.0",
     "react-cosmos": "^7.0.0",
+    "rollup-plugin-bundle-stats": "^4.21.7",
     "ts-mockito": "^2.6.1"
   },
   "nx": {}

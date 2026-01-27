@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
@@ -87,7 +87,7 @@ async function _updatePresignGnosisSafeTx(
            */
           const isOrderTxReplaced = !!(
             safeNonce &&
-            Number(safeTransaction.nonce) < safeNonce &&
+            BigInt(safeTransaction.nonce) < BigInt(safeNonce) &&
             !safeTransaction.isExecuted
           )
 

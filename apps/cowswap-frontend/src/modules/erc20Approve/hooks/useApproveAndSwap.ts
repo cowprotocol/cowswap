@@ -17,7 +17,7 @@ import { getIsTradeApproveResult } from '../utils/getIsTradeApproveResult'
 export interface ApproveAndSwapProps {
   amountToApprove: CurrencyAmount<Currency>
   minAmountToSignForSwap?: CurrencyAmount<Currency>
-  onApproveConfirm?: (transactionHash?: string | null) => void
+  onApproveConfirm?: (transactionHash: string | null) => void
   ignorePermit?: boolean
   useModals?: boolean
 }
@@ -41,7 +41,7 @@ export function useApproveAndSwap({
     if (isPermitSupported && onApproveConfirm) {
       const isPermitSigned = await generatePermitToTrade()
       if (isPermitSigned) {
-        onApproveConfirm()
+        onApproveConfirm(null)
       }
 
       return true
