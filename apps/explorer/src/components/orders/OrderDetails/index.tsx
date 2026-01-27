@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { BridgeProviderType, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { Command } from '@cowprotocol/types'
-import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
+import { TruncatedText } from '@cowprotocol/ui'
 
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { ConnectionStatus } from 'components/ConnectionStatus'

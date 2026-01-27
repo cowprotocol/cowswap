@@ -146,9 +146,6 @@ export default defineConfig(({ mode }) => {
       alias: {
         'node-fetch': 'isomorphic-fetch',
       },
-      dedupe: [
-        'bn.js', // 240kb -> 16kb (gzip) // v5 is compatible with v4
-      ],
       // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
       conditions: ['module', 'import', 'browser', 'default'],
     },
@@ -185,7 +182,6 @@ export default defineConfig(({ mode }) => {
             if (id.includes('@uniswap')) return '@uniswap'
             if (id.includes('crypto-es/lib')) return 'crypto-es'
             if (id.includes('web3/dist')) return 'web3' // was used by @1inch
-            if (id.includes('bn.js')) return 'bn'
             if (id.includes('@ethersproject')) return '@ethersproject'
           },
         },

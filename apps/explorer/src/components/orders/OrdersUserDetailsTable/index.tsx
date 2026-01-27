@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { Color } from '@cowprotocol/ui'
-import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
+import { TruncatedText } from '@cowprotocol/ui'
 
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
@@ -119,7 +119,7 @@ const HiddenOrdersLegend = styled.div`
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+
 const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndExpired, showPreSigning }) => {
   const { creationDate, buyToken, buyAmount, sellToken, sellAmount, kind, partiallyFilled, uid, filledPercentage } =
     order
