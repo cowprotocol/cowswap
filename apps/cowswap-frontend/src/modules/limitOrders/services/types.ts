@@ -1,5 +1,5 @@
-import { Erc20, GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Erc20, GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 

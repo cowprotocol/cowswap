@@ -1,5 +1,4 @@
 /// <reference types="vitest" />
-import { joinPathFragments } from '@nx/devkit'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
@@ -35,7 +34,7 @@ export default defineConfig(({ command }) => {
     plugins: [
       dts({
         entryRoot: 'src',
-        tsconfigPath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
+        tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
       }),
 
       viteTsConfigPaths({

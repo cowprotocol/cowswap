@@ -25,6 +25,7 @@ export interface OrderNotificationContentProps {
   actionTitle?: string
   customTemplate?: typeof SellForAtLeastTemplate
   skipExplorerLink?: boolean
+  hideReceiver?: boolean
   transactionHash?: string
   bottomContent?: ReactNode
   children?: ReactNode
@@ -41,6 +42,7 @@ export function OrderNotificationContent({
   transactionHash,
   skipExplorerLink,
   bottomContent,
+  hideReceiver,
   children,
 }: OrderNotificationContentProps): ReactNode {
   const ref = useToastRenderRef(orderInfo.orderUid, messageType, orderInfo.orderType)
@@ -63,7 +65,7 @@ export function OrderNotificationContent({
           dstChainData={dstChainData}
         />
       )}
-      <ReceiverInfo receiver={orderInfo.receiver} owner={orderInfo.owner} />
+      {!hideReceiver && <ReceiverInfo receiver={orderInfo.receiver} owner={orderInfo.owner} />}
       {bottomContent}
     </div>
   )

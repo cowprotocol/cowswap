@@ -1,7 +1,8 @@
 import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
+
+import { getIsFastQuote } from './getIsFastQuote'
 
 import { TradeQuoteState } from '../state/tradeQuoteAtom'
 
@@ -14,8 +15,7 @@ const MAX_EXPIRATION_TIME = ms`1min`
  * deadlineParams the deadline parameters for the quote
  */
 export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
-  if (!state.quote || !state.localQuoteTimestamp || state.fetchParams?.priceQuality === PriceQuality.FAST)
-    return undefined
+  if (!state.quote || !state.localQuoteTimestamp || getIsFastQuote(state.fetchParams)) return undefined
 
   const { expiration } = state.quote.quoteResults.quoteResponse
 
