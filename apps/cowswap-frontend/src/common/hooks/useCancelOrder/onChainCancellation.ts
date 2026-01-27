@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
-import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/abis'
 import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { GPv2Settlement, CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Order } from 'legacy/state/orders/actions'

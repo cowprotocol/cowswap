@@ -103,7 +103,8 @@ module.exports = [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['../../tools/**', '@cowprotocol/assets/**'],
+          allow: ['../../tools/**'],
+          checkDynamicDependenciesExceptions: ['@cowprotocol/analytics'],
           depConstraints: [
             {
               sourceTag: '*',

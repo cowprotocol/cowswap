@@ -1,5 +1,5 @@
-import { GPv2Settlement } from '@cowprotocol/abis'
 import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import { ContractTransaction } from '@ethersproject/contracts'
 
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
@@ -8,7 +8,7 @@ import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
 
 export async function presignOrderStep(
   orderId: string,
-  settlementContract: GPv2Settlement
+  settlementContract: GPv2Settlement,
 ): Promise<ContractTransaction | null> {
   logTradeFlow('SWAP FLOW', 'Pre-signing order', orderId)
 
