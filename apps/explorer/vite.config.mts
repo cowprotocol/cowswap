@@ -26,6 +26,9 @@ export default defineConfig(({ mode }) => {
 
     resolve: {
       extensions: mode === 'development' ? ['.js', '.ts', '.jsx', '.tsx', '.json'] : undefined,
+      dedupe: [
+        'bn.js', // 240kb -> 16kb (gzip) // v5 is compatible with v4
+      ],
     },
 
     define: {
