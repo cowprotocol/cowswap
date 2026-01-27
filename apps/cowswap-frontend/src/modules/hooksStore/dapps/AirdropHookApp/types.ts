@@ -1,6 +1,6 @@
-import { Airdrop } from '@cowprotocol/abis'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Airdrop } from '@cowprotocol/cowswap-abis'
 
 import type { Address } from 'viem'
 

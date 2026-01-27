@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { loadWalletPlusIcon } from '@cowprotocol/assets/lazy-loaders'
+import { loadWalletPlusIcon } from '@cowprotocol/assets/lazy-loaders.ts'
 
 export function useWalletIcon(): string | null {
   const [walletIcon, setWalletIcon] = useState<string | null>(null)

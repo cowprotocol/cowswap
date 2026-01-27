@@ -4,6 +4,8 @@ import { useFeatureFlags, useSetIsBridgingEnabled } from '@cowprotocol/common-ho
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSafeApp } from '@cowprotocol/wallet'
 
+import { useHasBridgeProviders } from 'entities/bridgeProvider'
+
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTradeTypeInfo } from 'modules/trade'
 
@@ -20,7 +22,9 @@ export function BridgingEnabledUpdater(): null {
   const widgetInSafeApp = isSafeApp && isInjectedWidget()
   const shouldEnableInWidgetSafe = isBridgingInSafeWidgetEnabled ? true : !widgetInSafeApp
 
-  const shouldEnableBridging = isSwapPage && !disableCrossChainSwap && shouldEnableInWidgetSafe
+  const hasBridgeProviders = useHasBridgeProviders()
+
+  const shouldEnableBridging = isSwapPage && !disableCrossChainSwap && shouldEnableInWidgetSafe && hasBridgeProviders
 
   useEffect(() => {
     setIsBridgingEnabled(shouldEnableBridging)

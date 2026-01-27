@@ -1,9 +1,11 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
-import useSWR, { SWRResponse } from 'swr'
+import useSWR from 'swr'
 
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 
@@ -15,6 +17,8 @@ export type WalletCapabilities = {
 }
 
 const requestTimeout = ms`10s`
+
+const EMPTY_SWR_RESPONSE = { data: undefined, isLoading: true }
 
 /**
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
@@ -35,16 +39,22 @@ function shouldCheckCapabilities(
   return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }
 
-export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefined> {
+export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
   const provider = useWalletProvider()
   const isWalletConnect = useIsWalletConnect()
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
 
-  return useSWR(
-    shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId
-      ? [provider, account, chainId]
-      : null,
+  const shouldFetchCapabilities = Boolean(
+    shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId,
+  )
+
+  const swrResponse = useSWR<
+    WalletCapabilities | undefined,
+    unknown,
+    readonly [Web3Provider, string, SupportedChainId] | null
+  >(
+    shouldFetchCapabilities ? [provider!, account!, chainId] : null,
     ([provider, account, chainId]) => {
       return new Promise((resolve) => {
         const timeout = setTimeout(() => {
@@ -54,7 +64,7 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
         provider
           .send('wallet_getCapabilities', [account])
           .then((result: { [chainIdHex: string]: WalletCapabilities }) => {
-            clearInterval(timeout)
+            clearTimeout(timeout)
 
             if (!result) {
               resolve(undefined)
@@ -65,12 +75,19 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
             // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
             resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
-          .catch(() => {
-            clearInterval(timeout)
+          .catch((error) => {
+            console.error('useWalletCapabilities() error', error)
+            clearTimeout(timeout)
             resolve(undefined)
           })
       })
     },
     SWR_NO_REFRESH_OPTIONS,
   )
+
+  if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
+    return EMPTY_SWR_RESPONSE
+  }
+
+  return swrResponse
 }

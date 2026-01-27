@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useMemo } from 'react'
 
 import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useAllActiveTokens } from '@cowprotocol/tokens'
+import { useAllActiveTokens, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
@@ -42,10 +42,19 @@ export function BalancesAndAllowancesUpdater({
   const updateTokenBalance = useUpdateTokenBalance()
 
   const allTokens = useAllActiveTokens()
+
+  const targetChainTokensMap = useTokensByAddressMapForChain(chainId)
   const { data: nativeTokenBalance } = useNativeTokenBalance(account, chainId)
 
   const tokenAddresses = useMemo(() => {
-    if (allTokens.chainId !== chainId) return EMPTY_TOKENS
+    if (allTokens.chainId !== chainId) {
+      // Use tokens from target chain's token lists when viewing a different chain
+      const addresses = Object.keys(targetChainTokensMap)
+      if (addresses.length > 0) {
+        return addresses
+      }
+      return EMPTY_TOKENS
+    }
 
     return allTokens.tokens.reduce<string[]>((acc, token) => {
       if (!(token instanceof LpToken)) {
@@ -53,7 +62,7 @@ export function BalancesAndAllowancesUpdater({
       }
       return acc
     }, [])
-  }, [allTokens, chainId])
+  }, [allTokens, chainId, targetChainTokensMap])
 
   const rpcBalancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, RPC_BALANCES_SWR_CONFIG)
   // Add native token balance to the store as well

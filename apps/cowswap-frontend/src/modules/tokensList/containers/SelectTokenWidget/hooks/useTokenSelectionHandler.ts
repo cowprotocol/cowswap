@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { log } from '@cowprotocol/sdk-common'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
@@ -55,7 +54,7 @@ export function useTokenSelectionHandler(
           await onSelectNetwork(chainToSwitch, true)
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error)
-          log(`Failed to switch network after token selection: ${message}`)
+          console.debug(`Failed to switch network after token selection: ${message}`)
         }
       }
 

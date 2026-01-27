@@ -27,7 +27,7 @@ export function usePollQuoteCallback(
   // eslint-disable-next-line react-hooks/refs
   tradeQuoteRef.current = tradeQuote
 
-  const { quoteParams, appData, inputCurrency } = quoteParamsState || {}
+  const { quoteParams, appData, inputCurrency, hasSmartSlippage } = quoteParamsState || {}
 
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
@@ -81,6 +81,7 @@ export function usePollQuoteCallback(
         isBrowserOnline: isOnlineRef.current && isWindowVisible,
         isConfirmOpen,
         fastQuote,
+        hasSmartSlippage,
       }
 
       /**
@@ -97,6 +98,7 @@ export function usePollQuoteCallback(
       getIsUnsupportedTokens,
       quotePollingParams,
       getCorrelatedTokensByChainId,
+      hasSmartSlippage,
     ],
   )
 }

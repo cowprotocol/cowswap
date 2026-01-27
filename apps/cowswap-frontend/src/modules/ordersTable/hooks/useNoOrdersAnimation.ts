@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { loadSurprisedCowAnimation } from '@cowprotocol/assets/lazy-loaders'
+import { loadSurprisedCowAnimation } from '@cowprotocol/assets/lazy-loaders.ts'
 
 import type { LottieComponentProps } from 'lottie-react'
 

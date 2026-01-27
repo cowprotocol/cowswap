@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.129.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.5...cowswap-v1.129.0) (2026-01-26)
+
+
+### Features
+
+* **bridge:** use sell token as intermediate by default ([#6834](https://github.com/cowprotocol/cowswap/issues/6834)) ([0c59666](https://github.com/cowprotocol/cowswap/commit/0c59666e80d583b53cb5f36cfb0af99998b92c44))
+* disable sell=buy feature for a while ([#6862](https://github.com/cowprotocol/cowswap/issues/6862)) ([cba735f](https://github.com/cowprotocol/cowswap/commit/cba735f9630ce9acf4b5d081c654a8380b3569e6))
+* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
+* show loading wallet capabilities state ([#6852](https://github.com/cowprotocol/cowswap/issues/6852)) ([474e784](https://github.com/cowprotocol/cowswap/commit/474e78476489d677fc59490b564e4ef7b000f33d))
+
+
+### Bug Fixes
+
+* **bridge:** do not reset assets when change sell token ([#6851](https://github.com/cowprotocol/cowswap/issues/6851)) ([b30ca82](https://github.com/cowprotocol/cowswap/commit/b30ca8234f1e1d2d07eca7804b76157344328470))
+* **bridge:** hide receiver when swap part of bridge is filled ([#6878](https://github.com/cowprotocol/cowswap/issues/6878)) ([c5a1b1d](https://github.com/cowprotocol/cowswap/commit/c5a1b1da8c12146cc91665f1c75c073a38091dc4))
+* **bridging:** add near api key ([#6854](https://github.com/cowprotocol/cowswap/issues/6854)) ([448e639](https://github.com/cowprotocol/cowswap/commit/448e6392eb235a272b05a286e5cc565f7880396d))
+* **bridging:** disable bridging when there are no configured providers ([#6860](https://github.com/cowprotocol/cowswap/issues/6860)) ([f5fcd33](https://github.com/cowprotocol/cowswap/commit/f5fcd3345c8498ea30b2ed4d8a8e8b5da0fc829a))
+* bring safeApp to wallets who support TxBundling ([#6872](https://github.com/cowprotocol/cowswap/issues/6872)) ([25f8836](https://github.com/cowprotocol/cowswap/commit/25f8836fbfcbfe741b32dcdd9f1ee0fe11894bdb))
+* move dl provider in tree to avoid ffs reinitialization ([#6871](https://github.com/cowprotocol/cowswap/issues/6871)) ([b7d1908](https://github.com/cowprotocol/cowswap/commit/b7d1908daba8d7cfe8542221df83204af93280f9))
+* request balances from view chain id in selector ([#6859](https://github.com/cowprotocol/cowswap/issues/6859)) ([8428aaa](https://github.com/cowprotocol/cowswap/commit/8428aaa4402c90e68d38b8d832577c301bbf49ad))
+* **trade:** do not reset output token for regular swap ([#6874](https://github.com/cowprotocol/cowswap/issues/6874)) ([da709ec](https://github.com/cowprotocol/cowswap/commit/da709ecc6f733673d368f9a0ddeff33b6c80553b))
+* unify order summary ([#6773](https://github.com/cowprotocol/cowswap/issues/6773)) ([3883ce9](https://github.com/cowprotocol/cowswap/commit/3883ce9cc00e8b66c5d7443fc3121433a12828b8))
+
 ## [1.128.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.4...cowswap-v1.128.5) (2026-01-15)
 
 
