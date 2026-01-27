@@ -1,10 +1,10 @@
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { safe, injected } from '@wagmi/connectors'
 import { Chain, http } from 'viem'
 import { arbitrum, avalanche, base, bsc, gnosis, lens, linea, mainnet, plasma, polygon, sepolia } from 'viem/chains'
 import { createConfig, Transport } from 'wagmi'
-import { safe, injected } from 'wagmi/connectors'
 
 const SUPPORTED_CHAIN_IDS = Object.values(SupportedChainId).filter((v) => typeof v === 'number')
 

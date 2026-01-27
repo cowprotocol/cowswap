@@ -59,7 +59,7 @@ export class LpToken extends TokenWithLogo {
     symbol?: string,
     name?: string,
     bypassChecksum?: boolean,
-    public tags: string[] = [],
+    override tags: string[] = [],
   ) {
     super(undefined, chainId, address, decimals, symbol, name, bypassChecksum)
   }
