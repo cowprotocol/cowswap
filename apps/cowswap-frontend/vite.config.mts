@@ -140,6 +140,12 @@ export default defineConfig(({ mode }) => {
         // force esm usage for misconfigured deps' package.json (e.g. @safe-global/safe-apps-sdk)
         mainFields: ['exports', 'module', 'main'],
       },
+      include: [
+        '@walletconnect/ethereum-provider',
+        '@walletconnect/universal-provider',
+        '@walletconnect/utils',
+        '@walletconnect/sign-client',
+      ],
     },
 
     resolve: {
@@ -148,15 +154,6 @@ export default defineConfig(({ mode }) => {
       },
       // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
       conditions: ['module', 'import', 'browser', 'default'],
-    },
-
-    optimizeDeps: {
-      include: [
-        '@walletconnect/ethereum-provider',
-        '@walletconnect/universal-provider',
-        '@walletconnect/utils',
-        '@walletconnect/sign-client',
-      ],
     },
 
     build: {
