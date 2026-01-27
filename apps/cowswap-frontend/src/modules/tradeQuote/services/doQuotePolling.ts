@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 
@@ -38,7 +39,7 @@ export function doQuotePolling({
   fetchQuote,
   hasSmartSlippage,
 }: QuoteUpdateContext): boolean {
-  const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo.doc
+  const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo?.doc
 
   if (!forceUpdate) {
     // Don't fetch quote if the parameters are the same

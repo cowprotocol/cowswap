@@ -4,7 +4,10 @@ import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { isNonEvmPrototypeEnabled } from 'prototype/nonEvmPrototype'
 import useSWR from 'swr'
+
+import { isNonEvmChainId } from 'common/chains/nonEvm'
 
 import {
   buildRoutesAvailabilityResult,
@@ -28,6 +31,7 @@ export function useRoutesAvailability(
   destinationChainIds: number[],
 ): RoutesAvailabilityResult {
   const isBridgingEnabled = useIsBridgingEnabled()
+  const isPrototypeEnabled = isNonEvmPrototypeEnabled()
   const providerIds = useBridgeProvidersIds()
   const providersKey = providerIds.join('|')
 
@@ -36,9 +40,25 @@ export function useRoutesAvailability(
     [destinationChainIds, sourceChainId],
   )
 
+  const { chainsToCheckForFetch } = useMemo(() => {
+    if (!isPrototypeEnabled) {
+      return { chainsToCheckForFetch: chainsToCheck }
+    }
+
+    const filtered = chainsToCheck.filter((chainId) => !isNonEvmChainId(chainId))
+
+    return { chainsToCheckForFetch: filtered }
+  }, [chainsToCheck, isPrototypeEnabled])
+
   const swrKey = useMemo(
-    () => createAvailabilitySwrKey({ isBridgingEnabled, sourceChainId, chainsToCheck, providersKey }),
-    [isBridgingEnabled, sourceChainId, chainsToCheck, providersKey],
+    () =>
+      createAvailabilitySwrKey({
+        isBridgingEnabled,
+        sourceChainId,
+        chainsToCheck: chainsToCheckForFetch,
+        providersKey,
+      }),
+    [isBridgingEnabled, sourceChainId, chainsToCheckForFetch, providersKey],
   )
 
   const { data, isLoading } = useSWR<RouteCheckResult[], Error, RoutesAvailabilityKey | null>(
@@ -48,7 +68,13 @@ export function useRoutesAvailability(
   )
 
   return useMemo(
-    () => buildRoutesAvailabilityResult({ swrKey, isLoading, data, chainsToCheck }),
-    [swrKey, isLoading, data, chainsToCheck],
+    () =>
+      buildRoutesAvailabilityResult({
+        swrKey,
+        isLoading,
+        data,
+        chainsToCheck: chainsToCheckForFetch,
+      }),
+    [swrKey, isLoading, data, chainsToCheckForFetch],
   )
 }

@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { useMemo } from 'react'
 
 import { useTokenByAddress } from '@cowprotocol/tokens'
@@ -55,10 +56,14 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
   const tradeQuote = useTradeQuote()
+  const derivedTradeState = useDerivedTradeState()
   const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
 
-  const inputCurrency = useTokenByAddress(quoteResponse?.quote?.sellToken.toLowerCase())
-  const outputCurrency = useTokenByAddress(quoteResponse?.quote?.buyToken.toLowerCase())
+  const inputCurrencyFromQuote = useTokenByAddress(quoteResponse?.quote?.sellToken.toLowerCase())
+  const outputCurrencyFromQuote = useTokenByAddress(quoteResponse?.quote?.buyToken.toLowerCase())
+
+  const inputCurrency = inputCurrencyFromQuote ?? derivedTradeState?.inputCurrency ?? null
+  const outputCurrency = outputCurrencyFromQuote ?? derivedTradeState?.outputCurrency ?? null
 
   return { inputCurrency, outputCurrency }
 }

@@ -5,6 +5,7 @@ import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { isBuyOnlyChainId } from 'common/chains/nonEvm'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
@@ -20,7 +21,7 @@ const EMPTY_CURRENCY_ID = '_'
 export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawState> = {}) {
   const { chainId } = useWalletInfo()
   const tradeState = useTradeState()
-  const { inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
+  const { inputCurrencyAmount, outputCurrencyAmount, outputCurrency } = useDerivedTradeState() || {}
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const tradeNavigate = useTradeNavigate()
 
@@ -31,6 +32,8 @@ export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawSta
 
   return useCallback(() => {
     if (!updateState) return
+
+    if (isBuyOnlyChainId(outputCurrency?.chainId)) return
 
     if (!isWrapOrUnwrap) {
       cowAnalytics.sendEvent({
@@ -59,6 +62,7 @@ export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawSta
     outputCurrencyId,
     inputCurrencyAmount,
     outputCurrencyAmount,
+    outputCurrency,
     stateOverride,
     cowAnalytics,
   ])

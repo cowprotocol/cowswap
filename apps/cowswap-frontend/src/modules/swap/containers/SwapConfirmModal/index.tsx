@@ -60,7 +60,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const appData = useAppData()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
-  const { slippage } = useSwapDerivedState()
+  const { slippage, outputCurrency } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
   const commonTradeConfirmContext = useCommonTradeConfirmContext()
 
@@ -154,6 +154,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     recipient={recipient}
                     recipientAddress={recipientAddress}
                     account={account}
+                    recipientChainId={outputCurrency?.chainId}
                     labelsAndTooltips={labelsAndTooltips}
                     hideLimitPrice
                     hideUsdValues

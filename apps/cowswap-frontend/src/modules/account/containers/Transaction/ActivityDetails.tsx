@@ -535,7 +535,7 @@ export function ActivityDetails(props: {
                       </>
                     )}
                   </SummaryInnerRow>
-                  {order && isCustomRecipient && (
+                  {order && isCustomRecipient && !isBridgeOrder && (
                     <SummaryInnerRow>
                       <b>
                         <Trans>Recipient</Trans>:

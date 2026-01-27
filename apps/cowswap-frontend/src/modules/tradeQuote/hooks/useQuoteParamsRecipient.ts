@@ -1,9 +1,11 @@
+/* eslint-disable complexity */
 import { useMemo } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDerivedTradeState } from 'modules/trade'
+import { useRecipientRequirement } from 'modules/trade/hooks/useRecipientRequirement'
 
 import { useTradeQuote } from './useTradeQuote'
 
@@ -18,12 +20,24 @@ export function useQuoteParamsRecipient(): string | undefined {
   const { bridgeQuote } = useTradeQuote()
   const state = useDerivedTradeState()
   const { account } = useWalletInfo()
+  const recipientRequirement = useRecipientRequirement()
 
   const { recipient, recipientAddress } = state || {}
 
   const isReceiverAccountBridgeProvider = bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
+  const zeroAddress = '0x0000000000000000000000000000000000000000'
 
   return useMemo(() => {
+    if (recipientRequirement.isRecipientRequired) {
+      if (recipientRequirement.recipient && recipientRequirement.isRecipientValid) {
+        return recipientRequirement.recipient
+      }
+
+      // Non-EVM prototype quotes should still be possible without a recipient.
+      // Use a deterministic fallback to avoid undefined receiver crashes.
+      return account || zeroAddress
+    }
+
     if (isReceiverAccountBridgeProvider) {
       if (recipient && isAddress(recipient)) {
         return recipient
@@ -31,5 +45,5 @@ export function useQuoteParamsRecipient(): string | undefined {
     }
 
     return (isAddress(recipientAddress) ? recipientAddress : isAddress(recipient) ? recipient : null) || account
-  }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress])
+  }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress, recipientRequirement])
 }

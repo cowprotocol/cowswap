@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import { useAtom, useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
@@ -5,6 +6,8 @@ import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/commo
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import ms from 'ms.macro'
+
+import { useRecipientRequirement } from 'modules/trade'
 
 import { usePollQuoteCallback } from './usePollQuoteCallback'
 import { useQuoteParams } from './useQuoteParams'
@@ -36,6 +39,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const amountStr = amount?.quotient.toString()
   const quoteParamsState = useQuoteParams(amountStr, partiallyFillable)
   const { quoteParams, inputCurrency } = quoteParamsState || {}
+  const recipientRequirement = useRecipientRequirement()
+  const isRecipientBlocked = recipientRequirement.isRecipientRequired && recipientRequirement.isRecipientBlocked
 
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
 
@@ -64,6 +69,19 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
       setTradeQuotePolling(0)
     }
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
+
+  /**
+   * Reset stale quotes when recipient becomes blocked for non-EVM destinations.
+   */
+  useLayoutEffect(() => {
+    if (isConfirmOpen) return
+    if (!tradeQuoteManager) return
+
+    if (isRecipientBlocked) {
+      tradeQuoteManager.reset()
+      setTradeQuotePolling(0)
+    }
+  }, [isConfirmOpen, isRecipientBlocked, tradeQuoteManager, setTradeQuotePolling])
 
   /**
    * Fetch the quote instantly once the quote params are changed

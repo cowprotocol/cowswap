@@ -7,6 +7,9 @@ import { getCowProtocolNativePrice } from './getCowProtocolNativePrice'
 
 export async function getCowProtocolUsdPrice(currency: Token): Promise<Fraction | null> {
   const usdcToken = USDC[currency.chainId as SupportedChainId]
+  if (!usdcToken) {
+    return null
+  }
   const usdNativePrice = await getCowProtocolNativePrice(usdcToken)
   const tokenNativePrice = await getCowProtocolNativePrice(currency)
 

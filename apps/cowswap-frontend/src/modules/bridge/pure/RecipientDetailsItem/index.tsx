@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { areAddressesEqual, isAddress } from '@cowprotocol/common-utils'
-import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
+import { areAddressesEqual } from '@cowprotocol/common-utils'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -9,7 +9,8 @@ import { Trans } from '@lingui/react/macro'
 import { ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 
-import { AddressLink } from 'common/pure/AddressLink'
+import { getChainType } from 'common/chains/nonEvm'
+import { ChainAwareAddress } from 'common/pure/ChainAwareAddress'
 
 import { RecipientWrapper } from '../../styles'
 
@@ -19,24 +20,24 @@ interface RecipientDetailsItemProps {
 }
 
 export function RecipientDetailsItem({ recipient, chainId }: RecipientDetailsItemProps): ReactNode {
+  const chainType = getChainType(chainId)
+  const shouldHideBridgeQuoteAccount = chainType === 'evm' && areAddressesEqual(recipient, BRIDGE_QUOTE_ACCOUNT)
+
+  if (shouldHideBridgeQuoteAccount) return null
+
   return (
-    <>
-      {!areAddressesEqual(recipient, BRIDGE_QUOTE_ACCOUNT) && isAddress(recipient) && (
-        <ConfirmDetailsItem
-          withTimelineDot
-          label={
-            <>
-              <Trans>Recipient</Trans>{' '}
-              <InfoTooltip content={t`The address that will receive the tokens on the destination chain.`} size={14} />
-            </>
-          }
-        >
-          <RecipientWrapper>
-            <NetworkLogo chainId={chainId} size={16} />
-            <AddressLink address={recipient} chainId={chainId} />
-          </RecipientWrapper>
-        </ConfirmDetailsItem>
-      )}
-    </>
+    <ConfirmDetailsItem
+      withTimelineDot
+      label={
+        <>
+          {chainType === 'evm' ? <Trans>Recipient</Trans> : <Trans>Destination address</Trans>}{' '}
+          <InfoTooltip content={t`The address that will receive the tokens on the destination chain.`} size={14} />
+        </>
+      }
+    >
+      <RecipientWrapper>
+        <ChainAwareAddress address={recipient} chainId={chainId} />
+      </RecipientWrapper>
+    </ConfirmDetailsItem>
   )
 }

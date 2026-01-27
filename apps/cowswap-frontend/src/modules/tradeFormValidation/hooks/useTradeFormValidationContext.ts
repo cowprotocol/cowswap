@@ -11,7 +11,7 @@ import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAcc
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
-import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
+import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap, useRecipientRequirement } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -49,6 +49,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
+  const recipientRequirement = useRecipientRequirement()
 
   const isApproveRequired = useIsApprovalOrPermitRequired({
     isBundlingSupportedOrEnabledForContext: isBundlingSupported,
@@ -77,6 +78,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isSwapUnsupported,
       isSafeReadonlyUser,
       recipientEnsAddress,
+      recipientRequirement,
       approvalState,
       tradeQuote,
       isApproveRequired,
@@ -113,6 +115,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isWrapUnwrap,
     isProxySetupValid,
     recipientEnsAddress,
+    recipientRequirement,
     toBeImported,
     tradeQuote,
     balancesError,

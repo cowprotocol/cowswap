@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
-import { useDerivedTradeState } from '../../trade'
+import { useDerivedTradeState, useRecipientRequirement } from '../../trade'
 import { useIsCurrentTradeBridging } from '../../trade/hooks/useIsCurrentTradeBridging'
 import { useTradeQuote } from '../../tradeQuote'
 
@@ -29,6 +29,13 @@ export function useShouldCheckBridgingRecipient(): boolean {
   const { isLoading } = useTradeQuote()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const recipientRequirement = useRecipientRequirement()
 
-  return !!isSmartContractWallet && !!outputCurrencyAmount && isCurrentTradeBridging && !isLoading
+  return (
+    !!isSmartContractWallet &&
+    !!outputCurrencyAmount &&
+    isCurrentTradeBridging &&
+    !isLoading &&
+    !recipientRequirement.isRecipientRequired
+  )
 }

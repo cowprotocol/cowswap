@@ -12,6 +12,7 @@ import {
   useShouldPayGas,
   useGetReceiveAmountInfo,
   useGetSwapReceiveAmountInfo,
+  useRecipientRequirement,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useShouldShowSlippageProminent, useTradeSlippage } from 'modules/tradeSlippage'
@@ -50,6 +51,7 @@ export function TradeRateDetails({
   const shouldPayGas = useShouldPayGas()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const { error: quoteError } = useTradeQuote()
+  const recipientRequirement = useRecipientRequirement()
 
   const networkFeeAmount = useNetworkFeeAmount()
 
@@ -58,6 +60,10 @@ export function TradeRateDetails({
   const toggleAccordion = useCallback(() => {
     setFeeDetailsOpen((prev) => !prev)
   }, [])
+
+  if (recipientRequirement.blockedQuoteMessage) {
+    return <div style={{ padding: '0 10px', opacity: 0.85 }}>{recipientRequirement.blockedQuoteMessage}</div>
+  }
 
   if (!receiveAmountInfo || !swapReceiveAmountInfo || quoteError) {
     if (!networkFeeAmount) return null

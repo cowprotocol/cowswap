@@ -12,6 +12,7 @@ export interface ChainsSelectorProps {
   defaultChainId?: ChainInfo['id']
   isLoading: boolean
   disabledChainIds?: Set<number>
+  disabledReasons?: Map<number, string>
   loadingChainIds?: Set<number>
 }
 

@@ -9,6 +9,8 @@ import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { getChainType } from 'common/chains/nonEvm'
+
 export type ClickableAddressProps = {
   address: string
   chainId: number
@@ -46,10 +48,14 @@ const AddressWrapper = styled.span`
 
 export function ClickableAddress(props: ClickableAddressProps): ReactNode {
   const { address, chainId } = props
+  const chainType = getChainType(chainId)
 
   const wrapperRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const bridgeNetwork = useBridgeSupportedNetwork(chainId)
+
+  // Non-EVM chains use synthetic addresses in the prototype. Avoid misleading explorer links.
+  if (chainType !== 'evm') return null
 
   const shortAddress = shortenAddress(address)
   const target = getExplorerLink(chainId, address, ExplorerDataType.TOKEN, bridgeNetwork?.blockExplorer.url)

@@ -6,6 +6,8 @@ const NO_UPDATE_STATES = [
   TradeFormValidation.BrowserOffline,
   TradeFormValidation.CurrencyNotSet,
   TradeFormValidation.InputAmountNotSet,
+  TradeFormValidation.RecipientRequired,
+  TradeFormValidation.RecipientInvalidNonEvm,
   TradeFormValidation.WrapUnwrapFlow,
 ]
 

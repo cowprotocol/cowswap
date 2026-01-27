@@ -23,6 +23,7 @@ import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFro
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
+import { NON_EVM_FLIP_DISABLED_REASON, isBuyOnlyChainId } from 'common/chains/nonEvm'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
@@ -185,7 +186,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     }
   }, [isMarketOrderWidget, toggleAccountModal])
 
-  const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
+  const isOutputTokenBuyOnly = isBuyOnlyChainId(buyToken?.chainId)
+  const isOutputTokenUnsupported = !!buyToken && !isOutputTokenBuyOnly && !(buyToken.chainId in SupportedChainId)
+  const flipDisabledReason = isOutputTokenBuyOnly ? NON_EVM_FLIP_DISABLED_REASON : undefined
 
   const { t } = useLingui()
 
@@ -242,7 +245,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     hasSeparatorLine={!compactView}
                     onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
                     isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
-                    disabled={shouldLockForAlternativeOrder || isOutputTokenUnsupported}
+                    disabled={shouldLockForAlternativeOrder || isOutputTokenUnsupported || isOutputTokenBuyOnly}
+                    disabledReason={flipDisabledReason}
                     isDarkMode={darkMode}
                   />
                 </styledEl.CurrencySeparatorBox>

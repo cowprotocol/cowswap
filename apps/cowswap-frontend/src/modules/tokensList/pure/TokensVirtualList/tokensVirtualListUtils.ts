@@ -38,12 +38,25 @@ export interface BuildVirtualRowsParams {
   recentTokens: TokenWithLogo[] | undefined
   hideFavoriteTokensTooltip: boolean
   onClearRecentTokens: () => void
+  suppressPinnedSections?: boolean
 }
 
 export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualRow[] {
-  const { sortedTokens, favoriteTokens, recentTokens, hideFavoriteTokensTooltip, onClearRecentTokens } = params
+  const {
+    sortedTokens,
+    favoriteTokens,
+    recentTokens,
+    hideFavoriteTokensTooltip,
+    onClearRecentTokens,
+    suppressPinnedSections,
+  } = params
 
   const tokenRows = sortedTokens.map<TokensVirtualRow>((token) => ({ type: 'token', token }))
+
+  if (suppressPinnedSections) {
+    return tokenRows
+  }
+
   const composedRows: TokensVirtualRow[] = []
 
   if (favoriteTokens?.length) {

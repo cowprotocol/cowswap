@@ -1,20 +1,16 @@
 import { ReactNode } from 'react'
 
-import {
-  areAddressesEqual,
-  capitalizeFirstLetter,
-  ExplorerDataType,
-  getExplorerLink,
-  shortenAddress,
-} from '@cowprotocol/common-utils'
+import { areAddressesEqual, capitalizeFirstLetter } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
+import { Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import type { Order } from 'legacy/state/orders/actions'
 
+import { getChainType } from 'common/chains/nonEvm'
+import { ChainAwareAddress } from 'common/pure/ChainAwareAddress'
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
 
 import { SwapAndBridgeContext, SwapAndBridgeOverview, SwapAndBridgeStatus } from '../../types'
@@ -33,8 +29,12 @@ export function BridgeSummaryHeader({
   swapAndBridgeContext,
 }: BridgeSummaryHeaderProps): ReactNode {
   const { sourceAmounts, targetAmounts, sourceChainName, targetChainName, targetRecipient } = swapAndBridgeOverview
-  const isCustomRecipient = !!targetRecipient && !areAddressesEqual(order.owner, targetRecipient)
   const targetAmount = targetAmounts?.buyAmount
+  const targetChainId = targetAmount?.currency.chainId
+  const targetChainType = getChainType(targetChainId)
+  const isCustomRecipient = Boolean(
+    targetRecipient && targetChainId && (targetChainType !== 'evm' || !areAddressesEqual(order.owner, targetRecipient)),
+  )
 
   const isFinished = swapAndBridgeContext?.bridgingStatus === SwapAndBridgeStatus.DONE
 
@@ -69,18 +69,12 @@ export function BridgeSummaryHeader({
 
       {isCustomRecipient && targetRecipient && targetAmount && (
         <SummaryRow>
-          <b>
-            <Trans>Recipient</Trans>:
-          </b>
+          <b>{targetChainType === 'evm' ? <Trans>Recipient</Trans> : <Trans>Destination address</Trans>}:</b>
           <i>
             {isCustomRecipientWarning && (
               <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description={t`Alert`} size={18} />
             )}
-            <ExternalLink
-              href={getExplorerLink(targetAmount.currency.chainId, targetRecipient, ExplorerDataType.ADDRESS)}
-            >
-              {shortenAddress(targetRecipient)} ↗
-            </ExternalLink>
+            <ChainAwareAddress address={targetRecipient} chainId={targetAmount.currency.chainId} />
           </i>
         </SummaryRow>
       )}

@@ -18,6 +18,7 @@ import {
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
   useIsEoaEthFlow,
+  useRecipientRequirement,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
@@ -34,6 +35,7 @@ import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeInterme
 
 import { Container } from './styled'
 
+import { useEnforceBuyOnlyChains } from '../../hooks/useEnforceBuyOnlyChains'
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
@@ -60,7 +62,12 @@ export interface SwapWidgetProps {
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function,complexity
 export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
+  useEnforceBuyOnlyChains()
+
   const { showRecipient } = useSwapSettings()
+  const recipientRequirement = useRecipientRequirement()
+  const isNonEvmDestination = recipientRequirement.isRecipientRequired
+  const showRecipientEffective = showRecipient || isNonEvmDestination
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
@@ -198,6 +205,8 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
         enablePartialApprovalState={enablePartialApprovalState}
+        recipientToggleDisabled={isNonEvmDestination}
+        recipientToggleDisabledReason={recipientRequirement.toggleDisabledReason}
       />
     ),
     bottomContent: useCallback(
@@ -244,7 +253,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     isSellingEthSupported: true,
     allowSwapSameToken,
     recipient,
-    showRecipient,
+    showRecipient: showRecipientEffective,
     isTradePriceUpdating: isRateLoading,
     priceImpact,
   }

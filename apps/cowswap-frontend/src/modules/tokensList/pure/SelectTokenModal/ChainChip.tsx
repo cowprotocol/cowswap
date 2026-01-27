@@ -16,6 +16,7 @@ export interface ChainChipProps {
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
   isLoading: boolean
+  disabledReason?: string
   isTooltipVisible: boolean
   onDisabledClick(chainId: number): void
   onHideTooltip(): void
@@ -27,6 +28,7 @@ export function ChainChip({
   onSelectChain,
   isDisabled,
   isLoading,
+  disabledReason,
   isTooltipVisible,
   onDisabledClick,
   onHideTooltip,
@@ -35,7 +37,7 @@ export function ChainChip({
   const { darkMode } = useTheme()
   const accent = getChainAccent(chain.id)
   const logoSrc = darkMode ? chain.logo.dark : chain.logo.light
-  const disabledTooltip = t`This destination is not supported for this source chain`
+  const disabledTooltip = disabledReason || t`This destination is not supported for this source chain`
   const loadingTooltip = t`Checking route availability...`
   const chipRef = useRef<HTMLButtonElement | null>(null)
 

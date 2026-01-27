@@ -11,6 +11,7 @@ export interface ChainsListProps {
   onSelectChain(chain: ChainInfo): void
   isDarkMode: boolean
   disabledChainIds?: Set<number>
+  disabledReasons?: Map<number, string>
   loadingChainIds?: Set<number>
 }
 
@@ -20,6 +21,7 @@ export function ChainsList({
   onSelectChain,
   isDarkMode,
   disabledChainIds,
+  disabledReasons,
   loadingChainIds,
 }: ChainsListProps): ReactNode {
   return (
@@ -32,6 +34,7 @@ export function ChainsList({
           onSelectChain={onSelectChain}
           isDarkMode={isDarkMode}
           isDisabled={disabledChainIds?.has(chain.id) ?? false}
+          disabledReason={disabledReasons?.get(chain.id)}
           isLoading={loadingChainIds?.has(chain.id) ?? false}
         />
       ))}

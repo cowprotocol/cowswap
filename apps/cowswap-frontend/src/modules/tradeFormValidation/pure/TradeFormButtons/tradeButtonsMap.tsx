@@ -12,6 +12,7 @@ import { TradeApproveButton } from 'modules/erc20Approve'
 import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { getChainType, getNonEvmChainLabel } from 'common/chains/nonEvm'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
@@ -51,10 +52,10 @@ function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
     [BridgeQuoteErrors.API_ERROR]: DEFAULT_QUOTE_ERROR,
     [BridgeQuoteErrors.INVALID_BRIDGE]: DEFAULT_QUOTE_ERROR,
     [BridgeQuoteErrors.TX_BUILD_ERROR]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.QUOTE_ERROR]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.QUOTE_ERROR]: t`Quote unavailable for this recipient/route`,
     [BridgeQuoteErrors.INVALID_API_JSON_RESPONSE]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: t`No routes found`,
-    [BridgeQuoteErrors.NO_ROUTES]: t`No routes found`,
+    [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: t`No route available for this pair/amount`,
+    [BridgeQuoteErrors.NO_ROUTES]: t`No route available for this pair/amount`,
     [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
     [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
     [BridgeQuoteErrors.SELL_AMOUNT_TOO_SMALL]: t`Sell amount too small to bridge`,
@@ -110,17 +111,39 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.InputAmountNotSet]: {
     text: <Trans>Enter an amount</Trans>,
   },
+  [TradeFormValidation.RecipientRequired]: ({ derivedState: { outputCurrency } }) => {
+    const chainLabel = outputCurrency ? getNonEvmChainLabel(outputCurrency.chainId) : undefined
+    const text = chainLabel ? `Recipient required for ${chainLabel}` : 'Recipient required for Bitcoin/Solana'
+
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <span>{text}</span>
+      </TradeFormBlankButton>
+    )
+  },
+  [TradeFormValidation.RecipientRequiredNonEvmPrototype]: ({ derivedState: { outputCurrency } }) => {
+    const chainLabel = outputCurrency ? getNonEvmChainLabel(outputCurrency.chainId) : undefined
+    const text = chainLabel ? `Recipient required for ${chainLabel}` : 'Recipient required for Bitcoin/Solana'
+
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <span>{text}</span>
+      </TradeFormBlankButton>
+    )
+  },
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
   [TradeFormValidation.RecipientInvalid]: ({ derivedState: { inputCurrency, outputCurrency, recipient } }) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
+    const outputChainType = getChainType(outputCurrency?.chainId)
+    const showEnsTooltip = Boolean(isBridging && recipient && outputChainType === 'evm')
 
     return (
       <TradeFormBlankButton disabled>
         <>
           <Trans>Enter a valid recipient</Trans>
-          {isBridging && recipient && (
+          {showEnsTooltip && (
             <HelpTooltip
               placement="top"
               text={t`ENS recipient not supported for Swap and Bridge. Use address instead.`}
@@ -129,6 +152,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         </>
       </TradeFormBlankButton>
     )
+  },
+  [TradeFormValidation.RecipientInvalidNonEvm]: {
+    text: <Trans>Enter a valid recipient</Trans>,
   },
   [TradeFormValidation.CurrencyNotSupported]: (context) => {
     return unsupportedTokenButton(context)

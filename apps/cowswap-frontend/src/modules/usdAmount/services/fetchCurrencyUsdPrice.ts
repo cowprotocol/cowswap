@@ -51,6 +51,16 @@ function getShouldSkipBff(currency: Token): boolean {
  * Tries sources in that order
  */
 export async function fetchCurrencyUsdPrice(currency: Token): Promise<Fraction | null> {
+  // Prototype non-EVM chains and malformed tokens should short-circuit.
+  if (!currency || typeof currency.chainId !== 'number' || !currency.address) {
+    return null
+  }
+
+  // Non-supported chain ids (e.g. prototype non-EVM chains) have no USD sources configured.
+  if (!(currency.chainId in SupportedChainId)) {
+    return null
+  }
+
   const shouldSkipBff = getShouldSkipBff(currency)
   const shouldSkipDefillama = getShouldSkipDefillama(currency)
 
@@ -93,8 +103,8 @@ function handleErrorFactory(
   rateLimitTimestamp: null | number,
   unknownCurrenciesMap: UnknownCurrenciesMap,
   fetchPriceFallback: (currency: Token) => Promise<Fraction | null>,
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ((reason: any) => Fraction | PromiseLike<Fraction | null> | null) | null | undefined {
   return (error) => {
     if (error instanceof RateLimitError) {
