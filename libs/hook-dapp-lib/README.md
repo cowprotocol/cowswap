@@ -27,10 +27,6 @@ And it expects calling two callbacks:
 npm install @cowprotocol/hook-dapp-lib --save
 ```
 
-```
-yarn add @cowprotocol/hook-dapp-lib
-```
-
 Let's create a simple hook-dapp that will check the COW token balance of the order creator.
 
 ```html

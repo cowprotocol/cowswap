@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
 import { getContract, isAddress, isZero, safeNamehash, uriToHttp } from '@cowprotocol/common-utils'
+import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/cowswap-abis'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'

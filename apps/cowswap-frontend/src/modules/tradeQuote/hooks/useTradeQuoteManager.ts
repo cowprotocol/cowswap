@@ -39,7 +39,6 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
               update(sellTokenAddress, {
                 isLoading: true,
                 hasParamsChanged,
-                ...(hasParamsChanged ? { quote: null } : null),
               })
             },
             reset() {

@@ -1,4 +1,4 @@
-import type { CoWSwapEthFlow } from '@cowprotocol/abis'
+import type { CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
 
 import type { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 

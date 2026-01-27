@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { AppDataInfo, stringifyDeterministic } from '@cowprotocol/cow-sdk'
 
@@ -11,6 +11,7 @@ import {
   getSchema,
   handleErrors,
   INITIAL_FORM_VALUES,
+  normalizePartnerFeeSchema,
   transformErrors,
   uiSchema,
 } from './config'
@@ -55,6 +56,15 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   const [isDocUploaded, setIsDocUploaded] = useState<boolean>(encode.options.isDocUploaded ?? false)
   const [error, setError] = useState<string | undefined>(encode.options.error)
   const formRef = React.useRef<Form<FormProps>>(null)
+
+  const schemaForForm = useMemo(() => {
+    if (!Object.keys(schema).length) {
+      return schema
+    }
+
+    return normalizePartnerFeeSchema(schema)
+  }, [schema])
+  const schemaKey = schemaForForm.$id ?? 'appdata-schema-loading'
 
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
@@ -189,6 +199,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
       <div className="form-container">
         <Form
           className="data-form"
+          idPrefix="appdata-encode"
           liveOmit
           liveValidate={invalidFormDataAttempted.appData}
           omitExtraData
@@ -202,7 +213,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
           ref={formRef}
           autoComplete="off"
           onError={(): void => toggleInvalid({ appData: true })}
-          schema={schema}
+          key={schemaKey}
+          schema={schemaForForm}
           uiSchema={uiSchema}
         />
         <AppDataWrapper>

@@ -5,7 +5,7 @@ Collection of utils for handling token permits.
 ## Installation
 
 ```bash
-yarn add @cowprotocol/permit-utils
+npm install @cowprotocol/permit-utils
 ```
 
 ## Usage
@@ -26,10 +26,10 @@ const permitInfo = await getTokenPermitInfo({
 import { getPermitUtilsInstance } from "@cowprotocol/permit-utils"
 
 // Using a static account defined in the library
-const staticEip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
+const staticEip2612PermitUtils = await getPermitUtilsInstance(chainId, provider)
 
 // Using a provided account address
-const accountEip2612PermitUtils = getPermitUtilsInstance(chainId, provider, account)
+const accountEip2612PermitUtils = await getPermitUtilsInstance(chainId, provider, account)
 ```
 
 ### `generatePermitHook`
@@ -93,7 +93,7 @@ if (!permitInfo) {
 }
 
 // Pass in an account address as we'll need the user to sign the actual permit
-const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
+const eip2612Utils = await getPermitUtilsInstance(chainId, provider, account)
 
 // Need to know what the current permit nonce is
 const nonce = await eip2612Utils.getTokenNonce(inputToken.address, account)

@@ -1,11 +1,12 @@
 import { atom } from 'jotai'
 
-import { PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteResults } from '@cowprotocol/sdk-bridging'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
 import { TradeQuoteFetchParams } from '../types'
+import { getIsFastQuote } from '../utils/getIsFastQuote'
 
 type SellTokenAddress = string
 
@@ -45,7 +46,7 @@ export const updateTradeQuoteAtom = atom(
       if (
         prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
         nextState.quote &&
-        nextState.fetchParams?.priceQuality === PriceQuality.FAST
+        getIsFastQuote(nextState.fetchParams)
       ) {
         return { ...prevState }
       }

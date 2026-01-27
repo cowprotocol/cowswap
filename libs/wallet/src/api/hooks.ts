@@ -55,16 +55,17 @@ export function useEndEagerConnect(): () => void {
   return useCallback(() => set((prev) => (prev > 0 ? prev - 1 : 0)), [set])
 }
 
-// TODO: if you want to test TWAP with others EIP-5792 wallets - keep only atomicBatch.supported
 export function useIsTxBundlingSupported(): boolean | null {
   // TODO this will be fixed in M-3 COW-569
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
 
+  if (isSafeApp) return true
+
   if (isCapabilitiesLoading) return null
 
-  return isSafeApp || (isSafeViaWc && capabilities?.atomic?.status === 'supported')
+  return isSafeViaWc && capabilities?.atomic?.status === 'supported'
 }
 
 // TODO: Add proper return type annotation
@@ -96,7 +97,7 @@ export function useIsAssetWatchingSupported(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType !== ConnectionType.INJECTED
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     isInjectedConnection = connector?.type === ConnectorType.INJECTED
   }
@@ -112,7 +113,7 @@ export function useIsRabbyWallet(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType !== ConnectionType.INJECTED
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     isInjectedConnection = connector?.type === ConnectorType.INJECTED
   }
@@ -127,7 +128,7 @@ export function useIsBraveWallet(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType !== ConnectionType.INJECTED
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     isInjectedConnection = connector?.type === ConnectorType.INJECTED
   }
@@ -143,7 +144,7 @@ export function useIsMetamaskBrowserExtensionWallet(): boolean {
   const info = useSelectedEip6963ProviderInfo()
 
   let isMetamaskConnection = connectionType === ConnectionType.METAMASK
-  let isInjectedConnection = connectionType !== ConnectionType.INJECTED
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
     isInjectedConnection = connector?.type === ConnectorType.INJECTED

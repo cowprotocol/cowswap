@@ -1,9 +1,10 @@
 import { SlippageToleranceRequest, SlippageToleranceResponse } from '@cowprotocol/cow-sdk'
-import { log } from '@cowprotocol/sdk-common'
 
 const DEFAULT_TIMEOUT = 2000 // 2 sec
 
 const EMPTY_SLIPPAGE_RESPONSE = { slippageBps: null }
+
+const log = console.debug
 
 export class CoWBFFClient {
   constructor(private readonly baseUrl: string) {}

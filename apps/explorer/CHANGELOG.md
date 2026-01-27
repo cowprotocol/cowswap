@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.62.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.61.0...explorer-v2.62.0) (2026-01-26)
+
+
+### Features
+
+* **common-utils:** add REACT_APP_BLOCK_EXPLORER_URL environment variable override ([#6774](https://github.com/cowprotocol/cowswap/issues/6774)) ([e23a0df](https://github.com/cowprotocol/cowswap/commit/e23a0df7240787d815c0126f83009895e3d3611a))
+* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
+
+
+### Bug Fixes
+
+* **bridging:** add near api key ([#6854](https://github.com/cowprotocol/cowswap/issues/6854)) ([448e639](https://github.com/cowprotocol/cowswap/commit/448e6392eb235a272b05a286e5cc565f7880396d))
+
 ## [2.61.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.60.0...explorer-v2.61.0) (2026-01-09)
 
 

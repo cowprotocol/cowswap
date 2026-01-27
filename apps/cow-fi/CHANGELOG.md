@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.31.0...cow-fi-v1.32.0) (2026-01-26)
+
+
+### Features
+
+* update MEV Blocker redirection and layout ([#6843](https://github.com/cowprotocol/cowswap/issues/6843)) ([9b61b16](https://github.com/cowprotocol/cowswap/commit/9b61b1694d045a872af212fafb56a6182ad9276f))
+
 ## [1.31.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.30.0...cow-fi-v1.31.0) (2026-01-09)
 
 

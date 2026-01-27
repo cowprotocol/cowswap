@@ -23,7 +23,7 @@ export function checkSafeTransaction(transaction: EnhancedTransactionDetails, pa
       const { isExecuted, transactionHash } = safeTransaction
       const safeNonce = safeInfo?.nonce
 
-      if (typeof safeNonce === 'number' && safeNonce > Number(safeTransaction.nonce) && !isExecuted) {
+      if (typeof safeNonce === 'number' && BigInt(safeNonce) > BigInt(safeTransaction.nonce) && !isExecuted) {
         handleTransactionReplacement(transaction, params)
 
         return

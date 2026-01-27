@@ -11,7 +11,7 @@ For example, you want to get the balance of 10 different ERC20 tokens.
 ### Usage example
 ```ts
 import { Interface } from '@ethersproject/abi'
-import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
+import { Erc20Abi, Erc20Interface } from '@cowprotocol/cowswap-abis'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 
 const ACCOUNT = '0x0000000000000000000000000000000000000000'
@@ -47,7 +47,7 @@ For example: you want to get the balance of 10 different users.
 ### Usage example
 ```ts
 import { Interface } from '@ethersproject/abi'
-import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
+import { Erc20Abi, Erc20Interface } from '@cowprotocol/cowswap-abis'
 import { Contract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 

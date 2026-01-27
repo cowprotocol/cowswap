@@ -33,6 +33,7 @@ export function StatusIcon({ connectionType, account, size = 16 }: StatusIconPro
     let image
     switch (connector?.type) {
       case ConnectorType.COINBASE_WALLET:
+        image = <img src={CoinbaseWalletIcon} alt={t`Coinbase Wallet`} />
         break
       case ConnectorType.INJECTED:
         image = <Identicon account={account} />

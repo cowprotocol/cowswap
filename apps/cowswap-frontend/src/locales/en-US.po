@@ -525,8 +525,8 @@ msgid "Failed to parse date and time provided"
 msgstr "Failed to parse date and time provided"
 
 #: libs/common-const/src/common.ts
-msgid "Only executed swaps incur fees."
-msgstr "Only executed swaps incur fees."
+#~ msgid "Only executed swaps incur fees."
+#~ msgstr "Only executed swaps incur fees."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
@@ -775,8 +775,8 @@ msgid "Import intermediate token"
 msgstr "Import intermediate token"
 
 #: libs/ui/src/pure/MenuBar/index.tsx
-msgid "Language {locale} not found"
-msgstr "Language {locale} not found"
+#~ msgid "Language {locale} not found"
+#~ msgstr "Language {locale} not found"
 
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
 msgid "I understand"
@@ -828,7 +828,6 @@ msgid "Loading operation"
 msgstr "Loading operation"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
-#: libs/common-const/src/common.ts
 msgid "CoW Runner"
 msgstr "CoW Runner"
 
@@ -865,7 +864,6 @@ msgstr "Tokens"
 
 #: apps/cowswap-frontend/src/legacy/components/Copy/CopyMod.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/CopyHelper/index.tsx
-#: libs/ui/src/pure/ContextMenu/ContextMenuCopyButton.tsx
 msgid "Copied"
 msgstr "Copied"
 
@@ -992,8 +990,8 @@ msgid "Bridging to destination..."
 msgstr "Bridging to destination..."
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
-msgstr "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
+#~ msgid "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
+#~ msgstr "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "Actions"
@@ -1411,8 +1409,8 @@ msgid "Error {verb} the order"
 msgstr "Error {verb} the order"
 
 #: libs/common-const/src/common.ts
-msgid "CoW Swap | The smartest way to trade cryptocurrencies"
-msgstr "CoW Swap | The smartest way to trade cryptocurrencies"
+#~ msgid "CoW Swap | The smartest way to trade cryptocurrencies"
+#~ msgstr "CoW Swap | The smartest way to trade cryptocurrencies"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "this order"
@@ -1609,8 +1607,8 @@ msgid "Bridging feature is exclusively operated by the indicated third party. Pl
 msgstr "Bridging feature is exclusively operated by the indicated third party. Please review their terms."
 
 #: libs/ui/src/pure/ContextMenu/ContextMenuCopyButton.tsx
-msgid "Copy address"
-msgstr "Copy address"
+#~ msgid "Copy address"
+#~ msgstr "Copy address"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/LimitPriceRow.tsx
 msgid "The limit price"
@@ -1704,8 +1702,8 @@ msgid "No unfillable orders"
 msgstr "No unfillable orders"
 
 #: libs/common-utils/src/tooltips.ts
-msgid "This accounts for the current price and the slippage tolerance ({allowedSlippagePercentage}%). If the price moves beyond the slippage tolerance, you won't trade but also you won't pay any fees or gas."
-msgstr "This accounts for the current price and the slippage tolerance ({allowedSlippagePercentage}%). If the price moves beyond the slippage tolerance, you won't trade but also you won't pay any fees or gas."
+#~ msgid "This accounts for the current price and the slippage tolerance ({allowedSlippagePercentage}%). If the price moves beyond the slippage tolerance, you won't trade but also you won't pay any fees or gas."
+#~ msgstr "This accounts for the current price and the slippage tolerance ({allowedSlippagePercentage}%). If the price moves beyond the slippage tolerance, you won't trade but also you won't pay any fees or gas."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "No fees for failed transactions"
@@ -1809,8 +1807,8 @@ msgid "Enable order alerts"
 msgstr "Enable order alerts"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
-msgstr "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
+#~ msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
+#~ msgstr "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "Volume (24h)"
@@ -1868,6 +1866,7 @@ msgstr "Languages"
 msgid "Set custom deadline"
 msgstr "Set custom deadline"
 
+#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "WalletConnect"
 msgstr "WalletConnect"
@@ -2529,8 +2528,8 @@ msgstr "If allowance remains insufficient at creation time, this portion will no
 #~ msgstr "User rejected signing the order"
 
 #: libs/common-const/src/common.ts
-msgid "Account Proxy"
-msgstr "Account Proxy"
+#~ msgid "Account Proxy"
+#~ msgstr "Account Proxy"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
@@ -2569,8 +2568,8 @@ msgid "Unsupported wallet detected"
 msgstr "Unsupported wallet detected"
 
 #: libs/common-const/src/common.ts
-msgid "Tokens Overview"
-msgstr "Tokens Overview"
+#~ msgid "Tokens Overview"
+#~ msgstr "Tokens Overview"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/getPendingText.ts
 msgid "Confirm approval"
@@ -2585,12 +2584,12 @@ msgid "No order history"
 msgstr "No order history"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#~ msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
-#~ msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
+msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
+msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "The input token cannot be transferred. There may be an issue with the input token."
-msgstr "The input token cannot be transferred. There may be an issue with the input token."
+#~ msgid "The input token cannot be transferred. There may be an issue with the input token."
+#~ msgstr "The input token cannot be transferred. There may be an issue with the input token."
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
 msgid "{pendingCount} Pending"
@@ -2639,7 +2638,6 @@ msgstr "Liquidity pools on CoW AMM grow faster than on other AMMs because they d
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
-#: libs/common-const/src/common.ts
 msgid "TWAP"
 msgstr "TWAP"
 
@@ -3103,10 +3101,9 @@ msgstr "Tokens from external sources."
 msgid "Insufficient"
 msgstr "Insufficient"
 
-#. placeholder {0}: reason ? `: "${reason}"` : ''
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
-msgstr "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgid "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgstr "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
@@ -3160,8 +3157,8 @@ msgid "Total claimable rewards:"
 msgstr "Total claimable rewards:"
 
 #: libs/common-utils/src/legacyAddressUtils.ts
-msgid "View on"
-msgstr "View on"
+#~ msgid "View on"
+#~ msgstr "View on"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Connected with"
@@ -3188,8 +3185,8 @@ msgid "both {joinedSupportedTypes}"
 msgstr "both {joinedSupportedTypes}"
 
 #: libs/common-utils/src/legacyAddressUtils.ts
-msgid "View on Explorer"
-msgstr "View on Explorer"
+#~ msgid "View on Explorer"
+#~ msgstr "View on Explorer"
 
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
@@ -3321,8 +3318,8 @@ msgid "Booooost APR!"
 msgstr "Booooost APR!"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
-msgstr "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgid "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgstr "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
 msgid "blocked activities"
@@ -3410,8 +3407,8 @@ msgid "No open orders"
 msgstr "No open orders"
 
 #: libs/common-utils/src/tooltips.ts
-msgid "Maximum tokens you'll sell."
-msgstr "Maximum tokens you'll sell."
+#~ msgid "Maximum tokens you'll sell."
+#~ msgstr "Maximum tokens you'll sell."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
@@ -3443,6 +3440,7 @@ msgstr "Limit Order"
 msgid "Insufficient allowance"
 msgstr "Insufficient allowance"
 
+#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "Coinbase Wallet"
 msgstr "Coinbase Wallet"
@@ -3506,8 +3504,8 @@ msgid "and saved "
 msgstr "and saved "
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
-msgstr "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgid "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgstr "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 msgid "Approve all"
@@ -3545,7 +3543,6 @@ msgstr "Price change"
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
-#: libs/common-const/src/common.ts
 msgid "Yield"
 msgstr "Yield"
 
@@ -4551,7 +4548,6 @@ msgid "Recreate"
 msgstr "Recreate"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/SwapResultContent/contents.tsx
-#: libs/common-const/src/common.ts
 msgid "Received"
 msgstr "Received"
 
@@ -4621,8 +4617,8 @@ msgid "No networks match {chainQuery}."
 msgstr "No networks match {chainQuery}."
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
-msgstr "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
+#~ msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
+#~ msgstr "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "dynamic"
@@ -4667,8 +4663,8 @@ msgid "Favorite tokens"
 msgstr "Favorite tokens"
 
 #: libs/common-const/src/common.ts
-msgid "Limit Orders"
-msgstr "Limit Orders"
+#~ msgid "Limit Orders"
+#~ msgstr "Limit Orders"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.ts
 msgid "Approved amount is not sufficient!"
@@ -4740,8 +4736,8 @@ msgid "Submit"
 msgstr "Submit"
 
 #: libs/common-const/src/common.ts
-msgid "Account Overview"
-msgstr "Account Overview"
+#~ msgid "Account Overview"
+#~ msgstr "Account Overview"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "FREE order placement and cancellation"
@@ -4882,8 +4878,8 @@ msgid "Select a network"
 msgstr "Select a network"
 
 #: libs/common-utils/src/tooltips.ts
-msgid "Minimum tokens you'll receive."
-msgstr "Minimum tokens you'll receive."
+#~ msgid "Minimum tokens you'll receive."
+#~ msgstr "Minimum tokens you'll receive."
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
 #~ msgid "Connected <0/>"
@@ -4973,7 +4969,6 @@ msgstr "This is the estimated amount you will receive for each part of the TWAP 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
-#: libs/common-const/src/common.ts
 msgid "Hooks"
 msgstr "Hooks"
 
@@ -5679,8 +5674,8 @@ msgid "Light mode"
 msgstr "Light mode"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "The output token cannot be transferred. There may be an issue with the output token."
-msgstr "The output token cannot be transferred. There may be an issue with the output token."
+#~ msgid "The output token cannot be transferred. There may be an issue with the output token."
+#~ msgstr "The output token cannot be transferred. There may be an issue with the output token."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Approve and swap"
@@ -5783,8 +5778,8 @@ msgid "Advanced"
 msgstr "Advanced"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#~ msgid "Not yet supported"
-#~ msgstr "Not yet supported"
+msgid "Not yet supported"
+msgstr "Not yet supported"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "Remove"
@@ -5961,8 +5956,8 @@ msgid "Tokens must be different"
 msgstr "Tokens must be different"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useGetSafeTxInfo.ts
-msgid "There is no provider to get Gnosis safe info"
-msgstr "There is no provider to get Gnosis safe info"
+#~ msgid "There is no provider to get Gnosis safe info"
+#~ msgstr "There is no provider to get Gnosis safe info"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Expired order"
@@ -5994,7 +5989,6 @@ msgstr "Because you are using a smart contract wallet"
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
-#: libs/common-const/src/common.ts
 msgid "Swap"
 msgstr "Swap"
 
@@ -6218,8 +6212,8 @@ msgid "Lower overall network costs"
 msgstr "Lower overall network costs"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
-msgstr "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgid "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgstr "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderWarning.tsx
 msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more"
@@ -6483,8 +6477,8 @@ msgid "Entered amount is invalid"
 msgstr "Entered amount is invalid"
 
 #: libs/common-const/src/common.ts
-msgid "Mev Slicer"
-msgstr "Mev Slicer"
+#~ msgid "Mev Slicer"
+#~ msgstr "Mev Slicer"
 
 #: apps/cowswap-frontend/src/utils/orderUtils/parseOrder.ts
 msgid "Creation transaction"
