@@ -1,7 +1,7 @@
-import { ComposableCoW } from '@cowprotocol/abis'
 import { delay, isTruthy } from '@cowprotocol/common-utils'
 import { SAFE_TRANSACTION_SERVICE_URL } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 

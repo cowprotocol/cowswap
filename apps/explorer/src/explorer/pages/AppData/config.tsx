@@ -25,16 +25,77 @@ export const INITIAL_FORM_VALUES = {
 export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
-  const latestSchema = (await metadataApiSDK
-    .getAppDataSchema(LATEST_APP_DATA_VERSION)
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .then((m) => (m as any).default)) as JSONSchema7
+  const latestSchemaResponse = await metadataApiSDK.getAppDataSchema(LATEST_APP_DATA_VERSION)
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const latestSchema = ((latestSchemaResponse as any).default ?? latestSchemaResponse) as JSONSchema7
 
-  return makeSchemaCopy(latestSchema)
+  return normalizePartnerFeeSchema(latestSchema)
 }
 
-const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => structuredClone(schema)
+const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => {
+  if (typeof structuredClone === 'function') {
+    return structuredClone(schema)
+  }
+
+  return JSON.parse(JSON.stringify(schema)) as JSONSchema7
+}
+
+const PARTNER_FEE_REF_PREFIX = '#/properties/metadata/properties/partnerFee/definitions/'
+
+const normalizePartnerFeeRefs = (schema: JSONSchema7): JSONSchema7 => {
+  const metadata = schema.properties?.metadata
+  if (!metadata || typeof metadata !== 'object') {
+    return schema
+  }
+
+  const partnerFee = (metadata as JSONSchema7).properties?.partnerFee
+  if (!partnerFee || typeof partnerFee !== 'object') {
+    return schema
+  }
+
+  const partnerFeeDefinitions = (partnerFee as JSONSchema7).definitions as Record<string, JSONSchema7> | undefined
+  const rootDefinitions = (schema.definitions ?? {}) as Record<string, JSONSchema7>
+  const allDefinitionKeys = new Set<string>(Object.keys(rootDefinitions))
+
+  if (partnerFeeDefinitions && typeof partnerFeeDefinitions === 'object') {
+    Object.entries(partnerFeeDefinitions).forEach(([key, value]) => {
+      if (!(key in rootDefinitions)) {
+        rootDefinitions[key] = value
+      }
+      allDefinitionKeys.add(key)
+    })
+
+    schema.definitions = rootDefinitions
+  }
+
+  const rewriteRefs = (node: unknown): void => {
+    if (!node || typeof node !== 'object') return
+
+    if (Array.isArray(node)) {
+      node.forEach(rewriteRefs)
+      return
+    }
+
+    const record = node as Record<string, unknown>
+    if (typeof record.$ref === 'string' && record.$ref.startsWith(PARTNER_FEE_REF_PREFIX)) {
+      const definitionKey = record.$ref.slice(PARTNER_FEE_REF_PREFIX.length)
+      if (allDefinitionKeys.has(definitionKey)) {
+        record.$ref = `#/definitions/${definitionKey}`
+      }
+    }
+
+    Object.values(record).forEach(rewriteRefs)
+  }
+
+  rewriteRefs(schema)
+  return schema
+}
+
+export const normalizePartnerFeeSchema = (schema: JSONSchema7): JSONSchema7 => {
+  const schemaCopy = makeSchemaCopy(schema)
+  return normalizePartnerFeeRefs(schemaCopy)
+}
 
 export const transformErrors = (errors: AjvError[]): AjvError[] => {
   return errors.reduce<AjvError[]>((errorsList, error) => {

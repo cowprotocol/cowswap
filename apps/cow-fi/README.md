@@ -6,38 +6,38 @@ This is the website for CoW Protocol
 ## Setup
 ```bash
 # Install dependencies
-yarn
+pnpm install
 ```
 
 ## Dev server
 ```bash
 # Run server
-yarn dev
+pnpm run dev
 ```
 
 ## Lint
 ```bash
 # Run eslint
-yarn lint
+pnpm run lint
 ```
 
 
 ## Build
 ```bash
-yarn build
+pnpm run build
 ```
 
 # Run server
 ```bash
 # Run app
-yarn start
+pnpm run start
 ```
 
 # Internationalization
 ```bash
 # Extract internationalization literals from the code
-yarn i18n:extract
+pnpm run i18n:extract
 
 # Generate JS files for the language file
-yarn i18n:compile
+pnpm run i18n:compile
 ```
