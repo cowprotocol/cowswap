@@ -149,8 +149,7 @@ async function fetchBridgingQuote(
       return
     }
 
-    // TODO: remove after resting
-    const error = localStorage.getItem('EMULATE_QUOTE_ERROR') ? new Error('QUOTE ERROR') : data?.error
+    const error = data?.error
 
     if (error) {
       // Skip state update when another quote already started
