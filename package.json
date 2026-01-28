@@ -86,7 +86,7 @@
     "@web3-react/empty": "^8.2.3",
     "@web3-react/metamask": "^8.2.4",
     "@web3-react/url": "^8.2.3",
-    "next": "15.2.8",
+    "next": "16.1.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "styled-jsx": "5.1.2",
