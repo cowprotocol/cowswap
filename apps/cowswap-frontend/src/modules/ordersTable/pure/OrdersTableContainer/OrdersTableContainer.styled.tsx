@@ -121,6 +121,66 @@ export const UnsupportedNetworkIconWrapper = styled(ConnectWalletIconWrapper)`
   }
 `
 
+export const ConnectWalletIconWrapper = styled.span`
+  --size: 130px;
+  --backgroundColor: var(${UI.COLOR_PAPER_DARKER});
+  --iconFillColor: var(${UI.COLOR_TEXT});
+  --iconColor: var(${UI.COLOR_TEXT});
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0;
+  color: inherit;
+  transform: rotate(0);
+  transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--backgroundColor);
+    border-radius: var(--size);
+    z-index: -1;
+  }
+
+  &:hover {
+    transform: rotate(360deg);
+  }
+
+  > svg,
+  > img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: inline;
+  }
+
+  > svg {
+    padding: 28px;
+    fill: var(--iconFillColor);
+    color: var(--iconColor);
+    opacity: 0.5;
+  }
+`
+
+export const UnsupportedNetworkIconWrapper = styled(ConnectWalletIconWrapper)`
+  --backgroundColor: var(${UI.COLOR_DANGER_BG});
+  --iconFillColor: transparent;
+  --iconColor: var(${UI.COLOR_DANGER_TEXT});
+
+  &:hover {
+    transform: rotate(0);
+  }
+`
+
 export const NoOrdersAnimation = styled.div`
   width: 100%;
   max-width: 320px;
