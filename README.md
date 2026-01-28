@@ -24,13 +24,13 @@ providing MEV protection.
 First install Dependencies:
 
 ```bash
-yarn
+pnpm install
 ```
 
 Or, if you want to use `@cowprotocol/sdk` preview versions like `"@cowprotocol/cow-sdk": "7.0.4-pr-546-c04641f0.0"`, then:
 
 - set the versions in `package.json`
-- run `PACKAGE_READ_AUTH_TOKEN=XXX yarn run install:sdk-preview` instead of just `yarn`
+- run `PACKAGE_READ_AUTH_TOKEN=XXX pnpm run install:sdk-preview` instead of just `yarn`
 - the token must be generated in GitHub with `read:packages` permissions
 
 ## Run
@@ -38,7 +38,7 @@ Or, if you want to use `@cowprotocol/sdk` preview versions like `"@cowprotocol/c
 Start CoW Swap on `http://localhost:3000`
 
 ```bash
-yarn start
+pnpm start
 ```
 
 ## Build
@@ -46,13 +46,13 @@ yarn start
 Build the project. The static files will be generated in the `build` folder.
 
 ```bash
-yarn build
+pnpm run build
 ```
 
 ## Unit testing
 
 ```bash
-yarn test
+pnpm run test
 ```
 
 # 🔎 Explorer
@@ -64,13 +64,13 @@ Start the Explorer on <http://localhost:4200>
 ### Start
 
 ```bash
-yarn start:explorer
+pnpm run start:explorer
 ```
 
 ### Build
 
 ```bash
-yarn build:explorer
+pnpm run build:explorer
 ```
 
 # 🐄 cow.fi
@@ -80,13 +80,13 @@ Start CoW.fi on <http://localhost:3001>
 ### Start
 
 ```bash
-yarn start:cowfi
+pnpm run start:cowfi
 ```
 
 ### Build
 
 ```bash
-yarn build:cowfi
+pnpm run build:cowfi
 ```
 
 # 🖼️ Widget Configurator
@@ -95,10 +95,10 @@ Start the Widget Configurator on <http://localhost:4200/widget-configurator>
 
 ```bash
 # Start
-yarn start:widget
+pnpm run start:widget
 
 # Build
-yarn build:widget
+pnpm run build:widget
 ```
 
 # 🌌 Cosmos UI Library
@@ -106,7 +106,7 @@ yarn build:widget
 Start the Cosmos UI Library on <http://localhost:5000>
 
 ```bash
-yarn run cosmos
+pnpm run cosmos
 ```
 
 # 🤓 Development
@@ -124,9 +124,9 @@ To launch it with our development server (so you have live-reloading):
 
 ```bash
 # Terminal 1
-yarn start
+pnpm run start
 # Terminal 2
-yarn e2e
+pnpm run e2e
 ```
 
 If we want to use the Cypress UI, with the production build:
@@ -135,7 +135,7 @@ If we want to use the Cypress UI, with the production build:
 # Terminal 1
 npx nx run cowswap-frontend:serve-static --port 3000
 # Terminal 2
-yarn e2e:open
+pnpm run e2e:open
 ```
 
 ## Analyze build
@@ -144,7 +144,7 @@ Analyze CoW Swap bundle:
 
 ```bash
 # Use one of the following templates: "sunburst" | "treemap" | "network" | "raw-data" | "list";
-ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build
+ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build
 ```
 
 # ⚙️ Configuration
@@ -258,7 +258,7 @@ environment variable. For more details, check out the environment file (<.env>)
 
 ## Sitemap
 
-`yarn build:cowfi` also generates `./sitemap.xml` file.
+`pnpm run build:cowfi` also generates `./sitemap.xml` file.
 
 See [next-sitemap.config.js](apps/cow-fi/next-sitemap.config.js)
 

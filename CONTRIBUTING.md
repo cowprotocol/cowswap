@@ -10,19 +10,19 @@ Make sure you follow them for a speedy review.
 ### Install dependencies
 
 ```bash
-yarn install
+pnpm install
 ```
 
 ### Generate locale files
 
 ```bash
-yarn i18n
+pnpm run i18n
 ```
 
 ### Run the interface
 
 ```bash
-yarn start
+pnpm start
 ```
 
 ---
@@ -152,7 +152,7 @@ Additional Guidelines:
 
 Problems detection:
 
-1. run `yarn analyze-build`
+1. run `pnpm run analyze-build`
 2. check `build/cowswap/analyse.html` and `build/cowswap/bundle-stats.html`
 
 Optimization rules:
