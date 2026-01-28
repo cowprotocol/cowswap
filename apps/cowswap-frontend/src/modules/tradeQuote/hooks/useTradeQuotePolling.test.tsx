@@ -45,10 +45,6 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
     getBestQuote: jest.fn(),
   },
 }))
-jest.mock('wagmi', () => ({
-  __esModule: true,
-  useConnection: jest.fn(() => ({ chainId: 1 })),
-}))
 
 const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock
 
