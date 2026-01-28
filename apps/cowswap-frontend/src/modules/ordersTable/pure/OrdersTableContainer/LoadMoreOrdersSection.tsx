@@ -21,6 +21,8 @@ export function LoadMoreOrdersSection({ totalOpenOrders }: LoadMoreOrdersSection
       <p>
         {limit === AMOUNT_OF_ORDERS_TO_FETCH ? (
           <Trans>Only the {limit} most recent orders were searched.</Trans>
+        ) : totalOpenOrders === 1 ? (
+          <Trans>Found 1 open order in the {limit} most recent ones.</Trans>
         ) : (
           <Trans>
             Found {totalOpenOrders} open orders in the {limit} most recent ones.

@@ -3294,6 +3294,10 @@ msgstr "You are not eligible for this airdrop"
 msgid "Select a token"
 msgstr "Select a token"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
+msgid "Found 1 open order in the {limit} most recent ones."
+msgstr "Found 1 open order in the {limit} most recent ones."
+
 #: apps/cowswap-frontend/src/legacy/components/swap/UnsupportedCurrencyFooter/index.tsx
 msgid "Read more about unsupported tokens"
 msgstr "Read more about unsupported tokens"
