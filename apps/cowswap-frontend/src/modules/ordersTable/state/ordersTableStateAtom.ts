@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
 
-import { OrdersTableState } from '../types'
+import { OrdersTableState } from '../ordersTable.types'
 
 export const ordersTableStateAtom = atom<OrdersTableState | null>(null)

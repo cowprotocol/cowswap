@@ -6,7 +6,7 @@ import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'
 import { isPartiallyFilled } from 'utils/orderUtils/isPartiallyFilled'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { OrderTableItem } from '../types'
+import { OrderTableItem } from '../ordersTable.types'
 import { getParsedOrderFromTableItem } from '../utils/orderTableGroupUtils'
 
 function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {

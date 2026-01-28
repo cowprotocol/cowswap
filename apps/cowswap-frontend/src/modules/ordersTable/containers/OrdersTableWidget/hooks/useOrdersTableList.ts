@@ -9,7 +9,7 @@ import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrde
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
 import { useGetPendingOrdersPermitValidityState } from '../../../hooks/usePendingOrderPermitValidity'
-import { OrdersTableList, OrderTableItem, TabOrderTypes } from '../../../types'
+import { OrdersTableList, OrderTableItem, TabOrderTypes } from '../../../ordersTable.types'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'

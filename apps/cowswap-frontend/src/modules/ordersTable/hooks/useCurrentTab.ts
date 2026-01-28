@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useLocation } from 'react-router'
 
 import { OrderTabId } from '../const/tabs'
-import { OrdersTableList } from '../types'
+import { OrdersTableList } from '../ordersTable.types'
 import { parseOrdersTableUrl } from '../utils/parseOrdersTableUrl'
 
 interface CurrentTabState {

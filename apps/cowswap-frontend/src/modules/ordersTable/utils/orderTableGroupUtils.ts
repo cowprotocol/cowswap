@@ -1,6 +1,6 @@
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { OrderTableItem } from '../types'
+import { OrderTableItem } from '../ordersTable.types'
 
 export const isParsedOrder = (item: OrderTableItem): item is ParsedOrder => !('children' in item)
 

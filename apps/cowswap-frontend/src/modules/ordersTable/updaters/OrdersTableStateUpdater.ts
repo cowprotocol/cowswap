@@ -24,7 +24,7 @@ import { useOrderActions } from '../hooks/useOrderActions'
 import { useOrdersHydrationState } from '../hooks/useOrdersHydrationState'
 import { useTabs } from '../hooks/useTabs'
 import { ordersTableStateAtom } from '../state/ordersTableStateAtom'
-import { OrdersTableParams } from '../types'
+import { OrdersTableParams } from '../ordersTable.types'
 import { buildOrdersTableUrl } from '../utils/buildOrdersTableUrl'
 
 function getOrdersInputTokens(allOrders: Order[]): string[] {

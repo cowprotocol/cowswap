@@ -11,9 +11,9 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import {
   useGetAlternativeOrderModalContextCallback,
   useSelectReceiptOrder,
-} from '../containers/OrdersReceiptModal/hooks'
+} from '../containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { useOrdersTableTokenApprove } from '../containers/OrdersTableWidget/hooks/useOrdersTableTokenApprove'
-import { OrderActions } from '../types'
+import { OrderActions } from '../ordersTable.types'
 
 function toggleOrderInCancellationList(state: CancellableOrder[], order: CancellableOrder): CancellableOrder[] {
   const isOrderIncluded = state.find((item) => item.id === order.id)
