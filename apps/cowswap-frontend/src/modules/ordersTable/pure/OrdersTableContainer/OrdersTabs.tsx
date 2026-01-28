@@ -3,6 +3,7 @@ import { ReactNode, ChangeEvent } from 'react'
 import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Media, UI } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -26,7 +27,7 @@ const Tabs = styled.div`
   }
 `
 
-const SelectContainer = styled.div`
+export const SelectContainer = styled.div`
   display: none;
   width: 100%;
   margin: 0;
@@ -55,7 +56,7 @@ const SelectContainer = styled.div`
   }
 `
 
-const Select = styled.select`
+export const Select = styled.select`
   width: 100%;
   padding: 10px 40px 10px 10px;
   border-radius: 14px;
@@ -149,11 +150,11 @@ const TabButton = styled(Link)<{
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]
-  isWalletConnected: boolean
 }
 
-export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps): ReactNode {
+export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
   const { i18n } = useLingui()
+  const { account } = useWalletInfo()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const navigate = useNavigate()
   const activeTabIndex = Math.max(
@@ -169,7 +170,7 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps):
   return (
     <>
       <SelectContainer>
-        <Select value={tabs[activeTabIndex].id} onChange={handleSelectChange}>
+        <Select value={tabs[activeTabIndex]?.id || tabs[0]?.id} onChange={handleSelectChange}>
           {tabs.map((tab) => {
             const isUnfillable = tab.id === 'unfillable'
             const isSigning = tab.id === 'signing'
@@ -177,7 +178,7 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps):
               <option key={tab.id} value={tab.id}>
                 {isUnfillable && '⚠️ '}
                 {isSigning && '⏳ '}
-                {i18n._(tab.title)} {isWalletConnected && `(${tab.count})`}
+                {i18n._(tab.title)} {account && `(${tab.count})`}
               </option>
             )
           })}
@@ -194,12 +195,12 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps):
               active={(index === activeTabIndex).toString()}
               $isUnfillable={isUnfillable}
               $isSigning={isSigning}
-              $isDisabled={!isWalletConnected}
+              $isDisabled={!account}
               to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
             >
               {isUnfillable && <SVG src={alertCircle} description={t`warning`} />}
               {isSigning && <SVG src={orderPresignaturePending} description={t`signing`} />}
-              {i18n._(tab.title)} {isWalletConnected && <span>({tab.count})</span>}
+              {i18n._(tab.title)} {account && <span>({tab.count})</span>}
             </TabButton>
           )
         })}

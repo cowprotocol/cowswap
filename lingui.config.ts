@@ -2,7 +2,21 @@ const linguiConfig = {
   catalogs: [
     {
       path: '<rootDir>/apps/cowswap-frontend/src/locales/{locale}',
-      include: ['<rootDir>/apps', '<rootDir>/libs'],
+      include: [
+        '<rootDir>/apps/cowswap-frontend/src',
+        '<rootDir>/libs/*/src',
+      ],
+      exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/.next/**',
+        '**/build/**',
+        '**/*.spec.ts',
+        '**/*.spec.tsx',
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/assets/**',
+      ],
     },
   ],
   fallbackLocales: {

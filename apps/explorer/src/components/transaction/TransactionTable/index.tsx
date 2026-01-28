@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
+import { TruncatedText } from '@cowprotocol/ui'
 
 import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -40,7 +40,7 @@ interface RowProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+
 const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   const {
     buyToken,
@@ -113,7 +113,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted }) => {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 const TransactionTable: React.FC<Props> = (props) => {
   const { orders } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)

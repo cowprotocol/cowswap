@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { Actions, Connector } from '@web3-react/types'
 
-import EventEmitter from 'events'
+import EventEmitter from 'eventemitter3'
 
 export const ASYNC_CUSTOM_PROVIDER_EVENT = 'customProvider'
 
@@ -27,7 +27,11 @@ function initCustomProvider(self: AsyncConnector, connector: Connector, chainId:
 export class AsyncConnector extends Connector {
   readonly events = new EventEmitter()
 
-  constructor(private loader: () => Promise<Connector>, actions: Actions, onError?: (error: Error) => void) {
+  constructor(
+    private loader: () => Promise<Connector>,
+    actions: Actions,
+    onError?: (error: Error) => void,
+  ) {
     super(actions, onError)
   }
 

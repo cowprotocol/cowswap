@@ -1,18 +1,19 @@
-import { ReactNode, useMemo, useState } from 'react'
-
-import { useTheme } from '@cowprotocol/common-hooks'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { ReactNode, useMemo, useState, useEffect } from 'react'
 
 import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { useNavigate } from 'common/hooks/useNavigate'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon } from './styled'
+import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon, SelectContainer, Select } from './styled'
 
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
+import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
+import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { OrdersTableParams } from '../../types'
@@ -27,25 +28,56 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
   return orders.slice(start, end)
 }
 
-const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.all, OrderTabId.unfillable] as const
+const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
-interface OrdersTableWidgetProps extends OrdersTableParams {
-  children?: ReactNode
-}
-
-export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
-  const { children, ...stateParams } = props
-
-  const { account } = useWalletInfo()
-  const { darkMode } = useTheme()
+// eslint-disable-next-line max-lines-per-function
+export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
+  const { i18n } = useLingui()
+  const navigate = useNavigate()
 
   const [searchTerm, setSearchTerm] = useState('')
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<HistoryStatusFilter>(HistoryStatusFilter.FILLED)
+
+  const resetPagination = (): void => {
+    if (!currentPageNumber || currentPageNumber === 1 || !filteredOrders) return
+
+    const url = buildOrdersTableUrl({ pageNumber: 1 })
+
+    navigate(url, { replace: true })
+  }
+
+  const resetSearchTerm = (): void => {
+    setSearchTerm('')
+
+    // If any filter changes, reset pagination:
+    resetPagination()
+  }
+
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchTerm(e.target.value)
+
+    // If any filter changes, reset pagination:
+    resetPagination()
+  }
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    setHistoryStatusFilter(e.target.value as HistoryStatusFilter)
+
+    // If any filter changes, reset pagination:
+    resetPagination()
+  }
 
   const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
+  const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
 
-  const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
+  useEffect(() => {
+    // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
+    if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
+  }, [currentTabId])
 
   const pendingOrders = useMemo(() => {
+    const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
+
     if (!isTabWithPending || !filteredOrders || typeof currentPageNumber !== 'number') return undefined
 
     const currentPageItems = getOrdersPageChunk(
@@ -57,30 +89,50 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
     return currentPageItems.filter((order) => {
       return order.status === OrderStatus.PENDING
     })
-  }, [isTabWithPending, filteredOrders, currentPageNumber])
+  }, [currentTabId, filteredOrders, currentPageNumber])
 
   const hasPendingOrders = !!pendingOrders?.length
 
   return (
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
-      <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
-      {children}
-      <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
+
+      <OrdersTableStateUpdater
+        searchTerm={searchTerm}
+        historyStatusFilter={historyStatusFilter}
+        {...ordersTableParams}
+      />
+
+      <OrdersTableContainer searchTerm={searchTerm} historyStatusFilter={historyStatusFilter}>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
-        {/* If account is not connected, don't show the search input */}
-        {!!account && !!orders?.length && (
-          <SearchInputContainer>
-            <SearchIcon />
-            <SearchInput
-              type="text"
-              placeholder={t`Token symbol, address`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && <StyledCloseIcon onClick={() => setSearchTerm('')} />}
-          </SearchInputContainer>
+        {/* Show filters only if there are orders */}
+        {!!orders?.length && (
+          <>
+            {/* Show onlyFilled select only in history tab */}
+            {currentTabId === OrderTabId.history && (
+              <SelectContainer>
+                <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
+                  <option value="filled">{i18n._('Filled orders')}</option>
+                  <option value="cancelled">{i18n._('Cancelled orders')}</option>
+                  <option value="expired">{i18n._('Expired orders')}</option>
+                  <option value="all">{i18n._('All orders')}</option>
+                </Select>
+              </SelectContainer>
+            )}
+
+            <SearchInputContainer>
+              <SearchIcon />
+              <SearchInput
+                type="text"
+                placeholder={t`Token symbol, address`}
+                name="searchTerm"
+                value={searchTerm}
+                onChange={handleSearchTermChange}
+              />
+              {searchTerm && <StyledCloseIcon onClick={resetSearchTerm} />}
+            </SearchInputContainer>
+          </>
         )}
       </OrdersTableContainer>
 
