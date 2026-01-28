@@ -42,7 +42,7 @@
     "ajv": "^6.12.6",
     "ethers": "5.7.2",
     "graphql-request": "4.3.0",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "ms.macro": "^2.0.0",
     "react": "19.1.2",
     "react-feather": "^2.0.10",

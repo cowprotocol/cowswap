@@ -7,6 +7,6 @@ export const orderLastTimePriceUpdateAtom = atomWithStorage<Record<string, numbe
   {},
   getJotaiMergerStorage(),
   {
-    unstable_getOnInit: true,
+    getOnInit: true,
   },
 )

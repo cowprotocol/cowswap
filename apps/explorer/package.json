@@ -59,7 +59,7 @@
     "ethers": "5.7.2",
     "flexsearch": "^0.8.164",
     "inter-ui": "^3.19.3",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "json-schema": "^0.4.0",
     "launchdarkly-react-client-sdk": "^3.0.4",
     "lightweight-charts": "^3.3.0",
