@@ -7,10 +7,9 @@ export function useWalletChainId(): number | undefined {
   const { chainId: wagmiChainId } = useConnection()
   const { chainId: web3ChainId } = useWeb3React()
 
-  let chainId = web3ChainId
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    chainId = wagmiChainId
+    return wagmiChainId
   }
 
-  return chainId
+  return web3ChainId
 }

@@ -4,7 +4,6 @@ import { CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
-import { useConnection } from 'wagmi'
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -19,7 +18,7 @@ const IconWrapper = styled.div<{ size?: number }>`
 `
 
 export interface StatusIconProps {
-  connectionType: ConnectionType
+  connectionType?: ConnectionType | string
   account?: string
   size?: number
 }
@@ -27,11 +26,9 @@ export interface StatusIconProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function StatusIcon({ connectionType, account, size = 16 }: StatusIconProps) {
-  const { connector } = useConnection()
-
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
     let image
-    switch (connector?.type) {
+    switch (connectionType) {
       case ConnectorType.COINBASE_WALLET:
         image = <img src={CoinbaseWalletIcon} alt={t`Coinbase Wallet`} />
         break

@@ -86,9 +86,7 @@ interface WalletUpdaterProps {
   standaloneMode?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
+export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   const walletInfo = useWalletInfo()
   const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
   const gnosisSafeInfo = useSafeInfo(walletInfo)

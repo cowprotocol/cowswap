@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { JSX, ReactNode } from 'react'
 
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
@@ -13,9 +13,7 @@ interface Web3ProviderProps {
   children: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Web3Provider({ children }: Web3ProviderProps) {
+export function Web3Provider({ children }: Web3ProviderProps): JSX.Element {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
