@@ -30,6 +30,7 @@ export const PROTOTYPE_BRIDGE_PROVIDER_INFO: BridgeProviderInfo = {
 
 export const ASSET_ID_TAG_PREFIX = 'assetId:'
 export const BLOCKCHAIN_TAG_PREFIX = 'blockchain:'
+export const SOLANA_MINT_TAG_PREFIX = 'solanaMint:'
 
 const PROTOTYPE_SWAP_RATE_BPS = 9_800
 const PROTOTYPE_BRIDGE_FEE_BPS = 30
@@ -108,6 +109,10 @@ function getAssetIdTag(assetId: string): string {
   return `${ASSET_ID_TAG_PREFIX}${assetId}`
 }
 
+function getSolanaMintTag(mint: string): string {
+  return `${SOLANA_MINT_TAG_PREFIX}${mint}`
+}
+
 function getBlockchainTag(chainId: number): string {
   const chainType = getChainType(chainId)
 
@@ -115,6 +120,18 @@ function getBlockchainTag(chainId: number): string {
   if (chainType === 'solana') return `${BLOCKCHAIN_TAG_PREFIX}sol`
 
   return `${BLOCKCHAIN_TAG_PREFIX}evm`
+}
+
+function normalizeLogoUrl(logoUrl: string | undefined): string | undefined {
+  if (!logoUrl) return undefined
+  if (logoUrl.startsWith('data:')) return logoUrl
+  if (logoUrl.includes('://')) return logoUrl
+
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return new URL(logoUrl, window.location.origin).toString()
+  }
+
+  return logoUrl
 }
 
 function buildPrototypeTokens(): void {
@@ -126,6 +143,12 @@ function buildPrototypeTokens(): void {
 
     for (const tokenDef of allowlist.tokens) {
       const syntheticAddress = getSyntheticAddress(chainInfo.id, tokenDef.assetId)
+      const tags = [getAssetIdTag(tokenDef.assetId), getBlockchainTag(chainInfo.id)]
+
+      if (tokenDef.solanaMint && getChainType(chainInfo.id) === 'solana') {
+        tags.push(getSolanaMintTag(tokenDef.solanaMint))
+      }
+
       const token = TokenWithLogo.fromToken(
         {
           chainId: chainInfo.id,
@@ -133,9 +156,9 @@ function buildPrototypeTokens(): void {
           decimals: tokenDef.decimals,
           symbol: tokenDef.symbol,
           name: tokenDef.name,
-          tags: [getAssetIdTag(tokenDef.assetId), getBlockchainTag(chainInfo.id)],
+          tags,
         },
-        tokenDef.logoUrl,
+        normalizeLogoUrl(tokenDef.logoUrl),
       )
 
       registerPrototypeToken(token)
@@ -186,6 +209,14 @@ export function getAssetIdFromTokenTags(tags: string[] | undefined | null): stri
   const assetTag = tags.find((tag) => tag.startsWith(ASSET_ID_TAG_PREFIX))
 
   return assetTag?.slice(ASSET_ID_TAG_PREFIX.length)
+}
+
+export function getSolanaMintFromTokenTags(tags: string[] | undefined | null): string | undefined {
+  if (!tags) return undefined
+
+  const mintTag = tags.find((tag) => tag.startsWith(SOLANA_MINT_TAG_PREFIX))
+
+  return mintTag?.slice(SOLANA_MINT_TAG_PREFIX.length)
 }
 
 export function getPrototypeAssetIdForAddress(chainId: number, address: string | undefined | null): string | undefined {

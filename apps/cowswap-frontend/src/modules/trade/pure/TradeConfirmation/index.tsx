@@ -184,8 +184,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const isSolanaDestination = destinationChainType === 'solana'
   const chainLabel = destinationChainId ? getNonEvmChainLabel(destinationChainId) : undefined
   const nonEvmLogoUrl = destinationChainId ? getNonEvmAllowlist(destinationChainId)?.tokens[0]?.logoUrl : undefined
-  const solanaExplorerUrl =
-    isSolanaDestination && recipient ? `https://explorer.solana.com/address/${recipient}` : undefined
+  const solanaExplorerUrl = isSolanaDestination && recipient ? `https://solscan.io/account/${recipient}` : undefined
 
   const shouldShowRecipientStep = isNonEvmPrototypeFlow && Boolean(recipient)
   const [isRecipientConfirmed, setIsRecipientConfirmed] = useState(!shouldShowRecipientStep)

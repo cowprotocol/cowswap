@@ -58,7 +58,7 @@ export function ChainAwareAddress({ address, chainId, className }: ChainAwareAdd
   const logoUrl = bridgeNetwork ? bridgeNetwork.logo.light : undefined
   const nonEvmExplorerUrl =
     chainType === 'solana'
-      ? `https://explorer.solana.com/address/${address}`
+      ? `https://solscan.io/account/${address}`
       : chainType === 'bitcoin'
         ? `https://www.blockchain.com/btc/address/${address}`
         : undefined
