@@ -23,7 +23,9 @@ export function isOrderFilled(order: Order | ParsedOrder): boolean {
 
   if (isSellOrder(order.kind)) {
     amount = new BigNumber(order.sellAmount.toString())
-    executedAmount = new BigNumber(apiAdditionalInfo.executedSellAmount.toString()).minus(apiAdditionalInfo.executedFeeAmount?.toString() || '0')
+    executedAmount = new BigNumber(apiAdditionalInfo.executedSellAmount.toString()).minus(
+      apiAdditionalInfo.executedFeeAmount?.toString() || '0',
+    )
   } else {
     amount = new BigNumber(order.buyAmount.toString())
     executedAmount = new BigNumber(apiAdditionalInfo.executedBuyAmount.toString())
