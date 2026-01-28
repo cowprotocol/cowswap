@@ -10,6 +10,7 @@ import styled from 'styled-components/macro'
 import { REDIRECT_SECONDS } from './constants'
 
 const REDIRECT_URL = 'https://mevblocker.io'
+const ANNOUNCEMENT_URL = 'https://www.smg.org/memo/mevblocker'
 
 const Page = styled.main`
   display: flex;
@@ -66,6 +67,13 @@ const Subtitle = styled.p`
   font-size: 1.8rem;
   line-height: 1.6;
   color: var(${UI.COLOR_NEUTRAL_30});
+`
+
+const RedirectSubtitle = styled.p`
+  font-size: 1.8rem;
+  line-height: 1.6;
+  color: var(${UI.COLOR_NEUTRAL_30});
+  margin: 0;
 `
 
 const Countdown = styled.p`
@@ -160,7 +168,14 @@ export default function MevBlockerRedirectPage(): ReactNode {
       <Card>
         <Badge>MEV Blocker update</Badge>
         <Title>MEV Blocker has been acquired.</Title>
-        <Subtitle>We are redirecting you to the new home.</Subtitle>
+        <Subtitle>
+          Read the announcement on{' '}
+          <InlineLink href={ANNOUNCEMENT_URL} target="_blank" rel="noopener noreferrer">
+            smg.org
+          </InlineLink>
+          .
+        </Subtitle>
+        <RedirectSubtitle>We are redirecting you to the new home.</RedirectSubtitle>
         <Countdown aria-live="polite">
           Redirecting you in <span>{countdownLabel}</span>.
         </Countdown>
