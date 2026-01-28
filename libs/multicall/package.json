@@ -34,7 +34,7 @@
     "@ethersproject/contracts": "5.7.0",
     "@ethersproject/providers": "5.7.0",
     "ethers": "5.7.2",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "react": "19.1.2",
     "swr": "^2.3.3"
   },

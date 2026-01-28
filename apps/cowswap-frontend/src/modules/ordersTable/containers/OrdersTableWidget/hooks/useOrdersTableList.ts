@@ -14,6 +14,8 @@ import { getOrderParams } from '../../../utils/getOrderParams'
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 
+const ORDER_LIMIT = 1000
+
 const ordersSorter = (a: OrderTableItem, b: OrderTableItem): number => {
   const aCreationTime = getParsedOrderFromTableItem(a).creationTime
   const bCreationTime = getParsedOrderFromTableItem(b).creationTime
@@ -27,7 +29,6 @@ export function useOrdersTableList(
   chainId: number,
   balancesAndAllowances: BalancesAndAllowances,
 ): OrdersTableList {
-  const orderLimit = orderType === TabOrderTypes.LIMIT ? 100 : 1000
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
 
   // First, group and sort all orders
@@ -40,7 +41,7 @@ export function useOrdersTableList(
   // Then, categorize orders into their respective lists
   return useMemo(
     () =>
-      allSortedOrders.slice(0, orderLimit).reduce<OrdersTableList>(
+      allSortedOrders.slice(0, ORDER_LIMIT).reduce<OrdersTableList>(
         // TODO: Reduce function complexity by extracting logic
         // eslint-disable-next-line complexity
         (acc, item) => {
@@ -114,7 +115,6 @@ export function useOrdersTableList(
       balancesAndAllowances,
       orderType,
       setIsOrderUnfillable,
-      orderLimit,
       pendingOrdersPermitValidityState,
     ],
   )
