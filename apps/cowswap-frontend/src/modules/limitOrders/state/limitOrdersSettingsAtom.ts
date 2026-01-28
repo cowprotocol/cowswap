@@ -1,4 +1,4 @@
-import { atom, Getter, Setter } from 'jotai'
+import { atom, Getter, SetStateAction, Setter } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
@@ -67,16 +67,16 @@ export const updateLimitOrdersSettingsAtom = atom(
 function partialFillsOverrideSetterFactory(
   atomToUpdate: typeof regularLimitOrdersSettingsAtom | typeof alternativeLimitOrdersSettingsAtom,
 ) {
-  return (get: Getter, set: Setter, nextState: Partial<LimitOrdersSettingsState>) => {
-    set(atomToUpdate, () => {
-      const prevState = get(atomToUpdate)
+  return (_: Getter, set: Setter, nextState: SetStateAction<Partial<LimitOrdersSettingsState>>) => {
+    set(atomToUpdate, (prevState) => {
+      const update = typeof nextState === 'function' ? nextState(prevState) : nextState
 
-      if (nextState.partialFillsEnabled !== prevState.partialFillsEnabled) {
+      if (update.partialFillsEnabled !== prevState.partialFillsEnabled) {
         // Whenever `partialFillsEnabled` changes, reset `partiallyFillableOverrideAtom`
         set(partiallyFillableOverrideAtom, undefined)
       }
 
-      return { ...prevState, ...nextState }
+      return { ...prevState, ...update }
     })
   }
 }

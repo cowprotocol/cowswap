@@ -147,10 +147,10 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'
 
 // fee threshold - should be greater than percentage, show warning
-export const FEE_SIZE_THRESHOLD = 10 // 10%
+export const FEE_SIZE_THRESHOLD = 10 as const // 10%
 
-export const MAXIMUM_ORDERS_TO_DISPLAY = 10
-export const AMOUNT_OF_ORDERS_TO_FETCH = 100
+export const MAXIMUM_ORDERS_TO_DISPLAY = 10 as const
+export const AMOUNT_OF_ORDERS_TO_FETCH = 100 as const
 
 // Start date of COW vesting for locked GNO
 export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')

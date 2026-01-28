@@ -139,7 +139,9 @@ describe('useHandleOrderPlacement', () => {
       () => useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
       { wrapper },
     )
-    await result.current()
+    await act(async () => {
+      await result.current()
+    })
 
     // Assert
     const { result: limitOrdersStateResultAfter } = renderHook(() => useLimitOrdersRawState(), {
