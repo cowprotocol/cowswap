@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/events-v2.1.0...events-v3.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.0.0
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/events-v2.0.2...events-v2.1.0) (2025-12-24)
 
 

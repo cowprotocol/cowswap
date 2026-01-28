@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.14.0...analytics-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/events bumped to 3.0.0
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.13.0...analytics-v1.14.0) (2025-11-24)
 
 

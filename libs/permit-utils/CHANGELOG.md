@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v1.0.1...permit-utils-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Bug Fixes
+
+* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.0
+
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v1.0.0...permit-utils-v1.0.1) (2025-12-16)
 
 

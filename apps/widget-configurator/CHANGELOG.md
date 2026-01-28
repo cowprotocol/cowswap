@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.17.1...widget-configurator-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* add repo-wide AGENTS.md with app-specific overlays ([#6865](https://github.com/cowprotocol/cowswap/issues/6865)) ([a2a4239](https://github.com/cowprotocol/cowswap/commit/a2a4239b11691585396f1959475cbbcf535e2853))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Bug Fixes
+
+* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.0
+    * @cowprotocol/assets bumped to 2.0.0
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/events bumped to 3.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/widget-lib bumped to 1.0.0
+    * @cowprotocol/widget-react bumped to 1.0.0
+
 ## [1.17.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.17.0...widget-configurator-v1.17.1) (2025-12-19)
 
 
