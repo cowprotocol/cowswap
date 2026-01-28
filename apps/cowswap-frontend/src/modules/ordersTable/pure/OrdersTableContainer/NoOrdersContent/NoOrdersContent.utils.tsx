@@ -122,7 +122,7 @@ export function getDescription({
     return [t`You don't have any orders at the moment.`]
   }
 
-  // If there are orders, then we are seeing NoOrdersContent because they have been fileted out by the searchTerm and/or historyStatusFilter:
+  // If there are orders, then we are seeing NoOrdersContent because they have been filtered out by the searchTerm and/or historyStatusFilter:
 
   if (searchTerm) {
     return [
