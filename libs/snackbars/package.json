@@ -27,7 +27,7 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/ui": "workspace:*",
     "@react-spring/web": "^9.6.1",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "ms.macro": "^2.0.0",
     "react": "19.1.2",
     "react-feather": "^2.0.10",

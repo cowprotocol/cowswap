@@ -4,7 +4,7 @@ import { COW_TOKEN_TO_CHAIN, NATIVE_CURRENCIES } from '@cowprotocol/common-const
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { renderHook } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
@@ -149,7 +149,9 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
       { wrapper: WithProviders },
     )
 
-    await result.current({ ...orderMock, inputToken: NATIVE_CURRENCIES[chainId] })
+    await act(async () => {
+      await result.current({ ...orderMock, inputToken: NATIVE_CURRENCIES[chainId] })
+    })
 
     expect(ethFlowInvalidationMock).toHaveBeenCalledTimes(1)
     expect(ethFlowInvalidationMock.mock.calls[0]).toMatchSnapshot()
@@ -159,7 +161,9 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   it('When is NOT ETH-flow order, then should call settlement contract', async () => {
     const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
 
-    await result.current({ ...orderMock, inputToken: COW_TOKEN_TO_CHAIN[chainId]! })
+    await act(async () => {
+      await result.current({ ...orderMock, inputToken: COW_TOKEN_TO_CHAIN[chainId]! })
+    })
 
     expect(settlementInvalidationMock).toHaveBeenCalledTimes(1)
     expect(settlementInvalidationMock.mock.calls[0]).toMatchSnapshot()
@@ -170,7 +174,9 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
     it('Then should change an order status, set a tx hash to order and add the transaction to store', async () => {
       const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
 
-      await result.current({ ...orderMock, inputToken: COW_TOKEN_TO_CHAIN[chainId]! })
+      await act(async () => {
+        await result.current({ ...orderMock, inputToken: COW_TOKEN_TO_CHAIN[chainId]! })
+      })
 
       expect(transactionAdder).toHaveBeenCalledTimes(1)
       expect(transactionAdder.mock.calls[0]).toMatchSnapshot()

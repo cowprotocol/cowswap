@@ -56,7 +56,7 @@
     "ethers": "5.7.2",
     "eventemitter3": "^4.0.0",
     "hdkey": "^2.1.0",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "ms.macro": "^2.0.0",
     "react": "19.1.2",
     "styled-components": "5.3.11",

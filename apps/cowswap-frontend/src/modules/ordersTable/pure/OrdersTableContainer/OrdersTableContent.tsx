@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { ConnectWalletContent } from './ConnectWalletContent'
-import { NoOrdersContent } from './NoOrdersContent'
+import { NoOrdersContent } from './NoOrdersContent/NoOrdersContent'
 import { OrdersTable } from './OrdersTable'
 import { UnsupportedNetworkContent } from './UnsupportedNetworkContent'
 
@@ -37,16 +37,19 @@ export function OrdersTableContent({
     return <UnsupportedNetworkContent />
   }
 
-  if (filteredOrders?.length === 0) {
-    return (
-      <NoOrdersContent
-        currentTab={currentTab}
-        searchTerm={searchTerm}
-        historyStatusFilter={historyStatusFilter}
-        hasHydratedOrders={isHydrated}
-      />
-    )
+  if (isProviderNetworkUnsupported) {
+    return <UnsupportedNetworkContent />
   }
 
-  return <OrdersTable currentTab={currentTab} />
+  return filteredOrders?.length === 0 ? (
+    <NoOrdersContent
+      currentTab={currentTab}
+      searchTerm={searchTerm}
+      historyStatusFilter={historyStatusFilter}
+      historyStatusFilter={historyStatusFilter}
+      hasHydratedOrders={isHydrated}
+    />
+  ) : (
+    <OrdersTable currentTab={currentTab} />
+  )
 }

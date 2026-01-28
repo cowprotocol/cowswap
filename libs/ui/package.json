@@ -41,7 +41,7 @@
     "@uniswap/sdk-core": "^3.0.1",
     "bignumber.js": "^9.1.2",
     "color2k": "^2.0.2",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "next": "15.2.8",
     "polished": "^4.0.5",
     "react": "19.1.2",

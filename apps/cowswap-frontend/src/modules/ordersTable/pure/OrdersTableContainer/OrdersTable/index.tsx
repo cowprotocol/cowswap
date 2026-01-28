@@ -1,5 +1,6 @@
-import React, { ReactNode, useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
@@ -11,17 +12,21 @@ import { TableHeader } from './TableHeader'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../../hooks/useGetBuildOrdersTableUrl'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
+import { TabOrderTypes } from '../../../types'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../../OrdersTablePagination'
+import { LoadMoreOrdersSection } from '../LoadMoreOrdersSection'
 import { TABLE_HEADERS } from '../tableHeaders'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const { chainId } = useWalletInfo()
   const {
+    orderType,
     selectedOrders,
     allowsOffchainSigning,
     filteredOrders,
@@ -83,6 +88,9 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
 
   if (!chainId || !balancesAndAllowances || !orderActions || !pendingOrdersPrices) return null
 
+  const totalFilteredOrders = filteredOrders?.length || 0
+  const lastPageNumber = Math.ceil(totalFilteredOrders / ORDERS_TABLE_PAGE_SIZE)
+
   return (
     <>
       <TableBox>
@@ -108,13 +116,17 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
       </TableBox>
 
       {/* Only show pagination if more than 1 page available */}
-      {filteredOrders && filteredOrders.length > ORDERS_TABLE_PAGE_SIZE && (
+      {totalFilteredOrders > ORDERS_TABLE_PAGE_SIZE && (
         <OrdersTablePagination
           getPageUrl={getPageUrl}
           pageSize={ORDERS_TABLE_PAGE_SIZE}
-          totalCount={filteredOrders.length}
+          totalCount={totalFilteredOrders}
           currentPage={currentPageNumber}
         />
+      )}
+
+      {currentTab === OrderTabId.open && currentPageNumber === lastPageNumber && orderType === TabOrderTypes.LIMIT && (
+        <LoadMoreOrdersSection totalOpenOrders={totalFilteredOrders} />
       )}
     </>
   )
