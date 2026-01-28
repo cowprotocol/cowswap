@@ -23,14 +23,14 @@
   },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
-    "@cowprotocol/cow-sdk": "7.2.13",
-    "@cowprotocol/sdk-composable": "0.1.26",
-    "@cowprotocol/sdk-ethers-v5-adapter": "0.3.1",
-    "styled-components": "5.3.11",
+    "@cowprotocol/cow-sdk": "~7.3.0",
+    "@cowprotocol/sdk-composable": "0.1.27",
+    "@cowprotocol/sdk-ethers-v5-adapter": "0.3.2",
     "ethers": "5.7.2",
     "inter-ui": "^3.19.3",
     "react": "19.1.2",
-    "react-dom": "19.1.2"
+    "react-dom": "19.1.2",
+    "styled-components": "5.3.11"
   },
   "devDependencies": {
     "@types/react": "19.1.3",

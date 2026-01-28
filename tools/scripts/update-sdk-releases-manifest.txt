@@ -1,0 +1,17 @@
+sdk-app-data-v4.5.2
+sdk-bridging-v1.6.0
+sdk-common-v0.5.1
+sdk-composable-v0.1.27
+sdk-config-v0.7.0
+sdk-contracts-ts-v1.3.0
+sdk-cow-shed-v0.2.13
+sdk-flash-loans-v1.7.0
+sdk-order-book-v0.6.0
+sdk-order-signing-v0.1.27
+sdk-subgraph-v0.3.0
+sdk-trading-v0.9.1
+sdk-weiroll-v0.1.13
+sdk-ethers-v5-adapter-v0.3.2
+sdk-ethers-v6-adapter-v0.3.2
+sdk-viem-adapter-v0.3.2
+cow-sdk-v7.3.0

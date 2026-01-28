@@ -1,9 +1,9 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, HttpsString } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse, default as SafeApiKitType } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
-export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
+export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, HttpsString> = {
   [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global/api',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global/api',
   [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global/api',

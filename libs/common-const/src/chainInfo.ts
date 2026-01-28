@@ -13,17 +13,18 @@ import {
   sepolia,
   ink,
   SupportedChainId,
+  HttpsString,
 } from '@cowprotocol/cow-sdk'
 
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
 
 export interface BaseChainInfo {
-  readonly docs: string
-  readonly bridge?: string
-  readonly explorer: string
-  readonly infoLink: string
-  readonly logo: { light: string; dark: string }
+  readonly docs: HttpsString
+  readonly bridge?: HttpsString
+  readonly explorer: HttpsString
+  readonly infoLink: HttpsString
+  readonly logo: { light: HttpsString; dark: HttpsString }
   readonly name: string
   readonly addressPrefix: string
   readonly label: string
@@ -57,7 +58,10 @@ function mapChainInfoToBaseChainInfo(
     bridge: chainInfo.bridges?.[0]?.url,
     explorer: chainInfo.blockExplorer.url ?? '',
     infoLink: chainInfo.website.url,
-    logo: chainInfo.logo,
+    logo: {
+      light: chainInfo.logo.light as HttpsString,
+      dark: chainInfo.logo.dark as HttpsString,
+    },
     addressPrefix: chainInfo.addressPrefix,
     label: chainInfo.label,
     explorerTitle: chainInfo.blockExplorer.name,

@@ -192,5 +192,17 @@
       "source": "https://files.cow.fi/token-lists/CoinGecko.9745.json",
       "enabledByDefault": true
     }
+  ],
+  "57073": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    },
+    {
+      "priority": 2,
+      "source": "https://files.cow.fi/token-lists/CoinGecko.57073.json",
+      "enabledByDefault": true
+    }
   ]
 }
