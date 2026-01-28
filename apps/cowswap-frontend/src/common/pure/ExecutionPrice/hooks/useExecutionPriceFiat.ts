@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 

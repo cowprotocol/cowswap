@@ -1,16 +1,15 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import STEP_IMAGE_CANCELLED from '@cowprotocol/assets/cow-swap/progressbar-step-cancelled.svg'
 import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
 import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
 import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
-import STEP_LOTTIE_EXECUTING from '@cowprotocol/assets/lottie/progressbar-step-executing.json'
-import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
+import useSWR from 'swr'
 
 import { NoSurplus, ShowSurplus } from './BenefitComponents'
 import { PROCESS_IMAGE_WRAPPER_BG_COLOR } from './constants'
@@ -51,7 +50,18 @@ export function UnfillableTopSection(): ReactNode {
 // delayed, submissionFailed, solved
 
 export function DelayedSolvedSubmissionFailedTopSection(): ReactNode {
-  return <FullSizeLottie animationData={STEP_LOTTIE_NEXTBATCH} />
+  const { data: STEP_LOTTIE_NEXTBATCH } = useSWR(
+    ['progressbar-step-nextbatch'],
+    () => import('@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'),
+  )
+
+  const animationData = useMemo(() => {
+    return { ...STEP_LOTTIE_NEXTBATCH } // swr freezes result value, should unfreeze it to pass into lottie
+  }, [STEP_LOTTIE_NEXTBATCH])
+
+  if (!STEP_LOTTIE_NEXTBATCH) return null
+
+  return <FullSizeLottie animationData={animationData} />
 }
 
 interface SolvingTopSectionProps {
@@ -84,9 +94,20 @@ export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactN
 }
 
 export function ExecutingTopSection({ stepName }: BaseTopSectionProps): ReactNode {
+  const { data: STEP_LOTTIE_EXECUTING } = useSWR(
+    ['progressbar-step-executing'],
+    () => import('@cowprotocol/assets/lottie/progressbar-step-executing.json'),
+  )
+
+  const animationData = useMemo(() => {
+    return { ...STEP_LOTTIE_EXECUTING } // swr freezes result value, should unfreeze it to pass into lottie
+  }, [STEP_LOTTIE_EXECUTING])
+
+  if (!STEP_LOTTIE_EXECUTING) return null
+
   return (
     <ProgressImageWrapper stepName={stepName}>
-      <FullSizeLottie animationData={STEP_LOTTIE_EXECUTING} />
+      <FullSizeLottie animationData={animationData} />
     </ProgressImageWrapper>
   )
 }
