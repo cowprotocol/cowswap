@@ -9,9 +9,27 @@ import type { ChainAccentVars } from '../ChainsSelector/styled'
 const fallbackBackground = `var(${UI.COLOR_PRIMARY_OPACITY_10})`
 const fallbackBorder = `var(${UI.COLOR_PRIMARY_OPACITY_50})`
 
-const getBackground = (accent?: ChainAccentVars): string =>
-  accent ? `var(${accent.backgroundVar})` : fallbackBackground
-const getBorder = (accent?: ChainAccentVars): string => (accent ? `var(${accent.borderVar})` : fallbackBorder)
+const getBackground = (accent?: ChainAccentVars, theme?: { darkMode?: boolean }): string => {
+  if (!accent) return fallbackBackground
+
+  if (accent.backgroundVar) return `var(${accent.backgroundVar})`
+  if (accent.backgroundColor) {
+    return theme?.darkMode && accent.backgroundColorDark ? accent.backgroundColorDark : accent.backgroundColor
+  }
+
+  return fallbackBackground
+}
+
+const getBorder = (accent?: ChainAccentVars, theme?: { darkMode?: boolean }): string => {
+  if (!accent) return fallbackBorder
+
+  if (accent.borderVar) return `var(${accent.borderVar})`
+  if (accent.borderColor) {
+    return theme?.darkMode && accent.borderColorDark ? accent.borderColorDark : accent.borderColor
+  }
+
+  return fallbackBorder
+}
 
 export const MobileSelectorRow = styled.div`
   padding: 0 14px 12px;
@@ -105,8 +123,8 @@ export const ChainChipButton = styled.button<{
   width: var(--size);
   height: var(--size);
   border-radius: 10px;
-  border: 2px solid ${({ $active, $accent }) => ($active ? getBorder($accent) : 'transparent')};
-  background: ${({ $active, $accent }) => ($active ? getBackground($accent) : 'transparent')};
+  border: 2px solid ${({ $active, $accent, theme }) => ($active ? getBorder($accent, theme) : 'transparent')};
+  background: ${({ $active, $accent, theme }) => ($active ? getBackground($accent, theme) : 'transparent')};
   display: flex;
   align-items: center;
   justify-content: center;

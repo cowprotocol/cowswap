@@ -35,7 +35,7 @@ export function ChainChip({
 }: ChainChipProps): ReactNode {
   const { t } = useLingui()
   const { darkMode } = useTheme()
-  const accent = getChainAccent(chain.id)
+  const accent = getChainAccent(chain)
   const logoSrc = darkMode ? chain.logo.dark : chain.logo.light
   const disabledTooltip = disabledReason || t`This destination is not supported for this source chain`
   const loadingTooltip = t`Checking route availability...`
