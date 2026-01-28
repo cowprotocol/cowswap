@@ -1,39 +1,37 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import { Search } from 'react-feather'
+import { Search, X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { CloseIcon } from 'common/pure/CloseIcon'
+import {
+  SelectContainer as OrdersTableSelectContainer,
+  Select as OrdersTableSelect,
+} from '../../pure/OrdersTableContainer/OrdersTabs'
 
-export const SearchInputContainer = styled.div`
-  margin: 0;
-  padding: 0 0 0 8px;
+export const SearchInputContainer = styled.label`
   position: relative;
+  margin: 0 0 0 8px;
 
   ${Media.upToMedium()} {
-    padding: 0;
+    margin 0;
   }
 `
 
 export const SearchIcon = styled(Search)`
   position: absolute;
-  left: 18px;
+  left: 15px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
   color: var(${UI.COLOR_TEXT_OPACITY_50});
   width: 16px;
   height: 16px;
-
-  ${Media.upToMedium()} {
-    left: 10px;
-  }
 `
 
-export const StyledCloseIcon = styled(CloseIcon)`
+export const StyledCloseIcon = styled(X)`
   position: absolute;
-  right: 10px;
+  right: 15px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translate(50%, -50%);
   width: 16px;
   height: 16px;
 
@@ -49,14 +47,14 @@ export const SearchInput = styled.input`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
-  border-radius: 8px;
+  border-radius: 14px;
   font-size: 13px;
   font-weight: 500;
   min-height: 36px;
+  min-width: 240px;
 
   ${Media.upToMedium()} {
     padding: 8px 32px;
-    border-radius: 12px;
   }
 
   &::placeholder {
@@ -75,4 +73,12 @@ export const SearchInput = styled.input`
       font-size: 16px;
     }
   }
+`
+
+export const SelectContainer = styled(OrdersTableSelectContainer)`
+  display: block !important;
+`
+
+export const Select = styled(OrdersTableSelect)`
+  min-width: 120px;
 `

@@ -14,7 +14,7 @@ interface CurrentTabState {
 }
 
 const DEFAULT_STATE: CurrentTabState = {
-  currentTabId: OrderTabId.all,
+  currentTabId: OrderTabId.open,
   currentPageNumber: 1,
 }
 
@@ -30,19 +30,19 @@ export function useCurrentTab(ordersList: OrdersTableList): CurrentTabState {
     const params = parseOrdersTableUrl(location.search)
 
     // If we're on a tab that becomes empty (signing or unfillable),
-    // default to the all orders tab
+    // default to the open orders tab
     if (
       (params.tabId === OrderTabId.signing && !ordersList.signing.length) ||
       (params.tabId === OrderTabId.unfillable && !ordersList.unfillable.length)
     ) {
       return {
-        currentTabId: OrderTabId.all,
+        currentTabId: OrderTabId.open,
         currentPageNumber: params.pageNumber || 1,
       }
     }
 
     return {
-      currentTabId: params.tabId || OrderTabId.all,
+      currentTabId: params.tabId || OrderTabId.open,
       currentPageNumber: params.pageNumber || 1,
     }
   }, [location.search, ordersList.signing.length, ordersList.unfillable.length, account])
