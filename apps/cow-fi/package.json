@@ -69,7 +69,7 @@
     "exponential-backoff": "^3.1.1",
     "jotai": "2.16.2",
     "launchdarkly-react-client-sdk": "^3.0.4",
-    "next": "15.2.8",
+    "next": "16.1.5",
     "polished": "^4.0.5",
     "qs": "^6.14.1",
     "react": "19.1.2",
