@@ -5,11 +5,10 @@ import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
-import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
-
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
+import { useGetPendingOrdersPermitValidityState } from '../../../hooks/usePendingOrderPermitValidity'
 import { OrdersTableList, OrderTableItem, TabOrderTypes } from '../../../types'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'
@@ -54,9 +53,6 @@ export function useOrdersTableList(
             // Skip if order type doesn't match
             return acc
           }
-
-          // Add to 'all' list regardless of status
-          acc.all.push(item)
 
           const isPending = PENDING_STATES.includes(order.status)
           const isSigning = order.status === OrderStatus.PRESIGNATURE_PENDING
@@ -110,7 +106,7 @@ export function useOrdersTableList(
 
           return acc
         },
-        { open: [], history: [], unfillable: [], signing: [], all: [] },
+        { open: [], history: [], unfillable: [], signing: [] },
       ),
     [
       allSortedOrders,

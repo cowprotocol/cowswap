@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai'
+import { PropsWithChildren } from 'react'
 
 import { USDC_BASE, USDT_BASE } from '@cowprotocol/common-const'
 import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
@@ -22,6 +23,7 @@ import { WithModalProvider } from 'utils/withModalProvider'
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from './useLimitOrdersRawState'
 
+import { WithMockedWeb3 } from '../../../test-utils'
 import { TradeConfirmActions } from '../../trade'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
@@ -94,6 +96,16 @@ const tradeConfirmActions: TradeConfirmActions = {
   },
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const wrapper = ({ children }: PropsWithChildren) => {
+  return (
+    <WithMockedWeb3>
+      <WithModalProvider>{children}</WithModalProvider>
+    </WithMockedWeb3>
+  )
+}
+
 describe('useHandleOrderPlacement', () => {
   beforeEach(() => {
     mockTradeFlow.mockImplementation(() => Promise.resolve('0xOrderHash'))
@@ -113,25 +125,25 @@ describe('useHandleOrderPlacement', () => {
 
         updateLimitOrdersState({ recipient })
       },
-      { wrapper: WithModalProvider },
+      { wrapper },
     )
 
     // Assert
     const { result: limitOrdersStateResultBefore } = renderHook(() => useLimitOrdersRawState(), {
-      wrapper: WithModalProvider,
+      wrapper,
     })
     expect(limitOrdersStateResultBefore.current.recipient).toBe(recipient)
 
     // Act
     const { result } = renderHook(
       () => useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-      { wrapper: WithModalProvider },
+      { wrapper },
     )
     await result.current()
 
     // Assert
     const { result: limitOrdersStateResultAfter } = renderHook(() => useLimitOrdersRawState(), {
-      wrapper: WithModalProvider,
+      wrapper,
     })
     expect(limitOrdersStateResultAfter.current.recipient).toBe(null)
   })
@@ -140,7 +152,7 @@ describe('useHandleOrderPlacement', () => {
     it('When partiallyFillableOverride is undefined, then no override should be passed to tradeFlow', async () => {
       // Arrange
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper: WithModalProvider,
+        wrapper,
       })
       // Set override to undefined
       act(() => {
@@ -151,7 +163,7 @@ describe('useHandleOrderPlacement', () => {
       const { result } = renderHook(
         () =>
           useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper: WithModalProvider },
+        { wrapper },
       )
       await act(async () => {
         await result.current()
@@ -176,7 +188,7 @@ describe('useHandleOrderPlacement', () => {
     it('When partiallyFillableOverride is true, then it should be passed to tradeFlow', async () => {
       // Arrange
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper: WithModalProvider,
+        wrapper,
       })
       // Set override to true
       act(() => {
@@ -187,7 +199,7 @@ describe('useHandleOrderPlacement', () => {
       const { result } = renderHook(
         () =>
           useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper: WithModalProvider },
+        { wrapper },
       )
       await act(async () => {
         await result.current()
@@ -212,7 +224,7 @@ describe('useHandleOrderPlacement', () => {
     it('When partiallyFillableOverride is false, then it should be passed to tradeFlow', async () => {
       // Arrange
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper: WithModalProvider,
+        wrapper,
       })
       // Set override to false
       act(() => {
@@ -223,7 +235,7 @@ describe('useHandleOrderPlacement', () => {
       const { result } = renderHook(
         () =>
           useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper: WithModalProvider },
+        { wrapper },
       )
       await act(async () => {
         await result.current()
@@ -248,7 +260,7 @@ describe('useHandleOrderPlacement', () => {
     it('When order is successfully placed, then partiallyFillableOverride should be reset to undefined', async () => {
       // Arrange
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper: WithModalProvider,
+        wrapper,
       })
       // Set override to true initially
       act(() => {
@@ -260,7 +272,7 @@ describe('useHandleOrderPlacement', () => {
       const { result } = renderHook(
         () =>
           useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper: WithModalProvider },
+        { wrapper },
       )
       await act(async () => {
         await result.current()
@@ -281,7 +293,7 @@ describe('useHandleOrderPlacement', () => {
       mockUseIsSafeApprovalBundle.mockImplementation(() => true) // Trigger safe bundle flow
 
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper: WithModalProvider,
+        wrapper,
       })
       // Set override to true
       act(() => {
@@ -292,7 +304,7 @@ describe('useHandleOrderPlacement', () => {
       const { result } = renderHook(
         () =>
           useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper: WithModalProvider },
+        { wrapper },
       )
       await act(async () => {
         await result.current()
@@ -322,7 +334,7 @@ describe('useHandleOrderPlacement', () => {
       mockUseIsSafeApprovalBundle.mockImplementation(() => true) // Trigger safe bundle flow
 
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper: WithModalProvider,
+        wrapper,
       })
       // Set override to false
       act(() => {
@@ -333,7 +345,7 @@ describe('useHandleOrderPlacement', () => {
       const { result } = renderHook(
         () =>
           useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper: WithModalProvider },
+        { wrapper },
       )
       await act(async () => {
         await result.current()
@@ -363,7 +375,7 @@ describe('useHandleOrderPlacement', () => {
       mockUseIsSafeApprovalBundle.mockImplementation(() => true) // Trigger safe bundle flow
 
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper: WithModalProvider,
+        wrapper,
       })
       // Set override to undefined
       act(() => {
@@ -374,7 +386,7 @@ describe('useHandleOrderPlacement', () => {
       const { result } = renderHook(
         () =>
           useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper: WithModalProvider },
+        { wrapper },
       )
       await act(async () => {
         await result.current()
@@ -400,7 +412,7 @@ describe('useHandleOrderPlacement', () => {
       mockTradeFlow.mockImplementation(() => Promise.reject(new Error('Order failed')))
 
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper: WithModalProvider,
+        wrapper,
       })
       // Set override to true initially
       act(() => {
@@ -412,7 +424,7 @@ describe('useHandleOrderPlacement', () => {
       const { result } = renderHook(
         () =>
           useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper: WithModalProvider },
+        { wrapper },
       )
       await act(async () => {
         await result.current()

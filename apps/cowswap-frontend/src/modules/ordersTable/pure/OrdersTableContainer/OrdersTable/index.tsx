@@ -1,5 +1,7 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { OrderTableRow } from './OrderTableRow'
@@ -18,10 +20,10 @@ export interface OrdersTableProps {
 }
 
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
+  const { chainId } = useWalletInfo()
   const {
     selectedOrders,
     allowsOffchainSigning,
-    chainId,
     filteredOrders,
     pendingOrdersPrices,
     balancesAndAllowances,

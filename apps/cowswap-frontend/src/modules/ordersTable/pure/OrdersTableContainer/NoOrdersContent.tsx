@@ -1,5 +1,6 @@
 import { ReactNode, memo, lazy, Suspense } from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -8,6 +9,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import * as styledEl from './OrdersTableContainer.styled'
 
 import { OrderTabId } from '../../const/tabs'
+import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
 import { useNoOrdersAnimation } from '../../hooks/useNoOrdersAnimation'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../types'
@@ -16,16 +18,20 @@ const Lottie = lazy(() => import('lottie-react'))
 
 interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
-  orderType: TabOrderTypes | undefined
-  searchTerm: string | undefined
-  isSafeViaWc: boolean | undefined
-  displayOrdersOnlyForSafeApp: boolean | undefined
+  hasOrders: boolean
+  orderType?: TabOrderTypes
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
+  isSafeViaWc?: boolean
+  displayOrdersOnlyForSafeApp?: boolean
 }
 
 const NoOrdersDescription = memo(function NoOrdersDescription({
   currentTab,
+  hasOrders,
   orderType,
   searchTerm,
+  historyStatusFilter,
   isSafeViaWc,
   displayOrdersOnlyForSafeApp,
 }: NoOrdersDescriptionProps): ReactNode {
@@ -34,67 +40,99 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
   const orderStatusText =
     currentTab === OrderTabId.unfillable ? t`unfillable` : currentTab === OrderTabId.open ? t`open` : ''
 
-  return displayOrdersOnlyForSafeApp && isSafeViaWc ? (
-    <Trans>
-      Use the <CowSwapSafeAppLink /> to see {currentTabText}
-    </Trans>
-  ) : searchTerm ? (
-    <Trans>Try adjusting your search term or clearing the filter</Trans>
-  ) : (
-    <>
-      <Trans>You don't have any {orderStatusText} orders at the moment.</Trans>{' '}
-      {(currentTab === OrderTabId.open || currentTab === OrderTabId.all) && (
-        <>
-          <br />
-          <Trans>Time to create a new one!</Trans>{' '}
-          {orderType === TabOrderTypes.LIMIT ? (
-            <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
-              <Trans>Learn more</Trans>
-              <styledEl.ExternalArrow />
-            </styledEl.ExternalLinkStyled>
-          ) : null}
-        </>
-      )}
-    </>
-  )
+  const areOrdersFiltered = hasOrders && (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL)
+
+  if (!areOrdersFiltered && displayOrdersOnlyForSafeApp && isSafeViaWc) {
+    return (
+      <Trans>
+        Use the <CowSwapSafeAppLink /> to see {currentTabText}
+      </Trans>
+    )
+  }
+
+  if (!hasOrders) {
+    return (
+      <>
+        <Trans>You don't have any {orderStatusText} orders at the moment.</Trans>{' '}
+        {currentTab === OrderTabId.open && (
+          <>
+            <br />
+            <Trans>Time to create a new one!</Trans>{' '}
+            {orderType === TabOrderTypes.LIMIT ? (
+              <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
+                <Trans>Learn more</Trans>
+                <styledEl.ExternalArrow />
+              </styledEl.ExternalLinkStyled>
+            ) : null}
+          </>
+        )}
+      </>
+    )
+  }
+
+  if (searchTerm && historyStatusFilter !== HistoryStatusFilter.ALL)
+    return <Trans>Try adjusting your search term or filters</Trans>
+
+  return searchTerm ? <Trans>Try adjusting your search term</Trans> : <Trans>Try adjusting your filters</Trans>
 })
 
-function getSectionTitle(currentTab: OrderTabId): string {
-  return currentTab === OrderTabId.all
-    ? t`No orders`
-    : currentTab === OrderTabId.unfillable
-      ? t`No unfillable orders`
-      : currentTab === OrderTabId.open
-        ? t`No open orders`
-        : t`No order history`
+function getTabTitle(currentTab: OrderTabId): string {
+  if (currentTab === OrderTabId.unfillable) return t`No unfillable orders`
+  if (currentTab === OrderTabId.open) return t`No open orders`
+  if (currentTab === OrderTabId.signing) return t`No signing orders`
+  return t`No order history`
+}
+
+function getHistoryTitle(historyStatusFilter: HistoryStatusFilter): string {
+  if (historyStatusFilter === HistoryStatusFilter.FILLED) return t`No filled orders found`
+  if (historyStatusFilter === HistoryStatusFilter.CANCELLED) return t`No cancelled orders found`
+  if (historyStatusFilter === HistoryStatusFilter.EXPIRED) return t`No expired orders found`
+
+  return t`No matching orders found`
 }
 
 interface NoOrdersContentProps {
   currentTab: OrderTabId
-  searchTerm?: string
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
   hasHydratedOrders: boolean
-  isDarkMode: boolean
 }
 
 export function NoOrdersContent({
   currentTab,
   searchTerm,
+  historyStatusFilter,
   hasHydratedOrders,
-  isDarkMode,
 }: NoOrdersContentProps): ReactNode {
-  const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
+  const { darkMode: isDarkMode } = useTheme()
+  const {
+    orderType,
+    isSafeViaWc,
+    displayOrdersOnlyForSafeApp,
+    injectedWidgetParams,
+    orders = [],
+  } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
+  const hasOrders = orders.length > 0
 
   return (
     <styledEl.Content>
-      <h3>{searchTerm ? t`No matching orders found` : getSectionTitle(currentTab)}</h3>
+      <h3>
+        {hasOrders &&
+        (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL) &&
+        currentTab === OrderTabId.history
+          ? getHistoryTitle(historyStatusFilter)
+          : getTabTitle(currentTab)}
+      </h3>
       <p>
         <NoOrdersDescription
           currentTab={currentTab}
+          hasOrders={hasOrders}
           orderType={orderType}
           searchTerm={searchTerm}
+          historyStatusFilter={historyStatusFilter}
           isSafeViaWc={isSafeViaWc}
           displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
         />
