@@ -76,8 +76,7 @@ export const PRODUCT_LIST = [
   {
     title: 'MEV Blocker',
     description: 'The best MEV protection RPC under the sun',
-    linkHref: 'https://mevblocker.io',
-    linkExternal: true,
+    linkHref: '/mevblocker',
     linkText: 'Get protected',
     linkEvent: 'click-get-protected',
     bgColor: Color.cowfi_orange_pale,
