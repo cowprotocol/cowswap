@@ -10,5 +10,8 @@ module.exports = {
     '\\.woff2': '<rootDir>../../testing/imgMock.js',
     '\\.png': '<rootDir>../../testing/imgMock.js',
   },
-  transformIgnorePatterns: ['node_modules/(?!(wagmi|@wagmi|viem)/)'],
+  transformIgnorePatterns: [
+    '/node_modules/.pnpm/(?!.*(wagmi|@wagmi|viem))',
+    '/node_modules/(?!(\\.pnpm|wagmi|@wagmi|viem))',
+  ],
 }
