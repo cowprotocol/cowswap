@@ -25,7 +25,7 @@
     "@cowprotocol/common-const": "workspace:*",
     "inter-ui": "^3.19.3",
     "react": "19.1.2",
-    "react-dom": "19.1.2",
+    "react-dom": "19.2.3",
     "styled-components": "5.3.11"
   },
   "devDependencies": {
