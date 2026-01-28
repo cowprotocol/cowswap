@@ -46,7 +46,6 @@ export function OrdersTableContent({
       currentTab={currentTab}
       searchTerm={searchTerm}
       historyStatusFilter={historyStatusFilter}
-      historyStatusFilter={historyStatusFilter}
       hasHydratedOrders={isHydrated}
     />
   ) : (

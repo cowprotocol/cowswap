@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
