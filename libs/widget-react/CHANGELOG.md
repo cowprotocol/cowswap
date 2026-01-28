@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.14.6...widget-react-v1.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/widget-lib bumped to 1.0.0
+
 ## [0.14.6](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.14.5...widget-react-v0.14.6) (2026-01-26)
 
 

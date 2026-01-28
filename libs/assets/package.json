@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/assets",
-  "version": "1.17.1",
+  "version": "2.0.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
