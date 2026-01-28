@@ -611,14 +611,11 @@ importers:
         specifier: 0.3.1
         version: 0.3.1(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@cowprotocol/sdk-order-book':
-        specifier: 0.5.1
+        specifier: ^0.5.1
         version: 0.5.1(encoding@0.1.13)
       '@cowprotocol/sdk-trading':
-        specifier: 0.8.1
+        specifier: ^0.8.1
         version: 0.8.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/sdk-viem-adapter':
-        specifier: 0.3.1
-        version: 0.3.1(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
       '@cowprotocol/snackbars':
         specifier: workspace:*
         version: link:../../libs/snackbars
@@ -3179,11 +3176,6 @@ packages:
 
   '@cowprotocol/sdk-trading@0.9.0':
     resolution: {integrity: sha512-9B0M1GhLxBriKFzDEHBJxF6izXIK5xRR0f8j6JRvNdEPdZ5sGhR5nYsjicwF+/5u9pJVIZEW/6L+3MyOVqiKrw==}
-
-  '@cowprotocol/sdk-viem-adapter@0.3.1':
-    resolution: {integrity: sha512-oCWxITbgnlMObgxZwxt9/M+6mAdAdjVMTUyfpZBScFjiH181Mjs196M/m5fyfiTsQVSezslFHocobde6qmBKeg==}
-    peerDependencies:
-      viem: ^2.28.4
 
   '@cowprotocol/sdk-weiroll@0.1.12':
     resolution: {integrity: sha512-SMRMrcnF8CAdnD295n6DH5fH1hrqwR8HcC1CgwaDbNwTFUDN3esWFW1LmrDJgf92UQCBrqLBnPWhh0Sx+Jcv2w==}
@@ -11787,6 +11779,7 @@ packages:
     resolution: {integrity: sha512-Quz3MvAwHxVYNXsOByL7xI5EB2WYOeFswqaHIA3qOK3isRWTxiplBEocmmru6XmxDB2L7jDNYtYA4FyimoAFEw==}
     engines: {node: '>=8.17.0'}
     hasBin: true
+    bundledDependencies: []
 
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
@@ -18252,11 +18245,6 @@ snapshots:
       - encoding
       - ipfs-only-hash
       - multiformats
-
-  '@cowprotocol/sdk-viem-adapter@0.3.1(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.5.0
-      viem: 2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
 
   '@cowprotocol/sdk-weiroll@0.1.12':
     dependencies:
