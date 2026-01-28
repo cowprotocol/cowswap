@@ -25,8 +25,8 @@
     "widget-lib"
   ],
   "dependencies": {
-    "@cowprotocol/cow-sdk": "~7.3.0",
-    "@cowprotocol/sdk-bridging": "1.6.0",
+    "@cowprotocol/cow-sdk": "~7.3.1",
+    "@cowprotocol/sdk-bridging": "1.7.0",
     "@uniswap/sdk-core": "^3.0.1",
     "eventemitter3": "^4.0.0"
   },

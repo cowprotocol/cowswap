@@ -26,7 +26,7 @@
   "dependencies": {
     "@cowprotocol/cms": "^0.11.0",
     "@cowprotocol/common-const": "workspace:*",
-    "@cowprotocol/cow-sdk": "~7.3.0",
+    "@cowprotocol/cow-sdk": "~7.3.1",
     "@ethersproject/providers": "5.7.0",
     "@safe-global/api-kit": "^4.0.1",
     "@safe-global/types-kit": "^3.0.0",
