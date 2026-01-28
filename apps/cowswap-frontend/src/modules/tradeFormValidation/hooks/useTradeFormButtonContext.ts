@@ -18,6 +18,7 @@ export function useTradeFormButtonContext(
   defaultText: string,
   confirmTrade: () => void,
   supportsPartialApprove = false,
+  recipientConfirmationLabel?: string,
 ): TradeFormButtonContext | null {
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
@@ -51,6 +52,7 @@ export function useTradeFormButtonContext(
       customTokenError,
       minAmountToSignForSwap,
       balancesError,
+      recipientConfirmationLabel,
     } satisfies TradeFormButtonContext
   }, [
     defaultText,
@@ -66,5 +68,6 @@ export function useTradeFormButtonContext(
     customTokenError,
     minAmountToSignForSwap,
     balancesError,
+    recipientConfirmationLabel,
   ])
 }

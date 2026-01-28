@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
-import { ChangeEvent, ReactNode, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, FocusEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
+import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { getChainInfo } from '@cowprotocol/common-const'
 import {
   getBlockExplorerUrl as getExplorerLink,
@@ -13,12 +14,13 @@ import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { getChainType } from 'common/chains/nonEvm'
+import { getChainType, getNonEvmChainLabel } from 'common/chains/nonEvm'
 import { getNonEvmAllowlist } from 'common/chains/nonEvmTokenAllowlist'
 
 import { autofocus } from '../../utils/autofocus'
@@ -34,14 +36,28 @@ const InputPanel = styled.div`
   width: 100%;
 `
 
-const ContainerRow = styled.div<{ error: boolean }>`
+const ContainerRow = styled.div<{ error: boolean; $flattenBottomCorners?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 16px;
+  border-radius: ${({ $flattenBottomCorners }) => ($flattenBottomCorners ? '16px 16px 0 0' : '16px')};
   border: 0;
   color: inherit;
   background-color: var(${UI.COLOR_PAPER_DARKER});
+  position: relative;
+
+  &::after {
+    content: '';
+    display: block;
+    width: 100%;
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    height: 2px;
+    border-radius: ${({ $flattenBottomCorners }) => ($flattenBottomCorners ? '0' : '24px')};
+    background: var(${UI.COLOR_PAPER});
+    z-index: -1;
+  }
 `
 
 export const InputContainer = styled.div`
@@ -51,6 +67,8 @@ export const InputContainer = styled.div`
 
 const Input = styled.input<{ error?: boolean }>`
   font-size: 1.25rem;
+  font-family: var(${UI.FONT_FAMILY_MONO}), Arial, sans-serif;
+  letter-spacing: -0.2px;
   outline: none;
   border: none;
   flex: 1 1 auto;
@@ -96,6 +114,22 @@ const HeaderActions = styled.div`
   font-size: 13px;
 `
 
+const HeaderLink = styled(ExternalLink)`
+  font-family: var(${UI.FONT_FAMILY_PRIMARY}), Arial, sans-serif;
+  font-size: 13.3333px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: inherit;
+  opacity: 0.7;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 1;
+    color: var(${UI.COLOR_TEXT});
+    text-decoration: underline;
+  }
+`
+
 const ActionButton = styled.button`
   border: none;
   background: transparent;
@@ -120,14 +154,30 @@ const MessageText = styled.div<{ $error?: boolean }>`
 const InputRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 `
 
 const ChainIcon = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   flex: 0 0 auto;
+`
+
+const ValidIcon = styled(SVG)`
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+`
+const LabelRow = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+`
+
+const LabelText = styled.span`
+  font-size: 14px;
+  font-weight: 500;
 `
 
 // TODO: Break down this large function into smaller functions
@@ -148,6 +198,7 @@ export function AddressInputPanel({
   errorMessage,
   warningText,
   pattern,
+  flattenBottomCorners = false,
 }: {
   id?: string
   className?: string
@@ -162,6 +213,7 @@ export function AddressInputPanel({
   errorMessage?: ReactNode
   warningText?: ReactNode
   pattern?: string
+  flattenBottomCorners?: boolean
 }) {
   const { t } = useLingui()
   const { chainId: walletChainId } = useWalletInfo()
@@ -178,6 +230,51 @@ export function AddressInputPanel({
   const { address, loading, name } = useENS(enableEnsEffective ? value : '')
   const [chainPrefixWarning, setChainPrefixWarning] = useState('')
   const isDarkMode = useIsDarkMode()
+  const inputRef = useRef<HTMLInputElement>(null)
+  const measureCanvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [solanaFontSize, setSolanaFontSize] = useState<number | undefined>(undefined)
+  const [isFocused, setIsFocused] = useState(false)
+  const [displayValue, setDisplayValue] = useState(value)
+
+  const updateSolanaFontSize = useCallback((): void => {
+    if (chainType !== 'solana') {
+      setSolanaFontSize(undefined)
+      return
+    }
+
+    const input = inputRef.current
+    if (!input) return
+
+    const maxFontSize = 22
+    const minFontSize = 18
+    const text = isFocused ? value : displayValue
+
+    if (!text) {
+      setSolanaFontSize(maxFontSize)
+      return
+    }
+
+    const availableWidth = input.clientWidth
+    if (!availableWidth) return
+
+    const computedStyle = window.getComputedStyle(input)
+    const fontWeight = computedStyle.fontWeight || '500'
+    const fontFamily = computedStyle.fontFamily || 'inherit'
+    const fontStyle = computedStyle.fontStyle || 'normal'
+
+    const canvas = measureCanvasRef.current ?? (measureCanvasRef.current = document.createElement('canvas'))
+    const context = canvas.getContext('2d')
+    if (!context) return
+
+    context.font = `${fontStyle} ${fontWeight} ${maxFontSize}px ${fontFamily}`
+    const textWidth = context.measureText(text).width
+    const nextFontSize =
+      textWidth > availableWidth
+        ? Math.max(minFontSize, Math.floor((maxFontSize * availableWidth) / textWidth))
+        : maxFontSize
+
+    setSolanaFontSize(nextFontSize)
+  }, [chainType, displayValue, isFocused, value])
 
   const handleInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -225,6 +322,19 @@ export function AddressInputPanel({
     }
   }, [chainPrefixWarning, addressPrefix])
 
+  useEffect(() => {
+    updateSolanaFontSize()
+  }, [updateSolanaFontSize])
+
+  useEffect(() => {
+    if (chainType !== 'solana') return
+
+    const handleResize = (): void => updateSolanaFontSize()
+    window.addEventListener('resize', handleResize)
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [chainType, updateSolanaFontSize])
+
   const defaultError = Boolean(enableEnsEffective && value.length > 0 && !loading && !address)
   const error = typeof isValid === 'boolean' ? !isValid && (value.length > 0 || Boolean(errorMessage)) : defaultError
   const resolvedAddress = enableEnsEffective ? address : value
@@ -232,43 +342,93 @@ export function AddressInputPanel({
   const canShowExplorerLink = Boolean(
     !disableExplorerLink && supportedChainId && resolvedAddress && (!enableEnsEffective || address),
   )
-  const defaultLabelText = chainType === 'evm' ? t`Recipient` : t`Send to wallet`
+  const nonEvmExplorerUrl =
+    chainType === 'solana' && resolvedAddress
+      ? `https://solscan.io/account/${resolvedAddress}`
+      : chainType === 'bitcoin' && resolvedAddress
+        ? `https://www.blockchain.com/explorer/addresses/btc/${resolvedAddress}`
+        : undefined
+  const showNonEvmViewLink = Boolean(nonEvmExplorerUrl && resolvedAddress && (typeof isValid !== 'boolean' || isValid))
+  const nonEvmChainLabel = typeof chainId === 'number' ? getNonEvmChainLabel(chainId) : undefined
+  const defaultLabelText =
+    chainType === 'evm' ? t`Recipient` : nonEvmChainLabel ? t`Send to ${nonEvmChainLabel} wallet` : t`Send to wallet`
   const defaultPlaceholderText = chainType === 'evm' ? t`Wallet Address or ENS name` : t`Enter wallet address`
   const showChainIconPrefix = chainType !== 'evm' && Boolean(nonEvmLogoUrl)
+  const isValidRecipient = Boolean(resolvedAddress && !error)
+  const shouldAbbreviateAddress = chainType !== 'evm' && isValidRecipient && !isFocused
+
+  const abbreviateAddress = useCallback((address: string): string => {
+    if (address.length <= 18) return address
+
+    return `${address.slice(0, 8)}…${address.slice(-6)}`
+  }, [])
+
+  useEffect(() => {
+    if (isFocused) {
+      setDisplayValue(value)
+      return
+    }
+
+    setDisplayValue(shouldAbbreviateAddress ? abbreviateAddress(value) : value)
+  }, [abbreviateAddress, isFocused, shouldAbbreviateAddress, value])
+
+  const handleFocus = useCallback(
+    (event: FocusEvent<HTMLInputElement>) => {
+      setIsFocused(true)
+      setDisplayValue(value)
+      autofocus(event)
+    },
+    [value],
+  )
+
+  const handleBlur = useCallback(() => {
+    setIsFocused(false)
+  }, [])
+  const inputStyle = {
+    ...(chainType === 'solana' && solanaFontSize ? { fontSize: `${solanaFontSize}px` } : {}),
+    ...(shouldAbbreviateAddress ? { letterSpacing: '0.2px' } : {}),
+  }
 
   return (
     <InputPanel id={id}>
       {chainPrefixWarning && chainInfo && (
         <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} isDarkMode={isDarkMode} />
       )}
-      <ContainerRow error={error}>
+      <ContainerRow error={error} $flattenBottomCorners={flattenBottomCorners}>
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
-              <span>{label ?? defaultLabelText}</span>
+              <LabelRow>
+                {showChainIconPrefix && nonEvmLogoUrl && (
+                  <ChainIcon src={nonEvmLogoUrl} alt={`${chainType} icon`} aria-hidden="true" />
+                )}
+                <LabelText>{label ?? defaultLabelText}</LabelText>
+              </LabelRow>
               <HeaderActions>
                 {canShowExplorerLink && supportedChainId && explorerAddress && (
-                  <ExternalLink
-                    href={getExplorerLink(supportedChainId, 'address', explorerAddress)}
-                    style={{ fontSize: '13px' }}
-                  >
+                  <HeaderLink href={getExplorerLink(supportedChainId, 'address', explorerAddress)}>
                     <Trans>(View on Explorer)</Trans>
-                  </ExternalLink>
+                  </HeaderLink>
                 )}
-                <ActionButton type="button" onClick={handlePaste}>
-                  <Trans>Paste</Trans>
-                </ActionButton>
+                {!showNonEvmViewLink && (
+                  <ActionButton type="button" onClick={handlePaste}>
+                    <Trans>Paste</Trans>
+                  </ActionButton>
+                )}
                 {value && (
                   <ActionButton type="button" onClick={handleClear}>
                     <Trans>Clear</Trans>
                   </ActionButton>
                 )}
+                {showNonEvmViewLink && nonEvmExplorerUrl && (
+                  <HeaderLink href={nonEvmExplorerUrl}>
+                    <Trans>View ↗</Trans>
+                  </HeaderLink>
+                )}
               </HeaderActions>
             </RowBetween>
             <InputRow>
-              {showChainIconPrefix && nonEvmLogoUrl && (
-                <ChainIcon src={nonEvmLogoUrl} alt={`${chainType} icon`} aria-hidden="true" />
-              )}
+              {isValidRecipient && <ValidIcon src={OrderCheckIcon} aria-hidden="true" />}
               <Input
                 className={className}
                 type="text"
@@ -280,8 +440,11 @@ export function AddressInputPanel({
                 error={error}
                 pattern={pattern ?? (enableEnsEffective ? '^(0x[a-fA-F0-9]{40})$' : undefined)}
                 onChange={handleInput}
-                value={value}
-                onFocus={autofocus}
+                value={displayValue}
+                ref={inputRef}
+                style={inputStyle}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
               />
             </InputRow>
             {error && errorMessage && <MessageText $error>{errorMessage}</MessageText>}

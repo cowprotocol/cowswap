@@ -329,6 +329,15 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const inputCurrency = context.derivedState.inputCurrency
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
     const contextDefaultText = context.defaultText
+    const recipientConfirmationLabel = context.recipientConfirmationLabel
+
+    if (recipientConfirmationLabel) {
+      return (
+        <TradeFormBlankButton disabled={true}>
+          <span>{recipientConfirmationLabel}</span>
+        </TradeFormBlankButton>
+      )
+    }
 
     return (
       <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
@@ -351,6 +360,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         supportsPartialApprove={supportsPartialApprove}
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
+        label={context.recipientConfirmationLabel}
       >
         <TradeFormBlankButton disabled={!supportsPartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>

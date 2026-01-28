@@ -7,17 +7,17 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsCurrentTradeBridging, useTradePriceImpact, useTradeRouteContext } from 'modules/trade'
-import { HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
-import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
-
 import {
   useShouldCheckBridgingRecipient,
   useSmartContractRecipientConfirmed,
   useToggleSmartContractRecipientConfirmed,
-} from '../../hooks/useSmartContractRecipientConfirmed'
+} from 'modules/trade/hooks/useSmartContractRecipientConfirmed'
+import { SmartContractReceiverWarning } from 'modules/trade/pure/SmartContractReceiverWarning'
+import { HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
+import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
+
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { SwapFormState, useSwapFormState } from '../../hooks/useSwapFormState'
-import { SmartContractReceiverWarning } from '../../pure/SmartContractReceiverWarning'
 import { TwapSuggestionBanner } from '../../pure/TwapSuggestionBanner'
 
 interface WarningsProps {

@@ -8,7 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { getChainType } from 'common/chains/nonEvm'
+import { getChainType, getNonEvmChainLabel } from 'common/chains/nonEvm'
 import { ChainAwareAddress } from 'common/pure/ChainAwareAddress'
 
 const Row = styled.div`
@@ -32,6 +32,7 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
   const { chainId, recipient, account } = props
 
   const chainType = getChainType(chainId)
+  const nonEvmChainLabel = getNonEvmChainLabel(chainId)
   const recipientAddress =
     chainType === 'evm'
       ? isAddress(recipient)
@@ -49,7 +50,15 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
   return (
     <Row>
       <div>
-        <span>{chainType === 'evm' ? <Trans>Recipient</Trans> : <Trans>Send to wallet</Trans>}</span>{' '}
+        <span>
+          {chainType === 'evm' ? (
+            <Trans>Recipient</Trans>
+          ) : nonEvmChainLabel ? (
+            <Trans>Send to {nonEvmChainLabel} wallet</Trans>
+          ) : (
+            <Trans>Send to wallet</Trans>
+          )}
+        </span>{' '}
         <InfoTooltip
           content={t`The tokens received from this order will automatically be sent to this address. No need to do a second transaction!`}
         />

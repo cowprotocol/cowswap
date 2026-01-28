@@ -1,11 +1,19 @@
 import { AutoRow } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ArrowDown } from 'react-feather'
+
+import {
+  useShouldCheckNonEvmRecipient,
+  useSmartContractRecipientConfirmed,
+  useToggleSmartContractRecipientConfirmed,
+} from 'modules/trade/hooks/useSmartContractRecipientConfirmed'
 
 import { getChainType } from 'common/chains/nonEvm'
 import { AddressInputPanel } from 'common/pure/AddressInputPanel'
 
 import { useRecipientRequirement } from '../../hooks/useRecipientRequirement'
+import { SmartContractReceiverWarning } from '../SmartContractReceiverWarning'
 
 export interface SetRecipientProps {
   recipient: string
@@ -20,8 +28,13 @@ export interface SetRecipientProps {
 export function SetRecipient(props: SetRecipientProps) {
   const { recipient, onChangeRecipient, className, targetChainId } = props
   const recipientRequirement = useRecipientRequirement()
+  const { account } = useWalletInfo()
+  const shouldCheckNonEvmRecipient = useShouldCheckNonEvmRecipient()
+  const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
+  const toggleSmartContractRecipientConfirmed = useToggleSmartContractRecipientConfirmed()
 
-  const destinationChainType = getChainType(targetChainId ?? recipientRequirement.destinationChainId)
+  const destinationChainId = targetChainId ?? recipientRequirement.destinationChainId
+  const destinationChainType = getChainType(destinationChainId)
   const isNonEvmDestination = destinationChainType !== 'evm'
 
   const placeholder =
@@ -41,14 +54,23 @@ export function SetRecipient(props: SetRecipientProps) {
         value={recipient}
         onChange={onChangeRecipient}
         targetChainId={targetChainId}
-        label={isNonEvmDestination ? 'Send to wallet' : undefined}
         placeholder={placeholder}
         enableEns={!isNonEvmDestination}
         disableExplorerLink={isNonEvmDestination}
         isValid={isNonEvmDestination ? recipientRequirement.isRecipientValid : undefined}
         errorMessage={isNonEvmDestination ? recipientRequirement.recipientError : undefined}
         warningText={isNonEvmDestination ? recipientRequirement.warningText : undefined}
+        flattenBottomCorners={isNonEvmDestination && shouldCheckNonEvmRecipient}
       />
+      {isNonEvmDestination && shouldCheckNonEvmRecipient && destinationChainId && (
+        <SmartContractReceiverWarning
+          account={account}
+          recipient={recipient}
+          chainId={destinationChainId}
+          checked={smartContractRecipientConfirmed}
+          toggle={toggleSmartContractRecipientConfirmed}
+        />
+      )}
     </>
   )
 }
