@@ -36,14 +36,15 @@ const VideoPreview = styled.video`
 const HintText = styled.p`
   margin: 21px 0 9px;
   font-size: 15px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT});
   text-align: center;
+  font-weight: 500;
 `
 
 const PrivacyText = styled.p`
   margin: 0 auto 12px;
   font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-align: center;
   max-width: 250px;
 `

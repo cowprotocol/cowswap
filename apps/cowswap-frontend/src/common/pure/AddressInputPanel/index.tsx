@@ -1,5 +1,16 @@
+/* eslint-disable max-lines-per-function */
 /* eslint-disable complexity */
-import { ChangeEvent, FocusEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  ChangeEvent,
+  CSSProperties,
+  FocusEvent,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -14,6 +25,7 @@ import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import QR_SCAN_ICON from 'assets/icon/qr-scan.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -68,7 +80,7 @@ export const InputContainer = styled.div`
 `
 
 const Input = styled.input<{ error?: boolean }>`
-  font-size: 1.25rem;
+  font-size: var(--recipient-font-size, 1.25rem);
   font-family: var(${UI.FONT_FAMILY_MONO}), Arial, sans-serif;
   letter-spacing: -0.2px;
   outline: none;
@@ -81,15 +93,6 @@ const Input = styled.input<{ error?: boolean }>`
   text-overflow: ellipsis;
   font-weight: 500;
   width: 100%;
-
-  &&::placeholder {
-    color: inherit;
-    opacity: 0.5;
-  }
-
-  &:focus::placeholder {
-    color: transparent;
-  }
 
   padding: 0px;
   appearance: textfield;
@@ -104,8 +107,19 @@ const Input = styled.input<{ error?: boolean }>`
     -webkit-appearance: none;
   }
 
+  &&::placeholder {
+    color: inherit;
+    opacity: 0.5;
+    font-size: var(--recipient-placeholder-font-size, inherit);
+  }
+
+  &:focus::placeholder {
+    color: transparent;
+  }
+
   ::placeholder {
     color: ${({ theme }) => theme.text4};
+    font-size: var(--recipient-placeholder-font-size, inherit);
   }
 `
 
@@ -174,9 +188,9 @@ const ValidIcon = styled(SVG)`
   height: 14px;
   flex: 0 0 auto;
 `
-const QrIcon = styled.svg`
-  width: 14px;
-  height: 14px;
+const QrIcon = styled(SVG)`
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
   color: inherit;
 `
@@ -194,7 +208,10 @@ const LabelText = styled.span`
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+
+const SOLANA_MAX_FONT_SIZE = 22
+const SOLANA_MIN_FONT_SIZE = 18
+
 export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
@@ -227,7 +244,7 @@ export function AddressInputPanel({
   warningText?: ReactNode
   pattern?: string
   flattenBottomCorners?: boolean
-}) {
+}): ReactElement {
   const { t } = useLingui()
   const { chainId: walletChainId } = useWalletInfo()
   // Use targetChainId if provided (for cross-chain), otherwise fall back to wallet's chain
@@ -261,8 +278,8 @@ export function AddressInputPanel({
     const input = inputRef.current
     if (!input) return
 
-    const maxFontSize = 22
-    const minFontSize = 18
+    const maxFontSize = SOLANA_MAX_FONT_SIZE
+    const minFontSize = SOLANA_MIN_FONT_SIZE
     const text = isFocused ? value : displayValue
 
     if (!text) {
@@ -492,8 +509,13 @@ export function AddressInputPanel({
   const handleBlur = useCallback(() => {
     setIsFocused(false)
   }, [])
-  const inputStyle = {
-    ...(chainType === 'solana' && solanaFontSize ? { fontSize: `${solanaFontSize}px` } : {}),
+  const inputStyle: CSSProperties = {
+    ...(chainType === 'solana'
+      ? {
+          '--recipient-font-size': solanaFontSize ? `${solanaFontSize}px` : undefined,
+          '--recipient-placeholder-font-size': `${SOLANA_MIN_FONT_SIZE}px`,
+        }
+      : {}),
     ...(shouldAbbreviateAddress ? { letterSpacing: '0.2px' } : {}),
   }
 
@@ -520,15 +542,7 @@ export function AddressInputPanel({
                 )}
                 {showScanButton && (
                   <ActionButton type="button" onClick={handleOpenQrScan}>
-                    <QrIcon viewBox="0 0 24 24" aria-hidden="true">
-                      <rect x="3" y="3" width="7" height="7" rx="1" fill="currentColor" />
-                      <rect x="14" y="3" width="7" height="7" rx="1" fill="currentColor" />
-                      <rect x="3" y="14" width="7" height="7" rx="1" fill="currentColor" />
-                      <rect x="14" y="14" width="3" height="3" rx="0.5" fill="currentColor" />
-                      <rect x="18" y="14" width="3" height="3" rx="0.5" fill="currentColor" />
-                      <rect x="14" y="18" width="3" height="3" rx="0.5" fill="currentColor" />
-                      <rect x="18" y="18" width="3" height="3" rx="0.5" fill="currentColor" />
-                    </QrIcon>
+                    <QrIcon src={QR_SCAN_ICON} aria-hidden="true" />
                     <Trans>Scan</Trans>
                   </ActionButton>
                 )}

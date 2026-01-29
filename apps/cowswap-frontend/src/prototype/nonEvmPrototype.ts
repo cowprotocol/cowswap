@@ -1,5 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import type { ChainInfo } from '@cowprotocol/cow-sdk'
+import { RAW_PROVIDERS_FILES_PATH } from '@cowprotocol/sdk-bridging'
 import type { BridgeProviderInfo, BridgeQuoteResults, QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import type { QuoteAndPost } from '@cowprotocol/sdk-trading'
 
@@ -23,7 +24,7 @@ export const NON_EVM_PROTOTYPE_ENV_FLAG = 'REACT_APP_NON_EVM_PROTOTYPE'
 export const PROTOTYPE_BRIDGE_PROVIDER_INFO: BridgeProviderInfo = {
   type: 'ReceiverAccountBridgeProvider',
   name: 'Prototype Bridge',
-  logoUrl: 'https://raw.githubusercontent.com/cowprotocol/brand-assets/main/cow/swap/cow-swap-logo.svg',
+  logoUrl: `${RAW_PROVIDERS_FILES_PATH}/near-intents/near-intents-logo.png`,
   dappId: 'prototype-non-evm',
   website: 'https://cow.fi',
 }
