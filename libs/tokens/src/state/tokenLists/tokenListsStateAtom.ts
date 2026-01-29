@@ -27,9 +27,9 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.AVALANCHE]: `${TOKEN_LIST_SRC}/Uniswap.43114.json`,
   [SupportedChainId.LENS]: `${TOKEN_LIST_SRC}/CoinGecko.232.json`, // There's no Uniswap list for Lens, using Coingecko as a fallback
   [SupportedChainId.BNB]: `${TOKEN_LIST_SRC}/Uniswap.56.json`,
-  [SupportedChainId.LINEA]: `${TOKEN_LIST_SRC}/Uniswap.59144.json`, // TODO: create lists if possible
-  [SupportedChainId.PLASMA]: `${TOKEN_LIST_SRC}/Uniswap.9745.json`, // TODO: create lists if possible
-  [SupportedChainId.INK]: `${TOKEN_LIST_SRC}/Uniswap.57073.json`, // TODO: create lists if possible
+  [SupportedChainId.LINEA]: `${TOKEN_LIST_SRC}/Uniswap.59144.json`,
+  [SupportedChainId.PLASMA]: `${TOKEN_LIST_SRC}/Uniswap.9745.json`,
+  [SupportedChainId.INK]: `${TOKEN_LIST_SRC}/Uniswap.57073.json`,
 }
 
 const curatedListSourceAtom = atom((get) => {
