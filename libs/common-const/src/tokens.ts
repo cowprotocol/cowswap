@@ -2,7 +2,7 @@ import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId } from 
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
-import { NATIVE_CURRENCIES, WETH_MAINNET, WRAPPED_NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
+import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
 
 // Mainnet
@@ -129,14 +129,9 @@ export const WBTC_GNOSIS_CHAIN = new TokenWithLogo(
   'WBTC',
   'Wrapped BTC',
 )
-export const WETH_GNOSIS_CHAIN = new TokenWithLogo(
-  WETH_MAINNET.logoURI,
-  SupportedChainId.GNOSIS_CHAIN,
-  '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
-  18,
-  'WETH',
-  'Wrapped Ether on Gnosis Chain',
-)
+
+export const WETH_GNOSIS_CHAIN = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN]
+
 export const GNO_GNOSIS_CHAIN = new TokenWithLogo(
   GNO_MAINNET.logoURI,
   SupportedChainId.GNOSIS_CHAIN,
@@ -525,15 +520,7 @@ export const USDT_PLASMA = new TokenWithLogo(
   'USDT0',
 )
 
-export const WETH_PLASMA = new TokenWithLogo(
-  WETH_MAINNET.logoURI,
-  SupportedChainId.PLASMA,
-  // https://plasmascan.to/token/0x9895d81bb462a195b4922ed7de0e3acd007c32cb
-  '0x9895d81bb462a195b4922ed7de0e3acd007c32cb',
-  18,
-  'WETH',
-  'WETH',
-)
+export const WETH_PLASMA = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.PLASMA]
 
 // Ink
 
@@ -555,18 +542,6 @@ export const USDC_INK = new TokenWithLogo(
   6,
   'USDC',
   'USDC',
-)
-
-// TODO: Why are these not imported from WRAPPED_NATIVE_CURRENCIES?
-
-export const WETH_INK = new TokenWithLogo(
-  WETH_MAINNET.logoURI,
-  SupportedChainId.INK,
-  // https://explorer.inkonchain.com/token/0x4200000000000000000000000000000000000006
-  '0x4200000000000000000000000000000000000006',
-  18,
-  'WETH',
-  'WETH',
 )
 
 // Optimism
