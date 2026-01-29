@@ -2,9 +2,11 @@ import { ReactNode } from 'react'
 
 import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { HoverTooltip } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 import { getChainAccent } from './getChainAccent'
 import * as styledEl from './styled'
@@ -18,6 +20,10 @@ export interface ChainButtonProps {
   isLoading: boolean
   disabledReason?: string
 }
+
+const TooltipContent = styled.div`
+  max-width: 220px;
+`
 
 export function ChainButton({
   chain,
@@ -42,7 +48,7 @@ export function ChainButton({
 
   const tooltip = isLoading ? loadingTooltip : isDisabled ? disabledTooltip : undefined
 
-  return (
+  const button = (
     <styledEl.ChainButton
       onClick={handleClick}
       active$={isActive}
@@ -51,7 +57,6 @@ export function ChainButton({
       aria-disabled={isDisabled || isLoading}
       disabled$={isDisabled}
       loading$={isLoading}
-      title={tooltip}
     >
       <styledEl.ChainInfo>
         <styledEl.ChainLogo>
@@ -67,5 +72,13 @@ export function ChainButton({
         </styledEl.ActiveIcon>
       )}
     </styledEl.ChainButton>
+  )
+
+  return tooltip ? (
+    <HoverTooltip content={<TooltipContent>{tooltip}</TooltipContent>} wrapInContainer placement="left-start">
+      {button}
+    </HoverTooltip>
+  ) : (
+    button
   )
 }

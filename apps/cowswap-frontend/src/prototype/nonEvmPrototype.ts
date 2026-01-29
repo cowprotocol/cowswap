@@ -12,6 +12,7 @@ import {
   NON_EVM_FLIP_DISABLED_REASON,
   NON_EVM_SELL_DISABLED_REASON,
   SOLANA_CHAIN_ID,
+  getNonEvmChainLabel,
   getChainType,
   isBuyOnlyChainId,
   isNonEvmChainId,
@@ -234,7 +235,10 @@ export function isPrototypeNonEvmDestination(chainId: number | undefined | null)
 }
 
 export function getPrototypeSellDisabledReason(chainId: number): string | undefined {
-  return isBuyOnlyChainId(chainId) ? NON_EVM_SELL_DISABLED_REASON : undefined
+  if (!isBuyOnlyChainId(chainId)) return undefined
+
+  const label = getNonEvmChainLabel(chainId)
+  return label ? `Swap from ${label} not supported.` : NON_EVM_SELL_DISABLED_REASON
 }
 
 export function getPrototypeFlipDisabledReason(chainId: number | undefined | null): string | undefined {

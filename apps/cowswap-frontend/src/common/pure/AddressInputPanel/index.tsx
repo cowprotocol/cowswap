@@ -21,7 +21,7 @@ import {
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
-import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
+import { ExternalLink, Media, RowBetween, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -81,6 +81,10 @@ const ContainerRow = styled.div<{ error: boolean; $flattenBottomCorners?: boolea
 export const InputContainer = styled.div`
   flex: 1;
   padding: 1rem;
+
+  ${Media.upToSmall()} {
+    padding: 12px 8px;
+  }
 `
 
 const Input = styled.input<{ error?: boolean }>`
@@ -125,6 +129,10 @@ const Input = styled.input<{ error?: boolean }>`
     color: ${({ theme }) => theme.text4};
     font-size: var(--recipient-placeholder-font-size, inherit);
   }
+
+  ${Media.upToSmall()} {
+    text-align: center;
+  }
 `
 
 const HeaderActions = styled.div`
@@ -132,6 +140,12 @@ const HeaderActions = styled.div`
   align-items: center;
   gap: 8px;
   font-size: 13px;
+
+  ${Media.upToSmall()} {
+    width: 100%;
+    justify-content: center;
+    gap: 34px;
+  }
 `
 
 const HeaderLink = styled(ExternalLink)`
@@ -172,6 +186,11 @@ const MessageText = styled.div<{ $error?: boolean }>`
   font-size: 13px;
   color: ${({ $error }) => ($error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   opacity: ${({ $error }) => ($error ? 1 : 0.8)};
+
+  ${Media.upToSmall()} {
+    text-align: center;
+    margin: 0;
+  }
 `
 
 const InputRow = styled.div`
@@ -211,6 +230,23 @@ const LabelRow = styled.span`
 const LabelText = styled.span`
   font-size: 14px;
   font-weight: 500;
+`
+
+const AddressAutoColumn = styled(AutoColumn)`
+  ${Media.upToSmall()} {
+    gap: 20px;
+    justify-content: center;
+    display: flex;
+    flex-flow: column wrap;
+  }
+`
+
+const HeaderRow = styled(RowBetween)`
+  ${Media.upToSmall()} {
+    flex-flow: column wrap;
+    gap: 24px;
+    width: 100%;
+  }
 `
 
 // TODO: Break down this large function into smaller functions
@@ -563,8 +599,8 @@ export function AddressInputPanel({
       )}
       <ContainerRow error={error} $flattenBottomCorners={flattenBottomCorners}>
         <InputContainer>
-          <AutoColumn gap="md">
-            <RowBetween>
+          <AddressAutoColumn gap="md">
+            <HeaderRow>
               <LabelRow>
                 {showChainIconPrefix && nonEvmLogoUrl && (
                   <ChainIcon src={nonEvmLogoUrl} alt={`${chainType} icon`} aria-hidden="true" />
@@ -599,7 +635,7 @@ export function AddressInputPanel({
                   </HeaderLink>
                 )}
               </HeaderActions>
-            </RowBetween>
+            </HeaderRow>
             <InputRow>
               {isValidRecipient && <ValidIcon src={OrderCheckIcon} aria-hidden="true" />}
               <Input
@@ -622,7 +658,7 @@ export function AddressInputPanel({
             </InputRow>
             {error && errorMessage && <MessageText $error>{errorMessage}</MessageText>}
             {!error && warningText && <MessageText>{warningText}</MessageText>}
-          </AutoColumn>
+          </AddressAutoColumn>
         </InputContainer>
       </ContainerRow>
       {enableQrScan && (
