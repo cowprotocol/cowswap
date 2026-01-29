@@ -1,6 +1,6 @@
 export * from './updater/AppDataUpdater'
 
-export { useAppData, useAppDataHooks, useUploadAppData } from './hooks'
+export { useAppData, useAppDataHooks } from './hooks'
 export { uploadAppDataDocOrderbookApi } from './services'
 
 export { getAppData } from './utils/fullAppData'
