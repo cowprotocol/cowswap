@@ -28,5 +28,5 @@ export const uploadAppDataDocOrderbookApi: UploadAppDataDoc = async (props) => {
   const { appDataKeccak256, fullAppData, chainId, env } = props
 
   const contextOverride = env ? { chainId, env } : { chainId }
-  orderBookApi.uploadAppData(appDataKeccak256, fullAppData, contextOverride)
+  await orderBookApi.uploadAppData(appDataKeccak256, fullAppData, contextOverride)
 }
