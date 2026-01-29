@@ -57,6 +57,7 @@ export function SetRecipient(props: SetRecipientProps) {
         placeholder={placeholder}
         enableEns={!isNonEvmDestination}
         disableExplorerLink={isNonEvmDestination}
+        enableQrScan
         isValid={isNonEvmDestination ? recipientRequirement.isRecipientValid : undefined}
         errorMessage={isNonEvmDestination ? recipientRequirement.recipientError : undefined}
         warningText={isNonEvmDestination ? recipientRequirement.warningText : undefined}

@@ -22,6 +22,8 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { getChainType, getNonEvmChainLabel } from 'common/chains/nonEvm'
 import { getNonEvmAllowlist } from 'common/chains/nonEvmTokenAllowlist'
+import { QrScanModal } from 'common/pure/QrScanModal'
+import { validateRecipientForChain } from 'common/recipient/nonEvmRecipientValidation'
 
 import { autofocus } from '../../utils/autofocus'
 import ChainPrefixWarning from '../ChainPrefixWarning'
@@ -138,6 +140,9 @@ const ActionButton = styled.button`
   cursor: pointer;
   color: inherit;
   opacity: 0.7;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 
   &:hover {
     opacity: 1;
@@ -169,6 +174,12 @@ const ValidIcon = styled(SVG)`
   height: 14px;
   flex: 0 0 auto;
 `
+const QrIcon = styled.svg`
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  color: inherit;
+`
 const LabelRow = styled.span`
   display: inline-flex;
   align-items: center;
@@ -194,6 +205,7 @@ export function AddressInputPanel({
   targetChainId,
   enableEns = true,
   disableExplorerLink = false,
+  enableQrScan = false,
   isValid,
   errorMessage,
   warningText,
@@ -209,6 +221,7 @@ export function AddressInputPanel({
   targetChainId?: number
   enableEns?: boolean
   disableExplorerLink?: boolean
+  enableQrScan?: boolean
   isValid?: boolean
   errorMessage?: ReactNode
   warningText?: ReactNode
@@ -235,6 +248,9 @@ export function AddressInputPanel({
   const [solanaFontSize, setSolanaFontSize] = useState<number | undefined>(undefined)
   const [isFocused, setIsFocused] = useState(false)
   const [displayValue, setDisplayValue] = useState(value)
+  const [isQrScanOpen, setIsQrScanOpen] = useState(false)
+  const [qrScanStream, setQrScanStream] = useState<MediaStream | null>(null)
+  const [qrScanError, setQrScanError] = useState<string | null>(null)
 
   const updateSolanaFontSize = useCallback((): void => {
     if (chainType !== 'solana') {
@@ -314,6 +330,82 @@ export function AddressInputPanel({
   }, [onChange])
 
   const handleClear = useCallback(() => onChange(''), [onChange])
+  const normalizeScannedValue = useCallback((scannedValue: string): string => {
+    const trimmedValue = scannedValue.trim()
+    const withoutQuery = trimmedValue.split('?')[0]
+    const withoutScheme = withoutQuery.replace(/^[a-zA-Z]+:/, '')
+    const withoutChainId = withoutScheme.split('@')[0]
+
+    return withoutChainId
+  }, [])
+  const stopQrScanStream = useCallback(() => {
+    if (qrScanStream) {
+      qrScanStream.getTracks().forEach((track) => track.stop())
+    }
+    setQrScanStream(null)
+  }, [qrScanStream])
+
+  const handleOpenQrScan = useCallback(async () => {
+    setQrScanError(null)
+    setIsQrScanOpen(true)
+
+    if (!navigator?.mediaDevices?.getUserMedia) {
+      setQrScanError(t`Camera access is not available in this browser.`)
+      return
+    }
+    if (!window.isSecureContext) {
+      setQrScanError(t`Camera access requires a secure context.`)
+      return
+    }
+
+    try {
+      const preferredStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' } },
+        audio: false,
+      })
+      setQrScanStream(preferredStream)
+    } catch (error) {
+      const name = error instanceof Error ? error.name : ''
+      if (name === 'NotFoundError' || name === 'OverconstrainedError') {
+        try {
+          const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+          setQrScanStream(fallbackStream)
+          return
+        } catch {
+          setQrScanError(t`Camera access was denied or is unavailable.`)
+          return
+        }
+      }
+      setQrScanError(t`Camera access was denied or is unavailable.`)
+    }
+  }, [t])
+
+  const handleCloseQrScan = useCallback(() => {
+    setIsQrScanOpen(false)
+    stopQrScanStream()
+  }, [stopQrScanStream])
+  const handleQrScanResult = useCallback(
+    (scannedValue: string): boolean => {
+      const normalizedValue = normalizeScannedValue(scannedValue)
+      if (chainType !== 'evm') {
+        const validation = validateRecipientForChain(chainId, normalizedValue)
+        if (!validation.isValid) {
+          const chainLabel = chainId != null ? getNonEvmChainLabel(chainId) : undefined
+          setQrScanError(
+            chainLabel ? t`Invalid ${chainLabel} address scanned, please try again.` : t`Invalid address scanned.`,
+          )
+          return false
+        }
+      }
+
+      setQrScanError(null)
+      onChange(normalizedValue)
+      setIsQrScanOpen(false)
+      stopQrScanStream()
+      return true
+    },
+    [chainId, chainType, normalizeScannedValue, onChange, stopQrScanStream, t],
+  )
 
   //clear warning if target chainId changes and we are now on the right network
   useEffect(() => {
@@ -356,12 +448,28 @@ export function AddressInputPanel({
   const showChainIconPrefix = chainType !== 'evm' && Boolean(nonEvmLogoUrl)
   const isValidRecipient = Boolean(resolvedAddress && !error)
   const shouldAbbreviateAddress = chainType !== 'evm' && isValidRecipient && !isFocused
+  const showScanButton = enableQrScan && !isValidRecipient
+  const qrScanTitle =
+    chainType === 'bitcoin'
+      ? t`Scan Bitcoin wallet QR code`
+      : chainType === 'solana'
+        ? t`Scan Solana wallet QR code`
+        : t`Scan wallet QR code`
 
-  const abbreviateAddress = useCallback((address: string): string => {
-    if (address.length <= 18) return address
+  const abbreviateAddress = useCallback(
+    (address: string): string => {
+      if (chainType === 'bitcoin') {
+        if (address.length <= 18) return address
 
-    return `${address.slice(0, 8)}…${address.slice(-6)}`
-  }, [])
+        return `${address.slice(0, 8)}…${address.slice(-8)}`
+      }
+
+      if (address.length <= 18) return address
+
+      return `${address.slice(0, 8)}…${address.slice(-6)}`
+    },
+    [chainType],
+  )
 
   useEffect(() => {
     if (isFocused) {
@@ -410,6 +518,20 @@ export function AddressInputPanel({
                     <Trans>(View on Explorer)</Trans>
                   </HeaderLink>
                 )}
+                {showScanButton && (
+                  <ActionButton type="button" onClick={handleOpenQrScan}>
+                    <QrIcon viewBox="0 0 24 24" aria-hidden="true">
+                      <rect x="3" y="3" width="7" height="7" rx="1" fill="currentColor" />
+                      <rect x="14" y="3" width="7" height="7" rx="1" fill="currentColor" />
+                      <rect x="3" y="14" width="7" height="7" rx="1" fill="currentColor" />
+                      <rect x="14" y="14" width="3" height="3" rx="0.5" fill="currentColor" />
+                      <rect x="18" y="14" width="3" height="3" rx="0.5" fill="currentColor" />
+                      <rect x="14" y="18" width="3" height="3" rx="0.5" fill="currentColor" />
+                      <rect x="18" y="18" width="3" height="3" rx="0.5" fill="currentColor" />
+                    </QrIcon>
+                    <Trans>Scan</Trans>
+                  </ActionButton>
+                )}
                 {!showNonEvmViewLink && (
                   <ActionButton type="button" onClick={handlePaste}>
                     <Trans>Paste</Trans>
@@ -452,6 +574,18 @@ export function AddressInputPanel({
           </AutoColumn>
         </InputContainer>
       </ContainerRow>
+      {enableQrScan && (
+        <QrScanModal
+          isOpen={isQrScanOpen}
+          onDismiss={handleCloseQrScan}
+          onScan={handleQrScanResult}
+          stream={qrScanStream}
+          errorMessage={qrScanError}
+          title={qrScanTitle}
+          iconUrl={chainType !== 'evm' ? nonEvmLogoUrl : undefined}
+          iconAlt={chainType !== 'evm' && nonEvmChainLabel ? `${nonEvmChainLabel} icon` : undefined}
+        />
+      )}
     </InputPanel>
   )
 }
