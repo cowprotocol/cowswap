@@ -619,6 +619,9 @@ importers:
       '@cowprotocol/sdk-trading':
         specifier: ^0.9.2
         version: 0.9.2(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-viem-adapter':
+        specifier: ^0.3.3
+        version: 0.3.3(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
       '@cowprotocol/snackbars':
         specifier: workspace:*
         version: link:../../libs/snackbars
@@ -3185,6 +3188,11 @@ packages:
 
   '@cowprotocol/sdk-trading@0.9.2':
     resolution: {integrity: sha512-BmL/YN6yHOWrxcGwX/G1C39kuA4ZreDpLcSOTzOQ+1w5iGZqkL74oPa2MArmiSBoA4fm8YR3FR2E1jILlRZzQw==}
+
+  '@cowprotocol/sdk-viem-adapter@0.3.3':
+    resolution: {integrity: sha512-I7tZsaTPkrhDqodDxePqtnmpXJ28FHojxlaieS/xJ+3mlURs/THj5v4TrVtvNJ1IiMlR81SFwtOU5EGJUlW/1A==}
+    peerDependencies:
+      viem: ^2.28.4
 
   '@cowprotocol/sdk-weiroll@0.1.14':
     resolution: {integrity: sha512-vsodVMvOBtx9aFBtXp5bLM28IExrOt9qEDF3hxzlkq5+9xXQ4AXuYXWF5wVxwbqyDFQhReGOGg0WOZQ15+OnZA==}
@@ -11834,7 +11842,6 @@ packages:
     resolution: {integrity: sha512-Quz3MvAwHxVYNXsOByL7xI5EB2WYOeFswqaHIA3qOK3isRWTxiplBEocmmru6XmxDB2L7jDNYtYA4FyimoAFEw==}
     engines: {node: '>=8.17.0'}
     hasBin: true
-    bundledDependencies: []
 
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
@@ -18282,6 +18289,11 @@ snapshots:
       - encoding
       - ipfs-only-hash
       - multiformats
+
+  '@cowprotocol/sdk-viem-adapter@0.3.3(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))':
+    dependencies:
+      '@cowprotocol/sdk-common': 0.5.2
+      viem: 2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
 
   '@cowprotocol/sdk-weiroll@0.1.14':
     dependencies:
