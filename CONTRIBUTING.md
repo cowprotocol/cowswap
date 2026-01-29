@@ -230,3 +230,7 @@ Follow ALL rules defined in CONTRIBUTING.md exactly.
 ```
 
 This ensures both human contributors and AI assistants adhere to consistent coding standards in this repository.
+
+## 12. Nx cloud
+
+1. Run `npx nx login` and use your `@cow.fi` account (https://nx.dev/docs/guides/nx-cloud/personal-access-tokens)

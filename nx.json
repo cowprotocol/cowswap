@@ -5,23 +5,21 @@
   "affected": {
     "defaultBase": "develop"
   },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e", "i18n"]
-      }
-    }
-  },
   "targetDefaults": {
     "build": {
-      "inputs": ["default", "production", "^production"]
+      "inputs": ["default", "production", "^production"],
+      "cache": true
     },
     "e2e": {
-      "inputs": ["default", "^production"]
+      "inputs": ["default", "^production"],
+      "cache": true
     },
     "test": {
-      "inputs": ["default", "^production"]
+      "inputs": ["default", "^production"],
+      "cache": true
+    },
+    "i18n": {
+      "cache": true
     },
     "lint": {
       "inputs": [
@@ -29,7 +27,8 @@
         "{workspaceRoot}/.eslintrc.json",
         "{workspaceRoot}/.eslintignore",
         "{workspaceRoot}/eslint.config.js"
-      ]
+      ],
+      "cache": true
     }
   },
   "namedInputs": {
