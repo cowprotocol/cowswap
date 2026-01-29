@@ -6,8 +6,12 @@ import { useAllActiveTokens, useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
+import { getAssetIdFromTokenTags, isNonEvmPrototypeEnabled } from 'prototype/nonEvmPrototype'
 
 import { Field } from 'legacy/state/types'
+
+import { SOLANA_CHAIN_ID } from 'common/chains/nonEvm'
+import { SOLANA_SOL_ASSET_ID, SOLANA_USDC_ASSET_ID, getNonEvmAllowlist } from 'common/chains/nonEvmTokenAllowlist'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
@@ -28,6 +32,14 @@ export function useTokensToSelect(): TokensToSelectContext {
   const allTokens = useAllActiveTokens().tokens
 
   const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
+  const allowlistedAssetIds = useMemo(() => {
+    if (!isNonEvmPrototypeEnabled()) return null
+
+    const allowlist = getNonEvmAllowlist(selectedTargetChainId)
+    if (!allowlist) return null
+
+    return new Set(allowlist.tokens.map((token) => token.assetId))
+  }, [selectedTargetChainId])
 
   const params: BuyTokensParams | undefined = useMemo(() => {
     if (!areTokensFromBridge) return undefined
@@ -36,29 +48,61 @@ export function useTokensToSelect(): TokensToSelectContext {
   }, [areTokensFromBridge, chainId, selectedTargetChainId])
 
   const { data: result, isLoading } = useBridgeSupportedTokens(params)
+  const bridgeTokens = result?.tokens ?? EMPTY_TOKENS
+  const filteredBridgeTokens = useMemo(() => {
+    if (!allowlistedAssetIds) return bridgeTokens
+
+    return bridgeTokens.filter((token) => {
+      const assetId = getAssetIdFromTokenTags(token.tags)
+
+      return assetId ? allowlistedAssetIds.has(assetId) : false
+    })
+  }, [allowlistedAssetIds, bridgeTokens])
 
   const bridgeSupportedTokensMap = useMemo(() => {
-    const tokens = result?.tokens
+    if (!filteredBridgeTokens.length) return null
 
-    if (!tokens || !tokens.length) return null
-
-    return tokens.reduce<Record<string, boolean>>((acc, val) => {
+    return filteredBridgeTokens.reduce<Record<string, boolean>>((acc, val) => {
       acc[val.address.toLowerCase()] = true
       return acc
     }, {})
-  }, [result])
+  }, [filteredBridgeTokens])
+
+  const prototypeFavoriteTokens = useMemo(() => {
+    if (!areTokensFromBridge || !isNonEvmPrototypeEnabled()) return null
+    if (selectedTargetChainId !== SOLANA_CHAIN_ID) return null
+
+    const favoriteAssetIds = new Set([SOLANA_SOL_ASSET_ID, SOLANA_USDC_ASSET_ID])
+
+    return filteredBridgeTokens.filter((token) => {
+      const assetId = getAssetIdFromTokenTags(token.tags)
+
+      return assetId ? favoriteAssetIds.has(assetId) : false
+    })
+  }, [areTokensFromBridge, filteredBridgeTokens, selectedTargetChainId])
 
   return useMemo(() => {
-    const favoriteTokensToSelect = bridgeSupportedTokensMap
-      ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[token.address.toLowerCase()])
-      : favoriteTokens
+    const favoriteTokensToSelect = prototypeFavoriteTokens
+      ? prototypeFavoriteTokens
+      : bridgeSupportedTokensMap
+        ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[token.address.toLowerCase()])
+        : favoriteTokens
 
     return {
       isLoading: areTokensFromBridge ? isLoading : false,
-      tokens: (areTokensFromBridge ? result?.tokens : allTokens) || EMPTY_TOKENS,
+      tokens: (areTokensFromBridge ? filteredBridgeTokens : allTokens) || EMPTY_TOKENS,
       favoriteTokens: favoriteTokensToSelect,
       areTokensFromBridge,
-      isRouteAvailable: result?.isRouteAvailable,
+      isRouteAvailable: areTokensFromBridge ? filteredBridgeTokens.length > 0 && result?.isRouteAvailable : undefined,
     }
-  }, [allTokens, bridgeSupportedTokensMap, isLoading, areTokensFromBridge, favoriteTokens, result])
+  }, [
+    allTokens,
+    bridgeSupportedTokensMap,
+    isLoading,
+    areTokensFromBridge,
+    favoriteTokens,
+    filteredBridgeTokens,
+    prototypeFavoriteTokens,
+    result?.isRouteAvailable,
+  ])
 }

@@ -5,6 +5,7 @@ import type { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core
 
 import type { ReceiveAmountInfo } from 'modules/trade'
 
+import type { ChainType } from 'common/chains/nonEvm'
 import type { SolverCompetition } from 'common/types/soverCompetition'
 
 /**
@@ -21,6 +22,8 @@ export enum SwapAndBridgeStatus {
 export interface QuoteSwapContext {
   chainName: string
   receiveAmountInfo: ReceiveAmountInfo
+  destinationChainId: number
+  destinationChainType: ChainType
 
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
@@ -39,6 +42,8 @@ export interface QuoteSwapContext {
 
 export interface QuoteBridgeContext {
   chainName: string
+  destinationChainId: number
+  destinationChainType: ChainType
 
   bridgeFee: CurrencyAmount<Currency> | null
   estimatedTime: number | null

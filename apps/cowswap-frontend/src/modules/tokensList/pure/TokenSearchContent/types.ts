@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenSearchResponse } from '@cowprotocol/tokens'
 
@@ -8,6 +10,7 @@ export interface TokenSearchContentProps {
   searchResults: TokenSearchResponse
   selectTokenContext: SelectTokenContext
   importToken: (tokenToImport: TokenWithLogo) => void
+  emptyStateMessage?: ReactNode
 }
 
 export type TokenImportSection = 'blockchain' | 'inactive' | 'external'

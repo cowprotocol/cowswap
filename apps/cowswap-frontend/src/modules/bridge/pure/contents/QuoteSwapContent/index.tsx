@@ -119,16 +119,18 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
     slippage,
     recipient,
     bridgeReceiverOverride,
+    destinationChainType,
     minReceiveAmount,
     minReceiveUsdValue,
     expectedReceiveUsdValue,
     isSlippageModified,
   } = context
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
+  const shouldShowSwapRecipient = destinationChainType === 'evm' && !isBridgeQuoteRecipient
   const contents = [
     createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
-    !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
+    shouldShowSwapRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
   ]
 
@@ -140,7 +142,7 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
           {content}
         </ConfirmDetailsItem>
       ))}
-      {!isBridgeQuoteRecipient && (
+      {shouldShowSwapRecipient && (
         <ProxyAccountBanner
           recipient={recipient}
           bridgeReceiverOverride={bridgeReceiverOverride}

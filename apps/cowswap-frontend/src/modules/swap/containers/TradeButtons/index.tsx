@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -13,6 +14,10 @@ import {
   useWrappedToken,
 } from 'modules/trade'
 import {
+  useShouldConfirmRecipient,
+  useSmartContractRecipientConfirmed,
+} from 'modules/trade/hooks/useSmartContractRecipientConfirmed'
+import {
   TradeFormButtons,
   TradeFormValidation,
   useGetTradeFormValidation,
@@ -26,10 +31,6 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
-import {
-  useShouldCheckBridgingRecipient,
-  useSmartContractRecipientConfirmed,
-} from '../../hooks/useSmartContractRecipientConfirmed'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
 
@@ -62,7 +63,7 @@ export function TradeButtons({
   const wrappedToken = useWrappedToken()
   const onCurrencySelection = useOnCurrencySelection()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
+  const shouldConfirmRecipient = useShouldConfirmRecipient()
   const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
   const isSafeWallet = useIsSafeWallet()
 
@@ -70,10 +71,24 @@ export function TradeButtons({
 
   const { confirmTrade } = useConfirmTradeWithRwaCheck()
 
-  const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
+  const isRecipientConfirmationBlocking = shouldConfirmRecipient && !smartContractRecipientConfirmed
+  const baseDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted
+  const isRecipientConfirmationOnlyDisabled =
+    isRecipientConfirmationBlocking &&
+    !baseDisabled &&
+    (primaryFormValidation === null ||
+      primaryFormValidation === TradeFormValidation.ApproveRequired ||
+      primaryFormValidation === TradeFormValidation.ApproveAndSwapInBundle)
+  const recipientConfirmationLabel = isRecipientConfirmationOnlyDisabled ? t`Confirm recipient to swap` : undefined
+
+  const confirmText = isRecipientConfirmationOnlyDisabled
+    ? t`Confirm recipient to swap`
+    : isCurrentTradeBridging
+      ? t`Swap and Bridge`
+      : t`Swap`
 
   // enable partial approve only for swap
-  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, true)
+  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, true, recipientConfirmationLabel)
 
   const context = useSafeMemoObject({
     wrappedToken,
@@ -92,11 +107,7 @@ export function TradeButtons({
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
-  const isDisabled =
-    !isTradeContextReady ||
-    !feeWarningAccepted ||
-    !isNoImpactWarningAccepted ||
-    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false)
+  const isDisabled = baseDisabled || isRecipientConfirmationBlocking
 
   if (!tradeFormButtonContext) return null
 

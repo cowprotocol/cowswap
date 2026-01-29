@@ -9,9 +9,20 @@ import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { getChainType } from 'common/chains/nonEvm'
+
 export type ClickableAddressProps = {
   address: string
   chainId: number
+  displayAddress?: string
+  copyAddress?: string
+  explorerUrl?: string
+}
+
+function shortenNonEvmAddress(address: string): string {
+  if (address.length <= 18) return address
+
+  return `${address.slice(0, 8)}…${address.slice(-6)}`
 }
 
 const Wrapper = styled.div<{ alwaysShow: boolean }>`
@@ -46,10 +57,40 @@ const AddressWrapper = styled.span`
 
 export function ClickableAddress(props: ClickableAddressProps): ReactNode {
   const { address, chainId } = props
+  const chainType = getChainType(chainId)
 
   const wrapperRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const bridgeNetwork = useBridgeSupportedNetwork(chainId)
+
+  const displayAddress = props.displayAddress ?? address
+  const copyAddress = props.copyAddress ?? address
+
+  if (chainType === 'solana') {
+    const shortAddress = shortenNonEvmAddress(displayAddress)
+    const target = props.explorerUrl
+
+    return (
+      <Wrapper alwaysShow={isMobile} ref={wrapperRef}>
+        <AddressWrapper>{shortAddress}</AddressWrapper>
+        <ContextMenuTooltip
+          content={
+            <>
+              <ContextMenuCopyButton address={copyAddress} />
+              {target && <ContextMenuExternalLink href={target} label={t`View details`} />}
+            </>
+          }
+          placement="bottom"
+          containerRef={wrapperRef}
+        >
+          <Info size={16} />
+        </ContextMenuTooltip>
+      </Wrapper>
+    )
+  }
+
+  // Non-EVM chains use synthetic addresses in the prototype. Avoid misleading explorer links.
+  if (chainType !== 'evm') return null
 
   const shortAddress = shortenAddress(address)
   const target = getExplorerLink(chainId, address, ExplorerDataType.TOKEN, bridgeNetwork?.blockExplorer.url)

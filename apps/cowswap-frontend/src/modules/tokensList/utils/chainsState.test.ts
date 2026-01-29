@@ -45,14 +45,14 @@ describe('chainsState', () => {
       expect(filterDestinationChains([])).toEqual([])
     })
 
-    it('filters out unsupported chains', () => {
+    it('keeps unsupported chains (non-EVM destinations) for prototype flows', () => {
       const chains = [MAINNET, GNOSIS, UNSUPPORTED]
       const result = filterDestinationChains(chains)
 
-      expect(result).toHaveLength(2)
+      expect(result).toHaveLength(3)
       expect(result).toContainEqual(MAINNET)
       expect(result).toContainEqual(GNOSIS)
-      expect(result).not.toContainEqual(UNSUPPORTED)
+      expect(result).toContainEqual(UNSUPPORTED)
     })
 
     it('keeps all supported chains', () => {
@@ -264,7 +264,7 @@ describe('chainsState', () => {
 
       createOutputChainsState(options)
 
-      expect(mockSortChainsByDisplayOrder).toHaveBeenCalledWith([MAINNET, GNOSIS])
+      expect(mockSortChainsByDisplayOrder).toHaveBeenCalledWith(expect.arrayContaining([MAINNET, GNOSIS, ARBITRUM]))
     })
 
     it('passes isLoading through to result', () => {

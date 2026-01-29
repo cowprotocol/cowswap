@@ -75,6 +75,7 @@ export function MobileChainSelector({
                 onSelectChain={onSelectChain}
                 isDisabled={chainsState.disabledChainIds?.has(chain.id) ?? false}
                 isLoading={chainsState.loadingChainIds?.has(chain.id) ?? false}
+                disabledReason={chainsState.disabledReasons?.get(chain.id)}
                 isTooltipVisible={activeTooltipChainId === chain.id}
                 onDisabledClick={toggleTooltip}
                 onHideTooltip={hideTooltip}

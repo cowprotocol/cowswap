@@ -1,7 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getChainAccentColors } from '@cowprotocol/ui'
 
+import { transparentize } from 'color2k'
+
 import { getChainAccent } from './getChainAccent'
+
+import { createChainInfoForTests } from '../../test-utils/createChainInfoForTests'
 
 jest.mock('@cowprotocol/ui', () => ({
   ...jest.requireActual('@cowprotocol/ui'),
@@ -31,14 +35,15 @@ describe('getChainAccent', () => {
 
     mockGetChainAccentColors.mockReturnValue(mockAccentConfig)
 
-    const result = getChainAccent(SupportedChainId.MAINNET)
+    const chain = createChainInfoForTests(SupportedChainId.MAINNET)
+    const result = getChainAccent(chain)
 
     expect(result).toEqual({
       backgroundVar: '--cow-color-chain-ethereum-bg',
       borderVar: '--cow-color-chain-ethereum-border',
       accentColorVar: '--cow-color-chain-ethereum-accent',
     })
-    expect(mockGetChainAccentColors).toHaveBeenCalledWith(SupportedChainId.MAINNET)
+    expect(mockGetChainAccentColors).toHaveBeenCalledWith(chain.id)
   })
 
   it('should return ChainAccentVars for different chain IDs', () => {
@@ -57,31 +62,52 @@ describe('getChainAccent', () => {
 
     mockGetChainAccentColors.mockReturnValue(mockAccentConfig)
 
-    const result = getChainAccent(SupportedChainId.POLYGON)
+    const chain = createChainInfoForTests(SupportedChainId.POLYGON)
+    const result = getChainAccent(chain)
 
     expect(result).toEqual({
       backgroundVar: '--cow-color-chain-polygon-bg',
       borderVar: '--cow-color-chain-polygon-border',
       accentColorVar: '--cow-color-chain-polygon-accent',
     })
-    expect(mockGetChainAccentColors).toHaveBeenCalledWith(SupportedChainId.POLYGON)
+    expect(mockGetChainAccentColors).toHaveBeenCalledWith(chain.id)
   })
 
-  it('should return undefined when getChainAccentColors returns undefined', () => {
+  it('should return derived colors when getChainAccentColors returns undefined', () => {
+    const baseColor = '#f7931a'
+    const chain = createChainInfoForTests(SupportedChainId.MAINNET, { id: 999, color: baseColor })
+
     mockGetChainAccentColors.mockReturnValue(undefined as unknown as ReturnType<typeof getChainAccentColors>)
 
-    const result = getChainAccent(999 as SupportedChainId)
+    const result = getChainAccent(chain)
 
-    expect(result).toBeUndefined()
-    expect(mockGetChainAccentColors).toHaveBeenCalledWith(999)
+    expect(result).toEqual({
+      backgroundColor: transparentize(baseColor, 1 - 0.22),
+      backgroundColorDark: transparentize(baseColor, 1 - 0.32),
+      borderColor: transparentize(baseColor, 1 - 0.45),
+      borderColorDark: transparentize(baseColor, 1 - 0.65),
+      accentColor: baseColor,
+      accentColorDark: baseColor,
+    })
+    expect(mockGetChainAccentColors).toHaveBeenCalledWith(chain.id)
   })
 
-  it('should return undefined when getChainAccentColors returns null', () => {
+  it('should return derived colors when getChainAccentColors returns null', () => {
+    const baseColor = '#14f195'
+    const chain = createChainInfoForTests(SupportedChainId.MAINNET, { id: 998, color: baseColor })
+
     mockGetChainAccentColors.mockReturnValue(null as unknown as ReturnType<typeof getChainAccentColors>)
 
-    const result = getChainAccent(SupportedChainId.MAINNET)
+    const result = getChainAccent(chain)
 
-    expect(result).toBeUndefined()
+    expect(result).toEqual({
+      backgroundColor: transparentize(baseColor, 1 - 0.22),
+      backgroundColorDark: transparentize(baseColor, 1 - 0.32),
+      borderColor: transparentize(baseColor, 1 - 0.45),
+      borderColorDark: transparentize(baseColor, 1 - 0.65),
+      accentColor: baseColor,
+      accentColorDark: baseColor,
+    })
   })
 
   it('should correctly map all ChainAccentConfig properties to ChainAccentVars', () => {
@@ -100,7 +126,8 @@ describe('getChainAccent', () => {
 
     mockGetChainAccentColors.mockReturnValue(mockAccentConfig)
 
-    const result = getChainAccent(SupportedChainId.ARBITRUM_ONE)
+    const chain = createChainInfoForTests(SupportedChainId.ARBITRUM_ONE)
+    const result = getChainAccent(chain)
 
     expect(result).toBeDefined()
     expect(result).toHaveProperty('backgroundVar', mockAccentConfig.bgVar)
@@ -142,7 +169,8 @@ describe('getChainAccent', () => {
 
       mockGetChainAccentColors.mockReturnValue(mockAccentConfig)
 
-      const result = getChainAccent(chainId)
+      const chain = createChainInfoForTests(chainId)
+      const result = getChainAccent(chain)
 
       expect(result).toBeDefined()
       expect(result).toHaveProperty('backgroundVar')

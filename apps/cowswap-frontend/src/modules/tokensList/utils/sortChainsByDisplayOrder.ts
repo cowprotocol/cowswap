@@ -1,6 +1,8 @@
 import { SORTED_CHAIN_IDS } from '@cowprotocol/common-const'
 import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { BITCOIN_CHAIN_ID, SOLANA_CHAIN_ID } from 'common/chains/nonEvm'
+
 const CHAIN_ORDER = SORTED_CHAIN_IDS.reduce<Record<SupportedChainId, number>>(
   (acc, chainId, index) => {
     acc[chainId] = index
@@ -9,8 +11,26 @@ const CHAIN_ORDER = SORTED_CHAIN_IDS.reduce<Record<SupportedChainId, number>>(
   {} as Record<SupportedChainId, number>,
 )
 
+const ARBITRUM_WEIGHT = CHAIN_ORDER[SupportedChainId.ARBITRUM_ONE]
+
+const NON_EVM_CHAIN_ORDER: Record<number, number> = {
+  // Place non-EVM destinations directly after Arbitrum in the selector.
+  [BITCOIN_CHAIN_ID]: ARBITRUM_WEIGHT + 0.1,
+  [SOLANA_CHAIN_ID]: ARBITRUM_WEIGHT + 0.2,
+}
+
 interface SortOptions {
   pinChainId?: ChainInfo['id']
+}
+
+function getChainWeight(chainId: number): number {
+  const evmWeight = CHAIN_ORDER[chainId as SupportedChainId]
+  if (typeof evmWeight === 'number') return evmWeight
+
+  const nonEvmWeight = NON_EVM_CHAIN_ORDER[chainId]
+  if (typeof nonEvmWeight === 'number') return nonEvmWeight
+
+  return Number.MAX_SAFE_INTEGER
 }
 
 /**
@@ -24,7 +44,7 @@ export function sortChainsByDisplayOrder(chains: ChainInfo[], options?: SortOpti
 
   const weightedChains = chains.map((chain, index) => ({
     chain,
-    weight: CHAIN_ORDER[chain.id as SupportedChainId] ?? Number.MAX_SAFE_INTEGER,
+    weight: getChainWeight(chain.id),
     index,
   }))
 

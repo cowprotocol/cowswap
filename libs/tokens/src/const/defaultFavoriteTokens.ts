@@ -46,6 +46,37 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../types'
 
+const SOLANA_CHAIN_ID = 1_000_000_002
+const SOLANA_SOL_ASSET_ID = 'nep141:sol.omft.near'
+const SOLANA_USDC_ASSET_ID = 'nep141:sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near'
+
+const FNV_OFFSET_BASIS = 0x811c9dc5
+const FNV_PRIME = 0x01000193
+
+function fnv1a32(input: string, seed: number): number {
+  let hash = seed >>> 0
+
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i)
+    hash = Math.imul(hash, FNV_PRIME) >>> 0
+  }
+
+  return hash >>> 0
+}
+
+function createSyntheticAddress(chainId: number, assetId: string): string {
+  const key = `${chainId}:${assetId}`.toLowerCase()
+  let hex = ''
+
+  for (let i = 0; i < 5; i += 1) {
+    const seed = (FNV_OFFSET_BASIS + i * 0x9e3779b1) >>> 0
+    const word = fnv1a32(`${i}:${key}`, seed)
+    hex += word.toString(16).padStart(8, '0')
+  }
+
+  return `0x${hex.slice(0, 40)}`
+}
+
 const tokensListToMap = (list: (TokenWithLogo | null)[]): TokensMap =>
   list.reduce<TokensMap>((acc, token) => {
     if (!token) {
@@ -62,7 +93,26 @@ const tokensListToMap = (list: (TokenWithLogo | null)[]): TokensMap =>
     return acc
   }, {})
 
-export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
+const SOLANA_DEFAULT_FAVORITES = tokensListToMap([
+  new TokenWithLogo(
+    undefined,
+    SOLANA_CHAIN_ID,
+    createSyntheticAddress(SOLANA_CHAIN_ID, SOLANA_SOL_ASSET_ID),
+    9,
+    'SOL',
+    'Solana',
+  ),
+  new TokenWithLogo(
+    undefined,
+    SOLANA_CHAIN_ID,
+    createSyntheticAddress(SOLANA_CHAIN_ID, SOLANA_USDC_ASSET_ID),
+    6,
+    'USDC',
+    'USD Coin',
+  ),
+])
+
+export const DEFAULT_FAVORITE_TOKENS: Record<number, TokensMap> = {
   [SupportedChainId.MAINNET]: tokensListToMap([
     DAI,
     COW_TOKEN_MAINNET,
@@ -134,4 +184,5 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDT_PLASMA,
     WETH_PLASMA,
   ]),
+  [SOLANA_CHAIN_ID]: SOLANA_DEFAULT_FAVORITES,
 }

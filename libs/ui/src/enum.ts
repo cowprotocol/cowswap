@@ -160,6 +160,7 @@ export enum UI {
   FONT_SIZE_LARGER = '--cow-font-size-larger',
   FONT_SIZE_LARGEST = '--cow-font-size-largest',
   FONT_FAMILY_PRIMARY = '--cow-font-family-primary',
+  FONT_FAMILY_MONO = '--cow-font-family-mono',
 
   // Animation
   ANIMATION_DURATION = '--cow-animation-duration',

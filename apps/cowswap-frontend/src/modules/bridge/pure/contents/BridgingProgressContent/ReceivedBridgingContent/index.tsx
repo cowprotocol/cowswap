@@ -12,6 +12,8 @@ import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
+import { getChainType } from 'common/chains/nonEvm'
+
 import { SuccessTextBold } from '../../../../styles'
 import { BridgeTransactionLink } from '../../../BridgeTransactionLink'
 import { DepositTxLink } from '../../../DepositTxLink'
@@ -38,7 +40,13 @@ export function ReceivedBridgingContent({
   const { depositTxHash, fillTxHash } = statusResult || {}
   const destinationBridgeNetwork = useBridgeSupportedNetwork(destinationChainId)
   const { i18n } = useLingui()
-  const blockExplorerUrl = destinationBridgeNetwork?.blockExplorer?.url || getChainInfo(destinationChainId)?.explorer
+  const destinationChainType = getChainType(destinationChainId)
+  const isEvmDestination = destinationChainType === 'evm' && destinationChainId in SupportedChainId
+
+  // Only show explorer links for EVM destinations. Non-EVM explorers need different URL formats.
+  const blockExplorerUrl = isEvmDestination
+    ? destinationBridgeNetwork?.blockExplorer?.url || getChainInfo(destinationChainId as SupportedChainId).explorer
+    : undefined
 
   const fillTxLink =
     fillTxHash &&
@@ -64,7 +72,7 @@ export function ReceivedBridgingContent({
       ) : (
         <>
           <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
-          {fillTxLink && (
+          {isEvmDestination && fillTxLink && (
             <TransactionLinkItem link={fillTxLink} label={t`Destination transaction`} chainId={destinationChainId} />
           )}
         </>

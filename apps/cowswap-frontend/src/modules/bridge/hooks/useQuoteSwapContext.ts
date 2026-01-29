@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -8,6 +9,8 @@ import { useGetSwapReceiveAmountInfo } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
+
+import { getChainType } from 'common/chains/nonEvm'
 
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 
@@ -27,9 +30,12 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
   const cowShedAddress = useCurrentAccountProxy()?.data?.proxyAddress
   const bridgeReceiverOverride = bridgeQuote?.bridgeReceiverOverride || null
   const recipient = bridgeReceiverOverride || cowShedAddress || BRIDGE_QUOTE_ACCOUNT
+  const destinationChainId =
+    bridgeQuote?.tradeParameters?.buyTokenChainId ?? quoteAmounts?.bridgeMinReceiveAmount.currency.chainId
+  const destinationChainType = getChainType(destinationChainId)
 
   return useMemo(() => {
-    if (!receiveAmountInfo || !quoteAmounts || !recipient) return null
+    if (!receiveAmountInfo || !quoteAmounts || !recipient || !destinationChainId) return null
 
     const { sellAmount } = receiveAmountInfo.afterSlippage
     const sellToken = sellAmount.currency
@@ -40,6 +46,8 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     return {
       chainName: sourceChainData.label,
       receiveAmountInfo,
+      destinationChainId,
+      destinationChainType,
       sellAmount: quoteAmounts.swapSellAmount,
       buyAmount: quoteAmounts.swapBuyAmount,
       slippage,
@@ -60,5 +68,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     swapMinReceiveAmountUsd,
     swapExpectedReceiveUsd,
     bridgeReceiverOverride,
+    destinationChainId,
+    destinationChainType,
   ])
 }

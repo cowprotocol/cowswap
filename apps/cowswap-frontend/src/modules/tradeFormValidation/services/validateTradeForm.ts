@@ -1,7 +1,12 @@
 import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
 
+import { isNonEvmPrototypeEnabled } from 'prototype/nonEvmPrototype'
+
 import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
+
+import { getChainType } from 'common/chains/nonEvm'
+import { validateRecipientForChain } from 'common/recipient/nonEvmRecipientValidation'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
@@ -15,6 +20,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isSafeReadonlyUser,
     isSwapUnsupported,
     recipientEnsAddress,
+    recipientRequirement,
     tradeQuote,
     account,
     isApproveRequired,
@@ -50,6 +56,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
 
   const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
+  const isNonEvmPrototype = isNonEvmPrototypeEnabled()
+  const outputChainId = outputCurrency?.chainId
+  const outputChainType = getChainType(outputChainId)
+  const isNonEvmDestination = isNonEvmPrototype && outputChainType !== 'evm'
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
@@ -122,15 +132,40 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (!isWrapUnwrap) {
-    const isRecipientAddress = Boolean(recipient && isAddress(recipient))
+    const shouldUseNonEvmRecipientRules = recipientRequirement.isRecipientRequired || isNonEvmDestination
 
-    /**
-     * For bridging, recipient can be only an address (ENS is not supported)
-     */
-    const isRecipientValid = isBridging ? isRecipientAddress : recipientEnsAddress ? true : isRecipientAddress
+    if (shouldUseNonEvmRecipientRules) {
+      const recipientValue = recipient?.trim() ?? ''
+      const isRecipientMissing = recipientValue.length === 0
+      const destinationChainId = isNonEvmDestination ? outputChainId : recipientRequirement.destinationChainId
+      const validationResult =
+        !isRecipientMissing && destinationChainId ? validateRecipientForChain(destinationChainId, recipientValue) : null
+      const isRecipientValid = isRecipientMissing || validationResult?.isValid !== false
 
-    if (recipient && !isRecipientValid) {
-      validations.push(TradeFormValidation.RecipientInvalid)
+      // In the non-EVM prototype, recipient is not required for quotes, but we still
+      // surface invalid formats once the user types something.
+      if (isNonEvmPrototype) {
+        if (isRecipientMissing) {
+          validations.push(TradeFormValidation.RecipientRequiredNonEvmPrototype)
+        } else if (!isRecipientValid) {
+          validations.push(TradeFormValidation.RecipientInvalidNonEvm)
+        }
+      } else if (isRecipientMissing) {
+        validations.push(TradeFormValidation.RecipientRequired)
+      } else if (!isRecipientValid) {
+        validations.push(TradeFormValidation.RecipientInvalidNonEvm)
+      }
+    } else {
+      const isRecipientAddress = Boolean(recipient && isAddress(recipient))
+
+      /**
+       * For bridging, recipient can be only an address (ENS is not supported)
+       */
+      const isRecipientValid = isBridging ? isRecipientAddress : recipientEnsAddress ? true : isRecipientAddress
+
+      if (recipient && !isRecipientValid) {
+        validations.push(TradeFormValidation.RecipientInvalid)
+      }
     }
 
     if (isSwapUnsupported) {
@@ -145,6 +180,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
       !isQuoteLoading &&
       !isFastQuote &&
+      !(isNonEvmDestination && isNonEvmPrototype) &&
       isQuoteExpired(tradeQuote)
     ) {
       validations.push(TradeFormValidation.QuoteExpired)

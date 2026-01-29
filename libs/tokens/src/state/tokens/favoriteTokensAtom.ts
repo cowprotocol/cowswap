@@ -9,7 +9,7 @@ import { DEFAULT_FAVORITE_TOKENS } from '../../const/defaultFavoriteTokens'
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
-type FavoriteTokens = Record<SupportedChainId, TokensMap>
+type FavoriteTokens = Record<number, TokensMap>
 
 const EMPTY_FAVORITE_TOKENS: TokenWithLogo[] = []
 

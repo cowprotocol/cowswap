@@ -3,6 +3,7 @@ import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { renderHook } from '@testing-library/react'
 
 import { TradeDerivedState, useDerivedTradeState } from 'modules/trade'
+import { useRecipientRequirement } from 'modules/trade/hooks/useRecipientRequirement'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 import { useTradeQuote } from './useTradeQuote'
@@ -14,6 +15,9 @@ jest.mock('./useTradeQuote')
 jest.mock('modules/trade', () => ({
   useDerivedTradeState: jest.fn(),
 }))
+jest.mock('modules/trade/hooks/useRecipientRequirement', () => ({
+  useRecipientRequirement: jest.fn(),
+}))
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
 }))
@@ -21,6 +25,7 @@ jest.mock('@cowprotocol/wallet', () => ({
 const mockedUseTradeQuote = useTradeQuote as jest.MockedFunction<typeof useTradeQuote>
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockedUseRecipientRequirement = useRecipientRequirement as jest.MockedFunction<typeof useRecipientRequirement>
 
 const VALID_ADDRESS = '0x1234567890123456789012345678901234567890'
 const ANOTHER_VALID_ADDRESS = '0x0987654321098765432109876543210987654321'
@@ -36,6 +41,22 @@ describe('useQuoteParamsRecipient', () => {
     mockedUseWalletInfo.mockReturnValue({
       account: ACCOUNT_ADDRESS,
     } as unknown as WalletInfo)
+
+    mockedUseRecipientRequirement.mockReturnValue({
+      destinationChainId: undefined,
+      destinationChainType: 'evm',
+      isRecipientRequired: false,
+      isRecipientBlocked: false,
+      isRecipientValid: true,
+      isRecipientMissing: false,
+      recipientError: undefined,
+      blockedQuoteMessage: undefined,
+      toggleDisabled: false,
+      toggleDisabledReason: undefined,
+      warningText: undefined,
+      recipient: '',
+      isMismatch: false,
+    })
   })
 
   describe('ReceiverAccountBridgeProvider', () => {

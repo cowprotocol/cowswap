@@ -3,6 +3,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ApprovalState, ApproveRequiredReason } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'
+import type { RecipientRequirementState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
 export enum TradeFormValidation {
@@ -22,7 +23,10 @@ export enum TradeFormValidation {
   // Quote request params
   CurrencyNotSet,
   InputAmountNotSet,
+  RecipientRequired,
+  RecipientRequiredNonEvmPrototype,
   RecipientInvalid,
+  RecipientInvalidNonEvm,
   NetworkNotSupported,
   BrowserOffline,
 
@@ -60,6 +64,7 @@ export interface TradeFormValidationCommonContext {
   approvalState: ApprovalState
   tradeQuote: TradeQuoteState
   recipientEnsAddress: string | null
+  recipientRequirement: RecipientRequirementState
   isWrapUnwrap: boolean
   isBundlingSupported: boolean | null
   isSupportedWallet: boolean
@@ -91,6 +96,7 @@ export interface TradeFormButtonContext {
   customTokenError?: string
   minAmountToSignForSwap?: CurrencyAmount<Currency>
   balancesError: string | null
+  recipientConfirmationLabel?: string
 
   confirmTrade(): void
 

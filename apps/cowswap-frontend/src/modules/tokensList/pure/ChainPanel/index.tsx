@@ -63,6 +63,7 @@ export function ChainPanel({
           defaultChainId={chainsState?.defaultChainId}
           onSelectChain={onSelectChain}
           disabledChainIds={chainsState?.disabledChainIds}
+          disabledReasons={chainsState?.disabledReasons}
           loadingChainIds={chainsState?.loadingChainIds}
         />
         {showUnavailableState && <styledEl.EmptyState>{t`No networks available for this trade.`}</styledEl.EmptyState>}

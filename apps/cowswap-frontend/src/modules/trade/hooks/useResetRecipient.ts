@@ -1,14 +1,18 @@
 import { useEffect } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
+
+import { getChainType } from 'common/chains/nonEvm'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsHooksTradeType } from './useIsHooksTradeType'
 import { useIsNativeIn } from './useIsNativeInOrOut'
+import { useTradeState } from './useTradeState'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
@@ -21,8 +25,14 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const isNativeIn = useIsNativeIn()
   const hasTradeState = !!tradeStateFromUrl
   const { chainId } = useWalletInfo()
+  const { state: tradeRawState } = useTradeState()
 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
+  const destinationChainId =
+    tradeRawState?.targetChainId ?? tradeState?.outputCurrency?.chainId ?? tradeRawState?.chainId ?? undefined
+  const destinationChainType = getChainType(destinationChainId)
+  const prevDestinationChainId = usePrevious(destinationChainId)
+  const prevDestinationChainType = usePrevious(destinationChainType)
   const recipient = tradeState?.recipient
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
 
@@ -70,6 +80,36 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
       onChangeRecipient(null)
     }
   }, [isHooksTradeType, isNativeIn, onChangeRecipient])
+
+  /**
+   * Apply recipient reset rules when the destination chain changes.
+   * - Non-EVM -> EVM: keep only valid EVM addresses.
+   * - Bitcoin <-> Solana: always clear.
+   * - EVM -> Non-EVM: clear.
+   */
+  useEffect(() => {
+    if (!prevDestinationChainId || prevDestinationChainId === destinationChainId) return
+
+    const prevType = prevDestinationChainType ?? getChainType(prevDestinationChainId)
+    const nextType = destinationChainType
+
+    if (prevType !== 'evm' && nextType === 'evm') {
+      if (recipient && isAddress(recipient)) {
+        return
+      }
+    } else if (prevType === 'evm' && nextType === 'evm') {
+      return
+    }
+
+    onChangeRecipient(null)
+  }, [
+    prevDestinationChainId,
+    prevDestinationChainType,
+    destinationChainId,
+    destinationChainType,
+    recipient,
+    onChangeRecipient,
+  ])
 
   return null
 }

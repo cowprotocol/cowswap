@@ -20,6 +20,7 @@ export function TokenSearchContent({
   searchResults,
   importToken,
   selectTokenContext,
+  emptyStateMessage,
 }: TokenSearchContentProps): ReactNode {
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
 
@@ -75,11 +76,7 @@ export function TokenSearchContent({
     )
 
   if (isTokenNotFound)
-    return (
-      <styledEl.TokenNotFound>
-        <Trans>No tokens found</Trans>
-      </styledEl.TokenNotFound>
-    )
+    return <styledEl.TokenNotFound>{emptyStateMessage ?? <Trans>No tokens found</Trans>}</styledEl.TokenNotFound>
 
   return <VirtualList id="token-search-results" items={rows} getItemView={getItemView} scrollResetKey={searchInput} />
 }

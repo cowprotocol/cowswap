@@ -5,23 +5,56 @@ import styled from 'styled-components/macro'
 import { blankButtonMixin } from '../commonElements'
 
 export interface ChainAccentVars {
-  backgroundVar: string
-  borderVar: string
-  accentColorVar: string
+  backgroundVar?: string
+  borderVar?: string
+  accentColorVar?: string
+  backgroundColor?: string
+  backgroundColorDark?: string
+  backgroundIsGradient?: boolean
+  borderColor?: string
+  borderColorDark?: string
+  accentColor?: string
+  accentColorDark?: string
 }
 
 const fallbackBackground = `var(${UI.COLOR_PRIMARY_OPACITY_10})`
 const fallbackBorder = `var(${UI.COLOR_PRIMARY_OPACITY_80})`
 const fallbackHoverBorder = `var(${UI.COLOR_PRIMARY_OPACITY_70})`
 
-const getBackground = (accent$?: ChainAccentVars, fallback = fallbackBackground): string =>
-  accent$ ? `var(${accent$.backgroundVar})` : fallback
+const getBackground = (
+  accent$?: ChainAccentVars,
+  theme?: { darkMode?: boolean },
+  fallback = fallbackBackground,
+): string => {
+  if (!accent$) return fallback
 
-const getBorder = (accent$?: ChainAccentVars, fallback = fallbackBorder): string =>
-  accent$ ? `var(${accent$.borderVar})` : fallback
+  if (accent$.backgroundVar) return `var(${accent$.backgroundVar})`
+  if (accent$.backgroundColor) {
+    return theme?.darkMode && accent$.backgroundColorDark ? accent$.backgroundColorDark : accent$.backgroundColor
+  }
 
-const getAccentColor = (accent$?: ChainAccentVars): string | undefined =>
-  accent$ ? `var(${accent$.accentColorVar})` : undefined
+  return fallback
+}
+
+const getBorder = (accent$?: ChainAccentVars, theme?: { darkMode?: boolean }, fallback = fallbackBorder): string => {
+  if (!accent$) return fallback
+
+  if (accent$.borderVar) return `var(${accent$.borderVar})`
+  if (accent$.borderColor) {
+    return theme?.darkMode && accent$.borderColorDark ? accent$.borderColorDark : accent$.borderColor
+  }
+
+  return fallback
+}
+
+const getAccentColor = (accent$?: ChainAccentVars, theme?: { darkMode?: boolean }): string | undefined => {
+  if (!accent$) return undefined
+
+  if (accent$.accentColorVar) return `var(${accent$.accentColorVar})`
+  if (!accent$.accentColor) return undefined
+
+  return theme?.darkMode && accent$.accentColorDark ? accent$.accentColorDark : accent$.accentColor
+}
 
 export const List = styled.div`
   display: flex;
@@ -49,9 +82,10 @@ export const ChainButton = styled.button<{
   padding: 8px 12px;
   min-height: var(--min-height);
   border-radius: var(--min-height);
-  border: 1px solid ${({ active$, accent$ }) => (active$ ? getBorder(accent$) : 'transparent')};
-  background: ${({ active$, accent$ }) => (active$ ? getBackground(accent$) : 'transparent')};
-  box-shadow: ${({ active$, accent$ }) => (active$ ? `0 0 0 1px ${getBackground(accent$)} inset` : 'none')};
+  border: 1px solid ${({ active$, accent$, theme }) => (active$ ? getBorder(accent$, theme) : 'transparent')};
+  background: ${({ active$, accent$, theme }) => (active$ ? getBackground(accent$, theme) : 'transparent')};
+  box-shadow: ${({ active$, accent$, theme }) =>
+    active$ && !accent$?.backgroundIsGradient ? `0 0 0 1px ${getBackground(accent$, theme)} inset` : 'none'};
   cursor: ${({ disabled$, loading$ }) => (disabled$ || loading$ ? 'not-allowed' : 'pointer')};
   opacity: ${({ disabled$ }) => (disabled$ ? 0.5 : 1)};
   transition:
@@ -61,16 +95,16 @@ export const ChainButton = styled.button<{
     opacity 0.2s ease;
 
   &:hover {
-    border-color: ${({ accent$, disabled$, loading$ }) =>
-      disabled$ || loading$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder)};
-    background: ${({ accent$, disabled$, loading$ }) =>
-      disabled$ || loading$ ? 'transparent' : getBackground(accent$)};
+    border-color: ${({ accent$, disabled$, loading$, theme }) =>
+      disabled$ || loading$ ? 'transparent' : getBorder(accent$, theme, fallbackHoverBorder)};
+    background: ${({ accent$, disabled$, loading$, theme }) =>
+      disabled$ || loading$ ? 'transparent' : getBackground(accent$, theme)};
   }
 
   &:focus-visible {
     outline: none;
-    border-color: ${({ accent$, disabled$, loading$ }) =>
-      disabled$ || loading$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder)};
+    border-color: ${({ accent$, disabled$, loading$, theme }) =>
+      disabled$ || loading$ ? 'transparent' : getBorder(accent$, theme, fallbackHoverBorder)};
   }
 
   /* Shimmer overlay for loading state - aligned with theme.shimmer */
@@ -135,8 +169,8 @@ export const ActiveIcon = styled.span<{ accent$?: ChainAccentVars; color$?: stri
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ color$, accent$ }) =>
-    getAccentColor(accent$) ?? color$ ?? getBorder(accent$, `var(${UI.COLOR_PRIMARY})`)};
+  color: ${({ color$, accent$, theme }) =>
+    getAccentColor(accent$, theme) ?? color$ ?? getBorder(accent$, theme, `var(${UI.COLOR_PRIMARY})`)};
 
   > svg {
     width: 16px;

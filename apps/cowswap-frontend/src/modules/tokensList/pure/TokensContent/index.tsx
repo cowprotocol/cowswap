@@ -2,6 +2,9 @@ import { ReactNode, useMemo } from 'react'
 
 import { getTokenId } from '@cowprotocol/common-utils'
 import { Loader } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { getNonEvmAllowlist } from 'common/chains/nonEvmTokenAllowlist'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { useTokenListContext } from '../../hooks/useTokenListContext'
@@ -12,12 +15,20 @@ import { TokensVirtualList } from '../TokensVirtualList'
 export function TokensContent(): ReactNode {
   // UI state (searchInput) from atom
   const { searchInput } = useTokenListViewState()
+  const { chainId: walletChainId } = useWalletInfo()
 
   // Token data directly from source hooks
-  const { favoriteTokens, recentTokens, areTokensLoading, allTokens, onClearRecentTokens } = useTokenListContext()
+  const { favoriteTokens, recentTokens, areTokensLoading, allTokens, onClearRecentTokens, selectedTargetChainId } =
+    useTokenListContext()
 
-  const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
-  const shouldShowRecentsInline = !areTokensLoading && !searchInput && recentTokens.length > 0
+  const targetChainId = selectedTargetChainId ?? walletChainId
+  const nonEvmAllowlist = targetChainId ? getNonEvmAllowlist(targetChainId) : undefined
+  const suppressPinnedSections = Boolean(nonEvmAllowlist && nonEvmAllowlist.tokens.length === 1)
+
+  const shouldShowFavoritesInline =
+    !suppressPinnedSections && !areTokensLoading && !searchInput && favoriteTokens.length > 0
+  const shouldShowRecentsInline =
+    !suppressPinnedSections && !areTokensLoading && !searchInput && recentTokens.length > 0
 
   const pinnedTokenKeys = useMemo(() => {
     // Only hide "Recent" tokens from the main list.
@@ -65,6 +76,7 @@ export function TokensContent(): ReactNode {
       favoriteTokens={favoriteTokensInline}
       recentTokens={recentTokensInline}
       onClearRecentTokens={onClearRecentTokens}
+      suppressPinnedSections={suppressPinnedSections}
     />
   )
 }

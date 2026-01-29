@@ -19,6 +19,7 @@ export interface TokensVirtualListProps {
   favoriteTokens?: TokenWithLogo[]
   recentTokens?: TokenWithLogo[]
   onClearRecentTokens: () => void
+  suppressPinnedSections?: boolean
 }
 
 export function TokensVirtualList({
@@ -26,6 +27,7 @@ export function TokensVirtualList({
   favoriteTokens,
   recentTokens,
   onClearRecentTokens,
+  suppressPinnedSections,
 }: TokensVirtualListProps): ReactNode {
   const { selectTokenContext, hideFavoriteTokensTooltip, selectedTargetChainId } = useTokenListContext()
   const { values: balances } = selectTokenContext.balancesState
@@ -41,8 +43,16 @@ export function TokensVirtualList({
         recentTokens,
         hideFavoriteTokensTooltip,
         onClearRecentTokens,
+        suppressPinnedSections,
       }),
-    [favoriteTokens, hideFavoriteTokensTooltip, onClearRecentTokens, recentTokens, sortedTokens],
+    [
+      favoriteTokens,
+      hideFavoriteTokensTooltip,
+      onClearRecentTokens,
+      recentTokens,
+      sortedTokens,
+      suppressPinnedSections,
+    ],
   )
 
   const getItemView = useCallback(

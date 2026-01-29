@@ -16,6 +16,7 @@ export interface ChainButtonProps {
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
   isLoading: boolean
+  disabledReason?: string
 }
 
 export function ChainButton({
@@ -25,11 +26,12 @@ export function ChainButton({
   onSelectChain,
   isDisabled,
   isLoading,
+  disabledReason,
 }: ChainButtonProps): ReactNode {
   const { t } = useLingui()
   const logoSrc = isDarkMode ? chain.logo.dark : chain.logo.light
-  const accent = getChainAccent(chain.id)
-  const disabledTooltip = t`This destination is not supported for this source chain`
+  const accent = getChainAccent(chain)
+  const disabledTooltip = disabledReason || t`This destination is not supported for this source chain`
   const loadingTooltip = t`Checking route availability...`
 
   const handleClick = (): void => {

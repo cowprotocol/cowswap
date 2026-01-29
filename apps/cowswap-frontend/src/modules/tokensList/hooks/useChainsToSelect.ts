@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+/* eslint-disable max-lines-per-function */
 import { useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
@@ -6,11 +8,13 @@ import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
+import { getPrototypeNonEvmNetworks, isNonEvmPrototypeEnabled } from 'prototype/nonEvmPrototype'
 
 import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade/types'
 
+import { getSellSideDisabledReason, isBuyOnlyChainId } from 'common/chains/nonEvm'
 import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
@@ -34,6 +38,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
   const { field, selectedTargetChainId = chainId, tradeType } = useSelectTokenWidgetState()
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
+  const prototypeNetworks = isNonEvmPrototypeEnabled() ? getPrototypeNonEvmNetworks() : []
   const isBridgingEnabled = useIsBridgingEnabled() // Reads from Jotai atom
   const availableChains = useAvailableChains()
   const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
@@ -47,7 +52,21 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     }, [] as ChainInfo[])
   }, [availableChains])
 
-  const destinationChainIds = useMemo(() => supportedChains.map((c) => c.id), [supportedChains])
+  const effectiveBridgeNetworks = bridgeSupportedNetworks ?? prototypeNetworks
+
+  const destinationChainIds = useMemo(() => {
+    const chainsById = new Map<number, ChainInfo>()
+
+    for (const chain of supportedChains) {
+      chainsById.set(chain.id, chain)
+    }
+
+    for (const chain of effectiveBridgeNetworks) {
+      chainsById.set(chain.id, chain)
+    }
+
+    return Array.from(chainsById.keys())
+  }, [supportedChains, effectiveBridgeNetworks])
   const isBuyField = field === Field.OUTPUT
   const routesAvailability = useRoutesAvailability(
     isBuyField && isBridgingEnabled ? chainId : undefined,
@@ -62,10 +81,36 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (!chainInfo) return undefined
 
     if (field === Field.INPUT) {
+      const chainsById = new Map<number, ChainInfo>()
+
+      for (const chain of supportedChains) {
+        chainsById.set(chain.id, chain)
+      }
+
+      for (const chain of effectiveBridgeNetworks) {
+        chainsById.set(chain.id, chain)
+      }
+
+      const sellSideChains = shouldHideNetworkSelector ? [] : sortChainsByDisplayOrder(Array.from(chainsById.values()))
+      const disabledChainIds = new Set<number>()
+      const disabledReasons = new Map<number, string>()
+
+      for (const chain of sellSideChains) {
+        if (!isBuyOnlyChainId(chain.id)) continue
+
+        const reason = getSellSideDisabledReason(chain.id)
+        disabledChainIds.add(chain.id)
+        if (reason) {
+          disabledReasons.set(chain.id, reason)
+        }
+      }
+
       return {
         defaultChainId: selectedTargetChainId,
-        chains: shouldHideNetworkSelector ? [] : sortChainsByDisplayOrder(supportedChains),
+        chains: sellSideChains,
         isLoading: false,
+        disabledChainIds: disabledChainIds.size > 0 ? disabledChainIds : undefined,
+        disabledReasons: disabledReasons.size > 0 ? disabledReasons : undefined,
       }
     }
 
@@ -74,7 +119,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       selectedTargetChainId,
       chainId,
       currentChainInfo: mapChainInfo(chainId, chainInfo),
-      bridgeSupportedNetworks,
+      bridgeSupportedNetworks: effectiveBridgeNetworks,
       supportedChains,
       isLoading,
       routesAvailability,
@@ -83,7 +128,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     field,
     selectedTargetChainId,
     chainId,
-    bridgeSupportedNetworks,
+    effectiveBridgeNetworks,
     supportedChains,
     isLoading,
     isBridgingEnabled,

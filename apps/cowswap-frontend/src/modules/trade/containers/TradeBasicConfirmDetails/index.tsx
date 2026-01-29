@@ -33,6 +33,7 @@ type Props = {
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
   withTimelineDot?: boolean
+  recipientChainId?: number
 }
 
 type LabelsAndTooltips = {
@@ -148,7 +149,7 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
 
       {/*Recipient*/}
       <RecipientRow
-        chainId={rateInfoParams.chainId}
+        chainId={props.recipientChainId ?? rateInfoParams.chainId}
         recipient={props.recipient}
         recipientAddress={props.recipientAddress}
         account={props.account}

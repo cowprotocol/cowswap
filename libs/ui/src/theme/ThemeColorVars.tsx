@@ -374,6 +374,7 @@ export const ThemeColorVars = css`
     ${UI.FONT_SIZE_LARGER}: 20px;
     ${UI.FONT_SIZE_LARGEST}: 24px;
     ${UI.FONT_FAMILY_PRIMARY}: 'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif;
+    ${UI.FONT_FAMILY_MONO}: 'studiofeixenmono', 'Inter var', 'Inter', Arial, sans-serif;
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;

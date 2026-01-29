@@ -30,6 +30,8 @@ interface SettingsTabProps {
   hooksEnabledState?: StatefulValue<boolean>
   deadlineState: StatefulValue<number>
   enablePartialApprovalState?: StatefulValue<boolean> | [null, null]
+  recipientToggleDisabled?: boolean
+  recipientToggleDisabledReason?: string
 }
 
 // TODO: Break down this large function into smaller functions
@@ -41,16 +43,21 @@ export function SettingsTab({
   hooksEnabledState,
   deadlineState,
   enablePartialApprovalState,
+  recipientToggleDisabled = false,
+  recipientToggleDisabledReason,
 }: SettingsTabProps): ReactNode {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   const [recipientToggleVisible, toggleRecipientVisibilityAux] = recipientToggleState
+  const recipientToggleActive = recipientToggleDisabled ? true : recipientToggleVisible
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
+      if (recipientToggleDisabled) return
+
       const isVisible = value ?? !recipientToggleVisible
       toggleRecipientVisibilityAux(isVisible)
     },
-    [toggleRecipientVisibilityAux, recipientToggleVisible],
+    [toggleRecipientVisibilityAux, recipientToggleVisible, recipientToggleDisabled],
   )
 
   const [hooksEnabled, toggleHooksEnabledAux] = hooksEnabledState || [null, null]
@@ -75,6 +82,16 @@ export function SettingsTab({
     [toggleEnablePartialApprovalAux, enablePartialApproval],
   )
 
+  const recipientHelpText = recipientToggleDisabledReason ? (
+    <>
+      <Trans>Allows you to choose a destination address for the swap other than the connected one.</Trans>
+      <br />
+      {recipientToggleDisabledReason}
+    </>
+  ) : (
+    <Trans>Allows you to choose a destination address for the swap other than the connected one.</Trans>
+  )
+
   return (
     <Menu>
       <SettingsTabController buttonRef={menuButtonRef}>
@@ -97,24 +114,35 @@ export function SettingsTab({
                   <ThemedText.Black fontWeight={400} fontSize={14}>
                     <Trans>Custom Recipient</Trans>
                   </ThemedText.Black>
-                  <HelpTooltip
-                    text={
-                      <Trans>
-                        Allows you to choose a destination address for the swap other than the connected one.
-                      </Trans>
-                    }
-                  />
+                  <HelpTooltip text={recipientHelpText} />
                 </RowFixed>
-                <Toggle
-                  id="toggle-recipient-mode-button"
-                  isActive={recipientToggleVisible}
-                  toggle={toggleRecipientVisibility}
-                  data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
-                    action: 'Toggle Recipient Address',
-                    label: recipientToggleVisible ? 'Enabled' : 'Disabled',
-                  })}
-                />
+                {recipientToggleDisabledReason ? (
+                  <span title={recipientToggleDisabledReason}>
+                    <Toggle
+                      id="toggle-recipient-mode-button"
+                      isActive={recipientToggleActive}
+                      isDisabled={recipientToggleDisabled}
+                      toggle={toggleRecipientVisibility}
+                      data-click-event={toCowSwapGtmEvent({
+                        category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
+                        action: 'Toggle Recipient Address',
+                        label: recipientToggleActive ? 'Enabled' : 'Disabled',
+                      })}
+                    />
+                  </span>
+                ) : (
+                  <Toggle
+                    id="toggle-recipient-mode-button"
+                    isActive={recipientToggleActive}
+                    isDisabled={recipientToggleDisabled}
+                    toggle={toggleRecipientVisibility}
+                    data-click-event={toCowSwapGtmEvent({
+                      category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
+                      action: 'Toggle Recipient Address',
+                      label: recipientToggleActive ? 'Enabled' : 'Disabled',
+                    })}
+                  />
+                )}
               </RowBetween>
 
               {enablePartialApproval !== null && (

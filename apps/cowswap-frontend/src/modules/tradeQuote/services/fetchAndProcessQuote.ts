@@ -9,6 +9,7 @@ import {
 } from '@cowprotocol/sdk-bridging'
 import { QuoteAndPost } from '@cowprotocol/sdk-trading'
 
+import { buildPrototypeQuotes, isPrototypeNonEvmDestination } from 'prototype/nonEvmPrototype'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
@@ -77,6 +78,15 @@ export async function fetchAndProcessQuote(
   }
 
   tradeQuoteManager.setLoading(hasParamsChanged)
+
+  if (isBridge && isPrototypeNonEvmDestination(quoteParams.buyTokenChainId)) {
+    if (timings.ref.current && timings.now !== timings.ref.current) return
+
+    const { quote, bridgeQuote } = buildPrototypeQuotes(quoteParams)
+    tradeQuoteManager.onResponse(quote, bridgeQuote, fetchParams)
+
+    return
+  }
 
   if (isBridge) {
     await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError, timings)

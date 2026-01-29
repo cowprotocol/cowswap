@@ -6,6 +6,8 @@ import { useEstimatedBridgeBuyAmount } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { getChainType } from 'common/chains/nonEvm'
+
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 import { useBridgeQuoteRecipient } from './useBridgeQuoteRecipient'
 
@@ -30,18 +32,21 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { value: bridgeMinReceiveAmountUsd } = useUsdAmount(quoteAmounts?.bridgeMinReceiveAmount)
 
   const targetChainId = quoteAmounts?.bridgeMinReceiveAmount.currency.chainId
+  const destinationChainType = getChainType(targetChainId)
   const destChainData = useBridgeSupportedNetwork(targetChainId)
 
   const expectedFillTimeSeconds = bridgeQuote?.expectedFillTimeSeconds
   const recipient = useBridgeQuoteRecipient()
 
   return useMemo(() => {
-    if (!quoteAmounts?.swapExpectedReceive || !recipient || !buyAmount) return null
+    if (!quoteAmounts?.swapExpectedReceive || !recipient || !buyAmount || targetChainId == null) return null
 
     if (!destChainData) return null
 
     return {
       chainName: destChainData.label,
+      destinationChainId: targetChainId,
+      destinationChainType,
       bridgeFee: quoteAmounts.bridgeFee,
       estimatedTime: expectedFillTimeSeconds || null,
       recipient,
@@ -61,6 +66,8 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
     expectedFillTimeSeconds,
     recipient,
     destChainData,
+    targetChainId,
+    destinationChainType,
     buyAmount,
     buyAmountUsd,
     bridgeMinDepositAmountUsd,

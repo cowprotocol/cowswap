@@ -19,7 +19,7 @@ export interface CreateOutputChainsOptions {
 }
 
 export function filterDestinationChains(bridgeSupportedNetworks: ChainInfo[] | undefined): ChainInfo[] | undefined {
-  return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId)
+  return bridgeSupportedNetworks
 }
 
 export function createInputChainsState(
@@ -79,9 +79,19 @@ export function createOutputChainsState({
   isLoading,
   routesAvailability,
 }: CreateOutputChainsOptions): ChainsToSelectState {
-  const chainSet = new Set(supportedChains.map((c) => c.id))
-  const chainsWithCurrent = chainSet.has(chainId) ? supportedChains : [...supportedChains, currentChainInfo]
-  const orderedChains = sortChainsByDisplayOrder(chainsWithCurrent)
+  const chainsById = new Map<number, ChainInfo>()
+
+  for (const chain of supportedChains) {
+    chainsById.set(chain.id, chain)
+  }
+
+  chainsById.set(currentChainInfo.id, currentChainInfo)
+
+  for (const bridgeChain of bridgeSupportedNetworks ?? []) {
+    chainsById.set(bridgeChain.id, bridgeChain)
+  }
+
+  const orderedChains = sortChainsByDisplayOrder(Array.from(chainsById.values()))
 
   const destinationIds = new Set(filterDestinationChains(bridgeSupportedNetworks)?.map((c) => c.id) ?? [])
   const sourceSupported = destinationIds.has(chainId)

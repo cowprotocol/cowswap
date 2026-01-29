@@ -3,6 +3,11 @@ import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 
+import { Field } from 'legacy/state/types'
+
+import { getChainType } from 'common/chains/nonEvm'
+import { getNonEvmEmptyStateMessage } from 'common/chains/nonEvmTokenAllowlist'
+
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokenListContext } from '../../hooks/useTokenListContext'
@@ -18,7 +23,7 @@ export function TokenSearchResults(): ReactNode {
 
   const { onTokenListItemClick } = selectTokenContext
 
-  const { onSelectToken } = useSelectTokenWidgetState()
+  const { onSelectToken, selectedTargetChainId, field } = useSelectTokenWidgetState()
 
   // Do not make search when tokens are from bridge
   const defaultSearchResults = useSearchToken(areTokensFromBridge ? null : searchInput)
@@ -45,6 +50,15 @@ export function TokenSearchResults(): ReactNode {
   const matchedTokens = useMemo(() => {
     return activeListsResult.filter((t) => doesTokenMatchSymbolOrAddress(t, searchInput))
   }, [activeListsResult, searchInput])
+
+  const emptyStateMessage = useMemo(() => {
+    if (field !== Field.OUTPUT) return undefined
+
+    const chainType = getChainType(selectedTargetChainId)
+    if (chainType === 'evm') return undefined
+
+    return getNonEvmEmptyStateMessage(selectedTargetChainId)
+  }, [field, selectedTargetChainId])
 
   // On press Enter, select first token if only one token is found or it fully matches to the search input
   const onInputPressEnter = useCallback(() => {
@@ -73,6 +87,7 @@ export function TokenSearchResults(): ReactNode {
         searchInput={searchInput}
         selectTokenContext={selectTokenContext}
         searchResults={searchResults}
+        emptyStateMessage={emptyStateMessage}
       />
     </CommonListContainer>
   )

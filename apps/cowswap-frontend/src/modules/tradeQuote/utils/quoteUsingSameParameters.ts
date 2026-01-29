@@ -43,9 +43,9 @@ export function quoteUsingSameParameters(
       [bridgeTradeParams.receiver === nextParams.receiver, 'receiver'],
       // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
       [slippageCheck, 'slippageBps', currentParams.slippageBps, nextParams.swapSlippageBps],
-      [currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(), 'sellToken'],
+      [sameAddress(currentParams.sellToken, nextParams.sellTokenAddress), 'sellToken'],
       [bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId, 'sellTokenChainId'],
-      [bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(), 'buyTokenAddress'],
+      [sameAddress(bridgeTradeParams.buyTokenAddress, nextParams.buyTokenAddress), 'buyTokenAddress'],
       [bridgeTradeParams.buyTokenChainId === nextParams.buyTokenChainId, 'buyTokenChainId'],
     ]
 
@@ -74,8 +74,8 @@ export function quoteUsingSameParameters(
      * See how slippageBps is defined in `useQuoteParams()`
      */
     [slippageCheck, 'slippageBps', currentParams.slippageBps, nextParams.swapSlippageBps],
-    [currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(), 'sellToken'],
-    [currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(), 'buyToken'],
+    [sameAddress(currentParams.sellToken, nextParams.sellTokenAddress), 'sellToken'],
+    [sameAddress(currentParams.buyToken, nextParams.buyTokenAddress), 'buyToken'],
   ]
 
   const changes = cases.filter((i) => !Boolean(i[0]))
@@ -93,6 +93,13 @@ export function quoteUsingSameParameters(
  */
 function compareSlippage(currentSlippage: number | undefined, nextSlippage: number | undefined): boolean {
   return !nextSlippage || !currentSlippage || currentSlippage === nextSlippage
+}
+
+function sameAddress(a: string | undefined | null, b: string | undefined | null): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') return false
+  if (!a || !b) return false
+
+  return a.toLowerCase() === b.toLowerCase()
 }
 
 /**
