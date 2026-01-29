@@ -187,6 +187,10 @@ const ValidIcon = styled(SVG)`
   width: 14px;
   height: 14px;
   flex: 0 0 auto;
+
+  > path {
+    fill: var(${UI.COLOR_SUCCESS});
+  }
 `
 const QrIcon = styled(SVG)`
   width: 16px;
@@ -345,6 +349,67 @@ export function AddressInputPanel({
       console.debug('[AddressInputPanel] Failed to read clipboard', error)
     }
   }, [onChange])
+  const handlePasteFromModal = useCallback((): void => {
+    void handlePaste()
+    requestAnimationFrame(() => inputRef.current?.focus())
+  }, [handlePaste])
+
+  const replaceQrScanStream = useCallback(
+    (nextStream: MediaStream | null): void => {
+      if (qrScanStream && qrScanStream !== nextStream) {
+        qrScanStream.getTracks().forEach((track) => track.stop())
+      }
+      setQrScanStream(nextStream)
+    },
+    [qrScanStream],
+  )
+
+  const requestQrScanStream = useCallback(
+    async (deviceId?: string | null): Promise<MediaStream | null> => {
+      if (!navigator?.mediaDevices?.getUserMedia) {
+        setQrScanError(t`Camera access is not available in this browser.`)
+        return null
+      }
+      if (!window.isSecureContext) {
+        setQrScanError(t`Camera access requires a secure context.`)
+        return null
+      }
+
+      const buildConstraints = (id?: string | null): MediaStreamConstraints => ({
+        video: id
+          ? {
+              deviceId: { exact: id },
+            }
+          : {
+              facingMode: { ideal: 'environment' },
+            },
+        audio: false,
+      })
+
+      try {
+        const preferredStream = await navigator.mediaDevices.getUserMedia(buildConstraints(deviceId))
+        setQrScanError(null)
+        replaceQrScanStream(preferredStream)
+        return preferredStream
+      } catch (error) {
+        const name = error instanceof Error ? error.name : ''
+        if (name === 'NotFoundError' || name === 'OverconstrainedError') {
+          try {
+            const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            setQrScanError(null)
+            replaceQrScanStream(fallbackStream)
+            return fallbackStream
+          } catch {
+            setQrScanError(t`Camera access was denied or is unavailable.`)
+            return null
+          }
+        }
+        setQrScanError(t`Camera access was denied or is unavailable.`)
+        return null
+      }
+    },
+    [replaceQrScanStream, t],
+  )
 
   const handleClear = useCallback(() => onChange(''), [onChange])
   const normalizeScannedValue = useCallback((scannedValue: string): string => {
@@ -355,52 +420,16 @@ export function AddressInputPanel({
 
     return withoutChainId
   }, [])
-  const stopQrScanStream = useCallback(() => {
-    if (qrScanStream) {
-      qrScanStream.getTracks().forEach((track) => track.stop())
-    }
-    setQrScanStream(null)
-  }, [qrScanStream])
-
-  const handleOpenQrScan = useCallback(async () => {
+  const handleOpenQrScan = useCallback(() => {
     setQrScanError(null)
     setIsQrScanOpen(true)
-
-    if (!navigator?.mediaDevices?.getUserMedia) {
-      setQrScanError(t`Camera access is not available in this browser.`)
-      return
-    }
-    if (!window.isSecureContext) {
-      setQrScanError(t`Camera access requires a secure context.`)
-      return
-    }
-
-    try {
-      const preferredStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' } },
-        audio: false,
-      })
-      setQrScanStream(preferredStream)
-    } catch (error) {
-      const name = error instanceof Error ? error.name : ''
-      if (name === 'NotFoundError' || name === 'OverconstrainedError') {
-        try {
-          const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-          setQrScanStream(fallbackStream)
-          return
-        } catch {
-          setQrScanError(t`Camera access was denied or is unavailable.`)
-          return
-        }
-      }
-      setQrScanError(t`Camera access was denied or is unavailable.`)
-    }
-  }, [t])
+    void requestQrScanStream()
+  }, [requestQrScanStream])
 
   const handleCloseQrScan = useCallback(() => {
     setIsQrScanOpen(false)
-    stopQrScanStream()
-  }, [stopQrScanStream])
+    replaceQrScanStream(null)
+  }, [replaceQrScanStream])
   const handleQrScanResult = useCallback(
     (scannedValue: string): boolean => {
       const normalizedValue = normalizeScannedValue(scannedValue)
@@ -418,10 +447,9 @@ export function AddressInputPanel({
       setQrScanError(null)
       onChange(normalizedValue)
       setIsQrScanOpen(false)
-      stopQrScanStream()
       return true
     },
-    [chainId, chainType, normalizeScannedValue, onChange, stopQrScanStream, t],
+    [chainId, chainType, normalizeScannedValue, onChange, t],
   )
 
   //clear warning if target chainId changes and we are now on the right network
@@ -466,12 +494,7 @@ export function AddressInputPanel({
   const isValidRecipient = Boolean(resolvedAddress && !error)
   const shouldAbbreviateAddress = chainType !== 'evm' && isValidRecipient && !isFocused
   const showScanButton = enableQrScan && !isValidRecipient
-  const qrScanTitle =
-    chainType === 'bitcoin'
-      ? t`Scan Bitcoin wallet QR code`
-      : chainType === 'solana'
-        ? t`Scan Solana wallet QR code`
-        : t`Scan wallet QR code`
+  const qrScanTitle = t`Scan QR code`
 
   const abbreviateAddress = useCallback(
     (address: string): string => {
@@ -593,7 +616,9 @@ export function AddressInputPanel({
           isOpen={isQrScanOpen}
           onDismiss={handleCloseQrScan}
           onScan={handleQrScanResult}
+          onPaste={handlePasteFromModal}
           stream={qrScanStream}
+          onRequestStream={requestQrScanStream}
           errorMessage={qrScanError}
           title={qrScanTitle}
           iconUrl={chainType !== 'evm' ? nonEvmLogoUrl : undefined}
