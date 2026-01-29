@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-      
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
