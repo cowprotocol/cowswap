@@ -28,6 +28,7 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
     if (!ultimateOrder) return undefined
 
     const { inputAmount, outputAmount } = getUltimateOrderTradeAmounts(ultimateOrder)
+
     const receiver = ultimateOrder.bridgeOrderFromStore?.recipient ?? ultimateOrder.orderFromStore.receiver
     const owner = ultimateOrder.orderFromStore.owner
 
