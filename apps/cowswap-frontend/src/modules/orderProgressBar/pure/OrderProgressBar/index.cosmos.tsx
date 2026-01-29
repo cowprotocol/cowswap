@@ -59,6 +59,8 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
   },
   quoteBridgeContext: {
     chainName: 'Base',
+    destinationChainId: USDC_BASE.chainId,
+    destinationChainType: 'evm',
     estimatedTime: 8,
     recipient: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
     bridgeFee: CurrencyAmount.fromRawAmount(USDC_BASE, '150000'),

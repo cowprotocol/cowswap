@@ -293,6 +293,10 @@ msgstr "Trade your way - personalize the interface and customize your limit orde
 msgid "Supported networks:"
 msgstr "Supported networks:"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Camera access is not available in this browser."
+msgstr "Camera access is not available in this browser."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "EOA wallets"
 msgstr "EOA wallets"
@@ -475,6 +479,7 @@ msgstr "Surplus"
 msgid "Place multiple orders using the same balance"
 msgstr "Place multiple orders using the same balance"
 
+#: apps/cowswap-frontend/src/common/pure/ClickableAddress/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ClickableAddress/index.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountCard/DefaultAccountContent.tsx
@@ -713,6 +718,14 @@ msgstr "Cancelling order"
 msgid "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
 msgstr "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "View ↗"
+msgstr "View ↗"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Solana address detected. Scan a valid Bitcoin address."
+msgstr "Solana address detected. Scan a valid Bitcoin address."
+
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown Hook"
 msgstr "Unknown Hook"
@@ -761,6 +774,10 @@ msgstr "Pre Hooks"
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Maybe next time"
 msgstr "Maybe next time"
+
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Failed to start camera"
+msgstr "Failed to start camera"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Can't find the pool you're looking for?"
@@ -1019,7 +1036,6 @@ msgstr "pools available to get yield on your assets!"
 #: apps/cowswap-frontend/src/common/pure/ConfirmationModal/ConfirmationModal.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/index.tsx
 msgid "Confirm"
 msgstr "Confirm"
@@ -1034,8 +1050,8 @@ msgid "Unsupported token"
 msgstr "Unsupported token"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
-msgid "is on {chainName} network"
-msgstr "is on {chainName} network"
+#~ msgid "is on {chainName} network"
+#~ msgstr "is on {chainName} network"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
@@ -1107,6 +1123,11 @@ msgstr "Symbol"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "Bridge transaction costs."
 msgstr "Bridge transaction costs."
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "No route available for this pair/amount"
+msgstr "No route available for this pair/amount"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/pure/DeadlineSelector/index.tsx
@@ -1244,6 +1265,10 @@ msgstr "5 Minutes"
 msgid "Share this win!"
 msgstr "Share this win!"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Quote unavailable for this recipient/route"
+msgstr "Quote unavailable for this recipient/route"
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Create Order"
 msgstr "Create Order"
@@ -1360,6 +1385,7 @@ msgstr "Share on Twitter"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "Allows you to choose a destination address for the swap other than the connected one."
 msgstr "Allows you to choose a destination address for the swap other than the connected one."
@@ -1762,6 +1788,10 @@ msgstr "Receiver"
 msgid "You have already claimed this airdrop"
 msgstr "You have already claimed this airdrop"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SmartContractReceiverWarning/index.tsx
+msgid "I confirm this {chainName} address is correct."
+msgstr "I confirm this {chainName} address is correct."
+
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Cancel multiple orders: {ordersCount}"
 msgstr "Cancel multiple orders: {ordersCount}"
@@ -1777,6 +1807,10 @@ msgstr "Read more about limit orders"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Your Safe is not connected with a signer.<0/>To place an order, you must connect using a signer of this Safe."
 msgstr "Your Safe is not connected with a signer.<0/>To place an order, you must connect using a signer of this Safe."
+
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/index.tsx
+msgid "Non EVM prototype mode"
+msgstr "Non EVM prototype mode"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
@@ -1981,6 +2015,10 @@ msgstr "Replaced"
 #~ msgid "dynamic'"
 #~ msgstr "dynamic'"
 
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Camera unavailable"
+msgstr "Camera unavailable"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "MEV Slicer"
 msgstr "MEV Slicer"
@@ -2091,6 +2129,14 @@ msgstr "Error loading price. Try again later."
 msgid "Trying to claim without claim data"
 msgstr "Trying to claim without claim data"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Paste"
+msgstr "Paste"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Scan"
+msgstr "Scan"
+
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 #~ msgstr "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
@@ -2114,7 +2160,6 @@ msgstr "Sign the {operationLabel} with your wallet."
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/RecipientDetailsItem/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-#: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RecipientRow/index.tsx
 msgid "Recipient"
 msgstr "Recipient"
@@ -2122,6 +2167,10 @@ msgstr "Recipient"
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #~ msgid "Swap with {symbol}"
 #~ msgstr "Swap with {symbol}"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Invalid address scanned."
+msgstr "Invalid address scanned."
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.cosmos.tsx
 msgid "Reset USDT allowance to 0 before setting new spending cap"
@@ -2227,6 +2276,10 @@ msgstr "(v)COW token holders are eligible for a fee discount"
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Error connecting"
 msgstr "Error connecting"
+
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Align the QR code in the frame."
+msgstr "Align the QR code in the frame."
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Trade"
@@ -2582,6 +2635,11 @@ msgstr "Partner fee can not be less than 0!"
 msgid "No order history"
 msgstr "No order history"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/RecipientRow/index.tsx
+msgid "Send to wallet"
+msgstr "Send to wallet"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
 msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
@@ -2911,6 +2969,10 @@ msgstr "gas"
 msgid "details"
 msgstr "details"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Enter wallet address"
+msgstr "Enter wallet address"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "TWAP order split into {twapOrderN} parts"
 msgstr "TWAP order split into {twapOrderN} parts"
@@ -2980,6 +3042,11 @@ msgstr "Unknown Source"
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
 msgid "Cancel all"
 msgstr "Cancel all"
+
+#: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/RecipientDetailsItem/index.tsx
+msgid "Destination address"
+msgstr "Destination address"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Add Pre-hook"
@@ -3405,6 +3472,10 @@ msgstr "This could have happened due to the lack of internet or the release of a
 msgid "No open orders"
 msgstr "No open orders"
 
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "No camera found"
+msgstr "No camera found"
+
 #: libs/common-utils/src/tooltips.ts
 #~ msgid "Maximum tokens you'll sell."
 #~ msgstr "Maximum tokens you'll sell."
@@ -3565,6 +3636,11 @@ msgstr "No wallet compatibility information available."
 msgid "submitted a solution"
 msgstr "submitted a solution"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/RecipientRow/index.tsx
+msgid "Send to {nonEvmChainLabel} wallet"
+msgstr "Send to {nonEvmChainLabel} wallet"
+
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/MetamaskTransactionWarning/index.tsx
 msgid "Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to <0>v{VERSION_WHERE_BUG_WAS_FIXED}</0>. Before you sign, please check in your wallet that the transaction is being sent to the network:"
 msgstr "Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to <0>v{VERSION_WHERE_BUG_WAS_FIXED}</0>. Before you sign, please check in your wallet that the transaction is being sent to the network:"
@@ -3623,6 +3699,10 @@ msgstr "My orders <0/>"
 msgid "Trade alert settings info"
 msgstr "Trade alert settings info"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/index.tsx
+msgid "Ends here."
+msgstr "Ends here."
+
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Define custom total time"
 msgstr "Define custom total time"
@@ -3637,6 +3717,11 @@ msgstr "Expected to receive"
 #: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
 msgid "Change trade alert settings here"
 msgstr "Change trade alert settings here"
+
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Requesting camera permission..."
+msgstr "Requesting camera permission..."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "Select input and output"
@@ -3660,6 +3745,11 @@ msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> y
 msgid "This token is not available in your region."
 msgstr "This token is not available in your region."
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Scan QR code"
+msgstr "Scan QR code"
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "No signatures yet"
 msgstr "No signatures yet"
@@ -3669,8 +3759,8 @@ msgid "Start bridging"
 msgstr "Start bridging"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
-msgid "Confirm this is the correct address and that it exists on this chain."
-msgstr "Confirm this is the correct address and that it exists on this chain."
+#~ msgid "Confirm this is the correct address and that it exists on this chain."
+#~ msgstr "Confirm this is the correct address and that it exists on this chain."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "Import at your own risk"
@@ -3894,8 +3984,8 @@ msgstr "first."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "No routes found"
-msgstr "No routes found"
+#~ msgid "No routes found"
+#~ msgstr "No routes found"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
 msgid "for at most"
@@ -3968,6 +4058,11 @@ msgstr "Set your own price"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute your order."
 msgstr "This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute your order."
+
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
+msgid "Confirm recipient to swap"
+msgstr "Confirm recipient to swap"
 
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "12 Hours"
@@ -4183,6 +4278,10 @@ msgstr "Now"
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Mooove between <0/> any chain, hassle-free"
 msgstr "Mooove between <0/> any chain, hassle-free"
+
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Scans locally in your browser. Nothing is uploaded."
+msgstr "Scans locally in your browser. Nothing is uploaded."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
@@ -4680,6 +4779,10 @@ msgstr "Pool details"
 msgid "Slippage adjusted to {slippageBpsPercentage}% to ensure quick execution"
 msgstr "Slippage adjusted to {slippageBpsPercentage}% to ensure quick execution"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Camera access requires a secure context."
+msgstr "Camera access requires a secure context."
+
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Receive surplus of your order"
@@ -4724,6 +4827,10 @@ msgstr "This is the cost of settling your order on-chain, including gas and any 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "more signature is"
 msgstr "more signature is"
+
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Turn on flashlight"
+msgstr "Turn on flashlight"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower minimal slippage (instead of {minEthFlowSlippageToSignificant}% minimum)"
@@ -5213,6 +5320,10 @@ msgstr "The order will start when it is validated and executed in your Safe."
 msgid "Confirm with your wallet"
 msgstr "Confirm with your wallet"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Bitcoin address detected. Scan a valid Solana address."
+msgstr "Bitcoin address detected. Scan a valid Solana address."
+
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 #~ msgid "Swaps just got smarter"
 #~ msgstr "Swaps just got smarter"
@@ -5331,6 +5442,11 @@ msgstr "Canceling your order"
 msgid "{solversLength} out of {totalSolvers} solvers"
 msgstr "{solversLength} out of {totalSolvers} solvers"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Camera access was denied or is unavailable."
+msgstr "Camera access was denied or is unavailable."
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -5446,6 +5562,10 @@ msgstr "Fee discount"
 msgid "Allow CoW Swap to use your <0/>"
 msgstr "Allow CoW Swap to use your <0/>"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+msgid "Invalid {chainLabel} address scanned, please try again."
+msgstr "Invalid {chainLabel} address scanned, please try again."
+
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "mo"
 msgstr "mo"
@@ -5462,6 +5582,10 @@ msgstr "Wrapping"
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/index.tsx
 msgid "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
 msgstr "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
+
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Switch camera"
+msgstr "Switch camera"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
@@ -5597,6 +5721,10 @@ msgstr "is required"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Operation in progress!"
 msgstr "Operation in progress!"
+
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Camera permission denied"
+msgstr "Camera permission denied"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Request is being rate limited"
@@ -5827,6 +5955,10 @@ msgstr "Pending execution"
 #~ msgid "By clicking Confirm, you acknowledge that:"
 #~ msgstr "By clicking Confirm, you acknowledge that:"
 
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Turn off flashlight"
+msgstr "Turn off flashlight"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Place TWAP order"
 msgstr "Place TWAP order"
@@ -5835,6 +5967,7 @@ msgstr "Place TWAP order"
 msgid "Reload page"
 msgstr "Reload page"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Enter a valid recipient"
 msgstr "Enter a valid recipient"
@@ -6119,6 +6252,10 @@ msgstr "Longer limit orders - place orders for up to a year."
 msgid "User rejected signing the cancellation"
 msgstr "User rejected signing the cancellation"
 
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
+msgid "Unable to toggle flashlight."
+msgstr "Unable to toggle flashlight."
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
 msgstr "Loading {accountProxyLabel}"
@@ -6174,6 +6311,7 @@ msgstr "Simulate"
 msgid "Start time"
 msgstr "Start time"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 msgid "Clear"
 msgstr "Clear"
@@ -6440,9 +6578,11 @@ msgstr "Back home"
 msgid "Refund started"
 msgstr "Refund started"
 
+#: apps/cowswap-frontend/src/common/pure/QrScanModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ToggleArrow/ToggleArrow.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/index.tsx
 msgid "Close"
 msgstr "Close"
 

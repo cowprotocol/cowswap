@@ -24,6 +24,7 @@ import {
   SwapResultContext,
 } from 'modules/bridge/types'
 
+import { getChainType } from 'common/chains/nonEvm'
 import type { SolverCompetition } from 'common/types/soverCompetition'
 
 import { useBridgeOrderOutputToken } from './useBridgeOrderOutputToken'
@@ -193,6 +194,8 @@ export function useSwapAndBridgeContext(
 
     const quoteBridgeContext: QuoteBridgeContext = {
       chainName: destChainData.label,
+      destinationChainId: destChainData.id,
+      destinationChainType: getChainType(destChainData.id),
       bridgeFee,
       estimatedTime: null,
       recipient: crossChainOrder.bridgingParams.recipient,

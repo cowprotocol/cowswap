@@ -10,7 +10,7 @@ import { Connector } from '@web3-react/types'
 
 import { parseChainId } from '../../utils/parseChainId'
 
-import type { MetaMaskSDK as _MetaMaskSDK, MetaMaskSDKOptions as _MetaMaskSDKOptions, SDKProvider } from '@metamask/sdk'
+import type { MetaMaskSDK as _MetaMaskSDK, MetaMaskSDKOptions as _MetaMaskSDKOptions } from '@metamask/sdk'
 
 /**
  * MetaMaskSDK options.
@@ -50,7 +50,7 @@ export interface MetaMaskSDKConstructorArgs {
  */
 export class MetaMaskSDK extends Connector {
   private sdk?: _MetaMaskSDK
-  provider?: SDKProvider = undefined
+  public provider?: Provider = undefined
   private readonly options: MetaMaskSDKOptions
   private eagerConnection?: Promise<void>
 
@@ -78,9 +78,10 @@ export class MetaMaskSDK extends Connector {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private async isConnected() {
     try {
-      if (this.provider?.isConnected?.() === true) {
+      const provider = this.provider as Provider & { isConnected?: () => boolean }
+      if (provider?.isConnected?.() === true) {
         if (this.sdk?.isExtensionActive() === true) {
-          const accounts = ((await this.provider?.request({ method: 'eth_accounts' })) ?? []) as string[]
+          const accounts = ((await provider?.request({ method: 'eth_accounts' })) ?? []) as string[]
           return accounts.length > 0
         }
 
@@ -112,7 +113,7 @@ export class MetaMaskSDK extends Connector {
         await this.sdk.init()
       }
 
-      this.provider = this.sdk.getProvider()!
+      this.provider = this.sdk.getProvider() as unknown as Provider
 
       this.provider.on('connect', (({ chainId }: ProviderConnectInfo): void => {
         this.actions.update({ chainId: parseChainId(chainId) })
@@ -269,7 +270,7 @@ export class MetaMaskSDK extends Connector {
 
     const chainIdHex = `0x${desiredChainId.toString(16)}`
     this.provider
-      .request<void>({
+      .request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: chainIdHex }],
       })
@@ -281,7 +282,7 @@ export class MetaMaskSDK extends Connector {
         if (originalError.code === 4902 && desiredChain !== undefined) {
           if (!this.provider) throw new NoMetaMaskSDKError()
           // if we're here, we can try to add a new network
-          return this.provider.request<void>({
+          return this.provider.request({
             method: 'wallet_addEthereumChain',
             params: [{ ...desiredChain, chainId: chainIdHex }],
           })
