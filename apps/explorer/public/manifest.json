@@ -1,7 +1,7 @@
 {
   "background_color": "#ffffff",
   "display": "standalone",
-  "homepage_url": "https://explorer.cow.fi/",
+  "homepage_url": "https://explorer.cow.fi",
   "description": "CoW Explorer is a blockchain explorer for the CoW Protocol.",
   "icons": [
     {
