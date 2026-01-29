@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/core",
-  "version": "1.11.0",
+  "version": "2.0.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -32,7 +32,7 @@
     "@safe-global/protocol-kit": "^1.2.0",
     "@safe-global/types-kit": "^3.0.0",
     "ethers": "5.7.2",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "localforage": "^1.10.0",
     "qs": "^6.14.1"
   },

@@ -13,9 +13,7 @@ interface Web3ProviderProps {
   children: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Web3Provider({ children }: Web3ProviderProps) {
+export function Web3Provider({ children }: Web3ProviderProps): React.ReactNode {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cow-fi",
-  "version": "1.32.0",
+  "version": "2.0.0",
   "description": "CoW DAO website",
   "main": "index.js",
   "author": "",
@@ -67,7 +67,7 @@
     "d3": "^7.8.1",
     "date-fns": "^2.29.3",
     "exponential-backoff": "^3.1.1",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "launchdarkly-react-client-sdk": "^3.0.4",
     "next": "15.2.8",
     "polished": "^4.0.5",

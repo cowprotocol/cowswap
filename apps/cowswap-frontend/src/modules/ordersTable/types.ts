@@ -1,5 +1,4 @@
-import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import type { Command } from '@cowprotocol/types'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import type { Currency, Price, Token } from '@uniswap/sdk-core'
@@ -64,13 +63,11 @@ export interface OrderActions {
 
 export interface OrdersTableState {
   currentTabId: OrderTabId
-  isWalletConnected: boolean
   isSafeViaWc: boolean
   displayOrdersOnlyForSafeApp: boolean
   orderType: TabOrderTypes
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
   tabs: TabParams[]
-  chainId: SupportedChainId
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]
   hasHydratedOrders: boolean

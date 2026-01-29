@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-hooks",
-  "version": "1.14.0",
+  "version": "2.0.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -37,7 +37,7 @@
     "@web3-react/core": "^8.2.3",
     "copy-to-clipboard": "^3.2.0",
     "ethers": "5.7.2",
-    "jotai": "2.2.0",
+    "jotai": "2.16.2",
     "launchdarkly-react-client-sdk": "^3.0.4",
     "ms.macro": "^2.0.0",
     "qs": "^6.14.1",

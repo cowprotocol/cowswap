@@ -12,6 +12,7 @@ export default {
   setupFilesAfterEnv: ['./jest.setup.ts'],
   setupFiles: ['dotenv/config'],
   transformIgnorePatterns: [
-    '/node_modules/(?!(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|@wagmi/connectors|@wagmi/core|viem)/)',
+    '/node_modules/.pnpm/(?!.*(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem))',
+    '/node_modules/(?!(\\.pnpm|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem))',
   ],
 }
