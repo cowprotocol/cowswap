@@ -172,6 +172,8 @@ function useERC1155Uri(
 
 function useERC721Contract(address: string | undefined): Erc721 | undefined {
   const chainId = useWalletChainId()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
   const { data } = useSWR(
@@ -184,6 +186,8 @@ function useERC721Contract(address: string | undefined): Erc721 | undefined {
 
 function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
   const chainId = useWalletChainId()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
   const { data } = useSWR(

@@ -1,10 +1,9 @@
 {
   "name": "@cowprotocol/events",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "type": "commonjs",
   "description": "CoW Swap events",
   "main": "./src/index.ts",
-  "private": true,
   "exports": {
     ".": {
       "types": "./src/index.ts",

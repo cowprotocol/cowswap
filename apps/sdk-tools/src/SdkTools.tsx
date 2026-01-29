@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { COMPOSABLE_COW } from '@cowprotocol/cow-sdk'
 import {
@@ -145,9 +145,7 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function IsValid({ isValid }: { isValid: IsValidResult }) {
+function IsValid({ isValid }: { isValid: IsValidResult }): ReactNode {
   if (isValid.isValid) {
     return <span style={{ color: 'green' }}>true</span>
   }
@@ -155,16 +153,13 @@ function IsValid({ isValid }: { isValid: IsValidResult }) {
   return <span style={{ color: 'red' }}>false: {isValid.reason}</span>
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function BooleanValue({ value }: { value: boolean }) {
+function BooleanValue({ value }: { value: boolean }): ReactNode {
   return <span style={{ color: value ? 'green' : 'red' }}>{Boolean(value).toString()}</span>
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SdkTools() {
+// eslint-disable-next-line max-lines-per-function
+export function SdkTools(): ReactNode {
   const [handler, setHandler] = React.useState('0x6cF1e9cA41f7611dEf408122793c358a3d11E5a5')
   const [salt, setSalt] = React.useState('0x000000000000000000000000000000000000000000000000000000192a56162a')
   const [staticInput, setStaticInput] = React.useState(

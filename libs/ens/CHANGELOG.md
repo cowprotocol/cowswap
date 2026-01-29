@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.7.0...ens-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/cowswap-abis bumped to 2.0.0
+    * @cowprotocol/wallet-provider bumped to 2.0.0
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.6.0...ens-v1.7.0) (2025-11-24)
 
 

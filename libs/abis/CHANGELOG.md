@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v1.2.3...cowswap-abis-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
 ## [1.2.3](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v1.2.2...cowswap-abis-v1.2.3) (2025-08-12)
 
 
