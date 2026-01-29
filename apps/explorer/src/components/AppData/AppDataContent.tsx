@@ -27,6 +27,7 @@ export function AppDataContent({ appData, fullAppData, showDecodedAppData }: App
       return (
         <Notification type="error" message="Error when getting metadata info." closable={false} appendMessage={false} />
       )
+
     return (
       <RowWithCopyButton
         textToCopy={appDataString}
