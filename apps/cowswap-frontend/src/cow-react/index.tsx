@@ -76,7 +76,6 @@ export function Main(): ReactNode {
 
 function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-
   const { standaloneMode } = useInjectedWidgetParams()
 
   return (
