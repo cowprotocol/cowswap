@@ -164,7 +164,7 @@ export function NetworkBridgeBanner(): ReactNode {
         <LinkOutToBridge href={bridge}>
           <BodyText color={textColor}>
             <L2Icon src={logoUrl} />
-            <AutoRow>
+            <AutoRow gap="5px">
               <Header>
                 <Trans>{label} token bridge</Trans>
               </Header>
