@@ -6,13 +6,17 @@
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "inputs": ["src", "patches", "public", "robots", "dotEnv", "^production"],
+      "namedInputs": {
+        "src": ["{projectRoot}/src/**/*"],
+        "patches": ["{projectRoot}/patches/*"],
+        "public": ["{projectRoot}/public/**/*"],
+        "robots": ["{projectRoot}/robots/**/*"],
+        "dotEnv": ["{projectRoot}/.env(*.)"]
+      },
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
-      "dependsOn": [
-        "i18n"
-      ],
+      "dependsOn": ["i18n"],
       "options": {
         "outputPath": "build/cowswap"
       },
@@ -73,22 +77,16 @@
     },
     "ipfs": {
       "executor": "nx:run-commands",
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "options": {
         "command": "npx ipfs-deploy build/cowswap -p pinata -O"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "serve-static": {
@@ -99,18 +97,12 @@
     },
     "i18n": {
       "executor": "nx:run-commands",
-      "dependsOn": [
-        "i18n:extract"
-      ],
+      "dependsOn": ["i18n:extract"],
       "options": {
         "command": "npx lingui compile"
       },
-      "inputs": [
-        "{projectRoot}/src/locales/*.po"
-      ],
-      "outputs": [
-        "{projectRoot}/src/locales/*.js"
-      ],
+      "inputs": ["{projectRoot}/src/locales/*.po"],
+      "outputs": ["{projectRoot}/src/locales/*.js"],
       "cache": true
     },
     "i18n:extract": {
@@ -118,13 +110,8 @@
       "options": {
         "command": "cross-env NODE_ENV=development npx lingui extract --locale en-US"
       },
-      "inputs": [
-        "{projectRoot}/src/**/*.{ts,tsx,jsx}",
-        "{workspaceRoot}/libs/*/src/**/*.{ts,tsx,jsx}"
-      ],
-      "outputs": [
-        "{projectRoot}/src/locales/en-US.po"
-      ],
+      "inputs": ["{projectRoot}/src/**/*.{ts,tsx,jsx}", "{workspaceRoot}/libs/*/src/**/*.{ts,tsx,jsx}"],
+      "outputs": ["{projectRoot}/src/locales/en-US.po"],
       "cache": true
     }
   },
