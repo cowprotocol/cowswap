@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/explorer-v3.0.0...explorer-v3.0.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* **explorer:** minor refactor to trigger the build ([72580d9](https://github.com/cowprotocol/cowswap/commit/72580d920d38f2a97bbb61451e5ffc160598620d))
+
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.62.0...explorer-v3.0.0) (2026-01-28)
 
 
