@@ -9,7 +9,6 @@
       "inputs": ["src", "patches", "public", "robots", "dotEnv", "^production"],
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
-      "dependsOn": ["i18n"],
       "options": {
         "outputPath": "build/cowswap"
       },
