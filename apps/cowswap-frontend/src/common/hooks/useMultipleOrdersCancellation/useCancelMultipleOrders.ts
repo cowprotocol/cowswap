@@ -10,6 +10,8 @@ import { orderBookApi } from 'cowSdk'
 import { CancellableOrder, isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promise<void> {
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
 

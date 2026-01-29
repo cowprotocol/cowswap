@@ -29,6 +29,7 @@
     "@cowprotocol/cow-sdk": "~7.3.1",
     "@ethersproject/providers": "5.7.0",
     "@safe-global/api-kit": "^4.0.1",
+    "@safe-global/protocol-kit": "^1.2.0",
     "@safe-global/types-kit": "^3.0.0",
     "ethers": "5.7.2",
     "jotai": "2.16.2",

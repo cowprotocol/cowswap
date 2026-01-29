@@ -31,6 +31,7 @@
     "@ethersproject/abstract-provider": "5.7.0",
     "@ethersproject/properties": "5.7.0",
     "@ethersproject/providers": "5.7.0",
+    "@ethersproject/bignumber": "5.7.0",
     "@lingui/react": "^5.4.1",
     "@web3-react/core": "^8.2.3",
     "copy-to-clipboard": "^3.2.0",
@@ -43,7 +44,10 @@
     "react-router": "7.5.2",
     "styled-components": "5.3.11",
     "swr": "^2.3.3",
-    "timeago.js": "^4.0.2"
+    "timeago.js": "^4.0.2",
+    "viem": "^2.42.1",
+    "@wagmi/core": "^3.1.0",
+    "wagmi": "^3.1.0"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.0",

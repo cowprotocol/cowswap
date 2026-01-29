@@ -2,21 +2,21 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HttpsString } from '@cowprotocol/cow-sdk'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-const INFURA_KEY = process.env.REACT_APP_INFURA_KEY || '2af29cd5ac554ae3b8d991afe1ba4b7d' // Default rate-limited infura key (should be overridden, not reliable to use)
+const INFURA_KEY = process.env['REACT_APP_INFURA_KEY'] || '2af29cd5ac554ae3b8d991afe1ba4b7d' // Default rate-limited infura key (should be overridden, not reliable to use)
 
 const RPC_URL_ENVS: Record<SupportedChainId, HttpsString | undefined> = {
-  [SupportedChainId.MAINNET]: (process.env.REACT_APP_NETWORK_URL_1 as HttpsString) || undefined,
-  [SupportedChainId.BNB]: (process.env.REACT_APP_NETWORK_URL_56 as HttpsString) || undefined,
-  [SupportedChainId.GNOSIS_CHAIN]: (process.env.REACT_APP_NETWORK_URL_100 as HttpsString) || undefined,
-  [SupportedChainId.POLYGON]: (process.env.REACT_APP_NETWORK_URL_137 as HttpsString) || undefined,
-  [SupportedChainId.LENS]: (process.env.REACT_APP_NETWORK_URL_232 as HttpsString) || undefined,
-  [SupportedChainId.BASE]: (process.env.REACT_APP_NETWORK_URL_8453 as HttpsString) || undefined,
-  [SupportedChainId.PLASMA]: (process.env.REACT_APP_NETWORK_URL_9745 as HttpsString) || undefined,
-  [SupportedChainId.ARBITRUM_ONE]: (process.env.REACT_APP_NETWORK_URL_42161 as HttpsString) || undefined,
-  [SupportedChainId.AVALANCHE]: (process.env.REACT_APP_NETWORK_URL_43114 as HttpsString) || undefined,
-  [SupportedChainId.INK]: (process.env.REACT_APP_NETWORK_URL_57073 as HttpsString) || undefined,
-  [SupportedChainId.LINEA]: (process.env.REACT_APP_NETWORK_URL_59144 as HttpsString) || undefined,
-  [SupportedChainId.SEPOLIA]: (process.env.REACT_APP_NETWORK_URL_11155111 as HttpsString) || undefined,
+  [SupportedChainId.MAINNET]: (process.env['REACT_APP_NETWORK_URL_1'] as HttpsString) || undefined,
+  [SupportedChainId.BNB]: (process.env['REACT_APP_NETWORK_URL_56'] as HttpsString) || undefined,
+  [SupportedChainId.GNOSIS_CHAIN]: (process.env['REACT_APP_NETWORK_URL_100'] as HttpsString) || undefined,
+  [SupportedChainId.POLYGON]: (process.env['REACT_APP_NETWORK_URL_137'] as HttpsString) || undefined,
+  [SupportedChainId.LENS]: (process.env['REACT_APP_NETWORK_URL_232'] as HttpsString) || undefined,
+  [SupportedChainId.BASE]: (process.env['REACT_APP_NETWORK_URL_8453'] as HttpsString) || undefined,
+  [SupportedChainId.PLASMA]: (process.env['REACT_APP_NETWORK_URL_9745'] as HttpsString) || undefined,
+  [SupportedChainId.ARBITRUM_ONE]: (process.env['REACT_APP_NETWORK_URL_42161'] as HttpsString) || undefined,
+  [SupportedChainId.AVALANCHE]: (process.env['REACT_APP_NETWORK_URL_43114'] as HttpsString) || undefined,
+  [SupportedChainId.INK]: (process.env['REACT_APP_NETWORK_URL_57073'] as HttpsString) || undefined,
+  [SupportedChainId.LINEA]: (process.env['REACT_APP_NETWORK_URL_59144'] as HttpsString) || undefined,
+  [SupportedChainId.SEPOLIA]: (process.env['REACT_APP_NETWORK_URL_11155111'] as HttpsString) || undefined,
 }
 
 const DEFAULT_RPC_URL: Record<SupportedChainId, { url: HttpsString; usesInfura: boolean }> = {
