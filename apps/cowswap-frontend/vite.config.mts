@@ -140,6 +140,12 @@ export default defineConfig(({ mode }) => {
         // force esm usage for misconfigured deps' package.json (e.g. @safe-global/safe-apps-sdk)
         mainFields: ['exports', 'module', 'main'],
       },
+      include: [
+        '@walletconnect/ethereum-provider',
+        '@walletconnect/universal-provider',
+        '@walletconnect/utils',
+        '@walletconnect/sign-client',
+      ],
     },
 
     resolve: {

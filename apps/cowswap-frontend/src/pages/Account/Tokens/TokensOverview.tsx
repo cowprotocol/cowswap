@@ -86,6 +86,8 @@ export default function TokensOverview(): ReactNode {
   useScrollToTop()
 
   const { chainId, account } = useWalletInfo()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const { selectedView, isMenuOpen, toggleMenu, selectView, menuRef } = useTokensView()
   const [page, setPage] = useState<number>(1)
