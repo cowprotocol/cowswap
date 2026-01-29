@@ -85,7 +85,7 @@
     "@sentry/webpack-plugin": "^2.10.0",
     "@swc/helpers": "~0.5.2",
     "@types/hdkey": "^2.0.1",
-    "@walletconnect/ethereum-provider": "^2.18.0",
+    "@walletconnect/ethereum-provider": "^2.21.9",
     "@walletconnect/types": "2.17.3",
     "@web3-react/eip1193": "^8.2.3",
     "@web3-react/empty": "^8.2.3",
