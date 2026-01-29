@@ -1,8 +1,8 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
-import { ButtonPrimary, ButtonSecondary, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSecondary, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
@@ -12,19 +12,48 @@ import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { REFERRAL_HOW_IT_WORKS_URL } from 'modules/affiliate/config/constants'
-import { getIncomingIneligibleCode } from 'modules/affiliate/lib/ineligible'
+import { bffAffiliateApi } from 'modules/affiliate/api'
+import { getIncomingIneligibleCode } from 'modules/affiliate/lib/affiliate-program-utils'
 import { useReferral } from 'modules/affiliate/model/hooks/useReferral'
 import { useReferralActions } from 'modules/affiliate/model/hooks/useReferralActions'
+import { TraderStatsResponse } from 'modules/affiliate/model/types'
 import { ReferralIneligibleCopy } from 'modules/affiliate/ui/ReferralIneligibleCopy'
+import {
+  Badge,
+  CardHeader,
+  CardTitle,
+  ClaimValue,
+  CodeBadge,
+  DonutValue,
+  HeroActions,
+  HeroCard,
+  HeroContent,
+  HeroSubtitle,
+  HeroTitle,
+  InfoItem,
+  InfoList,
+  InlineActions,
+  InlineNote,
+  LinkedHeader,
+  ReferralTermsFaqLinks,
+  RewardsCol1Card,
+  RewardsCol2Card,
+  RewardsCol3Card,
+  RewardsDonut,
+  RewardsMetricItem,
+  RewardsMetricsList,
+  RewardsMetricsRow,
+  RewardsThreeColumnGrid,
+  RewardsWrapper,
+} from 'modules/affiliate/ui/shared'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
-import { Card, ExtLink } from 'pages/Account/styled'
+import { Card } from 'pages/Account/styled'
 
 const DEFAULT_REWARDS_TARGET = 50_000
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function, complexity
 export default function AccountMyRewards() {
   const { i18n } = useLingui()
   const { account } = useWalletInfo()
@@ -32,21 +61,90 @@ export default function AccountMyRewards() {
   const referral = useReferral()
   const referralActions = useReferralActions()
   const navigateBack = useNavigateBack()
+  const [traderStats, setTraderStats] = useState<TraderStatsResponse | null>(null)
 
   const isConnected = Boolean(account)
-  const isIneligible = referral.wallet.status === 'ineligible' && isConnected
-  const isLinked = referral.wallet.status === 'linked'
-  const traderCode = isLinked
-    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (referral as any).wallet.code
-    : (referral.savedCode ?? (referral.verification.kind === 'valid' ? referral.verification.code : undefined))
-  const traderHasCode = Boolean(traderCode)
   const incomingIneligibleCode = getIncomingIneligibleCode(referral.incomingCode, referral.verification)
 
-  const rewardsProgress = 0
-  const rewardsProgressPercent = Math.min(100, Math.round((rewardsProgress / DEFAULT_REWARDS_TARGET) * 100))
-  const linkedSinceLabel = '--'
-  const rewardsEndLabel = '--'
+  const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
+  const compactFormatter = useMemo(
+    () => new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1 }),
+    [],
+  )
+  const formatUsd = useCallback(
+    (value: number | null | undefined) =>
+      value === null || value === undefined ? '-' : `$${compactFormatter.format(value)}`,
+    [compactFormatter],
+  )
+  const formatUsdc = useCallback(
+    (value: number | null | undefined) =>
+      value === null || value === undefined ? '-' : `${compactFormatter.format(value)} USDC`,
+    [compactFormatter],
+  )
+  const formatNumber = useCallback(
+    (value: number | null | undefined) => (value === null || value === undefined ? '-' : numberFormatter.format(value)),
+    [numberFormatter],
+  )
+
+  useEffect(() => {
+    let cancelled = false
+
+    if (!account) {
+      setTraderStats(null)
+      return
+    }
+
+    bffAffiliateApi
+      .getTraderStats(account)
+      .then((stats) => {
+        if (cancelled) {
+          return
+        }
+
+        setTraderStats(stats)
+        if (stats?.bound_referrer_code && referral.savedCode !== stats.bound_referrer_code) {
+          referralActions.setSavedCode(stats.bound_referrer_code)
+          referralActions.setWalletState({ status: 'linked', code: stats.bound_referrer_code })
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setTraderStats(null)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [account, referral.savedCode, referralActions])
+
+  const statsReady = Boolean(traderStats)
+  const statsLinkedCode = traderStats?.bound_referrer_code
+  const isLinked = Boolean(statsLinkedCode) || referral.wallet.status === 'linked'
+  const isIneligible = referral.wallet.status === 'ineligible' && isConnected && !statsLinkedCode
+  const traderCode = isConnected
+    ? statsLinkedCode
+      ? statsLinkedCode
+      : isLinked
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (referral as any).wallet.code
+        : (referral.savedCode ?? (referral.verification.kind === 'valid' ? referral.verification.code : undefined))
+    : undefined
+  const traderHasCode = Boolean(traderCode)
+  const triggerVolume = traderStats?.trigger_volume ?? DEFAULT_REWARDS_TARGET
+  const leftToNextRewards = traderStats?.left_to_next_rewards
+  const progressToNextReward =
+    statsReady && leftToNextRewards !== undefined ? Math.max(triggerVolume - leftToNextRewards, 0) : 0
+  const rewardsProgressPercent =
+    statsReady && triggerVolume > 0 ? Math.min(100, Math.round((progressToNextReward / triggerVolume) * 100)) : 0
+  const rewardsProgressLabel = statsReady ? formatUsd(progressToNextReward) : '-'
+  const triggerVolumeLabel = statsReady ? formatUsd(triggerVolume) : '-'
+  const leftToNextRewardLabel = statsReady ? formatUsd(leftToNextRewards) : '-'
+  const totalEarnedLabel = statsReady ? formatUsdc(traderStats?.total_earned) : '-'
+  const claimedLabel = statsReady ? formatUsdc(traderStats?.paid_out) : '-'
+  const nextPayoutLabel = statsReady ? formatNumber(traderStats?.next_payout) : '-'
+  const linkedSinceLabel = formatStatsDate(traderStats?.linked_since)
+  const rewardsEndLabel = formatStatsDate(traderStats?.rewards_end)
 
   const handleOpenRewardsModal = useCallback(() => {
     referralActions.openModal('rewards')
@@ -77,14 +175,7 @@ export default function AccountMyRewards() {
             <Trans>Your wallet is ineligible</Trans>
           </IneligibleTitle>
           <IneligibleSubtitle>
-            <ReferralIneligibleCopy
-              incomingCode={incomingIneligibleCode}
-              howItWorksLink={
-                <ExtLink href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
-                  <Trans>How it works</Trans>
-                </ExtLink>
-              }
-            />
+            <ReferralIneligibleCopy incomingCode={incomingIneligibleCode} />
           </IneligibleSubtitle>
           <IneligibleActions>
             <ButtonPrimary onClick={handleGoBack}>
@@ -119,21 +210,13 @@ export default function AccountMyRewards() {
                 </ButtonPrimary>
               )}
             </HeroActions>
-            <HeroLinks>
-              <ExtLink href="https://cow.fi/legal/cowswap-terms" target="_blank" rel="noopener noreferrer">
-                <Trans>Terms</Trans>
-              </ExtLink>
-              <Separator>•</Separator>
-              <ExtLink href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
-                <Trans>FAQ</Trans>
-              </ExtLink>
-            </HeroLinks>
+            <ReferralTermsFaqLinks />
           </HeroContent>
         </HeroCard>
       ) : (
         <>
-          <RewardsGrid>
-            <CardStack>
+          <RewardsThreeColumnGrid>
+            <RewardsCol1Card>
               <Header>
                 <Title>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</Title>
               </Header>
@@ -154,13 +237,13 @@ export default function AccountMyRewards() {
                   <span>
                     <Trans>Linked since</Trans>
                   </span>
-                  <span>{isLinked ? linkedSinceLabel : '--'}</span>
+                  <span>{isLinked ? linkedSinceLabel : '-'}</span>
                 </InfoItem>
                 <InfoItem>
                   <span>
                     <Trans>Rewards end</Trans>
                   </span>
-                  <span>{isLinked ? rewardsEndLabel : '--'}</span>
+                  <span>{isLinked ? rewardsEndLabel : '-'}</span>
                 </InfoItem>
               </InfoList>
               <InlineActions>
@@ -168,52 +251,58 @@ export default function AccountMyRewards() {
                   <Trans>Edit code</Trans>
                 </ButtonSecondary>
               </InlineActions>
-            </CardStack>
+            </RewardsCol1Card>
 
-            <CardStack>
+            <RewardsCol2Card>
               <CardHeader>
                 <CardTitle>
                   <Trans>Next $10 reward</Trans>
                 </CardTitle>
               </CardHeader>
-              <MetricsRow>
-                <Donut $value={rewardsProgressPercent}>
+              <RewardsMetricsRow>
+                <RewardsMetricsList>
+                  <RewardsMetricItem>
+                    <span>
+                      <Trans>Left to next $10</Trans>
+                    </span>
+                    <strong>{leftToNextRewardLabel}</strong>
+                  </RewardsMetricItem>
+                  <RewardsMetricItem>
+                    <span>
+                      <Trans>Total earned</Trans>
+                    </span>
+                    <strong>{totalEarnedLabel}</strong>
+                  </RewardsMetricItem>
+                  <RewardsMetricItem>
+                    <span>
+                      <Trans>Claimed</Trans>
+                    </span>
+                    <strong>{claimedLabel}</strong>
+                  </RewardsMetricItem>
+                </RewardsMetricsList>
+                <RewardsDonut $value={rewardsProgressPercent}>
                   <DonutValue>
-                    <span>{`$${rewardsProgress.toLocaleString()}`}</span>
+                    <span>{rewardsProgressLabel}</span>
                     <small>
-                      <Trans>of</Trans> ${DEFAULT_REWARDS_TARGET.toLocaleString()}
+                      <Trans>of</Trans> {triggerVolumeLabel}
                     </small>
                   </DonutValue>
-                </Donut>
-                <MetricsList>
-                  <MetricItem>
-                    <span>
-                      <Trans>Eligible volume</Trans>
-                    </span>
-                    <strong>${rewardsProgress.toLocaleString()}</strong>
-                  </MetricItem>
-                  <MetricItem>
-                    <span>
-                      <Trans>Goal</Trans>
-                    </span>
-                    <strong>${DEFAULT_REWARDS_TARGET.toLocaleString()}</strong>
-                  </MetricItem>
-                </MetricsList>
-              </MetricsRow>
-            </CardStack>
+                </RewardsDonut>
+              </RewardsMetricsRow>
+            </RewardsCol2Card>
 
-            <CardStack>
+            <RewardsCol3Card>
               <CardHeader>
                 <CardTitle>
-                  <Trans>Claimable rewards</Trans>
+                  <Trans>Next payout</Trans>
                 </CardTitle>
               </CardHeader>
-              <ClaimValue>0 USDC</ClaimValue>
-              <SmallNote>
+              <ClaimValue>{nextPayoutLabel} USDC</ClaimValue>
+              <InlineNote>
                 <Trans>Paid weekly via airdrop.</Trans>
-              </SmallNote>
-            </CardStack>
-          </RewardsGrid>
+              </InlineNote>
+            </RewardsCol3Card>
+          </RewardsThreeColumnGrid>
 
           <FullWidthCard>
             <Content>
@@ -257,37 +346,18 @@ export default function AccountMyRewards() {
   )
 }
 
-type BadgeTone = 'neutral' | 'info' | 'success' | 'error'
-
-const RewardsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`
-
-const RewardsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-
-  ${Media.upToMedium()} {
-    grid-template-columns: 1fr;
+function formatStatsDate(value?: string): string {
+  if (!value) {
+    return '-'
   }
-`
 
-const HeroCard = styled(Card)`
-  max-width: 520px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-`
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    return '-'
+  }
 
-const HeroContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  align-items: center;
-`
+  return date.toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })
+}
 
 const IneligibleCard = styled(Card)`
   max-width: 640px;
@@ -345,34 +415,6 @@ const IneligibleActions = styled.div`
   }
 `
 
-const HeroTitle = styled.h1`
-  margin: 0;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const HeroSubtitle = styled.p`
-  margin: 0;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const HeroActions = styled.div`
-  display: flex;
-  justify-content: center;
-  min-width: 320px;
-`
-
-const HeroLinks = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const Separator = styled.span`
-  opacity: 0.6;
-`
-
 const Content = styled.div`
   width: 100%;
   display: flex;
@@ -403,135 +445,6 @@ const FullWidthCard = styled(Card)`
   align-items: flex-start;
 `
 
-const CardStack = styled(Card)`
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-`
-
-const CardHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`
-
-const CardTitle = styled.h4`
-  margin: 0;
-  font-size: 16px;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const LinkedHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-`
-
-const CodeBadge = styled.span`
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  color: var(${UI.COLOR_TEXT});
-  font-weight: 600;
-  font-size: 14px;
-`
-
-const Badge = styled.span<{ $tone: BadgeTone }>`
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  background: ${({ $tone }) => {
-    switch ($tone) {
-      case 'success':
-        return `var(${UI.COLOR_SUCCESS_BG})`
-      case 'error':
-        return `var(${UI.COLOR_DANGER_BG})`
-      case 'info':
-        return `var(${UI.COLOR_PRIMARY_OPACITY_10})`
-      default:
-        return `var(${UI.COLOR_PAPER_DARKER})`
-    }
-  }};
-  color: ${({ $tone }) => {
-    switch ($tone) {
-      case 'success':
-        return `var(${UI.COLOR_SUCCESS_TEXT})`
-      case 'error':
-        return `var(${UI.COLOR_DANGER_TEXT})`
-      case 'info':
-        return `var(${UI.COLOR_INFO})`
-      default:
-        return `var(${UI.COLOR_TEXT})`
-    }
-  }};
-`
-
-const InfoList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`
-
-const InfoItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-
-  > span:last-child {
-    color: var(${UI.COLOR_TEXT});
-  }
-`
-
-const InlineActions = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-`
-
-const MetricsRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-`
-
-const MetricsList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`
-
-const MetricItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 13px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-
-  strong {
-    color: var(${UI.COLOR_TEXT});
-    font-size: 16px;
-  }
-`
-
-const ClaimValue = styled.div`
-  font-size: 20px;
-  font-weight: 600;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const SmallNote = styled.p`
-  margin: 0;
-  font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
 const RewardsTable = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -555,46 +468,3 @@ const EmptyTableState = styled.div`
   padding: 16px 0;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
-
-const Donut = styled.div<{ $value: number }>`
-  --size: 90px;
-  --thickness: 10px;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  background: conic-gradient(var(${UI.COLOR_INFO}) ${({ $value }) => $value}%, var(${UI.COLOR_TEXT_OPACITY_10}) 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  flex: 0 0 auto;
-
-  &::after {
-    content: '';
-    width: calc(var(--size) - var(--thickness) * 2);
-    height: calc(var(--size) - var(--thickness) * 2);
-    border-radius: 50%;
-    background: var(${UI.COLOR_PAPER});
-    position: absolute;
-  }
-
-  > div {
-    position: relative;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(${UI.COLOR_TEXT});
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    text-align: center;
-
-    small {
-      font-size: 10px;
-      color: var(${UI.COLOR_TEXT_OPACITY_70});
-      font-weight: 500;
-    }
-  }
-`
-
-const DonutValue = styled.div``

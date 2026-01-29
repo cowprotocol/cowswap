@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useReferral } from './useReferral'
 
-import { isReferralCodeLengthValid } from '../../lib/code'
+import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
 
 export type ReferralModalUiState =
   | 'empty'
@@ -11,7 +11,6 @@ export type ReferralModalUiState =
   | 'unsupported'
   | 'checking'
   | 'invalid'
-  | 'expired'
   | 'valid'
   | 'linked'
   | 'ineligible'
@@ -125,7 +124,6 @@ function resolveVerificationState(
     [verificationKind === 'checking', 'checking'],
     [walletStatus === 'unsupported' && hasCode, 'unsupported'],
     [verificationKind === 'invalid', 'invalid'],
-    [verificationKind === 'expired', 'expired'],
     [verificationKind === 'valid', 'valid'],
     [verificationKind === 'ineligible' || walletStatus === 'ineligible', 'ineligible'],
     [verificationKind === 'error', 'error'],

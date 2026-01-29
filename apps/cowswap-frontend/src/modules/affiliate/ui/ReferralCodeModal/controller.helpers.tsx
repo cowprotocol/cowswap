@@ -25,7 +25,7 @@ export function computePrimaryCta(params: {
 
   if (uiState === 'editing') {
     return disabledCta(
-      hasValidLength && hasCode ? t`Save to verify code` : t`Enter a referral code with 6 to 12 characters`,
+      hasValidLength && hasCode ? t`Save to verify code` : t`Enter a referral code with 5 to 20 characters`,
     )
   }
 
@@ -48,7 +48,6 @@ export function computePrimaryCta(params: {
     unsupported: t`Unsupported Network`,
     checking: t`Checking code…`,
     invalid: t`This code is invalid. Try another.`,
-    expired: t`Rewards ended for this code. Try another.`,
   }
 
   const disabledLabel = staticDisabledLabels[uiState]
@@ -85,7 +84,7 @@ function verifyCta(
 
 export function getHelperText(uiState: ReferralModalUiState): string | undefined {
   return uiState === 'empty'
-    ? t`Referral codes contain 6-12 uppercase letters, numbers, dashes, or underscores`
+    ? t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
     : undefined
 }
 
@@ -114,7 +113,7 @@ export function useReferralModalFocus(
       return
     }
 
-    if (uiState === 'invalid' || uiState === 'expired' || uiState === 'editing' || uiState === 'empty') {
+    if (uiState === 'invalid' || uiState === 'editing' || uiState === 'empty') {
       inputRef.current?.focus()
     }
   }, [ctaRef, inputRef, isOpen, uiState])
@@ -206,13 +205,6 @@ function renderRejectionReason(reason?: ReferralIncomingCodeReason): ReactNode {
         <>
           {' '}
           <Trans>It isn’t a valid referral code.</Trans>
-        </>
-      )
-    case 'expired':
-      return (
-        <>
-          {' '}
-          <Trans>Rewards for this code have ended.</Trans>
         </>
       )
     case 'ineligible':

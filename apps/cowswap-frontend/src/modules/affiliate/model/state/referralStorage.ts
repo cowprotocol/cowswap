@@ -5,7 +5,7 @@ import { isProdLike } from '@cowprotocol/common-utils'
 import { reduceRemoveCode, reduceSetSavedCode } from './referralReducers'
 
 import { REFERRAL_STORAGE_KEY } from '../../config/constants'
-import { sanitizeReferralCode } from '../../lib/code'
+import { sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import { ReferralDomainState } from '../types'
 
 type SetReferralState = Dispatch<SetStateAction<ReferralDomainState>>

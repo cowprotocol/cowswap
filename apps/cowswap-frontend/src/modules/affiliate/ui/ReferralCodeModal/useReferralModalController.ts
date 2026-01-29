@@ -15,8 +15,8 @@ import {
 } from './controller.helpers'
 import { FocusableElement, PrimaryCta, ReferralModalContentProps } from './types'
 
-import { isReferralCodeLengthValid } from '../../lib/code'
-import { getIncomingIneligibleCode } from '../../lib/ineligible'
+import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
+import { getIncomingIneligibleCode } from '../../lib/affiliate-program-utils'
 import { useReferralActions } from '../../model/hooks/useReferralActions'
 import { useReferralModalState } from '../../model/hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../model/types'

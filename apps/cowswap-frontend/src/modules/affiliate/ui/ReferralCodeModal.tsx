@@ -9,10 +9,10 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useNavigate } from 'common/hooks/useNavigate'
 import { CowModal } from 'common/pure/Modal'
 
-import { ReferralModalContent } from './ReferralCodeModal/content'
+import { ReferralModalContent } from './ReferralCodeModal/ReferralModalContent'
 import { useReferralModalController } from './ReferralCodeModal/useReferralModalController'
 
-import { isSupportedReferralNetwork } from '../api/referralApi'
+import { isSupportedReferralNetwork } from '../api'
 import { useReferralActions } from '../model/hooks/useReferralActions'
 import { useReferralModalState } from '../model/hooks/useReferralModalState'
 

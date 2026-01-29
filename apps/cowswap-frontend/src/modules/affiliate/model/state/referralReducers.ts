@@ -1,4 +1,4 @@
-import { sanitizeReferralCode } from '../../lib/code'
+import { sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import {
   ReferralDomainState,
   ReferralIncomingCodeReason,

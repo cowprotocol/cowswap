@@ -1481,8 +1481,8 @@ msgid "Please contact CoW Swap support!"
 msgstr "Please contact CoW Swap support!"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
-msgid "UPPERCASE | 6-12 chars | A-Z 0-9 - _"
-msgstr "UPPERCASE | 6-12 chars | A-Z 0-9 - _"
+msgid "UPPERCASE | 5-20 chars | A-Z 0-9 - _"
+msgstr "UPPERCASE | 5-20 chars | A-Z 0-9 - _"
 
 #: apps/cowswap-frontend/src/common/containers/CoWAmmBanner/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -4957,8 +4957,8 @@ msgid "Orders not matched after the threshold time are automatically refunded."
 msgstr "Orders not matched after the threshold time are automatically refunded."
 
 #: apps/cowswap-frontend/src/modules/affiliate/ui/ReferralCodeModal/controller.helpers.tsx
-msgid "Enter a referral code with 6 to 12 characters"
-msgstr "Enter a referral code with 6 to 12 characters"
+msgid "Enter a referral code with 5 to 20 characters"
+msgstr "Enter a referral code with 5 to 20 characters"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 msgid "Follow these steps:"
@@ -5282,8 +5282,8 @@ msgstr "FREE order placement and cancellation"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
-msgid "Enter a code with 6-12 characters (A-Z, 0-9, - or _)."
-msgstr "Enter a code with 6-12 characters (A-Z, 0-9, - or _)."
+msgid "Enter a code with 5-20 characters (A-Z, 0-9, - or _)."
+msgstr "Enter a code with 5-20 characters (A-Z, 0-9, - or _)."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No expired orders found"
@@ -6785,8 +6785,8 @@ msgid "Value"
 msgstr "Value"
 
 #: apps/cowswap-frontend/src/modules/affiliate/ui/ReferralCodeModal/controller.helpers.tsx
-msgid "Referral codes contain 6-12 uppercase letters, numbers, dashes, or underscores"
-msgstr "Referral codes contain 6-12 uppercase letters, numbers, dashes, or underscores"
+msgid "Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores"
+msgstr "Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowRewards/index.tsx
 msgid "Your wallet is linked to this referral code."

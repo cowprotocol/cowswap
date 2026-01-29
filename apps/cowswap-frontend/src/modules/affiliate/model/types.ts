@@ -1,31 +1,30 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { AffiliateProgramParams } from '../config/programParams'
+import { AffiliateProgramParams } from '../lib/affiliate-program-utils'
 
 /**
  * Flags how the referral modal was launched:
  * - 'ui': user clicked through our surfaces (header CTA, rewards hub, etc.)
  * - 'deeplink': modal auto-opened from a `?ref=` query
+ * - 'rewards': user visited the rewards dashboard and had no code yet
  */
 export type ReferralModalSource = 'ui' | 'deeplink' | 'rewards'
 
 /**
  * Categorises referral verification failures so UI copy can react:
  * - 'network': request failed or timed out
- * - 'rate-limit': backend rejected due to too many attempts
  * - 'unknown': any other error case we can't classify yet
  */
-export type ReferralVerificationErrorType = 'network' | 'rate-limit' | 'unknown'
-export type ReferralIncomingCodeReason = 'invalid' | 'expired' | 'ineligible'
+export type ReferralVerificationErrorType = 'network' | 'unknown'
+export type ReferralIncomingCodeReason = 'invalid' | 'ineligible'
 
 /**
  * State machine describing the referral code lifecycle:
  * - 'idle': modal hasn't captured a code yet
  * - 'pending': code captured but we still need wallet/network before verifying
  * - 'checking': verification request in flight
- * - 'valid': backend accepted the code; `eligible` + `programActive` indicate next steps
+ * - 'valid': backend accepted the code; `eligible` indicates next steps
  * - 'invalid': backend rejected the code
- * - 'expired': code used to be valid but is no longer eligible
  * - 'linked': wallet already bound to `linkedCode`
  * - 'ineligible': wallet can't use the code; optional `incomingCode` shows what triggered it
  * - 'error': verification failed; includes error type + message for UI feedback
@@ -34,9 +33,8 @@ export type ReferralVerificationStatus =
   | { kind: 'idle' }
   | { kind: 'pending'; code: string }
   | { kind: 'checking'; code: string }
-  | { kind: 'valid'; code: string; eligible: boolean; programActive: boolean; programParams?: AffiliateProgramParams }
+  | { kind: 'valid'; code: string; eligible: boolean; programParams?: AffiliateProgramParams }
   | { kind: 'invalid'; code: string }
-  | { kind: 'expired'; code: string }
   | { kind: 'linked'; code: string; linkedCode: string }
   | { kind: 'ineligible'; code: string; reason: string; incomingCode?: string }
   | { kind: 'error'; code: string; errorType: ReferralVerificationErrorType; message: string }
@@ -91,24 +89,16 @@ export interface ReferralVerificationRequest {
   chainId: SupportedChainId
 }
 
-/**
- * Shape returned by the referral verification endpoint:
- * - code: echoes the code with its validation status and program availability
- * - wallet: indicates referral eligibility plus any linked or rejection details
- */
-export interface ReferralVerificationApiResponse {
-  code: {
-    value: string
-    status: 'valid' | 'invalid' | 'expired'
-    programActive: boolean
-    params?: AffiliateProgramParams
-  }
-  wallet: {
-    eligible: boolean
-    linkedCode?: string
-    ineligibleReason?: string
-  }
+export interface ReferralVerificationResponse {
+  status: number
+  ok: boolean
+  data?: ReferralCodeResponse
+  text: string
 }
+
+/**
+ * Shape returned by the referral verification endpoint.
+ */
 
 export interface WalletReferralStatusRequest {
   account: string
@@ -138,6 +128,32 @@ export interface AffiliateCodeResponse {
   revenueSplitAffiliatePct: number
   revenueSplitTraderPct: number
   revenueSplitDaoPct: number
+}
+
+export interface TraderStatsResponse {
+  trader_address: string
+  bound_referrer_code: string
+  linked_since: string
+  rewards_end: string
+  eligible_volume: number
+  left_to_next_rewards: number
+  trigger_volume: number
+  total_earned: number
+  paid_out: number
+  next_payout: number
+}
+
+export interface AffiliateStatsResponse {
+  affiliate_address: string
+  referrer_code: string
+  total_volume: number
+  trigger_volume: number
+  total_earned: number
+  paid_out: number
+  next_payout: number
+  left_to_next_reward: number
+  active_traders: number
+  total_traders: number
 }
 
 export interface AffiliateCreateRequest {

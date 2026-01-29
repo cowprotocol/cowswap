@@ -4,7 +4,7 @@ import type { CowAnalytics } from '@cowprotocol/analytics'
 
 import { performVerification } from './verificationLogic'
 
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/code'
+import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import { ReferralContextValue, ReferralVerificationStatus, WalletReferralState } from '../types'
 
 interface VerificationParams {
@@ -184,7 +184,9 @@ function resolveAutoVerification(params: ResolveAutoVerificationParams): { code?
 }
 
 function shouldDisableAutoVerification(params: ResolveAutoVerificationParams): boolean {
-  return params.walletStatus === 'linked' || params.verificationKind === 'linked'
+  return (
+    params.walletStatus === 'linked' || params.walletStatus === 'ineligible' || params.verificationKind === 'linked'
+  )
 }
 
 function pickAutoVerificationCandidate(params: ResolveAutoVerificationParams): string | undefined {

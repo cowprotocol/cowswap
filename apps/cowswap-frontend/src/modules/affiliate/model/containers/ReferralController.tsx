@@ -12,7 +12,7 @@ import {
   usePendingVerificationHandler,
 } from './verificationEffects'
 
-import { isSupportedReferralNetwork } from '../../api/referralApi'
+import { isSupportedReferralNetwork } from '../../api'
 import { useReferral } from '../hooks/useReferral'
 import { useReferralWalletSync } from '../hooks/useReferralWalletSync'
 

@@ -7,8 +7,6 @@ import { Trans } from '@lingui/react/macro'
 import { useReferral } from 'modules/affiliate/model/hooks/useReferral'
 import { useReferralActions } from 'modules/affiliate/model/hooks/useReferralActions'
 
-import { Routes } from 'common/constants/routes'
-
 import { RowRewardsContent } from '../../pure/Row/RowRewards'
 
 export function useIsRowRewardsVisible(): boolean {
@@ -37,9 +35,9 @@ export function RowRewards(): ReactNode {
   return (
     <RowRewardsContent
       linkedCode={displayCode}
-      accountLink={displayCode ? `#${Routes.ACCOUNT}` : undefined}
       tooltipContent={tooltipContent}
       onAddCode={!displayCode ? handleOpenModal : undefined}
+      onManageCode={displayCode ? handleOpenModal : undefined}
     />
   )
 }

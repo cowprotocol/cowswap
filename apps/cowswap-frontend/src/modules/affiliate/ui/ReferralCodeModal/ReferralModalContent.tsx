@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
-import { ButtonPrimary, LinkStyledButton, ModalHeader } from '@cowprotocol/ui'
+import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -10,22 +10,17 @@ import { ReferralStatusMessages, getModalTitle } from './ReferralStatusMessages'
 import { Body, Footer, HelperText, ModalContainer, Subtitle, Title } from './styles'
 import { ReferralModalContentProps } from './types'
 
-import { REFERRAL_HOW_IT_WORKS_URL } from '../../config/constants'
-import { getAffiliateProgramCopyValues } from '../../config/programParams'
+import { getAffiliateProgramCopyValues } from '../../lib/affiliate-program-utils'
 import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../model/types'
-import { ReferralIneligibleCopy } from '../ReferralIneligibleCopy'
+import { ReferralHowItWorksLink, ReferralIneligibleCopy } from '../ReferralIneligibleCopy'
 
 export function ReferralModalContent(props: ReferralModalContentProps): ReactNode {
   const { uiState, onPrimaryClick, helperText, primaryCta, onDismiss, inputRef, ctaRef, linkedMessage, hasRejection } =
     props
   const shouldShowForm = uiState !== 'ineligible'
 
-  const howItWorksLink = (
-    <LinkStyledButton as="a" href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
-      <Trans>How it works.</Trans>
-    </LinkStyledButton>
-  )
+  const howItWorksLink = <ReferralHowItWorksLink />
 
   return (
     <ModalContainer>
@@ -102,7 +97,7 @@ function ReferralSubtitle({
   if (uiState === 'ineligible') {
     return (
       <Subtitle>
-        <ReferralIneligibleCopy incomingCode={incomingIneligibleCode} howItWorksLink={howItWorksLink} />
+        <ReferralIneligibleCopy incomingCode={incomingIneligibleCode} />
       </Subtitle>
     )
   }

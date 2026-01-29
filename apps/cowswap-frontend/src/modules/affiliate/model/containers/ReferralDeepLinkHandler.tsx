@@ -8,7 +8,7 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/code'
+import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import { useReferral } from '../hooks/useReferral'
 import { useReferralActions } from '../hooks/useReferralActions'
 import { ReferralContextValue } from '../types'
@@ -100,17 +100,17 @@ interface ProcessReferralParams {
 }
 
 function processReferralCode(params: ProcessReferralParams): void {
-  // Snapshot-driven flow: we decide up front whether to reuse the existing code,
-  // verify the incoming one, or simply persist it so reducers stay side-effect free.
+  // Snapshot-driven flow: we decide up front whether to reuse the existing code or
+  // verify the incoming one. Persistence happens only on successful verification.
   const { sanitized, snapshot, actions, analytics } = params
   const isAlreadyLinked = snapshot.walletStatus === 'linked' || snapshot.verificationKind === 'linked'
+  const isWalletIneligible = snapshot.walletStatus === 'ineligible'
   const isSameAsSaved = snapshot.savedCode ? snapshot.savedCode === sanitized : false
   const hasExistingCode = Boolean(snapshot.savedCode)
   const verificationKind = snapshot.verificationKind
-  const verificationIsRecoverable = !['invalid', 'expired', 'ineligible'].includes(verificationKind)
+  const verificationIsRecoverable = !['invalid', 'ineligible'].includes(verificationKind)
   const hasRestorableCode = hasExistingCode && !isSameAsSaved && verificationIsRecoverable
 
-  actions.setIncomingCode(sanitized)
   actions.openModal('deeplink', { code: sanitized })
 
   if (isAlreadyLinked) {
@@ -118,6 +118,16 @@ function processReferralCode(params: ProcessReferralParams): void {
       category: 'referral',
       action: 'deeplink_discarded',
       label: 'linked_wallet',
+      value: sanitized.length,
+    })
+    return
+  }
+
+  if (isWalletIneligible) {
+    analytics.sendEvent({
+      category: 'referral',
+      action: 'deeplink_discarded',
+      label: 'ineligible_wallet',
       value: sanitized.length,
     })
     return
@@ -135,7 +145,7 @@ function processReferralCode(params: ProcessReferralParams): void {
   }
 
   if (!isSameAsSaved) {
-    actions.setSavedCode(sanitized)
+    actions.setShouldAutoVerify(true)
     analytics.sendEvent({ category: 'referral', action: 'code_saved', label: 'deeplink', value: sanitized.length })
     return
   }

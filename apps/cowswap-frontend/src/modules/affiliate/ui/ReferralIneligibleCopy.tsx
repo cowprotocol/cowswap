@@ -1,14 +1,25 @@
 import { ReactNode } from 'react'
 
+import { LinkStyledButton } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/react/macro'
+
+import { REFERRAL_HOW_IT_WORKS_URL } from '../config/constants'
 
 export interface ReferralIneligibleCopyProps {
   incomingCode?: string
-  howItWorksLink: ReactNode
+}
+
+export function ReferralHowItWorksLink(): ReactNode {
+  return (
+    <LinkStyledButton as="a" href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
+      <Trans>How it works.</Trans>
+    </LinkStyledButton>
+  )
 }
 
 export function ReferralIneligibleCopy(props: ReferralIneligibleCopyProps): ReactNode {
-  const { incomingCode, howItWorksLink } = props
+  const { incomingCode } = props
 
   return (
     <>
@@ -25,7 +36,7 @@ export function ReferralIneligibleCopy(props: ReferralIneligibleCopyProps): Reac
           <Trans>This wallet has already traded on CoW Swap. Referral rewards are for new wallets only.</Trans>{' '}
         </>
       )}
-      {howItWorksLink}
+      <ReferralHowItWorksLink />
     </>
   )
 }

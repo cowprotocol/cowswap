@@ -13,3 +13,8 @@ export const REFERRAL_API_TIMEOUT_MS = 10_000
 
 // TODO: replace placeholder URL once the referral docs are provisioned
 export const REFERRAL_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
+
+export const REFERRAL_REWARDS_CURRENCY = 'USDC'
+
+// TODO: replace with BFF_BASE_URL
+export const REFERRAL_API_BASE_URL = 'http://localhost:3001'

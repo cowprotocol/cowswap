@@ -3,7 +3,7 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary, ButtonSecondary, ButtonSize, HelpTooltip, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSecondary, ButtonSize, HelpTooltip, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -16,17 +16,49 @@ import styled from 'styled-components/macro'
 import CopyHelper from 'legacy/components/Copy'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { createAffiliateCode, getAffiliateCode, verifyReferralCode } from 'modules/affiliate/api/referralApi'
-import { REFERRAL_HOW_IT_WORKS_URL } from 'modules/affiliate/config/constants'
-import { buildAffiliateTypedData } from 'modules/affiliate/lib/typedData'
+import { bffAffiliateApi } from 'modules/affiliate/api'
+import { buildAffiliateTypedData } from 'modules/affiliate/lib/affiliate-program-utils'
+import { AffiliateStatsResponse } from 'modules/affiliate/model/types'
+import {
+  type BadgeTone,
+  Badge,
+  CardHeader,
+  CardTitle,
+  ClaimValue,
+  CodeBadge,
+  DonutValue,
+  RewardsDonut,
+  RewardsCol1Card,
+  RewardsCol2Card,
+  RewardsCol3Card,
+  RewardsMetricItem,
+  RewardsMetricsList,
+  RewardsMetricsRow,
+  RewardsThreeColumnGrid,
+  HeroActions,
+  HeroCard,
+  HeroContent,
+  HeroSubtitle,
+  HeroTitle,
+  InlineActions,
+  InlineNote,
+  InfoItem,
+  InfoList,
+  LinkedHeader,
+  MetaRow,
+  ReferralTermsFaqLinks,
+  RewardsWrapper,
+} from 'modules/affiliate/ui/shared'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useModalState } from 'common/hooks/useModalState'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { CowModal } from 'common/pure/Modal'
-import { CardsLoader, CardsSpinner, Card, ExtLink } from 'pages/Account/styled'
+import { CardsLoader, CardsSpinner } from 'pages/Account/styled'
 
 const QR_SIZE_PX = 220
+const DEFAULT_REWARDS_TARGET = 50_000
+const EMPTY_VALUE_LABEL = '-'
 
 const QR_COLORS: Record<QrColor, { label: string; dark: string; light: string }> = {
   black: { label: 'Black', dark: '#111111', light: '#FFFFFF' },
@@ -56,6 +88,8 @@ export default function AccountAffiliate() {
   const [linkedAt, setLinkedAt] = useState<Date | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [affiliateStats, setAffiliateStats] = useState<AffiliateStatsResponse | null>(null)
+  const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
   const { isModalOpen: isQrOpen, openModal: openQrModal, closeModal: closeQrModal } = useModalState()
   const [qrColor, setQrColor] = useState<QrColor>('navy')
   const [qrPngUrl, setQrPngUrl] = useState<string | null>(null)
@@ -64,7 +98,46 @@ export default function AccountAffiliate() {
 
   const normalizedCode = useMemo(() => normalizeAffiliateCode(inputCode), [inputCode])
   const isCodeValid = useMemo(() => isAffiliateCodeValid(normalizedCode), [normalizedCode])
-  const codeTooltip = t`UPPERCASE | 6-12 chars | A-Z 0-9 - _`
+  const codeTooltip = t`UPPERCASE | 5-20 chars | A-Z 0-9 - _`
+  const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
+  const compactFormatter = useMemo(
+    () => new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1 }),
+    [],
+  )
+  const formatUsdCompact = useCallback(
+    (value: number | null | undefined) =>
+      value === null || value === undefined ? '-' : `$${compactFormatter.format(value)}`,
+    [compactFormatter],
+  )
+  const formatUsdcCompact = useCallback(
+    (value: number | null | undefined) =>
+      value === null || value === undefined ? '-' : `${compactFormatter.format(value)} USDC`,
+    [compactFormatter],
+  )
+  const formatNumber = useCallback(
+    (value: number | null | undefined) => (value === null || value === undefined ? '-' : numberFormatter.format(value)),
+    [numberFormatter],
+  )
+  const formatUpdatedAt = useCallback((value: Date | null) => {
+    if (!value) {
+      return '-'
+    }
+
+    const dateLabel = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'UTC',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(value)
+    const timeLabel = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'UTC',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(value)
+
+    return `${dateLabel} - ${timeLabel} GMT`
+  }, [])
 
   const isConnected = Boolean(account)
   const isSignerAvailable = Boolean(provider)
@@ -174,13 +247,16 @@ export default function AccountAffiliate() {
     if (!account || !isMainnet) {
       setExistingCode(null)
       setLoading(false)
+      setAffiliateStats(null)
+      setStatsUpdatedAt(null)
       return
     }
 
     setLoading(true)
     setErrorMessage(null)
 
-    getAffiliateCode(account)
+    bffAffiliateApi
+      .getAffiliateCode(account)
       .then((response) => {
         if (cancelled) {
           return
@@ -208,6 +284,37 @@ export default function AccountAffiliate() {
       cancelled = true
     }
   }, [account, isMainnet])
+
+  useEffect(() => {
+    let cancelled = false
+
+    if (!account || !isMainnet || !existingCode) {
+      setAffiliateStats(null)
+      setStatsUpdatedAt(null)
+      return
+    }
+
+    bffAffiliateApi
+      .getAffiliateStats(account)
+      .then((stats) => {
+        if (cancelled) {
+          return
+        }
+
+        setAffiliateStats(stats)
+        setStatsUpdatedAt(stats ? new Date() : null)
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setAffiliateStats(null)
+          setStatsUpdatedAt(null)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [account, existingCode, isMainnet])
 
   useEffect(() => {
     if (!showCreateForm || hasEdited || inputCode) {
@@ -243,21 +350,33 @@ export default function AccountAffiliate() {
     setAvailability('checking')
 
     const timer = setTimeout(() => {
-      verifyReferralCode({
-        code: normalizedCode,
-        account: account || '0x0000000000000000000000000000000000000000',
-        chainId,
-      })
+      bffAffiliateApi
+        .verifyReferralCode({
+          code: normalizedCode,
+          account: account || '0x0000000000000000000000000000000000000000',
+          chainId,
+        })
         .then((response) => {
           if (!active) {
             return
           }
 
-          if (response.code.status === 'invalid' && response.code.programActive) {
-            setAvailability('available')
-          } else {
+          if (response.ok) {
             setAvailability('unavailable')
+            return
           }
+
+          if (response.status === 404) {
+            setAvailability('available')
+            return
+          }
+
+          if (response.status === 403) {
+            setAvailability('unavailable')
+            return
+          }
+
+          setAvailability('error')
         })
         .catch(() => {
           if (active) {
@@ -284,7 +403,7 @@ export default function AccountAffiliate() {
     }
 
     if (!isCodeValid) {
-      setErrorMessage(t`Enter a code with 6-12 characters (A-Z, 0-9, - or _).`)
+      setErrorMessage(t`Enter a code with 5-20 characters (A-Z, 0-9, - or _).`)
       return
     }
 
@@ -312,7 +431,7 @@ export default function AccountAffiliate() {
 
       const signedMessage = await signer._signTypedData(typedData.domain, typedData.types, typedData.message)
 
-      const response = await createAffiliateCode({
+      const response = await bffAffiliateApi.createAffiliateCode({
         code: normalizedCode,
         walletAddress: account,
         signedMessage,
@@ -333,7 +452,8 @@ export default function AccountAffiliate() {
       } else if (err.status === 401) {
         setErrorMessage(t`Signature invalid. Please try again.`)
       } else if (err.status === 403) {
-        setErrorMessage(t`Affiliate code disabled.`)
+        setAvailability('unavailable')
+        setErrorMessage(t`That code is unavailable. Try another.`)
       } else if (err.status === 422) {
         setErrorMessage(t`Unsupported network.`)
       } else if (err.status === 400) {
@@ -381,7 +501,7 @@ export default function AccountAffiliate() {
 
   const handleStartConfirm = useCallback(() => {
     if (!isCodeValid) {
-      setErrorMessage(t`Enter a code with 6-12 characters (A-Z, 0-9, - or _).`)
+      setErrorMessage(t`Enter a code with 5-20 characters (A-Z, 0-9, - or _).`)
       return
     }
 
@@ -400,16 +520,30 @@ export default function AccountAffiliate() {
   const canSave = showCreateForm && isCodeValid && availability === 'available' && !submitting
   const showCodeUnavailable = availability === 'unavailable'
   const showInvalidFormat = availability === 'invalid'
-  const referralTarget = 50_000
-  const referralVolume = 0
-  const referralTrafficPercent = Math.min(100, Math.round((referralVolume / referralTarget) * 100))
-  const claimableAmount = 0
-  const hasClaimable = claimableAmount > 0
+  const statsReady = Boolean(affiliateStats)
+  const referralTarget = affiliateStats?.trigger_volume ?? DEFAULT_REWARDS_TARGET
+  const leftToNextReward = affiliateStats?.left_to_next_reward
+
+  const progressToNextReward =
+    statsReady && leftToNextReward !== undefined ? Math.max(referralTarget - leftToNextReward, 0) : 0
+  const referralTrafficPercent =
+    referralTarget > 0 ? Math.min(100, Math.round((progressToNextReward / referralTarget) * 100)) : 0
+
+  const progressToNextRewardLabel = formatUsdCompact(progressToNextReward)
+  const referralTargetLabel = formatUsdCompact(referralTarget)
+
+  const nextPayoutLabel = statsReady ? formatUsdcCompact(affiliateStats?.next_payout) : EMPTY_VALUE_LABEL
+  const totalEarnedLabel = statsReady ? formatUsdcCompact(affiliateStats?.total_earned) : EMPTY_VALUE_LABEL
+  const paidOutLabel = statsReady ? formatUsdcCompact(affiliateStats?.paid_out) : EMPTY_VALUE_LABEL
+  const leftToNextRewardLabel = statsReady ? formatUsdCompact(affiliateStats?.left_to_next_reward) : EMPTY_VALUE_LABEL
+  const totalVolumeLabel = statsReady ? formatUsdCompact(affiliateStats?.total_volume) : EMPTY_VALUE_LABEL
+  const activeReferralsLabel = statsReady ? formatNumber(affiliateStats?.active_traders) : EMPTY_VALUE_LABEL
 
   const showHero = !isConnected || showUnsupported || (isConnected && !isSignerAvailable && !showLinkedFlow)
 
-  const linkedSinceLabel = linkedAt ? formatDate(linkedAt) : '--'
-  const rewardsEndLabel = linkedAt ? formatDate(addDays(linkedAt, 90)) : '--'
+  const linkedSinceLabel = linkedAt ? formatDate(linkedAt) : '-'
+  const rewardsEndLabel = linkedAt ? formatDate(addDays(linkedAt, 90)) : '-'
+  const statsUpdatedLabel = formatUpdatedAt(statsUpdatedAt)
 
   return (
     <RewardsWrapper>
@@ -452,15 +586,7 @@ export default function AccountAffiliate() {
                     </ButtonPrimary>
                   )}
                 </HeroActions>
-                <HeroLinks>
-                  <ExtLink href="https://cow.fi/legal/cowswap-terms" target="_blank" rel="noopener noreferrer">
-                    <Trans>Terms</Trans>
-                  </ExtLink>
-                  <Separator>•</Separator>
-                  <ExtLink href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
-                    <Trans>FAQ</Trans>
-                  </ExtLink>
-                </HeroLinks>
+                <ReferralTermsFaqLinks />
                 {showUnsupported && (
                   <InlineNote>
                     <Trans>Affiliate payouts happen on Ethereum mainnet.</Trans>
@@ -470,14 +596,14 @@ export default function AccountAffiliate() {
             </HeroCard>
           ) : (
             <>
-              <RewardsGrid>
-                <CardStack>
+              <RewardsThreeColumnGrid>
+                <RewardsCol1Card>
                   {showLinkedFlow && existingCode ? (
                     <LinkedBlock>
                       <LinkedHeader>
-                        <LinkedTitle>
+                        <CardTitle>
                           <Trans>Your referral code</Trans>
-                        </LinkedTitle>
+                        </CardTitle>
                         <Badge $tone="success">
                           <Trans>Linked</Trans>
                         </Badge>
@@ -530,9 +656,9 @@ export default function AccountAffiliate() {
                   ) : (
                     <Form>
                       <LabelRow>
-                        <Label>
+                        <CardTitle>
                           <Trans>Create your referral code</Trans>
-                        </Label>
+                        </CardTitle>
                         <MiniAction onClick={handleGenerate} disabled={submitting}>
                           <Trans>generate</Trans>
                         </MiniAction>
@@ -540,7 +666,7 @@ export default function AccountAffiliate() {
                       <HelperText>
                         <Trans>
                           Type or generate a code (subject to availability). Saving locks this code to your wallet and
-                          can't be changed.
+                          can't be changed. Links/codes don't reveal your wallet.
                         </Trans>
                       </HelperText>
                       {!confirming ? (
@@ -561,9 +687,6 @@ export default function AccountAffiliate() {
                             onChange={handleInputChange}
                             disabled={submitting}
                           />
-                          <HelperText>
-                            <Trans>Links/codes don't reveal your wallet.</Trans>
-                          </HelperText>
                           {showCodeUnavailable && (
                             <InlineError>
                               <Trans>This code is taken. Generate another one.</Trans>
@@ -605,82 +728,72 @@ export default function AccountAffiliate() {
                       )}
                     </Form>
                   )}
-                </CardStack>
+                </RewardsCol1Card>
 
-                <CardStack>
+                <RewardsCol2Card>
                   <CardHeader>
                     <CardTitle>
                       <Trans>Your referral traffic</Trans>
                     </CardTitle>
                   </CardHeader>
-                  <MetricsRow>
-                    <Donut $value={referralTrafficPercent}>
-                      <DonutValue>
-                        <span>{`$${referralVolume.toLocaleString()}`}</span>
-                        <small>
-                          <Trans>of</Trans> ${referralTarget.toLocaleString()}
-                        </small>
-                      </DonutValue>
-                    </Donut>
-                    <MetricsList>
-                      <MetricItem>
+                  <RewardsMetricsRow>
+                    <RewardsMetricsList>
+                      <RewardsMetricItem>
                         <span>
                           <Trans>Left to next $10</Trans>
                         </span>
-                        <strong>-</strong>
-                      </MetricItem>
-                      <MetricItem>
+                        <strong>{leftToNextRewardLabel}</strong>
+                      </RewardsMetricItem>
+                      <RewardsMetricItem>
                         <span>
                           <Trans>Total earned</Trans>
                         </span>
-                        <strong>-</strong>
-                      </MetricItem>
-                      <MetricItem>
+                        <strong>{totalEarnedLabel}</strong>
+                      </RewardsMetricItem>
+                      <RewardsMetricItem>
                         <span>
                           <Trans>Claimed</Trans>
                         </span>
-                        <strong>-</strong>
-                      </MetricItem>
-                      <MetricItem>
+                        <strong>{paidOutLabel}</strong>
+                      </RewardsMetricItem>
+                      <RewardsMetricItem>
                         <span>
                           <Trans>Volume referred</Trans>
                         </span>
-                        <strong>-</strong>
-                      </MetricItem>
-                      <MetricItem>
+                        <strong>{totalVolumeLabel}</strong>
+                      </RewardsMetricItem>
+                      <RewardsMetricItem>
                         <span>
                           <Trans>Active referrals</Trans>
                         </span>
-                        <strong>-</strong>
-                      </MetricItem>
-                    </MetricsList>
-                  </MetricsRow>
+                        <strong>{activeReferralsLabel}</strong>
+                      </RewardsMetricItem>
+                    </RewardsMetricsList>
+
+                    <RewardsDonut $value={referralTrafficPercent}>
+                      <DonutValue>
+                        <span>{progressToNextRewardLabel}</span>
+                        <small>
+                          <Trans>of</Trans> {referralTargetLabel}
+                        </small>
+                      </DonutValue>
+                    </RewardsDonut>
+                  </RewardsMetricsRow>
                   <MetaRow>
-                    <Trans>Last updated: --</Trans>
+                    <Trans>Last updated: {statsUpdatedLabel}</Trans>
                   </MetaRow>
-                </CardStack>
-                <CardStack>
+                </RewardsCol2Card>
+                <RewardsCol3Card>
                   <CardHeader>
                     <CardTitle>
-                      <Trans>Claimable rewards</Trans>
+                      <Trans>Next payout</Trans>
                     </CardTitle>
                   </CardHeader>
-                  <ClaimValue>{claimableAmount} USDC</ClaimValue>
-                  <ButtonPrimary disabled={!hasClaimable}>
-                    {hasClaimable ? t`Switch to base & claim` : t`No rewards to claim`}
-                  </ButtonPrimary>
-                </CardStack>
-              </RewardsGrid>
+                  <ClaimValue>{nextPayoutLabel}</ClaimValue>
+                </RewardsCol3Card>
+              </RewardsThreeColumnGrid>
 
-              <FooterLinksCentered>
-                <ExtLink href="https://cow.fi/legal/cowswap-terms" target="_blank" rel="noopener noreferrer">
-                  <Trans>Terms</Trans>
-                </ExtLink>
-                <Separator>•</Separator>
-                <ExtLink href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
-                  <Trans>FAQ</Trans>
-                </ExtLink>
-              </FooterLinksCentered>
+              <ReferralTermsFaqLinks align="center" />
             </>
           )}
 
@@ -747,11 +860,11 @@ function normalizeAffiliateCode(code: string): string {
 }
 
 function isAffiliateCodeValid(code: string): boolean {
-  return /^[A-Z0-9_-]{6,12}$/.test(code)
+  return /^[A-Z0-9_-]{5,20}$/.test(code)
 }
 
 function generateSuggestedCode(): string {
-  const suffix = randomDigits(4)
+  const suffix = randomDigits(6)
   return `COW-${suffix}`
 }
 
@@ -768,71 +881,6 @@ function addDays(date: Date, days: number): Date {
 function formatDate(date: Date): string {
   return date.toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })
 }
-
-type BadgeTone = 'neutral' | 'info' | 'success' | 'error'
-
-const RewardsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`
-
-const RewardsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-
-  ${Media.upToMedium()} {
-    grid-template-columns: 1fr;
-  }
-`
-
-const HeroCard = styled(Card)`
-  max-width: 520px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-`
-
-const HeroContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  align-items: center;
-`
-const HeroTitle = styled.h1`
-  margin: 0;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const HeroSubtitle = styled.p`
-  margin: 0;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const HeroActions = styled.div`
-  display: flex;
-  justify-content: center;
-  min-width: 320px;
-`
-
-const HeroLinks = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const Separator = styled.span`
-  opacity: 0.6;
-`
-
-const InlineNote = styled.p`
-  margin: 0;
-  font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
 
 const Form = styled.div`
   display: flex;
@@ -888,7 +936,7 @@ const Input = styled.input`
 `
 
 const HelperText = styled.span`
-  font-size: 12px;
+  font-size: 13px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
@@ -907,53 +955,11 @@ const LinkedBlock = styled.div`
   gap: 12px;
 `
 
-const LinkedHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-`
-
-const LinkedTitle = styled.h4`
-  margin: 0;
-  font-size: 16px;
-  color: var(${UI.COLOR_TEXT});
-`
-
 const CodeRow = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-`
-
-const CodeBadge = styled.span`
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  color: var(${UI.COLOR_TEXT});
-  font-weight: 600;
-  font-size: 14px;
-`
-
-const InfoList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`
-
-const InfoItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-
-  > span:last-child {
-    color: var(${UI.COLOR_TEXT});
-  }
 `
 
 const ConfirmBlock = styled.div`
@@ -974,156 +980,11 @@ const ConfirmText = styled.p`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
-const InlineActions = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-`
-
 const StatusText = styled.p<{ $variant: 'error' | 'success' }>`
   margin: 0;
   font-size: 14px;
   color: ${({ $variant }) => ($variant === 'error' ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
 `
-
-const FooterLinksCentered = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const CardStack = styled(Card)`
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-`
-
-const CardHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`
-
-const CardTitle = styled.h4`
-  margin: 0;
-  font-size: 16px;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const MetricsRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-`
-
-const MetricsList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`
-
-const MetricItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 13px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-
-  strong {
-    color: var(${UI.COLOR_TEXT});
-    font-size: 16px;
-  }
-`
-
-const MetaRow = styled.p`
-  margin: 0;
-  font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const ClaimValue = styled.div`
-  font-size: 20px;
-  font-weight: 600;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const Badge = styled.span<{ $tone: BadgeTone }>`
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  background: ${({ $tone }) => {
-    switch ($tone) {
-      case 'success':
-        return `var(${UI.COLOR_SUCCESS_BG})`
-      case 'error':
-        return `var(${UI.COLOR_DANGER_BG})`
-      case 'info':
-        return `var(${UI.COLOR_PRIMARY_OPACITY_10})`
-      default:
-        return `var(${UI.COLOR_PAPER_DARKER})`
-    }
-  }};
-  color: ${({ $tone }) => {
-    switch ($tone) {
-      case 'success':
-        return `var(${UI.COLOR_SUCCESS_TEXT})`
-      case 'error':
-        return `var(${UI.COLOR_DANGER_TEXT})`
-      case 'info':
-        return `var(${UI.COLOR_INFO})`
-      default:
-        return `var(${UI.COLOR_TEXT})`
-    }
-  }};
-`
-
-const Donut = styled.div<{ $value: number }>`
-  --size: 90px;
-  --thickness: 10px;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  background: conic-gradient(var(${UI.COLOR_INFO}) ${({ $value }) => $value}%, var(${UI.COLOR_TEXT_OPACITY_10}) 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  flex: 0 0 auto;
-
-  &::after {
-    content: '';
-    width: calc(var(--size) - var(--thickness) * 2);
-    height: calc(var(--size) - var(--thickness) * 2);
-    border-radius: 50%;
-    background: var(${UI.COLOR_PAPER});
-    position: absolute;
-  }
-
-  > div {
-    position: relative;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(${UI.COLOR_TEXT});
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    text-align: center;
-
-    small {
-      font-size: 10px;
-      color: var(${UI.COLOR_TEXT_OPACITY_70});
-      font-weight: 500;
-    }
-  }
-`
-
-const DonutValue = styled.div``
 
 const ModalContent = styled.div`
   padding: 20px;

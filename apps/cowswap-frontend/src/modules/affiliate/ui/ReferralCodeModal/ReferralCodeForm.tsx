@@ -20,7 +20,7 @@ import {
   TagGroup,
 } from './styles'
 
-import { isReferralCodeLengthValid } from '../../lib/code'
+import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
 import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../model/types'
 
@@ -28,7 +28,6 @@ type TrailingIconKind = 'error' | 'lock' | 'pending' | 'success'
 
 const VERIFICATION_ERROR_KINDS: ReadonlySet<ReferralVerificationStatus['kind']> = new Set([
   'invalid',
-  'expired',
   'error',
   'ineligible',
 ])
@@ -187,12 +186,7 @@ function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
 
   // Unsupported network deliberately hides every edit affordance to avoid no-op buttons.
   const isUnsupported = uiState === 'unsupported'
-  const isEditing =
-    uiState === 'editing' ||
-    uiState === 'invalid' ||
-    uiState === 'expired' ||
-    uiState === 'ineligible' ||
-    uiState === 'error'
+  const isEditing = uiState === 'editing' || uiState === 'invalid' || uiState === 'ineligible' || uiState === 'error'
   const isLinked = uiState === 'linked'
   const hasError = VERIFICATION_ERROR_KINDS.has(verification.kind)
   const isInputDisabled = isUnsupported || (!isEditing && uiState !== 'empty')

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useLayoutEffect, useMemo } from 'react'
 
 import { areAddressesEqual } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -26,7 +26,7 @@ export function useReferralWalletSync(params: WalletSyncParams): void {
     return Object.values(ordersMap).some((order) => order?.order.owner && areAddressesEqual(order.order.owner, account))
   }, [account, ordersMap])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!account) {
       actions.setWalletState({ status: 'disconnected' })
       return

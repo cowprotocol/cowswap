@@ -17,6 +17,19 @@ export const Body = styled.div`
   padding: 10px 10px 0;
   gap: 10px;
   overflow-y: auto;
+
+  > img {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    align-self: center;
+  }
+
+  ${Media.upToSmall()} {
+    > img {
+      max-width: 150px;
+    }
+  }
 `
 
 export const Title = styled.h2`

@@ -57,7 +57,7 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
         placeholder={t`ENTER CODE`}
         onChange={onChange}
         disabled={isInputDisabled}
-        maxLength={16}
+        maxLength={20}
         autoComplete="off"
         spellCheck={false}
         onKeyDown={(event) => {

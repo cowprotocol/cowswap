@@ -4,13 +4,16 @@ import { CowAnalytics } from '@cowprotocol/analytics'
 import { isProdLike } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { handleDebugVerification } from './verificationDebug'
-
-import { verifyReferralCode } from '../../api/referralApi'
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/code'
+import { bffAffiliateApi } from '../../api'
 import {
+  isReferralCodeLengthValid,
+  sanitizeReferralCode,
+  type AffiliateProgramParams,
+} from '../../lib/affiliate-program-utils'
+import {
+  ReferralCodeResponse,
   ReferralContextValue,
-  ReferralVerificationApiResponse,
+  ReferralVerificationResponse,
   ReferralVerificationStatus,
   WalletReferralState,
 } from '../types'
@@ -32,6 +35,7 @@ export interface PerformVerificationParams {
   previousVerification?: ReferralVerificationStatus
 }
 
+// eslint-disable-next-line complexity
 export async function performVerification(params: PerformVerificationParams): Promise<void> {
   const context = sanitizeAndValidate(params)
 
@@ -41,35 +45,6 @@ export async function performVerification(params: PerformVerificationParams): Pr
 
   const { sanitizedCode, baseParams } = context
   const { actions, pendingVerificationRef, applyVerificationResult, trackVerifyResult } = baseParams
-  const preserveExisting =
-    Boolean(baseParams.incomingCode) &&
-    shouldPreserveExistingCode(baseParams.previousVerification ?? baseParams.currentVerification, baseParams.savedCode)
-  const restoreExisting = (): void => {
-    // When we have a previously validated code we restore that state instead of
-    // letting the new verification clobber it (invalid deeplinks, transient errors).
-    if (!preserveExisting) {
-      return
-    }
-
-    restoreExistingVerificationState({
-      currentVerification: baseParams.previousVerification ?? baseParams.currentVerification,
-      applyVerificationResult: baseParams.applyVerificationResult,
-    })
-  }
-
-  if (
-    handleDebugVerification({
-      sanitizedCode,
-      actions,
-      applyVerificationResult,
-      trackVerifyResult,
-      pendingVerificationRef,
-      preserveExisting,
-      restoreExisting,
-    })
-  ) {
-    return
-  }
 
   if (!ensurePrerequisites(baseParams)) {
     return
@@ -78,7 +53,7 @@ export async function performVerification(params: PerformVerificationParams): Pr
   const requestId = startVerificationRequest({ sanitizedCode, baseParams })
 
   try {
-    const response = await verifyReferralCode({
+    const response = await bffAffiliateApi.verifyReferralCode({
       code: sanitizedCode,
       account: baseParams.account,
       chainId: baseParams.chainId,
@@ -88,20 +63,42 @@ export async function performVerification(params: PerformVerificationParams): Pr
       return
     }
 
-    handleVerificationResponse({
+    const preserveExisting =
+      Boolean(baseParams.incomingCode) &&
+      shouldPreserveExistingCode(
+        baseParams.previousVerification ?? baseParams.currentVerification,
+        baseParams.savedCode,
+      )
+
+    handleCodeStatusResponse({
       response,
       sanitizedCode,
-      incomingCode: baseParams.incomingCode,
       actions,
       applyVerificationResult,
       trackVerifyResult,
-      savedCode: baseParams.savedCode,
-      currentVerification: baseParams.currentVerification,
-      previousVerification: baseParams.previousVerification,
+      preserveExisting,
+      currentVerification: baseParams.previousVerification ?? baseParams.currentVerification,
     })
     pendingVerificationRef.current = null
   } catch (error) {
-    handleVerificationFailure({ error, sanitizedCode, requestId, baseParams })
+    console.log('📜 LOG > performVerification > error:', error)
+    await new Promise((resolve) => setTimeout(resolve, 5_000)) // artificial delay to limit API spam
+
+    if (pendingVerificationRef.current !== requestId) {
+      return
+    }
+
+    const status = (error as Error & { status?: number }).status
+    const errorType = status ? 'network' : 'unknown'
+    const message = 'Unable to check code right now.'
+
+    applyVerificationResult({ kind: 'error', code: sanitizedCode, errorType, message })
+    trackVerifyResult('error', false, `type=${errorType}`)
+    pendingVerificationRef.current = null
+
+    if (!isProdLike) {
+      console.warn('[Referral] Verification failed', error)
+    }
   }
 }
 
@@ -161,107 +158,6 @@ function startVerificationRequest(params: {
   return requestId
 }
 
-function handleVerificationFailure(params: {
-  error: unknown
-  sanitizedCode: string
-  requestId: number
-  baseParams: PerformVerificationParams
-}): void {
-  const { error, sanitizedCode, requestId, baseParams } = params
-  const { pendingVerificationRef, applyVerificationResult, trackVerifyResult } = baseParams
-
-  if (pendingVerificationRef.current !== requestId) {
-    return
-  }
-
-  const status = (error as Error & { status?: number }).status
-  const errorType = status === 429 ? 'rate-limit' : 'network'
-  const message = errorType === 'rate-limit' ? 'Too many attempts. Try later.' : 'Unable to check code right now.'
-
-  applyVerificationResult({ kind: 'error', code: sanitizedCode, errorType, message })
-  trackVerifyResult('error', false, `type=${errorType}`)
-  pendingVerificationRef.current = null
-
-  if (!isProdLike) {
-    console.warn('[Referral] Verification failed', error)
-  }
-}
-
-function handleVerificationResponse(params: {
-  response: ReferralVerificationApiResponse
-  sanitizedCode: string
-  incomingCode?: string
-  actions: ReferralContextValue['actions']
-  applyVerificationResult: (status: ReferralVerificationStatus, walletState?: WalletReferralState) => void
-  trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
-  savedCode?: string
-  currentVerification: ReferralVerificationStatus
-  previousVerification?: ReferralVerificationStatus
-}): void {
-  const {
-    response,
-    sanitizedCode,
-    incomingCode,
-    actions,
-    applyVerificationResult,
-    trackVerifyResult,
-    savedCode,
-    currentVerification,
-    previousVerification,
-  } = params
-  const linked = sanitizeReferralCode(response.wallet.linkedCode || '')
-  const preserveExisting =
-    Boolean(incomingCode) && shouldPreserveExistingCode(previousVerification ?? currentVerification, savedCode)
-
-  if (linked) {
-    actions.setSavedCode(linked)
-    applyVerificationResult(
-      { kind: 'linked', code: sanitizedCode, linkedCode: linked },
-      { status: 'linked', code: linked },
-    )
-    trackVerifyResult('linked', false)
-    return
-  }
-
-  if (!response.wallet.eligible) {
-    const reason = response.wallet.ineligibleReason || 'This wallet is not eligible for referral rewards.'
-    const sanitizedIncoming = incomingCode ? sanitizeReferralCode(incomingCode) : undefined
-
-    actions.setIncomingCodeReason('ineligible')
-
-    if (preserveExisting) {
-      restoreExistingVerificationState({
-        currentVerification,
-        applyVerificationResult,
-      })
-      trackVerifyResult('ineligible', false, reason)
-      return
-    }
-
-    applyVerificationResult(
-      {
-        kind: 'ineligible',
-        code: sanitizedCode,
-        reason,
-        incomingCode: sanitizedIncoming,
-      },
-      { status: 'ineligible', reason },
-    )
-    trackVerifyResult('ineligible', false, reason)
-    return
-  }
-
-  handleCodeStatusResponse({
-    response,
-    sanitizedCode,
-    actions,
-    applyVerificationResult,
-    trackVerifyResult,
-    preserveExisting,
-    currentVerification: previousVerification ?? currentVerification,
-  })
-}
-
 function shouldPreserveExistingCode(currentVerification: ReferralVerificationStatus, savedCode?: string): boolean {
   if (!savedCode) {
     return false
@@ -271,7 +167,7 @@ function shouldPreserveExistingCode(currentVerification: ReferralVerificationSta
 }
 
 function handleCodeStatusResponse(params: {
-  response: ReferralVerificationApiResponse
+  response: ReferralVerificationResponse
   sanitizedCode: string
   actions: ReferralContextValue['actions']
   applyVerificationResult: (status: ReferralVerificationStatus, walletState?: WalletReferralState) => void
@@ -279,48 +175,31 @@ function handleCodeStatusResponse(params: {
   preserveExisting: boolean
   currentVerification: ReferralVerificationStatus
 }): void {
-  const {
-    response,
-    sanitizedCode,
-    actions,
-    applyVerificationResult,
-    trackVerifyResult,
-    preserveExisting,
-    currentVerification,
-  } = params
-  const programActive = response.code.programActive !== false
+  const { response, sanitizedCode, actions, applyVerificationResult, trackVerifyResult, preserveExisting } = params
+  const { currentVerification } = params
 
-  if (response.code.status === 'invalid') {
-    actions.setIncomingCodeReason('invalid')
+  if (!response.ok) {
+    if (response.status === 404 || response.status === 403) {
+      actions.setIncomingCodeReason('invalid')
 
-    if (preserveExisting) {
-      restoreExistingVerificationState({
-        currentVerification,
-        applyVerificationResult,
-      })
+      if (preserveExisting) {
+        restoreExistingVerificationState({
+          currentVerification,
+          applyVerificationResult,
+        })
+        trackVerifyResult('invalid', false)
+        return
+      }
+
+      applyVerificationResult({ kind: 'invalid', code: sanitizedCode })
       trackVerifyResult('invalid', false)
       return
     }
 
-    applyVerificationResult({ kind: 'invalid', code: sanitizedCode })
-    trackVerifyResult('invalid', false)
-    return
-  }
-
-  if (response.code.status === 'expired' || !programActive) {
-    actions.setIncomingCodeReason('expired')
-
-    if (preserveExisting) {
-      restoreExistingVerificationState({
-        currentVerification,
-        applyVerificationResult,
-      })
-      trackVerifyResult('expired', false)
-      return
-    }
-
-    applyVerificationResult({ kind: 'expired', code: sanitizedCode })
-    trackVerifyResult('expired', false)
+    const errorType = response.status ? 'network' : 'unknown'
+    const message = 'Unable to check code right now.'
+    applyVerificationResult({ kind: 'error', code: sanitizedCode, errorType, message })
+    trackVerifyResult('error', false, `type=${errorType}`)
     return
   }
 
@@ -330,10 +209,30 @@ function handleCodeStatusResponse(params: {
     kind: 'valid',
     code: sanitizedCode,
     eligible: true,
-    programActive,
-    programParams: response.code.params,
+    programParams: toAffiliateProgramParams(response.data),
   })
   trackVerifyResult('valid', true)
+}
+
+function toAffiliateProgramParams(data?: ReferralCodeResponse): AffiliateProgramParams | undefined {
+  if (!data) {
+    return undefined
+  }
+  const { traderRewardAmount, triggerVolume, timeCapDays, volumeCap } = data
+  if (
+    typeof traderRewardAmount !== 'number' ||
+    typeof triggerVolume !== 'number' ||
+    typeof timeCapDays !== 'number' ||
+    typeof volumeCap !== 'number'
+  ) {
+    return undefined
+  }
+  return {
+    traderRewardAmount,
+    triggerVolumeUsd: triggerVolume,
+    timeCapDays,
+    volumeCapUsd: volumeCap,
+  }
 }
 
 function restoreExistingVerificationState(params: {
@@ -355,7 +254,6 @@ function restoreExistingVerificationState(params: {
       kind: 'valid',
       code: currentVerification.code,
       eligible: currentVerification.eligible,
-      programActive: currentVerification.programActive,
       programParams: currentVerification.programParams,
     })
     return
