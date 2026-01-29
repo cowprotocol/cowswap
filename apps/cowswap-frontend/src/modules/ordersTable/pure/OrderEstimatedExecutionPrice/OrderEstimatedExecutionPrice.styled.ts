@@ -1,11 +1,8 @@
+import { SymbolElement, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
 import { darken } from 'color2k'
-import {
-    SymbolElement,
-    UI,
-  } from '@cowprotocol/ui'
-  
+import styled from 'styled-components/macro'
+
 export const OrderEstimatedExecutionPriceWrapper = styled.span<{ $hasWarning: boolean; $showPointerCursor: boolean }>`
   display: flex;
   width: 100%;

@@ -4,14 +4,14 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { OrdersTable } from '../OrdersTable.pure'
-import { OrdersTableUnsupportedNetworkContent } from './UnsupportedNetwork/OrdersTableUnsupportedNetworkContent'
-import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletContent'
 import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersContent'
+import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletContent'
+import { OrdersTableUnsupportedNetworkContent } from './UnsupportedNetwork/OrdersTableUnsupportedNetworkContent'
 
 import { OrderTabId } from '../../../const/tabs'
 import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
+import { OrdersTable } from '../OrdersTable.pure'
 
 interface OrdersTableContentProps {
   currentTab: OrderTabId

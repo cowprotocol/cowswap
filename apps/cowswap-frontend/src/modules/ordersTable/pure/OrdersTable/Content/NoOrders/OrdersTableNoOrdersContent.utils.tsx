@@ -9,8 +9,8 @@ import { Trans } from '@lingui/react/macro'
 import { OrderTabId } from '../../../../const/tabs'
 import { HistoryStatusFilter } from '../../../../hooks/useFilteredOrders'
 import { TabOrderTypes } from '../../../../ordersTable.types'
-import { LoadMoreOrdersButton } from '../../LoadMore/Button/LoadMoreOrdersButton'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
+import { LoadMoreOrdersButton } from '../../LoadMore/Button/LoadMoreOrdersButton'
 
 export interface GetTitleOptions {
   currentTab: OrderTabId

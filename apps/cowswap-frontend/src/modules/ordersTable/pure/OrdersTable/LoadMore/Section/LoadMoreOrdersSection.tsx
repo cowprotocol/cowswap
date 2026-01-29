@@ -6,8 +6,8 @@ import { Trans } from '@lingui/react/macro'
 
 import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
 
-import { LoadMoreOrdersButton } from '../Button/LoadMoreOrdersButton'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
+import { LoadMoreOrdersButton } from '../Button/LoadMoreOrdersButton'
 
 export interface LoadMoreOrdersSectionProps {
   totalOpenOrders: number

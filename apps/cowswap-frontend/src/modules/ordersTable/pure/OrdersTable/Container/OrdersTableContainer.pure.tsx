@@ -7,13 +7,13 @@ import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import * as styledEl from './OrdersTableContainer.styled'
-import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
-import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 
 import { OrderTabId } from '../../../const/tabs'
 import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDisplayProtocolFeeBanner'
+import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
+import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
 
 interface OrdersTableContainerProps extends PropsWithChildren {
   searchTerm: string

@@ -1,13 +1,14 @@
 import React, { ReactNode, useEffect, useRef } from 'react'
 
+import { TableHeaderConfig } from './ordersTableHeader.constants'
+import { HeaderElement } from './OrdersTableHeader.styled'
+import { TableHeaderWrapper } from './OrdersTableHeader.styled'
+
 import { OrderTabId } from '../../../const/tabs'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../ordersTable.types'
 import { tableItemsToOrders } from '../../../utils/orderTableGroupUtils'
 import { CheckboxCheckmark, TableRowCheckbox, TableRowCheckboxWrapper } from '../Row/Checkbox/Checkbox.styled'
-import { TableHeaderConfig } from './ordersTableHeader.constants'
-import { HeaderElement } from './OrdersTableHeader.styled'
-import { TableHeaderWrapper } from './OrdersTableHeader.styled'
 
 interface OrdersTableHeaderProps {
   currentTab: OrderTabId

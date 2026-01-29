@@ -3,8 +3,8 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import { ChevronLeft, ChevronRight } from 'react-feather'
 
 import { PageNavigationButton } from './Button/OrdersTablePaginationButton.pure'
-import { PaginationBox } from './OrdersTablePagination.styled'
 import { BlankButton } from './Button/OrdersTablePaginationButton.styled'
+import { PaginationBox } from './OrdersTablePagination.styled'
 
 const PAGES_LIMIT = 14
 

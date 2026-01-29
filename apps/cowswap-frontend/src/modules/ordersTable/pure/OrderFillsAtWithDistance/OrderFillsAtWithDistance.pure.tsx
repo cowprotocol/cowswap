@@ -14,9 +14,9 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from '../../containers/OrderRow/OrderRow.styled'
 import { getDistanceColor } from '../../containers/OrderRow/utils'
+import { OrderEstimatedExecutionPrice } from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 import { TwapOrderStatus } from '../TwapOrderStatus/TwapOrderStatus.pure'
 import { TwapScheduledOrderStatus } from '../TwapScheduledOrderStatus/TwapScheduledOrderStatus.pure'
-import { OrderEstimatedExecutionPrice } from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 
 export interface OrderFillsAtWithDistanceProps {
   isTwapTable?: boolean

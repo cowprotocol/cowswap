@@ -4,17 +4,18 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
+import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
+import { OrdersTableHeader } from './Header/OrdersTableHeader.pure'
+import { LoadMoreOrdersSection } from './LoadMore/Section/LoadMoreOrdersSection'
 import { Rows, TableBox, TableInner } from './OrdersTable.styled'
+import { OrdersTablePagination } from './Pagination/OrdersTablePagination.pure'
+import { OrdersTableRow } from './Row/OrdersTableRow.pure'
+
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../ordersTable.types'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
-import { OrdersTablePagination } from './Pagination/OrdersTablePagination.pure'
-import { LoadMoreOrdersSection } from './LoadMore/Section/LoadMoreOrdersSection'
-import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
-import { OrdersTableHeader } from './Header/OrdersTableHeader.pure'
-import { OrdersTableRow } from './Row/OrdersTableRow.pure'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId

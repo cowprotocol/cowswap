@@ -4,14 +4,7 @@ import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import {
-  ButtonSecondary,
-  HoverTooltip,
-  Loader,
-  TokenAmount,
-  TokenAmountProps,
-  UI,
-} from '@cowprotocol/ui'
+import { ButtonSecondary, HoverTooltip, Loader, TokenAmount, TokenAmountProps, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
@@ -21,9 +14,10 @@ import { Nullish } from 'types'
 
 import { HIGH_FEE_WARNING_PERCENTAGE, PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
 
+import * as styledEl from './OrderEstimatedExecutionPrice.styled'
+
 import * as orderRowEl from '../../containers/OrderRow/OrderRow.styled'
 import * as warningTooltopEl from '../OrdersTable/Row/WarningTooltip/WarningTooltip.styled'
-import * as styledEl from './OrderEstimatedExecutionPrice.styled'
 
 const MINUS_ONE_FRACTION = new Fraction(-1)
 

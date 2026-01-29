@@ -7,11 +7,10 @@ import { msg } from '@lingui/core/macro'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { ordersMock } from '../../utils/orders.mock'
-
 import { OrderTab, OrderTabId } from '../../const/tabs'
-import { ordersTableStateAtom } from '../../state/ordersTableStateAtom'
 import { OrderActions, TabOrderTypes } from '../../ordersTable.types'
+import { ordersTableStateAtom } from '../../state/ordersTableStateAtom'
+import { ordersMock } from '../../utils/orders.mock'
 
 const tabs: OrderTab[] = [
   {

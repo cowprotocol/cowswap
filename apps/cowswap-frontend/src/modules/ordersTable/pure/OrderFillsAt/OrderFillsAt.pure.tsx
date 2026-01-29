@@ -24,8 +24,8 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from '../../containers/OrderRow/OrderRow.styled'
 import { useFeeAmountDifference } from '../../hooks/useFeeAmountDifference'
-import { TwapOrderStatus } from '../TwapOrderStatus/TwapOrderStatus.pure'
 import { OrderEstimatedExecutionPrice } from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
+import { TwapOrderStatus } from '../TwapOrderStatus/TwapOrderStatus.pure'
 
 export interface OrderFillsAtProps {
   order: ParsedOrder
