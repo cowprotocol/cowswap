@@ -1917,6 +1917,7 @@ msgid "Set custom deadline"
 msgstr "Set custom deadline"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
+#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -3514,6 +3515,7 @@ msgstr "Limit Order"
 msgid "Insufficient allowance"
 msgstr "Insufficient allowance"
 
+#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "Coinbase Wallet"
 msgstr "Coinbase Wallet"
