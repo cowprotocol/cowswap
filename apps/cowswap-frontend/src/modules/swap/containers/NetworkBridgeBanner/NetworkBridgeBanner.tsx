@@ -15,6 +15,8 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 const HideSmall = styled.span`
+  width: 100%;
+
   ${Media.upToSmall()} {
     display: none;
   }
@@ -120,6 +122,7 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
   }
 `
 const Header = styled.h2`
+  width: 100%;
   font-weight: 600;
   font-size: 16px;
   margin: 0;
@@ -164,7 +167,7 @@ export function NetworkBridgeBanner(): ReactNode {
         <LinkOutToBridge href={bridge}>
           <BodyText color={textColor}>
             <L2Icon src={logoUrl} />
-            <AutoRow gap="5px">
+            <AutoRow>
               <Header>
                 <Trans>{label} token bridge</Trans>
               </Header>
