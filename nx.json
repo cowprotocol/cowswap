@@ -31,18 +31,10 @@
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/build/*",
-      "!{projectRoot}/dist/*",
-      "!{projectRoot}/docs/*",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/*.po",
       "!{projectRoot}/tsconfig.spec.json"
     ],
-    "src": ["{projectRoot}/src/**/*"],
-    "patches": ["{projectRoot}/patches/*"],
-    "public": ["{projectRoot}/public/**/*"],
-    "robots": ["{projectRoot}/robots/**/*"],
-    "dotEnv": ["{projectRoot}/.env(*.)"],
     "sharedGlobals": []
   },
   "generators": {
