@@ -55,6 +55,12 @@ const PrivacyText = styled.p`
   text-align: center;
 `
 
+const Footer = styled.div<{ $visible: boolean }>`
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+`
+
 const HeaderTitle = styled.div`
   display: inline-flex;
   align-items: center;
@@ -579,16 +585,16 @@ export function QrScanModal({
         </VideoFrame>
         {displayError ? (
           <ErrorText>{displayError}</ErrorText>
-        ) : cameraStatus === 'ready' ? (
-          <>
+        ) : (
+          <Footer $visible={cameraStatus === 'ready'} aria-hidden={cameraStatus !== 'ready'}>
             <HintText>
               <Trans>Align the QR code in the frame.</Trans>
             </HintText>
             <PrivacyText>
               <Trans>Scans locally in your browser. Nothing is uploaded.</Trans>
             </PrivacyText>
-          </>
-        ) : null}
+          </Footer>
+        )}
       </ContentWrapper>
     </QrModal>
   )

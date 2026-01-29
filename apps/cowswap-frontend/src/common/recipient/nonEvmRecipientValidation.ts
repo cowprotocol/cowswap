@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { BITCOIN_CHAIN_ID, SOLANA_CHAIN_ID, getChainType } from 'common/chains/nonEvm'
 
 export interface RecipientValidationResult {
@@ -61,10 +62,16 @@ export function validateRecipientForChain(
   if (!value) return { isValid: false, reason: 'Recipient is required' }
 
   if ((chainId === BITCOIN_CHAIN_ID || chainId === SOLANA_CHAIN_ID) && looksLikeEvmAddress(value)) {
+    const mismatchReason =
+      chainType === 'solana'
+        ? "That's an EVM address; Solana requires a SOL address."
+        : chainType === 'bitcoin'
+          ? "That's an EVM address; Bitcoin requires a BTC address."
+          : "That's an EVM address; Bitcoin/Solana requires a BTC/SOL address."
     return {
       isValid: false,
       isMismatch: true,
-      reason: "That's an EVM address; Bitcoin/Solana requires a BTC/SOL address.",
+      reason: mismatchReason,
     }
   }
 

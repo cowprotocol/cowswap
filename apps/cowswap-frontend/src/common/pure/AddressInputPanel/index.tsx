@@ -217,7 +217,7 @@ const LabelText = styled.span`
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
 
-const SOLANA_MAX_FONT_SIZE = 22
+const SOLANA_MAX_FONT_SIZE = 20
 const SOLANA_MIN_FONT_SIZE = 18
 const stripRecipientNoise = (input: string): string => {
   const withoutWhitespace = input.replace(/\s+/g, '')
