@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.0...cowswap-v2.0.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* **cowswap:** minor refactor just to trigger the build ([12700c5](https://github.com/cowprotocol/cowswap/commit/12700c5a1c21896957a31e07ab2cd7eaf7edcfd4))
+
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.129.0...cowswap-v2.0.0) (2026-01-28)
 
 
