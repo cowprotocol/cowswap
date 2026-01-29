@@ -138,7 +138,7 @@
     "use-async-memo": "^1.2.4",
     "uuid": "^13.0.0",
     "viem": "^2.45.0",
-    "wagmi": "^3.4.1",
+    "wagmi": "3.4.1",
     "workbox-core": "^6.6.1",
     "workbox-expiration": "^6.6.1",
     "workbox-precaching": "^6.6.1",
