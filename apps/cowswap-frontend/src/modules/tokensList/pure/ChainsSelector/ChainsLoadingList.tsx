@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
 import * as styledEl from './styled'
 
-const LOADING_ITEMS_COUNT = Object.keys(SupportedChainId).length
+const LOADING_ITEMS_COUNT = ALL_SUPPORTED_CHAIN_IDS.length
 
 const LOADING_SKELETON_INDICES = Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => index)
 
