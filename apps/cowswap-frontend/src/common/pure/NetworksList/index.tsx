@@ -9,7 +9,7 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
-const NEW_NETWORK_IDS = new Set([SupportedChainId.LINEA, SupportedChainId.PLASMA, SupportedChainId.INK])
+const NEW_NETWORK_IDS = new Set([SupportedChainId.PLASMA, SupportedChainId.INK])
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
