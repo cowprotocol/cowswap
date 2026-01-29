@@ -1,6 +1,12 @@
 import { useMemo } from 'react'
 
-import { FractionUtils, getCurrencyAddress } from '@cowprotocol/common-utils'
+import {
+  currencyAmountToExactString,
+  currencyAmountToRawString,
+  getCurrencyAddress,
+  getTokenLabel,
+  normalizeTokenSymbol,
+} from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -22,26 +28,6 @@ export interface SwapBridgeClickEventInput extends SwapBridgeClickEventData {
   action: SwapBridgeClickAction
 }
 
-function getRawAmount(amount: CurrencyAmount<Currency> | null | undefined): string | undefined {
-  return amount ? amount.quotient.toString() : undefined
-}
-
-function getExactAmount(amount: CurrencyAmount<Currency> | null | undefined): string | undefined {
-  if (!amount) return undefined
-
-  const exact = FractionUtils.fractionLikeToExactString(amount)
-  return exact || undefined
-}
-
-function normalizeSymbol(currency: Currency): string {
-  return currency.symbol ? currency.symbol.toLowerCase() : ''
-}
-
-function getTokenLabel(currency: Currency, address: string): string {
-  const symbol = normalizeSymbol(currency)
-  return symbol || address
-}
-
 function parseEventValue(value: string | undefined): number | undefined {
   if (!value) return undefined
 
@@ -60,10 +46,10 @@ export function buildSwapBridgeClickEvent(input: SwapBridgeClickEventInput): str
   const sellTokenAddress = getCurrencyAddress(sellCurrency)
   const buyTokenAddress = getCurrencyAddress(buyCurrency)
 
-  const sellAmountRaw = getRawAmount(sellAmount)
-  const sellAmountHuman = getExactAmount(sellAmount)
-  const buyAmountRaw = getRawAmount(buyAmount)
-  const buyAmountHuman = getExactAmount(buyAmount)
+  const sellAmountRaw = currencyAmountToRawString(sellAmount)
+  const sellAmountHuman = currencyAmountToExactString(sellAmount)
+  const buyAmountRaw = currencyAmountToRawString(buyAmount)
+  const buyAmountHuman = currencyAmountToExactString(buyAmount)
 
   if (!sellAmountRaw || !sellAmountHuman || !buyAmountRaw || !buyAmountHuman) return undefined
 
@@ -83,13 +69,13 @@ export function buildSwapBridgeClickEvent(input: SwapBridgeClickEventInput): str
     fromChainId: sellCurrency.chainId,
     toChainId: buyCurrency.chainId,
     sellToken: sellTokenAddress,
-    sellTokenSymbol: normalizeSymbol(sellCurrency),
+    sellTokenSymbol: normalizeTokenSymbol(sellCurrency),
     sellTokenDecimals: sellCurrency.decimals,
     sellTokenChainId: sellCurrency.chainId,
     sellAmount: sellAmountRaw,
     sellAmountHuman,
     buyToken: buyTokenAddress,
-    buyTokenSymbol: normalizeSymbol(buyCurrency),
+    buyTokenSymbol: normalizeTokenSymbol(buyCurrency),
     buyTokenDecimals: buyCurrency.decimals,
     buyTokenChainId: buyCurrency.chainId,
     buyAmountExpected: buyAmountRaw,

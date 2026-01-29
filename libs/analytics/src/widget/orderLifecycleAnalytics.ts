@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { FractionUtils } from '@cowprotocol/common-utils'
+import { FractionUtils, normalizeRawAmount } from '@cowprotocol/common-utils'
 import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
@@ -85,17 +85,6 @@ function toTokenWithLogo(meta?: Tokenish): TokenWithLogo | null {
 }
 
 type RawAmount = string | number | bigint | null | undefined
-
-function normalizeRawAmount(rawAmount: RawAmount): string | undefined {
-  if (rawAmount === null || rawAmount === undefined) {
-    return undefined
-  }
-
-  const raw = typeof rawAmount === 'bigint' ? rawAmount.toString() : String(rawAmount)
-  const trimmed = raw.trim()
-
-  return trimmed === '' ? undefined : trimmed
-}
 
 function formatTokenUnitsExact(meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined {
   const normalizedRaw = normalizeRawAmount(rawAmount)
