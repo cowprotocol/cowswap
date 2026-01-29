@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.32.0...common-const-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.0.0
+
+## [1.32.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.31.0...common-const-v1.32.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** adjust price impact warnings for bridging ([#6754](https://github.com/cowprotocol/cowswap/issues/6754)) ([9f5f85b](https://github.com/cowprotocol/cowswap/commit/9f5f85be18b07f8ef0078d20c1cf29933fa4d80f))
+
+
+### Bug Fixes
+
+* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+
 ## [1.31.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.30.0...common-const-v1.31.0) (2025-12-16)
 
 

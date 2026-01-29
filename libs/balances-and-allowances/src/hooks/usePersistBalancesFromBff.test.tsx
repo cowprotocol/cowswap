@@ -64,6 +64,8 @@ describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
             chainId: SupportedChainId.MAINNET,
             values: {},
             fromCache: false,
+            hasFirstLoad: false,
+            error: null,
           } as BalancesState,
         ],
         [balancesUpdateAtom, mockBalancesUpdate],
@@ -188,5 +190,4 @@ describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
       )
     })
   })
-
 })

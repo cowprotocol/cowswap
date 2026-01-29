@@ -13,10 +13,12 @@ import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 const eip6963Providers: EIP6963ProviderDetail[] = []
 
-window.addEventListener('eip6963:announceProvider', (event: Event) => {
-  const providerEvent = event as EIP6963AnnounceProviderEvent
-  eip6963Providers.push(providerEvent.detail)
-})
+if (typeof window !== 'undefined') {
+  window.addEventListener('eip6963:announceProvider', (event: Event) => {
+    const providerEvent = event as EIP6963AnnounceProviderEvent
+    eip6963Providers.push(providerEvent.detail)
+  })
+}
 
 /**
  * Handles JSON-RPC request coming from an iFrame by delegating to a given Ethereum provider.
@@ -44,9 +46,9 @@ export class IframeRpcProviderBridge {
   /**
    * Disconnects the JSON-RPC bridge from the Ethereum provider.
    */
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  disconnect() {
+  disconnect(): void {
+    if (typeof window === 'undefined') return
+
     // Disconnect provider
     this.ethereumProvider = null
     iframeRpcProviderTransport.stopListeningToMessageFromWindow(
@@ -66,9 +68,9 @@ export class IframeRpcProviderBridge {
    * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
    * @param newProvider - The Ethereum provider to connect.
    */
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  onConnect(newProvider: EthereumProvider) {
+  onConnect(newProvider: EthereumProvider): void {
+    if (typeof window === 'undefined') return
+
     // Disconnect the previous provider
     if (this.ethereumProvider) {
       this.disconnect()

@@ -1,5 +1,52 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.11.1...balances-and-allowances-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/core bumped to 2.0.0
+    * @cowprotocol/cowswap-abis bumped to 2.0.0
+    * @cowprotocol/multicall bumped to 2.0.0
+    * @cowprotocol/tokens bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/wallet bumped to 2.0.0
+    * @cowprotocol/wallet-provider bumped to 2.0.0
+
+## [1.11.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.11.0...balances-and-allowances-v1.11.1) (2026-01-26)
+
+
+### Bug Fixes
+
+* request balances from view chain id in selector ([#6859](https://github.com/cowprotocol/cowswap/issues/6859)) ([8428aaa](https://github.com/cowprotocol/cowswap/commit/8428aaa4402c90e68d38b8d832577c301bbf49ad))
+
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.10.0...balances-and-allowances-v1.11.0) (2026-01-09)
+
+
+### Features
+
+* reset balances update on account change ([#6745](https://github.com/cowprotocol/cowswap/issues/6745)) ([92c2a49](https://github.com/cowprotocol/cowswap/commit/92c2a49fda2d7f045a1898012573640dcea50603))
+
+
+### Bug Fixes
+
+* hide couldnt load balances msg when balances are loading ([#6779](https://github.com/cowprotocol/cowswap/issues/6779)) ([54269cc](https://github.com/cowprotocol/cowswap/commit/54269ccb815c75f064febc8bc45a4fbe6cac9f5a))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.9.0...balances-and-allowances-v1.10.0) (2025-11-10)
 
 

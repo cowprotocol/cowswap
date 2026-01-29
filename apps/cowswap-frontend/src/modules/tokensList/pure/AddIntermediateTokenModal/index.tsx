@@ -36,7 +36,7 @@ export function AddIntermediateTokenModal({ onDismiss, onBack, onImport }: AddIn
       importTokenCallback([tokenToImport])
       onImport(tokenToImport)
       // when we import the token from here, we don't need to import it again in the SelectTokenWidget
-      closeTokenSelectWidget()
+      closeTokenSelectWidget({ overrideForceLock: true })
     }
   }, [onImport, importTokenCallback, closeTokenSelectWidget, tokenToImport])
 

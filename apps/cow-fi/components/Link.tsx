@@ -5,8 +5,6 @@ import { Font, Media, UI } from '@cowprotocol/ui'
 import NextLink from 'next/link'
 import styled, { css } from 'styled-components/macro'
 
-import { defaultUtm } from 'modules/utm'
-
 export enum LinkType {
   TopicButton = 'topicButton',
   HeroButton = 'heroButton',
@@ -135,12 +133,8 @@ const StyledDiv = styled.div<LinkProps>`
   ${({ linkType }) => linkType === LinkType.SectionTitleButton && sectionTitleButtonStyles}
 `
 
-export const Link: FC<LinkProps> = ({ href, external, linkType, children, utmContent, asButton, ...rest }) => {
-  const finalHref = external
-    ? `${href}?utm_source=${defaultUtm.utmSource}&utm_medium=${defaultUtm.utmMedium}&utm_content=${
-        utmContent || defaultUtm.utmContent
-      }`
-    : href
+export const Link: FC<LinkProps> = ({ href, external, linkType, children, asButton, ...rest }) => {
+  const finalHref = href
 
   if (asButton) {
     return (

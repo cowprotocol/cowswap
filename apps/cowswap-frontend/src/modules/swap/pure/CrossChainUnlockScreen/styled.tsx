@@ -1,4 +1,4 @@
-import CROSS_CHAIN_BG from '@cowprotocol/assets/cross-chain-unlock-bg.svg'
+import CROSS_CHAIN_BG from '@cowprotocol/assets/images/cross-chain-unlock-bg.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'

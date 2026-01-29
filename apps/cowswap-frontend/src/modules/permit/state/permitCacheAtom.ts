@@ -15,7 +15,7 @@ import {
  * Used exclusively for quote requests
  */
 export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v3', {}, undefined, {
-  unstable_getOnInit: true,
+  getOnInit: true,
 })
 
 /**
@@ -24,7 +24,7 @@ export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitC
  * Used exclusively for order requests
  */
 export const userPermitCacheAtom = atomWithStorage<PermitCache>('userPermitCache:v1', {}, undefined, {
-  unstable_getOnInit: true,
+  getOnInit: true,
 })
 
 /**

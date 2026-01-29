@@ -1,12 +1,17 @@
 {
   "name": "@cowprotocol/wallet-provider",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "type": "commonjs",
   "description": "Wallet provider",
-  "main": "index.js",
+  "main": "./src/index.ts",
+  "private": true,
   "exports": {
-    "import": "./index.js",
-    "require": "./index.mjs"
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
   },
   "license": "ISC",
   "repository": {
@@ -19,5 +24,22 @@
     "cowswap",
     "dex",
     "wallet-provider"
-  ]
+  ],
+  "types": "./src/index.ts",
+  "publishConfig": {
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./index.d.ts",
+        "import": "./index.mjs",
+        "require": "./index.js"
+      }
+    }
+  },
+  "dependencies": {
+    "@ethersproject/providers": "5.7.0",
+    "@web3-react/core": "^8.2.3",
+    "ethers": "5.7.2"
+  }
 }

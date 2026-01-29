@@ -25,8 +25,8 @@ export interface TradeApproveButtonProps {
   minAmountToSignForSwap?: CurrencyAmount<Currency>
   children?: ReactNode
   isDisabled?: boolean
-  enablePartialApprove?: boolean
-  onApproveConfirm?: (txHash?: string) => void
+  supportsPartialApprove?: boolean
+  onApproveConfirm?: (txHash: string | null) => void
   label?: string
   buttonSize?: ButtonSize
   useModals?: boolean
@@ -37,7 +37,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const {
     amountToApprove,
     children,
-    enablePartialApprove,
+    supportsPartialApprove,
     isDisabled,
     buttonSize = ButtonSize.DEFAULT,
     useModals = true,
@@ -51,7 +51,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { callback: approveWithPreventedDoubleExecution, isExecuting } = usePreventDoubleExecution(approveAndSwap)
   const { data: cachedPermit, isLoading: cachedPermitLoading } = useHasCachedPermit(amountToApprove)
 
-  if (!enablePartialApprove) {
+  if (!supportsPartialApprove) {
     return (
       <>
         <LegacyApproveButton

@@ -10,16 +10,22 @@ export interface RwaConsentModalProps {
   onDismiss(): void
   onConfirm(): void
   token?: TokenWithLogo
+  listName?: string
+  consentHash?: string
 }
 
 export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
-  const { onDismiss, onConfirm, token } = props
+  const { onDismiss, onConfirm, token, listName } = props
 
-  const displaySymbol = token?.symbol || 'this token'
+  const isListConsent = !!listName
+  const displayName = listName || token?.symbol || 'this token'
+  const title = isListConsent
+    ? 'Additional confirmation required for this token list'
+    : 'Additional confirmation required for this token'
 
   return (
     <styledEl.Wrapper>
-      <ModalHeader onClose={onDismiss}>Additional confirmation required for this token</ModalHeader>
+      <ModalHeader onClose={onDismiss}>{title}</ModalHeader>
       <styledEl.Contents>
         {token && (
           <styledEl.TokenBlock>
@@ -35,10 +41,17 @@ export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
             </styledEl.TokenSymbolName>
           </styledEl.TokenBlock>
         )}
+        {listName && !token && (
+          <styledEl.TokenBlock>
+            <styledEl.TokenSymbolName>
+              <styledEl.TokenSymbol>{listName}</styledEl.TokenSymbol>
+            </styledEl.TokenSymbolName>
+          </styledEl.TokenBlock>
+        )}
         <styledEl.Body>
           <p>
             We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to{' '}
-            {displaySymbol} is strictly limited to specific regions.
+            {displayName} is strictly limited to specific regions.
           </p>
           <styledEl.AcknowledgementSection>
             <p>By clicking Confirm, you expressly represent and warrant that you are NOT:</p>

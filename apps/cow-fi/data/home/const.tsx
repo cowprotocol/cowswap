@@ -9,8 +9,10 @@ import IMG_TUBE from '@cowprotocol/assets/images/image-tube.svg'
 import { Color, ProductVariant, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import { Link, LinkType } from '@/components/Link'
+import { COW_SWAP_CTA } from '@/const/cta'
 import {
   ContainerCard,
   ContainerCardSection,
@@ -23,7 +25,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 const analytics = initGtm()
 
@@ -45,9 +46,9 @@ export const PRODUCT_LIST = [
   {
     title: 'CoW Swap',
     description: 'The DEX that lets you do what you want',
-    linkHref: 'https://swap.cow.fi/#/1/swap/USDC/COW',
-    linkText: 'Start trading',
-    linkEvent: 'click-trade-on-cow-swap',
+    linkHref: COW_SWAP_CTA.deeplinkHref,
+    linkText: COW_SWAP_CTA.text,
+    linkEvent: COW_SWAP_CTA.action,
     linkExternal: true,
     linkUtmContent: 'home-page-trade-on-cow-swap',
     bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
@@ -75,7 +76,7 @@ export const PRODUCT_LIST = [
   {
     title: 'MEV Blocker',
     description: 'The best MEV protection RPC under the sun',
-    linkHref: '/mev-blocker',
+    linkHref: '/mevblocker',
     linkText: 'Get protected',
     linkEvent: 'click-get-protected',
     bgColor: Color.cowfi_orange_pale,
@@ -91,7 +92,7 @@ export const PRODUCT_LIST = [
 export const CHANNEL_LIST = [
   {
     title: 'Discord',
-    href: 'https://discord.com/invite/cowprotocol?utm_source=cow.fi&utm_medium=web&utm_content=link',
+    href: 'https://discord.com/invite/cowprotocol',
     linkEvent: 'click-discord',
     iconColor: Color.cowfi_discord_pink,
     textColor: `var(${UI.COLOR_NEUTRAL_10})`,
@@ -99,7 +100,7 @@ export const CHANNEL_LIST = [
   },
   {
     title: 'Forum',
-    href: 'https://forum.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=link',
+    href: 'https://forum.cow.fi/',
     linkEvent: 'click-forum',
     iconColor: Color.cowamm_dark_green,
     textColor: Color.neutral98,
@@ -107,7 +108,7 @@ export const CHANNEL_LIST = [
   },
   {
     title: 'Snapshot',
-    href: 'https://snapshot.org/#/cow.eth?utm_source=cow.fi&utm_medium=web&utm_content=link',
+    href: 'https://snapshot.org/#/cow.eth',
     linkEvent: 'click-snapshot',
     iconColor: Color.cowfi_snapshot_red,
     textColor: Color.neutral98,

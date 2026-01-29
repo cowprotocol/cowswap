@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -42,7 +42,11 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
   const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
 
-  const { isLoading: isBalancesLoading, data } = useMultipleContractSingleData<{ balance: BigNumber }>(
+  const {
+    isLoading: isBalancesLoading,
+    data,
+    error,
+  } = useMultipleContractSingleData<{ balance: BigNumber }>(
     chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
@@ -65,6 +69,17 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId }))
   }, [setBalances, isBalancesLoading, setLoadingState, chainId])
 
+  // Set balances error state for full balances fetches only
+  useEffect(() => {
+    if (!setLoadingState) return
+
+    if (!error) return
+
+    const message = error instanceof Error ? error.message : String(error)
+
+    setBalances((state) => ({ ...state, error: message, isLoading: false }))
+  }, [setBalances, error, setLoadingState])
+
   // Set balances to the store
   useEffect(() => {
     if (!account || !balances?.length || !isNewBlockNumber) return
@@ -83,6 +98,8 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
         ...state,
         chainId,
         fromCache: false,
+        hasFirstLoad: true,
+        error: null,
         values: { ...state.values, ...balancesState },
         ...(setLoadingState ? { isLoading: false } : {}),
       }

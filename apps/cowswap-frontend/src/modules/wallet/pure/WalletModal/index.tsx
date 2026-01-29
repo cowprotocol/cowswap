@@ -88,11 +88,7 @@ function CustomTerms() {
     <TermsWrapper>
       <Trans>
         By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s{' '}
-        <a
-          href="https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://cow.fi/legal/cowswap-terms" target="_blank" rel="noopener noreferrer">
           Terms &amp; Conditions
         </a>
         .

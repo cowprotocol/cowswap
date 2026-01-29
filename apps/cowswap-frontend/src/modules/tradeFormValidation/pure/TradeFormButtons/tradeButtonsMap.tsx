@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
-import { HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -138,6 +138,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     const quoteErrorTexts = getQuoteErrorTexts()
 
+    {
+      /*TODO: sell=buy feature. Remove all SameBuyAndSellToken usages once feature is ready */
+    }
     const quoteErrorTextsForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
       [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Not yet supported`,
     }
@@ -251,11 +254,39 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </>
     ),
   },
+  [TradeFormValidation.WalletCapabilitiesLoading]: {
+    text: (
+      <>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
-  [TradeFormValidation.BalancesNotLoaded]: {
-    text: <Trans>Couldn't load balances</Trans>,
+  [TradeFormValidation.BalancesLoading]: {
+    text: (
+      <>
+        <Trans>Fetching balances</Trans>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
+  [TradeFormValidation.BalancesNotLoaded]: (context) => {
+    let errorMessage: string | undefined = undefined
+
+    if (context.balancesError?.includes('rate limit')) {
+      errorMessage = t`Request is being rate limited`
+    }
+
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <>
+          <Trans>Couldn't load balances</Trans>
+          {errorMessage ? <HelpTooltip text={<div>{errorMessage}</div>} /> : null}
+        </>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.BalanceInsufficient]: (context) => {
     const inputCurrency = context.derivedState.inputCurrency
@@ -284,18 +315,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
-    const { amountToApprove, enablePartialApprove, defaultText } = context
+    const { amountToApprove, supportsPartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
     return (
       <TradeApproveButton
         isDisabled={isDisabled}
         amountToApprove={amountToApprove}
-        enablePartialApprove={enablePartialApprove}
+        supportsPartialApprove={supportsPartialApprove}
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
       >
-        <TradeFormBlankButton disabled={!enablePartialApprove}>{defaultText}</TradeFormBlankButton>
+        <TradeFormBlankButton disabled={!supportsPartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>
     )
   },

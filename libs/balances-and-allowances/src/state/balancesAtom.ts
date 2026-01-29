@@ -15,6 +15,8 @@ type BalancesCache = PersistentStateByChain<Record<Account, Record<TokenAddress,
 export interface BalancesState extends Erc20MulticallState {
   chainId: SupportedChainId | null
   fromCache: boolean
+  hasFirstLoad: boolean
+  error: string | null
 }
 
 export const DEFAULT_BALANCES_STATE: BalancesState = {
@@ -22,6 +24,8 @@ export const DEFAULT_BALANCES_STATE: BalancesState = {
   values: {},
   chainId: null,
   fromCache: false,
+  hasFirstLoad: false,
+  error: null,
 }
 
 export const balancesCacheAtom = atomWithStorage<BalancesCache>(

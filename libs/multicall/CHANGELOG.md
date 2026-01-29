@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/multicall-v1.3.2...multicall-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/cowswap-abis bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/wallet bumped to 2.0.0
+    * @cowprotocol/wallet-provider bumped to 2.0.0
+
+## [1.3.2](https://github.com/cowprotocol/cowswap/compare/multicall-v1.3.1...multicall-v1.3.2) (2026-01-09)
+
+
+### Bug Fixes
+
+* **multicall:** build fix ([#6776](https://github.com/cowprotocol/cowswap/issues/6776)) ([#6777](https://github.com/cowprotocol/cowswap/issues/6777)) ([e94a3d9](https://github.com/cowprotocol/cowswap/commit/e94a3d94e19245c3b5861f756673d257f3c159b4))
+
 ## [1.3.1](https://github.com/cowprotocol/cowswap/compare/multicall-v1.3.0...multicall-v1.3.1) (2025-12-24)
 
 

@@ -1,11 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { ComposableCoW } from '@cowprotocol/abis'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 
+import { twapOrdersAtom } from 'entities/twap'
 import ms from 'ms.macro'
 
 import { TWAP_PENDING_STATUSES } from '../const'
@@ -13,7 +14,7 @@ import { useAllTwapOrdersInfo } from '../hooks/useAllTwapOrdersInfo'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
-import { deleteTwapOrdersFromListAtom, twapOrdersAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
+import { deleteTwapOrdersFromListAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderInfo, TwapOrderItem } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
@@ -107,7 +108,7 @@ export function TwapOrdersUpdater(props: {
         .filter((data) => {
           const { nonce, isExecuted } = data.safeData.safeTxParams
 
-          return !isExecuted && nonce < safeNonce
+          return !isExecuted && BigInt(nonce) < BigInt(safeNonce)
         })
         .map((item) => item.id)
     })()

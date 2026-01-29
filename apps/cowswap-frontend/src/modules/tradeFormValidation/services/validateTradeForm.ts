@@ -1,8 +1,7 @@
 import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
-import { isQuoteExpired } from 'modules/tradeQuote'
+import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
@@ -27,6 +26,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isProxySetupValid,
     customTokenError,
     isRestrictedForCountry,
+    isBalancesLoading,
+    isBundlingSupported,
   } = context
 
   const {
@@ -51,7 +52,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
-  const isFastQuote = fetchParams?.priceQuality === PriceQuality.FAST
+  const isFastQuote = getIsFastQuote(fetchParams)
 
   const validations: TradeFormValidation[] = []
 
@@ -102,6 +103,24 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.InputAmountNotSet)
   }
 
+  if (!!account && isBundlingSupported === null) {
+    validations.push(TradeFormValidation.WalletCapabilitiesLoading)
+  }
+
+  if (!canPlaceOrderWithoutBalance && !!account) {
+    if (!inputCurrencyBalance && isBalancesLoading) {
+      validations.push(TradeFormValidation.BalancesLoading)
+    }
+
+    if (!inputCurrencyBalance && !isBalancesLoading) {
+      validations.push(TradeFormValidation.BalancesNotLoaded)
+    }
+
+    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+      validations.push(TradeFormValidation.BalanceInsufficient)
+    }
+  }
+
   if (!isWrapUnwrap) {
     const isRecipientAddress = Boolean(recipient && isAddress(recipient))
 
@@ -139,16 +158,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       if (isProxySetupValid === null) {
         validations.push(TradeFormValidation.ProxyAccountUnknown)
       }
-    }
-  }
-
-  if (!canPlaceOrderWithoutBalance) {
-    if (!inputCurrencyBalance) {
-      validations.push(TradeFormValidation.BalancesNotLoaded)
-    }
-
-    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
-      validations.push(TradeFormValidation.BalanceInsufficient)
     }
   }
 

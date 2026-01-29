@@ -1,8 +1,9 @@
 import { MouseEventHandler, ReactNode, useCallback } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { getTokenId } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -34,6 +35,8 @@ import {
   Wrapper,
 } from './styled'
 
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
+
 const LoadingElement = (
   <LoadingRows>
     <LoadingRowSmall />
@@ -53,22 +56,20 @@ interface LpTokenListsProps {
   balancesState: BalancesState
   displayCreatePoolBanner: boolean
   poolsInfo: PoolInfoStates | undefined
-  onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line max-lines-per-function
 export function LpTokenLists({
   account,
-  onSelectToken,
   openPoolPage,
   lpTokens,
   balancesState,
   displayCreatePoolBanner,
   poolsInfo,
-}: LpTokenListsProps) {
+}: LpTokenListsProps): ReactNode {
+  const { onSelectToken } = useSelectTokenWidgetState()
   const { values: balances } = balancesState
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
@@ -108,12 +109,12 @@ export function LpTokenLists({
       if (isMobile) {
         return (
           <MobileCard
-            key={token.address}
+            key={getTokenId(token)}
             data-address={token.address}
             data-token-symbol={token.symbol || ''}
             data-token-name={token.name || ''}
             data-element-type="token-selection"
-            onClick={() => onSelectToken(token)}
+            onClick={() => onSelectToken?.(token)}
           >
             <MobileCardRow>{commonContent}</MobileCardRow>
             <MobileCardRowItem label={t`Balance`} value={BalanceDisplay} />
@@ -133,12 +134,12 @@ export function LpTokenLists({
 
       return (
         <ListItem
-          key={token.address}
+          key={getTokenId(token)}
           data-address={token.address}
           data-token-symbol={token.symbol || ''}
           data-token-name={token.name || ''}
           data-element-type="token-selection"
-          onClick={() => onSelectToken(token)}
+          onClick={() => onSelectToken?.(token)}
         >
           <LpTokenWrapper>{commonContent}</LpTokenWrapper>
           <LpTokenBalance>{BalanceDisplay}</LpTokenBalance>

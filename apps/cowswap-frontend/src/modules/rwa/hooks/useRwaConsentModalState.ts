@@ -1,18 +1,14 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
-
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useCallback, useMemo } from 'react'
 
 import {
   rwaConsentModalStateAtom,
   updateRwaConsentModalStateAtom,
   RwaConsentModalState,
+  RwaConsentModalContext,
 } from '../state/rwaConsentModalStateAtom'
 
-export interface RwaConsentModalContext {
-  consentHash: string
-  token?: TokenWithLogo
-}
+export type { RwaConsentModalContext }
 
 export function useRwaConsentModalState(): {
   isModalOpen: boolean
@@ -43,10 +39,13 @@ export function useRwaConsentModalState(): {
     })
   }, [updateState])
 
-  return {
-    isModalOpen: state.isModalOpen,
-    context: state.context,
-    openModal,
-    closeModal,
-  }
+  return useMemo(
+    () => ({
+      isModalOpen: state.isModalOpen,
+      context: state.context,
+      openModal,
+      closeModal,
+    }),
+    [state.isModalOpen, state.context, openModal, closeModal],
+  )
 }

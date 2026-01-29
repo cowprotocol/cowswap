@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { areTokensEqual } from '@cowprotocol/common-utils'
-import { useAnyRestrictedToken, RestrictedTokenInfo } from '@cowprotocol/tokens'
+import { getCountryAsKey, RestrictedTokenInfo, useAnyRestrictedToken } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -93,8 +93,8 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
     // If we can determine the country, use it regardless of consent status
     // Note: while loading, country is null so we fall through to consent check
     if (geoStatus.country !== null) {
-      const country = geoStatus.country.toUpperCase()
-      if (rwaTokenInfo.blockedCountries.has(country)) {
+      const countryKey = getCountryAsKey(geoStatus.country)
+      if (rwaTokenInfo.blockedCountries.has(countryKey)) {
         return RwaTokenStatus.Restricted
       }
       return RwaTokenStatus.Allowed
@@ -108,8 +108,5 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
     return RwaTokenStatus.RequiredConsent
   }, [isRwaGeoblockEnabled, rwaTokenInfo, geoStatus.country, consentStatus])
 
-  return {
-    status,
-    rwaTokenInfo,
-  }
+  return useMemo(() => ({ status, rwaTokenInfo }), [status, rwaTokenInfo])
 }

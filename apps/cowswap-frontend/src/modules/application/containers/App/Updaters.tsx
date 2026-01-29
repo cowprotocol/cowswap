@@ -20,6 +20,7 @@ import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
+import { BalancesDevtools } from 'modules/balancesAndAllowances/updaters/BalancesDevtools'
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
@@ -31,7 +32,8 @@ import {
   ProgressBarExecutingOrdersUpdater,
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { useSourceChainId } from 'modules/tokensList'
+import { GeoDataUpdater } from 'modules/rwa'
+import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
@@ -115,6 +117,9 @@ export function Updaters(): ReactNode {
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
+      <BlockedListSourcesUpdater />
+      <RecentTokensStorageUpdater />
+      <GeoDataUpdater />
       <TokensListsTagsUpdater />
 
       <WidgetTokensUpdater />
@@ -126,6 +131,7 @@ export function Updaters(): ReactNode {
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />
       <BalancesCombinedUpdater />
+      <BalancesDevtools />
       <CorrelatedTokensUpdater />
       <BridgeOrdersCleanUpdater />
       <PendingBridgeOrdersUpdater />

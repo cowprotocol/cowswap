@@ -31,11 +31,9 @@ export const GlobalStyle = createGlobalStyle`
   #root {
     display: block;
     max-width: 100vw;
-    overflow-x: hidden;
     margin: 0;
     padding: 0;
     position: relative;
-    ${ScrollBarStyle}
   }
 
   // TODO: remove this once we have a proper way to set global CSS variables for all apps
@@ -74,6 +72,7 @@ export const MainWrapper = styled.div`
   min-height: 100vh;
   height: auto;
   margin: 0 auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   flex-grow: 1;

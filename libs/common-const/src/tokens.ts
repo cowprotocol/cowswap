@@ -525,6 +525,16 @@ export const USDT_PLASMA = new TokenWithLogo(
   'USDT0',
 )
 
+export const WETH_PLASMA = new TokenWithLogo(
+  WETH_MAINNET.logoURI,
+  SupportedChainId.PLASMA,
+  // https://plasmascan.to/token/0x9895d81bb462a195b4922ed7de0e3acd007c32cb
+  '0x9895d81bb462a195b4922ed7de0e3acd007c32cb',
+  18,
+  'WETH',
+  'WETH',
+)
+
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(

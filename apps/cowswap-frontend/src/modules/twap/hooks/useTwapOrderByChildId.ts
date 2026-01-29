@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import { useTwapOrderById } from './useTwapOrderById'
+import { useTwapOrderById } from 'entities/twap'
+
 import { useTwapPartOrdersList } from './useTwapPartOrdersList'
 
 import { TwapOrderItem } from '../types'

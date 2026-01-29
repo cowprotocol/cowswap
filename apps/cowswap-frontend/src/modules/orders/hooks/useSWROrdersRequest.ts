@@ -1,12 +1,15 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { ordersLimitAtom } from '../state/ordersLimitAtom'
 
 export function useSWROrdersRequest(): { owner: string; limit: number } | null {
   const { account } = useWalletInfo()
+  const { limit } = useAtomValue(ordersLimitAtom)
 
   return useMemo(() => {
-    return account ? { owner: account, limit: AMOUNT_OF_ORDERS_TO_FETCH } : null
-  }, [account])
+    return account ? { owner: account, limit } : null
+  }, [account, limit])
 }

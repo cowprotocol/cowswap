@@ -1,5 +1,70 @@
 # Changelog
 
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/explorer-v3.0.0...explorer-v3.0.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* **explorer:** minor refactor to trigger the build ([72580d9](https://github.com/cowprotocol/cowswap/commit/72580d920d38f2a97bbb61451e5ffc160598620d))
+
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.62.0...explorer-v3.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* add repo-wide AGENTS.md with app-specific overlays ([#6865](https://github.com/cowprotocol/cowswap/issues/6865)) ([a2a4239](https://github.com/cowprotocol/cowswap/commit/a2a4239b11691585396f1959475cbbcf535e2853))
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Bug Fixes
+
+* **explorer:** fix app-data page scrolling ([#6876](https://github.com/cowprotocol/cowswap/issues/6876)) ([527cc66](https://github.com/cowprotocol/cowswap/commit/527cc666524d2484edce04079e31ebc2aa072dc1))
+* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.0
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/ui bumped to 2.0.0
+
+## [2.62.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.61.0...explorer-v2.62.0) (2026-01-26)
+
+
+### Features
+
+* **common-utils:** add REACT_APP_BLOCK_EXPLORER_URL environment variable override ([#6774](https://github.com/cowprotocol/cowswap/issues/6774)) ([e23a0df](https://github.com/cowprotocol/cowswap/commit/e23a0df7240787d815c0126f83009895e3d3611a))
+* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
+
+
+### Bug Fixes
+
+* **bridging:** add near api key ([#6854](https://github.com/cowprotocol/cowswap/issues/6854)) ([448e639](https://github.com/cowprotocol/cowswap/commit/448e6392eb235a272b05a286e5cc565f7880396d))
+
+## [2.61.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.60.0...explorer-v2.61.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+
+### Bug Fixes
+
+* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+* to address tooltip for bridge orders ([#6766](https://github.com/cowprotocol/cowswap/issues/6766)) ([b1ef329](https://github.com/cowprotocol/cowswap/commit/b1ef32998e603b48c4f8f7f40889ad541e03df3d))
+
 ## [2.60.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.3...explorer-v2.60.0) (2025-12-24)
 
 

@@ -1,5 +1,46 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.27.0...common-utils-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+
+## [1.27.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.26.1...common-utils-v1.27.0) (2026-01-26)
+
+
+### Features
+
+* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
+
+## [1.26.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.26.0...common-utils-v1.26.1) (2026-01-13)
+
+
+### Bug Fixes
+
+* **swap:** break quote updating loop ([#6819](https://github.com/cowprotocol/cowswap/issues/6819)) ([64f6d34](https://github.com/cowprotocol/cowswap/commit/64f6d348f87579e4b07ee1f6beb8a5d48f4915ec))
+
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.25.0...common-utils-v1.26.0) (2026-01-09)
+
+
+### Features
+
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
 ## [1.25.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.24.0...common-utils-v1.25.0) (2025-12-24)
 
 

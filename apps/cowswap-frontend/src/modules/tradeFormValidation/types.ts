@@ -17,6 +17,7 @@ export enum TradeFormValidation {
   WalletNotConnected,
   WalletNotSupported,
   SafeReadonlyUser,
+  WalletCapabilitiesLoading,
 
   // Quote request params
   CurrencyNotSet,
@@ -30,6 +31,7 @@ export enum TradeFormValidation {
   QuoteExpired,
 
   // Balances
+  BalancesLoading,
   BalancesNotLoaded,
   BalanceInsufficient,
 
@@ -59,7 +61,7 @@ export interface TradeFormValidationCommonContext {
   tradeQuote: TradeQuoteState
   recipientEnsAddress: string | null
   isWrapUnwrap: boolean
-  isBundlingSupported: boolean
+  isBundlingSupported: boolean | null
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
@@ -72,6 +74,8 @@ export interface TradeFormValidationCommonContext {
   isProxySetupValid: boolean | null | undefined
   customTokenError?: string
   isRestrictedForCountry: boolean
+  isBalancesLoading: boolean
+  balancesError: string | null
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -83,9 +87,10 @@ export interface TradeFormButtonContext {
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
-  enablePartialApprove?: boolean
+  supportsPartialApprove?: boolean
   customTokenError?: string
   minAmountToSignForSwap?: CurrencyAmount<Currency>
+  balancesError: string | null
 
   confirmTrade(): void
 

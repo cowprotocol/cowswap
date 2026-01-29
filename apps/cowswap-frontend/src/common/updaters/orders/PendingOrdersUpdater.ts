@@ -1,11 +1,11 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
+import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
@@ -66,7 +66,7 @@ async function _updatePresignGnosisSafeTx(
   getSafeTxInfo: GetSafeTxInfo,
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback,
   cancelOrdersBatch: CancelOrdersBatchCallback,
-  safeInfo: GnosisSafeInfo | undefined,
+  safeNonce: number | undefined,
 ) {
   const getSafeTxPromises = allPendingOrders
     // Update orders that are pending for presingature
@@ -81,13 +81,15 @@ async function _updatePresignGnosisSafeTx(
       // Get safe info
       return safeTransactionPromise
         .then((safeTransaction) => {
-          const safeNonce = safeInfo?.nonce
-
           /**
            * If an order has a nonce lower than the current Safe nonce, it means that the proposed transaction was replaced by another one.
            * In this case, we should cancel the order.
            */
-          const isOrderTxReplaced = !!(safeNonce && safeTransaction.nonce < safeNonce && !safeTransaction.isExecuted)
+          const isOrderTxReplaced = !!(
+            safeNonce &&
+            BigInt(safeTransaction.nonce) < BigInt(safeNonce) &&
+            !safeTransaction.isExecuted
+          )
 
           if (CREATING_STATES.includes(order.status) && isOrderTxReplaced) {
             cancelOrdersBatch({
@@ -179,7 +181,7 @@ interface UpdateOrdersParams {
   triggerTotalSurplusUpdate: Command | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
   getSafeTxInfo: GetSafeTxInfo
-  safeInfo: GnosisSafeInfo | undefined
+  safeNonce: number | undefined
   allTransactions: ReturnType<typeof useAllTransactions>
   markPollComplete?: (chainId: ChainId) => void
 }
@@ -254,7 +256,7 @@ async function _updateOrders({
   triggerTotalSurplusUpdate,
   updatePresignGnosisSafeTx,
   getSafeTxInfo,
-  safeInfo,
+  safeNonce,
   allTransactions,
   markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
@@ -355,7 +357,7 @@ async function _updateOrders({
     getSafeTxInfo,
     updatePresignGnosisSafeTx,
     cancelOrdersBatch,
-    safeInfo,
+    safeNonce,
   )
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
@@ -416,6 +418,7 @@ function _triggerNps(pending: Order[], chainId: ChainId, account: string): void 
 export function PendingOrdersUpdater(): null {
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
+  const safeNonce = safeInfo?.nonce
   const { chainId, account } = useWalletInfo()
   const blockNumber = useBlockNumber()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
@@ -526,7 +529,7 @@ export function PendingOrdersUpdater(): null {
           triggerTotalSurplusUpdate,
           updatePresignGnosisSafeTx,
           getSafeTxInfo,
-          safeInfo,
+          safeNonce,
           allTransactions,
           markPollComplete: shouldMarkCompletion ? markPollComplete : undefined,
         }).finally(() => {
@@ -546,7 +549,7 @@ export function PendingOrdersUpdater(): null {
       triggerTotalSurplusUpdate,
       updatePresignGnosisSafeTx,
       getSafeTxInfo,
-      safeInfo,
+      safeNonce,
       allTransactions,
       markPollComplete,
     ],

@@ -1,9 +1,7 @@
 import { useSetAtom } from 'jotai'
 
-import { updateSelectTokenWidgetAtom } from '../state/selectTokenWidgetAtom'
+import { SelectTokenWidgetState, updateSelectTokenWidgetAtom } from '../state/selectTokenWidgetAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useUpdateSelectTokenWidgetState() {
+export function useUpdateSelectTokenWidgetState(): (update: Partial<SelectTokenWidgetState>) => void {
   return useSetAtom(updateSelectTokenWidgetAtom)
 }

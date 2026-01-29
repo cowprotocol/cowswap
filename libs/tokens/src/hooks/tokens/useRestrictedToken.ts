@@ -16,13 +16,13 @@ export interface RestrictedTokenInfo {
   consentHash: string
 }
 
-function findRestrictedToken(
+export function findRestrictedToken(
   token: Token | undefined,
   restrictedList: RestrictedTokenListState,
 ): RestrictedTokenInfo | undefined {
   if (!token) return undefined
 
-  const tokenId = getTokenId(token.chainId, token.address)
+  const tokenId = getTokenId({ chainId: token.chainId, address: token.address })
   const foundToken = restrictedList.tokensMap[tokenId]
 
   if (!foundToken) return undefined

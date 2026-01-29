@@ -1,5 +1,58 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.33.0...tokens-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/core bumped to 2.0.0
+    * @cowprotocol/cowswap-abis bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/ui bumped to 2.0.0
+    * @cowprotocol/wallet-provider bumped to 2.0.0
+
+## [1.33.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.32.0...tokens-v1.33.0) (2026-01-26)
+
+
+### Features
+
+* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
+
+
+### Bug Fixes
+
+* **bridge:** do not reset assets when change sell token ([#6851](https://github.com/cowprotocol/cowswap/issues/6851)) ([b30ca82](https://github.com/cowprotocol/cowswap/commit/b30ca8234f1e1d2d07eca7804b76157344328470))
+
+## [1.32.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.1...tokens-v1.32.0) (2026-01-09)
+
+
+### Features
+
+* implement consent for all flows ([#6769](https://github.com/cowprotocol/cowswap/issues/6769)) ([ba12026](https://github.com/cowprotocol/cowswap/commit/ba12026ef8a73fde2f38f448e0a581476518e843))
+* show consents before import modal ([#6770](https://github.com/cowprotocol/cowswap/issues/6770)) ([e928b80](https://github.com/cowprotocol/cowswap/commit/e928b806c45b435f830e8ebfa18090319c58659b))
+* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+
+
+### Bug Fixes
+
+* ondo tokens with bad formatting ([#6794](https://github.com/cowprotocol/cowswap/issues/6794)) ([c967eae](https://github.com/cowprotocol/cowswap/commit/c967eaef997cf168a37ec87d92fa834e44d5e1f2))
+* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+
 ## [1.31.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.0...tokens-v1.31.1) (2025-12-16)
 
 
