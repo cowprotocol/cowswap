@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/permit-utils",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "type": "module",
   "dependencies": {
     "@1inch/permit-signed-approvals-utils": "^1.5.1",

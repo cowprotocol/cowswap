@@ -1,5 +1,44 @@
 # Changelog
 
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/explorer-v3.0.0...explorer-v3.0.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* **explorer:** minor refactor to trigger the build ([72580d9](https://github.com/cowprotocol/cowswap/commit/72580d920d38f2a97bbb61451e5ffc160598620d))
+
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.62.0...explorer-v3.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* add repo-wide AGENTS.md with app-specific overlays ([#6865](https://github.com/cowprotocol/cowswap/issues/6865)) ([a2a4239](https://github.com/cowprotocol/cowswap/commit/a2a4239b11691585396f1959475cbbcf535e2853))
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Bug Fixes
+
+* **explorer:** fix app-data page scrolling ([#6876](https://github.com/cowprotocol/cowswap/issues/6876)) ([527cc66](https://github.com/cowprotocol/cowswap/commit/527cc666524d2484edce04079e31ebc2aa072dc1))
+* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.0
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/ui bumped to 2.0.0
+
 ## [2.62.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.61.0...explorer-v2.62.0) (2026-01-26)
 
 

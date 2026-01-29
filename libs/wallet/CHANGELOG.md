@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.17.0...wallet-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Bug Fixes
+
+* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/assets bumped to 2.0.0
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/core bumped to 2.0.0
+    * @cowprotocol/ens bumped to 2.0.0
+    * @cowprotocol/iframe-transport bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/ui bumped to 2.0.0
+    * @cowprotocol/wallet-provider bumped to 2.0.0
+
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.16.2...wallet-v1.17.0) (2026-01-26)
 
 
