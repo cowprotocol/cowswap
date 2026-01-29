@@ -36,8 +36,10 @@
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/build/*",
+      "!{projectRoot}/dist/*",
+      "!{projectRoot}/docs/*",
+      "!{projectRoot}/tsconfig.base.json",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/*.po"
     ],
