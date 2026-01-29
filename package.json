@@ -152,7 +152,7 @@
     "jsdom": "~27.0.0",
     "lint-staged": "^16.2.7",
     "node-stdlib-browser": "^1.2.0",
-    "nx": "21.6.4",
+    "nx": "22.4.2",
     "next-sitemap": "^4.2.3",
     "patch-package": "^8.0.0",
     "prettier": "^3.3.3",
