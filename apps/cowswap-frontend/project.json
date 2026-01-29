@@ -7,13 +7,6 @@
     "build": {
       "executor": "@nx/vite:build",
       "inputs": ["src", "patches", "public", "robots", "dotEnv", "^production"],
-      "namedInputs": {
-        "src": ["{projectRoot}/src/**/*"],
-        "patches": ["{projectRoot}/patches/*"],
-        "public": ["{projectRoot}/public/**/*"],
-        "robots": ["{projectRoot}/robots/**/*"],
-        "dotEnv": ["{projectRoot}/.env(*.)"]
-      },
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "dependsOn": ["i18n"],
