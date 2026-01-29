@@ -68,8 +68,26 @@ export function validateRecipientForChain(
     }
   }
 
-  if (chainType === 'bitcoin') return validateBitcoinRecipient(value)
-  if (chainType === 'solana') return validateSolanaRecipient(value)
+  if (chainType === 'bitcoin') {
+    if (validateSolanaRecipient(value).isValid) {
+      return {
+        isValid: false,
+        isMismatch: true,
+        reason: 'Solana address detected. Enter a valid Bitcoin address.',
+      }
+    }
+    return validateBitcoinRecipient(value)
+  }
+  if (chainType === 'solana') {
+    if (validateBitcoinRecipient(value).isValid) {
+      return {
+        isValid: false,
+        isMismatch: true,
+        reason: 'Bitcoin address detected. Enter a valid Solana address.',
+      }
+    }
+    return validateSolanaRecipient(value)
+  }
 
   return { isValid: true }
 }

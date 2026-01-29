@@ -35,7 +35,11 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { getChainType, getNonEvmChainLabel } from 'common/chains/nonEvm'
 import { getNonEvmAllowlist } from 'common/chains/nonEvmTokenAllowlist'
 import { QrScanModal } from 'common/pure/QrScanModal'
-import { validateRecipientForChain } from 'common/recipient/nonEvmRecipientValidation'
+import {
+  validateBitcoinRecipient,
+  validateRecipientForChain,
+  validateSolanaRecipient,
+} from 'common/recipient/nonEvmRecipientValidation'
 
 import { autofocus } from '../../utils/autofocus'
 import ChainPrefixWarning from '../ChainPrefixWarning'
@@ -215,6 +219,10 @@ const LabelText = styled.span`
 
 const SOLANA_MAX_FONT_SIZE = 22
 const SOLANA_MIN_FONT_SIZE = 18
+const stripRecipientNoise = (input: string): string => {
+  const withoutWhitespace = input.replace(/\s+/g, '')
+  return withoutWhitespace.replace(/^[("'\\[{<]+/, '').replace(/[)"'\]}>.,;:!?]+$/, '')
+}
 
 export function AddressInputPanel({
   id,
@@ -317,7 +325,7 @@ export function AddressInputPanel({
     (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       setChainPrefixWarning('')
-      let value = input.replace(/\s+/g, '')
+      let value = stripRecipientNoise(input)
 
       if (isPrefixedAddress(value)) {
         const { prefix, address } = parsePrefixedAddress(value)
@@ -336,23 +344,6 @@ export function AddressInputPanel({
     },
     [onChange, addressPrefix],
   )
-
-  const handlePaste = useCallback(async () => {
-    if (!navigator?.clipboard?.readText) return
-
-    try {
-      const text = await navigator.clipboard.readText()
-      if (text) {
-        onChange(text.trim())
-      }
-    } catch (error) {
-      console.debug('[AddressInputPanel] Failed to read clipboard', error)
-    }
-  }, [onChange])
-  const handlePasteFromModal = useCallback((): void => {
-    void handlePaste()
-    requestAnimationFrame(() => inputRef.current?.focus())
-  }, [handlePaste])
 
   const replaceQrScanStream = useCallback(
     (nextStream: MediaStream | null): void => {
@@ -420,6 +411,21 @@ export function AddressInputPanel({
 
     return withoutChainId
   }, [])
+  const handlePaste = useCallback(async () => {
+    if (!navigator?.clipboard?.readText) return
+
+    try {
+      const text = await navigator.clipboard.readText()
+      if (text) {
+        const normalized = stripRecipientNoise(normalizeScannedValue(text))
+        if (normalized) {
+          onChange(normalized)
+        }
+      }
+    } catch (error) {
+      console.debug('[AddressInputPanel] Failed to read clipboard', error)
+    }
+  }, [normalizeScannedValue, onChange])
   const handleOpenQrScan = useCallback(() => {
     setQrScanError(null)
     setIsQrScanOpen(true)
@@ -434,6 +440,14 @@ export function AddressInputPanel({
     (scannedValue: string): boolean => {
       const normalizedValue = normalizeScannedValue(scannedValue)
       if (chainType !== 'evm') {
+        if (chainType === 'solana' && validateBitcoinRecipient(normalizedValue).isValid) {
+          setQrScanError(t`Bitcoin address detected. Scan a valid Solana address.`)
+          return false
+        }
+        if (chainType === 'bitcoin' && validateSolanaRecipient(normalizedValue).isValid) {
+          setQrScanError(t`Solana address detected. Scan a valid Bitcoin address.`)
+          return false
+        }
         const validation = validateRecipientForChain(chainId, normalizedValue)
         if (!validation.isValid) {
           const chainLabel = chainId != null ? getNonEvmChainLabel(chainId) : undefined
@@ -616,7 +630,6 @@ export function AddressInputPanel({
           isOpen={isQrScanOpen}
           onDismiss={handleCloseQrScan}
           onScan={handleQrScanResult}
-          onPaste={handlePasteFromModal}
           stream={qrScanStream}
           onRequestStream={requestQrScanStream}
           errorMessage={qrScanError}

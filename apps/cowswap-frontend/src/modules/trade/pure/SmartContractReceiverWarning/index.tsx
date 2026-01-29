@@ -10,7 +10,7 @@ import styled from 'styled-components/macro'
 
 import { getNonEvmChainLabel } from 'common/chains/nonEvm'
 
-const ConfirmCheckbox = styled.label`
+const ConfirmCheckbox = styled.label<{ $checked: boolean }>`
   border: 0;
   display: flex;
   align-items: center;
@@ -23,15 +23,15 @@ const ConfirmCheckbox = styled.label`
   font-size: 14px;
   transition: all 0.2s ease-in-out;
   background: transparent;
-  color: var(${UI.COLOR_INFO_TEXT});
+  color: ${({ $checked }) => ($checked ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_INFO_TEXT})`)};
 
   &:hover {
-    border-color: var(${UI.COLOR_INFO_TEXT});
+    border-color: ${({ $checked }) => ($checked ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_INFO_TEXT})`)};
   }
 
   input {
-    accent-color: var(${UI.COLOR_INFO_TEXT});
-    color: var(${UI.COLOR_INFO_TEXT});
+    accent-color: ${({ $checked }) => ($checked ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_INFO_TEXT})`)};
+    color: ${({ $checked }) => ($checked ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_INFO_TEXT})`)};
   }
 `
 
@@ -62,13 +62,13 @@ export function SmartContractReceiverWarning({
   const chainName = isEvmChain ? CHAIN_INFO[chainId as SupportedChainId].label : getNonEvmChainLabel(chainId) || 'this'
   return (
     <StyledInlineBanner
-      bannerType={StatusColorVariant.Info}
+      bannerType={checked ? StatusColorVariant.Success : StatusColorVariant.Info}
       orientation={BannerOrientation.Horizontal}
       breakWord
       hideIcon={true}
     >
       <div>
-        <ConfirmCheckbox>
+        <ConfirmCheckbox $checked={checked}>
           <input type="checkbox" checked={checked} onChange={(event) => toggle(event.target.checked)} />{' '}
           <Trans>I confirm this {chainName} address is correct.</Trans>
         </ConfirmCheckbox>

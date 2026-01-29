@@ -74,35 +74,6 @@ const ErrorText = styled.p`
   color: var(${UI.COLOR_DANGER});
 `
 
-const FallbackActions = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 6px;
-`
-
-const FallbackButton = styled.button`
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
-  border-radius: 999px;
-  background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_TEXT});
-  font-size: 13px;
-  padding: 8px 14px;
-  cursor: pointer;
-  min-height: 36px;
-  transition: background-color var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    background: var(${UI.COLOR_PAPER_DARKER});
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(${UI.COLOR_PRIMARY});
-    outline-offset: 2px;
-  }
-`
-
 const ViewfinderOverlay = styled.div`
   position: absolute;
   inset: 0;
@@ -292,7 +263,6 @@ export interface QrScanModalProps {
   isOpen: boolean
   onDismiss: () => void
   onScan: (value: string) => boolean
-  onPaste?: () => void
   stream?: MediaStream | null
   onRequestStream?: (deviceId?: string | null) => Promise<MediaStream | null>
   errorMessage?: string | null
@@ -305,7 +275,6 @@ export function QrScanModal({
   isOpen,
   onDismiss,
   onScan,
-  onPaste,
   stream,
   onRequestStream,
   errorMessage,
@@ -331,14 +300,8 @@ export function QrScanModal({
   const hasExternalStream = typeof stream !== 'undefined' || typeof onRequestStream !== 'undefined'
 
   const displayError = localError ?? errorMessage
-  const hasCameraError =
-    cameraStatus === 'denied' ||
-    cameraStatus === 'no-camera' ||
-    cameraStatus === 'unavailable' ||
-    cameraStatus === 'failed'
   const showStateOverlay = cameraStatus !== 'ready'
   const showControls = cameraStatus === 'ready'
-  const showFallbackActions = Boolean(onPaste) && (hasCameraError || Boolean(displayError))
 
   const cameraStatusMessage = useMemo((): string => {
     switch (cameraStatus) {
@@ -569,11 +532,6 @@ export function QrScanModal({
     }
   }, [activeDeviceId, onRequestStream, videoDevices])
 
-  const handlePasteAction = useCallback((): void => {
-    onPaste?.()
-    onDismiss()
-  }, [onDismiss, onPaste])
-
   return (
     <QrModal isOpen={isOpen} onDismiss={onDismiss} maxWidth={400}>
       <HeaderRow>
@@ -631,13 +589,6 @@ export function QrScanModal({
             </PrivacyText>
           </>
         ) : null}
-        {showFallbackActions && (
-          <FallbackActions>
-            <FallbackButton type="button" onClick={handlePasteAction}>
-              <Trans>Paste address</Trans>
-            </FallbackButton>
-          </FallbackActions>
-        )}
       </ContentWrapper>
     </QrModal>
   )
