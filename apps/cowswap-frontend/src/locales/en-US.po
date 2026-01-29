@@ -166,6 +166,14 @@ msgstr "Value may be zero due to missing token price information"
 msgid "Type"
 msgstr "Type"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
+msgid "You don't have any orders at the moment."
+msgstr "You don't have any orders at the moment."
+
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "Active referrals"
+msgstr "Active referrals"
+
 #: apps/cowswap-frontend/src/modules/usdAmount/apis/getBffUsdPrice.ts
 msgid "Unexpected response from BFF: {resStatus}"
 msgstr "Unexpected response from BFF: {resStatus}"
@@ -1431,8 +1439,12 @@ msgid "Partner fee can not be more than {PARTNER_FEE_MAX_BPS} BPS!"
 msgstr "Partner fee can not be more than {PARTNER_FEE_MAX_BPS} BPS!"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensContent/index.tsx
-msgid "Manage Token Lists"
-msgstr "Manage Token Lists"
+#~ msgid "Manage Token Lists"
+#~ msgstr "Manage Token Lists"
+
+#: apps/cowswap-frontend/src/modules/affiliate/ui/ReferralCodeModal/ReferralStatusMessages.tsx
+msgid "Already linked to a referral code"
+msgstr "Already linked to a referral code"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "No results found"
@@ -3761,8 +3773,12 @@ msgstr "This could have happened due to the lack of internet or the release of a
 #~ msgstr "For your convenience, token approval and order placement will be bundled into a single transaction, streamlining your experience!"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "No open orders"
-msgstr "No open orders"
+#~ msgid "No open orders"
+#~ msgstr "No open orders"
+
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "No rewards to claim"
+msgstr "No rewards to claim"
 
 #: libs/common-utils/src/tooltips.ts
 #~ msgid "Maximum tokens you'll sell."
@@ -4398,6 +4414,10 @@ msgstr "12 Hours"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "signatures are"
 msgstr "signatures are"
+
+#: apps/cowswap-frontend/src/modules/affiliate/ui/ReferralCodeModal/controller.helpers.tsx
+msgid "This wallet isn’t eligible for that code."
+msgstr "This wallet isn’t eligible for that code."
 
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/yieldTradeButtonsMap.tsx
 msgid "Use the Swap tab for trades that don't involve an LP token."
@@ -5260,6 +5280,15 @@ msgstr "Claimed"
 msgid "FREE order placement and cancellation"
 msgstr "FREE order placement and cancellation"
 
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "Enter a code with 6-12 characters (A-Z, 0-9, - or _)."
+msgstr "Enter a code with 6-12 characters (A-Z, 0-9, - or _)."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
+msgid "No expired orders found"
+msgstr "No expired orders found"
+
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidget/TradeWidgetForm.tsx
 msgid "You cannot edit this field when selling"
 msgstr "You cannot edit this field when selling"
@@ -5551,7 +5580,6 @@ msgid "Linked"
 msgstr "Linked"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
-#: libs/common-const/src/common.ts
 msgid "Rewards hub - Affiliate"
 msgstr "Rewards hub - Affiliate"
 
@@ -5833,6 +5861,14 @@ msgstr "Post Hooks"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "Not compatible with current wallet type"
 msgstr "Not compatible with current wallet type"
+
+#: apps/cowswap-frontend/src/pages/Account/index.tsx
+msgid "Rewards hub - My rewards"
+msgstr "Rewards hub - My rewards"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
+msgid "Swap from"
+msgstr "Swap from"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #~ msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of<2>{parts} parts</2>placed every<3>{partDurationDisplay}</3>, the total time to complete the order is<4>{totalDurationDisplay}</4>. Each limit order remains open for<5>{partDurationDisplay}</5>until the next part becomes active."
@@ -6347,6 +6383,14 @@ msgstr "Order cannot be filled due to insufficient balance on the current accoun
 msgid "required"
 msgstr "required"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Fetching balances"
+msgstr "Fetching balances"
+
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "This code is taken. Generate another one."
+msgstr "This code is taken. Generate another one."
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
 msgid "Wallet"
 msgstr "Wallet"
@@ -6855,8 +6899,12 @@ msgid "Lower overall network costs"
 msgstr "Lower overall network costs"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
-msgid "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
-msgstr "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgid "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+#~ msgstr "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+
+#: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
+msgid "Next $10 reward"
+msgstr "Next $10 reward"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderWarning.tsx
 msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more"
