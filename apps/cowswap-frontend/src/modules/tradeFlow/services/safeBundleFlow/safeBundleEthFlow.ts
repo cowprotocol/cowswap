@@ -11,7 +11,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, type PostOrderParams, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
-import { removePermitHookFromAppData } from 'modules/appData'
+import { removePermitHookFromAppData, uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildWrapTx } from 'modules/operations/bundle/buildWrapTx'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -99,6 +99,13 @@ export async function safeBundleEthFlow(
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: post order')
+
+    await uploadAppDataDocOrderbookApi({
+      appDataKeccak256: orderParams.appData.appDataKeccak256,
+      fullAppData: orderParams.appData.fullAppData,
+      chainId,
+      env: tradingSdk.traderParams.env,
+    })
 
     const {
       orderId,

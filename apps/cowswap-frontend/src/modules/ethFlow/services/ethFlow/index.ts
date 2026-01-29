@@ -6,11 +6,12 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { SigningSteps } from 'entities/trade'
+import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
-import { removePermitHookFromAppData } from 'modules/appData'
+import { removePermitHookFromAppData, uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -51,8 +52,7 @@ export async function ethFlow({
     tradeQuoteState,
     bridgeQuoteAmounts,
   } = tradeContext
-  const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId } =
-    ethFlowContext
+  const { contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId } = ethFlowContext
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
   const { account, recipientAddressOrName, kind } = orderParams
@@ -107,6 +107,13 @@ export async function ethFlow({
         setSigningStep('2/2', SigningSteps.OrderSigning)
       },
     }
+
+    await uploadAppDataDocOrderbookApi({
+      appDataKeccak256: orderParams.appData.appDataKeccak256,
+      fullAppData: orderParams.appData.fullAppData,
+      chainId,
+      env: tradingSdk.traderParams.env,
+    })
 
     const {
       orderId,
@@ -188,16 +195,13 @@ export async function ethFlow({
     // TODO: maybe move this into addPendingOrderStep?
     addTransaction({ hash: txHash!, ethFlow: { orderId: order.id, subType: 'creation' } })
 
-    logTradeFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
-    uploadAppData({ chainId: context.chainId, orderId, appData })
-
-    logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
+    logTradeFlow('ETH FLOW', 'STEP 6: show UI of the successfully sent transaction', orderId)
     tradeConfirmActions.onSuccess(orderId)
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
   } catch (error) {
-    logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
+    logTradeFlow('ETH FLOW', 'STEP 7: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

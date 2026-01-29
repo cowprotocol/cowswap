@@ -9,7 +9,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
-import { removePermitHookFromAppData } from 'modules/appData'
+import { removePermitHookFromAppData, uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -70,6 +70,13 @@ export async function safeBundleApprovalFlow(
     })
 
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
+
+    await uploadAppDataDocOrderbookApi({
+      appDataKeccak256: orderParams.appData.appDataKeccak256,
+      fullAppData: orderParams.appData.fullAppData,
+      chainId,
+      env: tradingSdk.traderParams.env,
+    })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
     const {
