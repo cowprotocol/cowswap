@@ -110,7 +110,8 @@
       ],
       "outputs": [
         "{projectRoot}/src/locales/*.js"
-      ]
+      ],
+      "cache": true
     },
     "i18n:extract": {
       "executor": "nx:run-commands",
@@ -118,12 +119,13 @@
         "command": "cross-env NODE_ENV=development npx lingui extract --locale en-US"
       },
       "inputs": [
-        "{workspaceRoot}/apps/**/*.{ts,tsx,jsx}",
-        "{workspaceRoot}/libs/**/*.{ts,tsx,jsx}"
+        "{projectRoot}/src/**/*.{ts,tsx,jsx}",
+        "{workspaceRoot}/libs/*/src/**/*.{ts,tsx,jsx}"
       ],
       "outputs": [
-        "{projectRoot}/src/locales/*.po"
-      ]
+        "{projectRoot}/src/locales/en-US.po"
+      ],
+      "cache": true
     }
   },
   "tags": []
