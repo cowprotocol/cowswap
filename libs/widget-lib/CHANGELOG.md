@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.3...widget-lib-v1.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.0
+    * @cowprotocol/iframe-transport bumped to 2.0.0
+
 ## [0.22.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.2...widget-lib-v0.22.3) (2026-01-26)
 
 
