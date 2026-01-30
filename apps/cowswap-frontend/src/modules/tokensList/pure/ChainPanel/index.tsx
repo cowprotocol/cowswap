@@ -5,6 +5,10 @@ import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
+import { Field } from 'legacy/state/types'
+
+import { TradeType } from 'modules/trade/types'
+
 import { ChainPanelHeader } from './ChainPanelHeader'
 import { filterChainsByQuery, getEmptyStateFlags } from './chainPanelUtils'
 import * as styledEl from './styled'
@@ -20,6 +24,9 @@ export interface ChainPanelProps {
   onSelectChain(chain: ChainInfo): void
   variant?: 'default' | 'fullscreen'
   onClose?(): void
+  tradeType?: TradeType
+  field?: Field
+  counterChainId?: ChainInfo['id']
 }
 
 export function ChainPanel({
@@ -28,6 +35,9 @@ export function ChainPanel({
   onSelectChain,
   variant = 'default',
   onClose,
+  tradeType,
+  field,
+  counterChainId,
 }: ChainPanelProps): ReactNode {
   const [chainQuery, setChainQuery] = useState('')
   const chains = chainsState?.chains ?? EMPTY_CHAINS
@@ -64,6 +74,9 @@ export function ChainPanel({
           onSelectChain={onSelectChain}
           disabledChainIds={chainsState?.disabledChainIds}
           loadingChainIds={chainsState?.loadingChainIds}
+          tradeType={tradeType}
+          field={field}
+          counterChainId={counterChainId}
         />
         {showUnavailableState && <styledEl.EmptyState>{t`No networks available for this trade.`}</styledEl.EmptyState>}
         {showSearchEmptyState && (

@@ -4,6 +4,10 @@ import { ChainInfo } from '@cowprotocol/cow-sdk'
 
 import { createPortal } from 'react-dom'
 
+import { Field } from 'legacy/state/types'
+
+import { TradeType } from 'modules/trade/types'
+
 import { MobileChainPanelCard, MobileChainPanelOverlay } from './styled'
 
 import { ChainPanel } from '../../pure/ChainPanel'
@@ -14,6 +18,9 @@ interface MobileChainPanelPortalProps {
   chainsToSelect: ChainsToSelectState | undefined
   onSelectChain: (chain: ChainInfo) => void
   onClose(): void
+  tradeType?: TradeType
+  field?: Field
+  counterChainId?: ChainInfo['id']
 }
 
 export function MobileChainPanelPortal({
@@ -21,6 +28,9 @@ export function MobileChainPanelPortal({
   chainsToSelect,
   onSelectChain,
   onClose,
+  tradeType,
+  field,
+  counterChainId,
 }: MobileChainPanelPortalProps): ReactNode {
   if (typeof document === 'undefined') {
     return null
@@ -38,6 +48,9 @@ export function MobileChainPanelPortal({
           }}
           variant="fullscreen"
           onClose={onClose}
+          tradeType={tradeType}
+          field={field}
+          counterChainId={counterChainId}
         />
       </MobileChainPanelCard>
     </MobileChainPanelOverlay>,

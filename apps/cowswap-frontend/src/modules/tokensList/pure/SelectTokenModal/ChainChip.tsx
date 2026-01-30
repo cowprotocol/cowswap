@@ -8,7 +8,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import * as styledEl from './mobileChainSelector.styled'
 
-import { getChainAccent } from '../ChainsSelector'
+import { getChainAccent } from '../ChainsSelector/getChainAccent'
 
 export interface ChainChipProps {
   chain: ChainInfo
@@ -19,6 +19,7 @@ export interface ChainChipProps {
   isTooltipVisible: boolean
   onDisabledClick(chainId: number): void
   onHideTooltip(): void
+  clickEvent?: string
 }
 
 export function ChainChip({
@@ -30,6 +31,7 @@ export function ChainChip({
   isTooltipVisible,
   onDisabledClick,
   onHideTooltip,
+  clickEvent,
 }: ChainChipProps): ReactNode {
   const { t } = useLingui()
   const { darkMode } = useTheme()
@@ -67,6 +69,7 @@ export function ChainChip({
       aria-pressed={isActive}
       aria-disabled={isDisabled || isLoading}
       title={isDisabled || isLoading ? tooltip : undefined}
+      data-click-event={clickEvent}
     >
       <img src={logoSrc} alt={chain.label} loading="lazy" />
     </styledEl.ChainChipButton>
