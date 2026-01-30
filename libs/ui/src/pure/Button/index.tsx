@@ -28,7 +28,9 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   border-radius: 16px;
   position: relative;
   min-height: 58px;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0;
   flex-flow: row wrap;
 
@@ -125,8 +127,11 @@ export const ButtonOutlined = styled.button<{ disabled?: boolean; margin?: strin
   padding: 5px 10px;
   min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : 'initial')};
   margin: ${({ margin }) => margin || '0'};
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out,
-    border var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    border var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -255,8 +260,8 @@ export const ButtonStar = ({
   size = '18px',
   stroke,
   ...rest
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: { fill?: string; size?: string; stroke: string } & HTMLAttributes<HTMLDivElement>) => {
   return (
     <HoverIcon {...rest}>

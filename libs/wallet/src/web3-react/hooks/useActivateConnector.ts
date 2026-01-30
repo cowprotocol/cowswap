@@ -48,8 +48,8 @@ export function useActivateConnector({
         await connector.activate(skipNetworkChanging ? undefined : getCurrentChainIdFromUrl())
 
         afterActivation(isHardWareWallet, connectionType)
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error(`[tryActivation] web3-react connection error`, error)
 

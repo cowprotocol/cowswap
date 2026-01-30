@@ -7,7 +7,7 @@ import { CheckEthereumTransactions } from '../types'
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function handleTransactionReplacement(
   transaction: EnhancedTransactionDetails,
-  params: CheckEthereumTransactions
+  params: CheckEthereumTransactions,
 ) {
   const { chainId, dispatch } = params
   const { hash } = transaction
