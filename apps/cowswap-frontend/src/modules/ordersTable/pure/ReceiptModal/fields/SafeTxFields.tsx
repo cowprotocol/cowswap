@@ -7,6 +7,7 @@ import styled from 'styled-components/macro'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 
 import { FieldLabel } from './FieldLabel'
+
 import { Field } from '../ReceiptModal.styled'
 
 const SafeIcon = styled.img`

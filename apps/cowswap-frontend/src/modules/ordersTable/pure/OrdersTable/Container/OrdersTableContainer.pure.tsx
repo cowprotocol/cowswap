@@ -8,10 +8,10 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 
 import * as styledEl from './OrdersTableContainer.styled'
 
-import { OrderTabId } from '../../../const/tabs'
-import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
-import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
-import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDisplayProtocolFeeBanner'
+import { useShouldDisplayProtocolFeeBanner } from '../../../shared/hooks/useShouldDisplayProtocolFeeBanner'
+import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
+import { HistoryStatusFilter } from '../../../state/useFilteredOrders'
+import { useOrdersTableState } from '../../../state/useOrdersTableState'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
 

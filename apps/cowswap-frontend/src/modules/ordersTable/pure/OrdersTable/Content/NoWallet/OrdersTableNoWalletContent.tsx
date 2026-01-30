@@ -9,7 +9,7 @@ import SVG from 'react-inlinesvg'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
-import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
+import { useOrdersTableState } from '../../../../state/useOrdersTableState'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 
 export function OrdersTableNoWalletContent(): ReactNode {

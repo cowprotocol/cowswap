@@ -1,7 +1,7 @@
+import { Media, UI } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
-import { Media, UI } from '@cowprotocol/ui'
 
 export const Tabs = styled.div`
   display: flex;

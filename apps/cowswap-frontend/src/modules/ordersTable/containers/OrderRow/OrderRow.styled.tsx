@@ -1,8 +1,9 @@
-import { HelpTooltip, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { RateWrapper } from 'common/pure/RateInfo'
+
 import { TableHeaderWrapper } from '../../pure/OrdersTable/Header/OrdersTableHeader.styled'
 
 export const TableRow = styled(TableHeaderWrapper)<{

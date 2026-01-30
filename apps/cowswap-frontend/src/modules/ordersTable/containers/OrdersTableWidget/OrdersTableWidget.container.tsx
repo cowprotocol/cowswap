@@ -9,17 +9,24 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon, SelectContainer, Select } from './OrdersTableWidget.styled'
+import {
+  SearchIcon,
+  SearchInput,
+  SearchInputContainer,
+  StyledCloseIcon,
+  SelectContainer,
+  Select,
+} from './OrdersTableWidget.styled'
 
-import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
-import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
-import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
-import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import { OrdersTableParams } from '../../ordersTable.types'
-import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
-import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
-import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
+import { tableItemsToOrders } from '../../shared/utils/orderTableGroupUtils'
+import { OrdersTableParams } from '../../state/ordersTable.types'
+import { OrdersTableStateUpdater } from '../../state/OrdersTable.updater'
+import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { useGetBuildOrdersTableUrl } from '../../state/url/useGetBuildOrdersTableUrl'
+import { HistoryStatusFilter } from '../../state/useFilteredOrders'
+import { useOrdersTableState } from '../../state/useOrdersTableState'
+import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
 
 function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {

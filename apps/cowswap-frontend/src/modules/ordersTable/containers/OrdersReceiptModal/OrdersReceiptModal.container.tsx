@@ -20,7 +20,7 @@ interface OrdersReceiptModalProps {
   pendingOrdersPrices: PendingOrdersPrices
 }
 
-export function OrdersReceiptModal(props: OrdersReceiptModalProps): ReactNode {
+export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalProps): ReactNode {
   // TODO: can we get selected order from URL by id?
   const order = useSelectedOrder()
   const { chainId } = useWalletInfo()
@@ -59,8 +59,6 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps): ReactNode {
   })
 
   // Executes at price
-  const { pendingOrdersPrices } = props
-
   const { estimatedExecutionPrice = null } = pendingOrdersPrices[order.id] || {}
 
   return (

@@ -11,11 +11,11 @@ import { Rows, TableBox, TableInner } from './OrdersTable.styled'
 import { OrdersTablePagination } from './Pagination/OrdersTablePagination.pure'
 import { OrdersTableRow } from './Row/OrdersTableRow.pure'
 
-import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
-import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
-import { useOrdersTableState } from '../../hooks/useOrdersTableState'
-import { TabOrderTypes } from '../../ordersTable.types'
-import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
+import { getParsedOrderFromTableItem, isParsedOrder } from '../../shared/utils/orderTableGroupUtils'
+import { TabOrderTypes } from '../../state/ordersTable.types'
+import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { useGetBuildOrdersTableUrl } from '../../state/url/useGetBuildOrdersTableUrl'
+import { useOrdersTableState } from '../../state/useOrdersTableState'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId

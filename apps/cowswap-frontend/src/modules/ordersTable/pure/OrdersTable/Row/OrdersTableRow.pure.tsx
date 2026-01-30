@@ -2,14 +2,15 @@ import React, { ReactNode, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { OrderTabId } from '../../../const/tabs'
-import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
-import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
-import { useGetPendingOrdersPermitValidityState } from '../../../hooks/usePendingOrderPermitValidity'
-import { OrderTableItem } from '../../../ordersTable.types'
-import { getOrderParams } from '../../../utils/getOrderParams'
-import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
+
+import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
+import { getOrderParams } from '../../../shared/utils/getOrderParams'
+import { getParsedOrderFromTableItem, isParsedOrder } from '../../../shared/utils/orderTableGroupUtils'
+import { OrderTableItem } from '../../../state/ordersTable.types'
+import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/usePendingOrderPermitValidity'
+import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
+import { useOrdersTableState } from '../../../state/useOrdersTableState'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId

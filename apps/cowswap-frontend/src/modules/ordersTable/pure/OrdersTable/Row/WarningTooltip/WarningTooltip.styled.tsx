@@ -2,8 +2,6 @@ import { HelpTooltip, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { RateWrapper } from 'common/pure/RateInfo'
-
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   --height: 28px;
   margin: 0;

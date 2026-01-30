@@ -23,7 +23,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from '../../containers/OrderRow/OrderRow.styled'
-import { useFeeAmountDifference } from '../../hooks/useFeeAmountDifference'
+import { useFeeAmountDifference } from '../../shared/hooks/useFeeAmountDifference'
 import { OrderEstimatedExecutionPrice } from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 import { TwapOrderStatus } from '../TwapOrderStatus/TwapOrderStatus.pure'
 

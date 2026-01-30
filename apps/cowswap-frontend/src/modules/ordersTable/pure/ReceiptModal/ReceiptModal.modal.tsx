@@ -33,16 +33,16 @@ import { CurrencyField } from './fields/CurrencyField'
 import { DateField } from './fields/DateField'
 import { FeeField } from './fields/FeeField'
 import { FieldLabel } from './fields/FieldLabel'
-import { SafeTxFields } from './fields/SafeTxFields'
 import { FilledField } from './fields/FilledField'
 import { IdField } from './fields/IdField'
 import { OrderTypeField } from './fields/OrderTypeField'
 import { PriceField } from './fields/PriceField'
+import { SafeTxFields } from './fields/SafeTxFields'
 import { StatusField } from './fields/StatusField'
-import * as styledEl from './ReceiptModal.styled'
 import { SurplusField } from './fields/SurplusField'
+import * as styledEl from './ReceiptModal.styled'
 
-import { AlternativeOrderModalContext } from '../../ordersTable.types'
+import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 
 interface ReceiptProps {
   isOpen: boolean

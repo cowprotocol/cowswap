@@ -11,12 +11,12 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import type { PendingOrderPrices } from 'modules/orders'
 
-import { ORDERS_TABLE_PAGE_SIZE } from '../../../../const/tabs'
 import { OrderRow } from '../../../../containers/OrderRow/OrderRow.container'
-import { OrderActions, OrderTableGroup } from '../../../../ordersTable.types'
-import { getOrderParams } from '../../../../utils/getOrderParams'
-import { OrdersTablePagination } from '../../Pagination/OrdersTablePagination.pure'
+import { getOrderParams } from '../../../../shared/utils/getOrderParams'
+import { OrderActions, OrderTableGroup } from '../../../../state/ordersTable.types'
+import { ORDERS_TABLE_PAGE_SIZE } from '../../../../state/tabs/ordersTableTabs.constants'
 import { TwapStatusAndToggle } from '../../../TwapStatusAndToggle/TwapStatusAndToggle.pure'
+import { OrdersTablePagination } from '../../Pagination/OrdersTablePagination.pure'
 
 const GroupBox = styled.div``
 

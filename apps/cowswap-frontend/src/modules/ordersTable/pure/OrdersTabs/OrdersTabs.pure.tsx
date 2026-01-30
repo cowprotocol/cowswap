@@ -8,13 +8,12 @@ import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import * as styledEl from './OrdersTabs.styled'
-
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { OrderTab, OrderTabId } from '../../const/tabs'
-import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
+import * as styledEl from './OrdersTabs.styled'
 
+import { OrderTab, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { useGetBuildOrdersTableUrl } from '../../state/url/useGetBuildOrdersTableUrl'
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]

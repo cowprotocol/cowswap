@@ -9,8 +9,8 @@ import { isCreating, isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { isOffchainOrder, ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { receiptAtom, updateReceiptAtom } from '../../state/orderReceiptAtom'
-import { AlternativeOrderModalContext } from '../../ordersTable.types'
+import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
+import { receiptAtom, updateReceiptAtom } from '../../state/receip/ordersTableReceip.atoms'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

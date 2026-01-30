@@ -1,8 +1,7 @@
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import * as styledEl from '../ReceiptModal.styled'
-
 import { OrderStatusBox } from '../../OrderStatusBox/OrderStatusBox.pure'
+import * as styledEl from '../ReceiptModal.styled'
 
 export type Props = {
   order: ParsedOrder

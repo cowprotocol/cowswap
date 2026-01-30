@@ -5,9 +5,8 @@ import { Trans } from '@lingui/react/macro'
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import * as styledEl from '../ReceiptModal.styled'
-
 import { ProgressBar, ProgressBarWrapper } from '../../../containers/OrderRow/OrderRow.styled'
+import * as styledEl from '../ReceiptModal.styled'
 
 interface Props {
   order: ParsedOrder

@@ -23,11 +23,11 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { WarningTooltip } from '../../pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import * as styledEl from './OrderRow.styled'
+import { TableRow } from './OrderRow.styled'
 import { getActivityUrl, shouldShowDashForExpiration } from './utils'
 
-import { usePricesDifference } from '../../hooks/usePricesDifference'
+import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem/CurrencyAmountItem.pure'
 import { OrderFillsAt } from '../../pure/OrderFillsAt/OrderFillsAt.pure'
 import { OrderFillsAtWithDistance } from '../../pure/OrderFillsAtWithDistance/OrderFillsAtWithDistance.pure'
@@ -37,12 +37,12 @@ import {
   TableRowCheckbox,
   TableRowCheckboxWrapper,
 } from '../../pure/OrdersTable/Row/Checkbox/Checkbox.styled'
-import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
-import { OrderActions } from '../../ordersTable.types'
-import { OrderParams } from '../../utils/getOrderParams'
-import { TableRow } from './OrderRow.styled'
 import { OrderRowWarningEstimatedPrice } from '../../pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure'
-import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
+import { WarningTooltip } from '../../pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
+import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
+import { usePricesDifference } from '../../shared/hooks/usePricesDifference'
+import { OrderParams } from '../../shared/utils/getOrderParams'
+import { OrderActions } from '../../state/ordersTable.types'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000

@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit, FileText, MoreVertical, Repeat, Trash2 } from 'react-feather'
 
-import { AlternativeOrderModalContext } from '../../ordersTable.types'
+import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 
 export interface OrderContextMenuProps {
   openReceipt: Command

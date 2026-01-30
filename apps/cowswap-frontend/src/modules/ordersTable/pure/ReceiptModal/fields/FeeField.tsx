@@ -5,9 +5,8 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { getFeeToken } from '../../../shared/utils/getFeeToken'
 import * as styledEl from '../ReceiptModal.styled'
-
-import { getFeeToken } from '../../../utils/getFeeToken'
 
 export type Props = { order: ParsedOrder }
 
