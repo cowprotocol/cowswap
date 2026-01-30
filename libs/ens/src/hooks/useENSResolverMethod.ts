@@ -10,18 +10,18 @@ import { useENSResolverContract } from './useENSResolverContract'
 
 export function useENSResolverMethod(
   method: 'addr' | 'name' | 'contenthash',
-  ensNodeArgument: string | undefined
+  ensNodeArgument: string | undefined,
 ): { data: string | undefined; isLoading: boolean } {
   const { data: resolverAddress, isLoading: resolverAddressLoading } = useENSResolver(ensNodeArgument)
 
   const resolverContract = useENSResolverContract(
-    resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined
+    resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined,
   )
 
   const { data, isLoading } = useSWR(
     resolverContract && ensNodeArgument ? ['useENSResolverMethod', method, resolverContract, ensNodeArgument] : null,
     async ([, _method, contract, arg]) => contract.callStatic[_method](arg),
-    SWR_NO_REFRESH_OPTIONS
+    SWR_NO_REFRESH_OPTIONS,
   )
 
   return useMemo(() => {

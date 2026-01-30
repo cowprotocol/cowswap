@@ -25,13 +25,13 @@ export function useHasNotificationSubscription(): UseHasNotificationSubscription
   const result = useMemo(() => {
     // Don't show loading state if no account (user not connected)
     const isLoading = !!account && !authorization.isAuthChecked
-    
+
     const channels = {
       telegram: isTgSubscribed,
     }
 
     const hasSubscription = channels.telegram
-    
+
     return {
       hasSubscription,
       isLoading,

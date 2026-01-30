@@ -22,13 +22,10 @@ export function validateSlippage(input: FlexibleSlippageConfig | undefined): str
   const configs = resolveFlexibleConfigValues(input)
 
   const errors = configs.flatMap(({ min, max, defaultValue }) => {
-    const minSlippageError = min && min < MIN_SLIPPAGE_BPS
-      ? `Min slippage can't be less than 0 BPS!`
-      : undefined
+    const minSlippageError = min && min < MIN_SLIPPAGE_BPS ? `Min slippage can't be less than 0 BPS!` : undefined
 
-    const maxSlippageError = max && max > MAX_SLIPPAGE_BPS
-      ? `Max slippage can't be more than ${MAX_SLIPPAGE_BPS} BPS!`
-      : undefined
+    const maxSlippageError =
+      max && max > MAX_SLIPPAGE_BPS ? `Max slippage can't be more than ${MAX_SLIPPAGE_BPS} BPS!` : undefined
 
     const isMaxSlippageLessOrEqualToMin = typeof min === 'number' && typeof max === 'number' && max <= min
     const maxSlippageEqualsOrLessToMinError = isMaxSlippageLessOrEqualToMin
@@ -37,7 +34,9 @@ export function validateSlippage(input: FlexibleSlippageConfig | undefined): str
 
     const defaultSlippageError = validateDefaultValue(defaultValue, min, max)
 
-    return [minSlippageError, maxSlippageError, maxSlippageEqualsOrLessToMinError, defaultSlippageError].filter(isTruthy)
+    return [minSlippageError, maxSlippageError, maxSlippageEqualsOrLessToMinError, defaultSlippageError].filter(
+      isTruthy,
+    )
   })
 
   return errors.length > 0 ? errors : undefined

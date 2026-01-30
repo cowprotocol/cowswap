@@ -9,7 +9,6 @@ import { subgraphApiSDK } from '../../../../cowSdk'
 import { useNetworkId } from '../../../../state/network'
 import { Network } from '../../../../types'
 
-
 type RawVolumeItem = {
   timestamp: number
   volumeUsd: string
@@ -49,7 +48,7 @@ async function getLastHoursData(network: Network): Promise<RawVolumeItem[]> {
 
 async function getLastDaysData(
   period: VolumePeriod.WEEKLY | VolumePeriod.MONTHLY | VolumePeriod.YEARLY,
-  network: Network
+  network: Network,
 ): Promise<RawVolumeItem[]> {
   const days = {
     [VolumePeriod.WEEKLY]: 7 * 2,
@@ -63,7 +62,7 @@ async function getLastDaysData(
 
 export function buildVolumeData(
   _data: RawVolumeItem[],
-  volumePeriod: VolumePeriod
+  volumePeriod: VolumePeriod,
 ): {
   data: HistogramData[]
   currentVolume: number

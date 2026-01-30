@@ -14,7 +14,6 @@ import { twapTimeIntervalAtom } from '../state/twapOrderAtom'
 import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 import { TWAPOrder } from '../types'
 
-
 export function useTwapOrder(): TWAPOrder | null {
   const appDataInfo = useAtomValue(appDataInfoAtom)
   const { account } = useAtomValue(walletInfoAtom)
@@ -38,5 +37,14 @@ export function useTwapOrder(): TWAPOrder | null {
       span: 0,
       appData: appDataInfo?.appDataKeccak256 || getAppData().appDataKeccak256,
     }
-  }, [appDataInfo, account, inputCurrencyAmount, numberOfPartsValue, receiveAmountInfo, recipient, recipientAddress, timeInterval])
+  }, [
+    appDataInfo,
+    account,
+    inputCurrencyAmount,
+    numberOfPartsValue,
+    receiveAmountInfo,
+    recipient,
+    recipientAddress,
+    timeInterval,
+  ])
 }

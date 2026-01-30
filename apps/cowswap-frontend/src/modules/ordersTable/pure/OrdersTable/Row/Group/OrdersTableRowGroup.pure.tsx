@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
