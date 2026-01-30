@@ -4,13 +4,6 @@
   "sourceRoot": "libs/ui-utils/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/ui-utils"
-      }
-    },
     "publish": {
       "command": "node tools/scripts/publish.mjs ui {args.tag} {args.otp}",
       "dependsOn": ["build"]

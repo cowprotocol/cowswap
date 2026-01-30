@@ -1,7 +1,7 @@
-import { EnsAbi, EnsRegistrar } from '@cowprotocol/abis'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EnsAbi, EnsRegistrar } from '@cowprotocol/cowswap-abis'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import useSWR from 'swr'
@@ -14,6 +14,8 @@ const ENS_REGISTRAR_ADDRESSES: Record<SupportedChainId, string | null> = {
 }
 
 export function useENSRegistrarContract(): EnsRegistrar | undefined {
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const chainId = useWalletChainId()
 

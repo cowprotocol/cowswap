@@ -9,7 +9,7 @@ import { Trans } from '@lingui/macro'
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
 // TODO: Replace any with proper type definitions
-// eslint-disable-next-line max-lines-per-function, complexity, @typescript-eslint/no-explicit-any
+// eslint-disable-next-line complexity, @typescript-eslint/no-explicit-any
 export function swapErrorToUserReadableMessage(error: any): ReactNode {
   let reason: string | undefined
   while (error) {

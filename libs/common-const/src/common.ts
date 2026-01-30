@@ -131,26 +131,26 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
-  [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.MAINNET]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.GNOSIS_CHAIN]: null,
   [SupportedChainId.ARBITRUM_ONE]: null,
   [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.LENS]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.BNB]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.LINEA]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.AVALANCHE]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.LENS]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.BNB]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.LINEA]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.PLASMA]: null,
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'
 
 // fee threshold - should be greater than percentage, show warning
-export const FEE_SIZE_THRESHOLD = 10 // 10%
+export const FEE_SIZE_THRESHOLD = 10 as const // 10%
 
-export const MAXIMUM_ORDERS_TO_DISPLAY = 10
-export const AMOUNT_OF_ORDERS_TO_FETCH = 100
+export const MAXIMUM_ORDERS_TO_DISPLAY = 10 as const
+export const AMOUNT_OF_ORDERS_TO_FETCH = 100 as const
 
 // Start date of COW vesting for locked GNO
 export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')

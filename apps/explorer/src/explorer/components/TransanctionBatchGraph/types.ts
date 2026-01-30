@@ -6,7 +6,6 @@ import { Account, Contract, Trade, Transfer } from '../../../api/tenderly'
 import { SingleErc20State } from '../../../state/erc20'
 import { Network } from '../../../types'
 
-
 export enum TypeNodeOnTx {
   NetworkNode = 'networkNode',
   CowProtocol = 'cowProtocol',
@@ -60,7 +59,7 @@ export type BuildNodesFn = (
   txSettlement: Settlement,
   networkId: Network,
   heightSize: number,
-  layout: string
+  layout: string,
 ) => ElementDefinition[]
 
 export type ContractTrade = {

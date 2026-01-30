@@ -1,6 +1,13 @@
 import { useMemo } from 'react'
 
 import {
+  getEthFlowContractAddresses,
+  V_COW_CONTRACT_ADDRESS,
+  WRAPPED_NATIVE_CURRENCIES,
+} from '@cowprotocol/common-const'
+import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
   CoWSwapEthFlow,
   CoWSwapEthFlowAbi,
   Erc20,
@@ -11,14 +18,7 @@ import {
   vCowAbi,
   Weth,
   WethAbi,
-} from '@cowprotocol/abis'
-import {
-  getEthFlowContractAddresses,
-  V_COW_CONTRACT_ADDRESS,
-  WRAPPED_NATIVE_CURRENCIES,
-} from '@cowprotocol/common-const'
-import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
+} from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
@@ -44,6 +44,8 @@ export function useContract<T extends Contract = Contract>(
   withSignerIfPossible = true,
   customProvider?: Web3Provider,
 ): UseContractResult<T> {
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const defaultProvider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const provider = customProvider || defaultProvider

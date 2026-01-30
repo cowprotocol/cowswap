@@ -1,6 +1,7 @@
-import { atom, PrimitiveAtom, SetStateAction, WritableAtom } from 'jotai'
+import { atom, SetStateAction, WritableAtom } from 'jotai'
 
-export function atomWithPartialUpdate<T>(anyAtom: PrimitiveAtom<T>): {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function atomWithPartialUpdate<T>(anyAtom: WritableAtom<T, any, any>): {
   atom: typeof anyAtom
   updateAtom: WritableAtom<null, [SetStateAction<Partial<T>>], void>
 } {

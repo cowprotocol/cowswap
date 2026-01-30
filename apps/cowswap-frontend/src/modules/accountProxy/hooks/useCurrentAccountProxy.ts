@@ -12,6 +12,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
 import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
+import { Address } from 'viem'
 
 import { useCowShedHooks } from './useCowShedHooks'
 
@@ -57,7 +58,7 @@ interface CoWShedContract extends BaseContract {
 interface ProxyAndAccount {
   chainId: SupportedChainId
   proxyAddress: string
-  account: string
+  account: Address
   isProxyDeployed: boolean
   isProxySetupValid: boolean | null
 }
@@ -84,6 +85,8 @@ const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount | undefined> = {
 export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefined, unknown, typeof SWR_OPTIONS> {
   const { account, chainId } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
   return useSWR(

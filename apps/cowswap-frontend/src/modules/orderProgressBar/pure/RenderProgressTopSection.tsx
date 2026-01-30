@@ -1,9 +1,8 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo, lazy, Suspense } from 'react'
 
 import { getRandomInt } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
-import { AnimatePresence, motion } from 'framer-motion'
 
 import { FinishedStepContentSection } from './FinishedStepContentSection'
 import { ProgressSkeleton } from './ProgressSkeleton'
@@ -27,6 +26,9 @@ interface ProgressContentProps {
   shouldShowSurplus: boolean
 }
 
+const AnimatePresence = lazy(() => import('framer-motion').then((r) => ({ default: r.AnimatePresence })))
+const MotionDiv = lazy(() => import('framer-motion').then((r) => ({ default: r.motion.div })))
+
 function ProgressContent({
   isLayoutReady,
   stepName,
@@ -42,34 +44,36 @@ function ProgressContent({
   }
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={stepName}
-        initial={false}
-        animate={{
-          opacity: 1,
-          width: '100%',
-          transition: {
-            duration: 0.3,
-            ease: [0.4, 0, 0.2, 1],
-          },
-        }}
-        exit={{ opacity: 0, width: '100%' }}
-        style={{ width: '100%' }}
-      >
-        {stepName && (
-          <ProgressTopSection
-            stepName={stepName}
-            order={order}
-            countdown={countdown}
-            randomImage={randomImage}
-            surplusPercentValue={surplusPercentValue}
-            randomBenefit={randomBenefit}
-            shouldShowSurplus={shouldShowSurplus}
-          />
-        )}
-      </motion.div>
-    </AnimatePresence>
+    <Suspense fallback={<ProgressSkeleton />}>
+      <AnimatePresence mode="wait">
+        <MotionDiv
+          key={stepName}
+          initial={false}
+          animate={{
+            opacity: 1,
+            width: '100%',
+            transition: {
+              duration: 0.3,
+              ease: [0.4, 0, 0.2, 1],
+            },
+          }}
+          exit={{ opacity: 0, width: '100%' }}
+          style={{ width: '100%' }}
+        >
+          {stepName && (
+            <ProgressTopSection
+              stepName={stepName}
+              order={order}
+              countdown={countdown}
+              randomImage={randomImage}
+              surplusPercentValue={surplusPercentValue}
+              randomBenefit={randomBenefit}
+              shouldShowSurplus={shouldShowSurplus}
+            />
+          )}
+        </MotionDiv>
+      </AnimatePresence>
+    </Suspense>
   )
 }
 

@@ -7,8 +7,6 @@ import type { Metadata } from 'next'
 import { CmsPageComponent } from '@/components/CmsPageComponent'
 import { getPageMetadata } from '@/util/getPageMetadata'
 
-
-
 /**
  * Extracts CMS slug from Next.js route segments
  * Converts route like /legal/cowswap-privacy-policy to slug 'cowswap-privacy-policy'

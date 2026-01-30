@@ -31,6 +31,8 @@ interface CowShedInfoProps {
 
 export function CowShedInfo({ className, onClick }: CowShedInfoProps): ReactNode {
   const { chainId } = useWalletInfo()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const proxyAddress = useCurrentAccountProxyAddress()
   const { i18n } = useLingui()
