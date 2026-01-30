@@ -12,7 +12,7 @@ describe('genericPropsChecker() to check component props via React.memo', () => 
         foo() {
           console.log('***')
         },
-      }
+      },
     )
 
     expect(result).toBe(false)
@@ -34,7 +34,7 @@ describe('genericPropsChecker() to check component props via React.memo', () => 
       it('And return true, when objects are equal', () => {
         const result = genericPropsChecker(
           { options: { foo: { bar: 1 } } }, //
-          { options: { foo: { bar: 1 } } } //
+          { options: { foo: { bar: 1 } } }, //
         )
 
         expect(result).toBe(true)
@@ -44,7 +44,7 @@ describe('genericPropsChecker() to check component props via React.memo', () => 
         // bar - are not the same function (different references)
         const result = genericPropsChecker(
           { options: { foo: { bar: () => 1 } } },
-          { options: { foo: { bar: () => 1 } } }
+          { options: { foo: { bar: () => 1 } } },
         )
 
         expect(result).toBe(false)

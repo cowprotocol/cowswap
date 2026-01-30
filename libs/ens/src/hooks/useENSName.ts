@@ -31,6 +31,6 @@ export function useENSName(address?: string): { ENSName: string | null; loading:
       ENSName: checkedName ?? null,
       loading: nameLoading,
     }),
-    [checkedName, nameLoading]
+    [checkedName, nameLoading],
   )
 }

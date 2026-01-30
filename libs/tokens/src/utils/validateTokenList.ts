@@ -5,11 +5,11 @@ import type { Ajv, ValidateFunction } from 'ajv'
 
 const SYMBOL_AND_NAME_VALIDATION = [
   {
-    const: ''
+    const: '',
   },
   {
-    pattern: '^[^<>]+$'
-  }
+    pattern: '^[^<>]+$',
+  },
 ]
 
 // TODO: Replace any with proper type definitions
@@ -26,24 +26,29 @@ const patchValidationSchema = (schema: any) => ({
         symbol: {
           ...schema.definitions.TokenInfo.properties.symbol,
           maxLength: 80,
-          anyOf: SYMBOL_AND_NAME_VALIDATION
+          anyOf: SYMBOL_AND_NAME_VALIDATION,
         },
         name: {
           ...schema.definitions.TokenInfo.properties.name,
           maxLength: 100,
-          anyOf: SYMBOL_AND_NAME_VALIDATION
-        }
-      }
+          anyOf: SYMBOL_AND_NAME_VALIDATION,
+        },
+      },
     },
     ExtensionPrimitiveValue: {
-      'anyOf': [{
-        'type': 'string',
-        'minLength': 1,
-        'maxLength': 420,
-        'examples': ['#00000']
-      }, { 'type': 'boolean', 'examples': [true] }, { 'type': 'number', 'examples': [15] }, { 'type': 'null' }]
-    }
-  }
+      anyOf: [
+        {
+          type: 'string',
+          minLength: 1,
+          maxLength: 420,
+          examples: ['#00000'],
+        },
+        { type: 'boolean', examples: [true] },
+        { type: 'number', examples: [15] },
+        { type: 'null' },
+      ],
+    },
+  },
 })
 
 enum ValidationSchema {
@@ -60,9 +65,9 @@ const validator = new Promise<Ajv>((resolve) => {
         {
           ...patchValidationSchema(schema),
           $id: schema.$id + '#tokens',
-          required: ['tokens']
+          required: ['tokens'],
         },
-        ValidationSchema.TOKENS
+        ValidationSchema.TOKENS,
       )
     resolve(validator)
   })
