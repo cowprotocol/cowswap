@@ -26,6 +26,7 @@ const COINGECKO_CHAINS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BNB]: 'binance-smart-chain',
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
+  [SupportedChainId.INK]: 'ink',
 }
 
 const EMPTY_TOKENS: TokenListByAddress = {}

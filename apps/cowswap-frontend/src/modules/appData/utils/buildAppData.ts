@@ -58,8 +58,7 @@ export async function buildAppData({
   replacedOrderUid,
   userConsent,
 }: BuildAppDataParams): Promise<AppDataInfo> {
-  const referrerParams =
-    referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
+  const referrerParams = referrerAccount && chainId === SupportedChainId.MAINNET ? { code: referrerAccount } : undefined
 
   const quoteParams = {
     slippageBips,

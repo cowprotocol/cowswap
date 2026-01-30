@@ -27,6 +27,7 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
     [ChainId.BNB]: `${baseUrl}/bnb`,
     [ChainId.LINEA]: `${baseUrl}/linea`,
     [ChainId.PLASMA]: `${baseUrl}/plasma`,
+    [ChainId.INK]: `${baseUrl}/ink`,
   }
 }
 

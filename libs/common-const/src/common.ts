@@ -73,6 +73,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BNB]: '0x5bfdaa3f7c28b9994b56135403bf1acea02595b0',
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
+  [SupportedChainId.INK]: null,
 }
 
 // Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized
@@ -117,6 +118,8 @@ export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 
 // TODO: test gas prices for all networks
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
+
+// See https://docs.blocknative.com/gas-prediction/gas-platform
 export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosis.blockscout.com/api/v1/gas-price-oracle',
@@ -124,11 +127,12 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.BASE]: 'https://base.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'https://polygon.blockscout.com/api/v1/gas-price-oracle',
-  [SupportedChainId.AVALANCHE]: 'https://api.blocknative.com/gasprices/blockprices?chainid=43114',
-  [SupportedChainId.LENS]: 'https://api.blocknative.com/gasprices/blockprices?chainid=232',
-  [SupportedChainId.BNB]: 'https://api.blocknative.com/gasprices/blockprices?chainid=56',
-  [SupportedChainId.LINEA]: 'https://api.blocknative.com/gasprices/blockprices?chainid=59144',
+  [SupportedChainId.AVALANCHE]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.AVALANCHE}`,
+  [SupportedChainId.LENS]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LENS}`,
+  [SupportedChainId.BNB]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.BNB}`,
+  [SupportedChainId.LINEA]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LINEA}`,
   [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
+  [SupportedChainId.INK]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.INK}`,
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
@@ -142,6 +146,7 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BNB]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.LINEA]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.PLASMA]: null,
+  [SupportedChainId.INK]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'
