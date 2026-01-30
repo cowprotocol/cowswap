@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'

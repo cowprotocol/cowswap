@@ -12,7 +12,6 @@ import { SingleErc20State } from '../../../state/erc20'
 import { Network } from '../../../types'
 import { abbreviateString } from '../../../utils'
 
-
 /**
  * Group transfers by token, from and to
  */
@@ -37,7 +36,7 @@ function groupTransfers(arr: Transfer[]): Transfer[] {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function buildTransfersBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
   const { networkId, orders, txData, tokens, trades, transfers } = params
   const { trace, contracts } = txData
@@ -58,17 +57,17 @@ export function buildTransfersBasedSettlement(params: BuildSettlementParams): Se
 
   const groupedTransfers = groupTransfers(transfers)
   const transfersWithKind: Transfer[] = groupedTransfers.filter(
-    (transfer) => !ownersAndReceivers.has(transfer.from) && !ownersAndReceivers.has(transfer.to)
+    (transfer) => !ownersAndReceivers.has(transfer.from) && !ownersAndReceivers.has(transfer.to),
   )
   filteredOrders?.forEach((order) => {
     const { owner, kind, receiver } = order
     if (!ownersAndReceivers.has(owner)) return
     transfersWithKind.push(
-      ...groupedTransfers.filter((t) => [t.from, t.to].includes(owner)).map((transfer) => ({ ...transfer, kind }))
+      ...groupedTransfers.filter((t) => [t.from, t.to].includes(owner)).map((transfer) => ({ ...transfer, kind })),
     )
 
     transfersWithKind.push(
-      ...groupedTransfers.filter((t) => [t.from, t.to].includes(receiver)).map((transfer) => ({ ...transfer, kind }))
+      ...groupedTransfers.filter((t) => [t.from, t.to].includes(receiver)).map((transfer) => ({ ...transfer, kind })),
     )
     ownersAndReceivers.delete(owner)
     ownersAndReceivers.delete(receiver)

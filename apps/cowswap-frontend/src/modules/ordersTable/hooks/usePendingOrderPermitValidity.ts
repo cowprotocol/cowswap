@@ -10,8 +10,7 @@ export function useGetPendingOrdersPermitValidityState(): PendingOrdersPermitVal
   return useAtomValue(pendingOrdersPermitValidityStateAtom)
 }
 
-export function useUpdatePendingOrdersPermitValidityState(): ReturnType<
-  typeof useSetAtom<typeof updatePendingOrdersPermitValidityStateAtom>
-> {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function useUpdatePendingOrdersPermitValidityState() {
   return useSetAtom(updatePendingOrdersPermitValidityStateAtom)
 }

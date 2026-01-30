@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
 import { getContract, isAddress, isZero, safeNamehash, uriToHttp } from '@cowprotocol/common-utils'
+import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/cowswap-abis'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
@@ -19,7 +19,7 @@ import { useENSResolverContract } from './useENSResolverContract'
  */
 export function useENSAvatar(
   account: string | undefined,
-  enforceOwnership = true
+  enforceOwnership = true,
 ): { avatar: string | null; loading: boolean } {
   const node = useMemo(() => {
     if (!account || !isAddress(account)) return undefined
@@ -41,7 +41,7 @@ export function useENSAvatar(
       avatar: http ?? null,
       loading: addressAvatar.loading || nameAvatar.loading || nftAvatar.loading,
     }),
-    [addressAvatar.loading, http, nameAvatar.loading, nftAvatar.loading]
+    [addressAvatar.loading, http, nameAvatar.loading, nftAvatar.loading],
   )
 }
 
@@ -49,12 +49,12 @@ function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean }
   const { data: resolverAddress } = useENSResolver(node)
 
   const resolverContract = useENSResolverContract(
-    resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined
+    resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined,
   )
 
   const { data: avatar, isLoading } = useSWR(
     node && resolverContract ? ['useAvatarFromNode', node, resolverContract] : null,
-    async ([, _node, contract]) => contract.callStatic.text(_node, 'avatar')
+    async ([, _node, contract]) => contract.callStatic.text(_node, 'avatar'),
   )
 
   return useMemo(
@@ -62,7 +62,7 @@ function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean }
       avatar: avatar,
       loading: isLoading,
     }),
-    [avatar, isLoading]
+    [avatar, isLoading],
   )
 }
 
@@ -71,7 +71,7 @@ function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean }
 function useAvatarFromNFT(
   account: string | undefined,
   nftUri = '',
-  enforceOwnership: boolean
+  enforceOwnership: boolean,
 ): { avatar?: string; loading: boolean } {
   const parts = nftUri.toLowerCase().split(':')
   const protocol = parts[0]
@@ -106,7 +106,7 @@ function useAvatarFromNFT(
 
   return useMemo(
     () => ({ avatar, loading: erc721.loading || erc1155.loading || loading }),
-    [avatar, erc1155.loading, erc721.loading, loading]
+    [avatar, erc1155.loading, erc721.loading, loading],
   )
 }
 
@@ -114,7 +114,7 @@ function useERC721Uri(
   account: string | undefined,
   contractAddress: string | undefined,
   id: string | undefined,
-  enforceOwnership: boolean
+  enforceOwnership: boolean,
 ): { uri?: string; loading: boolean } {
   const contract = useERC721Contract(contractAddress)
 
@@ -124,7 +124,7 @@ function useERC721Uri(
       const [owner, uri] = await Promise.all([_contract.callStatic.ownerOf(_id), _contract.callStatic.tokenURI(_id)])
 
       return { owner, uri }
-    }
+    },
   )
 
   return useMemo(
@@ -132,7 +132,7 @@ function useERC721Uri(
       uri: !enforceOwnership || account === data?.owner ? data?.uri : undefined,
       loading: isLoading,
     }),
-    [account, enforceOwnership, data, isLoading]
+    [account, enforceOwnership, data, isLoading],
   )
 }
 
@@ -140,7 +140,7 @@ function useERC1155Uri(
   account: string | undefined,
   contractAddress: string | undefined,
   id: string | undefined,
-  enforceOwnership: boolean
+  enforceOwnership: boolean,
 ): { uri?: string; loading: boolean } {
   const contract = useERC1155Contract(contractAddress)
 
@@ -153,7 +153,7 @@ function useERC1155Uri(
       ])
 
       return { balance, uri }
-    }
+    },
   )
 
   // ERC-1155 allows a generic {id} in the URL, so prepare to replace if relevant,
@@ -172,11 +172,13 @@ function useERC1155Uri(
 
 function useERC721Contract(address: string | undefined): Erc721 | undefined {
   const chainId = useWalletChainId()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
   const { data } = useSWR(
     provider && chainId && address ? ['useERC721Contract', provider, chainId, address] : null,
-    ([, _provider, , _address]) => getContract(_address, Erc721Abi, _provider) as Erc721
+    ([, _provider, , _address]) => getContract(_address, Erc721Abi, _provider) as Erc721,
   )
 
   return data
@@ -184,11 +186,13 @@ function useERC721Contract(address: string | undefined): Erc721 | undefined {
 
 function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
   const chainId = useWalletChainId()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
   const { data } = useSWR(
     provider && chainId && address ? ['useERC1155Contract', provider, chainId, address] : null,
-    ([, _provider, , _address]) => getContract(_address, Erc1155Abi, _provider) as Erc1155
+    ([, _provider, , _address]) => getContract(_address, Erc1155Abi, _provider) as Erc1155,
   )
 
   return data

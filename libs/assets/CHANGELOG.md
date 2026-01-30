@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.17.1...assets-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** update orders table tabs and filters [#6831](https://github.com/cowprotocol/cowswap/issues/6831) ([11b07b9](https://github.com/cowprotocol/cowswap/commit/11b07b901ad33dc19b8c37ab1769fb3fa7895222))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
 ## [1.17.1](https://github.com/cowprotocol/cowswap/compare/assets-v1.17.0...assets-v1.17.1) (2025-12-15)
 
 

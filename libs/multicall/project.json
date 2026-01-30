@@ -7,38 +7,14 @@
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "libs/multicall/**/*.{ts,tsx,js,jsx}"
-        ]
-      }
-    },
-    "build": {
-      "executor": "@nx/vite:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
-      "defaultConfiguration": "production",
-      "options": {
-        "outputPath": "dist/libs/multicall"
-      },
-      "configurations": {
-        "development": {
-          "mode": "development"
-        },
-        "production": {
-          "mode": "production"
-        }
+        "lintFilePatterns": ["libs/multicall/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/multicall/jest.config.ts",
         "passWithNoTests": true

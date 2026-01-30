@@ -13,7 +13,7 @@ export class TrezorProvider extends JsonRpcProvider {
     url: string,
     public readonly accounts: string[],
     public readonly trezorConnect: TrezorConnect,
-    public readonly _transformTypedData: typeof transformTypedData
+    public readonly _transformTypedData: typeof transformTypedData,
   ) {
     super(url)
   }
@@ -36,7 +36,7 @@ export class TrezorProvider extends JsonRpcProvider {
         params as Parameters<typeof sendTransactionHandler>[0],
         this.getCurrentAccount(),
         this,
-        this.trezorConnect
+        this.trezorConnect,
       )
     }
 

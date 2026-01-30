@@ -19,51 +19,6 @@ export const Content = styled.div`
   padding: 24px 0 0;
   gap: 32px;
 
-  > span {
-    --size: 130px;
-    width: var(--size);
-    height: var(--size);
-    border-radius: var(--size);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin: 0;
-    color: inherit;
-    transform: rotate(0);
-    transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(${UI.COLOR_PAPER_DARKER});
-      border-radius: var(--size);
-      z-index: -1;
-    }
-
-    &:hover {
-      transform: rotate(360deg);
-    }
-
-    > svg,
-    > img {
-      max-width: 100%;
-      max-height: 100%;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: inline;
-    }
-
-    > svg {
-      padding: 28px;
-      fill: currentColor;
-      opacity: 0.5;
-    }
-  }
-
   > h3 {
     font-size: 32px;
     line-height: 1;
@@ -89,6 +44,80 @@ export const Content = styled.div`
     font-weight: 400;
     text-align: center;
     color: inherit;
+  }
+`
+export const ContentDescription = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  > p {
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 0 auto;
+    font-weight: 400;
+    text-align: center;
+    color: inherit;
+  }
+`
+
+export const ConnectWalletIconWrapper = styled.span`
+  --size: 130px;
+  --backgroundColor: var(${UI.COLOR_PAPER_DARKER});
+  --iconFillColor: var(${UI.COLOR_TEXT});
+  --iconColor: var(${UI.COLOR_TEXT});
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0;
+  color: inherit;
+  transform: rotate(0);
+  transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--backgroundColor);
+    border-radius: var(--size);
+    z-index: -1;
+  }
+
+  &:hover {
+    transform: rotate(360deg);
+  }
+
+  > svg,
+  > img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: inline;
+  }
+
+  > svg {
+    padding: 28px;
+    fill: var(--iconFillColor);
+    color: var(--iconColor);
+    opacity: 0.5;
+  }
+`
+
+export const UnsupportedNetworkIconWrapper = styled(ConnectWalletIconWrapper)`
+  --backgroundColor: var(${UI.COLOR_DANGER_BG});
+  --iconFillColor: transparent;
+  --iconColor: var(${UI.COLOR_DANGER_TEXT});
+
+  &:hover {
+    transform: rotate(0);
   }
 `
 
@@ -127,6 +156,7 @@ export const TopContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 3px;
+  min-height: 36px;
 
   ${Media.upToMedium()} {
     display: block;
@@ -172,14 +202,14 @@ export const ExternalArrow = styled.span`
   }
 `
 
-export const RightContainer = styled.div`
+export const RightContainer = styled.div<{ $isHistoryTab: boolean }>`
   display: flex;
   flex-flow: row nowrap;
 
   ${Media.upToMedium()} {
     width: 100%;
     gap: 10px;
-    flex-flow: column-reverse wrap;
+    flex-flow: ${({ $isHistoryTab }) => ($isHistoryTab ? 'column wrap' : 'column-reverse wrap')};
   }
 `
 

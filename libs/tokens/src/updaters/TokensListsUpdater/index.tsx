@@ -27,7 +27,7 @@ const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomW
     mapSupportedNetworks(LAST_UPDATE_TIME_DEFAULT),
     getJotaiMergerStorage(),
     {
-      unstable_getOnInit: true,
+      getOnInit: true,
     },
   ),
 )

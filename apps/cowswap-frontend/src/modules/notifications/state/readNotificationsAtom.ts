@@ -6,7 +6,7 @@ import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 export const readNotificationsAtom = atomWithStorage<number[]>(
   'readNotificationsAtom:v0',
   [],
-  getJotaiIsolatedStorage()
+  getJotaiIsolatedStorage(),
 )
 
 export const markNotificationsAsReadAtom = atom(null, (get, set, ids: number[]) => {

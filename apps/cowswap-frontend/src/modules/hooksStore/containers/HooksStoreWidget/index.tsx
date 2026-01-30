@@ -100,7 +100,8 @@ export function HooksStoreWidget(): ReactNode {
   return (
     <>
       <TradeWidgetWrapper visible$={!hideSwapWidget}>
-        <SwapWidget topContent={TopContent} bottomContent={BottomContent} allowSwapSameToken />
+        {/*TODO: sell=buy feature. Add allowSwapSameToken attribute again when feature is ready */}
+        <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (

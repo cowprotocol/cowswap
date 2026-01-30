@@ -22,9 +22,10 @@ import { TwapSuggestionBanner } from '../../pure/TwapSuggestionBanner'
 
 interface WarningsProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
+  hideQuoteAmount: boolean
 }
 
-export function Warnings({ buyingFiatAmount }: WarningsProps): ReactNode {
+export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } = useSwapDerivedState()
   const formState = useSwapFormState()
@@ -55,7 +56,7 @@ export function Warnings({ buyingFiatAmount }: WarningsProps): ReactNode {
     <>
       {inputCurrency && !isNativeSellInHooksStore && <MetamaskTransactionWarning sellToken={inputCurrency} />}
       {isNativeSellInHooksStore && <SellNativeWarningBanner />}
-      <HighFeeWarning />
+      {!hideQuoteAmount && <HighFeeWarning />}
       {shouldCheckBridgingRecipient && account && outputChainId && !isFractionFalsy(outputCurrencyAmount) && (
         <SmartContractReceiverWarning
           account={account}

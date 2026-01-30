@@ -60,7 +60,8 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean; inactiveBgColor?: string }>`
   align-items: center;
-  background: ${({ isActive, inactiveBgColor }) => (isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : (inactiveBgColor || `var(${UI.COLOR_PAPER_DARKER})`))};
+  background: ${({ isActive, inactiveBgColor }) =>
+    isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : inactiveBgColor || `var(${UI.COLOR_PAPER_DARKER})`};
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -127,7 +128,14 @@ export function Toggle({
   }
 
   return (
-    <Wrapper id={id} isActive={isActive} inactiveBgColor={inactiveBgColor} onClick={switchToggle} className={className} data-click-event={dataClickEvent}>
+    <Wrapper
+      id={id}
+      isActive={isActive}
+      inactiveBgColor={inactiveBgColor}
+      onClick={switchToggle}
+      className={className}
+      data-click-event={dataClickEvent}
+    >
       <ToggleElement isActive={isActive} bgColor={bgColor} isInitialToggleLoad={isInitialToggleLoad} />
     </Wrapper>
   )

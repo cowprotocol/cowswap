@@ -26,6 +26,8 @@ const SbcDepositContractInterface = SBCDepositContract.interface
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ClaimGnoHookApp({ context }: HookDappProps) {
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined)
   const [gasLimit, setGasLimit] = useState<BigNumber | undefined>(undefined)

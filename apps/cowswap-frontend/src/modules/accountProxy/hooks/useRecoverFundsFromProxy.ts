@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 
-import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
 import { delay } from '@cowprotocol/common-utils'
+import { CowShedContract, CowShedContractAbi } from '@cowprotocol/cowswap-abis'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -41,6 +41,8 @@ export function useRecoverFundsFromProxy(
 ): RecoverFundsContext {
   const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks(proxyVersion)

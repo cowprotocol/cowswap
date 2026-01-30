@@ -1,7 +1,5 @@
-import { PermitType } from '@cowprotocol/permit-utils'
+import { oneInchPermitUtilsConsts, PermitType } from '@cowprotocol/permit-utils'
 import { Interface } from '@ethersproject/abi'
-
-import { DAI_PERMIT_SELECTOR, EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
 
 import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
 
@@ -18,7 +16,7 @@ export interface PermitData {
 
 export function extractPermitData(callData: string): PermitData {
   try {
-    if (callData.startsWith(EIP_2612_PERMIT_SELECTOR)) {
+    if (callData.startsWith(oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR)) {
       const erc20Interface = new Interface([EIP_2612_SIGNATURE])
 
       const decoded = erc20Interface.decodeFunctionData('permit', callData)
@@ -29,7 +27,7 @@ export function extractPermitData(callData: string): PermitData {
       }
     }
 
-    if (callData.startsWith(DAI_PERMIT_SELECTOR)) {
+    if (callData.startsWith(oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR)) {
       const daiInterface = new Interface([DAI_SIGNATURE])
 
       const decoded = daiInterface.decodeFunctionData('permit', callData)

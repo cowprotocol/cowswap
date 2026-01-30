@@ -7,7 +7,7 @@ import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
-import { Web3Provider } from '@cowprotocol/wallet'
+import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -51,18 +51,18 @@ export function Main(): ReactNode {
               <ThemeProvider>
                 <HashRouter>
                   <LanguageProvider>
-                    <Web3ProviderInstance>
-                      <BlockNumberProvider>
-                        <WithLDProvider>
+                    <WithLDProvider>
+                      <Web3ProviderInstance>
+                        <BlockNumberProvider>
                           <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                             <WalletUnsupportedNetworkBanner />
                             <Updaters />
                             <Toasts />
                             <App />
                           </CowAnalyticsProvider>
-                        </WithLDProvider>
-                      </BlockNumberProvider>
-                    </Web3ProviderInstance>
+                        </BlockNumberProvider>
+                      </Web3ProviderInstance>
+                    </WithLDProvider>
                   </LanguageProvider>
                 </HashRouter>
               </ThemeProvider>
@@ -79,9 +79,9 @@ function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode 
   const { standaloneMode } = useInjectedWidgetParams()
 
   return (
-    <Web3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
-      {children}
-    </Web3Provider>
+    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
+      <Web3Provider>{children}</Web3Provider>
+    </LegacyWeb3Provider>
   )
 }
 

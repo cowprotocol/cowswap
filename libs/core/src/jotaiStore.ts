@@ -75,6 +75,6 @@ export function atomWithIdbStorage<Value>(key: string, initialValue: Value) {
     key,
     initialValue,
     createJSONStorage(() => storage),
-    { unstable_getOnInit: true },
+    { getOnInit: true },
   )
 }

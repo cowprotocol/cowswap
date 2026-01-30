@@ -1,12 +1,42 @@
 {
   "name": "@cowprotocol/ens",
-  "version": "1.7.0",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "version": "2.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "private": true,
   "exports": {
     ".": {
-      "import": "./index.mjs",
-      "require": "./index.js"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "default": "./src/index.ts"
     }
+  },
+  "publishConfig": {
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./index.d.ts",
+        "import": "./index.mjs",
+        "require": "./index.js"
+      }
+    }
+  },
+  "dependencies": {
+    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/common-utils": "workspace:*",
+    "@cowprotocol/cowswap-abis": "workspace:*",
+    "@cowprotocol/wallet-provider": "workspace:*",
+    "@ethersproject/bignumber": "5.7.0",
+    "@ethersproject/bytes": "5.7.0",
+    "@ethersproject/hash": "5.7.0",
+    "ethers": "5.7.2",
+    "react": "19.1.2",
+    "swr": "^2.3.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.3"
   }
 }

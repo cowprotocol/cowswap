@@ -110,7 +110,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
           : undefined,
       hideBridgeInfo,
       hideOrdersTable,
-      slippage
+      slippage,
     }
 
     return params

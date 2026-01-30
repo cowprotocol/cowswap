@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.31.0...ui-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.0
+    * @cowprotocol/assets bumped to 2.0.0
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/core bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/ui-utils bumped to 2.0.0
+
 ## [1.31.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.30.1...ui-v1.31.0) (2025-12-24)
 
 

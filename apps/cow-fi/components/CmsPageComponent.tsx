@@ -8,7 +8,6 @@ import { extractRichTextContent } from '../util/cms'
 import { CmsContent } from '@/components/CmsContent'
 import { ContentPageLayout } from '@/components/ContentPageLayout'
 
-
 interface CmsPageComponentProps {
   page: Page
 }

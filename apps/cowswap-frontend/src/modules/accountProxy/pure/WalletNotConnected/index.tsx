@@ -22,7 +22,7 @@ export function WalletNotConnected({ onConnect }: WalletNotConnectedProps): Reac
       <Wrapper>
         <BaseAccountCard width={206} height={116} padding={16} enableScale ariaLabel={t`Connect wallet banner`}>
           <WalletIcon>
-            <SVG src={ICON_WALLET} />
+            <SVG src={ICON_WALLET} description={t`connect wallet`} />
           </WalletIcon>
           <SkeletonLines />
           <CowProtocolIcon />
