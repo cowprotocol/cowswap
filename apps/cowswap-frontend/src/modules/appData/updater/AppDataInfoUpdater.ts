@@ -101,7 +101,7 @@ export function AppDataInfoUpdater({
     userConsent,
   ])
 
-  return null;
+  return null
 }
 
 function getEnvByClass(orderClass: string): CowEnv | undefined {

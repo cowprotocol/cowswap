@@ -6,6 +6,7 @@ import { ChainInfo, OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
 import { OrderSummaryTemplateProps } from './summaryTemplates'
 import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
 
@@ -61,8 +62,7 @@ export function OrderSummary(props: OrderSummaryProps): ReactNode {
     }),
   }
 
-  const Template =
-    CustomTemplateComponent ?? (isSell ? SellForAtLeastTemplate : BuyForAtMostTemplate)
+  const Template = CustomTemplateComponent ?? (isSell ? SellForAtLeastTemplate : BuyForAtMostTemplate)
 
   return (
     <div>

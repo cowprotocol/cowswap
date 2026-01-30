@@ -9,9 +9,6 @@ interface DismissableInlineBannerProps extends Omit<InlineBannerProps, 'onClose'
 
 export function DismissableInlineBanner(props: DismissableInlineBannerProps): ReactNode {
   return (
-    <ClosableBanner
-      storageKey={props.bannerId}
-      callback={(onClose) => <InlineBanner {...props} onClose={onClose} />}
-    />
+    <ClosableBanner storageKey={props.bannerId} callback={(onClose) => <InlineBanner {...props} onClose={onClose} />} />
   )
 }

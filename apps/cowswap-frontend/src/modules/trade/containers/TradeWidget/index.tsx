@@ -37,7 +37,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     <TradeWidgetModals
       confirmModal={confirmModal}
       genericModal={genericModal}
-      renderFallback={ () => <TradeWidgetForm {...props} /> }
+      renderFallback={() => <TradeWidgetForm {...props} />}
     />
   )
 
@@ -54,7 +54,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
           {slots.updaters}
         </TradeWidgetUpdaters>
 
-        { modals }
+        {modals}
       </styledEl.Container>
 
       {selectTokenWidgetNode}
