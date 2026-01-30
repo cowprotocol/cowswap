@@ -17,6 +17,7 @@ import { SlippageLoader } from './styled'
 
 import { SlippageTooltip } from '../SlippageTooltip'
 
+// eslint-disable-next-line max-lines-per-function
 export function TransactionSlippageInput(): JSX.Element {
   const theme = useContext(ThemeContext)
 
@@ -32,10 +33,13 @@ export function TransactionSlippageInput(): JSX.Element {
   const {
     slippageError,
     slippageViewValue,
+    isInputFocused,
     parseSlippageInput,
     placeholderSlippage,
     onSlippageInputBlur,
     setAutoSlippage,
+    focusOnInput,
+    inputRef,
   } = useSlippageInput()
 
   return (
@@ -47,8 +51,13 @@ export function TransactionSlippageInput(): JSX.Element {
         <styledEl.Option onClick={setAutoSlippage} active={!isSlippageModified}>
           <Trans>Auto</Trans>
         </styledEl.Option>
-        <styledEl.OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
-          {!isSlippageModified && isQuoteLoading ? (
+        <styledEl.OptionCustom
+          active={isSlippageModified}
+          warning={!!slippageError}
+          tabIndex={-1}
+          onClick={focusOnInput}
+        >
+          {!isSlippageModified && isQuoteLoading && !isInputFocused ? (
             <SlippageLoader size="16px" />
           ) : (
             <RowBetween>
@@ -62,6 +71,8 @@ export function TransactionSlippageInput(): JSX.Element {
                 </styledEl.SlippageEmojiContainer>
               ) : null}
               <styledEl.Input
+                ref={inputRef}
+                autoFocus={isInputFocused}
                 placeholder={placeholderSlippage.toFixed(2)}
                 value={slippageViewValue}
                 onChange={(e) => parseSlippageInput(e.target.value)}

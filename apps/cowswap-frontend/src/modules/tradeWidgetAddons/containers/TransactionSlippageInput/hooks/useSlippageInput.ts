@@ -1,17 +1,16 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { RefObject, useCallback, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { isValidIntegerFactory, percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
-
 import {
   useDefaultTradeSlippage,
   useIsSlippageModified,
   useSetSlippage,
   useSlippageConfig,
-  useTradeSlippage
+  useTradeSlippage,
 } from 'modules/tradeSlippage'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -31,20 +30,24 @@ interface SlippageAnalyticsEvent {
 interface ReturnType {
   slippageViewValue: string
   slippageError: SlippageError | false
+  isInputFocused: boolean
   parseSlippageInput: (value: string) => void
   placeholderSlippage: Percent
   onSlippageInputBlur: () => void
   setAutoSlippage: () => void
+  inputRef: RefObject<HTMLInputElement | null>
+  focusOnInput: () => void
 }
 
 function getSlippageForView(slippageInput: string, isSlippageModified: boolean, swapSlippage: Percent): string {
-  return slippageInput.length > 0
-    ? slippageInput
-    : (!isSlippageModified ? '' : swapSlippage.toFixed(2))
+  return slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function useSlippageInput(): ReturnType {
+  const inputRef = useRef<HTMLInputElement>(null)
   const [slippageInput, setSlippageInput] = useState('')
+  const [isInputFocused, setIsInputFocused] = useState(false)
   const [slippageError, setSlippageError] = useState<SlippageError | false>(false)
 
   const { min, max } = useSlippageConfig()
@@ -73,14 +76,12 @@ export function useSlippageInput(): ReturnType {
   const slippageViewValue = getSlippageForView(slippageInput, isSlippageModified, swapSlippage)
 
   const isValidInput = useMemo(() => {
-    return isValidIntegerFactory(
-      min,
-      max,
-    )
+    return isValidIntegerFactory(min, max)
   }, [min, max])
 
   const parseSlippageInput = useCallback(
     (value: string) => {
+      setIsInputFocused(true)
       // populate what the user typed and clear the error
       setSlippageInput(value)
       setSlippageError(false)
@@ -110,12 +111,7 @@ export function useSlippageInput(): ReturnType {
         setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
       }
     },
-    [
-      placeholderSlippage,
-      isValidInput,
-      setSwapSlippage,
-      sendSlippageAnalytics,
-    ],
+    [placeholderSlippage, isValidInput, setSwapSlippage, sendSlippageAnalytics],
   )
 
   const onSlippageInputBlur = useCallback(() => {
@@ -133,14 +129,23 @@ export function useSlippageInput(): ReturnType {
 
   const setAutoSlippage = useCallback(() => {
     setSwapSlippage(null)
+    setIsInputFocused(false)
   }, [setSwapSlippage])
 
+  const focusOnInput = (): void => {
+    setIsInputFocused(true)
+    inputRef.current?.focus()
+  }
+
   return {
+    inputRef,
     slippageError,
     parseSlippageInput,
+    isInputFocused,
     placeholderSlippage,
     slippageViewValue,
     onSlippageInputBlur,
-    setAutoSlippage
+    setAutoSlippage,
+    focusOnInput,
   }
 }
