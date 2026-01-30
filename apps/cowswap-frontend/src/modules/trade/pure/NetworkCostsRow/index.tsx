@@ -13,6 +13,7 @@ interface NetworkCostsRowProps {
   amountSuffix?: ReactNode
   tooltipSuffix?: ReactNode
   isLast?: boolean
+  showFreeLabel?: boolean
 }
 
 export function NetworkCostsRow({
@@ -22,6 +23,7 @@ export function NetworkCostsRow({
   amountSuffix,
   tooltipSuffix,
   isLast = false,
+  showFreeLabel = false,
 }: NetworkCostsRowProps): ReactNode {
   const { t } = useLingui()
 
@@ -42,6 +44,7 @@ export function NetworkCostsRow({
       }
       label={t`Network costs (est.)`}
       isLast={isLast}
+      showFreeLabel={showFreeLabel}
     />
   )
 }

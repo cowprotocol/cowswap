@@ -61,7 +61,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         showTotalRow={showTotalRow}
       />
 
-      {hasNetworkCosts && networkFeeAmount && (
+      {networkFeeAmount && (
         <NetworkCostsRow
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
@@ -69,6 +69,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
           amountSuffix={networkCostsSuffix}
           tooltipSuffix={networkCostsTooltipSuffix}
           isLast
+          showFreeLabel={!hasNetworkCosts}
         />
       )}
     </>
