@@ -36,7 +36,8 @@
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/*.po",
-      "!{projectRoot}/tsconfig.spec.json"
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/CHANGELOG.md"
     ],
     "sharedGlobals": []
   },
