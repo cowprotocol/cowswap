@@ -234,3 +234,9 @@ This ensures both human contributors and AI assistants adhere to consistent codi
 ## 12. Nx cloud
 
 1. Run `npx nx login` and use your `@cow.fi` account (https://nx.dev/docs/guides/nx-cloud/personal-access-tokens)
+2. If you experience problems with caching:
+   - open Vercel build and look for a link like https://cloud.nx.app/runs/0d5C83MrNY. In the link click on the task that didn't hit cache and click to `Compare to similar tasks`. With this tool you can compare the build and see what prevents caching.
+   - In most of the cases, it would be some flacky files, you can debug it using following links:
+     - https://nx.dev/docs/reference/inputs
+     - https://nx.dev/docs/concepts/how-caching-works#fine-tuning-nxs-cache
+3. In Vercel env variables, there are two different `NX_CLOUD_AUTH_TOKEN`. Token for production environment (`develop` branch) has write access.
