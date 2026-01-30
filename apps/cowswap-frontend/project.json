@@ -3,16 +3,8 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/cowswap-frontend/src",
   "projectType": "application",
-  "namedInputs": {
-    "patches": ["{projectRoot}/patches/*"],
-    "public": ["{projectRoot}/public/**/*"],
-    "robots": ["{projectRoot}/robots/**/*"],
-    "src": ["{projectRoot}/src/**/*"],
-    "rootFiles": ["{projectRoot}/*"]
-  },
   "targets": {
     "build": {
-      "inputs": ["patches", "public", "robots", "src", "rootFiles", "^production"],
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -97,7 +89,6 @@
     },
     "i18n": {
       "executor": "nx:run-commands",
-      "dependsOn": ["i18n:extract"],
       "options": {
         "command": "npx lingui compile"
       },
