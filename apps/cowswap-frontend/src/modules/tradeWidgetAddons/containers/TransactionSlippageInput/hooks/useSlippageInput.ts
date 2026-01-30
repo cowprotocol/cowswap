@@ -1,6 +1,5 @@
 import { RefObject, useCallback, useMemo, useRef, useState } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { isValidIntegerFactory, percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
@@ -13,18 +12,10 @@ import {
   useTradeSlippage,
 } from 'modules/tradeSlippage'
 
-import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { useSlippageAnalytics } from './useSlippageAnalytics'
 
-enum SlippageError {
+export enum SlippageError {
   InvalidInput = 'InvalidInput',
-}
-
-type TxSettingAction = 'Default' | 'Custom'
-
-interface SlippageAnalyticsEvent {
-  category: CowSwapAnalyticsCategory.TRADE
-  action: `${TxSettingAction} Slippage Tolerance`
-  value: number
 }
 
 interface ReturnType {
@@ -43,7 +34,6 @@ function getSlippageForView(slippageInput: string, isSlippageModified: boolean, 
   return slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function useSlippageInput(): ReturnType {
   const inputRef = useRef<HTMLInputElement>(null)
   const [slippageInput, setSlippageInput] = useState('')
@@ -53,25 +43,13 @@ export function useSlippageInput(): ReturnType {
   const { min, max } = useSlippageConfig()
 
   const setSwapSlippage = useSetSlippage()
-  const analytics = useCowAnalytics()
+  const { sendSlippageAnalytics } = useSlippageAnalytics()
 
   const defaultSwapSlippage = useDefaultTradeSlippage()
   const swapSlippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
 
   const placeholderSlippage = isSlippageModified ? defaultSwapSlippage : swapSlippage
-
-  const sendSlippageAnalytics = useCallback(
-    (action: TxSettingAction, value: string | number) => {
-      const analyticsEvent: SlippageAnalyticsEvent = {
-        category: CowSwapAnalyticsCategory.TRADE,
-        action: `${action} Slippage Tolerance`,
-        value: typeof value === 'string' ? parseFloat(value) : value,
-      }
-      analytics.sendEvent(analyticsEvent)
-    },
-    [analytics],
-  )
 
   const slippageViewValue = getSlippageForView(slippageInput, isSlippageModified, swapSlippage)
 
