@@ -41,8 +41,8 @@ export const _getAvailableTransactions = ({
   nativeBalance?: CurrencyAmount<Currency>
   nativeInput?: CurrencyAmount<Currency>
   singleTxCost?: CurrencyAmount<Currency>
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => {
   if (!nativeBalance || !nativeInput || !singleTxCost || nativeBalance.lessThan(nativeInput.add(singleTxCost))) {
     return null

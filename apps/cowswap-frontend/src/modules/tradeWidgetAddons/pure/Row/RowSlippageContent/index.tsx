@@ -144,12 +144,20 @@ function SlippageTextContents({
   isDefaultSlippageApplied,
 }: SlippageTextContentsProps): ReactNode {
   const { t } = useLingui()
-  
+
   return (
     <TransactionText>
       {slippageLabel || t`Slippage tolerance`}
-      {isDynamicSlippageSet && !isDefaultSlippageApplied && <i><Trans>(dynamic)</Trans></i>}
-      {isEoaEthFlow && isDefaultSlippageApplied && <i><Trans>(modified)</Trans></i>}
+      {isDynamicSlippageSet && !isDefaultSlippageApplied && (
+        <i>
+          <Trans>(dynamic)</Trans>
+        </i>
+      )}
+      {isEoaEthFlow && isDefaultSlippageApplied && (
+        <i>
+          <Trans>(modified)</Trans>
+        </i>
+      )}
     </TransactionText>
   )
 }

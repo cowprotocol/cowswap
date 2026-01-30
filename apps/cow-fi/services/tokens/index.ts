@@ -1,14 +1,15 @@
 'use server'
 
+import { COW_CDN } from '@cowprotocol/common-const'
+
 import { backOff } from 'exponential-backoff'
+import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
 
 import fs from 'fs'
 import path from 'path'
 
 import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { Network } from '@/const/networkMap'
-import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
-import { COW_CDN } from '@cowprotocol/common-const'
 
 const NETWORKS: Network[] = ['ethereum', 'base', 'arbitrum-one', 'avalanche', 'polygon-pos', 'xdai']
 const COW_TOKEN_ID = 'cow-protocol'

@@ -37,7 +37,6 @@ import {
 } from './styled'
 import { TokensTableRow } from './TokensTableRow'
 
-
 const MAX_ITEMS = 20
 
 enum SORT_FIELD {

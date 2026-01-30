@@ -6,7 +6,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useTokensBalances } from './useTokensBalances'
 
 export function useCurrencyAmountBalance(
-  token: TokenWithLogo | undefined | null
+  token: TokenWithLogo | undefined | null,
 ): CurrencyAmount<TokenWithLogo> | undefined {
   const { values: balances } = useTokensBalances()
 

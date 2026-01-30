@@ -20,7 +20,7 @@ const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = Object.keys(CHAIN_INF
   return [chainId, CHAIN_INFO[chainId].urlAlias]
 })
 const NETWORK_ID_BY_PREFIX: Map<string, SupportedChainId> = new Map(
-  NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key])
+  NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key]),
 )
 
 function getNetworkId(network = MAINNET_PREFIX): SupportedChainId {

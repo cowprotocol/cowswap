@@ -6,6 +6,8 @@ import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import { Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
 import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
@@ -31,7 +33,6 @@ import {
   WidgetContainer,
   HeroButtonWrapper,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 const FEATURE_ITEMS = [
   'Live styling configurator',
