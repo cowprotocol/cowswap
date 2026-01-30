@@ -4,9 +4,9 @@ import { JSX } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { TokenDetails as TokenDetailsPure } from '@/components/TokenDetails'
-
 import { type TokenDetails } from '../types'
+
+import { TokenDetails as TokenDetailsPure } from '@/components/TokenDetails'
 
 const Wrapper = styled.div`
   display: flex;

@@ -3,9 +3,7 @@ import { DEFAULT_PRECISION } from 'const'
 import { logDebug, silentPromise, parseStringOrBytes32, retry } from 'utils'
 import Web3 from 'web3'
 
-
 import { Erc20Api } from 'api/erc20/Erc20Api'
-
 
 interface Params {
   tokenAddress: string
@@ -41,15 +39,15 @@ export async function getErc20Info({ tokenAddress, networkId, erc20Api, web3 }: 
   const [symbol, name, decimals] = await Promise.all([
     silentPromise(
       retry(() => erc20Api.symbol({ tokenAddress, networkId }), retryOptions),
-      errorMsg
+      errorMsg,
     ),
     silentPromise(
       retry(() => erc20Api.name({ tokenAddress, networkId }), retryOptions),
-      errorMsg
+      errorMsg,
     ),
     silentPromise(
       retry(() => erc20Api.decimals({ tokenAddress, networkId }), retryOptions),
-      errorMsg
+      errorMsg,
     ),
   ])
 

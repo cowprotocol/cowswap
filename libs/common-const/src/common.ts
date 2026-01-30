@@ -133,16 +133,16 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
-  [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.MAINNET]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.GNOSIS_CHAIN]: null,
   [SupportedChainId.ARBITRUM_ONE]: null,
   [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.LENS]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.BNB]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.LINEA]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.AVALANCHE]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.LENS]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.BNB]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.LINEA]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.PLASMA]: null,
 }
 

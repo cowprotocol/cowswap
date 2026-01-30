@@ -18,6 +18,8 @@ export interface ExtensibleFallbackContext {
 export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null {
   const { account } = useWalletInfo()
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
   return useMemo(() => {

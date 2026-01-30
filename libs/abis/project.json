@@ -26,13 +26,6 @@
         "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/legacy './libs/abis/src/abis-legacy/**/*.json'"
       }
     },
-    "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/abis"
-      }
-    },
     "publish": {
       "command": "node tools/scripts/publish.mjs abis {args.tag} {args.otp}",
       "dependsOn": ["build"]

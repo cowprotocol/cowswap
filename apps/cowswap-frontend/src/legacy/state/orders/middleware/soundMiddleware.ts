@@ -19,7 +19,7 @@ const isBatchOrderAction = isAnyOf(
   OrderActions.fulfillOrdersBatch,
   OrderActions.expireOrdersBatch,
   OrderActions.cancelOrdersBatch,
-  OrderActions.preSignOrders
+  OrderActions.preSignOrders,
 )
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
@@ -83,7 +83,7 @@ function _shouldPlayPendingOrderSound(payload: AddPendingOrderParams): boolean {
 
 function _shouldPlayExpiredOrderSound(
   payload: BatchOrdersUpdateParams,
-  store: MiddlewareAPI<Dispatch<AnyAction>, { orders: OrdersState }>
+  store: MiddlewareAPI<Dispatch<AnyAction>, { orders: OrdersState }>,
 ): boolean {
   const { chainId, ids } = payload
   const orders = store.getState().orders[chainId]

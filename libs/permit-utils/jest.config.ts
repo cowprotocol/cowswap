@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'permit-utils',
   preset: '../../jest.preset.js',

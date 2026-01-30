@@ -15,9 +15,8 @@ export type NetworkOption = {
 
 export const NetworkOptions: NetworkOption[] = Object.keys(CHAIN_INFO).map<NetworkOption>((key) => {
   const chainId = +key as SupportedChainId
-  return ({ chainId, label: CHAIN_INFO[chainId].label })
+  return { chainId, label: CHAIN_INFO[chainId].label }
 })
-
 
 const DEFAULT_CHAIN_ID = NetworkOptions[0].chainId
 
@@ -35,11 +34,7 @@ type NetworkControlProps = {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function NetworkControl({
-  state,
-  standaloneMode,
-  availableChains
-}: NetworkControlProps) {
+export function NetworkControl({ state, standaloneMode, availableChains }: NetworkControlProps) {
   const [network, setNetwork] = state
 
   // TODO: Add proper return type annotation
@@ -52,7 +47,6 @@ export function NetworkControl({
       setNetwork(targetNetwork)
     }
   }
-
 
   return (
     <FormControl sx={{ width: '100%' }} disabled={standaloneMode}>
@@ -67,7 +61,7 @@ export function NetworkControl({
         size="small"
       >
         {availableChains.map((chainId) => {
-          const option = NetworkOptions.find(o => o.chainId === chainId)
+          const option = NetworkOptions.find((o) => o.chainId === chainId)
 
           if (!option) return null
 
@@ -76,7 +70,6 @@ export function NetworkControl({
               {option.label}
             </MenuItem>
           )
-
         })}
       </Select>
     </FormControl>
