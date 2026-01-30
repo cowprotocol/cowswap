@@ -6,7 +6,6 @@
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
-      "inputs": ["src", "patches", "public", "robots", "dotEnv", "^production"],
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "dependsOn": ["i18n"],
