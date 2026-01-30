@@ -8,6 +8,7 @@ const Fixtures = {
       title="Review order"
       appData={null}
       isSmartContractWallet={false}
+      isCurrentTradeBridging={false}
       account={undefined}
       ensName={undefined}
       inputCurrencyInfo={inputCurrencyInfoMock}

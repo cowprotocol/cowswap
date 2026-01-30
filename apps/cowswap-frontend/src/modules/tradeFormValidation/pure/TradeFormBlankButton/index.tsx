@@ -50,6 +50,7 @@ export interface TradeFormPrimaryButtonProps {
   disabled?: boolean
   loading?: boolean
   id?: string
+  clickEvent?: string
 
   onClick?(): void
 
@@ -66,6 +67,7 @@ export function TradeFormBlankButton({
   loading,
   id,
   className,
+  clickEvent,
 }: TradeFormPrimaryButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
@@ -113,6 +115,7 @@ export function TradeFormBlankButton({
       onClick={handleClick}
       disabled={showLoader || disabled}
       hasLongText$={hasLongText}
+      data-click-event={clickEvent}
     >
       {showLoader ? (
         <>

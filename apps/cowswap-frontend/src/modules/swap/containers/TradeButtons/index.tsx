@@ -1,13 +1,12 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 
-import { useLingui } from '@lingui/react/macro'
-
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useConfirmTradeWithRwaCheck,
+  useGetConfirmButtonLabel,
   useIsCurrentTradeBridging,
   useIsNoImpactWarningAccepted,
   useWrappedToken,
@@ -30,6 +29,7 @@ import {
   useShouldCheckBridgingRecipient,
   useSmartContractRecipientConfirmed,
 } from '../../hooks/useSmartContractRecipientConfirmed'
+import { buildSwapBridgeClickEvent, useSwapBridgeClickEventData } from '../../hooks/useSwapBridgeClickEvent'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
 
@@ -66,14 +66,27 @@ export function TradeButtons({
   const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
   const isSafeWallet = useIsSafeWallet()
 
-  const { t } = useLingui()
-
   const { confirmTrade } = useConfirmTradeWithRwaCheck()
 
-  const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
+  const confirmText = useGetConfirmButtonLabel('swap', isCurrentTradeBridging)
+
+  const swapBridgeClickEventData = useSwapBridgeClickEventData()
+  const swapBridgeClickEvent = useMemo(
+    () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click' }),
+    [swapBridgeClickEventData],
+  )
+  const swapBridgeClickApproveEvent = useMemo(
+    () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click_approve' }),
+    [swapBridgeClickEventData],
+  )
+
+  const tradeFormAnalytics = useSafeMemoObject({
+    confirmClickEvent: swapBridgeClickEvent,
+    approveClickEvent: swapBridgeClickApproveEvent,
+  })
 
   // enable partial approve only for swap
-  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, true)
+  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, true, tradeFormAnalytics)
 
   const context = useSafeMemoObject({
     wrappedToken,
@@ -85,6 +98,7 @@ export function TradeButtons({
     confirmText,
     isSafeWallet,
     isCurrentTradeBridging,
+    swapBridgeClickEvent,
   })
 
   const shouldShowAddIntermediateToken =
