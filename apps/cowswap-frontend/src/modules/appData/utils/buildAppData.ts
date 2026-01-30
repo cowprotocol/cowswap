@@ -68,11 +68,14 @@ export async function buildAppData({
   const orderClass = { orderClass: orderClassName }
   const replacedOrder = replacedOrderUid ? { uid: replacedOrderUid } : undefined
 
+  console.log('referrerParams', referrerParams)
+
   const doc = await metadataApiSDK.generateAppDataDoc({
     appCode,
     environment,
     metadata: {
-      referrer: referrerParams,
+      // TODO: fix it
+      // referrer: referrerParams,
       quote: quoteParams,
       orderClass,
       utm,

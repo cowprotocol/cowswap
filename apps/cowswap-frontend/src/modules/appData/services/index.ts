@@ -15,11 +15,12 @@ export interface UploadAppDataProps {
 }
 
 /**
- * Upload appData document to orderbook API
- * 
+ * Upload appData document to orderbook API.
+ * If a document was already deployed, the API will return 201.
+ *
  * @param appDataKeccak256 Keccak256 of the fullAppData passed as second parameter
  * @param fullAppData Full appData content to upload
- * 
+ *
  * @throws Throws in case the fullAppData and the appDataKeccak256 don't match
 
  */
@@ -27,5 +28,5 @@ export const uploadAppDataDocOrderbookApi: UploadAppDataDoc = async (props) => {
   const { appDataKeccak256, fullAppData, chainId, env } = props
 
   const contextOverride = env ? { chainId, env } : { chainId }
-  orderBookApi.uploadAppData(appDataKeccak256, fullAppData, contextOverride)
+  await orderBookApi.uploadAppData(appDataKeccak256, fullAppData, contextOverride)
 }

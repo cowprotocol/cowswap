@@ -30,6 +30,7 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderError,
   BridgeProviderQuoteError,
@@ -39,7 +40,6 @@ import {
   MultiQuoteResult,
   QuoteBridgeRequest,
 } from '@cowprotocol/sdk-bridging'
-import { QuoteAndPost } from '@cowprotocol/sdk-trading'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 

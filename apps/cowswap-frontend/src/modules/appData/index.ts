@@ -1,6 +1,9 @@
-export { getAppData } from './utils/fullAppData'
 export * from './updater/AppDataUpdater'
-export { useAppData, useAppDataHooks, useUploadAppData } from './hooks'
+
+export { useAppData, useAppDataHooks } from './hooks'
+export { uploadAppDataDocOrderbookApi } from './services'
+
+export { getAppData } from './utils/fullAppData'
 export { filterPermitSignerPermit } from './utils/appDataFilter'
 export { decodeAppData } from './utils/decodeAppData'
 export { replaceHooksOnAppData, buildAppData, removePermitHookFromAppData } from './utils/buildAppData'

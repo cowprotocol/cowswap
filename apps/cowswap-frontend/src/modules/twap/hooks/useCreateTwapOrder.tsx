@@ -7,10 +7,11 @@ import { UiOrderType } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { tradingSdk } from 'tradingSdk/tradingSdk'
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
-import { useAppData, useUploadAppData } from 'modules/appData'
+import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
@@ -71,7 +72,6 @@ export function useCreateTwapOrder() {
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
   const tradeConfirmActions = useTradeConfirmActions()
-  const uploadAppData = useUploadAppData()
 
   const { priceImpact } = useTradePriceImpact()
   const isBridge = getAreBridgeCurrencies(inputCurrencyAmount?.currency, outputCurrencyAmount?.currency)
@@ -152,8 +152,13 @@ export function useCreateTwapOrder() {
           ? await extensibleFallbackSetupTxs(extensibleFallbackContext)
           : []
 
-        // upload the app data here, as application might need it to decode the order info before it is being signed
-        uploadAppData({ chainId, orderId, appData: appDataInfo })
+        await uploadAppDataDocOrderbookApi({
+          appDataKeccak256: appDataInfo.appDataKeccak256,
+          fullAppData: appDataInfo.fullAppData,
+          chainId,
+          env: tradingSdk.traderParams.env,
+        })
+
         const createOrderTxs = createTwapOrderTxs(twapOrder, paramsStruct, twapOrderCreationContext)
         const safeTxHash = await sendSafeTransactions([...fallbackSetupTxs, ...createOrderTxs])
 
@@ -216,7 +221,6 @@ export function useCreateTwapOrder() {
       priceImpact,
       tradeConfirmActions,
       addTwapOrderToList,
-      uploadAppData,
       updateAdvancedOrdersState,
       sendOrderAnalytics,
       sendTwapConversionAnalytics,

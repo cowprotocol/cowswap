@@ -3,8 +3,6 @@ import { useMemo } from 'react'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useAppData, useUploadAppData } from 'modules/appData'
-
 import { useEthFlowContract } from 'common/hooks/useContract'
 
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
@@ -17,23 +15,19 @@ export function useEthFlowContext(): EthFlowContext | null {
     result: { contract },
   } = useEthFlowContract()
   const addTransaction = useTransactionAdder()
-  const uploadAppData = useUploadAppData()
-  const appData = useAppData()
 
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
   const checkEthFlowOrderExists = useCheckEthFlowOrderExists()
 
   return useMemo(() => {
-    return appData && contract
+    return contract
       ? {
           contract,
           addTransaction,
           checkEthFlowOrderExists,
           addInFlightOrderId,
-          uploadAppData,
-          appData,
         }
       : null
-  }, [appData, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, uploadAppData])
+  }, [contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId])
 }
