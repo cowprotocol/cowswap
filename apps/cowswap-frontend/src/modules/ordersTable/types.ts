@@ -1,16 +1,12 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import type { Command } from '@cowprotocol/types'
-import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
-import type { Currency, Price, Token } from '@uniswap/sdk-core'
+import type { Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import type { PendingOrdersPrices, SpotPricesKeyParams } from 'modules/orders'
-
 import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
-import type { CancellableOrder } from 'common/utils/isOrderCancellable'
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import type { OrderTabId } from './const/tabs'
@@ -63,23 +59,23 @@ export interface OrderActions {
 
 export interface OrdersTableState {
   currentTabId: OrderTabId
-  isSafeViaWc: boolean
+  // isSafeViaWc: boolean // TODO: Use useIsSafeViaWc()
   displayOrdersOnlyForSafeApp: boolean
   orderType: TabOrderTypes
-  injectedWidgetParams: Partial<CowSwapWidgetAppParams>
+  // injectedWidgetParams: Partial<CowSwapWidgetAppParams> // TODO: Use useInjectedWidgetParams()
   tabs: TabParams[]
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]
   hasHydratedOrders: boolean
-  allowsOffchainSigning: boolean
+  // allowsOffchainSigning: boolean // TODO: Use const { allowsOffchainSigning } = useWalletDetails()
   balancesAndAllowances: BalancesAndAllowances
   orderActions: OrderActions
   currentPageNumber: number
-  pendingOrdersPrices: PendingOrdersPrices
-  getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
-  pendingActivitiesCount: number
+  // pendingOrdersPrices: PendingOrdersPrices // TODO: Use usePendingOrdersPrices hook
+  // getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null // TODO: Use useGetSpotPrice()
+  // pendingActivitiesCount: number // TODO: Use usePendingActivitiesCount()
   isTwapTable: boolean
-  selectedOrders: CancellableOrder[]
+  // selectedOrders: CancellableOrder[] // TODO: Use useAtomValue(ordersToCancelAtom)
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>

@@ -1,19 +1,15 @@
-import { useAtomValue, useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai/index'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
-
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useNavigate } from 'common/hooks/useNavigate'
-import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
 import { OrderTabId } from '../const/tabs'
 import { useOrdersTableList } from '../containers/OrdersTableWidget/hooks/useOrdersTableList'
@@ -43,8 +39,20 @@ interface OrdersTableStateUpdaterProps extends OrdersTableParams {
   syncWithUrl?: boolean
 }
 
+/*
+TODO:
+- Tabs and filters should be combined here.
+- The atom should subscribe to history changes and based on that and current filters, update the table orders (which are
+  just the Redux orders, filtered).
+- This means params like `isTwapTable` and `orderType` (which are correlated BTW) or the hooks useCurrentTab and useTabs
+  are not needed.
+- We also need a loading / indeterminate state (e.g. if URL tab is signing, we don't know if we have to redirect the user
+  to a different tab until orders load).
+- Why are we persisting every single order in localStorage?
+*/
+
 // todo will fix in the next pr
-// eslint-disable-next-line max-lines-per-function
+
 export function OrdersTableStateUpdater({
   orders: allOrders,
   orderType,
@@ -55,21 +63,18 @@ export function OrdersTableStateUpdater({
   syncWithUrl = true,
 }: OrdersTableStateUpdaterProps): ReactNode {
   const { chainId } = useWalletInfo()
-  const { allowsOffchainSigning } = useWalletDetails()
   const navigate = useNavigate()
   const location = useLocation()
   const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
-  const pendingOrdersPrices = usePendingOrdersPrices()
   const setOrdersTableState = useSetAtom(ordersTableStateAtom)
-  const selectedOrders = useAtomValue(ordersToCancelAtom)
-  const getSpotPrice = useGetSpotPrice()
-  const isSafeViaWc = useIsSafeViaWc()
-  const injectedWidgetParams = useInjectedWidgetParams()
-  const pendingActivitiesCount = usePendingActivitiesCount()
 
   const ordersTokens = useMemo(() => getOrdersInputTokens(allOrders), [allOrders])
 
+  // TODO: Do we need this for all orders or only the ones on the current page?
   const balancesAndAllowances = useBalancesAndAllowances(ordersTokens)
+
+  // TODO: Combine ordersList with filteredOrders params + pagination params to avoid processing orders that are not
+  // going to be displayed in the current page.
   const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
 
   const { currentTabId, currentPageNumber } = useCurrentTab(ordersList)
@@ -92,18 +97,11 @@ export function OrdersTableStateUpdater({
       orders,
       filteredOrders,
       displayOrdersOnlyForSafeApp,
-      isSafeViaWc,
       currentPageNumber,
-      pendingOrdersPrices,
       balancesAndAllowances,
       orderActions,
-      getSpotPrice,
-      allowsOffchainSigning,
       orderType,
-      injectedWidgetParams,
       isTwapTable,
-      pendingActivitiesCount,
-      selectedOrders,
       hasHydratedOrders,
     })
   }, [
@@ -113,18 +111,11 @@ export function OrdersTableStateUpdater({
     filteredOrders,
     currentTabId,
     displayOrdersOnlyForSafeApp,
-    isSafeViaWc,
     currentPageNumber,
-    pendingOrdersPrices,
     balancesAndAllowances,
     orderActions,
-    getSpotPrice,
-    allowsOffchainSigning,
     orderType,
-    injectedWidgetParams,
     isTwapTable,
-    pendingActivitiesCount,
-    selectedOrders,
     hasHydratedOrders,
   ])
 
