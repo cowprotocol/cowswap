@@ -24,7 +24,7 @@ export function usePreGeneratedPermitInfo(): {
   const { data, isLoading } = useSWR(
     url,
     (url: string): Promise<Record<string, PermitInfo>> => fetch(url).then((r) => r.json()),
-    { ...SWR_NO_REFRESH_OPTIONS, fallbackData: {} }
+    { ...SWR_NO_REFRESH_OPTIONS, fallbackData: {} },
   )
 
   return useMemo(() => ({ allPermitInfo: data, isLoading }), [data, isLoading])

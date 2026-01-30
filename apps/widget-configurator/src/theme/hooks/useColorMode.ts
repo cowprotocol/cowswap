@@ -35,6 +35,6 @@ export function useColorMode(): ColorModeParams {
         updateMode(prefersDarkMode ? 'dark' : 'light')
       },
     }),
-    [mode, prefersDarkMode]
+    [mode, prefersDarkMode],
   )
 }

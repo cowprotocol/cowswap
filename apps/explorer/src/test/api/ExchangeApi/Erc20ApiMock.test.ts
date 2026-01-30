@@ -27,13 +27,13 @@ const NETWORK_ID = 0
 let instance: Erc20Api = new Erc20ApiMock({ balances: BALANCES, allowances: ALLOWANCES, tokens: unregisteredTokens })
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('Basic view functions', () => {
   describe('balanceOf', () => {
     it('returns balance', async () => {
       const token1Balance = BALANCES[USER_1][TOKEN_1]
       expect(await instance.balanceOf({ tokenAddress: TOKEN_1, userAddress: USER_1, networkId: NETWORK_ID })).toBe(
-        token1Balance
+        token1Balance,
       )
     })
 
@@ -51,7 +51,7 @@ describe('Basic view functions', () => {
           userAddress: USER_1,
           spenderAddress: CONTRACT,
           networkId: NETWORK_ID,
-        })
+        }),
       ).toBe(allowance)
     })
 
@@ -62,7 +62,7 @@ describe('Basic view functions', () => {
           userAddress: USER_2,
           spenderAddress: CONTRACT,
           networkId: NETWORK_ID,
-        })
+        }),
       ).toBe(ZERO)
     })
 
@@ -73,7 +73,7 @@ describe('Basic view functions', () => {
           userAddress: USER_1,
           spenderAddress: CONTRACT,
           networkId: NETWORK_ID,
-        })
+        }),
       ).toBe(ZERO)
     })
 
@@ -84,7 +84,7 @@ describe('Basic view functions', () => {
           userAddress: USER_1,
           spenderAddress: CONTRACT,
           networkId: NETWORK_ID,
-        })
+        }),
       ).toBe(ZERO)
     })
   })
@@ -105,7 +105,7 @@ describe('Basic view functions', () => {
         await instance.name32Bytes({
           tokenAddress: '0xF1290473E210b2108A85237fbCd7b6eb42Cc654F',
           networkId: NETWORK_ID,
-        })
+        }),
       ).toBe('0x4865646765547261646500000000000000000000000000000000000000000000')
     })
 
@@ -137,7 +137,7 @@ describe('Basic view functions', () => {
         await instance.symbol32Bytes({
           tokenAddress: '0xF1290473E210b2108A85237fbCd7b6eb42Cc654F',
           networkId: NETWORK_ID,
-        })
+        }),
       ).toBe('0x4845444700000000000000000000000000000000000000000000000000000000')
     })
 
@@ -176,7 +176,7 @@ describe('Basic view functions', () => {
 })
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('Write functions', () => {
   const mockFunction = jest.fn()
   const txOptionalParams: TxOptionalParams = {
@@ -207,7 +207,7 @@ describe('Write functions', () => {
           userAddress: USER_1,
           spenderAddress: USER_2,
           networkId: NETWORK_ID,
-        })
+        }),
       ).toBe(amount)
       expect(result).toBe(RECEIPT)
     })
@@ -248,10 +248,10 @@ describe('Write functions', () => {
       })
 
       expect(await instance.balanceOf({ tokenAddress: TOKEN_1, userAddress: CONTRACT, networkId: NETWORK_ID })).toEqual(
-        contractBalance.sub(amount)
+        contractBalance.sub(amount),
       )
       expect(await instance.balanceOf({ tokenAddress: TOKEN_1, userAddress: USER_2, networkId: NETWORK_ID })).toEqual(
-        userBalance.add(amount)
+        userBalance.add(amount),
       )
       expect(result).toBe(RECEIPT)
     })
@@ -279,7 +279,7 @@ describe('Write functions', () => {
     })
   })
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+
   describe('transferFrom', () => {
     const amount = new BN('78565893578')
 
@@ -309,10 +309,10 @@ describe('Write functions', () => {
       })
 
       expect(await instance.balanceOf({ tokenAddress: TOKEN_1, userAddress: USER_1, networkId: NETWORK_ID })).toEqual(
-        expectedUser1Balance
+        expectedUser1Balance,
       )
       expect(await instance.balanceOf({ tokenAddress: TOKEN_1, userAddress: USER_2, networkId: NETWORK_ID })).toEqual(
-        expectedUser2Balance
+        expectedUser2Balance,
       )
       expect(
         (
@@ -322,7 +322,7 @@ describe('Write functions', () => {
             spenderAddress: USER_3,
             networkId: NETWORK_ID,
           })
-        ).toString()
+        ).toString(),
       ).toEqual(ZERO.toString())
       expect(result).toBe(RECEIPT)
     })

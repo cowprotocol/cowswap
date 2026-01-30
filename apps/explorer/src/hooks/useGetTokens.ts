@@ -24,10 +24,10 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
       const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
       const lastWeekTimestampTo = Number(lastDaysTimestamp(6))
       const lastDayPrice = data.tokenHourlyTotals.find(
-        (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo
+        (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo,
       )?.averagePrice
       const lastWeekPrice = data.tokenHourlyTotals.find(
-        (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo
+        (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo,
       )?.averagePrice
 
       return {
@@ -47,7 +47,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
           .sort((a, b) => a.time - b.time),
       }
     },
-    []
+    [],
   )
 
   const fetchTokens = useCallback(
@@ -65,7 +65,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
             yesterdayTimestamp,
             lastWeekTimestamp,
           },
-          { chainId: network }
+          { chainId: network },
         )
         if (response) {
           const tokensData: { [tokenId: string]: TokenData } = {}
@@ -74,13 +74,13 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
             const tokenData = processTokenData(
               { tokenHourlyTotals: token.hourlyTotals },
               Number(totalVolumeUsd),
-              timestamp
+              timestamp,
             )
             tokensData[token.address] = { ...tokenData }
           }
           const tokens = addHistoricalData(
             response.tokenDailyTotals.map((tokenDaily) => tokenDaily.token),
-            tokensData
+            tokensData,
           )
           setTokens(enhanceNativeToken(tokens, network))
         }
@@ -92,7 +92,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
         setIsLoading(false)
       }
     },
-    [processTokenData]
+    [processTokenData],
   )
 
   useEffect(() => {

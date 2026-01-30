@@ -2,13 +2,6 @@ import React, { JSX } from 'react'
 
 import Image from 'next/image'
 
-import { Breadcrumbs } from '@/components/Breadcrumbs'
-import { ChartSection } from '@/components/ChartSection'
-import { NetworkItem } from '@/components/NetworkItem'
-import { NetworkHeaderItem } from '@/components/NetworkItem/styles'
-import { SwapLinkCard } from '@/components/SwapLinkCard'
-import { SwapWidget } from '@/components/SwapWidget'
-import { Network, NETWORK_MAP } from '@/const/networkMap'
 import { formatUSDPrice } from 'util/formatUSDPrice'
 
 import {
@@ -29,6 +22,14 @@ import {
 } from './index.styles'
 
 import type { TokenDetails as TokenDetailsType } from 'types'
+
+import { Breadcrumbs } from '@/components/Breadcrumbs'
+import { ChartSection } from '@/components/ChartSection'
+import { NetworkItem } from '@/components/NetworkItem'
+import { NetworkHeaderItem } from '@/components/NetworkItem/styles'
+import { SwapLinkCard } from '@/components/SwapLinkCard'
+import { SwapWidget } from '@/components/SwapWidget'
+import { Network, NETWORK_MAP } from '@/const/networkMap'
 
 function TokenDetailsHeading(props: { token: TokenDetailsType }): JSX.Element {
   const { token } = props

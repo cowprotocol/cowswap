@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
-import { getPageMetadata } from '@/util/getPageMetadata'
+
 import { CONFIG } from '@/const/meta'
+import { getPageMetadata } from '@/util/getPageMetadata'
 
 const title = 'Knowledge Base - CoW DAO'
 

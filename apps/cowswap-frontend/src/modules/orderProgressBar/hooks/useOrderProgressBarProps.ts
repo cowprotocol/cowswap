@@ -181,7 +181,12 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     isBridgingTrade,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
-  useCountdownStartUpdater(orderId, countdown, backendApiStatus, isUnfillable || isCancelled || isCancelling || isExpired)
+  useCountdownStartUpdater(
+    orderId,
+    countdown,
+    backendApiStatus,
+    isUnfillable || isCancelled || isCancelling || isExpired,
+  )
 
   const solverCompetition = useMemo(() => {
     const solversMap = apiSolverCompetition?.reduce(
@@ -501,11 +506,7 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type
   [CompetitionOrderStatus.type.CANCELLED]: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
-function useBackendApiStatusUpdater(
-  chainId: SupportedChainId,
-  orderId: string | undefined,
-  doNotQuery: boolean,
-): void {
+function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string | undefined, doNotQuery: boolean): void {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
   const [stopQuerying, setStopQuerying] = useState(false)
   const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, stopQuerying) || {}

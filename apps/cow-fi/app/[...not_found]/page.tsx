@@ -6,7 +6,6 @@ import { Layout } from '@/components/Layout'
 import { NotFoundPageComponent } from '@/components/NotFoundPageComponent'
 import { getPageMetadata } from '@/util/getPageMetadata'
 
-
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata({
     title: '404 - Page Not Found',

@@ -20,7 +20,7 @@ ORDER.sellAmountBeforeFee = '1000'
 ORDER.buyAmount = '1000'
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('isOrderUnfillable', () => {
   describe('sell order', () => {
     const order = { ...ORDER, kind: OrderKind.SELL }
@@ -35,7 +35,7 @@ describe('isOrderUnfillable', () => {
         order.inputToken,
         order.outputToken,
         order.sellAmount.toString(),
-        order.buyAmount.toString()
+        order.buyAmount.toString(),
       )
       const executionPrice = getOrderMarketPrice(order, price, fee)
 
@@ -50,7 +50,7 @@ describe('isOrderUnfillable', () => {
         order.inputToken,
         order.outputToken,
         order.sellAmount.toString(),
-        order.buyAmount.toString()
+        order.buyAmount.toString(),
       )
       const executionPrice = getOrderMarketPrice(order, price, fee)
 
@@ -65,7 +65,7 @@ describe('isOrderUnfillable', () => {
         order.inputToken,
         order.outputToken,
         order.sellAmount.toString(),
-        order.buyAmount.toString()
+        order.buyAmount.toString(),
       )
       const executionPrice = getOrderMarketPrice(order, price, fee)
 
@@ -85,7 +85,7 @@ describe('isOrderUnfillable', () => {
         order.inputToken,
         order.outputToken,
         order.sellAmount.toString(),
-        order.buyAmount.toString()
+        order.buyAmount.toString(),
       )
       const executionPrice = getOrderMarketPrice(order, price, fee)
 
@@ -100,7 +100,7 @@ describe('isOrderUnfillable', () => {
         order.inputToken,
         order.outputToken,
         order.sellAmount.toString(),
-        order.buyAmount.toString()
+        order.buyAmount.toString(),
       )
       const executionPrice = getOrderMarketPrice(order, price, fee)
 
@@ -115,7 +115,7 @@ describe('isOrderUnfillable', () => {
         order.inputToken,
         order.outputToken,
         order.sellAmount.toString(),
-        order.buyAmount.toString()
+        order.buyAmount.toString(),
       )
       const executionPrice = getOrderMarketPrice(order, price, fee)
 
@@ -125,7 +125,7 @@ describe('isOrderUnfillable', () => {
 })
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('classifyOrder', () => {
   const BASE_ORDER: Parameters<typeof classifyOrder>[0] = {
     uid: '0x0000000000...',
