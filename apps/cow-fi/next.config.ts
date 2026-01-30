@@ -4,9 +4,8 @@ import { NextConfig } from 'next'
 
 const nextConfig: WithNxOptions & NextConfig = {
   reactStrictMode: true,
-  nx: {},
-  eslint: {
-    ignoreDuringBuilds: true,
+  nx: {
+    svgr: false,
   },
   compiler: {
     styledComponents: true,
