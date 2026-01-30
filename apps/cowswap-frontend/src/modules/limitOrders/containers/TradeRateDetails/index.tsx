@@ -5,6 +5,7 @@ import { t } from '@lingui/core/macro'
 import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
+import { RowRewards } from 'modules/tradeWidgetAddons'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
@@ -50,7 +51,12 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   )
 
   if (!rateInfoParams) {
-    return tradeFees
+    return (
+      <>
+        {tradeFees}
+        <RowRewards />
+      </>
+    )
   }
 
   if (alwaysExpanded) {
@@ -64,7 +70,10 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
           fontSize={13}
           fontBold
         />
-        <Box noMargin>{tradeFees}</Box>
+        <Box noMargin>
+          {tradeFees}
+          <RowRewards />
+        </Box>
       </>
     )
   }
@@ -77,6 +86,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       toggleAccordion={toggleAccordion}
     >
       {tradeFees}
+      <RowRewards />
     </TradeTotalCostsDetails>
   )
 }

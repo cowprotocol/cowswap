@@ -84,7 +84,6 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   flex: 1;
-  min-height: 192px;
   margin: 0;
   background: var(${UI.COLOR_PAPER});
   box-shadow: none;
@@ -117,8 +116,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   }
 
   ${ButtonPrimary} {
-    height: 52px;
-    gap: 10px;
+    gap: 8px;
 
     > svg {
       height: 100%;
@@ -149,7 +147,6 @@ export const BannerCard = styled.div<{ rowOnMobile?: boolean }>`
   flex-flow: row;
   align-items: center;
   justify-content: flex-start;
-  min-height: 192px;
   border-radius: 16px;
   background: var(${UI.COLOR_PAPER});
   border: none;

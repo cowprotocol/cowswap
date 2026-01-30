@@ -30,6 +30,14 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId) => ({
       href: `/${chainId}/account-proxy`,
       label: ACCOUNT_PROXY_LABEL,
     },
+    {
+      href: Routes.ACCOUNT_MY_REWARDS,
+      label: msg`My rewards`,
+    },
+    {
+      href: Routes.ACCOUNT_AFFILIATE,
+      label: msg`Affiliate`,
+    },
   ],
 })
 

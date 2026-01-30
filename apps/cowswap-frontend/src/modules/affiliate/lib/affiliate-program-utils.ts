@@ -1,0 +1,97 @@
+import type { TypedDataField } from '@ethersproject/abstract-signer'
+
+import { i18n } from '@lingui/core'
+
+import { REFERRAL_REWARDS_CURRENCY } from '../config/constants'
+import { ReferralVerificationStatus } from '../model/types'
+
+export const AFFILIATE_TYPED_DATA_DOMAIN = {
+  name: 'CoW Swap Affiliate',
+  version: '1',
+} as const
+
+export const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
+  AffiliateCode: [
+    { name: 'walletAddress', type: 'address' },
+    { name: 'code', type: 'string' },
+    { name: 'chainId', type: 'uint256' },
+  ],
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function buildAffiliateTypedData(params: { walletAddress: string; code: string; chainId: number }) {
+  return {
+    domain: {
+      ...AFFILIATE_TYPED_DATA_DOMAIN,
+    },
+    types: AFFILIATE_TYPED_DATA_TYPES,
+    message: {
+      walletAddress: params.walletAddress,
+      code: params.code,
+      chainId: params.chainId,
+    },
+  }
+}
+
+const CODE_ALLOWED_REGEX = /[A-Z0-9_-]/
+
+export function sanitizeReferralCode(raw: string): string {
+  if (!raw) {
+    return ''
+  }
+
+  const next = raw
+    .trim()
+    .toUpperCase()
+    .split('')
+    .filter((char) => CODE_ALLOWED_REGEX.test(char))
+    .join('')
+
+  return next.slice(0, 20)
+}
+
+// TODO: Derive actual length limits from the referral API response schema
+export function isReferralCodeLengthValid(code: string): boolean {
+  return code.length >= 5 && code.length <= 20
+}
+
+export type AffiliateProgramParams = {
+  traderRewardAmount: number
+  triggerVolumeUsd: number
+  timeCapDays: number
+  volumeCapUsd: number
+  notes?: string | null
+}
+
+export function getAffiliateProgramCopyValues(params: AffiliateProgramParams): {
+  rewardAmount: string
+  rewardCurrency: string
+  triggerVolume: string
+  timeCapDays: number
+} {
+  return {
+    rewardAmount: formatInteger(params.traderRewardAmount),
+    rewardCurrency: REFERRAL_REWARDS_CURRENCY,
+    triggerVolume: formatInteger(params.triggerVolumeUsd),
+    timeCapDays: params.timeCapDays,
+  }
+}
+
+function formatInteger(value: number): string {
+  return value.toLocaleString(i18n.locale, { maximumFractionDigits: 0 })
+}
+
+export function getIncomingIneligibleCode(
+  incomingCode: string | undefined,
+  verification: ReferralVerificationStatus,
+): string | undefined {
+  if (incomingCode) {
+    return incomingCode
+  }
+
+  if (verification.kind === 'ineligible') {
+    return verification.code
+  }
+
+  return undefined
+}

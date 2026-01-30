@@ -28,6 +28,10 @@ function _getPropsFromRoute(route: string): string[] {
       return ['account-governance', t`Governance`]
     case RoutesEnum.ACCOUNT_TOKENS:
       return ['account-tokens', t`Tokens overview`]
+    case RoutesEnum.ACCOUNT_AFFILIATE:
+      return ['account-affiliate', t`Rewards hub - Affiliate`]
+    case RoutesEnum.ACCOUNT_MY_REWARDS:
+      return ['account-my-rewards', t`Rewards hub - My rewards`]
     default:
       return []
   }
