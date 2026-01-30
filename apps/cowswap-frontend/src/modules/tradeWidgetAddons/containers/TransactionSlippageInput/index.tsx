@@ -2,7 +2,6 @@ import { JSX, useContext } from 'react'
 
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { ThemeContext } from 'styled-components/macro'
 
@@ -12,8 +11,8 @@ import { SlippageWarningMessage } from 'modules/tradeWidgetAddons/pure/SlippageW
 
 import { useSlippageInput } from './hooks/useSlippageInput'
 import { useSlippageWarningParams } from './hooks/useSlippageWarningParams'
+import { Input } from './Input'
 import * as styledEl from './styled'
-import { SlippageLoader } from './styled'
 
 import { SlippageTooltip } from '../SlippageTooltip'
 
@@ -32,10 +31,13 @@ export function TransactionSlippageInput(): JSX.Element {
   const {
     slippageError,
     slippageViewValue,
+    isInputFocused,
     parseSlippageInput,
     placeholderSlippage,
     onSlippageInputBlur,
     setAutoSlippage,
+    focusOnInput,
+    inputRef,
   } = useSlippageInput()
 
   return (
@@ -47,30 +49,19 @@ export function TransactionSlippageInput(): JSX.Element {
         <styledEl.Option onClick={setAutoSlippage} active={!isSlippageModified}>
           <Trans>Auto</Trans>
         </styledEl.Option>
-        <styledEl.OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
-          {!isSlippageModified && isQuoteLoading ? (
-            <SlippageLoader size="16px" />
-          ) : (
-            <RowBetween>
-              {slippageWarningParams &&
-              !isQuoteLoading &&
-              (slippageWarningParams.tooLow || slippageWarningParams?.tooHigh) ? (
-                <styledEl.SlippageEmojiContainer>
-                  <span role="img" aria-label={t`warning`}>
-                    ⚠️
-                  </span>
-                </styledEl.SlippageEmojiContainer>
-              ) : null}
-              <styledEl.Input
-                placeholder={placeholderSlippage.toFixed(2)}
-                value={slippageViewValue}
-                onChange={(e) => parseSlippageInput(e.target.value)}
-                onBlur={onSlippageInputBlur}
-              />
-              %
-            </RowBetween>
-          )}
-        </styledEl.OptionCustom>
+        <Input
+          isSlippageModified={isSlippageModified}
+          slippageError={slippageError}
+          focusOnInput={focusOnInput}
+          isQuoteLoading={isQuoteLoading}
+          isInputFocused={isInputFocused}
+          slippageWarningParams={slippageWarningParams}
+          inputRef={inputRef}
+          slippageViewValue={slippageViewValue}
+          parseSlippageInput={parseSlippageInput}
+          onSlippageInputBlur={onSlippageInputBlur}
+          placeholderSlippage={placeholderSlippage.toFixed(2)}
+        />
       </RowBetween>
       {slippageWarningParams && !isQuoteLoading && (
         <SlippageWarningMessage error={!!slippageError} theme={theme} slippageWarningParams={slippageWarningParams} />
