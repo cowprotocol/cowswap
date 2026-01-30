@@ -68,6 +68,7 @@ function Root(): ReactNode {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+
           <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
           <Box sx={WrapperStyled}>
             <WithLDProvider>
