@@ -105,7 +105,7 @@ export const ContextMenuItems = styled(MenuItems)`
 
 const dangerVariantStyles = css`
   color: var(${UI.COLOR_DANGER});
-  
+
   &:hover,
   &:active,
   &:focus {
@@ -176,7 +176,7 @@ export const ContextMenuItemLink = styled.a<{ variant?: 'danger' }>`
 export const ContextMenuItemText = styled.span`
   ${BaseMenuItemStyles}
   cursor: default;
-  
+
   &:hover,
   &:active,
   &:focus {

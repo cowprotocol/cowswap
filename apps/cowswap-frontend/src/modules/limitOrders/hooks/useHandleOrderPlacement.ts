@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -69,6 +70,7 @@ export function useHandleOrderPlacement(
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
   const { t } = useLingui()
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   const beforePermit = useCallback(async () => {
     if (!tradeContext) return
@@ -154,10 +156,13 @@ export function useHandleOrderPlacement(
         setPartiallyFillableOverride(undefined)
         // Reset alternative mode if any
         hideAlternativeOrderModal()
-        // Navigate to all orders
-        navigateToOrdersTableTab(OrderTabId.all)
         // Close receipt modal
         closeReceiptModal()
+
+        // TODO: Clear filters if the new order is not visible before navigating.
+
+        // Navigate to open orders
+        navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.signing : OrderTabId.open)
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
@@ -183,6 +188,7 @@ export function useHandleOrderPlacement(
     closeReceiptModal,
     hideAlternativeOrderModal,
     alternativeModalAnalytics,
+    isSmartContractWallet,
   ])
 }
 

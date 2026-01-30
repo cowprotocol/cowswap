@@ -31,7 +31,6 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<AsyncC
                 url: RPC_URLS[SupportedChainId.MAINNET],
                 appName: 'CoW Swap',
                 appLogoUrl: CowImage,
-                reloadOnDisconnect: false,
               },
               onError,
             }),

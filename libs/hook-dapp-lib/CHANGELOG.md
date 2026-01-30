@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.14.4...hook-dapp-lib-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.0.0
+
+## [1.14.4](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.14.3...hook-dapp-lib-v1.14.4) (2026-01-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped from ^1.1.1 to ^1.2.0
+
 ## [1.14.3](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.14.2...hook-dapp-lib-v1.14.3) (2026-01-26)
 
 

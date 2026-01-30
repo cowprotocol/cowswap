@@ -1,7 +1,14 @@
-import LineChart from '@/components/Chart/LineChart'
-import { bisect, curveCardinal, NumberValue, scaleLinear, timeDay, timeHour, timeMinute, timeMonth } from 'd3'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
+import { Color } from '@cowprotocol/ui'
+
 import { AxisBottom, TickFormatter } from '@visx/axis'
+import { localPoint } from '@visx/event'
+import { EventType } from '@visx/event/lib/types'
+import { GlyphCircle } from '@visx/glyph'
+import { Line } from '@visx/shape'
+import { bisect, curveCardinal, NumberValue, scaleLinear, timeDay, timeHour, timeMinute, timeMonth } from 'd3'
+
 import {
   dayHourFormatter,
   hourFormatter,
@@ -10,10 +17,8 @@ import {
   monthYearDayFormatter,
   weekFormatter,
 } from 'util/formatChartTimes'
-import { Line } from '@visx/shape'
-import { GlyphCircle } from '@visx/glyph'
-import { localPoint } from '@visx/event'
-import { EventType } from '@visx/event/lib/types'
+import { formatUSDPrice } from 'util/formatUSDPrice'
+
 import { MissingPriceChart } from './MissingChart'
 import {
   ArrowCell,
@@ -26,8 +31,8 @@ import {
   TokenPrice,
   TokenPriceWrapper,
 } from './styled'
-import { formatUSDPrice } from 'util/formatUSDPrice'
-import { Color } from '@cowprotocol/ui'
+
+import LineChart from '@/components/Chart/LineChart'
 
 export type PricePoint = { timestamp: number; value: number }
 

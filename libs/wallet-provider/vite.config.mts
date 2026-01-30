@@ -65,7 +65,17 @@ export default defineConfig(({ command }) => {
       },
       rollupOptions: {
         // External packages that should not be bundled into your library.
-        external: [],
+        external: [
+          'react',
+          'react-dom',
+          'react/jsx-runtime',
+          'wagmi',
+          'viem',
+          '@web3-react/core',
+          '@ethersproject/providers',
+          'ethers',
+          /^@cowprotocol\//,
+        ],
       },
     },
   }

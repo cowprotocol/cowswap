@@ -1,4 +1,4 @@
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { LAUNCH_DARKLY_VIEM_MIGRATION, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -6,14 +6,16 @@ import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
+import { useCapabilities } from 'wagmi'
 
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 
-import { useIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
+import { useIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
+import { useIsWalletConnect as legacyUseIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
 import { useWalletInfo } from '../hooks'
 
 export type WalletCapabilities = {
-  atomicBatch?: { supported: boolean }
+  atomic?: { status: 'supported' | 'ready' | 'unsupported' }
 }
 
 const requestTimeout = ms`10s`
@@ -41,9 +43,17 @@ function shouldCheckCapabilities(
 
 export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
   const provider = useWalletProvider()
-  const isWalletConnect = useIsWalletConnect()
+  const newIsWalletConnect = useIsWalletConnect()
+  const legacyIsWalletConnect = legacyUseIsWalletConnect()
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
+
+  const capabilities = useCapabilities({ account, chainId })
+
+  let isWalletConnect = legacyIsWalletConnect
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isWalletConnect = newIsWalletConnect
+  }
 
   const shouldFetchCapabilities = Boolean(
     shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId,
@@ -85,7 +95,9 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
     SWR_NO_REFRESH_OPTIONS,
   )
 
-  if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    return capabilities
+  } else if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
     return EMPTY_SWR_RESPONSE
   }
 
