@@ -8,7 +8,11 @@ import { correlatedTokensAtom } from 'entities/correlatedTokens'
 
 import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
 import { derivedTradeStateAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
+import { tradeQuotesAtom } from 'modules/tradeQuote'
 
+import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
+
+import { isCorrelatedTrade } from './isCorrelatedTrade'
 import { safeAppFeeAtom } from './safeAppFeeAtom'
 
 import { VolumeFee } from '../types'
@@ -28,32 +32,23 @@ export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
 
 const shouldSkipFeeAtom = atom<boolean>((get) => {
   const { chainId } = get(walletInfoAtom)
-  const tradeState = get(derivedTradeStateAtom)
-  const correlatedTokensState = get(correlatedTokensAtom)
+  const { inputCurrency, outputCurrency } = get(derivedTradeStateAtom) || {}
+  const correlatedTokens = get(correlatedTokensAtom)[chainId]
 
-  if (!tradeState) return false
-
-  const correlatedTokens = correlatedTokensState[chainId]
-
-  if (!correlatedTokens) return false
-
-  const { inputCurrency, outputCurrency } = tradeState
-
-  if (!inputCurrency || !outputCurrency) return false
+  if (!inputCurrency || !outputCurrency || !correlatedTokens) return false
 
   const inputCurrencyAddress = getCurrencyAddress(inputCurrency).toLowerCase()
-  const outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
 
-  return correlatedTokens.some((tokens) => {
-    // If there is only one asset in the list, it means that it is a global correlated token
-    const addresses = Object.keys(tokens)
-    if (addresses.length === 1) {
-      return addresses[0] === inputCurrencyAddress || addresses[0] === outputCurrencyAddress
-      // If there are two tokens in the list, it means that it is a pair correlated token
-    } else {
-      return tokens[inputCurrencyAddress] && tokens[outputCurrencyAddress]
-    }
-  })
+  let outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
+
+  if (inputCurrency.chainId !== outputCurrency.chainId) {
+    const tradeQuotes = get(tradeQuotesAtom)
+    const bridgeQuote = tradeQuotes[inputCurrencyAddress]?.bridgeQuote ?? null
+
+    outputCurrencyAddress = getBridgeIntermediateTokenAddress(bridgeQuote)?.toLowerCase() ?? ''
+  }
+
+  return isCorrelatedTrade(inputCurrencyAddress, outputCurrencyAddress, correlatedTokens)
 })
 
 const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {

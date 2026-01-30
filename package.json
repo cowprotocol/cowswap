@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@10.28.2",
   "config": {
     "enabledApps": "cowswap-frontend cowswap-frontend-e2e abis ui ui-utils widget-lib widget-react"
   },
