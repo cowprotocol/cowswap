@@ -22,7 +22,6 @@ export interface ReferralModalContentProps {
   onRemove(): void
   onSave(): void
   onChange(event: FormEvent<HTMLInputElement>): void
-  helperText?: string
   primaryCta: PrimaryCta
   linkedMessage: ReactNode
   hasRejection: boolean

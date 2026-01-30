@@ -1,20 +1,20 @@
 import { FormEvent, ReactNode, RefObject } from 'react'
 
 import SaveIcon from '@cowprotocol/assets/images/icon-save.svg'
-import { Badge } from '@cowprotocol/ui'
+import { Badge, HelpTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import { ReferralCodeInputRow } from './ReferralCodeInputRow'
 import {
   FormActions,
   FormActionButton,
   FormActionDanger,
   FormGroup,
   Label,
+  LabelContent,
   LabelAffordances,
   LabelRow,
   TagGroup,
@@ -23,8 +23,7 @@ import {
 import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
 import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../model/types'
-
-type TrailingIconKind = 'error' | 'lock' | 'pending' | 'success'
+import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput'
 
 const VERIFICATION_ERROR_KINDS: ReadonlySet<ReferralVerificationStatus['kind']> = new Set([
   'invalid',
@@ -45,6 +44,7 @@ export interface ReferralCodeFormProps {
   inputRef: RefObject<HTMLInputElement | null>
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
   const {
     uiState,
@@ -85,6 +85,8 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
   })
   const submitAction = canSubmitSave ? onSave : onPrimaryClick
 
+  const tooltipCopy = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
+
   return (
     <FormGroup
       onSubmit={(event) => {
@@ -94,7 +96,10 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
     >
       <LabelRow>
         <Label htmlFor="referral-code-input">
-          <Trans>Referral code</Trans>
+          <LabelContent>
+            <Trans>Referral code</Trans>
+            <HelpTooltip text={tooltipCopy} />
+          </LabelContent>
         </Label>
         <LabelAffordances>
           <ReferralCodeTags showPendingTag={showPendingTag} showValidTag={showValidTag} />

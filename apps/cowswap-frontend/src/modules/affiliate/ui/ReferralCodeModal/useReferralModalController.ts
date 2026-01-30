@@ -7,7 +7,6 @@ import { NavigateFunction } from 'common/hooks/useNavigate'
 
 import {
   computePrimaryCta,
-  getHelperText,
   getStatusCopy,
   useReferralMessages,
   useReferralModalAnalytics,
@@ -78,7 +77,6 @@ export function useReferralModalController(params: ReferralModalControllerParams
     pendingVerificationId: referral.pendingVerificationRequest?.id,
   })
 
-  const helperText = getHelperText(uiState)
   const timeCapDays = verification.kind === 'valid' ? verification.programParams?.timeCapDays : undefined
   const statusCopy = getStatusCopy(verification, timeCapDays)
   const verificationCode = 'code' in verification ? verification.code : undefined
@@ -107,7 +105,6 @@ export function useReferralModalController(params: ReferralModalControllerParams
       onRemove: handlers.onRemove,
       onSave: handlers.onSave,
       onChange: handlers.onChange,
-      helperText,
       primaryCta,
       linkedMessage,
       hasRejection,

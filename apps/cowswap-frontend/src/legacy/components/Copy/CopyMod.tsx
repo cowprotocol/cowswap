@@ -54,12 +54,13 @@ interface CopyHelperProps
   children?: React.ReactNode
   clickableLink?: boolean
   copyIconWidth?: string
+  hideCopiedLabel?: boolean
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function CopyHelper(props: CopyHelperProps) {
-  const { toCopy, children, clickableLink, copyIconWidth, ...rest } = props
+  const { toCopy, children, clickableLink, copyIconWidth, hideCopiedLabel = false, ...rest } = props
   const [isCopied, setCopied] = useCopyClipboard()
 
   // TODO: Add proper return type annotation
@@ -78,11 +79,13 @@ export default function CopyHelper(props: CopyHelperProps) {
             isCopied={isCopied} // mod
           >
             <CheckCircleIconWrapper size={'16'} />
-            <TransactionStatusText
-              isCopied={isCopied} // mod
-            >
-              <Trans>Copied</Trans>
-            </TransactionStatusText>
+            {!hideCopiedLabel ? (
+              <TransactionStatusText
+                isCopied={isCopied} // mod
+              >
+                <Trans>Copied</Trans>
+              </TransactionStatusText>
+            ) : null}
           </TransactionStatusText>
         ) : (
           <TransactionStatusText>

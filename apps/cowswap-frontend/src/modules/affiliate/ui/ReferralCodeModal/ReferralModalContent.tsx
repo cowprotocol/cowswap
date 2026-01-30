@@ -7,7 +7,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { ReferralCodeForm } from './ReferralCodeForm'
 import { ReferralStatusMessages, getModalTitle } from './ReferralStatusMessages'
-import { Body, Footer, HelperText, ModalContainer, Subtitle, Title } from './styles'
+import { Body, Footer, ModalContainer, Subtitle, Title } from './styles'
 import { ReferralModalContentProps } from './types'
 
 import { getAffiliateProgramCopyValues } from '../../lib/affiliate-program-utils'
@@ -16,8 +16,7 @@ import { ReferralVerificationStatus } from '../../model/types'
 import { ReferralHowItWorksLink, ReferralIneligibleCopy } from '../ReferralIneligibleCopy'
 
 export function ReferralModalContent(props: ReferralModalContentProps): ReactNode {
-  const { uiState, onPrimaryClick, helperText, primaryCta, onDismiss, inputRef, ctaRef, linkedMessage, hasRejection } =
-    props
+  const { uiState, onPrimaryClick, primaryCta, onDismiss, inputRef, ctaRef, linkedMessage, hasRejection } = props
   const shouldShowForm = uiState !== 'ineligible'
 
   const howItWorksLink = <ReferralHowItWorksLink />
@@ -60,8 +59,6 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
         <ButtonPrimary ref={ctaRef} disabled={primaryCta.disabled} onClick={onPrimaryClick} type="button">
           {primaryCta.label}
         </ButtonPrimary>
-
-        {helperText && <HelperText>{helperText}</HelperText>}
       </Footer>
     </ModalContainer>
   )

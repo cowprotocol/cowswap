@@ -2,12 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
-import { ButtonPrimary, ButtonSecondary, UI } from '@cowprotocol/ui'
+import { useTimeAgo } from '@cowprotocol/common-hooks'
+import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
+import { ButtonPrimary, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
-import { ArrowLeft } from 'react-feather'
+import { ArrowLeft, Lock } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -19,30 +22,23 @@ import { useReferralActions } from 'modules/affiliate/model/hooks/useReferralAct
 import { TraderStatsResponse } from 'modules/affiliate/model/types'
 import { ReferralIneligibleCopy } from 'modules/affiliate/ui/ReferralIneligibleCopy'
 import {
-  Badge,
+  BottomMetaRow,
   CardHeader,
   CardTitle,
-  ClaimValue,
-  CodeBadge,
+  Donut,
   DonutValue,
   HeroActions,
   HeroCard,
   HeroContent,
   HeroSubtitle,
   HeroTitle,
-  InfoItem,
-  InfoList,
-  InlineActions,
-  InlineNote,
-  LinkedHeader,
   ReferralTermsFaqLinks,
   RewardsCol1Card,
   RewardsCol2Card,
-  RewardsCol3Card,
-  RewardsDonut,
-  RewardsMetricItem,
+  MetricItem,
   RewardsMetricsList,
   RewardsMetricsRow,
+  RewardsPayoutCard,
   RewardsThreeColumnGrid,
   RewardsWrapper,
 } from 'modules/affiliate/ui/shared'
@@ -62,6 +58,8 @@ export default function AccountMyRewards() {
   const referralActions = useReferralActions()
   const navigateBack = useNavigateBack()
   const [traderStats, setTraderStats] = useState<TraderStatsResponse | null>(null)
+  const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
+  const [statsLoading, setStatsLoading] = useState(false)
 
   const isConnected = Boolean(account)
   const incomingIneligibleCode = getIncomingIneligibleCode(referral.incomingCode, referral.verification)
@@ -91,9 +89,12 @@ export default function AccountMyRewards() {
 
     if (!account) {
       setTraderStats(null)
+      setStatsUpdatedAt(null)
+      setStatsLoading(false)
       return
     }
 
+    setStatsLoading(true)
     bffAffiliateApi
       .getTraderStats(account)
       .then((stats) => {
@@ -102,6 +103,8 @@ export default function AccountMyRewards() {
         }
 
         setTraderStats(stats)
+        const updated = stats?.lastUpdatedAt ? new Date(stats.lastUpdatedAt) : null
+        setStatsUpdatedAt(updated && !Number.isNaN(updated.getTime()) ? updated : null)
         if (stats?.bound_referrer_code && referral.savedCode !== stats.bound_referrer_code) {
           referralActions.setSavedCode(stats.bound_referrer_code)
           referralActions.setWalletState({ status: 'linked', code: stats.bound_referrer_code })
@@ -110,6 +113,12 @@ export default function AccountMyRewards() {
       .catch(() => {
         if (!cancelled) {
           setTraderStats(null)
+          setStatsUpdatedAt(null)
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setStatsLoading(false)
         }
       })
 
@@ -142,9 +151,18 @@ export default function AccountMyRewards() {
   const leftToNextRewardLabel = statsReady ? formatUsd(leftToNextRewards) : '-'
   const totalEarnedLabel = statsReady ? formatUsdc(traderStats?.total_earned) : '-'
   const claimedLabel = statsReady ? formatUsdc(traderStats?.paid_out) : '-'
-  const nextPayoutLabel = statsReady ? formatNumber(traderStats?.next_payout) : '-'
-  const linkedSinceLabel = formatStatsDate(traderStats?.linked_since)
-  const rewardsEndLabel = formatStatsDate(traderStats?.rewards_end)
+  const nextPayoutValue = traderStats?.next_payout
+  const nextPayoutLabel =
+    statsReady && nextPayoutValue !== null && nextPayoutValue !== undefined
+      ? `${formatNumber(nextPayoutValue)} USDC`
+      : '-'
+  const linkedSinceLabel = formatShortDate(traderStats?.linked_since) ?? '-'
+  const rewardsEndLabel = formatShortDate(traderStats?.rewards_end) ?? '-'
+  const statsUpdatedLabel = useTimeAgo(statsUpdatedAt ?? undefined, 60_000)
+  const statsUpdatedAbsoluteLabel = formatUpdatedAt(statsUpdatedAt)
+  const statsUpdatedDisplay = statsUpdatedLabel || '-'
+  const statsUpdatedText = i18n._(t`Last updated: ${statsUpdatedDisplay}`)
+  const statsUpdatedTitle = statsUpdatedAbsoluteLabel !== '-' ? statsUpdatedAbsoluteLabel : undefined
 
   const handleOpenRewardsModal = useCallback(() => {
     referralActions.openModal('rewards')
@@ -216,44 +234,45 @@ export default function AccountMyRewards() {
       ) : (
         <>
           <RewardsThreeColumnGrid>
-            <RewardsCol1Card>
+            <RewardsCol1Card showLoader={statsLoading}>
               <Header>
-                <Title>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</Title>
+                <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
               </Header>
-              <LinkedHeader>
-                <CodeBadge>{traderCode}</CodeBadge>
-                {isLinked ? (
-                  <Badge $tone="success">
-                    <Trans>Linked</Trans>
-                  </Badge>
-                ) : (
-                  <Badge $tone="info">
+              <LinkedCard>
+                <LinkedCodeRow>
+                  <LinkedCodeText>{traderCode}</LinkedCodeText>
+                  {isLinked ? (
+                    <LinkedStatusBadge>
+                      <Lock size={14} />
+                      <Trans>Linked</Trans>
+                    </LinkedStatusBadge>
+                  ) : (
                     <Trans>Pending</Trans>
-                  </Badge>
-                )}
-              </LinkedHeader>
-              <InfoList>
-                <InfoItem>
+                  )}
+                </LinkedCodeRow>
+              </LinkedCard>
+              <LinkedMetaList>
+                <MetricItem>
                   <span>
                     <Trans>Linked since</Trans>
                   </span>
-                  <span>{isLinked ? linkedSinceLabel : '-'}</span>
-                </InfoItem>
-                <InfoItem>
+                  <strong>{isLinked ? linkedSinceLabel : '-'}</strong>
+                </MetricItem>
+                <MetricItem>
                   <span>
                     <Trans>Rewards end</Trans>
                   </span>
-                  <span>{isLinked ? rewardsEndLabel : '-'}</span>
-                </InfoItem>
-              </InfoList>
-              <InlineActions>
-                <ButtonSecondary onClick={handleOpenRewardsModal}>
+                  <strong>{isLinked ? rewardsEndLabel : '-'}</strong>
+                </MetricItem>
+              </LinkedMetaList>
+              <HeroActions>
+                <ButtonPrimary onClick={handleOpenRewardsModal}>
                   <Trans>Edit code</Trans>
-                </ButtonSecondary>
-              </InlineActions>
+                </ButtonPrimary>
+              </HeroActions>
             </RewardsCol1Card>
 
-            <RewardsCol2Card>
+            <RewardsCol2Card showLoader={statsLoading}>
               <CardHeader>
                 <CardTitle>
                   <Trans>Next $10 reward</Trans>
@@ -261,102 +280,53 @@ export default function AccountMyRewards() {
               </CardHeader>
               <RewardsMetricsRow>
                 <RewardsMetricsList>
-                  <RewardsMetricItem>
+                  <MetricItem>
                     <span>
                       <Trans>Left to next $10</Trans>
                     </span>
                     <strong>{leftToNextRewardLabel}</strong>
-                  </RewardsMetricItem>
-                  <RewardsMetricItem>
+                  </MetricItem>
+                  <MetricItem>
                     <span>
                       <Trans>Total earned</Trans>
                     </span>
                     <strong>{totalEarnedLabel}</strong>
-                  </RewardsMetricItem>
-                  <RewardsMetricItem>
+                  </MetricItem>
+                  <MetricItem>
                     <span>
                       <Trans>Claimed</Trans>
                     </span>
                     <strong>{claimedLabel}</strong>
-                  </RewardsMetricItem>
+                  </MetricItem>
                 </RewardsMetricsList>
-                <RewardsDonut $value={rewardsProgressPercent}>
+                <Donut $value={rewardsProgressPercent}>
                   <DonutValue>
                     <span>{rewardsProgressLabel}</span>
                     <small>
                       <Trans>of</Trans> {triggerVolumeLabel}
                     </small>
                   </DonutValue>
-                </RewardsDonut>
+                </Donut>
               </RewardsMetricsRow>
+              <BottomMetaRow>
+                <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
+              </BottomMetaRow>
             </RewardsCol2Card>
 
-            <RewardsCol3Card>
-              <CardHeader>
-                <CardTitle>
-                  <Trans>Next payout</Trans>
-                </CardTitle>
-              </CardHeader>
-              <ClaimValue>{nextPayoutLabel} USDC</ClaimValue>
-              <InlineNote>
-                <Trans>Paid weekly via airdrop.</Trans>
-              </InlineNote>
-            </RewardsCol3Card>
+            <RewardsPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
           </RewardsThreeColumnGrid>
-
-          <FullWidthCard>
-            <Content>
-              <Header>
-                <Title>
-                  <Trans>Rewards activity</Trans>
-                </Title>
-                <Subtitle>
-                  <Trans>Track completed rewards over time.</Trans>
-                </Subtitle>
-              </Header>
-              <RewardsTable>
-                <thead>
-                  <tr>
-                    <th>
-                      <Trans>Trade</Trans>
-                    </th>
-                    <th>
-                      <Trans>Date</Trans>
-                    </th>
-                    <th>
-                      <Trans>Eligible volume</Trans>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan={3}>
-                      <EmptyTableState>
-                        <Trans>Your rewards activity will show here.</Trans>
-                      </EmptyTableState>
-                    </td>
-                  </tr>
-                </tbody>
-              </RewardsTable>
-            </Content>
-          </FullWidthCard>
         </>
       )}
     </RewardsWrapper>
   )
 }
 
-function formatStatsDate(value?: string): string {
+function formatUpdatedAt(value: Date | null): string {
   if (!value) {
     return '-'
   }
 
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) {
-    return '-'
-  }
-
-  return date.toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })
+  return formatDateWithTimezone(value) ?? '-'
 }
 
 const IneligibleCard = styled(Card)`
@@ -415,56 +385,51 @@ const IneligibleActions = styled.div`
   }
 `
 
-const Content = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`
-
 const Header = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
 `
 
-const Title = styled.h3`
-  margin: 0;
-  font-size: 20px;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const Subtitle = styled.p`
-  margin: 0;
-  font-size: 14px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const FullWidthCard = styled(Card)`
-  grid-column: 1 / -1;
-  align-items: flex-start;
-`
-
-const RewardsTable = styled.table`
+const LinkedCard = styled.div`
+  border: 1px solid var(${UI.COLOR_INFO_BG});
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 9px;
+  overflow: hidden;
   width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  color: var(${UI.COLOR_TEXT});
-
-  th,
-  td {
-    padding: 10px 0;
-    border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-    text-align: left;
-  }
-
-  th {
-    font-size: 12px;
-    color: var(${UI.COLOR_TEXT_OPACITY_70});
-  }
 `
 
-const EmptyTableState = styled.div`
-  padding: 16px 0;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+const LinkedCodeRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(${UI.COLOR_INFO_BG});
+  color: var(${UI.COLOR_INFO_TEXT});
+`
+
+const LinkedCodeText = styled.span`
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 18px;
+  white-space: nowrap;
+  color: var(${UI.COLOR_INFO_TEXT});
+`
+
+const LinkedStatusBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+`
+
+const LinkedMetaList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  width: 100%;
 `

@@ -96,3 +96,9 @@ export const Label = styled.label`
   font-weight: 600;
   color: var(${UI.COLOR_TEXT});
 `
+
+export const LabelContent = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+`

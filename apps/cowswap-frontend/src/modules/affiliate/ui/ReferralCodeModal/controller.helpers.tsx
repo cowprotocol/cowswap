@@ -82,12 +82,6 @@ function verifyCta(
   }
 }
 
-export function getHelperText(uiState: ReferralModalUiState): string | undefined {
-  return uiState === 'empty'
-    ? t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
-    : undefined
-}
-
 export function getStatusCopy(verification: ReferralVerificationStatus, timeCapDays?: number): StatusCopyResult {
   return {
     shouldShowInfo: verification.kind === 'valid' && verification.eligible,

@@ -1,7 +1,9 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { useTimeAgo } from '@cowprotocol/common-hooks'
+import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary, ButtonSecondary, ButtonSize, HelpTooltip, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -11,27 +13,29 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
 import { toDataURL, toString } from 'qrcode'
+import { Grid, Lock, X } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api'
-import { buildAffiliateTypedData } from 'modules/affiliate/lib/affiliate-program-utils'
-import { AffiliateStatsResponse } from 'modules/affiliate/model/types'
 import {
-  type BadgeTone,
-  Badge,
+  buildAffiliateTypedData,
+  isReferralCodeLengthValid,
+  sanitizeReferralCode,
+} from 'modules/affiliate/lib/affiliate-program-utils'
+import { AffiliateStatsResponse } from 'modules/affiliate/model/types'
+import { ReferralCodeInputRow, type TrailingIconKind } from 'modules/affiliate/ui/ReferralCodeInput'
+import {
+  BottomMetaRow,
   CardHeader,
   CardTitle,
-  ClaimValue,
-  CodeBadge,
+  Donut,
   DonutValue,
-  RewardsDonut,
   RewardsCol1Card,
   RewardsCol2Card,
-  RewardsCol3Card,
-  RewardsMetricItem,
+  MetricItem,
   RewardsMetricsList,
   RewardsMetricsRow,
   RewardsThreeColumnGrid,
@@ -40,13 +44,10 @@ import {
   HeroContent,
   HeroSubtitle,
   HeroTitle,
-  InlineActions,
   InlineNote,
-  InfoItem,
-  InfoList,
-  LinkedHeader,
   MetaRow,
   ReferralTermsFaqLinks,
+  RewardsPayoutCard,
   RewardsWrapper,
 } from 'modules/affiliate/ui/shared'
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -83,22 +84,27 @@ export default function AccountAffiliate() {
   const [existingCode, setExistingCode] = useState<string | null>(null)
   const [inputCode, setInputCode] = useState('')
   const [availability, setAvailability] = useState<AvailabilityState>('idle')
-  const [confirming, setConfirming] = useState(false)
   const [hasEdited, setHasEdited] = useState(false)
-  const [linkedAt, setLinkedAt] = useState<Date | null>(null)
+  const [createdAt, setCreatedAt] = useState<Date | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [affiliateStats, setAffiliateStats] = useState<AffiliateStatsResponse | null>(null)
   const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
+  const [statsLoading, setStatsLoading] = useState(false)
   const { isModalOpen: isQrOpen, openModal: openQrModal, closeModal: closeQrModal } = useModalState()
   const [qrColor, setQrColor] = useState<QrColor>('navy')
   const [qrPngUrl, setQrPngUrl] = useState<string | null>(null)
   const [qrSvgUrl, setQrSvgUrl] = useState<string | null>(null)
   const [qrError, setQrError] = useState<string | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const normalizedCode = useMemo(() => normalizeAffiliateCode(inputCode), [inputCode])
-  const isCodeValid = useMemo(() => isAffiliateCodeValid(normalizedCode), [normalizedCode])
-  const codeTooltip = t`UPPERCASE | 5-20 chars | A-Z 0-9 - _`
+  const normalizedCode = useMemo(() => sanitizeReferralCode(inputCode), [inputCode])
+  const hasInvalidChars = useMemo(() => inputCode.trim().toUpperCase() !== normalizedCode, [inputCode, normalizedCode])
+  const isCodeValid = useMemo(
+    () => isReferralCodeLengthValid(normalizedCode) && !hasInvalidChars,
+    [hasInvalidChars, normalizedCode],
+  )
+  const codeTooltip = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
   const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
   const compactFormatter = useMemo(
     () => new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1 }),
@@ -123,20 +129,7 @@ export default function AccountAffiliate() {
       return '-'
     }
 
-    const dateLabel = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'UTC',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(value)
-    const timeLabel = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'UTC',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    }).format(value)
-
-    return `${dateLabel} - ${timeLabel} GMT`
+    return formatDateWithTimezone(value) ?? '-'
   }, [])
 
   const isConnected = Boolean(account)
@@ -153,38 +146,6 @@ export default function AccountAffiliate() {
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://swap.cow.fi'
     return `${origin}?ref=${existingCode}`
   }, [existingCode])
-
-  const availabilityLabel = useMemo(() => {
-    switch (availability) {
-      case 'checking':
-        return t`Checking availability...`
-      case 'available':
-        return t`Available`
-      case 'unavailable':
-        return t`Unavailable`
-      case 'invalid':
-        return t`Invalid format`
-      case 'error':
-        return t`Unable to check`
-      default:
-        return t`Availability`
-    }
-  }, [availability])
-
-  const availabilityTone: BadgeTone = useMemo(() => {
-    switch (availability) {
-      case 'available':
-        return 'success'
-      case 'unavailable':
-      case 'error':
-      case 'invalid':
-        return 'error'
-      case 'checking':
-        return 'info'
-      default:
-        return 'neutral'
-    }
-  }, [availability])
 
   const shareText = useMemo(() => {
     if (!existingCode) {
@@ -246,6 +207,7 @@ export default function AccountAffiliate() {
 
     if (!account || !isMainnet) {
       setExistingCode(null)
+      setCreatedAt(null)
       setLoading(false)
       setAffiliateStats(null)
       setStatsUpdatedAt(null)
@@ -264,13 +226,17 @@ export default function AccountAffiliate() {
 
         if (response?.code) {
           setExistingCode(response.code)
+          const created = response.createdAt ? new Date(response.createdAt) : null
+          setCreatedAt(created && !Number.isNaN(created.getTime()) ? created : null)
         } else {
           setExistingCode(null)
+          setCreatedAt(null)
         }
       })
       .catch(() => {
         if (!cancelled) {
           setExistingCode(null)
+          setCreatedAt(null)
           setErrorMessage(t`Unable to load affiliate code right now.`)
         }
       })
@@ -291,9 +257,11 @@ export default function AccountAffiliate() {
     if (!account || !isMainnet || !existingCode) {
       setAffiliateStats(null)
       setStatsUpdatedAt(null)
+      setStatsLoading(false)
       return
     }
 
+    setStatsLoading(true)
     bffAffiliateApi
       .getAffiliateStats(account)
       .then((stats) => {
@@ -302,12 +270,18 @@ export default function AccountAffiliate() {
         }
 
         setAffiliateStats(stats)
-        setStatsUpdatedAt(stats ? new Date() : null)
+        const updated = stats?.lastUpdatedAt ? new Date(stats.lastUpdatedAt) : null
+        setStatsUpdatedAt(updated && !Number.isNaN(updated.getTime()) ? updated : null)
       })
       .catch(() => {
         if (!cancelled) {
           setAffiliateStats(null)
           setStatsUpdatedAt(null)
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setStatsLoading(false)
         }
       })
 
@@ -391,6 +365,7 @@ export default function AccountAffiliate() {
     }
   }, [account, chainId, inputCode, isCodeValid, normalizedCode, showCreateForm])
 
+  // eslint-disable-next-line complexity
   const handleCreate = useCallback(async () => {
     if (!account) {
       setErrorMessage(t`Connect your wallet to create a code.`)
@@ -407,8 +382,11 @@ export default function AccountAffiliate() {
       return
     }
 
-    if (availability === 'unavailable' || availability === 'error') {
-      setErrorMessage(t`That code is unavailable. Try another.`)
+    if (availability !== 'available') {
+      if (availability === 'unavailable' || availability === 'error') {
+        setErrorMessage(t`That code is unavailable. Try another.`)
+      }
+
       return
     }
 
@@ -438,9 +416,9 @@ export default function AccountAffiliate() {
       })
 
       setExistingCode(response.code)
-      setLinkedAt(new Date())
+      const created = response.createdAt ? new Date(response.createdAt) : null
+      setCreatedAt(created && !Number.isNaN(created.getTime()) ? created : null)
       setSuccessMessage(t`Affiliate code created.`)
-      setConfirming(false)
     } catch (error) {
       const err = error as Error & { status?: number; code?: number }
 
@@ -474,17 +452,15 @@ export default function AccountAffiliate() {
     onSelectNetwork(SupportedChainId.MAINNET)
   }, [onSelectNetwork])
 
-  const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = useCallback((event: FormEvent<HTMLInputElement>) => {
     setHasEdited(true)
-    setConfirming(false)
     setErrorMessage(null)
     setSuccessMessage(null)
-    setInputCode(event.target.value.toUpperCase())
+    setInputCode(event.currentTarget.value.toUpperCase())
   }, [])
 
   const handleGenerate = useCallback(() => {
     setHasEdited(true)
-    setConfirming(false)
     setErrorMessage(null)
     setSuccessMessage(null)
     setInputCode(generateSuggestedCode())
@@ -499,27 +475,17 @@ export default function AccountAffiliate() {
     openQrModal()
   }, [openQrModal, referralLink])
 
-  const handleStartConfirm = useCallback(() => {
-    if (!isCodeValid) {
-      setErrorMessage(t`Enter a code with 5-20 characters (A-Z, 0-9, - or _).`)
-      return
-    }
-
-    if (availability === 'unavailable' || availability === 'error') {
-      setErrorMessage(t`That code is unavailable. Try another.`)
-      return
-    }
-
-    setConfirming(true)
-  }, [availability, isCodeValid])
-
-  const handleCancelConfirm = useCallback(() => {
-    setConfirming(false)
-  }, [])
-
   const canSave = showCreateForm && isCodeValid && availability === 'available' && !submitting
   const showCodeUnavailable = availability === 'unavailable'
   const showInvalidFormat = availability === 'invalid'
+  const trailingIconKind: TrailingIconKind | undefined =
+    availability === 'checking'
+      ? 'pending'
+      : availability === 'available'
+        ? 'success'
+        : availability === 'unavailable' || availability === 'invalid' || availability === 'error'
+          ? 'error'
+          : undefined
   const statsReady = Boolean(affiliateStats)
   const referralTarget = affiliateStats?.trigger_volume ?? DEFAULT_REWARDS_TARGET
   const leftToNextReward = affiliateStats?.left_to_next_reward
@@ -541,9 +507,12 @@ export default function AccountAffiliate() {
 
   const showHero = !isConnected || showUnsupported || (isConnected && !isSignerAvailable && !showLinkedFlow)
 
-  const linkedSinceLabel = linkedAt ? formatDate(linkedAt) : '-'
-  const rewardsEndLabel = linkedAt ? formatDate(addDays(linkedAt, 90)) : '-'
-  const statsUpdatedLabel = formatUpdatedAt(statsUpdatedAt)
+  const createdOnLabel = createdAt ? formatShortDate(createdAt) : '-'
+  const statsUpdatedLabel = useTimeAgo(statsUpdatedAt ?? undefined, 60_000)
+  const statsUpdatedAbsoluteLabel = formatUpdatedAt(statsUpdatedAt)
+  const statsUpdatedDisplay = statsUpdatedLabel || '-'
+  const statsUpdatedText = i18n._(t`Last updated: ${statsUpdatedDisplay}`)
+  const statsUpdatedTitle = statsUpdatedAbsoluteLabel !== '-' ? statsUpdatedAbsoluteLabel : undefined
 
   return (
     <RewardsWrapper>
@@ -600,58 +569,60 @@ export default function AccountAffiliate() {
                 <RewardsCol1Card>
                   {showLinkedFlow && existingCode ? (
                     <LinkedBlock>
-                      <LinkedHeader>
-                        <CardTitle>
-                          <Trans>Your referral code</Trans>
-                        </CardTitle>
-                        <Badge $tone="success">
-                          <Trans>Linked</Trans>
-                        </Badge>
-                      </LinkedHeader>
+                      <CardTitle>
+                        <Trans>Your referral code</Trans>
+                      </CardTitle>
 
-                      <CodeRow>
-                        <CodeBadge>{existingCode}</CodeBadge>
-                        <CopyHelper toCopy={existingCode} iconSize={16} iconPosition="right">
-                          <Trans>Copy code</Trans>
-                        </CopyHelper>
-                      </CodeRow>
+                      <LinkedCard>
+                        <LinkedCodeRow>
+                          <LinkedCopy>
+                            <CopyHelper toCopy={existingCode} iconSize={16} hideCopiedLabel />
+                            <LinkedCodeText>{existingCode}</LinkedCodeText>
+                          </LinkedCopy>
+                          <LinkedBadge>
+                            <Lock size={14} />
+                            <Trans>Created</Trans>
+                          </LinkedBadge>
+                        </LinkedCodeRow>
+                        <LinkedLinkRow>
+                          <LinkedCopy>
+                            <CopyHelper toCopy={referralLink} iconSize={16} hideCopiedLabel />
+                            <LinkedLinkText>{referralLink}</LinkedLinkText>
+                          </LinkedCopy>
+                        </LinkedLinkRow>
+                      </LinkedCard>
 
-                      <InfoList>
-                        <InfoItem>
-                          <span>
-                            <Trans>Referral link</Trans>
-                          </span>
-                          <CopyHelper toCopy={referralLink} iconSize={16} iconPosition="right">
-                            <Trans>Copy link</Trans>
-                          </CopyHelper>
-                        </InfoItem>
-                        <InfoItem>
-                          <span>
-                            <Trans>Linked since</Trans>
-                          </span>
-                          <span>{linkedSinceLabel}</span>
-                        </InfoItem>
-                        <InfoItem>
-                          <span>
-                            <Trans>Rewards end</Trans>
-                          </span>
-                          <span>{rewardsEndLabel}</span>
-                        </InfoItem>
-                      </InfoList>
+                      <MetricItem>
+                        <span>
+                          <Trans>Created on</Trans>
+                        </span>
+                        <strong>{createdOnLabel}</strong>
+                      </MetricItem>
 
-                      <InlineActions>
-                        <ButtonSecondary
-                          as="a"
-                          href={`https://twitter.com/intent/tweet?text=${shareText}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Trans>Share on X</Trans>
-                        </ButtonSecondary>
-                        <ButtonSecondary onClick={handleOpenQr}>
-                          <Trans>Download QR code</Trans>
-                        </ButtonSecondary>
-                      </InlineActions>
+                      <LinkedFooter>
+                        <LinkedFooterNote>
+                          <Trans>Links/codes don't reveal your wallet.</Trans>
+                        </LinkedFooterNote>
+                        <LinkedActions>
+                          <LinkedActionButton
+                            as="a"
+                            href={`https://twitter.com/intent/tweet?text=${shareText}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <LinkedActionIcon>
+                              <X size={14} />
+                            </LinkedActionIcon>
+                            <Trans>Share on X</Trans>
+                          </LinkedActionButton>
+                          <LinkedActionButton onClick={handleOpenQr}>
+                            <LinkedActionIcon>
+                              <Grid size={14} />
+                            </LinkedActionIcon>
+                            <Trans>Download QR</Trans>
+                          </LinkedActionButton>
+                        </LinkedActions>
+                      </LinkedFooter>
                     </LinkedBlock>
                   ) : (
                     <Form>
@@ -659,9 +630,6 @@ export default function AccountAffiliate() {
                         <CardTitle>
                           <Trans>Create your referral code</Trans>
                         </CardTitle>
-                        <MiniAction onClick={handleGenerate} disabled={submitting}>
-                          <Trans>generate</Trans>
-                        </MiniAction>
                       </LabelRow>
                       <HelperText>
                         <Trans>
@@ -669,68 +637,64 @@ export default function AccountAffiliate() {
                           can't be changed. Links/codes don't reveal your wallet.
                         </Trans>
                       </HelperText>
-                      {!confirming ? (
-                        <>
-                          <LabelRow>
-                            <Label htmlFor="affiliate-code">
-                              <LabelContent>
-                                <Trans>Referral code</Trans>
-                                <HelpTooltip text={codeTooltip} />
-                              </LabelContent>
-                            </Label>
-                            <Badge $tone={availabilityTone}>{availabilityLabel}</Badge>
-                          </LabelRow>
-                          <Input
-                            id="affiliate-code"
-                            value={inputCode}
-                            placeholder={t`Enter your code`}
-                            onChange={handleInputChange}
-                            disabled={submitting}
-                          />
-                          {showCodeUnavailable && (
-                            <InlineError>
-                              <Trans>This code is taken. Generate another one.</Trans>
-                            </InlineError>
-                          )}
-                          {showInvalidFormat && (
-                            <InlineError>
-                              <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
-                            </InlineError>
-                          )}
-                          <PrimaryAction
-                            onClick={handleStartConfirm}
-                            disabled={!canSave}
-                            data-testid="affiliate-start-confirm"
-                          >
-                            {submitting ? t`Signing...` : t`Save & lock code`}
-                          </PrimaryAction>
-                        </>
-                      ) : (
-                        <>
-                          <ConfirmBlock>
-                            <ConfirmTitle>
-                              <Trans>Lock this code to your wallet?</Trans>
-                            </ConfirmTitle>
-                            <ConfirmText>
-                              <Trans>This action is permanent. You won't be able to change it.</Trans>
-                            </ConfirmText>
-                            <CodeBadge>{normalizedCode}</CodeBadge>
-                          </ConfirmBlock>
-                          <InlineActions>
-                            <ButtonSecondary onClick={handleCancelConfirm} disabled={submitting}>
-                              <Trans>Edit</Trans>
-                            </ButtonSecondary>
-                            <ButtonPrimary onClick={handleCreate} disabled={!canSave} data-testid="affiliate-confirm">
-                              {submitting ? t`Signing...` : t`Confirm`}
-                            </ButtonPrimary>
-                          </InlineActions>
-                        </>
-                      )}
+                      <>
+                        <LabelRow>
+                          <Label htmlFor="affiliate-code">
+                            <LabelContent>
+                              <Trans>Referral code</Trans>
+                              <HelpTooltip text={codeTooltip} />
+                            </LabelContent>
+                          </Label>
+                          <LabelActions>
+                            <MiniAction onClick={handleGenerate} disabled={submitting}>
+                              <Trans>generate</Trans>
+                            </MiniAction>
+                          </LabelActions>
+                        </LabelRow>
+                        <ReferralCodeInputRow
+                          displayCode={inputCode}
+                          hasError={showInvalidFormat || showCodeUnavailable || availability === 'error'}
+                          isInputDisabled={submitting}
+                          isEditing
+                          isLinked={false}
+                          trailingIconKind={trailingIconKind}
+                          canSubmitSave={canSave}
+                          onChange={handleInputChange}
+                          onPrimaryClick={handleCreate}
+                          onSave={handleCreate}
+                          inputRef={inputRef}
+                          isLoading={availability === 'checking'}
+                          inputId="affiliate-code"
+                          placeholder={t`Enter your code`}
+                          size="compact"
+                          trailingIconLabels={{
+                            pending: <Trans>Checking</Trans>,
+                            success: <Trans>Available</Trans>,
+                          }}
+                          trailingIconTitles={{
+                            pending: t`Checking`,
+                            success: t`Available`,
+                          }}
+                        />
+                        {showCodeUnavailable && (
+                          <InlineError>
+                            <Trans>This code is taken. Generate another one.</Trans>
+                          </InlineError>
+                        )}
+                        {showInvalidFormat && (
+                          <InlineError>
+                            <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
+                          </InlineError>
+                        )}
+                        <PrimaryAction onClick={handleCreate} disabled={!canSave} data-testid="affiliate-start-confirm">
+                          {submitting ? t`Signing...` : t`Save & lock code`}
+                        </PrimaryAction>
+                      </>
                     </Form>
                   )}
                 </RewardsCol1Card>
 
-                <RewardsCol2Card>
+                <RewardsCol2Card showLoader={statsLoading}>
                   <CardHeader>
                     <CardTitle>
                       <Trans>Your referral traffic</Trans>
@@ -738,59 +702,52 @@ export default function AccountAffiliate() {
                   </CardHeader>
                   <RewardsMetricsRow>
                     <RewardsMetricsList>
-                      <RewardsMetricItem>
+                      <MetricItem>
                         <span>
                           <Trans>Left to next $10</Trans>
                         </span>
                         <strong>{leftToNextRewardLabel}</strong>
-                      </RewardsMetricItem>
-                      <RewardsMetricItem>
+                      </MetricItem>
+                      <MetricItem>
                         <span>
                           <Trans>Total earned</Trans>
                         </span>
                         <strong>{totalEarnedLabel}</strong>
-                      </RewardsMetricItem>
-                      <RewardsMetricItem>
+                      </MetricItem>
+                      <MetricItem>
                         <span>
                           <Trans>Claimed</Trans>
                         </span>
                         <strong>{paidOutLabel}</strong>
-                      </RewardsMetricItem>
-                      <RewardsMetricItem>
+                      </MetricItem>
+                      <MetricItem>
                         <span>
                           <Trans>Volume referred</Trans>
                         </span>
                         <strong>{totalVolumeLabel}</strong>
-                      </RewardsMetricItem>
-                      <RewardsMetricItem>
+                      </MetricItem>
+                      <MetricItem>
                         <span>
                           <Trans>Active referrals</Trans>
                         </span>
                         <strong>{activeReferralsLabel}</strong>
-                      </RewardsMetricItem>
+                      </MetricItem>
                     </RewardsMetricsList>
 
-                    <RewardsDonut $value={referralTrafficPercent}>
+                    <Donut $value={referralTrafficPercent}>
                       <DonutValue>
                         <span>{progressToNextRewardLabel}</span>
                         <small>
                           <Trans>of</Trans> {referralTargetLabel}
                         </small>
                       </DonutValue>
-                    </RewardsDonut>
+                    </Donut>
                   </RewardsMetricsRow>
-                  <MetaRow>
-                    <Trans>Last updated: {statsUpdatedLabel}</Trans>
-                  </MetaRow>
+                  <BottomMetaRow>
+                    <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
+                  </BottomMetaRow>
                 </RewardsCol2Card>
-                <RewardsCol3Card>
-                  <CardHeader>
-                    <CardTitle>
-                      <Trans>Next payout</Trans>
-                    </CardTitle>
-                  </CardHeader>
-                  <ClaimValue>{nextPayoutLabel}</ClaimValue>
-                </RewardsCol3Card>
+                <RewardsPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
               </RewardsThreeColumnGrid>
 
               <ReferralTermsFaqLinks align="center" />
@@ -855,14 +812,6 @@ export default function AccountAffiliate() {
   )
 }
 
-function normalizeAffiliateCode(code: string): string {
-  return code.trim().toUpperCase()
-}
-
-function isAffiliateCodeValid(code: string): boolean {
-  return /^[A-Z0-9_-]{5,20}$/.test(code)
-}
-
 function generateSuggestedCode(): string {
   const suffix = randomDigits(6)
   return `COW-${suffix}`
@@ -870,16 +819,6 @@ function generateSuggestedCode(): string {
 
 function randomDigits(length: number): string {
   return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
-}
-
-function addDays(date: Date, days: number): Date {
-  const next = new Date(date)
-  next.setDate(next.getDate() + days)
-  return next
-}
-
-function formatDate(date: Date): string {
-  return date.toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })
 }
 
 const Form = styled.div`
@@ -906,6 +845,12 @@ const LabelContent = styled.span`
   gap: 6px;
 `
 
+const LabelActions = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+`
+
 const MiniAction = styled.button`
   border: none;
   background: transparent;
@@ -918,20 +863,6 @@ const MiniAction = styled.button`
   &:disabled {
     opacity: 0.6;
     cursor: default;
-  }
-`
-
-const Input = styled.input`
-  height: 48px;
-  border-radius: 12px;
-  padding: 0 16px;
-  border: 1px solid var(${UI.COLOR_BORDER});
-  background: var(${UI.COLOR_PAPER_DARKER});
-  color: var(${UI.COLOR_TEXT});
-  font-size: 16px;
-
-  &:disabled {
-    opacity: 0.6;
   }
 `
 
@@ -952,32 +883,111 @@ const PrimaryAction = styled(ButtonPrimary)`
 const LinkedBlock = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  width: 100%;
+  flex: 1;
 `
 
-const CodeRow = styled.div`
+const LinkedCard = styled.div`
+  border: 1px solid var(${UI.COLOR_INFO_BG});
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 9px;
+  overflow: hidden;
+`
+
+const LinkedCodeRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(${UI.COLOR_INFO_BG});
+  color: var(${UI.COLOR_INFO_TEXT});
+`
+
+const LinkedCopy = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+`
+
+const LinkedCodeText = styled.span`
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 18px;
+  white-space: nowrap;
+`
+
+const LinkedBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+`
+
+const LinkedLinkRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 12px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  border-top: 1px solid var(${UI.COLOR_BORDER});
+`
+
+const LinkedLinkText = styled.span`
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+
+const LinkedActions = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
+  width: 100%;
 `
 
-const ConfirmBlock = styled.div`
+const LinkedFooter = styled.div`
+  margin-top: auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 12px;
+`
+
+const LinkedFooterNote = styled(MetaRow)`
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+`
+
+const LinkedActionButton = styled(ButtonSecondary)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
-`
-
-const ConfirmTitle = styled.h4`
-  margin: 0;
-  font-size: 16px;
+  flex: 1;
+  min-width: 0;
+  border-radius: 12px;
+  border: 1px solid var(${UI.COLOR_BORDER});
+  background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 14px;
+  // min-height: 36px;
 `
 
-const ConfirmText = styled.p`
-  margin: 0;
-  font-size: 14px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+const LinkedActionIcon = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
 `
 
 const StatusText = styled.p<{ $variant: 'error' | 'success' }>`
@@ -991,6 +1001,7 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 `
 
 const ModalHeader = styled.div`

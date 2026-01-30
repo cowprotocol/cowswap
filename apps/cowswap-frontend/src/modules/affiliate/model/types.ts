@@ -121,6 +121,7 @@ export interface ReferralCodeResponse {
 
 export interface AffiliateCodeResponse {
   code: string
+  createdAt: string
   rewardAmount: number
   triggerVolume: number
   timeCapDays: number
@@ -141,6 +142,7 @@ export interface TraderStatsResponse {
   total_earned: number
   paid_out: number
   next_payout: number
+  lastUpdatedAt: string
 }
 
 export interface AffiliateStatsResponse {
@@ -154,6 +156,7 @@ export interface AffiliateStatsResponse {
   left_to_next_reward: number
   active_traders: number
   total_traders: number
+  lastUpdatedAt: string
 }
 
 export interface AffiliateCreateRequest {
