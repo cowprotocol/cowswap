@@ -33,7 +33,7 @@
     "@cowprotocol/widget-react": "workspace:*",
     "@mui/icons-material": "^5.17.1",
     "@mui/material": "^5.17.1",
-    "@web3modal/ethers5": "^4.1.9",
+    "@web3modal/ethers5": "^5.1.11",
     "ethers": "5.7.2",
     "inter-ui": "^3.19.3",
     "launchdarkly-react-client-sdk": "^3.0.4",
