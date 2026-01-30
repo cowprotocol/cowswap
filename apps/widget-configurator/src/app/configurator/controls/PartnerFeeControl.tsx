@@ -17,7 +17,7 @@ export function PartnerFeeControl(props: PartnerFeeControlProps) {
 
       setFeeBps(value)
     },
-    [setFeeBps]
+    [setFeeBps],
   )
 
   return (

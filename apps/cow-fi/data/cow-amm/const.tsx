@@ -1,13 +1,14 @@
-import { Link } from '@/components/Link'
-import { Color } from '@cowprotocol/ui'
-
 import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
-import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
 import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
 import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
 import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
+import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
+import { Color } from '@cowprotocol/ui'
+
+import { CowFiCategory } from 'src/common/analytics/types'
+
+import { Link } from '@/components/Link'
 
 const analytics = initGtm()
 

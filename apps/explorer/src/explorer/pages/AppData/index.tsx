@@ -38,7 +38,7 @@ function useQueryViewParams(): string {
 const tabItems = (
   tabData: TabData,
   setTabData: React.Dispatch<React.SetStateAction<TabData>>,
-  onChangeTab: (tabId: number) => void
+  onChangeTab: (tabId: number) => void,
 ): TabItemInterface[] => {
   return [
     {
@@ -73,7 +73,7 @@ const AppDataPage = () => {
 
   useEffect(
     () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
-    [tabViewSelected, updateQueryString]
+    [tabViewSelected, updateQueryString],
   )
 
   return (

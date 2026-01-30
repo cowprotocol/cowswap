@@ -107,7 +107,7 @@ export class Erc20ApiImpl implements Erc20Api {
 
     this._contractPrototype = new this.web3.eth.Contract(erc20Abi as AbiItem[]) as unknown as Erc20Contract
     this._contract32BytesPrototype = new this.web3.eth.Contract(
-      erc20_bytes32Abi as AbiItem[]
+      erc20_bytes32Abi as AbiItem[],
     ) as unknown as Erc20Contract
 
     // TODO remove later
