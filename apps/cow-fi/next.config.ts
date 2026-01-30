@@ -4,9 +4,7 @@ import { NextConfig } from 'next'
 
 const nextConfig: WithNxOptions & NextConfig = {
   reactStrictMode: true,
-  nx: {
-    svgr: false,
-  },
+  nx: {},
   compiler: {
     styledComponents: true,
   },
