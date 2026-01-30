@@ -7,7 +7,7 @@
   },
   "targetDefaults": {
     "build": {
-      "inputs": ["production", "^production"],
+      "inputs": ["production", "^production", "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)"],
       "cache": true
     },
     "e2e": {
@@ -33,7 +33,6 @@
       "default",
       "!{projectRoot}/node_modules/**/*",
       "!{projectRoot}/src/locales/*.js",
-      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/CHANGELOG.md"
