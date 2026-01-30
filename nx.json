@@ -27,9 +27,12 @@
     }
   },
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "!{projectRoot}/node_modules/**/*", "sharedGlobals"],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
+      "!{projectRoot}/node_modules/**/*",
+      "!{projectRoot}/src/locales/*.js",
+      "!{projectRoot}/src/locales/*.po",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/*.po",
