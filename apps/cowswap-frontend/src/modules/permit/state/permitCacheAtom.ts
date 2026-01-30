@@ -1,6 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
+
 import {
   CachedPermitData,
   GetPermitCacheParams,
@@ -96,10 +98,10 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
 })
 
 function buildKey({ chainId, tokenAddress, account, spender, amount }: PermitCacheKeyParams): string {
-  const base = `${chainId}-${tokenAddress.toLowerCase()}-${spender.toLowerCase()}`
+  const base = `${chainId}-${getTokenAddressKey(tokenAddress)}-${getTokenAddressKey(spender)}`
   const withAmount = amount ? `${base}-${amount.toString()}` : base
 
-  return account ? `${withAmount}-${account.toLowerCase()}` : withAmount
+  return account ? `${withAmount}-${getTokenAddressKey(account)}` : withAmount
 }
 
 const removePermitCacheBuilder = (key: string) => (permitCache: PermitCache) => {

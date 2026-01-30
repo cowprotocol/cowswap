@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppSelector } from '../../hooks'
@@ -34,8 +35,8 @@ export function useHasPendingApproval(tokenAddress: string | undefined): boolean
         if (!approval) return false
 
         return (
-          approval.spender.toLowerCase() === spender.toLowerCase() &&
-          approval.tokenAddress.toLowerCase() === tokenAddress
+          getTokenAddressKey(approval.spender) === getTokenAddressKey(spender) &&
+          getTokenAddressKey(approval.tokenAddress) === getTokenAddressKey(tokenAddress)
         )
       }),
     [allTransactions, spender, tokenAddress],

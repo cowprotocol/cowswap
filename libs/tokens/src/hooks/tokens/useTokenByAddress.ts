@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
 
 import { useTokensByAddressMap } from './useTokensByAddressMap'
@@ -13,6 +14,6 @@ export function useTokenByAddress(tokenAddress: Nullish<string>): Nullish<TokenW
       return null
     }
 
-    return tokensByAddress[tokenAddress.toLowerCase()]
+    return tokensByAddress[getTokenAddressKey(tokenAddress)]
   }, [tokensByAddress, tokenAddress])
 }
