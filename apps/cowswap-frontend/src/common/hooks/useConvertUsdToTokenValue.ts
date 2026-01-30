@@ -5,13 +5,15 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@uniswap/sdk-core'
 
 import { useUsdPrice } from 'modules/usdAmount'
+import { useCallback } from 'react'
 
 export function useConvertUsdToTokenValue(
   currency: Currency | null,
 ): (typedValue: string, isUsdMode: boolean) => string {
+  // TODO: We need a ref for this:
   const currencyUsdcPrice = useUsdPrice(currency ? getWrappedToken(currency) : null)
 
-  return (typedValue: string, isUsdMode: boolean) => {
+  return useCallback((typedValue: string, isUsdMode: boolean) => {
     if (isUsdMode && currencyUsdcPrice?.price) {
       const usdcToken = USDC[currencyUsdcPrice.currency.chainId as SupportedChainId]
       const usdAmount = tryParseCurrencyAmount(typedValue, usdcToken)
@@ -22,5 +24,5 @@ export function useConvertUsdToTokenValue(
     }
 
     return typedValue
-  }
+  }, [currencyUsdcPrice, currency])
 }

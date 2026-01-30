@@ -46,6 +46,11 @@ export default defineConfig(({ mode }) => {
     }),
     react({
       plugins: [['@lingui/swc-plugin', {}]],
+      ...(isProduction
+        ? {}
+        : {
+            jsxImportSource: '@welldone-software/why-did-you-render',
+          }),
     }),
     viteTsConfigPaths({
       root: '../../',
