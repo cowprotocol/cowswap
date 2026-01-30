@@ -13,7 +13,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
-import { uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -139,13 +138,6 @@ export async function swapFlow(
         }
       },
     }
-
-    await uploadAppDataDocOrderbookApi({
-      appDataKeccak256: orderParams.appData.appDataKeccak256,
-      fullAppData: orderParams.appData.fullAppData,
-      chainId,
-      env: tradingSdk.traderParams.env,
-    })
 
     const {
       orderId,

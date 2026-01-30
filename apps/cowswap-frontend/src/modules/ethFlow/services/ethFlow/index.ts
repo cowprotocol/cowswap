@@ -6,12 +6,11 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { SigningSteps } from 'entities/trade'
-import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
-import { removePermitHookFromAppData, uploadAppDataDocOrderbookApi } from 'modules/appData'
+import { removePermitHookFromAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -107,13 +106,6 @@ export async function ethFlow({
         setSigningStep('2/2', SigningSteps.OrderSigning)
       },
     }
-
-    await uploadAppDataDocOrderbookApi({
-      appDataKeccak256: orderParams.appData.appDataKeccak256,
-      fullAppData: orderParams.appData.fullAppData,
-      chainId,
-      env: tradingSdk.traderParams.env,
-    })
 
     const {
       orderId,
