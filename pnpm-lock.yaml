@@ -434,7 +434,7 @@ importers:
         version: 3.12.0(react@19.1.2)
       '@wagmi/core':
         specifier: ^3.1.0
-        version: 3.3.1(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.11.3(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
+        version: 3.3.1(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.11.3(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
       '@web3-react/core':
         specifier: ^8.2.3
         version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
@@ -547,6 +547,9 @@ importers:
       '@web3-react/types':
         specifier: ^8.2.3
         version: 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
+      file-loader:
+        specifier: ^6.2.0
+        version: 6.2.0(webpack@5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17)))
       jest-fetch-mock:
         specifier: ^3.0.3
         version: 3.0.3(encoding@0.1.13)
@@ -10273,6 +10276,12 @@ packages:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
 
+  file-loader@6.2.0:
+    resolution: {integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw==}
+    engines: {node: '>= 10.13.0'}
+    peerDependencies:
+      webpack: ^4.0.0 || ^5.0.0
+
   file-type@19.6.0:
     resolution: {integrity: sha512-VZR5I7k5wkD0HgFnMsq5hOsSc710MJMu5Nc5QYsbe38NN5iPV/XTObYLc/cpttRTf6lX538+5uO1ZQRhYibiZQ==}
     engines: {node: '>=18'}
@@ -11852,7 +11861,6 @@ packages:
     resolution: {integrity: sha512-Quz3MvAwHxVYNXsOByL7xI5EB2WYOeFswqaHIA3qOK3isRWTxiplBEocmmru6XmxDB2L7jDNYtYA4FyimoAFEw==}
     engines: {node: '>=8.17.0'}
     hasBin: true
-    bundledDependencies: []
 
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
@@ -23631,6 +23639,22 @@ snapshots:
       - react
       - use-sync-external-store
 
+  '@wagmi/core@3.3.1(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.11.3(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))':
+    dependencies:
+      eventemitter3: 5.0.1
+      mipd: 0.0.7(typescript@5.9.3)
+      viem: 2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      zustand: 5.0.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)(use-sync-external-store@1.4.0(react@19.1.2))
+    optionalDependencies:
+      '@tanstack/query-core': 5.90.20
+      ox: 0.11.3(typescript@5.9.3)(zod@4.1.12)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@types/react'
+      - immer
+      - react
+      - use-sync-external-store
+
   '@wagmi/core@3.3.1(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.11.3(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))':
     dependencies:
       eventemitter3: 5.0.1
@@ -27432,6 +27456,12 @@ snapshots:
   file-entry-cache@8.0.0:
     dependencies:
       flat-cache: 4.0.1
+
+  file-loader@6.2.0(webpack@5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17))):
+    dependencies:
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
+      webpack: 5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17))
 
   file-type@19.6.0:
     dependencies:
