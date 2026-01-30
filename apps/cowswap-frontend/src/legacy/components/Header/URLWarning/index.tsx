@@ -43,9 +43,14 @@ export function URLWarning() {
     return null
   }
 
-  return ClosableBanner(BANNER_IDS.ANNOUNCEMENT + contentHash, (close) => (
-    <GlobalWarning onClose={close}>
-      <ReactMarkdown components={markdownComponents as Components}>{announcementText}</ReactMarkdown>
-    </GlobalWarning>
-  ))
+  return (
+    <ClosableBanner
+      storageKey={BANNER_IDS.ANNOUNCEMENT + contentHash}
+      callback={(close) => (
+        <GlobalWarning onClose={close}>
+          <ReactMarkdown components={markdownComponents as Components}>{announcementText}</ReactMarkdown>
+        </GlobalWarning>
+      )}
+    />
+  )
 }

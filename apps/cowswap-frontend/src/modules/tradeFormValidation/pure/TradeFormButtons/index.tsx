@@ -30,15 +30,15 @@ export function TradeFormButtons(props: TradeFormButtonsProps): ReactNode {
     )
   }
 
-  const buttonFactory = tradeButtonsMap[validation]
+  const TradeButtonComponent = tradeButtonsMap[validation]
 
-  if (typeof buttonFactory === 'function') {
-    return buttonFactory(context, isDisabled)
+  if (typeof TradeButtonComponent === 'function') {
+    return <TradeButtonComponent {...context} isDisabled={isDisabled} />
   }
 
   return (
-    <TradeFormBlankButton id={buttonFactory.id} className={className} disabled={true}>
-      <>{buttonFactory.text}</>
+    <TradeFormBlankButton id={TradeButtonComponent.id} className={className} disabled={true}>
+      <>{TradeButtonComponent.text}</>
     </TradeFormBlankButton>
   )
 }

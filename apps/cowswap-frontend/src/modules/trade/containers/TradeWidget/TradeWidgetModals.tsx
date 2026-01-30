@@ -35,11 +35,16 @@ import { WrapNativeModal } from '../WrapNativeModal'
 interface TradeWidgetModalsProps {
   confirmModal: ReactNode | undefined
   genericModal: ReactNode | undefined
+  renderFallback: () => ReactNode
 }
 
 // todo refactor it
 // eslint-disable-next-line max-lines-per-function
-export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetModalsProps): ReactNode {
+export function TradeWidgetModals({
+  confirmModal,
+  genericModal,
+  renderFallback = () => null,
+}: TradeWidgetModalsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { state: rawState } = useTradeState()
   const importTokenCallback = useAddUserToken()
@@ -169,5 +174,5 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
     return <ZeroApprovalModal onDismiss={closeZeroApprovalModal} />
   }
 
-  return null
+  return renderFallback()
 }

@@ -177,7 +177,12 @@ const SNOWFALL_STYLE: CSSProperties = {
 }
 
 function CowSpeechBubbleBanner(): ReactNode {
-  return ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, (close) => <CowSpeechBubble show onClose={close} />)
+  return (
+    <ClosableBanner
+      storageKey={BANNER_IDS.HIRING_SPEECH_BUBBLE}
+      callback={(close) => <CowSpeechBubble show onClose={close} />}
+    />
+  )
 }
 
 interface FooterSectionProps {

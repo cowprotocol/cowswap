@@ -49,9 +49,9 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   )
 })
 
-const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => {
-  AppDataHooksUpdater()
-  AppDataInfoUpdater(params)
-
-  return null
-})
+const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => (
+  <>
+    <AppDataHooksUpdater />
+    <AppDataInfoUpdater {...params} />
+  </>
+))
