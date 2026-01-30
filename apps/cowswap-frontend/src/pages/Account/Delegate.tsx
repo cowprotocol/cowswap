@@ -45,5 +45,9 @@ export default function Delegate({ dismissable = false, rowOnMobile }: DelegateP
     </BannerCard>
   )
 
-  return dismissable ? ClosableBanner(BANNER_IDS.DELEGATE, (onClose) => renderContent(onClose)) : renderContent()
+  return dismissable ? (
+    <ClosableBanner storageKey={BANNER_IDS.DELEGATE} callback={(onClose) => renderContent(onClose)} />
+  ) : (
+    renderContent()
+  )
 }

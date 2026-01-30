@@ -6,7 +6,7 @@ import { ChainInfo, OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-
+import { OrderSummaryTemplateProps } from './summaryTemplates'
 import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
 
 import { TradeAmounts } from '../../types'
@@ -24,11 +24,11 @@ type OrderSummaryProps = {
   srcChainData?: ChainInfo
   dstChainData?: ChainInfo
   children?: ReactElement | string
-  customTemplate?: typeof SellForAtLeastTemplate
+  customTemplate?: React.ComponentType<OrderSummaryTemplateProps>
 } & (TradeAmounts | TokensAndAmounts)
 
 export function OrderSummary(props: OrderSummaryProps): ReactNode {
-  const { kind, children, customTemplate, actionTitle, srcChainData, dstChainData } = props
+  const { kind, children, customTemplate: CustomTemplateComponent, actionTitle, srcChainData, dstChainData } = props
   const isSell = isSellOrder(kind)
   const isBridgeOrder = srcChainData && dstChainData && srcChainData.id !== dstChainData.id
 
@@ -61,15 +61,12 @@ export function OrderSummary(props: OrderSummaryProps): ReactNode {
     }),
   }
 
-  const summary = customTemplate
-    ? customTemplate(templateProps)
-    : isSell
-      ? SellForAtLeastTemplate(templateProps)
-      : BuyForAtMostTemplate(templateProps)
+  const Template =
+    CustomTemplateComponent ?? (isSell ? SellForAtLeastTemplate : BuyForAtMostTemplate)
 
   return (
     <div>
-      {summary}
+      <Template {...templateProps} />
       {children}
     </div>
   )

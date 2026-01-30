@@ -31,6 +31,7 @@ export type UseAppDataParams = {
  */
 // TODO: Break down this large function into smaller functions
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
   chainId,
@@ -42,7 +43,7 @@ export function AppDataInfoUpdater({
   volumeFee,
   replacedOrderUid,
   userConsent,
-}: UseAppDataParams): void {
+}: UseAppDataParams) {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
@@ -99,6 +100,8 @@ export function AppDataInfoUpdater({
     isSmartSlippage,
     userConsent,
   ])
+
+  return null;
 }
 
 function getEnvByClass(orderClass: string): CowEnv | undefined {

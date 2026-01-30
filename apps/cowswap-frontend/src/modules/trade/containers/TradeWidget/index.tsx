@@ -21,7 +21,6 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     allowSwapSameToken = false,
     enableSmartSlippage,
   } = params
-  const modals = TradeWidgetModals({ confirmModal, genericModal })
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
   const isTokenSelectWide = useIsTokenSelectWide()
 
@@ -33,6 +32,14 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   useEffect(() => {
     setShouldUseAutoSlippage(enableSmartSlippage ?? false)
   }, [enableSmartSlippage, setShouldUseAutoSlippage])
+
+  const modals = (
+    <TradeWidgetModals
+      confirmModal={confirmModal}
+      genericModal={genericModal}
+      renderFallback={ () => <TradeWidgetForm {...props} /> }
+    />
+  )
 
   return (
     <>
@@ -47,7 +54,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
           {slots.updaters}
         </TradeWidgetUpdaters>
 
-        {modals || <TradeWidgetForm {...props} />}
+        { modals }
       </styledEl.Container>
 
       {selectTokenWidgetNode}

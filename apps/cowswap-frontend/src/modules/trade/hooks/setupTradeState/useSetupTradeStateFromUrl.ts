@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useMemo } from 'react'
+import { useMemo, useLayoutEffect } from 'react'
 
 import { useLocation, useParams } from 'react-router'
 
@@ -46,7 +46,7 @@ export function useSetupTradeStateFromUrl(): null {
    * In order to update tradeStateFromUrlAtom faster we use useMemo() here.
    * We need this, because useSetupTradeState() depends on the atom value and needs it to be udpated ASAP.
    */
-  useMemo(() => {
+  useLayoutEffect(() => {
     const state: TradeRawState = {
       chainId,
       targetChainId,

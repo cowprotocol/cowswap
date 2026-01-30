@@ -16,8 +16,9 @@ const LOCAL_STORAGE_KEY = 'limitOrders_showInfoBanner'
 export function InfoBanner() {
   return (
     <>
-      {ClosableBanner(LOCAL_STORAGE_KEY, (close) => {
-        return (
+      <ClosableBanner
+        storageKey={LOCAL_STORAGE_KEY}
+        callback={(close) => (
           <styledEl.InfoPopup>
             <div className="icon">
               <SVG src={AlertIcon} />
@@ -44,8 +45,8 @@ export function InfoBanner() {
               })}
             />
           </styledEl.InfoPopup>
-        )
-      })}
+        )}
+      />
     </>
   )
 }
