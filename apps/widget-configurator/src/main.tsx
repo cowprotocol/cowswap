@@ -1,4 +1,4 @@
-import { StrictMode, useMemo } from 'react'
+import { ReactNode, StrictMode, useMemo } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 
@@ -28,9 +28,7 @@ const WrapperStyled = {
 
 initWeb3Modal()
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function Root() {
+function Root(): ReactNode {
   const colorMode = useColorMode()
   const { mode } = colorMode
 

@@ -126,40 +126,6 @@ jobs:
       - name: Run eslint
         run: pnpm run lint
 
-  build:
-    name: Build
-    needs: setup
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: false
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
-
-      - name: Set up node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Load generated files
-        id: cache-generated-files
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-        with:
-          path: |
-            apps/cowswap-frontend/src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-      - name: Build
-        run: pnpm run build
-
   integration-tests:
     name: Cypress
     runs-on: ubuntu-latest
@@ -221,7 +187,7 @@ jobs:
 
   notify-failure:
     name: Notify Slack on Failure
-    needs: [setup, build, test, lint]
+    needs: [setup, test, lint]
     runs-on: ubuntu-latest
     if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 

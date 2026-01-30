@@ -15,6 +15,7 @@ export function usePriceHistory(tokenPriceData: any): PricePoint[] | undefined {
     const priceHistory = market?.priceHistory?.filter(isPricePoint)
     const currentPrice = market?.price?.value
     if (Array.isArray(priceHistory) && currentPrice !== undefined) {
+      // eslint-disable-next-line react-hooks/purity
       const timestamp = Date.now() / 1000
       return [...priceHistory, { timestamp, value: currentPrice }]
     }
