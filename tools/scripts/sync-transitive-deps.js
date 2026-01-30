@@ -50,12 +50,45 @@ const IMPORT_PATTERNS = [
 
 // Node.js built-in modules to skip
 const NODE_BUILTINS = new Set([
-  'fs', 'path', 'os', 'crypto', 'http', 'https', 'url', 'util', 'stream',
-  'events', 'buffer', 'child_process', 'cluster', 'dgram', 'dns', 'net',
-  'readline', 'repl', 'tls', 'tty', 'zlib', 'assert', 'module', 'process',
-  'querystring', 'string_decoder', 'timers', 'vm', 'worker_threads',
-  'perf_hooks', 'async_hooks', 'inspector', 'trace_events', 'v8', 'constants',
-  'fs/promises', 'stream/promises', 'stream/web', 'timers/promises',
+  'fs',
+  'path',
+  'os',
+  'crypto',
+  'http',
+  'https',
+  'url',
+  'util',
+  'stream',
+  'events',
+  'buffer',
+  'child_process',
+  'cluster',
+  'dgram',
+  'dns',
+  'net',
+  'readline',
+  'repl',
+  'tls',
+  'tty',
+  'zlib',
+  'assert',
+  'module',
+  'process',
+  'querystring',
+  'string_decoder',
+  'timers',
+  'vm',
+  'worker_threads',
+  'perf_hooks',
+  'async_hooks',
+  'inspector',
+  'trace_events',
+  'v8',
+  'constants',
+  'fs/promises',
+  'stream/promises',
+  'stream/web',
+  'timers/promises',
 ])
 
 /**
@@ -206,7 +239,7 @@ function findPnpmPackage(packageName) {
     const entries = fs.readdirSync(PNPM_DIR)
 
     // Find directories that match the package name pattern
-    const matching = entries.filter(entry => {
+    const matching = entries.filter((entry) => {
       // Match @scope+package@version or package@version
       return entry.startsWith(pnpmName + '@')
     })
@@ -221,6 +254,7 @@ function findPnpmPackage(packageName) {
         return pnpmPackageDir
       }
     }
+    // eslint-disable-next-line unused-imports/no-unused-vars
   } catch (e) {
     // Ignore errors
   }
@@ -244,6 +278,7 @@ function getInstalledVersion(packageName) {
   try {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
     return packageJson.version
+    // eslint-disable-next-line unused-imports/no-unused-vars
   } catch (e) {
     return null
   }
@@ -263,10 +298,10 @@ function getAllDeclaredDeps(packageJson) {
   const deps = new Set()
 
   if (packageJson.dependencies) {
-    Object.keys(packageJson.dependencies).forEach(dep => deps.add(dep))
+    Object.keys(packageJson.dependencies).forEach((dep) => deps.add(dep))
   }
   if (packageJson.devDependencies) {
-    Object.keys(packageJson.devDependencies).forEach(dep => deps.add(dep))
+    Object.keys(packageJson.devDependencies).forEach((dep) => deps.add(dep))
   }
 
   return deps
@@ -317,7 +352,7 @@ function processPackage(packageDir) {
   const allImports = new Set()
   for (const file of sourceFiles) {
     const imports = extractImports(file)
-    imports.forEach(imp => allImports.add(imp))
+    imports.forEach((imp) => allImports.add(imp))
   }
 
   // Get declared dependencies
@@ -356,7 +391,7 @@ function processPackage(packageDir) {
   return {
     name: packageName,
     added: missingTransitive.sort((a, b) => a.name.localeCompare(b.name)),
-    skipped: false
+    skipped: false,
   }
 }
 
@@ -381,7 +416,7 @@ for (const app of apps) {
     console.log(`\n${result.name}: skipped (no package.json)`)
   } else if (result.added.length > 0) {
     console.log(`\n${result.name}: adding ${result.added.length} transitive dependencies`)
-    result.added.forEach(dep => console.log(`  + ${dep.name}: ${dep.version}`))
+    result.added.forEach((dep) => console.log(`  + ${dep.name}: ${dep.version}`))
     totalAdded += result.added.length
   }
 }
@@ -393,7 +428,7 @@ for (const lib of libs) {
     console.log(`\n${result.name}: skipped (no package.json)`)
   } else if (result.added.length > 0) {
     console.log(`\n${result.name}: adding ${result.added.length} transitive dependencies`)
-    result.added.forEach(dep => console.log(`  + ${dep.name}: ${dep.version}`))
+    result.added.forEach((dep) => console.log(`  + ${dep.name}: ${dep.version}`))
     totalAdded += result.added.length
   }
 }

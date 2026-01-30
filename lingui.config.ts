@@ -2,10 +2,7 @@ const linguiConfig = {
   catalogs: [
     {
       path: '<rootDir>/apps/cowswap-frontend/src/locales/{locale}',
-      include: [
-        '<rootDir>/apps/cowswap-frontend/src',
-        '<rootDir>/libs/*/src',
-      ],
+      include: ['<rootDir>/apps/cowswap-frontend/src', '<rootDir>/libs/*/src'],
       exclude: [
         '**/node_modules/**',
         '**/dist/**',
