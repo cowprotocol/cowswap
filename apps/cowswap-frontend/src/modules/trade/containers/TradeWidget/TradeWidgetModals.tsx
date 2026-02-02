@@ -36,7 +36,7 @@ import { WrapNativeModal } from '../WrapNativeModal'
 interface TradeWidgetModalsProps {
   confirmModal: ReactNode | undefined
   genericModal: ReactNode | undefined
-  renderFallback: () => ReactNode
+  renderFallback?: () => ReactNode
 }
 
 // todo refactor it
