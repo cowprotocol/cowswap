@@ -1,4 +1,4 @@
-// eslint-disable-file complexity
+/* eslint-disable complexity */
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
