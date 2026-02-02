@@ -12,6 +12,7 @@ const chainIdToName: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BNB]: 'smartchain',
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
+  [SupportedChainId.INK]: null, // As of now (2026/01/23), Ink is not on Trust Wallet assets repo
 }
 
 /**
@@ -24,5 +25,6 @@ export function trustTokenLogoUrl(address: string, chainId: SupportedChainId): s
     return null
   }
 
+  // TODO: Never point to master! Use a specific commit hash or tag.
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${trustChainName}/assets/${address}/logo.png`
 }
