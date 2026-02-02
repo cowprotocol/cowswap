@@ -24,10 +24,12 @@
     }
   },
   "dependencies": {
+    "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/cow-sdk": "7.2.13",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/events": "workspace:*",
+    "@uniswap/sdk-core": "^3.0.1",
     "react": "19.1.2",
     "react-router": "7.5.2",
     "web-vitals": "^2.1.4"
