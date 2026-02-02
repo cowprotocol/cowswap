@@ -6,14 +6,23 @@ import { Media } from '@cowprotocol/ui'
 import { DesktopChainPanel } from './DesktopChainPanel'
 
 import { useSelectTokenWidgetState } from '../../../../hooks/useSelectTokenWidgetState'
-import { useChainPanelState } from '../../hooks'
+import { useChainAnalyticsContext, useChainPanelState } from '../../hooks'
 
 export function ConnectedDesktopChainPanel(): ReactNode {
   const widgetState = useSelectTokenWidgetState()
   const chainPanel = useChainPanelState(widgetState.tradeType)
+  const analyticsContext = useChainAnalyticsContext()
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
 
   if (!chainPanel.isEnabled || isCompactLayout) return null
 
-  return <DesktopChainPanel chains={chainPanel.chainsToSelect} onSelectChain={chainPanel.onSelectChain} />
+  return (
+    <DesktopChainPanel
+      chains={chainPanel.chainsToSelect}
+      onSelectChain={chainPanel.onSelectChain}
+      tradeType={analyticsContext.tradeType}
+      field={analyticsContext.field}
+      counterChainId={analyticsContext.counterChainId}
+    />
+  )
 }
