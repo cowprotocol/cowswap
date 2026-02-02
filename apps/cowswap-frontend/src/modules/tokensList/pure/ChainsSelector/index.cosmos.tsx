@@ -3,6 +3,10 @@ import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
+import { Field } from 'legacy/state/types'
+
+import { TradeType } from 'modules/trade/types'
+
 import { mapChainInfo } from '../../utils/mapChainInfo'
 
 import { ChainsSelector } from './index'
@@ -25,6 +29,9 @@ const Fixtures = {
         chains={chains}
         isLoading={false}
         onSelectChain={(chain) => console.log('Chain selected: ', chain.label)}
+        tradeType={TradeType.SWAP}
+        field={Field.INPUT}
+        counterChainId={chains[1]?.id}
       />
     </Wrapper>
   ),
