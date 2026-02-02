@@ -603,8 +603,8 @@ importers:
         specifier: 0.2.15
         version: 0.2.15
       '@cowprotocol/sdk-ethers-v5-adapter':
-        specifier: 0.3.1
-        version: 0.3.1(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+        specifier: 0.3.4
+        version: 0.3.4(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@cowprotocol/sdk-order-book':
         specifier: ^0.6.2
         version: 0.6.2(encoding@0.1.13)
@@ -974,8 +974,8 @@ importers:
         specifier: ^1.4.1
         version: 1.4.1
       '@cowprotocol/sdk-ethers-v5-adapter':
-        specifier: 0.3.1
-        version: 0.3.1(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+        specifier: 0.3.4
+        version: 0.3.4(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@cowprotocol/sdk-subgraph':
         specifier: 0.3.2
         version: 0.3.2(encoding@0.1.13)
@@ -3096,17 +3096,11 @@ packages:
   '@cowprotocol/sdk-bridging@1.7.1':
     resolution: {integrity: sha512-VFgL+hcLP5m2VJ0n1b61NPYjxBvaU1LfPabrUeyVDDyYQMBAkQ+mrOkqD6vPk5w9MIs5wDAyY5o51PLOxTFu+g==}
 
-  '@cowprotocol/sdk-common@0.5.0':
-    resolution: {integrity: sha512-vCUSs1kufjwSNrJDwAmjpKqHiFWg2JakEeODYw6vL4DJTEqy2IAZ0fYVO0ojKlmz+VDTBJkov2A/PjP1tO0+xA==}
-
   '@cowprotocol/sdk-common@0.5.3':
     resolution: {integrity: sha512-3ldNAin97A04MjpQpV9B5FG6ohak8+W/1nBA+1wLS6otjVLmjSeIFVsOAtaj5Jga+cmCcJYUh9/QWBQOWoD1pQ==}
 
   '@cowprotocol/sdk-composable@0.1.29':
     resolution: {integrity: sha512-a6L35K0GlCyUlriYOKowznmVLn0UYby8Wot3zfjkfOEkv/8is4kjX1z3DK+31+j3+OBqxOu4c5h9CNoDmT38hQ==}
-
-  '@cowprotocol/sdk-config@0.6.3':
-    resolution: {integrity: sha512-0Fodk5O8pqslt+jkOL1ybg9V0bokFA+/DF02TZjQcPtSAmnmuep6zEjaY2+s4WVdB98YDb0RkgI/Ejn/E2TaAA==}
 
   '@cowprotocol/sdk-config@0.7.2':
     resolution: {integrity: sha512-oTu8N2WTwMIejs+k0W1lSVzTvg2TGZtvVOM1Z9lutBIPOawXD2bxA3u+59sKJ92RIlkto1SMM+QuwSMzl+yjDg==}
@@ -3116,13 +3110,6 @@ packages:
 
   '@cowprotocol/sdk-cow-shed@0.2.15':
     resolution: {integrity: sha512-UvGGJ8GoMblLNRGyXq1/nV2dlykH5mleAEDr1MIjZ/ZL92gYi7QIV8Vhf8SxtSfSXMORLa03howcb06/GrAt7Q==}
-
-  '@cowprotocol/sdk-ethers-v5-adapter@0.3.1':
-    resolution: {integrity: sha512-67qVIBm/6+bPoZgqH0/16XHm2K8f8wVBY8pDOdYP2aZeU0AxWZljgJZusORoe5cVqMKShAABysWQ+1tgpJj1NA==}
-    peerDependencies:
-      '@ethersproject/abstract-signer': ^5.8.0
-      '@typechain/ethers-v5': ^11.1.2
-      ethers: ^5.7.2
 
   '@cowprotocol/sdk-ethers-v5-adapter@0.3.4':
     resolution: {integrity: sha512-1npljSCeirgMNvO4EVbCD0lqvpai7RVhZPcF6SJGeQyjUct1Gf9v/ZVvXGEkOjajKEk3JtFjBIWocwYC227Ttg==}
@@ -18117,10 +18104,6 @@ snapshots:
       - ipfs-only-hash
       - multiformats
 
-  '@cowprotocol/sdk-common@0.5.0':
-    dependencies:
-      '@cowprotocol/sdk-config': 0.6.3
-
   '@cowprotocol/sdk-common@0.5.3':
     dependencies:
       '@cowprotocol/sdk-config': 0.7.2
@@ -18136,11 +18119,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
-
-  '@cowprotocol/sdk-config@0.6.3':
-    dependencies:
-      exponential-backoff: 3.1.3
-      limiter: 2.1.0
 
   '@cowprotocol/sdk-config@0.7.2':
     dependencies:
@@ -18158,18 +18136,11 @@ snapshots:
       '@cowprotocol/sdk-config': 0.7.2
       '@cowprotocol/sdk-contracts-ts': 1.4.1
 
-  '@cowprotocol/sdk-ethers-v5-adapter@0.3.1(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@cowprotocol/sdk-ethers-v5-adapter@0.3.4(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
     dependencies:
-      '@cowprotocol/sdk-common': 0.5.0
+      '@cowprotocol/sdk-common': 0.5.3
       '@ethersproject/abstract-signer': 5.7.0
       '@typechain/ethers-v5': 11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)
-      ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-
-  '@cowprotocol/sdk-ethers-v5-adapter@0.3.1(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.5.0
-      '@ethersproject/abstract-signer': 5.8.0
-      '@typechain/ethers-v5': 11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)
       ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
   '@cowprotocol/sdk-ethers-v5-adapter@0.3.4(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
