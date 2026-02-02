@@ -4,10 +4,10 @@
 
 The affiliate program will amplify word-of-mouth marketing for CoW Swap by incentivizing referrals. Its mechanic will also facilitate a slew of other marketing tactics including KOL (influencer) and publisher activation, low funnel offers (e.g. with social and display ads), and high funnel measurement (e.g. with podcast and OOH ads).
 
-## 2) Actors TODO
+## 2) Actors
 
 - Traders
-- Affiliates (KOLs, publishers)
+- Partners/Affiliates/KOLs, publishers
 - Program managers (Marketing Squad)
 - Accountants (Finance Squad)
 - Maintainers (Web Squad, DevOps Squad)

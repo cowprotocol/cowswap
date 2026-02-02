@@ -4,7 +4,7 @@ import { LinkStyledButton } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-import { REFERRAL_HOW_IT_WORKS_URL } from '../config/constants'
+import { AFFILIATE_HOW_IT_WORKS_URL } from '../config/constants'
 
 export interface ReferralIneligibleCopyProps {
   incomingCode?: string
@@ -12,7 +12,7 @@ export interface ReferralIneligibleCopyProps {
 
 export function ReferralHowItWorksLink(): ReactNode {
   return (
-    <LinkStyledButton as="a" href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
+    <LinkStyledButton as="a" href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
       <Trans>How it works.</Trans>
     </LinkStyledButton>
   )

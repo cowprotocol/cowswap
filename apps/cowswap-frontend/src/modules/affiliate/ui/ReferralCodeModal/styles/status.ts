@@ -26,13 +26,6 @@ export const Footer = styled.div`
   padding: 0 10px 10px;
 `
 
-export const HelperText = styled.div`
-  text-align: center;
-  font-size: var(${UI.FONT_SIZE_SMALL});
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-  padding: 6px 0 10px;
-`
-
 export const InlineAlert = styled(InlineBanner)`
   border-radius: 9px;
   padding: 12px 16px;

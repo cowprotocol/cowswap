@@ -5,7 +5,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { REFERRAL_HOW_IT_WORKS_URL } from 'modules/affiliate/config/constants'
+import { AFFILIATE_HOW_IT_WORKS_URL } from 'modules/affiliate/config/constants'
 
 import { Card, ExtLink } from 'pages/Account/styled'
 
@@ -69,7 +69,7 @@ export const HeroSubtitle = styled.p`
   width: 100%;
   font-size: 15px;
   line-height: 1.5;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
   text-align: center;
 
   ${Media.upToSmall()} {
@@ -104,7 +104,7 @@ const LinksRow = styled.div<{ $align: 'inline' | 'center' }>`
   gap: 8px;
   width: ${({ $align }) => ($align === 'center' ? '100%' : 'auto')};
   font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
 `
 
 export function ReferralTermsFaqLinks({ align = 'inline' }: { align?: 'inline' | 'center' }): ReactElement {
@@ -114,7 +114,7 @@ export function ReferralTermsFaqLinks({ align = 'inline' }: { align?: 'inline' |
         <Trans>Terms</Trans>
       </ExtLink>
       <Separator>•</Separator>
-      <ExtLink href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
+      <ExtLink href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
         <Trans>FAQ</Trans>
       </ExtLink>
     </LinksRow>
@@ -124,18 +124,19 @@ export function ReferralTermsFaqLinks({ align = 'inline' }: { align?: 'inline' |
 export const InlineNote = styled.p`
   margin: 0;
   font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
 `
 
 export const CardStack = styled(Card)`
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
+  gap: 24px;
 `
 
 export const RewardsCol1Card = styled(CardStack)`
   grid-column: 1 / 2;
   grid-row: 1;
+  align-items: center;
 
   ${Media.upToMedium()} {
     grid-column: 1 / -1;
@@ -146,7 +147,6 @@ export const RewardsCol1Card = styled(CardStack)`
 export const RewardsCol2Card = styled(CardStack)`
   grid-column: 2 / 3;
   grid-row: 1;
-  min-height: 320px;
 
   ${Media.upToMedium()} {
     grid-column: 1 / -1;
@@ -158,8 +158,7 @@ export const RewardsCol2Card = styled(CardStack)`
 export const RewardsCol3Card = styled(CardStack)`
   grid-column: 3 / 4;
   grid-row: 1;
-  min-height: 140px;
-  align-items: flex-start;
+  align-items: center;
 
   ${Media.upToMedium()} {
     grid-column: 1 / -1;
@@ -168,16 +167,10 @@ export const RewardsCol3Card = styled(CardStack)`
   }
 `
 
-export const CardHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`
-
 export const CardTitle = styled.h4`
   margin: 0;
   font-size: 16px;
-  color: var(${UI.COLOR_TEXT});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-weight: 600;
 `
 
@@ -241,7 +234,7 @@ export const InfoItem = styled.div`
   justify-content: space-between;
   gap: 12px;
   font-size: 13px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
 
   > span:last-child {
     color: var(${UI.COLOR_TEXT});
@@ -270,7 +263,7 @@ export const MetricsList = styled.div`
 export const MetaRow = styled.p`
   margin: 0;
   font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -286,7 +279,7 @@ export const PayoutValue = styled.div`
   color: var(${UI.COLOR_TEXT});
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
 `
 
 export const BottomMetaRow = styled(MetaRow)`
@@ -299,29 +292,24 @@ const PayoutNote = styled(InlineNote)`
   margin-top: auto;
 `
 
-type RewardsPayoutCardProps = {
+type NextPayoutCardProps = {
   payoutLabel: ReactNode
-  note?: ReactNode
   showLoader?: boolean
 }
 
-export function RewardsPayoutCard({
-  payoutLabel,
-  note = <Trans>Paid weekly via airdrop.</Trans>,
-  showLoader = false,
-}: RewardsPayoutCardProps): ReactElement {
+export function NextPayoutCard({ payoutLabel, showLoader = false }: NextPayoutCardProps): ReactElement {
   return (
     <RewardsCol3Card showLoader={showLoader}>
-      <CardHeader>
-        <CardTitle>
-          <Trans>Next payout</Trans>
-        </CardTitle>
-      </CardHeader>
+      <CardTitle>
+        <Trans>Next payout</Trans>
+      </CardTitle>
       <PayoutValue>
         <img src={USDC_LOGO_URL} height={36} width={36} alt="" role="presentation" />
         {payoutLabel}
       </PayoutValue>
-      <PayoutNote>{note}</PayoutNote>
+      <PayoutNote>
+        <Trans>Paid weekly via airdrop.</Trans>
+      </PayoutNote>
     </RewardsCol3Card>
   )
 }
@@ -399,7 +387,7 @@ const DonutWrapper = styled.div<{ $value: number }>`
 
     small {
       font-size: 15px;
-      color: var(${UI.COLOR_TEXT_OPACITY_70});
+      color: var(${UI.COLOR_TEXT_OPACITY_60});
       font-weight: 400;
     }
   }
@@ -458,7 +446,7 @@ export const MetricItem = styled.div`
 
   font-size: 13px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
 
   strong {
     color: var(${UI.COLOR_TEXT});
@@ -466,4 +454,10 @@ export const MetricItem = styled.div`
     white-space: nowrap;
     font-weight: 500;
   }
+`
+
+export const LabelContent = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0px;
 `

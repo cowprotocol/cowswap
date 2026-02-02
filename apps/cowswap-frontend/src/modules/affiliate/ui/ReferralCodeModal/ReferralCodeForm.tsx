@@ -14,7 +14,6 @@ import {
   FormActionDanger,
   FormGroup,
   Label,
-  LabelContent,
   LabelAffordances,
   LabelRow,
   TagGroup,
@@ -24,6 +23,7 @@ import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
 import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../model/types'
 import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput'
+import { LabelContent } from '../shared'
 
 const VERIFICATION_ERROR_KINDS: ReadonlySet<ReferralVerificationStatus['kind']> = new Set([
   'invalid',

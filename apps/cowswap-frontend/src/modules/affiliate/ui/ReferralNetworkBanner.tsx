@@ -6,7 +6,7 @@ import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { REFERRAL_SUPPORTED_NETWORK_NAMES } from '../config/constants'
+import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from '../config/constants'
 import { useReferral } from '../model/hooks/useReferral'
 
 const Wrapper = styled.div`
@@ -63,7 +63,7 @@ export function ReferralNetworkBanner(): ReactNode {
     return null
   }
 
-  const supportedNetworks = REFERRAL_SUPPORTED_NETWORK_NAMES.join(', ')
+  const supportedNetworks = AFFILIATE_SUPPORTED_NETWORK_NAMES.join(', ')
 
   return (
     <Wrapper role="alert" aria-live="polite">

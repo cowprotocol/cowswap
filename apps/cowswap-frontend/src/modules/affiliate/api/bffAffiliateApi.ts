@@ -1,4 +1,4 @@
-import { REFERRAL_API_TIMEOUT_MS } from '../config/constants'
+import { AFFILIATE_API_TIMEOUT_MS } from '../config/constants'
 import {
   AffiliateCodeResponse,
   AffiliateCreateRequest,
@@ -31,7 +31,7 @@ export class BffAffiliateApi {
   private readonly baseUrl: string
   private readonly timeoutMs: number
 
-  constructor(baseUrl: string, timeoutMs: number = REFERRAL_API_TIMEOUT_MS) {
+  constructor(baseUrl: string, timeoutMs: number = AFFILIATE_API_TIMEOUT_MS) {
     this.baseUrl = baseUrl.replace(/\/$/, '')
     this.timeoutMs = timeoutMs
   }

@@ -16,14 +16,17 @@ import styled from 'styled-components/macro'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api'
-import { getIncomingIneligibleCode } from 'modules/affiliate/lib/affiliate-program-utils'
+import {
+  formatUsdcCompact,
+  formatUsdCompact,
+  getIncomingIneligibleCode,
+} from 'modules/affiliate/lib/affiliate-program-utils'
 import { useReferral } from 'modules/affiliate/model/hooks/useReferral'
 import { useReferralActions } from 'modules/affiliate/model/hooks/useReferralActions'
 import { TraderStatsResponse } from 'modules/affiliate/model/types'
 import { ReferralIneligibleCopy } from 'modules/affiliate/ui/ReferralIneligibleCopy'
 import {
   BottomMetaRow,
-  CardHeader,
   CardTitle,
   Donut,
   DonutValue,
@@ -38,7 +41,7 @@ import {
   MetricItem,
   RewardsMetricsList,
   RewardsMetricsRow,
-  RewardsPayoutCard,
+  NextPayoutCard,
   RewardsThreeColumnGrid,
   RewardsWrapper,
 } from 'modules/affiliate/ui/shared'
@@ -47,14 +50,13 @@ import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useNavigateBack } from 'common/hooks/useNavigate'
 import { Card } from 'pages/Account/styled'
 
-const DEFAULT_REWARDS_TARGET = 50_000
-
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function, complexity
 export default function AccountMyRewards() {
   const { i18n } = useLingui()
   const { account } = useWalletInfo()
   const toggleWalletModal = useToggleWalletModal()
   const referral = useReferral()
+  console.log('📜 LOG > AccountMyRewards > referral:', referral)
   const referralActions = useReferralActions()
   const navigateBack = useNavigateBack()
   const [traderStats, setTraderStats] = useState<TraderStatsResponse | null>(null)
@@ -65,20 +67,6 @@ export default function AccountMyRewards() {
   const incomingIneligibleCode = getIncomingIneligibleCode(referral.incomingCode, referral.verification)
 
   const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
-  const compactFormatter = useMemo(
-    () => new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1 }),
-    [],
-  )
-  const formatUsd = useCallback(
-    (value: number | null | undefined) =>
-      value === null || value === undefined ? '-' : `$${compactFormatter.format(value)}`,
-    [compactFormatter],
-  )
-  const formatUsdc = useCallback(
-    (value: number | null | undefined) =>
-      value === null || value === undefined ? '-' : `${compactFormatter.format(value)} USDC`,
-    [compactFormatter],
-  )
   const formatNumber = useCallback(
     (value: number | null | undefined) => (value === null || value === undefined ? '-' : numberFormatter.format(value)),
     [numberFormatter],
@@ -128,9 +116,18 @@ export default function AccountMyRewards() {
   }, [account, referral.savedCode, referralActions])
 
   const statsReady = Boolean(traderStats)
+  console.log('📜 LOG > AccountMyRewards > traderStats:', traderStats)
   const statsLinkedCode = traderStats?.bound_referrer_code
   const isLinked = Boolean(statsLinkedCode) || referral.wallet.status === 'linked'
+  console.log('📜 LOG > AccountMyRewards > isLinked:', isLinked)
   const isIneligible = referral.wallet.status === 'ineligible' && isConnected && !statsLinkedCode
+  const programParams =
+    referral.verification.kind === 'valid'
+      ? referral.verification.programParams
+      : referral.previousVerification?.kind === 'valid'
+        ? referral.previousVerification.programParams
+        : undefined
+  const rewardAmountLabel = programParams ? formatUsdCompact(programParams?.traderRewardAmount) : 'reward'
   const traderCode = isConnected
     ? statsLinkedCode
       ? statsLinkedCode
@@ -140,22 +137,24 @@ export default function AccountMyRewards() {
         : (referral.savedCode ?? (referral.verification.kind === 'valid' ? referral.verification.code : undefined))
     : undefined
   const traderHasCode = Boolean(traderCode)
-  const triggerVolume = traderStats?.trigger_volume ?? DEFAULT_REWARDS_TARGET
-  const leftToNextRewards = traderStats?.left_to_next_rewards
+  const triggerVolume =
+    statsReady && typeof traderStats?.trigger_volume === 'number' ? traderStats.trigger_volume : null
+  const leftToNextRewards = statsReady ? traderStats?.left_to_next_rewards : undefined
   const progressToNextReward =
-    statsReady && leftToNextRewards !== undefined ? Math.max(triggerVolume - leftToNextRewards, 0) : 0
-  const rewardsProgressPercent =
-    statsReady && triggerVolume > 0 ? Math.min(100, Math.round((progressToNextReward / triggerVolume) * 100)) : 0
-  const rewardsProgressLabel = statsReady ? formatUsd(progressToNextReward) : '-'
-  const triggerVolumeLabel = statsReady ? formatUsd(triggerVolume) : '-'
-  const leftToNextRewardLabel = statsReady ? formatUsd(leftToNextRewards) : '-'
-  const totalEarnedLabel = statsReady ? formatUsdc(traderStats?.total_earned) : '-'
-  const claimedLabel = statsReady ? formatUsdc(traderStats?.paid_out) : '-'
+    triggerVolume !== null && leftToNextRewards !== undefined ? Math.max(triggerVolume - leftToNextRewards, 0) : 0
+  const rewardsProgressPercent = triggerVolume
+    ? Math.min(100, Math.round((progressToNextReward / triggerVolume) * 100))
+    : 0
+  const rewardsProgressLabel = triggerVolume !== null ? formatUsdCompact(progressToNextReward) : formatUsdCompact(0)
+  const triggerVolumeLabel = triggerVolume !== null ? formatUsdCompact(triggerVolume) : formatUsdCompact(0)
+  const leftToNextRewardLabel = statsReady ? formatUsdCompact(leftToNextRewards) : '-'
+  const totalEarnedLabel = statsReady ? formatUsdcCompact(traderStats?.total_earned) : '-'
+  const claimedLabel = statsReady ? formatUsdcCompact(traderStats?.paid_out) : '-'
   const nextPayoutValue = traderStats?.next_payout
   const nextPayoutLabel =
     statsReady && nextPayoutValue !== null && nextPayoutValue !== undefined
       ? `${formatNumber(nextPayoutValue)} USDC`
-      : '-'
+      : formatUsdcCompact(0)
   const linkedSinceLabel = formatShortDate(traderStats?.linked_since) ?? '-'
   const rewardsEndLabel = formatShortDate(traderStats?.rewards_end) ?? '-'
   const statsUpdatedLabel = useTimeAgo(statsUpdatedAt ?? undefined, 60_000)
@@ -210,9 +209,9 @@ export default function AccountMyRewards() {
             </HeroTitle>
             <HeroSubtitle>
               <Trans>
-                Use a referral code to earn 10 USDC for
+                Use a referral code to earn a flat fee for
                 <br />
-                every $50k in eligible volume within 90 days.
+                the eligible volume done through the app.
                 <br />
                 New wallets only.
               </Trans>
@@ -273,16 +272,14 @@ export default function AccountMyRewards() {
             </RewardsCol1Card>
 
             <RewardsCol2Card showLoader={statsLoading}>
-              <CardHeader>
-                <CardTitle>
-                  <Trans>Next $10 reward</Trans>
-                </CardTitle>
-              </CardHeader>
+              <CardTitle>
+                <Trans>Next {rewardAmountLabel} reward</Trans>
+              </CardTitle>
               <RewardsMetricsRow>
                 <RewardsMetricsList>
                   <MetricItem>
                     <span>
-                      <Trans>Left to next $10</Trans>
+                      <Trans>Left to next {rewardAmountLabel}</Trans>
                     </span>
                     <strong>{leftToNextRewardLabel}</strong>
                   </MetricItem>
@@ -313,7 +310,7 @@ export default function AccountMyRewards() {
               </BottomMetaRow>
             </RewardsCol2Card>
 
-            <RewardsPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
+            <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
           </RewardsThreeColumnGrid>
         </>
       )}

@@ -1,8 +1,9 @@
+import { formatLocaleNumber } from '@cowprotocol/common-utils'
 import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
-import { REFERRAL_REWARDS_CURRENCY } from '../config/constants'
+import { AFFILIATE_REWARDS_CURRENCY } from '../config/constants'
 import { ReferralVerificationStatus } from '../model/types'
 
 export const AFFILIATE_TYPED_DATA_DOMAIN = {
@@ -71,7 +72,7 @@ export function getAffiliateProgramCopyValues(params: AffiliateProgramParams): {
 } {
   return {
     rewardAmount: formatInteger(params.traderRewardAmount),
-    rewardCurrency: REFERRAL_REWARDS_CURRENCY,
+    rewardCurrency: AFFILIATE_REWARDS_CURRENCY,
     triggerVolume: formatInteger(params.triggerVolumeUsd),
     timeCapDays: params.timeCapDays,
   }
@@ -79,6 +80,28 @@ export function getAffiliateProgramCopyValues(params: AffiliateProgramParams): {
 
 function formatInteger(value: number): string {
   return value.toLocaleString(i18n.locale, { maximumFractionDigits: 0 })
+}
+
+export function formatCompactNumber(value: number | null | undefined): string {
+  if (value === null || value === undefined) {
+    return '-'
+  }
+
+  return formatLocaleNumber({
+    number: value,
+    locale: i18n.locale,
+    options: { notation: 'compact', maximumFractionDigits: 1 },
+  })
+}
+
+export function formatUsdCompact(value: number | null | undefined): string {
+  const formatted = formatCompactNumber(value)
+  return formatted === '-' ? '-' : `$${formatted}`
+}
+
+export function formatUsdcCompact(value: number | null | undefined): string {
+  const formatted = formatCompactNumber(value)
+  return formatted === '-' ? '-' : `${formatted} USDC`
 }
 
 export function getIncomingIneligibleCode(

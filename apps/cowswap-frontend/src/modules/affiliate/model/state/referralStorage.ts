@@ -4,7 +4,7 @@ import { isProdLike } from '@cowprotocol/common-utils'
 
 import { reduceRemoveCode, reduceSetSavedCode } from './referralReducers'
 
-import { REFERRAL_STORAGE_KEY } from '../../config/constants'
+import { AFFILIATE_PARTNER_STORAGE_KEY } from '../../config/constants'
 import { sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import { ReferralDomainState } from '../types'
 
@@ -21,7 +21,7 @@ export function useReferralHydration(setState: SetReferralState, setHydrated: Se
     let shouldHydrate = true
 
     try {
-      const stored = window.localStorage.getItem(REFERRAL_STORAGE_KEY)
+      const stored = window.localStorage.getItem(AFFILIATE_PARTNER_STORAGE_KEY)
 
       if (stored) {
         const sanitized = sanitizeReferralCode(stored)
@@ -51,9 +51,9 @@ export function useReferralPersistence(savedCode: string | undefined, hasHydrate
 
     try {
       if (!savedCode) {
-        window.localStorage.removeItem(REFERRAL_STORAGE_KEY)
+        window.localStorage.removeItem(AFFILIATE_PARTNER_STORAGE_KEY)
       } else {
-        window.localStorage.setItem(REFERRAL_STORAGE_KEY, savedCode)
+        window.localStorage.setItem(AFFILIATE_PARTNER_STORAGE_KEY, savedCode)
       }
     } catch (error) {
       if (!isProdLike) {
@@ -86,7 +86,7 @@ export function useReferralStorageSync(setState: SetReferralState): void {
     }
 
     const handleStorage = (event: StorageEvent): void => {
-      if (event.key !== REFERRAL_STORAGE_KEY) {
+      if (event.key !== AFFILIATE_PARTNER_STORAGE_KEY) {
         return
       }
 
@@ -95,7 +95,7 @@ export function useReferralStorageSync(setState: SetReferralState): void {
 
     const handleFocus = (): void => {
       try {
-        const current = window.localStorage.getItem(REFERRAL_STORAGE_KEY)
+        const current = window.localStorage.getItem(AFFILIATE_PARTNER_STORAGE_KEY)
         applyValue(current)
       } catch (error) {
         if (!isProdLike) {

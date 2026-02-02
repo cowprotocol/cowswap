@@ -1,20 +1,19 @@
 import { AFFILIATE_SUPPORTED_CHAIN_IDS, CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-export const REFERRAL_STORAGE_KEY = 'cowswap:referral-code:v3'
-export const REFERRAL_SOURCE_STORAGE_KEY = 'cowswap:referral-source:v3'
+export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliate-trader:v1'
+export const AFFILIATE_PARTNER_STORAGE_KEY = 'cowswap:affiliate-partner:v1'
 
-export const REFERRAL_SUPPORTED_NETWORKS: SupportedChainId[] = [...AFFILIATE_SUPPORTED_CHAIN_IDS]
-
-export const REFERRAL_SUPPORTED_NETWORK_NAMES = REFERRAL_SUPPORTED_NETWORKS.map((chainId) => CHAIN_INFO[chainId].label)
+export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.map(
+  (chainId) => CHAIN_INFO[chainId].label,
+)
 
 // Timeout applied to referral service requests so UI fails fast on network issues
-export const REFERRAL_API_TIMEOUT_MS = 10_000
+export const AFFILIATE_API_TIMEOUT_MS = 10_000
 
 // TODO: replace placeholder URL once the referral docs are provisioned
-export const REFERRAL_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
+export const AFFILIATE_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
 
-export const REFERRAL_REWARDS_CURRENCY = 'USDC'
+export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 
 // TODO: replace with BFF_BASE_URL
-export const REFERRAL_API_BASE_URL = 'http://localhost:3001'
+export const AFFILIATE_API_BASE_URL = 'http://localhost:3001'

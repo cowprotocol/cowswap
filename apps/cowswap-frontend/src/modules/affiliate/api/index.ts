@@ -1,13 +1,15 @@
+import { AFFILIATE_SUPPORTED_CHAIN_IDS } from '@cowprotocol/common-const'
+
 import { BffAffiliateApi } from './bffAffiliateApi'
 
-import { REFERRAL_API_BASE_URL, REFERRAL_API_TIMEOUT_MS, REFERRAL_SUPPORTED_NETWORKS } from '../config/constants'
+import { AFFILIATE_API_BASE_URL, AFFILIATE_API_TIMEOUT_MS } from '../config/constants'
 
-export const bffAffiliateApi = new BffAffiliateApi(REFERRAL_API_BASE_URL, REFERRAL_API_TIMEOUT_MS)
+export const bffAffiliateApi = new BffAffiliateApi(AFFILIATE_API_BASE_URL, AFFILIATE_API_TIMEOUT_MS)
 
 export function isSupportedReferralNetwork(chainId: number | undefined | null): boolean {
   if (!chainId) {
     return false
   }
 
-  return REFERRAL_SUPPORTED_NETWORKS.includes(chainId as number)
+  return AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId as number)
 }
