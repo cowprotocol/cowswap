@@ -513,8 +513,8 @@ msgid "Free"
 msgstr "Free"
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
-msgid "Blocked Address"
-msgstr "Blocked Address"
+#~ msgid "Blocked Address"
+#~ msgstr "Blocked Address"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
@@ -608,8 +608,8 @@ msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to
 #~ msgstr "A U.S. Person or resident of the United States."
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
-msgid "If you believe this is an error, please send an email including your address to "
-msgstr "If you believe this is an error, please send an email including your address to "
+#~ msgid "If you believe this is an error, please send an email including your address to "
+#~ msgstr "If you believe this is an error, please send an email including your address to "
 
 #: apps/cowswap-frontend/src/modules/ethFlow/services/ethFlow/index.ts
 msgid "EthFlow contract ({actualContractAddress}) address don't match the expected address for chain {chainId} ({expectedContractAddress}). Please refresh the page and try again."
@@ -3139,6 +3139,10 @@ msgstr "Included in the estimated execution price"
 msgid "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
 msgstr "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+msgstr "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Technical details:"
 msgstr "Technical details:"
@@ -3397,8 +3401,8 @@ msgstr "Booooost APR!"
 #~ msgstr "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
-msgid "blocked activities"
-msgstr "blocked activities"
+#~ msgid "blocked activities"
+#~ msgstr "blocked activities"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
 #~ msgid "Settings"
@@ -4934,8 +4938,8 @@ msgid "Minimum receive"
 msgstr "Minimum receive"
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
-msgid "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
-msgstr "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
+#~ msgid "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
+#~ msgstr "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Interval time too short"
@@ -6614,8 +6618,8 @@ msgid "Creation transaction"
 msgstr "Creation transaction"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-msgstr "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+#~ msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+#~ msgstr "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WatchAssetInWallet/index.tsx
 msgid "Add token"
