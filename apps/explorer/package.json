@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/explorer",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "CoW Swap Explorer",
   "main": "src/main.tsx",
   "author": "",
