@@ -1,11 +1,13 @@
 import { ReactNode } from 'react'
 
-import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
+import { bpsToPercent, FractionUtils, trimTrailingZeros } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
+
+import { PROTOCOL_FEE_SCALE } from 'common/constants/common'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
@@ -24,7 +26,13 @@ export function ProtocolFeeRow({
   withTimelineDot,
   isLast = false,
 }: ProtocolFeeRowProps): ReactNode {
-  const protocolFeeAsPercent = protocolFeeBps ? formatPercent(bpsToPercent(protocolFeeBps)) : null
+  const protocolFeeAsPercent = protocolFeeBps
+    ? trimTrailingZeros(
+        bpsToPercent(protocolFeeBps * PROTOCOL_FEE_SCALE)
+          .divide(PROTOCOL_FEE_SCALE)
+          .toSignificant(),
+      )
+    : null
   const minProtocolFeeAmount = FractionUtils.amountToAtLeastOneWei(protocolFeeAmount)
 
   if (!protocolFeeAmount || !protocolFeeBps || protocolFeeAmount.equalTo(0)) {

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-hooks",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/cow-sdk": "7.3.3",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/types": "workspace:*",
@@ -52,8 +52,8 @@
   "devDependencies": {
     "@testing-library/react": "16.3.0",
     "@types/ms.macro": "^2.0.0",
+    "@types/qs": "^6.9.7",
     "@types/react": "19.1.3",
-    "@types/styled-components": "5.1.34",
-    "@types/qs": "^6.9.7"
+    "@types/styled-components": "5.1.34"
   }
 }

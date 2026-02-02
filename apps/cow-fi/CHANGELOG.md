@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.0...cow-fi-v2.0.1) (2026-02-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.1
+    * @cowprotocol/balances-and-allowances bumped to 2.0.1
+    * @cowprotocol/common-const bumped to 2.0.1
+    * @cowprotocol/common-hooks bumped to 2.0.1
+    * @cowprotocol/common-utils bumped to 2.0.1
+    * @cowprotocol/core bumped to 2.0.1
+    * @cowprotocol/ens bumped to 2.0.1
+    * @cowprotocol/events bumped to 3.0.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.1
+    * @cowprotocol/iframe-transport bumped to 2.0.1
+    * @cowprotocol/multicall bumped to 2.0.1
+    * @cowprotocol/permit-utils bumped to 2.0.1
+    * @cowprotocol/snackbars bumped to 2.0.1
+    * @cowprotocol/tokens bumped to 2.0.1
+    * @cowprotocol/types bumped to 3.0.1
+    * @cowprotocol/ui bumped to 2.0.1
+    * @cowprotocol/wallet bumped to 2.0.1
+    * @cowprotocol/widget-lib bumped to 1.0.1
+    * @cowprotocol/widget-react bumped to 1.0.1
+
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.32.0...cow-fi-v2.0.0) (2026-01-28)
 
 

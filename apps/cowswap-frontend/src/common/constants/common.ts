@@ -16,3 +16,5 @@ export const MAX_ORDER_DEADLINE = ms`1y` // https://github.com/cowprotocol/infra
 export const GAS_LIMIT_DEFAULT = BigNumber.from('150000')
 
 export const APP_HEADER_ELEMENT_ID = 'cowswap-app-header'
+
+export const PROTOCOL_FEE_SCALE = 100_000
