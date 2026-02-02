@@ -1,4 +1,3 @@
-
 import { PixelAnalytics } from './PixelAnalytics'
 import { FacebookPixel } from './providers/facebook'
 import { LinkedinPixel } from './providers/linkedin'

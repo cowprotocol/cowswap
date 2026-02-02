@@ -1,5 +1,6 @@
-import { CopyIcon, CopyMessage, CopyWrapper } from '@/components/TokenDetails/index.styles'
 import { useEffect, useState } from 'react'
+
+import { CopyIcon, CopyMessage, CopyWrapper } from '@/components/TokenDetails/index.styles'
 
 export const CopyToClipboard = ({ text }: { text: string }) => {
   const [copied, setCopied] = useState(false)
