@@ -28,7 +28,7 @@ export const ordersLimitAtom = atom<OrdersLimitState>(DEFAULT_ORDERS_LIMIT_STATE
 
 const walletKeyAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
-  return account ? `${chainId}::${account}` : ''
+  return account ? `${chainId}::${account.toLowerCase()}` : ''
 })
 
 ordersLimitAtom.onMount = () => {
