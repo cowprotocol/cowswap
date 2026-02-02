@@ -4,6 +4,9 @@ import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-a
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import ICON_QR_CODE from '@cowprotocol/assets/images/icon-qr-code.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import COW_LOGO_ACCENT from '@cowprotocol/assets/images/logo-icon-cow-circle-accent.svg'
+import COW_LOGO_BLACK from '@cowprotocol/assets/images/logo-icon-cow-circle-black.svg'
+import COW_LOGO_WHITE from '@cowprotocol/assets/images/logo-icon-cow-circle-white.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
@@ -15,9 +18,9 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
-import { toDataURL, toString } from 'qrcode'
 import { RotateCw } from 'react-feather'
 import SVG from 'react-inlinesvg'
+import QRCode from 'react-qrcode-logo'
 import styled from 'styled-components/macro'
 
 import CopyHelper from 'legacy/components/Copy'
@@ -85,16 +88,23 @@ import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { CowModal } from 'common/pure/Modal'
 
 const QR_SIZE_PX = 220
+const QR_LOGO_SIZE_PX = 64
 const EMPTY_VALUE_LABEL = '-'
 
-const QR_COLORS: Record<QrColor, { label: string; dark: string; light: string }> = {
-  black: { label: 'Black', dark: '#111111', light: '#FFFFFF' },
-  navy: { label: 'Navy', dark: '#123a78', light: '#FFFFFF' },
-  blue: { label: 'Blue', dark: '#1f5bd6', light: '#FFFFFF' },
+const QR_COLORS: Record<QrColor, { label: string; fg: string; bg: string }> = {
+  black: { label: 'Black', fg: '#111111', bg: '#FFFFFF' },
+  white: { label: 'White', fg: '#FFFFFF', bg: '#111111' },
+  accent: { label: 'Accent', fg: '#1f5bd6', bg: '#FFFFFF' },
+}
+
+const QR_LOGOS: Record<QrColor, string> = {
+  black: COW_LOGO_BLACK,
+  white: COW_LOGO_WHITE,
+  accent: COW_LOGO_ACCENT,
 }
 
 type AvailabilityState = 'idle' | 'invalid' | 'checking' | 'available' | 'unavailable' | 'error'
-type QrColor = 'black' | 'navy' | 'blue'
+type QrColor = 'black' | 'white' | 'accent'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function, complexity
 export default function AccountAffiliate() {
@@ -119,10 +129,8 @@ export default function AccountAffiliate() {
   const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
   const { isModalOpen: isQrOpen, openModal: openQrModal, closeModal: closeQrModal } = useModalState()
-  const [qrColor, setQrColor] = useState<QrColor>('navy')
-  const [qrPngUrl, setQrPngUrl] = useState<string | null>(null)
-  const [qrSvgUrl, setQrSvgUrl] = useState<string | null>(null)
-  const [qrError, setQrError] = useState<string | null>(null)
+  const [qrColor, setQrColor] = useState<QrColor>('accent')
+  const qrCodeRef = useRef<QRCode | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const normalizedCode = useMemo(() => sanitizeReferralCode(inputCode), [inputCode])
@@ -168,52 +176,20 @@ export default function AccountAffiliate() {
     return encodeURIComponent(`Trade on CoW Swap with my referral code ${existingCode}. ${referralLink} @CoWSwap`)
   }, [existingCode, referralLink])
 
-  useEffect(() => {
-    if (!isQrOpen) {
-      setQrError(null)
-      return
-    }
+  const qrPalette = useMemo(() => QR_COLORS[qrColor], [qrColor])
+  const qrError = !referralLink ? t`Referral link unavailable.` : null
+  const canDownloadQr = Boolean(referralLink)
 
-    if (!referralLink) {
-      setQrError(t`Referral link unavailable.`)
-      setQrPngUrl(null)
-      setQrSvgUrl(null)
-      return
-    }
+  const handleDownloadQr = useCallback(
+    (fileType: 'png' | 'jpg' | 'webp') => {
+      if (!qrCodeRef.current || !canDownloadQr) {
+        return
+      }
 
-    let active = true
-    setQrError(null)
-
-    const palette = QR_COLORS[qrColor]
-    const options = {
-      margin: 1,
-      width: QR_SIZE_PX,
-      color: { dark: palette.dark, light: palette.light },
-    }
-
-    Promise.all([toDataURL(referralLink, options), toString(referralLink, { ...options, type: 'svg' })])
-      .then(([pngUrl, svgText]) => {
-        if (!active) {
-          return
-        }
-
-        setQrPngUrl(pngUrl)
-        setQrSvgUrl(`data:image/svg+xml;utf8,${encodeURIComponent(svgText)}`)
-      })
-      .catch(() => {
-        if (!active) {
-          return
-        }
-
-        setQrError(t`Unable to generate QR code.`)
-        setQrPngUrl(null)
-        setQrSvgUrl(null)
-      })
-
-    return () => {
-      active = false
-    }
-  }, [isQrOpen, qrColor, referralLink])
+      qrCodeRef.current.download(fileType, 'cow-referral')
+    },
+    [canDownloadQr],
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -788,7 +764,27 @@ export default function AccountAffiliate() {
           </ModalHeader>
           <ModalBody>
             <QrUrl>{referralLink}</QrUrl>
-            <QrFrame>{qrPngUrl ? <QrImage src={qrPngUrl} alt={t`Referral QR code`} /> : <QrPlaceholder />}</QrFrame>
+            <QrFrame $bg={qrPalette.bg}>
+              {referralLink ? (
+                <QRCode
+                  ref={qrCodeRef}
+                  value={referralLink}
+                  size={QR_SIZE_PX}
+                  quietZone={2}
+                  bgColor={qrPalette.bg}
+                  fgColor={qrPalette.fg}
+                  logoImage={QR_LOGOS[qrColor]}
+                  logoWidth={QR_LOGO_SIZE_PX}
+                  logoHeight={QR_LOGO_SIZE_PX}
+                  logoPadding={0}
+                  logoPaddingStyle="circle"
+                  removeQrCodeBehindLogo
+                  eyeRadius={0}
+                />
+              ) : (
+                <QrPlaceholder />
+              )}
+            </QrFrame>
             {qrError && <InlineError>{qrError}</InlineError>}
             <QrPalette>
               {Object.entries(QR_COLORS).map(([key, color]) => (
@@ -796,7 +792,7 @@ export default function AccountAffiliate() {
                   key={key}
                   type="button"
                   $active={qrColor === key}
-                  $color={color.dark}
+                  $color={color.fg}
                   onClick={() => setQrColor(key as QrColor)}
                   aria-label={color.label}
                 />
@@ -804,24 +800,24 @@ export default function AccountAffiliate() {
             </QrPalette>
             <QrActions>
               <DownloadLink
-                href={qrSvgUrl ?? '#'}
-                download="cow-referral.svg"
-                $disabled={!qrSvgUrl}
+                href="#"
+                $disabled={!canDownloadQr}
                 onClick={(event) => {
-                  if (!qrSvgUrl) event.preventDefault()
-                }}
-              >
-                <Trans>Download .SVG</Trans>
-              </DownloadLink>
-              <DownloadLink
-                href={qrPngUrl ?? '#'}
-                download="cow-referral.png"
-                $disabled={!qrPngUrl}
-                onClick={(event) => {
-                  if (!qrPngUrl) event.preventDefault()
+                  event.preventDefault()
+                  handleDownloadQr('png')
                 }}
               >
                 <Trans>Download .PNG</Trans>
+              </DownloadLink>
+              <DownloadLink
+                href="#"
+                $disabled={!canDownloadQr}
+                onClick={(event) => {
+                  event.preventDefault()
+                  handleDownloadQr('webp')
+                }}
+              >
+                <Trans>Download .WEBP</Trans>
               </DownloadLink>
             </QrActions>
           </ModalBody>
@@ -872,20 +868,15 @@ const QrUrl = styled.p`
   word-break: break-all;
 `
 
-const QrFrame = styled.div`
+const QrFrame = styled.div<{ $bg: string }>`
   border-radius: 16px;
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  background: ${({ $bg }) => $bg};
   padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-`
-
-const QrImage = styled.img`
-  width: ${QR_SIZE_PX}px;
-  height: ${QR_SIZE_PX}px;
-  border-radius: 12px;
 `
 
 const QrPlaceholder = styled.div`
@@ -909,10 +900,10 @@ const QrPalette = styled.div`
 `
 
 const ColorDot = styled.button<{ $active: boolean; $color: string }>`
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   border-radius: 999px;
-  border: 2px solid ${({ $active }) => ($active ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
+  border: 4px solid ${({ $active }) => ($active ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_BORDER})`)};
   background: ${({ $color }) => $color};
   cursor: pointer;
 `
