@@ -13,7 +13,10 @@ const COW_AMM_CHAINS = {
   [SupportedChainId.BNB]: '',
   [SupportedChainId.LINEA]: '', // TODO: confirm
   [SupportedChainId.PLASMA]: '', // TODO: confirm
+  [SupportedChainId.INK]: '', // TODO: confirm
 }
+
+// Reference: https://api-docs.uniswap.org/guides/supported_chains
 
 const UNI_CHAINS = {
   [SupportedChainId.MAINNET]: 'ethereum',
@@ -27,7 +30,10 @@ const UNI_CHAINS = {
   [SupportedChainId.BNB]: 'bnb',
   [SupportedChainId.LINEA]: '', // TODO: confirm
   [SupportedChainId.PLASMA]: '', // TODO: confirm
+  [SupportedChainId.INK]: '',
 }
+
+// Reference: https://www.sushi.com/faq/general/about-sushi/which-chains-are-sushi-on
 
 const SUSHI_CHAINS = {
   [SupportedChainId.MAINNET]: 'ethereum',
@@ -39,9 +45,12 @@ const SUSHI_CHAINS = {
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: 'bsc',
-  [SupportedChainId.LINEA]: '', // TODO: confirm
+  [SupportedChainId.LINEA]: '', // TODO: confirm. This one is actually supported.
   [SupportedChainId.PLASMA]: '', // TODO: confirm
+  [SupportedChainId.INK]: '',
 }
+
+// Reference: https://pancakeswap.finance/info/linea
 
 const PANCAKE_CHAINS = {
   [SupportedChainId.MAINNET]: 'eth',
@@ -53,8 +62,9 @@ const PANCAKE_CHAINS = {
   [SupportedChainId.AVALANCHE]: '',
   [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: 'bsc',
-  [SupportedChainId.LINEA]: '', // TODO: confirm
+  [SupportedChainId.LINEA]: '', // TODO: confirm. This one is actually supported.
   [SupportedChainId.PLASMA]: '', // TODO: confirm
+  [SupportedChainId.INK]: '',
 }
 
 export const LP_PAGE_LINKS: Record<LpTokenProvider, (chainId: SupportedChainId, address: string) => string | null> = {
