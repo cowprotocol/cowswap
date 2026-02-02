@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/types",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "commonjs",
   "description": "CoW Swap events",
   "main": "./src/index.ts",
@@ -25,8 +25,8 @@
     "widget-lib"
   ],
   "dependencies": {
-    "@cowprotocol/cow-sdk": "~7.3.1",
-    "@cowprotocol/sdk-bridging": "1.7.0",
+    "@cowprotocol/cow-sdk": "7.3.2",
+    "@cowprotocol/sdk-bridging": "1.7.1",
     "@uniswap/sdk-core": "^3.0.1",
     "eventemitter3": "^4.0.0"
   },

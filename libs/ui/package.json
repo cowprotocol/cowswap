@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/ui",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,13 +24,13 @@
     }
   },
   "dependencies": {
+    "@cowprotocol/cow-sdk": "7.3.2",
     "@cowprotocol/analytics": "workspace:*",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cow-sdk": "~7.3.1",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui-utils": "workspace:*",
     "@lingui/core": "^5.4.1",
