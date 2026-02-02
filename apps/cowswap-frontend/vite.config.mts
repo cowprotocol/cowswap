@@ -154,6 +154,10 @@ export default defineConfig(({ mode }) => {
       },
       // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
       conditions: ['module', 'import', 'browser', 'default'],
+      // Dedupe packages that rely on shared React context across workspace libs.
+      // Without this, pnpm creates separate copies per workspace package (different peer dep sets),
+      // causing context mismatches (e.g. WagmiProvider in libs/wallet vs useConnection in libs/wallet-provider).
+      dedupe: ['wagmi'],
     },
 
     build: {
