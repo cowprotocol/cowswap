@@ -106,6 +106,7 @@ export function useTraderReferralCodeModalController(
     initialFocusRef,
     contentProps: {
       uiState,
+      isConnected: Boolean(account),
       savedCode,
       displayCode,
       verification,

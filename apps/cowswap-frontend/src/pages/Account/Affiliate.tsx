@@ -5,7 +5,7 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary, ButtonSecondary, ButtonSize, HelpTooltip, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSecondary, ButtonSize, Font, HelpTooltip, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -492,7 +492,8 @@ export default function AccountAffiliate() {
 
   const progressToNextRewardLabel =
     referralTarget !== null ? formatUsdCompact(progressToNextReward) : formatUsdCompact(0)
-  const referralTargetLabel = referralTarget !== null ? formatUsdCompact(referralTarget) : formatUsdCompact(0)
+  const hasReferralTarget = referralTarget !== null
+  const referralTargetLabel = hasReferralTarget ? formatUsdCompact(referralTarget) : formatUsdCompact(0)
   const rewardAmountLabel = partnerRewardAmount ? formatUsdCompact(partnerRewardAmount) : 'reward'
 
   const nextPayoutLabel = statsReady ? formatUsdcCompact(partnerStats?.next_payout) : formatUsdcCompact(0)
@@ -738,9 +739,11 @@ export default function AccountAffiliate() {
                     <Donut $value={referralTrafficPercent}>
                       <DonutValue>
                         <span>{progressToNextRewardLabel}</span>
-                        <small>
-                          <Trans>of</Trans> {referralTargetLabel}
-                        </small>
+                        {hasReferralTarget && (
+                          <small>
+                            <Trans>of</Trans> {referralTargetLabel}
+                          </small>
+                        )}
                       </DonutValue>
                     </Donut>
                   </RewardsMetricsRow>
@@ -924,6 +927,7 @@ const LinkedCodeText = styled.span`
   text-transform: uppercase;
   font-size: 18px;
   white-space: nowrap;
+  font-family: ${Font.familyMono};
 `
 
 const LinkedBadge = styled.span`

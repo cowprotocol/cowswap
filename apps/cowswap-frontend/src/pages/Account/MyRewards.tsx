@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
-import { ButtonPrimary, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Font, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
@@ -12,6 +13,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
 import { AlertCircle, Lock } from 'react-feather'
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -151,7 +153,8 @@ export default function AccountMyRewards() {
     ? Math.min(100, Math.round((progressToNextReward / triggerVolume) * 100))
     : 0
   const rewardsProgressLabel = triggerVolume !== null ? formatUsdCompact(progressToNextReward) : formatUsdCompact(0)
-  const triggerVolumeLabel = triggerVolume !== null ? formatUsdCompact(triggerVolume) : formatUsdCompact(0)
+  const hasTriggerVolume = triggerVolume !== null
+  const triggerVolumeLabel = hasTriggerVolume ? formatUsdCompact(triggerVolume) : formatUsdCompact(0)
   const leftToNextRewardLabel = statsReady ? formatUsdCompact(leftToNextRewards) : '-'
   const totalEarnedLabel = statsReady ? formatUsdcCompact(traderStats?.total_earned) : '-'
   const claimedLabel = statsReady ? formatUsdcCompact(traderStats?.paid_out) : '-'
@@ -251,7 +254,10 @@ export default function AccountMyRewards() {
                         <Trans>Linked</Trans>
                       </LinkedStatusBadge>
                     ) : (
-                      <Trans>Pending</Trans>
+                      <ValidStatusBadge>
+                        <SVG src={CheckIcon} title={t`Valid`} />
+                        <Trans>Valid</Trans>
+                      </ValidStatusBadge>
                     )}
                   </LinkedCodeRow>
                 </LinkedCard>
@@ -269,11 +275,13 @@ export default function AccountMyRewards() {
                     <strong>{isLinked ? rewardsEndLabel : '-'}</strong>
                   </MetricItem>
                 </LinkedMetaList>
-                <HeroActions>
-                  <ButtonPrimary onClick={handleOpenRewardsModal}>
-                    <Trans>Edit code</Trans>
-                  </ButtonPrimary>
-                </HeroActions>
+                {!isLinked && (
+                  <HeroActions>
+                    <ButtonPrimary onClick={handleOpenRewardsModal}>
+                      <Trans>Edit code</Trans>
+                    </ButtonPrimary>
+                  </HeroActions>
+                )}
               </RewardsCol1Card>
 
               <RewardsCol2Card showLoader={statsLoading}>
@@ -304,9 +312,11 @@ export default function AccountMyRewards() {
                   <Donut $value={rewardsProgressPercent}>
                     <DonutValue>
                       <span>{rewardsProgressLabel}</span>
-                      <small>
-                        <Trans>of</Trans> {triggerVolumeLabel}
-                      </small>
+                      {hasTriggerVolume && (
+                        <small>
+                          <Trans>of</Trans> {triggerVolumeLabel}
+                        </small>
+                      )}
                     </DonutValue>
                   </Donut>
                 </RewardsMetricsRow>
@@ -410,6 +420,7 @@ const LinkedCodeText = styled.span`
   font-size: 18px;
   white-space: nowrap;
   color: var(${UI.COLOR_INFO_TEXT});
+  font-family: ${Font.familyMono};
 `
 
 const LinkedStatusBadge = styled.span`
@@ -418,6 +429,14 @@ const LinkedStatusBadge = styled.span`
   gap: 6px;
   font-weight: 600;
   font-size: 14px;
+`
+
+const ValidStatusBadge = styled(LinkedStatusBadge)`
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+
+  svg {
+    fill: currentColor;
+  }
 `
 
 const LinkedMetaList = styled.div`

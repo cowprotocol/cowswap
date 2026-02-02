@@ -34,6 +34,7 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
           hasRejection={hasRejection}
           verification={props.verification}
           incomingIneligibleCode={props.incomingIneligibleCode}
+          isConnected={props.isConnected}
         />
         {shouldShowForm && (
           <TraderReferralCodeForm
@@ -67,6 +68,7 @@ interface TraderReferralCodeSubtitleProps {
   hasRejection: boolean
   verification: TraderReferralCodeVerificationStatus
   incomingIneligibleCode?: string
+  isConnected: boolean
 }
 
 function TraderReferralCodeSubtitle({
@@ -75,6 +77,7 @@ function TraderReferralCodeSubtitle({
   hasRejection,
   verification,
   incomingIneligibleCode,
+  isConnected,
 }: TraderReferralCodeSubtitleProps): ReactNode {
   const programParams = verification.kind === 'valid' ? verification.programParams : undefined
   const programCopy = programParams ? getPartnerProgramCopyValues(programParams) : null
@@ -117,10 +120,23 @@ function TraderReferralCodeSubtitle({
       ) : (
         <>
           {programCopy ? (
+            isConnected ? (
+              <Trans>
+                Code binds on your first eligible trade. Earn {programCopy.rewardAmount} {programCopy.rewardCurrency}{' '}
+                per {programCopy.triggerVolume} eligible volume in {programCopy.timeCapDays} days. Payouts happen on
+                Ethereum mainnet.
+              </Trans>
+            ) : (
+              <Trans>
+                Connect to verify eligibility. Code binds on your first eligible trade. Earn {programCopy.rewardAmount}{' '}
+                {programCopy.rewardCurrency} per {programCopy.triggerVolume} eligible volume in{' '}
+                {programCopy.timeCapDays} days. Payouts happen on Ethereum mainnet.
+              </Trans>
+            )
+          ) : isConnected ? (
             <Trans>
-              Connect to verify eligibility. Code binds on your first eligible trade. Earn {programCopy.rewardAmount}{' '}
-              {programCopy.rewardCurrency} per {programCopy.triggerVolume} eligible volume in {programCopy.timeCapDays}{' '}
-              days. Payouts happen on Ethereum mainnet.
+              Code binds on your first eligible trade. Earn rewards for eligible volume within the program window.
+              Payouts happen on Ethereum mainnet.
             </Trans>
           ) : (
             <Trans>

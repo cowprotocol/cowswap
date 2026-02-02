@@ -201,7 +201,7 @@ function pickAutoVerificationCandidate(params: ResolveAutoVerificationParams): s
     return undefined
   }
 
-  const sanitized = sanitizeReferralCode(incomingCode ?? savedCode ?? inputCode)
+  const sanitized = sanitizeReferralCode(incomingCode ?? inputCode ?? savedCode)
 
   if (!sanitized || !isReferralCodeLengthValid(sanitized)) {
     return undefined

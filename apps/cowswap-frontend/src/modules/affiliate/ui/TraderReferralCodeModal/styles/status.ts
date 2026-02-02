@@ -29,6 +29,7 @@ export const Footer = styled.div`
 export const InlineAlert = styled(InlineBanner)`
   border-radius: 9px;
   padding: 12px 16px;
+  text-align: center;
 `
 
 export const ErrorInline = styled(InlineBanner)`

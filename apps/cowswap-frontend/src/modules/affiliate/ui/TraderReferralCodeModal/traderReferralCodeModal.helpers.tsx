@@ -97,7 +97,7 @@ export function getStatusCopy(
     shouldShowInfo: verification.kind === 'valid' && verification.eligible,
     infoMessage: timeCapDays
       ? t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for ${timeCapDays} days.`
-      : t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for the program window.`,
+      : t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for the entire program.`,
   }
 }
 
@@ -124,7 +124,7 @@ export function useTraderReferralCodeModalFocus(
 }
 
 export function useTraderReferralCodeModalAnalytics(
-  traderReferralCode: ReturnType<typeof useTraderReferralCodeModalState>['referral'],
+  traderReferralCode: ReturnType<typeof useTraderReferralCodeModalState>['traderReferralCode'],
   uiState: TraderReferralCodeModalUiState,
   analytics: CowAnalytics,
 ): void {

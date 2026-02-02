@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { Font, Media, UI } from '@cowprotocol/ui'
 
 import styled, { keyframes, css } from 'styled-components/macro'
 
@@ -72,7 +72,7 @@ export const StyledInput = styled.input<{ disabled?: boolean; $size?: 'default' 
   font-weight: 600;
   letter-spacing: 0;
   text-transform: uppercase;
-  font-family: var(${UI.FONT_FAMILY_MONO});
+  font-family: ${Font.familyMono};
   padding: 0;
   margin: 0;
   outline: none;

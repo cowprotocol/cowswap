@@ -13,6 +13,7 @@ export interface PrimaryCta {
 
 export interface TraderReferralCodeModalContentProps {
   uiState: TraderReferralCodeModalUiState
+  isConnected: boolean
   savedCode?: string
   displayCode: string
   verification: TraderReferralCodeVerificationStatus

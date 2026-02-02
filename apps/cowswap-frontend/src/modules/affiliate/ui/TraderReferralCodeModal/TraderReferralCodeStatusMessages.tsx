@@ -19,7 +19,11 @@ export function TraderReferralCodeStatusMessages(props: TraderReferralCodeStatus
 
   return (
     <StatusMessage role="status" aria-live="polite">
-      {shouldShowInfo && <InlineAlert bannerType={StatusColorVariant.Success}>{infoMessage}</InlineAlert>}
+      {shouldShowInfo && (
+        <InlineAlert bannerType={StatusColorVariant.Info} hideIcon>
+          {infoMessage}
+        </InlineAlert>
+      )}
     </StatusMessage>
   )
 }
