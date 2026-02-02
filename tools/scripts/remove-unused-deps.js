@@ -23,9 +23,9 @@
  *   --json          Output results as JSON
  */
 
-const { _execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
+const { execSync } = require('child_process')
 
 const ROOT_DIR = path.resolve(__dirname, '../..')
 const APPS_DIR = path.join(ROOT_DIR, 'apps')
@@ -112,54 +112,62 @@ const CONFIG_FILE_PATTERNS = [
 
 // Dependencies that are always considered "used" (tools, plugins, etc.)
 const ALWAYS_USED_PATTERNS = [
-  /^@types\//, // TypeScript types
-  /^@nx\//, // Nx plugins
-  /^eslint/, // ESLint and plugins/configs
-  /^prettier/, // Prettier
-  /^@babel\//, // Babel presets/plugins
-  /^babel-/, // Babel presets/plugins
-  /^@swc\//, // SWC plugins
-  /^@vitejs\//, // Vite plugins
-  /^vite-plugin-/, // Vite plugins
-  /^vite-tsconfig/, // Vite tsconfig paths
-  /^@sentry\//, // Sentry plugins
-  /^@testing-library\//, // Testing library
-  /^@commitlint\//, // Commitlint
-  /^jest/, // Jest related
-  /^ts-jest/, // ts-jest
-  /^typescript$/, // TypeScript compiler
-  /^husky$/, // Git hooks
-  /^lint-staged$/, // Lint staged
-  /^cross-env$/, // Cross-env CLI
-  /^patch-package$/, // Patch package CLI
-  /^typechain$/, // Typechain CLI
-  /^@lingui\//, // Lingui i18n
-  /^@swc-node\//, // SWC Node
-  /^rollup-plugin-/, // Rollup plugins
-  /^@vitest\//, // Vitest
-  /^vitest$/, // Vitest
-  /^postcss/, // PostCSS
-  /^autoprefixer/, // Autoprefixer
-  /^tailwindcss/, // Tailwind CSS
-  /^next-sitemap/, // Next sitemap
-  /^@typechain\//, // Typechain
-  /^styled-jsx$/, // Styled JSX (Next.js)
-  /^tslib$/, // TypeScript runtime helpers
-  /^@swc\/helpers$/, // SWC helpers
-  /^react-cosmos/, // React Cosmos
-  /^cypress/, // Cypress
-  /^workbox-/, // Workbox (PWA)
-  /^@web3-react\//, // Web3 React
-  /^jsdom$/, // JSDOM for testing
-  /^isomorphic-fetch$/, // Fetch polyfill
+  /^@types\//,           // TypeScript types
+  /^@nx\//,              // Nx plugins
+  /^eslint/,             // ESLint and plugins/configs
+  /^prettier/,           // Prettier
+  /^@babel\//,           // Babel presets/plugins
+  /^babel-/,             // Babel presets/plugins
+  /^@swc\//,             // SWC plugins
+  /^@vitejs\//,          // Vite plugins
+  /^vite-plugin-/,       // Vite plugins
+  /^vite-tsconfig/,      // Vite tsconfig paths
+  /^@sentry\//,          // Sentry plugins
+  /^@testing-library\//,  // Testing library
+  /^@commitlint\//,      // Commitlint
+  /^jest/,               // Jest related
+  /^ts-jest/,            // ts-jest
+  /^typescript$/,        // TypeScript compiler
+  /^husky$/,             // Git hooks
+  /^lint-staged$/,       // Lint staged
+  /^cross-env$/,         // Cross-env CLI
+  /^patch-package$/,     // Patch package CLI
+  /^typechain$/,         // Typechain CLI
+  /^@lingui\//,          // Lingui i18n
+  /^@swc-node\//,        // SWC Node
+  /^rollup-plugin-/,     // Rollup plugins
+  /^@vitest\//,          // Vitest
+  /^vitest$/,            // Vitest
+  /^postcss/,            // PostCSS
+  /^autoprefixer/,       // Autoprefixer
+  /^tailwindcss/,        // Tailwind CSS
+  /^next-sitemap/,       // Next sitemap
+  /^@typechain\//,       // Typechain
+  /^styled-jsx$/,        // Styled JSX (Next.js)
+  /^tslib$/,             // TypeScript runtime helpers
+  /^@swc\/helpers$/,     // SWC helpers
+  /^react-cosmos/,       // React Cosmos
+  /^cypress/,            // Cypress
+  /^workbox-/,           // Workbox (PWA)
+  /^@web3-react\//,      // Web3 React
+  /^jsdom$/,             // JSDOM for testing
+  /^isomorphic-fetch$/,  // Fetch polyfill
   /^node-stdlib-browser$/, // Node polyfills
 ]
 
 // Packages that are often required as peer deps (not directly imported)
-const PEER_DEP_LIKE_PATTERNS = [/^react$/, /^react-dom$/, /^csstype$/]
+const PEER_DEP_LIKE_PATTERNS = [
+  /^react$/,
+  /^react-dom$/,
+  /^csstype$/,
+]
 
 // Dependencies that should be checked via peer dependencies
-const _PEER_DEP_PACKAGES = new Set(['react', 'react-dom', 'next'])
+const PEER_DEP_PACKAGES = new Set([
+  'react',
+  'react-dom',
+  'next',
+])
 
 // Package name mappings (import path -> declared dependency)
 // This handles cases where the import differs from the package name
@@ -354,7 +362,6 @@ function findImportsInFile(filePath) {
       }
     }
 
-    // eslint-disable-next-line unused-imports/no-unused-vars
   } catch (e) {
     // Ignore read errors
   }
@@ -389,7 +396,6 @@ function findConfigDependencies(dir) {
                 if (pkg) deps.add(pkg)
               }
             }
-            // eslint-disable-next-line unused-imports/no-unused-vars
           } catch (e) {
             // Ignore
           }

@@ -66,7 +66,7 @@ function collectPackageDeps(packageDirs) {
     const packageJson = readPackageJson(dir)
     if (!packageJson) continue
 
-    const _packageName = packageJson.name || path.basename(dir)
+    const packageName = packageJson.name || path.basename(dir)
 
     // Collect dependencies (skip workspace:* references)
     if (packageJson.dependencies) {

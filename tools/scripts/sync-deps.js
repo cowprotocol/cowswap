@@ -51,7 +51,7 @@ const COWPROTOCOL_NPM_PACKAGES = new Set([
   '@cowprotocol/sdk-subgraph',
   '@cowprotocol/sdk-contracts-ts',
   '@cowprotocol/sdk-order-book',
-  '@cowprotocol/sdk-trading',
+  '@cowprotocol/sdk-trading'
 ])
 
 // Node.js built-in modules
@@ -212,7 +212,6 @@ function getTsConfigBaseUrl(packageDir) {
         if (tsConfig.compilerOptions?.baseUrl) {
           return tsConfig.compilerOptions.baseUrl
         }
-        // eslint-disable-next-line unused-imports/no-unused-vars
       } catch (e) {
         // Ignore parsing errors
       }
@@ -437,7 +436,7 @@ function processPackage(packageDir) {
   const addedDevDeps = Object.keys(finalDevDeps).length
   const workspaceCount = allWorkspaceDeps.size
   console.log(
-    `  Added ${addedDeps} dependencies (${workspaceCount} workspace), ${addedDevDeps} devDependencies (${typesPackagesAdded} @types)`,
+    `  Added ${addedDeps} dependencies (${workspaceCount} workspace), ${addedDevDeps} devDependencies (${typesPackagesAdded} @types)`
   )
 }
 
