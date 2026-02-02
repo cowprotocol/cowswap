@@ -1,10 +1,11 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
 
 import { UtmParams } from '@cowprotocol/common-utils'
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
+
+import { useAsyncEffect } from 'common/hooks/useAsyncEffect'
 
 import { UserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
 import { appDataInfoAtom } from '../state/atoms'
@@ -12,7 +13,7 @@ import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../type
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
-export type UseAppDataParams = {
+export interface UseAppDataParams {
   appCodeWithWidgetMetadata: AppCodeWithWidgetMetadata | null
   chainId: SupportedChainId
   slippageBips: number
@@ -47,9 +48,7 @@ export function AppDataInfoUpdater({
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
-  const updateAppDataPromiseRef = useRef(Promise.resolve())
-
-  useEffect(() => {
+  useAsyncEffect(async () => {
     if (!appCodeWithWidgetMetadata) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
@@ -72,21 +71,16 @@ export function AppDataInfoUpdater({
       userConsent,
     }
 
-    const updateAppData = async (): Promise<void> => {
-      try {
-        const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
+    try {
+      const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
 
-        setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
-        console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
-        setAppDataInfo(getAppData())
-      }
+      setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
+      setAppDataInfo(getAppData())
     }
-
-    // Chain the next update to avoid race conditions
-    updateAppDataPromiseRef.current = updateAppDataPromiseRef.current.finally(updateAppData)
   }, [
     appCodeWithWidgetMetadata,
     chainId,
