@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v2.0.0...balances-and-allowances-v2.0.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.1
+    * @cowprotocol/common-hooks bumped to 2.0.1
+    * @cowprotocol/common-utils bumped to 2.0.1
+    * @cowprotocol/core bumped to 2.0.1
+    * @cowprotocol/multicall bumped to 2.0.1
+    * @cowprotocol/tokens bumped to 2.0.1
+    * @cowprotocol/types bumped to 3.0.1
+    * @cowprotocol/wallet bumped to 2.0.1
+
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.11.1...balances-and-allowances-v2.0.0) (2026-01-28)
 
 
