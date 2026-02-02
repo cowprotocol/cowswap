@@ -19,8 +19,6 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
   const { uiState, onPrimaryClick, primaryCta, onDismiss, inputRef, ctaRef, linkedMessage, hasRejection } = props
   const shouldShowForm = uiState !== 'ineligible'
 
-  const howItWorksLink = <TraderReferralCodeHowItWorksLink />
-
   return (
     <ModalContainer>
       <ModalHeader onBack={onDismiss} onClose={onDismiss}>
@@ -33,7 +31,6 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
         <TraderReferralCodeSubtitle
           uiState={uiState}
           linkedMessage={linkedMessage}
-          howItWorksLink={howItWorksLink}
           hasRejection={hasRejection}
           verification={props.verification}
           incomingIneligibleCode={props.incomingIneligibleCode}
@@ -67,7 +64,6 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
 interface TraderReferralCodeSubtitleProps {
   uiState: TraderReferralCodeModalUiState
   linkedMessage?: ReactNode
-  howItWorksLink: ReactNode
   hasRejection: boolean
   verification: TraderReferralCodeVerificationStatus
   incomingIneligibleCode?: string
@@ -76,7 +72,6 @@ interface TraderReferralCodeSubtitleProps {
 function TraderReferralCodeSubtitle({
   uiState,
   linkedMessage,
-  howItWorksLink,
   hasRejection,
   verification,
   incomingIneligibleCode,
@@ -86,7 +81,7 @@ function TraderReferralCodeSubtitle({
   if ((uiState === 'linked' || hasRejection) && linkedMessage) {
     return (
       <Subtitle>
-        {linkedMessage} {howItWorksLink}
+        {linkedMessage} <TraderReferralCodeHowItWorksLink />
       </Subtitle>
     )
   }
@@ -117,7 +112,7 @@ function TraderReferralCodeSubtitle({
               Payouts happen on Ethereum mainnet.
             </Trans>
           )}{' '}
-          {howItWorksLink}
+          <TraderReferralCodeHowItWorksLink />
         </>
       ) : (
         <>
@@ -133,7 +128,7 @@ function TraderReferralCodeSubtitle({
               within the program window. Payouts happen on Ethereum mainnet.
             </Trans>
           )}{' '}
-          {howItWorksLink}
+          <TraderReferralCodeHowItWorksLink />
         </>
       )}
     </Subtitle>

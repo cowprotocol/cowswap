@@ -31,7 +31,7 @@
 - As a trader, I want invalid or disabled codes rejected because I should not be punished for mistakes.
 - As a trader, I want invalid/disabled codes not persisted locally because I should not get stuck with a bad code.
 - As a trader, I want my prior referrer to stick because switching after trading is not allowed.
-- As a trader, I want to be told I am ineligible if I have traded before without a referrer because I cannot add one later.
+- As a trader, I want to be told I am ineligible if I have traded before on any network without a referrer because I cannot add one later.
 - As a trader, I want my prior referrer to override any new URL/code because the first referrer should win.
 - As a developer, I want new traders validated via `GET /ref-codes/:code` because we must only accept enabled codes.
 - As a developer, I want `GET /ref-codes/:code` to return flat params with `traderRewardAmount` (split applied) and no revenue splits because the UI should not expose split math.

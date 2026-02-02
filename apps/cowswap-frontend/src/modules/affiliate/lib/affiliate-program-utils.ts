@@ -51,7 +51,6 @@ export function sanitizeReferralCode(raw: string): string {
   return next.slice(0, 20)
 }
 
-// TODO: Derive actual length limits from the referral API response schema
 export function isReferralCodeLengthValid(code: string): boolean {
   return code.length >= 5 && code.length <= 20
 }
@@ -61,7 +60,6 @@ export type PartnerProgramParams = {
   triggerVolumeUsd: number
   timeCapDays: number
   volumeCapUsd: number
-  notes?: string | null
 }
 
 export function getPartnerProgramCopyValues(params: PartnerProgramParams): {

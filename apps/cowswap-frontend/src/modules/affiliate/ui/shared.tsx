@@ -1,6 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
 
-import { Media, UI } from '@cowprotocol/ui'
+import { LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -460,4 +460,13 @@ export const LabelContent = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 0px;
+`
+
+export const HowItWorksLink = styled(LinkStyledButton)`
+  color: var(${UI.COLOR_LINK});
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `

@@ -10,7 +10,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
-import { ArrowLeft, Lock } from 'react-feather'
+import { Lock } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -47,7 +47,6 @@ import {
 import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/ui/TraderReferralCodeIneligibleCopy'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
-import { useNavigateBack } from 'common/hooks/useNavigate'
 import { Card } from 'pages/Account/styled'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function, complexity
@@ -57,7 +56,6 @@ export default function AccountMyRewards() {
   const toggleWalletModal = useToggleWalletModal()
   const traderReferralCode = useTraderReferralCode()
   const traderReferralCodeActions = useTraderReferralCodeActions()
-  const navigateBack = useNavigateBack()
   const [traderStats, setTraderStats] = useState<TraderStatsResponse | null>(null)
   const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
@@ -172,21 +170,12 @@ export default function AccountMyRewards() {
     toggleWalletModal()
   }, [toggleWalletModal])
 
-  const handleGoBack = useCallback(() => {
-    navigateBack()
-  }, [navigateBack])
-
   return (
     <RewardsWrapper>
       <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 
       {isIneligible ? (
         <IneligibleCard>
-          <IneligibleHeader>
-            <BackButton type="button" onClick={handleGoBack} aria-label="Go back">
-              <ArrowLeft size={20} />
-            </BackButton>
-          </IneligibleHeader>
           <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
 
           <IneligibleTitle>
@@ -195,11 +184,6 @@ export default function AccountMyRewards() {
           <IneligibleSubtitle>
             <TraderReferralCodeIneligibleCopy incomingCode={incomingIneligibleCode} />
           </IneligibleSubtitle>
-          <IneligibleActions>
-            <ButtonPrimary onClick={handleGoBack}>
-              <Trans>Go back</Trans>
-            </ButtonPrimary>
-          </IneligibleActions>
         </IneligibleCard>
       ) : !traderHasCode ? (
         <HeroCard>
@@ -328,35 +312,12 @@ function formatUpdatedAt(value: Date | null): string {
 }
 
 const IneligibleCard = styled(Card)`
-  max-width: 640px;
+  max-width: 520px;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 20px;
   position: relative;
-`
-
-const IneligibleHeader = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-`
-
-const BackButton = styled.button`
-  border: none;
-  background: transparent;
-  color: var(${UI.COLOR_TEXT});
-  padding: 4px;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  &:hover,
-  &:focus-visible {
-    background: var(${UI.COLOR_PAPER_DARKER});
-  }
 `
 
 const IneligibleTitle = styled.h3`
@@ -372,14 +333,6 @@ const IneligibleSubtitle = styled.p`
 
   strong {
     color: var(${UI.COLOR_TEXT});
-  }
-`
-
-const IneligibleActions = styled.div`
-  width: 100%;
-
-  ${ButtonPrimary} {
-    width: 100%;
   }
 `
 

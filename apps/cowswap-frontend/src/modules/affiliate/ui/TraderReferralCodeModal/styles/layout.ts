@@ -65,15 +65,6 @@ export const Subtitle = styled.p`
     font-size: 14px;
     max-width: 90%;
   }
-
-  a {
-    color: var(${UI.COLOR_LINK});
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 `
 
 export const FormGroup = styled.form`
