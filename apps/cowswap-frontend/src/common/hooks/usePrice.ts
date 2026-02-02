@@ -7,7 +7,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 export function usePrice(
   inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
-  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
 ): Price<Currency, Currency> | null {
   return useSafeMemo(() => {
     return buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)

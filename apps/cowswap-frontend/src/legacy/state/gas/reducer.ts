@@ -19,5 +19,5 @@ export default createReducer(initialState, (builder) =>
         ...rest,
       }
     }
-  })
+  }),
 )

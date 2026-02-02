@@ -4,7 +4,20 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { Chain, http } from 'viem'
-import { arbitrum, avalanche, base, bsc, gnosis, lens, linea, mainnet, plasma, polygon, sepolia } from 'viem/chains'
+import {
+  arbitrum,
+  avalanche,
+  base,
+  bsc,
+  gnosis,
+  ink,
+  lens,
+  linea,
+  mainnet,
+  plasma,
+  polygon,
+  sepolia,
+} from 'viem/chains'
 import { Transport } from 'wagmi'
 
 // TODO change
@@ -23,6 +36,7 @@ const SUPPORTED_CHAINS: Record<SupportedChainId, Chain> = {
   [SupportedChainId.ARBITRUM_ONE]: arbitrum,
   [SupportedChainId.AVALANCHE]: avalanche,
   [SupportedChainId.LINEA]: linea,
+  [SupportedChainId.INK]: ink,
   [SupportedChainId.SEPOLIA]: sepolia,
 }
 

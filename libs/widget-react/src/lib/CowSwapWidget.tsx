@@ -12,7 +12,7 @@ import {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CowSwapWidget(props: CowSwapWidgetProps) {
   const { params, provider, listeners } = props
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)

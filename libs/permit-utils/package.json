@@ -4,7 +4,7 @@
   "type": "module",
   "dependencies": {
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
-    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/cow-sdk": "~7.3.1",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@ethersproject/abi": "5.7.0",
     "@ethersproject/abstract-signer": "5.7.0",

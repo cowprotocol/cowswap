@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-      
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
@@ -61,8 +61,11 @@ jobs:
           REACT_APP_NETWORK_URL_137: ${{ secrets.REACT_APP_NETWORK_URL_137 }}
           REACT_APP_NETWORK_URL_232: ${{ secrets.REACT_APP_NETWORK_URL_232 }}
           REACT_APP_NETWORK_URL_8453: ${{ secrets.REACT_APP_NETWORK_URL_8453 }}
+          REACT_APP_NETWORK_URL_9745: ${{ secrets.REACT_APP_NETWORK_URL_9745 }}
           REACT_APP_NETWORK_URL_42161: ${{ secrets.REACT_APP_NETWORK_URL_42161 }}
           REACT_APP_NETWORK_URL_43114: ${{ secrets.REACT_APP_NETWORK_URL_43114 }}
+          REACT_APP_NETWORK_URL_57073: ${{ secrets.REACT_APP_NETWORK_URL_57073 }}
+          REACT_APP_NETWORK_URL_59144: ${{ secrets.REACT_APP_NETWORK_URL_59144 }}
           REACT_APP_NETWORK_URL_11155111: ${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
           REACT_APP_WC_PROJECT_ID: ${{ secrets.REACT_APP_WC_PROJECT_ID }}
           REACT_APP_IPFS_READ_URI: ${{ secrets.REACT_APP_IPFS_READ_URI }}
