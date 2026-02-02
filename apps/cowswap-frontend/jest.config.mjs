@@ -1,12 +1,8 @@
 // this is not used for now. we use "craco test", but eventually we will
 
-import path from 'path'
-import { fileURLToPath } from 'url'
+import { createRequire } from 'node:module';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const workspaceRoot = path.resolve(__dirname, '../..')
+const require = createRequire(import.meta.url);
 
 export default {
   displayName: 'cowswap',
@@ -24,7 +20,7 @@ export default {
     '/node_modules/(?!(\\.pnpm|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown))',
   ],
   moduleNameMapper: {
-    '^wagmi$': require.resolve('wagmi', { paths: [workspaceRoot] }),
+    '^wagmi$': require.resolve('wagmi'),
     '^@reown/appkit/react$': '<rootDir>/../../testing/reownMock.ts',
   },
 }
