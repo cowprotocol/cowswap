@@ -66,8 +66,8 @@ const CompatibilityIssuesWarningWrapper = styled.div`
 `
 
 // TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const UnsupportedTokenButton = ({ derivedState, isSupportedWallet }: ButtonComponentProps) => {
+
+const UnsupportedTokenButton = ({ derivedState, isSupportedWallet }: ButtonComponentProps): ReactNode => {
   const { inputCurrency, outputCurrency } = derivedState
 
   return inputCurrency && outputCurrency ? (
@@ -306,7 +306,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const contextDefaultText = context.defaultText
 
     return (
-      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade} clickEvent={context.approveClickEvent}>
         <span>
           <Trans>
             Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {contextDefaultText}
@@ -326,6 +326,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         supportsPartialApprove={supportsPartialApprove}
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
+        approveClickEvent={context.approveClickEvent}
+        swapClickEvent={context.confirmClickEvent}
       >
         <TradeFormBlankButton disabled={!supportsPartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>

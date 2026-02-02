@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/explorer",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "CoW Swap Explorer",
   "main": "src/main.tsx",
   "author": "",
@@ -21,12 +21,12 @@
     ]
   },
   "dependencies": {
-    "@apollo/client": "^3.1.5",
-    "@cowprotocol/cow-sdk": "7.2.13",
-    "@cowprotocol/sdk-bridging": "1.5.0",
-    "@cowprotocol/sdk-ethers-v5-adapter": "0.3.1",
-    "@cowprotocol/sdk-subgraph": "0.2.7",
-    "@cowprotocol/sdk-contracts-ts": "^1.1.0",
+    "@apollo/client": "3.1.5",
+    "@cowprotocol/cow-sdk": "7.3.3",
+    "@cowprotocol/sdk-bridging": "1.7.2",
+    "@cowprotocol/sdk-ethers-v5-adapter": "0.3.5",
+    "@cowprotocol/sdk-subgraph": "0.3.3",
+    "@cowprotocol/sdk-contracts-ts": "1.4.2",
     "@cowprotocol/analytics": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",

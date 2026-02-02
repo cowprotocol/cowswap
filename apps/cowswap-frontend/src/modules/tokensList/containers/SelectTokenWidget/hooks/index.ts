@@ -7,6 +7,7 @@ export { useViewWithFlows, type ViewWithFlowsResult } from './useViewWithFlows'
 // Slot state hooks
 export { useHeaderState, type HeaderState } from './useHeaderState'
 export { useChainPanelState, type ChainPanelState } from './useChainPanelState'
+export { useChainAnalyticsContext, type ChainAnalyticsContext } from './useChainAnalyticsContext'
 
 // Blocking view state hooks
 export { useImportTokenViewState, type ImportTokenViewState } from './useImportTokenViewState'
