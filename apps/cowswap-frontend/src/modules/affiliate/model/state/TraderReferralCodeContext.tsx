@@ -17,16 +17,24 @@ import {
   reduceSetShouldAutoVerify,
   reduceSetWalletState,
   reduceStartVerification,
-} from './referralReducers'
-import { useReferralHydration, useReferralPersistence, useReferralStorageSync } from './referralStorage'
+} from './traderReferralCodeReducers'
+import {
+  useTraderReferralCodeHydration,
+  useTraderReferralCodePersistence,
+  useTraderReferralCodeStorageSync,
+} from './traderReferralCodeStorage'
 
-import { ReferralActions, ReferralContextValue, ReferralDomainState } from '../types'
+import {
+  TraderReferralCodeActions,
+  TraderReferralCodeContextValue,
+  TraderReferralCodeState,
+} from '../partner-trader-types'
 
-export interface ReferralProviderProps {
+export interface TraderReferralCodeProviderProps {
   children: ReactNode
 }
 
-const initialState: ReferralDomainState = {
+const initialState: TraderReferralCodeState = {
   modalOpen: false,
   modalSource: null,
   editMode: false,
@@ -44,7 +52,7 @@ const initialState: ReferralDomainState = {
 
 const noop = (): void => undefined
 
-const noopActions: ReferralActions = {
+const noopActions: TraderReferralCodeActions = {
   openModal: noop,
   closeModal: noop,
   setInputCode: noop,
@@ -64,28 +72,28 @@ const noopActions: ReferralActions = {
   registerCancelVerification: noop,
 }
 
-const ReferralContext = createContext<ReferralContextValue>({
+const TraderReferralCodeContext = createContext<TraderReferralCodeContextValue>({
   ...initialState,
   cancelVerification: noop,
   actions: noopActions,
 })
 
-export function ReferralProvider({ children }: ReferralProviderProps): ReactNode {
-  const value = useReferralStore()
+export function TraderReferralCodeProvider({ children }: TraderReferralCodeProviderProps): ReactNode {
+  const value = useTraderReferralCodeStore()
 
-  return <ReferralContext.Provider value={value}>{children}</ReferralContext.Provider>
+  return <TraderReferralCodeContext.Provider value={value}>{children}</TraderReferralCodeContext.Provider>
 }
 
-function useReferralStore(): ReferralContextValue {
-  const [state, setState] = useState<ReferralDomainState>(initialState)
+function useTraderReferralCodeStore(): TraderReferralCodeContextValue {
+  const [state, setState] = useState<TraderReferralCodeState>(initialState)
   const [hasHydrated, setHasHydrated] = useState(false)
   const [cancelVerification, setCancelVerification] = useState<() => void>(() => () => undefined)
 
-  useReferralHydration(setState, setHasHydrated)
-  useReferralPersistence(state.savedCode, hasHydrated)
-  useReferralStorageSync(setState)
+  useTraderReferralCodeHydration(setState, setHasHydrated)
+  useTraderReferralCodePersistence(state.savedCode, hasHydrated)
+  useTraderReferralCodeStorageSync(setState)
 
-  const actions = useReferralStoreActions(setState, setCancelVerification)
+  const actions = useTraderReferralCodeStoreActions(setState, setCancelVerification)
 
   return useMemo(
     () => ({
@@ -97,11 +105,11 @@ function useReferralStore(): ReferralContextValue {
   )
 }
 
-type SetReferralState = Dispatch<SetStateAction<ReferralDomainState>>
+type SetTraderReferralCodeState = Dispatch<SetStateAction<TraderReferralCodeState>>
 
 function useStateReducerAction<A extends unknown[]>(
-  setState: SetReferralState,
-  reducer: (state: ReferralDomainState, ...args: A) => ReferralDomainState,
+  setState: SetTraderReferralCodeState,
+  reducer: (state: TraderReferralCodeState, ...args: A) => TraderReferralCodeState,
 ): (...args: A) => void {
   return useCallback(
     (...args: A) => {
@@ -111,10 +119,10 @@ function useStateReducerAction<A extends unknown[]>(
   )
 }
 
-function useReferralStoreActions(
-  setState: SetReferralState,
+function useTraderReferralCodeStoreActions(
+  setState: SetTraderReferralCodeState,
   setCancelVerification: Dispatch<SetStateAction<() => void>>,
-): ReferralActions {
+): TraderReferralCodeActions {
   const openModal = useStateReducerAction(setState, reduceOpenModal)
   const closeModal = useStateReducerAction(setState, reduceCloseModal)
   const setInputCode = useStateReducerAction(setState, reduceSetInputCode)
@@ -180,6 +188,6 @@ function useReferralStoreActions(
   )
 }
 
-export function useReferralContext(): ReferralContextValue {
-  return useContext(ReferralContext)
+export function useTraderReferralCodeContext(): TraderReferralCodeContextValue {
+  return useContext(TraderReferralCodeContext)
 }

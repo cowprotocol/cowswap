@@ -5,10 +5,14 @@ import type { CowAnalytics } from '@cowprotocol/analytics'
 import { performVerification } from './verificationLogic'
 
 import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/affiliate-program-utils'
-import { ReferralContextValue, ReferralVerificationStatus, WalletReferralState } from '../types'
+import {
+  TraderReferralCodeContextValue,
+  TraderReferralCodeVerificationStatus,
+  TraderWalletReferralCodeState,
+} from '../partner-trader-types'
 
 interface VerificationParams {
-  referral: ReferralContextValue
+  traderReferralCode: TraderReferralCodeContextValue
   account?: string
   chainId?: number
   supportedNetwork: boolean
@@ -16,24 +20,24 @@ interface VerificationParams {
   toggleWalletModal: () => void
 }
 
-export interface ReferralVerificationHandle {
+export interface TraderReferralCodeVerificationHandle {
   runVerification(code: string): Promise<void>
   cancelVerification(): void
 }
 
-export function useReferralVerification(params: VerificationParams): ReferralVerificationHandle {
-  const { referral, account, chainId, supportedNetwork, analytics, toggleWalletModal } = params
+export function useTraderReferralCodeVerification(params: VerificationParams): TraderReferralCodeVerificationHandle {
+  const { traderReferralCode, account, chainId, supportedNetwork, analytics, toggleWalletModal } = params
   const pendingVerificationRef = useRef<number | null>(null)
 
   const applyVerificationResult = useCallback(
-    (status: ReferralVerificationStatus, walletState?: WalletReferralState) => {
-      referral.actions.completeVerification(status)
+    (status: TraderReferralCodeVerificationStatus, walletState?: TraderWalletReferralCodeState) => {
+      traderReferralCode.actions.completeVerification(status)
 
       if (walletState) {
-        referral.actions.setWalletState(walletState)
+        traderReferralCode.actions.setWalletState(walletState)
       }
     },
-    [referral.actions],
+    [traderReferralCode.actions],
   )
 
   const trackVerifyResult = useCallback(
@@ -57,26 +61,26 @@ export function useReferralVerification(params: VerificationParams): ReferralVer
         chainId,
         supportedNetwork,
         toggleWalletModal,
-        actions: referral.actions,
+        actions: traderReferralCode.actions,
         analytics,
         pendingVerificationRef,
         applyVerificationResult,
         trackVerifyResult,
-        incomingCode: referral.incomingCode,
-        savedCode: referral.savedCode,
-        currentVerification: referral.verification,
-        previousVerification: referral.previousVerification,
+        incomingCode: traderReferralCode.incomingCode,
+        savedCode: traderReferralCode.savedCode,
+        currentVerification: traderReferralCode.verification,
+        previousVerification: traderReferralCode.previousVerification,
       }),
     [
       account,
       analytics,
       applyVerificationResult,
       chainId,
-      referral.actions,
-      referral.incomingCode,
-      referral.previousVerification,
-      referral.savedCode,
-      referral.verification,
+      traderReferralCode.actions,
+      traderReferralCode.incomingCode,
+      traderReferralCode.previousVerification,
+      traderReferralCode.savedCode,
+      traderReferralCode.verification,
       supportedNetwork,
       toggleWalletModal,
       trackVerifyResult,
@@ -88,32 +92,32 @@ export function useReferralVerification(params: VerificationParams): ReferralVer
   }, [])
 
   useEffect(() => {
-    referral.actions.registerCancelVerification(cancelVerification)
+    traderReferralCode.actions.registerCancelVerification(cancelVerification)
 
     return () => {
-      referral.actions.registerCancelVerification(() => undefined)
+      traderReferralCode.actions.registerCancelVerification(() => undefined)
     }
-  }, [cancelVerification, referral.actions])
+  }, [cancelVerification, traderReferralCode.actions])
 
   return { runVerification, cancelVerification }
 }
 
 interface AutoVerificationParams {
-  referral: ReferralContextValue
+  traderReferralCode: TraderReferralCodeContextValue
   account?: string
   chainId?: number
   supportedNetwork: boolean
   runVerification: (code: string) => Promise<void>
 }
 
-export function useReferralAutoVerification(params: AutoVerificationParams): void {
-  const { referral, account, chainId, supportedNetwork, runVerification } = params
-  const { shouldAutoVerify, savedCode, inputCode, incomingCode, verification } = referral
+export function useTraderReferralCodeAutoVerification(params: AutoVerificationParams): void {
+  const { traderReferralCode, account, chainId, supportedNetwork, runVerification } = params
+  const { shouldAutoVerify, savedCode, inputCode, incomingCode, verification } = traderReferralCode
 
   useEffect(() => {
     const { code, shouldDisable } = resolveAutoVerification({
       shouldAutoVerify,
-      walletStatus: referral.wallet.status,
+      walletStatus: traderReferralCode.wallet.status,
       verificationKind: verification.kind,
       account,
       supportedNetwork,
@@ -124,7 +128,7 @@ export function useReferralAutoVerification(params: AutoVerificationParams): voi
     })
 
     if (shouldDisable) {
-      referral.actions.setShouldAutoVerify(false)
+      traderReferralCode.actions.setShouldAutoVerify(false)
       return
     }
 
@@ -138,8 +142,8 @@ export function useReferralAutoVerification(params: AutoVerificationParams): voi
     chainId,
     inputCode,
     incomingCode,
-    referral.actions,
-    referral.wallet.status,
+    traderReferralCode.actions,
+    traderReferralCode.wallet.status,
     runVerification,
     savedCode,
     shouldAutoVerify,
@@ -150,8 +154,8 @@ export function useReferralAutoVerification(params: AutoVerificationParams): voi
 
 interface ResolveAutoVerificationParams {
   shouldAutoVerify: boolean
-  walletStatus: WalletReferralState['status']
-  verificationKind: ReferralVerificationStatus['kind']
+  walletStatus: TraderWalletReferralCodeState['status']
+  verificationKind: TraderReferralCodeVerificationStatus['kind']
   account?: string
   supportedNetwork: boolean
   chainId?: number
@@ -206,13 +210,13 @@ function pickAutoVerificationCandidate(params: ResolveAutoVerificationParams): s
   return sanitized
 }
 interface PendingVerificationParams {
-  referral: ReferralContextValue
+  traderReferralCode: TraderReferralCodeContextValue
   runVerification: (code: string) => Promise<void>
 }
 
-export function usePendingVerificationHandler(params: PendingVerificationParams): void {
-  const { referral, runVerification } = params
-  const { pendingVerificationRequest, actions, inputCode, savedCode } = referral
+export function usePendingReferralCodeVerificationHandler(params: PendingVerificationParams): void {
+  const { traderReferralCode, runVerification } = params
+  const { pendingVerificationRequest, actions, inputCode, savedCode } = traderReferralCode
 
   useEffect(() => {
     if (!pendingVerificationRequest) {

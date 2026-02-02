@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
-import { useReferral } from './useReferral'
+import { useTraderReferralCode } from './useTraderReferralCode'
 
 import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
 
-export type ReferralModalUiState =
+export type TraderReferralCodeModalUiState =
   | 'empty'
   | 'editing'
   | 'pending'
@@ -16,11 +16,11 @@ export type ReferralModalUiState =
   | 'ineligible'
   | 'error'
 
-type ReferralSnapshot = ReturnType<typeof useReferral>
+type TraderReferralCodeSnapshot = ReturnType<typeof useTraderReferralCode>
 
-interface ReferralModalState {
-  referral: ReferralSnapshot
-  uiState: ReferralModalUiState
+interface TraderReferralCodeModalState {
+  traderReferralCode: TraderReferralCodeSnapshot
+  uiState: TraderReferralCodeModalUiState
   displayCode: string
   savedCode?: string
   inputCode: string
@@ -29,21 +29,23 @@ interface ReferralModalState {
   hasValidLength: boolean
   isEditing: boolean
   shouldAutoVerify: boolean
-  verification: ReferralSnapshot['verification']
-  wallet: ReferralSnapshot['wallet']
+  verification: TraderReferralCodeSnapshot['verification']
+  wallet: TraderReferralCodeSnapshot['wallet']
 }
 
-type ReferralVerificationKind = ReferralSnapshot['verification']['kind']
-type ReferralWalletStatus = ReferralSnapshot['wallet']['status']
+type TraderReferralCodeVerificationKind = TraderReferralCodeSnapshot['verification']['kind']
+type TraderReferralCodeWalletStatus = TraderReferralCodeSnapshot['wallet']['status']
 
-export function useReferralModalState(): ReferralModalState {
-  const referral = useReferral()
+export function useTraderReferralCodeModalState(): TraderReferralCodeModalState {
+  const traderReferralCode = useTraderReferralCode()
 
-  return useMemo(() => buildReferralModalState(referral), [referral])
+  return useMemo(() => buildTraderReferralCodeModalState(traderReferralCode), [traderReferralCode])
 }
 
-function buildReferralModalState(referral: ReferralSnapshot): ReferralModalState {
-  const { inputCode, savedCode, verification, wallet, editMode, incomingCode, shouldAutoVerify } = referral
+function buildTraderReferralCodeModalState(
+  traderReferralCode: TraderReferralCodeSnapshot,
+): TraderReferralCodeModalState {
+  const { inputCode, savedCode, verification, wallet, editMode, incomingCode, shouldAutoVerify } = traderReferralCode
   const verificationCode = 'code' in verification ? verification.code : undefined
   // Prefer the code the user is actively verifying (incoming/verification) so the UI
   // reflects what the backend is checking even if a different value lives in storage.
@@ -60,7 +62,7 @@ function buildReferralModalState(referral: ReferralSnapshot): ReferralModalState
   })
 
   return {
-    referral,
+    traderReferralCode,
     uiState,
     displayCode,
     savedCode,
@@ -80,14 +82,14 @@ function hasAnyCode(verificationCode?: string, incomingCode?: string, savedCode?
 }
 
 interface DeriveUiStateParams {
-  verificationKind: ReferralVerificationKind
-  walletStatus: ReferralWalletStatus
+  verificationKind: TraderReferralCodeVerificationKind
+  walletStatus: TraderReferralCodeWalletStatus
   hasCode: boolean
   isEditing: boolean
   editMode: boolean
 }
 
-function deriveUiState(params: DeriveUiStateParams): ReferralModalUiState {
+function deriveUiState(params: DeriveUiStateParams): TraderReferralCodeModalUiState {
   const { verificationKind, walletStatus, hasCode, isEditing, editMode } = params
 
   if (walletStatus === 'unsupported') {
@@ -116,11 +118,11 @@ function deriveUiState(params: DeriveUiStateParams): ReferralModalUiState {
 }
 
 function resolveVerificationState(
-  verificationKind: ReferralVerificationKind,
-  walletStatus: ReferralWalletStatus,
+  verificationKind: TraderReferralCodeVerificationKind,
+  walletStatus: TraderReferralCodeWalletStatus,
   hasCode: boolean,
-): ReferralModalUiState | null {
-  const orderedConditions: Array<[boolean, ReferralModalUiState]> = [
+): TraderReferralCodeModalUiState | null {
+  const orderedConditions: Array<[boolean, TraderReferralCodeModalUiState]> = [
     [verificationKind === 'checking', 'checking'],
     [walletStatus === 'unsupported' && hasCode, 'unsupported'],
     [verificationKind === 'invalid', 'invalid'],

@@ -9,26 +9,26 @@ import { useLocation } from 'react-router'
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/affiliate-program-utils'
-import { useReferral } from '../hooks/useReferral'
-import { useReferralActions } from '../hooks/useReferralActions'
-import { ReferralContextValue } from '../types'
+import { useTraderReferralCode } from '../hooks/useTraderReferralCode'
+import { useTraderReferralCodeActions } from '../hooks/useTraderReferralCodeActions'
+import { TraderReferralCodeContextValue } from '../partner-trader-types'
 
-export function ReferralDeepLinkHandler(): ReactNode {
+export function TraderReferralCodeDeepLinkHandler(): ReactNode {
   const { isAffiliateRewardsEnabled = true } = useFeatureFlags()
-  const actions = useReferralActions()
-  const referral = useReferral()
+  const actions = useTraderReferralCodeActions()
+  const traderReferralCode = useTraderReferralCode()
   const location = useLocation()
   const navigate = useNavigate()
   const lastProcessedRef = useRef<string | null>(null)
   const analytics = useCowAnalytics()
-  const savedCode = referral.savedCode
-  const verificationKind = referral.verification.kind
-  const walletStatus = referral.wallet.status
+  const savedCode = traderReferralCode.savedCode
+  const verificationKind = traderReferralCode.verification.kind
+  const walletStatus = traderReferralCode.wallet.status
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const codeParam = params.get('ref')
-    const stripReferralFromUrl = (): void => {
+    const stripReferralCodeFromUrl = (): void => {
       params.delete('ref')
       const nextSearch = params.toString()
       navigate(
@@ -47,7 +47,7 @@ export function ReferralDeepLinkHandler(): ReactNode {
     }
 
     if (!isAffiliateRewardsEnabled) {
-      stripReferralFromUrl()
+      stripReferralCodeFromUrl()
       lastProcessedRef.current = null
       return
     }
@@ -63,13 +63,13 @@ export function ReferralDeepLinkHandler(): ReactNode {
     }
 
     lastProcessedRef.current = sanitized
-    const snapshot: ReferralSnapshot = {
+    const snapshot: TraderReferralCodeSnapshot = {
       savedCode,
       verificationKind,
       walletStatus,
     }
-    processReferralCode({ sanitized, snapshot, actions, analytics })
-    stripReferralFromUrl()
+    processTraderReferralCode({ sanitized, snapshot, actions, analytics })
+    stripReferralCodeFromUrl()
   }, [
     actions,
     analytics,
@@ -86,20 +86,20 @@ export function ReferralDeepLinkHandler(): ReactNode {
   return null
 }
 
-interface ReferralSnapshot {
+interface TraderReferralCodeSnapshot {
   savedCode?: string
-  verificationKind: ReferralContextValue['verification']['kind']
-  walletStatus: ReferralContextValue['wallet']['status']
+  verificationKind: TraderReferralCodeContextValue['verification']['kind']
+  walletStatus: TraderReferralCodeContextValue['wallet']['status']
 }
 
-interface ProcessReferralParams {
+interface ProcessTraderReferralCodeParams {
   sanitized: string
-  snapshot: ReferralSnapshot
-  actions: ReferralContextValue['actions']
+  snapshot: TraderReferralCodeSnapshot
+  actions: TraderReferralCodeContextValue['actions']
   analytics: CowAnalytics
 }
 
-function processReferralCode(params: ProcessReferralParams): void {
+function processTraderReferralCode(params: ProcessTraderReferralCodeParams): void {
   // Snapshot-driven flow: we decide up front whether to reuse the existing code or
   // verify the incoming one. Persistence happens only on successful verification.
   const { sanitized, snapshot, actions, analytics } = params

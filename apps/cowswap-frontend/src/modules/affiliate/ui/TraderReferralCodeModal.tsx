@@ -9,16 +9,16 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useNavigate } from 'common/hooks/useNavigate'
 import { CowModal } from 'common/pure/Modal'
 
-import { ReferralModalContent } from './ReferralCodeModal/ReferralModalContent'
-import { useReferralModalController } from './ReferralCodeModal/useReferralModalController'
+import { TraderReferralCodeModalContent } from './TraderReferralCodeModal/TraderReferralCodeModalContent'
+import { useTraderReferralCodeModalController } from './TraderReferralCodeModal/useTraderReferralCodeModalController'
 
 import { isSupportedReferralNetwork } from '../api'
-import { useReferralActions } from '../model/hooks/useReferralActions'
-import { useReferralModalState } from '../model/hooks/useReferralModalState'
+import { useTraderReferralCodeActions } from '../model/hooks/useTraderReferralCodeActions'
+import { useTraderReferralCodeModalState } from '../model/hooks/useTraderReferralCodeModalState'
 
-export function ReferralCodeModal(): ReactNode {
-  const modalState = useReferralModalState()
-  const actions = useReferralActions()
+export function TraderReferralCodeModal(): ReactNode {
+  const modalState = useTraderReferralCodeModalState()
+  const actions = useTraderReferralCodeActions()
   const toggleWalletModal = useToggleWalletModal()
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
@@ -26,7 +26,7 @@ export function ReferralCodeModal(): ReactNode {
   const analytics = useCowAnalytics()
   const supportedNetwork = chainId === undefined ? true : isSupportedReferralNetwork(chainId)
 
-  const controller = useReferralModalController({
+  const controller = useTraderReferralCodeModalController({
     modalState,
     actions,
     account,
@@ -38,13 +38,13 @@ export function ReferralCodeModal(): ReactNode {
 
   return (
     <CowModal
-      isOpen={controller.referral.modalOpen}
+      isOpen={controller.traderReferralCode.modalOpen}
       onDismiss={controller.handleClose}
       initialFocusRef={controller.initialFocusRef}
       padding="0"
       maxHeight={90}
     >
-      <ReferralModalContent {...controller.contentProps} onDismiss={controller.handleClose} />
+      <TraderReferralCodeModalContent {...controller.contentProps} onDismiss={controller.handleClose} />
     </CowModal>
   )
 }

@@ -4,7 +4,7 @@ import type { TypedDataField } from '@ethersproject/abstract-signer'
 import { i18n } from '@lingui/core'
 
 import { AFFILIATE_REWARDS_CURRENCY } from '../config/constants'
-import { ReferralVerificationStatus } from '../model/types'
+import { TraderReferralCodeVerificationStatus } from '../model/partner-trader-types'
 
 export const AFFILIATE_TYPED_DATA_DOMAIN = {
   name: 'CoW Swap Affiliate',
@@ -20,7 +20,7 @@ export const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function buildAffiliateTypedData(params: { walletAddress: string; code: string; chainId: number }) {
+export function buildPartnerTypedData(params: { walletAddress: string; code: string; chainId: number }) {
   return {
     domain: {
       ...AFFILIATE_TYPED_DATA_DOMAIN,
@@ -56,7 +56,7 @@ export function isReferralCodeLengthValid(code: string): boolean {
   return code.length >= 5 && code.length <= 20
 }
 
-export type AffiliateProgramParams = {
+export type PartnerProgramParams = {
   traderRewardAmount: number
   triggerVolumeUsd: number
   timeCapDays: number
@@ -64,7 +64,7 @@ export type AffiliateProgramParams = {
   notes?: string | null
 }
 
-export function getAffiliateProgramCopyValues(params: AffiliateProgramParams): {
+export function getPartnerProgramCopyValues(params: PartnerProgramParams): {
   rewardAmount: string
   rewardCurrency: string
   triggerVolume: string
@@ -106,7 +106,7 @@ export function formatUsdcCompact(value: number | null | undefined): string {
 
 export function getIncomingIneligibleCode(
   incomingCode: string | undefined,
-  verification: ReferralVerificationStatus,
+  verification: TraderReferralCodeVerificationStatus,
 ): string | undefined {
   if (incomingCode) {
     return incomingCode

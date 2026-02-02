@@ -8,15 +8,15 @@ import { bffAffiliateApi } from '../../api'
 import {
   isReferralCodeLengthValid,
   sanitizeReferralCode,
-  type AffiliateProgramParams,
+  type PartnerProgramParams,
 } from '../../lib/affiliate-program-utils'
 import {
-  ReferralCodeResponse,
-  ReferralContextValue,
-  ReferralVerificationResponse,
-  ReferralVerificationStatus,
-  WalletReferralState,
-} from '../types'
+  TraderReferralCodeResponse,
+  TraderReferralCodeContextValue,
+  TraderReferralCodeVerificationResponse,
+  TraderReferralCodeVerificationStatus,
+  TraderWalletReferralCodeState,
+} from '../partner-trader-types'
 
 export interface PerformVerificationParams {
   rawCode: string
@@ -24,15 +24,18 @@ export interface PerformVerificationParams {
   chainId?: number
   supportedNetwork: boolean
   toggleWalletModal: () => void
-  actions: ReferralContextValue['actions']
+  actions: TraderReferralCodeContextValue['actions']
   analytics: CowAnalytics
   pendingVerificationRef: MutableRefObject<number | null>
-  applyVerificationResult: (status: ReferralVerificationStatus, walletState?: WalletReferralState) => void
+  applyVerificationResult: (
+    status: TraderReferralCodeVerificationStatus,
+    walletState?: TraderWalletReferralCodeState,
+  ) => void
   trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
   incomingCode?: string
   savedCode?: string
-  currentVerification: ReferralVerificationStatus
-  previousVerification?: ReferralVerificationStatus
+  currentVerification: TraderReferralCodeVerificationStatus
+  previousVerification?: TraderReferralCodeVerificationStatus
 }
 
 // eslint-disable-next-line complexity
@@ -81,7 +84,6 @@ export async function performVerification(params: PerformVerificationParams): Pr
     })
     pendingVerificationRef.current = null
   } catch (error) {
-    console.log('📜 LOG > performVerification > error:', error)
     await new Promise((resolve) => setTimeout(resolve, 5_000)) // artificial delay to limit API spam
 
     if (pendingVerificationRef.current !== requestId) {
@@ -97,7 +99,7 @@ export async function performVerification(params: PerformVerificationParams): Pr
     pendingVerificationRef.current = null
 
     if (!isProdLike) {
-      console.warn('[Referral] Verification failed', error)
+      console.warn('[ReferralCode] Verification failed', error)
     }
   }
 }
@@ -158,7 +160,10 @@ function startVerificationRequest(params: {
   return requestId
 }
 
-function shouldPreserveExistingCode(currentVerification: ReferralVerificationStatus, savedCode?: string): boolean {
+function shouldPreserveExistingCode(
+  currentVerification: TraderReferralCodeVerificationStatus,
+  savedCode?: string,
+): boolean {
   if (!savedCode) {
     return false
   }
@@ -167,13 +172,16 @@ function shouldPreserveExistingCode(currentVerification: ReferralVerificationSta
 }
 
 function handleCodeStatusResponse(params: {
-  response: ReferralVerificationResponse
+  response: TraderReferralCodeVerificationResponse
   sanitizedCode: string
-  actions: ReferralContextValue['actions']
-  applyVerificationResult: (status: ReferralVerificationStatus, walletState?: WalletReferralState) => void
+  actions: TraderReferralCodeContextValue['actions']
+  applyVerificationResult: (
+    status: TraderReferralCodeVerificationStatus,
+    walletState?: TraderWalletReferralCodeState,
+  ) => void
   trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
   preserveExisting: boolean
-  currentVerification: ReferralVerificationStatus
+  currentVerification: TraderReferralCodeVerificationStatus
 }): void {
   const { response, sanitizedCode, actions, applyVerificationResult, trackVerifyResult, preserveExisting } = params
   const { currentVerification } = params
@@ -209,12 +217,12 @@ function handleCodeStatusResponse(params: {
     kind: 'valid',
     code: sanitizedCode,
     eligible: true,
-    programParams: toAffiliateProgramParams(response.data),
+    programParams: toPartnerProgramParams(response.data),
   })
   trackVerifyResult('valid', true)
 }
 
-function toAffiliateProgramParams(data?: ReferralCodeResponse): AffiliateProgramParams | undefined {
+function toPartnerProgramParams(data?: TraderReferralCodeResponse): PartnerProgramParams | undefined {
   if (!data) {
     return undefined
   }
@@ -236,8 +244,11 @@ function toAffiliateProgramParams(data?: ReferralCodeResponse): AffiliateProgram
 }
 
 function restoreExistingVerificationState(params: {
-  currentVerification: ReferralVerificationStatus
-  applyVerificationResult: (status: ReferralVerificationStatus, walletState?: WalletReferralState) => void
+  currentVerification: TraderReferralCodeVerificationStatus
+  applyVerificationResult: (
+    status: TraderReferralCodeVerificationStatus,
+    walletState?: TraderWalletReferralCodeState,
+  ) => void
 }): void {
   const { currentVerification, applyVerificationResult } = params
 

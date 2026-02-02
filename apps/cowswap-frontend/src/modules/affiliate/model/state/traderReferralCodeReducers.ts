@@ -1,17 +1,17 @@
 import { sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import {
-  ReferralDomainState,
-  ReferralIncomingCodeReason,
-  ReferralModalSource,
-  ReferralVerificationStatus,
-  WalletReferralState,
-} from '../types'
+  TraderReferralCodeState,
+  TraderReferralCodeIncomingReason,
+  TraderReferralCodeModalSource,
+  TraderReferralCodeVerificationStatus,
+  TraderWalletReferralCodeState,
+} from '../partner-trader-types'
 
 export function reduceOpenModal(
-  prev: ReferralDomainState,
-  source: ReferralModalSource,
+  prev: TraderReferralCodeState,
+  source: TraderReferralCodeModalSource,
   options?: { code?: string },
-): ReferralDomainState {
+): TraderReferralCodeState {
   const sanitizedIncoming = options?.code ? sanitizeReferralCode(options.code) : undefined
   const isLinked = prev.wallet.status === 'linked' || prev.verification.kind === 'linked'
 
@@ -32,7 +32,11 @@ export function reduceOpenModal(
   }
 }
 
-function resolveInputCode(prev: ReferralDomainState, sanitizedIncoming: string | undefined, isLinked: boolean): string {
+function resolveInputCode(
+  prev: TraderReferralCodeState,
+  sanitizedIncoming: string | undefined,
+  isLinked: boolean,
+): string {
   const candidate = isLinked
     ? prev.savedCode || prev.inputCode || ''
     : (sanitizedIncoming ?? prev.inputCode ?? prev.savedCode ?? '')
@@ -41,10 +45,10 @@ function resolveInputCode(prev: ReferralDomainState, sanitizedIncoming: string |
 }
 
 function resolveVerification(
-  prev: ReferralDomainState,
+  prev: TraderReferralCodeState,
   sanitizedIncoming: string | undefined,
   isLinked: boolean,
-): ReferralDomainState['verification'] {
+): TraderReferralCodeState['verification'] {
   if (!sanitizedIncoming || sanitizedIncoming === prev.savedCode || isLinked) {
     return prev.verification
   }
@@ -52,7 +56,7 @@ function resolveVerification(
   return { kind: 'pending', code: sanitizedIncoming }
 }
 
-export function reduceCloseModal(prev: ReferralDomainState): ReferralDomainState {
+export function reduceCloseModal(prev: TraderReferralCodeState): TraderReferralCodeState {
   return {
     ...prev,
     modalOpen: false,
@@ -65,7 +69,7 @@ export function reduceCloseModal(prev: ReferralDomainState): ReferralDomainState
   }
 }
 
-export function reduceSetInputCode(prev: ReferralDomainState, value: string): ReferralDomainState {
+export function reduceSetInputCode(prev: TraderReferralCodeState, value: string): TraderReferralCodeState {
   const sanitized = sanitizeReferralCode(value)
 
   return {
@@ -75,17 +79,17 @@ export function reduceSetInputCode(prev: ReferralDomainState, value: string): Re
   }
 }
 
-export const reduceEnableEditMode = (prev: ReferralDomainState): ReferralDomainState => ({
+export const reduceEnableEditMode = (prev: TraderReferralCodeState): TraderReferralCodeState => ({
   ...prev,
   editMode: true,
 })
 
-export const reduceDisableEditMode = (prev: ReferralDomainState): ReferralDomainState => ({
+export const reduceDisableEditMode = (prev: TraderReferralCodeState): TraderReferralCodeState => ({
   ...prev,
   editMode: false,
 })
 
-export function reduceSaveCode(prev: ReferralDomainState, value: string): ReferralDomainState {
+export function reduceSaveCode(prev: TraderReferralCodeState, value: string): TraderReferralCodeState {
   const sanitized = sanitizeReferralCode(value)
 
   if (!sanitized) {
@@ -108,7 +112,7 @@ export function reduceSaveCode(prev: ReferralDomainState, value: string): Referr
   }
 }
 
-export const reduceRemoveCode = (prev: ReferralDomainState): ReferralDomainState => ({
+export const reduceRemoveCode = (prev: TraderReferralCodeState): TraderReferralCodeState => ({
   ...prev,
   savedCode: undefined,
   inputCode: '',
@@ -119,29 +123,29 @@ export const reduceRemoveCode = (prev: ReferralDomainState): ReferralDomainState
   shouldAutoVerify: false,
 })
 
-export const reduceSetIncomingCode = (prev: ReferralDomainState, code?: string): ReferralDomainState => ({
+export const reduceSetIncomingCode = (prev: TraderReferralCodeState, code?: string): TraderReferralCodeState => ({
   ...prev,
   incomingCode: code ? sanitizeReferralCode(code) : undefined,
   incomingCodeReason: undefined,
 })
 
 export const reduceSetIncomingCodeReason = (
-  prev: ReferralDomainState,
-  reason?: ReferralIncomingCodeReason,
-): ReferralDomainState => ({
+  prev: TraderReferralCodeState,
+  reason?: TraderReferralCodeIncomingReason,
+): TraderReferralCodeState => ({
   ...prev,
   incomingCodeReason: reason,
 })
 
 export const reduceSetWalletState = (
-  prev: ReferralDomainState,
-  walletState: WalletReferralState,
-): ReferralDomainState => ({
+  prev: TraderReferralCodeState,
+  walletState: TraderWalletReferralCodeState,
+): TraderReferralCodeState => ({
   ...prev,
   wallet: walletState,
 })
 
-export function reduceStartVerification(prev: ReferralDomainState, code: string): ReferralDomainState {
+export function reduceStartVerification(prev: TraderReferralCodeState, code: string): TraderReferralCodeState {
   const sanitized = sanitizeReferralCode(code)
 
   if (!sanitized) {
@@ -157,21 +161,21 @@ export function reduceStartVerification(prev: ReferralDomainState, code: string)
 }
 
 export const reduceCompleteVerification = (
-  prev: ReferralDomainState,
-  status: ReferralVerificationStatus,
-): ReferralDomainState => ({
+  prev: TraderReferralCodeState,
+  status: TraderReferralCodeVerificationStatus,
+): TraderReferralCodeState => ({
   ...prev,
   verification: status,
   previousVerification: undefined,
   shouldAutoVerify: false,
 })
 
-export const reduceSetShouldAutoVerify = (prev: ReferralDomainState, value: boolean): ReferralDomainState => ({
+export const reduceSetShouldAutoVerify = (prev: TraderReferralCodeState, value: boolean): TraderReferralCodeState => ({
   ...prev,
   shouldAutoVerify: value,
 })
 
-export function reduceSetSavedCode(prev: ReferralDomainState, value?: string): ReferralDomainState {
+export function reduceSetSavedCode(prev: TraderReferralCodeState, value?: string): TraderReferralCodeState {
   const sanitized = value ? sanitizeReferralCode(value) : undefined
 
   if (!sanitized) {
@@ -195,13 +199,13 @@ export function reduceSetSavedCode(prev: ReferralDomainState, value?: string): R
   }
 }
 
-export const reduceRequestVerification = (prev: ReferralDomainState, code?: string): ReferralDomainState => ({
+export const reduceRequestVerification = (prev: TraderReferralCodeState, code?: string): TraderReferralCodeState => ({
   ...prev,
   pendingVerificationRequest: { id: Date.now(), code: code ? sanitizeReferralCode(code) : undefined },
   shouldAutoVerify: false,
 })
 
-export const reduceClearPendingVerification = (prev: ReferralDomainState, id: number): ReferralDomainState => {
+export const reduceClearPendingVerification = (prev: TraderReferralCodeState, id: number): TraderReferralCodeState => {
   if (prev.pendingVerificationRequest?.id !== id) {
     return prev
   }

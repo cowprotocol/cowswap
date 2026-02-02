@@ -12,11 +12,11 @@ import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
-import { ReferralController } from 'modules/affiliate/model/containers/ReferralController'
-import { ReferralDeepLinkHandler } from 'modules/affiliate/model/containers/ReferralDeepLinkHandler'
-import { ReferralProvider } from 'modules/affiliate/model/state/ReferralContext'
-import { ReferralCodeModal } from 'modules/affiliate/ui/ReferralCodeModal'
-import { ReferralNetworkBanner } from 'modules/affiliate/ui/ReferralNetworkBanner'
+import { TraderReferralCodeController } from 'modules/affiliate/model/containers/TraderReferralCodeController'
+import { TraderReferralCodeDeepLinkHandler } from 'modules/affiliate/model/containers/TraderReferralCodeDeepLinkHandler'
+import { TraderReferralCodeProvider } from 'modules/affiliate/model/state/TraderReferralCodeContext'
+import { TraderReferralCodeModal } from 'modules/affiliate/ui/TraderReferralCodeModal'
+import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/ui/TraderReferralCodeNetworkBanner'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -92,13 +92,13 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
   return (
-    <ReferralProvider>
-      <ReferralDeepLinkHandler />
+    <TraderReferralCodeProvider>
+      <TraderReferralCodeDeepLinkHandler />
       {isAffiliateRewardsEnabled && (
         <>
-          <ReferralController />
-          <ReferralNetworkBanner />
-          <ReferralCodeModal />
+          <TraderReferralCodeController />
+          <TraderReferralCodeNetworkBanner />
+          <TraderReferralCodeModal />
         </>
       )}
       <PageBackgroundContext.Provider value={pageBackgroundValue}>
@@ -128,7 +128,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
           {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
         </styledEl.AppWrapper>
       </PageBackgroundContext.Provider>
-    </ReferralProvider>
+    </TraderReferralCodeProvider>
   )
 }
 

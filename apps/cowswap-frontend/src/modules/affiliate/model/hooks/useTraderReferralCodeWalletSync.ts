@@ -5,17 +5,17 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useAllOrdersMap } from 'legacy/state/orders/hooks'
 
-import { ReferralContextValue } from '../types'
+import { TraderReferralCodeContextValue } from '../partner-trader-types'
 
 interface WalletSyncParams {
   account?: string
   chainId?: number
   supportedNetwork: boolean
-  actions: ReferralContextValue['actions']
+  actions: TraderReferralCodeContextValue['actions']
   savedCode?: string
 }
 
-export function useReferralWalletSync(params: WalletSyncParams): void {
+export function useTraderReferralCodeWalletSync(params: WalletSyncParams): void {
   const { account, chainId, supportedNetwork, actions, savedCode } = params
   const ordersMap = useAllOrdersMap({ chainId: chainId as SupportedChainId | undefined })
   const hasOrders = useMemo(() => {

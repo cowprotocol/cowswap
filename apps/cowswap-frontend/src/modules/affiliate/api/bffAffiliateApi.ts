@@ -1,15 +1,15 @@
 import { AFFILIATE_API_TIMEOUT_MS } from '../config/constants'
 import {
-  AffiliateCodeResponse,
-  AffiliateCreateRequest,
-  AffiliateStatsResponse,
-  ReferralCodeResponse,
-  ReferralVerificationResponse,
-  ReferralVerificationRequest,
+  PartnerCodeResponse,
+  PartnerCreateRequest,
+  PartnerStatsResponse,
+  TraderReferralCodeResponse,
+  TraderReferralCodeVerificationResponse,
+  TraderReferralCodeVerificationRequest,
   TraderStatsResponse,
-  WalletReferralStatusRequest,
-  WalletReferralStatusResponse,
-} from '../model/types'
+  TraderWalletReferralCodeStatusRequest,
+  TraderWalletReferralCodeStatusResponse,
+} from '../model/partner-trader-types'
 
 const TIMEOUT_ERROR_MESSAGE = 'Unable to reach referral service'
 const JSON_HEADERS = {
@@ -35,10 +35,12 @@ export class BffAffiliateApi {
     this.baseUrl = baseUrl.replace(/\/$/, '')
     this.timeoutMs = timeoutMs
   }
-  async verifyReferralCode(request: ReferralVerificationRequest): Promise<ReferralVerificationResponse> {
+  async verifyReferralCode(
+    request: TraderReferralCodeVerificationRequest,
+  ): Promise<TraderReferralCodeVerificationResponse> {
     const { code } = request
     const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
-    const { response, data, text } = await this.fetchJsonResponse<ReferralCodeResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<TraderReferralCodeResponse>(url, {
       method: 'GET',
       headers: JSON_HEADERS,
     })
@@ -50,11 +52,13 @@ export class BffAffiliateApi {
       text,
     }
   }
-  async getWalletReferralStatus(request: WalletReferralStatusRequest): Promise<WalletReferralStatusResponse> {
+  async getWalletReferralStatus(
+    request: TraderWalletReferralCodeStatusRequest,
+  ): Promise<TraderWalletReferralCodeStatusResponse> {
     const { account } = request
     const url = this.buildUrl(`affiliate/${account}`)
 
-    const { response, data, text } = await this.fetchJsonResponse<AffiliateCodeResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<PartnerCodeResponse>(url, {
       method: 'GET',
       headers: JSON_HEADERS,
     })
@@ -73,9 +77,9 @@ export class BffAffiliateApi {
 
     throw buildReferralError(response.status, text, data as { message?: string } | undefined)
   }
-  async getAffiliateCode(account: string): Promise<AffiliateCodeResponse | null> {
+  async getAffiliateCode(account: string): Promise<PartnerCodeResponse | null> {
     const url = this.buildUrl(`affiliate/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<AffiliateCodeResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<PartnerCodeResponse>(url, {
       method: 'GET',
       headers: JSON_HEADERS,
     })
@@ -113,9 +117,9 @@ export class BffAffiliateApi {
 
     throw buildReferralError(response.status, text, data as { message?: string } | undefined)
   }
-  async getAffiliateStats(account: string): Promise<AffiliateStatsResponse | null> {
+  async getAffiliateStats(account: string): Promise<PartnerStatsResponse | null> {
     const url = this.buildUrl(`affiliate/affiliate-stats/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<AffiliateStatsResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<PartnerStatsResponse>(url, {
       method: 'GET',
       headers: JSON_HEADERS,
     })
@@ -133,11 +137,11 @@ export class BffAffiliateApi {
 
     throw buildReferralError(response.status, text, data as { message?: string } | undefined)
   }
-  async createAffiliateCode(request: AffiliateCreateRequest): Promise<AffiliateCodeResponse> {
+  async createAffiliateCode(request: PartnerCreateRequest): Promise<PartnerCodeResponse> {
     const url = this.buildUrl(`affiliate/${request.walletAddress}`)
     const body = JSON.stringify(request)
 
-    const { response, data, text } = await this.fetchJsonResponse<AffiliateCodeResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<PartnerCodeResponse>(url, {
       method: 'POST',
       headers: JSON_HEADERS,
       body,

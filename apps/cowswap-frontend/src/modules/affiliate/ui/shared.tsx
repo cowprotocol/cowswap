@@ -107,7 +107,7 @@ const LinksRow = styled.div<{ $align: 'inline' | 'center' }>`
   color: var(${UI.COLOR_TEXT_OPACITY_60});
 `
 
-export function ReferralTermsFaqLinks({ align = 'inline' }: { align?: 'inline' | 'center' }): ReactElement {
+export function AffiliateTermsFaqLinks({ align = 'inline' }: { align?: 'inline' | 'center' }): ReactElement {
   return (
     <LinksRow $align={align}>
       <ExtLink href="https://cow.fi/legal/cowswap-terms" target="_blank" rel="noopener noreferrer">

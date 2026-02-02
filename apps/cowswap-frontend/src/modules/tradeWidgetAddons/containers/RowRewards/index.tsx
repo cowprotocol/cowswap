@@ -4,8 +4,8 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/react/macro'
 
-import { useReferral } from 'modules/affiliate/model/hooks/useReferral'
-import { useReferralActions } from 'modules/affiliate/model/hooks/useReferralActions'
+import { useTraderReferralCode } from 'modules/affiliate/model/hooks/useTraderReferralCode'
+import { useTraderReferralCodeActions } from 'modules/affiliate/model/hooks/useTraderReferralCodeActions'
 
 import { RowRewardsContent } from '../../pure/Row/RowRewards'
 
@@ -16,16 +16,16 @@ export function useIsRowRewardsVisible(): boolean {
 
 export function RowRewards(): ReactNode {
   const isRowRewardsVisible = useIsRowRewardsVisible()
-  const referral = useReferral()
-  const referralActions = useReferralActions()
+  const traderReferralCode = useTraderReferralCode()
+  const traderReferralCodeActions = useTraderReferralCodeActions()
 
-  const linkedCode = getLinkedCode(referral)
+  const linkedCode = getLinkedCode(traderReferralCode)
   const hasLinkedCode = Boolean(linkedCode)
-  const hasSavedValidCode = shouldShowSavedCode(referral, hasLinkedCode)
-  const displayCode = linkedCode ?? (hasSavedValidCode ? referral.savedCode : undefined)
+  const hasSavedValidCode = shouldShowSavedCode(traderReferralCode, hasLinkedCode)
+  const displayCode = linkedCode ?? (hasSavedValidCode ? traderReferralCode.savedCode : undefined)
   const tooltipContent = getTooltipContent(hasLinkedCode, hasSavedValidCode)
   const handleOpenModal = (): void => {
-    referralActions.openModal('rewards')
+    traderReferralCodeActions.openModal('rewards')
   }
 
   if (!isRowRewardsVisible) {
@@ -42,24 +42,27 @@ export function RowRewards(): ReactNode {
   )
 }
 
-function getLinkedCode(referral: ReturnType<typeof useReferral>): string | undefined {
-  if (referral.wallet.status === 'linked') {
-    return referral.wallet.code
+function getLinkedCode(traderReferralCode: ReturnType<typeof useTraderReferralCode>): string | undefined {
+  if (traderReferralCode.wallet.status === 'linked') {
+    return traderReferralCode.wallet.code
   }
 
-  if (referral.verification.kind === 'linked') {
-    return referral.verification.linkedCode
+  if (traderReferralCode.verification.kind === 'linked') {
+    return traderReferralCode.verification.linkedCode
   }
 
   return undefined
 }
 
-function shouldShowSavedCode(referral: ReturnType<typeof useReferral>, hasLinkedCode: boolean): boolean {
+function shouldShowSavedCode(
+  traderReferralCode: ReturnType<typeof useTraderReferralCode>,
+  hasLinkedCode: boolean,
+): boolean {
   if (hasLinkedCode) {
     return false
   }
 
-  return referral.verification.kind === 'valid' && Boolean(referral.savedCode)
+  return traderReferralCode.verification.kind === 'valid' && Boolean(traderReferralCode.savedCode)
 }
 
 function getTooltipContent(hasLinkedCode: boolean, hasSavedValidCode: boolean): ReactNode {

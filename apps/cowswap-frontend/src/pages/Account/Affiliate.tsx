@@ -21,14 +21,13 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api'
 import {
-  buildAffiliateTypedData,
+  buildPartnerTypedData,
   formatUsdcCompact,
   formatUsdCompact,
   isReferralCodeLengthValid,
   sanitizeReferralCode,
 } from 'modules/affiliate/lib/affiliate-program-utils'
-import { AffiliateStatsResponse } from 'modules/affiliate/model/types'
-import { ReferralCodeInputRow, type TrailingIconKind } from 'modules/affiliate/ui/ReferralCodeInput'
+import { PartnerStatsResponse } from 'modules/affiliate/model/partner-trader-types'
 import {
   BottomMetaRow,
   CardTitle,
@@ -47,11 +46,12 @@ import {
   HeroTitle,
   InlineNote,
   MetaRow,
-  ReferralTermsFaqLinks,
+  AffiliateTermsFaqLinks,
   NextPayoutCard,
   RewardsWrapper,
   LabelContent,
 } from 'modules/affiliate/ui/shared'
+import { PartnerReferralCodeInputRow, type TrailingIconKind } from 'modules/affiliate/ui/TraderReferralCodeInput'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useModalState } from 'common/hooks/useModalState'
@@ -87,10 +87,10 @@ export default function AccountAffiliate() {
   const [availability, setAvailability] = useState<AvailabilityState>('idle')
   const [hasEdited, setHasEdited] = useState(false)
   const [createdAt, setCreatedAt] = useState<Date | null>(null)
-  const [affiliateRewardAmount, setAffiliateRewardAmount] = useState<number | null>(null)
+  const [partnerRewardAmount, setPartnerRewardAmount] = useState<number | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
-  const [affiliateStats, setAffiliateStats] = useState<AffiliateStatsResponse | null>(null)
+  const [partnerStats, setPartnerStats] = useState<PartnerStatsResponse | null>(null)
   const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
   const { isModalOpen: isQrOpen, openModal: openQrModal, closeModal: closeQrModal } = useModalState()
@@ -197,9 +197,9 @@ export default function AccountAffiliate() {
       setExistingCode(null)
       setCreatedAt(null)
       setLoading(false)
-      setAffiliateStats(null)
+      setPartnerStats(null)
       setStatsUpdatedAt(null)
-      setAffiliateRewardAmount(null)
+      setPartnerRewardAmount(null)
       return
     }
 
@@ -217,18 +217,18 @@ export default function AccountAffiliate() {
           setExistingCode(response.code)
           const created = response.createdAt ? new Date(response.createdAt) : null
           setCreatedAt(created && !Number.isNaN(created.getTime()) ? created : null)
-          setAffiliateRewardAmount(typeof response.rewardAmount === 'number' ? response.rewardAmount : null)
+          setPartnerRewardAmount(typeof response.rewardAmount === 'number' ? response.rewardAmount : null)
         } else {
           setExistingCode(null)
           setCreatedAt(null)
-          setAffiliateRewardAmount(null)
+          setPartnerRewardAmount(null)
         }
       })
       .catch(() => {
         if (!cancelled) {
           setExistingCode(null)
           setCreatedAt(null)
-          setAffiliateRewardAmount(null)
+          setPartnerRewardAmount(null)
           setErrorMessage(t`Unable to load affiliate code right now.`)
         }
       })
@@ -247,7 +247,7 @@ export default function AccountAffiliate() {
     let cancelled = false
 
     if (!account || !isMainnet || !existingCode) {
-      setAffiliateStats(null)
+      setPartnerStats(null)
       setStatsUpdatedAt(null)
       setStatsLoading(false)
       return
@@ -261,13 +261,13 @@ export default function AccountAffiliate() {
           return
         }
 
-        setAffiliateStats(stats)
+        setPartnerStats(stats)
         const updated = stats?.lastUpdatedAt ? new Date(stats.lastUpdatedAt) : null
         setStatsUpdatedAt(updated && !Number.isNaN(updated.getTime()) ? updated : null)
       })
       .catch(() => {
         if (!cancelled) {
-          setAffiliateStats(null)
+          setPartnerStats(null)
           setStatsUpdatedAt(null)
         }
       })
@@ -393,7 +393,7 @@ export default function AccountAffiliate() {
 
     try {
       const signer = provider.getSigner()
-      const typedData = buildAffiliateTypedData({
+      const typedData = buildPartnerTypedData({
         walletAddress: account,
         code: normalizedCode,
         chainId: SupportedChainId.MAINNET,
@@ -410,7 +410,7 @@ export default function AccountAffiliate() {
       setExistingCode(response.code)
       const created = response.createdAt ? new Date(response.createdAt) : null
       setCreatedAt(created && !Number.isNaN(created.getTime()) ? created : null)
-      setAffiliateRewardAmount(typeof response.rewardAmount === 'number' ? response.rewardAmount : null)
+      setPartnerRewardAmount(typeof response.rewardAmount === 'number' ? response.rewardAmount : null)
       setSuccessMessage(t`Affiliate code created.`)
     } catch (error) {
       const err = error as Error & { status?: number; code?: number }
@@ -479,10 +479,10 @@ export default function AccountAffiliate() {
         : availability === 'unavailable' || availability === 'invalid' || availability === 'error'
           ? 'error'
           : undefined
-  const statsReady = Boolean(affiliateStats)
+  const statsReady = Boolean(partnerStats)
   const referralTarget =
-    statsReady && typeof affiliateStats?.trigger_volume === 'number' ? affiliateStats.trigger_volume : null
-  const leftToNextReward = statsReady ? affiliateStats?.left_to_next_reward : undefined
+    statsReady && typeof partnerStats?.trigger_volume === 'number' ? partnerStats.trigger_volume : null
+  const leftToNextReward = statsReady ? partnerStats?.left_to_next_reward : undefined
 
   const progressToNextReward =
     referralTarget !== null && leftToNextReward !== undefined ? Math.max(referralTarget - leftToNextReward, 0) : 0
@@ -493,14 +493,14 @@ export default function AccountAffiliate() {
   const progressToNextRewardLabel =
     referralTarget !== null ? formatUsdCompact(progressToNextReward) : formatUsdCompact(0)
   const referralTargetLabel = referralTarget !== null ? formatUsdCompact(referralTarget) : formatUsdCompact(0)
-  const rewardAmountLabel = affiliateRewardAmount ? formatUsdCompact(affiliateRewardAmount) : 'reward'
+  const rewardAmountLabel = partnerRewardAmount ? formatUsdCompact(partnerRewardAmount) : 'reward'
 
-  const nextPayoutLabel = statsReady ? formatUsdcCompact(affiliateStats?.next_payout) : formatUsdcCompact(0)
-  const totalEarnedLabel = statsReady ? formatUsdcCompact(affiliateStats?.total_earned) : EMPTY_VALUE_LABEL
-  const paidOutLabel = statsReady ? formatUsdcCompact(affiliateStats?.paid_out) : EMPTY_VALUE_LABEL
-  const leftToNextRewardLabel = statsReady ? formatUsdCompact(affiliateStats?.left_to_next_reward) : EMPTY_VALUE_LABEL
-  const totalVolumeLabel = statsReady ? formatUsdCompact(affiliateStats?.total_volume) : EMPTY_VALUE_LABEL
-  const activeReferralsLabel = statsReady ? formatNumber(affiliateStats?.active_traders) : EMPTY_VALUE_LABEL
+  const nextPayoutLabel = statsReady ? formatUsdcCompact(partnerStats?.next_payout) : formatUsdcCompact(0)
+  const totalEarnedLabel = statsReady ? formatUsdcCompact(partnerStats?.total_earned) : EMPTY_VALUE_LABEL
+  const paidOutLabel = statsReady ? formatUsdcCompact(partnerStats?.paid_out) : EMPTY_VALUE_LABEL
+  const leftToNextRewardLabel = statsReady ? formatUsdCompact(partnerStats?.left_to_next_reward) : EMPTY_VALUE_LABEL
+  const totalVolumeLabel = statsReady ? formatUsdCompact(partnerStats?.total_volume) : EMPTY_VALUE_LABEL
+  const activeReferralsLabel = statsReady ? formatNumber(partnerStats?.active_traders) : EMPTY_VALUE_LABEL
 
   const showHero = !isConnected || showUnsupported || (isConnected && !isSignerAvailable && !showLinkedFlow)
 
@@ -544,7 +544,7 @@ export default function AccountAffiliate() {
                   )}
                   {isConnected && showUnsupported && (
                     <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleSwitchToMainnet}>
-                      <Trans>Switch to Ethereum mainnet</Trans>
+                      <Trans>Switch to Ethereum</Trans>
                     </ButtonPrimary>
                   )}
                   {isConnected && !showUnsupported && !isSignerAvailable && !showLinkedFlow && (
@@ -553,7 +553,7 @@ export default function AccountAffiliate() {
                     </ButtonPrimary>
                   )}
                 </HeroActions>
-                <ReferralTermsFaqLinks />
+                <AffiliateTermsFaqLinks />
                 {showUnsupported && (
                   <InlineNote>
                     <Trans>Affiliate payouts happen on Ethereum mainnet.</Trans>
@@ -649,7 +649,7 @@ export default function AccountAffiliate() {
                               </MiniAction>
                             </LabelActions>
                           </LabelRow>
-                          <ReferralCodeInputRow
+                          <PartnerReferralCodeInputRow
                             displayCode={inputCode}
                             hasError={showInvalidFormat || showCodeUnavailable || availability === 'error'}
                             isInputDisabled={submitting}
@@ -751,7 +751,7 @@ export default function AccountAffiliate() {
                 <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
               </RewardsThreeColumnGrid>
 
-              <ReferralTermsFaqLinks align="center" />
+              <AffiliateTermsFaqLinks align="center" />
             </>
           )}
 

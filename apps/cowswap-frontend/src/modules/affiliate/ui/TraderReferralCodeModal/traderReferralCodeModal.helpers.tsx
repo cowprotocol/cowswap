@@ -7,17 +7,24 @@ import { Trans } from '@lingui/react/macro'
 
 import { PrimaryCta, StatusCopyResult } from './types'
 
-import { useReferralModalState, ReferralModalUiState } from '../../model/hooks/useReferralModalState'
-import { ReferralIncomingCodeReason, ReferralVerificationStatus, WalletReferralState } from '../../model/types'
+import {
+  useTraderReferralCodeModalState,
+  TraderReferralCodeModalUiState,
+} from '../../model/hooks/useTraderReferralCodeModalState'
+import {
+  TraderReferralCodeIncomingReason,
+  TraderReferralCodeVerificationStatus,
+  TraderWalletReferralCodeState,
+} from '../../model/partner-trader-types'
 
-type VerificationKind = ReturnType<typeof useReferralModalState>['verification']['kind']
-type WalletStatus = WalletReferralState['status']
+type VerificationKind = ReturnType<typeof useTraderReferralCodeModalState>['verification']['kind']
+type WalletStatus = TraderWalletReferralCodeState['status']
 
 export function computePrimaryCta(params: {
-  uiState: ReferralModalUiState
+  uiState: TraderReferralCodeModalUiState
   hasValidLength: boolean
   hasCode: boolean
-  verification: ReferralVerificationStatus
+  verification: TraderReferralCodeVerificationStatus
   verificationKind: VerificationKind
   walletStatus: WalletStatus
 }): PrimaryCta {
@@ -43,7 +50,7 @@ export function computePrimaryCta(params: {
     return { label, disabled: true, action: 'none' }
   }
 
-  const staticDisabledLabels: Partial<Record<ReferralModalUiState, string>> = {
+  const staticDisabledLabels: Partial<Record<TraderReferralCodeModalUiState, string>> = {
     empty: t`Provide a valid referral code`,
     unsupported: t`Unsupported Network`,
     checking: t`Checking code…`,
@@ -82,7 +89,10 @@ function verifyCta(
   }
 }
 
-export function getStatusCopy(verification: ReferralVerificationStatus, timeCapDays?: number): StatusCopyResult {
+export function getStatusCopy(
+  verification: TraderReferralCodeVerificationStatus,
+  timeCapDays?: number,
+): StatusCopyResult {
   return {
     shouldShowInfo: verification.kind === 'valid' && verification.eligible,
     infoMessage: timeCapDays
@@ -91,9 +101,9 @@ export function getStatusCopy(verification: ReferralVerificationStatus, timeCapD
   }
 }
 
-export function useReferralModalFocus(
+export function useTraderReferralCodeModalFocus(
   isOpen: boolean,
-  uiState: ReferralModalUiState,
+  uiState: TraderReferralCodeModalUiState,
   inputRef: RefObject<HTMLInputElement | null>,
   ctaRef: RefObject<HTMLButtonElement | null>,
 ): void {
@@ -113,32 +123,32 @@ export function useReferralModalFocus(
   }, [ctaRef, inputRef, isOpen, uiState])
 }
 
-export function useReferralModalAnalytics(
-  referral: ReturnType<typeof useReferralModalState>['referral'],
-  uiState: ReferralModalUiState,
+export function useTraderReferralCodeModalAnalytics(
+  traderReferralCode: ReturnType<typeof useTraderReferralCodeModalState>['referral'],
+  uiState: TraderReferralCodeModalUiState,
   analytics: CowAnalytics,
 ): void {
   const wasOpenRef = useRef(false)
-  const lastUiStateRef = useRef<ReferralModalUiState | null>(null)
+  const lastUiStateRef = useRef<TraderReferralCodeModalUiState | null>(null)
 
   useEffect(() => {
-    if (referral.modalOpen && !wasOpenRef.current) {
+    if (traderReferralCode.modalOpen && !wasOpenRef.current) {
       analytics.sendEvent({
         category: 'referral',
         action: 'modal_opened',
-        label: referral.modalSource ?? 'unknown',
+        label: traderReferralCode.modalSource ?? 'unknown',
       })
     }
 
-    wasOpenRef.current = referral.modalOpen
+    wasOpenRef.current = traderReferralCode.modalOpen
 
-    if (!referral.modalOpen) {
+    if (!traderReferralCode.modalOpen) {
       lastUiStateRef.current = null
     }
-  }, [analytics, referral.modalOpen, referral.modalSource])
+  }, [analytics, traderReferralCode.modalOpen, traderReferralCode.modalSource])
 
   useEffect(() => {
-    if (!referral.modalOpen) {
+    if (!traderReferralCode.modalOpen) {
       return
     }
 
@@ -146,7 +156,7 @@ export function useReferralModalAnalytics(
       analytics.sendEvent({
         category: 'referral',
         action: 'view_linked',
-        label: referral.modalSource ?? 'unknown',
+        label: traderReferralCode.modalSource ?? 'unknown',
       })
     }
 
@@ -154,17 +164,17 @@ export function useReferralModalAnalytics(
       analytics.sendEvent({
         category: 'referral',
         action: 'view_ineligible',
-        label: referral.modalSource ?? 'unknown',
+        label: traderReferralCode.modalSource ?? 'unknown',
       })
     }
 
     lastUiStateRef.current = uiState
-  }, [analytics, referral.modalOpen, referral.modalSource, uiState])
+  }, [analytics, traderReferralCode.modalOpen, traderReferralCode.modalSource, uiState])
 }
 
-export function useReferralMessages(
+export function useTraderReferralCodeMessages(
   codeForDisplay?: string,
-  reason?: ReferralIncomingCodeReason,
+  reason?: TraderReferralCodeIncomingReason,
 ): {
   linkedMessage: ReactNode
 } {
@@ -188,7 +198,7 @@ export function useReferralMessages(
   }, [codeForDisplay, reason])
 }
 
-function renderRejectionReason(reason?: ReferralIncomingCodeReason): ReactNode {
+function renderRejectionReason(reason?: TraderReferralCodeIncomingReason): ReactNode {
   if (!reason) {
     return null
   }

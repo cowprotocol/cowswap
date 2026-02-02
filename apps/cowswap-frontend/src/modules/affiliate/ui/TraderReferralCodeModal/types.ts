@@ -1,7 +1,7 @@
 import { FormEvent, ReactNode, RefObject } from 'react'
 
-import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../model/types'
+import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
+import { TraderReferralCodeVerificationStatus } from '../../model/partner-trader-types'
 
 export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElement | null
 
@@ -11,11 +11,11 @@ export interface PrimaryCta {
   action: 'none' | 'verify' | 'viewRewards' | 'goBack'
 }
 
-export interface ReferralModalContentProps {
-  uiState: ReferralModalUiState
+export interface TraderReferralCodeModalContentProps {
+  uiState: TraderReferralCodeModalUiState
   savedCode?: string
   displayCode: string
-  verification: ReferralVerificationStatus
+  verification: TraderReferralCodeVerificationStatus
   incomingIneligibleCode?: string
   onPrimaryClick(): void
   onEdit(): void

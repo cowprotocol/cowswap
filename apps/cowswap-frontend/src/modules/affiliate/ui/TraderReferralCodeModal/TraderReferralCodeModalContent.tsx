@@ -5,21 +5,21 @@ import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-import { ReferralCodeForm } from './ReferralCodeForm'
-import { ReferralStatusMessages, getModalTitle } from './ReferralStatusMessages'
 import { Body, Footer, ModalContainer, Subtitle, Title } from './styles'
-import { ReferralModalContentProps } from './types'
+import { TraderReferralCodeForm } from './TraderReferralCodeForm'
+import { TraderReferralCodeStatusMessages, getModalTitle } from './TraderReferralCodeStatusMessages'
+import { TraderReferralCodeModalContentProps } from './types'
 
-import { getAffiliateProgramCopyValues } from '../../lib/affiliate-program-utils'
-import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../model/types'
-import { ReferralHowItWorksLink, ReferralIneligibleCopy } from '../ReferralIneligibleCopy'
+import { getPartnerProgramCopyValues } from '../../lib/affiliate-program-utils'
+import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
+import { TraderReferralCodeVerificationStatus } from '../../model/partner-trader-types'
+import { TraderReferralCodeHowItWorksLink, TraderReferralCodeIneligibleCopy } from '../TraderReferralCodeIneligibleCopy'
 
-export function ReferralModalContent(props: ReferralModalContentProps): ReactNode {
+export function TraderReferralCodeModalContent(props: TraderReferralCodeModalContentProps): ReactNode {
   const { uiState, onPrimaryClick, primaryCta, onDismiss, inputRef, ctaRef, linkedMessage, hasRejection } = props
   const shouldShowForm = uiState !== 'ineligible'
 
-  const howItWorksLink = <ReferralHowItWorksLink />
+  const howItWorksLink = <TraderReferralCodeHowItWorksLink />
 
   return (
     <ModalContainer>
@@ -30,7 +30,7 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
       <Body>
         <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
         <Title>{getModalTitle(uiState, { hasRejection })}</Title>
-        <ReferralSubtitle
+        <TraderReferralCodeSubtitle
           uiState={uiState}
           linkedMessage={linkedMessage}
           howItWorksLink={howItWorksLink}
@@ -39,7 +39,7 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
           incomingIneligibleCode={props.incomingIneligibleCode}
         />
         {shouldShowForm && (
-          <ReferralCodeForm
+          <TraderReferralCodeForm
             uiState={uiState}
             savedCode={props.savedCode}
             displayCode={props.displayCode}
@@ -52,7 +52,7 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
             inputRef={inputRef}
           />
         )}
-        <ReferralStatusMessages infoMessage={props.infoMessage} shouldShowInfo={props.shouldShowInfo} />
+        <TraderReferralCodeStatusMessages infoMessage={props.infoMessage} shouldShowInfo={props.shouldShowInfo} />
       </Body>
 
       <Footer>
@@ -64,25 +64,25 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
   )
 }
 
-interface ReferralSubtitleProps {
-  uiState: ReferralModalUiState
+interface TraderReferralCodeSubtitleProps {
+  uiState: TraderReferralCodeModalUiState
   linkedMessage?: ReactNode
   howItWorksLink: ReactNode
   hasRejection: boolean
-  verification: ReferralVerificationStatus
+  verification: TraderReferralCodeVerificationStatus
   incomingIneligibleCode?: string
 }
 
-function ReferralSubtitle({
+function TraderReferralCodeSubtitle({
   uiState,
   linkedMessage,
   howItWorksLink,
   hasRejection,
   verification,
   incomingIneligibleCode,
-}: ReferralSubtitleProps): ReactNode {
+}: TraderReferralCodeSubtitleProps): ReactNode {
   const programParams = verification.kind === 'valid' ? verification.programParams : undefined
-  const programCopy = programParams ? getAffiliateProgramCopyValues(programParams) : null
+  const programCopy = programParams ? getPartnerProgramCopyValues(programParams) : null
   if ((uiState === 'linked' || hasRejection) && linkedMessage) {
     return (
       <Subtitle>
@@ -94,7 +94,7 @@ function ReferralSubtitle({
   if (uiState === 'ineligible') {
     return (
       <Subtitle>
-        <ReferralIneligibleCopy incomingCode={incomingIneligibleCode} />
+        <TraderReferralCodeIneligibleCopy incomingCode={incomingIneligibleCode} />
       </Subtitle>
     )
   }

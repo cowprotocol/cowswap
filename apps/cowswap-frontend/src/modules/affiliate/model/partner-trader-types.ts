@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { AffiliateProgramParams } from '../lib/affiliate-program-utils'
+import { PartnerProgramParams } from '../lib/affiliate-program-utils'
 
 /**
  * Flags how the referral modal was launched:
@@ -8,15 +8,15 @@ import { AffiliateProgramParams } from '../lib/affiliate-program-utils'
  * - 'deeplink': modal auto-opened from a `?ref=` query
  * - 'rewards': user visited the rewards dashboard and had no code yet
  */
-export type ReferralModalSource = 'ui' | 'deeplink' | 'rewards'
+export type TraderReferralCodeModalSource = 'ui' | 'deeplink' | 'rewards'
 
 /**
  * Categorises referral verification failures so UI copy can react:
  * - 'network': request failed or timed out
  * - 'unknown': any other error case we can't classify yet
  */
-export type ReferralVerificationErrorType = 'network' | 'unknown'
-export type ReferralIncomingCodeReason = 'invalid' | 'ineligible'
+export type TraderReferralCodeVerificationErrorType = 'network' | 'unknown'
+export type TraderReferralCodeIncomingReason = 'invalid' | 'ineligible'
 
 /**
  * State machine describing the referral code lifecycle:
@@ -29,15 +29,15 @@ export type ReferralIncomingCodeReason = 'invalid' | 'ineligible'
  * - 'ineligible': wallet can't use the code; optional `incomingCode` shows what triggered it
  * - 'error': verification failed; includes error type + message for UI feedback
  */
-export type ReferralVerificationStatus =
+export type TraderReferralCodeVerificationStatus =
   | { kind: 'idle' }
   | { kind: 'pending'; code: string }
   | { kind: 'checking'; code: string }
-  | { kind: 'valid'; code: string; eligible: boolean; programParams?: AffiliateProgramParams }
+  | { kind: 'valid'; code: string; eligible: boolean; programParams?: PartnerProgramParams }
   | { kind: 'invalid'; code: string }
   | { kind: 'linked'; code: string; linkedCode: string }
   | { kind: 'ineligible'; code: string; reason: string; incomingCode?: string }
-  | { kind: 'error'; code: string; errorType: ReferralVerificationErrorType; message: string }
+  | { kind: 'error'; code: string; errorType: TraderReferralCodeVerificationErrorType; message: string }
 
 /**
  * Represents the wallet's relationship with the referral program:
@@ -48,7 +48,7 @@ export type ReferralVerificationStatus =
  * - 'linked': wallet already bound to the given `code`
  * - 'ineligible': wallet rejected with `reason`; may also expose an existing `linkedCode`
  */
-export type WalletReferralState =
+export type TraderWalletReferralCodeState =
   | { status: 'unknown' }
   | { status: 'disconnected' }
   | { status: 'unsupported'; chainId?: SupportedChainId | number }
@@ -56,17 +56,17 @@ export type WalletReferralState =
   | { status: 'linked'; code: string }
   | { status: 'ineligible'; reason: string; linkedCode?: string }
 
-export interface ReferralDomainState {
+export interface TraderReferralCodeState {
   modalOpen: boolean
-  modalSource: ReferralModalSource | null
+  modalSource: TraderReferralCodeModalSource | null
   editMode: boolean
   inputCode: string
   savedCode?: string
   incomingCode?: string
-  incomingCodeReason?: ReferralIncomingCodeReason
-  previousVerification?: ReferralVerificationStatus
-  verification: ReferralVerificationStatus
-  wallet: WalletReferralState
+  incomingCodeReason?: TraderReferralCodeIncomingReason
+  previousVerification?: TraderReferralCodeVerificationStatus
+  verification: TraderReferralCodeVerificationStatus
+  wallet: TraderWalletReferralCodeState
   shouldAutoVerify: boolean
   lastVerificationRequest?: {
     code: string
@@ -78,21 +78,21 @@ export interface ReferralDomainState {
   }
 }
 
-export interface ReferralApiConfig {
+export interface TraderReferralCodeApiConfig {
   baseUrl: string
   timeoutMs?: number
 }
 
-export interface ReferralVerificationRequest {
+export interface TraderReferralCodeVerificationRequest {
   code: string
   account: string
   chainId: SupportedChainId
 }
 
-export interface ReferralVerificationResponse {
+export interface TraderReferralCodeVerificationResponse {
   status: number
   ok: boolean
-  data?: ReferralCodeResponse
+  data?: TraderReferralCodeResponse
   text: string
 }
 
@@ -100,18 +100,18 @@ export interface ReferralVerificationResponse {
  * Shape returned by the referral verification endpoint.
  */
 
-export interface WalletReferralStatusRequest {
+export interface TraderWalletReferralCodeStatusRequest {
   account: string
 }
 
-export interface WalletReferralStatusResponse {
+export interface TraderWalletReferralCodeStatusResponse {
   wallet: {
     linkedCode?: string
     ineligibleReason?: string
   }
 }
 
-export interface ReferralCodeResponse {
+export interface TraderReferralCodeResponse {
   code: string
   traderRewardAmount?: number
   triggerVolume?: number
@@ -119,7 +119,7 @@ export interface ReferralCodeResponse {
   volumeCap?: number
 }
 
-export interface AffiliateCodeResponse {
+export interface PartnerCodeResponse {
   code: string
   createdAt: string
   rewardAmount: number
@@ -145,7 +145,7 @@ export interface TraderStatsResponse {
   lastUpdatedAt: string
 }
 
-export interface AffiliateStatsResponse {
+export interface PartnerStatsResponse {
   affiliate_address: string
   referrer_code: string
   total_volume: number
@@ -159,19 +159,19 @@ export interface AffiliateStatsResponse {
   lastUpdatedAt: string
 }
 
-export interface AffiliateCreateRequest {
+export interface PartnerCreateRequest {
   code: string
   walletAddress: string
   signedMessage: string
 }
 
-export interface ReferralContextValue extends ReferralDomainState {
+export interface TraderReferralCodeContextValue extends TraderReferralCodeState {
   cancelVerification: () => void
-  actions: ReferralActions
+  actions: TraderReferralCodeActions
 }
 
-export interface ReferralActions {
-  openModal(source: ReferralModalSource, options?: { code?: string }): void
+export interface TraderReferralCodeActions {
+  openModal(source: TraderReferralCodeModalSource, options?: { code?: string }): void
   closeModal(): void
   setInputCode(value: string): void
   enableEditMode(): void
@@ -179,10 +179,10 @@ export interface ReferralActions {
   saveCode(code: string): void
   removeCode(): void
   setIncomingCode(code?: string): void
-  setIncomingCodeReason(reason?: ReferralIncomingCodeReason): void
-  setWalletState(state: WalletReferralState): void
+  setIncomingCodeReason(reason?: TraderReferralCodeIncomingReason): void
+  setWalletState(state: TraderWalletReferralCodeState): void
   startVerification(code: string): void
-  completeVerification(status: ReferralVerificationStatus): void
+  completeVerification(status: TraderReferralCodeVerificationStatus): void
   setShouldAutoVerify(value: boolean): void
   setSavedCode(code?: string): void
   requestVerification(code?: string): void

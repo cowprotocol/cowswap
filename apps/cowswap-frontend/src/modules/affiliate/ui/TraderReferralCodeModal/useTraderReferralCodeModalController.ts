@@ -8,21 +8,20 @@ import { NavigateFunction } from 'common/hooks/useNavigate'
 import {
   computePrimaryCta,
   getStatusCopy,
-  useReferralMessages,
-  useReferralModalAnalytics,
-  useReferralModalFocus,
-} from './controller.helpers'
-import { FocusableElement, PrimaryCta, ReferralModalContentProps } from './types'
+  useTraderReferralCodeMessages,
+  useTraderReferralCodeModalAnalytics,
+  useTraderReferralCodeModalFocus,
+} from './traderReferralCodeModal.helpers'
+import { FocusableElement, PrimaryCta, TraderReferralCodeModalContentProps } from './types'
 
-import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
-import { getIncomingIneligibleCode } from '../../lib/affiliate-program-utils'
-import { useReferralActions } from '../../model/hooks/useReferralActions'
-import { useReferralModalState } from '../../model/hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../model/types'
+import { isReferralCodeLengthValid, getIncomingIneligibleCode } from '../../lib/affiliate-program-utils'
+import { useTraderReferralCodeActions } from '../../model/hooks/useTraderReferralCodeActions'
+import { useTraderReferralCodeModalState } from '../../model/hooks/useTraderReferralCodeModalState'
+import { TraderReferralCodeVerificationStatus } from '../../model/partner-trader-types'
 
-export interface ReferralModalControllerParams {
-  modalState: ReturnType<typeof useReferralModalState>
-  actions: ReturnType<typeof useReferralActions>
+export interface TraderReferralCodeModalControllerParams {
+  modalState: ReturnType<typeof useTraderReferralCodeModalState>
+  actions: ReturnType<typeof useTraderReferralCodeActions>
   account?: string
   supportedNetwork: boolean
   toggleWalletModal: () => void
@@ -30,18 +29,29 @@ export interface ReferralModalControllerParams {
   analytics: CowAnalytics
 }
 
-export interface ReferralModalControllerResult {
-  referral: ReturnType<typeof useReferralModalState>['referral']
+export interface TraderReferralCodeModalControllerResult {
+  traderReferralCode: ReturnType<typeof useTraderReferralCodeModalState>['traderReferralCode']
   handleClose(): void
   initialFocusRef: RefObject<FocusableElement>
-  contentProps: Omit<ReferralModalContentProps, 'onDismiss'>
+  contentProps: Omit<TraderReferralCodeModalContentProps, 'onDismiss'>
 }
 
-// eslint-disable-next-line complexity
-export function useReferralModalController(params: ReferralModalControllerParams): ReferralModalControllerResult {
+// eslint-disable-next-line complexity, max-lines-per-function
+export function useTraderReferralCodeModalController(
+  params: TraderReferralCodeModalControllerParams,
+): TraderReferralCodeModalControllerResult {
   const { modalState, actions, account, supportedNetwork, toggleWalletModal, navigate, analytics } = params
-  const { referral, uiState, displayCode, savedCode, hasCode, hasValidLength, verification, incomingCode, wallet } =
-    modalState
+  const {
+    traderReferralCode,
+    uiState,
+    displayCode,
+    savedCode,
+    hasCode,
+    hasValidLength,
+    verification,
+    incomingCode,
+    wallet,
+  } = modalState
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const ctaRef = useRef<HTMLButtonElement | null>(null)
@@ -60,10 +70,10 @@ export function useReferralModalController(params: ReferralModalControllerParams
     [effectiveWalletStatus, hasCode, hasValidLength, uiState, verification],
   )
 
-  useReferralModalFocus(referral.modalOpen, uiState, inputRef, ctaRef)
-  useReferralModalAnalytics(referral, uiState, analytics)
+  useTraderReferralCodeModalFocus(traderReferralCode.modalOpen, uiState, inputRef, ctaRef)
+  useTraderReferralCodeModalAnalytics(traderReferralCode, uiState, analytics)
 
-  const handlers = useReferralModalHandlers({
+  const handlers = useTraderReferralCodeModalHandlers({
     actions,
     analytics,
     account,
@@ -72,9 +82,9 @@ export function useReferralModalController(params: ReferralModalControllerParams
     toggleWalletModal,
     navigate,
     inputRef,
-    cancelVerification: referral.cancelVerification,
+    cancelVerification: traderReferralCode.cancelVerification,
     verificationKind: verification.kind,
-    pendingVerificationId: referral.pendingVerificationRequest?.id,
+    pendingVerificationId: traderReferralCode.pendingVerificationRequest?.id,
   })
 
   const timeCapDays = verification.kind === 'valid' ? verification.programParams?.timeCapDays : undefined
@@ -82,8 +92,8 @@ export function useReferralModalController(params: ReferralModalControllerParams
   const verificationCode = 'code' in verification ? verification.code : undefined
   const codeForDisplay = incomingCode || verificationCode || savedCode || displayCode
   const incomingIneligibleCode = getIncomingIneligibleCode(incomingCode, verification)
-  const { linkedMessage } = useReferralMessages(codeForDisplay, referral.incomingCodeReason)
-  const hasRejection = Boolean(referral.incomingCodeReason)
+  const { linkedMessage } = useTraderReferralCodeMessages(codeForDisplay, traderReferralCode.incomingCodeReason)
+  const hasRejection = Boolean(traderReferralCode.incomingCodeReason)
 
   const initialFocusRef =
     uiState === 'valid' || uiState === 'linked' || uiState === 'ineligible'
@@ -91,7 +101,7 @@ export function useReferralModalController(params: ReferralModalControllerParams
       : (inputRef as RefObject<FocusableElement>)
 
   return {
-    referral,
+    traderReferralCode,
     handleClose: handlers.onClose,
     initialFocusRef,
     contentProps: {
@@ -116,8 +126,8 @@ export function useReferralModalController(params: ReferralModalControllerParams
   }
 }
 
-interface ReferralModalHandlersParams {
-  actions: ReturnType<typeof useReferralActions>
+interface TraderReferralCodeModalHandlersParams {
+  actions: ReturnType<typeof useTraderReferralCodeActions>
   analytics: CowAnalytics
   account?: string
   displayCode: string
@@ -126,11 +136,11 @@ interface ReferralModalHandlersParams {
   navigate: NavigateFunction
   inputRef: RefObject<HTMLInputElement | null>
   cancelVerification: () => void
-  verificationKind: ReferralVerificationStatus['kind']
+  verificationKind: TraderReferralCodeVerificationStatus['kind']
   pendingVerificationId?: number
 }
 
-interface ReferralModalHandlers {
+interface TraderReferralCodeModalHandlers {
   onClose(): void
   onEdit(): void
   onRemove(): void
@@ -139,7 +149,9 @@ interface ReferralModalHandlers {
   onChange(event: FormEvent<HTMLInputElement>): void
 }
 
-function useReferralModalHandlers(params: ReferralModalHandlersParams): ReferralModalHandlers {
+function useTraderReferralCodeModalHandlers(
+  params: TraderReferralCodeModalHandlersParams,
+): TraderReferralCodeModalHandlers {
   const {
     actions,
     analytics,
@@ -230,10 +242,10 @@ function useFocusInputRef(inputRef: RefObject<HTMLInputElement | null>): () => v
 }
 
 function useCancelVerificationHandler(params: {
-  actions: ReturnType<typeof useReferralActions>
+  actions: ReturnType<typeof useTraderReferralCodeActions>
   cancelVerification: () => void
   pendingVerificationId?: number
-  verificationKind: ReferralVerificationStatus['kind']
+  verificationKind: TraderReferralCodeVerificationStatus['kind']
 }): () => void {
   const { actions, cancelVerification, pendingVerificationId, verificationKind } = params
 
@@ -258,7 +270,7 @@ function usePrimaryClickHandler(params: {
   account?: string
   toggleWalletModal: () => void
   analytics: CowAnalytics
-  actions: ReturnType<typeof useReferralActions>
+  actions: ReturnType<typeof useTraderReferralCodeActions>
   displayCode: string
   navigate: NavigateFunction
   onClose: () => void

@@ -7,14 +7,14 @@ import { Trans } from '@lingui/react/macro'
 
 import { InlineAlert, StatusMessage, TitleAccent } from './styles'
 
-import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
+import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
 
-export interface ReferralStatusMessagesProps {
+export interface TraderReferralCodeStatusMessagesProps {
   infoMessage: string
   shouldShowInfo: boolean
 }
 
-export function ReferralStatusMessages(props: ReferralStatusMessagesProps): ReactNode {
+export function TraderReferralCodeStatusMessages(props: TraderReferralCodeStatusMessagesProps): ReactNode {
   const { infoMessage, shouldShowInfo } = props
 
   return (
@@ -24,7 +24,10 @@ export function ReferralStatusMessages(props: ReferralStatusMessagesProps): Reac
   )
 }
 
-export function getModalTitle(uiState: ReferralModalUiState, options: { hasRejection?: boolean } = {}): ReactNode {
+export function getModalTitle(
+  uiState: TraderReferralCodeModalUiState,
+  options: { hasRejection?: boolean } = {},
+): ReactNode {
   const { hasRejection = false } = options
 
   if (uiState === 'linked' || (uiState === 'valid' && hasRejection)) {

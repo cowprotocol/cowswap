@@ -27,7 +27,7 @@ function getDefaultLoadingLabel(): ReactNode {
   return <Trans>Checking</Trans>
 }
 
-interface ReferralCodeInputRowProps {
+interface TraderReferralCodeInputRowProps {
   displayCode: string
   hasError: boolean
   isInputDisabled: boolean
@@ -48,7 +48,7 @@ interface ReferralCodeInputRowProps {
   trailingIconTitles?: IconTitleMap
 }
 
-export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNode {
+export function TraderReferralCodeInputRow(props: TraderReferralCodeInputRowProps): ReactNode {
   const {
     displayCode,
     hasError,

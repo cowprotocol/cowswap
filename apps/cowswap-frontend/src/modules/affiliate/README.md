@@ -1,4 +1,4 @@
-# Affiliate program
+# Affiliate program (partners + traders)
 
 ## 1) Purpose
 
@@ -7,7 +7,7 @@ The affiliate program will amplify word-of-mouth marketing for CoW Swap by incen
 ## 2) Actors
 
 - Traders
-- Partners/Affiliates/KOLs, publishers
+- Partners (affiliates/KOLs, publishers)
 - Program managers (Marketing Squad)
 - Accountants (Finance Squad)
 - Maintainers (Web Squad, DevOps Squad)
@@ -52,14 +52,14 @@ flowchart TB
 - This does not affect historical payouts
 - It can be bypassed by traders that do not use our frontend
 
-## 6) Affiliate privacy
+## 6) Partner privacy
 
-Goal: protect our affiliates privacy by not leaking their wallet addresses
+Goal: protect partner privacy by not leaking wallet addresses
 
 Audit:
 
 - Ensure FE uses a CMS key that cannot read the affiliate collection
-- Ensure BFF strips affiliate address from `/ref-codes/:code` (called by traders)
+- Ensure BFF strips partner address from `/ref-codes/:code` (called by traders)
 - Ensure CMS disallows reading the affiliate collection without API key
 
 ## 7) Eligibility (hard requirement) TODO
@@ -97,3 +97,45 @@ Audit:
 - Dune payouts: USDC mainnet only; time/volume caps enforced; `volume_cap=0` unlimited
 - FE typed data includes only `walletAddress + code + chainId` (no nonce/expiry)
 - `DEBUG*` codes simulate statuses for testing/demo
+
+## 11) File map (high level)
+
+- `apps/cowswap-frontend/src/modules/affiliate/README.md`: product + data-flow overview; keep up to date.
+- `apps/cowswap-frontend/src/modules/affiliate/SPEC.md`: spec checklist for partner/trader flows and analytics requirements.
+- `apps/cowswap-frontend/src/modules/affiliate/config/constants.ts`: shared constants (storage keys, URLs, supported networks).
+- `apps/cowswap-frontend/src/modules/affiliate/api/index.ts`: BFF API entry point + supported-network helper.
+- `apps/cowswap-frontend/src/modules/affiliate/api/bffAffiliateApi.ts`: BFF client; all partner + trader requests live here.
+- `apps/cowswap-frontend/src/modules/affiliate/lib/affiliate-program-utils.ts`: shared formatting, typed data builder, referral-code helpers.
+- `apps/cowswap-frontend/src/modules/affiliate/lib/affiliate-program-utils.test.ts`: unit tests for referral-code helpers.
+- `apps/cowswap-frontend/src/modules/affiliate/model/partner-trader-types.ts`: core types for partner stats + trader referral-code state.
+- `apps/cowswap-frontend/src/modules/affiliate/model/state/TraderReferralCodeContext.tsx`: context/provider + actions for trader referral-code state.
+- `apps/cowswap-frontend/src/modules/affiliate/model/state/traderReferralCodeReducers.ts`: pure reducers for referral-code state transitions.
+- `apps/cowswap-frontend/src/modules/affiliate/model/state/traderReferralCodeStorage.ts`: localStorage sync for saved referral codes.
+- `apps/cowswap-frontend/src/modules/affiliate/model/hooks/useTraderReferralCode.ts`: access trader referral-code context.
+- `apps/cowswap-frontend/src/modules/affiliate/model/hooks/useTraderReferralCodeActions.ts`: access referral-code actions only.
+- `apps/cowswap-frontend/src/modules/affiliate/model/hooks/useTraderReferralCodeModalState.ts`: derive modal UI state from referral-code state.
+- `apps/cowswap-frontend/src/modules/affiliate/model/hooks/useTraderReferralCodeWalletSync.ts`: wallet eligibility + network sync.
+- `apps/cowswap-frontend/src/modules/affiliate/model/containers/TraderReferralCodeController.tsx`: wires verification + wallet sync for traders.
+- `apps/cowswap-frontend/src/modules/affiliate/model/containers/TraderReferralCodeDeepLinkHandler.tsx`: handles `?ref=` deep links.
+- `apps/cowswap-frontend/src/modules/affiliate/model/containers/verificationEffects.ts`: hooks for auto-verify + pending verify flows.
+- `apps/cowswap-frontend/src/modules/affiliate/model/containers/verificationLogic.ts`: verification pipeline + BFF response handling.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/shared.tsx`: shared cards/layout bits + terms/FAQ links.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeNetworkBanner.tsx`: banner for unsupported wallet/network.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeIneligibleCopy.tsx`: ineligible copy + “How it works” link.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeInput/index.ts`: exports for referral-code input row (partner/trader).
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeInput/TraderReferralCodeInputRow.tsx`: referral-code input UI row.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeInput/styles.ts`: styles for referral-code input row.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal.tsx`: modal shell for trader referral-code flow.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx`: modal content layout + copy.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/TraderReferralCodeForm.tsx`: modal form logic + actions.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/TraderReferralCodeStatusMessages.tsx`: status UI + modal title.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/types.ts`: modal prop types + CTA definitions.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/useTraderReferralCodeModalController.ts`: modal controller wiring.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/traderReferralCodeModal.helpers.tsx`: CTA + analytics helpers.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/styles/index.ts`: re-exports for modal styles.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/styles/layout.ts`: modal layout styles.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/styles/form.ts`: modal form styles.
+- `apps/cowswap-frontend/src/modules/affiliate/ui/TraderReferralCodeModal/styles/status.ts`: modal status styles.
+- `apps/cowswap-frontend/src/modules/affiliate/misc/affiliates.sql`: partner metrics query (Dune).
+- `apps/cowswap-frontend/src/modules/affiliate/misc/traders.sql`: trader metrics query (Dune).
+- `apps/cowswap-frontend/src/modules/affiliate/misc/traders_debug.sql`: trader eligibility debug query (Dune).

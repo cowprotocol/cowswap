@@ -7,17 +7,17 @@ import { useWalletChainId } from '@cowprotocol/wallet-provider'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import {
-  useReferralAutoVerification,
-  useReferralVerification,
-  usePendingVerificationHandler,
+  useTraderReferralCodeAutoVerification,
+  useTraderReferralCodeVerification,
+  usePendingReferralCodeVerificationHandler,
 } from './verificationEffects'
 
 import { isSupportedReferralNetwork } from '../../api'
-import { useReferral } from '../hooks/useReferral'
-import { useReferralWalletSync } from '../hooks/useReferralWalletSync'
+import { useTraderReferralCode } from '../hooks/useTraderReferralCode'
+import { useTraderReferralCodeWalletSync } from '../hooks/useTraderReferralCodeWalletSync'
 
-export function ReferralController(): ReactNode {
-  const referral = useReferral()
+export function TraderReferralCodeController(): ReactNode {
+  const traderReferralCode = useTraderReferralCode()
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
   const analytics = useCowAnalytics()
@@ -28,31 +28,31 @@ export function ReferralController(): ReactNode {
     [chainId],
   )
 
-  useReferralWalletSync({
+  useTraderReferralCodeWalletSync({
     account,
     chainId,
     supportedNetwork,
-    actions: referral.actions,
-    savedCode: referral.savedCode,
+    actions: traderReferralCode.actions,
+    savedCode: traderReferralCode.savedCode,
   })
-  const { runVerification } = useReferralVerification({
+  const { runVerification } = useTraderReferralCodeVerification({
     account,
     chainId,
     supportedNetwork,
-    referral,
+    traderReferralCode,
     analytics,
     toggleWalletModal,
   })
 
-  useReferralAutoVerification({
+  useTraderReferralCodeAutoVerification({
     account,
     chainId,
     supportedNetwork,
-    referral,
+    traderReferralCode,
     runVerification,
   })
 
-  usePendingVerificationHandler({ referral, runVerification })
+  usePendingReferralCodeVerificationHandler({ traderReferralCode, runVerification })
 
   return null
 }

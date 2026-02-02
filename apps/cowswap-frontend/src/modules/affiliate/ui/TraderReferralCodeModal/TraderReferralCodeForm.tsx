@@ -20,22 +20,22 @@ import {
 } from './styles'
 
 import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
-import { ReferralModalUiState } from '../../model/hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../model/types'
-import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput'
+import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
+import { TraderReferralCodeVerificationStatus } from '../../model/partner-trader-types'
 import { LabelContent } from '../shared'
+import { TraderReferralCodeInputRow, type TrailingIconKind } from '../TraderReferralCodeInput'
 
-const VERIFICATION_ERROR_KINDS: ReadonlySet<ReferralVerificationStatus['kind']> = new Set([
+const VERIFICATION_ERROR_KINDS: ReadonlySet<TraderReferralCodeVerificationStatus['kind']> = new Set([
   'invalid',
   'error',
   'ineligible',
 ])
 
-export interface ReferralCodeFormProps {
-  uiState: ReferralModalUiState
+export interface TraderReferralCodeFormProps {
+  uiState: TraderReferralCodeModalUiState
   savedCode?: string
   displayCode: string
-  verification: ReferralVerificationStatus
+  verification: TraderReferralCodeVerificationStatus
   onEdit(): void
   onRemove(): void
   onSave(): void
@@ -45,7 +45,7 @@ export interface ReferralCodeFormProps {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
+export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): ReactNode {
   const {
     uiState,
     savedCode,
@@ -102,8 +102,8 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
           </LabelContent>
         </Label>
         <LabelAffordances>
-          <ReferralCodeTags showPendingTag={showPendingTag} showValidTag={showValidTag} />
-          <ReferralCodeActions
+          <TraderReferralCodeTags showPendingTag={showPendingTag} showValidTag={showValidTag} />
+          <TraderReferralCodeActions
             showEdit={showEdit}
             showRemove={showRemove}
             showSave={showSave}
@@ -115,7 +115,7 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
         </LabelAffordances>
       </LabelRow>
 
-      <ReferralCodeInputRow
+      <TraderReferralCodeInputRow
         displayCode={displayCode}
         hasError={hasError}
         isInputDisabled={isInputDisabled || isChecking}
@@ -134,8 +134,8 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
 }
 
 interface DeriveFormFlagsParams {
-  uiState: ReferralModalUiState
-  verification: ReferralVerificationStatus
+  uiState: TraderReferralCodeModalUiState
+  verification: TraderReferralCodeVerificationStatus
   savedCode?: string
   displayCode: string
   showPendingLabelInInput: boolean
@@ -216,12 +216,12 @@ function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
   }
 }
 
-interface ReferralCodeTagsProps {
+interface TraderReferralCodeTagsProps {
   showPendingTag: boolean
   showValidTag: boolean
 }
 
-function ReferralCodeTags({ showPendingTag, showValidTag }: ReferralCodeTagsProps): ReactNode {
+function TraderReferralCodeTags({ showPendingTag, showValidTag }: TraderReferralCodeTagsProps): ReactNode {
   const showTags = showPendingTag || showValidTag
 
   if (!showTags) {
@@ -236,7 +236,7 @@ function ReferralCodeTags({ showPendingTag, showValidTag }: ReferralCodeTagsProp
   )
 }
 
-interface ReferralCodeActionsProps {
+interface TraderReferralCodeActionsProps {
   showEdit: boolean
   showRemove: boolean
   showSave: boolean
@@ -246,7 +246,7 @@ interface ReferralCodeActionsProps {
   isSaveDisabled: boolean
 }
 
-function ReferralCodeActions({
+function TraderReferralCodeActions({
   showEdit,
   showRemove,
   showSave,
@@ -254,7 +254,7 @@ function ReferralCodeActions({
   onRemove,
   onSave,
   isSaveDisabled,
-}: ReferralCodeActionsProps): ReactNode {
+}: TraderReferralCodeActionsProps): ReactNode {
   if (!showEdit && !showRemove && !showSave) {
     return null
   }
@@ -288,7 +288,7 @@ function ReferralCodeActions({
   )
 }
 
-function shouldShowPendingLabel(verification: ReferralVerificationStatus): boolean {
+function shouldShowPendingLabel(verification: TraderReferralCodeVerificationStatus): boolean {
   return verification.kind === 'pending'
 }
 

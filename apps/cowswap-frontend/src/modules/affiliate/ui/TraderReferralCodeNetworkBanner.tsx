@@ -7,7 +7,7 @@ import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from '../config/constants'
-import { useReferral } from '../model/hooks/useReferral'
+import { useTraderReferralCode } from '../model/hooks/useTraderReferralCode'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -50,8 +50,8 @@ const Message = styled.div`
   line-height: 1.4;
 `
 
-export function ReferralNetworkBanner(): ReactNode {
-  const { modalOpen, wallet } = useReferral()
+export function TraderReferralCodeNetworkBanner(): ReactNode {
+  const { modalOpen, wallet } = useTraderReferralCode()
 
   if (!modalOpen) {
     return null

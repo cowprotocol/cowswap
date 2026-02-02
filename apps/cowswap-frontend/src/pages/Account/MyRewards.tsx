@@ -21,10 +21,9 @@ import {
   formatUsdCompact,
   getIncomingIneligibleCode,
 } from 'modules/affiliate/lib/affiliate-program-utils'
-import { useReferral } from 'modules/affiliate/model/hooks/useReferral'
-import { useReferralActions } from 'modules/affiliate/model/hooks/useReferralActions'
-import { TraderStatsResponse } from 'modules/affiliate/model/types'
-import { ReferralIneligibleCopy } from 'modules/affiliate/ui/ReferralIneligibleCopy'
+import { useTraderReferralCode } from 'modules/affiliate/model/hooks/useTraderReferralCode'
+import { useTraderReferralCodeActions } from 'modules/affiliate/model/hooks/useTraderReferralCodeActions'
+import { TraderStatsResponse } from 'modules/affiliate/model/partner-trader-types'
 import {
   BottomMetaRow,
   CardTitle,
@@ -35,7 +34,7 @@ import {
   HeroContent,
   HeroSubtitle,
   HeroTitle,
-  ReferralTermsFaqLinks,
+  AffiliateTermsFaqLinks,
   RewardsCol1Card,
   RewardsCol2Card,
   MetricItem,
@@ -45,6 +44,7 @@ import {
   RewardsThreeColumnGrid,
   RewardsWrapper,
 } from 'modules/affiliate/ui/shared'
+import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/ui/TraderReferralCodeIneligibleCopy'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
@@ -55,16 +55,18 @@ export default function AccountMyRewards() {
   const { i18n } = useLingui()
   const { account } = useWalletInfo()
   const toggleWalletModal = useToggleWalletModal()
-  const referral = useReferral()
-  console.log('📜 LOG > AccountMyRewards > referral:', referral)
-  const referralActions = useReferralActions()
+  const traderReferralCode = useTraderReferralCode()
+  const traderReferralCodeActions = useTraderReferralCodeActions()
   const navigateBack = useNavigateBack()
   const [traderStats, setTraderStats] = useState<TraderStatsResponse | null>(null)
   const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
 
   const isConnected = Boolean(account)
-  const incomingIneligibleCode = getIncomingIneligibleCode(referral.incomingCode, referral.verification)
+  const incomingIneligibleCode = getIncomingIneligibleCode(
+    traderReferralCode.incomingCode,
+    traderReferralCode.verification,
+  )
 
   const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
   const formatNumber = useCallback(
@@ -93,9 +95,9 @@ export default function AccountMyRewards() {
         setTraderStats(stats)
         const updated = stats?.lastUpdatedAt ? new Date(stats.lastUpdatedAt) : null
         setStatsUpdatedAt(updated && !Number.isNaN(updated.getTime()) ? updated : null)
-        if (stats?.bound_referrer_code && referral.savedCode !== stats.bound_referrer_code) {
-          referralActions.setSavedCode(stats.bound_referrer_code)
-          referralActions.setWalletState({ status: 'linked', code: stats.bound_referrer_code })
+        if (stats?.bound_referrer_code && traderReferralCode.savedCode !== stats.bound_referrer_code) {
+          traderReferralCodeActions.setSavedCode(stats.bound_referrer_code)
+          traderReferralCodeActions.setWalletState({ status: 'linked', code: stats.bound_referrer_code })
         }
       })
       .catch(() => {
@@ -113,19 +115,17 @@ export default function AccountMyRewards() {
     return () => {
       cancelled = true
     }
-  }, [account, referral.savedCode, referralActions])
+  }, [account, traderReferralCode.savedCode, traderReferralCodeActions])
 
   const statsReady = Boolean(traderStats)
-  console.log('📜 LOG > AccountMyRewards > traderStats:', traderStats)
   const statsLinkedCode = traderStats?.bound_referrer_code
-  const isLinked = Boolean(statsLinkedCode) || referral.wallet.status === 'linked'
-  console.log('📜 LOG > AccountMyRewards > isLinked:', isLinked)
-  const isIneligible = referral.wallet.status === 'ineligible' && isConnected && !statsLinkedCode
+  const isLinked = Boolean(statsLinkedCode) || traderReferralCode.wallet.status === 'linked'
+  const isIneligible = traderReferralCode.wallet.status === 'ineligible' && isConnected && !statsLinkedCode
   const programParams =
-    referral.verification.kind === 'valid'
-      ? referral.verification.programParams
-      : referral.previousVerification?.kind === 'valid'
-        ? referral.previousVerification.programParams
+    traderReferralCode.verification.kind === 'valid'
+      ? traderReferralCode.verification.programParams
+      : traderReferralCode.previousVerification?.kind === 'valid'
+        ? traderReferralCode.previousVerification.programParams
         : undefined
   const rewardAmountLabel = programParams ? formatUsdCompact(programParams?.traderRewardAmount) : 'reward'
   const traderCode = isConnected
@@ -133,8 +133,9 @@ export default function AccountMyRewards() {
       ? statsLinkedCode
       : isLinked
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (referral as any).wallet.code
-        : (referral.savedCode ?? (referral.verification.kind === 'valid' ? referral.verification.code : undefined))
+          (traderReferralCode as any).wallet.code
+        : (traderReferralCode.savedCode ??
+          (traderReferralCode.verification.kind === 'valid' ? traderReferralCode.verification.code : undefined))
     : undefined
   const traderHasCode = Boolean(traderCode)
   const triggerVolume =
@@ -164,8 +165,8 @@ export default function AccountMyRewards() {
   const statsUpdatedTitle = statsUpdatedAbsoluteLabel !== '-' ? statsUpdatedAbsoluteLabel : undefined
 
   const handleOpenRewardsModal = useCallback(() => {
-    referralActions.openModal('rewards')
-  }, [referralActions])
+    traderReferralCodeActions.openModal('rewards')
+  }, [traderReferralCodeActions])
 
   const handleConnect = useCallback(() => {
     toggleWalletModal()
@@ -192,7 +193,7 @@ export default function AccountMyRewards() {
             <Trans>Your wallet is ineligible</Trans>
           </IneligibleTitle>
           <IneligibleSubtitle>
-            <ReferralIneligibleCopy incomingCode={incomingIneligibleCode} />
+            <TraderReferralCodeIneligibleCopy incomingCode={incomingIneligibleCode} />
           </IneligibleSubtitle>
           <IneligibleActions>
             <ButtonPrimary onClick={handleGoBack}>
@@ -227,7 +228,7 @@ export default function AccountMyRewards() {
                 </ButtonPrimary>
               )}
             </HeroActions>
-            <ReferralTermsFaqLinks />
+            <AffiliateTermsFaqLinks />
           </HeroContent>
         </HeroCard>
       ) : (

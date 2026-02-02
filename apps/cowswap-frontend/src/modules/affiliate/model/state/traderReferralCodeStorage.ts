@@ -2,16 +2,19 @@ import { Dispatch, SetStateAction, useEffect } from 'react'
 
 import { isProdLike } from '@cowprotocol/common-utils'
 
-import { reduceRemoveCode, reduceSetSavedCode } from './referralReducers'
+import { reduceRemoveCode, reduceSetSavedCode } from './traderReferralCodeReducers'
 
 import { AFFILIATE_PARTNER_STORAGE_KEY } from '../../config/constants'
 import { sanitizeReferralCode } from '../../lib/affiliate-program-utils'
-import { ReferralDomainState } from '../types'
+import { TraderReferralCodeState } from '../partner-trader-types'
 
-type SetReferralState = Dispatch<SetStateAction<ReferralDomainState>>
+type SetTraderReferralCodeState = Dispatch<SetStateAction<TraderReferralCodeState>>
 type SetHydratedState = Dispatch<SetStateAction<boolean>>
 
-export function useReferralHydration(setState: SetReferralState, setHydrated: SetHydratedState): void {
+export function useTraderReferralCodeHydration(
+  setState: SetTraderReferralCodeState,
+  setHydrated: SetHydratedState,
+): void {
   useEffect(() => {
     if (typeof window === 'undefined') {
       setHydrated(true)
@@ -33,7 +36,7 @@ export function useReferralHydration(setState: SetReferralState, setHydrated: Se
     } catch (error) {
       shouldHydrate = true
       if (!isProdLike) {
-        console.warn('[Referral] Failed to read saved code from storage', error)
+        console.warn('[ReferralCode] Failed to read saved code from storage', error)
       }
     }
 
@@ -43,7 +46,7 @@ export function useReferralHydration(setState: SetReferralState, setHydrated: Se
   }, [setHydrated, setState])
 }
 
-export function useReferralPersistence(savedCode: string | undefined, hasHydrated: boolean): void {
+export function useTraderReferralCodePersistence(savedCode: string | undefined, hasHydrated: boolean): void {
   useEffect(() => {
     if (!hasHydrated || typeof window === 'undefined') {
       return
@@ -57,13 +60,13 @@ export function useReferralPersistence(savedCode: string | undefined, hasHydrate
       }
     } catch (error) {
       if (!isProdLike) {
-        console.warn('[Referral] Failed to persist saved code', error)
+        console.warn('[ReferralCode] Failed to persist saved code', error)
       }
     }
   }, [hasHydrated, savedCode])
 }
 
-export function useReferralStorageSync(setState: SetReferralState): void {
+export function useTraderReferralCodeStorageSync(setState: SetTraderReferralCodeState): void {
   useEffect(() => {
     if (typeof window === 'undefined') {
       return
@@ -99,7 +102,7 @@ export function useReferralStorageSync(setState: SetReferralState): void {
         applyValue(current)
       } catch (error) {
         if (!isProdLike) {
-          console.warn('[Referral] Failed to sync saved code from storage on focus', error)
+          console.warn('[ReferralCode] Failed to sync saved code from storage on focus', error)
         }
       }
     }

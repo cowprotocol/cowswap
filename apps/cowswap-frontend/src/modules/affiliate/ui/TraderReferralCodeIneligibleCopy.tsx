@@ -6,11 +6,11 @@ import { Trans } from '@lingui/react/macro'
 
 import { AFFILIATE_HOW_IT_WORKS_URL } from '../config/constants'
 
-export interface ReferralIneligibleCopyProps {
+export interface TraderReferralCodeIneligibleCopyProps {
   incomingCode?: string
 }
 
-export function ReferralHowItWorksLink(): ReactNode {
+export function TraderReferralCodeHowItWorksLink(): ReactNode {
   return (
     <LinkStyledButton as="a" href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
       <Trans>How it works.</Trans>
@@ -18,7 +18,7 @@ export function ReferralHowItWorksLink(): ReactNode {
   )
 }
 
-export function ReferralIneligibleCopy(props: ReferralIneligibleCopyProps): ReactNode {
+export function TraderReferralCodeIneligibleCopy(props: TraderReferralCodeIneligibleCopyProps): ReactNode {
   const { incomingCode } = props
 
   return (
@@ -36,7 +36,7 @@ export function ReferralIneligibleCopy(props: ReferralIneligibleCopyProps): Reac
           <Trans>This wallet has already traded on CoW Swap. Referral rewards are for new wallets only.</Trans>{' '}
         </>
       )}
-      <ReferralHowItWorksLink />
+      <TraderReferralCodeHowItWorksLink />
     </>
   )
 }
