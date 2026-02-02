@@ -155,7 +155,6 @@
     "@types/sortablejs": "^1.15.8",
     "@types/styled-components": "5.1.34",
     "@web3-react/types": "^8.2.3",
-    "@welldone-software/why-did-you-render": "^10.0.1",
     "jest-fetch-mock": "^3.0.3",
     "jotai-devtools": "0.8.0",
     "react-cosmos": "^7.0.0",
