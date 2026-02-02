@@ -14,13 +14,13 @@ export function useSafeApiKit(): SafeApiKit | null {
   const lastRequestedChainId = useRef<number | null>(null)
 
   useAsyncEffect(async () => {
-    lastRequestedChainId.current = chainId || null;
+    lastRequestedChainId.current = chainId || null
 
     if (chainId && isSafeWallet) {
-      const safeApiKit = await createSafeApiKitInstance(chainId);
+      const safeApiKit = await createSafeApiKitInstance(chainId)
 
       if (chainId === lastRequestedChainId.current) {
-        setSafeApiClient(safeApiKit);
+        setSafeApiClient(safeApiKit)
       }
     } else {
       setSafeApiClient(null)

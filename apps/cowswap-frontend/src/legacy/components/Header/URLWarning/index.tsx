@@ -1,3 +1,5 @@
+import { useCallback } from 'react'
+
 import { hashCode, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ClosableBanner } from '@cowprotocol/ui'
@@ -10,7 +12,6 @@ import { useCriticalAnnouncements, useNonCriticalAnnouncements } from 'common/ho
 import { GlobalWarning } from 'common/pure/GlobalWarning'
 
 import { H2, LinkScrollableStyled, Table } from '../../Markdown/components'
-import { useCallback } from 'react'
 
 function useGetCmsAnnouncement(chainId: number): string | undefined {
   const critical = useCriticalAnnouncements(chainId)
@@ -40,20 +41,18 @@ export function URLWarning() {
   const announcementText = useGetCmsAnnouncement(chainId)
   const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
 
-  const callback = useCallback((close: () => void) => (
-    <GlobalWarning onClose={close}>
-      <ReactMarkdown components={markdownComponents as Components}>{announcementText}</ReactMarkdown>
-    </GlobalWarning>
-  ), [announcementText])
+  const callback = useCallback(
+    (close: () => void) => (
+      <GlobalWarning onClose={close}>
+        <ReactMarkdown components={markdownComponents as Components}>{announcementText}</ReactMarkdown>
+      </GlobalWarning>
+    ),
+    [announcementText],
+  )
 
   if (!announcementText) {
     return null
   }
 
-  return (
-    <ClosableBanner
-      storageKey={BANNER_IDS.ANNOUNCEMENT + contentHash}
-      callback={callback}
-    />
-  )
+  return <ClosableBanner storageKey={BANNER_IDS.ANNOUNCEMENT + contentHash} callback={callback} />
 }

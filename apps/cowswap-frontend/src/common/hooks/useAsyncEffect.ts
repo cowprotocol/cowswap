@@ -29,5 +29,7 @@ export function useAsyncEffect(fn: () => Promise<void | (() => void)>, deps: Rea
       isMounted = false
       cleanupFn?.()
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
 }

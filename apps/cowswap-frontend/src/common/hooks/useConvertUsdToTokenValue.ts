@@ -27,6 +27,7 @@ export function useConvertUsdToTokenValue(
 
       return typedValue
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currencyUsdcPrice, currency],
   )
 }
