@@ -1308,6 +1308,9 @@ importers:
 
   libs/analytics:
     dependencies:
+      '@cowprotocol/common-const':
+        specifier: workspace:*
+        version: link:../common-const
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -1320,6 +1323,9 @@ importers:
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
+      '@uniswap/sdk-core':
+        specifier: ^3.0.1
+        version: 3.2.6
       react:
         specifier: 19.1.2
         version: 19.1.2
