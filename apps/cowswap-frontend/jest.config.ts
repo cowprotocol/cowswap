@@ -1,5 +1,9 @@
 // this is not used for now. we use "craco test", but eventually we will
 
+import path from 'path'
+
+const workspaceRoot = path.resolve(__dirname, '../..')
+
 export default {
   displayName: 'cowswap',
   preset: '../../jest.preset.js',
@@ -16,6 +20,7 @@ export default {
     '/node_modules/(?!(\\.pnpm|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown))',
   ],
   moduleNameMapper: {
+    '^wagmi$': require.resolve('wagmi', { paths: [workspaceRoot] }),
     '^@reown/appkit/react$': '<rootDir>/../../testing/reownMock.ts',
   },
 }
