@@ -1,11 +1,14 @@
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
+import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
+import ICON_QR_CODE from '@cowprotocol/assets/images/icon-qr-code.svg'
+import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary, ButtonSecondary, ButtonSize, Font, HelpTooltip, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, HelpTooltip, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -13,7 +16,8 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
 import { toDataURL, toString } from 'qrcode'
-import { Grid, Lock, RotateCw, X } from 'react-feather'
+import { RotateCw } from 'react-feather'
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import CopyHelper from 'legacy/components/Copy'
@@ -24,6 +28,7 @@ import {
   buildPartnerTypedData,
   formatUsdcCompact,
   formatUsdCompact,
+  generateSuggestedCode,
   isReferralCodeLengthValid,
   sanitizeReferralCode,
 } from 'modules/affiliate/lib/affiliate-program-utils'
@@ -33,6 +38,26 @@ import {
   CardTitle,
   Donut,
   DonutValue,
+  Form,
+  HelperText,
+  InlineError,
+  Label,
+  LabelActions,
+  LabelRow,
+  LinkedActionButton,
+  LinkedActionIcon,
+  LinkedActions,
+  LinkedBadge,
+  LinkedCard,
+  LinkedCodeRow,
+  LinkedCodeText,
+  LinkedCopy,
+  LinkedFooter,
+  LinkedFooterNote,
+  LinkedLinkRow,
+  LinkedLinkText,
+  MiniAction,
+  PrimaryAction,
   RewardsCol1Card,
   RewardsCol2Card,
   MetricItem,
@@ -45,11 +70,12 @@ import {
   HeroSubtitle,
   HeroTitle,
   InlineNote,
-  MetaRow,
   AffiliateTermsFaqLinks,
   NextPayoutCard,
   RewardsWrapper,
   LabelContent,
+  StatusText,
+  LinkedMetaList,
 } from 'modules/affiliate/ui/shared'
 import { PartnerReferralCodeInputRow, type TrailingIconKind } from 'modules/affiliate/ui/TraderReferralCodeInput'
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -57,7 +83,6 @@ import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useModalState } from 'common/hooks/useModalState'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { CowModal } from 'common/pure/Modal'
-import { CardsLoader, CardsSpinner } from 'pages/Account/styled'
 
 const QR_SIZE_PX = 220
 const EMPTY_VALUE_LABEL = '-'
@@ -80,7 +105,7 @@ export default function AccountAffiliate() {
   const onSelectNetwork = useOnSelectNetwork()
   const isMainnet = useMemo(() => chainId === SupportedChainId.MAINNET, [chainId])
 
-  const [loading, setLoading] = useState(false)
+  const [codeLoading, setCodeLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [existingCode, setExistingCode] = useState<string | null>(null)
   const [inputCode, setInputCode] = useState('')
@@ -196,14 +221,14 @@ export default function AccountAffiliate() {
     if (!account || !isMainnet) {
       setExistingCode(null)
       setCreatedAt(null)
-      setLoading(false)
+      setCodeLoading(false)
       setPartnerStats(null)
       setStatsUpdatedAt(null)
       setPartnerRewardAmount(null)
       return
     }
 
-    setLoading(true)
+    setCodeLoading(true)
     setErrorMessage(null)
 
     bffAffiliateApi
@@ -234,7 +259,7 @@ export default function AccountAffiliate() {
       })
       .finally(() => {
         if (!cancelled) {
-          setLoading(false)
+          setCodeLoading(false)
         }
       })
 
@@ -516,252 +541,242 @@ export default function AccountAffiliate() {
     <RewardsWrapper>
       <PageTitle title={i18n._(PAGE_TITLES.AFFILIATE)} />
 
-      {loading ? (
-        <CardsLoader>
-          <CardsSpinner />
-        </CardsLoader>
+      {showHero ? (
+        <HeroCard>
+          <HeroContent>
+            <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
+            <HeroTitle>
+              <Trans>
+                Invite your friends <br /> and earn rewards
+              </Trans>
+            </HeroTitle>
+            <HeroSubtitle>
+              <Trans>
+                You and your referrals can earn a flat fee <br /> for the eligible volume done through the app. link.
+              </Trans>
+            </HeroSubtitle>
+            <HeroActions>
+              {!isConnected && (
+                <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleConnect} data-testid="affiliate-connect">
+                  <Trans>Connect wallet</Trans>
+                </ButtonPrimary>
+              )}
+              {isConnected && showUnsupported && (
+                <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleSwitchToMainnet}>
+                  <Trans>Switch to Ethereum</Trans>
+                </ButtonPrimary>
+              )}
+              {isConnected && !showUnsupported && !isSignerAvailable && !showLinkedFlow && (
+                <ButtonPrimary onClick={handleConnect} data-testid="affiliate-unlock">
+                  <Trans>Become an affiliate</Trans>
+                </ButtonPrimary>
+              )}
+            </HeroActions>
+            <AffiliateTermsFaqLinks />
+            {showUnsupported && (
+              <InlineNote>
+                <Trans>Affiliate payouts and registration happens on Ethereum mainnet.</Trans>
+              </InlineNote>
+            )}
+          </HeroContent>
+        </HeroCard>
       ) : (
         <>
-          {showHero ? (
-            <HeroCard>
-              <HeroContent>
-                <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
-                <HeroTitle>
-                  <Trans>
-                    Invite your friends <br /> and earn rewards
-                  </Trans>
-                </HeroTitle>
-                <HeroSubtitle>
-                  <Trans>
-                    You and your referrals can earn a flat fee <br /> for the eligible volume done through the app.
-                    link.
-                  </Trans>
-                </HeroSubtitle>
-                <HeroActions>
-                  {!isConnected && (
-                    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleConnect} data-testid="affiliate-connect">
-                      <Trans>Connect wallet</Trans>
-                    </ButtonPrimary>
-                  )}
-                  {isConnected && showUnsupported && (
-                    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleSwitchToMainnet}>
-                      <Trans>Switch to Ethereum</Trans>
-                    </ButtonPrimary>
-                  )}
-                  {isConnected && !showUnsupported && !isSignerAvailable && !showLinkedFlow && (
-                    <ButtonPrimary onClick={handleConnect} data-testid="affiliate-unlock">
-                      <Trans>Become an affiliate</Trans>
-                    </ButtonPrimary>
-                  )}
-                </HeroActions>
-                <AffiliateTermsFaqLinks />
-                {showUnsupported && (
-                  <InlineNote>
-                    <Trans>Affiliate payouts and registration happens on Ethereum mainnet.</Trans>
-                  </InlineNote>
-                )}
-              </HeroContent>
-            </HeroCard>
-          ) : (
-            <>
-              <RewardsThreeColumnGrid>
-                <RewardsCol1Card>
-                  {showLinkedFlow && existingCode ? (
-                    <LinkedBlock>
-                      <CardTitle>
-                        <Trans>Your referral code</Trans>
-                      </CardTitle>
-
-                      <LinkedCard>
-                        <LinkedCodeRow>
-                          <LinkedCopy>
-                            <CopyHelper toCopy={existingCode} iconSize={16} hideCopiedLabel />
-                            <LinkedCodeText>{existingCode}</LinkedCodeText>
-                          </LinkedCopy>
-                          <LinkedBadge>
-                            <Lock size={14} />
-                            <Trans>Created</Trans>
-                          </LinkedBadge>
-                        </LinkedCodeRow>
-                        <LinkedLinkRow>
-                          <LinkedCopy>
-                            <CopyHelper toCopy={referralLink} iconSize={16} hideCopiedLabel />
-                            <LinkedLinkText>{referralLink}</LinkedLinkText>
-                          </LinkedCopy>
-                        </LinkedLinkRow>
-                      </LinkedCard>
-
-                      <MetricItem>
-                        <span>
-                          <Trans>Created on</Trans>
-                        </span>
-                        <strong>{createdOnLabel}</strong>
-                      </MetricItem>
-
-                      <LinkedFooter>
-                        <LinkedFooterNote>
-                          <Trans>Links/codes don't reveal your wallet.</Trans>
-                        </LinkedFooterNote>
-                        <LinkedActions>
-                          <LinkedActionButton
-                            as="a"
-                            href={`https://twitter.com/intent/tweet?text=${shareText}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <LinkedActionIcon>
-                              <X size={14} />
-                            </LinkedActionIcon>
-                            <Trans>Share on X</Trans>
-                          </LinkedActionButton>
-                          <LinkedActionButton onClick={handleOpenQr}>
-                            <LinkedActionIcon>
-                              <Grid size={14} />
-                            </LinkedActionIcon>
-                            <Trans>Download QR</Trans>
-                          </LinkedActionButton>
-                        </LinkedActions>
-                      </LinkedFooter>
-                    </LinkedBlock>
-                  ) : (
-                    <>
-                      <CardTitle>
-                        <Trans>Create your referral code</Trans>
-                      </CardTitle>
-                      <HelperText>
-                        <Trans>
-                          Type or generate a code (subject to availability). Saving locks this code to your wallet and
-                          can't be changed. Links/codes don't reveal your wallet.
-                        </Trans>
-                      </HelperText>
-                      <BottomMetaRow>
-                        <Form>
-                          <LabelRow>
-                            <Label htmlFor="affiliate-code">
-                              <LabelContent>
-                                <Trans>Referral code</Trans>
-                                <HelpTooltip text={codeTooltip} />
-                              </LabelContent>
-                            </Label>
-                            <LabelActions>
-                              <MiniAction onClick={handleGenerate} disabled={submitting}>
-                                <Trans>generate</Trans>
-                                <RotateCw size={10} strokeWidth={3} />
-                              </MiniAction>
-                            </LabelActions>
-                          </LabelRow>
-                          <PartnerReferralCodeInputRow
-                            displayCode={inputCode}
-                            hasError={showInvalidFormat || showCodeUnavailable || availability === 'error'}
-                            isInputDisabled={submitting}
-                            isEditing
-                            isLinked={false}
-                            trailingIconKind={trailingIconKind}
-                            canSubmitSave={canSave}
-                            onChange={handleInputChange}
-                            onPrimaryClick={handleCreate}
-                            onSave={handleCreate}
-                            inputRef={inputRef}
-                            isLoading={availability === 'checking'}
-                            inputId="affiliate-code"
-                            placeholder={t`Enter your code`}
-                            size="compact"
-                            trailingIconLabels={{
-                              pending: <Trans>Checking</Trans>,
-                              success: <Trans>Available</Trans>,
-                            }}
-                            trailingIconTitles={{
-                              pending: t`Checking`,
-                              success: t`Available`,
-                            }}
-                          />
-                          {showCodeUnavailable && (
-                            <InlineError>
-                              <Trans>This code is taken. Generate another one.</Trans>
-                            </InlineError>
-                          )}
-                          {showInvalidFormat && (
-                            <InlineError>
-                              <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
-                            </InlineError>
-                          )}
-                          <PrimaryAction
-                            onClick={handleCreate}
-                            disabled={!canSave}
-                            data-testid="affiliate-start-confirm"
-                          >
-                            {submitting ? t`Signing...` : t`Save & lock code`}
-                          </PrimaryAction>
-                        </Form>
-                      </BottomMetaRow>
-                    </>
-                  )}
-                </RewardsCol1Card>
-
-                <RewardsCol2Card showLoader={statsLoading}>
+          <RewardsThreeColumnGrid>
+            <RewardsCol1Card showLoader={codeLoading}>
+              {codeLoading ? (
+                <></>
+              ) : showLinkedFlow && existingCode ? (
+                <>
                   <CardTitle>
-                    <Trans>Your referral traffic</Trans>
+                    <Trans>Your referral code</Trans>
                   </CardTitle>
-                  <RewardsMetricsRow>
-                    <RewardsMetricsList>
-                      <MetricItem>
-                        <span>
-                          <Trans>Left to next {rewardAmountLabel}</Trans>
-                        </span>
-                        <strong>{leftToNextRewardLabel}</strong>
-                      </MetricItem>
-                      <MetricItem>
-                        <span>
-                          <Trans>Total earned</Trans>
-                        </span>
-                        <strong>{totalEarnedLabel}</strong>
-                      </MetricItem>
-                      <MetricItem>
-                        <span>
-                          <Trans>Claimed</Trans>
-                        </span>
-                        <strong>{paidOutLabel}</strong>
-                      </MetricItem>
-                      <MetricItem>
-                        <span>
-                          <Trans>Volume referred</Trans>
-                        </span>
-                        <strong>{totalVolumeLabel}</strong>
-                      </MetricItem>
-                      <MetricItem>
-                        <span>
-                          <Trans>Active referrals</Trans>
-                        </span>
-                        <strong>{activeReferralsLabel}</strong>
-                      </MetricItem>
-                    </RewardsMetricsList>
+                  <LinkedCard>
+                    <LinkedCodeRow>
+                      <LinkedCopy>
+                        <CopyHelper toCopy={existingCode} iconSize={16} hideCopiedLabel />
+                        <LinkedCodeText>{existingCode}</LinkedCodeText>
+                      </LinkedCopy>
+                      <LinkedBadge>
+                        <SVG src={LockedIcon} width={12} height={10} />
+                        <Trans>Created</Trans>
+                      </LinkedBadge>
+                    </LinkedCodeRow>
+                    <LinkedLinkRow>
+                      <LinkedCopy>
+                        <CopyHelper toCopy={referralLink} iconSize={16} hideCopiedLabel />
+                        <LinkedLinkText>{referralLink}</LinkedLinkText>
+                      </LinkedCopy>
+                    </LinkedLinkRow>
+                  </LinkedCard>
 
-                    <Donut $value={referralTrafficPercent}>
-                      <DonutValue>
-                        <span>{progressToNextRewardLabel}</span>
-                        {hasReferralTarget && (
-                          <small>
-                            <Trans>of</Trans> {referralTargetLabel}
-                          </small>
-                        )}
-                      </DonutValue>
-                    </Donut>
-                  </RewardsMetricsRow>
+                  <LinkedMetaList>
+                    <MetricItem>
+                      <span>
+                        <Trans>Created on</Trans>
+                      </span>
+                      <strong>{createdOnLabel}</strong>
+                    </MetricItem>
+                  </LinkedMetaList>
+
+                  <LinkedFooter>
+                    <LinkedFooterNote>
+                      <Trans>Links/codes don't reveal your wallet.</Trans>
+                    </LinkedFooterNote>
+                    <LinkedActions>
+                      <LinkedActionButton
+                        as="a"
+                        href={`https://twitter.com/intent/tweet?text=${shareText}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <LinkedActionIcon>
+                          <SVG src={ICON_SOCIAL_X} width={14} height={14} />
+                        </LinkedActionIcon>
+                        <Trans>Share on X</Trans>
+                      </LinkedActionButton>
+                      <LinkedActionButton onClick={handleOpenQr}>
+                        <LinkedActionIcon>
+                          <SVG src={ICON_QR_CODE} width={14} height={14} />
+                        </LinkedActionIcon>
+                        <Trans>Download QR</Trans>
+                      </LinkedActionButton>
+                    </LinkedActions>
+                  </LinkedFooter>
+                </>
+              ) : (
+                <>
+                  <CardTitle>
+                    <Trans>Create your referral code</Trans>
+                  </CardTitle>
+                  <HelperText>
+                    <Trans>
+                      Type or generate a code (subject to availability). Saving locks this code to your wallet and can't
+                      be changed. Links/codes don't reveal your wallet.
+                    </Trans>
+                  </HelperText>
                   <BottomMetaRow>
-                    <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
+                    <Form>
+                      <LabelRow>
+                        <Label htmlFor="affiliate-code">
+                          <LabelContent>
+                            <Trans>Referral code</Trans>
+                            <HelpTooltip text={codeTooltip} />
+                          </LabelContent>
+                        </Label>
+                        <LabelActions>
+                          <MiniAction onClick={handleGenerate} disabled={submitting}>
+                            <Trans>generate</Trans>
+                            <RotateCw size={10} strokeWidth={3} />
+                          </MiniAction>
+                        </LabelActions>
+                      </LabelRow>
+                      <PartnerReferralCodeInputRow
+                        displayCode={inputCode}
+                        hasError={showInvalidFormat || showCodeUnavailable || availability === 'error'}
+                        isInputDisabled={submitting}
+                        isEditing
+                        isLinked={false}
+                        trailingIconKind={trailingIconKind}
+                        canSubmitSave={canSave}
+                        onChange={handleInputChange}
+                        onPrimaryClick={handleCreate}
+                        onSave={handleCreate}
+                        inputRef={inputRef}
+                        isLoading={availability === 'checking'}
+                        inputId="affiliate-code"
+                        placeholder={t`Enter your code`}
+                        size="compact"
+                        trailingIconLabels={{
+                          pending: <Trans>Checking</Trans>,
+                          success: <Trans>Available</Trans>,
+                        }}
+                        trailingIconTitles={{
+                          pending: t`Checking`,
+                          success: t`Available`,
+                        }}
+                      />
+                      {showCodeUnavailable && (
+                        <InlineError>
+                          <Trans>This code is taken. Generate another one.</Trans>
+                        </InlineError>
+                      )}
+                      {showInvalidFormat && (
+                        <InlineError>
+                          <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
+                        </InlineError>
+                      )}
+                      <PrimaryAction onClick={handleCreate} disabled={!canSave} data-testid="affiliate-start-confirm">
+                        {submitting ? t`Signing...` : t`Save & lock code`}
+                      </PrimaryAction>
+                    </Form>
                   </BottomMetaRow>
-                </RewardsCol2Card>
-                <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
-              </RewardsThreeColumnGrid>
+                </>
+              )}
+            </RewardsCol1Card>
 
-              <AffiliateTermsFaqLinks align="center" />
-            </>
-          )}
+            <RewardsCol2Card showLoader={statsLoading}>
+              <CardTitle>
+                <Trans>Your referral traffic</Trans>
+              </CardTitle>
+              <RewardsMetricsRow>
+                <RewardsMetricsList>
+                  <MetricItem>
+                    <span>
+                      <Trans>Left to next {rewardAmountLabel}</Trans>
+                    </span>
+                    <strong>{leftToNextRewardLabel}</strong>
+                  </MetricItem>
+                  <MetricItem>
+                    <span>
+                      <Trans>Total earned</Trans>
+                    </span>
+                    <strong>{totalEarnedLabel}</strong>
+                  </MetricItem>
+                  <MetricItem>
+                    <span>
+                      <Trans>Claimed</Trans>
+                    </span>
+                    <strong>{paidOutLabel}</strong>
+                  </MetricItem>
+                  <MetricItem>
+                    <span>
+                      <Trans>Volume referred</Trans>
+                    </span>
+                    <strong>{totalVolumeLabel}</strong>
+                  </MetricItem>
+                  <MetricItem>
+                    <span>
+                      <Trans>Active referrals</Trans>
+                    </span>
+                    <strong>{activeReferralsLabel}</strong>
+                  </MetricItem>
+                </RewardsMetricsList>
 
-          {errorMessage && <StatusText $variant="error">{errorMessage}</StatusText>}
-          {successMessage && <StatusText $variant="success">{successMessage}</StatusText>}
+                <Donut $value={referralTrafficPercent}>
+                  <DonutValue>
+                    <span>{progressToNextRewardLabel}</span>
+                    {hasReferralTarget && (
+                      <small>
+                        <Trans>of</Trans> {referralTargetLabel}
+                      </small>
+                    )}
+                  </DonutValue>
+                </Donut>
+              </RewardsMetricsRow>
+              <BottomMetaRow>
+                <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
+              </BottomMetaRow>
+            </RewardsCol2Card>
+            <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
+          </RewardsThreeColumnGrid>
+
+          <AffiliateTermsFaqLinks align="center" />
         </>
       )}
+
+      {errorMessage && <StatusText $variant="error">{errorMessage}</StatusText>}
+      {successMessage && <StatusText $variant="success">{successMessage}</StatusText>}
 
       <CowModal isOpen={isQrOpen} onDismiss={closeQrModal}>
         <ModalContent>
@@ -816,201 +831,11 @@ export default function AccountAffiliate() {
   )
 }
 
-function generateSuggestedCode(): string {
-  const suffix = randomDigits(6)
-  return `COW-${suffix}`
-}
-
-function randomDigits(length: number): string {
-  return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
-}
-
-const Form = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`
-
-const LabelRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-`
-
-const Label = styled.label`
-  font-size: 14px;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const LabelActions = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const MiniAction = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 2px 6px;
-  border-radius: 999px;
-  border: 1px solid var(${UI.COLOR_BORDER});
-  background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  text-transform: lowercase;
-
-  &:hover:not(:disabled) {
-    background: var(${UI.COLOR_PAPER_DARKER});
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: default;
-  }
-`
-
-const HelperText = styled.span`
-  font-size: 13px;
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
-  line-height: 1.5;
-  text-align: center;
-`
-
-const InlineError = styled.span`
-  font-size: 12px;
-  color: var(${UI.COLOR_DANGER_TEXT});
-`
-
-const PrimaryAction = styled(ButtonPrimary)`
-  width: 100%;
-`
-
-const LinkedBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  flex: 1;
-`
-
-const LinkedCard = styled.div`
-  border: 1px solid var(${UI.COLOR_INFO_BG});
-  background: var(${UI.COLOR_PAPER});
-  border-radius: 9px;
-  overflow: hidden;
-`
-
-const LinkedCodeRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(${UI.COLOR_INFO_BG});
-  color: var(${UI.COLOR_INFO_TEXT});
-`
-
-const LinkedCopy = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-`
-
-const LinkedCodeText = styled.span`
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  font-size: 18px;
-  white-space: nowrap;
-  font-family: ${Font.familyMono};
-`
-
-const LinkedBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  font-size: 14px;
-`
-
-const LinkedLinkRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
-  border-top: 1px solid var(${UI.COLOR_BORDER});
-`
-
-const LinkedLinkText = styled.span`
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`
-
-const LinkedActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-`
-
-const LinkedFooter = styled.div`
-  margin-top: auto;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-`
-
-const LinkedFooterNote = styled(MetaRow)`
-  width: 100%;
-  justify-content: center;
-  text-align: center;
-`
-
-const LinkedActionButton = styled(ButtonSecondary)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-  border-radius: 12px;
-  border: 1px solid var(${UI.COLOR_BORDER});
-  background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_TEXT});
-  font-weight: 600;
-  font-size: 14px;
-  padding: 8px 14px;
-  // min-height: 36px;
-`
-
-const LinkedActionIcon = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: inherit;
-`
-
-const StatusText = styled.p<{ $variant: 'error' | 'success' }>`
-  margin: 0;
-  font-size: 14px;
-  color: ${({ $variant }) => ($variant === 'error' ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
-`
-
 const ModalContent = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   width: 100%;
 `
 
@@ -1029,7 +854,7 @@ const ModalTitle = styled.h4`
 const ModalClose = styled.button`
   border: none;
   background: transparent;
-  font-size: 20px;
+  font-size: 28px;
   cursor: pointer;
   color: var(${UI.COLOR_TEXT_OPACITY_60});
 `
@@ -1041,19 +866,20 @@ const ModalBody = styled.div`
 `
 
 const QrUrl = styled.p`
-  margin: 0;
-  font-size: 12px;
+  margin: 0 auto;
+  font-size: 13px;
   color: var(${UI.COLOR_TEXT_OPACITY_60});
   word-break: break-all;
 `
 
 const QrFrame = styled.div`
   border-radius: 16px;
-  background: var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
 `
 
 const QrImage = styled.img`
@@ -1102,6 +928,6 @@ const DownloadLink = styled.a<{ $disabled: boolean }>`
   border-radius: 12px;
   border: 1px solid var(${UI.COLOR_BORDER});
   text-decoration: none;
-  color: ${({ $disabled }) => ($disabled ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ $disabled }) => ($disabled ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_TEXT_OPACITY_60})`)};
   pointer-events: ${({ $disabled }) => ($disabled ? 'none' : 'auto')};
 `

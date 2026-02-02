@@ -99,6 +99,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
       position: relative;
       overflow: hidden;
       &::after {
+        z-index: 2;
         position: absolute;
         top: 0;
         right: 0;

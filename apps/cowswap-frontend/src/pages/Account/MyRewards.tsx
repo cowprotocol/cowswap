@@ -2,25 +2,26 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
+import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
-import { ButtonPrimary, Font, UI } from '@cowprotocol/ui'
+import { formatShortDate } from '@cowprotocol/common-utils'
+import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
-import { AlertCircle, Lock } from 'react-feather'
+import { AlertCircle } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi, isSupportedReferralNetwork } from 'modules/affiliate/api'
 import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from 'modules/affiliate/config/constants'
 import {
+  formatUpdatedAt,
   formatUsdcCompact,
   formatUsdCompact,
   getIncomingIneligibleCode,
@@ -29,6 +30,7 @@ import { useTraderReferralCode } from 'modules/affiliate/model/hooks/useTraderRe
 import { useTraderReferralCodeActions } from 'modules/affiliate/model/hooks/useTraderReferralCodeActions'
 import { TraderStatsResponse } from 'modules/affiliate/model/partner-trader-types'
 import {
+  AffiliateTermsFaqLinks,
   BottomMetaRow,
   CardTitle,
   Donut,
@@ -38,21 +40,31 @@ import {
   HeroContent,
   HeroSubtitle,
   HeroTitle,
-  AffiliateTermsFaqLinks,
+  IneligibleCard,
+  IneligibleSubtitle,
+  IneligibleTitle,
+  LinkedBadge,
+  LinkedCard,
+  LinkedCodeRow,
+  LinkedCodeText,
+  LinkedMetaList,
+  NextPayoutCard,
   RewardsCol1Card,
   RewardsCol2Card,
-  MetricItem,
+  RewardsHeader,
   RewardsMetricsList,
   RewardsMetricsRow,
-  NextPayoutCard,
   RewardsThreeColumnGrid,
   RewardsWrapper,
+  MetricItem,
+  UnsupportedNetworkCard,
+  UnsupportedNetworkHeader,
+  UnsupportedNetworkMessage,
+  ValidStatusBadge,
 } from 'modules/affiliate/ui/shared'
 import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/ui/TraderReferralCodeIneligibleCopy'
 import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/ui/TraderReferralCodeNetworkBanner'
 import { PageTitle } from 'modules/application/containers/PageTitle'
-
-import { Card } from 'pages/Account/styled'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function, complexity
 export default function AccountMyRewards() {
@@ -64,7 +76,7 @@ export default function AccountMyRewards() {
   const traderReferralCodeActions = useTraderReferralCodeActions()
   const [traderStats, setTraderStats] = useState<TraderStatsResponse | null>(null)
   const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
-  const [statsLoading, setStatsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const isConnected = Boolean(account)
   const supportedNetwork = chainId === undefined ? true : isSupportedReferralNetwork(chainId)
@@ -86,11 +98,11 @@ export default function AccountMyRewards() {
     if (!account) {
       setTraderStats(null)
       setStatsUpdatedAt(null)
-      setStatsLoading(false)
+      setLoading(false)
       return
     }
 
-    setStatsLoading(true)
+    setLoading(true)
     bffAffiliateApi
       .getTraderStats(account)
       .then((stats) => {
@@ -114,7 +126,7 @@ export default function AccountMyRewards() {
       })
       .finally(() => {
         if (!cancelled) {
-          setStatsLoading(false)
+          setLoading(false)
         }
       })
 
@@ -241,18 +253,18 @@ export default function AccountMyRewards() {
         ) : (
           <>
             <RewardsThreeColumnGrid>
-              <RewardsCol1Card showLoader={statsLoading}>
-                <Header>
+              <RewardsCol1Card showLoader={loading}>
+                <RewardsHeader>
                   <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
-                </Header>
+                </RewardsHeader>
                 <LinkedCard>
                   <LinkedCodeRow>
                     <LinkedCodeText>{traderCode}</LinkedCodeText>
                     {isLinked ? (
-                      <LinkedStatusBadge>
-                        <Lock size={14} />
+                      <LinkedBadge>
+                        <SVG src={LockedIcon} width={12} height={10} />
                         <Trans>Linked</Trans>
-                      </LinkedStatusBadge>
+                      </LinkedBadge>
                     ) : (
                       <ValidStatusBadge>
                         <SVG src={CheckIcon} title={t`Valid`} />
@@ -284,7 +296,7 @@ export default function AccountMyRewards() {
                 )}
               </RewardsCol1Card>
 
-              <RewardsCol2Card showLoader={statsLoading}>
+              <RewardsCol2Card showLoader={loading}>
                 <CardTitle>
                   <Trans>Next {rewardAmountLabel} reward</Trans>
                 </CardTitle>
@@ -325,7 +337,7 @@ export default function AccountMyRewards() {
                 </BottomMetaRow>
               </RewardsCol2Card>
 
-              <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
+              <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={loading} />
             </RewardsThreeColumnGrid>
           </>
         )}
@@ -333,116 +345,3 @@ export default function AccountMyRewards() {
     </>
   )
 }
-
-function formatUpdatedAt(value: Date | null): string {
-  if (!value) {
-    return '-'
-  }
-
-  return formatDateWithTimezone(value) ?? '-'
-}
-
-const IneligibleCard = styled(Card)`
-  max-width: 520px;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 20px;
-  position: relative;
-`
-
-const UnsupportedNetworkCard = styled(Card)`
-  min-height: 300px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-`
-
-const UnsupportedNetworkHeader = styled.h3`
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 20px;
-  color: var(${UI.COLOR_DANGER});
-`
-
-const UnsupportedNetworkMessage = styled.p`
-  margin: 0;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const IneligibleTitle = styled.h3`
-  margin: 0;
-  font-size: 22px;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const IneligibleSubtitle = styled.p`
-  margin: 0;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-  max-width: 520px;
-
-  strong {
-    color: var(${UI.COLOR_TEXT});
-  }
-`
-
-const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`
-
-const LinkedCard = styled.div`
-  border: 1px solid var(${UI.COLOR_INFO_BG});
-  background: var(${UI.COLOR_PAPER});
-  border-radius: 9px;
-  overflow: hidden;
-  width: 100%;
-`
-
-const LinkedCodeRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(${UI.COLOR_INFO_BG});
-  color: var(${UI.COLOR_INFO_TEXT});
-`
-
-const LinkedCodeText = styled.span`
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  font-size: 18px;
-  white-space: nowrap;
-  color: var(${UI.COLOR_INFO_TEXT});
-  font-family: ${Font.familyMono};
-`
-
-const LinkedStatusBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  font-size: 14px;
-`
-
-const ValidStatusBadge = styled(LinkedStatusBadge)`
-  color: var(${UI.COLOR_SUCCESS_TEXT});
-
-  svg {
-    fill: currentColor;
-  }
-`
-
-const LinkedMetaList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  width: 100%;
-`

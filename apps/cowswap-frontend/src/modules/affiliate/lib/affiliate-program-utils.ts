@@ -1,4 +1,4 @@
-import { formatLocaleNumber } from '@cowprotocol/common-utils'
+import { formatDateWithTimezone, formatLocaleNumber } from '@cowprotocol/common-utils'
 import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
@@ -115,4 +115,21 @@ export function getIncomingIneligibleCode(
   }
 
   return undefined
+}
+
+export function formatUpdatedAt(value: Date | null): string {
+  if (!value) {
+    return '-'
+  }
+
+  return formatDateWithTimezone(value) ?? '-'
+}
+
+export function generateSuggestedCode(): string {
+  const suffix = randomDigits(6)
+  return `COW-${suffix}`
+}
+
+function randomDigits(length: number): string {
+  return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
 }

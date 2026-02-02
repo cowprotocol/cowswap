@@ -1,6 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
 
-import { HelpTooltip, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSecondary, Font, HelpTooltip, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -16,6 +16,70 @@ export const RewardsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+`
+
+export const Form = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`
+
+export const LabelRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+`
+
+export const Label = styled.label`
+  font-size: 14px;
+  color: var(${UI.COLOR_TEXT});
+`
+
+export const LabelActions = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+`
+
+export const MiniAction = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid var(${UI.COLOR_BORDER});
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: lowercase;
+
+  &:hover:not(:disabled) {
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+`
+
+export const HelperText = styled.span`
+  font-size: 13px;
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  line-height: 1.5;
+  text-align: center;
+`
+
+export const InlineError = styled.span`
+  font-size: 12px;
+  color: var(${UI.COLOR_DANGER_TEXT});
+`
+
+export const PrimaryAction = styled(ButtonPrimary)`
+  width: 100%;
 `
 
 export const RewardsGrid = styled.div`
@@ -171,6 +235,127 @@ export const CardTitle = styled.h4`
   font-weight: 600;
 `
 
+export const LinkedCard = styled.div`
+  border: 1px solid var(${UI.COLOR_INFO_BG});
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 9px;
+  overflow: hidden;
+  width: 100%;
+`
+
+export const LinkedCodeRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(${UI.COLOR_INFO_BG});
+  color: var(${UI.COLOR_INFO_TEXT});
+`
+
+export const LinkedCodeText = styled.span`
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 18px;
+  white-space: nowrap;
+  color: inherit;
+  font-family: ${Font.familyMono};
+`
+
+export const LinkedBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+`
+
+export const LinkedMetaList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  width: 100%;
+`
+
+export const RewardsHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`
+
+export const ValidStatusBadge = styled(LinkedBadge)`
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+
+  svg {
+    fill: currentColor;
+  }
+`
+
+export const LinkedCopy = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+`
+
+export const LinkedLinkRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 12px;
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  border-top: 1px solid var(${UI.COLOR_BORDER});
+`
+
+export const LinkedLinkText = styled.span`
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+
+export const LinkedActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+`
+
+export const LinkedFooter = styled.div`
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+`
+
+export const LinkedActionButton = styled(ButtonSecondary)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  border-radius: 12px;
+  border: 1px solid var(${UI.COLOR_BORDER});
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT});
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 14px;
+  // min-height: 36px;
+`
+
+export const LinkedActionIcon = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+`
+
 export const LinkedHeader = styled.div`
   display: flex;
   align-items: center;
@@ -257,7 +442,7 @@ export const MetricsList = styled.div`
   gap: 8px;
 `
 
-export const MetaRow = styled.p`
+export const MetaRow = styled.div`
   margin: 0;
   font-size: 12px;
   color: var(${UI.COLOR_TEXT_OPACITY_60});
@@ -268,6 +453,65 @@ export const MetaRow = styled.p`
   span[title] {
     cursor: help;
   }
+`
+
+export const IneligibleCard = styled(Card)`
+  max-width: 520px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  position: relative;
+`
+
+export const IneligibleTitle = styled.h3`
+  margin: 0;
+  font-size: 22px;
+  color: var(${UI.COLOR_TEXT});
+`
+
+export const IneligibleSubtitle = styled.p`
+  margin: 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  max-width: 520px;
+
+  strong {
+    color: var(${UI.COLOR_TEXT});
+  }
+`
+
+export const UnsupportedNetworkCard = styled(Card)`
+  min-height: 300px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+`
+
+export const UnsupportedNetworkHeader = styled.h3`
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  color: var(${UI.COLOR_DANGER});
+`
+
+export const UnsupportedNetworkMessage = styled.p`
+  margin: 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+`
+
+export const LinkedFooterNote = styled(MetaRow)`
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+`
+
+export const StatusText = styled.p<{ $variant: 'error' | 'success' }>`
+  margin: 0;
+  font-size: 14px;
+  color: ${({ $variant }) => ($variant === 'error' ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
 `
 
 export const PayoutValue = styled.div`
