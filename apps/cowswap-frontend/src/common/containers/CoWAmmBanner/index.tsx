@@ -79,29 +79,31 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
 
   const bannerId = `${BANNER_IDS.COW_AMM}_${key}${isTokenSelectorView ? account : ''}`
 
+  const callback = useCallback((close: () => void) => (
+    <CoWAmmBannerContent
+      id={bannerId}
+      isDarkMode={isDarkMode}
+      title={t`CoW AMM`}
+      ctaText={isSmartContractWallet ? t`Booooost APR!` : t`Booooost APR gas-free!`}
+      isTokenSelectorView={!!isTokenSelectorView}
+      vampireAttackContext={vampireAttackContext}
+      tokensByAddress={tokensByAddress}
+      onCtaClick={() => {
+        handleCTAClick()
+        close()
+      }}
+      onClose={close}
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapAnalyticsCategory.COWSWAP,
+        action: `CoW AMM Banner [${key}] Close`,
+      })}
+    />
+  ), [bannerId, isDarkMode, isSmartContractWallet, isTokenSelectorView, vampireAttackContext, tokensByAddress, key, handleCTAClick]);
+
   return (
     <ClosableBanner
       storageKey={bannerId}
-      callback={(close) => (
-        <CoWAmmBannerContent
-          id={bannerId}
-          isDarkMode={isDarkMode}
-          title={t`CoW AMM`}
-          ctaText={isSmartContractWallet ? t`Booooost APR!` : t`Booooost APR gas-free!`}
-          isTokenSelectorView={!!isTokenSelectorView}
-          vampireAttackContext={vampireAttackContext}
-          tokensByAddress={tokensByAddress}
-          onCtaClick={() => {
-            handleCTAClick()
-            close()
-          }}
-          onClose={close}
-          data-click-event={toCowSwapGtmEvent({
-            category: CowSwapAnalyticsCategory.COWSWAP,
-            action: `CoW AMM Banner [${key}] Close`,
-          })}
-        />
-      )}
+      callback={callback}
     />
   )
 }
