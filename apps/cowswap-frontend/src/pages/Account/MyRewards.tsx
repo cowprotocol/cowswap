@@ -6,16 +6,18 @@ import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
-import { Lock } from 'react-feather'
+import { AlertCircle, Lock } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { bffAffiliateApi } from 'modules/affiliate/api'
+import { bffAffiliateApi, isSupportedReferralNetwork } from 'modules/affiliate/api'
+import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from 'modules/affiliate/config/constants'
 import {
   formatUsdcCompact,
   formatUsdCompact,
@@ -45,6 +47,7 @@ import {
   RewardsWrapper,
 } from 'modules/affiliate/ui/shared'
 import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/ui/TraderReferralCodeIneligibleCopy'
+import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/ui/TraderReferralCodeNetworkBanner'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { Card } from 'pages/Account/styled'
@@ -53,6 +56,7 @@ import { Card } from 'pages/Account/styled'
 export default function AccountMyRewards() {
   const { i18n } = useLingui()
   const { account } = useWalletInfo()
+  const chainId = useWalletChainId()
   const toggleWalletModal = useToggleWalletModal()
   const traderReferralCode = useTraderReferralCode()
   const traderReferralCodeActions = useTraderReferralCodeActions()
@@ -61,6 +65,8 @@ export default function AccountMyRewards() {
   const [statsLoading, setStatsLoading] = useState(false)
 
   const isConnected = Boolean(account)
+  const supportedNetwork = chainId === undefined ? true : isSupportedReferralNetwork(chainId)
+  const isUnsupportedNetwork = Boolean(account) && !supportedNetwork
   const incomingIneligibleCode = getIncomingIneligibleCode(
     traderReferralCode.incomingCode,
     traderReferralCode.verification,
@@ -170,136 +176,151 @@ export default function AccountMyRewards() {
     toggleWalletModal()
   }, [toggleWalletModal])
 
+  const supportedNetworks = AFFILIATE_SUPPORTED_NETWORK_NAMES.join(', ')
+
   return (
-    <RewardsWrapper>
-      <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
+    <>
+      <TraderReferralCodeNetworkBanner forceVisible onlyWhenUnsupported />
+      <RewardsWrapper>
+        <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 
-      {isIneligible ? (
-        <IneligibleCard>
-          <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
-
-          <IneligibleTitle>
-            <Trans>Your wallet is ineligible</Trans>
-          </IneligibleTitle>
-          <IneligibleSubtitle>
-            <TraderReferralCodeIneligibleCopy incomingCode={incomingIneligibleCode} />
-          </IneligibleSubtitle>
-        </IneligibleCard>
-      ) : !traderHasCode ? (
-        <HeroCard>
-          <HeroContent>
+        {isIneligible ? (
+          <IneligibleCard>
             <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
-            <HeroTitle>
-              <Trans>Earn while you trade</Trans>
-            </HeroTitle>
-            <HeroSubtitle>
-              <Trans>
-                Use a referral code to earn a flat fee for
-                <br />
-                the eligible volume done through the app.
-                <br />
-                New wallets only.
-              </Trans>
-            </HeroSubtitle>
-            <HeroActions>
-              {!isConnected ? (
-                <ButtonPrimary onClick={handleConnect}>
-                  <Trans>Connect wallet</Trans>
-                </ButtonPrimary>
-              ) : (
-                <ButtonPrimary onClick={handleOpenRewardsModal}>
-                  <Trans>Add code</Trans>
-                </ButtonPrimary>
-              )}
-            </HeroActions>
-            <AffiliateTermsFaqLinks />
-          </HeroContent>
-        </HeroCard>
-      ) : (
-        <>
-          <RewardsThreeColumnGrid>
-            <RewardsCol1Card showLoader={statsLoading}>
-              <Header>
-                <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
-              </Header>
-              <LinkedCard>
-                <LinkedCodeRow>
-                  <LinkedCodeText>{traderCode}</LinkedCodeText>
-                  {isLinked ? (
-                    <LinkedStatusBadge>
-                      <Lock size={14} />
-                      <Trans>Linked</Trans>
-                    </LinkedStatusBadge>
-                  ) : (
-                    <Trans>Pending</Trans>
-                  )}
-                </LinkedCodeRow>
-              </LinkedCard>
-              <LinkedMetaList>
-                <MetricItem>
-                  <span>
-                    <Trans>Linked since</Trans>
-                  </span>
-                  <strong>{isLinked ? linkedSinceLabel : '-'}</strong>
-                </MetricItem>
-                <MetricItem>
-                  <span>
-                    <Trans>Rewards end</Trans>
-                  </span>
-                  <strong>{isLinked ? rewardsEndLabel : '-'}</strong>
-                </MetricItem>
-              </LinkedMetaList>
+
+            <IneligibleTitle>
+              <Trans>Your wallet is ineligible</Trans>
+            </IneligibleTitle>
+            <IneligibleSubtitle>
+              <TraderReferralCodeIneligibleCopy incomingCode={incomingIneligibleCode} />
+            </IneligibleSubtitle>
+          </IneligibleCard>
+        ) : isUnsupportedNetwork ? (
+          <UnsupportedNetworkCard>
+            <UnsupportedNetworkHeader>
+              <AlertCircle size={20} />
+              <Trans>Switch network</Trans>
+            </UnsupportedNetworkHeader>
+            <UnsupportedNetworkMessage>
+              <Trans>Please connect your wallet to one of our supported networks: {supportedNetworks}.</Trans>
+            </UnsupportedNetworkMessage>
+          </UnsupportedNetworkCard>
+        ) : !traderHasCode ? (
+          <HeroCard>
+            <HeroContent>
+              <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+              <HeroTitle>
+                <Trans>Earn while you trade</Trans>
+              </HeroTitle>
+              <HeroSubtitle>
+                <Trans>
+                  Use a referral code to earn a flat fee for
+                  <br />
+                  the eligible volume done through the app.
+                  <br />
+                  New wallets only.
+                </Trans>
+              </HeroSubtitle>
               <HeroActions>
-                <ButtonPrimary onClick={handleOpenRewardsModal}>
-                  <Trans>Edit code</Trans>
-                </ButtonPrimary>
+                {!isConnected ? (
+                  <ButtonPrimary onClick={handleConnect}>
+                    <Trans>Connect wallet</Trans>
+                  </ButtonPrimary>
+                ) : (
+                  <ButtonPrimary onClick={handleOpenRewardsModal}>
+                    <Trans>Add code</Trans>
+                  </ButtonPrimary>
+                )}
               </HeroActions>
-            </RewardsCol1Card>
+              <AffiliateTermsFaqLinks />
+            </HeroContent>
+          </HeroCard>
+        ) : (
+          <>
+            <RewardsThreeColumnGrid>
+              <RewardsCol1Card showLoader={statsLoading}>
+                <Header>
+                  <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
+                </Header>
+                <LinkedCard>
+                  <LinkedCodeRow>
+                    <LinkedCodeText>{traderCode}</LinkedCodeText>
+                    {isLinked ? (
+                      <LinkedStatusBadge>
+                        <Lock size={14} />
+                        <Trans>Linked</Trans>
+                      </LinkedStatusBadge>
+                    ) : (
+                      <Trans>Pending</Trans>
+                    )}
+                  </LinkedCodeRow>
+                </LinkedCard>
+                <LinkedMetaList>
+                  <MetricItem>
+                    <span>
+                      <Trans>Linked since</Trans>
+                    </span>
+                    <strong>{isLinked ? linkedSinceLabel : '-'}</strong>
+                  </MetricItem>
+                  <MetricItem>
+                    <span>
+                      <Trans>Rewards end</Trans>
+                    </span>
+                    <strong>{isLinked ? rewardsEndLabel : '-'}</strong>
+                  </MetricItem>
+                </LinkedMetaList>
+                <HeroActions>
+                  <ButtonPrimary onClick={handleOpenRewardsModal}>
+                    <Trans>Edit code</Trans>
+                  </ButtonPrimary>
+                </HeroActions>
+              </RewardsCol1Card>
 
-            <RewardsCol2Card showLoader={statsLoading}>
-              <CardTitle>
-                <Trans>Next {rewardAmountLabel} reward</Trans>
-              </CardTitle>
-              <RewardsMetricsRow>
-                <RewardsMetricsList>
-                  <MetricItem>
-                    <span>
-                      <Trans>Left to next {rewardAmountLabel}</Trans>
-                    </span>
-                    <strong>{leftToNextRewardLabel}</strong>
-                  </MetricItem>
-                  <MetricItem>
-                    <span>
-                      <Trans>Total earned</Trans>
-                    </span>
-                    <strong>{totalEarnedLabel}</strong>
-                  </MetricItem>
-                  <MetricItem>
-                    <span>
-                      <Trans>Claimed</Trans>
-                    </span>
-                    <strong>{claimedLabel}</strong>
-                  </MetricItem>
-                </RewardsMetricsList>
-                <Donut $value={rewardsProgressPercent}>
-                  <DonutValue>
-                    <span>{rewardsProgressLabel}</span>
-                    <small>
-                      <Trans>of</Trans> {triggerVolumeLabel}
-                    </small>
-                  </DonutValue>
-                </Donut>
-              </RewardsMetricsRow>
-              <BottomMetaRow>
-                <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
-              </BottomMetaRow>
-            </RewardsCol2Card>
+              <RewardsCol2Card showLoader={statsLoading}>
+                <CardTitle>
+                  <Trans>Next {rewardAmountLabel} reward</Trans>
+                </CardTitle>
+                <RewardsMetricsRow>
+                  <RewardsMetricsList>
+                    <MetricItem>
+                      <span>
+                        <Trans>Left to next {rewardAmountLabel}</Trans>
+                      </span>
+                      <strong>{leftToNextRewardLabel}</strong>
+                    </MetricItem>
+                    <MetricItem>
+                      <span>
+                        <Trans>Total earned</Trans>
+                      </span>
+                      <strong>{totalEarnedLabel}</strong>
+                    </MetricItem>
+                    <MetricItem>
+                      <span>
+                        <Trans>Claimed</Trans>
+                      </span>
+                      <strong>{claimedLabel}</strong>
+                    </MetricItem>
+                  </RewardsMetricsList>
+                  <Donut $value={rewardsProgressPercent}>
+                    <DonutValue>
+                      <span>{rewardsProgressLabel}</span>
+                      <small>
+                        <Trans>of</Trans> {triggerVolumeLabel}
+                      </small>
+                    </DonutValue>
+                  </Donut>
+                </RewardsMetricsRow>
+                <BottomMetaRow>
+                  <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
+                </BottomMetaRow>
+              </RewardsCol2Card>
 
-            <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
-          </RewardsThreeColumnGrid>
-        </>
-      )}
-    </RewardsWrapper>
+              <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
+            </RewardsThreeColumnGrid>
+          </>
+        )}
+      </RewardsWrapper>
+    </>
   )
 }
 
@@ -318,6 +339,28 @@ const IneligibleCard = styled(Card)`
   text-align: center;
   gap: 20px;
   position: relative;
+`
+
+const UnsupportedNetworkCard = styled(Card)`
+  min-height: 300px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+`
+
+const UnsupportedNetworkHeader = styled.h3`
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  color: var(${UI.COLOR_DANGER});
+`
+
+const UnsupportedNetworkMessage = styled.p`
+  margin: 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 const IneligibleTitle = styled.h3`

@@ -50,14 +50,22 @@ const Message = styled.div`
   line-height: 1.4;
 `
 
-export function TraderReferralCodeNetworkBanner(): ReactNode {
+export interface TraderReferralCodeNetworkBannerProps {
+  forceVisible?: boolean
+  onlyWhenUnsupported?: boolean
+}
+
+export function TraderReferralCodeNetworkBanner(props: TraderReferralCodeNetworkBannerProps): ReactNode {
+  const { forceVisible = false, onlyWhenUnsupported = false } = props
   const { modalOpen, wallet } = useTraderReferralCode()
 
-  if (!modalOpen) {
+  if (!forceVisible && !modalOpen) {
     return null
   }
 
-  const shouldShow = wallet.status === 'unsupported' || wallet.status === 'unknown' || wallet.status === 'disconnected'
+  const shouldShow = onlyWhenUnsupported
+    ? wallet.status === 'unsupported'
+    : wallet.status === 'unsupported' || wallet.status === 'unknown' || wallet.status === 'disconnected'
 
   if (!shouldShow) {
     return null
