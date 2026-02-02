@@ -1,6 +1,7 @@
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import DelegateCowIcon from '@cowprotocol/assets/cow-swap/delegate-cow.svg'
 import { ClosableBanner, ButtonPrimary } from '@cowprotocol/ui'
+import { useCallback } from 'react'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -21,9 +22,9 @@ interface DelegateProps {
 export default function Delegate({ dismissable = false, rowOnMobile }: DelegateProps) {
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const renderContent = (onClose?: () => void) => (
+  const callback = useCallback((close?: () => void) => (
     <BannerCard rowOnMobile={rowOnMobile}>
-      {dismissable && onClose && <CloseButton onClick={onClose} />}
+      {dismissable && close && <CloseButton onClick={close} />}
       <BannerCardIcon width={159}>
         <SVG src={DelegateCowIcon} title={t`Delegate`} />
       </BannerCardIcon>
@@ -43,11 +44,11 @@ export default function Delegate({ dismissable = false, rowOnMobile }: DelegateP
         </ButtonPrimary>
       </BannerCardContent>
     </BannerCard>
-  )
+  ), [rowOnMobile, dismissable])
 
   return dismissable ? (
-    <ClosableBanner storageKey={BANNER_IDS.DELEGATE} callback={(onClose) => renderContent(onClose)} />
+    <ClosableBanner storageKey={BANNER_IDS.DELEGATE} callback={callback} />
   ) : (
-    renderContent()
+    callback()
   )
 }
