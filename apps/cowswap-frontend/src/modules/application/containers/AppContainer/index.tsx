@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
+import { type CSSProperties, type ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -177,10 +177,12 @@ const SNOWFALL_STYLE: CSSProperties = {
 }
 
 function CowSpeechBubbleBanner(): ReactNode {
+  const callback = useCallback((close: () => void) => <CowSpeechBubble show onClose={close} />, [])
+
   return (
     <ClosableBanner
       storageKey={BANNER_IDS.HIRING_SPEECH_BUBBLE}
-      callback={(close) => <CowSpeechBubble show onClose={close} />}
+      callback={callback}
     />
   )
 }
