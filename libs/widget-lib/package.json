@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/widget-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "commonjs",
   "description": "CoW Swap Widget Library. Allows you to easily embed a CoW Swap widget on your website.",
   "main": "./src/index.ts",
@@ -25,7 +25,7 @@
     "widget-lib"
   ],
   "dependencies": {
-    "@cowprotocol/cow-sdk": "~7.3.1",
+    "@cowprotocol/cow-sdk": "7.3.3",
     "@cowprotocol/events": "workspace:*",
     "@cowprotocol/iframe-transport": "workspace:*"
   },

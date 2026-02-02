@@ -24,6 +24,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps): ReactNode {
         className={className}
         disabled={isDisabled}
         onClick={() => context.confirmTrade()}
+        clickEvent={context.confirmClickEvent}
       >
         {confirmText}
       </TradeFormBlankButton>

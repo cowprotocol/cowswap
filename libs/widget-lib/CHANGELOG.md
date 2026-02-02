@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.0.0...widget-lib-v1.0.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.1
+    * @cowprotocol/iframe-transport bumped to 2.0.1
+
 ## [1.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.3...widget-lib-v1.0.0) (2026-01-28)
 
 
