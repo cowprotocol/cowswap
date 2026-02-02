@@ -1,6 +1,10 @@
 // this is not used for now. we use "craco test", but eventually we will
 
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const workspaceRoot = path.resolve(__dirname, '../..')
 
