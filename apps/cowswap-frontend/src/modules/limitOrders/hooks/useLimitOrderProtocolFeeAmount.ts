@@ -17,7 +17,7 @@ export function useLimitOrderProtocolFeeAmount(): CurrencyAmount<Currency> | nul
     if (!outputCurrencyAmount) return null
 
     // Example:
-    // output * 20bps = output * 0.02% = output * 0.0002
+    // output * 2bps = output * 0.02% = output * 0.0002
 
     return !!protocolFeeBps && protocolFeeBps > 0
       ? outputCurrencyAmount
