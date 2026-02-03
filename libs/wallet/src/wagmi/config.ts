@@ -48,7 +48,7 @@ const metadata = {
   icons: ['https://swap.cow.fi/favicon-light-mode.png'],
 }
 
-const networks = SUPPORTED_CHAIN_IDS.map((chainId) => SUPPORTED_CHAINS[chainId]) as [Chain, ...Chain[]]
+const networks = Object.values(SUPPORTED_CHAINS) as [Chain, ...Chain[]]
 
 export const wagmiAdapter = new WagmiAdapter({
   networks,

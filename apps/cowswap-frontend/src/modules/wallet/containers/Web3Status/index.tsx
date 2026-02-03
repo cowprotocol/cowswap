@@ -1,9 +1,6 @@
 import { ReactNode } from 'react'
 
-import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { useConnectionType, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-
-import { useAppKit } from '@reown/appkit/react'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -23,7 +20,6 @@ export interface Web3StatusProps {
 }
 
 export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
-  const { open } = useAppKit()
   const connectionType = useConnectionType()
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -40,7 +36,7 @@ export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
         pendingCount={pendingCount}
         account={account}
         ensName={ensName}
-        connectWallet={LAUNCH_DARKLY_VIEM_MIGRATION ? () => open() : toggleWalletModal}
+        connectWallet={toggleWalletModal}
         connectionType={connectionType}
       />
       <WalletModal />

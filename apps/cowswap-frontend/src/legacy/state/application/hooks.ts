@@ -1,8 +1,10 @@
 import { useCallback } from 'react'
 
+import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 
 import { createAction } from '@reduxjs/toolkit'
+import { useAppKit } from '@reown/appkit/react'
 
 import { ApplicationModal } from './reducer'
 
@@ -28,7 +30,14 @@ export function useCloseModal(_modal: ApplicationModal): Command {
 }
 
 export function useToggleWalletModal(): Command {
-  return useToggleModal(ApplicationModal.WALLET)
+  const { open } = useAppKit()
+  const toggleModal = useToggleModal(ApplicationModal.WALLET)
+
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    return () => open()
+  }
+
+  return toggleModal
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced

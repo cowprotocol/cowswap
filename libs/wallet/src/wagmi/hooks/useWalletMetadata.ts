@@ -26,34 +26,41 @@ export interface WalletMetaData {
   icon?: string
 }
 
+// fix for this https://github.com/gnosis/cowswap/issues/1929
+const defaultWcPeerOutput = { walletName: undefined, icon: undefined }
+
 function useWcPeerMetadata(connector?: Connector): WalletMetaData {
   const [peerWalletName, setPeerWalletName] = useState('')
 
-  // fix for this https://github.com/gnosis/cowswap/issues/1929
-  const defaultOutput = useMemo(() => ({ walletName: undefined, icon: undefined }), [])
+  const peerWalletMetadata = useMemo(() => {
+    if (!peerWalletName || !connector) {
+      return null
+    }
+    return
+    ;({
+      walletName: peerWalletName,
+      icon: connector?.icon,
+    })
+  }, [peerWalletName, connector])
 
   useEffect(() => {
     if (!connector) {
+      setPeerWalletName('')
       return
     }
     const fetchPeerMetadata = async (): Promise<void> => {
       try {
         const provider = (await connector.getProvider()) as { session?: { peer?: { metadata?: { name?: string } } } }
         setPeerWalletName(provider?.session?.peer?.metadata?.name || '')
-        // eslint-disable-next-line unused-imports/no-unused-vars
-      } catch (_error) {
+      } catch (error) {
+        console.error(error.message)
         setPeerWalletName('')
       }
     }
     fetchPeerMetadata()
   }, [connector])
 
-  return peerWalletName
-    ? {
-        walletName: peerWalletName,
-        icon: connector?.icon,
-      }
-    : defaultOutput
+  return peerWalletMetadata || defaultWcPeerOutput
 }
 
 export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
