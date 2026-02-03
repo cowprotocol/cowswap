@@ -22,15 +22,11 @@ export const FlyoutMenu = styled.div`
 `
 
 export const FlyoutMenuContents = styled.div`
-  align-items: flex-start;
   background-color: var(${UI.COLOR_PAPER});
   border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
   box-shadow: var(${UI.BOX_SHADOW});
   border-radius: 12px;
-  display: flex;
-  flex-direction: column;
   font-size: 16px;
-  overflow: auto;
   min-width: 175px;
   z-index: 99;
   overflow: hidden;
@@ -45,16 +41,17 @@ export const FlyoutMenuContents = styled.div`
     box-shadow: 0 -100vh 0 100vh ${transparentize('black', 0.4)};
     max-height: calc(100dvh - 56px);
   }
-
-  & > *:not(:last-child) {
-    margin-bottom: 5px;
-  }
 `
 
 export const FlyoutMenuScrollable = styled.div`
   overflow: auto;
   width: 100%;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+
   ${({ theme }) => theme.colorScrollbar};
 `
 
