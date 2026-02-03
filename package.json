@@ -43,6 +43,7 @@
     "lint-staged": "lint-staged --verbose -c lint-staged.config.js",
     "prebuild:cowswap": "node tools/scripts/prebuild.js",
     "upgrade-sdk-preview": "node tools/scripts/update-sdk-preview.js",
+    "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
     "prepare": "husky",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
     "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install",
