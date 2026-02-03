@@ -1,5 +1,5 @@
 import { UtmParams } from '@cowprotocol/common-utils'
-import { stringifyDeterministic, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { stringifyDeterministic } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
 
@@ -19,14 +19,20 @@ import {
   TypedAppDataHooks,
 } from '../types'
 
+const REFERRER_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
+
+function normalizeReferrerCode(value: string): string | undefined {
+  const normalized = value.trim().toUpperCase()
+  return REFERRER_CODE_PATTERN.test(normalized) ? normalized : undefined
+}
+
 export type BuildAppDataParams = {
   appCode: string
   environment?: string
-  chainId: SupportedChainId
   slippageBips: number
   isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
-  referrerAccount?: string
+  referrerCode?: string
   utm: UtmParams | undefined
   typedHooks?: TypedAppDataHooks
   widget?: AppDataWidget
@@ -44,10 +50,9 @@ async function generateAppDataFromDoc(
 }
 
 export async function buildAppData({
-  chainId,
   slippageBips,
   isSmartSlippage,
-  referrerAccount,
+  referrerCode,
   appCode,
   environment,
   orderClass: orderClassName,
@@ -58,7 +63,11 @@ export async function buildAppData({
   replacedOrderUid,
   userConsent,
 }: BuildAppDataParams): Promise<AppDataInfo> {
-  const referrerParams = referrerAccount && chainId === SupportedChainId.MAINNET ? { code: referrerAccount } : undefined
+  const normalizedReferrerCode = referrerCode ? normalizeReferrerCode(referrerCode) : undefined
+
+  const referrerParams: AppDataRootSchema['metadata']['referrer'] = normalizedReferrerCode
+    ? { code: normalizedReferrerCode }
+    : undefined
 
   const quoteParams = {
     slippageBips,

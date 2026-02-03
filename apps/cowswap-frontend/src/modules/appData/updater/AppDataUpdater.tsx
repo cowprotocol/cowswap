@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useTraderReferralCode } from 'modules/affiliate/model/hooks/useTraderReferralCode'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
 import { useUtm } from 'modules/utm'
@@ -30,13 +31,14 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
   const userConsent = useRwaConsentForAppData()
+  const traderReferralCode = useTraderReferralCode()
+  const referrerCode = getReferrerCode(traderReferralCode)
 
   if (!chainId) return null
 
   return (
     <AppDataUpdaterMemo
       appCodeWithWidgetMetadata={appCodeWithWidgetMetadata}
-      chainId={chainId}
       slippageBips={slippageBips}
       isSmartSlippage={isSmartSlippage}
       orderClass={orderClass}
@@ -45,6 +47,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
       volumeFee={volumeFee}
       replacedOrderUid={replacedOrderUid}
       userConsent={userConsent}
+      referrerCode={referrerCode}
     />
   )
 })
@@ -55,3 +58,19 @@ const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => {
 
   return null
 })
+
+function getReferrerCode(traderReferralCode: ReturnType<typeof useTraderReferralCode>): string | undefined {
+  if (traderReferralCode.wallet.status === 'linked') {
+    return traderReferralCode.wallet.code
+  }
+
+  if (traderReferralCode.verification.kind === 'linked') {
+    return traderReferralCode.verification.linkedCode
+  }
+
+  if (traderReferralCode.verification.kind === 'valid' && traderReferralCode.savedCode) {
+    return traderReferralCode.savedCode
+  }
+
+  return undefined
+}

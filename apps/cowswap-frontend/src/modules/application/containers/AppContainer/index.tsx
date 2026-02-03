@@ -12,6 +12,11 @@ import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
+import { TraderReferralCodeController } from 'modules/affiliate/model/containers/TraderReferralCodeController'
+import { TraderReferralCodeDeepLinkHandler } from 'modules/affiliate/model/containers/TraderReferralCodeDeepLinkHandler'
+import { TraderReferralCodeProvider } from 'modules/affiliate/model/state/TraderReferralCodeContext'
+import { TraderReferralCodeModal } from 'modules/affiliate/ui/TraderReferralCodeModal'
+import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/ui/TraderReferralCodeNetworkBanner'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -43,6 +48,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
+  const { isYieldEnabled, isAffiliateProgramEnabled = false } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -56,8 +62,6 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
 
   useInitializeUtm()
-
-  const { isYieldEnabled } = useFeatureFlags()
   const isInjectedWidgetMode = isInjectedWidget()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
@@ -87,7 +91,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
-  return (
+  const appContent = (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
       <styledEl.AppWrapper>
         <URLWarning />
@@ -115,6 +119,22 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
+  )
+
+  if (!isAffiliateProgramEnabled) {
+    return appContent
+  }
+
+  return (
+    <TraderReferralCodeProvider>
+      <>
+        <TraderReferralCodeDeepLinkHandler />
+        <TraderReferralCodeController />
+        <TraderReferralCodeNetworkBanner />
+        <TraderReferralCodeModal />
+        {appContent}
+      </>
+    </TraderReferralCodeProvider>
   )
 }
 
