@@ -36,11 +36,10 @@ function useWcPeerMetadata(connector?: Connector): WalletMetaData {
     if (!peerWalletName || !connector) {
       return null
     }
-    return
-    ;({
+    return {
       walletName: peerWalletName,
       icon: connector?.icon,
-    })
+    }
   }, [peerWalletName, connector])
 
   useEffect(() => {
