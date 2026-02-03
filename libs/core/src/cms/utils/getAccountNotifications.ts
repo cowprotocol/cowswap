@@ -5,7 +5,7 @@ import ms from 'ms.macro'
 import { NotificationModel } from '../types'
 import { getCmsClient } from '../utils'
 
-const NOTIFICATIONS_TTL = ms`5m`
+const NOTIFICATIONS_TTL = ms`5m` - 500 // Substract 500ms to not hit cache with polling in useAccountNotifications
 
 const cache = new TTLCache<NotificationModel[]>('cms-account-notifications', true, NOTIFICATIONS_TTL)
 
