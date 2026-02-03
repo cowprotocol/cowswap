@@ -108,7 +108,7 @@ const spin = keyframes`
 export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 'success'; isSpinning?: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 6px;
   min-width: 96px;
   flex: 0 0 auto;

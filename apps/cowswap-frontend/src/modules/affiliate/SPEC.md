@@ -37,7 +37,7 @@
 - As a developer, I want `GET /ref-codes/:code` to return flat params with `traderRewardAmount` (split applied) and no revenue splits because the UI should not expose split math.
 - As a trader, I want to be told the code is only stored locally until I place a trade because the wallet is not bound yet.
 - As a developer, I want to persist the code locally and include it in first APP_DATA because attribution happens on first trade.
-- As a developer, I want APP_DATA referrer payload compatible with the v0.2.0 referrer schema because existing infra expects it.
+- As a developer, I want APP_DATA referrer payload compatible with the current referrer schema (`metadata.referrer.code`, 5-20 A-Z0-9-_) because invalid appData breaks attribution.
 
 ## Error handling / edge cases
 - As a developer, I want duplicate code to return 409 because it is a conflict.
@@ -68,7 +68,7 @@
 - As a program manager, I want rewards computed in USDC only because the program pays in USDC.
 - As a data analyst, I want a CMS export table in Dune (`affiliate_program_data`) because code params + enabled flags must join to trades.
 - As a data analyst, I want a payout_sources dashboard param (array of ETH addresses) because paid_out/payable depends on payout wallets.
-- As a data analyst, I want to parse `app_data.metadata.referrer.code` (v0.2.0) and normalize uppercase because referrer codes are case-insensitive.
+- As a data analyst, I want to parse `app_data.metadata.referrer.code` and normalize uppercase because referrer codes are case-insensitive.
 - As a data analyst, I want dashboard filters (blockchain, start_time, payout_sources) because analysis must slice by chain/time/payout wallet.
 - As a developer, I want to enforce eligibility: first-ever trade must be a ref trade; bound code is from first ref trade; unsupported chains excluded; time cap and volume cap enforced because reward rules are strict.
 - As a developer, I want a `traders_debug` view with columns (blockchain, block_time, tx_hash, trader_address, usd_value, referrer_code, bound_referrer_code, linked_since, days_since_bound, cum_volume_for_code, first_trade_time, first_ref_trade_time, is_first_trade, is_first_ref_trade, is_eligible, eligibility_reason, is_bound_to_code) because I need to debug eligibility and binding.

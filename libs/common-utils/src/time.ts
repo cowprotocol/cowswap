@@ -13,7 +13,7 @@ export function getDateTimestamp(date: Date): number {
  * in the format <local date string> (<time zone information>)
  */
 export function formatDateWithTimezone(value: Date | number | undefined | null): string | undefined {
-  if (!value) {
+  if (value === undefined || value === null) {
     return
   }
 
@@ -27,7 +27,7 @@ export function formatDateWithTimezone(value: Date | number | undefined | null):
 }
 
 export function formatShortDate(value: Date | number | string | undefined | null): string | undefined {
-  if (!value) {
+  if (value === undefined || value === null) {
     return
   }
 

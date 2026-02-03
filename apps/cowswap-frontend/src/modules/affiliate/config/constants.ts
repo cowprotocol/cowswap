@@ -13,6 +13,3 @@ export const AFFILIATE_API_TIMEOUT_MS = 10_000
 export const AFFILIATE_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
 
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
-
-// TODO: replace with BFF_BASE_URL
-export const AFFILIATE_API_BASE_URL = 'http://localhost:3001'

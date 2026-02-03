@@ -55,6 +55,7 @@ export function TraderReferralCodeDeepLinkHandler(): ReactNode {
     const sanitized = sanitizeReferralCode(codeParam)
 
     if (!sanitized || !isReferralCodeLengthValid(sanitized)) {
+      stripReferralCodeFromUrl()
       return
     }
 
