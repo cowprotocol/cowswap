@@ -9,7 +9,7 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
-const NEW_NETWORK_IDS = [SupportedChainId.LINEA, SupportedChainId.PLASMA]
+const NEW_NETWORK_IDS = new Set([SupportedChainId.PLASMA, SupportedChainId.INK])
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
@@ -32,7 +32,7 @@ export function NetworksList(props: NetworksListProps): ReactNode {
 
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
-        const isNewNetwork = NEW_NETWORK_IDS.includes(targetChainId)
+        const isNewNetwork = NEW_NETWORK_IDS.has(targetChainId)
 
         const rowContent = (
           <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} active={isActive}>

@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v2.0.0...widget-configurator-v2.0.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.1
+    * @cowprotocol/common-const bumped to 2.0.1
+    * @cowprotocol/common-hooks bumped to 2.0.1
+    * @cowprotocol/events bumped to 3.0.1
+    * @cowprotocol/types bumped to 3.0.1
+    * @cowprotocol/widget-lib bumped to 1.0.1
+    * @cowprotocol/widget-react bumped to 1.0.1
+
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.17.1...widget-configurator-v2.0.0) (2026-01-28)
 
 

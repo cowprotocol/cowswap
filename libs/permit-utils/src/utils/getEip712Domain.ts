@@ -1,7 +1,6 @@
 import { getAddress } from '@ethersproject/address'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
-
 import { getContract } from './getContract'
 
 import Erc20Abi from '../abi/erc20.json'
@@ -11,7 +10,7 @@ import Erc20Abi from '../abi/erc20.json'
 export async function getEip712Domain(
   tokenAddress: string,
   chainId: number,
-  provider: JsonRpcProvider
+  provider: JsonRpcProvider,
 ): Promise<Eip712Domain> {
   const formattedAddress = getAddress(tokenAddress)
   const erc20Contract = getContract(formattedAddress, Erc20Abi, provider)

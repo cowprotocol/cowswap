@@ -20,7 +20,7 @@ export function CollapsibleInlineBanner({
 
   const toggle = (): void => {
     if (!isCollapsible) return
-    setIsExpanded(state => {
+    setIsExpanded((state) => {
       onToggle?.(!state)
       return !state
     })

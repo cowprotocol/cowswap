@@ -65,7 +65,7 @@ export interface DropdownProps extends DOMAttributes<HTMLDivElement> {
   callback?: Command
 }
 
-const Items = styled(BaseCard) <{
+const Items = styled(BaseCard)<{
   dropdownDirection?: DropdownDirection
   dropdownPosition?: DropdownPosition
   fullWidth?: boolean
@@ -111,7 +111,7 @@ export const DropdownOption = styled.li<DropdownItemProps>`
 `
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export const Dropdown: React.FC<DropdownProps> = (props) => {
   const {
     activeItemHighlight = true,

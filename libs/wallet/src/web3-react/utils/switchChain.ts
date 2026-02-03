@@ -11,7 +11,9 @@ import {
   plasma,
   polygon,
   sepolia,
+  ink,
   SupportedChainId,
+  HttpsString,
 } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
@@ -21,13 +23,13 @@ import { isChainAllowed } from './isChainAllowed'
 import { ConnectionType } from '../../api/types'
 import { getIsWalletConnect } from '../hooks/useIsWalletConnect'
 
-function getRpcUrls(chainId: SupportedChainId): [string] {
+function getRpcUrls(chainId: SupportedChainId): [HttpsString] {
   const rpcUrl = WALLET_RPC_SUGGESTION[chainId] || RPC_URLS[chainId]
 
   return [rpcUrl]
 }
 
-const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
+const WALLET_RPC_SUGGESTION: Record<SupportedChainId, HttpsString | null> = {
   [SupportedChainId.MAINNET]: mainnet.rpcUrls.default.http[0],
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChain.rpcUrls.default.http[0],
   [SupportedChainId.ARBITRUM_ONE]: arbitrumOne.rpcUrls.default.http[0],
@@ -39,6 +41,7 @@ const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BNB]: bnb.rpcUrls.default.http[0],
   [SupportedChainId.LINEA]: linea.rpcUrls.default.http[0],
   [SupportedChainId.PLASMA]: plasma.rpcUrls.default.http[0],
+  [SupportedChainId.INK]: ink.rpcUrls.default.http[0],
 }
 
 // TODO: Add proper return type annotation
