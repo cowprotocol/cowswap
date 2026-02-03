@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Badge, BadgeTypes, ExternalLink } from '@cowprotocol/ui'
+import { Badge, BadgeTypes } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -35,7 +35,12 @@ export function NetworksList(props: NetworksListProps): ReactNode {
         const isNewNetwork = NEW_NETWORK_IDS.has(targetChainId)
 
         const rowContent = (
-          <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} active={isActive}>
+          <styledEl.FlyoutRow
+            key={targetChainId}
+            type="button"
+            onClick={() => onSelectChain(targetChainId)}
+            active={isActive}
+          >
             <styledEl.Logo src={logoUrl} />
             <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
             {isNewNetwork && (
@@ -56,28 +61,42 @@ export function NetworksList(props: NetworksListProps): ReactNode {
             {rowContent}
             <styledEl.ActiveRowLinkList>
               {bridge && (
-                <ExternalLink href={bridge}>
-                  <Trans>Bridge</Trans>
-                  <styledEl.LinkOutCircle />
-                </ExternalLink>
+                <styledEl.ActiveRowLink href={bridge}>
+                  <styledEl.ActiveRowLinkLabel>
+                    <Trans>Bridge</Trans>
+                  </styledEl.ActiveRowLinkLabel>
+                  <styledEl.LinkOutIconWrapper>
+                    <styledEl.LinkOutCircle aria-hidden="true" />
+                  </styledEl.LinkOutIconWrapper>
+                </styledEl.ActiveRowLink>
               )}
               {explorer && (
-                <ExternalLink href={explorer}>
-                  {explorerTitle}
-                  <styledEl.LinkOutCircle />
-                </ExternalLink>
+                <styledEl.ActiveRowLink href={explorer}>
+                  <styledEl.ActiveRowLinkLabel>{explorerTitle}</styledEl.ActiveRowLinkLabel>
+                  <styledEl.LinkOutIconWrapper>
+                    <styledEl.LinkOutCircle aria-hidden="true" />
+                  </styledEl.LinkOutIconWrapper>
+                </styledEl.ActiveRowLink>
               )}
               {helpCenterUrl && (
-                <ExternalLink href={helpCenterUrl}>
-                  <Trans>Help Center</Trans>
-                  <styledEl.LinkOutCircle />
-                </ExternalLink>
+                <styledEl.ActiveRowLink href={helpCenterUrl}>
+                  <styledEl.ActiveRowLinkLabel>
+                    <Trans>Help Center</Trans>
+                  </styledEl.ActiveRowLinkLabel>
+                  <styledEl.LinkOutIconWrapper>
+                    <styledEl.LinkOutCircle aria-hidden="true" />
+                  </styledEl.LinkOutIconWrapper>
+                </styledEl.ActiveRowLink>
               )}
 
-              <ExternalLink href={getExplorerBaseUrl(targetChainId)}>
-                <Trans>CoW Protocol Explorer</Trans>
-                <styledEl.LinkOutCircle />
-              </ExternalLink>
+              <styledEl.ActiveRowLink href={getExplorerBaseUrl(targetChainId)}>
+                <styledEl.ActiveRowLinkLabel>
+                  <Trans>CoW Protocol Explorer</Trans>
+                </styledEl.ActiveRowLinkLabel>
+                <styledEl.LinkOutIconWrapper>
+                  <styledEl.LinkOutCircle aria-hidden="true" />
+                </styledEl.LinkOutIconWrapper>
+              </styledEl.ActiveRowLink>
             </styledEl.ActiveRowLinkList>
           </styledEl.ActiveRowWrapper>
         )

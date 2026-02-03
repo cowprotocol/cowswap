@@ -1,13 +1,14 @@
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useEffect, useRef, type MouseEvent } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -27,12 +28,10 @@ export function NetworkSelector(): ReactNode {
   const nodeSelector = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
-
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const shouldHideNetworkSelector = useShouldHideNetworkSelector()
-
   useOnClickOutside(isUpToMedium ? [nodeMobile, nodeSelector] : [node], () => {
     if (isOpen) {
       toggleModal()
@@ -44,6 +43,16 @@ export function NetworkSelector(): ReactNode {
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
 
   const availableChains = useAvailableChains()
+  const { t } = useLingui()
+
+  const handleClose = (event: MouseEvent<HTMLButtonElement>): void => {
+    event.stopPropagation()
+    if (isOpen) {
+      toggleModal()
+    }
+  }
+
+  useNetworkSelectorBodyScrollLock({ isOpen, isUpToMedium, shouldHideNetworkSelector })
 
   if (shouldHideNetworkSelector) {
     return null
@@ -51,12 +60,12 @@ export function NetworkSelector(): ReactNode {
 
   return (
     <styledEl.SelectorWrapper ref={node} onClick={toggleModal}>
-      <styledEl.SelectorControls ref={nodeSelector} isChainIdUnsupported={isChainIdUnsupported}>
+      <styledEl.SelectorControls ref={nodeSelector} isChainIdUnsupported={isChainIdUnsupported} isOpen={isOpen}>
         {!isChainIdUnsupported ? (
           <>
             <styledEl.SelectorLogo src={logoUrl} />
             <styledEl.SelectorLabel>{info?.label}</styledEl.SelectorLabel>
-            <styledEl.StyledChevronDown />
+            <styledEl.StyledChevronDown isOpen={isOpen} />
           </>
         ) : (
           <>
@@ -64,7 +73,7 @@ export function NetworkSelector(): ReactNode {
             <styledEl.NetworkAlertLabel>
               <Trans>Switch Network</Trans>
             </styledEl.NetworkAlertLabel>
-            <styledEl.StyledChevronDown />
+            <styledEl.StyledChevronDown isOpen={isOpen} />
           </>
         )}
       </styledEl.SelectorControls>
@@ -73,7 +82,12 @@ export function NetworkSelector(): ReactNode {
           <styledEl.FlyoutMenuContents ref={nodeMobile}>
             <styledEl.FlyoutMenuScrollable>
               <styledEl.FlyoutHeader>
-                <Trans>Select a network</Trans>
+                <styledEl.FlyoutHeaderTitle>
+                  <Trans>Select a network</Trans>
+                </styledEl.FlyoutHeaderTitle>
+                <styledEl.CloseButton type="button" aria-label={t`Close`} onClick={handleClose}>
+                  <styledEl.CloseIcon aria-hidden="true" />
+                </styledEl.CloseButton>
               </styledEl.FlyoutHeader>
               <NetworksList
                 currentChainId={isChainIdUnsupported ? null : chainId}
@@ -87,4 +101,23 @@ export function NetworkSelector(): ReactNode {
       )}
     </styledEl.SelectorWrapper>
   )
+}
+
+function useNetworkSelectorBodyScrollLock({
+  isOpen,
+  isUpToMedium,
+  shouldHideNetworkSelector,
+}: {
+  isOpen: boolean
+  isUpToMedium: boolean
+  shouldHideNetworkSelector: boolean
+}): void {
+  useEffect(() => {
+    if (!isOpen || !isUpToMedium || shouldHideNetworkSelector) {
+      removeBodyClass('noScroll')
+      return
+    }
+    addBodyClass('noScroll')
+    return () => removeBodyClass('noScroll')
+  }, [isOpen, isUpToMedium, shouldHideNetworkSelector])
 }

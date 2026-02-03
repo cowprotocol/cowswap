@@ -1,13 +1,75 @@
-import { UI } from '@cowprotocol/ui'
-import { Media } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { darken, transparentize } from 'color2k'
-import { AlertTriangle, ChevronDown } from 'react-feather'
+import { AlertTriangle, ChevronDown, X } from 'react-feather'
 import styled from 'styled-components/macro'
+
+import { TAP_DESKTOP, TAP_MOBILE } from 'common/pure/NetworksList/NetworksList.const'
+
+const CLOSE_ICON_SIZE = '24px'
 
 export const FlyoutHeader = styled.div`
   color: inherit;
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  margin: 0 0 10px;
+`
+
+export const FlyoutHeaderTitle = styled.div`
+  flex: 1 1 auto;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+
+  ${Media.upToMedium()} {
+    font-size: 18px;
+  }
+`
+
+export const CloseButton = styled.button`
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: none;
+  justify-content: center;
+  min-height: ${TAP_DESKTOP};
+  min-width: auto;
+  object-fit: contain;
+  opacity: 0.7;
+  padding: 0;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  ${Media.upToMedium()} {
+    display: inline-flex;
+    min-height: ${TAP_MOBILE};
+    min-width: auto;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(${UI.COLOR_PRIMARY});
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+`
+
+export const CloseIcon = styled(X)`
+  --size: ${CLOSE_ICON_SIZE};
+  width: var(--size);
+  height: var(--size);
+
+  > line {
+    stroke: var(${UI.COLOR_TEXT});
+  }
 `
 
 export const FlyoutMenu = styled.div`
@@ -21,7 +83,10 @@ export const FlyoutMenu = styled.div`
   }
 `
 
-export const FlyoutMenuContents = styled.div`
+export const FlyoutMenuContents = styled.div.attrs(() => ({
+  role: 'dialog',
+  'aria-modal': true,
+}))`
   align-items: flex-start;
   background-color: var(${UI.COLOR_PAPER});
   border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
@@ -56,6 +121,10 @@ export const FlyoutMenuScrollable = styled.div`
   width: 100%;
   padding: 16px;
   ${({ theme }) => theme.colorScrollbar};
+
+  ${Media.upToMedium()} {
+    padding: 16px 16px 100px;
+  }
 `
 
 export const SelectorLabel = styled.div`
@@ -68,7 +137,7 @@ export const SelectorLabel = styled.div`
     display: none;
   }
 `
-export const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
+export const SelectorControls = styled.div<{ isChainIdUnsupported: boolean; isOpen: boolean }>`
   align-items: center;
   color: inherit;
   display: flex;
@@ -80,6 +149,13 @@ export const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   padding: 6px;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   background: transparent;
+
+  ${({ isOpen }) =>
+    isOpen &&
+    `
+      background: var(${UI.COLOR_PAPER_DARKER});
+      border: 2px solid var(${UI.COLOR_PAPER_DARKEST});
+    `}
 
   &:focus {
     background-color: ${({ theme }) => darken(theme.error, 0.1)};
@@ -117,11 +193,13 @@ export const SelectorWrapper = styled.div`
     position: relative;
   }
 `
-export const StyledChevronDown = styled(ChevronDown)`
+export const StyledChevronDown = styled(ChevronDown)<{ isOpen: boolean }>`
   width: 21px;
   height: 21px;
   margin: 0 0 0 -3px;
   object-fit: contain;
+  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
 export const NetworkIcon = styled(AlertTriangle)`
   margin-left: 0.25rem;
