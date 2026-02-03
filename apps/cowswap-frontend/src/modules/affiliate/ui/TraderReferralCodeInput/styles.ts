@@ -110,6 +110,8 @@ export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 's
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-width: 96px;
+  flex: 0 0 auto;
   position: relative;
   z-index: 1;
   font-size: 14px;
@@ -149,4 +151,15 @@ export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 's
         animation: ${spin} 1.1s linear infinite;
       }
     `}
+`
+
+export const TrailingIconPlaceholder = styled.div`
+  min-width: 96px;
+  height: 18px;
+  flex: 0 0 auto;
+  visibility: hidden;
+
+  ${Media.upToSmall()} {
+    display: none;
+  }
 `

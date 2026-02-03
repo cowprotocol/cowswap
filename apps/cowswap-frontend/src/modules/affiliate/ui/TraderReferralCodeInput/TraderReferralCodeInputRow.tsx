@@ -9,7 +9,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { InputWrapper, StyledInput, TrailingIcon } from './styles'
+import { InputWrapper, StyledInput, TrailingIcon, TrailingIconPlaceholder } from './styles'
 
 export type TrailingIconKind = 'error' | 'lock' | 'pending' | 'success'
 
@@ -112,12 +112,12 @@ export function TraderReferralCodeInputRow(props: TraderReferralCodeInputRowProp
             trailingIconLabels?.pending ?? getDefaultLoadingLabel(),
           )}
         </TrailingIcon>
+      ) : trailingIconKind ? (
+        <TrailingIcon kind={trailingIconKind}>
+          {renderTrailingIcon(trailingIconKind, trailingIconLabels, trailingIconTitles)}
+        </TrailingIcon>
       ) : (
-        trailingIconKind && (
-          <TrailingIcon kind={trailingIconKind}>
-            {renderTrailingIcon(trailingIconKind, trailingIconLabels, trailingIconTitles)}
-          </TrailingIcon>
-        )
+        <TrailingIconPlaceholder aria-hidden="true" />
       )}
     </InputWrapper>
   )

@@ -664,11 +664,13 @@ type DonutProps = {
 }
 
 export function Donut({ $value, children }: DonutProps): ReactElement {
+  const hasProgress = $value > 0
+
   return (
     <DonutWrapper $value={$value}>
       <DonutRing viewBox="0 0 100 100" aria-hidden="true">
         <circle className="donut-track" pathLength="100" />
-        <circle className="donut-progress" pathLength="100" />
+        {hasProgress ? <circle className="donut-progress" pathLength="100" /> : null}
         <circle className="donut-center" />
       </DonutRing>
       {children}
