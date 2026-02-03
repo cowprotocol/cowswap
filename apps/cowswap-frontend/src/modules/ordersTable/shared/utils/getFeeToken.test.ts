@@ -1,5 +1,6 @@
 import { getFeeToken } from './getFeeToken' // Adjust the import path as necessary
-import { ordersMock } from './orders.mock'
+
+import { ordersMock } from '../../test/ordersTable.mock'
 
 const BASE_ORDER = ordersMock[3]
 
