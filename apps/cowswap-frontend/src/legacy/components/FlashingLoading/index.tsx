@@ -37,7 +37,9 @@ export const Loading: React.FC = () => {
   return (
     <LoadingWrapper>
       <CowLoadingIcon size={120} isDarkMode={darkMode} />
-      <span><Trans>Loading...</Trans></span>
+      <span>
+        <Trans>Loading...</Trans>
+      </span>
     </LoadingWrapper>
   )
 }

@@ -28,12 +28,18 @@ export const ordersLimitAtom = atom<OrdersLimitState>(DEFAULT_ORDERS_LIMIT_STATE
 
 const walletKeyAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
-  return `${chainId}::${account ?? ''}`
+  return account ? `${chainId}::${account.toLowerCase()}` : ''
 })
 
 ordersLimitAtom.onMount = () => {
+  let prevWalletKey = ''
+
   return observe((get, set) => {
-    get(walletKeyAtom)
-    set(ordersLimitAtom, DEFAULT_ORDERS_LIMIT_STATE)
+    const walletKey = get(walletKeyAtom)
+
+    if (prevWalletKey !== walletKey) {
+      prevWalletKey = walletKey
+      set(ordersLimitAtom, DEFAULT_ORDERS_LIMIT_STATE)
+    }
   }, jotaiStore)
 }

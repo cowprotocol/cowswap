@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.0...snackbars-v2.0.1) (2026-02-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-hooks bumped to 2.0.1
+    * @cowprotocol/ui bumped to 2.0.1
+
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.2.0...snackbars-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/ui bumped to 2.0.0
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.4...snackbars-v1.2.0) (2025-10-23)
 
 

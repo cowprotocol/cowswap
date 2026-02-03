@@ -13,6 +13,8 @@ export function useNativeTokensBalances(
   chainId: SupportedChainId,
   accounts: string[] | undefined,
 ): NativeBalances | undefined {
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const contract = provider ? getMulticallContract(provider) : undefined
   const params = useMemo(() => accounts?.map((account) => [account]), [accounts])

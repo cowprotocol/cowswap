@@ -8,7 +8,7 @@ import { TwapOrderItem, TwapOrderStatus } from '../types'
 export function getPartOrderStatus(
   enrichedOrder: EnrichedOrder,
   parent: TwapOrderItem,
-  isVirtualPart: boolean
+  isVirtualPart: boolean,
 ): OrderStatus {
   const isExpired = isOrderExpired(enrichedOrder, 0)
   const isCancelled = isTwapOrderCancelled(enrichedOrder)

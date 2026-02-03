@@ -29,6 +29,15 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+      - name: Set up node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
@@ -52,8 +61,11 @@ jobs:
           REACT_APP_NETWORK_URL_137: ${{ secrets.REACT_APP_NETWORK_URL_137 }}
           REACT_APP_NETWORK_URL_232: ${{ secrets.REACT_APP_NETWORK_URL_232 }}
           REACT_APP_NETWORK_URL_8453: ${{ secrets.REACT_APP_NETWORK_URL_8453 }}
+          REACT_APP_NETWORK_URL_9745: ${{ secrets.REACT_APP_NETWORK_URL_9745 }}
           REACT_APP_NETWORK_URL_42161: ${{ secrets.REACT_APP_NETWORK_URL_42161 }}
           REACT_APP_NETWORK_URL_43114: ${{ secrets.REACT_APP_NETWORK_URL_43114 }}
+          REACT_APP_NETWORK_URL_57073: ${{ secrets.REACT_APP_NETWORK_URL_57073 }}
+          REACT_APP_NETWORK_URL_59144: ${{ secrets.REACT_APP_NETWORK_URL_59144 }}
           REACT_APP_NETWORK_URL_11155111: ${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
           REACT_APP_WC_PROJECT_ID: ${{ secrets.REACT_APP_WC_PROJECT_ID }}
           REACT_APP_IPFS_READ_URI: ${{ secrets.REACT_APP_IPFS_READ_URI }}

@@ -1,18 +1,19 @@
-import { useAccount, useConnect as useConnectWagmi } from 'wagmi'
 import { useCallback, useEffect, useState } from 'react'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { ConnectResult, PublicClient } from '@wagmi/core'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
+
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { ConnectReturnType } from '@wagmi/core'
 import { CowFiCategory } from 'src/common/analytics/types'
+import { useAccount, useConnectors, useConnect as useConnectWagmi } from 'wagmi'
 
 export function useConnect() {
   const { isConnected } = useAccount()
   const { openConnectModal } = useConnectModal()
-  const { connectAsync, connectors } = useConnectWagmi()
+  const connectors = useConnectors()
+  const { mutateAsync: connectAsync } = useConnectWagmi()
   const cowAnalytics = useCowAnalytics()
-  const [connectionPromise, setConnectionPromise] = useState<Promise<ConnectResult<PublicClient> | undefined> | null>(
-    null,
-  )
+  const [connectionPromise, setConnectionPromise] = useState<Promise<ConnectReturnType | undefined> | null>(null)
 
   const injectedConnector = connectors.find((c) => c.id === 'injected')
 
@@ -27,17 +28,17 @@ export function useConnect() {
     }
   }, [isConnected, connectionPromise, cowAnalytics])
 
-  const connect = useCallback((): Promise<ConnectResult<PublicClient> | undefined> => {
+  const connect = useCallback((): Promise<ConnectReturnType | undefined> => {
     console.debug('[useConnect] Initiating connection')
 
-    const promise = new Promise<ConnectResult<PublicClient> | undefined>((resolve, reject) => {
+    const promise = new Promise<ConnectReturnType | undefined>((resolve, reject) => {
       if (openConnectModal) {
         console.debug('[useConnect] Showing connect modal')
         openConnectModal()
       }
 
       const checkConnection = setInterval(async () => {
-        if (isConnected) {
+        if (isConnected && injectedConnector) {
           clearInterval(checkConnection)
           try {
             const result = await connectAsync({ connector: injectedConnector })

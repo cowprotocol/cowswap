@@ -1,9 +1,9 @@
 {
   "name": "@cowprotocol/permit-utils",
-  "version": "1.0.1",
+  "version": "2.0.1",
   "type": "module",
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/cow-sdk": "7.3.3",
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@ethersproject/abi": "5.7.0",
@@ -14,8 +14,9 @@
     "@ethersproject/contracts": "5.7.0",
     "@ethersproject/providers": "5.7.0",
     "@ethersproject/wallet": "5.7.0",
-    "ethers": "^5.7.2",
-    "ms.macro": "^2.0.0"
+    "ethers": "5.7.2",
+    "ms.macro": "^2.0.0",
+    "viem": "^2.42.1"
   },
   "module": "./index.js",
   "main": "./src/index.ts",
