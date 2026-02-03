@@ -26,7 +26,6 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
     website: 'https://github.com/cowprotocol/cowswap',
     type: 'ReceiverAccountBridgeProvider',
   }
-
   constructor(
     protected receiver: string,
     protected bridgeProvider: BridgeProvider<BridgeQuoteResult>,
