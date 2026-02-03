@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { bpsToPercent } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from 'modules/trade'
@@ -16,7 +17,7 @@ export function useLimitOrderProtocolFeeAmount(): CurrencyAmount<Currency> | nul
     if (!outputCurrencyAmount) return null
 
     return !!protocolFeeBps && protocolFeeBps > 0
-      ? outputCurrencyAmount.multiply(protocolFeeBps * PROTOCOL_FEE_SCALE).divide(PROTOCOL_FEE_SCALE)
+      ? outputCurrencyAmount.multiply(bpsToPercent(protocolFeeBps * PROTOCOL_FEE_SCALE)).divide(PROTOCOL_FEE_SCALE)
       : CurrencyAmount.fromRawAmount(outputCurrencyAmount.currency, 0)
   }, [outputCurrencyAmount, protocolFeeBps])
 }
