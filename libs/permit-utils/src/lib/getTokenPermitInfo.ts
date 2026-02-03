@@ -1,4 +1,4 @@
-import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
@@ -31,8 +31,7 @@ const UNSUPPORTED: PermitInfo = { type: 'unsupported' }
 
 export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { tokenAddress, chainId } = params
-
-  const key = `${chainId}-${getTokenAddressKey(tokenAddress)}`
+  const key = getTokenId({ address: tokenAddress, chainId })
 
   const cached = REQUESTS_CACHE[key]
 
