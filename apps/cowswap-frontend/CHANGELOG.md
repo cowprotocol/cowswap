@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.2...cowswap-v2.0.3) (2026-02-03)
+
+
+### Bug Fixes
+
+* **limit-orders:** display correct protocol fee amount ([#6955](https://github.com/cowprotocol/cowswap/issues/6955)) ([076139e](https://github.com/cowprotocol/cowswap/commit/076139e2ef998daccb4d0225c4e2f60cf0a8bac0))
+
 ## [2.0.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.1...cowswap-v2.0.2) (2026-02-02)
 
 
