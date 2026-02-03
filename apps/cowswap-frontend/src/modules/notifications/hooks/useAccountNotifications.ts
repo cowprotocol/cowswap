@@ -1,10 +1,8 @@
-import { getCmsClient } from '@cowprotocol/core'
+import { getAccountNotifications, NotificationModel } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
-
-import { NotificationModel } from '../types'
 
 const swrOptions: SWRConfiguration = {
   refreshInterval: ms`5m`,
@@ -17,18 +15,8 @@ export function useAccountNotifications(): NotificationModel[] | undefined {
   const { account } = useWalletInfo()
 
   const { data: notifications } = useSWR<NotificationModel[]>(
-    account ? `/notification-list/${account}` : null,
-    (url: string | null) => {
-      return url
-        ? getCmsClient()
-            .GET(url)
-            .then((res: { data: NotificationModel[] }) => res.data)
-            .catch((error: Error) => {
-              console.error('Failed to fetch notifications', error)
-              return []
-            })
-        : null
-    },
+    account ? [account, 'account-notifications'] : null,
+    ([account]) => getAccountNotifications(account),
     swrOptions,
   )
 
