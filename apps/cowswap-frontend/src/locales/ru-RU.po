@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-01-28 12:06\n"
+"PO-Revision-Date: 2026-02-02 18:06\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -510,8 +510,8 @@ msgid "Free"
 msgstr "Бесплатно"
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
-msgid "Blocked Address"
-msgstr "Заблокированный адрес"
+#~ msgid "Blocked Address"
+#~ msgstr "Blocked Address"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
@@ -605,8 +605,8 @@ msgstr "При продаже {aNativeCurrency} минимальная допу�
 #~ msgstr "A U.S. Person or resident of the United States."
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
-msgid "If you believe this is an error, please send an email including your address to "
-msgstr "Если вы считаете, что это ошибка, пожалуйста, отправьте письмо с вашим адресом на "
+#~ msgid "If you believe this is an error, please send an email including your address to "
+#~ msgstr "If you believe this is an error, please send an email including your address to "
 
 #: apps/cowswap-frontend/src/modules/ethFlow/services/ethFlow/index.ts
 msgid "EthFlow contract ({actualContractAddress}) address don't match the expected address for chain {chainId} ({expectedContractAddress}). Please refresh the page and try again."
@@ -700,7 +700,7 @@ msgstr "Только CoW AMM"
 msgid "Scheduled"
 msgstr "Запланирован"
 
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
+#: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Approve and Swap"
 msgstr "Одобрить и заменить"
 
@@ -1355,7 +1355,7 @@ msgstr "CoW AMM"
 msgid "Too much time between parts"
 msgstr "Слишком много времени между частями"
 
-#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Swap and Bridge"
 msgstr "Поменять и запустить бридж"
 
@@ -1470,7 +1470,7 @@ msgstr "Рыночная цена"
 msgid "Max"
 msgstr "Макс"
 
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
+#: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Approve, Swap & Bridge"
 msgstr "Утверждение, замена и мост"
 
@@ -1573,8 +1573,8 @@ msgid "Price Updated"
 msgstr "Цена обновлена"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
-msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a 2 bps (0.02%) protocol fee will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
-msgstr "Начиная с {PROTOCOL_FEE_START_DATETIME_UTC}, в соответствии с <0>CIP-74</0>, комиссия протокола в размере 2 б.п. (0.02%) будет применена ко всем исполненным ордерам, включая лимитные и TWAP ордеры, даже если они были созданы до указанной даты. "
+#~ msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a 2 bps (0.02%) protocol fee will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
+#~ msgstr "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a 2 bps (0.02%) protocol fee will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Enter a hook dapp URL"
@@ -1909,6 +1909,7 @@ msgstr "Языки"
 msgid "Set custom deadline"
 msgstr "Установить свой срок"
 
+#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "WalletConnect"
 msgstr "Подключение к кошельку"
@@ -3131,6 +3132,10 @@ msgstr "Включено в предполагаемую цену исполне
 msgid "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
 msgstr "Сетевые расходы (включая газ) покрываются за счет заполнения ордера, когда рыночная цена выше лимитной цены."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Technical details:"
 msgstr "Технические подробности:"
@@ -3389,8 +3394,8 @@ msgstr "Загрузка APR!"
 #~ msgstr "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
-msgid "blocked activities"
-msgstr "заблокированные действия"
+#~ msgid "blocked activities"
+#~ msgstr "blocked activities"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
 #~ msgid "Settings"
@@ -3505,6 +3510,7 @@ msgstr "Лимит ордера"
 msgid "Insufficient allowance"
 msgstr "Недостаточно надбавки"
 
+#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "Coinbase Wallet"
 msgstr "Кошелек Coinbase"
@@ -4931,8 +4937,8 @@ msgid "Minimum receive"
 msgstr "Минимальное количество"
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
-msgid "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
-msgstr "Этот адрес заблокирован в интерфейсе Uniswap Labs, потому что он связан с одним или несколькими"
+#~ msgid "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
+#~ msgstr "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Interval time too short"
@@ -5325,8 +5331,8 @@ msgid "Add"
 msgstr "Добавить"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
-msgid "Confirm Swap and Bridge"
-msgstr "Подтверждение смены и моста"
+#~ msgid "Confirm Swap and Bridge"
+#~ msgstr "Confirm Swap and Bridge"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The order will start when it is validated and executed in your Safe."
@@ -5364,6 +5370,10 @@ msgstr "Загрузка хука..."
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Terms and Conditions"
 msgstr "Правила и Условия"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
+msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a <1>protocol fee</1> will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Hide today's fortune cookie"
@@ -5990,7 +6000,6 @@ msgid "Your order was created on this date & time. It will remain open until it 
 msgstr "Ваш заказ был создан на эту дату и время. Он будет оставаться открытым до тех пор, пока он не истечет или не будет исполнен."
 
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
-#: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldConfirmModal/index.tsx
 msgid "Confirm Swap"
 msgstr "Подтверждение смены"
@@ -6104,10 +6113,9 @@ msgstr "Так как вы используете смарт-кошелек с �
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/SwapStepRow.tsx
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
@@ -6611,8 +6619,8 @@ msgid "Creation transaction"
 msgstr "Создание транзакции"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-msgstr "Там {areIs} <0>{ordersWithPermitLength}</0> существующий {orderWord} с <1/> одобрением токена. Частичное утверждение может повлиять на исполнение других заказов. Отрегулируйте сумму или выберите полное одобрение для продолжения."
+#~ msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+#~ msgstr "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WatchAssetInWallet/index.tsx
 msgid "Add token"
