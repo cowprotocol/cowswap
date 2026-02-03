@@ -1,24 +1,78 @@
+name: Release Please
+
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: lts/jod
+  PUBLISHABLE_LIBS: events types permit-utils widget-lib widget-react iframe-transport hook-dapp-lib
 
 permissions:
   contents: write
   pull-requests: write
 
-name: release-please
-
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
     steps:
-      - uses: googleapis/release-please-action@c2a5a2bd6a758a0937f1ddb1e8950609867ed15c # v4.3.0
-        name: release
+      # 1️⃣ Run release-please
+      - name: Run release-please
+        uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
+        id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_AUTH }}
-          include-component-in-tag: true
+          target-branch: main
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
-          default-branch: main
-          target-branch: main
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    steps:
+      # 1️⃣ Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # 2️⃣ Setup pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+
+      # 3️⃣ Setup Node
+      - name: Set up node
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      # 4️⃣ Install dependencies
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 5️⃣ Build publishable libs
+      - name: Build publishable libs
+        run: pnpm nx run-many -t build -p ${{ env.PUBLISHABLE_LIBS }}
+
+      # 6️⃣ Setup npm auth
+      - name: Setup npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # 7️⃣ Publish released packages
+      - name: Publish released packages
+        run: |
+          for lib in ${{ env.PUBLISHABLE_LIBS }}; do
+            if [ -d "dist/libs/$lib" ]; then
+              echo "Publishing $lib..."
+              cp "libs/$lib/README.md" "dist/libs/$lib/" 2>/dev/null || true
+              cd "dist/libs/$lib"
+              npm publish --tag latest --access public || echo "Failed to publish $lib (may already exist)"
+              cd - > /dev/null
+            fi
+          done
