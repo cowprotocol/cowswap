@@ -30,6 +30,7 @@
   },
   "types": "./src/index.ts",
   "publishConfig": {
+    "access": "public",
     "main": "./index.js",
     "types": "./index.d.ts",
     "exports": {
