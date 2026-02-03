@@ -1,223 +1,126 @@
 {
-  "last-release-sha": "dbf70fcb64ad3255b34779821721fc7b2dab0c31",
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "include-component-in-tag": true,
+  "tag-separator": "-",
   "plugins": ["node-workspace"],
+  "changelog-sections": [
+    { "type": "feat", "section": "✨ Features" },
+    { "type": "fix", "section": "🐛 Bug Fixes" },
+    { "type": "perf", "section": "⚡ Performance" },
+    { "type": "refactor", "section": "♻️ Refactoring" },
+    { "type": "docs", "section": "📚 Documentation" },
+    { "type": "test", "section": "🧪 Tests" },
+    { "type": "chore", "section": "🔧 Miscellaneous", "hidden": false }
+  ],
   "packages": {
     "apps/cowswap-frontend": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/cowswap",
+      "release-type": "node"
     },
     "apps/explorer": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/explorer",
+      "release-type": "node"
     },
     "apps/cow-fi": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/cow-fi",
+      "release-type": "node"
     },
     "apps/widget-configurator": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/permit-utils": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/widget-lib": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/widget-react": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/iframe-transport": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/hook-dapp-lib": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/abis": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/analytics": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/assets": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/balances-and-allowances": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/common-const": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/common-hooks": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/common-utils": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/core": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/ens": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/widget-configurator",
+      "release-type": "node"
     },
     "libs/events": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/multicall": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/snackbars": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
-    },
-    "libs/tokens": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/events",
+      "release-type": "node"
     },
     "libs/types": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/types",
+      "release-type": "node"
+    },
+    "libs/permit-utils": {
+      "package-name": "@cowprotocol/permit-utils",
+      "release-type": "node"
+    },
+    "libs/widget-lib": {
+      "package-name": "@cowprotocol/widget-lib",
+      "release-type": "node"
+    },
+    "libs/widget-react": {
+      "package-name": "@cowprotocol/widget-react",
+      "release-type": "node"
+    },
+    "libs/iframe-transport": {
+      "package-name": "@cowprotocol/iframe-transport",
+      "release-type": "node"
+    },
+    "libs/hook-dapp-lib": {
+      "package-name": "@cowprotocol/hook-dapp-lib",
+      "release-type": "node"
+    },
+    "libs/abis": {
+      "package-name": "@cowprotocol/abis",
+      "release-type": "node"
+    },
+    "libs/analytics": {
+      "package-name": "@cowprotocol/analytics",
+      "release-type": "node"
+    },
+    "libs/assets": {
+      "package-name": "@cowprotocol/assets",
+      "release-type": "node"
+    },
+    "libs/balances-and-allowances": {
+      "package-name": "@cowprotocol/balances-and-allowances",
+      "release-type": "node"
+    },
+    "libs/common-const": {
+      "package-name": "@cowprotocol/common-const",
+      "release-type": "node"
+    },
+    "libs/common-hooks": {
+      "package-name": "@cowprotocol/common-hooks",
+      "release-type": "node"
+    },
+    "libs/common-utils": {
+      "package-name": "@cowprotocol/common-utils",
+      "release-type": "node"
+    },
+    "libs/core": {
+      "package-name": "@cowprotocol/core",
+      "release-type": "node"
+    },
+    "libs/ens": {
+      "package-name": "@cowprotocol/ens",
+      "release-type": "node"
+    },
+    "libs/multicall": {
+      "package-name": "@cowprotocol/multicall",
+      "release-type": "node"
+    },
+    "libs/snackbars": {
+      "package-name": "@cowprotocol/snackbars",
+      "release-type": "node"
+    },
+    "libs/tokens": {
+      "package-name": "@cowprotocol/tokens",
+      "release-type": "node"
     },
     "libs/ui": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/ui",
+      "release-type": "node"
     },
     "libs/ui-utils": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/ui-utils",
+      "release-type": "node"
     },
     "libs/wallet": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/wallet",
+      "release-type": "node"
     },
     "libs/wallet-provider": {
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+      "package-name": "@cowprotocol/wallet-provider",
+      "release-type": "node"
     }
-  },
-  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+  }
 }
