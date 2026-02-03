@@ -15,7 +15,7 @@ import { Routes } from 'common/constants/routes'
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ACCOUNT_ITEM = (chainId: SupportedChainId) => ({
+const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean) => ({
   label: msg`Account`,
   children: [
     {
@@ -30,14 +30,18 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId) => ({
       href: `/${chainId}/account-proxy`,
       label: ACCOUNT_PROXY_LABEL,
     },
-    {
-      href: Routes.ACCOUNT_MY_REWARDS,
-      label: msg`My rewards`,
-    },
-    {
-      href: Routes.ACCOUNT_AFFILIATE,
-      label: msg`Affiliate`,
-    },
+    ...(isAffiliateProgramEnabled
+      ? [
+          {
+            href: Routes.ACCOUNT_MY_REWARDS,
+            label: msg`My rewards`,
+          },
+          {
+            href: Routes.ACCOUNT_AFFILIATE,
+            label: msg`Affiliate`,
+          },
+        ]
+      : []),
   ],
 })
 
@@ -114,8 +118,8 @@ const MORE_ITEM = {
   ],
 }
 
-export const NAV_ITEMS = (chainId: SupportedChainId): MenuItem[] => {
-  const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId)
+export const NAV_ITEMS = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean): MenuItem[] => {
+  const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId, isAffiliateProgramEnabled)
   const accountItem: MenuItem = {
     label: i18n._(_ACCOUNT_ITEM.label),
     children: _ACCOUNT_ITEM.children.map(({ href, label }) => ({

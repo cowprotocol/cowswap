@@ -10,8 +10,8 @@ import { useTraderReferralCodeActions } from 'modules/affiliate/model/hooks/useT
 import { RowRewardsContent } from '../../pure/Row/RowRewards'
 
 export function useIsRowRewardsVisible(): boolean {
-  const { isAffiliateRewardsEnabled = true } = useFeatureFlags()
-  return isAffiliateRewardsEnabled
+  const { isAffiliateProgramEnabled = false } = useFeatureFlags()
+  return isAffiliateProgramEnabled
 }
 
 export function RowRewards(): ReactNode {

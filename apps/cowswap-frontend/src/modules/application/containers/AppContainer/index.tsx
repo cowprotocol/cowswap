@@ -48,7 +48,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
-  const { isYieldEnabled, isAffiliateRewardsEnabled = true } = useFeatureFlags()
+  const { isYieldEnabled, isAffiliateProgramEnabled = false } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -91,43 +91,49 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
+  const appContent = (
+    <PageBackgroundContext.Provider value={pageBackgroundValue}>
+      <styledEl.AppWrapper>
+        <URLWarning />
+        <InvalidLocalTimeWarning />
+
+        <OrdersPanel />
+
+        <AppMenu customTheme={customTheme}>{networkAndAccountControls}</AppMenu>
+
+        {isYieldEnabled && <CoWAmmBanner />}
+
+        <styledEl.BodyWrapper customTheme={customTheme} backgroundVariant={pageBackgroundVariant}>
+          {children}
+          <styledEl.Marginer />
+        </styledEl.BodyWrapper>
+
+        <SnowfallOverlay show={showSnowfall} isMobile={isMobile} darkMode={darkMode} />
+        <FooterSection
+          show={!isInjectedWidgetMode}
+          showCowSpeechBubble={shouldRenderCowSpeechBubble}
+          pageScene={pageScene}
+        />
+
+        {/* Render MobileHeaderControls outside of MenuBar on mobile */}
+        {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
+      </styledEl.AppWrapper>
+    </PageBackgroundContext.Provider>
+  )
+
+  if (!isAffiliateProgramEnabled) {
+    return appContent
+  }
+
   return (
     <TraderReferralCodeProvider>
-      <TraderReferralCodeDeepLinkHandler />
-      {isAffiliateRewardsEnabled && (
-        <>
-          <TraderReferralCodeController />
-          <TraderReferralCodeNetworkBanner />
-          <TraderReferralCodeModal />
-        </>
-      )}
-      <PageBackgroundContext.Provider value={pageBackgroundValue}>
-        <styledEl.AppWrapper>
-          <URLWarning />
-          <InvalidLocalTimeWarning />
-
-          <OrdersPanel />
-
-          <AppMenu customTheme={customTheme}>{networkAndAccountControls}</AppMenu>
-
-          {isYieldEnabled && <CoWAmmBanner />}
-
-          <styledEl.BodyWrapper customTheme={customTheme} backgroundVariant={pageBackgroundVariant}>
-            {children}
-            <styledEl.Marginer />
-          </styledEl.BodyWrapper>
-
-          <SnowfallOverlay show={showSnowfall} isMobile={isMobile} darkMode={darkMode} />
-          <FooterSection
-            show={!isInjectedWidgetMode}
-            showCowSpeechBubble={shouldRenderCowSpeechBubble}
-            pageScene={pageScene}
-          />
-
-          {/* Render MobileHeaderControls outside of MenuBar on mobile */}
-          {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
-        </styledEl.AppWrapper>
-      </PageBackgroundContext.Provider>
+      <>
+        <TraderReferralCodeDeepLinkHandler />
+        <TraderReferralCodeController />
+        <TraderReferralCodeNetworkBanner />
+        <TraderReferralCodeModal />
+        {appContent}
+      </>
     </TraderReferralCodeProvider>
   )
 }

@@ -1,5 +1,9 @@
 # Affiliate program spec
 
+## Feature flag
+- As a program manager, I want the affiliate program gated by the `isAffiliateProgramEnabled` feature flag because we must be able to turn it off instantly.
+- As a developer, I want the affiliate UI/routes and referrer appData disabled when the flag is off because hidden must mean inactive.
+
 ## Partner creation + binding
 - As a partner, I want to see if my wallet already has a code because I should not be able to change it after creation.
 - As a developer, I want `GET /affiliate/:address` to return an existing code because the UI must show a bound code state.

@@ -3890,6 +3890,10 @@ msgstr "is worth"
 msgid "View account"
 msgstr "View account"
 
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "Donut chart tracks eligible volume left to unlock the next reward."
+msgstr "Donut chart tracks eligible volume left to unlock the next reward."
+
 #: apps/cowswap-frontend/src/modules/yield/pure/TargetPoolPreviewInfo.tsx
 msgid "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
@@ -6884,8 +6888,8 @@ msgid "Try new limit orders now"
 msgstr "Try new limit orders now"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
-msgid "Affiliate code created."
-msgstr "Affiliate code created."
+#~ msgid "Affiliate code created."
+#~ msgstr "Affiliate code created."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageTokens/index.tsx
 msgid "Custom Tokens"

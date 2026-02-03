@@ -4,6 +4,11 @@
 
 The affiliate program will amplify word-of-mouth marketing for CoW Swap by incentivizing referrals. Its mechanic will also facilitate a slew of other marketing tactics including KOL (influencer) and publisher activation, low funnel offers (e.g. with social and display ads), and high funnel measurement (e.g. with podcast and OOH ads).
 
+## 1.5) Feature flag
+
+- Gated by LaunchDarkly flag `isAffiliateProgramEnabled`
+- When disabled, hide affiliate + rewards hub routes and menu links, block referral deep links, skip affiliate modals/banners, and omit referrer payload from appData
+
 ## 2) Actors
 
 - Traders

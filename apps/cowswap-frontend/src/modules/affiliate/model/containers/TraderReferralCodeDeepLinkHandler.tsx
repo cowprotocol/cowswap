@@ -14,7 +14,7 @@ import { useTraderReferralCodeActions } from '../hooks/useTraderReferralCodeActi
 import { TraderReferralCodeContextValue } from '../partner-trader-types'
 
 export function TraderReferralCodeDeepLinkHandler(): ReactNode {
-  const { isAffiliateRewardsEnabled = true } = useFeatureFlags()
+  const { isAffiliateProgramEnabled = false } = useFeatureFlags()
   const actions = useTraderReferralCodeActions()
   const traderReferralCode = useTraderReferralCode()
   const location = useLocation()
@@ -46,7 +46,7 @@ export function TraderReferralCodeDeepLinkHandler(): ReactNode {
       return
     }
 
-    if (!isAffiliateRewardsEnabled) {
+    if (!isAffiliateProgramEnabled) {
       stripReferralCodeFromUrl()
       lastProcessedRef.current = null
       return
@@ -74,7 +74,7 @@ export function TraderReferralCodeDeepLinkHandler(): ReactNode {
   }, [
     actions,
     analytics,
-    isAffiliateRewardsEnabled,
+    isAffiliateProgramEnabled,
     location.hash,
     location.pathname,
     location.search,

@@ -1,4 +1,4 @@
-import { sanitizeReferralCode, isReferralCodeLengthValid } from './partner-program-utils'
+import { sanitizeReferralCode, isReferralCodeLengthValid } from './affiliate-program-utils'
 
 describe('sanitizeReferralCode', () => {
   it('uppercases and trims whitespace', () => {
