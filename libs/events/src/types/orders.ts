@@ -13,6 +13,7 @@ export type OnPostedOrderPayload = {
   owner: string
   kind: OrderKind
   orderType: UiOrderType
+  partiallyFillable?: boolean
   inputAmount: bigint
   outputAmount: bigint
   inputToken: TokenInfo

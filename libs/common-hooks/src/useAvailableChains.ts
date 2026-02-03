@@ -14,7 +14,7 @@ import { useFeatureFlags } from './useFeatureFlags'
  */
 export function useAvailableChains(): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
-  const { isLineaEnabled, isPlasmaEnabled } = useFeatureFlags()
+  const { isInkEnabled } = useFeatureFlags()
 
   return useMemo(
     // 2. Conditionally build a list of chain ids to exclude
@@ -22,15 +22,12 @@ export function useAvailableChains(): SupportedChainId[] {
     () => {
       const chainsToSkip: SupportedChainId[] = []
 
-      if (!isLineaEnabled) {
-        chainsToSkip.push(SupportedChainId.LINEA)
-      }
-      if (!isPlasmaEnabled) {
-        chainsToSkip.push(SupportedChainId.PLASMA)
+      if (!isInkEnabled) {
+        chainsToSkip.push(SupportedChainId.INK)
       }
 
       return getAvailableChains(chainsToSkip)
     },
-    [isLineaEnabled, isPlasmaEnabled],
+    [isInkEnabled],
   )
 }

@@ -1,5 +1,43 @@
 # Changelog
 
+## [2.0.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.2...cowswap-v2.0.3) (2026-02-03)
+
+
+### Bug Fixes
+
+* **limit-orders:** display correct protocol fee amount ([#6955](https://github.com/cowprotocol/cowswap/issues/6955)) ([076139e](https://github.com/cowprotocol/cowswap/commit/076139e2ef998daccb4d0225c4e2f60cf0a8bac0))
+
+## [2.0.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.1...cowswap-v2.0.2) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.1
+    * @cowprotocol/balances-and-allowances bumped to 2.0.1
+    * @cowprotocol/common-const bumped to 2.0.1
+    * @cowprotocol/common-hooks bumped to 2.0.1
+    * @cowprotocol/common-utils bumped to 2.0.1
+    * @cowprotocol/core bumped to 2.0.1
+    * @cowprotocol/ens bumped to 2.0.1
+    * @cowprotocol/events bumped to 3.0.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.1
+    * @cowprotocol/iframe-transport bumped to 2.0.1
+    * @cowprotocol/multicall bumped to 2.0.1
+    * @cowprotocol/permit-utils bumped to 2.0.1
+    * @cowprotocol/snackbars bumped to 2.0.1
+    * @cowprotocol/tokens bumped to 2.0.1
+    * @cowprotocol/types bumped to 3.0.1
+    * @cowprotocol/ui bumped to 2.0.1
+    * @cowprotocol/wallet bumped to 2.0.1
+    * @cowprotocol/widget-lib bumped to 1.0.1
+
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.0...cowswap-v2.0.1) (2026-01-29)
 
 

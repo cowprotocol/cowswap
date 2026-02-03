@@ -6,6 +6,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useDerivedTradeState } from 'modules/trade'
 import { useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 
+import { PROTOCOL_FEE_SCALE } from 'common/constants/common'
+
 export function useLimitOrderProtocolFeeAmount(): CurrencyAmount<Currency> | null {
   const state = useDerivedTradeState()
   const protocolFeeBps = useTradeQuoteProtocolFee()
@@ -15,7 +17,7 @@ export function useLimitOrderProtocolFeeAmount(): CurrencyAmount<Currency> | nul
     if (!outputCurrencyAmount) return null
 
     return !!protocolFeeBps && protocolFeeBps > 0
-      ? outputCurrencyAmount.multiply(bpsToPercent(protocolFeeBps))
+      ? outputCurrencyAmount.multiply(bpsToPercent(protocolFeeBps * PROTOCOL_FEE_SCALE)).divide(PROTOCOL_FEE_SCALE)
       : CurrencyAmount.fromRawAmount(outputCurrencyAmount.currency, 0)
   }, [outputCurrencyAmount, protocolFeeBps])
 }

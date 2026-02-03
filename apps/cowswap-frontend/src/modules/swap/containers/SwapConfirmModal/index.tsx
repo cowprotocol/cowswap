@@ -23,6 +23,7 @@ import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
+  useGetConfirmButtonLabel,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
   useCommonTradeConfirmContext,
@@ -36,6 +37,7 @@ import { RateInfo } from 'common/pure/RateInfo'
 
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
+import { buildSwapBridgeClickEvent, useSwapBridgeClickEventData } from '../../hooks/useSwapBridgeClickEvent'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
@@ -63,6 +65,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { slippage } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
   const commonTradeConfirmContext = useCommonTradeConfirmContext()
+  const swapBridgeClickEventData = useSwapBridgeClickEventData()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
   const { bridgeQuote } = useTradeQuote()
@@ -103,7 +106,12 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     return true
   }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
-  const confirmText = shouldDisplayBridgeDetails ? t`Confirm Swap and Bridge` : t`Confirm Swap`
+  const confirmText = useGetConfirmButtonLabel('swap', shouldDisplayBridgeDetails)
+
+  const swapBridgeClickEvent = useMemo(
+    () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click' }),
+    [swapBridgeClickEventData],
+  )
 
   const buttonText = useMemo(() => {
     const { amount } = inputCurrencyInfo
@@ -129,6 +137,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData}
+        confirmClickEvent={swapBridgeClickEvent}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (

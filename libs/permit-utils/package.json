@@ -1,9 +1,9 @@
 {
   "name": "@cowprotocol/permit-utils",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/cow-sdk": "7.3.4",
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@ethersproject/abi": "5.7.0",

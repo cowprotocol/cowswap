@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/analytics",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,10 +24,12 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/cow-sdk": "7.3.4",
+    "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/events": "workspace:*",
+    "@uniswap/sdk-core": "^3.0.1",
     "react": "19.1.2",
     "react-router": "7.5.2",
     "web-vitals": "^2.1.4"
