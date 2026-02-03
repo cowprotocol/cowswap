@@ -1,7 +1,6 @@
 import { AFFILIATE_SUPPORTED_CHAIN_IDS, CHAIN_INFO } from '@cowprotocol/common-const'
 
-export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliate-trader:v1'
-export const AFFILIATE_PARTNER_STORAGE_KEY = 'cowswap:affiliate-partner:v1'
+export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliate-trader:v2'
 
 export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.map(
   (chainId) => CHAIN_INFO[chainId].label,

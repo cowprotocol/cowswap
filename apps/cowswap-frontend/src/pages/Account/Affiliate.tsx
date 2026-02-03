@@ -77,6 +77,7 @@ import {
   NextPayoutCard,
   RewardsWrapper,
   LabelContent,
+  TitleWithTooltip,
   StatusText,
   LinkedMetaList,
 } from 'modules/affiliate/ui/shared'
@@ -124,7 +125,6 @@ export default function AccountAffiliate() {
   const [createdAt, setCreatedAt] = useState<Date | null>(null)
   const [partnerRewardAmount, setPartnerRewardAmount] = useState<number | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [partnerStats, setPartnerStats] = useState<PartnerStatsResponse | null>(null)
   const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
@@ -140,6 +140,7 @@ export default function AccountAffiliate() {
     [hasInvalidChars, normalizedCode],
   )
   const codeTooltip = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
+  const referralTrafficTooltip = t`Donut chart tracks eligible volume left to unlock the next reward.`
   const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
   const formatNumber = useCallback(
     (value: number | null | undefined) => (value === null || value === undefined ? '-' : numberFormatter.format(value)),
@@ -390,8 +391,6 @@ export default function AccountAffiliate() {
 
     setSubmitting(true)
     setErrorMessage(null)
-    setSuccessMessage(null)
-
     try {
       const signer = provider.getSigner()
       const typedData = buildPartnerTypedData({
@@ -412,7 +411,6 @@ export default function AccountAffiliate() {
       const created = response.createdAt ? new Date(response.createdAt) : null
       setCreatedAt(created && !Number.isNaN(created.getTime()) ? created : null)
       setPartnerRewardAmount(typeof response.rewardAmount === 'number' ? response.rewardAmount : null)
-      setSuccessMessage(t`Affiliate code created.`)
     } catch (error) {
       const err = error as Error & { status?: number; code?: number }
 
@@ -449,14 +447,12 @@ export default function AccountAffiliate() {
   const handleInputChange = useCallback((event: FormEvent<HTMLInputElement>) => {
     setHasEdited(true)
     setErrorMessage(null)
-    setSuccessMessage(null)
     setInputCode(event.currentTarget.value.toUpperCase())
   }, [])
 
   const handleGenerate = useCallback(() => {
     setHasEdited(true)
     setErrorMessage(null)
-    setSuccessMessage(null)
     setInputCode(generateSuggestedCode())
   }, [])
 
@@ -685,6 +681,7 @@ export default function AccountAffiliate() {
                       <PrimaryAction onClick={handleCreate} disabled={!canSave} data-testid="affiliate-start-confirm">
                         {submitting ? t`Signing...` : t`Save & lock code`}
                       </PrimaryAction>
+                      {errorMessage && <StatusText $variant="error">{errorMessage}</StatusText>}
                     </Form>
                   </BottomMetaRow>
                 </>
@@ -693,14 +690,20 @@ export default function AccountAffiliate() {
 
             <RewardsCol2Card showLoader={statsLoading}>
               <CardTitle>
-                <Trans>Your referral traffic</Trans>
+                <TitleWithTooltip>
+                  <span>
+                    <Trans>Your referral traffic</Trans>
+                  </span>
+                  <HelpTooltip text={referralTrafficTooltip} />
+                </TitleWithTooltip>
               </CardTitle>
               <RewardsMetricsRow>
                 <RewardsMetricsList>
                   <MetricItem>
-                    <span>
+                    <LabelContent>
                       <Trans>Left to next {rewardAmountLabel}</Trans>
-                    </span>
+                      <HelpTooltip text={referralTrafficTooltip} />
+                    </LabelContent>
                     <strong>{leftToNextRewardLabel}</strong>
                   </MetricItem>
                   <MetricItem>
@@ -750,9 +753,6 @@ export default function AccountAffiliate() {
           <AffiliateTermsFaqLinks align="center" />
         </>
       )}
-
-      {errorMessage && <StatusText $variant="error">{errorMessage}</StatusText>}
-      {successMessage && <StatusText $variant="success">{successMessage}</StatusText>}
 
       <CowModal isOpen={isQrOpen} onDismiss={closeQrModal}>
         <ModalContent>
