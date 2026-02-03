@@ -1,4 +1,5 @@
 export * from './useAvailableChains'
+export * from './useBodyScrollbarLocker'
 export * from './useDebounce'
 export * from './useIsBridgingEnabled'
 export * from './usePrevious'

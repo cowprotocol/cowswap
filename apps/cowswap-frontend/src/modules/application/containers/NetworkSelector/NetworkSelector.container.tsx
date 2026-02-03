@@ -3,7 +3,7 @@ import { ReactNode, useRef } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -38,6 +38,8 @@ export function NetworkSelector(): ReactNode {
       toggleModal()
     }
   })
+
+  useBodyScrollbarLocker(isOpen, Media.upToMedium(false))
 
   const onSelectChain = useOnSelectNetwork()
   const isDarkMode = useIsDarkMode()
@@ -74,13 +76,16 @@ export function NetworkSelector(): ReactNode {
             <styledEl.FlyoutMenuScrollable>
               <styledEl.FlyoutHeader>
                 <Trans>Select a network</Trans>
+                <styledEl.CloseIcon onClick={toggleModal} />
               </styledEl.FlyoutHeader>
-              <NetworksList
-                currentChainId={isChainIdUnsupported ? null : chainId}
-                isDarkMode={isDarkMode}
-                onSelectChain={onSelectChain}
-                availableChains={availableChains}
-              />
+              <styledEl.FlayoutMenuList>
+                <NetworksList
+                  currentChainId={isChainIdUnsupported ? null : chainId}
+                  isDarkMode={isDarkMode}
+                  onSelectChain={onSelectChain}
+                  availableChains={availableChains}
+                />
+              </styledEl.FlayoutMenuList>
             </styledEl.FlyoutMenuScrollable>
           </styledEl.FlyoutMenuContents>
         </styledEl.FlyoutMenu>

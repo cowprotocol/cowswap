@@ -1,3 +1,4 @@
+import Close from '@cowprotocol/assets/images/x.svg?react'
 import { UI } from '@cowprotocol/ui'
 import { Media } from '@cowprotocol/ui'
 
@@ -6,8 +7,35 @@ import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const FlyoutHeader = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
   color: inherit;
   font-weight: 400;
+  background-color: var(${UI.COLOR_PAPER});
+`
+
+export const CloseIcon = styled(Close)`
+  display: none;
+
+  ${Media.upToMedium()} {
+    --size: 16px;
+    display: block;
+    opacity: 0.6;
+    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+    stroke: var(${UI.COLOR_TEXT});
+    width: var(--size);
+    height: var(--size);
+    object-fit: contain;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 `
 
 export const FlyoutMenu = styled.div`
@@ -22,6 +50,8 @@ export const FlyoutMenu = styled.div`
 `
 
 export const FlyoutMenuContents = styled.div`
+  display: flex;
+  overflow: hidden;
   background-color: var(${UI.COLOR_PAPER});
   border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
   box-shadow: var(${UI.BOX_SHADOW});
@@ -29,7 +59,6 @@ export const FlyoutMenuContents = styled.div`
   font-size: 16px;
   min-width: 175px;
   z-index: 99;
-  overflow: hidden;
   max-height: calc(100dvh - 66px - 32px);
 
   ${Media.upToMedium()} {
@@ -39,20 +68,23 @@ export const FlyoutMenuContents = styled.div`
     width: 100%;
     border-radius: 12px 12px 0 0;
     box-shadow: 0 -100vh 0 100vh ${transparentize('black', 0.4)};
-    max-height: calc(100dvh - 56px);
+    max-height: calc(100dvh - 56px) !important;
   }
 `
 
 export const FlyoutMenuScrollable = styled.div`
   overflow: auto;
   width: 100%;
-  padding: 16px;
+
+  ${({ theme }) => theme.colorScrollbar};
+`
+
+export const FlayoutMenuList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
-
-  ${({ theme }) => theme.colorScrollbar};
+  padding: 0 16px 16px;
 `
 
 export const SelectorLabel = styled.div`
