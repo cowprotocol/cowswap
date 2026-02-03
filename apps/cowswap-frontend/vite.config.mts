@@ -2,6 +2,7 @@
 import { lingui } from '@lingui/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
+import { bundleStats } from 'rollup-plugin-bundle-stats'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
@@ -13,12 +14,13 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import * as path from 'path'
 
+import { formatChunkFileName } from '../../tools/formatChunkFileName'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
-// eslint-disable-next-line no-restricted-imports
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
-import type { Plugin } from 'vite'
+import type { PluginOption } from 'vite'
 
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
@@ -32,7 +34,7 @@ const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
 
-  const plugins = [
+  const plugins: PluginOption[] = [
     nodePolyfills({
       exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
       globals: {
@@ -77,9 +79,11 @@ export default defineConfig(({ mode }) => {
         open: true,
         gzipSize: true,
         brotliSize: true,
-        filename: 'analyse.html', // will be saved in project's root
-      }) as Plugin,
+        emitFile: true,
+        filename: 'analyse.html', // will be saved in build/cowswap/analyse.html
+      }) as PluginOption,
     )
+    plugins.push(bundleStats() as PluginOption)
   }
 
   // Disable page indexing for non-prod envs
@@ -131,16 +135,31 @@ export default defineConfig(({ mode }) => {
       host: 'localhost',
     },
 
+    optimizeDeps: {
+      esbuildOptions: {
+        // force esm usage for misconfigured deps' package.json (e.g. @safe-global/safe-apps-sdk)
+        mainFields: ['exports', 'module', 'main'],
+      },
+      include: [
+        '@walletconnect/ethereum-provider',
+        '@walletconnect/universal-provider',
+        '@walletconnect/utils',
+        '@walletconnect/sign-client',
+      ],
+    },
+
     resolve: {
       alias: {
         'node-fetch': 'isomorphic-fetch',
       },
+      // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
+      conditions: ['module', 'import', 'browser', 'default'],
     },
 
     build: {
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
-      // sourcemap: true, // disabled for now, as this is causing vercel builds to fail
+      sourcemap: true,
       rollupOptions: {
         output: {
           // Remove hash for font files to enable preloading
@@ -150,14 +169,26 @@ export default defineConfig(({ mode }) => {
             }
             return 'static/[name]-[hash][extname]' // Everything else with hash
           },
+          // add distinguishable prefixes to chunk names
+          chunkFileNames(chunk) {
+            const chunkFileName = formatChunkFileName(chunk, {
+              '/src/pages/': 'static/page-[name]-[hash].js',
+              '/web3-react/connectors/': 'static/connectors-[name]-[hash].js',
+              '/node_modules/lottie-react/': 'static/lottie-react-[name]-[hash].js',
+              '/node_modules/@walletconnect/': 'static/@walletconnect-[name]-[hash].js',
+              '/node_modules/@safe-global/': 'static/@safe-global-[name]-[hash].js',
+              '/node_modules/framer-motion/': 'static/framer-motion-[name]-[hash].js',
+            })
+            if (chunkFileName) return chunkFileName
+            return 'static/[name]-[hash].js'
+          },
           manualChunks(id) {
-            if (id.includes('@1inch')) return '@1inch'
-            if (id.includes('@safe-global') || id.includes('viem')) return '@safe-global'
+            if (id.includes('@safe-global/safe-apps-sdk')) return '@safe-global-safe-apps-sdk' // used by some deps
             if (id.includes('@sentry')) return '@sentry'
             if (id.includes('@uniswap')) return '@uniswap'
             if (id.includes('crypto-es/lib')) return 'crypto-es'
-            if (id.includes('web3/dist')) return 'web3'
-            if (id.includes('lottie-react')) return 'lottie-react'
+            if (id.includes('web3/dist')) return 'web3' // was used by @1inch
+            if (id.includes('@ethersproject')) return '@ethersproject'
           },
         },
       },

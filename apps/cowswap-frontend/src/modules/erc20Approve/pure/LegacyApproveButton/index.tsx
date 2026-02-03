@@ -29,10 +29,11 @@ export interface ApproveButtonProps {
   state: ApprovalState
   onClick?: Command
   isDisabled?: boolean
+  clickEvent?: string
 }
 
 export function LegacyApproveButton(props: ApproveButtonProps): ReactNode {
-  const { currency, state, onClick, isDisabled } = props
+  const { currency, state, onClick, isDisabled, clickEvent } = props
 
   const theme = useContext(ThemeContext)
   const isPending = state === ApprovalState.PENDING
@@ -77,6 +78,7 @@ export function LegacyApproveButton(props: ApproveButtonProps): ReactNode {
       marginBottom={10}
       altDisabledStyle={isPending} // show solid button while waiting
       confirmed={isConfirmed}
+      data-click-event={clickEvent}
     >
       <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }}>
         <TokenLogoContainer>

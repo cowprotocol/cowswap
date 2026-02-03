@@ -14,13 +14,11 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { deadlineToView, getDeadlineRange } from '../utils'
 
-
 type TxSettingAction = 'Default' | 'Custom'
 
 enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
-
 
 interface DeadlineAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TRADE
@@ -58,10 +56,9 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
   )
 
   const [minDeadline, maxDeadline] = useMemo(
-    () => getDeadlineRange(isEoaEthFlow, !!isSmartContractWallet), [
-    isEoaEthFlow,
-    isSmartContractWallet,
-  ])
+    () => getDeadlineRange(isEoaEthFlow, !!isSmartContractWallet),
+    [isEoaEthFlow, isSmartContractWallet],
+  )
 
   useEffect(() => {
     if (widgetDeadline) {
@@ -78,7 +75,7 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
       // populate what the user typed and clear the error
       setDeadlineInput(value)
       setDeadlineError(false)
-      const isValidInput = isValidIntegerFactory(minDeadline, maxDeadline);
+      const isValidInput = isValidIntegerFactory(minDeadline, maxDeadline)
 
       if (value.length === 0) {
         sendDeadlineAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)

@@ -8,7 +8,7 @@ import {
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { HwAccountIndexUpdater, LegacyWalletUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -18,7 +18,6 @@ import { CorrelatedTokensUpdater } from 'entities/correlatedTokens'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
-import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
 import { BalancesDevtools } from 'modules/balancesAndAllowances/updaters/BalancesDevtools'
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
@@ -84,6 +83,7 @@ export function Updaters(): ReactNode {
       {/*MultiCallUpdater will use wallet network by default if custom chainId is not provided*/}
       <MultiCallUpdater chainId={sourceChainSource === 'wallet' ? undefined : sourceChainId} />
       <WalletUpdater standaloneMode={standaloneMode} />
+      <LegacyWalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
@@ -93,7 +93,6 @@ export function Updaters(): ReactNode {
       <OrdersFromApiUpdater />
       <GasUpdater />
       <SentryUpdater />
-      <UploadToIpfsUpdater />
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />

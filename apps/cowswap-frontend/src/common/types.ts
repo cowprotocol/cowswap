@@ -24,7 +24,7 @@ export type SafeTransactionParams = {
   submissionDate: string
   executionDate: string | null
   isExecuted: boolean
-  nonce: number
+  nonce: string
   confirmationsRequired: number
   confirmations: number
   safeTxHash: string

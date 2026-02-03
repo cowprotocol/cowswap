@@ -1,13 +1,36 @@
 import { debounce } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
-import { GtmEvent, Category } from '../types'
+import { Category, GtmEvent } from '../types'
 
 interface DataLayerEvent extends Record<string, unknown> {
   event: string
 }
 
 type DataLayer = DataLayerEvent[]
+
+function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
+}
+
+function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unknown> {
+  const {
+    category: _category,
+    action: _action,
+    label: _label,
+    value: _value,
+    nonInteraction: _nonInteraction,
+    isBridgeOrder: _isBridgeOrder,
+    orderId: _orderId,
+    orderType: _orderType,
+    tokenSymbol: _tokenSymbol,
+    chainId: _chainId,
+    ...rest
+  } = event as GtmEvent<Category> & Record<string, unknown>
+
+  return sanitizeRecord(rest)
+}
 
 declare global {
   interface Window {
@@ -87,9 +110,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
   private dataLayer: DataLayer = []
   private previousAccount: string | undefined = undefined
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  private cleanup = () => {
+  private cleanup(): void {
     window.cowAnalyticsInstance = undefined
   }
 
@@ -107,10 +128,9 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  destroy() {
+  destroy(): void {
     if (typeof window !== 'undefined') {
+      this.cleanup()
       window.removeEventListener('unload', this.cleanup)
     }
   }
@@ -130,8 +150,6 @@ export class CowAnalyticsGtm implements CowAnalytics {
    * @param account The user's wallet address or undefined if disconnected
    * @param walletName Optional wallet name (e.g., 'MetaMask', 'WalletConnect')
    */
-  // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
   setUserAccount(account: string | undefined, walletName?: string): void {
     this.setContext(AnalyticsContext.userAddress, account || 'disconnected')
 
@@ -142,6 +160,13 @@ export class CowAnalyticsGtm implements CowAnalytics {
     })
 
     // Enhanced wallet connection tracking
+    this.trackWalletConnectionFlow(account, walletName)
+
+    // Update the previous account reference
+    this.previousAccount = account
+  }
+
+  private trackWalletConnectionFlow(account: string | undefined, walletName?: string): void {
     // Case 1: Wallet disconnection (account changes from defined to undefined)
     if (this.previousAccount && !account) {
       this.pushToDataLayer({
@@ -150,39 +175,44 @@ export class CowAnalyticsGtm implements CowAnalytics {
         previousWalletAddress: this.previousAccount,
         previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
       })
+      this.setContext(AnalyticsContext.walletName, undefined)
+      return
     }
+
     // Case 2: Wallet connection/switching (account is defined)
-    else if (account) {
-      // Get wallet name from context if not provided
-      const walletNameToUse = walletName || this.dimensions[AnalyticsContext.walletName] || 'Unknown'
-
-      // Common properties for wallet events
-      const commonEventProps = {
-        walletAddress: account,
-        walletName: walletNameToUse,
-      }
-
-      // Initial connection (account changes from undefined/null to defined)
-      if (!this.previousAccount) {
-        this.pushToDataLayer({
-          event: 'wallet_connected',
-          eventType: 'wallet_initial_connection',
-          ...commonEventProps,
-        })
-      }
-      // Wallet switched (account changes from one defined value to another)
-      else if (this.previousAccount !== account) {
-        this.pushToDataLayer({
-          event: 'wallet_switched',
-          eventType: 'wallet_switch',
-          previousWalletAddress: this.previousAccount,
-          ...commonEventProps,
-        })
-      }
+    if (!account) {
+      return
     }
 
-    // Update the previous account reference
-    this.previousAccount = account
+    // Get wallet name from context if not provided
+    const walletNameToUse = walletName || this.dimensions[AnalyticsContext.walletName] || 'Unknown'
+
+    // Common properties for wallet events
+    const commonEventProps = {
+      walletAddress: account,
+      walletName: walletNameToUse,
+    }
+
+    // Initial connection (account changes from undefined/null to defined)
+    if (!this.previousAccount) {
+      this.pushToDataLayer({
+        event: 'wallet_connected',
+        eventType: 'wallet_initial_connection',
+        ...commonEventProps,
+      })
+    }
+    // Wallet switched (account changes from one defined value to another)
+    else if (!areAddressesEqual(this.previousAccount, account)) {
+      this.pushToDataLayer({
+        event: 'wallet_switched',
+        eventType: 'wallet_switch',
+        previousWalletAddress: this.previousAccount,
+        previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
+        ...commonEventProps,
+      })
+    }
+
+    this.setContext(AnalyticsContext.walletName, walletNameToUse)
   }
 
   sendPageView(path?: string, params?: string[], title?: string): void {
@@ -204,7 +234,11 @@ export class CowAnalyticsGtm implements CowAnalytics {
 
     const eventData: DataLayerEvent =
       typeof event === 'string'
-        ? { event, ...(params as Record<string, unknown>) }
+        ? {
+            event,
+            ...this.getDimensions(),
+            ...sanitizeRecord((typeof params === 'object' && params !== null ? params : {}) as Record<string, unknown>),
+          }
         : {
             event: event.action,
             category: event.category,
@@ -220,6 +254,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
               token_symbol: gtmEvent.tokenSymbol,
             }),
             ...(gtmEvent.chainId && { chain_id: gtmEvent.chainId }),
+            ...getAdditionalEventParams(gtmEvent),
           }
 
     this.pushToDataLayer(eventData)
@@ -267,7 +302,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
 
   private pushToDataLayer(data: DataLayerEvent): void {
     if (typeof window !== 'undefined') {
-      const dataLayerEvent = { ...data }
+      const dataLayerEvent = sanitizeRecord({ ...data }) as DataLayerEvent
 
       // Debug log in development environment
       if (process.env.NODE_ENV === 'development') {

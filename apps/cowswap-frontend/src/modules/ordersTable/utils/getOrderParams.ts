@@ -30,7 +30,9 @@ export function getOrderParams(
   const isOrderAtLeastOnceFilled = order.executionData.filledAmount.gt(0)
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
-  const isPermitInvalid = pendingOrdersPermitValidityState ? pendingOrdersPermitValidityState[order.id] === false : false
+  const isPermitInvalid = pendingOrdersPermitValidityState
+    ? pendingOrdersPermitValidityState[order.id] === false
+    : false
   const permitAmount = isPermitInvalid ? undefined : getOrderPermitAmount(chainId, order) || undefined
 
   const rateInfoParams: RateInfoParams = {

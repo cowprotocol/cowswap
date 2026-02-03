@@ -3,6 +3,8 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Color, Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import { Link, LinkType } from '@/components/Link'
 import { CONFIG } from '@/const/meta'
 import {
@@ -24,7 +26,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 interface CareersPageContentProps {
   department: string

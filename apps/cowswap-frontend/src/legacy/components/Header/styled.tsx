@@ -47,8 +47,8 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
 
   ${Media.upToLarge()} {
     ${({ isMobileMenuOpen }) =>
-    isMobileMenuOpen &&
-    css`
+      isMobileMenuOpen &&
+      css`
         height: 34px;
         width: auto;
       `}

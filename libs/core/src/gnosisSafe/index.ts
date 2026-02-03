@@ -1,39 +1,35 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
-import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
-import { EthersAdapter } from '@safe-global/protocol-kit'
-import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { SupportedChainId, HttpsString } from '@cowprotocol/cow-sdk'
+import type { SafeInfoResponse, default as SafeApiKitType } from '@safe-global/api-kit'
+import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
-// eslint-disable-next-line no-restricted-imports
-import { ethers } from 'ethers'
-
-export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
-  [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
-  [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global',
-  [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global',
-  [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
-  [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global',
-  [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global',
-  [SupportedChainId.LENS]: 'https://safe-transaction-lens.safe.global',
-  [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global',
-  [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global',
-  [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global',
+export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, HttpsString> = {
+  [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global/api',
+  [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global/api',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global/api',
+  [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global/api',
+  [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global/api',
+  [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global/api',
+  [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global/api',
+  [SupportedChainId.LENS]: 'https://safe-transaction-lens.safe.global/api',
+  [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global/api',
+  [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global/api',
+  [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global/api',
+  [SupportedChainId.INK]: 'https://safe-transaction-ink.safe.global/api',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'
 
-const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKit | null>> = {}
+const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
 
-function _getClient(chainId: number, library: Web3Provider): SafeApiKit | null {
+async function _getClient(chainId: number): Promise<SafeApiKitType | null> {
   const cachedClient = SAFE_TRANSACTION_SERVICE_CACHE[chainId]
 
   if (cachedClient !== undefined) {
     return cachedClient
   }
 
-  const client = createSafeApiKitInstance(chainId, library)
+  const client = await createSafeApiKitInstance(chainId)
 
   // Add client to cache (or null if unknown network)
   SAFE_TRANSACTION_SERVICE_CACHE[chainId] = client
@@ -41,27 +37,19 @@ function _getClient(chainId: number, library: Web3Provider): SafeApiKit | null {
   return client
 }
 
-function _createSafeEthAdapter(library: Web3Provider): EthersAdapter {
-  const provider = new Web3Provider(library.send.bind(library) as JsonRpcFetchFunc)
-
-  return new EthersAdapter({
-    ethers,
-    signerOrProvider: provider.getSigner(0),
-  })
-}
-
-export function createSafeApiKitInstance(chainId: number, library: Web3Provider): SafeApiKit | null {
+export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
   const url = SAFE_TRANSACTION_SERVICE_URL[chainId as SupportedChainId]
   if (!url) {
     return null
   }
 
-  const ethAdapter = _createSafeEthAdapter(library)
-  return new SafeApiKit({ txServiceUrl: url, ethAdapter })
+  const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
+
+  return new SafeApiKit({ txServiceUrl: url, chainId: BigInt(chainId) })
 }
 
-function _getClientOrThrow(chainId: number, library: Web3Provider): SafeApiKit {
-  const client = _getClient(chainId, library)
+async function _getClientOrThrow(chainId: number): Promise<SafeApiKitType> {
+  const client = await _getClient(chainId)
   if (!client) {
     throw new Error('Unsupported network for Gnosis Safe Transaction Service: ' + chainId)
   }
@@ -81,21 +69,20 @@ export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string
   return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}`
 }
 
-export function getSafeTransaction(
+export async function getSafeTransaction(
   chainId: number,
   safeTxHash: string,
-  library: Web3Provider,
 ): Promise<SafeMultisigTransactionResponse> {
   console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
-  const client = _getClientOrThrow(chainId, library)
+  const client = await _getClientOrThrow(chainId)
 
   return client.getTransaction(safeTxHash)
 }
 
-export function getSafeInfo(chainId: number, safeAddress: string, library: Web3Provider): Promise<SafeInfoResponse> {
+export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
   console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
   try {
-    const client = _getClientOrThrow(chainId, library)
+    const client = await _getClientOrThrow(chainId)
 
     return client.getSafeInfo(safeAddress)
   } catch (error) {

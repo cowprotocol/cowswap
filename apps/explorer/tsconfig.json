@@ -8,24 +8,7 @@
     "strict": true,
     "types": ["node", "vite/client"],
     "baseUrl": "src",
-    "noImplicitAny": false,
-    "paths": {
-      "@cowprotocol/common-const": ["../../../libs/common-const/src/index.ts"],
-      "@cowprotocol/common-utils": ["../../../libs/common-utils/src/index.ts"],
-      "@cowprotocol/common-hooks": ["../../../libs/common-hooks/src/index.ts"],
-      "@cowprotocol/ui/pure/*": ["../../../libs/ui/src/pure/*"],
-      "@cowprotocol/core": ["../../../libs/core/src/index.ts"],
-      "@cowprotocol/ui": ["../../../libs/ui/src/index.ts"],
-      "@cowprotocol/ui-utils": ["../../../libs/ui-utils/src/index.ts"],
-      "@cowprotocol/abis": ["../../../libs/abis/src/index.ts"],
-      "@cowprotocol/analytics": ["../../../libs/analytics/src/index.ts"],
-      "@cowprotocol/assets/*": ["../../../libs/assets/src/*"],
-      "@cowprotocol/types": ["../../../libs/types/src/index.ts"],
-      "@cowprotocol/hook-dapp-lib": ["../../../libs/hook-dapp-lib/src/index.ts"],
-      "@cowprotocol/iframe-transport": ["../../../libs/iframe-transport/src/index.ts"],
-      "@cowprotocol/wallet": ["../../../libs/wallet/src/index.ts"],
-      "@cowprotocol/events": ["../../../libs/events/src/index.ts"]
-    }
+    "noImplicitAny": false
   },
   "files": [],
   "include": [],

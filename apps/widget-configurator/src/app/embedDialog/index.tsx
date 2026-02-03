@@ -20,7 +20,7 @@ import Snackbar from '@mui/material/Snackbar'
 import Tabs from '@mui/material/Tabs'
 import SVG from 'react-inlinesvg'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-// eslint-disable-next-line no-restricted-imports
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 import { vanillaNoDepsExample } from './utils/htmlExample'

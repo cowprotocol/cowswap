@@ -10,6 +10,8 @@ import { sendOrderCancellation } from 'legacy/utils/trade'
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useOffChainCancelOrder() {
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const cancelPendingOrder = useRequestOrderCancellation()
@@ -23,6 +25,6 @@ export function useOffChainCancelOrder() {
 
       return sendOrderCancellation({ chainId, orderId: order.id, signer, account, cancelPendingOrder })
     },
-    [account, cancelPendingOrder, chainId, provider]
+    [account, cancelPendingOrder, chainId, provider],
   )
 }

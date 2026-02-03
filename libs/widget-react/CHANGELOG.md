@@ -1,5 +1,54 @@
 # Changelog
 
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.0...widget-react-v1.0.1) (2026-02-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.1
+    * @cowprotocol/types bumped to 3.0.1
+    * @cowprotocol/widget-lib bumped to 1.0.1
+
+## [1.0.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.14.6...widget-react-v1.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/widget-lib bumped to 1.0.0
+
+## [0.14.6](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.14.5...widget-react-v0.14.6) (2026-01-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped from ^0.22.2 to ^0.22.3
+
+## [0.14.5](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.14.4...widget-react-v0.14.5) (2026-01-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped from ^0.22.1 to ^0.22.2
+
 ## [0.14.4](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.14.3...widget-react-v0.14.4) (2025-12-24)
 
 

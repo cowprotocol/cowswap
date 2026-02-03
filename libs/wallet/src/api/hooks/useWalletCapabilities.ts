@@ -1,22 +1,26 @@
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { LAUNCH_DARKLY_VIEM_MIGRATION, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
-import useSWR, { SWRResponse } from 'swr'
+import useSWR from 'swr'
+import { useCapabilities } from 'wagmi'
 
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 
-import { useIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
+import { useIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
+import { useIsWalletConnect as legacyUseIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
 import { useWalletInfo } from '../hooks'
 
 export type WalletCapabilities = {
-  atomicBatch?: { supported: boolean }
+  atomic?: { status: 'supported' | 'ready' | 'unsupported' }
 }
 
 const requestTimeout = ms`10s`
+
+const EMPTY_SWR_RESPONSE = { data: undefined, isLoading: true }
 
 /**
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
@@ -37,11 +41,19 @@ function shouldCheckCapabilities(
   return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }
 
-export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefined> {
+export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
   const provider = useWalletProvider()
-  const isWalletConnect = useIsWalletConnect()
+  const newIsWalletConnect = useIsWalletConnect()
+  const legacyIsWalletConnect = legacyUseIsWalletConnect()
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
+
+  const capabilities = useCapabilities({ account, chainId })
+
+  let isWalletConnect = legacyIsWalletConnect
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isWalletConnect = newIsWalletConnect
+  }
 
   const shouldFetchCapabilities = Boolean(
     shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId,
@@ -73,7 +85,8 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
             // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
             resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
-          .catch(() => {
+          .catch((error) => {
+            console.error('useWalletCapabilities() error', error)
             clearTimeout(timeout)
             resolve(undefined)
           })
@@ -82,8 +95,10 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
     SWR_NO_REFRESH_OPTIONS,
   )
 
-  if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
-    return { ...swrResponse, isLoading: true }
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    return capabilities
+  } else if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
+    return EMPTY_SWR_RESPONSE
   }
 
   return swrResponse

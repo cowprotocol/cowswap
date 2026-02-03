@@ -37,7 +37,7 @@ export const restrictedTokensLastUpdateAtom = atomWithStorage<number>(
   'restrictedTokens:lastUpdate:v1',
   0,
   getJotaiMergerStorage(),
-  { unstable_getOnInit: true },
+  { getOnInit: true },
 )
 
 /**

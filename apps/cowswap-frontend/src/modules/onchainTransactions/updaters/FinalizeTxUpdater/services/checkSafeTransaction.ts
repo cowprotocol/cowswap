@@ -23,18 +23,18 @@ export function checkSafeTransaction(transaction: EnhancedTransactionDetails, pa
       const { isExecuted, transactionHash } = safeTransaction
       const safeNonce = safeInfo?.nonce
 
-      if (typeof safeNonce === 'number' && safeNonce > safeTransaction.nonce && !isExecuted) {
+      if (typeof safeNonce === 'number' && BigInt(safeNonce) > BigInt(safeTransaction.nonce) && !isExecuted) {
         handleTransactionReplacement(transaction, params)
 
         return
       }
 
       // If the safe transaction is executed, but we don't have a tx receipt yet
-      if (isExecuted && !receipt) {
+      if (isExecuted && transactionHash && !receipt) {
         // Get the ethereum tx receipt
         console.log(
           '[FinalizeTxUpdater] Safe transaction is executed, but we have not fetched the receipt yet. Tx: ',
-          transactionHash
+          transactionHash,
         )
         // Get the transaction receipt
         const { promise: receiptPromise } = getReceipt(transactionHash)

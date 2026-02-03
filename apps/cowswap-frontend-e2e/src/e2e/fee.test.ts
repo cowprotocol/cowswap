@@ -1,5 +1,3 @@
-import { GetQuoteResponse } from '@cowprotocol/cow-sdk'
-
 import { parseUnits } from 'ethers/lib/utils'
 
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
@@ -40,9 +38,9 @@ const mockQuoteResponse = {
   from: ZERO_ADDRESS,
 }
 
-function _assertFeeData(fee: GetQuoteResponse): void {
+function _assertFeeData(fee: { quote: {} } | string): void {
   if (typeof fee === 'string') {
-    fee = JSON.parse(fee)
+    fee = JSON.parse(fee) as { quote: {} }
   }
   expect(fee).to.have.property('quote')
   expect(fee).to.have.property('expiration')

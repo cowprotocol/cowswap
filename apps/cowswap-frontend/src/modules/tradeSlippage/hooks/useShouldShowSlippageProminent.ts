@@ -17,15 +17,15 @@ const REGULAR_ORDER_SLIPPAGE_WARNING_BPS = 200 // 2%
 
 /**
  * Hook to determine if slippage should be displayed prominently (outside the accordion)
- * 
+ *
  * Slippage should be prominent when:
  * 1. User has manually modified the slippage value, OR
  * 2. Slippage exceeds warning thresholds (>2%)
- * 
+ *
  * EXCEPT: Never show prominently for Bridge orders
- * 
+ *
  * Note: When accordion is expanded, prominent slippage is hidden to avoid duplication
- * 
+ *
  * @returns {boolean} true if slippage should be shown outside the accordion
  */
 export function useShouldShowSlippageProminent(): boolean {
@@ -58,8 +58,7 @@ export function useShouldShowSlippageProminent(): boolean {
     // 1. User manually modified slippage, OR
     // 2. Slippage exceeds threshold (>2%)
     const shouldShowDueToHighSlippage = slippageBps > warningThresholdBps
-    
+
     return isSlippageModified || shouldShowDueToHighSlippage
   }, [chainId, slippage, isSlippageModified, isEoaEthFlow, isCurrentTradeBridging])
 }
-

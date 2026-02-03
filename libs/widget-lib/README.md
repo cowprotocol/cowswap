@@ -18,10 +18,6 @@ You can find a detailed description of all widget parameters in the [documentati
 npm install @cowprotocol/widget-lib --save
 ```
 
-```
-yarn add @cowprotocol/widget-lib
-```
-
 Create a container somewhere in your website, the widget will be rendered inside it:
 
 ```html

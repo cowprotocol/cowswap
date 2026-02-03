@@ -14,7 +14,6 @@ import { CacheFirst } from 'workbox-strategies'
 import { DocumentRoute } from './document'
 import { toURL } from './utils'
 
- 
 import pkg from '../../package.json'
 
 const WEB_VERSION = pkg.version

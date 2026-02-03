@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
+import { PercentDisplay } from '@cowprotocol/ui'
 
 import { ProgressBar } from 'components/common/ProgressBar'
 

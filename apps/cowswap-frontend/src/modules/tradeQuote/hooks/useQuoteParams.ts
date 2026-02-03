@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -19,7 +21,6 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
-import { useTradeQuote } from './useTradeQuote'
 
 import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
@@ -30,10 +31,13 @@ export interface QuoteParams {
   quoteParams: QuoteBridgeRequest | undefined
   inputCurrency: Currency
   appData: AppDataInfo['doc'] | undefined
+  hasSmartSlippage?: boolean
 }
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -42,28 +46,30 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-  const { isLoading: isQuoteLoading } = useTradeQuote()
 
-  // Slippage value for quote params:
-  // - User slippage: always include (re-quotes when user changes it)
-  // - Smart slippage: only include after quote loads to prevent re-fetch loop and this will only re-fetch when user switches to auto-slippage mode
-  const slippageBps =
-    tradeSlippage.type === 'user'
-      ? tradeSlippage.value
-      : tradeSlippage.type === 'smart' && !isQuoteLoading
-        ? tradeSlippage.value
-        : undefined
+  const userSlippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
+  const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
+
+  /**
+   * Smart-slippage change should not trigger quote fetching. Only user entered value should trigger it
+   * Because of that, we use smartSlippageBps as ref
+   */
+  const smartSlippageBpsRef = useRef(smartSlippageBps)
+  useEffect(() => {
+    smartSlippageBpsRef.current = smartSlippageBps
+  }, [smartSlippageBps])
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 
   const receiver = useQuoteParamsRecipient()
+  const appDataDoc = appData?.doc
 
   // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
     if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
 
-    const appCode = appData?.doc.appCode || DEFAULT_APP_CODE
+    const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
 
     const sellTokenAddress = getCurrencyAddress(inputCurrency)
     const buyTokenAddress = getCurrencyAddress(outputCurrency)
@@ -75,7 +81,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       return {
         quoteParams: undefined,
         inputCurrency,
-        appData: appData?.doc,
+        appData: appDataDoc,
       }
     }
 
@@ -108,10 +114,15 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
-      swapSlippageBps: slippageBps,
+      swapSlippageBps: userSlippageBps ?? smartSlippageBpsRef.current,
     }
 
-    return { quoteParams, inputCurrency, appData: appData?.doc }
+    return {
+      quoteParams,
+      inputCurrency,
+      appData: appDataDoc,
+      hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
+    }
   }, [
     provider,
     inputCurrency,
@@ -119,12 +130,12 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     amount,
     partiallyFillable,
     orderKind,
-    appData?.doc,
+    appDataDoc,
     receiver,
     account,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
-    slippageBps,
+    userSlippageBps,
   ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)

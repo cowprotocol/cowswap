@@ -3,7 +3,7 @@ import { useHydrateAtoms } from 'jotai/utils'
 import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
-import { Web3Provider } from '@cowprotocol/wallet'
+import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
 import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
@@ -40,9 +40,11 @@ const WithProviders = ({ children }: { children?: ReactNode }): ReactNode => {
     <LanguageProvider>
       <MockedI18nProvider>
         <Provider store={cowSwapStore}>
-          <Web3Provider selectedWallet={undefined}>
-            <MockThemeProvider>{children}</MockThemeProvider>
-          </Web3Provider>
+          <LegacyWeb3Provider selectedWallet={undefined}>
+            <Web3Provider>
+              <MockThemeProvider>{children}</MockThemeProvider>
+            </Web3Provider>
+          </LegacyWeb3Provider>
         </Provider>
       </MockedI18nProvider>
     </LanguageProvider>
@@ -78,7 +80,9 @@ export function WithMockedWeb3({ children, location }: { children?: ReactNode; l
   return (
     <MemoryRouter initialEntries={location ? [location] : undefined}>
       <Provider store={cowSwapStore}>
-        <Web3ReactProvider connectors={connectors}>{children}</Web3ReactProvider>
+        <Web3ReactProvider connectors={connectors}>
+          <Web3Provider>{children}</Web3Provider>
+        </Web3ReactProvider>
       </Provider>
     </MemoryRouter>
   )

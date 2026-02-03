@@ -1,5 +1,7 @@
 import React, { ReactNode, useMemo } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { OrderTabId } from '../../../const/tabs'
 import { OrderRow } from '../../../containers/OrderRow'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
@@ -15,6 +17,7 @@ interface OrderTableRowProps {
 }
 
 export function OrderTableRow({ item, currentTab }: OrderTableRowProps): ReactNode {
+  const { chainId } = useWalletInfo()
   const tableState = useOrdersTableState()
   const selectedOrders = tableState?.selectedOrders
   const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
@@ -32,15 +35,8 @@ export function OrderTableRow({ item, currentTab }: OrderTableRowProps): ReactNo
 
   if (!tableState) return null
 
-  const {
-    chainId,
-    pendingOrdersPrices,
-    balancesAndAllowances,
-    getSpotPrice,
-    orderActions,
-    isTwapTable,
-    allowsOffchainSigning,
-  } = tableState
+  const { pendingOrdersPrices, balancesAndAllowances, getSpotPrice, orderActions, isTwapTable, allowsOffchainSigning } =
+    tableState
 
   const isRowSelectable = allowsOffchainSigning
 

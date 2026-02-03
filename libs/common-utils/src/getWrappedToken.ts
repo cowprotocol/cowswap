@@ -4,7 +4,6 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { getIsNativeToken } from './getIsNativeToken'
 
-
 export function getWrappedToken(currency: Currency): TokenWithLogo {
   return getIsNativeToken(currency)
     ? WRAPPED_NATIVE_CURRENCIES[currency.chainId as SupportedChainId]
