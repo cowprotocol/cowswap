@@ -1,4 +1,4 @@
-import { TTLCache } from '@cowprotocol/cow-sdk'
+import { getTokenAddressKey, TTLCache } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 
@@ -7,10 +7,10 @@ import { getCmsClient } from '../utils'
 
 const NOTIFICATIONS_TTL = ms`5m` - 500 // Substract 500ms to not hit cache with polling in useAccountNotifications
 
-const cache = new TTLCache<NotificationModel[]>('cms-account-notifications', true, NOTIFICATIONS_TTL)
+const cache = new TTLCache<NotificationModel[]>('cmsAccountNotifications:v0', true, NOTIFICATIONS_TTL)
 
 export async function getAccountNotifications(account: string): Promise<NotificationModel[]> {
-  const cacheKey = account.toLowerCase()
+  const cacheKey = getTokenAddressKey(account)
   const cached = cache.get(cacheKey)
   if (cached !== undefined) {
     return cached

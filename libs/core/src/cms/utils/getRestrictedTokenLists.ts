@@ -26,7 +26,7 @@ interface CmsRestrictedTokenListsResponse {
  */
 const CACHE_KEY = 'restricted-token-lists'
 
-const cache = new TTLCache<RestrictedTokenLists>('cms-restricted-token-lists', true, DEFAULT_CMS_REQUEST_TTL)
+const cache = new TTLCache<RestrictedTokenLists>('cmsRestrictedTokenLists:v0', true, DEFAULT_CMS_REQUEST_TTL)
 
 export async function getRestrictedTokenLists(): Promise<RestrictedTokenLists> {
   const cached = cache.get(CACHE_KEY)
@@ -35,11 +35,13 @@ export async function getRestrictedTokenLists(): Promise<RestrictedTokenLists> {
   }
 
   const result = await fetchRestrictedTokenLists()
-  cache.set(CACHE_KEY, result)
-  return result
+  if (result) {
+    cache.set(CACHE_KEY, result)
+  }
+  return result ?? []
 }
 
-async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists> {
+async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null> {
   const cmsClient = getCmsClient()
 
   return cmsClient
@@ -66,6 +68,6 @@ async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists> {
     })
     .catch((error: Error) => {
       console.error('Failed to fetch restricted token lists', error)
-      return [] as RestrictedTokenLists
+      return null
     })
 }
