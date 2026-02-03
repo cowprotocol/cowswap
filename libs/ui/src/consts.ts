@@ -42,8 +42,6 @@ export const Media = {
   LargeAndUp: (useMediaPrefix = true) => getMediaQuery(`(min-width: ${MEDIA_WIDTHS.upToLarge + 1}px)`, useMediaPrefix),
 }
 
-export type MediaQueryKey = keyof typeof Media
-
 export const Font = {
   family: `'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif`,
   familySerif: `'studiofeixenserif', Arial, serif`,
