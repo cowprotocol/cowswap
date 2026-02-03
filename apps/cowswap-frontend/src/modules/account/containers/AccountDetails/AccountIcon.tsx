@@ -1,9 +1,11 @@
 import { useState } from 'react'
 
+import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { HoverTooltip } from '@cowprotocol/ui'
-import { useConnectionType, useWalletDetails } from '@cowprotocol/wallet'
+import { ConnectorType, useConnectionType, useWalletDetails } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import { useConnection } from 'wagmi'
 
 import { StatusIcon } from 'modules/wallet/pure/StatusIcon'
 
@@ -17,6 +19,7 @@ interface AccountIconProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
+  const { connector } = useConnection()
   const walletDetails = useWalletDetails()
   const connectionType = useConnectionType()
   const [imageLoadError, setImageLoadError] = useState(false)
@@ -27,7 +30,11 @@ export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
   if (imageLoadError || isIdenticon || !icon) {
     return (
       <IconWrapper size={size}>
-        <StatusIcon size={size} account={account} connectionType={connectionType} />
+        <StatusIcon
+          size={size}
+          account={account}
+          connectionType={LAUNCH_DARKLY_VIEM_MIGRATION ? (connector?.type as ConnectorType) : connectionType}
+        />
       </IconWrapper>
     )
   }

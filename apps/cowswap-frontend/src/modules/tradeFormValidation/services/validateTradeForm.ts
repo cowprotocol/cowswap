@@ -1,8 +1,7 @@
 import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
-import { isQuoteExpired } from 'modules/tradeQuote'
+import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
@@ -28,6 +27,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     customTokenError,
     isRestrictedForCountry,
     isBalancesLoading,
+    isBundlingSupported,
   } = context
 
   const {
@@ -52,7 +52,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
-  const isFastQuote = fetchParams?.priceQuality === PriceQuality.FAST
+  const isFastQuote = getIsFastQuote(fetchParams)
 
   const validations: TradeFormValidation[] = []
 
@@ -101,6 +101,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (inputAmountIsNotSet) {
     validations.push(TradeFormValidation.InputAmountNotSet)
+  }
+
+  if (!!account && isBundlingSupported === null) {
+    validations.push(TradeFormValidation.WalletCapabilitiesLoading)
   }
 
   if (!canPlaceOrderWithoutBalance && !!account) {

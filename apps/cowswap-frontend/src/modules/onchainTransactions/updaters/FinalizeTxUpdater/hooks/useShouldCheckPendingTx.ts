@@ -16,7 +16,7 @@ export function useShouldCheckPendingTx() {
 
   return useCallback(
     (tx: EnhancedTransactionDetails) => shouldCheckPendingTx(lastBlockNumber, accountLowerCase, tx),
-    [accountLowerCase, lastBlockNumber]
+    [accountLowerCase, lastBlockNumber],
   )
 }
 
@@ -25,7 +25,7 @@ export function useShouldCheckPendingTx() {
 function shouldCheckPendingTx(
   lastBlockNumber: number | undefined,
   accountLowerCase: string,
-  tx: EnhancedTransactionDetails
+  tx: EnhancedTransactionDetails,
 ): boolean {
   const isCurrentAccount = tx.from.toLowerCase() === accountLowerCase
   const isReplaced = !!(tx.replacementType || tx.linkedTransactionHash)

@@ -1,5 +1,6 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { PriceQuality, SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
+import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
   CrossChainQuoteAndPost,
@@ -7,7 +8,6 @@ import {
   MultiQuoteResult,
   QuoteBridgeRequest,
 } from '@cowprotocol/sdk-bridging'
-import { QuoteAndPost } from '@cowprotocol/sdk-trading'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -49,6 +49,8 @@ export async function fetchAndProcessQuote(
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
     getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
     getCorrelatedTokens,
+    // TODO: sell=buy feature. Set allowIntermediateEqSellToken: true once the feature is ready
+    // allowIntermediateEqSellToken: true
   }
 
   const processQuoteError = (error: Error): void => {

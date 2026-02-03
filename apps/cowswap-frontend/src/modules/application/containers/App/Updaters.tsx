@@ -8,7 +8,7 @@ import {
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { HwAccountIndexUpdater, LegacyWalletUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -18,7 +18,6 @@ import { CorrelatedTokensUpdater } from 'entities/correlatedTokens'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
-import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
 import { BalancesDevtools } from 'modules/balancesAndAllowances/updaters/BalancesDevtools'
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
@@ -33,7 +32,7 @@ import {
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { GeoDataUpdater } from 'modules/rwa'
-import { BlockedListSourcesUpdater, useSourceChainId } from 'modules/tokensList'
+import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
@@ -84,6 +83,7 @@ export function Updaters(): ReactNode {
       {/*MultiCallUpdater will use wallet network by default if custom chainId is not provided*/}
       <MultiCallUpdater chainId={sourceChainSource === 'wallet' ? undefined : sourceChainId} />
       <WalletUpdater standaloneMode={standaloneMode} />
+      <LegacyWalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
@@ -93,7 +93,6 @@ export function Updaters(): ReactNode {
       <OrdersFromApiUpdater />
       <GasUpdater />
       <SentryUpdater />
-      <UploadToIpfsUpdater />
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
@@ -118,6 +117,7 @@ export function Updaters(): ReactNode {
       />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
       <BlockedListSourcesUpdater />
+      <RecentTokensStorageUpdater />
       <GeoDataUpdater />
       <TokensListsTagsUpdater />
 

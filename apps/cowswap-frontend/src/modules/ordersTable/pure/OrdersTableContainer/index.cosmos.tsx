@@ -1,8 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useEffect } from 'react'
 
-import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 
 import { msg } from '@lingui/core/macro'
 
@@ -68,14 +67,12 @@ function Wrapper(): null {
       pendingActivitiesCount: 0,
       displayOrdersOnlyForSafeApp: false,
       pendingOrdersPrices: {},
-      chainId: SupportedChainId.MAINNET,
       currentPageNumber: 1,
       orders: ordersMock,
       filteredOrders: ordersMock,
       tabs: tabs,
       isSafeViaWc: false,
       allowsOffchainSigning: true,
-      isWalletConnected: true,
       selectedOrders: [],
       balancesAndAllowances: balancesAndAllowances,
       getSpotPrice: () => null,

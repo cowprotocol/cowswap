@@ -1,6 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
+
+import { useConnection } from 'wagmi'
+
 import { useWalletCapabilities } from './hooks/useWalletCapabilities'
 import {
   gnosisSafeInfoAtom,
@@ -15,7 +19,7 @@ import {
   selectedEip6963ProviderAtom,
   selectedEip6963ProviderRdnsAtom,
 } from './state/multiInjectedProvidersAtom'
-import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
+import { ConnectionType, ConnectorType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useConnectionType } from '../web3-react/hooks/useConnectionType'
@@ -51,15 +55,17 @@ export function useEndEagerConnect(): () => void {
   return useCallback(() => set((prev) => (prev > 0 ? prev - 1 : 0)), [set])
 }
 
-// TODO: if you want to test TWAP with others EIP-5792 wallets - keep only atomicBatch.supported
 export function useIsTxBundlingSupported(): boolean | null {
+  // TODO this will be fixed in M-3 COW-569
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
 
+  if (isSafeApp) return true
+
   if (isCapabilitiesLoading) return null
 
-  return isSafeApp || (isSafeViaWc && !!capabilities?.atomicBatch?.supported)
+  return isSafeViaWc && capabilities?.atomic?.status === 'supported'
 }
 
 // TODO: Add proper return type annotation
@@ -87,40 +93,66 @@ export function useSelectedEip6963ProviderInfo() {
 }
 
 export function useIsAssetWatchingSupported(): boolean {
+  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  if (!info || connectionType !== ConnectionType.INJECTED) return false
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isInjectedConnection = connector?.type === ConnectorType.INJECTED
+  }
+
+  if (!info || !isInjectedConnection) return false
 
   // TODO: check other wallets and extend the array
   return WATCH_ASSET_SUPPORED_WALLETS.includes(info.info.rdns)
 }
 
 export function useIsRabbyWallet(): boolean {
+  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  if (!info || connectionType !== ConnectionType.INJECTED) return false
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isInjectedConnection = connector?.type === ConnectorType.INJECTED
+  }
+
+  if (!info || !isInjectedConnection) return false
 
   return RABBY_RDNS === info.info.rdns
 }
 
 export function useIsBraveWallet(): boolean {
+  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  if (!info || connectionType !== ConnectionType.INJECTED) return false
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isInjectedConnection = connector?.type === ConnectorType.INJECTED
+  }
+
+  if (!info || !isInjectedConnection) return false
 
   return BRAVE_WALLET_RDNS === info.info.rdns
 }
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
+  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  if (connectionType === ConnectionType.METAMASK) return true
+  let isMetamaskConnection = connectionType === ConnectionType.METAMASK
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
+    isInjectedConnection = connector?.type === ConnectorType.INJECTED
+  }
 
-  if (!info || connectionType !== ConnectionType.INJECTED) return false
+  if (isMetamaskConnection) return true
+
+  if (!info || !isInjectedConnection) return false
 
   return METAMASK_RDNS === info.info.rdns
 }

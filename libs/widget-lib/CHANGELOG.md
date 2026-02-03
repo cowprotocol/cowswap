@@ -1,5 +1,55 @@
 # Changelog
 
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.0.0...widget-lib-v1.0.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.1
+    * @cowprotocol/iframe-transport bumped to 2.0.1
+
+## [1.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.3...widget-lib-v1.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.0
+    * @cowprotocol/iframe-transport bumped to 2.0.0
+
+## [0.22.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.2...widget-lib-v0.22.3) (2026-01-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped from ^1.1.1 to ^1.2.0
+
+## [0.22.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.1...widget-lib-v0.22.2) (2026-01-26)
+
+
+### Bug Fixes
+
+* **widget-lib:** add compatibility with server rendering ([#6813](https://github.com/cowprotocol/cowswap/issues/6813)) ([76bd736](https://github.com/cowprotocol/cowswap/commit/76bd736f17d722f0a639542d4fcbd5e3f0be57b2))
+
 ## [0.22.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.0...widget-lib-v0.22.1) (2025-12-24)
 
 

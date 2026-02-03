@@ -1,0 +1,14 @@
+packages:
+  - 'apps/*'
+  - 'libs/*'
+
+# Enforce a 1-week delay (10080 minutes)
+minimumReleaseAge: 10080
+
+# Optional: Allow specific packages to update immediately
+minimumReleaseAgeExclude:
+  - react
+  - next
+  - typescript
+  - '@types/*'
+  - '@cowprotocol/*'

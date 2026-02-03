@@ -1,5 +1,6 @@
 export * from './hooks/useTokensForOrdersList'
 export * from './hooks/useSWRProdOrders'
+export * from './hooks/useLoadMoreOrders'
 export * from './utils/getTokensListFromOrders'
 
 export type { PendingOrderPrices, PendingOrdersPrices } from './state/pendingOrdersPricesAtom'

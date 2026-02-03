@@ -10,19 +10,19 @@ Make sure you follow them for a speedy review.
 ### Install dependencies
 
 ```bash
-yarn install
+pnpm install
 ```
 
 ### Generate locale files
 
 ```bash
-yarn i18n
+pnpm run i18n
 ```
 
 ### Run the interface
 
 ```bash
-yarn start
+pnpm start
 ```
 
 ---
@@ -148,7 +148,29 @@ Additional Guidelines:
 
 ---
 
-## 8. Testing
+## 8. Bundle optimization
+
+Problems detection:
+
+1. run `pnpm run analyze-build`
+2. check `build/cowswap/analyse.html` and `build/cowswap/bundle-stats.html`
+
+Optimization rules:
+
+1. Dynamic imports
+
+- Every huge (> 100kb) dependency should be loaded via dynamic `import()`
+- Dynamic import breaks tree-shaking, so re-export only used variables when possible (see imports/1inchPermitUtils)
+- Add eslint `@typescript-eslint/no-restricted-imports` rules for dynamically imported modules
+
+2. Dependency size
+
+- Always check if huge dependency has a new version, especially if it's `cjs` module (`cjs` is non tree-shakable)
+- [Bundlephobia](https://bundlephobia.com/) shows if module is tree-shakeable and it's actual size
+
+---
+
+## 9. Testing
 
 - Unit tests / integration tests required when applicable
 - Jest unit tests for logic
@@ -159,7 +181,7 @@ Additional Guidelines:
 
 ---
 
-## 9. Interaction Contract
+## 10. Interaction Contract
 
 1. Ask clarifying questions when requirements are ambiguous
 2. Output only ready-to-paste code, using repo-root-relative paths
@@ -169,7 +191,7 @@ Additional Guidelines:
 
 ---
 
-## 10. Development Communication
+## 11. Development Communication
 
 - Use descriptive commit messages, inline comments, and rich PR descriptions (expected behaviour & QA scope)
 - Plan work up-front to keep each PR scoped to a single feature/fix

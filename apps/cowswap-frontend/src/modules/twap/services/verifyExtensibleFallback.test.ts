@@ -17,8 +17,8 @@ const context: ExtensibleFallbackContext = {
   safeAddress: '0x360Ba61Bc799edfa01e306f1eCCb2F6e0C3C8c8e',
   settlementContract: {
     callStatic: { domainSeparator: () => '0xa5b986c2f5845d520bcb903639360b147735589732066cea24a3a59678025c94' },
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any,
   provider: new Web3Provider(defaultJsonRpcHandler),
 }

@@ -30,6 +30,8 @@ export function useSetupTradeState(): void {
 
   const isWindowVisible = useIsWindowVisible()
   const prevIsWindowVisible = usePrevious(isWindowVisible)
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
@@ -150,7 +152,7 @@ export function useSetupTradeState(): void {
       return
     }
 
-    const { inputCurrencyId, outputCurrencyId } = tradeStateFromUrl
+    const { inputCurrencyId, outputCurrencyId, chainId, targetChainId } = tradeStateFromUrl
     const providerAndUrlChainIdMismatch = currentChainId !== prevProviderChainId
 
     const onlyChainIdIsChanged =
@@ -163,6 +165,8 @@ export function useSetupTradeState(): void {
     const sameTokens =
       inputCurrencyId !== EMPTY_TOKEN_ID &&
       (inputCurrencyId || outputCurrencyId) &&
+      // Not cross-chain swap
+      (!targetChainId || chainId === targetChainId) &&
       inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
 
     const defaultState = getDefaultTradeRawState(currentChainId)

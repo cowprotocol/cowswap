@@ -1,5 +1,121 @@
 # Changelog
 
+## [2.0.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.2...cowswap-v2.0.3) (2026-02-03)
+
+
+### Bug Fixes
+
+* **limit-orders:** display correct protocol fee amount ([#6955](https://github.com/cowprotocol/cowswap/issues/6955)) ([076139e](https://github.com/cowprotocol/cowswap/commit/076139e2ef998daccb4d0225c4e2f60cf0a8bac0))
+
+## [2.0.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.1...cowswap-v2.0.2) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.1
+    * @cowprotocol/balances-and-allowances bumped to 2.0.1
+    * @cowprotocol/common-const bumped to 2.0.1
+    * @cowprotocol/common-hooks bumped to 2.0.1
+    * @cowprotocol/common-utils bumped to 2.0.1
+    * @cowprotocol/core bumped to 2.0.1
+    * @cowprotocol/ens bumped to 2.0.1
+    * @cowprotocol/events bumped to 3.0.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.1
+    * @cowprotocol/iframe-transport bumped to 2.0.1
+    * @cowprotocol/multicall bumped to 2.0.1
+    * @cowprotocol/permit-utils bumped to 2.0.1
+    * @cowprotocol/snackbars bumped to 2.0.1
+    * @cowprotocol/tokens bumped to 2.0.1
+    * @cowprotocol/types bumped to 3.0.1
+    * @cowprotocol/ui bumped to 2.0.1
+    * @cowprotocol/wallet bumped to 2.0.1
+    * @cowprotocol/widget-lib bumped to 1.0.1
+
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.0...cowswap-v2.0.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* **cowswap:** minor refactor just to trigger the build ([12700c5](https://github.com/cowprotocol/cowswap/commit/12700c5a1c21896957a31e07ab2cd7eaf7edcfd4))
+
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.129.0...cowswap-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* add repo-wide AGENTS.md with app-specific overlays ([#6865](https://github.com/cowprotocol/cowswap/issues/6865)) ([a2a4239](https://github.com/cowprotocol/cowswap/commit/a2a4239b11691585396f1959475cbbcf535e2853))
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* **limit:** update orders table tabs and filters [#6831](https://github.com/cowprotocol/cowswap/issues/6831) ([11b07b9](https://github.com/cowprotocol/cowswap/commit/11b07b901ad33dc19b8c37ab1769fb3fa7895222))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Bug Fixes
+
+* fix safeNonce type check ([#6896](https://github.com/cowprotocol/cowswap/issues/6896)) ([3e39af2](https://github.com/cowprotocol/cowswap/commit/3e39af235b71cf4370bed02b58b1d364881064de))
+* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.0
+    * @cowprotocol/assets bumped to 2.0.0
+    * @cowprotocol/balances-and-allowances bumped to 2.0.0
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/core bumped to 2.0.0
+    * @cowprotocol/cowswap-abis bumped to 2.0.0
+    * @cowprotocol/ens bumped to 2.0.0
+    * @cowprotocol/events bumped to 3.0.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.0
+    * @cowprotocol/iframe-transport bumped to 2.0.0
+    * @cowprotocol/multicall bumped to 2.0.0
+    * @cowprotocol/permit-utils bumped to 2.0.0
+    * @cowprotocol/snackbars bumped to 2.0.0
+    * @cowprotocol/tokens bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/ui-utils bumped to 2.0.0
+    * @cowprotocol/ui bumped to 2.0.0
+    * @cowprotocol/wallet-provider bumped to 2.0.0
+    * @cowprotocol/wallet bumped to 2.0.0
+    * @cowprotocol/widget-lib bumped to 1.0.0
+
+## [1.129.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.5...cowswap-v1.129.0) (2026-01-26)
+
+
+### Features
+
+* **bridge:** use sell token as intermediate by default ([#6834](https://github.com/cowprotocol/cowswap/issues/6834)) ([0c59666](https://github.com/cowprotocol/cowswap/commit/0c59666e80d583b53cb5f36cfb0af99998b92c44))
+* disable sell=buy feature for a while ([#6862](https://github.com/cowprotocol/cowswap/issues/6862)) ([cba735f](https://github.com/cowprotocol/cowswap/commit/cba735f9630ce9acf4b5d081c654a8380b3569e6))
+* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
+* show loading wallet capabilities state ([#6852](https://github.com/cowprotocol/cowswap/issues/6852)) ([474e784](https://github.com/cowprotocol/cowswap/commit/474e78476489d677fc59490b564e4ef7b000f33d))
+
+
+### Bug Fixes
+
+* **bridge:** do not reset assets when change sell token ([#6851](https://github.com/cowprotocol/cowswap/issues/6851)) ([b30ca82](https://github.com/cowprotocol/cowswap/commit/b30ca8234f1e1d2d07eca7804b76157344328470))
+* **bridge:** hide receiver when swap part of bridge is filled ([#6878](https://github.com/cowprotocol/cowswap/issues/6878)) ([c5a1b1d](https://github.com/cowprotocol/cowswap/commit/c5a1b1da8c12146cc91665f1c75c073a38091dc4))
+* **bridging:** add near api key ([#6854](https://github.com/cowprotocol/cowswap/issues/6854)) ([448e639](https://github.com/cowprotocol/cowswap/commit/448e6392eb235a272b05a286e5cc565f7880396d))
+* **bridging:** disable bridging when there are no configured providers ([#6860](https://github.com/cowprotocol/cowswap/issues/6860)) ([f5fcd33](https://github.com/cowprotocol/cowswap/commit/f5fcd3345c8498ea30b2ed4d8a8e8b5da0fc829a))
+* bring safeApp to wallets who support TxBundling ([#6872](https://github.com/cowprotocol/cowswap/issues/6872)) ([25f8836](https://github.com/cowprotocol/cowswap/commit/25f8836fbfcbfe741b32dcdd9f1ee0fe11894bdb))
+* move dl provider in tree to avoid ffs reinitialization ([#6871](https://github.com/cowprotocol/cowswap/issues/6871)) ([b7d1908](https://github.com/cowprotocol/cowswap/commit/b7d1908daba8d7cfe8542221df83204af93280f9))
+* request balances from view chain id in selector ([#6859](https://github.com/cowprotocol/cowswap/issues/6859)) ([8428aaa](https://github.com/cowprotocol/cowswap/commit/8428aaa4402c90e68d38b8d832577c301bbf49ad))
+* **trade:** do not reset output token for regular swap ([#6874](https://github.com/cowprotocol/cowswap/issues/6874)) ([da709ec](https://github.com/cowprotocol/cowswap/commit/da709ecc6f733673d368f9a0ddeff33b6c80553b))
+* unify order summary ([#6773](https://github.com/cowprotocol/cowswap/issues/6773)) ([3883ce9](https://github.com/cowprotocol/cowswap/commit/3883ce9cc00e8b66c5d7443fc3121433a12828b8))
+
 ## [1.128.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.128.4...cowswap-v1.128.5) (2026-01-15)
 
 

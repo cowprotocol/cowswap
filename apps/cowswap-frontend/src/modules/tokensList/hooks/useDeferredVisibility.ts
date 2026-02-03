@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface DeferredVisibilityOptions {
   /**
@@ -64,5 +64,5 @@ export function useDeferredVisibility<T extends HTMLElement>(
     setElement(node)
   }, [])
 
-  return { ref, isVisible }
+  return useMemo(() => ({ ref, isVisible }), [ref, isVisible])
 }

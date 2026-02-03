@@ -315,6 +315,7 @@ export const Wrapper = styled(WrapperTemplate)`
       padding: 0.6rem 1rem;
       border-radius: 0.6rem;
       border: 1px solid ${Color.explorer_borderPrimary};
+
       legend {
         padding: 0.5rem;
       }

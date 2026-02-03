@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
@@ -46,7 +45,18 @@ export default defineConfig({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'wagmi',
+        'viem',
+        '@tanstack/react-query',
+        '@web3-react/core',
+        'ethers',
+        /^@cowprotocol\//,
+        /^@ethersproject\//,
+      ],
     },
   },
 })

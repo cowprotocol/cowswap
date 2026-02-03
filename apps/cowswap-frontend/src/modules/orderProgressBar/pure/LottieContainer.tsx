@@ -1,7 +1,8 @@
-import { ReactNode, useRef, useEffect } from 'react'
+import { ReactNode, useRef, useEffect, lazy, Suspense } from 'react'
 
-import Lottie from 'lottie-react'
 import styled from 'styled-components/macro'
+
+const Lottie = lazy(() => import('lottie-react'))
 
 const LottieWrapper = styled.div`
   --size: 100%;
@@ -61,7 +62,15 @@ export function FullSizeLottie({ animationData, loop = true, autoplay = true }: 
 
   return (
     <LottieWrapper ref={lottieRef}>
-      <Lottie animationData={animationData} loop={loop} autoplay={autoplay} style={{ width: '100%', height: '100%' }} />
+      {/* TODO: what fallback should be used here? */}
+      <Suspense fallback={null}>
+        <Lottie
+          animationData={animationData}
+          loop={loop}
+          autoplay={autoplay}
+          style={{ width: '100%', height: '100%' }}
+        />
+      </Suspense>
     </LottieWrapper>
   )
 }

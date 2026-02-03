@@ -32,7 +32,6 @@ export const CONFIG = {
     explorer: 'https://explorer.cow.fi',
     securityPortal: 'https://app.chainpatrol.io/cow',
     grants: 'https://grants.cow.fi',
-    mevBlocker: 'https://mevblocker.io/',
   },
   ashbyHqApi: 'https://jobs.ashbyhq.com/api/non-user-graphql',
   social: {

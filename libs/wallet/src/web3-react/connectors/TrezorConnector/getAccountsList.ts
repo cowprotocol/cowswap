@@ -1,4 +1,4 @@
-import { publicToAddress } from 'ethereumjs-util'
+import { publicToAddress } from '@ethereumjs/util'
 import HDNode from 'hdkey'
 
 import { TREZOR_DERIVATION_PATH } from '../../../api/utils/getHwAccount'
@@ -29,7 +29,11 @@ interface DerivedHDKeyInfo {
 class DerivedHDKeyInfoIterator {
   private index = 0
 
-  constructor(private parentDerivedKeyInfo: DerivedHDKeyInfo, private offset = 0, private limit = 100) {}
+  constructor(
+    private parentDerivedKeyInfo: DerivedHDKeyInfo,
+    private offset = 0,
+    private limit = 100,
+  ) {}
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   next() {
@@ -93,7 +97,7 @@ async function initialDerivedKeyInfoAsync(trezorConnect: TrezorConnect): Promise
 function calculateDerivedHDKeyInfos(
   parentDerivedKeyInfo: DerivedHDKeyInfo,
   offset: number,
-  limit: number
+  limit: number,
 ): DerivedHDKeyInfo[] {
   const derivedKeys: DerivedHDKeyInfo[] = []
   const derivedKeyIterator = new DerivedHDKeyInfoIterator(parentDerivedKeyInfo, offset, limit)
@@ -105,10 +109,16 @@ function calculateDerivedHDKeyInfos(
   return derivedKeys
 }
 
+function uint8ArrayToHex(uint8arr: Uint8Array): string {
+  return Array.from(uint8arr)
+    .map((x) => x.toString(16).padStart(2, '0'))
+    .join('')
+}
+
 function addressOfHDKey(hdKey: HDNode): string {
   const shouldSanitizePublicKey = true
   const derivedPublicKey = hdKey.publicKey
-  const ethereumAddressUnprefixed = publicToAddress(derivedPublicKey, shouldSanitizePublicKey).toString('hex')
+  const ethereumAddressUnprefixed = uint8ArrayToHex(publicToAddress(derivedPublicKey, shouldSanitizePublicKey))
 
   return '0x' + ethereumAddressUnprefixed.toLowerCase()
 }

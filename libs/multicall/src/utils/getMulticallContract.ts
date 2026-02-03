@@ -1,4 +1,4 @@
-import { Multicall3, Multicall3Abi } from '@cowprotocol/abis'
+import { Multicall3, Multicall3Abi } from '@cowprotocol/cowswap-abis'
 import { Contract } from '@ethersproject/contracts'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 

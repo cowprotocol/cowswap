@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useMemo, useState, Suspense, lazy } from 'react'
 
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
@@ -12,7 +12,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { i18n } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'
-import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
 
@@ -32,15 +31,20 @@ import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 
+const Lottie = lazy(() => import('lottie-react'))
+
 function TransactionStatus({ isDarkMode }: { isDarkMode: boolean }): ReactNode {
   return (
     <styledEl.TransactionStatus margin={'0 auto 24px'}>
-      <Lottie
-        animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
-        loop={false}
-        autoplay
-        style={{ width: '36px', height: '36px' }}
-      />
+      {/* TODO: what fallback should be used here? */}
+      <Suspense fallback={null}>
+        <Lottie
+          animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
+          loop={false}
+          autoplay
+          style={{ width: '36px', height: '36px' }}
+        />
+      </Suspense>
       <Trans>Transaction completed!</Trans>
     </styledEl.TransactionStatus>
   )

@@ -15,10 +15,11 @@ import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMu
 import { useNavigate } from 'common/hooks/useNavigate'
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
+import { OrderTabId } from '../const/tabs'
 import { useOrdersTableList } from '../containers/OrdersTableWidget/hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from '../containers/OrdersTableWidget/hooks/useValidatePageUrlParams'
 import { useCurrentTab } from '../hooks/useCurrentTab'
-import { useFilteredOrders } from '../hooks/useFilteredOrders'
+import { HistoryStatusFilter, useFilteredOrders } from '../hooks/useFilteredOrders'
 import { useOrderActions } from '../hooks/useOrderActions'
 import { useOrdersHydrationState } from '../hooks/useOrdersHydrationState'
 import { useTabs } from '../hooks/useTabs'
@@ -37,7 +38,8 @@ function getOrdersInputTokens(allOrders: Order[]): string[] {
 }
 
 interface OrdersTableStateUpdaterProps extends OrdersTableParams {
-  searchTerm?: string
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
   syncWithUrl?: boolean
 }
 
@@ -47,11 +49,12 @@ export function OrdersTableStateUpdater({
   orders: allOrders,
   orderType,
   searchTerm = '',
+  historyStatusFilter,
   isTwapTable = false,
   displayOrdersOnlyForSafeApp = false,
   syncWithUrl = true,
 }: OrdersTableStateUpdaterProps): ReactNode {
-  const { chainId, account } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const navigate = useNavigate()
   const location = useLocation()
@@ -72,9 +75,12 @@ export function OrdersTableStateUpdater({
   const { currentTabId, currentPageNumber } = useCurrentTab(ordersList)
 
   const orders = ordersList[currentTabId]
-  const filteredOrders = useFilteredOrders(orders, searchTerm)
+  const filteredOrders = useFilteredOrders(orders, {
+    searchTerm,
+    // The status filter select is only visible in the story tab:
+    historyStatusFilter: currentTabId === OrderTabId.history ? historyStatusFilter : HistoryStatusFilter.ALL,
+  })
   const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
-
   const tabs = useTabs(ordersList, currentTabId)
 
   const orderActions = useOrderActions(allOrders)
@@ -82,7 +88,6 @@ export function OrdersTableStateUpdater({
   useEffect(() => {
     setOrdersTableState({
       currentTabId,
-      chainId,
       tabs,
       orders,
       filteredOrders,
@@ -91,7 +96,6 @@ export function OrdersTableStateUpdater({
       currentPageNumber,
       pendingOrdersPrices,
       balancesAndAllowances,
-      isWalletConnected: !!account,
       orderActions,
       getSpotPrice,
       allowsOffchainSigning,
@@ -104,7 +108,6 @@ export function OrdersTableStateUpdater({
     })
   }, [
     setOrdersTableState,
-    chainId,
     tabs,
     orders,
     filteredOrders,
@@ -114,7 +117,6 @@ export function OrdersTableStateUpdater({
     currentPageNumber,
     pendingOrdersPrices,
     balancesAndAllowances,
-    account,
     orderActions,
     getSpotPrice,
     allowsOffchainSigning,

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { COW_CDN, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
 import { ALL_SUPPORTED_CHAIN_IDS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 
@@ -25,6 +26,7 @@ const COINGECKO_CHAINS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BNB]: 'binance-smart-chain',
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
+  [SupportedChainId.INK]: 'ink',
 }
 
 const EMPTY_TOKENS: TokenListByAddress = {}
@@ -65,7 +67,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
 
     const nativeToken = NATIVE_TOKEN_PER_NETWORK[chainId]
 
-    data[NATIVE_TOKEN_ADDRESS.toLowerCase()] = {
+    data[getTokenAddressKey(NATIVE_TOKEN_ADDRESS)] = {
       ...nativeToken,
       name: nativeToken.name || '',
       symbol: nativeToken.symbol || '',
@@ -93,7 +95,7 @@ function fetcher(tokenListUrl: string): Promise<TokenListPerNetwork> {
       tokens.reduce((acc, token) => {
         // Pick only supported chains
         if (SUPPORTED_CHAIN_IDS_SET.has(token.chainId)) {
-          acc[token.chainId][token.address.toLowerCase()] = token
+          acc[token.chainId][getTokenAddressKey(token.address)] = token
         }
         return acc
       }, INITIAL_TOKEN_LIST_PER_NETWORK),

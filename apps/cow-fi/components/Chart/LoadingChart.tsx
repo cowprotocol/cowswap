@@ -1,5 +1,6 @@
-import styled from 'styled-components/macro'
 import { Color } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 export const ChartContainer = styled.div`
   display: flex;

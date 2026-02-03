@@ -117,7 +117,7 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
               const tokens = await fetchTokenList(list.tokenListUrl)
 
               for (const token of tokens) {
-                const tokenId = getTokenId(token.chainId, token.address)
+                const tokenId = getTokenId({ chainId: token.chainId, address: token.address })
                 tokensMap[tokenId] = token
                 countriesPerToken[tokenId] = list.restrictedCountries
                 consentHashPerToken[tokenId] = RWA_CONSENT_HASH

@@ -1,6 +1,5 @@
 // this is not used for now. we use "craco test", but eventually we will
 
- 
 export default {
   displayName: 'explorer',
   preset: '../../jest.preset.js',

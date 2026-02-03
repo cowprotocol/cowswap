@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { ReactNode, useState } from 'react'
 
 import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'

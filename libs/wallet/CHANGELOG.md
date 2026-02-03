@@ -1,5 +1,71 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/wallet-v2.0.0...wallet-v2.0.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.1
+    * @cowprotocol/common-utils bumped to 2.0.1
+    * @cowprotocol/core bumped to 2.0.1
+    * @cowprotocol/ens bumped to 2.0.1
+    * @cowprotocol/iframe-transport bumped to 2.0.1
+    * @cowprotocol/types bumped to 3.0.1
+    * @cowprotocol/ui bumped to 2.0.1
+
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.17.0...wallet-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Bug Fixes
+
+* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/assets bumped to 2.0.0
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/core bumped to 2.0.0
+    * @cowprotocol/ens bumped to 2.0.0
+    * @cowprotocol/iframe-transport bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/ui bumped to 2.0.0
+    * @cowprotocol/wallet-provider bumped to 2.0.0
+
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.16.2...wallet-v1.17.0) (2026-01-26)
+
+
+### Features
+
+* reconnect to safe wallet on window focus ([#6830](https://github.com/cowprotocol/cowswap/issues/6830)) ([8c114bd](https://github.com/cowprotocol/cowswap/commit/8c114bd61a66f2b06c262e151f7779a1d5c7a1fa))
+* show loading wallet capabilities state ([#6852](https://github.com/cowprotocol/cowswap/issues/6852)) ([474e784](https://github.com/cowprotocol/cowswap/commit/474e78476489d677fc59490b564e4ef7b000f33d))
+
+
+### Bug Fixes
+
+* bring safeApp to wallets who support TxBundling ([#6872](https://github.com/cowprotocol/cowswap/issues/6872)) ([25f8836](https://github.com/cowprotocol/cowswap/commit/25f8836fbfcbfe741b32dcdd9f1ee0fe11894bdb))
+* wallet connect v2 reconnection ([#6840](https://github.com/cowprotocol/cowswap/issues/6840)) ([74303b5](https://github.com/cowprotocol/cowswap/commit/74303b5867bccce4447cdda63e85f4b29e9b1901))
+
 ## [1.16.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.16.1...wallet-v1.16.2) (2026-01-09)
 
 

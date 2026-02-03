@@ -54,16 +54,21 @@ import { Warnings } from '../Warnings'
 export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
+  allowSwapSameToken?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function,complexity
-export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
+export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
+  const { isLoading: isRateLoading, bridgeQuote, error: quoteError } = useTradeQuote()
+  /**
+   * When a quote is loading, or there is an error in the quote result, we should not display values
+   */
+  const hideQuoteAmount = Boolean(isRateLoading || quoteError)
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -125,21 +130,21 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
-    amount: !isSellTrade && isRateLoading ? null : inputCurrencyAmount,
+    amount: !isSellTrade && hideQuoteAmount ? null : inputCurrencyAmount,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
-    receiveAmountInfo: !isSellTrade ? receiveAmountInfo : null,
+    receiveAmountInfo: !isSellTrade && !hideQuoteAmount ? receiveAmountInfo : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
-    amount: isSellTrade && isRateLoading ? null : outputCurrencyAmount,
+    amount: isSellTrade && hideQuoteAmount ? null : outputCurrencyAmount,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
+    receiveAmountInfo: isSellTrade && !hideQuoteAmount ? receiveAmountInfo : null,
   }
 
   const inputCurrencyPreviewInfo = {
@@ -200,9 +205,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         return (
           <>
             {bottomContent}
-            <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+            {!isRateLoading && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
-            <Warnings buyingFiatAmount={buyingFiatAmount} />
+            <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
             <TradeButtons
               isTradeContextReady={doTrade.contextIsReady}
@@ -226,6 +231,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         toBeImported,
         intermediateBuyToken,
         isPrimaryValidationPassed,
+        hideQuoteAmount,
+        isRateLoading,
       ],
     ),
   }
@@ -235,6 +242,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     enableSmartSlippage: true,
     isMarketOrderWidget: true,
     isSellingEthSupported: true,
+    allowSwapSameToken,
     recipient,
     showRecipient,
     isTradePriceUpdating: isRateLoading,

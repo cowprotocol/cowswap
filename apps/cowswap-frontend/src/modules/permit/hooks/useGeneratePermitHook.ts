@@ -6,7 +6,7 @@ import {
   generatePermitHook,
   getPermitUtilsInstance,
   isSupportedPermitInfo,
-  PermitHookData
+  PermitHookData,
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -34,6 +34,8 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   useAtomValue(staticPermitCacheAtom)
   useAtomValue(userPermitCacheAtom)
 
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
   return useCallback(
@@ -54,7 +56,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         return
       }
 
-      const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
+      const eip2612Utils = await getPermitUtilsInstance(chainId, provider, account)
       const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
       // Always get the nonce for the real account, to know whether the cache should be invalidated
