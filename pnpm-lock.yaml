@@ -1682,10 +1682,16 @@ importers:
       localforage:
         specifier: ^1.10.0
         version: 1.10.0
+      ms.macro:
+        specifier: ^2.0.0
+        version: 2.0.0
       qs:
         specifier: ^6.14.1
         version: 6.14.1
     devDependencies:
+      '@types/ms.macro':
+        specifier: ^2.0.0
+        version: 2.0.3
       '@types/qs':
         specifier: ^6.9.7
         version: 6.9.7

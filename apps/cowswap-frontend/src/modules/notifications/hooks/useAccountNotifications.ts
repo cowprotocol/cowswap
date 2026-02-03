@@ -7,15 +7,13 @@ import useSWR, { SWRConfiguration } from 'swr'
 import { NotificationModel } from '../types'
 
 const swrOptions: SWRConfiguration = {
-  refreshInterval: ms`1m`,
+  refreshInterval: ms`2m`,
   refreshWhenHidden: false,
   refreshWhenOffline: false,
   revalidateOnFocus: false,
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAccountNotifications() {
+export function useAccountNotifications(): NotificationModel[] | undefined {
   const { account } = useWalletInfo()
 
   const { data: notifications } = useSWR<NotificationModel[]>(
