@@ -24,6 +24,7 @@ function setStatusColors({
     case 'expired':
     case 'cancelled':
     case 'cancelling':
+    case BridgeStatus.REFUND.toLowerCase():
       text = Color.explorer_orange1
       background = Color.explorer_orangeOpacity
       break
@@ -45,7 +46,6 @@ function setStatusColors({
       background = Color.explorer_bgInput
       break
     case BridgeStatus.EXECUTED.toLowerCase():
-    case BridgeStatus.REFUND.toLowerCase():
       text = Color.explorer_green1
       background = Color.explorer_greenOpacity
       break
