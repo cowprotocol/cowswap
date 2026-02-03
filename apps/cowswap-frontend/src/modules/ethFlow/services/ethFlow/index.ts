@@ -51,8 +51,7 @@ export async function ethFlow({
     tradeQuoteState,
     bridgeQuoteAmounts,
   } = tradeContext
-  const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId } =
-    ethFlowContext
+  const { contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId } = ethFlowContext
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
   const { account, recipientAddressOrName, kind } = orderParams
@@ -188,16 +187,13 @@ export async function ethFlow({
     // TODO: maybe move this into addPendingOrderStep?
     addTransaction({ hash: txHash!, ethFlow: { orderId: order.id, subType: 'creation' } })
 
-    logTradeFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
-    uploadAppData({ chainId: context.chainId, orderId, appData })
-
-    logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
+    logTradeFlow('ETH FLOW', 'STEP 6: show UI of the successfully sent transaction', orderId)
     tradeConfirmActions.onSuccess(orderId)
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
   } catch (error) {
-    logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
+    logTradeFlow('ETH FLOW', 'STEP 7: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

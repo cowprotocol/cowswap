@@ -27,10 +27,17 @@ First install Dependencies:
 pnpm install
 ```
 
+To upgrade `@cowprotocol/cow-sdk` and all `@cowprotocol/sdk-*` packages to the latest published versions:
+
+```bash
+pnpm upgrade-sdk-latest
+pnpm install
+```
+
 Or, if you want to use `@cowprotocol/sdk` preview versions like `"@cowprotocol/cow-sdk": "7.0.4-pr-546-c04641f0.0"`, then:
 
 - run `pnpm upgrade-sdk-preview https://github.com/cowprotocol/cow-sdk/pull/787` with a link to SDK PR with deployed previews
-- run `PACKAGE_READ_AUTH_TOKEN=XXX pnpm run install:sdk-preview` instead of just `yarn`
+- run `PACKAGE_READ_AUTH_TOKEN=XXX pnpm run install:sdk-preview` instead of just `pnpm install`
 - the token must be generated in GitHub with `read:packages` permissions
 
 ## Run
