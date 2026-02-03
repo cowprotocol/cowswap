@@ -27,7 +27,7 @@ import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
 import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
 import { AppMenu } from '../AppMenu'
-import { NetworkAndAccountControls } from '../NetworkAndAccountControls'
+import { NetworkAndAccountControls } from '../NetworkAndAccountControls/NetworkAndAccountControls.container'
 
 // Initialize static analytics instance
 const pixel = initPixelAnalytics()

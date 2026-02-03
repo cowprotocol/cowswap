@@ -6,7 +6,7 @@ import { Media } from '@cowprotocol/ui'
 
 import { MenuTree } from '../../components/common/MenuDropdown/MenuTree'
 import { Header as GenericHeader } from '../../components/layout/GenericLayout/Header'
-import { NetworkSelector } from '../../components/NetworkSelector'
+import { NetworkSelector } from '../../components/NetworkSelector/NetworkSelector.container'
 import { useNetworkId } from '../../state/network'
 import { addBodyClass, removeBodyClass } from '../../utils/toggleBodyClass'
 import { FlexWrap } from '../pages/styled'

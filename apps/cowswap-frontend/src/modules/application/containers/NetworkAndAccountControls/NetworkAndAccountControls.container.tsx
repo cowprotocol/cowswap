@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
-import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector/NetworkSelector.container'
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
