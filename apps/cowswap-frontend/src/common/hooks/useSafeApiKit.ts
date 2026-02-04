@@ -1,10 +1,9 @@
 import { useRef, useState } from 'react'
 
+import { useAsyncEffect } from '@cowprotocol/common-hooks'
 import { createSafeApiKitInstance } from '@cowprotocol/core'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import type SafeApiKit from '@safe-global/api-kit'
-
-import { useAsyncEffect } from './useAsyncEffect'
 
 export function useSafeApiKit(): SafeApiKit | null {
   const [safeApiClient, setSafeApiClient] = useState<SafeApiKit | null>(null)

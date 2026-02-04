@@ -65,8 +65,6 @@ const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
 `
 
-// TODO: Add proper return type annotation
-
 const UnsupportedTokenButton = ({ derivedState, isSupportedWallet }: ButtonComponentProps): ReactNode => {
   const { inputCurrency, outputCurrency } = derivedState
 

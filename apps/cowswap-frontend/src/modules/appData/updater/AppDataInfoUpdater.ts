@@ -1,11 +1,10 @@
 import { useSetAtom } from 'jotai'
 
+import { useAsyncEffect } from '@cowprotocol/common-hooks'
 import { UtmParams } from '@cowprotocol/common-utils'
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
-
-import { useAsyncEffect } from 'common/hooks/useAsyncEffect'
 
 import { UserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
 import { appDataInfoAtom } from '../state/atoms'
