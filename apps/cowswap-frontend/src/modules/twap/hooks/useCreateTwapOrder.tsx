@@ -7,7 +7,6 @@ import { UiOrderType } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { tradingSdk } from 'tradingSdk/tradingSdk'
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
@@ -156,7 +155,7 @@ export function useCreateTwapOrder() {
           appDataKeccak256: appDataInfo.appDataKeccak256,
           fullAppData: appDataInfo.fullAppData,
           chainId,
-          env: tradingSdk.traderParams.env,
+          env: 'prod', // Since WatchTower creates orders only in PROD env, we should have `prod` here
         })
 
         const createOrderTxs = createTwapOrderTxs(twapOrder, paramsStruct, twapOrderCreationContext)
