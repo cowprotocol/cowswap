@@ -9,14 +9,18 @@ import { TAP_DESKTOP, TAP_MOBILE } from 'common/pure/NetworksList/NetworksList.c
 const CLOSE_ICON_SIZE = '24px'
 
 export const FlyoutHeader = styled.div`
-  color: inherit;
-  font-weight: 400;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
   gap: 12px;
-  margin: 0 0 10px;
+  color: inherit;
+  font-weight: 400;
+  background-color: var(${UI.COLOR_PAPER});
 `
 
 export const FlyoutHeaderTitle = styled.div`
@@ -87,18 +91,17 @@ export const FlyoutMenuContents = styled.div.attrs(() => ({
   role: 'dialog',
   'aria-modal': true,
 }))`
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
+  overflow: hidden;
   background-color: var(${UI.COLOR_PAPER});
   border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
   box-shadow: var(${UI.BOX_SHADOW});
   border-radius: 12px;
-  display: flex;
-  flex-direction: column;
   font-size: 16px;
-  overflow: auto;
   min-width: 175px;
   z-index: 99;
-  overflow: hidden;
   max-height: calc(100dvh - 66px - 32px);
 
   ${Media.upToMedium()} {
@@ -108,23 +111,27 @@ export const FlyoutMenuContents = styled.div.attrs(() => ({
     width: 100%;
     border-radius: 12px 12px 0 0;
     box-shadow: 0 -100vh 0 100vh ${transparentize('black', 0.4)};
-    max-height: calc(100dvh - 56px);
-  }
-
-  & > *:not(:last-child) {
-    margin-bottom: 5px;
+    max-height: calc(100dvh - 56px) !important;
   }
 `
 
 export const FlyoutMenuScrollable = styled.div`
   overflow: auto;
   width: 100%;
-  padding: 16px;
+
   ${({ theme }) => theme.colorScrollbar};
 
   ${Media.upToMedium()} {
-    padding: 16px 16px 100px;
+    padding: 0 0 100px;
   }
+`
+
+export const FlayoutMenuList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 0 16px 16px;
 `
 
 export const SelectorLabel = styled.div`

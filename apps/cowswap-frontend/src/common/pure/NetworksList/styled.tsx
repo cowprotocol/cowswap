@@ -16,6 +16,7 @@ export const ActiveRowWrapper = styled.div`
 
   ${Media.upToMedium()} {
     padding: 0;
+    order: -1;
   }
 `
 

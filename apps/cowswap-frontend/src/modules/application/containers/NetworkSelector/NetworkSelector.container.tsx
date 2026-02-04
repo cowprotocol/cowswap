@@ -1,10 +1,7 @@
-import { ReactNode, useEffect, useRef, type MouseEvent } from 'react'
+import { ReactNode, useRef, type MouseEvent } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { useAvailableChains } from '@cowprotocol/common-hooks'
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { useAvailableChains, useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -20,6 +17,31 @@ import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkS
 import { NetworksList } from 'common/pure/NetworksList'
 
 import * as styledEl from './NetworkSelector.styled'
+
+type OnSelectNetwork = ReturnType<typeof useOnSelectNetwork>
+type OnSelectNetworkTarget = Parameters<OnSelectNetwork>[0]
+
+const stopPropagation = (event: MouseEvent<HTMLDivElement>): void => {
+  event.stopPropagation()
+}
+
+const createCloseHandler =
+  (isOpen: boolean, toggleModal: () => void) =>
+  (event: MouseEvent<HTMLButtonElement>): void => {
+    event.stopPropagation()
+    if (isOpen) {
+      toggleModal()
+    }
+  }
+
+const createSelectHandler =
+  (isOpen: boolean, toggleModal: () => void, onSelectChain: OnSelectNetwork) =>
+  (targetChainId: OnSelectNetworkTarget): void => {
+    if (isOpen) {
+      toggleModal()
+    }
+    void onSelectChain(targetChainId, true)
+  }
 
 export function NetworkSelector(): ReactNode {
   const { chainId } = useWalletInfo()
@@ -38,21 +60,16 @@ export function NetworkSelector(): ReactNode {
     }
   })
 
+  useBodyScrollbarLocker(isOpen && !shouldHideNetworkSelector, Media.upToMedium(false))
+
   const onSelectChain = useOnSelectNetwork()
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
-
   const availableChains = useAvailableChains()
   const { t } = useLingui()
 
-  const handleClose = (event: MouseEvent<HTMLButtonElement>): void => {
-    event.stopPropagation()
-    if (isOpen) {
-      toggleModal()
-    }
-  }
-
-  useNetworkSelectorBodyScrollLock({ isOpen, isUpToMedium, shouldHideNetworkSelector })
+  const handleClose = createCloseHandler(isOpen, toggleModal)
+  const handleSelectChain = createSelectHandler(isOpen, toggleModal, onSelectChain)
 
   if (shouldHideNetworkSelector) {
     return null
@@ -79,7 +96,7 @@ export function NetworkSelector(): ReactNode {
       </styledEl.SelectorControls>
       {isOpen && (
         <styledEl.FlyoutMenu>
-          <styledEl.FlyoutMenuContents ref={nodeMobile}>
+          <styledEl.FlyoutMenuContents ref={nodeMobile} onClick={stopPropagation}>
             <styledEl.FlyoutMenuScrollable>
               <styledEl.FlyoutHeader>
                 <styledEl.FlyoutHeaderTitle>
@@ -89,35 +106,18 @@ export function NetworkSelector(): ReactNode {
                   <styledEl.CloseIcon aria-hidden="true" />
                 </styledEl.CloseButton>
               </styledEl.FlyoutHeader>
-              <NetworksList
-                currentChainId={isChainIdUnsupported ? null : chainId}
-                isDarkMode={isDarkMode}
-                onSelectChain={onSelectChain}
-                availableChains={availableChains}
-              />
+              <styledEl.FlayoutMenuList>
+                <NetworksList
+                  currentChainId={isChainIdUnsupported ? null : chainId}
+                  isDarkMode={isDarkMode}
+                  onSelectChain={handleSelectChain}
+                  availableChains={availableChains}
+                />
+              </styledEl.FlayoutMenuList>
             </styledEl.FlyoutMenuScrollable>
           </styledEl.FlyoutMenuContents>
         </styledEl.FlyoutMenu>
       )}
     </styledEl.SelectorWrapper>
   )
-}
-
-function useNetworkSelectorBodyScrollLock({
-  isOpen,
-  isUpToMedium,
-  shouldHideNetworkSelector,
-}: {
-  isOpen: boolean
-  isUpToMedium: boolean
-  shouldHideNetworkSelector: boolean
-}): void {
-  useEffect(() => {
-    if (!isOpen || !isUpToMedium || shouldHideNetworkSelector) {
-      removeBodyClass('noScroll')
-      return
-    }
-    addBodyClass('noScroll')
-    return () => removeBodyClass('noScroll')
-  }, [isOpen, isUpToMedium, shouldHideNetworkSelector])
 }
