@@ -21,11 +21,13 @@ export async function getSolversInfo(): Promise<CmsSolversInfo> {
   }
 
   const result = await fetchSolversInfo()
-  cache.set(CACHE_KEY, result)
-  return result
+  if (result !== null) {
+    cache.set(CACHE_KEY, result)
+  }
+  return result ?? []
 }
 
-async function fetchSolversInfo(): Promise<CmsSolversInfo> {
+async function fetchSolversInfo(): Promise<CmsSolversInfo | null> {
   const cmsClient = getCmsClient()
 
   return cmsClient
@@ -55,6 +57,6 @@ async function fetchSolversInfo(): Promise<CmsSolversInfo> {
     .then((res: { data: components['schemas']['SolverListResponse'] }) => res.data?.data)
     .catch((error: Error) => {
       console.error('Failed to fetch solvers', error)
-      return []
+      return null
     })
 }
