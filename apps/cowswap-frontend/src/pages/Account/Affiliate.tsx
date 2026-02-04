@@ -11,7 +11,7 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary, ButtonSize, HelpTooltip, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, HelpTooltip, ModalHeader, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -26,7 +26,7 @@ import styled from 'styled-components/macro'
 import CopyHelper from 'legacy/components/Copy'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { bffAffiliateApi } from 'modules/affiliate/api'
+import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
 import {
   buildPartnerTypedData,
   formatUsdcCompact,
@@ -231,7 +231,7 @@ export default function AccountAffiliate() {
           setExistingCode(null)
           setCreatedAt(null)
           setPartnerRewardAmount(null)
-          setErrorMessage(t`Unable to load affiliate code right now.`)
+          setErrorMessage(t`Unable to reach the affiliate service.`)
         }
       })
       .finally(() => {
@@ -756,11 +756,8 @@ export default function AccountAffiliate() {
 
       <CowModal isOpen={isQrOpen} onDismiss={closeQrModal}>
         <ModalContent>
-          <ModalHeader>
-            <ModalTitle>
-              <Trans>Download referral QR code</Trans>
-            </ModalTitle>
-            <ModalClose onClick={closeQrModal}>×</ModalClose>
+          <ModalHeader onClose={closeQrModal}>
+            <Trans>Download referral QR code</Trans>
           </ModalHeader>
           <ModalBody>
             <QrUrl>{referralLink}</QrUrl>
@@ -828,37 +825,16 @@ export default function AccountAffiliate() {
 }
 
 const ModalContent = styled.div`
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
   width: 100%;
-`
-
-const ModalHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
-
-const ModalTitle = styled.h4`
-  margin: 0;
-  font-size: 16px;
-  color: var(${UI.COLOR_TEXT});
-`
-
-const ModalClose = styled.button`
-  border: none;
-  background: transparent;
-  font-size: 28px;
-  cursor: pointer;
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
 `
 
 const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 10px;
 `
 
 const QrUrl = styled.p`

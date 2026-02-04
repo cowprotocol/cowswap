@@ -1,3 +1,5 @@
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
+
 import { AFFILIATE_API_TIMEOUT_MS } from '../config/constants'
 import {
   PartnerCodeResponse,
@@ -16,18 +18,21 @@ const JSON_HEADERS = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
 }
+
 type FetchJsonResponse<T> = {
   response: Response
   data?: T
   text: string
 }
+
 function buildReferralError(status: number, text: string, data?: { message?: string }): Error {
   const message = data?.message || text || `Referral service error (${status})`
   const error = new Error(message)
   ;(error as Error & { status?: number }).status = status
   return error
 }
-export class BffAffiliateApi {
+
+class BffAffiliateApi {
   private readonly baseUrl: string
   private readonly timeoutMs: number
 
@@ -196,3 +201,5 @@ export class BffAffiliateApi {
     }
   }
 }
+
+export const bffAffiliateApi = new BffAffiliateApi(BFF_BASE_URL, AFFILIATE_API_TIMEOUT_MS)

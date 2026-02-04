@@ -18,13 +18,14 @@ import SVG from 'react-inlinesvg'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { bffAffiliateApi, isSupportedReferralNetwork } from 'modules/affiliate/api'
+import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
 import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from 'modules/affiliate/config/constants'
 import {
   formatUpdatedAt,
   formatUsdcCompact,
   formatUsdCompact,
   getIncomingIneligibleCode,
+  isSupportedReferralNetwork,
 } from 'modules/affiliate/lib/affiliate-program-utils'
 import { useTraderReferralCode } from 'modules/affiliate/model/hooks/useTraderReferralCode'
 import { useTraderReferralCodeActions } from 'modules/affiliate/model/hooks/useTraderReferralCodeActions'

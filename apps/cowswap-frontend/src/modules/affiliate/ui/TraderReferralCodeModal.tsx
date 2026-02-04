@@ -12,7 +12,7 @@ import { CowModal } from 'common/pure/Modal'
 import { TraderReferralCodeModalContent } from './TraderReferralCodeModal/TraderReferralCodeModalContent'
 import { useTraderReferralCodeModalController } from './TraderReferralCodeModal/useTraderReferralCodeModalController'
 
-import { isSupportedReferralNetwork } from '../api'
+import { isSupportedReferralNetwork } from '../lib/affiliate-program-utils'
 import { useTraderReferralCodeActions } from '../model/hooks/useTraderReferralCodeActions'
 import { useTraderReferralCodeModalState } from '../model/hooks/useTraderReferralCodeModalState'
 

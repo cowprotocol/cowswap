@@ -6,13 +6,14 @@ import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { isSupportedReferralNetwork } from 'modules/affiliate/lib/affiliate-program-utils'
+
 import {
   useTraderReferralCodeAutoVerification,
   useTraderReferralCodeVerification,
   usePendingReferralCodeVerificationHandler,
 } from './verificationEffects'
 
-import { isSupportedReferralNetwork } from '../../api'
 import { useTraderReferralCode } from '../hooks/useTraderReferralCode'
 import { useTraderReferralCodeWalletSync } from '../hooks/useTraderReferralCodeWalletSync'
 

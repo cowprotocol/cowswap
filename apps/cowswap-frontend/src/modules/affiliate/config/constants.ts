@@ -1,4 +1,16 @@
-import { AFFILIATE_SUPPORTED_CHAIN_IDS, CHAIN_INFO } from '@cowprotocol/common-const'
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
+  SupportedChainId.MAINNET,
+  SupportedChainId.BASE,
+  SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.POLYGON,
+  SupportedChainId.AVALANCHE,
+  SupportedChainId.GNOSIS_CHAIN,
+  SupportedChainId.LENS,
+  SupportedChainId.SEPOLIA,
+] as const
 
 export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliate-trader:v2'
 

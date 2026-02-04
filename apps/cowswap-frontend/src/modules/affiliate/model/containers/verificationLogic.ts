@@ -4,7 +4,8 @@ import { CowAnalytics } from '@cowprotocol/analytics'
 import { isProdLike } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { bffAffiliateApi } from '../../api'
+import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
+
 import {
   isReferralCodeLengthValid,
   sanitizeReferralCode,

@@ -3,7 +3,7 @@ import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
-import { AFFILIATE_REWARDS_CURRENCY } from '../config/constants'
+import { AFFILIATE_REWARDS_CURRENCY, AFFILIATE_SUPPORTED_CHAIN_IDS } from '../config/constants'
 import { TraderReferralCodeVerificationStatus } from '../model/partner-trader-types'
 
 export const AFFILIATE_TYPED_DATA_DOMAIN = {
@@ -132,4 +132,12 @@ export function generateSuggestedCode(): string {
 
 function randomDigits(length: number): string {
   return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
+}
+
+export function isSupportedReferralNetwork(chainId: number | undefined | null): boolean {
+  if (!chainId) {
+    return false
+  }
+
+  return AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId as number)
 }
