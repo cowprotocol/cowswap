@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback } from 'react'
 
-import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { balancesAtom } from '../state/balancesAtom'
@@ -11,7 +11,7 @@ export function useUpdateTokenBalance(): (tokenAddress: string, balance: BigNumb
 
   return useCallback(
     (tokenAddress: string, balance: BigNumber | undefined) => {
-      setBalances((state) => ({ ...state, values: { ...state.values, [getTokenAddressKey(tokenAddress)]: balance } }))
+      setBalances((state) => ({ ...state, values: { ...state.values, [getAddressKey(tokenAddress)]: balance } }))
     },
     [setBalances],
   )

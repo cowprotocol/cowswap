@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { COW_CDN, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { getTokenAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { ALL_SUPPORTED_CHAIN_IDS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 
@@ -67,7 +67,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
 
     const nativeToken = NATIVE_TOKEN_PER_NETWORK[chainId]
 
-    data[getTokenAddressKey(NATIVE_TOKEN_ADDRESS)] = {
+    data[getAddressKey(NATIVE_TOKEN_ADDRESS)] = {
       ...nativeToken,
       name: nativeToken.name || '',
       symbol: nativeToken.symbol || '',
@@ -95,7 +95,7 @@ function fetcher(tokenListUrl: string): Promise<TokenListPerNetwork> {
       tokens.reduce((acc, token) => {
         // Pick only supported chains
         if (SUPPORTED_CHAIN_IDS_SET.has(token.chainId)) {
-          acc[token.chainId][getTokenAddressKey(token.address)] = token
+          acc[token.chainId][getAddressKey(token.address)] = token
         }
         return acc
       }, INITIAL_TOKEN_LIST_PER_NETWORK),
