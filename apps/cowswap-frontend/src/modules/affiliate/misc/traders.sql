@@ -8,17 +8,8 @@ params as (
     end as payout_sources
 ),
 affiliate_program_data as (
-  select
-    upper(code) as code,
-    cast(affiliate_address as varchar) as affiliate_address,
-    reward_amount,
-    trigger_volume,
-    time_cap_days,
-    volume_cap,
-    revenue_split_affiliate_pct,
-    revenue_split_trader_pct,
-    revenue_split_dao_pct
-  from dune.cowprotocol.dataset_affiliate_program_data
+  -- select * from dune.cowprotocol.dataset_affiliate_program_data_staging
+  select * from dune.cowprotocol.dataset_affiliate_program_data
 ),
 trades_with_referrer as (
   select

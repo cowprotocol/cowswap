@@ -144,3 +144,28 @@ Audit:
 - `apps/cowswap-frontend/src/modules/affiliate/misc/affiliates.sql`: partner metrics query (Dune).
 - `apps/cowswap-frontend/src/modules/affiliate/misc/traders.sql`: trader metrics query (Dune).
 - `apps/cowswap-frontend/src/modules/affiliate/misc/traders_debug.sql`: trader eligibility debug query (Dune).
+
+## Environments
+
+Staging:
+- BFF: <https://bff.barn.cow.fi>
+- CMS: <https://cms.barn.cow.fi/admin>
+- FE: <https://staging.swap.cow.fi>
+- DUNE_QUERY_ID_TRADER_STATS: `6648679`
+- DUNE_QUERY_ID_AFFILIATE_STATS: `6648689`
+- DUNE_AFFILIATE_PROGRAM_TABLE_NAME: `affiliate_program_data_staging`
+
+```sh
+curl -s "https://bff.barn.cow.fi/ref-codes/FOOBAR"
+curl -s "https://bff.barn.cow.fi/affiliate/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
+curl -s "https://bff.barn.cow.fi/affiliate/affiliate-stats/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
+curl -s "https://bff.barn.cow.fi/affiliate/trader-stats/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
+```
+
+Production:
+- BFF: <https://bff.cow.fi>
+- CMS: <https://cms.cow.fi/admin>
+- FE: <https://swap.cow.fi>
+- DUNE_QUERY_ID_TRADER_STATS: `6560853`
+- DUNE_QUERY_ID_AFFILIATE_STATS: `6560325`
+- DUNE_AFFILIATE_PROGRAM_TABLE_NAME: `affiliate_program_data`
