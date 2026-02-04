@@ -1,5 +1,8 @@
+import { TTLCache } from '@cowprotocol/cow-sdk'
+
 import { querySerializer } from './querySerializer'
 
+import { DEFAULT_CMS_REQUEST_TTL } from '../consts'
 import { RestrictedTokenList, RestrictedTokenLists } from '../types'
 import { getCmsClient } from '../utils'
 
@@ -18,7 +21,27 @@ interface CmsRestrictedTokenListsResponse {
   data: CmsRestrictedTokenListItem[]
 }
 
+/**
+ * Request parameters are static, hence the cache key is also static
+ */
+const CACHE_KEY = 'restricted-token-lists'
+
+const cache = new TTLCache<RestrictedTokenLists>('cmsRestrictedTokenLists:v0', true, DEFAULT_CMS_REQUEST_TTL)
+
 export async function getRestrictedTokenLists(): Promise<RestrictedTokenLists> {
+  const cached = cache.get(CACHE_KEY)
+  if (cached !== undefined) {
+    return cached
+  }
+
+  const result = await fetchRestrictedTokenLists()
+  if (result) {
+    cache.set(CACHE_KEY, result)
+  }
+  return result ?? []
+}
+
+async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null> {
   const cmsClient = getCmsClient()
 
   return cmsClient
@@ -45,6 +68,6 @@ export async function getRestrictedTokenLists(): Promise<RestrictedTokenLists> {
     })
     .catch((error: Error) => {
       console.error('Failed to fetch restricted token lists', error)
-      return [] as RestrictedTokenLists
+      return null
     })
 }
