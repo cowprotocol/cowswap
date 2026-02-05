@@ -12,7 +12,7 @@ export const useFlexSearch = (
   query: string,
   data: Item[],
   filterValues: Array<string>,
-  searchOptions?: SearchOptions
+  searchOptions?: SearchOptions,
 ): Item[] => {
   const [index, setIndex] = useState(SEARCH_INDEX)
   const [filteredResults, setFilteredResults] = useState<Item[]>(data)

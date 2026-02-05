@@ -44,8 +44,10 @@ async function generateAppDataFromDoc(
 }
 
 export async function buildAppData({
+  chainId,
   slippageBips,
   isSmartSlippage,
+  referrerAccount,
   appCode,
   environment,
   orderClass: orderClassName,
@@ -56,6 +58,8 @@ export async function buildAppData({
   replacedOrderUid,
   userConsent,
 }: BuildAppDataParams): Promise<AppDataInfo> {
+  const referrerParams = referrerAccount && chainId === SupportedChainId.MAINNET ? { code: referrerAccount } : undefined
+
   const quoteParams = {
     slippageBips,
     ...(isSmartSlippage !== undefined ? { smartSlippage: isSmartSlippage } : undefined),
@@ -67,8 +71,7 @@ export async function buildAppData({
     appCode,
     environment,
     metadata: {
-      // TODO: add referrer back with a new version
-      // referrer: referrerParams,
+      referrer: referrerParams,
       quote: quoteParams,
       orderClass,
       utm,

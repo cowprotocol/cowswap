@@ -10,6 +10,8 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { multiCallContextAtom } from '../state/multiCallContextAtom'
 
 export function useMultiCallRpcProvider(): Nullish<JsonRpcProvider> {
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const walletChainId = useWalletChainId()
   const context = useAtomValue(multiCallContextAtom)

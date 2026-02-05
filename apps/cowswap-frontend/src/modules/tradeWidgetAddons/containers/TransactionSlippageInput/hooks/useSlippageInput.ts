@@ -5,13 +5,12 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { isValidIntegerFactory, percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
-
 import {
   useDefaultTradeSlippage,
   useIsSlippageModified,
   useSetSlippage,
   useSlippageConfig,
-  useTradeSlippage
+  useTradeSlippage,
 } from 'modules/tradeSlippage'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -38,9 +37,7 @@ interface ReturnType {
 }
 
 function getSlippageForView(slippageInput: string, isSlippageModified: boolean, swapSlippage: Percent): string {
-  return slippageInput.length > 0
-    ? slippageInput
-    : (!isSlippageModified ? '' : swapSlippage.toFixed(2))
+  return slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)
 }
 
 export function useSlippageInput(): ReturnType {
@@ -73,10 +70,7 @@ export function useSlippageInput(): ReturnType {
   const slippageViewValue = getSlippageForView(slippageInput, isSlippageModified, swapSlippage)
 
   const isValidInput = useMemo(() => {
-    return isValidIntegerFactory(
-      min,
-      max,
-    )
+    return isValidIntegerFactory(min, max)
   }, [min, max])
 
   const parseSlippageInput = useCallback(
@@ -110,12 +104,7 @@ export function useSlippageInput(): ReturnType {
         setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
       }
     },
-    [
-      placeholderSlippage,
-      isValidInput,
-      setSwapSlippage,
-      sendSlippageAnalytics,
-    ],
+    [placeholderSlippage, isValidInput, setSwapSlippage, sendSlippageAnalytics],
   )
 
   const onSlippageInputBlur = useCallback(() => {
@@ -141,6 +130,6 @@ export function useSlippageInput(): ReturnType {
     placeholderSlippage,
     slippageViewValue,
     onSlippageInputBlur,
-    setAutoSlippage
+    setAutoSlippage,
   }
 }

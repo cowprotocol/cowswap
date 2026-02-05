@@ -15,6 +15,8 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 const HideSmall = styled.span`
+  width: 100%;
+
   ${Media.upToSmall()} {
     display: none;
   }
@@ -56,6 +58,7 @@ const SHOULD_SHOW_ALERT = {
   [SupportedChainId.LENS]: true,
   [SupportedChainId.LINEA]: true,
   [SupportedChainId.PLASMA]: true,
+  [SupportedChainId.INK]: true,
 }
 
 type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
@@ -119,6 +122,7 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
   }
 `
 const Header = styled.h2`
+  width: 100%;
   font-weight: 600;
   font-size: 16px;
   margin: 0;

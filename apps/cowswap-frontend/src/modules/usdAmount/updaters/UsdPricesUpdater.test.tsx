@@ -93,7 +93,7 @@ async function performTest(
 }
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('UsdPricesUpdater', () => {
   afterEach(() => {
     jest.resetAllMocks()

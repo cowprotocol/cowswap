@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.2",
+    "@cowprotocol/cow-sdk": "7.3.4",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@ethersproject/abstract-provider": "5.7.0",

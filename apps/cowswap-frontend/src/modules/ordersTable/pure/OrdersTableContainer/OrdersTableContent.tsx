@@ -37,10 +37,6 @@ export function OrdersTableContent({
     return <UnsupportedNetworkContent />
   }
 
-  if (isProviderNetworkUnsupported) {
-    return <UnsupportedNetworkContent />
-  }
-
   return filteredOrders?.length === 0 ? (
     <NoOrdersContent
       currentTab={currentTab}

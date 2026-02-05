@@ -31,5 +31,9 @@ export const TokensTableWithData: React.FC = () => {
     }
   }, [tokens, tokens?.length])
 
-  return isFirstRender || isFirstLoading ? <LoadingWrapper message="Loading tokens" /> : <TokenTable tokens={tokens} tableState={tableState} />
+  return isFirstRender || isFirstLoading ? (
+    <LoadingWrapper message="Loading tokens" />
+  ) : (
+    <TokenTable tokens={tokens} tableState={tableState} />
+  )
 }

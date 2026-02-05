@@ -253,6 +253,9 @@ export default createReducer(initialState, (builder) =>
 
       order.openSince = CREATING_STATES.includes(order.status) ? undefined : Date.now()
 
+      // Ensure the order doesn't exist in multiple buckets (e.g., creating + pending)
+      deleteOrderById(state, chainId, id)
+
       switch (order.status) {
         // EthFlow or PreSign orders have their respective buckets
         case OrderStatus.CREATING: // ethflow orders
