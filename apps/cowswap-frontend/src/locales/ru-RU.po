@@ -90,9 +90,13 @@ msgstr "Чтобы переопределить это, введите сумм�
 #~ msgstr "Order cannot be filled due to insufficient allowance on the current account."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
-msgid "Did you know? {benefit}\n\n"
+msgid ""
+"Did you know? {benefit}\n"
+"\n"
 "Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
-msgstr "Знаете ли вы? {benefit}\n\n"
+msgstr ""
+"Знаете ли вы? {benefit}\n"
+"\n"
 "Начать смену на swap.cow.fi #CoWSwap @CoWSwap 🐮"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
@@ -412,9 +416,13 @@ msgid "30 Minutes"
 msgstr "30 минут"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
-msgid "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n\n"
+msgid ""
+"My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
+"\n"
 " Get yours at swap.cow.fi @CoWSwap"
-msgstr "Мой CoW печенье фортуны 🐮💬: \"{openFortuneText}\" \n\n"
+msgstr ""
+"Мой CoW печенье фортуны 🐮💬: \"{openFortuneText}\" \n"
+"\n"
 " Получите себе по адресу swap.cow.fi @CoWSwap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
@@ -674,7 +682,7 @@ msgstr "(Просмотр в проводнике)"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
 msgid "View all {totalChains} networks"
-msgstr "Смотреть все ({totalChains}) сетей"
+msgstr "Показать все сети ({totalChains})"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Loading {ACCOUNT_PROXY_LABEL}"
@@ -945,7 +953,7 @@ msgstr "1 день"
 msgid "Smart contract"
 msgstr "Умный контракт"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 msgid "Switch Network"
 msgstr "Переключить сеть"
 
@@ -1277,6 +1285,12 @@ msgstr "смарт-контракты (например, Safe)"
 msgid "Quote refresh in"
 msgstr "Обновление квоты через"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/helpers.ts
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
+msgid "No route found for this token"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/account/containers/OrdersPanel/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -1430,6 +1444,10 @@ msgstr "из"
 msgid "Error {verb} the order"
 msgstr "Ошибка {verb} заказа"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
+msgid "No available tokens found to bridge"
+msgstr ""
+
 #: libs/common-const/src/common.ts
 #~ msgid "CoW Swap | The smartest way to trade cryptocurrencies"
 #~ msgstr "CoW Swap | The smartest way to trade cryptocurrencies"
@@ -1525,9 +1543,13 @@ msgstr "Просмотреть вашу личную {accountProxyLabelString}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
-msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
+msgid ""
+"Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
+"\n"
 "Start swapping on swap.cow.fi"
-msgstr "Эй, я просто {actionWord} еще {surplus} на @CoWSwap! 🐮💸\n\n"
+msgstr ""
+"Эй, я просто {actionWord} еще {surplus} на @CoWSwap! 🐮💸\n"
+"\n"
 "Начать обмен swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
@@ -2428,7 +2450,7 @@ msgstr "содержимое диалогового окна"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 #~ msgid "Cross chain swap"
-#~ msgstr "Cross chain swap"
+#~ msgstr "Свап между сетями"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
@@ -3406,9 +3428,11 @@ msgid "It is required to do a one-time approval of {wrappedSymbol} via an on-cha
 msgstr "Единоразовое одобрение {wrappedSymbol} требуется через цепочку ERC20 Подтвердить транзакцию."
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/setupTradeState/useResetStateWithSymbolDuplication.ts
-msgid "There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
+msgid ""
+"There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
 "Please select the token you need from the UI or use the address of the token instead of the symbol"
-msgstr "В списке токенов с символом есть более одного токена: {doubledSymbol}.\n"
+msgstr ""
+"В списке токенов с символом есть более одного токена: {doubledSymbol}.\n"
 "Пожалуйста, выберите необходимый токен из пользовательского интерфейса или используйте адрес токена вместо символа"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
@@ -4503,14 +4527,6 @@ msgstr "Включить частичные утверждения"
 msgid "Version"
 msgstr "Версии"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
-msgid "Recent"
-msgstr "Недавние"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
-msgid "Clear"
-msgstr "Очистить"
-
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
@@ -5001,7 +5017,7 @@ msgstr "Добавлено <0/>"
 msgid "Transaction Failed"
 msgstr "Транзакция не удалась"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 msgid "Select a network"
 msgstr "Выберите сеть"
 
@@ -5394,7 +5410,7 @@ msgstr "Не совместимо с текущим типом кошелька"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Swap from"
-msgstr "Продать из сети"
+msgstr "Свап из сети"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #~ msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of<2>{parts} parts</2>placed every<3>{partDurationDisplay}</3>, the total time to complete the order is<4>{totalDurationDisplay}</4>. Each limit order remains open for<5>{partDurationDisplay}</5>until the next part becomes active."
@@ -6573,6 +6589,7 @@ msgid "Refund started"
 msgstr "Возврат начат"
 
 #: apps/cowswap-frontend/src/common/pure/ToggleArrow/ToggleArrow.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Close"
@@ -6686,85 +6703,3 @@ msgstr "Узнать больше"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
-
-# Receive amount labels
-msgid "Receive (incl. fees)"
-msgstr "К получению (с комиссиями)"
-
-msgid "From (incl. fees)"
-msgstr "Отправить (с комиссиями)"
-
-# Notifications / jobs aria labels
-msgid "Trade alert settings"
-msgstr "Настройки уведомлений о сделках"
-
-msgid "View jobs (opens in a new tab)"
-msgstr "Просмотр вакансий (откроется в новой вкладке)"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "Search network"
-msgstr "Поиск сети"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Select token"
-msgstr "Выбрать токен"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "From network"
-msgstr "Исходная сеть"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "To network"
-msgstr "Целевая сеть"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Select network"
-msgstr "Выбрать сеть"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
-msgid "Cross chain swap"
-msgstr "Свап между сетями"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Swap from"
-msgstr "Свап из сети"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Swap to"
-msgstr "Свап в сеть"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Sell token"
-msgstr "Продать токен"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Buy token"
-msgstr "Купить токен"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
-msgid "Manage token lists"
-msgstr "Управление списками токенов"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks available for this trade."
-msgstr "Нет доступных сетей для этой сделки."
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks match {chainQuery}."
-msgstr "Нет сетей, соответствующих {chainQuery}."
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "View all ({totalChains})"
-msgstr "Показать все ({totalChains})"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "View all {totalChains} networks"
-msgstr "Показать все сети ({totalChains})"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "Selected network {activeChainLabel}"
-msgstr "Выбранная сеть {activeChainLabel}"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-msgid "This destination is not supported for this source chain"
-msgstr "Сеть назначения не доступна для выбранной исходной сети"

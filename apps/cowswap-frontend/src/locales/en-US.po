@@ -948,7 +948,7 @@ msgstr "1 Day"
 msgid "Smart contract"
 msgstr "Smart contract"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 msgid "Switch Network"
 msgstr "Switch Network"
 
@@ -1280,6 +1280,12 @@ msgstr "smart contracts (e.g. Safe)"
 msgid "Quote refresh in"
 msgstr "Quote refresh in"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/helpers.ts
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
+msgid "No route found for this token"
+msgstr "No route found for this token"
+
 #: apps/cowswap-frontend/src/modules/account/containers/OrdersPanel/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -1432,6 +1438,10 @@ msgstr "of"
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "Error {verb} the order"
 msgstr "Error {verb} the order"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
+msgid "No available tokens found to bridge"
+msgstr "No available tokens found to bridge"
 
 #: libs/common-const/src/common.ts
 #~ msgid "CoW Swap | The smartest way to trade cryptocurrencies"
@@ -5002,7 +5012,7 @@ msgstr "Added <0/>"
 msgid "Transaction Failed"
 msgstr "Transaction Failed"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 msgid "Select a network"
 msgstr "Select a network"
 
@@ -6574,6 +6584,7 @@ msgid "Refund started"
 msgstr "Refund started"
 
 #: apps/cowswap-frontend/src/common/pure/ToggleArrow/ToggleArrow.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Close"
