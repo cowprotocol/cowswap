@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
+import { type CSSProperties, type ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -27,7 +27,7 @@ import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
 import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
 import { AppMenu } from '../AppMenu'
-import { NetworkAndAccountControls } from '../NetworkAndAccountControls'
+import { NetworkAndAccountControls } from '../NetworkAndAccountControls/NetworkAndAccountControls.container'
 
 // Initialize static analytics instance
 const pixel = initPixelAnalytics()
@@ -177,7 +177,9 @@ const SNOWFALL_STYLE: CSSProperties = {
 }
 
 function CowSpeechBubbleBanner(): ReactNode {
-  return ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, (close) => <CowSpeechBubble show onClose={close} />)
+  const callback = useCallback((close: () => void) => <CowSpeechBubble show onClose={close} />, [])
+
+  return <ClosableBanner storageKey={BANNER_IDS.HIRING_SPEECH_BUBBLE} callback={callback} />
 }
 
 interface FooterSectionProps {
