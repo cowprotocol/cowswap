@@ -80,7 +80,7 @@ capped_trades as (
 payouts as (
   select
     "to" as recipient,
-    sum(value / 1e6) as paid_out
+    cast(round(sum(value) / 1e6, 6) as decimal(18, 6)) as paid_out
   from erc20_ethereum.evt_transfer
   cross join params
   cross join unnest(params.payout_sources) as ps(payout_source)
@@ -101,10 +101,39 @@ select
       (sum(eligible_volume) % max(affiliate_program_data.trigger_volume))
   end as left_to_next_rewards,
   max(affiliate_program_data.trigger_volume) as trigger_volume,
-  floor(sum(eligible_volume) / max(affiliate_program_data.trigger_volume)) * max(affiliate_program_data.reward_amount) as total_earned,
-  coalesce(max(payouts.paid_out), 0) as paid_out,
-  (floor(sum(eligible_volume) / max(affiliate_program_data.trigger_volume)) * max(affiliate_program_data.reward_amount)) -
-    coalesce(max(payouts.paid_out), 0) as next_payout
+  cast(
+    round(
+    cast(
+      floor(sum(eligible_volume) / max(affiliate_program_data.trigger_volume))
+      as decimal(18, 0)
+    )
+    * (
+      cast(max(affiliate_program_data.reward_amount) as decimal(18, 6))
+        * cast(max(affiliate_program_data.revenue_split_trader_pct) as decimal(18, 0))
+        / cast(100 as decimal(18, 6))
+    ),
+    6
+    )
+    as decimal(18, 6)
+  ) as total_earned,
+  cast(coalesce(max(payouts.paid_out), cast(0 as decimal(18, 6))) as decimal(18, 6)) as paid_out,
+  cast(
+    round(
+    (
+      cast(
+        floor(sum(eligible_volume) / max(affiliate_program_data.trigger_volume))
+        as decimal(18, 0)
+      )
+      * (
+        cast(max(affiliate_program_data.reward_amount) as decimal(18, 6))
+          * cast(max(affiliate_program_data.revenue_split_trader_pct) as decimal(18, 0))
+          / cast(100 as decimal(18, 6))
+      )
+    ) - cast(coalesce(max(payouts.paid_out), cast(0 as decimal(18, 6))) as decimal(18, 6)),
+    6
+    )
+    as decimal(18, 6)
+  ) as next_payout
 from capped_trades
 join affiliate_program_data on affiliate_program_data.code = capped_trades.referrer_code
 left join payouts on payouts.recipient = capped_trades.trader

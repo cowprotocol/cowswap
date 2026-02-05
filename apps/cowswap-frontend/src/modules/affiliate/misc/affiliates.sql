@@ -91,7 +91,7 @@ affiliate_rewards as (
 payouts as (
   select
     "to" as recipient,
-    sum(value / 1e6) as paid_out
+    cast(round(sum(value) / 1e6, 6) as decimal(18, 6)) as paid_out
   from erc20_ethereum.evt_transfer
   cross join params
   cross join unnest(params.payout_sources) as ps(payout_source)
@@ -104,10 +104,33 @@ select
   affiliate_program_data.code as referrer_code,
   coalesce(affiliate_rewards.referral_volume, 0) as total_volume,
   affiliate_program_data.trigger_volume as trigger_volume,
-  floor(coalesce(affiliate_rewards.referral_volume, 0) / affiliate_program_data.trigger_volume) * affiliate_program_data.reward_amount as total_earned,
-  coalesce(payouts.paid_out, 0) as paid_out,
-  (floor(coalesce(affiliate_rewards.referral_volume, 0) / affiliate_program_data.trigger_volume) * affiliate_program_data.reward_amount) -
-    coalesce(payouts.paid_out, 0) as next_payout,
+  cast(
+    round(
+    floor(coalesce(affiliate_rewards.referral_volume, 0) / affiliate_program_data.trigger_volume)
+    * (
+      cast(affiliate_program_data.reward_amount as decimal(18, 6))
+      * cast(affiliate_program_data.revenue_split_affiliate_pct as decimal(18, 0))
+      / cast(100 as decimal(18, 6))
+    ),
+    6
+    )
+    as decimal(18, 6)
+  ) as total_earned,
+  cast(coalesce(payouts.paid_out, 0) as decimal(18, 6)) as paid_out,
+  cast(
+    round(
+    (
+      floor(coalesce(affiliate_rewards.referral_volume, 0) / affiliate_program_data.trigger_volume)
+      * (
+        cast(affiliate_program_data.reward_amount as decimal(18, 6))
+        * cast(affiliate_program_data.revenue_split_affiliate_pct as decimal(18, 0))
+        / cast(100 as decimal(18, 6))
+      )
+    ) - coalesce(payouts.paid_out, 0),
+    6
+    )
+    as decimal(18, 6)
+  ) as next_payout,
   case
     when (coalesce(affiliate_rewards.referral_volume, 0) % affiliate_program_data.trigger_volume) = 0
       then affiliate_program_data.trigger_volume
