@@ -14,7 +14,7 @@ export const Header: React.FC = () => {
   const isMobile = useMediaQuery(Media.upToSmall(false))
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  useBodyScrollbarLocker(isMobileMenuOpen)
+  useBodyScrollbarLocker(isMobileMenuOpen && isMobile)
 
   const handleMobileMenuOnClick = useCallback(() => {
     isMobile && setMobileMenuOpen((isMobileMenuOpen) => !isMobileMenuOpen)
