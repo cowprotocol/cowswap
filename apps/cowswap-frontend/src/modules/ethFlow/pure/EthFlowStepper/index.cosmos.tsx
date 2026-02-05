@@ -147,7 +147,7 @@ const STEPS: Step[] = [
   },
 
   {
-    description: '[CANCEL] 1. Open and Canceling',
+    description: '[CANCEL] 1. Open and Cancelling',
     props: {
       ...defaultProps,
       order: {
@@ -212,7 +212,7 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL+EXPIRED] 1. Expired and Canceling',
+    description: '[CANCEL+EXPIRED] 1. Expired and Cancelling',
     props: {
       ...defaultProps,
       order: {
