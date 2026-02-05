@@ -225,7 +225,7 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL+EXPIRED] 2. Expired and Canceled',
+    description: '[CANCEL+EXPIRED] 2. Expired and Cancelled',
     props: {
       ...defaultProps,
       order: {
@@ -266,7 +266,7 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL+REFUND] Canceled + Refunding...',
+    description: '[CANCEL+REFUND] Cancelled + Refunding...',
     props: {
       ...defaultProps,
       order: {
@@ -280,7 +280,7 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL+REFUND] Canceled + Refunded',
+    description: '[CANCEL+REFUND] Cancelled + Refunded',
     props: {
       ...defaultProps,
       order: {
