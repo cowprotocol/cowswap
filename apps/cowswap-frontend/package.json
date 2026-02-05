@@ -38,7 +38,7 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cow-runner-game": "https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz",
+    "@cowprotocol/cow-runner-game": "^0.2.9",
     "@cowprotocol/cow-sdk": "7.3.5",
     "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/ens": "workspace:*",
