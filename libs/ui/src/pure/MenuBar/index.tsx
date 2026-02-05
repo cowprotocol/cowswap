@@ -17,8 +17,7 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { LOCALE_DISPLAY_NAMES } from '@cowprotocol/common-const'
-import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
@@ -874,26 +873,14 @@ export const MenuBar = (props: MenuBarProps) => {
   useOnClickOutside([mobileMenuRef, mobileMenuTriggerRef], () => setIsMobileMenuOpen(false))
   useOnClickOutside([settingsButtonRef, settingsDropdownRef], () => setIsSettingsOpen(false))
 
+  useBodyScrollbarLocker(isMobile && (isMobileMenuOpen || isDaoOpen || isSettingsOpen))
+
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
     setIsMobileMenuOpen((prev) => !prev)
   }
-
-  React.useEffect(() => {
-    if (isMobile) {
-      if (isMobileMenuOpen || isDaoOpen || isSettingsOpen) {
-        addBodyClass('noScroll')
-      } else {
-        removeBodyClass('noScroll')
-      }
-    }
-
-    return () => {
-      removeBodyClass('noScroll')
-    }
-  }, [isMobile, isMobileMenuOpen, isDaoOpen, isSettingsOpen])
 
   useEffect(() => {
     setIsLoaded(true)
