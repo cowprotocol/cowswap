@@ -9,7 +9,7 @@ import { calculatePriceDifference } from 'utils/orderUtils/calculatePriceDiffere
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { getDistanceColor } from '../../containers/OrderRow/utils'
+import { getDistanceColor } from '../../utils/getDistanceColor'
 
 interface TwapScheduledOrderStatusProps {
   childOrders: ParsedOrder[]

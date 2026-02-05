@@ -25,7 +25,6 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './OrderRow.styled'
 import { TableRow } from './OrderRow.styled'
-import { getActivityUrl, shouldShowDashForExpiration } from './utils'
 
 import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
@@ -43,6 +42,8 @@ import { WarningTooltip } from '../../pure/OrdersTable/Row/WarningTooltip/Warnin
 import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
 import { OrderActions } from '../../state/ordersTable.types'
 import { OrderParams } from '../../utils/getOrderParams'
+import { shouldShowDashForExpiration } from '../../utils/shouldShowDashForExpiration'
+import { getActivityUrl } from '../../utils/url/getActivityUrl'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000

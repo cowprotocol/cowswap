@@ -13,7 +13,7 @@ import * as styledEl from './AffectedPermitOrderWithActions.styled'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
-import { getActivityUrl } from '../OrderRow/utils'
+import { getActivityUrl } from '../../utils/url/getActivityUrl'
 
 export type AffectedPermitOrderProps = {
   order: Order
