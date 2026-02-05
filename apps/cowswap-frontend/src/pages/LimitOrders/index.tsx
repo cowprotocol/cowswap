@@ -20,6 +20,7 @@ import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternati
 
 import { AlternativeLimitOrder } from './AlternativeLimitOrder'
 import { RegularLimitOrders } from './RegularLimitOrders'
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function LimitOrderPage() {

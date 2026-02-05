@@ -1,4 +1,4 @@
-import React, { ErrorInfo, PropsWithChildren } from 'react'
+import React, { useCallback, ErrorInfo, PropsWithChildren } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -147,9 +147,12 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
 export default function ErrorBoundary(props: PropsWithChildren): React.ReactNode {
   const cowAnalytics = useCowAnalytics()
 
-  const handleError = (error: Error, errorInfo: ErrorInfo): void => {
-    cowAnalytics.sendError(error, errorInfo.toString())
-  }
+  const handleError = useCallback(
+    (error: Error, errorInfo: ErrorInfo): void => {
+      cowAnalytics.sendError(error, errorInfo.toString())
+    },
+    [cowAnalytics],
+  )
 
   return <ErrorBoundaryComponent {...props} onError={handleError} />
 }

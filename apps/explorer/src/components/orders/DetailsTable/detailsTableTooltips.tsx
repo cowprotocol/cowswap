@@ -17,7 +17,7 @@ export const DetailsTableTooltips = {
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
   appData:
     'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
-  status: 'The order status is either Signing, Open, Filled, Partially filled, Expired or Canceled.',
+  status: 'The order status is either Signing, Open, Filled, Partially filled, Expired or Cancelled.',
   hooks: 'Hooks are interactions before/after order execution.',
   submission:
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
