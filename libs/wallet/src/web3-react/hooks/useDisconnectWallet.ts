@@ -10,7 +10,7 @@ export function useDisconnectWallet(onDisconnect?: Command) {
   // Wallet connection (and warnings) through wagmi will be handled in a future task
   const { connector } = useWeb3React()
 
-  return useCallback(() => {
+  return useCallback(async () => {
     if (connector.deactivate) {
       connector.deactivate()
     } else {

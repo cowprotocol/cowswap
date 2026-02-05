@@ -1,19 +1,28 @@
 import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 import { Connector as LegacyConnector } from '@web3-react/types'
 
+import * as newUseDisconnect from './wagmi/hooks/useDisconnectWallet'
 import * as newUseIsSmartContract from './wagmi/hooks/useIsSmartContractWallet'
 import * as newUseIsWalletConnect from './wagmi/hooks/useIsWalletConnect'
+import * as newUseSwitchChain from './wagmi/hooks/useSwitchNetwork'
 import * as newUseWalletMetadata from './wagmi/hooks/useWalletMetadata'
+import * as legacyUseDisconnect from './web3-react/hooks/useDisconnectWallet'
 import * as legacyUseIsSmartContractWallet from './web3-react/hooks/useIsSmartContractWallet'
 import * as legacyUseIsWalletConnect from './web3-react/hooks/useIsWalletConnect'
+import * as legacyUseSwitchChain from './web3-react/hooks/useSwitchNetwork'
 import * as legacyUseWalletMetadata from './web3-react/hooks/useWalletMetadata'
 
 export * from './web3-react/hooks/useActivateConnector'
 
 export * from './web3-react/hooks/useConnectionType'
 
-export * from './web3-react/hooks/useDisconnectWallet'
+export function useDisconnectWallet(): () => Promise<void> {
+  const newUseDisconnectWallet = newUseDisconnect.useDisconnectWallet()
+  const legacyUseDisconnectWallet = legacyUseDisconnect.useDisconnectWallet()
+  return LAUNCH_DARKLY_VIEM_MIGRATION ? newUseDisconnectWallet : legacyUseDisconnectWallet
+}
 
 export function useAccountType(): AccountType | undefined {
   const newUseAccountType = newUseIsSmartContract.useAccountType()
@@ -39,7 +48,11 @@ export function useIsWalletConnect(): boolean {
 
 export * from './web3-react/hooks/useSafeAppsSdk'
 
-export * from './web3-react/hooks/useSwitchNetwork'
+export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void> {
+  const newUseSwitchNetwork = newUseSwitchChain.useSwitchNetwork()
+  const legacyUseSwitchNetwork = legacyUseSwitchChain.useSwitchNetwork()
+  return LAUNCH_DARKLY_VIEM_MIGRATION ? newUseSwitchNetwork : legacyUseSwitchNetwork
+}
 
 export function useIsSafeApp(): boolean {
   const newIsSafeApp = newUseWalletMetadata.useIsSafeApp()

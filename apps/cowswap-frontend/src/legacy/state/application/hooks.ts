@@ -28,7 +28,16 @@ export function useCloseModal(_modal: ApplicationModal): Command {
 }
 
 export function useToggleWalletModal(): Command {
-  return useToggleModal(ApplicationModal.WALLET)
+  // TODO M-7 COW-572
+  // Readd this
+  // const { open } = useAppKit()
+  const toggleModal = useToggleModal(ApplicationModal.WALLET)
+
+  // if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+  //   return () => open()
+  // }
+
+  return toggleModal
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced

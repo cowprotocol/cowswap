@@ -7,7 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { Address } from 'viem'
-import { useConnection, useEnsName } from 'wagmi'
+import { useChainId, useConnection, useEnsName } from 'wagmi'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
@@ -18,7 +18,8 @@ import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 function useWalletInfo(): WalletInfo {
-  const { address, chainId, isConnected } = useConnection()
+  const { address, isConnected } = useConnection()
+  const chainId = useChainId()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
   return useMemo(
@@ -111,7 +112,7 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
       ...walletDetails,
-      walletName: getWalletTypeLabel(walletType) || walletDetails.walletName,
+      walletName: walletDetails.walletName || getWalletTypeLabel(walletType),
     })
   }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 

@@ -27,7 +27,14 @@ export function useIsDarkMode(): boolean {
 
 export function useDarkModeManager(): [boolean, Command] {
   const dispatch = useAppDispatch()
+  // TODO M-7 COW-572
+  // Readd this
+  // const { setThemeMode } = useAppKitTheme()
   const darkMode = useIsDarkMode()
+
+  // useEffect(() => {
+  //   setThemeMode(darkMode ? 'dark' : 'light')
+  // }, [darkMode, setThemeMode])
 
   const toggleSetDarkMode = useCallback(() => {
     dispatch(updateUserDarkMode({ userDarkMode: !darkMode }))
