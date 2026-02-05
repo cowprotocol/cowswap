@@ -1,11 +1,32 @@
 import { useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getTokenAddressKey } from '@cowprotocol/common-utils'
+
 import { t } from '@lingui/core/macro'
 
 import { appendImportSection } from './helpers'
 import { TokenSearchRow, UseSearchRowsParams } from './types'
 
 const SEARCH_RESULTS_LIMIT = 100
+
+function isTokenDisabledForBridge(
+  token: TokenWithLogo,
+  areTokensFromBridge: boolean,
+  bridgeSupportedTokensMap: Record<string, boolean> | null | undefined,
+): boolean {
+  // Only disable if: in bridge mode AND map is loaded AND token not in map
+  if (!areTokensFromBridge || !bridgeSupportedTokensMap) {
+    return false
+  }
+
+  // Guard: disable tokens without address
+  if (!token.address) {
+    return true
+  }
+
+  return !bridgeSupportedTokensMap[getTokenAddressKey(token.address)]
+}
 
 export function useSearchRows({
   isLoading,
@@ -14,6 +35,8 @@ export function useSearchRows({
   blockchainResult,
   inactiveListsResult,
   externalApiResult,
+  bridgeSupportedTokensMap,
+  areTokensFromBridge = false,
 }: UseSearchRowsParams): TokenSearchRow[] {
   return useMemo(() => {
     const entries: TokenSearchRow[] = []
@@ -22,14 +45,28 @@ export function useSearchRows({
       return entries
     }
 
+    const noRouteTooltip = t`No route found for this token`
+
     entries.push({ type: 'banner' })
 
     for (const token of matchedTokens) {
-      entries.push({ type: 'token', token })
+      const disabled = isTokenDisabledForBridge(token, areTokensFromBridge, bridgeSupportedTokensMap)
+      entries.push({
+        type: 'token',
+        token,
+        disabled,
+        disabledReason: disabled ? noRouteTooltip : undefined,
+      })
     }
 
     for (const token of activeList) {
-      entries.push({ type: 'token', token })
+      const disabled = isTokenDisabledForBridge(token, areTokensFromBridge, bridgeSupportedTokensMap)
+      entries.push({
+        type: 'token',
+        token,
+        disabled,
+        disabledReason: disabled ? noRouteTooltip : undefined,
+      })
     }
 
     appendImportSection(entries, {
@@ -40,6 +77,8 @@ export function useSearchRows({
       tooltip: undefined,
       shadowed: false,
       wrapperId: 'currency-import',
+      bridgeSupportedTokensMap,
+      areTokensFromBridge,
     })
 
     appendImportSection(entries, {
@@ -49,6 +88,8 @@ export function useSearchRows({
       sectionTitle: t`Expanded results from inactive Token Lists`,
       tooltip: t`Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.`,
       shadowed: true,
+      bridgeSupportedTokensMap,
+      areTokensFromBridge,
     })
 
     appendImportSection(entries, {
@@ -58,8 +99,19 @@ export function useSearchRows({
       sectionTitle: t`Additional Results from External Sources`,
       tooltip: t`Tokens from external sources.`,
       shadowed: true,
+      bridgeSupportedTokensMap,
+      areTokensFromBridge,
     })
 
     return entries
-  }, [isLoading, matchedTokens, activeList, blockchainResult, inactiveListsResult, externalApiResult])
+  }, [
+    isLoading,
+    matchedTokens,
+    activeList,
+    blockchainResult,
+    inactiveListsResult,
+    externalApiResult,
+    bridgeSupportedTokensMap,
+    areTokensFromBridge,
+  ])
 }

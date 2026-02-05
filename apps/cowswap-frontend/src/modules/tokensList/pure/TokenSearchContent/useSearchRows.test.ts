@@ -112,8 +112,8 @@ describe('useSearchRows', () => {
       )
 
       expect(result.current[0]).toEqual({ type: 'banner' })
-      expect(result.current[1]).toEqual({ type: 'token', token: token1 })
-      expect(result.current[2]).toEqual({ type: 'token', token: token2 })
+      expect(result.current[1]).toEqual({ type: 'token', token: token1, disabled: false, disabledReason: undefined })
+      expect(result.current[2]).toEqual({ type: 'token', token: token2, disabled: false, disabledReason: undefined })
     })
 
     it('should preserve order of matched tokens', () => {
@@ -167,8 +167,18 @@ describe('useSearchRows', () => {
       )
 
       expect(result.current[0]).toEqual({ type: 'banner' })
-      expect(result.current[1]).toEqual({ type: 'token', token: matchedToken })
-      expect(result.current[2]).toEqual({ type: 'token', token: activeToken })
+      expect(result.current[1]).toEqual({
+        type: 'token',
+        token: matchedToken,
+        disabled: false,
+        disabledReason: undefined,
+      })
+      expect(result.current[2]).toEqual({
+        type: 'token',
+        token: activeToken,
+        disabled: false,
+        disabledReason: undefined,
+      })
     })
 
     it('should have correct structure for active list tokens', () => {
@@ -183,7 +193,7 @@ describe('useSearchRows', () => {
       )
 
       const tokenRow = result.current.find((row) => row.type === 'token')
-      expect(tokenRow).toEqual({ type: 'token', token: activeToken })
+      expect(tokenRow).toEqual({ type: 'token', token: activeToken, disabled: false, disabledReason: undefined })
     })
 
     it('should handle empty active list', () => {
@@ -691,6 +701,150 @@ describe('useSearchRows', () => {
 
       expect(importRow.isFirstInSection).toBe(true)
       expect(importRow.isLastInSection).toBe(true)
+    })
+  })
+
+  describe('Bridge Mode Disabled State', () => {
+    it('should not disable tokens when not in bridge mode', () => {
+      const token = createToken('TOKEN', 1, 'Test Token')
+
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [token],
+          activeList: [],
+          areTokensFromBridge: false,
+          bridgeSupportedTokensMap: null,
+        }),
+      )
+
+      const tokenRow = result.current.find((row) => row.type === 'token') as {
+        type: 'token'
+        disabled?: boolean
+      }
+
+      expect(tokenRow.disabled).toBe(false)
+    })
+
+    it('should not disable tokens when bridge map is loading (null)', () => {
+      const token = createToken('TOKEN', 1, 'Test Token')
+
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [token],
+          activeList: [],
+          areTokensFromBridge: true,
+          bridgeSupportedTokensMap: null,
+        }),
+      )
+
+      const tokenRow = result.current.find((row) => row.type === 'token') as {
+        type: 'token'
+        disabled?: boolean
+      }
+
+      expect(tokenRow.disabled).toBe(false)
+    })
+
+    it('should disable matched tokens not in bridge map', () => {
+      const token = createToken('TOKEN', 1, 'Test Token')
+
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [token],
+          activeList: [],
+          areTokensFromBridge: true,
+          bridgeSupportedTokensMap: { '0xother': true },
+        }),
+      )
+
+      const tokenRow = result.current.find((row) => row.type === 'token') as {
+        type: 'token'
+        disabled?: boolean
+        disabledReason?: string
+      }
+
+      expect(tokenRow.disabled).toBe(true)
+      expect(tokenRow.disabledReason).toBeDefined()
+    })
+
+    it('should disable active list tokens not in bridge map', () => {
+      const token = createToken('TOKEN', 1, 'Test Token')
+
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [],
+          activeList: [token],
+          areTokensFromBridge: true,
+          bridgeSupportedTokensMap: { '0xother': true },
+        }),
+      )
+
+      const tokenRow = result.current.find((row) => row.type === 'token') as {
+        type: 'token'
+        disabled?: boolean
+        disabledReason?: string
+      }
+
+      expect(tokenRow.disabled).toBe(true)
+      expect(tokenRow.disabledReason).toBeDefined()
+    })
+
+    it('should not disable tokens that are in bridge map', () => {
+      const token = createToken('TOKEN', 1, 'Test Token')
+      const tokenAddress = toAddress(1)
+
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [token],
+          activeList: [],
+          areTokensFromBridge: true,
+          bridgeSupportedTokensMap: { [tokenAddress]: true },
+        }),
+      )
+
+      const tokenRow = result.current.find((row) => row.type === 'token') as {
+        type: 'token'
+        disabled?: boolean
+        disabledReason?: string
+      }
+
+      expect(tokenRow.disabled).toBe(false)
+      expect(tokenRow.disabledReason).toBeUndefined()
+    })
+
+    it('should handle mixed bridgeable and non-bridgeable tokens', () => {
+      const nonBridgeableToken = createToken('NON_BRIDGE', 1, 'Non-Bridgeable Token')
+      const bridgeableToken = createToken('BRIDGE', 2, 'Bridgeable Token')
+      const bridgeableAddress = toAddress(2)
+
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [nonBridgeableToken, bridgeableToken],
+          activeList: [],
+          areTokensFromBridge: true,
+          bridgeSupportedTokensMap: { [bridgeableAddress]: true },
+        }),
+      )
+
+      const tokenRows = result.current.filter((row) => row.type === 'token') as Array<{
+        type: 'token'
+        token: TokenWithLogo
+        disabled?: boolean
+      }>
+
+      // Non-bridgeable token should be disabled
+      const nonBridgeableRow = tokenRows.find((row) => row.token.symbol === 'NON_BRIDGE')
+      expect(nonBridgeableRow?.disabled).toBe(true)
+
+      // Bridgeable token should not be disabled
+      const bridgeableRow = tokenRows.find((row) => row.token.symbol === 'BRIDGE')
+      expect(bridgeableRow?.disabled).toBe(false)
     })
   })
 

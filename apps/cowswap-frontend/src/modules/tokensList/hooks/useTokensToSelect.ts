@@ -19,6 +19,7 @@ export interface TokensToSelectContext {
   favoriteTokens: TokenWithLogo[]
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
+  bridgeSupportedTokensMap: Record<string, boolean> | null
 }
 
 export function useTokensToSelect(): TokensToSelectContext {
@@ -59,6 +60,7 @@ export function useTokensToSelect(): TokensToSelectContext {
       favoriteTokens: favoriteTokensToSelect,
       areTokensFromBridge,
       isRouteAvailable: result?.isRouteAvailable,
+      bridgeSupportedTokensMap,
     }
   }, [allTokens, bridgeSupportedTokensMap, isLoading, areTokensFromBridge, favoriteTokens, result])
 }

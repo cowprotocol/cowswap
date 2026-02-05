@@ -1,6 +1,6 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getIsNativeToken, getTokenAddressKey } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 
@@ -38,10 +38,20 @@ export interface BuildVirtualRowsParams {
   recentTokens: TokenWithLogo[] | undefined
   hideFavoriteTokensTooltip: boolean
   onClearRecentTokens: () => void
+  bridgeSupportedTokensMap: Record<string, boolean> | null
+  areTokensFromBridge: boolean
 }
 
 export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualRow[] {
-  const { sortedTokens, favoriteTokens, recentTokens, hideFavoriteTokensTooltip, onClearRecentTokens } = params
+  const {
+    sortedTokens,
+    favoriteTokens,
+    recentTokens,
+    hideFavoriteTokensTooltip,
+    onClearRecentTokens,
+    bridgeSupportedTokensMap,
+    areTokensFromBridge = false,
+  } = params
 
   const tokenRows = sortedTokens.map<TokensVirtualRow>((token) => ({ type: 'token', token }))
   const composedRows: TokensVirtualRow[] = []
@@ -55,13 +65,40 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
   }
 
   if (recentTokens?.length) {
+    const noRouteTooltip = t`No route found for this token`
+
     composedRows.push({
       type: 'title',
       label: t`Recent`,
       actionLabel: t`Clear`,
       onAction: onClearRecentTokens,
     })
-    recentTokens.forEach((token) => composedRows.push({ type: 'token', token }))
+
+    recentTokens.forEach((token) => {
+      // Guard: disable tokens without address (defensive, shouldn't happen but safer than allowing selection)
+      if (!token.address) {
+        composedRows.push({
+          type: 'token',
+          token,
+          disabled: true,
+          disabledReason: noRouteTooltip,
+        })
+        return
+      }
+
+      // Only disable if: in bridge mode AND map is loaded AND token not in map
+      const shouldDisable =
+        areTokensFromBridge &&
+        bridgeSupportedTokensMap !== null &&
+        !bridgeSupportedTokensMap[getTokenAddressKey(token.address)]
+
+      composedRows.push({
+        type: 'token',
+        token,
+        disabled: shouldDisable,
+        disabledReason: shouldDisable ? noRouteTooltip : undefined,
+      })
+    })
   }
 
   if (favoriteTokens?.length || recentTokens?.length) {
