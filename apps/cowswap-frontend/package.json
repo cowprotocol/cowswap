@@ -33,7 +33,7 @@
     "@cowprotocol/analytics": "workspace:*",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/balances-and-allowances": "workspace:*",
-    "@cowprotocol/cms": "https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz",
+    "@cowprotocol/cms": "^0.11.0",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
