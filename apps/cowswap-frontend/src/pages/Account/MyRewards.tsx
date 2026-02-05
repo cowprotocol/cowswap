@@ -318,7 +318,7 @@ export default function AccountMyRewards() {
                     </MetricItem>
                     <MetricItem>
                       <span>
-                        <Trans>Claimed</Trans>
+                        <Trans>Received</Trans>
                       </span>
                       <strong>{claimedLabel}</strong>
                     </MetricItem>

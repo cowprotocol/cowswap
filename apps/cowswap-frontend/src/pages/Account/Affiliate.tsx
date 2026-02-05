@@ -721,7 +721,7 @@ export default function AccountAffiliate() {
                   </MetricItem>
                   <MetricItem>
                     <span>
-                      <Trans>Claimed</Trans>
+                      <Trans>Received</Trans>
                     </span>
                     <strong>{paidOutLabel}</strong>
                   </MetricItem>

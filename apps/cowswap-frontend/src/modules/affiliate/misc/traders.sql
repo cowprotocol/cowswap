@@ -2,14 +2,36 @@ with
 params as (
   select
     split('{{blockchain}}', ',') as blockchains,
+    case when '{{is_staging_env}}' = 'true' then true else false end as is_staging_env,
     case
-      when '{{payout_sources}}' in ('', 'default value') then cast(array[] as array(varchar))
-      else transform(split('{{payout_sources}}', ','), x -> lower(trim(x)))
-    end as payout_sources
+      when '{{trader_payout_sources}}' in ('', 'default value') then cast(array[] as array(varchar))
+      else transform(split('{{trader_payout_sources}}', ','), x -> lower(trim(x)))
+    end as trader_payout_sources
 ),
 affiliate_program_data as (
-  -- select * from dune.cowprotocol.dataset_affiliate_program_data_staging
-  select * from dune.cowprotocol.dataset_affiliate_program_data
+  select
+    cast(affiliate_address as varchar) as affiliate_address,
+    cast(code as varchar) as code,
+    trigger_volume,
+    time_cap_days,
+    volume_cap,
+    reward_amount,
+    revenue_split_affiliate_pct,
+    revenue_split_trader_pct
+  from dune.cowprotocol.dataset_affiliate_program_data
+  where not (select is_staging_env from params)
+  union all
+  select
+    cast(affiliate_address as varchar) as affiliate_address,
+    cast(code as varchar) as code,
+    trigger_volume,
+    time_cap_days,
+    volume_cap,
+    reward_amount,
+    revenue_split_affiliate_pct,
+    revenue_split_trader_pct
+  from dune.cowprotocol.dataset_affiliate_program_data_staging
+  where (select is_staging_env from params)
 ),
 trades_with_referrer as (
   select
@@ -83,8 +105,8 @@ payouts as (
     cast(round(sum(value) / 1e6, 6) as decimal(18, 6)) as paid_out
   from erc20_ethereum.evt_transfer
   cross join params
-  cross join unnest(params.payout_sources) as ps(payout_source)
-  where lower(cast("from" as varchar)) = ps.payout_source
+  cross join unnest(params.trader_payout_sources) as ps(payout_source)
+  where lower(to_hex("from")) = replace(ps.payout_source, '0x', '')
     and contract_address = 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
   group by 1
 )

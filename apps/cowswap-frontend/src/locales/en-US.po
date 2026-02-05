@@ -351,6 +351,10 @@ msgstr "Set any limit price and time horizon"
 msgid "token"
 msgstr "token"
 
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "Unable to reach the affiliate service."
+msgstr "Unable to reach the affiliate service."
+
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
 msgid "Please, top up {symbol} balance or cancel the order."
 msgstr "Please, top up {symbol} balance or cancel the order."
@@ -1826,8 +1830,8 @@ msgid "Let's slice some"
 msgstr "Let's slice some"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
-msgid "Unable to load affiliate code right now."
-msgstr "Unable to load affiliate code right now."
+#~ msgid "Unable to load affiliate code right now."
+#~ msgstr "Unable to load affiliate code right now."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Cancellation failed"
@@ -5114,6 +5118,8 @@ msgid "Recreate"
 msgstr "Recreate"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/SwapResultContent/contents.tsx
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+#: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
 msgid "Received"
 msgstr "Received"
 
@@ -5329,8 +5335,8 @@ msgstr "Submit"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
-msgid "Claimed"
-msgstr "Claimed"
+#~ msgid "Claimed"
+#~ msgstr "Claimed"
 
 #: libs/common-const/src/common.ts
 #~ msgid "Account Overview"
