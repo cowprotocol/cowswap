@@ -4,10 +4,10 @@ import { TableHeaderConfig } from './ordersTableHeader.constants'
 import { HeaderElement } from './OrdersTableHeader.styled'
 import { TableHeaderWrapper } from './OrdersTableHeader.styled'
 
-import { tableItemsToOrders } from '../../../shared/utils/orderTableGroupUtils'
+import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../state/ordersTable.types'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
-import { useOrdersTableState } from '../../../state/useOrdersTableState'
+import { tableItemsToOrders } from '../../../utils/orderTableGroupUtils'
 import { CheckboxCheckmark, TableRowCheckbox, TableRowCheckboxWrapper } from '../Row/Checkbox/Checkbox.styled'
 
 interface OrdersTableHeaderProps {

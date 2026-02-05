@@ -9,10 +9,10 @@ import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
 
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
 
-import { useNoOrdersAnimation } from '../../../../shared/hooks/useNoOrdersAnimation'
+import { HistoryStatusFilter } from '../../../../hooks/useFilteredOrders'
+import { useNoOrdersAnimation } from '../../../../hooks/useNoOrdersAnimation'
+import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
-import { HistoryStatusFilter } from '../../../../state/useFilteredOrders'
-import { useOrdersTableState } from '../../../../state/useOrdersTableState'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 
 const Lottie = lazy(() => import('lottie-react'))

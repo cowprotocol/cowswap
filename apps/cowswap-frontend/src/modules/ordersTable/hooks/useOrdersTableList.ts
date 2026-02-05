@@ -8,12 +8,11 @@ import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
-import { OrdersTableList, OrderTableItem, TabOrderTypes } from './ordersTable.types'
-import { useGetPendingOrdersPermitValidityState } from './permit/usePendingOrderPermitValidity'
-
-import { getOrderParams } from '../shared/utils/getOrderParams'
-import { groupOrdersTable } from '../shared/utils/groupOrdersTable'
-import { getParsedOrderFromTableItem, isParsedOrder } from '../shared/utils/orderTableGroupUtils'
+import { OrdersTableList, OrderTableItem, TabOrderTypes } from '../state/ordersTable.types'
+import { useGetPendingOrdersPermitValidityState } from '../state/permit/usePendingOrderPermitValidity'
+import { getOrderParams } from '../utils/getOrderParams'
+import { groupOrdersTable } from '../utils/groupOrdersTable'
+import { getParsedOrderFromTableItem, isParsedOrder } from '../utils/orderTableGroupUtils'
 
 const ORDER_LIMIT = 1000
 

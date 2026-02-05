@@ -4,9 +4,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { ORDERS_TABLE_TABS, OrderTabId } from './ordersTableTabs.constants'
-
-import { OrdersTableList, TabParams } from '../ordersTable.types'
+import { OrdersTableList, TabParams } from '../../state/ordersTable.types'
+import { ORDERS_TABLE_TABS, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 
 export function useTabs(ordersList: OrdersTableList, currentTabId: OrderTabId): TabParams[] {
   const { account } = useWalletInfo()

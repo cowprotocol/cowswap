@@ -27,6 +27,7 @@ import * as styledEl from './OrderRow.styled'
 import { TableRow } from './OrderRow.styled'
 import { getActivityUrl, shouldShowDashForExpiration } from './utils'
 
+import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem/CurrencyAmountItem.pure'
 import { OrderFillsAt } from '../../pure/OrderFillsAt/OrderFillsAt.pure'
@@ -40,9 +41,8 @@ import {
 import { OrderRowWarningEstimatedPrice } from '../../pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure'
 import { WarningTooltip } from '../../pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
-import { usePricesDifference } from '../../shared/hooks/usePricesDifference'
-import { OrderParams } from '../../shared/utils/getOrderParams'
 import { OrderActions } from '../../state/ordersTable.types'
+import { OrderParams } from '../../utils/getOrderParams'
 
 // Constants
 const TIME_AGO_UPDATE_INTERVAL = 3000

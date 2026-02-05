@@ -10,7 +10,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { getOrderParams } from '../../../../shared/utils/getOrderParams'
+import { getOrderParams } from '../../../../utils/getOrderParams'
 import { OrderEstimatedExecutionPrice } from '../../../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 
 interface OrderRowWarningEstimatedPriceProps {

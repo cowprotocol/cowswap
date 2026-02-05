@@ -4,7 +4,7 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { PENDING_STATES } from 'legacy/state/orders/actions'
 
-import { useOrdersTableState } from '../../state/useOrdersTableState'
+import { useOrdersTableState } from '../hooks/useOrdersTableState'
 import { tableItemsToOrders } from '../utils/orderTableGroupUtils'
 
 const PROTOCOL_FEE_START_DATE = new Date('2025-11-26T00:00:00Z')

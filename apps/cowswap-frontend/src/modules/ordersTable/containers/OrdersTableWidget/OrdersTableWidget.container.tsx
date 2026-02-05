@@ -18,14 +18,14 @@ import {
   Select,
 } from './OrdersTableWidget.styled'
 
+import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
+import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
+import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import { tableItemsToOrders } from '../../shared/utils/orderTableGroupUtils'
 import { OrdersTableParams } from '../../state/ordersTable.types'
 import { OrdersTableStateUpdater } from '../../state/OrdersTable.updater'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
-import { useGetBuildOrdersTableUrl } from '../../state/url/useGetBuildOrdersTableUrl'
-import { HistoryStatusFilter } from '../../state/useFilteredOrders'
-import { useOrdersTableState } from '../../state/useOrdersTableState'
+import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
 

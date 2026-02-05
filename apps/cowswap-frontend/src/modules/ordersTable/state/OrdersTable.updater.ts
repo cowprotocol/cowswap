@@ -18,15 +18,15 @@ import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCoun
 import { ordersTableStateAtom } from './ordersTable.atoms'
 import { OrdersTableParams } from './ordersTable.types'
 import { OrderTabId } from './tabs/ordersTableTabs.constants'
-import { useCurrentTab } from './tabs/useCurrentTab'
-import { useTabs } from './tabs/useTabs'
-import { buildOrdersTableUrl } from './url/buildOrdersTableUrl'
-import { useValidatePageUrlParams } from './url/useValidatePageUrlParams'
-import { HistoryStatusFilter, useFilteredOrders } from './useFilteredOrders'
-import { useOrdersTableList } from './useOrdersTableList'
 
-import { useOrderActions } from '../shared/hooks/useOrderActions'
-import { useOrdersHydrationState } from '../shared/hooks/useOrdersHydrationState'
+import { useCurrentTab } from '../hooks/tabs/useCurrentTab'
+import { useTabs } from '../hooks/tabs/useTabs'
+import { useValidatePageUrlParams } from '../hooks/url/useValidatePageUrlParams'
+import { HistoryStatusFilter, useFilteredOrders } from '../hooks/useFilteredOrders'
+import { useOrderActions } from '../hooks/useOrderActions'
+import { useOrdersHydrationState } from '../hooks/useOrdersHydrationState'
+import { useOrdersTableList } from '../hooks/useOrdersTableList'
+import { buildOrdersTableUrl } from '../utils/url/buildOrdersTableUrl'
 
 function getOrdersInputTokens(allOrders: Order[]): string[] {
   const setOfTokens = allOrders.reduce((acc, order) => {

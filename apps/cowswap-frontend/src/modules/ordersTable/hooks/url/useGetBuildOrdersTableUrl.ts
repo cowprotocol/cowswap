@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { useLocation } from 'react-router'
 
-import { buildOrdersTableUrl } from './buildOrdersTableUrl'
+import { buildOrdersTableUrl } from '../../utils/url/buildOrdersTableUrl'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

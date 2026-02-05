@@ -13,7 +13,7 @@ import * as styledEl from './TwapStatusAndToggle.styled'
 import { WarningTooltip } from '../OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../OrderStatusBox/OrderStatusBox.pure'
 
-import type { OrderParams } from '../../shared/utils/getOrderParams'
+import type { OrderParams } from '../../utils/getOrderParams'
 
 interface ChildOrderItems {
   order: ParsedOrder

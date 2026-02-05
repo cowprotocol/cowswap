@@ -6,9 +6,8 @@ import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'
 import { isPartiallyFilled } from 'utils/orderUtils/isPartiallyFilled'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { OrderTableItem } from './ordersTable.types'
-
-import { getParsedOrderFromTableItem } from '../shared/utils/orderTableGroupUtils'
+import { OrderTableItem } from '../state/ordersTable.types'
+import { getParsedOrderFromTableItem } from '../utils/orderTableGroupUtils'
 
 function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {
   if (status === HistoryStatusFilter.FILLED) return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)

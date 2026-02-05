@@ -4,10 +4,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
 
-import { OrderTabId } from './ordersTableTabs.constants'
-
-import { OrdersTableList } from '../ordersTable.types'
-import { parseOrdersTableUrl } from '../url/parseOrdersTableUrl'
+import { OrdersTableList } from '../../state/ordersTable.types'
+import { OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { parseOrdersTableUrl } from '../../utils/url/parseOrdersTableUrl'
 
 interface CurrentTabState {
   currentTabId: OrderTabId

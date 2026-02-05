@@ -4,10 +4,9 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { buildOrdersTableUrl } from './buildOrdersTableUrl'
-import { parseOrdersTableUrl } from './parseOrdersTableUrl'
-
-import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../tabs/ordersTableTabs.constants'
+import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { buildOrdersTableUrl } from '../../utils/url/buildOrdersTableUrl'
+import { parseOrdersTableUrl } from '../../utils/url/parseOrdersTableUrl'
 
 // Reset page params if they are invalid
 export function useValidatePageUrlParams(

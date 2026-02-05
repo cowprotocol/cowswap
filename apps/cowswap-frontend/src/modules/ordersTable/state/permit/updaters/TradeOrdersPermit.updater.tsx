@@ -8,7 +8,7 @@ import { GenericOrder } from 'common/types'
 
 import { OrdersPermitUpdater } from './OrdersPermit.updater'
 
-import { usePendingOrdersFillability } from '../../../shared/hooks/usePendingOrdersFillability'
+import { usePendingOrdersFillability } from '../../../hooks/usePendingOrdersFillability'
 
 export function TradeOrdersPermitUpdater(): ReactNode {
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)

@@ -6,7 +6,7 @@ import { GenericOrder } from 'common/types'
 
 import { OrderPermitUpdater } from './OrderPermit.updater'
 
-import { useOrdersFillability } from '../../../shared/hooks/useOrdersFillability'
+import { useOrdersFillability } from '../../../hooks/useOrdersFillability'
 import { useGetPendingOrdersPermitValidityState } from '../usePendingOrderPermitValidity'
 
 type OrdersPermitUpdaterProps = {

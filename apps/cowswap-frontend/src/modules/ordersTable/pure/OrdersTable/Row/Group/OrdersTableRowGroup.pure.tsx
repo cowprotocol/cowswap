@@ -12,9 +12,9 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import type { PendingOrderPrices } from 'modules/orders'
 
 import { OrderRow } from '../../../../containers/OrderRow/OrderRow.container'
-import { getOrderParams } from '../../../../shared/utils/getOrderParams'
 import { OrderActions, OrderTableGroup } from '../../../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../../../state/tabs/ordersTableTabs.constants'
+import { getOrderParams } from '../../../../utils/getOrderParams'
 import { TwapStatusAndToggle } from '../../../TwapStatusAndToggle/TwapStatusAndToggle.pure'
 import { OrdersTablePagination } from '../../Pagination/OrdersTablePagination.pure'
 

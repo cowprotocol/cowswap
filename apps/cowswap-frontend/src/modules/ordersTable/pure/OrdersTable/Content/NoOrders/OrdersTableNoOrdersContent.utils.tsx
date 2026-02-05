@@ -6,9 +6,9 @@ import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
+import { HistoryStatusFilter } from '../../../../hooks/useFilteredOrders'
 import { TabOrderTypes } from '../../../../state/ordersTable.types'
 import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
-import { HistoryStatusFilter } from '../../../../state/useFilteredOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 import { LoadMoreOrdersButton } from '../../LoadMore/Button/LoadMoreOrdersButton'
 

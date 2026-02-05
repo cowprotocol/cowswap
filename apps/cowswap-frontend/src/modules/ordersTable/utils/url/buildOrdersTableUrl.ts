@@ -1,5 +1,5 @@
-import { OrdersTablePageParams } from '../ordersTable.types'
-import { ORDERS_TABLE_PAGE_KEY, ORDERS_TABLE_TAB_KEY } from '../tabs/ordersTableTabs.constants'
+import { OrdersTablePageParams } from '../../state/ordersTable.types'
+import { ORDERS_TABLE_PAGE_KEY, ORDERS_TABLE_TAB_KEY } from '../../state/tabs/ordersTableTabs.constants'
 
 export function buildOrdersTableUrl(
   { pathname, search }: Pick<Location, 'pathname' | 'search'>,

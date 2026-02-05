@@ -4,7 +4,7 @@ import { TradeType } from 'modules/trade'
 
 import { GenericOrder } from 'common/types'
 
-import { useDoesOrderHaveValidPermit } from '../../../shared/hooks/useDoesOrderHaveValidPermit'
+import { useDoesOrderHaveValidPermit } from '../../../hooks/useDoesOrderHaveValidPermit'
 import { useUpdatePendingOrdersPermitValidityState } from '../usePendingOrderPermitValidity'
 
 type OrderPermitUpdaterProps = {

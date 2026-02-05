@@ -12,8 +12,8 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import * as styledEl from './OrdersTabs.styled'
 
+import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
 import { OrderTab, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
-import { useGetBuildOrdersTableUrl } from '../../state/url/useGetBuildOrdersTableUrl'
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]

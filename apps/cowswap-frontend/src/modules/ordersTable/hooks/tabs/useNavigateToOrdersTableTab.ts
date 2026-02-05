@@ -2,8 +2,7 @@ import { useCallback } from 'react'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { OrderTabId } from './ordersTableTabs.constants'
-
+import { OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { useGetBuildOrdersTableUrl } from '../url/useGetBuildOrdersTableUrl'
 
 export function useNavigateToOrdersTableTab(): (tabId: OrderTabId) => void {

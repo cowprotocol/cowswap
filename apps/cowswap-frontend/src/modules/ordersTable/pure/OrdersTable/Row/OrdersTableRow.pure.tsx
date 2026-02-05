@@ -5,12 +5,12 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 
 import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
-import { getOrderParams } from '../../../shared/utils/getOrderParams'
-import { getParsedOrderFromTableItem, isParsedOrder } from '../../../shared/utils/orderTableGroupUtils'
+import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../state/ordersTable.types'
 import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/usePendingOrderPermitValidity'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
-import { useOrdersTableState } from '../../../state/useOrdersTableState'
+import { getOrderParams } from '../../../utils/getOrderParams'
+import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
