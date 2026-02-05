@@ -16,7 +16,7 @@ trades_with_referrer as (
     dune.cowprotocol.result_fac_trades.blockchain,
     dune.cowprotocol.result_fac_trades.block_time,
     dune.cowprotocol.result_fac_trades.tx_hash,
-    lower(cast(dune.cowprotocol.result_fac_trades.trader as varchar)) as trader,
+    dune.cowprotocol.result_fac_trades.trader as trader,
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code
   from dune.cowprotocol.result_fac_trades
@@ -79,7 +79,7 @@ capped_trades as (
 ),
 payouts as (
   select
-    lower(cast(to as varchar)) as recipient,
+    "to" as recipient,
     sum(value / 1e6) as paid_out
   from erc20_ethereum.evt_transfer
   cross join params

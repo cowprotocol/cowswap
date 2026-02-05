@@ -169,3 +169,8 @@ Production:
 - DUNE_QUERY_ID_TRADER_STATS: `6560853`
 - DUNE_QUERY_ID_AFFILIATE_STATS: `6560325`
 - DUNE_AFFILIATE_PROGRAM_TABLE_NAME: `affiliate_program_data`
+
+## Changing program params
+
+1. Tweak params in `/workspaces/infrastructure/cms/index.ts`
+2. Run `pulumi up` in `/workspaces/infrastructure/cms` (after ssologin, pulumi stack select)

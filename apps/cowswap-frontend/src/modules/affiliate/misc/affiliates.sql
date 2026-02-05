@@ -16,7 +16,7 @@ trades_with_referrer as (
     dune.cowprotocol.result_fac_trades.blockchain,
     dune.cowprotocol.result_fac_trades.block_time,
     dune.cowprotocol.result_fac_trades.tx_hash,
-    lower(cast(dune.cowprotocol.result_fac_trades.trader as varchar)) as trader,
+    dune.cowprotocol.result_fac_trades.trader as trader,
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code
   from dune.cowprotocol.result_fac_trades
@@ -89,9 +89,8 @@ affiliate_rewards as (
   group by 1
 ),
 payouts as (
-  -- NOTE: USDC mainnet only
   select
-    lower(cast(to as varchar)) as recipient,
+    "to" as recipient,
     sum(value / 1e6) as paid_out
   from erc20_ethereum.evt_transfer
   cross join params
@@ -119,5 +118,6 @@ select
   coalesce(affiliate_rewards.traders, 0) as total_traders
 from affiliate_program_data
 left join affiliate_rewards on affiliate_rewards.code = affiliate_program_data.code
-left join payouts on payouts.recipient = affiliate_program_data.affiliate_address
+left join payouts
+  on lower(cast(payouts.recipient as varchar)) = lower(cast(affiliate_program_data.affiliate_address as varchar))
 order by total_volume desc;

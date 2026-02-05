@@ -3,13 +3,15 @@ affiliate as (
   select
     lower(cast(affiliate_address as varchar)) as receiver,
     cast(next_payout as double) as next_payout
-  from "query_6560325()"
+  from "query_6560325()" -- prod
+  -- from "query_6648689()" -- staging
 ),
 trader as (
   select
     lower(cast(trader_address as varchar)) as receiver,
     cast(next_payout as double) as next_payout
-  from "query_6560853()"
+  from "query_6560853()" -- prod
+  -- from "query_6648679()" -- staging
 ),
 combined as (
   select receiver, next_payout from affiliate
