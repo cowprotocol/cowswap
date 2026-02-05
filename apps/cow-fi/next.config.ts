@@ -1,11 +1,10 @@
 import { withNx } from '@nx/next'
 import { WithNxOptions } from '@nx/next/plugins/with-nx'
+import { NextConfig } from 'next'
 
-const nextConfig: WithNxOptions = {
+const nextConfig: WithNxOptions & NextConfig = {
   reactStrictMode: true,
-  nx: {
-    svgr: false,
-  },
+  nx: {},
   compiler: {
     styledComponents: true,
   },

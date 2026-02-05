@@ -18,7 +18,6 @@ import { CorrelatedTokensUpdater } from 'entities/correlatedTokens'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
-import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
 import { BalancesDevtools } from 'modules/balancesAndAllowances/updaters/BalancesDevtools'
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
@@ -94,7 +93,6 @@ export function Updaters(): ReactNode {
       <OrdersFromApiUpdater />
       <GasUpdater />
       <SentryUpdater />
-      <UploadToIpfsUpdater />
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />

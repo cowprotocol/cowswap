@@ -1,5 +1,5 @@
 {
-  "apps/cowswap-frontend": "2.0.2",
+  "apps/cowswap-frontend": "2.0.3",
   "apps/explorer": "3.0.2",
   "libs/permit-utils": "2.0.1",
   "libs/widget-lib": "1.0.1",
