@@ -14,7 +14,7 @@ import { Integrations } from '@sentry/tracing'
 import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router'
 
 import { WithLDProvider } from './components/common/WithLDProvider'
-import { Header } from './layout/Header'
+import { Header } from './layout/Header.container'
 import { INITIAL_STATE, rootReducer } from './state'
 import { GlobalStyle, MainWrapper } from './styled'
 
