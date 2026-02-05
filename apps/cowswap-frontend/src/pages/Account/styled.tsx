@@ -93,11 +93,18 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   border: none;
   align-items: flex-end;
 
+  > * {
+    transition: opacity 200ms ease-out;
+  }
+
   ${({ showLoader, theme }) =>
     showLoader &&
     css`
       position: relative;
       overflow: hidden;
+      > * {
+        opacity: 0;
+      }
       &::after {
         z-index: 2;
         position: absolute;

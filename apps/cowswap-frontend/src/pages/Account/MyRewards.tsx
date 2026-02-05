@@ -5,7 +5,7 @@ import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trad
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { formatShortDate } from '@cowprotocol/common-utils'
+import { delay, formatShortDate } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
@@ -67,6 +67,8 @@ import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/ui/TraderRef
 import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/ui/TraderReferralCodeNetworkBanner'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
+const MIN_LOADING_MS = 200
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function, complexity
 export default function AccountMyRewards() {
   const { i18n } = useLingui()
@@ -103,10 +105,10 @@ export default function AccountMyRewards() {
       return
     }
 
-    setLoading(true)
-    bffAffiliateApi
-      .getTraderStats(account)
-      .then((stats) => {
+    const loadStats = async (): Promise<void> => {
+      setLoading(true)
+      try {
+        const [stats] = await Promise.all([bffAffiliateApi.getTraderStats(account), delay(MIN_LOADING_MS)])
         if (cancelled) {
           return
         }
@@ -118,18 +120,18 @@ export default function AccountMyRewards() {
           traderReferralCodeActions.setSavedCode(stats.bound_referrer_code)
           traderReferralCodeActions.setWalletState({ status: 'linked', code: stats.bound_referrer_code })
         }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setTraderStats(null)
-          setStatsUpdatedAt(null)
+      } catch {
+        if (cancelled) {
+          return
         }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false)
-        }
-      })
+        setTraderStats(null)
+        setStatsUpdatedAt(null)
+      }
+
+      setLoading(false)
+    }
+
+    loadStats()
 
     return () => {
       cancelled = true
@@ -157,8 +159,7 @@ export default function AccountMyRewards() {
           (traderReferralCode.verification.kind === 'valid' ? traderReferralCode.verification.code : undefined))
     : undefined
   const traderHasCode = Boolean(traderCode)
-  const triggerVolume =
-    statsReady && typeof traderStats?.trigger_volume === 'number' ? traderStats.trigger_volume : null
+  const triggerVolume = typeof programParams?.triggerVolumeUsd === 'number' ? programParams.triggerVolumeUsd : null
   const leftToNextRewards = statsReady ? traderStats?.left_to_next_rewards : undefined
   const progressToNextReward =
     triggerVolume !== null && leftToNextRewards !== undefined ? Math.max(triggerVolume - leftToNextRewards, 0) : 0

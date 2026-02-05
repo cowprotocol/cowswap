@@ -9,7 +9,7 @@ import COW_LOGO_BLACK from '@cowprotocol/assets/images/logo-icon-cow-circle-blac
 import COW_LOGO_WHITE from '@cowprotocol/assets/images/logo-icon-cow-circle-white.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
+import { delay, formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary, ButtonSize, HelpTooltip, ModalHeader, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -35,7 +35,7 @@ import {
   isReferralCodeLengthValid,
   sanitizeReferralCode,
 } from 'modules/affiliate/lib/affiliate-program-utils'
-import { PartnerStatsResponse } from 'modules/affiliate/model/partner-trader-types'
+import { PartnerCodeResponse, PartnerStatsResponse } from 'modules/affiliate/model/partner-trader-types'
 import {
   BottomMetaRow,
   CardTitle,
@@ -88,6 +88,8 @@ import { useModalState } from 'common/hooks/useModalState'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { CowModal } from 'common/pure/Modal'
 
+const MIN_LOADING_MS = 200
+
 const QR_SIZE_PX = 220
 const QR_LOGO_SIZE_PX = 64
 const EMPTY_VALUE_LABEL = '-'
@@ -123,7 +125,7 @@ export default function AccountAffiliate() {
   const [availability, setAvailability] = useState<AvailabilityState>('idle')
   const [hasEdited, setHasEdited] = useState(false)
   const [createdAt, setCreatedAt] = useState<Date | null>(null)
-  const [partnerRewardAmount, setPartnerRewardAmount] = useState<number | null>(null)
+  const [programParams, setProgramParams] = useState<PartnerCodeResponse | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [partnerStats, setPartnerStats] = useState<PartnerStatsResponse | null>(null)
   const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
@@ -201,44 +203,47 @@ export default function AccountAffiliate() {
       setCodeLoading(false)
       setPartnerStats(null)
       setStatsUpdatedAt(null)
-      setPartnerRewardAmount(null)
+      setProgramParams(null)
       return
     }
 
-    setCodeLoading(true)
-    setErrorMessage(null)
+    const loadCode = async (): Promise<void> => {
+      setCodeLoading(true)
+      setErrorMessage(null)
 
-    bffAffiliateApi
-      .getAffiliateCode(account)
-      .then((response) => {
+      try {
+        const [response] = await Promise.all([bffAffiliateApi.getAffiliateCode(account), delay(MIN_LOADING_MS)])
         if (cancelled) {
           return
         }
 
         if (response?.code) {
+          setStatsLoading(true)
           setExistingCode(response.code)
           const created = response.createdAt ? new Date(response.createdAt) : null
           setCreatedAt(created && !Number.isNaN(created.getTime()) ? created : null)
-          setPartnerRewardAmount(typeof response.rewardAmount === 'number' ? response.rewardAmount : null)
+          setProgramParams(response)
         } else {
           setExistingCode(null)
           setCreatedAt(null)
-          setPartnerRewardAmount(null)
+          setProgramParams(null)
+          setStatsLoading(false)
         }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setExistingCode(null)
-          setCreatedAt(null)
-          setPartnerRewardAmount(null)
-          setErrorMessage(t`Unable to reach the affiliate service.`)
+      } catch {
+        if (cancelled) {
+          return
         }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setCodeLoading(false)
-        }
-      })
+        setExistingCode(null)
+        setCreatedAt(null)
+        setProgramParams(null)
+        setStatsLoading(false)
+        setErrorMessage(t`Unable to reach the affiliate service.`)
+      }
+
+      setCodeLoading(false)
+    }
+
+    loadCode()
 
     return () => {
       cancelled = true
@@ -255,10 +260,10 @@ export default function AccountAffiliate() {
       return
     }
 
-    setStatsLoading(true)
-    bffAffiliateApi
-      .getAffiliateStats(account)
-      .then((stats) => {
+    const loadStats = async (): Promise<void> => {
+      setStatsLoading(true)
+      try {
+        const [stats] = await Promise.all([bffAffiliateApi.getAffiliateStats(account), delay(MIN_LOADING_MS)])
         if (cancelled) {
           return
         }
@@ -266,18 +271,18 @@ export default function AccountAffiliate() {
         setPartnerStats(stats)
         const updated = stats?.lastUpdatedAt ? new Date(stats.lastUpdatedAt) : null
         setStatsUpdatedAt(updated && !Number.isNaN(updated.getTime()) ? updated : null)
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setPartnerStats(null)
-          setStatsUpdatedAt(null)
+      } catch {
+        if (cancelled) {
+          return
         }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setStatsLoading(false)
-        }
-      })
+        setPartnerStats(null)
+        setStatsUpdatedAt(null)
+      }
+
+      setStatsLoading(false)
+    }
+
+    loadStats()
 
     return () => {
       cancelled = true
@@ -410,7 +415,7 @@ export default function AccountAffiliate() {
       setExistingCode(response.code)
       const created = response.createdAt ? new Date(response.createdAt) : null
       setCreatedAt(created && !Number.isNaN(created.getTime()) ? created : null)
-      setPartnerRewardAmount(typeof response.rewardAmount === 'number' ? response.rewardAmount : null)
+      setProgramParams(response)
     } catch (error) {
       const err = error as Error & { status?: number; code?: number }
 
@@ -477,21 +482,25 @@ export default function AccountAffiliate() {
           ? 'error'
           : undefined
   const statsReady = Boolean(partnerStats)
-  const referralTarget =
-    statsReady && typeof partnerStats?.trigger_volume === 'number' ? partnerStats.trigger_volume : null
+  const statsLoadingCombined = statsLoading || codeLoading
+  const triggerVolume = typeof programParams?.triggerVolume === 'number' ? programParams.triggerVolume : null
   const leftToNextReward = statsReady ? partnerStats?.left_to_next_reward : undefined
 
   const progressToNextReward =
-    referralTarget !== null && leftToNextReward !== undefined ? Math.max(referralTarget - leftToNextReward, 0) : 0
-  const referralTrafficPercent = referralTarget
-    ? Math.min(100, Math.round((progressToNextReward / referralTarget) * 100))
+    triggerVolume !== null && leftToNextReward !== undefined ? Math.max(triggerVolume - leftToNextReward, 0) : 0
+  const referralTrafficPercent = triggerVolume
+    ? Math.min(100, Math.round((progressToNextReward / triggerVolume) * 100))
     : 0
 
   const progressToNextRewardLabel =
-    referralTarget !== null ? formatUsdCompact(progressToNextReward) : formatUsdCompact(0)
-  const hasReferralTarget = referralTarget !== null
-  const referralTargetLabel = hasReferralTarget ? formatUsdCompact(referralTarget) : formatUsdCompact(0)
-  const rewardAmountLabel = partnerRewardAmount ? formatUsdCompact(partnerRewardAmount) : 'reward'
+    triggerVolume !== null ? formatUsdCompact(progressToNextReward) : formatUsdCompact(0)
+  const hasTriggerVolume = triggerVolume !== null
+  const triggerVolumeLabel = hasTriggerVolume ? formatUsdCompact(triggerVolume) : formatUsdCompact(0)
+  const affiliateRewardAmount =
+    typeof programParams?.rewardAmount === 'number' && typeof programParams?.revenueSplitAffiliatePct === 'number'
+      ? programParams.rewardAmount * (programParams.revenueSplitAffiliatePct / 100)
+      : null
+  const rewardAmountLabel = affiliateRewardAmount !== null ? formatUsdCompact(affiliateRewardAmount) : 'reward'
 
   const nextPayoutLabel = statsReady ? formatUsdcCompact(partnerStats?.next_payout) : formatUsdcCompact(0)
   const totalEarnedLabel = statsReady ? formatUsdcCompact(partnerStats?.total_earned) : EMPTY_VALUE_LABEL
@@ -556,9 +565,7 @@ export default function AccountAffiliate() {
         <>
           <RewardsThreeColumnGrid>
             <RewardsCol1Card showLoader={codeLoading}>
-              {codeLoading ? (
-                <></>
-              ) : showLinkedFlow && existingCode ? (
+              {showLinkedFlow && existingCode ? (
                 <>
                   <CardTitle>
                     <Trans>Your referral code</Trans>
@@ -688,7 +695,7 @@ export default function AccountAffiliate() {
               )}
             </RewardsCol1Card>
 
-            <RewardsCol2Card showLoader={statsLoading}>
+            <RewardsCol2Card showLoader={statsLoadingCombined}>
               <CardTitle>
                 <TitleWithTooltip>
                   <span>
@@ -735,9 +742,9 @@ export default function AccountAffiliate() {
                 <Donut $value={referralTrafficPercent}>
                   <DonutValue>
                     <span>{progressToNextRewardLabel}</span>
-                    {hasReferralTarget && (
+                    {hasTriggerVolume && (
                       <small>
-                        <Trans>of</Trans> {referralTargetLabel}
+                        <Trans>of</Trans> {triggerVolumeLabel}
                       </small>
                     )}
                   </DonutValue>
@@ -747,7 +754,7 @@ export default function AccountAffiliate() {
                 <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
               </BottomMetaRow>
             </RewardsCol2Card>
-            <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoading} />
+            <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoadingCombined} />
           </RewardsThreeColumnGrid>
 
           <AffiliateTermsFaqLinks align="center" />

@@ -88,7 +88,7 @@ export function formatCompactNumber(value: number | null | undefined): string {
   return formatLocaleNumber({
     number: value,
     locale: i18n.locale,
-    options: { notation: 'compact', maximumFractionDigits: 1 },
+    options: { notation: 'compact', maximumFractionDigits: 2 },
   })
 }
 

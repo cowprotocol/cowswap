@@ -1,18 +1,6 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-// // https://dune.com/discover/blockchains/popular
-// const UNSUPPORTED_DUNE_CHAIN_IDS: readonly SupportedChainId[] = [
-//   SupportedChainId.SEPOLIA,
-//   SupportedChainId.LENS,
-// ] as const
-
-// const UNSUPPORTED_DUNE_CHAIN_IDS_SET: ReadonlySet<SupportedChainId> = new Set(UNSUPPORTED_DUNE_CHAIN_IDS)
-
-// export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = ALL_SUPPORTED_CHAIN_IDS.filter(
-//   (chainId) => !UNSUPPORTED_DUNE_CHAIN_IDS_SET.has(chainId),
-// )
-
 // https://dune.com/queries/6434876
 export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
   SupportedChainId.MAINNET,
