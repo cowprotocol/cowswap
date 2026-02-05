@@ -3,7 +3,7 @@
   "version": "2.0.1",
   "type": "module",
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.4-pr-793-f52c1e9f.0",
+    "@cowprotocol/cow-sdk": "7.3.5",
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@ethersproject/abi": "5.7.0",
