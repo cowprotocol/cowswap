@@ -14,7 +14,6 @@ const backoffOpts = { numOfAttempts: 2 }
  *  - offset: int
  *  - limit: int
  */
-// eslint-disable-next-line complexity
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<GetAccountOrdersResponse> {
   const { networkId, owner, offset = 0, limit = 20 } = params
   const state = getState({ networkId, owner, limit })
@@ -24,15 +23,11 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   const cachedPageOrders = state.merged.get(currentPage)
 
   if (cachedPageOrders) {
-    if (networkId === SupportedChainId.INK) console.log('RETURNING CACHED PAGE ORDERS =', cachedPageOrders)
-
     return {
       orders: [...cachedPageOrders],
       hasNextPage: Boolean(state.merged.get(currentPage + 1)) || state.unmerged.length > 0,
     }
   }
-
-  if (networkId === SupportedChainId.INK) console.log('FETCHING NEW PAGE ORDERS =')
 
   const ordersPromise = state.prodHasNext
     ? orderBookSDK
