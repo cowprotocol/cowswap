@@ -24,10 +24,10 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
     throw error
   })
 
-  // Orders only exist in one env, so we use Promise.race instead of Promise.all to avoid waiting for all the retries on
+  // Orders only exist in one env, so we use Promise.any instead of Promise.all to avoid waiting for all the retries on
   // the failing request:
 
-  const result = await Promise.race([orderPromise, orderPromiseBarn])
+  const result = await Promise.any([orderPromise, orderPromiseBarn])
 
   return result || null
 }
@@ -56,10 +56,10 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
       throw error
     })
 
-  // A given txHash should only exist in one env, so we use Promise.race instead of Promise.all to avoid waiting for
+  // A given txHash should only exist in one env, so we use Promise.any instead of Promise.all to avoid waiting for
   // all the retries on the failing request:
 
-  const orders = await Promise.race([orderPromises, orderPromisesBarn])
+  const orders = await Promise.any([orderPromises, orderPromisesBarn])
 
   return orders
 }
