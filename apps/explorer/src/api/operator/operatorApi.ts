@@ -11,7 +11,7 @@ const backoffOpts = { numOfAttempts: 2 }
  *
  * Uses `Promise.any` to fetch from both prod and barn at the same time. The first fulfilled promise wins.
  */
-export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
+export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
   const { networkId, orderId } = params
   const context = { chainId: networkId, backoffOpts }
 
