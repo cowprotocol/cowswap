@@ -7,12 +7,29 @@ export { getAccountOrders } from './accountOrderUtils'
 const backoffOpts = { numOfAttempts: 2 }
 
 /**
- * Gets a single order by id
+ * Gets a single order by id.
+ * Tries prod and staging (barn); returns the first found order so that a failure in one env does not hide the other.
  */
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
 
-  return orderBookSDK.getOrderMultiEnv(orderId, { chainId: networkId })
+  const context = { chainId: networkId }
+
+  const [prodResult, stagingResult] = await Promise.allSettled([
+    orderBookSDK.getOrder(orderId, context).catch((error) => {
+      console.error('[getOrder] Error getting PROD order', orderId, networkId, error)
+      throw error
+    }),
+    orderBookSDK.getOrder(orderId, { ...context, env: 'staging' }).catch((error) => {
+      console.error('[getOrder] Error getting BARN order', orderId, networkId, error)
+      throw error
+    }),
+  ])
+
+  const prodOrder = prodResult.status === 'fulfilled' ? prodResult.value : null
+  const stagingOrder = stagingResult.status === 'fulfilled' ? stagingResult.value : null
+
+  return prodOrder || stagingOrder || null
 }
 
 /**
@@ -27,6 +44,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
     console.error('[getTxOrders] Error getting PROD orders', networkId, txHash, error)
     return []
   })
+
   const orderPromisesBarn = orderBookSDK
     .getTxOrders(txHash, {
       chainId: networkId,
