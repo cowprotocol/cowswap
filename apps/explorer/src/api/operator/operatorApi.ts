@@ -29,8 +29,8 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
 }
 
 /** Thrown when an env returns [] so Promise.any waits for the other; not logged. */
-class EmptyTxOrdersResult extends Error {
-  override readonly name = 'EmptyTxOrdersResult'
+class EmptyTxOrdersResultError extends Error {
+  override readonly name = 'EmptyTxOrdersResultError'
 }
 
 /**
@@ -49,7 +49,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
   const rejectIfEmpty = (orders: RawOrder[]): RawOrder[] => {
-    if (!orders?.length) throw new EmptyTxOrdersResult()
+    if (!orders?.length) throw new EmptyTxOrdersResultError()
     return orders
   }
 
@@ -57,7 +57,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
     .getTxOrders(txHash, context)
     .then(rejectIfEmpty)
     .catch((error) => {
-      if (!(error instanceof EmptyTxOrdersResult)) {
+      if (!(error instanceof EmptyTxOrdersResultError)) {
         console.error('[getTxOrders] Error getting PROD orders', networkId, txHash, error)
       }
 
@@ -68,7 +68,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
     .getTxOrders(txHash, { ...context, env: 'staging' })
     .then(rejectIfEmpty)
     .catch((error) => {
-      if (!(error instanceof EmptyTxOrdersResult)) {
+      if (!(error instanceof EmptyTxOrdersResultError)) {
         console.error('[getTxOrders] Error getting BARN orders', networkId, txHash, error)
       }
 
@@ -76,7 +76,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
     })
 
   return Promise.any([orderPromises, orderPromisesBarn]).catch((error) => {
-    if (error instanceof AggregateError && error.errors?.some((e) => e instanceof EmptyTxOrdersResult)) {
+    if (error instanceof AggregateError && error.errors?.some((e) => e instanceof EmptyTxOrdersResultError)) {
       return []
     }
 
