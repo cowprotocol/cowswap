@@ -15,21 +15,22 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
 
   const context = { chainId: networkId }
 
-  const [prodResult, stagingResult] = await Promise.allSettled([
-    orderBookSDK.getOrder(orderId, context).catch((error) => {
-      console.error('[getOrder] Error getting PROD order', orderId, networkId, error)
-      throw error
-    }),
-    orderBookSDK.getOrder(orderId, { ...context, env: 'staging' }).catch((error) => {
-      console.error('[getOrder] Error getting BARN order', orderId, networkId, error)
-      throw error
-    }),
-  ])
+  const orderPromise = orderBookSDK.getOrder(orderId, context).catch((error) => {
+    console.error('[getOrder] Error getting PROD order', orderId, networkId, error)
+    throw error
+  })
 
-  const prodOrder = prodResult.status === 'fulfilled' ? prodResult.value : null
-  const stagingOrder = stagingResult.status === 'fulfilled' ? stagingResult.value : null
+  const orderPromiseBarn = orderBookSDK.getOrder(orderId, { ...context, env: 'staging' }).catch((error) => {
+    console.error('[getOrder] Error getting BARN order', orderId, networkId, error)
+    throw error
+  })
 
-  return prodOrder || stagingOrder || null
+  // Orders only exist in one env, so we use Promise.race instead of Promise.all to avoid waiting for all the retries on
+  // the failing request:
+
+  const result = await Promise.race([orderPromise, orderPromiseBarn])
+
+  return result || null
 }
 
 /**
@@ -56,10 +57,12 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
       return []
     })
 
-  // sdk not merging array responses yet
-  const orders = await Promise.all([orderPromises, orderPromisesBarn])
+  // A given txHash should only exist in one env, so we use Promise.race instead of Promise.all to avoid waiting for
+  // all the retries on the failing request:
 
-  return [...orders[0], ...orders[1]]
+  const orders = await Promise.race([orderPromises, orderPromisesBarn])
+
+  return orders
 }
 
 /**
@@ -81,6 +84,7 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
       console.error('[getTrades] Error getting PROD trades', params, error)
       return []
     })
+
   const tradesPromiseBarn = orderBookSDK
     .getTrades({ owner, orderUid, offset, limit }, { chainId: networkId, env: 'staging' })
     .catch((error) => {
@@ -88,7 +92,8 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
       return []
     })
 
-  // sdk not merging array responses yet
+  // There might be orders in both PROD and BARN, so we need to merge the results of both request, as the SDK doesn't do
+  // it yet:
   const trades = await Promise.all([tradesPromise, tradesPromiseBarn])
 
   return [...trades[0], ...trades[1]]
