@@ -8,7 +8,8 @@ const backoffOpts = { numOfAttempts: 2 }
 
 /**
  * Gets a single order by id.
- * Tries prod and staging (barn); returns the first found order so that a failure in one env does not hide the other.
+ *
+ * Uses `Promise.any` to fetch from both prod and barn at the same time. The first fulfilled promise wins.
  */
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
@@ -24,16 +25,22 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
     throw error
   })
 
-  // Orders only exist in one env, so we use Promise.any instead of Promise.all to avoid waiting for all the retries on
-  // the failing request:
+  return Promise.any([orderPromise, orderPromiseBarn])
+}
 
-  const result = await Promise.any([orderPromise, orderPromiseBarn])
-
-  return result || null
+/** Thrown when an env returns [] so Promise.any waits for the other; not logged. */
+class EmptyTxOrdersResult extends Error {
+  override readonly name = 'EmptyTxOrdersResult'
 }
 
 /**
- * Gets a order list within Tx
+ * Gets orders for a tx from prod and staging (barn).
+ *
+ * Uses `Promise.any`, with some custom error handling, so:
+ * - The first non-empty array wins.
+ * - If one env returns `[]`, we still wait for the other.
+ * - If both envs return `[]`, we return `[]`.
+ * - If both fail, throws the corresponding `AggregateError`.
  */
 export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]> {
   const { networkId, txHash } = params
@@ -41,27 +48,40 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  const orderPromises = orderBookSDK.getTxOrders(txHash, context).catch((error) => {
-    console.error('[getTxOrders] Error getting PROD orders', networkId, txHash, error)
-    throw error
-  })
+  const rejectIfEmpty = (orders: RawOrder[]): RawOrder[] => {
+    if (!orders?.length) throw new EmptyTxOrdersResult()
+    return orders
+  }
 
-  const orderPromisesBarn = orderBookSDK
-    .getTxOrders(txHash, {
-      ...context,
-      env: 'staging',
-    })
+  const orderPromises = orderBookSDK
+    .getTxOrders(txHash, context)
+    .then(rejectIfEmpty)
     .catch((error) => {
-      console.error('[getTxOrders] Error getting BARN orders', networkId, txHash, error)
+      if (!(error instanceof EmptyTxOrdersResult)) {
+        console.error('[getTxOrders] Error getting PROD orders', networkId, txHash, error)
+      }
+
       throw error
     })
 
-  // A given txHash should only exist in one env, so we use Promise.any instead of Promise.all to avoid waiting for
-  // all the retries on the failing request:
+  const orderPromisesBarn = orderBookSDK
+    .getTxOrders(txHash, { ...context, env: 'staging' })
+    .then(rejectIfEmpty)
+    .catch((error) => {
+      if (!(error instanceof EmptyTxOrdersResult)) {
+        console.error('[getTxOrders] Error getting BARN orders', networkId, txHash, error)
+      }
 
-  const orders = await Promise.any([orderPromises, orderPromisesBarn])
+      throw error
+    })
 
-  return orders
+  return Promise.any([orderPromises, orderPromisesBarn]).catch((error) => {
+    if (error instanceof AggregateError && error.errors?.every((e) => e instanceof EmptyTxOrdersResult)) {
+      return []
+    }
+
+    throw error
+  })
 }
 
 /**
