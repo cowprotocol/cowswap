@@ -4,6 +4,8 @@ import { orderBookSDK } from 'cowSdk'
 
 import { GetAccountOrdersParams, RawOrder } from './types'
 
+const backoffOpts = { numOfAttempts: 2 }
+
 /**
  * Gets a list of orders of one user paginated
  *
@@ -12,6 +14,7 @@ import { GetAccountOrdersParams, RawOrder } from './types'
  *  - offset: int
  *  - limit: int
  */
+// eslint-disable-next-line complexity
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<GetAccountOrdersResponse> {
   const { networkId, owner, offset = 0, limit = 20 } = params
   const state = getState({ networkId, owner, limit })
@@ -21,22 +24,28 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   const cachedPageOrders = state.merged.get(currentPage)
 
   if (cachedPageOrders) {
+    if (networkId === SupportedChainId.INK) console.log('RETURNING CACHED PAGE ORDERS =', cachedPageOrders)
+
     return {
       orders: [...cachedPageOrders],
       hasNextPage: Boolean(state.merged.get(currentPage + 1)) || state.unmerged.length > 0,
     }
   }
 
+  if (networkId === SupportedChainId.INK) console.log('FETCHING NEW PAGE ORDERS =')
+
   const ordersPromise = state.prodHasNext
-    ? orderBookSDK.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId }).catch((error) => {
-        console.error('[getAccountOrders] Error getting PROD orders for account', owner, networkId, error)
-        return []
-      })
+    ? orderBookSDK
+        .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, backoffOpts })
+        .catch((error) => {
+          console.error('[getAccountOrders] Error getting PROD orders for account', owner, networkId, error)
+          return []
+        })
     : []
 
   const ordersPromiseBarn = state.barnHasNext
     ? orderBookSDK
-        .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging' })
+        .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging', backoffOpts })
         .catch((error) => {
           console.error('[getAccountOrders] Error getting BARN orders for account', owner, networkId, error)
           return []
@@ -46,11 +55,13 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   const [prodOrders, barnOrders] = await Promise.all([ordersPromise, ordersPromiseBarn])
 
   state.prodHasNext = prodOrders.length === limitPlusOne
+
   if (state.prodHasNext) {
     state.prodPage += 1
   }
 
   state.barnHasNext = barnOrders.length === limitPlusOne
+
   if (state.barnHasNext) {
     state.barnPage += 1
   }
