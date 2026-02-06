@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
-import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -118,17 +117,11 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
 
   // Update wallet info
   useEffect(() => {
-    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
   // Update wallet details
   useEffect(() => {
-    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
       ...walletDetails,
@@ -138,9 +131,6 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
 
   // Update Gnosis Safe info
   useEffect(() => {
-    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 

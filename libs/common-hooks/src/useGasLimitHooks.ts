@@ -1,4 +1,3 @@
-import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { calculateGasMargin } from '@cowprotocol/common-utils'
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -25,19 +24,13 @@ export function useWalletProvider(): Web3Provider | undefined {
 
 export const useHookGasLimitCalculator = (): IHookGasCalculator => {
   const config = useConfig()
-  const provider = useWalletProvider()
 
   return async (transactionData) => {
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-      const gasEstimation = await estimateGas(config, {
-        to: transactionData.to as Address,
-        data: transactionData.data as Hex,
-      })
-      return calculateGasMargin(BigNumber.from(gasEstimation)).toString()
-    }
-    if (!provider) throw new Error('Provider is not defined')
-    const gasEstimation = await provider.estimateGas(transactionData)
-    return calculateGasMargin(gasEstimation).toString()
+    const gasEstimation = await estimateGas(config, {
+      to: transactionData.to as Address,
+      data: transactionData.data as Hex,
+    })
+    return calculateGasMargin(BigNumber.from(gasEstimation)).toString()
   }
 }
 

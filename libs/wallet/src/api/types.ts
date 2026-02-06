@@ -4,24 +4,15 @@ import type { SafeInfoResponse } from '@safe-global/api-kit'
 import { injected, walletConnect, coinbaseWallet, safe } from '@wagmi/connectors'
 import { Address } from 'viem'
 
-export const ConnectorType = {
+export const ConnectionType = {
   COINBASE_WALLET: coinbaseWallet.type,
   GNOSIS_SAFE: safe.type,
   INJECTED: injected.type,
   WALLET_CONNECT_V2: walletConnect.type,
+  TREZOR: 'trezor', // TODO
 } as const
 
-export type ConnectorType = (typeof ConnectorType)[keyof typeof ConnectorType]
-
-export enum ConnectionType {
-  NETWORK = 'NETWORK',
-  INJECTED = 'INJECTED',
-  WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
-  COINBASE_WALLET = 'COINBASE_WALLET',
-  METAMASK = 'METAMASK',
-  GNOSIS_SAFE = 'GNOSIS_SAFE',
-  TREZOR = 'TREZOR',
-}
+export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType]
 
 export interface WalletInfo {
   chainId: SupportedChainId

@@ -5,7 +5,7 @@ import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import { Connector, useConnection } from 'wagmi'
 
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
-import { ConnectorType } from '../../api/types'
+import { ConnectionType } from '../../api/types'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -71,7 +71,7 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
     return METADATA_DISCONNECTED
   }
 
-  if (connector.type === ConnectorType.INJECTED) {
+  if (connector.type === ConnectionType.INJECTED) {
     if (standaloneMode === false) {
       return {
         walletName: 'CoW Swap widget',
@@ -87,11 +87,11 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
     }
   }
 
-  if (connector.type === ConnectorType.WALLET_CONNECT_V2) {
+  if (connector.type === ConnectionType.WALLET_CONNECT_V2) {
     return wcPeerMetadata
   }
 
-  if (connector.type === ConnectorType.GNOSIS_SAFE) {
+  if (connector.type === ConnectionType.GNOSIS_SAFE) {
     // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
     return METADATA_SAFE
   }

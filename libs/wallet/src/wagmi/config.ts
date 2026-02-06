@@ -1,7 +1,7 @@
-import { LAUNCH_DARKLY_VIEM_MIGRATION, RPC_URLS } from '@cowprotocol/common-const'
+import { RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { CreateAppKit } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { Chain, http } from 'viem'
 import {
@@ -62,11 +62,9 @@ export const wagmiAdapter = new WagmiAdapter({
   projectId,
 })
 
-export const appKitParams: CreateAppKit = {
+const appKit = createAppKit({
   adapters: [wagmiAdapter],
-  // TODO M-7 COW-572
-  // this will become false once the feature flag is removed
-  allowUnsupportedChain: !LAUNCH_DARKLY_VIEM_MIGRATION,
+  allowUnsupportedChain: false,
   defaultNetwork: networks[0],
   enableEIP6963: true,
   enableWalletGuide: false,
@@ -85,4 +83,7 @@ export const appKitParams: CreateAppKit = {
   projectId,
   termsConditionsUrl:
     'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
-}
+})
+appKit.updateFeatures({
+  connectorTypeOrder: ['recent', 'injected', 'featured', 'custom', 'external', 'recommended', 'walletConnect'],
+})

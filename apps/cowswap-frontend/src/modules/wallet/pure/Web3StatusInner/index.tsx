@@ -1,18 +1,16 @@
 import { ReactNode, useMemo } from 'react'
 
-import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween, Media } from '@cowprotocol/ui'
-import { ConnectionType, ConnectorType } from '@cowprotocol/wallet'
+import { ConnectionType } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
 import { AlertCircle } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import { useConnection } from 'wagmi'
 
 import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -32,7 +30,6 @@ export interface Web3StatusInnerProps {
 export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
   const { account, pendingCount, ensName, connectionType, connectWallet, showUnfillableOrdersAlert } = props
 
-  const { connector } = useConnection()
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(Media.upToExtraSmall(false))
   const isUpToTiny = useMediaQuery(Media.upToTiny(false))
@@ -66,11 +63,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
         ) : (
           <Text>{ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}</Text>
         )}
-        {!hasPendingTransactions && (
-          <StatusIcon
-            connectionType={LAUNCH_DARKLY_VIEM_MIGRATION ? (connector?.type as ConnectorType) : connectionType}
-          />
-        )}
+        {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
       </Web3StatusConnected>
     )
   }
