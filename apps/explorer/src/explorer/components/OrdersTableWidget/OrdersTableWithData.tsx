@@ -5,6 +5,7 @@ import { useSearchInAnotherNetwork, EmptyOrdersMessage } from './useSearchInAnot
 
 import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import OrdersTable from '../../../components/orders/OrdersUserDetailsTable'
+import useFirstRender from '../../../hooks/useFirstRender'
 
 export const OrdersTableWithData: React.FC = () => {
   const {
@@ -22,7 +23,9 @@ export const OrdersTableWithData: React.FC = () => {
     errorMsg: error,
   } = useSearchInAnotherNetwork(networkId, ownerAddress, orders)
 
-  return isOrdersLoading ? (
+  const isFirstRender = useFirstRender()
+
+  return isFirstRender || isOrdersLoading ? (
     <LoadingWrapper message="Loading orders" />
   ) : (
     <OrdersTable
