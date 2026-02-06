@@ -1,14 +1,20 @@
 import { ReactElement, ReactNode } from 'react'
 
-import { FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, InfoTooltip, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
 import { Content, Label } from 'modules/trade/pure/ConfirmDetailsItem/styled'
 
 import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { ReceiveAmountTitle } from '../ReceiveAmountTitle'
+
+const GreenText = styled.span`
+  color: var(${UI.COLOR_GREEN});
+`
 
 export type ReviewOrderAmountRowProps = {
   amount?: Nullish<CurrencyAmount<Currency>>
@@ -21,6 +27,7 @@ export type ReviewOrderAmountRowProps = {
   withTimelineDot?: boolean
   highlighted?: boolean
   isLast?: boolean
+  showFreeLabel?: boolean
 }
 
 export function ReviewOrderModalAmountRow({
@@ -34,17 +41,26 @@ export function ReviewOrderModalAmountRow({
   withTimelineDot = false,
   highlighted = false,
   isLast = false,
+  showFreeLabel = false,
 }: ReviewOrderAmountRowProps): ReactElement {
   const Amount = (
     <Content highlighted={highlighted}>
-      {children}
-      {!isAmountAccurate && '≈ '}
-      <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
-      {amountSuffix}
-      {fiatAmount && (
+      {showFreeLabel ? (
+        <GreenText>
+          <Trans>FREE</Trans>
+        </GreenText>
+      ) : (
         <>
-          &nbsp;
-          <FiatAmount amount={fiatAmount} withParentheses />
+          {children}
+          {!isAmountAccurate && '≈ '}
+          <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
+          {amountSuffix}
+          {fiatAmount && (
+            <>
+              &nbsp;
+              <FiatAmount amount={fiatAmount} withParentheses />
+            </>
+          )}
         </>
       )}
     </Content>
