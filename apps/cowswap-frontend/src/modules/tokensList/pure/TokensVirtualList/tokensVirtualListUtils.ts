@@ -1,12 +1,14 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getIsNativeToken, getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
 
 import { TokensVirtualRow } from './types'
 
 import { tokensListSorter } from '../../utils/tokensListSorter'
+import { getNoRouteTooltip } from '../constants'
 
 type BalancesMap = BalancesState['values'] | undefined
 
@@ -65,7 +67,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
   }
 
   if (recentTokens?.length) {
-    const noRouteTooltip = t`No route found for this token`
+    const noRouteTooltip = getNoRouteTooltip()
 
     composedRows.push({
       type: 'title',
@@ -90,7 +92,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
       const shouldDisable =
         areTokensFromBridge &&
         bridgeSupportedTokensMap !== null &&
-        !bridgeSupportedTokensMap[getTokenAddressKey(token.address)]
+        !bridgeSupportedTokensMap[getAddressKey(token.address)]
 
       composedRows.push({
         type: 'token',

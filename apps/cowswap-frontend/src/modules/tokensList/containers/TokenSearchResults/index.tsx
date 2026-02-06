@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
-import { doesTokenMatchSymbolOrAddress, getTokenAddressKey } from '@cowprotocol/common-utils'
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
@@ -32,9 +33,9 @@ export function TokenSearchResults(): ReactNode {
     const filteredBridgeTokens = allTokens.filter(filter)
 
     // Merge: bridge tokens first, then additional search results (will be marked disabled)
-    const bridgeAddresses = new Set(filteredBridgeTokens.map((t) => getTokenAddressKey(t.address)))
+    const bridgeAddresses = new Set(filteredBridgeTokens.map((t) => getAddressKey(t.address)))
     const additionalTokens = defaultSearchResults.activeListsResult.filter(
-      (t) => !bridgeAddresses.has(getTokenAddressKey(t.address)),
+      (t) => !bridgeAddresses.has(getAddressKey(t.address)),
     )
 
     return {
@@ -66,7 +67,7 @@ export function TokenSearchResults(): ReactNode {
         const isInBridgeMap =
           hasAddress &&
           bridgeSupportedTokensMap !== null &&
-          !!bridgeSupportedTokensMap[getTokenAddressKey(tokenToSelect.address)]
+          !!bridgeSupportedTokensMap[getAddressKey(tokenToSelect.address)]
         const isBridgeable = !areTokensFromBridge || isInBridgeMap
 
         if (isBridgeable) {

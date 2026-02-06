@@ -1285,11 +1285,9 @@ msgstr "contratos inteligentes (por ejemplo, seguro)"
 msgid "Quote refresh in"
 msgstr "Actualizar cotización en"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/helpers.ts
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
+#: apps/cowswap-frontend/src/modules/tokensList/pure/constants.ts
 msgid "No route found for this token"
-msgstr ""
+msgstr "No se encontró ruta para este token"
 
 #: apps/cowswap-frontend/src/modules/account/containers/OrdersPanel/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -1446,7 +1444,7 @@ msgstr "Error {verb} la orden"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
 msgid "No available tokens found to bridge"
-msgstr ""
+msgstr "No se encontraron tokens disponibles para puentear"
 
 #: libs/common-const/src/common.ts
 #~ msgid "CoW Swap | The smartest way to trade cryptocurrencies"

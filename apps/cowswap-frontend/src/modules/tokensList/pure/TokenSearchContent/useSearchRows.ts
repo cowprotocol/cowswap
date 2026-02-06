@@ -1,12 +1,14 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
 
 import { appendImportSection } from './helpers'
 import { TokenSearchRow, UseSearchRowsParams } from './types'
+
+import { getNoRouteTooltip } from '../constants'
 
 const SEARCH_RESULTS_LIMIT = 100
 
@@ -25,7 +27,7 @@ function isTokenDisabledForBridge(
     return true
   }
 
-  return !bridgeSupportedTokensMap[getTokenAddressKey(token.address)]
+  return !bridgeSupportedTokensMap[getAddressKey(token.address)]
 }
 
 export function useSearchRows({
@@ -45,7 +47,7 @@ export function useSearchRows({
       return entries
     }
 
-    const noRouteTooltip = t`No route found for this token`
+    const noRouteTooltip = getNoRouteTooltip()
 
     entries.push({ type: 'banner' })
 

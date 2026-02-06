@@ -1,8 +1,8 @@
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
-
-import { t } from '@lingui/core/macro'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { AppendImportSectionParams, TokenSearchRow } from './types'
+
+import { getNoRouteTooltip } from '../constants'
 
 export function appendImportSection(rows: TokenSearchRow[], params: AppendImportSectionParams): void {
   const {
@@ -25,7 +25,7 @@ export function appendImportSection(rows: TokenSearchRow[], params: AppendImport
     rows.push({ type: 'section-title', text: sectionTitle, tooltip })
   }
 
-  const noRouteTooltip = t`No route found for this token`
+  const noRouteTooltip = getNoRouteTooltip()
   const limitedTokens = tokens.slice(0, limit)
 
   limitedTokens.forEach((token, index) => {
@@ -34,7 +34,7 @@ export function appendImportSection(rows: TokenSearchRow[], params: AppendImport
       areTokensFromBridge &&
       !!bridgeSupportedTokensMap &&
       !!token.address &&
-      !bridgeSupportedTokensMap[getTokenAddressKey(token.address)]
+      !bridgeSupportedTokensMap[getAddressKey(token.address)]
 
     rows.push({
       type: 'import-token',
