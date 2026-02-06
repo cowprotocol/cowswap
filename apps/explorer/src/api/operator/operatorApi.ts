@@ -12,8 +12,7 @@ const backoffOpts = { numOfAttempts: 2 }
  */
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
-
-  const context = { chainId: networkId }
+  const context = { chainId: networkId, backoffOpts }
 
   const orderPromise = orderBookSDK.getOrder(orderId, context).catch((error) => {
     console.error('[getOrder] Error getting PROD order', orderId, networkId, error)
@@ -38,23 +37,23 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
  */
 export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]> {
   const { networkId, txHash } = params
+  const context = { chainId: networkId, backoffOpts }
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  const orderPromises = orderBookSDK.getTxOrders(txHash, { chainId: networkId, backoffOpts }).catch((error) => {
+  const orderPromises = orderBookSDK.getTxOrders(txHash, context).catch((error) => {
     console.error('[getTxOrders] Error getting PROD orders', networkId, txHash, error)
-    return []
+    throw error
   })
 
   const orderPromisesBarn = orderBookSDK
     .getTxOrders(txHash, {
-      chainId: networkId,
+      ...context,
       env: 'staging',
-      backoffOpts,
     })
     .catch((error) => {
       console.error('[getTxOrders] Error getting BARN orders', networkId, txHash, error)
-      return []
+      throw error
     })
 
   // A given txHash should only exist in one env, so we use Promise.race instead of Promise.all to avoid waiting for
@@ -76,17 +75,17 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  */
 export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const { networkId, owner, orderId: orderUid, offset, limit } = params
+  const context = { chainId: networkId, backoffOpts }
+
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid, offset, limit })
 
-  const tradesPromise = orderBookSDK
-    .getTrades({ owner, orderUid, offset, limit }, { chainId: networkId })
-    .catch((error) => {
-      console.error('[getTrades] Error getting PROD trades', params, error)
-      return []
-    })
+  const tradesPromise = orderBookSDK.getTrades({ owner, orderUid, offset, limit }, context).catch((error) => {
+    console.error('[getTrades] Error getting PROD trades', params, error)
+    return []
+  })
 
   const tradesPromiseBarn = orderBookSDK
-    .getTrades({ owner, orderUid, offset, limit }, { chainId: networkId, env: 'staging' })
+    .getTrades({ owner, orderUid, offset, limit }, { ...context, env: 'staging' })
     .catch((error) => {
       console.error('[getTrades] Error getting BARN trades', params, error)
       return []
