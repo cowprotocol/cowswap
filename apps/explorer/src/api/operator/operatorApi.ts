@@ -76,7 +76,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
     })
 
   return Promise.any([orderPromises, orderPromisesBarn]).catch((error) => {
-    if (error instanceof AggregateError && error.errors?.every((e) => e instanceof EmptyTxOrdersResult)) {
+    if (error instanceof AggregateError && error.errors?.some((e) => e instanceof EmptyTxOrdersResult)) {
       return []
     }
 
