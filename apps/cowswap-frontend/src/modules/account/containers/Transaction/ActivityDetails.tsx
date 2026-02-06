@@ -1,8 +1,8 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
-import { areAddressesEqual, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'

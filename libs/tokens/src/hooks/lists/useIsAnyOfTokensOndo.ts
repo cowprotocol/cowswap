@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { areAddressesEqual } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import { ONDO_TOKENS_LIST_SOURCE } from '../../const/tokensLists'
