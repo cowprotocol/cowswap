@@ -90,9 +90,13 @@ msgstr "Para anular esto, introduce la cantidad de tu deslizante deseada.<0/><1/
 #~ msgstr "Order cannot be filled due to insufficient allowance on the current account."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
-msgid "Did you know? {benefit}\n\n"
+msgid ""
+"Did you know? {benefit}\n"
+"\n"
 "Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
-msgstr "¿Sabías que? {benefit}\n\n"
+msgstr ""
+"¿Sabías que? {benefit}\n"
+"\n"
 "Comienza a intercambiar en swap.cow.fi #CoWSwap @CoWSwap 🐮"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
@@ -412,9 +416,13 @@ msgid "30 Minutes"
 msgstr "30 minutos"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
-msgid "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n\n"
+msgid ""
+"My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
+"\n"
 " Get yours at swap.cow.fi @CoWSwap"
-msgstr "Mi galleta de la fortuna de CoW  🐮💬: \"{openFortuneText}\" \n\n"
+msgstr ""
+"Mi galleta de la fortuna de CoW  🐮💬: \"{openFortuneText}\" \n"
+"\n"
 " Obtén el tuyo en swap.cow.fi @CoWSwap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
@@ -945,7 +953,7 @@ msgstr "1 día"
 msgid "Smart contract"
 msgstr "Contrato inteligente"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 msgid "Switch Network"
 msgstr "Cambiar red"
 
@@ -1277,6 +1285,10 @@ msgstr "contratos inteligentes (por ejemplo, seguro)"
 msgid "Quote refresh in"
 msgstr "Actualizar cotización en"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/constants.ts
+msgid "No route found for this token"
+msgstr "No se encontró ruta para este token"
+
 #: apps/cowswap-frontend/src/modules/account/containers/OrdersPanel/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -1430,6 +1442,10 @@ msgstr "de"
 msgid "Error {verb} the order"
 msgstr "Error {verb} la orden"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
+msgid "No available tokens found to bridge"
+msgstr "No se encontraron tokens disponibles para puentear"
+
 #: libs/common-const/src/common.ts
 #~ msgid "CoW Swap | The smartest way to trade cryptocurrencies"
 #~ msgstr "CoW Swap | The smartest way to trade cryptocurrencies"
@@ -1525,9 +1541,13 @@ msgstr "Ver tu {accountProxyLabelString} privado"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
-msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
+msgid ""
+"Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
+"\n"
 "Start swapping on swap.cow.fi"
-msgstr "¡Hola, acabo de {actionWord} un {surplus} extra en @CoWSwap! 🐮💸\n\n"
+msgstr ""
+"¡Hola, acabo de {actionWord} un {surplus} extra en @CoWSwap! 🐮💸\n"
+"\n"
 "Empieza a intercambiar en swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
@@ -2428,7 +2448,7 @@ msgstr "contenido del diálogo"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 #~ msgid "Cross chain swap"
-#~ msgstr "Cross chain swap"
+#~ msgstr "Swap entre cadenas"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
@@ -3406,9 +3426,11 @@ msgid "It is required to do a one-time approval of {wrappedSymbol} via an on-cha
 msgstr "Es necesario hacer una aprobación única de {wrappedSymbol} mediante una transacción de aprobación ERC20 en cadena."
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/setupTradeState/useResetStateWithSymbolDuplication.ts
-msgid "There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
+msgid ""
+"There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
 "Please select the token you need from the UI or use the address of the token instead of the symbol"
-msgstr "Hay más de un token en la lista de tokens con el símbolo: {doubledSymbol}.\n"
+msgstr ""
+"Hay más de un token en la lista de tokens con el símbolo: {doubledSymbol}.\n"
 "Por favor selecciona el token que necesitas desde la interfaz o usa la dirección del token en lugar del símbolo"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
@@ -4503,14 +4525,6 @@ msgstr "Habilitar aprobación parcial"
 msgid "Version"
 msgstr "Versión"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
-msgid "Recent"
-msgstr "Recientes"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
-msgid "Clear"
-msgstr "Borrar"
-
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
@@ -5001,7 +5015,7 @@ msgstr "Añadido <0/>"
 msgid "Transaction Failed"
 msgstr "Transacción fallida"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 msgid "Select a network"
 msgstr "Seleccione una red"
 
@@ -6573,6 +6587,7 @@ msgid "Refund started"
 msgstr "Reembolso iniciado"
 
 #: apps/cowswap-frontend/src/common/pure/ToggleArrow/ToggleArrow.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Close"
@@ -6686,85 +6701,3 @@ msgstr "Aprende más"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
-
-# Receive amount labels
-msgid "Receive (incl. fees)"
-msgstr "Recibir (incl. comisiones)"
-
-msgid "From (incl. fees)"
-msgstr "De (incl. comisiones)"
-
-# Notifications / jobs aria labels
-msgid "Trade alert settings"
-msgstr "Configuración de alertas de trading"
-
-msgid "View jobs (opens in a new tab)"
-msgstr "Ver trabajos (se abre en una pestaña nueva)"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "Search network"
-msgstr "Buscar red"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Select token"
-msgstr "Seleccionar token"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "From network"
-msgstr "Red de origen"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "To network"
-msgstr "Red de destino"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Select network"
-msgstr "Seleccionar red"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
-msgid "Cross chain swap"
-msgstr "Swap entre cadenas"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Swap from"
-msgstr "Swap desde"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Swap to"
-msgstr "Swap a"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Sell token"
-msgstr "Vender token"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Buy token"
-msgstr "Comprar token"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
-msgid "Manage token lists"
-msgstr "Gestionar listas de tokens"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks available for this trade."
-msgstr "No hay redes disponibles para este intercambio."
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks match {chainQuery}."
-msgstr "No hay redes que coincidan con {chainQuery}."
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "View all ({totalChains})"
-msgstr "Ver todas ({totalChains})"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "View all {totalChains} networks"
-msgstr "Ver todas las {totalChains} redes"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "Selected network {activeChainLabel}"
-msgstr "Red seleccionada {activeChainLabel}"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-msgid "This destination is not supported for this source chain"
-msgstr "Este destino no es compatible con esta red de origen"

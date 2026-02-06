@@ -30,6 +30,13 @@ export function TokensVirtualRowRenderer({ row, selectTokenContext }: TokensVirt
         </modalStyled.ListTitle>
       )
     default:
-      return <TokenListItemContainer token={row.token} context={selectTokenContext} />
+      return (
+        <TokenListItemContainer
+          token={row.token}
+          context={selectTokenContext}
+          disabled={row.disabled}
+          disabledReason={row.disabledReason}
+        />
+      )
   }
 }

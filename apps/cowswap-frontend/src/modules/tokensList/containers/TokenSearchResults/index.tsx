@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
@@ -14,25 +15,32 @@ import { TokenSearchContent } from '../../pure/TokenSearchContent'
 export function TokenSearchResults(): ReactNode {
   const { searchInput } = useTokenListViewState()
 
-  const { selectTokenContext, areTokensFromBridge, allTokens } = useTokenListContext()
+  const { selectTokenContext, areTokensFromBridge, allTokens, bridgeSupportedTokensMap } = useTokenListContext()
 
   const { onTokenListItemClick } = selectTokenContext
 
   const { onSelectToken } = useSelectTokenWidgetState()
 
-  // Do not make search when tokens are from bridge
-  const defaultSearchResults = useSearchToken(areTokensFromBridge ? null : searchInput)
+  // Search all tokens (used in both modes)
+  const defaultSearchResults = useSearchToken(searchInput)
 
-  // For bridge output tokens just filter them instead of making search
+  // For bridge mode, merge bridge-supported tokens with search results (non-bridgeable shown as disabled)
   const searchResults: TokenSearchResponse = useMemo(() => {
     if (!areTokensFromBridge) return defaultSearchResults
 
+    // Filter bridge-supported tokens (target chain) by search input
     const filter = getTokenSearchFilter(searchInput)
-    const filteredTokens = allTokens.filter(filter)
+    const filteredBridgeTokens = allTokens.filter(filter)
+
+    // Merge: bridge tokens first, then additional search results (will be marked disabled)
+    const bridgeAddresses = new Set(filteredBridgeTokens.map((t) => getAddressKey(t.address)))
+    const additionalTokens = defaultSearchResults.activeListsResult.filter(
+      (t) => !bridgeAddresses.has(getAddressKey(t.address)),
+    )
 
     return {
       ...defaultSearchResults,
-      activeListsResult: filteredTokens,
+      activeListsResult: [...filteredBridgeTokens, ...additionalTokens],
     }
   }, [searchInput, areTokensFromBridge, allTokens, defaultSearchResults])
 
@@ -53,12 +61,30 @@ export function TokenSearchResults(): ReactNode {
     if (activeListsResult.length === 1 || matchedTokens.length === 1) {
       const tokenToSelect = matchedTokens[0] || activeListsResult[0]
 
+      // In bridge mode, don't select non-bridgeable tokens (also block while map is loading)
       if (tokenToSelect) {
-        onTokenListItemClick?.(tokenToSelect)
-        onSelectToken?.(tokenToSelect)
+        const hasAddress = !!tokenToSelect.address
+        const isInBridgeMap =
+          hasAddress &&
+          bridgeSupportedTokensMap !== null &&
+          !!bridgeSupportedTokensMap[getAddressKey(tokenToSelect.address)]
+        const isBridgeable = !areTokensFromBridge || isInBridgeMap
+
+        if (isBridgeable) {
+          onTokenListItemClick?.(tokenToSelect)
+          onSelectToken?.(tokenToSelect)
+        }
       }
     }
-  }, [searchInput, activeListsResult, matchedTokens, onSelectToken, onTokenListItemClick])
+  }, [
+    searchInput,
+    activeListsResult,
+    matchedTokens,
+    onSelectToken,
+    onTokenListItemClick,
+    areTokensFromBridge,
+    bridgeSupportedTokensMap,
+  ])
 
   useEffect(() => {
     updateSelectTokenWidget({
@@ -73,6 +99,8 @@ export function TokenSearchResults(): ReactNode {
         searchInput={searchInput}
         selectTokenContext={selectTokenContext}
         searchResults={searchResults}
+        areTokensFromBridge={areTokensFromBridge}
+        bridgeSupportedTokensMap={bridgeSupportedTokensMap}
       />
     </CommonListContainer>
   )

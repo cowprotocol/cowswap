@@ -27,7 +27,13 @@ export function TokensVirtualList({
   recentTokens,
   onClearRecentTokens,
 }: TokensVirtualListProps): ReactNode {
-  const { selectTokenContext, hideFavoriteTokensTooltip, selectedTargetChainId } = useTokenListContext()
+  const {
+    selectTokenContext,
+    hideFavoriteTokensTooltip,
+    selectedTargetChainId,
+    bridgeSupportedTokensMap,
+    areTokensFromBridge,
+  } = useTokenListContext()
   const { values: balances } = selectTokenContext.balancesState
   const { isYieldEnabled } = useFeatureFlags()
 
@@ -41,8 +47,18 @@ export function TokensVirtualList({
         recentTokens,
         hideFavoriteTokensTooltip,
         onClearRecentTokens,
+        bridgeSupportedTokensMap,
+        areTokensFromBridge,
       }),
-    [favoriteTokens, hideFavoriteTokensTooltip, onClearRecentTokens, recentTokens, sortedTokens],
+    [
+      favoriteTokens,
+      hideFavoriteTokensTooltip,
+      onClearRecentTokens,
+      recentTokens,
+      sortedTokens,
+      bridgeSupportedTokensMap,
+      areTokensFromBridge,
+    ],
   )
 
   const getItemView = useCallback(
