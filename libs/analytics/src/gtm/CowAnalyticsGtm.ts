@@ -1,7 +1,8 @@
-import { debounce, areAddressesEqual } from '@cowprotocol/common-utils'
+import { debounce } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
-import { GtmEvent, Category } from '../types'
+import { Category, GtmEvent } from '../types'
 
 interface DataLayerEvent extends Record<string, unknown> {
   event: string
