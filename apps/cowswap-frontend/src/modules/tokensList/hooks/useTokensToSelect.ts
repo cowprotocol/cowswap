@@ -9,6 +9,7 @@ import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
+import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 const EMPTY_TOKENS: TokenWithLogo[] = []
@@ -26,15 +27,17 @@ export function useTokensToSelect(): TokensToSelectContext {
   const { chainId } = useWalletInfo()
   const favoriteTokens = useFavoriteTokens()
   const { selectedTargetChainId = chainId, field } = useSelectTokenWidgetState()
+  const chainsToSelect = useChainsToSelect()
   const allTokens = useAllActiveTokens().tokens
+  const targetChainId = chainsToSelect?.defaultChainId ?? selectedTargetChainId
 
-  const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
+  const areTokensFromBridge = field === Field.OUTPUT && targetChainId !== chainId
 
   const params: BuyTokensParams | undefined = useMemo(() => {
     if (!areTokensFromBridge) return undefined
 
-    return { buyChainId: selectedTargetChainId, sellChainId: chainId }
-  }, [areTokensFromBridge, chainId, selectedTargetChainId])
+    return { buyChainId: targetChainId, sellChainId: chainId }
+  }, [areTokensFromBridge, chainId, targetChainId])
 
   const { data: result, isLoading } = useBridgeSupportedTokens(params)
 
