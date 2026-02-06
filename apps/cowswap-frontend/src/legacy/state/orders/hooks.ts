@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { areAddressesEqual, isTruthy } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isTruthy } from '@cowprotocol/common-utils'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { useDispatch, useSelector } from 'react-redux'

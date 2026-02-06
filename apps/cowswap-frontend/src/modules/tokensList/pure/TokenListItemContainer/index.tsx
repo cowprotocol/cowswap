@@ -1,7 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { SelectTokenContext } from '../../types'
@@ -24,7 +24,7 @@ export function TokenListItemContainer({ token, context }: TokenListItemContaine
 
   const { onSelectToken, selectedToken } = useSelectTokenWidgetState()
 
-  const addressKey = getTokenAddressKey(token.address)
+  const addressKey = getAddressKey(token.address)
   const handleSelectToken = useCallback(
     (tokenToSelect: TokenWithLogo) => {
       onTokenListItemClick?.(tokenToSelect)

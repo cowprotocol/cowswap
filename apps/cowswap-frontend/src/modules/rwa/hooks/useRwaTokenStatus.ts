@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { areTokensEqual } from '@cowprotocol/common-utils'
+import { areTokensEqual } from '@cowprotocol/cow-sdk'
 import { getCountryAsKey, RestrictedTokenInfo, useAnyRestrictedToken } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
