@@ -11,16 +11,16 @@ export const CopyToClipboard = ({ text }: { text: string }) => {
   }
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null
+    let timer = 0
 
     if (copied) {
-      timer = setTimeout(() => {
+      timer = window.setTimeout(() => {
         setCopied(false)
       }, 3000)
     }
 
     return () => {
-      timer && clearTimeout(timer)
+      window.clearTimeout(timer)
     }
   }, [copied])
 

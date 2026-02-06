@@ -17,7 +17,7 @@ import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/s
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
-import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
+import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'

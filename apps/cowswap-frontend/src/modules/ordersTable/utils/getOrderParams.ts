@@ -8,7 +8,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { PendingOrdersPermitValidityState } from '../state/pendingOrdersPermitValidityState'
+import { PendingOrdersPermitValidityState } from '../state/permit/pendingOrdersPermitValidity.atom'
 
 export interface OrderParams {
   chainId: SupportedChainId | undefined
