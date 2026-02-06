@@ -113,6 +113,22 @@ describe('buildVirtualRows', () => {
     }
   })
 
+  it('should disable recent tokens when bridge map is empty object (loaded but no routes)', () => {
+    const result = buildVirtualRows({
+      ...defaultParams,
+      recentTokens: [mockToken],
+      bridgeSupportedTokensMap: {},
+      areTokensFromBridge: true,
+    })
+
+    const tokenRow = result.find((r) => r.type === 'token')
+    expect(tokenRow?.type).toBe('token')
+    if (tokenRow?.type === 'token') {
+      expect(tokenRow.disabled).toBe(true)
+      expect(tokenRow.disabledReason).toBeDefined()
+    }
+  })
+
   it('should include Recent title section when there are recent tokens', () => {
     const result = buildVirtualRows({
       ...defaultParams,

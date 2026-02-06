@@ -817,6 +817,29 @@ describe('useSearchRows', () => {
       expect(tokenRow.disabledReason).toBeUndefined()
     })
 
+    it('should disable all tokens when bridge map is empty object (loaded but no routes)', () => {
+      const token = createToken('TOKEN', 1, 'Test Token')
+
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [token],
+          activeList: [],
+          areTokensFromBridge: true,
+          bridgeSupportedTokensMap: {},
+        }),
+      )
+
+      const tokenRow = result.current.find((row) => row.type === 'token') as {
+        type: 'token'
+        disabled?: boolean
+        disabledReason?: string
+      }
+
+      expect(tokenRow.disabled).toBe(true)
+      expect(tokenRow.disabledReason).toBeDefined()
+    })
+
     it('should handle mixed bridgeable and non-bridgeable tokens', () => {
       const nonBridgeableToken = createToken('NON_BRIDGE', 1, 'Non-Bridgeable Token')
       const bridgeableToken = createToken('BRIDGE', 2, 'Bridgeable Token')

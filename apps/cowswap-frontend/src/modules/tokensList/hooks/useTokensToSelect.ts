@@ -41,7 +41,7 @@ export function useTokensToSelect(): TokensToSelectContext {
   const bridgeSupportedTokensMap = useMemo(() => {
     const tokens = result?.tokens
 
-    if (!tokens || !tokens.length) return null
+    if (!tokens) return null // still loading
 
     return tokens.reduce<Record<string, boolean>>((acc, val) => {
       acc[val.address.toLowerCase()] = true
