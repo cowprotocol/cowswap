@@ -2,9 +2,8 @@ import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { orderBookSDK } from 'cowSdk'
 
+import { backoffOpts } from './operator.constants'
 import { GetAccountOrdersParams, RawOrder } from './types'
-
-const backoffOpts = { numOfAttempts: 2 }
 
 /**
  * Gets a list of orders of one user paginated

@@ -1,10 +1,9 @@
 import { orderBookSDK } from 'cowSdk'
 
+import { backoffOpts } from './operator.constants'
 import { GetOrderParams, GetTxOrdersParams, RawOrder, RawTrade, GetTradesParams } from './types'
 
 export { getAccountOrders } from './accountOrderUtils'
-
-const backoffOpts = { numOfAttempts: 2 }
 
 /**
  * Gets a single order by id.
