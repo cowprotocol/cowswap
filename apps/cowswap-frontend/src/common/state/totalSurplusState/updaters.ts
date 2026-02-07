@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -38,11 +39,7 @@ export function TotalSurplusUpdater(): null {
     // Don't load if required params are missing: https://swr.vercel.app/docs/conditional-fetching
     chainId && account ? ['getSurplusData', chainId, account] : null,
     fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-    },
+    { ...SWR_NO_REFRESH_OPTIONS, revalidateIfStale: false },
   )
 
   useEffect(() => {
