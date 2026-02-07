@@ -30,7 +30,7 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cow-sdk": "7.3.4",
+    "@cowprotocol/cow-sdk": "7.3.5",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui-utils": "workspace:*",
     "@lingui/core": "^5.4.1",

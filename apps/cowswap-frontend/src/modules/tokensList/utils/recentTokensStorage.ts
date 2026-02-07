@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 
 export const RECENT_TOKENS_LIMIT = 4
 // Storage schema: { [chainId: number]: StoredRecentToken[] } serialized under this key.
