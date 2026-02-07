@@ -16,7 +16,7 @@ import styled from 'styled-components/macro'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { useTotalSurplus } from 'common/state/totalSurplusState'
+import { TotalSurplusUpdater, useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { InfoCard } from './styled'
@@ -183,6 +183,7 @@ export function SurplusCard() {
 
   return (
     <Wrapper>
+      <TotalSurplusUpdater />
       <InfoCard>
         <div>
           <span>
