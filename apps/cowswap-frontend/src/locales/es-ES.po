@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-02-02 18:06\n"
+"PO-Revision-Date: 2026-02-04 11:43\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -4503,14 +4503,6 @@ msgstr "Habilitar aprobación parcial"
 msgid "Version"
 msgstr "Versión"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
-msgid "Recent"
-msgstr "Recientes"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
-msgid "Clear"
-msgstr "Borrar"
-
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
@@ -5565,7 +5557,7 @@ msgstr "parte"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Cross-chain swaps are here"
-msgstr "Los swaps entre cadenas están aquí"
+msgstr "Los swaps de cadena media están aquí"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
 #~ msgid "Approval amount:"
@@ -6687,84 +6679,3 @@ msgstr "Aprende más"
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
 
-# Receive amount labels
-msgid "Receive (incl. fees)"
-msgstr "Recibir (incl. comisiones)"
-
-msgid "From (incl. fees)"
-msgstr "De (incl. comisiones)"
-
-# Notifications / jobs aria labels
-msgid "Trade alert settings"
-msgstr "Configuración de alertas de trading"
-
-msgid "View jobs (opens in a new tab)"
-msgstr "Ver trabajos (se abre en una pestaña nueva)"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "Search network"
-msgstr "Buscar red"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Select token"
-msgstr "Seleccionar token"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "From network"
-msgstr "Red de origen"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "To network"
-msgstr "Red de destino"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Select network"
-msgstr "Seleccionar red"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
-msgid "Cross chain swap"
-msgstr "Swap entre cadenas"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Swap from"
-msgstr "Swap desde"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Swap to"
-msgstr "Swap a"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Sell token"
-msgstr "Vender token"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Buy token"
-msgstr "Comprar token"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
-msgid "Manage token lists"
-msgstr "Gestionar listas de tokens"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks available for this trade."
-msgstr "No hay redes disponibles para este intercambio."
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks match {chainQuery}."
-msgstr "No hay redes que coincidan con {chainQuery}."
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "View all ({totalChains})"
-msgstr "Ver todas ({totalChains})"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "View all {totalChains} networks"
-msgstr "Ver todas las {totalChains} redes"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "Selected network {activeChainLabel}"
-msgstr "Red seleccionada {activeChainLabel}"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-msgid "This destination is not supported for this source chain"
-msgstr "Este destino no es compatible con esta red de origen"

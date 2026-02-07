@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-02-02 18:06\n"
+"PO-Revision-Date: 2026-02-03 15:54\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -474,7 +474,7 @@ msgstr "Сумма продажи на часть вашего TWAP ордера
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No filled orders found"
-msgstr ""
+msgstr "Выполненные ордеры не найдены"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Surplus"
@@ -781,7 +781,7 @@ msgstr "Адрес получателя заказа отличается от �
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No signing orders"
-msgstr ""
+msgstr "Нет ордеров в статусе подписания"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Import intermediate token"
@@ -1239,7 +1239,7 @@ msgstr "Нет хуков, соответствующих вашему запр�
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "Try adjusting your search term or filters"
-msgstr ""
+msgstr "Попробуйте изменить условие поиска или значение фильтра"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/styled.tsx
 msgid "New to decentralised applications?"
@@ -1497,7 +1497,7 @@ msgstr "Этот ордер будет исполнен либо полност�
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/index.tsx
 msgid "Cancelled orders"
-msgstr ""
+msgstr "Отмененные ордера"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "On-chain cancellations require a regular on-chain transaction and cost gas."
@@ -1753,7 +1753,7 @@ msgstr "Тип ордера"
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/index.tsx
 msgid "Expired orders"
-msgstr ""
+msgstr "Истекшие ордера"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HooksStoreWidget/index.tsx
 msgid "Learn more."
@@ -1847,7 +1847,7 @@ msgstr "Включить уведомления об ордерах"
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/index.tsx
 msgid "Filled orders"
-msgstr ""
+msgstr "Выполненные ордера"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
@@ -2278,7 +2278,7 @@ msgstr "Торговля"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No open orders found in your last {limit} orders"
-msgstr ""
+msgstr "Нет открытых ордеров в списке  {limit} последних"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Context is not full to cancel TWAP order"
@@ -3113,7 +3113,7 @@ msgstr "Дата создания"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "Try adjusting your search term"
-msgstr ""
+msgstr "Попробуйте изменить условие поиска"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Partially Filled"
@@ -3294,7 +3294,7 @@ msgstr "Выберите токен"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
 msgid "Found 1 open order in the {limit} most recent ones."
-msgstr ""
+msgstr "Найден 1 открытый ордер в списке {limit} последних"
 
 #: apps/cowswap-frontend/src/legacy/components/swap/UnsupportedCurrencyFooter/index.tsx
 msgid "Read more about unsupported tokens"
@@ -3518,7 +3518,7 @@ msgstr "Кошелек Coinbase"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "Only the {limit} most recent orders were searched."
-msgstr ""
+msgstr "Поиск произведен в списке {limit} последних созданных ордеров"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
@@ -3721,7 +3721,7 @@ msgstr "Выберите ввод и вывод"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersButton.tsx
 msgid "Search older orders"
-msgstr ""
+msgstr "Искать дальше"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price."
@@ -3876,7 +3876,7 @@ msgstr "Нет доступных маркеров пула"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "Try adjusting your filters"
-msgstr ""
+msgstr "Попробуйте изменить значение фильтра"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Still searching"
@@ -3916,7 +3916,7 @@ msgstr "Мост не удался на"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No cancelled orders found"
-msgstr ""
+msgstr "Отмененные ордеры не найдены"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 msgid "The {operationLabel} is submitted."
@@ -4248,7 +4248,7 @@ msgstr "CoW Swap динамически регулирует толерантн�
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "Press the button below to search older orders, or create a new one!"
-msgstr ""
+msgstr "Нажмите на кнопку ниже для поиска предыдущих ордеров, или создайте новый!"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/index.tsx
 msgid "CoW Swap has dynamically selected this slippage amount to account for current gas prices and trade size. Changes may result in slower execution."
@@ -4395,7 +4395,7 @@ msgstr "Контракт не присутствует или не подклю�
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
 msgid "That's all your open orders."
-msgstr ""
+msgstr "Это все отрытые ордера на данный момент."
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.cosmos.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
@@ -4503,14 +4503,6 @@ msgstr "Включить частичные утверждения"
 msgid "Version"
 msgstr "Версии"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
-msgid "Recent"
-msgstr "Недавние"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
-msgid "Clear"
-msgstr "Очистить"
-
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
@@ -4577,7 +4569,7 @@ msgstr "Выполните следующие шаги:"
 
 #: apps/cowswap-frontend/src/common/pure/UnsupportedNetworksText/index.tsx
 msgid "Please, connect your wallet to one of our supported networks."
-msgstr ""
+msgstr "Пожалуйста, подключите кошелек к одной из поддерживаемых сетей."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
@@ -4623,7 +4615,7 @@ msgstr "Подробнее о неподдерживаемых кошелька�
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No open orders found in the {limit} most recent one."
-msgstr ""
+msgstr "Открытые ордера не найдены из списка  {limit} последних."
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useGetOnChainCancellation.ts
 msgid "Chain Id from contracts should match (ethFlow={ethFlowChainId}, settlement={settlementChainId})"
@@ -4833,7 +4825,7 @@ msgstr "Неожиданный ответ от BFF: {stringifiedData}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "You don't have any open orders at the moment."
-msgstr ""
+msgstr "На данный момент открытых ордеров нет."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapStatusAndToggle/index.tsx
 msgid "parts"
@@ -4865,7 +4857,7 @@ msgstr "Бесплатное размещение и отмена заказа"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No expired orders found"
-msgstr ""
+msgstr "Истекшие ордеры не найдены"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidget/TradeWidgetForm.tsx
 msgid "You cannot edit this field when selling"
@@ -4925,7 +4917,7 @@ msgstr "Ошибка загрузки цены. В настоящее время
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent/NoOrdersContent.utils.tsx
 msgid "No open orders found"
-msgstr ""
+msgstr "Открытые ордеры не найдены"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Approve <0/> and {contextDefaultText}"
@@ -5373,7 +5365,7 @@ msgstr "Правила и Условия"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
 msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a <1>protocol fee</1> will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
-msgstr ""
+msgstr "Начиная с  {PROTOCOL_FEE_START_DATETIME_UTC},  в соответствии с <0>CIP-74</0>,  <1>комиссия протокола </1> будет применена ко всем исполненным ордерам, включая  лимитные и TWAP ордеры, созданные до указанной даты."
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Hide today's fortune cookie"
@@ -5565,7 +5557,7 @@ msgstr "часть"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Cross-chain swaps are here"
-msgstr "Межсетевые обмены здесь"
+msgstr "Перекрестные цепочки здесь"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
 #~ msgid "Approval amount:"
@@ -6604,7 +6596,7 @@ msgstr "Ой! Рыночная цена изменилась за пределы
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
 msgid "Found {totalOpenOrders} open orders in the {limit} most recent ones."
-msgstr ""
+msgstr "Найдено  {totalOpenOrders} открытый ордеров в списке {limit} последних."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Entered amount is invalid"
@@ -6687,84 +6679,3 @@ msgstr "Узнать больше"
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
 
-# Receive amount labels
-msgid "Receive (incl. fees)"
-msgstr "К получению (с комиссиями)"
-
-msgid "From (incl. fees)"
-msgstr "Отправить (с комиссиями)"
-
-# Notifications / jobs aria labels
-msgid "Trade alert settings"
-msgstr "Настройки уведомлений о сделках"
-
-msgid "View jobs (opens in a new tab)"
-msgstr "Просмотр вакансий (откроется в новой вкладке)"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "Search network"
-msgstr "Поиск сети"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Select token"
-msgstr "Выбрать токен"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "From network"
-msgstr "Исходная сеть"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "To network"
-msgstr "Целевая сеть"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Select network"
-msgstr "Выбрать сеть"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
-msgid "Cross chain swap"
-msgstr "Свап между сетями"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Swap from"
-msgstr "Свап из сети"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Swap to"
-msgstr "Свап в сеть"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Sell token"
-msgstr "Продать токен"
-
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
-msgid "Buy token"
-msgstr "Купить токен"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
-msgid "Manage token lists"
-msgstr "Управление списками токенов"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks available for this trade."
-msgstr "Нет доступных сетей для этой сделки."
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks match {chainQuery}."
-msgstr "Нет сетей, соответствующих {chainQuery}."
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "View all ({totalChains})"
-msgstr "Показать все ({totalChains})"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "View all {totalChains} networks"
-msgstr "Показать все сети ({totalChains})"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
-msgid "Selected network {activeChainLabel}"
-msgstr "Выбранная сеть {activeChainLabel}"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-msgid "This destination is not supported for this source chain"
-msgstr "Сеть назначения не доступна для выбранной исходной сети"
