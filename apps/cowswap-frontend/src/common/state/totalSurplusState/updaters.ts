@@ -38,6 +38,11 @@ export function TotalSurplusUpdater(): null {
     // Don't load if required params are missing: https://swr.vercel.app/docs/conditional-fetching
     chainId && account ? ['getSurplusData', chainId, account] : null,
     fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    },
   )
 
   useEffect(() => {
