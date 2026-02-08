@@ -2,7 +2,7 @@ import { TTLCache } from '@cowprotocol/cow-sdk'
 
 import { querySerializer } from './querySerializer'
 
-import { DEFAULT_CMS_REQUEST_TTL, ONDO_RESTRICTED_COUNTRIES, ONDO_TOKEN_LIST_URL } from '../consts'
+import { DEFAULT_CMS_REQUEST_TTL, ONDO_FALLBACK_TOKEN_LIST } from '../consts'
 import { RestrictedTokenList, RestrictedTokenLists } from '../types'
 import { getCmsClient } from '../utils'
 
@@ -68,12 +68,6 @@ async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null>
     })
     .catch((error: Error) => {
       console.error('Failed to fetch restricted token lists', error)
-      return [
-        {
-          name: 'Ondo Tokenized Stocks List',
-          tokenListUrl: ONDO_TOKEN_LIST_URL,
-          restrictedCountries: [...ONDO_RESTRICTED_COUNTRIES],
-        },
-      ]
+      return [ONDO_FALLBACK_TOKEN_LIST]
     })
 }

@@ -1,5 +1,7 @@
 import ms from 'ms.macro'
 
+import type { RestrictedTokenList } from './types'
+
 export const DEFAULT_CMS_REQUEST_TTL = ms`1h`
 
 export const ONDO_TOKEN_LIST_URL =
@@ -57,3 +59,9 @@ export const ONDO_RESTRICTED_COUNTRIES = [
   'LI',
   'NO',
 ] as const
+
+export const ONDO_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
+  name: 'Ondo Tokenized Stocks List',
+  tokenListUrl: ONDO_TOKEN_LIST_URL,
+  restrictedCountries: [...ONDO_RESTRICTED_COUNTRIES],
+}
