@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.2...widget-react-v1.0.3) (2026-02-09)
+
+
+### 🐛 Bug Fixes
+
+* clean up widget-react lib code ([#6982](https://github.com/cowprotocol/cowswap/issues/6982)) ([2283aba](https://github.com/cowprotocol/cowswap/commit/2283aba8ea22ba219d7ddd8059478a524e50915e))
+
 ## [1.0.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.1...widget-react-v1.0.2) (2026-02-05)
 
 
