@@ -4,7 +4,7 @@ import type { TypedDataField } from '@ethersproject/abstract-signer'
 import { i18n } from '@lingui/core'
 
 import { AFFILIATE_REWARDS_CURRENCY, AFFILIATE_SUPPORTED_CHAIN_IDS } from '../config/constants'
-import { TraderReferralCodeVerificationStatus } from '../model/partner-trader-types'
+import { TraderReferralCodeVerificationStatus } from '../state/affiliate-program-types'
 
 export const AFFILIATE_TYPED_DATA_DOMAIN = {
   name: 'CoW Swap Affiliate',

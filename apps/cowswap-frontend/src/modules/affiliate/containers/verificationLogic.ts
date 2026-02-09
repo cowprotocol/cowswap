@@ -6,19 +6,19 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
 
-import { VERIFICATION_RETRY_DELAY_MS } from '../../config/constants'
+import { VERIFICATION_RETRY_DELAY_MS } from '../config/constants'
 import {
   isReferralCodeLengthValid,
   sanitizeReferralCode,
   type PartnerProgramParams,
-} from '../../lib/affiliate-program-utils'
+} from '../lib/affiliate-program-utils'
 import {
   TraderReferralCodeResponse,
   TraderReferralCodeContextValue,
   TraderReferralCodeVerificationResponse,
   TraderReferralCodeVerificationStatus,
   TraderWalletReferralCodeState,
-} from '../partner-trader-types'
+} from '../state/affiliate-program-types'
 
 export interface PerformVerificationParams {
   rawCode: string

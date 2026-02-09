@@ -36,7 +36,10 @@ import {
   isReferralCodeLengthValid,
   sanitizeReferralCode,
 } from 'modules/affiliate/lib/affiliate-program-utils'
-import { PartnerCodeResponse, PartnerStatsResponse } from 'modules/affiliate/model/partner-trader-types'
+import {
+  ReferralCodeInputRow,
+  type TrailingIconKind,
+} from 'modules/affiliate/pure/ReferralCodeInput/ReferralCodeInputRow'
 import {
   BottomMetaRow,
   CardTitle,
@@ -81,9 +84,9 @@ import {
   TitleWithTooltip,
   StatusText,
   LinkedMetaList,
-} from 'modules/affiliate/ui/shared'
-import { TraderReferralCodeHowItWorksLink } from 'modules/affiliate/ui/TraderReferralCodeIneligibleCopy'
-import { PartnerReferralCodeInputRow, type TrailingIconKind } from 'modules/affiliate/ui/TraderReferralCodeInput'
+} from 'modules/affiliate/pure/shared'
+import { TraderReferralCodeHowItWorksLink } from 'modules/affiliate/pure/TraderReferralCodeIneligibleCopy'
+import { PartnerCodeResponse, PartnerStatsResponse } from 'modules/affiliate/state/affiliate-program-types'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useModalState } from 'common/hooks/useModalState'
@@ -653,7 +656,7 @@ export default function AccountAffiliate() {
                           </MiniAction>
                         </LabelActions>
                       </LabelRow>
-                      <PartnerReferralCodeInputRow
+                      <ReferralCodeInputRow
                         displayCode={inputCode}
                         hasError={showInvalidFormat || showCodeUnavailable || availability === 'error'}
                         isInputDisabled={submitting}

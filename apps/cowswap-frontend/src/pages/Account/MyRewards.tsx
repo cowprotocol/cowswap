@@ -20,6 +20,8 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
 import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from 'modules/affiliate/config/constants'
+import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
+import { useTraderReferralCodeActions } from 'modules/affiliate/hooks/useTraderReferralCodeActions'
 import {
   formatUpdatedAt,
   formatUsdcCompact,
@@ -27,9 +29,6 @@ import {
   getIncomingIneligibleCode,
   isSupportedReferralNetwork,
 } from 'modules/affiliate/lib/affiliate-program-utils'
-import { useTraderReferralCode } from 'modules/affiliate/model/hooks/useTraderReferralCode'
-import { useTraderReferralCodeActions } from 'modules/affiliate/model/hooks/useTraderReferralCodeActions'
-import { TraderStatsResponse } from 'modules/affiliate/model/partner-trader-types'
 import {
   AffiliateTermsFaqLinks,
   BottomMetaRow,
@@ -62,9 +61,10 @@ import {
   UnsupportedNetworkHeader,
   UnsupportedNetworkMessage,
   ValidStatusBadge,
-} from 'modules/affiliate/ui/shared'
-import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/ui/TraderReferralCodeIneligibleCopy'
-import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/ui/TraderReferralCodeNetworkBanner'
+} from 'modules/affiliate/pure/shared'
+import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/pure/TraderReferralCodeIneligibleCopy'
+import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/pure/TraderReferralCodeNetworkBanner'
+import { TraderStatsResponse } from 'modules/affiliate/state/affiliate-program-types'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 const MIN_LOADING_MS = 200

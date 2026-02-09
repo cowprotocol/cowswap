@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTraderReferralCode } from 'modules/affiliate/model/hooks/useTraderReferralCode'
+import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
 import { useUtm } from 'modules/utm'

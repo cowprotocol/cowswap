@@ -19,11 +19,11 @@ import {
   TagGroup,
 } from './styles'
 
+import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
 import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
-import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
-import { TraderReferralCodeVerificationStatus } from '../../model/partner-trader-types'
+import { TraderReferralCodeVerificationStatus } from '../../state/affiliate-program-types'
+import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput/ReferralCodeInputRow'
 import { LabelContent } from '../shared'
-import { TraderReferralCodeInputRow, type TrailingIconKind } from '../TraderReferralCodeInput'
 
 const VERIFICATION_ERROR_KINDS: ReadonlySet<TraderReferralCodeVerificationStatus['kind']> = new Set([
   'invalid',
@@ -118,7 +118,7 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
         </LabelAffordances>
       </LabelRow>
 
-      <TraderReferralCodeInputRow
+      <ReferralCodeInputRow
         displayCode={displayCode}
         hasError={hasError}
         isInputDisabled={isInputDisabled || isChecking}

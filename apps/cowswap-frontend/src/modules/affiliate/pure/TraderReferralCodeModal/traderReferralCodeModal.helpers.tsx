@@ -9,8 +9,11 @@ import { PrimaryCta, StatusCopyResult } from './types'
 import {
   useTraderReferralCodeModalState,
   TraderReferralCodeModalUiState,
-} from '../../model/hooks/useTraderReferralCodeModalState'
-import { TraderReferralCodeVerificationStatus, TraderWalletReferralCodeState } from '../../model/partner-trader-types'
+} from '../../hooks/useTraderReferralCodeModalState'
+import {
+  TraderReferralCodeVerificationStatus,
+  TraderWalletReferralCodeState,
+} from '../../state/affiliate-program-types'
 
 type VerificationKind = ReturnType<typeof useTraderReferralCodeModalState>['verification']['kind']
 type WalletStatus = TraderWalletReferralCodeState['status']

@@ -9,7 +9,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { InputWrapper, StyledInput, TrailingIcon, TrailingIconPlaceholder } from './styles'
+import { InputWrapper, StyledInput, TrailingIcon, TrailingIconPlaceholder } from './ReferralCodeInputRow.styles'
 
 export type TrailingIconKind = 'error' | 'lock' | 'pending' | 'success'
 
@@ -27,7 +27,7 @@ function getDefaultLoadingLabel(): ReactNode {
   return <Trans>Checking</Trans>
 }
 
-interface TraderReferralCodeInputRowProps {
+interface ReferralCodeInputRowProps {
   displayCode: string
   hasError: boolean
   isInputDisabled: boolean
@@ -48,7 +48,7 @@ interface TraderReferralCodeInputRowProps {
   trailingIconTitles?: IconTitleMap
 }
 
-export function TraderReferralCodeInputRow(props: TraderReferralCodeInputRowProps): ReactNode {
+export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNode {
   const {
     displayCode,
     hasError,

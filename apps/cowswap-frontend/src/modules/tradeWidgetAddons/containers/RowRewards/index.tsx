@@ -4,8 +4,8 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/react/macro'
 
-import { useTraderReferralCode } from 'modules/affiliate/model/hooks/useTraderReferralCode'
-import { useTraderReferralCodeActions } from 'modules/affiliate/model/hooks/useTraderReferralCodeActions'
+import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
+import { useTraderReferralCodeActions } from 'modules/affiliate/hooks/useTraderReferralCodeActions'
 
 import { RowRewardsContent } from '../../pure/Row/RowRewards'
 

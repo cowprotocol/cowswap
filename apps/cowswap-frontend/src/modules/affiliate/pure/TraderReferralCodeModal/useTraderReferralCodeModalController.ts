@@ -13,10 +13,10 @@ import {
 } from './traderReferralCodeModal.helpers'
 import { FocusableElement, PrimaryCta, TraderReferralCodeModalContentProps } from './types'
 
+import { useTraderReferralCodeActions } from '../../hooks/useTraderReferralCodeActions'
+import { useTraderReferralCodeModalState } from '../../hooks/useTraderReferralCodeModalState'
 import { isReferralCodeLengthValid, getIncomingIneligibleCode } from '../../lib/affiliate-program-utils'
-import { useTraderReferralCodeActions } from '../../model/hooks/useTraderReferralCodeActions'
-import { useTraderReferralCodeModalState } from '../../model/hooks/useTraderReferralCodeModalState'
-import { TraderReferralCodeVerificationStatus } from '../../model/partner-trader-types'
+import { TraderReferralCodeVerificationStatus } from '../../state/affiliate-program-types'
 
 export interface TraderReferralCodeModalControllerParams {
   modalState: ReturnType<typeof useTraderReferralCodeModalState>

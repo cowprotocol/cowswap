@@ -7,7 +7,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { InlineAlert, StatusMessage, TitleAccent } from './styles'
 
-import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
+import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
 
 export interface TraderReferralCodeStatusMessagesProps {
   infoMessage: string

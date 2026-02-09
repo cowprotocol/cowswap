@@ -1,6 +1,11 @@
 import { ReactNode, createContext, useCallback, useContext, useMemo, useState, Dispatch, SetStateAction } from 'react'
 
 import {
+  TraderReferralCodeActions,
+  TraderReferralCodeContextValue,
+  TraderReferralCodeState,
+} from './affiliate-program-types'
+import {
   reduceClearPendingVerification,
   reduceCloseModal,
   reduceCompleteVerification,
@@ -23,12 +28,6 @@ import {
   useTraderReferralCodePersistence,
   useTraderReferralCodeStorageSync,
 } from './traderReferralCodeStorage'
-
-import {
-  TraderReferralCodeActions,
-  TraderReferralCodeContextValue,
-  TraderReferralCodeState,
-} from '../partner-trader-types'
 
 export interface TraderReferralCodeProviderProps {
   children: ReactNode

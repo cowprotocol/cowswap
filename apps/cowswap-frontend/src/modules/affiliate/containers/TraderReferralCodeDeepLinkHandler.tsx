@@ -8,10 +8,10 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import { useTraderReferralCode } from '../hooks/useTraderReferralCode'
 import { useTraderReferralCodeActions } from '../hooks/useTraderReferralCodeActions'
-import { TraderReferralCodeContextValue } from '../partner-trader-types'
+import { isReferralCodeLengthValid, sanitizeReferralCode } from '../lib/affiliate-program-utils'
+import { TraderReferralCodeContextValue } from '../state/affiliate-program-types'
 
 export function TraderReferralCodeDeepLinkHandler(): ReactNode {
   const { isAffiliateProgramEnabled = false } = useFeatureFlags()

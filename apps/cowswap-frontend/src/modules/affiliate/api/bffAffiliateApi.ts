@@ -20,7 +20,7 @@ import {
   TraderStatsResponse,
   TraderWalletReferralCodeStatusRequest,
   TraderWalletReferralCodeStatusResponse,
-} from '../model/partner-trader-types'
+} from '../state/affiliate-program-types'
 
 const TIMEOUT_ERROR_MESSAGE = 'Unable to reach referral service'
 const JSON_HEADERS = {

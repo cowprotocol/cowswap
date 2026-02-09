@@ -1,11 +1,12 @@
-import { sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import {
   TraderReferralCodeState,
   TraderReferralCodeIncomingReason,
   TraderReferralCodeModalSource,
   TraderReferralCodeVerificationStatus,
   TraderWalletReferralCodeState,
-} from '../partner-trader-types'
+} from './affiliate-program-types'
+
+import { sanitizeReferralCode } from '../lib/affiliate-program-utils'
 
 export function reduceOpenModal(
   prev: TraderReferralCodeState,

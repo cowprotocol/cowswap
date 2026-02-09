@@ -4,13 +4,13 @@ import type { CowAnalytics } from '@cowprotocol/analytics'
 
 import { performVerification } from './verificationLogic'
 
-import { VERIFICATION_DEBOUNCE_MS } from '../../config/constants'
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/affiliate-program-utils'
+import { VERIFICATION_DEBOUNCE_MS } from '../config/constants'
+import { isReferralCodeLengthValid, sanitizeReferralCode } from '../lib/affiliate-program-utils'
 import {
   TraderReferralCodeContextValue,
   TraderReferralCodeVerificationStatus,
   TraderWalletReferralCodeState,
-} from '../partner-trader-types'
+} from '../state/affiliate-program-types'
 
 interface VerificationParams {
   traderReferralCode: TraderReferralCodeContextValue

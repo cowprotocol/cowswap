@@ -1,4 +1,4 @@
-import { TraderReferralCodeActions } from '../partner-trader-types'
+import { TraderReferralCodeActions } from '../state/affiliate-program-types'
 import { useTraderReferralCodeContext } from '../state/TraderReferralCodeContext'
 
 export function useTraderReferralCodeActions(): TraderReferralCodeActions {

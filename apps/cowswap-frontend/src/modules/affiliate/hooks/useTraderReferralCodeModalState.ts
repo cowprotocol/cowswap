@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useTraderReferralCode } from './useTraderReferralCode'
 
-import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
+import { isReferralCodeLengthValid } from '../lib/affiliate-program-utils'
 
 export type TraderReferralCodeModalUiState =
   | 'empty'

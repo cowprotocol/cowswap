@@ -146,5 +146,15 @@ Production:
 
 ## 10) File structure
 
+### Module structure
+
+Since our main tools are `React` and `Jotai`, we proceed from the entities which they provide:
+
+- `module/containers` - [smart components](https://medium.com/@abubakarmemon/dumb-smart-components-in-react-0d19e2653398)
+- `module/pure` - [dumb components](https://medium.com/@abubakarmemon/dumb-smart-components-in-react-0d19e2653398)
+- `module/hooks` - [custom react hooks](https://react.dev/learn/reusing-logic-with-custom-hooks)
+- `module/state` - [Jotai atoms](https://jotai.org/docs/core/atom)
+- `module/updaters` - this is our internal pattern. Updater is a high level singleton component. Updater is measure that protects us from executing some logic twice
+
 - Besides this README, there is also a `/apps/cowswap-frontend/src/modules/affiliate/SPEC.md` file with use-cases (useful for AGENTS).
 - The Dune queries are version controlled in `/apps/cowswap-frontend/src/modules/affiliate/misc`.

@@ -10,12 +10,12 @@ import { TraderReferralCodeForm } from './TraderReferralCodeForm'
 import { TraderReferralCodeStatusMessages, getModalTitle } from './TraderReferralCodeStatusMessages'
 import { TraderReferralCodeModalContentProps } from './types'
 
+import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
 import { getPartnerProgramCopyValues } from '../../lib/affiliate-program-utils'
-import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
 import {
   TraderReferralCodeIncomingReason,
   TraderReferralCodeVerificationStatus,
-} from '../../model/partner-trader-types'
+} from '../../state/affiliate-program-types'
 import { TraderReferralCodeHowItWorksLink, TraderReferralCodeIneligibleCopy } from '../TraderReferralCodeIneligibleCopy'
 
 export function TraderReferralCodeModalContent(props: TraderReferralCodeModalContentProps): ReactNode {
