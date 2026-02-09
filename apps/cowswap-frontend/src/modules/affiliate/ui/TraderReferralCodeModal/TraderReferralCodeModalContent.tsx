@@ -12,11 +12,14 @@ import { TraderReferralCodeModalContentProps } from './types'
 
 import { getPartnerProgramCopyValues } from '../../lib/affiliate-program-utils'
 import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
-import { TraderReferralCodeVerificationStatus } from '../../model/partner-trader-types'
+import {
+  TraderReferralCodeIncomingReason,
+  TraderReferralCodeVerificationStatus,
+} from '../../model/partner-trader-types'
 import { TraderReferralCodeHowItWorksLink, TraderReferralCodeIneligibleCopy } from '../TraderReferralCodeIneligibleCopy'
 
 export function TraderReferralCodeModalContent(props: TraderReferralCodeModalContentProps): ReactNode {
-  const { uiState, onPrimaryClick, primaryCta, onDismiss, inputRef, ctaRef, linkedMessage, hasRejection } = props
+  const { uiState, onPrimaryClick, primaryCta, onDismiss, inputRef, ctaRef, hasRejection } = props
   const shouldShowForm = uiState !== 'ineligible'
 
   return (
@@ -30,11 +33,13 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
         <Title>{getModalTitle(uiState, { hasRejection })}</Title>
         <TraderReferralCodeSubtitle
           uiState={uiState}
-          linkedMessage={linkedMessage}
           hasRejection={hasRejection}
           verification={props.verification}
           incomingIneligibleCode={props.incomingIneligibleCode}
           isConnected={props.isConnected}
+          rejectionCode={props.rejectionCode}
+          rejectionReason={props.rejectionReason}
+          isLinked={props.isLinked}
         />
         {shouldShowForm && (
           <TraderReferralCodeForm
@@ -65,27 +70,43 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
 
 interface TraderReferralCodeSubtitleProps {
   uiState: TraderReferralCodeModalUiState
-  linkedMessage?: ReactNode
   hasRejection: boolean
   verification: TraderReferralCodeVerificationStatus
   incomingIneligibleCode?: string
   isConnected: boolean
+  rejectionCode?: string
+  rejectionReason?: TraderReferralCodeIncomingReason
+  isLinked: boolean
 }
 
+// eslint-disable-next-line max-lines-per-function
 function TraderReferralCodeSubtitle({
   uiState,
-  linkedMessage,
   hasRejection,
   verification,
   incomingIneligibleCode,
   isConnected,
+  rejectionCode,
+  rejectionReason,
+  isLinked,
 }: TraderReferralCodeSubtitleProps): ReactNode {
   const programParams = verification.kind === 'valid' ? verification.programParams : undefined
   const programCopy = programParams ? getPartnerProgramCopyValues(programParams) : null
-  if ((uiState === 'linked' || hasRejection) && linkedMessage) {
+  if (isLinked && !hasRejection) {
     return (
       <Subtitle>
-        {linkedMessage} <TraderReferralCodeHowItWorksLink />
+        <Trans>Your wallet is already linked to a referral code.</Trans> <TraderReferralCodeHowItWorksLink />
+      </Subtitle>
+    )
+  }
+
+  if (hasRejection && rejectionCode) {
+    return (
+      <Subtitle>
+        <Trans>
+          The code <strong>{rejectionCode}</strong> from your link wasn’t applied.
+        </Trans>
+        {renderRejectionReason(rejectionReason)} <TraderReferralCodeHowItWorksLink />
       </Subtitle>
     )
   }
@@ -150,4 +171,29 @@ function TraderReferralCodeSubtitle({
       )}
     </Subtitle>
   )
+}
+
+function renderRejectionReason(reason?: TraderReferralCodeIncomingReason): ReactNode {
+  if (!reason) {
+    return null
+  }
+
+  switch (reason) {
+    case 'invalid':
+      return (
+        <>
+          {' '}
+          <Trans>It isn't a valid referral code.</Trans>
+        </>
+      )
+    case 'ineligible':
+      return (
+        <>
+          {' '}
+          <Trans>This wallet isn't eligible for that code.</Trans>
+        </>
+      )
+    default:
+      return null
+  }
 }

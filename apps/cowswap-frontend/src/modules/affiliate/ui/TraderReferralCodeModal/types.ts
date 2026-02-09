@@ -1,7 +1,10 @@
-import { FormEvent, ReactNode, RefObject } from 'react'
+import { FormEvent, RefObject } from 'react'
 
 import { TraderReferralCodeModalUiState } from '../../model/hooks/useTraderReferralCodeModalState'
-import { TraderReferralCodeVerificationStatus } from '../../model/partner-trader-types'
+import {
+  TraderReferralCodeIncomingReason,
+  TraderReferralCodeVerificationStatus,
+} from '../../model/partner-trader-types'
 
 export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElement | null
 
@@ -18,13 +21,15 @@ export interface TraderReferralCodeModalContentProps {
   displayCode: string
   verification: TraderReferralCodeVerificationStatus
   incomingIneligibleCode?: string
+  rejectionCode?: string
+  rejectionReason?: TraderReferralCodeIncomingReason
+  isLinked: boolean
   onPrimaryClick(): void
   onEdit(): void
   onRemove(): void
   onSave(): void
   onChange(event: FormEvent<HTMLInputElement>): void
   primaryCta: PrimaryCta
-  linkedMessage: ReactNode
   hasRejection: boolean
   infoMessage: string
   shouldShowInfo: boolean

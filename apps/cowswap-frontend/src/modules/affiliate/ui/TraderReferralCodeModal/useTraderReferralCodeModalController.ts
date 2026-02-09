@@ -8,7 +8,6 @@ import { NavigateFunction } from 'common/hooks/useNavigate'
 import {
   computePrimaryCta,
   getStatusCopy,
-  useTraderReferralCodeMessages,
   useTraderReferralCodeModalAnalytics,
   useTraderReferralCodeModalFocus,
 } from './traderReferralCodeModal.helpers'
@@ -92,8 +91,8 @@ export function useTraderReferralCodeModalController(
   const verificationCode = 'code' in verification ? verification.code : undefined
   const codeForDisplay = incomingCode || verificationCode || savedCode || displayCode
   const incomingIneligibleCode = getIncomingIneligibleCode(incomingCode, verification)
-  const { linkedMessage } = useTraderReferralCodeMessages(codeForDisplay, traderReferralCode.incomingCodeReason)
   const hasRejection = Boolean(traderReferralCode.incomingCodeReason)
+  const rejectionCode = hasRejection ? codeForDisplay : undefined
 
   const initialFocusRef =
     uiState === 'valid' || uiState === 'linked' || uiState === 'ineligible'
@@ -111,13 +110,15 @@ export function useTraderReferralCodeModalController(
       displayCode,
       verification,
       incomingIneligibleCode,
+      rejectionCode,
+      rejectionReason: traderReferralCode.incomingCodeReason,
+      isLinked: uiState === 'linked',
       onPrimaryClick: handlers.onPrimaryClick,
       onEdit: handlers.onEdit,
       onRemove: handlers.onRemove,
       onSave: handlers.onSave,
       onChange: handlers.onChange,
       primaryCta,
-      linkedMessage,
       hasRejection,
       infoMessage: statusCopy.infoMessage,
       shouldShowInfo: statusCopy.shouldShowInfo,

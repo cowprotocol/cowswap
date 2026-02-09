@@ -71,10 +71,16 @@ export function reduceCloseModal(prev: TraderReferralCodeState): TraderReferralC
 
 export function reduceSetInputCode(prev: TraderReferralCodeState, value: string): TraderReferralCodeState {
   const sanitized = sanitizeReferralCode(value)
+  const hasChanged = sanitized !== prev.inputCode
+  const shouldClearIncoming = Boolean(prev.incomingCode) && sanitized !== prev.incomingCode
+  const incomingCode = shouldClearIncoming ? undefined : prev.incomingCode
+  const incomingCodeReason = hasChanged ? undefined : prev.incomingCodeReason
 
   return {
     ...prev,
     inputCode: sanitized,
+    incomingCode,
+    incomingCodeReason,
     verification: prev.verification.kind === 'pending' ? prev.verification : { kind: 'idle' },
   }
 }

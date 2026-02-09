@@ -1,9 +1,8 @@
-import { ReactNode, RefObject, useEffect, useMemo, useRef } from 'react'
+import { RefObject, useEffect, useRef } from 'react'
 
 import { CowAnalytics } from '@cowprotocol/analytics'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
 
 import { PrimaryCta, StatusCopyResult } from './types'
 
@@ -11,11 +10,7 @@ import {
   useTraderReferralCodeModalState,
   TraderReferralCodeModalUiState,
 } from '../../model/hooks/useTraderReferralCodeModalState'
-import {
-  TraderReferralCodeIncomingReason,
-  TraderReferralCodeVerificationStatus,
-  TraderWalletReferralCodeState,
-} from '../../model/partner-trader-types'
+import { TraderReferralCodeVerificationStatus, TraderWalletReferralCodeState } from '../../model/partner-trader-types'
 
 type VerificationKind = ReturnType<typeof useTraderReferralCodeModalState>['verification']['kind']
 type WalletStatus = TraderWalletReferralCodeState['status']
@@ -170,55 +165,4 @@ export function useTraderReferralCodeModalAnalytics(
 
     lastUiStateRef.current = uiState
   }, [analytics, traderReferralCode.modalOpen, traderReferralCode.modalSource, uiState])
-}
-
-export function useTraderReferralCodeMessages(
-  codeForDisplay?: string,
-  reason?: TraderReferralCodeIncomingReason,
-): {
-  linkedMessage: ReactNode
-} {
-  return useMemo(() => {
-    if (!codeForDisplay) {
-      return {
-        linkedMessage: <Trans>Your wallet is already linked to a referral code.</Trans>,
-      }
-    }
-
-    return {
-      linkedMessage: (
-        <>
-          <Trans>
-            The code <strong>{codeForDisplay}</strong> from your link wasn’t applied.
-          </Trans>
-          {renderRejectionReason(reason)}
-        </>
-      ),
-    }
-  }, [codeForDisplay, reason])
-}
-
-function renderRejectionReason(reason?: TraderReferralCodeIncomingReason): ReactNode {
-  if (!reason) {
-    return null
-  }
-
-  switch (reason) {
-    case 'invalid':
-      return (
-        <>
-          {' '}
-          <Trans>It isn’t a valid referral code.</Trans>
-        </>
-      )
-    case 'ineligible':
-      return (
-        <>
-          {' '}
-          <Trans>This wallet isn’t eligible for that code.</Trans>
-        </>
-      )
-    default:
-      return null
-  }
 }
