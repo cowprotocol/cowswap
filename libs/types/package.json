@@ -1,47 +1,19 @@
 {
   "name": "@cowprotocol/types",
   "version": "3.1.0",
-  "type": "commonjs",
   "description": "CoW Swap events",
-  "main": "./src/index.ts",
-  "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts",
-      "require": "./src/index.ts",
-      "default": "./src/index.ts"
-    }
-  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cowprotocol/cowswap"
+  "publishConfig": {
+    "access": "public"
   },
-  "keywords": [
-    "cowprotocol",
-    "types",
-    "cowswap",
-    "dex",
-    "widget-lib"
-  ],
   "dependencies": {
     "@cowprotocol/cow-sdk": "7.3.4",
     "@cowprotocol/sdk-bridging": "1.7.3",
     "@uniswap/sdk-core": "^3.0.1",
     "eventemitter3": "^4.0.0"
-  },
-  "types": "./src/index.ts",
-  "publishConfig": {
-    "access": "public",
-    "main": "./index.js",
-    "types": "./index.d.ts",
-    "exports": {
-      ".": {
-        "types": "./index.d.ts",
-        "import": "./index.mjs",
-        "require": "./index.js"
-      }
-    }
   },
   "devDependencies": {
     "@web3-react/types": "^8.2.3"
