@@ -20,7 +20,7 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: bool
   children: [
     {
       href: '/account',
-      label: msg`Account`,
+      label: msg`Overview`,
     },
     {
       href: '/account/tokens',
