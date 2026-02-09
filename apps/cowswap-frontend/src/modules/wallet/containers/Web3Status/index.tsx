@@ -12,7 +12,6 @@ import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderA
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
 import { AccountSelectorModal } from '../AccountSelectorModal'
-import { WalletModal } from '../WalletModal'
 
 export interface Web3StatusProps {
   className?: string
@@ -39,7 +38,6 @@ export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
         connectWallet={toggleWalletModal}
         connectionType={connectionType}
       />
-      <WalletModal />
       <AccountSelectorModal />
     </Wrapper>
   )

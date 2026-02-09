@@ -26,11 +26,12 @@ export * from './wagmi/updaters/HwAccountIndexUpdater'
 // Components
 export * from './api/container/Identicon'
 export * from './api/pure/JazzIcon'
-// export * from './wagmi/pure/AccountIndexSelect'
+export * from './web3-react/pure/AccountIndexSelect'
 
 // Utils
 export * from './api/utils/connection'
-export * from './wagmi/utils/getIsHardWareWallet'
+export * from './web3-react/utils/getIsHardWareWallet'
+export { accountsLoaders } from './api/utils/accountsLoaders'
 // export { isChainAllowed } from './web3-react/utils/isChainAllowed'
 // export { getWeb3ReactConnection } from './web3-react/utils/getWeb3ReactConnection'
 // export { switchChain } from './web3-react/utils/switchChain'
