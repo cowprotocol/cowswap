@@ -24,9 +24,7 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
 
   return (
     <ModalContainer>
-      <ModalHeader onBack={onDismiss} onClose={onDismiss}>
-        {null}
-      </ModalHeader>
+      <ModalHeader onBack={onDismiss} />
 
       <Body>
         <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
