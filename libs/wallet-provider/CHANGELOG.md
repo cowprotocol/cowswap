@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.0.0...wallet-provider-v2.1.0) (2026-02-05)
+
+
+### ✨ Features
+
+* setup viem and wagmi ([#6845](https://github.com/cowprotocol/cowswap/issues/6845)) ([a543376](https://github.com/cowprotocol/cowswap/commit/a543376d32307b04098ff345aab7c92759ecd1b9))
+
+
+### 🔧 Miscellaneous
+
+* add missing eslint deps ([#6924](https://github.com/cowprotocol/cowswap/issues/6924)) ([afcfc18](https://github.com/cowprotocol/cowswap/commit/afcfc18ee80616629c7b0c0b7449e84db8400246))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.1.0
+
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v1.0.1...wallet-provider-v2.0.0) (2026-01-28)
 
 
