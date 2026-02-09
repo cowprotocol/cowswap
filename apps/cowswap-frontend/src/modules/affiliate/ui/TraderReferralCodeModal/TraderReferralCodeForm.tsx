@@ -79,6 +79,7 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
     isLinked,
   } = deriveFormFlags({
     uiState,
+    isConnected,
     verification,
     savedCode,
     displayCode,
@@ -137,6 +138,7 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
 
 interface DeriveFormFlagsParams {
   uiState: TraderReferralCodeModalUiState
+  isConnected: boolean
   verification: TraderReferralCodeVerificationStatus
   savedCode?: string
   displayCode: string
@@ -189,7 +191,7 @@ interface BaseFlags {
 
 // eslint-disable-next-line complexity
 function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
-  const { uiState, verification, savedCode, displayCode } = params
+  const { uiState, isConnected, verification, savedCode, displayCode } = params
 
   // Unsupported network deliberately hides every edit affordance to avoid no-op buttons.
   const isUnsupported = uiState === 'unsupported'
@@ -199,8 +201,10 @@ function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
   const isInputDisabled = isUnsupported || (!isEditing && uiState !== 'empty')
   const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
   const canEdit = !isUnsupported && !isEditing && !isLinked && uiState !== 'empty'
-  const showEdit = canEdit && Boolean(savedCode)
-  const showRemove = !isUnsupported && isEditing && Boolean(savedCode)
+  const allowDisconnectedEdit = uiState === 'pending' && !isConnected && Boolean(displayCode)
+  const showEdit = canEdit && (Boolean(savedCode) || allowDisconnectedEdit)
+  const showRemove =
+    !isUnsupported && (isEditing || allowDisconnectedEdit) && (Boolean(savedCode) || allowDisconnectedEdit)
   const showSave = !isUnsupported && (isEditing || uiState === 'empty')
   const canSubmitSave = showSave && !isSaveDisabled
 
