@@ -1,5 +1,49 @@
 # Changelog
 
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.3...cowswap-v2.1.0) (2026-02-05)
+
+
+### ✨ Features
+
+* **cms:** improve cms requests caching logic ([#6956](https://github.com/cowprotocol/cowswap/issues/6956)) ([4dc4b56](https://github.com/cowprotocol/cowswap/commit/4dc4b56cd371fcf2e8092abbb4447a4c10106b7e))
+* new Crowdin updates ([#6961](https://github.com/cowprotocol/cowswap/issues/6961)) ([2dea22b](https://github.com/cowprotocol/cowswap/commit/2dea22b9752e0e15fe7eb288431fd13bbd3e9f32))
+* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
+
+
+### 🐛 Bug Fixes
+
+* **bridge:** make failed bridge orders red ([#6911](https://github.com/cowprotocol/cowswap/issues/6911)) ([58f8abd](https://github.com/cowprotocol/cowswap/commit/58f8abd6ae74b594909d0444ffc31ae06d1b2c48))
+* gh issue 6966 re duplicated pending orders ([#6968](https://github.com/cowprotocol/cowswap/issues/6968)) ([aadd4aa](https://github.com/cowprotocol/cowswap/commit/aadd4aa7adc8c36318b704f2bfe15a954e8f9c6f))
+* **twap:** upload appData only on prod env ([#6967](https://github.com/cowprotocol/cowswap/issues/6967)) ([dc10054](https://github.com/cowprotocol/cowswap/commit/dc100540971dc45ccc2bd5858c3f1ea4580c7c67))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.1.0
+    * @cowprotocol/assets bumped to 2.0.1
+    * @cowprotocol/balances-and-allowances bumped to 2.1.0
+    * @cowprotocol/common-const bumped to 2.1.0
+    * @cowprotocol/common-hooks bumped to 2.1.0
+    * @cowprotocol/common-utils bumped to 2.1.0
+    * @cowprotocol/core bumped to 2.1.0
+    * @cowprotocol/cowswap-abis bumped to 3.0.0
+    * @cowprotocol/ens bumped to 2.1.0
+    * @cowprotocol/events bumped to 3.1.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.2
+    * @cowprotocol/iframe-transport bumped to 2.0.2
+    * @cowprotocol/multicall bumped to 2.1.0
+    * @cowprotocol/permit-utils bumped to 2.1.0
+    * @cowprotocol/snackbars bumped to 2.0.2
+    * @cowprotocol/tokens bumped to 2.1.0
+    * @cowprotocol/types bumped to 3.1.0
+    * @cowprotocol/ui bumped to 2.1.0
+    * @cowprotocol/ui-utils bumped to 2.0.1
+    * @cowprotocol/wallet bumped to 2.1.0
+    * @cowprotocol/wallet-provider bumped to 2.1.0
+    * @cowprotocol/widget-lib bumped to 1.1.0
+
 ## [2.0.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.2...cowswap-v2.0.3) (2026-02-03)
 
 
