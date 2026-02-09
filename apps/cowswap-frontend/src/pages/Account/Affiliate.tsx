@@ -27,6 +27,7 @@ import CopyHelper from 'legacy/components/Copy'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
+import { VERIFICATION_DEBOUNCE_MS } from 'modules/affiliate/config/constants'
 import {
   buildPartnerTypedData,
   formatUsdcCompact,
@@ -357,7 +358,7 @@ export default function AccountAffiliate() {
             setAvailability('error')
           }
         })
-    }, 350)
+    }, VERIFICATION_DEBOUNCE_MS)
 
     return () => {
       active = false

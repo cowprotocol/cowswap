@@ -4,6 +4,7 @@ import type { CowAnalytics } from '@cowprotocol/analytics'
 
 import { performVerification } from './verificationLogic'
 
+import { VERIFICATION_DEBOUNCE_MS } from '../../config/constants'
 import { isReferralCodeLengthValid, sanitizeReferralCode } from '../../lib/affiliate-program-utils'
 import {
   TraderReferralCodeContextValue,
@@ -136,7 +137,13 @@ export function useTraderReferralCodeAutoVerification(params: AutoVerificationPa
       return
     }
 
-    runVerification(code)
+    const timer = setTimeout(() => {
+      runVerification(code)
+    }, VERIFICATION_DEBOUNCE_MS)
+
+    return () => {
+      clearTimeout(timer)
+    }
   }, [
     account,
     chainId,

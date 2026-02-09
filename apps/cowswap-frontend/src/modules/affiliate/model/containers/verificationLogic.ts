@@ -1,11 +1,12 @@
-import { MutableRefObject } from 'react'
+import { RefObject } from 'react'
 
 import { CowAnalytics } from '@cowprotocol/analytics'
-import { isProdLike } from '@cowprotocol/common-utils'
+import { delay, isProdLike } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
 
+import { VERIFICATION_RETRY_DELAY_MS } from '../../config/constants'
 import {
   isReferralCodeLengthValid,
   sanitizeReferralCode,
@@ -27,7 +28,7 @@ export interface PerformVerificationParams {
   toggleWalletModal: () => void
   actions: TraderReferralCodeContextValue['actions']
   analytics: CowAnalytics
-  pendingVerificationRef: MutableRefObject<number | null>
+  pendingVerificationRef: RefObject<number | null>
   applyVerificationResult: (
     status: TraderReferralCodeVerificationStatus,
     walletState?: TraderWalletReferralCodeState,
@@ -67,6 +68,14 @@ export async function performVerification(params: PerformVerificationParams): Pr
       return
     }
 
+    if (response.status === 404) {
+      await delay(VERIFICATION_RETRY_DELAY_MS)
+
+      if (pendingVerificationRef.current !== requestId) {
+        return
+      }
+    }
+
     const preserveExisting =
       Boolean(baseParams.incomingCode) &&
       shouldPreserveExistingCode(
@@ -85,7 +94,7 @@ export async function performVerification(params: PerformVerificationParams): Pr
     })
     pendingVerificationRef.current = null
   } catch (error) {
-    await new Promise((resolve) => setTimeout(resolve, 5_000)) // artificial delay to limit API spam
+    await delay(VERIFICATION_RETRY_DELAY_MS) // artificial delay to limit API spam
 
     if (pendingVerificationRef.current !== requestId) {
       return

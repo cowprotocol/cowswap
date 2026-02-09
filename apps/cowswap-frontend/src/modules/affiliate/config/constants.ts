@@ -29,6 +29,9 @@ export const AFFILIATE_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
 
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 
+export const VERIFICATION_DEBOUNCE_MS = 350
+export const VERIFICATION_RETRY_DELAY_MS = 3_000
+
 // Timeout applied to referral service requests so UI fails fast on network issues
 export const AFFILIATE_API_TIMEOUT_MS = 10_000
 
