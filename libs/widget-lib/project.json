@@ -25,10 +25,6 @@
       },
       "configurations": {}
     },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs widget-lib {args.tag} {args.otp}",
-      "dependsOn": ["build"]
-    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],

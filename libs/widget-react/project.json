@@ -24,10 +24,6 @@
         "buildableProjectDepsInPackageJsonType": "dependencies"
       }
     },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs widget-react {args.tag} {args.otp}",
-      "dependsOn": ["build"]
-    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

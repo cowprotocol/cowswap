@@ -16,10 +16,6 @@
         "buildableProjectDepsInPackageJsonType": "dependencies"
       }
     },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs permit-utils {args.tag} {args.otp}",
-      "dependsOn": ["build"]
-    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
