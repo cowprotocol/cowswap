@@ -1,5 +1,3 @@
-import { useSetAtom } from 'jotai'
-
 import Close from '@cowprotocol/assets/images/x.svg?react'
 import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
 import { Media, UI } from '@cowprotocol/ui'
@@ -8,8 +6,6 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/AccountSelectorModal/state'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
@@ -138,7 +134,6 @@ const Wrapper = styled.div`
 export function OrdersPanel() {
   const { active, account } = useWalletInfo()
   const { ensName } = useWalletDetails()
-  const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
   const { isOpen } = useAccountModalState()
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
@@ -170,7 +165,6 @@ export function OrdersPanel() {
             ENSName={ensName}
             pendingTransactions={pendingActivity}
             confirmedTransactions={confirmedActivity}
-            toggleAccountSelectorModal={toggleAccountSelectorModal}
             handleCloseOrdersPanel={handleCloseOrdersPanel}
           />
         </Wrapper>

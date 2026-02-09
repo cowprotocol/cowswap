@@ -11,7 +11,6 @@ import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCoun
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
-import { AccountSelectorModal } from '../AccountSelectorModal'
 
 export interface Web3StatusProps {
   className?: string
@@ -38,7 +37,6 @@ export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
         connectWallet={toggleWalletModal}
         connectionType={connectionType}
       />
-      <AccountSelectorModal />
     </Wrapper>
   )
 }
