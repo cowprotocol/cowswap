@@ -17,9 +17,19 @@ import { useWeb3React } from '@web3-react/core'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 const chainId = getCurrentChainIdFromUrl()
-const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
-  ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
-  : undefined
+
+const envBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS && JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
+
+// To manually set the order book URLs in localStorage, you can use the following command in the browser console:
+// localStorage.setItem('orderBookUrls', JSON.stringify({ "1":"https://YOUR_HOST", "100":"https://YOUR_HOST" }))
+// To clear it, simply run:
+// localStorage.removeItem('orderBookUrls')
+const localStorageBaseUrls =
+  localStorage.getItem('orderBookUrls') && JSON.parse(localStorage.getItem('orderBookUrls') || '{}')
+
+const prodBaseUrls = envBaseUrls || localStorageBaseUrls || undefined
+
+console.log('Order Book URLs:', prodBaseUrls, !!envBaseUrls, !!localStorageBaseUrls)
 
 const legacyAdapter = new EthersV5Adapter({
   provider: getRpcProvider(chainId)!,
