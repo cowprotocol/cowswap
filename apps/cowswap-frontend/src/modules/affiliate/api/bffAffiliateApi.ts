@@ -1,6 +1,15 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 
-import { AFFILIATE_API_TIMEOUT_MS } from '../config/constants'
+import { fetchWithRateLimit } from 'common/utils/fetch'
+
+import {
+  AFFILIATE_API_TIMEOUT_MS,
+  BACKOFF_MAX_ATTEMPTS,
+  BACKOFF_START_DELAY_MS,
+  BACKOFF_TIME_MULTIPLE,
+  RATE_LIMIT_INTERVAL_MS,
+  STATUS_CODES_TO_RETRY,
+} from '../config/constants'
 import {
   PartnerCodeResponse,
   PartnerCreateRequest,
@@ -25,6 +34,15 @@ type FetchJsonResponse<T> = {
   text: string
 }
 
+class RetryableResponseError extends Error {
+  readonly rawApiError: { status: number }
+
+  constructor(status: number) {
+    super(`Retryable response (${status})`)
+    this.rawApiError = { status }
+  }
+}
+
 function buildReferralError(status: number, text: string, data?: { message?: string }): Error {
   const message = data?.message || text || `Referral service error (${status})`
   const error = new Error(message)
@@ -35,10 +53,22 @@ function buildReferralError(status: number, text: string, data?: { message?: str
 class BffAffiliateApi {
   private readonly baseUrl: string
   private readonly timeoutMs: number
+  private readonly fetchRateLimited: ReturnType<typeof fetchWithRateLimit>
 
   constructor(baseUrl: string, timeoutMs: number = AFFILIATE_API_TIMEOUT_MS) {
     this.baseUrl = baseUrl.replace(/\/$/, '')
     this.timeoutMs = timeoutMs
+    this.fetchRateLimited = fetchWithRateLimit({
+      rateLimit: {
+        tokensPerInterval: 1,
+        interval: RATE_LIMIT_INTERVAL_MS,
+      },
+      backoff: {
+        numOfAttempts: BACKOFF_MAX_ATTEMPTS,
+        startingDelay: BACKOFF_START_DELAY_MS,
+        timeMultiple: BACKOFF_TIME_MULTIPLE,
+      },
+    })
   }
   async verifyReferralCode(
     request: TraderReferralCodeVerificationRequest,
@@ -166,7 +196,7 @@ class BffAffiliateApi {
     return `${this.baseUrl}/${normalizedPath}`
   }
   private async fetchJsonResponse<T>(input: string, init: RequestInit): Promise<FetchJsonResponse<T>> {
-    const response = await this.fetchWithTimeout(input, init)
+    const response = await this.fetchWithBackoffAndRateLimit(input, init)
 
     const text = await response.text().catch(() => '')
     let data: T | undefined
@@ -180,6 +210,15 @@ class BffAffiliateApi {
     }
 
     return { response, data, text }
+  }
+  private async fetchWithBackoffAndRateLimit(input: RequestInfo, init: RequestInit): Promise<Response> {
+    return this.fetchRateLimited(async () => {
+      const response = await this.fetchWithTimeout(input, init)
+      if (STATUS_CODES_TO_RETRY.includes(response.status)) {
+        throw new RetryableResponseError(response.status)
+      }
+      return response
+    })
   }
   private async fetchWithTimeout(input: RequestInfo, init: RequestInit): Promise<Response> {
     if (!this.timeoutMs) {

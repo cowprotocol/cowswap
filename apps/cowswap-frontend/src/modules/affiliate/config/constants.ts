@@ -1,6 +1,8 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import ms from 'ms.macro'
+
 // https://dune.com/queries/6434876
 export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
   SupportedChainId.MAINNET,
@@ -22,10 +24,26 @@ export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.m
   (chainId) => CHAIN_INFO[chainId].label,
 )
 
-// Timeout applied to referral service requests so UI fails fast on network issues
-export const AFFILIATE_API_TIMEOUT_MS = 10_000
-
 // TODO: replace placeholder URL once the referral docs are provisioned
 export const AFFILIATE_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
 
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
+
+// Timeout applied to referral service requests so UI fails fast on network issues
+export const AFFILIATE_API_TIMEOUT_MS = 10_000
+
+export const RATE_LIMIT_INTERVAL_MS = 200
+export const BACKOFF_START_DELAY_MS = ms`1s`
+export const BACKOFF_TIME_MULTIPLE = 3
+export const BACKOFF_MAX_ATTEMPTS = 3
+
+enum RetryableStatusCode {
+  RequestTimeout = 408,
+  TooEarly = 425,
+  TooManyRequests = 429,
+  InternalServerError = 500,
+  BadGateway = 502,
+  ServiceUnavailable = 503,
+  GatewayTimeout = 504,
+}
+export const STATUS_CODES_TO_RETRY = Object.values(RetryableStatusCode)
