@@ -81,6 +81,7 @@ import {
   StatusText,
   LinkedMetaList,
 } from 'modules/affiliate/ui/shared'
+import { TraderReferralCodeHowItWorksLink } from 'modules/affiliate/ui/TraderReferralCodeIneligibleCopy'
 import { PartnerReferralCodeInputRow, type TrailingIconKind } from 'modules/affiliate/ui/TraderReferralCodeInput'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
@@ -533,7 +534,8 @@ export default function AccountAffiliate() {
             </HeroTitle>
             <HeroSubtitle>
               <Trans>
-                You and your referrals can earn a flat fee <br /> for the eligible volume done through the app. link.
+                You and your referrals can earn a flat fee <br /> for the eligible volume done through the app.{' '}
+                <TraderReferralCodeHowItWorksLink />
               </Trans>
             </HeroSubtitle>
             <HeroActions>

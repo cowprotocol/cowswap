@@ -1,7 +1,6 @@
 import { useLayoutEffect, useMemo } from 'react'
 
-import { areAddressesEqual } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { useSelector } from 'react-redux'
 
