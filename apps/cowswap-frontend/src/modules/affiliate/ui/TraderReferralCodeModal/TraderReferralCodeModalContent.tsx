@@ -188,7 +188,7 @@ function renderRejectionReason(reason?: TraderReferralCodeIncomingReason): React
       return (
         <>
           {' '}
-          <Trans>This wallet isn't eligible for that code.</Trans>
+          <Trans>This wallet isn't eligible.</Trans>
         </>
       )
     default:
