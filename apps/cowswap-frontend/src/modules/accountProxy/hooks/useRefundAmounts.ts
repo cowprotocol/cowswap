@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getUsdPriceStateKey, useUsdPrices } from 'modules/usdAmount'

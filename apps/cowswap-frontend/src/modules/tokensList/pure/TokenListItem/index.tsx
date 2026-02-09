@@ -1,8 +1,8 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { areAddressesEqual, getCurrencyAddress, getTokenId } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'

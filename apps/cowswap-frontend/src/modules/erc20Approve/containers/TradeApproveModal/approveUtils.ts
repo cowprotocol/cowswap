@@ -1,3 +1,4 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Nullish } from '@cowprotocol/types'
 import { defaultAbiCoder } from '@ethersproject/abi'
@@ -36,7 +37,7 @@ export function processApprovalTransaction(
 
       if (approvedAmount !== undefined) {
         return {
-          tokenAddress: tokenAddress.toLowerCase(),
+          tokenAddress: getAddressKey(tokenAddress),
           owner: account,
           spender,
           amount: approvedAmount,
@@ -68,14 +69,14 @@ function extractApprovalAmountFromLogs(
     // Find the Approval event log
     const approvalLog = txReceipt.logs.find((log) => {
       // Check if it's from the token contract and has the Approval event signature
-      if (log.address.toLowerCase() !== tokenAddress.toLowerCase()) return false
+      if (getAddressKey(log.address) !== getAddressKey(tokenAddress)) return false
       if (log.topics[0] !== APPROVAL_EVENT_TOPIC) return false
 
       // Verify owner and spender match (topics[1] = owner, topics[2] = spender)
       const logOwner = getAddress('0x' + log.topics[1].slice(26))
       const logSpender = getAddress('0x' + log.topics[2].slice(26))
 
-      return logOwner.toLowerCase() === owner.toLowerCase() && logSpender.toLowerCase() === spender.toLowerCase()
+      return getAddressKey(logOwner) === getAddressKey(owner) && getAddressKey(logSpender) === getAddressKey(spender)
     })
 
     if (!approvalLog) return undefined

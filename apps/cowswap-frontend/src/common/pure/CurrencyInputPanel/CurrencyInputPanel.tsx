@@ -120,6 +120,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
 
   const convertUsdToTokenValue = useConvertUsdToTokenValue(currency)
 
+  // TODO: Numerical input rerenders because this function changes due to some dep change.
   const onUserInputDispatch = useCallback(
     (typedValue: string, currencyValue?: string) => {
       // Always pass through empty string to allow clearing

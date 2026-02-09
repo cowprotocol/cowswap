@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
 
+import { useAsyncEffect } from '@cowprotocol/common-hooks'
 import { UtmParams } from '@cowprotocol/common-utils'
 import { CowEnv } from '@cowprotocol/cow-sdk'
 
@@ -12,7 +12,7 @@ import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../type
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
-export type UseAppDataParams = {
+export interface UseAppDataParams {
   appCodeWithWidgetMetadata: AppCodeWithWidgetMetadata | null
   slippageBips: number
   isSmartSlippage?: boolean
@@ -31,6 +31,7 @@ export type UseAppDataParams = {
  */
 // TODO: Break down this large function into smaller functions
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
   slippageBips,
@@ -42,13 +43,11 @@ export function AppDataInfoUpdater({
   replacedOrderUid,
   userConsent,
   referrerCode,
-}: UseAppDataParams): void {
+}: UseAppDataParams) {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
-  const updateAppDataPromiseRef = useRef(Promise.resolve())
-
-  useEffect(() => {
+  useAsyncEffect(async () => {
     if (!appCodeWithWidgetMetadata) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
@@ -71,21 +70,16 @@ export function AppDataInfoUpdater({
       referrerCode,
     }
 
-    const updateAppData = async (): Promise<void> => {
-      try {
-        const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
+    try {
+      const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
 
-        setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
-        console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
-        setAppDataInfo(getAppData())
-      }
+      setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
+      setAppDataInfo(getAppData())
     }
-
-    // Chain the next update to avoid race conditions
-    updateAppDataPromiseRef.current = updateAppDataPromiseRef.current.finally(updateAppData)
   }, [
     appCodeWithWidgetMetadata,
     setAppDataInfo,
@@ -99,6 +93,8 @@ export function AppDataInfoUpdater({
     userConsent,
     referrerCode,
   ])
+
+  return null
 }
 
 function getEnvByClass(orderClass: string): CowEnv | undefined {
