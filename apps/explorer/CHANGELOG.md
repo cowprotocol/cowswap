@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/explorer-v3.0.2...explorer-v3.1.0) (2026-02-05)
+
+
+### ✨ Features
+
+* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
+
+
+### 🐛 Bug Fixes
+
+* **bridge:** make failed bridge orders red ([#6911](https://github.com/cowprotocol/cowswap/issues/6911)) ([58f8abd](https://github.com/cowprotocol/cowswap/commit/58f8abd6ae74b594909d0444ffc31ae06d1b2c48))
+
+
+### 🔧 Miscellaneous
+
+* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.1.0
+    * @cowprotocol/common-const bumped to 2.1.0
+    * @cowprotocol/common-hooks bumped to 2.1.0
+    * @cowprotocol/common-utils bumped to 2.1.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.2
+    * @cowprotocol/types bumped to 3.1.0
+    * @cowprotocol/ui bumped to 2.1.0
+
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/explorer-v3.0.1...explorer-v3.0.2) (2026-02-02)
 
 
