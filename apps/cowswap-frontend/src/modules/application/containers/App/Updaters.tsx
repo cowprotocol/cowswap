@@ -37,6 +37,7 @@ import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
+import { SurplusInvalidationListenerUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { ConnectionStatusUpdater } from 'common/updaters/ConnectionStatusUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
@@ -103,6 +104,7 @@ export function Updaters(): ReactNode {
       <OrderProgressEventsUpdater />
       <SolversInfoUpdater />
       <AnnouncementsUpdater />
+      <SurplusInvalidationListenerUpdater />
       <BridgingEnabledUpdater />
       <FaviconAnimationUpdater />
 
