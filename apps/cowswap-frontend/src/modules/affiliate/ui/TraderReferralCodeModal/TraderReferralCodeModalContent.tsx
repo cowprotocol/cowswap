@@ -39,6 +39,7 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
         {shouldShowForm && (
           <TraderReferralCodeForm
             uiState={uiState}
+            isConnected={props.isConnected}
             savedCode={props.savedCode}
             displayCode={props.displayCode}
             verification={props.verification}

@@ -63,6 +63,10 @@ export function TraderReferralCodeNetworkBanner(props: TraderReferralCodeNetwork
     return null
   }
 
+  if (modalOpen && (wallet.status === 'disconnected' || wallet.status === 'unknown')) {
+    return null
+  }
+
   const shouldShow = onlyWhenUnsupported
     ? wallet.status === 'unsupported'
     : wallet.status === 'unsupported' || wallet.status === 'unknown' || wallet.status === 'disconnected'

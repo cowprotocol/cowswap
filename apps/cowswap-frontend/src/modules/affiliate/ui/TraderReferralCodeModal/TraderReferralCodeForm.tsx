@@ -33,6 +33,7 @@ const VERIFICATION_ERROR_KINDS: ReadonlySet<TraderReferralCodeVerificationStatus
 
 export interface TraderReferralCodeFormProps {
   uiState: TraderReferralCodeModalUiState
+  isConnected: boolean
   savedCode?: string
   displayCode: string
   verification: TraderReferralCodeVerificationStatus
@@ -48,6 +49,7 @@ export interface TraderReferralCodeFormProps {
 export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): ReactNode {
   const {
     uiState,
+    isConnected,
     savedCode,
     displayCode,
     verification,
@@ -59,9 +61,9 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
     inputRef,
   } = props
 
-  const showPendingLabelInInput = shouldShowPendingLabel(verification)
+  const showPendingLabelInInput = isConnected && shouldShowPendingLabel(verification)
   const showValidLabelInInput = verification.kind === 'valid'
-  const showPendingTag = verification.kind === 'pending' && !showPendingLabelInInput
+  const showPendingTag = isConnected && verification.kind === 'pending' && !showPendingLabelInInput
   const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
   const isChecking = verification.kind === 'checking'
   const {
