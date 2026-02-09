@@ -1,6 +1,6 @@
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import { i18n } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
@@ -35,10 +35,14 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: bool
           {
             href: Routes.ACCOUNT_MY_REWARDS,
             label: msg`My Rewards`,
+            badge: msg`New`,
+            badgeType: BadgeTypes.ALERT,
           },
           {
             href: Routes.ACCOUNT_AFFILIATE,
             label: msg`Affiliate`,
+            badge: msg`New`,
+            badgeType: BadgeTypes.ALERT,
           },
         ]
       : []),
@@ -122,9 +126,11 @@ export const NAV_ITEMS = (chainId: SupportedChainId, isAffiliateProgramEnabled: 
   const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId, isAffiliateProgramEnabled)
   const accountItem: MenuItem = {
     label: i18n._(_ACCOUNT_ITEM.label),
-    children: _ACCOUNT_ITEM.children.map(({ href, label }) => ({
+    children: _ACCOUNT_ITEM.children.map(({ href, label, badge, badgeType }) => ({
       href,
       label: i18n._(label),
+      badge: badge ? i18n._(badge) : undefined,
+      badgeType,
     })),
   }
 
