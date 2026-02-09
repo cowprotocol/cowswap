@@ -454,7 +454,7 @@ export default function AccountAffiliate() {
   const handleInputChange = useCallback((event: FormEvent<HTMLInputElement>) => {
     setHasEdited(true)
     setErrorMessage(null)
-    setInputCode(event.currentTarget.value.toUpperCase())
+    setInputCode(sanitizeReferralCode(event.currentTarget.value))
   }, [])
 
   const handleGenerate = useCallback(() => {
