@@ -26,7 +26,7 @@ const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId, isAffiliateProgramEnabled
     { title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) },
     ...(isAffiliateProgramEnabled
       ? [
-          { title: msg`My rewards`, url: '/account/my-rewards' },
+          { title: msg`My Rewards`, url: '/account/my-rewards' },
           { title: msg`Affiliate`, url: '/account/affiliate' },
         ]
       : []),

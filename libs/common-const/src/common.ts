@@ -48,7 +48,7 @@ export const PAGE_TITLES = {
   MEV_SLICER: msg`Mev Slicer`,
   HOOKS: msg`Hooks`,
   AFFILIATE: msg`Rewards hub - Affiliate`,
-  MY_REWARDS: msg`Rewards hub - My rewards`,
+  MY_REWARDS: msg`Rewards hub - My Rewards`,
 }
 
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {

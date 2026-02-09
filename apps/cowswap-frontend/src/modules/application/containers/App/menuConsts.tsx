@@ -34,7 +34,7 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: bool
       ? [
           {
             href: Routes.ACCOUNT_MY_REWARDS,
-            label: msg`My rewards`,
+            label: msg`My Rewards`,
           },
           {
             href: Routes.ACCOUNT_AFFILIATE,

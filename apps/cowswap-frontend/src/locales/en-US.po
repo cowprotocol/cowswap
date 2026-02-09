@@ -1066,8 +1066,8 @@ msgstr "APR"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
-msgid "My rewards"
-msgstr "My rewards"
+msgid "My Rewards"
+msgstr "My Rewards"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "CoW Protocol Explorer"
@@ -5933,8 +5933,8 @@ msgid "Not compatible with current wallet type"
 msgstr "Not compatible with current wallet type"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
-msgid "Rewards hub - My rewards"
-msgstr "Rewards hub - My rewards"
+msgid "Rewards hub - My Rewards"
+msgstr "Rewards hub - My Rewards"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Swap from"

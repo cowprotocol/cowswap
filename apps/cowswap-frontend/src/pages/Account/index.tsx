@@ -32,7 +32,7 @@ function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): s
     case RoutesEnum.ACCOUNT_AFFILIATE:
       return isAffiliateProgramEnabled ? ['account-affiliate', t`Rewards hub - Affiliate`] : []
     case RoutesEnum.ACCOUNT_MY_REWARDS:
-      return isAffiliateProgramEnabled ? ['account-my-rewards', t`Rewards hub - My rewards`] : []
+      return isAffiliateProgramEnabled ? ['account-my-rewards', t`Rewards hub - My Rewards`] : []
     default:
       return []
   }
