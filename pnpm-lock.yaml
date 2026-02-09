@@ -339,9 +339,6 @@ importers:
       '@cowprotocol/assets':
         specifier: workspace:*
         version: link:../../libs/assets
-      '@cowprotocol/balances-and-allowances':
-        specifier: workspace:*
-        version: link:../../libs/balances-and-allowances
       '@cowprotocol/cms':
         specifier: ^0.11.0
         version: 0.11.0
@@ -357,33 +354,9 @@ importers:
       '@cowprotocol/core':
         specifier: workspace:*
         version: link:../../libs/core
-      '@cowprotocol/cowswap-abis':
-        specifier: workspace:*
-        version: link:../../libs/abis
-      '@cowprotocol/ens':
-        specifier: workspace:*
-        version: link:../../libs/ens
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../../libs/events
-      '@cowprotocol/hook-dapp-lib':
-        specifier: workspace:*
-        version: link:../../libs/hook-dapp-lib
-      '@cowprotocol/iframe-transport':
-        specifier: workspace:*
-        version: link:../../libs/iframe-transport
-      '@cowprotocol/multicall':
-        specifier: workspace:*
-        version: link:../../libs/multicall
-      '@cowprotocol/permit-utils':
-        specifier: workspace:*
-        version: link:../../libs/permit-utils
-      '@cowprotocol/snackbars':
-        specifier: workspace:*
-        version: link:../../libs/snackbars
-      '@cowprotocol/tokens':
-        specifier: workspace:*
-        version: link:../../libs/tokens
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../../libs/types
@@ -399,9 +372,6 @@ importers:
       '@cowprotocol/wallet-provider':
         specifier: workspace:*
         version: link:../../libs/wallet-provider
-      '@cowprotocol/widget-lib':
-        specifier: workspace:*
-        version: link:../../libs/widget-lib
       '@cowprotocol/widget-react':
         specifier: workspace:*
         version: link:../../libs/widget-react

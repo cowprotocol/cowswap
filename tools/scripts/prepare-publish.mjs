@@ -4,6 +4,7 @@
  * Prepares a built package for publishing by:
  * 1. Applying publishConfig overrides to the package.json
  * 2. Resolving workspace:* dependencies to actual versions
+ * 3. Changing the main entry point to .js file. It should be .ts in the original code to keep local libs imports
  */
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs'
@@ -85,6 +86,11 @@ function preparePackage(distPkgPath) {
   if (pkg.private === true) {
     console.warn(`Warning: Package ${pkg.name} has private: true, removing it`)
     delete pkg.private
+  }
+
+  // Change entry point to compiled JS
+  if (pkg.main === './src/index.ts') {
+    pkg.main = './src/index.js'
   }
 
   writeJson(distPkgPath, pkg)
