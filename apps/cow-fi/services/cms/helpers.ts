@@ -23,7 +23,7 @@ export function getPopulateConfig(endpoint: '/categories' | '/articles' | '/page
         image: { fields: ['url'] },
       }
     case '/pages':
-      return { contentSections: '*' }
+      return { contentSections: '*', metadata: '*' }
     case '/articles':
       return {
         cover: { fields: ['url', 'width', 'height', 'alternativeText'] },

@@ -31,19 +31,20 @@ export async function generateCmsPageMetadata(slug: string): Promise<Metadata> {
     throw new Error(`Page with slug "${slug}" not found in CMS`)
   }
 
-  const { heading, description } = page.attributes
+  const { heading, description, metadata } = page.attributes
+  const metaTitle = (metadata as { metaTitle?: string })?.metaTitle
+  const metaDescription = (metadata as { metaDescription?: string })?.metaDescription
 
-  if (!heading && !description) {
+  const title = metaTitle || heading || description
+  const desc = metaDescription || description || heading || ''
+
+  if (!title) {
     throw new Error(`No title found for page with slug "${slug}" in CMS`)
   }
 
-  if (!description) {
-    throw new Error(`No meta description found for page with slug "${slug}" in CMS`)
-  }
-
   return getPageMetadata({
-    absoluteTitle: heading || description, // Use heading for title, fallback to description if heading is null
-    description: description,
+    absoluteTitle: title,
+    description: desc,
   })
 }
 
