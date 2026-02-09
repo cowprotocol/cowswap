@@ -32,7 +32,7 @@ export interface SmartModalProps {
   onDismiss: () => void
   children: ReactNode
   /** When set, position panel relative to this element using placement. */
-  anchorRef?: RefObject<HTMLElement> | null
+  anchorRef?: RefObject<HTMLElement | null>
   /** When set, render into document.getElementById(containerId); layout handled by container. */
   containerId?: string | null
   /** Media query string (e.g. Media.upToSmall(false)); when matched, render as bottom drawer with swipe-down to close. */

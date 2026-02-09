@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 import { useMediaQuery, useInterval } from '@cowprotocol/common-hooks'
 
 import { DialogOverlay } from '@reach/dialog'
-import type { Placement } from '@popperjs/core'
+import type { Placement, Options as PopperOptions } from '@popperjs/core'
 import { usePopper } from 'react-popper'
 import { useTransition } from '@react-spring/web'
 
@@ -165,20 +165,23 @@ function SmartModalDropdown({
   const referenceElement = anchorRef.current
   const options = useMemo(
     () => ({
-      placement: placement as Placement,
-      strategy: 'fixed' as const,
+      placement: placement,
+      strategy: 'absolute',
       modifiers: [
-        { name: 'offset', options: { offset: [POPPER_OFFSET, POPPER_OFFSET] } },
+        { name: 'offset', options: { offset: [0, POPPER_OFFSET] } },
         { name: 'preventOverflow', options: { padding: POPPER_OFFSET } },
       ],
-    }),
+    } satisfies PopperOptions),
     [placement],
   )
   const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
-  const updateCb = useCallback(() => {
-    update?.()
-  }, [update])
-  useInterval(updateCb, isOpen ? 100 : null)
+
+  // TODO: Implement as per example here https://codesandbox.io/p/sandbox/gallant-sea-rcg43b?file=%2Fsrc%2FApp.tsx
+  // or not at all (just close on resize or scroll)
+  // const updateCb = useCallback(() => {
+  //   update?.()
+  // }, [update])
+  // useInterval(updateCb, isOpen ? 100 : null)
 
   const portalContainer = getPortalContainer(containerId ?? undefined)
   if (!portalContainer || !isOpen) return null

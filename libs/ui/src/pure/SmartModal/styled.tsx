@@ -77,9 +77,11 @@ export const DropdownPanel = styled.div`
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_PAPER});
   box-shadow: var(${UI.BOX_SHADOW});
+  // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   border-radius: 12px;
-  padding: 6px 3px;
+  // padding: 6px 3px;
   font-size: 13px;
   overflow: auto;
+  border-radius: 12px;
 `
