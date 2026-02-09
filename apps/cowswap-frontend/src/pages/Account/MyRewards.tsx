@@ -19,16 +19,17 @@ import SVG from 'react-inlinesvg'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
-import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from 'modules/affiliate/config/constants'
+import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from 'modules/affiliate/config/affiliateProgram.const'
 import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
 import { useTraderReferralCodeActions } from 'modules/affiliate/hooks/useTraderReferralCodeActions'
+import { TraderStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
 import {
   formatUpdatedAt,
   formatUsdcCompact,
   formatUsdCompact,
   getIncomingIneligibleCode,
   isSupportedReferralNetwork,
-} from 'modules/affiliate/lib/affiliate-program-utils'
+} from 'modules/affiliate/lib/affiliateProgramUtils'
 import {
   AffiliateTermsFaqLinks,
   BottomMetaRow,
@@ -64,7 +65,6 @@ import {
 } from 'modules/affiliate/pure/shared'
 import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/pure/TraderReferralCodeIneligibleCopy'
 import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/pure/TraderReferralCodeNetworkBanner'
-import { TraderStatsResponse } from 'modules/affiliate/state/affiliate-program-types'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 const MIN_LOADING_MS = 200

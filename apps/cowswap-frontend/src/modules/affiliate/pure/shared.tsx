@@ -6,7 +6,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { AFFILIATE_HOW_IT_WORKS_URL, AFFILIATE_TERMS_URL } from 'modules/affiliate/config/constants'
+import { AFFILIATE_HOW_IT_WORKS_URL, AFFILIATE_TERMS_URL } from 'modules/affiliate/config/affiliateProgram.const'
 
 import { Card, ExtLink } from 'pages/Account/styled'
 

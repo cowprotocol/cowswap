@@ -2,11 +2,11 @@ import { Dispatch, SetStateAction, useEffect } from 'react'
 
 import { isProdLike } from '@cowprotocol/common-utils'
 
-import { TraderReferralCodeState } from './affiliate-program-types'
 import { reduceRemoveCode, reduceSetSavedCode } from './traderReferralCodeReducers'
 
-import { AFFILIATE_TRADER_STORAGE_KEY } from '../config/constants'
-import { sanitizeReferralCode } from '../lib/affiliate-program-utils'
+import { AFFILIATE_TRADER_STORAGE_KEY } from '../config/affiliateProgram.const'
+import { TraderReferralCodeState } from '../lib/affiliateProgramTypes'
+import { sanitizeReferralCode } from '../lib/affiliateProgramUtils'
 
 type SetTraderReferralCodeState = Dispatch<SetStateAction<TraderReferralCodeState>>
 type SetHydratedState = Dispatch<SetStateAction<boolean>>

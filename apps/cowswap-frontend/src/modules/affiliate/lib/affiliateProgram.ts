@@ -6,19 +6,17 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
 
-import { VERIFICATION_RETRY_DELAY_MS } from '../config/constants'
-import {
-  isReferralCodeLengthValid,
-  sanitizeReferralCode,
-  type PartnerProgramParams,
-} from '../lib/affiliate-program-utils'
-import {
+import { isReferralCodeLengthValid, sanitizeReferralCode, type PartnerProgramParams } from './affiliateProgramUtils'
+
+import { VERIFICATION_RETRY_DELAY_MS } from '../config/affiliateProgram.const'
+
+import type {
   TraderReferralCodeResponse,
   TraderReferralCodeContextValue,
   TraderReferralCodeVerificationResponse,
   TraderReferralCodeVerificationStatus,
   TraderWalletReferralCodeState,
-} from '../state/affiliate-program-types'
+} from './affiliateProgramTypes'
 
 export interface PerformVerificationParams {
   rawCode: string
@@ -40,7 +38,11 @@ export interface PerformVerificationParams {
   previousVerification?: TraderReferralCodeVerificationStatus
 }
 
-// eslint-disable-next-line complexity
+interface SanitizedContext {
+  sanitizedCode: string
+  baseParams: PerformVerificationParams
+}
+
 export async function performVerification(params: PerformVerificationParams): Promise<void> {
   const context = sanitizeAndValidate(params)
 
@@ -68,12 +70,10 @@ export async function performVerification(params: PerformVerificationParams): Pr
       return
     }
 
-    if (response.status === 404) {
-      await delay(VERIFICATION_RETRY_DELAY_MS)
+    const shouldProceed = await handleRetryDelay({ response, requestId, pendingVerificationRef })
 
-      if (pendingVerificationRef.current !== requestId) {
-        return
-      }
+    if (!shouldProceed) {
+      return
     }
 
     const preserveExisting =
@@ -94,29 +94,15 @@ export async function performVerification(params: PerformVerificationParams): Pr
     })
     pendingVerificationRef.current = null
   } catch (error) {
-    await delay(VERIFICATION_RETRY_DELAY_MS) // artificial delay to limit API spam
-
-    if (pendingVerificationRef.current !== requestId) {
-      return
-    }
-
-    const status = (error as Error & { status?: number }).status
-    const errorType = status ? 'network' : 'unknown'
-    const message = 'Unable to check code right now.'
-
-    applyVerificationResult({ kind: 'error', code: sanitizedCode, errorType, message })
-    trackVerifyResult('error', false, `type=${errorType}`)
-    pendingVerificationRef.current = null
-
-    if (!isProdLike) {
-      console.warn('[ReferralCode] Verification failed', error)
-    }
+    await applyVerificationError({
+      error,
+      sanitizedCode,
+      requestId,
+      pendingVerificationRef,
+      applyVerificationResult,
+      trackVerifyResult,
+    })
   }
-}
-
-interface SanitizedContext {
-  sanitizedCode: string
-  baseParams: PerformVerificationParams
 }
 
 function sanitizeAndValidate(params: PerformVerificationParams): SanitizedContext | null {
@@ -281,4 +267,52 @@ function restoreExistingVerificationState(params: {
   }
 
   applyVerificationResult(currentVerification)
+}
+
+async function applyVerificationError(params: {
+  error: unknown
+  sanitizedCode: string
+  requestId: number
+  pendingVerificationRef: PerformVerificationParams['pendingVerificationRef']
+  applyVerificationResult: (
+    status: TraderReferralCodeVerificationStatus,
+    walletState?: TraderWalletReferralCodeState,
+  ) => void
+  trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
+}): Promise<void> {
+  const { error, sanitizedCode, requestId, pendingVerificationRef, applyVerificationResult, trackVerifyResult } = params
+
+  await delay(VERIFICATION_RETRY_DELAY_MS)
+
+  if (pendingVerificationRef.current !== requestId) {
+    return
+  }
+
+  const status = (error as Error & { status?: number }).status
+  const errorType = status ? 'network' : 'unknown'
+  const message = 'Unable to check code right now.'
+
+  applyVerificationResult({ kind: 'error', code: sanitizedCode, errorType, message })
+  trackVerifyResult('error', false, `type=${errorType}`)
+  pendingVerificationRef.current = null
+
+  if (!isProdLike) {
+    console.warn('[ReferralCode] Verification failed', error)
+  }
+}
+
+async function handleRetryDelay(params: {
+  response: TraderReferralCodeVerificationResponse
+  requestId: number
+  pendingVerificationRef: PerformVerificationParams['pendingVerificationRef']
+}): Promise<boolean> {
+  const { response, requestId, pendingVerificationRef } = params
+
+  if (response.status !== 404) {
+    return true
+  }
+
+  await delay(VERIFICATION_RETRY_DELAY_MS)
+
+  return pendingVerificationRef.current === requestId
 }

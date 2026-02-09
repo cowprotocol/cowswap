@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { PartnerProgramParams } from '../lib/affiliate-program-utils'
+import { PartnerProgramParams } from './affiliateProgramUtils'
 
 /**
  * Flags how the referral modal was launched:

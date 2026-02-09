@@ -14,7 +14,7 @@ import { useTraderReferralCodeModalController } from './TraderReferralCodeModal/
 
 import { useTraderReferralCodeActions } from '../hooks/useTraderReferralCodeActions'
 import { useTraderReferralCodeModalState } from '../hooks/useTraderReferralCodeModalState'
-import { isSupportedReferralNetwork } from '../lib/affiliate-program-utils'
+import { isSupportedReferralNetwork } from '../lib/affiliateProgramUtils'
 
 export function TraderReferralCodeModal(): ReactNode {
   const modalState = useTraderReferralCodeModalState()

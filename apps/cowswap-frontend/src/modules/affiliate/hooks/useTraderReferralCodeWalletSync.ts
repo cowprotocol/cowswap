@@ -8,7 +8,7 @@ import { AppState } from 'legacy/state'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
 import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer'
 
-import { TraderReferralCodeContextValue } from '../state/affiliate-program-types'
+import { TraderReferralCodeContextValue } from '../lib/affiliateProgramTypes'
 
 interface WalletSyncParams {
   account?: string

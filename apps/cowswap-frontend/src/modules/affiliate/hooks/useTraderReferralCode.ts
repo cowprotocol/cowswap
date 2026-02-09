@@ -1,4 +1,4 @@
-import { TraderReferralCodeContextValue } from '../state/affiliate-program-types'
+import { TraderReferralCodeContextValue } from '../lib/affiliateProgramTypes'
 import { useTraderReferralCodeContext } from '../state/TraderReferralCodeContext'
 
 export function useTraderReferralCode(): TraderReferralCodeContextValue {

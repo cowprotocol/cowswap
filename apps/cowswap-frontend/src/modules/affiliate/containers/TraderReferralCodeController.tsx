@@ -6,15 +6,12 @@ import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { isSupportedReferralNetwork } from 'modules/affiliate/lib/affiliate-program-utils'
+import { isSupportedReferralNetwork } from 'modules/affiliate/lib/affiliateProgramUtils'
 
-import {
-  useTraderReferralCodeAutoVerification,
-  useTraderReferralCodeVerification,
-  usePendingReferralCodeVerificationHandler,
-} from './verificationEffects'
-
+import { usePendingReferralCodeVerificationHandler } from '../hooks/usePendingReferralCodeVerificationHandler'
 import { useTraderReferralCode } from '../hooks/useTraderReferralCode'
+import { useTraderReferralCodeAutoVerification } from '../hooks/useTraderReferralCodeAutoVerification'
+import { useTraderReferralCodeVerification } from '../hooks/useTraderReferralCodeVerification'
 import { useTraderReferralCodeWalletSync } from '../hooks/useTraderReferralCodeWalletSync'
 
 export function TraderReferralCodeController(): ReactNode {

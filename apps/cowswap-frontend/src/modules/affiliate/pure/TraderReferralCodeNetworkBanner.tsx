@@ -6,7 +6,7 @@ import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from '../config/constants'
+import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from '../config/affiliateProgram.const'
 import { useTraderReferralCode } from '../hooks/useTraderReferralCode'
 
 const Wrapper = styled.div`

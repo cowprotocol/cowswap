@@ -4,16 +4,13 @@ import { CowAnalytics } from '@cowprotocol/analytics'
 
 import { t } from '@lingui/core/macro'
 
-import { PrimaryCta, StatusCopyResult } from './types'
+import { PrimaryCta, StatusCopyResult } from './TraderReferralCodeModal.types'
 
 import {
   useTraderReferralCodeModalState,
   TraderReferralCodeModalUiState,
 } from '../../hooks/useTraderReferralCodeModalState'
-import {
-  TraderReferralCodeVerificationStatus,
-  TraderWalletReferralCodeState,
-} from '../../state/affiliate-program-types'
+import { TraderReferralCodeVerificationStatus, TraderWalletReferralCodeState } from '../../lib/affiliateProgramTypes'
 
 type VerificationKind = ReturnType<typeof useTraderReferralCodeModalState>['verification']['kind']
 type WalletStatus = TraderWalletReferralCodeState['status']

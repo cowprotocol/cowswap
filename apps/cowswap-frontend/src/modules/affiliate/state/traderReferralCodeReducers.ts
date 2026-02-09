@@ -4,9 +4,8 @@ import {
   TraderReferralCodeModalSource,
   TraderReferralCodeVerificationStatus,
   TraderWalletReferralCodeState,
-} from './affiliate-program-types'
-
-import { sanitizeReferralCode } from '../lib/affiliate-program-utils'
+} from '../lib/affiliateProgramTypes'
+import { sanitizeReferralCode } from '../lib/affiliateProgramUtils'
 
 export function reduceOpenModal(
   prev: TraderReferralCodeState,

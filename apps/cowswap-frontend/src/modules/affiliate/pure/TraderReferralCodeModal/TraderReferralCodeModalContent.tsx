@@ -7,15 +7,12 @@ import { Trans } from '@lingui/react/macro'
 
 import { Body, Footer, ModalContainer, Subtitle, Title } from './styles'
 import { TraderReferralCodeForm } from './TraderReferralCodeForm'
+import { TraderReferralCodeModalContentProps } from './TraderReferralCodeModal.types'
 import { TraderReferralCodeStatusMessages, getModalTitle } from './TraderReferralCodeStatusMessages'
-import { TraderReferralCodeModalContentProps } from './types'
 
 import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
-import { getPartnerProgramCopyValues } from '../../lib/affiliate-program-utils'
-import {
-  TraderReferralCodeIncomingReason,
-  TraderReferralCodeVerificationStatus,
-} from '../../state/affiliate-program-types'
+import { TraderReferralCodeIncomingReason, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+import { getPartnerProgramCopyValues } from '../../lib/affiliateProgramUtils'
 import { TraderReferralCodeHowItWorksLink, TraderReferralCodeIneligibleCopy } from '../TraderReferralCodeIneligibleCopy'
 
 export function TraderReferralCodeModalContent(props: TraderReferralCodeModalContentProps): ReactNode {

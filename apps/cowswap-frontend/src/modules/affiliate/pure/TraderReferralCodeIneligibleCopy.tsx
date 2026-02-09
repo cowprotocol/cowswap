@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { HowItWorksLink } from './shared'
 
-import { AFFILIATE_HOW_IT_WORKS_URL } from '../config/constants'
+import { AFFILIATE_HOW_IT_WORKS_URL } from '../config/affiliateProgram.const'
 
 export interface TraderReferralCodeIneligibleCopyProps {
   incomingCode?: string

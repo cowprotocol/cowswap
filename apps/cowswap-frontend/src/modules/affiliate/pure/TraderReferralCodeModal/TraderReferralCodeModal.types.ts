@@ -1,10 +1,7 @@
 import { FormEvent, RefObject } from 'react'
 
 import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
-import {
-  TraderReferralCodeIncomingReason,
-  TraderReferralCodeVerificationStatus,
-} from '../../state/affiliate-program-types'
+import { TraderReferralCodeIncomingReason, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 
 export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElement | null
 

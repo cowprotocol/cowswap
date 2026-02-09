@@ -11,12 +11,12 @@ import {
   useTraderReferralCodeModalAnalytics,
   useTraderReferralCodeModalFocus,
 } from './traderReferralCodeModal.helpers'
-import { FocusableElement, PrimaryCta, TraderReferralCodeModalContentProps } from './types'
+import { FocusableElement, PrimaryCta, TraderReferralCodeModalContentProps } from './TraderReferralCodeModal.types'
 
 import { useTraderReferralCodeActions } from '../../hooks/useTraderReferralCodeActions'
 import { useTraderReferralCodeModalState } from '../../hooks/useTraderReferralCodeModalState'
-import { isReferralCodeLengthValid, getIncomingIneligibleCode } from '../../lib/affiliate-program-utils'
-import { TraderReferralCodeVerificationStatus } from '../../state/affiliate-program-types'
+import { TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+import { isReferralCodeLengthValid, getIncomingIneligibleCode } from '../../lib/affiliateProgramUtils'
 
 export interface TraderReferralCodeModalControllerParams {
   modalState: ReturnType<typeof useTraderReferralCodeModalState>

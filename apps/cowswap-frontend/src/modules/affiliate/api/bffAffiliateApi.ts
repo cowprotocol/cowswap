@@ -9,7 +9,7 @@ import {
   BACKOFF_TIME_MULTIPLE,
   RATE_LIMIT_INTERVAL_MS,
   STATUS_CODES_TO_RETRY,
-} from '../config/constants'
+} from '../config/affiliateProgram.const'
 import {
   PartnerCodeResponse,
   PartnerCreateRequest,
@@ -20,7 +20,7 @@ import {
   TraderStatsResponse,
   TraderWalletReferralCodeStatusRequest,
   TraderWalletReferralCodeStatusResponse,
-} from '../state/affiliate-program-types'
+} from '../lib/affiliateProgramTypes'
 
 const TIMEOUT_ERROR_MESSAGE = 'Unable to reach referral service'
 const JSON_HEADERS = {

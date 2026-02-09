@@ -10,8 +10,8 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useTraderReferralCode } from '../hooks/useTraderReferralCode'
 import { useTraderReferralCodeActions } from '../hooks/useTraderReferralCodeActions'
-import { isReferralCodeLengthValid, sanitizeReferralCode } from '../lib/affiliate-program-utils'
-import { TraderReferralCodeContextValue } from '../state/affiliate-program-types'
+import { TraderReferralCodeContextValue } from '../lib/affiliateProgramTypes'
+import { isReferralCodeLengthValid, sanitizeReferralCode } from '../lib/affiliateProgramUtils'
 
 export function TraderReferralCodeDeepLinkHandler(): ReactNode {
   const { isAffiliateProgramEnabled = false } = useFeatureFlags()

@@ -27,7 +27,8 @@ import CopyHelper from 'legacy/components/Copy'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
-import { VERIFICATION_DEBOUNCE_MS } from 'modules/affiliate/config/constants'
+import { VERIFICATION_DEBOUNCE_MS } from 'modules/affiliate/config/affiliateProgram.const'
+import { PartnerCodeResponse, PartnerStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
 import {
   buildPartnerTypedData,
   formatUsdcCompact,
@@ -35,7 +36,7 @@ import {
   generateSuggestedCode,
   isReferralCodeLengthValid,
   sanitizeReferralCode,
-} from 'modules/affiliate/lib/affiliate-program-utils'
+} from 'modules/affiliate/lib/affiliateProgramUtils'
 import {
   ReferralCodeInputRow,
   type TrailingIconKind,
@@ -86,7 +87,6 @@ import {
   LinkedMetaList,
 } from 'modules/affiliate/pure/shared'
 import { TraderReferralCodeHowItWorksLink } from 'modules/affiliate/pure/TraderReferralCodeIneligibleCopy'
-import { PartnerCodeResponse, PartnerStatsResponse } from 'modules/affiliate/state/affiliate-program-types'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useModalState } from 'common/hooks/useModalState'

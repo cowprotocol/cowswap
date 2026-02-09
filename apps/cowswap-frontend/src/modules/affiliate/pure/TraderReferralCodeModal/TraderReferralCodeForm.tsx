@@ -20,8 +20,8 @@ import {
 } from './styles'
 
 import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
-import { isReferralCodeLengthValid } from '../../lib/affiliate-program-utils'
-import { TraderReferralCodeVerificationStatus } from '../../state/affiliate-program-types'
+import { TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+import { isReferralCodeLengthValid } from '../../lib/affiliateProgramUtils'
 import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput/ReferralCodeInputRow'
 import { LabelContent } from '../shared'
 
