@@ -3895,8 +3895,8 @@ msgid "View account"
 msgstr "View account"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
-msgid "Donut chart tracks eligible volume left to unlock the next reward."
-msgstr "Donut chart tracks eligible volume left to unlock the next reward."
+msgid "This chart tracks eligible volume left to unlock the next reward."
+msgstr "This chart tracks eligible volume left to unlock the next reward."
 
 #: apps/cowswap-frontend/src/modules/yield/pure/TargetPoolPreviewInfo.tsx
 msgid "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."

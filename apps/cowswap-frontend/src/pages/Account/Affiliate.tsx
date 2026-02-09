@@ -143,7 +143,7 @@ export default function AccountAffiliate() {
     [hasInvalidChars, normalizedCode],
   )
   const codeTooltip = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
-  const referralTrafficTooltip = t`Donut chart tracks eligible volume left to unlock the next reward.`
+  const referralTrafficTooltip = t`This chart tracks eligible volume left to unlock the next reward.`
   const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
   const formatNumber = useCallback(
     (value: number | null | undefined) => (value === null || value === undefined ? '-' : numberFormatter.format(value)),
