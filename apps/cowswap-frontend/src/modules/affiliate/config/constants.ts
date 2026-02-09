@@ -26,6 +26,7 @@ export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.m
 
 // TODO: replace placeholder URL once the referral docs are provisioned
 export const AFFILIATE_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
+export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms'
 
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 

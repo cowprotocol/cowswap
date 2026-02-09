@@ -6,7 +6,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { AFFILIATE_HOW_IT_WORKS_URL } from 'modules/affiliate/config/constants'
+import { AFFILIATE_HOW_IT_WORKS_URL, AFFILIATE_TERMS_URL } from 'modules/affiliate/config/constants'
 
 import { Card, ExtLink } from 'pages/Account/styled'
 
@@ -171,11 +171,11 @@ const LinksRow = styled.div<{ $align: 'inline' | 'center' }>`
 export function AffiliateTermsFaqLinks({ align = 'inline' }: { align?: 'inline' | 'center' }): ReactElement {
   return (
     <LinksRow $align={align}>
-      <ExtLink href="https://cow.fi/legal/cowswap-terms" target="_blank" rel="noopener noreferrer">
+      <ExtLink href={AFFILIATE_TERMS_URL} target="_blank">
         <Trans>Terms</Trans>
       </ExtLink>
       <Separator>•</Separator>
-      <ExtLink href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
+      <ExtLink href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank">
         <Trans>FAQ</Trans>
       </ExtLink>
     </LinksRow>
