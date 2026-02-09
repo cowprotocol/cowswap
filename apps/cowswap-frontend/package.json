@@ -95,7 +95,7 @@
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/token-lists": "^1.0.0-beta.30",
     "@use-gesture/react": "^10.2.23",
-    "@web3-react/core": "^8.2.3",
+    "@wagmi/core": "^3.3.1",
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",
     "color2k": "^2.0.2",
