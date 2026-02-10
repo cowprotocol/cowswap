@@ -114,6 +114,15 @@ const QR_LOGOS: Record<QrColor, string> = {
 type AvailabilityState = 'idle' | 'invalid' | 'checking' | 'available' | 'unavailable' | 'error'
 type QrColor = 'black' | 'white' | 'accent'
 
+const isAffiliateNetworkError = (error: Error & { status?: number }): boolean => {
+  if (typeof error.status === 'number') {
+    return false
+  }
+
+  const message = error.message || ''
+  return message.includes('Failed to fetch') || message.includes('NetworkError') || message.includes('Load failed')
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function, complexity
 export default function AccountAffiliate() {
   const { i18n } = useLingui()
@@ -355,10 +364,12 @@ export default function AccountAffiliate() {
           }
 
           setAvailability('error')
+          setErrorMessage(t`Affiliate service is unreachable. Try again later.`)
         })
         .catch(() => {
           if (active) {
             setAvailability('error')
+            setErrorMessage(t`Affiliate service is unreachable. Try again later.`)
           }
         })
     }, VERIFICATION_DEBOUNCE_MS)
@@ -424,7 +435,9 @@ export default function AccountAffiliate() {
     } catch (error) {
       const err = error as Error & { status?: number; code?: number }
 
-      if (err.code === 4001) {
+      if (isAffiliateNetworkError(err)) {
+        setErrorMessage(t`Affiliate service is unreachable. Try again later.`)
+      } else if (err.code === 4001) {
         setErrorMessage(t`Signature request rejected.`)
       } else if (err.status === 409) {
         setAvailability('unavailable')
