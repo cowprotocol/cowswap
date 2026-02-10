@@ -6,7 +6,6 @@ import type {
   OnCancelledOrderPayload,
   OnExpiredOrderPayload,
 } from '@cowprotocol/events'
-import { UiOrderType } from '@cowprotocol/types'
 
 import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'util'
 
@@ -91,7 +90,7 @@ describe('orderLifecycleAnalytics', () => {
       },
       inputAmount: BigInt('1000000000000000000'),
       outputAmount: BigInt('2500000'),
-      orderType: UiOrderType.SWAP,
+      orderType: 'SWAP' as OnPostedOrderPayload['orderType'],
       partiallyFillable: true,
       kind: OrderKind.SELL,
     }
