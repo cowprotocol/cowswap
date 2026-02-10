@@ -13,6 +13,42 @@ import { useTraderReferralCodeActions } from '../hooks/useTraderReferralCodeActi
 import { TraderReferralCodeContextValue } from '../lib/affiliateProgramTypes'
 import { isReferralCodeLengthValid, sanitizeReferralCode } from '../lib/affiliateProgramUtils'
 
+type ReferralSearchSource = 'router' | 'window' | 'none'
+
+interface ReferralSearchSnapshot {
+  codeParam: string | null
+  source: ReferralSearchSource
+  routerParams: URLSearchParams
+  windowParams: URLSearchParams
+  hasRouterRef: boolean
+  hasWindowRef: boolean
+}
+
+function getReferralSearchSnapshot(search: string): ReferralSearchSnapshot {
+  const routerParams = new URLSearchParams(search || '')
+  const windowParams = new URLSearchParams(window.location.search || '')
+  const routerCode = routerParams.get('ref')
+  const windowCode = windowParams.get('ref')
+  const hasRouterRef = Boolean(routerCode)
+  const hasWindowRef = Boolean(windowCode)
+
+  if (routerCode) {
+    return { codeParam: routerCode, source: 'router', routerParams, windowParams, hasRouterRef, hasWindowRef }
+  }
+
+  if (windowCode) {
+    return { codeParam: windowCode, source: 'window', routerParams, windowParams, hasRouterRef, hasWindowRef }
+  }
+
+  return { codeParam: null, source: 'none', routerParams, windowParams, hasRouterRef, hasWindowRef }
+}
+
+function replaceWindowSearch(params: URLSearchParams): void {
+  const nextSearch = params.toString()
+  const nextUrl = `${window.location.origin}${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`
+  window.history.replaceState(null, '', nextUrl)
+}
+
 export function TraderReferralCodeDeepLinkHandler(): ReactNode {
   const { isAffiliateProgramEnabled = false } = useFeatureFlags()
   const actions = useTraderReferralCodeActions()
@@ -26,11 +62,21 @@ export function TraderReferralCodeDeepLinkHandler(): ReactNode {
   const walletStatus = traderReferralCode.wallet.status
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    const codeParam = params.get('ref')
+    const { codeParam, source, routerParams, windowParams, hasRouterRef, hasWindowRef } = getReferralSearchSnapshot(
+      location.search,
+    )
     const stripReferralCodeFromUrl = (): void => {
-      params.delete('ref')
-      const nextSearch = params.toString()
+      if (hasWindowRef) {
+        windowParams.delete('ref')
+        replaceWindowSearch(windowParams)
+      }
+
+      if (!hasRouterRef) {
+        return
+      }
+
+      routerParams.delete('ref')
+      const nextSearch = routerParams.toString()
       navigate(
         {
           pathname: location.pathname,
@@ -41,7 +87,7 @@ export function TraderReferralCodeDeepLinkHandler(): ReactNode {
       )
     }
 
-    if (!codeParam) {
+    if (!codeParam || source === 'none') {
       lastProcessedRef.current = null
       return
     }
