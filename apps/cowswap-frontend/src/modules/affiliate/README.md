@@ -143,3 +143,8 @@ Production:
 - After having the payout wallet addresses you need to paste them in the Dune dashboards, both `Affiliate Overview` and `Traders Overview`
 - The dune dashboard will check USDC transfers from those wallets and compute what was already paid out and what is pending payout.
 - From two other dashboards, `Next payouts for affiliates` and `Next payouts for traders`, you can export a CSV file with the pending payouts with you can drop into Safe's CSV Airdrop app. (it takes a few minutes for the dashboards to reflect new payouts)
+
+## 10) File structure
+
+- Besides this README, there is also a `/apps/cowswap-frontend/src/modules/affiliate/SPEC.md` file with use-cases (useful for AGENTS).
+- The Dune queries are version controlled in `/apps/cowswap-frontend/src/modules/affiliate/misc`.
