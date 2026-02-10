@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import type { Web3Provider } from '@ethersproject/providers'
 
 import { useConnection } from 'wagmi'
 
 export function useWalletProvider(): Web3Provider | undefined {
-  const [provider, setProvider] = useState<JsonRpcProvider | undefined>()
+  // TODO this will probably be removed eventually
+  const [provider, setProvider] = useState<Web3Provider | undefined>()
 
   const { connector } = useConnection()
 
@@ -14,7 +15,7 @@ export function useWalletProvider(): Web3Provider | undefined {
     const getProvider = async (): Promise<void> => {
       try {
         const provider = await connector.getProvider()
-        setProvider(provider as JsonRpcProvider)
+        setProvider(provider as Web3Provider)
       } catch (error) {
         console.error(error.message)
         setProvider(undefined)
