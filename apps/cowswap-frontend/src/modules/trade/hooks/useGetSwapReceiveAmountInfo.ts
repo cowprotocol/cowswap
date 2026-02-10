@@ -44,7 +44,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   return useMemo(() => {
     // Avoid states mismatch
     if (orderKind !== orderParams?.kind) return null
-    if (!orderParams || !slippage || !inputCurrency || !outputCurrency) return null
+    if (!orderParams || typeof slippage !== 'number' || !inputCurrency || !outputCurrency) return null
 
     return {
       orderParams,
