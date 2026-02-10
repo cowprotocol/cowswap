@@ -87,4 +87,4 @@ jobs:
 
       # 9️⃣ Publish released packages
       - name: Publish released packages
-        run: pnpm exec nx release publish --tag next --access public
+        run: pnpm exec nx release publish --tag latest --access public
