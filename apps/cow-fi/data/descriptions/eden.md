@@ -12,4 +12,4 @@
 
 <h3>Where can you swap or trade EdenChain (EDN)?</h3>
 
-<p>Looking to add some EDN to your crypto herd? Look no further than <a href="https://swap.cow.fi/" target="_blank" rel="noopener">CoW Swap</a>, a Meta DEX aggregator that finds the best pasture for your trades. CoW Swap aggregrates all the DEXes where EDN is swappable, so you can be sure you're getting the best possible deal. Plus, it's also your safety net against MEV, providing MEV protection for secure, transparent transactions. So, why wait? Jump over the fence and start your EDN journey on CoW Swap today!</p>
+<p>Looking to add some EDN to your crypto herd? Look no further than <a href="https://swap.cow.fi/" target="_blank" rel="noopener">CoW Swap</a>, a Meta DEX aggregator that finds the best pasture for your trades. CoW Swap aggregates all the DEXes where EDN is swappable, so you can be sure you're getting the best possible deal. Plus, it's also your safety net against MEV, providing MEV protection for secure, transparent transactions. So, why wait? Jump over the fence and start your EDN journey on CoW Swap today!</p>

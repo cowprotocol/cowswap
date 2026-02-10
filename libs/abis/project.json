@@ -26,10 +26,6 @@
         "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/legacy './libs/abis/src/abis-legacy/**/*.json'"
       }
     },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs abis {args.tag} {args.otp}",
-      "dependsOn": ["build"]
-    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],

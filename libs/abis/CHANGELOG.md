@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/abis-v2.0.0...abis-v3.0.0) (2026-02-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### ✨ Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### 🐛 Bug Fixes
+
+* merge develop and resolve conflicts ([f13aa65](https://github.com/cowprotocol/cowswap/commit/f13aa654ecba5872503ccb81025c358b5941ab7f))
+* merge develop, resolve conflicts, update jotai in all packages ([20dddaa](https://github.com/cowprotocol/cowswap/commit/20dddaa2980ce7c9ba9f0c4dc6ca0d74c417638a))
+
+
+### 🔧 Miscellaneous
+
+* add missing eslint deps ([#6924](https://github.com/cowprotocol/cowswap/issues/6924)) ([afcfc18](https://github.com/cowprotocol/cowswap/commit/afcfc18ee80616629c7b0c0b7449e84db8400246))
+* release main ([#6917](https://github.com/cowprotocol/cowswap/issues/6917)) ([9657cec](https://github.com/cowprotocol/cowswap/commit/9657cec44d707ffb8871de46e47f19f61f4a9e64))
+* **release:** 2025 12 22 ([c133fa7](https://github.com/cowprotocol/cowswap/commit/c133fa730d2ff49fda21a8f543a4bba74d958aac))
+* **release:** 2026 01 28 ([#6903](https://github.com/cowprotocol/cowswap/issues/6903)) ([71b1b7d](https://github.com/cowprotocol/cowswap/commit/71b1b7d10037d5e2d69970c430be47ee5b63b58c))
+* trigger build ([bbc094a](https://github.com/cowprotocol/cowswap/commit/bbc094a1976912bbdbddce846d882686acb6ce17))
+* update readme examples ([#6600](https://github.com/cowprotocol/cowswap/issues/6600)) ([29150ee](https://github.com/cowprotocol/cowswap/commit/29150eea486ca3c794261b5cede5b5e398529a64))
+
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v1.2.3...cowswap-abis-v2.0.0) (2026-01-28)
 
 

@@ -4,10 +4,6 @@
   "sourceRoot": "libs/ui-utils/src",
   "projectType": "library",
   "targets": {
-    "publish": {
-      "command": "node tools/scripts/publish.mjs ui {args.tag} {args.otp}",
-      "dependsOn": ["build"]
-    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],

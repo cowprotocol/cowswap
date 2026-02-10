@@ -81,6 +81,12 @@
         "lintFilePatterns": ["apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}"]
       }
     },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p apps/cowswap-frontend/tsconfig.app.json"
+      }
+    },
     "serve-static": {
       "executor": "@nx/web:file-server",
       "options": {

@@ -5,15 +5,16 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/permit-utils"
+        "outputPath": "dist/libs/permit-utils",
+        "main": "libs/permit-utils/src/index.ts",
+        "tsConfig": "libs/permit-utils/tsconfig.lib.json",
+        "assets": ["libs/permit-utils/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true,
+        "buildableProjectDepsInPackageJsonType": "dependencies"
       }
-    },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs permit-utils {args.tag} {args.otp}",
-      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",

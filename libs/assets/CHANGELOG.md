@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/assets-v2.0.0...assets-v2.0.1) (2026-02-05)
+
+
+### 🔧 Miscellaneous
+
+* add missing eslint deps ([#6924](https://github.com/cowprotocol/cowswap/issues/6924)) ([afcfc18](https://github.com/cowprotocol/cowswap/commit/afcfc18ee80616629c7b0c0b7449e84db8400246))
+
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.17.1...assets-v2.0.0) (2026-01-28)
 
 

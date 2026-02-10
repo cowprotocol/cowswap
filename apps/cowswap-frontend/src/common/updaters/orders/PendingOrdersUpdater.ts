@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Command, UiOrderType } from '@cowprotocol/types'
+import { UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
@@ -52,7 +52,6 @@ import { fetchAndClassifyOrder } from './utils'
 
 import { useBlockNumber } from '../../hooks/useBlockNumber'
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
-import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 
 /**
  *
@@ -178,7 +177,6 @@ interface UpdateOrdersParams {
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
   addOrderToSurplusQueue: (orderId: string) => void
-  triggerTotalSurplusUpdate: Command | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
   getSafeTxInfo: GetSafeTxInfo
   safeNonce: number | undefined
@@ -253,7 +251,6 @@ async function _updateOrders({
   invalidateOrdersBatch,
   presignOrders,
   addOrderToSurplusQueue,
-  triggerTotalSurplusUpdate,
   updatePresignGnosisSafeTx,
   getSafeTxInfo,
   safeNonce,
@@ -336,8 +333,6 @@ async function _updateOrders({
         }
       }
     })
-    // trigger total surplus update
-    triggerTotalSurplusUpdate?.()
   }
 
   const replacedOrCancelledEthFlowOrders = getReplacedOrCancelledEthFlowOrders(orders, allTransactions)
@@ -457,7 +452,6 @@ export function PendingOrdersUpdater(): null {
   const invalidateOrdersBatch = useInvalidateOrdersBatch()
   const presignOrders = usePresignOrders()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
-  const triggerTotalSurplusUpdate = useTriggerTotalSurplusUpdateCallback()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
@@ -526,7 +520,6 @@ export function PendingOrdersUpdater(): null {
           cancelOrdersBatch,
           presignOrders,
           addOrderToSurplusQueue,
-          triggerTotalSurplusUpdate,
           updatePresignGnosisSafeTx,
           getSafeTxInfo,
           safeNonce,
@@ -546,7 +539,6 @@ export function PendingOrdersUpdater(): null {
       invalidateOrdersBatch,
       presignOrders,
       addOrderToSurplusQueue,
-      triggerTotalSurplusUpdate,
       updatePresignGnosisSafeTx,
       getSafeTxInfo,
       safeNonce,
