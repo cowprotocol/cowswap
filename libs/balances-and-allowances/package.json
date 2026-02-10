@@ -42,7 +42,9 @@
     "jotai": "2.16.2",
     "ms.macro": "^2.0.0",
     "react": "19.1.2",
-    "swr": "^2.3.3"
+    "swr": "^2.3.3",
+    "viem": "^2.45.0",
+    "wagmi": "3.4.1"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.0",
