@@ -32,7 +32,7 @@ interface MenuItemConfig {
 
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
   swap: Routes.SWAP,
-  limit: Routes.LIMIT_ORDER,
+  limit: Routes.LIMIT_ORDERS,
   advanced: Routes.ADVANCED_ORDERS,
   yield: Routes.YIELD,
 }
