@@ -1,5 +1,6 @@
-import { ConnectionType } from 'src/api/types'
 import { useConnection } from 'wagmi'
+
+import { ConnectionType } from '../../api/types'
 
 export function useConnectionType(): ConnectionType {
   const { connector } = useConnection()

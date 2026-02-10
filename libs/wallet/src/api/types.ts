@@ -10,7 +10,6 @@ export const ConnectionType = {
   INJECTED: injected.type,
   WALLET_CONNECT_V2: walletConnect.type,
 } as const
-
 export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType]
 
 export interface WalletInfo {
