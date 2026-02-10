@@ -43,6 +43,7 @@ interface SanitizedContext {
   baseParams: PerformVerificationParams
 }
 
+// eslint-disable-next-line complexity
 export async function performVerification(params: PerformVerificationParams): Promise<void> {
   const context = sanitizeAndValidate(params)
 
@@ -55,6 +56,13 @@ export async function performVerification(params: PerformVerificationParams): Pr
 
   if (!ensurePrerequisites(baseParams)) {
     return
+  }
+
+  if (pendingVerificationRef.current !== null && baseParams.currentVerification.kind === 'checking') {
+    if (baseParams.currentVerification.code === sanitizedCode) {
+      return
+    }
+    pendingVerificationRef.current = null
   }
 
   const requestId = startVerificationRequest({ sanitizedCode, baseParams })
