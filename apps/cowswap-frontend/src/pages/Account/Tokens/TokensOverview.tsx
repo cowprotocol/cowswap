@@ -17,13 +17,11 @@ import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowproto
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { useLingui, Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
-import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
 
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
@@ -31,7 +29,6 @@ import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
 
 import {
   AccountHeading,
@@ -49,14 +46,8 @@ import {
 } from './styled'
 
 import Delegate from '../Delegate'
-import { CardsLoader } from '../styled'
-
-const TokensLoader = styled(CardsLoader)`
-  min-height: 500px;
-`
 
 type TokenBalancesMap = ReturnType<typeof useTokensBalances>['values']
-type WalletProvider = ReturnType<typeof useWalletProvider>
 
 enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -86,9 +77,6 @@ export default function TokensOverview(): ReactNode {
   useScrollToTop()
 
   const { chainId, account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const { selectedView, isMenuOpen, toggleMenu, selectView, menuRef } = useTokensView()
   const [page, setPage] = useState<number>(1)
 
@@ -130,8 +118,6 @@ export default function TokensOverview(): ReactNode {
           <Trans>Unsupported network</Trans>
         ) : (
           <TokensTableContent
-            provider={provider}
-            darkMode={theme.darkMode}
             selectedView={selectedView}
             formattedTokens={formattedTokens}
             favoriteTokens={favoriteTokens}
@@ -230,8 +216,6 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
 }
 
 interface TokensTableContentProps {
-  provider: WalletProvider
-  darkMode: boolean
   selectedView: PageViewKeys
   formattedTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
@@ -246,8 +230,6 @@ interface TokensTableContentProps {
 
 function TokensTableContent(props: TokensTableContentProps): ReactNode {
   const {
-    provider,
-    darkMode,
     selectedView,
     formattedTokens,
     favoriteTokens,
@@ -261,14 +243,6 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
   } = props
 
   const tokensData = selectedView === PageViewKeys.ALL_TOKENS ? formattedTokens : favoriteTokens
-
-  if (!provider) {
-    return (
-      <TokensLoader>
-        <CowLoadingIcon size={120} isDarkMode={darkMode} />
-      </TokensLoader>
-    )
-  }
 
   return (
     <TokenTable

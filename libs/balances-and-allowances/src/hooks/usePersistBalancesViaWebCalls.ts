@@ -1,66 +1,43 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
-import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { SWRConfiguration } from 'swr'
-
-import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
+import { erc20Abi } from 'viem'
+import { useReadContracts } from 'wagmi'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
-
-const MULTICALL_OPTIONS = {}
 
 export interface PersistBalancesAndAllowancesParams {
   account: string | undefined
   chainId: SupportedChainId
   tokenAddresses: string[]
-  balancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
-  multicallOptions?: MultiCallOptions
 
   onBalancesLoaded?(loaded: boolean): void
 }
 
 export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowancesParams): void {
-  const {
-    account,
-    chainId,
-    tokenAddresses,
-    setLoadingState,
-    balancesSwrConfig,
-    multicallOptions = MULTICALL_OPTIONS,
-    onBalancesLoaded,
-  } = params
+  const { account, chainId, tokenAddresses, setLoadingState, onBalancesLoaded } = params
 
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
-  const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
-
   const {
+    data: balances,
     isLoading: isBalancesLoading,
-    data,
     error,
-  } = useMultipleContractSingleData<{ balance: BigNumber }>(
-    chainId,
-    tokenAddresses,
-    ERC_20_INTERFACE,
-    'balanceOf',
-    balanceOfParams,
-    multicallOptions,
-    balancesSwrConfig,
-    account,
-  )
-  const balances = data?.results
-  const blockNumber = data?.blockNumber
-
-  // Skip multicall results from outdated block if there is a result from newer one
-  const isNewBlockNumber = useIsBlockNumberRelevant(chainId, blockNumber)
+  } = useReadContracts({
+    contracts: tokenAddresses.map((address) => ({
+      abi: erc20Abi,
+      address,
+      chainId,
+      functionName: 'balanceOf',
+      args: [account],
+    })),
+  })
 
   // Set balances loading state
   useEffect(() => {
@@ -82,12 +59,12 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
   // Set balances to the store
   useEffect(() => {
-    if (!account || !balances?.length || !isNewBlockNumber) return
+    if (!account || !balances?.length) return
 
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
       if (getIsNativeToken(chainId, address)) return acc
 
-      acc[address.toLowerCase()] = balances[index]?.balance
+      acc[address.toLowerCase()] = BigNumber.from(balances[index]?.result || 0)
       return acc
     }, {})
 
@@ -114,15 +91,5 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
         },
       }))
     }
-  }, [
-    chainId,
-    account,
-    balances,
-    isNewBlockNumber,
-    tokenAddresses,
-    setBalances,
-    setLoadingState,
-    onBalancesLoaded,
-    setBalancesUpdate,
-  ])
+  }, [chainId, account, balances, tokenAddresses, setBalances, setLoadingState, onBalancesLoaded, setBalancesUpdate])
 }

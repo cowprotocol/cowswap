@@ -9,9 +9,7 @@ export const ConnectionType = {
   GNOSIS_SAFE: safe.type,
   INJECTED: injected.type,
   WALLET_CONNECT_V2: walletConnect.type,
-  TREZOR: 'trezor', // TODO
 } as const
-
 export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType]
 
 export interface WalletInfo {
