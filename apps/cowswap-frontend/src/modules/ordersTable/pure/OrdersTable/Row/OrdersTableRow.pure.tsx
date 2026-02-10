@@ -1,12 +1,11 @@
-import { useAtomValue } from 'jotai'
-import React, { ReactNode, useMemo } from 'react'
+import React, { ReactNode } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
 
-import { ordersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
 
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 
@@ -30,19 +29,7 @@ export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactN
   const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
   const getSpotPrice = useGetSpotPrice()
   const pendingOrdersPrices = usePendingOrdersPrices()
-
-  const ordersToCancel = useAtomValue(ordersToCancelAtom)
-  const ordersToCancelMap = useMemo(() => {
-    if (!ordersToCancel) return {}
-
-    return ordersToCancel.reduce(
-      (acc, val) => {
-        acc[val.id] = true
-        return acc
-      },
-      {} as { [key: string]: true },
-    )
-  }, [ordersToCancel])
+  const ordersToCancelMap = useOrdersToCancelMap()
 
   if (!tableState) return null
 

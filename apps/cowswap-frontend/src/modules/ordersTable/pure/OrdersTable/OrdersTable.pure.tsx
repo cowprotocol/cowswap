@@ -1,11 +1,10 @@
-import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
 import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
 
-import { ordersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
@@ -25,7 +24,6 @@ export interface OrdersTableProps {
   currentTab: OrderTabId
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -38,19 +36,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   } = useOrdersTableState() || {}
   const pendingOrdersPrices = usePendingOrdersPrices()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
-
-  const ordersToCancel = useAtomValue(ordersToCancelAtom)
-  const ordersToCancelMap = useMemo(() => {
-    if (!ordersToCancel) return {}
-
-    return ordersToCancel.reduce(
-      (acc, val) => {
-        acc[val.id] = true
-        return acc
-      },
-      {} as { [key: string]: true },
-    )
-  }, [ordersToCancel])
+  const ordersToCancelMap = useOrdersToCancelMap()
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
 
