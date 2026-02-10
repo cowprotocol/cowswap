@@ -5,7 +5,7 @@ import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { Outlet, useLocation, useParams } from 'react-router'
+import { Outlet, useLocation, useParams, matchPath } from 'react-router'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -55,6 +55,7 @@ export function AccountProxyWidgetPage({
 
   const isWalletConnected = !!account
   const isHelpPage = location.pathname.endsWith('/help')
+  const isRootProxyPage = !!matchPath(Routes.ACCOUNT_PROXIES, location.pathname)
   const query = new URLSearchParams(location.search)
   const [sourceRoute] = useState<string>(query.get('source') || 'swap')
 
@@ -87,6 +88,7 @@ export function AccountProxyWidgetPage({
       <WidgetWrapper ref={widgetRef}>
         <NewModal
           modalMode={modalMode}
+          showBackButton={!isRootProxyPage}
           title={
             <TitleWrapper>
               <span>
