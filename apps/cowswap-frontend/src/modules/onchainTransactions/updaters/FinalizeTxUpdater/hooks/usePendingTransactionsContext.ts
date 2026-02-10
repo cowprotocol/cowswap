@@ -1,7 +1,8 @@
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { getTransactionCount } from '@wagmi/core'
 import { useAsyncMemo } from 'use-async-memo'
+import { useConfig } from 'wagmi'
 
 import { useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAppDispatch } from 'legacy/state/hooks'
@@ -16,9 +17,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { CheckEthereumTransactions } from '../types'
 
 export function usePendingTransactionsContext(): CheckEthereumTransactions | null {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const config = useConfig()
   const { chainId, account } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
@@ -33,9 +32,9 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
 
   return useAsyncMemo(
     async () => {
-      if (!provider || !lastBlockNumber || !account) return null
+      if (!lastBlockNumber || !account) return null
 
-      const transactionsCount = await provider.getTransactionCount(account)
+      const transactionsCount = await getTransactionCount(config, { address: account })
 
       const params: CheckEthereumTransactions = {
         chainId,
@@ -58,7 +57,7 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
       chainId,
       account,
       isSafeWallet,
-      provider,
+      config,
       lastBlockNumber,
       dispatch,
       getReceipt,
