@@ -1,7 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+
+import { getTransactionCount } from '@wagmi/core'
+import { useConfig } from 'wagmi'
 
 import { useAllTransactions } from './TransactionHooksMod'
 
@@ -18,10 +20,8 @@ export type TransactionAdder = (params: AddTransactionHookParams) => void
  * Return helpers to add a new pending transaction
  */
 export function useTransactionAdder(): TransactionAdder {
+  const config = useConfig()
   const { chainId, account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const dispatch = useAppDispatch()
   const isSafeWallet = useIsSafeWallet()
 
@@ -35,10 +35,8 @@ export function useTransactionAdder(): TransactionAdder {
         throw Error('No transaction hash found')
       }
 
-      if (!provider) return
-
       try {
-        const nonce = await provider.getTransactionCount(account)
+        const nonce = await getTransactionCount(config, { address: account })
 
         dispatch(
           addTransaction({
@@ -53,7 +51,7 @@ export function useTransactionAdder(): TransactionAdder {
         console.error('Cannot add a transaction', e)
       }
     },
-    [dispatch, chainId, account, isSafeWallet, provider],
+    [dispatch, chainId, account, isSafeWallet, config],
   )
 }
 
