@@ -3,20 +3,20 @@
 This file applies to the whole monorepo. If a closer AGENTS.md exists under an app or package, follow it first and also follow this root file unless it explicitly says it fully replaces it.
 
 ## Setup commands (monorepo)
-- Install deps: `yarn install`
-- Generate i18n: `yarn i18n`
+- Install deps: `pnpm install`
+- Generate i18n: `pnpm i18n`
 - Start apps:
-  - `yarn start` (cowswap-frontend)
-  - `yarn start:cowswap`
-  - `yarn start:explorer`
-  - `yarn start:widget`
-  - `yarn start:cowfi`
-  - `yarn start:sdk-tools`
-  - `yarn start:omnibridge-hook`
-  - `yarn start:cosmos` (cowswap-frontend Cosmos)
-  - `yarn start:cosmos:explorer` (explorer Cosmos)
-- Lint and test: `yarn lint`, `yarn test`
-- Per-project Nx targets: `yarn nx run <project>:<target>` (targets include serve, build, lint, test, e2e)
+  - `pnpm start` (cowswap-frontend)
+  - `pnpm start:cowswap`
+  - `pnpm start:explorer`
+  - `pnpm start:widget`
+  - `pnpm start:cowfi`
+  - `pnpm start:sdk-tools`
+  - `pnpm start:omnibridge-hook`
+  - `pnpm start:cosmos` (cowswap-frontend Cosmos)
+  - `pnpm start:cosmos:explorer` (explorer Cosmos)
+- Lint and test: `pnpm lint`, `pnpm test`
+- Per-project Nx targets: `pnpx nx run <project>:<target>` (targets include serve, build, lint, test, e2e)
 
 ## Repo layout
 - apps/ - applications
@@ -70,7 +70,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 ## PR Workflow & Release Process
 
-- **Development commands:** Never run `yarn lint --fix`; use `yarn lint` only. Follow the command catalogue documented in the repository README and `package.json` scripts.
+- **Development commands:** Never run `pnpm lint --fix`; use `pnpm lint` only. Follow the command catalogue documented in the repository README and `package.json` scripts.
 - **Pull request requirements:**
 
   | Rule          | Requirement                                    |
@@ -337,9 +337,9 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 - **Post-implementation command (if available):**
   ```bash
-  yarn lint && yarn typecheck
+  pnpm lint && pnpm typecheck
   ```
-  If a project provides a typecheck target instead of a script, run `yarn nx run <project>:typecheck`.
+  If a project provides a typecheck target instead of a script, run `pnpx nx run <project>:typecheck`.
 
 ### AI assistant contract
 
