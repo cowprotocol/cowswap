@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { Body, Footer, ModalContainer, Subtitle, Title } from './styles'
@@ -13,11 +14,13 @@ import { TraderReferralCodeStatusMessages, getModalTitle } from './TraderReferra
 import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
 import { TraderReferralCodeIncomingReason, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 import { getPartnerProgramCopyValues } from '../../lib/affiliateProgramUtils'
+import { StatusText } from '../shared'
 import { TraderReferralCodeHowItWorksLink, TraderReferralCodeIneligibleCopy } from '../TraderReferralCodeIneligibleCopy'
 
 export function TraderReferralCodeModalContent(props: TraderReferralCodeModalContentProps): ReactNode {
   const { uiState, onPrimaryClick, primaryCta, onDismiss, inputRef, ctaRef, hasRejection } = props
   const shouldShowForm = uiState !== 'ineligible'
+  const errorMessage = getErrorMessage(uiState, props.verification)
 
   return (
     <ModalContainer>
@@ -51,6 +54,7 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
             inputRef={inputRef}
           />
         )}
+        {errorMessage ? <StatusText $variant="error">{errorMessage}</StatusText> : null}
         <TraderReferralCodeStatusMessages infoMessage={props.infoMessage} shouldShowInfo={props.shouldShowInfo} />
       </Body>
 
@@ -61,6 +65,17 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
       </Footer>
     </ModalContainer>
   )
+}
+
+function getErrorMessage(
+  uiState: TraderReferralCodeModalUiState,
+  verification: TraderReferralCodeVerificationStatus,
+): string | undefined {
+  if (uiState !== 'error' || verification.kind !== 'error') {
+    return undefined
+  }
+
+  return verification.message || t`Unable to verify code`
 }
 
 interface TraderReferralCodeSubtitleProps {

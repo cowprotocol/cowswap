@@ -19,11 +19,10 @@ export function computePrimaryCta(params: {
   uiState: TraderReferralCodeModalUiState
   hasValidLength: boolean
   hasCode: boolean
-  verification: TraderReferralCodeVerificationStatus
   verificationKind: VerificationKind
   walletStatus: WalletStatus
 }): PrimaryCta {
-  const { uiState, hasValidLength, hasCode, verification, verificationKind, walletStatus } = params
+  const { uiState, hasValidLength, hasCode, verificationKind, walletStatus } = params
 
   if (uiState === 'editing') {
     return disabledCta(
@@ -37,12 +36,6 @@ export function computePrimaryCta(params: {
 
   if (uiState === 'ineligible') {
     return { label: t`Go back`, disabled: false, action: 'goBack' }
-  }
-
-  if (uiState === 'error') {
-    const label =
-      verification.kind === 'error' && verification.message ? verification.message : t`Unable to verify code`
-    return { label, disabled: true, action: 'none' }
   }
 
   const staticDisabledLabels: Partial<Record<TraderReferralCodeModalUiState, string>> = {

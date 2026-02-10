@@ -62,7 +62,6 @@ export function useTraderReferralCodeModalController(
         uiState,
         hasValidLength,
         hasCode,
-        verification,
         verificationKind: verification.kind,
         walletStatus: effectiveWalletStatus,
       }),

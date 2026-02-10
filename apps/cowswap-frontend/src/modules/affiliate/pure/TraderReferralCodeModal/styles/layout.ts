@@ -14,7 +14,7 @@ export const ModalContainer = styled.div`
 export const Body = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 10px 10px 0;
+  padding: 10px;
   gap: 10px;
   overflow-y: auto;
 

@@ -17,13 +17,13 @@ export interface TraderReferralCodeStatusMessagesProps {
 export function TraderReferralCodeStatusMessages(props: TraderReferralCodeStatusMessagesProps): ReactNode {
   const { infoMessage, shouldShowInfo } = props
 
+  if (!shouldShowInfo) return null
+
   return (
     <StatusMessage role="status" aria-live="polite">
-      {shouldShowInfo && (
-        <InlineAlert bannerType={StatusColorVariant.Info} hideIcon>
-          {infoMessage}
-        </InlineAlert>
-      )}
+      <InlineAlert bannerType={StatusColorVariant.Info} hideIcon>
+        {infoMessage}
+      </InlineAlert>
     </StatusMessage>
   )
 }

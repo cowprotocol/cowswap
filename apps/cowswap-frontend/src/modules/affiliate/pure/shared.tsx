@@ -509,7 +509,7 @@ export const LinkedFooterNote = styled(MetaRow)`
 `
 
 export const StatusText = styled.p<{ $variant: 'error' | 'success' }>`
-  margin: 0;
+  margin: 0 0 0 8px;
   font-size: 14px;
   color: ${({ $variant }) => ($variant === 'error' ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
 `

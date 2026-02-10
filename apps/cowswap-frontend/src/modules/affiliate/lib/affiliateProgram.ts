@@ -201,7 +201,7 @@ function handleCodeStatusResponse(params: {
     }
 
     const errorType = response.status ? 'network' : 'unknown'
-    const message = 'Unable to check code right now.'
+    const message = 'Affiliate service is unreachable.'
     applyVerificationResult({ kind: 'error', code: sanitizedCode, errorType, message })
     trackVerifyResult('error', false, `type=${errorType}`)
     return
@@ -290,7 +290,7 @@ async function applyVerificationError(params: {
 
   const status = (error as Error & { status?: number }).status
   const errorType = status ? 'network' : 'unknown'
-  const message = 'Unable to check code right now.'
+  const message = 'Affiliate service is unreachable.'
 
   applyVerificationResult({ kind: 'error', code: sanitizedCode, errorType, message })
   trackVerifyResult('error', false, `type=${errorType}`)
