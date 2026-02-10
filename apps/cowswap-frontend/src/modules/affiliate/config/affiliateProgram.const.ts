@@ -36,6 +36,8 @@ export const VERIFICATION_RETRY_DELAY_MS = 3_000
 // Timeout applied to referral service requests so UI fails fast on network issues
 export const AFFILIATE_API_TIMEOUT_MS = 10_000
 
+export const AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE = true
+
 export const RATE_LIMIT_INTERVAL_MS = 200
 export const BACKOFF_START_DELAY_MS = ms`1s`
 export const BACKOFF_TIME_MULTIPLE = 3

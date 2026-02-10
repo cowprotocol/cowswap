@@ -4,6 +4,7 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/react/macro'
 
+import { AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE } from 'modules/affiliate/config/affiliateProgram.const'
 import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
 import { useTraderReferralCodeActions } from 'modules/affiliate/hooks/useTraderReferralCodeActions'
 
@@ -18,6 +19,8 @@ export function RowRewards(): ReactNode {
   const isRowRewardsVisible = useIsRowRewardsVisible()
   const traderReferralCode = useTraderReferralCode()
   const traderReferralCodeActions = useTraderReferralCodeActions()
+  const shouldHideForIneligible =
+    AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE && traderReferralCode.wallet.status === 'ineligible'
 
   const linkedCode = getLinkedCode(traderReferralCode)
   const hasLinkedCode = Boolean(linkedCode)
@@ -28,7 +31,7 @@ export function RowRewards(): ReactNode {
     traderReferralCodeActions.openModal('rewards')
   }
 
-  if (!isRowRewardsVisible) {
+  if (!isRowRewardsVisible || shouldHideForIneligible) {
     return null
   }
 
