@@ -78,7 +78,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.INK]: null,
 }
 
-// Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized
+// Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized)
 export const RECEIVED_LABEL_EXPLORER = 'Received'
 export const ACCOUNT_PROXY_LABEL_EXPLORER = 'Account Proxy'
 
