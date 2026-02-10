@@ -8,6 +8,12 @@ params as (
       else transform(split('{{affiliate_payout_sources}}', ','), x -> lower(trim(x)))
     end as affiliate_payout_sources
 ),
+constants as (
+  -- Exclude very low fee swaps from counting towards affiliate eligible volume.
+  -- Threshold is in bps (so 1 = 1 bps = 0.01%).
+  select
+    cast(1.9 as double) as min_fee_bps
+),
 affiliate_program_data as (
   select
     cast(affiliate_address as varchar) as affiliate_address,
@@ -40,9 +46,15 @@ trades_with_referrer as (
     dune.cowprotocol.result_fac_trades.tx_hash,
     dune.cowprotocol.result_fac_trades.trader as trader,
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
-    dune.cowprotocol.result_fac_trades.referrer_code as referrer_code
+    dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
+    dune.cowprotocol.result_fac_trades.protocol_fee_bps,
+    dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
+    (
+      coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 1e9) < constants.min_fee_bps
+    ) as is_excluded_low_fee
   from dune.cowprotocol.result_fac_trades
   cross join params
+  cross join constants
   where
     if(array_position(params.blockchains, '-=All=-') > 0, true, array_position(params.blockchains, dune.cowprotocol.result_fac_trades.blockchain) > 0)
 ),
@@ -88,6 +100,7 @@ eligible_trades as (
   where
     first_trade.first_trade_time = first_ref_trade.first_ref_trade_time
     and trades_with_referrer.block_time <= bound_ref.bound_time + affiliate_program_data.time_cap_days * interval '1' day
+    and not trades_with_referrer.is_excluded_low_fee
 ),
 capped_trades as (
   select
@@ -105,6 +118,7 @@ affiliate_rewards as (
     referrer_code as code,
     sum(eligible_volume) as referral_volume,
     count(*) as swaps,
+    count(*) as total_trades,
     count(distinct trader) as traders,
     sum(case when (bound_time + time_cap_days * interval '1' day) > now() and (volume_cap = 0 or cum_volume < volume_cap) then 1 else 0 end) as active_referrals
   from capped_trades
@@ -159,6 +173,7 @@ select
     else affiliate_program_data.trigger_volume -
       (coalesce(affiliate_rewards.referral_volume, 0) % affiliate_program_data.trigger_volume)
   end as left_to_next_reward,
+  coalesce(affiliate_rewards.total_trades, 0) as total_trades,
   coalesce(affiliate_rewards.active_referrals, 0) as active_traders,
   coalesce(affiliate_rewards.traders, 0) as total_traders
 from affiliate_program_data

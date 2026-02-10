@@ -3,6 +3,10 @@ params as (
   select
     split('{{blockchain}}', ',') as blockchains
 ),
+constants as (
+  select
+    cast(1.9 as double) as min_fee_bps
+),
 trades as (
   select
     dune.cowprotocol.result_fac_trades.blockchain,
@@ -10,9 +14,15 @@ trades as (
     dune.cowprotocol.result_fac_trades.tx_hash,
     lower(cast(dune.cowprotocol.result_fac_trades.trader as varchar)) as trader,
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
-    dune.cowprotocol.result_fac_trades.referrer_code as referrer_code
+    dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
+    dune.cowprotocol.result_fac_trades.protocol_fee_bps,
+    dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
+    (
+      coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 1e9) < constants.min_fee_bps
+    ) as is_excluded_low_fee
   from dune.cowprotocol.result_fac_trades
   cross join params
+  cross join constants
   where
     if(array_position(params.blockchains, '-=All=-') > 0, true, array_position(params.blockchains, dune.cowprotocol.result_fac_trades.blockchain) > 0)
 ),
@@ -48,11 +58,14 @@ select
   date_diff('day', first_ref_trade.first_ref_trade_time, trades.block_time) as days_since_bound,
   sum(trades.usd_value)
     over (partition by trades.trader, trades.referrer_code order by trades.block_time) as cum_volume_for_code,
+  sum(case when not trades.is_excluded_low_fee then trades.usd_value else 0 end)
+    over (partition by trades.trader, trades.referrer_code order by trades.block_time) as cum_eligible_volume_for_code,
   first_trade.first_trade_time,
   first_ref_trade.first_ref_trade_time,
   trades.block_time = first_trade.first_trade_time as is_first_trade,
   trades.block_time = first_ref_trade.first_ref_trade_time as is_first_ref_trade,
-  first_trade.first_trade_time = first_ref_trade.first_ref_trade_time as is_eligible,
+  first_trade.first_trade_time = first_ref_trade.first_ref_trade_time as is_trader_eligible,
+  trades.is_excluded_low_fee,
   case
     when first_ref_trade.first_ref_trade_time is null then 'no_ref_trade'
     when first_trade.first_trade_time <> first_ref_trade.first_ref_trade_time then 'ref_after_first_trade'
