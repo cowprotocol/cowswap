@@ -217,6 +217,7 @@ function useTraderReferralCodeModalHandlers(
     displayCode,
     navigate,
     onClose,
+    onSave,
   })
 
   const onChange = useCallback(
@@ -275,8 +276,9 @@ function usePrimaryClickHandler(params: {
   displayCode: string
   navigate: NavigateFunction
   onClose: () => void
+  onSave: () => void
 }): () => void {
-  const { primaryCta, account, toggleWalletModal, analytics, actions, displayCode, navigate, onClose } = params
+  const { primaryCta, account, toggleWalletModal, analytics, actions, displayCode, navigate, onClose, onSave } = params
 
   return useCallback(() => {
     if (primaryCta.disabled) {
@@ -286,6 +288,11 @@ function usePrimaryClickHandler(params: {
     if (!account && primaryCta.action === 'verify') {
       toggleWalletModal()
       analytics.sendEvent({ category: 'referral', action: 'cta_clicked', label: 'connect_to_verify' })
+      return
+    }
+
+    if (primaryCta.action === 'save') {
+      onSave()
       return
     }
 
@@ -313,6 +320,7 @@ function usePrimaryClickHandler(params: {
     displayCode,
     navigate,
     onClose,
+    onSave,
     primaryCta.action,
     primaryCta.disabled,
     toggleWalletModal,

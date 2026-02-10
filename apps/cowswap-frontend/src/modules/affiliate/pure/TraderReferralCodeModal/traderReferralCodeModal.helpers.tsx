@@ -25,9 +25,11 @@ export function computePrimaryCta(params: {
   const { uiState, hasValidLength, hasCode, verificationKind, walletStatus } = params
 
   if (uiState === 'editing') {
-    return disabledCta(
-      hasValidLength && hasCode ? t`Save to verify code` : t`Enter a referral code with 5 to 20 characters`,
-    )
+    return {
+      label: hasValidLength && hasCode ? t`Save and verify code` : t`Enter a referral code with 5 to 20 characters`,
+      disabled: !hasValidLength || !hasCode,
+      action: 'save',
+    }
   }
 
   if (uiState === 'valid' || uiState === 'linked') {
@@ -49,6 +51,14 @@ export function computePrimaryCta(params: {
 
   if (disabledLabel) {
     return disabledCta(disabledLabel)
+  }
+
+  if (uiState === 'empty') {
+    return {
+      label: hasValidLength && hasCode ? t`Save and verify code` : t`Enter a referral code with 5 to 20 characters`,
+      disabled: !hasValidLength || !hasCode,
+      action: 'save',
+    }
   }
 
   return verifyCta(hasValidLength, hasCode, verificationKind, walletStatus)

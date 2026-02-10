@@ -1,12 +1,10 @@
 import { FormEvent, ReactNode, RefObject } from 'react'
 
-import SaveIcon from '@cowprotocol/assets/images/icon-save.svg'
 import { Badge, HelpTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
-import SVG from 'react-inlinesvg'
 
 import {
   FormActions,
@@ -45,7 +43,6 @@ export interface TraderReferralCodeFormProps {
   inputRef: RefObject<HTMLInputElement | null>
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): ReactNode {
   const {
     uiState,
@@ -66,26 +63,16 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
   const showPendingTag = isConnected && verification.kind === 'pending' && !showPendingLabelInInput
   const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
   const isChecking = verification.kind === 'checking'
-  const {
-    hasError,
-    isEditing,
-    isInputDisabled,
-    trailingIconKind,
-    isSaveDisabled,
-    showEdit,
-    showRemove,
-    showSave,
-    canSubmitSave,
-    isLinked,
-  } = deriveFormFlags({
-    uiState,
-    isConnected,
-    verification,
-    savedCode,
-    displayCode,
-    showPendingLabelInInput,
-    showValidLabelInInput,
-  })
+  const { hasError, isEditing, isInputDisabled, trailingIconKind, showEdit, showRemove, canSubmitSave, isLinked } =
+    deriveFormFlags({
+      uiState,
+      isConnected,
+      verification,
+      savedCode,
+      displayCode,
+      showPendingLabelInInput,
+      showValidLabelInInput,
+    })
   const submitAction = canSubmitSave ? onSave : onPrimaryClick
 
   const tooltipCopy = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
@@ -106,15 +93,7 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
         </Label>
         <LabelAffordances>
           <TraderReferralCodeTags showPendingTag={showPendingTag} showValidTag={showValidTag} />
-          <TraderReferralCodeActions
-            showEdit={showEdit}
-            showRemove={showRemove}
-            showSave={showSave}
-            onEdit={onEdit}
-            onRemove={onRemove}
-            onSave={onSave}
-            isSaveDisabled={isSaveDisabled}
-          />
+          <TraderReferralCodeActions showEdit={showEdit} showRemove={showRemove} onEdit={onEdit} onRemove={onRemove} />
         </LabelAffordances>
       </LabelRow>
 
@@ -151,10 +130,8 @@ interface FormFlags {
   isEditing: boolean
   isInputDisabled: boolean
   trailingIconKind: TrailingIconKind | undefined
-  isSaveDisabled: boolean
   showEdit: boolean
   showRemove: boolean
-  showSave: boolean
   canSubmitSave: boolean
   isLinked: boolean
 }
@@ -180,10 +157,8 @@ interface BaseFlags {
   hasError: boolean
   isEditing: boolean
   isInputDisabled: boolean
-  isSaveDisabled: boolean
   showEdit: boolean
   showRemove: boolean
-  showSave: boolean
   canSubmitSave: boolean
   isLinked: boolean
   isUnsupported: boolean
@@ -199,23 +174,19 @@ function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
   const isLinked = uiState === 'linked'
   const hasError = VERIFICATION_ERROR_KINDS.has(verification.kind)
   const isInputDisabled = isUnsupported || (!isEditing && uiState !== 'empty')
-  const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
   const canEdit = !isUnsupported && !isEditing && !isLinked && uiState !== 'empty'
   const allowDisconnectedEdit = uiState === 'pending' && !isConnected && Boolean(displayCode)
   const showEdit = canEdit && (Boolean(savedCode) || allowDisconnectedEdit)
   const showRemove =
     !isUnsupported && (isEditing || allowDisconnectedEdit) && (Boolean(savedCode) || allowDisconnectedEdit)
-  const showSave = !isUnsupported && (isEditing || uiState === 'empty')
-  const canSubmitSave = showSave && !isSaveDisabled
+  const canSubmitSave = !isUnsupported && (isEditing || uiState === 'empty') && isReferralCodeLengthValid(displayCode)
 
   return {
     hasError,
     isEditing,
     isInputDisabled,
-    isSaveDisabled,
     showEdit,
     showRemove,
-    showSave,
     canSubmitSave,
     isLinked,
     isUnsupported,
@@ -245,23 +216,17 @@ function TraderReferralCodeTags({ showPendingTag, showValidTag }: TraderReferral
 interface TraderReferralCodeActionsProps {
   showEdit: boolean
   showRemove: boolean
-  showSave: boolean
   onEdit(): void
   onRemove(): void
-  onSave(): void
-  isSaveDisabled: boolean
 }
 
 function TraderReferralCodeActions({
   showEdit,
   showRemove,
-  showSave,
   onEdit,
   onRemove,
-  onSave,
-  isSaveDisabled,
 }: TraderReferralCodeActionsProps): ReactNode {
-  if (!showEdit && !showRemove && !showSave) {
+  if (!showEdit && !showRemove) {
     return null
   }
 
@@ -271,18 +236,6 @@ function TraderReferralCodeActions({
         <FormActionDanger type="button" onClick={onRemove}>
           <Trans>Remove</Trans>
         </FormActionDanger>
-      )}
-      {showSave && (
-        <FormActionButton
-          type="button"
-          variant="filled"
-          onClick={onSave}
-          disabled={isSaveDisabled}
-          aria-label={t`Save code`}
-        >
-          <SVG width={12} height={12} src={SaveIcon} title={t`Save`} />
-          <Trans>Save</Trans>
-        </FormActionButton>
       )}
       {showEdit && (
         <FormActionButton type="button" variant="outline" onClick={onEdit} aria-label={t`Edit code`}>

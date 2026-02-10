@@ -8,7 +8,7 @@ export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElemen
 export interface PrimaryCta {
   label: string
   disabled: boolean
-  action: 'none' | 'verify' | 'viewRewards' | 'goBack'
+  action: 'none' | 'save' | 'verify' | 'viewRewards' | 'goBack'
 }
 
 export interface TraderReferralCodeModalContentProps {
