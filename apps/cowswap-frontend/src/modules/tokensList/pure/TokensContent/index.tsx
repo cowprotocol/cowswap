@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 import { Loader } from '@cowprotocol/ui'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'

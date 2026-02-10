@@ -1,12 +1,7 @@
 import { ReactNode } from 'react'
 
-import {
-  areAddressesEqual,
-  capitalizeFirstLetter,
-  ExplorerDataType,
-  getExplorerLink,
-  shortenAddress,
-} from '@cowprotocol/common-utils'
+import { capitalizeFirstLetter, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 

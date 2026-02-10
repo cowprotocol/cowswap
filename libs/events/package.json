@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/events",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "type": "commonjs",
   "description": "CoW Swap events",
   "main": "./src/index.ts",
@@ -24,8 +24,8 @@
     "dex"
   ],
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.4",
-    "@cowprotocol/sdk-bridging": "1.7.3",
+    "@cowprotocol/cow-sdk": "7.3.5",
+    "@cowprotocol/sdk-bridging": "1.7.4",
     "@cowprotocol/types": "workspace:*"
   },
   "types": "./src/index.ts",

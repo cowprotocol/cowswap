@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 
 import { recentTokensStorageAtom } from '../state/recentTokensStorageAtom'
 import {
