@@ -1,6 +1,12 @@
+import { useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
+import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
+import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
+
+import { ordersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 
@@ -19,25 +25,28 @@ interface OrderTableRowProps {
 
 export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactNode {
   const { chainId } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const tableState = useOrdersTableState()
-  const selectedOrders = tableState?.selectedOrders
   const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
-  const selectedOrdersMap = useMemo(() => {
-    if (!selectedOrders) return {}
+  const getSpotPrice = useGetSpotPrice()
+  const pendingOrdersPrices = usePendingOrdersPrices()
 
-    return selectedOrders.reduce(
+  const ordersToCancel = useAtomValue(ordersToCancelAtom)
+  const ordersToCancelMap = useMemo(() => {
+    if (!ordersToCancel) return {}
+
+    return ordersToCancel.reduce(
       (acc, val) => {
         acc[val.id] = true
         return acc
       },
       {} as { [key: string]: true },
     )
-  }, [selectedOrders])
+  }, [ordersToCancel])
 
   if (!tableState) return null
 
-  const { pendingOrdersPrices, balancesAndAllowances, getSpotPrice, orderActions, isTwapTable, allowsOffchainSigning } =
-    tableState
+  const { balancesAndAllowances, orderActions, isTwapTable } = tableState
 
   const isRowSelectable = allowsOffchainSigning
 
@@ -55,7 +64,7 @@ export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactN
     return (
       <OrderRow
         isRowSelectable={isRowSelectable}
-        isRowSelected={!!selectedOrdersMap[order.id]}
+        isRowSelected={!!ordersToCancelMap[order.id]}
         isHistoryTab={currentTab === OrderTabId.history}
         order={order}
         spotPrice={spotPrice}
@@ -76,7 +85,7 @@ export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactN
         chainId={chainId}
         balancesAndAllowances={balancesAndAllowances}
         isRowSelectable={isRowSelectable}
-        isRowSelected={!!selectedOrdersMap[item.parent.id]}
+        isRowSelected={!!ordersToCancelMap[item.parent.id]}
         isHistoryTab={currentTab === OrderTabId.history}
         spotPrice={spotPrice}
         prices={pendingOrdersPrices[item.parent.id]}

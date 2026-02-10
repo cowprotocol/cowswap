@@ -64,21 +64,14 @@ function Wrapper(): null {
 
   useEffect(() => {
     setOrdersTableState({
-      pendingActivitiesCount: 0,
       displayOrdersOnlyForSafeApp: false,
-      pendingOrdersPrices: {},
       currentPageNumber: 1,
       orders: ordersMock,
       filteredOrders: ordersMock,
       tabs: tabs,
-      isSafeViaWc: false,
-      allowsOffchainSigning: true,
-      selectedOrders: [],
       balancesAndAllowances: balancesAndAllowances,
-      getSpotPrice: () => null,
       orderActions: orderActions,
       orderType: TabOrderTypes.LIMIT,
-      injectedWidgetParams: {},
       isTwapTable: false,
       currentTabId: OrderTabId.open,
       hasHydratedOrders: true,

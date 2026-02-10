@@ -1,4 +1,7 @@
+import { useAtomValue } from 'jotai'
 import React, { ReactNode, useEffect, useRef } from 'react'
+
+import { ordersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 
 import { TableHeaderConfig } from './ordersTableHeader.constants'
 import { HeaderElement } from './OrdersTableHeader.styled'
@@ -27,7 +30,9 @@ export function OrdersTableHeader({
   cancellableOrders,
   ordersPage,
 }: OrdersTableHeaderProps): ReactNode {
-  const { orderActions, isTwapTable, selectedOrders } = useOrdersTableState() || {}
+  const { orderActions, isTwapTable } = useOrdersTableState() || {}
+  const ordersToCancel = useAtomValue(ordersToCancelAtom)
+  const ordersToCancelCount = ordersToCancel?.length || 0
 
   const checkboxRef = useRef<HTMLInputElement>(null)
 
@@ -38,9 +43,9 @@ export function OrdersTableHeader({
 
     if (!checkbox) return
 
-    checkbox.indeterminate = !!selectedOrders?.length && !allOrdersSelected
+    checkbox.indeterminate = ordersToCancelCount > 0 && !allOrdersSelected
     checkbox.checked = allOrdersSelected
-  }, [allOrdersSelected, selectedOrders?.length])
+  }, [allOrdersSelected, ordersToCancelCount])
 
   return (
     <TableHeaderWrapper
