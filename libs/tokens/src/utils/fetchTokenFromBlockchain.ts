@@ -1,29 +1,42 @@
-import { getContract } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20, Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { TokenInfo } from '@cowprotocol/types'
 import { getAddress } from '@ethersproject/address'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+
+import { Config, readContracts } from '@wagmi/core'
+import { erc20Abi } from 'viem'
 
 export async function fetchTokenFromBlockchain(
   tokenAddress: string,
   chainId: SupportedChainId,
-  provider: JsonRpcProvider,
+  config: Config,
 ): Promise<TokenInfo> {
   const formattedAddress = getAddress(tokenAddress)
-  const erc20Contract = getContract(formattedAddress, Erc20Abi, provider) as Erc20
 
-  const [name, symbol, decimals] = await Promise.all([
-    erc20Contract.callStatic.name(),
-    erc20Contract.callStatic.symbol(),
-    erc20Contract.callStatic.decimals(),
-  ])
+  const [nameQuery, symbolQuery, decimalsQuery] = await readContracts(config, {
+    contracts: [
+      {
+        abi: erc20Abi,
+        address: formattedAddress,
+        functionName: 'name',
+      },
+      {
+        abi: erc20Abi,
+        address: formattedAddress,
+        functionName: 'symbol',
+      },
+      { abi: erc20Abi, address: formattedAddress, functionName: 'decimals' },
+    ],
+  })
+
+  if (nameQuery.status !== 'success' || symbolQuery.status !== 'success' || decimalsQuery.status !== 'success') {
+    throw nameQuery.error || symbolQuery.error || decimalsQuery.error
+  }
 
   return {
     chainId,
     address: formattedAddress,
-    name,
-    symbol,
-    decimals,
+    name: nameQuery.result!,
+    symbol: symbolQuery.result!,
+    decimals: decimalsQuery.result!,
   }
 }
