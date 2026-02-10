@@ -118,7 +118,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
        * Specify only the user entered slippage
        * Because if it's not specified, SDK will suggest a slippage, so no need to pass it in quote request
        */
-      ...(userSlippageBps ? { swapSlippageBps: userSlippageBps } : undefined),
+      ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
     }
 
     return {
