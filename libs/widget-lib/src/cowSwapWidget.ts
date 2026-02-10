@@ -175,9 +175,11 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provider: EthereumProvider | undefined) {
+function updateParams(
+  contentWindow: Window,
+  params: CowSwapWidgetParams,
+  provider: EthereumProvider | undefined,
+): void {
   const hasProvider = !!provider
 
   const pathname = buildWidgetPath(params)
@@ -202,9 +204,10 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
  * @param contentWindow - Window object of the widget's iframe.
  * @param appCode - A unique identifier for the app.
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
+function sendAppCodeOnActivation(
+  contentWindow: Window,
+  appCode: string | undefined,
+): (payload: MessageEvent<unknown>) => void {
   return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
     // Update the appData
     widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
