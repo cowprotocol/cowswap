@@ -6596,7 +6596,7 @@ msgstr "Ой! Рыночная цена изменилась за пределы
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
 msgid "Found {totalOpenOrders} open orders in the {limit} most recent ones."
-msgstr "Найдено  {totalOpenOrders} открытый ордеров в списке {limit} последних."
+msgstr "Найдено {totalOpenOrders} открытых ордеров в списке {limit} недавних."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Entered amount is invalid"
