@@ -242,7 +242,7 @@ export default function AccountAffiliate() {
         setCreatedAt(null)
         setProgramParams(null)
         setStatsLoading(false)
-        setErrorMessage(t`Unable to reach the affiliate service.`)
+        setErrorMessage(t`Affiliate service is unreachable. Try again later.`)
       }
 
       setCodeLoading(false)

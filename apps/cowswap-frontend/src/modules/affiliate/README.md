@@ -102,11 +102,12 @@ Audit:
 - BFF strips revenue split fields from `/ref-codes/:code`, instead it only returns `traderRewardAmount`
 - This is calculated as `rewardAmount * revenueSplitTraderPct / 100`
 
-## 7) Eligibility (hard requirement)
+## 7) Eligibility
 
-- New traders only; allowing existing traders is non-trivial
+- New traders only (hard requirement); allowing existing traders is non-trivial
 - FE checks prior orders and informs users if they are eligible
 - Dune filters out ineligible traders
+- Low fee swaps do not count towards eligible volume (see `min_fee_bps` in the dune queries)
 
 ## 8) Environments
 

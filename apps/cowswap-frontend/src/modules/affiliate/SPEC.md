@@ -75,6 +75,7 @@
 - As a data analyst, I want to parse `app_data.metadata.referrer.code` and normalize uppercase because referrer codes are case-insensitive.
 - As a data analyst, I want dashboard filters (blockchain, start_time, payout_sources) because analysis must slice by chain/time/payout wallet.
 - As a developer, I want to enforce eligibility: first-ever trade must be a ref trade; bound code is from first ref trade; unsupported chains excluded; time cap and volume cap enforced because reward rules are strict.
+- As a developer, I want to exclude very low fee swaps from eligible volume (see `min_fee_bps` in the dune queries) because otherwise volume can be gamed.
 - As a developer, I want a `traders_debug` view with columns (blockchain, block_time, tx_hash, trader_address, usd_value, referrer_code, bound_referrer_code, linked_since, days_since_bound, cum_volume_for_code, first_trade_time, first_ref_trade_time, is_first_trade, is_first_ref_trade, is_eligible, eligibility_reason, is_bound_to_code) because I need to debug eligibility and binding.
 
 ## Rewards hub UI (partner + my rewards)
