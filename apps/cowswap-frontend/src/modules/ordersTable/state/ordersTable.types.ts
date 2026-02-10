@@ -40,7 +40,6 @@ export interface TabParams {
 export interface OrdersTableParams {
   orders: Order[]
   orderType: TabOrderTypes
-  isTwapTable?: boolean
   displayOrdersOnlyForSafeApp?: boolean
 }
 
@@ -68,7 +67,6 @@ export interface OrdersTableState {
   balancesAndAllowances: BalancesAndAllowances
   orderActions: OrderActions
   currentPageNumber: number
-  isTwapTable: boolean
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>

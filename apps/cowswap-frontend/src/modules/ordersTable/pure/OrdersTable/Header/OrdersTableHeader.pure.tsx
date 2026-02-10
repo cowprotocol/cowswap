@@ -16,6 +16,7 @@ import { CheckboxCheckmark, TableRowCheckbox, TableRowCheckboxWrapper } from '..
 interface OrdersTableHeaderProps {
   currentTab: OrderTabId
   isRowSelectable: boolean
+  isTwapTable: boolean
   allOrdersSelected: boolean
   visibleHeaders: TableHeaderConfig[]
   cancellableOrders: OrderTableItem[]
@@ -25,12 +26,13 @@ interface OrdersTableHeaderProps {
 export function OrdersTableHeader({
   currentTab,
   isRowSelectable,
+  isTwapTable,
   allOrdersSelected,
   visibleHeaders,
   cancellableOrders,
   ordersPage,
 }: OrdersTableHeaderProps): ReactNode {
-  const { orderActions, isTwapTable } = useOrdersTableState() || {}
+  const { orderActions } = useOrdersTableState() || {}
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
   const ordersToCancelCount = ordersToCancel?.length || 0
 

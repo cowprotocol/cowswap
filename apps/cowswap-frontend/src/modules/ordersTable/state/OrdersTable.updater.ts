@@ -47,7 +47,6 @@ export function OrdersTableStateUpdater({
   orderType,
   searchTerm = '',
   historyStatusFilter,
-  isTwapTable = false,
   displayOrdersOnlyForSafeApp = false,
   syncWithUrl = true,
 }: OrdersTableStateUpdaterProps): ReactNode {
@@ -86,7 +85,6 @@ export function OrdersTableStateUpdater({
       balancesAndAllowances,
       orderActions,
       orderType,
-      isTwapTable,
       hasHydratedOrders,
     })
   }, [
@@ -100,7 +98,6 @@ export function OrdersTableStateUpdater({
     balancesAndAllowances,
     orderActions,
     orderType,
-    isTwapTable,
     hasHydratedOrders,
   ])
 

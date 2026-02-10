@@ -90,6 +90,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
             allOrdersSelected={allOrdersSelected}
             visibleHeaders={visibleHeaders}
             isRowSelectable={isRowSelectable}
+            isTwapTable={orderType === TabOrderTypes.ADVANCED}
           />
 
           <Rows>

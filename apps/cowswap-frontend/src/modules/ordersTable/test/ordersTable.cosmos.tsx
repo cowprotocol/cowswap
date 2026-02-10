@@ -72,7 +72,6 @@ function Wrapper(): null {
       balancesAndAllowances: balancesAndAllowances,
       orderActions: orderActions,
       orderType: TabOrderTypes.LIMIT,
-      isTwapTable: false,
       currentTabId: OrderTabId.open,
       hasHydratedOrders: true,
     })

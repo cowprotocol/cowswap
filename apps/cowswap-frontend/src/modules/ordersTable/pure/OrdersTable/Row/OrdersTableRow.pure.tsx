@@ -12,6 +12,7 @@ import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../state/ordersTable.types'
+import { TabOrderTypes } from '../../../state/ordersTable.types'
 import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/usePendingOrderPermitValidity'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { getOrderParams } from '../../../utils/getOrderParams'
@@ -33,9 +34,10 @@ export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactN
 
   if (!tableState) return null
 
-  const { balancesAndAllowances, orderActions, isTwapTable } = tableState
+  const { balancesAndAllowances, orderActions, orderType } = tableState
 
   const isRowSelectable = allowsOffchainSigning
+  const isTwapTable = orderType === TabOrderTypes.ADVANCED
 
   const { inputToken, outputToken } = getParsedOrderFromTableItem(item)
 

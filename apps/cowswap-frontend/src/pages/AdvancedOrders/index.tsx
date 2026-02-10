@@ -83,7 +83,6 @@ export default function AdvancedOrdersPage(): ReactNode {
           <styledEl.SecondaryWrapper>
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
-                isTwapTable
                 displayOrdersOnlyForSafeApp
                 orderType={TabOrderTypes.ADVANCED}
                 orders={allEmulatedOrders}
