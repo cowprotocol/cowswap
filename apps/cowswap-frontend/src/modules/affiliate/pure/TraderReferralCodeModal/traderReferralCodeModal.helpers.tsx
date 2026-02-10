@@ -97,7 +97,7 @@ export function getStatusCopy(
     return {
       shouldShowInfo: true,
       variant: StatusColorVariant.Warning,
-      infoMessage: t`We weren't able to check your eligibility. Feel free to continue, but you won't receive rewards if you traded on CoWSwap before.`,
+      infoMessage: t`We weren't able to check your eligibility. Feel free to continue, but you won't receive rewards if you traded on CoW Swap before.`,
     }
   }
 
