@@ -8,6 +8,7 @@ import { msg } from '@lingui/core/macro'
 import AppziButton from 'legacy/components/AppziButton'
 import { Version } from 'legacy/components/Version'
 
+import { getProxyAccountUrl } from 'modules/accountProxy/utils/getProxyAccountUrl'
 import { FortuneWidget } from 'modules/fortune'
 
 import { Routes } from 'common/constants/routes'
@@ -49,7 +50,7 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: bool
       label: msg`Tokens`,
     },
     {
-      href: `/${chainId}/account-proxy`,
+      href: getProxyAccountUrl(chainId),
       label: ACCOUNT_PROXY_LABEL,
     },
   ],

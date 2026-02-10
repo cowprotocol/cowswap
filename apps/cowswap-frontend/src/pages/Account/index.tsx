@@ -5,7 +5,7 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { Outlet, useLocation } from 'react-router'
+import { Outlet, useLocation, matchPath } from 'react-router'
 
 import { Content, PageTitle, Title } from 'modules/application'
 
@@ -21,6 +21,15 @@ const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages
 const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
 function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): string[] {
+  if (
+    matchPath(RoutesEnum.ACCOUNT_PROXIES, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_RECOVER, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_HELP, route)
+  ) {
+    return ['account-proxy', t`Account Proxy`]
+  }
+
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', t`Account overview`]
