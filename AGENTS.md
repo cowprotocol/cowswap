@@ -16,7 +16,7 @@ This file applies to the whole monorepo. If a closer AGENTS.md exists under an a
   - `pnpm start:cosmos` (cowswap-frontend Cosmos)
   - `pnpm start:cosmos:explorer` (explorer Cosmos)
 - Lint and test: `pnpm lint`, `pnpm test`
-- Per-project Nx targets: `pnpm nx run <project>:<target>` (targets include serve, build, lint, test, e2e)
+- Per-project Nx targets: `pnpx nx run <project>:<target>` (targets include serve, build, lint, test, e2e)
 
 ## Repo layout
 - apps/ - applications
@@ -339,7 +339,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
   ```bash
   pnpm lint && pnpm typecheck
   ```
-  If a project provides a typecheck target instead of a script, run `pnpm nx run <project>:typecheck`.
+  If a project provides a typecheck target instead of a script, run `pnpx nx run <project>:typecheck`.
 
 ### AI assistant contract
 
