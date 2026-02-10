@@ -56,7 +56,7 @@ jobs:
 
       # 5️⃣ Build publishable libs
       - name: Build publishable libs
-        run: pnpm nx run-many -t build -p ${{ env.PUBLISHABLE_LIBS }}
+        run: pnpm exec nx run-many --target=build --projects=${{ env.PUBLISHABLE_LIBS }} --parallel
 
       # 6️⃣ Setup npm auth
       - name: Setup npm auth
