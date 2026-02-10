@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.1.0...widget-lib-v1.1.1) (2026-02-10)
+
+
+### 🐛 Bug Fixes
+
+* **widget-lib:** clean up code ([#6992](https://github.com/cowprotocol/cowswap/issues/6992)) ([39d9f97](https://github.com/cowprotocol/cowswap/commit/39d9f97966e0a80dbc6b1232676fd18333070e1a))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.0.1...widget-lib-v1.1.0) (2026-02-05)
 
 

@@ -13,24 +13,16 @@
       }
     },
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/libs/widget-react"
-      },
-      "configurations": {
-        "development": {
-          "mode": "development"
-        },
-        "production": {
-          "mode": "production"
-        }
+        "outputPath": "dist/libs/widget-react",
+        "main": "libs/widget-react/src/index.ts",
+        "tsConfig": "libs/widget-react/tsconfig.lib.json",
+        "assets": ["libs/widget-react/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true,
+        "buildableProjectDepsInPackageJsonType": "dependencies"
       }
-    },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs widget-react {args.tag} {args.otp}",
-      "dependsOn": ["build"]
     },
     "test": {
       "executor": "@nx/jest:jest",
