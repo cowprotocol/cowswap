@@ -1,6 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { FormEvent, RefObject, useCallback, useMemo, useRef } from 'react'
 
 import { CowAnalytics } from '@cowprotocol/analytics'
+
+import { ordersFromApiStatusAtom } from 'modules/orders/state/ordersFromApiStatusAtom'
 
 import { Routes } from 'common/constants/routes'
 import { NavigateFunction } from 'common/hooks/useNavigate'
@@ -40,6 +43,7 @@ export function useTraderReferralCodeModalController(
   params: TraderReferralCodeModalControllerParams,
 ): TraderReferralCodeModalControllerResult {
   const { modalState, actions, account, supportedNetwork, toggleWalletModal, navigate, analytics } = params
+  const ordersFromApiStatus = useAtomValue(ordersFromApiStatusAtom)
   const {
     traderReferralCode,
     uiState,
@@ -86,7 +90,12 @@ export function useTraderReferralCodeModalController(
   })
 
   const timeCapDays = verification.kind === 'valid' ? verification.programParams?.timeCapDays : undefined
-  const statusCopy = getStatusCopy(verification, timeCapDays)
+  const eligibilityUnknown = traderReferralCode.wallet.status === 'eligibility-unknown'
+  const eligibilityConfirmed = ordersFromApiStatus === 'success'
+  let statusCopy = getStatusCopy(verification, timeCapDays, eligibilityUnknown)
+  if (!eligibilityUnknown && !eligibilityConfirmed) {
+    statusCopy = { ...statusCopy, shouldShowInfo: false }
+  }
   const verificationCode = 'code' in verification ? verification.code : undefined
   const codeForDisplay = incomingCode || verificationCode || savedCode || displayCode
   const incomingIneligibleCode = getIncomingIneligibleCode(incomingCode, verification)
@@ -121,6 +130,7 @@ export function useTraderReferralCodeModalController(
       hasRejection,
       infoMessage: statusCopy.infoMessage,
       shouldShowInfo: statusCopy.shouldShowInfo,
+      infoVariant: statusCopy.variant,
       inputRef,
       ctaRef,
     },

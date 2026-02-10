@@ -13,6 +13,7 @@ import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { getTokensListFromOrders, useTokensForOrdersList } from 'modules/orders'
 import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
+import { ordersFromApiStatusAtom } from 'modules/orders/state/ordersFromApiStatusAtom'
 
 import { useOrdersFromOrderBook } from 'api/cowProtocol/hooks'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
@@ -141,6 +142,7 @@ export function OrdersFromApiUpdater(): null {
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const updateApiOrders = useSetAtom(apiOrdersAtom)
+  const updateOrdersStatus = useSetAtom(ordersFromApiStatusAtom)
   const ordersFromOrderBook = useOrdersFromOrderBook()
   const getTokensForOrdersList = useTokensForOrdersList()
 
@@ -154,18 +156,20 @@ export function OrdersFromApiUpdater(): null {
   const updateOrders = useCallback(
     async (chainId: ChainId): Promise<void> => {
       try {
-        if (!ordersFromOrderBook?.length) {
+        if (!ordersFromOrderBook.orders.length) {
           return
         }
 
-        const tokensToFetch = getTokensListFromOrders(ordersFromOrderBook)
+        const tokensToFetch = getTokensListFromOrders(ordersFromOrderBook.orders)
         // Merge fetched tokens with what's currently loaded
         const reallyAllTokens = await getTokensForOrdersList(tokensToFetch)
 
         // Build store order objects, for all orders which we found both input/output tokens
         // Don't add order for those we didn't
-        const orders = _filterOrders(ordersFromOrderBook, reallyAllTokens, chainId)
-        console.debug(`OrdersFromApiUpdater::will add/update ${orders.length} out of ${ordersFromOrderBook.length}`)
+        const orders = _filterOrders(ordersFromOrderBook.orders, reallyAllTokens, chainId)
+        console.debug(
+          `OrdersFromApiUpdater::will add/update ${orders.length} out of ${ordersFromOrderBook.orders.length}`,
+        )
 
         // Add orders to redux state
         orders.length && addOrUpdateOrders({ orders, chainId, isSafeWallet })
@@ -179,8 +183,27 @@ export function OrdersFromApiUpdater(): null {
   )
 
   useEffect(() => {
-    updateApiOrders(ordersFromOrderBook)
-  }, [ordersFromOrderBook, updateApiOrders])
+    updateApiOrders(ordersFromOrderBook.orders)
+  }, [ordersFromOrderBook.orders, updateApiOrders])
+
+  useEffect(() => {
+    if (!ordersFromOrderBook.isEnabled) {
+      updateOrdersStatus('idle')
+      return
+    }
+
+    if (ordersFromOrderBook.isLoading) {
+      updateOrdersStatus('loading')
+      return
+    }
+
+    if (ordersFromOrderBook.error) {
+      updateOrdersStatus('error')
+      return
+    }
+
+    updateOrdersStatus('success')
+  }, [ordersFromOrderBook.error, ordersFromOrderBook.isEnabled, ordersFromOrderBook.isLoading, updateOrdersStatus])
 
   useEffect(() => {
     if (account && chainId && tokensAreLoaded) {

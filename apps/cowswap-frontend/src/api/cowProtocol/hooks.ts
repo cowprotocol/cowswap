@@ -12,13 +12,25 @@ import { getOrders } from './api'
 
 const emptyOrders: EnrichedOrder[] = []
 
-export function useOrdersFromOrderBook(): EnrichedOrder[] {
+export interface OrdersFromOrderBookResult {
+  orders: EnrichedOrder[]
+  isLoading: boolean
+  error?: Error
+  isEnabled: boolean
+}
+
+export function useOrdersFromOrderBook(): OrdersFromOrderBookResult {
   const { chainId } = useWalletInfo()
 
   const requestParams = useSWROrdersRequest()
+  const isEnabled = Boolean(requestParams && chainId)
 
   // Fetch orders for the current environment
-  const { data: currentEnvOrders, isLoading } = useSWR(
+  const {
+    data: currentEnvOrders = emptyOrders,
+    isLoading,
+    error,
+  } = useSWR(
     requestParams && chainId ? ['orders', requestParams, chainId] : null,
     ([, params, _chainId]) => getOrders(params, { chainId: _chainId }),
     { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL, fallbackData: emptyOrders },
@@ -43,5 +55,12 @@ export function useOrdersFromOrderBook(): EnrichedOrder[] {
 
   // Because we now keep expanding the limit param to be able to load older orders, we want to keep displaying the
   // previous smaller batch while the new larger one is being fetched:
-  return isLoading && prevEnvOrdersState.key === currentKey ? prevEnvOrdersState.orders : currentEnvOrders
+  const orders = isLoading && prevEnvOrdersState.key === currentKey ? prevEnvOrdersState.orders : currentEnvOrders
+
+  return {
+    orders,
+    isLoading,
+    error: error as Error | undefined,
+    isEnabled,
+  }
 }

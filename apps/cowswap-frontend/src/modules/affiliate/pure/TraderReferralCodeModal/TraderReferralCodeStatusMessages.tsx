@@ -12,16 +12,17 @@ import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCod
 export interface TraderReferralCodeStatusMessagesProps {
   infoMessage: string
   shouldShowInfo: boolean
+  variant: StatusColorVariant
 }
 
 export function TraderReferralCodeStatusMessages(props: TraderReferralCodeStatusMessagesProps): ReactNode {
-  const { infoMessage, shouldShowInfo } = props
+  const { infoMessage, shouldShowInfo, variant } = props
 
   if (!shouldShowInfo) return null
 
   return (
     <StatusMessage role="status" aria-live="polite">
-      <InlineAlert bannerType={StatusColorVariant.Info} hideIcon>
+      <InlineAlert bannerType={variant} hideIcon>
         {infoMessage}
       </InlineAlert>
     </StatusMessage>

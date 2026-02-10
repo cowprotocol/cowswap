@@ -55,7 +55,11 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
           />
         )}
         {errorMessage ? <StatusText $variant="error">{errorMessage}</StatusText> : null}
-        <TraderReferralCodeStatusMessages infoMessage={props.infoMessage} shouldShowInfo={props.shouldShowInfo} />
+        <TraderReferralCodeStatusMessages
+          infoMessage={props.infoMessage}
+          shouldShowInfo={props.shouldShowInfo}
+          variant={props.infoVariant}
+        />
       </Body>
 
       <Footer>

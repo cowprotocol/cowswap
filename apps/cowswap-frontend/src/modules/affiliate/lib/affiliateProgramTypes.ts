@@ -47,6 +47,7 @@ export type TraderReferralCodeVerificationStatus =
  * - 'eligible': wallet can bind the provided code
  * - 'linked': wallet already bound to the given `code`
  * - 'ineligible': wallet rejected with `reason`; may also expose an existing `linkedCode`
+ * - 'eligibility-unknown': wallet history could not be verified; optional `reason` for UI copy
  */
 export type TraderWalletReferralCodeState =
   | { status: 'unknown' }
@@ -55,6 +56,7 @@ export type TraderWalletReferralCodeState =
   | { status: 'eligible' }
   | { status: 'linked'; code: string }
   | { status: 'ineligible'; reason: string; linkedCode?: string }
+  | { status: 'eligibility-unknown'; reason?: string }
 
 export interface TraderReferralCodeState {
   modalOpen: boolean

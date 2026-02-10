@@ -1,6 +1,7 @@
 import { RefObject, useEffect, useRef } from 'react'
 
 import { CowAnalytics } from '@cowprotocol/analytics'
+import { StatusColorVariant } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -89,10 +90,20 @@ function verifyCta(
 
 export function getStatusCopy(
   verification: TraderReferralCodeVerificationStatus,
-  timeCapDays?: number,
+  timeCapDays: number | undefined,
+  eligibilityUnknown: boolean,
 ): StatusCopyResult {
+  if (eligibilityUnknown) {
+    return {
+      shouldShowInfo: true,
+      variant: StatusColorVariant.Warning,
+      infoMessage: t`We weren't able to check your eligibility. Feel free to continue, but you won't receive rewards if you traded on CoWSwap before.`,
+    }
+  }
+
   return {
     shouldShowInfo: verification.kind === 'valid' && verification.eligible,
+    variant: StatusColorVariant.Info,
     infoMessage: timeCapDays
       ? t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for ${timeCapDays} days.`
       : t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for the entire program.`,

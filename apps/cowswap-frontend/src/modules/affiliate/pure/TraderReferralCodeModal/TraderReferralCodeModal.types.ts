@@ -1,5 +1,7 @@
 import { FormEvent, RefObject } from 'react'
 
+import { StatusColorVariant } from '@cowprotocol/ui'
+
 import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
 import { TraderReferralCodeIncomingReason, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 
@@ -30,6 +32,7 @@ export interface TraderReferralCodeModalContentProps {
   hasRejection: boolean
   infoMessage: string
   shouldShowInfo: boolean
+  infoVariant: StatusColorVariant
   inputRef: RefObject<HTMLInputElement | null>
   ctaRef: RefObject<HTMLButtonElement | null>
   onDismiss(): void
@@ -38,4 +41,5 @@ export interface TraderReferralCodeModalContentProps {
 export interface StatusCopyResult {
   shouldShowInfo: boolean
   infoMessage: string
+  variant: StatusColorVariant
 }
