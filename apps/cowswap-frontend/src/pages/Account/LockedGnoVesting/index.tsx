@@ -57,10 +57,11 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const unvested = allocated.subtract(vested)
   const previousAccount = usePrevious(account)
+  const claimableAmount = vested.subtract(claimed)
 
   const canClaim =
     !loading &&
-    unvested.greaterThan(0) &&
+    claimableAmount.greaterThan(0) &&
     status === ClaimStatus.INITIAL &&
     MERKLE_DROP_CONTRACT_ADDRESSES[chainId] &&
     TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]
@@ -206,7 +207,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
               </HoverTooltip>
             </i>
             <b>
-              <TokenAmount amount={vested.subtract(claimed)} defaultValue="0" />
+              <TokenAmount amount={claimableAmount} defaultValue="0" />
             </b>
           </BalanceDisplay>
           {status === ClaimStatus.CONFIRMED ? (
