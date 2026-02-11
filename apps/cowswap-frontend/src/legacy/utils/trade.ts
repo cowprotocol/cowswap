@@ -14,8 +14,8 @@ import {
   SigningScheme,
   SupportedChainId as ChainId,
   UnsignedOrder,
+  Signer,
 } from '@cowprotocol/cow-sdk'
-import type { Signer } from '@ethersproject/abstract-signer'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 

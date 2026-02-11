@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
-import { getRpcProvider } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import {
   AbstractProviderAdapter,
   DEFAULT_BACKOFF_OPTIONS,
@@ -10,21 +9,20 @@ import {
   setGlobalAdapter,
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
 import { usePublicClient, useWalletClient } from 'wagmi'
-
-const chainId = getCurrentChainIdFromUrl()
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
   : undefined
 
-const legacyAdapter = new EthersV5Adapter({
-  provider: getRpcProvider(chainId)!,
-})
-
-setGlobalAdapter(legacyAdapter)
+setGlobalAdapter(
+  new ViemAdapter({
+    provider: createPublicClient({ chain: mainnet, transport: http(mainnet.rpcUrls.default.http[0]) }),
+  }) as AbstractProviderAdapter,
+)
 
 export const orderBookApi = new OrderBookApi({
   env: isBarnBackendEnv ? 'staging' : 'prod',
