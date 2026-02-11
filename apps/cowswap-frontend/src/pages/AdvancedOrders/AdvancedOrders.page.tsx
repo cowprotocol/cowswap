@@ -31,6 +31,8 @@ import {
   useTwapSlippage,
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -50,6 +52,12 @@ export function AdvancedOrdersPage(): ReactNode {
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
   const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
+
+  useResetOrdersTableFilters({
+    orderType: TabOrderTypes.ADVANCED,
+    historyStatusFilter: HistoryStatusFilter.FILLED,
+    displayOrdersOnlyForSafeApp: true,
+  })
 
   return (
     <>
@@ -82,11 +90,7 @@ export function AdvancedOrdersPage(): ReactNode {
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper>
             <Suspense fallback={<Loading />}>
-              <OrdersTableWidget
-                displayOrdersOnlyForSafeApp
-                orderType={TabOrderTypes.ADVANCED}
-                orders={allEmulatedOrders}
-              />
+              <OrdersTableWidget /* orders={allEmulatedOrders} */ />
             </Suspense>
           </styledEl.SecondaryWrapper>
         )}

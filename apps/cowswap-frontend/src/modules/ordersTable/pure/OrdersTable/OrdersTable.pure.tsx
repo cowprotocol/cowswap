@@ -19,6 +19,7 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
+import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
@@ -27,16 +28,18 @@ export interface OrdersTableProps {
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
-  const {
-    orderType,
-    filteredOrders,
-    balancesAndAllowances,
-    orderActions,
-    currentPageNumber = 0,
-  } = useOrdersTableState() || {}
   const pendingOrdersPrices = usePendingOrdersPrices()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const ordersToCancelMap = useOrdersToCancelMap()
+
+  // TODO: Shouldn't the default be 1?
+  const { orderType, currentPageNumber = 0 } = useOrdersTableFilters() || {}
+
+  const {
+    filteredOrders,
+    balancesAndAllowances,
+    orderActions,
+  } = useOrdersTableState() || {}
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
 
@@ -76,6 +79,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
 
   if (!chainId || !balancesAndAllowances || !orderActions || !pendingOrdersPrices) return null
 
+  const isTwapTable = orderType === TabOrderTypes.ADVANCED
   const totalFilteredOrders = filteredOrders?.length || 0
   const lastPageNumber = Math.ceil(totalFilteredOrders / ORDERS_TABLE_PAGE_SIZE)
 
@@ -90,14 +94,20 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
             allOrdersSelected={allOrdersSelected}
             visibleHeaders={visibleHeaders}
             isRowSelectable={isRowSelectable}
-            isTwapTable={orderType === TabOrderTypes.ADVANCED}
+            isTwapTable={isTwapTable}
           />
 
           <Rows>
             {ordersPage.map((item) => {
               const id = isParsedOrder(item) ? item.id : item.parent.id
 
-              return <OrdersTableRow key={id} item={item} currentTab={currentTab} />
+              return (
+                <OrdersTableRow
+                  key={id}
+                  currentTab={currentTab}
+                  isTwapTable={isTwapTable}
+                  item={item} />
+              )
             })}
           </Rows>
         </TableInner>

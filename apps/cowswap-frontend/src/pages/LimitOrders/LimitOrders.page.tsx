@@ -20,12 +20,20 @@ import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternati
 
 import { AlternativeLimitOrderPage } from './AlternativeLimitOrder.page'
 import { RegularLimitOrdersPage } from './RegularLimitOrders.page'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
+import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LimitOrdersPage() {
   const isAlternative = useIsAlternativeOrderModalVisible()
   const { i18n } = useLingui()
+
+  useResetOrdersTableFilters({
+    orderType: TabOrderTypes.LIMIT,
+    historyStatusFilter: HistoryStatusFilter.FILLED,
+  })
 
   return (
     <>

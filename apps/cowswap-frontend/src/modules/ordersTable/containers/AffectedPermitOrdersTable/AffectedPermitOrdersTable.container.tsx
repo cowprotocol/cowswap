@@ -5,8 +5,6 @@ import { Order } from 'legacy/state/orders/actions'
 import * as styledEl from './AffectedPermitOrdersTable.styled'
 
 import { usePendingOrdersPrices } from '../../../orders'
-import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
-import { TabOrderTypes } from '../../index'
 import { OrdersTableStateUpdater } from '../../state/OrdersTable.updater'
 import { AffectedPermitOrderWithActions } from '../AffectedPermitOrderWithActions/AffectedPermitOrderWithActions.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
@@ -22,13 +20,7 @@ export function AffectedPermitOrdersTable({ orders }: AffectedPermitOrdersTableP
     <>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
 
-      <OrdersTableStateUpdater
-        searchTerm=""
-        historyStatusFilter={HistoryStatusFilter.ALL}
-        orders={orders}
-        orderType={TabOrderTypes.LIMIT}
-        syncWithUrl={false}
-      />
+      <OrdersTableStateUpdater orders={orders} />
 
       {orders.map((order) => (
         <styledEl.OrderWrapper key={order.id}>

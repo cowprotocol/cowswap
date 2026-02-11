@@ -12,10 +12,17 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
+import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 
 export function SwapPage(): ReactNode {
   const params = useParams()
   const { i18n } = useLingui()
+
+  useResetOrdersTableFilters({
+    orderType: TabOrderTypes.LIMIT,
+    syncWithUrl: false,
+  })
 
   if (!params.chainId) {
     return <SwapPageRedirect />

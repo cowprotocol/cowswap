@@ -16,31 +16,36 @@ import { useNoOrdersAnimation } from '../../../../hooks/useNoOrdersAnimation'
 import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
+import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 
 const Lottie = lazy(() => import('lottie-react'))
 
 interface OrdersTableNoOrdersContentProps {
+  orderType: TabOrderTypes
   currentTab: OrderTabId
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   hasHydratedOrders: boolean
+  displayOrdersOnlyForSafeApp: boolean
+  hasOrders: boolean
 }
 
 export function OrdersTableNoOrdersContent({
+  orderType,
   currentTab,
   searchTerm,
   historyStatusFilter,
   hasHydratedOrders,
+  displayOrdersOnlyForSafeApp,
+  hasOrders,
 }: OrdersTableNoOrdersContentProps): ReactNode {
   const { darkMode: isDarkMode } = useTheme()
   const isSafeViaWc = useIsSafeViaWc()
   const injectedWidgetParams = useInjectedWidgetParams()
-  const { orderType, displayOrdersOnlyForSafeApp, orders = [] } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
   const { limit, isLoading, hasMoreOrders } = useLoadMoreOrders()
-  const hasOrders = orders.length > 0
   const displayLimit = isLoading ? limit - AMOUNT_OF_ORDERS_TO_FETCH : limit
 
   const { title, description } = useMemo(

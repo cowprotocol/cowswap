@@ -14,27 +14,29 @@ import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDispl
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
-
-interface OrdersTableContainerProps extends PropsWithChildren {
-  searchTerm: string
-  historyStatusFilter: HistoryStatusFilter
-}
+import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 
 export function OrdersTableContainer({
-  searchTerm,
-  historyStatusFilter,
   children,
-}: OrdersTableContainerProps): ReactNode {
+}: PropsWithChildren): ReactNode {
   const { account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
-
-  const { tabs } = useOrdersTableState() || {}
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
+  const {
+    tabs,
+    currentTabId,
+    searchTerm,
+    historyStatusFilter,
+  } = useOrdersTableFilters() || {}
+
+  /*
+  TODO: Why was it done this way instead of getting currentTabId from the atom?
   const currentTab = useMemo(() => {
     const activeTab = tabs?.find((tab) => tab.isActive)
     return activeTab?.id || OrderTabId.open
   }, [tabs])
+  */
 
   return (
     <styledEl.Wrapper>
@@ -44,7 +46,7 @@ export function OrdersTableContainer({
             <styledEl.TabsContainer>
               {tabs && <OrdersTabs tabs={tabs} />}
               {children && (
-                <styledEl.RightContainer $isHistoryTab={currentTab === OrderTabId.history}>
+                <styledEl.RightContainer $isHistoryTab={currentTabId === OrderTabId.history /* || OrderTabId.open */}>
                   {children}
                 </styledEl.RightContainer>
               )}
@@ -59,7 +61,10 @@ export function OrdersTableContainer({
         </>
       )}
 
-      <OrdersTableContent searchTerm={searchTerm} historyStatusFilter={historyStatusFilter} currentTab={currentTab} />
+      <OrdersTableContent
+        currentTab={currentTabId}
+        searchTerm={searchTerm}
+        historyStatusFilter={historyStatusFilter} />
     </styledEl.Wrapper>
   )
 }

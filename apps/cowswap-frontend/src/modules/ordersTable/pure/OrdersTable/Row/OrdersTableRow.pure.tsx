@@ -20,10 +20,15 @@ import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/order
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
+  isTwapTable: boolean;
   item: OrderTableItem
 }
 
-export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactNode {
+export function OrdersTableRow({
+  currentTab,
+  isTwapTable,
+  item,
+}: OrderTableRowProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const tableState = useOrdersTableState()
@@ -34,10 +39,9 @@ export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactN
 
   if (!tableState) return null
 
-  const { balancesAndAllowances, orderActions, orderType } = tableState
+  const { balancesAndAllowances, orderActions } = tableState
 
   const isRowSelectable = allowsOffchainSigning
-  const isTwapTable = orderType === TabOrderTypes.ADVANCED
 
   const { inputToken, outputToken } = getParsedOrderFromTableItem(item)
 

@@ -12,6 +12,7 @@ import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTable } from '../OrdersTable.pure'
+import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 
 interface OrdersTableContentProps {
   currentTab: OrderTabId
@@ -20,17 +21,18 @@ interface OrdersTableContentProps {
 }
 
 export function OrdersTableContent({
+  currentTab,
   searchTerm,
   historyStatusFilter,
-  currentTab,
 }: OrdersTableContentProps): ReactNode {
-  const { filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
+  const { orders, filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
+  const { orderType, displayOrdersOnlyForSafeApp } = useOrdersTableFilters() || {}
   const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { account } = useWalletInfo()
 
   if (!account) {
-    return <OrdersTableNoWalletContent />
+    return <OrdersTableNoWalletContent orderType={orderType} />
   }
 
   if (isProviderNetworkUnsupported) {
@@ -39,10 +41,13 @@ export function OrdersTableContent({
 
   return filteredOrders?.length === 0 ? (
     <OrdersTableNoOrdersContent
+      orderType={orderType}
       currentTab={currentTab}
       searchTerm={searchTerm}
       historyStatusFilter={historyStatusFilter}
       hasHydratedOrders={isHydrated}
+      displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
+      hasOrders={ !!orders?.length }
     />
   ) : (
     <OrdersTable currentTab={currentTab} />

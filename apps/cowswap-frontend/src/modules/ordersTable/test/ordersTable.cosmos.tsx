@@ -64,15 +64,10 @@ function Wrapper(): null {
 
   useEffect(() => {
     setOrdersTableState({
-      displayOrdersOnlyForSafeApp: false,
-      currentPageNumber: 1,
       orders: ordersMock,
       filteredOrders: ordersMock,
-      tabs: tabs,
       balancesAndAllowances: balancesAndAllowances,
       orderActions: orderActions,
-      orderType: TabOrderTypes.LIMIT,
-      currentTabId: OrderTabId.open,
       hasHydratedOrders: true,
     })
   }, [setOrdersTableState])

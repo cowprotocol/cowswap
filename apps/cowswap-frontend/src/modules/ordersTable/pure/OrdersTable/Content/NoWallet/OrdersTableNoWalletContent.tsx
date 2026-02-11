@@ -11,11 +11,14 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
-import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
+import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 
-export function OrdersTableNoWalletContent(): ReactNode {
-  const { orderType } = useOrdersTableState() || {}
+export interface OrdersTableNoWalletContentProps {
+  orderType: TabOrderTypes
+}
+
+export function OrdersTableNoWalletContent({ orderType }: OrdersTableNoWalletContentProps): ReactNode {
   const pendingActivitiesCount = usePendingActivitiesCount()
 
   return (

@@ -41,7 +41,7 @@ export function RegularLimitOrdersPage(): ReactNode {
         <styledEl.SecondaryWrapper>
           {pendingLimitOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingLimitOrders} />}
           <Suspense fallback={<Loading />}>
-            <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
+            <OrdersTableWidget /* orders={allLimitOrders} */ />
           </Suspense>
         </styledEl.SecondaryWrapper>
       )}
