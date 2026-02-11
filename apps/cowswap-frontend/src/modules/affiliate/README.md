@@ -18,6 +18,7 @@ The affiliate program will amplify word-of-mouth marketing for CoW Swap by incen
 - When enabled:
   1.  two new pages show up in `Account`, i.e. `My Rewards` and `Affiliate`
   2.  the referral code input row shows up in the trade form alongside a Modal to input the code
+- In injected widget mode, the rewards row is hidden.
 
 ## 4) Data flow
 

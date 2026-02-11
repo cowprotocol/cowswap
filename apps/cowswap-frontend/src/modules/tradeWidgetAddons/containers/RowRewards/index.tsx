@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -12,7 +13,7 @@ import { RowRewardsContent } from '../../pure/Row/RowRewards'
 
 export function useIsRowRewardsVisible(): boolean {
   const { isAffiliateProgramEnabled = false } = useFeatureFlags()
-  return isAffiliateProgramEnabled
+  return isAffiliateProgramEnabled && !isInjectedWidget()
 }
 
 export function RowRewards(): ReactNode {
