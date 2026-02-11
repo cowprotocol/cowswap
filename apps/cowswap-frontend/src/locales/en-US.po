@@ -2719,6 +2719,10 @@ msgstr "Enter your code"
 msgid "Hook description"
 msgstr "Hook description"
 
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "Affiliate payouts and registration happen on Ethereum mainnet."
+msgstr "Affiliate payouts and registration happen on Ethereum mainnet."
+
 #: apps/cowswap-frontend/src/common/pure/IconSpinner/index.tsx
 msgid "Spinning icon"
 msgstr "Spinning icon"
@@ -3033,10 +3037,6 @@ msgstr "Enter a referral code with 5 to 20 characters"
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Account overview"
 msgstr "Account overview"
-
-#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
-msgid "Affiliate payouts and registration happens on Ethereum mainnet."
-msgstr "Affiliate payouts and registration happens on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate your"
@@ -5518,6 +5518,10 @@ msgstr "Cancelled order"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "CoW AMM Deposit"
 #~ msgstr "CoW AMM Deposit"
+
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "Affiliate stats are temporarily unavailable. Try again later."
+msgstr "Affiliate stats are temporarily unavailable. Try again later."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Limit Order Settings"

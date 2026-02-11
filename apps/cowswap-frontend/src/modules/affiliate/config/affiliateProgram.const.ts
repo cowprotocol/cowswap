@@ -18,7 +18,7 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
   SupportedChainId.PLASMA,
 ] as const
 
-export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliate-trader:v2'
+export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliateTrader:v2'
 
 export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.map(
   (chainId) => CHAIN_INFO[chainId].label,
@@ -54,4 +54,7 @@ enum RetryableStatusCode {
   ServiceUnavailable = 503,
   GatewayTimeout = 504,
 }
-export const STATUS_CODES_TO_RETRY = Object.values(RetryableStatusCode)
+
+export const STATUS_CODES_TO_RETRY: number[] = Object.values(RetryableStatusCode).filter(
+  (value): value is number => typeof value === 'number',
+)

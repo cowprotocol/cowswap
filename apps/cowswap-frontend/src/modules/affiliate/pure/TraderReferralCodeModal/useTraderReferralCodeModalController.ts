@@ -307,7 +307,7 @@ function usePrimaryClickHandler(params: {
     }
 
     if (primaryCta.action === 'verify') {
-      analytics.sendEvent({ category: 'referral', action: 'cta_clicked', label: 'connect_to_verify' })
+      analytics.sendEvent({ category: 'referral', action: 'cta_clicked', label: 'verify_code' })
       actions.requestVerification(displayCode)
       return
     }

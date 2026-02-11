@@ -58,11 +58,9 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
     inputRef,
   } = props
 
-  const showPendingLabelInInput = isConnected && shouldShowPendingLabel(verification)
-  const showValidLabelInInput = verification.kind === 'valid'
-  const showPendingTag = isConnected && verification.kind === 'pending' && !showPendingLabelInInput
-  const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
-  const isChecking = verification.kind === 'checking'
+  const isEditingUi = uiState === 'editing' || uiState === 'invalid' || uiState === 'ineligible' || uiState === 'error'
+  const showPendingLabelInInput = isConnected && shouldShowPendingLabel(verification) && isEditingUi
+  const showValidLabelInInput = verification.kind === 'valid' && isEditingUi
   const { hasError, isEditing, isInputDisabled, trailingIconKind, showEdit, showRemove, canSubmitSave, isLinked } =
     deriveFormFlags({
       uiState,
@@ -73,6 +71,9 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
       showPendingLabelInInput,
       showValidLabelInInput,
     })
+  const showPendingTag = isConnected && verification.kind === 'pending' && !showPendingLabelInInput
+  const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
+  const isChecking = verification.kind === 'checking'
   const submitAction = canSubmitSave ? onSave : onPrimaryClick
 
   const tooltipCopy = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`

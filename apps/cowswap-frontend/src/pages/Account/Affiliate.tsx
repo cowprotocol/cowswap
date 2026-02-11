@@ -218,6 +218,7 @@ export default function AccountAffiliate() {
       setPartnerStats(null)
       setStatsUpdatedAt(null)
       setProgramParams(null)
+      setErrorMessage(null)
       return
     }
 
@@ -271,6 +272,9 @@ export default function AccountAffiliate() {
       setPartnerStats(null)
       setStatsUpdatedAt(null)
       setStatsLoading(false)
+      if (!account || !isMainnet) {
+        setErrorMessage(null)
+      }
       return
     }
 
@@ -291,6 +295,7 @@ export default function AccountAffiliate() {
         }
         setPartnerStats(null)
         setStatsUpdatedAt(null)
+        setErrorMessage(t`Affiliate stats are temporarily unavailable. Try again later.`)
       }
 
       setStatsLoading(false)
@@ -340,8 +345,6 @@ export default function AccountAffiliate() {
       bffAffiliateApi
         .verifyReferralCode({
           code: normalizedCode,
-          account: account || '0x0000000000000000000000000000000000000000',
-          chainId,
         })
         .then((response) => {
           if (!active) {
@@ -575,7 +578,7 @@ export default function AccountAffiliate() {
             <AffiliateTermsFaqLinks />
             {showUnsupported && (
               <InlineNote>
-                <Trans>Affiliate payouts and registration happens on Ethereum mainnet.</Trans>
+                <Trans>Affiliate payouts and registration happen on Ethereum mainnet.</Trans>
               </InlineNote>
             )}
           </HeroContent>

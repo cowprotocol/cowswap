@@ -149,14 +149,12 @@ export default function AccountMyRewards() {
         ? traderReferralCode.previousVerification.programParams
         : undefined
   const rewardAmountLabel = programParams ? formatUsdCompact(programParams?.traderRewardAmount) : 'reward'
+  const linkedWalletCode = traderReferralCode.wallet.status === 'linked' ? traderReferralCode.wallet.code : undefined
   const traderCode = isConnected
-    ? statsLinkedCode
-      ? statsLinkedCode
-      : isLinked
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (traderReferralCode as any).wallet.code
-        : (traderReferralCode.savedCode ??
-          (traderReferralCode.verification.kind === 'valid' ? traderReferralCode.verification.code : undefined))
+    ? (statsLinkedCode ??
+      linkedWalletCode ??
+      traderReferralCode.savedCode ??
+      (traderReferralCode.verification.kind === 'valid' ? traderReferralCode.verification.code : undefined))
     : undefined
   const traderHasCode = Boolean(traderCode)
   const triggerVolume = typeof programParams?.triggerVolumeUsd === 'number' ? programParams.triggerVolumeUsd : null

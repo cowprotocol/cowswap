@@ -12,7 +12,7 @@ export interface TraderReferralCodeIneligibleCopyProps {
 
 export function TraderReferralCodeHowItWorksLink(): ReactNode {
   return (
-    <HowItWorksLink as="a" href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank">
+    <HowItWorksLink as="a" href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
       <Trans>How it works.</Trans>
     </HowItWorksLink>
   )

@@ -93,8 +93,6 @@ export async function performVerification(params: PerformVerificationParams): Pr
 
     const response = await bffAffiliateApi.verifyReferralCode({
       code: sanitizedCode,
-      account: baseParams.account,
-      chainId: baseParams.chainId,
     })
 
     if (pendingVerificationRef.current !== requestId) {
@@ -188,7 +186,7 @@ function startVerificationRequest(params: {
   baseParams: PerformVerificationParams & { account: string; chainId: SupportedChainId }
 }): number {
   const { sanitizedCode, baseParams } = params
-  const { actions, analytics, account, supportedNetwork, pendingVerificationRef } = baseParams
+  const { actions, analytics, pendingVerificationRef } = baseParams
 
   const requestId = Date.now()
   pendingVerificationRef.current = requestId
@@ -196,7 +194,7 @@ function startVerificationRequest(params: {
   analytics.sendEvent({
     category: 'referral',
     action: 'verify_started',
-    label: `hasWallet=${account ? 'yes' : 'no'};supported=${supportedNetwork ? 'yes' : 'no'}`,
+    label: 'verify_code',
     value: sanitizedCode.length,
   })
 
