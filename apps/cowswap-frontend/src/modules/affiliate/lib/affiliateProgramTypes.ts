@@ -87,8 +87,6 @@ export interface TraderReferralCodeApiConfig {
 
 export interface TraderReferralCodeVerificationRequest {
   code: string
-  account: string
-  chainId: SupportedChainId
 }
 
 export interface TraderReferralCodeVerificationResponse {
