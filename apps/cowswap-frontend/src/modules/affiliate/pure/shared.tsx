@@ -1,6 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
 
-import { ButtonPrimary, ButtonSecondary, Font, HelpTooltip, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, ButtonPrimary, Font, HelpTooltip, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -332,7 +332,7 @@ export const LinkedFooter = styled.div`
   gap: 12px;
 `
 
-export const LinkedActionButton = styled(ButtonSecondary)`
+export const LinkedActionButton = styled(ButtonOutlined)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -340,13 +340,9 @@ export const LinkedActionButton = styled(ButtonSecondary)`
   flex: 1;
   min-width: 0;
   border-radius: 12px;
-  border: 1px solid var(${UI.COLOR_BORDER});
-  background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_TEXT});
-  font-weight: 600;
+  text-decoration: none;
   font-size: 14px;
   padding: 8px 14px;
-  // min-height: 36px;
 `
 
 export const LinkedActionIcon = styled.span`

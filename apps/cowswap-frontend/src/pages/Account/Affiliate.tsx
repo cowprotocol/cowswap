@@ -11,7 +11,7 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { delay, formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary, ButtonSize, HelpTooltip, ModalHeader, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, ButtonPrimary, ButtonSize, HelpTooltip, ModalHeader, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -822,26 +822,12 @@ export default function AccountAffiliate() {
               ))}
             </QrPalette>
             <QrActions>
-              <DownloadLink
-                href="#"
-                $disabled={!canDownloadQr}
-                onClick={(event) => {
-                  event.preventDefault()
-                  handleDownloadQr('png')
-                }}
-              >
+              <DownloadButton disabled={!canDownloadQr} onClick={() => handleDownloadQr('png')}>
                 <Trans>Download .PNG</Trans>
-              </DownloadLink>
-              <DownloadLink
-                href="#"
-                $disabled={!canDownloadQr}
-                onClick={(event) => {
-                  event.preventDefault()
-                  handleDownloadQr('webp')
-                }}
-              >
+              </DownloadButton>
+              <DownloadButton disabled={!canDownloadQr} onClick={() => handleDownloadQr('webp')}>
                 <Trans>Download .WEBP</Trans>
-              </DownloadLink>
+              </DownloadButton>
             </QrActions>
           </ModalBody>
         </ModalContent>
@@ -916,11 +902,8 @@ const QrActions = styled.div`
   justify-content: center;
 `
 
-const DownloadLink = styled.a<{ $disabled: boolean }>`
+const DownloadButton = styled(ButtonOutlined)`
   padding: 10px 16px;
   border-radius: 12px;
-  border: 1px solid var(${UI.COLOR_BORDER});
-  text-decoration: none;
-  color: ${({ $disabled }) => ($disabled ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_TEXT_OPACITY_60})`)};
-  pointer-events: ${({ $disabled }) => ($disabled ? 'none' : 'auto')};
+  min-width: 136px;
 `
