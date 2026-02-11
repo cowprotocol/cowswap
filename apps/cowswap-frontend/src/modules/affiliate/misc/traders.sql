@@ -121,6 +121,7 @@ payouts as (
   cross join unnest(params.trader_payout_sources) as ps(payout_source)
   where lower(to_hex("from")) = replace(ps.payout_source, '0x', '')
     and contract_address = 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+    and evt_block_time >= date '2026-01-01'
   group by 1
 )
 select
