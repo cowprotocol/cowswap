@@ -62,11 +62,17 @@ function checkIsTokenSelected(token: TokenWithLogo, selectedToken: Nullish<Curre
   return areAddressesEqual(token.address, getCurrencyAddress(selectedToken)) && token.chainId === selectedToken.chainId
 }
 
-function wrapWithTooltip(content: ReactNode, disabled: boolean, disabledReason?: string): ReactNode {
-  if (!disabled || !disabledReason) return content
+interface DisabledTooltipProps {
+  children: ReactNode
+  disabled: boolean
+  disabledReason?: string
+}
+
+function DisabledTooltip({ children, disabled, disabledReason }: DisabledTooltipProps): ReactNode {
+  if (!disabled || !disabledReason) return children
   return (
     <HoverTooltip wrapInContainer placement="top" content={disabledReason}>
-      {content}
+      {children}
     </HoverTooltip>
   )
 }
@@ -111,41 +117,41 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     onSelectToken?.(token)
   }
 
-  return wrapWithTooltip(
-    <styledEl.TokenItem
-      ref={visibilityRef}
-      data-address={token.address.toLowerCase()}
-      data-token-symbol={token.symbol || ''}
-      data-token-name={token.name || ''}
-      data-element-type="token-selection"
-      onClick={handleClick}
-      className={getClassName(isTokenSelected, disabled, className)}
-      {...getDisabledProps(disabled)}
-    >
-      <TokenInfo
-        token={token}
-        showAddress={hasIntersected}
-        tags={
-          hasIntersected ? (
-            <TokenTags
-              isUnsupported={isUnsupported}
-              isPermitCompatible={isPermitCompatible}
-              tags={token.tags}
-              tokenListTags={tokenListTags}
-            />
-          ) : null
-        }
-      />
-      <TokenBalanceColumn
-        shouldShow={shouldShowBalances}
-        shouldFormat={shouldFormatBalances}
-        balanceAmount={balanceAmount}
-        usdAmount={usdAmount}
-      />
-      {children}
-    </styledEl.TokenItem>,
-    disabled,
-    disabledReason,
+  return (
+    <DisabledTooltip disabled={disabled} disabledReason={disabledReason}>
+      <styledEl.TokenItem
+        ref={visibilityRef}
+        data-address={token.address.toLowerCase()}
+        data-token-symbol={token.symbol || ''}
+        data-token-name={token.name || ''}
+        data-element-type="token-selection"
+        onClick={handleClick}
+        className={getClassName(isTokenSelected, disabled, className)}
+        {...getDisabledProps(disabled)}
+      >
+        <TokenInfo
+          token={token}
+          showAddress={hasIntersected}
+          tags={
+            hasIntersected ? (
+              <TokenTags
+                isUnsupported={isUnsupported}
+                isPermitCompatible={isPermitCompatible}
+                tags={token.tags}
+                tokenListTags={tokenListTags}
+              />
+            ) : null
+          }
+        />
+        <TokenBalanceColumn
+          shouldShow={shouldShowBalances}
+          shouldFormat={shouldFormatBalances}
+          balanceAmount={balanceAmount}
+          usdAmount={usdAmount}
+        />
+        {children}
+      </styledEl.TokenItem>
+    </DisabledTooltip>
   )
 }
 
