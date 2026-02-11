@@ -14,7 +14,7 @@ import type { Config } from 'wagmi'
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
   // validTo must be calculated just before signing of an order
-  postOrderParams: Omit<PostOrderParams, 'validTo' | 'signer'>
+  postOrderParams: Omit<PostOrderParams, 'validTo' | 'config'>
   typedHooks?: TypedAppDataHooks
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
