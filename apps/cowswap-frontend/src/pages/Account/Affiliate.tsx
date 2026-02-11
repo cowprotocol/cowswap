@@ -27,7 +27,11 @@ import CopyHelper from 'legacy/components/Copy'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
-import { VERIFICATION_DEBOUNCE_MS } from 'modules/affiliate/config/affiliateProgram.const'
+import {
+  AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS,
+  AFFILIATE_REWARDS_UPDATE_LAG_HOURS,
+  VERIFICATION_DEBOUNCE_MS,
+} from 'modules/affiliate/config/affiliateProgram.const'
 import { PartnerCodeResponse, PartnerStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
 import {
   buildPartnerTypedData,
@@ -142,7 +146,6 @@ export default function AccountAffiliate() {
   const [programParams, setProgramParams] = useState<PartnerCodeResponse | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [partnerStats, setPartnerStats] = useState<PartnerStatsResponse | null>(null)
-  const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
   const { isModalOpen: isQrOpen, openModal: openQrModal, closeModal: closeQrModal } = useModalState()
   const [qrColor, setQrColor] = useState<QrColor>('accent')
@@ -162,14 +165,6 @@ export default function AccountAffiliate() {
     (value: number | null | undefined) => (value === null || value === undefined ? '-' : numberFormatter.format(value)),
     [numberFormatter],
   )
-  const formatUpdatedAt = useCallback((value: Date | null) => {
-    if (!value) {
-      return '-'
-    }
-
-    return formatDateWithTimezone(value) ?? '-'
-  }, [])
-
   const isConnected = Boolean(account)
   const isSignerAvailable = Boolean(provider)
   const showCreateForm = isConnected && isMainnet && !existingCode && isSignerAvailable
@@ -216,7 +211,6 @@ export default function AccountAffiliate() {
       setCreatedAt(null)
       setCodeLoading(false)
       setPartnerStats(null)
-      setStatsUpdatedAt(null)
       setProgramParams(null)
       setErrorMessage(null)
       return
@@ -270,7 +264,6 @@ export default function AccountAffiliate() {
 
     if (!account || !isMainnet || !existingCode) {
       setPartnerStats(null)
-      setStatsUpdatedAt(null)
       setStatsLoading(false)
       if (!account || !isMainnet) {
         setErrorMessage(null)
@@ -287,14 +280,11 @@ export default function AccountAffiliate() {
         }
 
         setPartnerStats(stats)
-        const updated = stats?.lastUpdatedAt ? new Date(stats.lastUpdatedAt) : null
-        setStatsUpdatedAt(updated && !Number.isNaN(updated.getTime()) ? updated : null)
       } catch {
         if (cancelled) {
           return
         }
         setPartnerStats(null)
-        setStatsUpdatedAt(null)
         setErrorMessage(t`Affiliate stats are temporarily unavailable. Try again later.`)
       }
 
@@ -533,11 +523,20 @@ export default function AccountAffiliate() {
   const showHero = !isConnected || showUnsupported || (isConnected && !isSignerAvailable && !showLinkedFlow)
 
   const createdOnLabel = createdAt ? formatShortDate(createdAt) : '-'
-  const statsUpdatedLabel = useTimeAgo(statsUpdatedAt ?? undefined, 60_000)
-  const statsUpdatedAbsoluteLabel = formatUpdatedAt(statsUpdatedAt)
-  const statsUpdatedDisplay = statsUpdatedLabel || '-'
-  const statsUpdatedText = i18n._(t`Last updated: ${statsUpdatedDisplay}`)
-  const statsUpdatedTitle = statsUpdatedAbsoluteLabel !== '-' ? statsUpdatedAbsoluteLabel : undefined
+  const approxStatsUpdatedAt = useMemo((): Date => {
+    const intervalMs = AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS * 60 * 60 * 1000
+    const lagMs = AFFILIATE_REWARDS_UPDATE_LAG_HOURS * 60 * 60 * 1000
+    const approximateUpdatedAtMs = Math.floor((Date.now() - lagMs) / intervalMs) * intervalMs + lagMs
+    return new Date(approximateUpdatedAtMs)
+  }, [])
+  const statsUpdatedLabel = useTimeAgo(approxStatsUpdatedAt, 60_000)
+  const statsUpdatedDisplay = statsUpdatedLabel ? ` ≈ ${statsUpdatedLabel}` : '-'
+  const statsUpdatedText = i18n._(t`Last updated`)
+  const statsUpdatedTooltip = i18n._(
+    t`Rewards data updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear here.`,
+  )
+  const statsUpdatedAbsoluteLabel = formatDateWithTimezone(approxStatsUpdatedAt)
+  const statsUpdatedTitle = statsUpdatedAbsoluteLabel ?? undefined
 
   return (
     <RewardsWrapper>
@@ -773,7 +772,13 @@ export default function AccountAffiliate() {
                 </Donut>
               </RewardsMetricsRow>
               <BottomMetaRow>
-                <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
+                <LabelContent>
+                  <span>
+                    {statsUpdatedText}
+                    <span title={statsUpdatedTitle}>{statsUpdatedDisplay}</span>
+                  </span>
+                  <HelpTooltip text={statsUpdatedTooltip} />
+                </LabelContent>
               </BottomMetaRow>
             </RewardsCol2Card>
             <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoadingCombined} />

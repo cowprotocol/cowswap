@@ -29,6 +29,8 @@ export const AFFILIATE_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
 export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms'
 
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
+export const AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS = 6
+export const AFFILIATE_REWARDS_UPDATE_LAG_HOURS = 1
 
 export const VERIFICATION_DEBOUNCE_MS = 350
 export const VERIFICATION_RETRY_DELAY_MS = 3_000

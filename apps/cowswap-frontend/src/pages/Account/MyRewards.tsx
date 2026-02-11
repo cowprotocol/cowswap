@@ -5,8 +5,8 @@ import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trad
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { delay, formatShortDate } from '@cowprotocol/common-utils'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { delay, formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
+import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
@@ -19,12 +19,15 @@ import SVG from 'react-inlinesvg'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
-import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from 'modules/affiliate/config/affiliateProgram.const'
+import {
+  AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS,
+  AFFILIATE_REWARDS_UPDATE_LAG_HOURS,
+  AFFILIATE_SUPPORTED_NETWORK_NAMES,
+} from 'modules/affiliate/config/affiliateProgram.const'
 import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
 import { useTraderReferralCodeActions } from 'modules/affiliate/hooks/useTraderReferralCodeActions'
 import { TraderStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
 import {
-  formatUpdatedAt,
   formatUsdcCompact,
   formatUsdCompact,
   getIncomingIneligibleCode,
@@ -62,6 +65,7 @@ import {
   UnsupportedNetworkHeader,
   UnsupportedNetworkMessage,
   ValidStatusBadge,
+  LabelContent,
 } from 'modules/affiliate/pure/shared'
 import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/pure/TraderReferralCodeIneligibleCopy'
 import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/pure/TraderReferralCodeNetworkBanner'
@@ -78,7 +82,6 @@ export default function AccountMyRewards() {
   const traderReferralCode = useTraderReferralCode()
   const traderReferralCodeActions = useTraderReferralCodeActions()
   const [traderStats, setTraderStats] = useState<TraderStatsResponse | null>(null)
-  const [statsUpdatedAt, setStatsUpdatedAt] = useState<Date | null>(null)
   const [loading, setLoading] = useState(false)
 
   const isConnected = Boolean(account)
@@ -100,7 +103,6 @@ export default function AccountMyRewards() {
 
     if (!account) {
       setTraderStats(null)
-      setStatsUpdatedAt(null)
       setLoading(false)
       return
     }
@@ -114,8 +116,6 @@ export default function AccountMyRewards() {
         }
 
         setTraderStats(stats)
-        const updated = stats?.lastUpdatedAt ? new Date(stats.lastUpdatedAt) : null
-        setStatsUpdatedAt(updated && !Number.isNaN(updated.getTime()) ? updated : null)
         if (stats?.bound_referrer_code && traderReferralCode.savedCode !== stats.bound_referrer_code) {
           traderReferralCodeActions.setSavedCode(stats.bound_referrer_code)
           traderReferralCodeActions.setWalletState({ status: 'linked', code: stats.bound_referrer_code })
@@ -125,7 +125,6 @@ export default function AccountMyRewards() {
           return
         }
         setTraderStats(null)
-        setStatsUpdatedAt(null)
       }
 
       setLoading(false)
@@ -177,11 +176,21 @@ export default function AccountMyRewards() {
       : formatUsdcCompact(0)
   const linkedSinceLabel = formatShortDate(traderStats?.linked_since) ?? '-'
   const rewardsEndLabel = formatShortDate(traderStats?.rewards_end) ?? '-'
-  const statsUpdatedLabel = useTimeAgo(statsUpdatedAt ?? undefined, 60_000)
-  const statsUpdatedAbsoluteLabel = formatUpdatedAt(statsUpdatedAt)
-  const statsUpdatedDisplay = statsUpdatedLabel || '-'
-  const statsUpdatedText = i18n._(t`Last updated: ${statsUpdatedDisplay}`)
-  const statsUpdatedTitle = statsUpdatedAbsoluteLabel !== '-' ? statsUpdatedAbsoluteLabel : undefined
+  const approxStatsUpdatedAt = useMemo((): Date => {
+    const intervalMs = AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS * 60 * 60 * 1000
+    const lagMs = AFFILIATE_REWARDS_UPDATE_LAG_HOURS * 60 * 60 * 1000
+    // eslint-disable-next-line react-hooks/purity
+    const approximateUpdatedAtMs = Math.floor((Date.now() - lagMs) / intervalMs) * intervalMs + lagMs
+    return new Date(approximateUpdatedAtMs)
+  }, [])
+  const statsUpdatedLabel = useTimeAgo(approxStatsUpdatedAt, 60_000)
+  const statsUpdatedDisplay = statsUpdatedLabel ? ` ≈ ${statsUpdatedLabel}` : '-'
+  const statsUpdatedText = i18n._(t`Last updated`)
+  const statsUpdatedTooltip = i18n._(
+    t`Rewards data updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear here.`,
+  )
+  const statsUpdatedAbsoluteLabel = formatDateWithTimezone(approxStatsUpdatedAt)
+  const statsUpdatedTitle = statsUpdatedAbsoluteLabel ?? undefined
 
   const handleOpenRewardsModal = useCallback(() => {
     traderReferralCodeActions.openModal('rewards')
@@ -333,7 +342,13 @@ export default function AccountMyRewards() {
                   </Donut>
                 </RewardsMetricsRow>
                 <BottomMetaRow>
-                  <span title={statsUpdatedTitle}>{statsUpdatedText}</span>
+                  <LabelContent>
+                    <span>
+                      {statsUpdatedText}
+                      <span title={statsUpdatedTitle}>{statsUpdatedDisplay}</span>
+                    </span>
+                    <HelpTooltip text={statsUpdatedTooltip} />
+                  </LabelContent>
                 </BottomMetaRow>
               </RewardsCol2Card>
 
