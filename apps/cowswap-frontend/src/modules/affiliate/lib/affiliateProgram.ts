@@ -43,6 +43,8 @@ interface SanitizedContext {
   baseParams: PerformVerificationParams
 }
 
+const SELF_REFERRAL_ERROR_MESSAGE = 'You cannot apply your own referral code.'
+
 // eslint-disable-next-line complexity
 export async function performVerification(params: PerformVerificationParams): Promise<void> {
   const context = sanitizeAndValidate(params)
@@ -68,6 +70,27 @@ export async function performVerification(params: PerformVerificationParams): Pr
   const requestId = startVerificationRequest({ sanitizedCode, baseParams })
 
   try {
+    const isSelfReferral = await isOwnAffiliateCode({
+      account: baseParams.account,
+      code: sanitizedCode,
+    })
+
+    if (isSelfReferral) {
+      if (pendingVerificationRef.current !== requestId) {
+        return
+      }
+
+      applyVerificationResult({
+        kind: 'error',
+        code: sanitizedCode,
+        errorType: 'unknown',
+        message: SELF_REFERRAL_ERROR_MESSAGE,
+      })
+      trackVerifyResult('error', false, 'type=self_referral')
+      pendingVerificationRef.current = null
+      return
+    }
+
     const response = await bffAffiliateApi.verifyReferralCode({
       code: sanitizedCode,
       account: baseParams.account,
@@ -110,6 +133,22 @@ export async function performVerification(params: PerformVerificationParams): Pr
       applyVerificationResult,
       trackVerifyResult,
     })
+  }
+}
+
+export async function isOwnAffiliateCode(params: { account: string; code: string }): Promise<boolean> {
+  const { account, code } = params
+
+  try {
+    const affiliateCode = await bffAffiliateApi.getAffiliateCode(account)
+
+    if (!affiliateCode?.code) {
+      return false
+    }
+
+    return sanitizeReferralCode(affiliateCode.code) === sanitizeReferralCode(code)
+  } catch {
+    return false
   }
 }
 
