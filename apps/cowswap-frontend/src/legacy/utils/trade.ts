@@ -52,7 +52,7 @@ export type PostOrderParams = {
   isSafeWallet: boolean
 }
 
-export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'signer' | 'validTo'> & {
+export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'config' | 'validTo'> & {
   orderId: string
   signature: string
   signingScheme: SigningScheme
