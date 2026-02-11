@@ -266,7 +266,7 @@ describe('useNavigateOnCurrencySelection - cross-chain', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.GNOSIS_CHAIN,
         {
-          inputCurrencyId: WETH_GNOSIS.symbol,
+          inputCurrencyId: WETH_GNOSIS.address,
           outputCurrencyId: USDC_MAINNET.address,
         },
         { targetChainId: SupportedChainId.MAINNET },
