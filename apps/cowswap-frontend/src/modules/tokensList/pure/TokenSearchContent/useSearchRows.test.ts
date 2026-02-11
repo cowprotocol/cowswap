@@ -726,7 +726,7 @@ describe('useSearchRows', () => {
       expect(tokenRow.disabled).toBe(false)
     })
 
-    it('should not disable tokens when bridge map is loading (null)', () => {
+    it('should disable tokens when bridge map is loading (null)', () => {
       const token = createToken('TOKEN', 1, 'Test Token')
 
       const { result } = renderHook(() =>
@@ -744,7 +744,7 @@ describe('useSearchRows', () => {
         disabled?: boolean
       }
 
-      expect(tokenRow.disabled).toBe(false)
+      expect(tokenRow.disabled).toBe(true)
     })
 
     it('should disable matched tokens not in bridge map', () => {

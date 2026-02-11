@@ -26,18 +26,29 @@ export interface TokensToSelectContext {
 export function useTokensToSelect(): TokensToSelectContext {
   const { chainId } = useWalletInfo()
   const favoriteTokens = useFavoriteTokens()
-  const { selectedTargetChainId = chainId, field } = useSelectTokenWidgetState()
+  const { selectedTargetChainId = chainId, field, oppositeToken } = useSelectTokenWidgetState()
   const chainsToSelect = useChainsToSelect()
   const allTokens = useAllActiveTokens().tokens
   const targetChainId = chainsToSelect?.defaultChainId ?? selectedTargetChainId
 
-  const areTokensFromBridge = field === Field.OUTPUT && targetChainId !== chainId
+  const sourceChainId = useMemo(() => {
+    // When selecting the BUY token, the "opposite" token is the SELL token.
+    // Use it as the source-of-truth for bridging so the selector stays correct even
+    // when wallet network != trade (sell) network.
+    if (field === Field.OUTPUT && oppositeToken) {
+      return oppositeToken.chainId
+    }
+
+    return chainId
+  }, [chainId, field, oppositeToken])
+
+  const areTokensFromBridge = field === Field.OUTPUT && targetChainId !== sourceChainId
 
   const params: BuyTokensParams | undefined = useMemo(() => {
     if (!areTokensFromBridge) return undefined
 
-    return { buyChainId: targetChainId, sellChainId: chainId }
-  }, [areTokensFromBridge, chainId, targetChainId])
+    return { buyChainId: targetChainId, sellChainId: sourceChainId }
+  }, [areTokensFromBridge, sourceChainId, targetChainId])
 
   const { data: result, isLoading } = useBridgeSupportedTokens(params)
 
@@ -53,9 +64,14 @@ export function useTokensToSelect(): TokensToSelectContext {
   }, [result])
 
   return useMemo(() => {
-    const favoriteTokensToSelect = bridgeSupportedTokensMap
-      ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[token.address.toLowerCase()])
-      : favoriteTokens
+    // In bridge mode, hide favorites until we know what's actually bridgeable for this chain pair.
+    // This avoids selecting a favorite token and then getting it cleared by async validation.
+    const favoriteTokensToSelect =
+      areTokensFromBridge && bridgeSupportedTokensMap === null
+        ? EMPTY_TOKENS
+        : bridgeSupportedTokensMap
+          ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[token.address.toLowerCase()])
+          : favoriteTokens
 
     return {
       isLoading: areTokensFromBridge ? isLoading : false,

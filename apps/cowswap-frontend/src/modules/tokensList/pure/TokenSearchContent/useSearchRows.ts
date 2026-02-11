@@ -8,23 +8,66 @@ import { t } from '@lingui/core/macro'
 import { appendImportSection } from './helpers'
 import { TokenSearchRow, UseSearchRowsParams } from './types'
 
-import { getNoRouteTooltip } from '../constants'
+import { getCheckingRouteTooltip, getNoRouteTooltip } from '../constants'
 
 const SEARCH_RESULTS_LIMIT = 100
+
+function getDisabledReason(
+  disabled: boolean,
+  bridgeSupportedTokensMap: Record<string, boolean> | null | undefined,
+  noRouteTooltip: string,
+  checkingRouteTooltip: string,
+): string | undefined {
+  if (!disabled) return undefined
+
+  return bridgeSupportedTokensMap === null ? checkingRouteTooltip : noRouteTooltip
+}
+
+function appendTokenRows(params: {
+  entries: TokenSearchRow[]
+  tokens: TokenWithLogo[]
+  areTokensFromBridge: boolean
+  bridgeSupportedTokensMap: Record<string, boolean> | null | undefined
+  noRouteTooltip: string
+  checkingRouteTooltip: string
+}): void {
+  const { entries, tokens, areTokensFromBridge, bridgeSupportedTokensMap, noRouteTooltip, checkingRouteTooltip } =
+    params
+
+  for (const token of tokens) {
+    const disabled = isTokenDisabledForBridge(token, areTokensFromBridge, bridgeSupportedTokensMap)
+
+    entries.push({
+      type: 'token',
+      token,
+      disabled,
+      disabledReason: getDisabledReason(disabled, bridgeSupportedTokensMap, noRouteTooltip, checkingRouteTooltip),
+    })
+  }
+}
 
 function isTokenDisabledForBridge(
   token: TokenWithLogo,
   areTokensFromBridge: boolean,
   bridgeSupportedTokensMap: Record<string, boolean> | null | undefined,
 ): boolean {
-  // Only disable if: in bridge mode AND map is loaded AND token not in map
-  if (!areTokensFromBridge || !bridgeSupportedTokensMap) {
+  if (!areTokensFromBridge) {
     return false
   }
 
   // Guard: disable tokens without address
   if (!token.address) {
     return true
+  }
+
+  // If we're in bridge mode but the supported tokens map hasn't resolved yet,
+  // block selections to avoid "select then reset" flicker once validation runs.
+  if (bridgeSupportedTokensMap === null) {
+    return true
+  }
+
+  if (!bridgeSupportedTokensMap) {
+    return false
   }
 
   return !bridgeSupportedTokensMap[getAddressKey(token.address)]
@@ -48,28 +91,27 @@ export function useSearchRows({
     }
 
     const noRouteTooltip = getNoRouteTooltip()
+    const checkingRouteTooltip = getCheckingRouteTooltip()
 
     entries.push({ type: 'banner' })
 
-    for (const token of matchedTokens) {
-      const disabled = isTokenDisabledForBridge(token, areTokensFromBridge, bridgeSupportedTokensMap)
-      entries.push({
-        type: 'token',
-        token,
-        disabled,
-        disabledReason: disabled ? noRouteTooltip : undefined,
-      })
-    }
+    appendTokenRows({
+      entries,
+      tokens: matchedTokens,
+      areTokensFromBridge,
+      bridgeSupportedTokensMap,
+      noRouteTooltip,
+      checkingRouteTooltip,
+    })
 
-    for (const token of activeList) {
-      const disabled = isTokenDisabledForBridge(token, areTokensFromBridge, bridgeSupportedTokensMap)
-      entries.push({
-        type: 'token',
-        token,
-        disabled,
-        disabledReason: disabled ? noRouteTooltip : undefined,
-      })
-    }
+    appendTokenRows({
+      entries,
+      tokens: activeList,
+      areTokensFromBridge,
+      bridgeSupportedTokensMap,
+      noRouteTooltip,
+      checkingRouteTooltip,
+    })
 
     appendImportSection(entries, {
       tokens: blockchainResult,

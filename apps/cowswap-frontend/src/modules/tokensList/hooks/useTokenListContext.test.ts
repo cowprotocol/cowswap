@@ -1,3 +1,4 @@
+import type { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -5,14 +6,13 @@ import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 
-import { useRecentTokenSection } from '../containers/SelectTokenWidget/hooks/useRecentTokenSection'
-
 import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenContext } from './useSelectTokenContext'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useTokenListContext } from './useTokenListContext'
 import { useTokensToSelect } from './useTokensToSelect'
 
+import { useRecentTokenSection } from '../containers/SelectTokenWidget/hooks/useRecentTokenSection'
 import { DEFAULT_SELECT_TOKEN_WIDGET_STATE } from '../state/selectTokenWidgetAtom'
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -73,6 +73,15 @@ describe('useTokenListContext', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    const balancesState: BalancesState = {
+      isLoading: false,
+      values: {},
+      chainId: null,
+      fromCache: false,
+      hasFirstLoad: false,
+      error: null,
+    }
+
     mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
     mockIsInjectedWidget.mockReturnValue(false)
     mockUseSelectTokenWidgetState.mockReturnValue(
@@ -95,8 +104,12 @@ describe('useTokenListContext', () => {
     })
     mockUseSelectTokenContext.mockReturnValue({
       onTokenListItemClick: jest.fn(),
-      balancesState: { values: {} },
-    } as ReturnType<typeof useSelectTokenContext>)
+      balancesState,
+      unsupportedTokens: {},
+      permitCompatibleTokens: {},
+      tokenListTags: {},
+      isWalletConnected: false,
+    })
     mockUseRecentTokenSection.mockReturnValue({
       recentTokens: [],
       handleTokenListItemClick: jest.fn(),

@@ -76,12 +76,6 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
 
       const isBridgeTrade = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
 
-      // When switching sell chain, if the old buy token was on the same chain
-      // as the old sell chain (was a same-chain swap), don't carry it over
-      // into a bridge trade that may not have valid routes.
-      const sellChainChanging = isInputField && currency?.chainId !== inputCurrency?.chainId
-      const wasOutputOnSameChainAsSell = sellChainChanging && outputCurrency?.chainId === inputCurrency?.chainId
-
       const inputCurrencyId = (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? null
       const outputCurrencyId = outputCurrency
         ? // For cross-chain order always use address for outputCurrencyId
@@ -103,7 +97,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       const shouldResetBuyOrder = targetChainMismatch && orderKind === OrderKind.BUY
 
       // When sell and buy tokens are on different chains
-      if (isBridgeTrade && !wasOutputOnSameChainAsSell) {
+      if (isBridgeTrade) {
         searchParams = {
           ...searchParams,
           targetChainId: isInputField
@@ -131,13 +125,11 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
           : {
               inputCurrencyId: targetInputCurrencyId,
-              outputCurrencyId: wasOutputOnSameChainAsSell
-                ? null
-                : isBridgeTrade
-                  ? isOutputCurrencyBridgeSupported
-                    ? targetOutputCurrencyId
-                    : null
-                  : targetOutputCurrencyId,
+              outputCurrencyId: isBridgeTrade
+                ? isOutputCurrencyBridgeSupported
+                  ? targetOutputCurrencyId
+                  : null
+                : targetOutputCurrencyId,
             },
         searchParams,
       )

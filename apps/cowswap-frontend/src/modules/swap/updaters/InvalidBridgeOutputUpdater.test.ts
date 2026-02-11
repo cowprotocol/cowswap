@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { getInvalidBridgeOutputPatch } from './InvalidBridgeOutputUpdater.utils'
+import { getInvalidBridgeOutputPatch, getUnsupportedBridgePairPatch } from './InvalidBridgeOutputUpdater.utils'
 
 describe('getInvalidBridgeOutputPatch', () => {
   it('returns null when route check is still loading', () => {
@@ -71,6 +71,45 @@ describe('getInvalidBridgeOutputPatch', () => {
       selectedOutputCurrencyId: '0x0000000000000000000000000000000000000001',
       bridgeRouteData: { tokens: [], isRouteAvailable: false },
       isBridgeRouteLoading: false,
+    })
+
+    expect(result).toBeNull()
+  })
+})
+
+describe('getUnsupportedBridgePairPatch', () => {
+  it('returns null while supported networks are still loading', () => {
+    const result = getUnsupportedBridgePairPatch({
+      sourceChainId: SupportedChainId.LINEA,
+      targetChainId: SupportedChainId.BASE,
+      bridgeSupportedNetworks: undefined,
+      isBridgeSupportedNetworksLoading: true,
+    })
+
+    expect(result).toBeNull()
+  })
+
+  it('clears cross-chain state when the source chain is not bridge-supported', () => {
+    const result = getUnsupportedBridgePairPatch({
+      sourceChainId: SupportedChainId.LINEA,
+      targetChainId: SupportedChainId.BASE,
+      bridgeSupportedNetworks: [{ id: SupportedChainId.MAINNET }, { id: SupportedChainId.BASE }],
+      isBridgeSupportedNetworksLoading: false,
+    })
+
+    expect(result).toEqual({
+      targetChainId: null,
+      outputCurrencyId: null,
+      outputCurrencyAmount: null,
+    })
+  })
+
+  it('returns null when both source and target are bridge-supported', () => {
+    const result = getUnsupportedBridgePairPatch({
+      sourceChainId: SupportedChainId.MAINNET,
+      targetChainId: SupportedChainId.BASE,
+      bridgeSupportedNetworks: [{ id: SupportedChainId.MAINNET }, { id: SupportedChainId.BASE }],
+      isBridgeSupportedNetworksLoading: false,
     })
 
     expect(result).toBeNull()

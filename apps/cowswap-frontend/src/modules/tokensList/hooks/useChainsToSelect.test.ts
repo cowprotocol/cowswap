@@ -1,3 +1,4 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
@@ -149,7 +150,39 @@ describe('useChainsToSelect state builders', () => {
     expect(state.disabledChainIds?.has(SupportedChainId.AVALANCHE)).toBe(true)
   })
 
-  it('disables all chains except source when source is not bridge-supported', () => {
+  it('disables all chains except source when source chain is not bridge-supported', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.LINEA),
+      createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
+    ]
+    const bridgeChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
+    ]
+
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.BASE,
+      chainId: SupportedChainId.LINEA, // Not in bridge destinations
+      currentChainInfo: createChainInfoForTests(SupportedChainId.LINEA),
+      bridgeSupportedNetworks: bridgeChains,
+      supportedChains,
+      isLoading: false,
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+    })
+
+    // When the source chain isn't bridge-supported, all other chains should be disabled
+    expect(state.disabledChainIds?.has(SupportedChainId.LINEA)).toBeFalsy()
+    expect(state.disabledChainIds?.has(SupportedChainId.MAINNET)).toBe(true)
+    expect(state.disabledChainIds?.has(SupportedChainId.BASE)).toBe(true)
+    expect(state.disabledChainIds?.has(SupportedChainId.ARBITRUM_ONE)).toBe(true)
+    // And we should default to the source since the selected target is disabled
+    expect(state.defaultChainId).toBe(SupportedChainId.LINEA)
+  })
+
+  it('disables all chains except source when routes are unavailable from the source', () => {
     const supportedChains = [
       createChainInfoForTests(SupportedChainId.MAINNET),
       createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
@@ -167,7 +200,11 @@ describe('useChainsToSelect state builders', () => {
       bridgeSupportedNetworks: bridgeChains,
       supportedChains,
       isLoading: false,
-      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+      routesAvailability: {
+        unavailableChainIds: new Set([SupportedChainId.MAINNET, SupportedChainId.ARBITRUM_ONE]),
+        loadingChainIds: new Set<number>(),
+        isLoading: false,
+      },
     })
 
     // Default to source chain when the selected target isn't available
@@ -384,6 +421,31 @@ describe('useChainsToSelect hook', () => {
     expect(result.current?.defaultChainId).toBe(SupportedChainId.MAINNET)
     // Verify it returns bridge destinations (Gnosis), not single-chain fallback
     expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+  })
+
+  it('uses oppositeToken.chainId as sourceChainId for routes availability in OUTPUT field', () => {
+    const sellTokenOnLinea = new TokenWithLogo(
+      undefined,
+      SupportedChainId.LINEA,
+      '0x0000000000000000000000000000000000000001',
+      18,
+      'TKN',
+      'Token',
+    )
+
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.OUTPUT,
+        tradeType: TradeType.SWAP,
+        selectedTargetChainId: SupportedChainId.BASE,
+        oppositeToken: sellTokenOnLinea,
+      }),
+    )
+
+    renderHook(() => useChainsToSelect())
+
+    expect(mockUseRoutesAvailability).toHaveBeenCalledWith(SupportedChainId.LINEA, expect.any(Array))
   })
 
   it('returns chains for SWAP + INPUT (sell token)', () => {
