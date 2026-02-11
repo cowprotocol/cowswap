@@ -2,7 +2,6 @@ import { useAtomValue } from 'jotai'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useDispatch } from 'react-redux'
@@ -27,9 +26,6 @@ import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFlowContext(): TradeFlowContext | null {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
@@ -58,7 +54,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const partiallyFillable = settingsState.partialFillsEnabled
 
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
+
   return useSafeMemo(() => {
     if (
       !account ||
@@ -66,7 +62,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       !state.outputCurrencyAmount ||
       !state.inputCurrency ||
       !state.outputCurrency ||
-      !provider ||
       !settlementContract ||
       !isQuoteReady ||
       !appData
@@ -80,7 +75,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       settlementContract,
       allowsOffchainSigning,
       dispatch,
-      signer: provider.getUncheckedSigner(),
       rateImpact,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
@@ -113,7 +107,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     state.inputCurrency,
     state.outputCurrency,
     state.orderKind,
-    provider,
     settlementContract,
     isQuoteReady,
     appData,

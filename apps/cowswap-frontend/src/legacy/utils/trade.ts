@@ -16,7 +16,6 @@ import {
   UnsignedOrder,
   Signer,
 } from '@cowprotocol/cow-sdk'
-import type { JsonRpcSigner } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
@@ -32,7 +31,6 @@ import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorEr
 export type PostOrderParams = {
   account: string
   chainId: ChainId
-  signer: JsonRpcSigner
   kind: OrderKind
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>

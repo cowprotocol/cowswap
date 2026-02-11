@@ -1,7 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
@@ -40,9 +39,6 @@ export interface TradeFlowParams {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const { account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()
@@ -99,7 +95,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         sellToken &&
         buyToken &&
         account &&
-        provider &&
         appData &&
         tradeQuote.quote &&
         tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
@@ -124,7 +119,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             networkFee,
             outputAmount,
             permitInfo,
-            provider,
             recipient,
             recipientAddress,
             sellAmountBeforeFee,
@@ -159,7 +153,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         networkFee,
         outputAmount,
         permitInfo,
-        provider,
         recipient,
         recipientAddress,
         sellAmountBeforeFee,
@@ -211,7 +204,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           orderParams: {
             account,
             chainId,
-            signer: provider.getUncheckedSigner(),
             kind: orderKind,
             inputAmount,
             outputAmount,
