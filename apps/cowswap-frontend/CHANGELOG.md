@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.1.0...cowswap-v2.1.1) (2026-02-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 1.1.1
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.0.3...cowswap-v2.1.0) (2026-02-05)
 
 

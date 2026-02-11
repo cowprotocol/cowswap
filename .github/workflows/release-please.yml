@@ -8,7 +8,6 @@ on:
 
 env:
   NODE_VERSION: lts/jod
-  PUBLISHABLE_LIBS: events types permit-utils widget-lib widget-react iframe-transport hook-dapp-lib
 
 permissions:
   contents: write
@@ -54,25 +53,38 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # 5️⃣ Build publishable libs
-      - name: Build publishable libs
-        run: pnpm exec nx run-many --target=build --projects=${{ env.PUBLISHABLE_LIBS }} --parallel
+      # 5️⃣ Get publishable libs from nx.json
+      - name: Get publishable libs
+        id: get-libs
+        run: |
+          # Extract lib names from nx.json release.projects (e.g., "libs/events" -> "events")
+          # Output comma-separated for nx commands, space-separated for bash loops
+          LIBS_CSV=$(node -e "const nx = require('./nx.json'); console.log(nx.release.projects.map(p => p.replace('libs/', '')).join(','))")
+          LIBS_SPACE=$(node -e "const nx = require('./nx.json'); console.log(nx.release.projects.map(p => p.replace('libs/', '')).join(' '))")
+          echo "libs_csv=$LIBS_CSV" >> $GITHUB_OUTPUT
+          echo "libs_space=$LIBS_SPACE" >> $GITHUB_OUTPUT
 
-      # 6️⃣ Setup npm auth
+      # 6️⃣ Build publishable libs
+      - name: Build publishable libs
+        run: pnpm exec nx run-many --target=build --projects=${{ steps.get-libs.outputs.libs_csv }} --parallel
+
+      # 7️⃣ Prepare packages for publishing (apply publishConfig, resolve workspace:*)
+      - name: Prepare packages for publishing
+        run: |
+          for lib in ${{ steps.get-libs.outputs.libs_space }}; do
+            if [ -d "dist/libs/$lib" ]; then
+              echo "Preparing $lib for publishing..."
+              cp "libs/$lib/README.md" "dist/libs/$lib/" 2>/dev/null || true
+              node tools/scripts/prepare-publish.mjs "dist/libs/$lib/package.json"
+            fi
+          done
+
+      # 8️⃣ Setup npm auth
       - name: Setup npm auth
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # 7️⃣ Publish released packages
+      # 9️⃣ Publish released packages
       - name: Publish released packages
-        run: |
-          for lib in ${{ env.PUBLISHABLE_LIBS }}; do
-            if [ -d "dist/libs/$lib" ]; then
-              echo "Publishing $lib..."
-              cp "libs/$lib/README.md" "dist/libs/$lib/" 2>/dev/null || true
-              cd "dist/libs/$lib"
-              npm publish --tag latest --access public || echo "Failed to publish $lib (may already exist)"
-              cd - > /dev/null
-            fi
-          done
+        run: pnpm exec nx release publish --tag latest --access public

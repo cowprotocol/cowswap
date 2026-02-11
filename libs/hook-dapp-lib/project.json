@@ -5,10 +5,15 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/hook-dapp-lib"
+        "outputPath": "dist/libs/hook-dapp-lib",
+        "main": "libs/hook-dapp-lib/src/index.ts",
+        "tsConfig": "libs/hook-dapp-lib/tsconfig.lib.json",
+        "assets": ["libs/hook-dapp-lib/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true,
+        "buildableProjectDepsInPackageJsonType": "dependencies"
       }
     },
     "serve": {
@@ -19,10 +24,6 @@
         "port": 3012
       },
       "configurations": {}
-    },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs hook-dapp-lib {args.tag} {args.otp}",
-      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
