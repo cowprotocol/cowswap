@@ -4,16 +4,12 @@ import { createAction } from '@reduxjs/toolkit'
 
 import { EnhancedTransactionDetails } from './reducer'
 
-export interface SerializableTransactionReceipt {
-  to: string
-  from: string
-  contractAddress: string
-  transactionIndex: number
-  blockHash: string
-  transactionHash: string
-  blockNumber: number
-  status?: number
-}
+import type { TransactionReceipt } from 'viem'
+
+export type SerializableTransactionReceipt = Pick<
+  TransactionReceipt,
+  'blockHash' | 'blockNumber' | 'contractAddress' | 'from' | 'status' | 'to' | 'transactionHash' | 'transactionIndex'
+>
 
 type WithChainId = { chainId: number }
 // TODO: Replace any with proper type definitions
