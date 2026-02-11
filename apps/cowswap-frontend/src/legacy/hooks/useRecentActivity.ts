@@ -34,11 +34,6 @@ export type TransactionAndOrder =
       status: OrderStatus
     })
 
-enum TxReceiptStatus {
-  PENDING,
-  CONFIRMED,
-}
-
 /**
  * useRecentActivity
  * @description returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
@@ -209,7 +204,7 @@ function getTxActivityStatus(tx: EnhancedTransactionDetails): ActivityStatus {
 }
 
 function getIsReceiptConfirmed(tx: EnhancedTransactionDetails): boolean {
-  return tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
+  return tx.receipt?.status === 'success'
 }
 
 export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
