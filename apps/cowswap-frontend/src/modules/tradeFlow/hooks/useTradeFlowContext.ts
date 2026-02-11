@@ -5,6 +5,7 @@ import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/w
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
+import { useConfig } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -38,6 +39,7 @@ export interface TradeFlowParams {
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
+  const config = useConfig()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
@@ -204,6 +206,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           orderParams: {
             account,
             chainId,
+            config,
             kind: orderKind,
             inputAmount,
             outputAmount,

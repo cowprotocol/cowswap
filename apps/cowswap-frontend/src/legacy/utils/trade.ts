@@ -20,6 +20,7 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
+import { Config } from 'wagmi'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -31,6 +32,7 @@ import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorEr
 export type PostOrderParams = {
   account: string
   chainId: ChainId
+  config: Config
   kind: OrderKind
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>

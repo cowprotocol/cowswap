@@ -5,6 +5,7 @@ import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/w
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useDispatch } from 'react-redux'
+import { useConfig } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 
@@ -26,6 +27,7 @@ import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFlowContext(): TradeFlowContext | null {
+  const config = useConfig()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
@@ -75,6 +77,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       settlementContract,
       allowsOffchainSigning,
       dispatch,
+      config,
       rateImpact,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,

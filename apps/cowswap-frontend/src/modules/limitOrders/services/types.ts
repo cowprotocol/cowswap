@@ -9,6 +9,8 @@ import { TypedAppDataHooks } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
+import type { Config } from 'wagmi'
+
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
   // validTo must be calculated just before signing of an order
@@ -18,6 +20,7 @@ export interface TradeFlowContext {
   chainId: SupportedChainId
   dispatch: AppDispatch
   rateImpact: number
+  config: Config
   allowsOffchainSigning: boolean
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
