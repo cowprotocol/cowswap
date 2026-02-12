@@ -12,7 +12,6 @@ import {
   CoWSwapEthFlowAbi,
   Erc20,
   Erc20Abi,
-  GPv2Settlement,
   GPv2SettlementAbi,
   VCow,
   vCowAbi,
@@ -117,8 +116,20 @@ export function useEthFlowContract(): {
   }
 }
 
-export function useGP2SettlementContract(): UseContractResult<GPv2Settlement> {
-  return useContract<GPv2Settlement>(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, GPv2SettlementAbi, true)
+export type SettlementContractData = {
+  abi: typeof GPv2SettlementAbi
+  address: string
+  chainId: SupportedChainId
+}
+
+export function useGP2SettlementContractData(): SettlementContractData {
+  const { chainId } = useWalletInfo()
+
+  return {
+    abi: GPv2SettlementAbi,
+    address: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId],
+    chainId,
+  }
 }
 
 export function useVCowContract(): UseContractResult<VCow> {
