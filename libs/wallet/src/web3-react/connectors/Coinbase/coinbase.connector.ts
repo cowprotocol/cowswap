@@ -16,6 +16,13 @@ const EVENT_DELAY_MS = 1000
 /**
  * Patched version of
  * https://github.com/Uniswap/web3-react/blob/8507a82d0647e74eb2fbbadc00447d2a9be0e07a/packages/coinbase-wallet/src/index.ts
+ *
+ * Changes:
+ *  - added 1s delay for provider events to avoid race conditions. The provider sends an event before resolving request promise
+ *  - changed connected getter, the new SDK version doesn't have provider?.selectedAddress
+ *  - added cancelActivation() calls in connectEagerly() and activate()
+ *  - added cleanUpProvider() in deactivate and when initialization failed
+ *  - changed eth_accounts to eth_requestAccounts because new version of the SDK requires this method to be called first of all
  */
 
 function parseChainId(chainId: string | number): number {
