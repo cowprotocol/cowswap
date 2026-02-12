@@ -7,12 +7,30 @@ import useSWR from 'swr'
 import { useIsSafeWallet } from './useWalletMetadata'
 
 import { useWalletInfo } from '../../api/hooks'
+import { useWalletCapabilities, WalletCapabilities } from '../../api/hooks/useWalletCapabilities'
+
+// EIP-5792: atomic batching capability — catches counterfactual ERC-4337 wallets (e.g. Coinbase Smart Wallet)
+function hasAtomicBatchSupport(capabilities: WalletCapabilities | undefined): boolean {
+  const status = capabilities?.atomic?.status
+  return status === 'supported' || status === 'ready'
+}
 
 export function useIsSmartContractWallet(): boolean | undefined {
   const accountType = useAccountType()
   const isSafeWallet = useIsSafeWallet()
+  const { data: capabilities, isLoading: capabilitiesLoading } = useWalletCapabilities()
 
-  return isSafeWallet || accountType === AccountType.SMART_CONTRACT
+  // Definitive positive signals
+  if (isSafeWallet) return true
+  if (accountType === AccountType.SMART_CONTRACT) return true
+  if (hasAtomicBatchSupport(capabilities)) return true
+
+  // If either detection signal is still loading, stay unknown
+  if (accountType === undefined || capabilitiesLoading) {
+    return undefined
+  }
+
+  return false
 }
 
 export function useAccountType(): AccountType | undefined {
