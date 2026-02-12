@@ -155,7 +155,7 @@ jobs:
         run: npx cypress install
 
       - name: Start server in the background
-        run: pnpm run start &
+        run: pnpm run preview &
 
       # Actually run tests, building repo
       - name: Cypress run
