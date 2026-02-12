@@ -12,7 +12,7 @@ import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { delay, formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonOutlined, ButtonPrimary, ButtonSize, HelpTooltip, ModalHeader, UI } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
@@ -95,6 +95,7 @@ import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useModalState } from 'common/hooks/useModalState'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 import { CowModal } from 'common/pure/Modal'
 
 const MIN_LOADING_MS = 200
@@ -131,9 +132,11 @@ const isAffiliateNetworkError = (error: Error & { status?: number }): boolean =>
 export default function AccountAffiliate() {
   const { i18n } = useLingui()
   const { account, chainId } = useWalletInfo()
+  const { walletName } = useWalletDetails()
   const provider = useWalletProvider()
   const toggleWalletModal = useToggleWalletModal()
   const onSelectNetwork = useOnSelectNetwork()
+  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
   const isMainnet = useMemo(() => chainId === SupportedChainId.MAINNET, [chainId])
 
   const [codeLoading, setCodeLoading] = useState(false)
@@ -457,8 +460,12 @@ export default function AccountAffiliate() {
   }, [toggleWalletModal])
 
   const handleSwitchToMainnet = useCallback(() => {
+    if (shouldHideNetworkSelector) {
+      return
+    }
+
     onSelectNetwork(SupportedChainId.MAINNET)
-  }, [onSelectNetwork])
+  }, [onSelectNetwork, shouldHideNetworkSelector])
 
   const handleInputChange = useCallback((event: FormEvent<HTMLInputElement>) => {
     setHasEdited(true)
@@ -563,10 +570,24 @@ export default function AccountAffiliate() {
                   <Trans>Connect wallet</Trans>
                 </ButtonPrimary>
               )}
-              {isConnected && showUnsupported && (
+              {isConnected && showUnsupported && !shouldHideNetworkSelector && (
                 <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={handleSwitchToMainnet}>
                   <Trans>Switch to Ethereum</Trans>
                 </ButtonPrimary>
+              )}
+              {isConnected && showUnsupported && shouldHideNetworkSelector && (
+                <WalletSwitchHint>
+                  <ButtonPrimary buttonSize={ButtonSize.BIG} disabled>
+                    <Trans>Switch to Ethereum</Trans>
+                  </ButtonPrimary>
+                  <InlineNote>
+                    {walletName ? (
+                      <Trans>To proceed change the network in your {walletName}</Trans>
+                    ) : (
+                      <Trans>To proceed change the network in your wallet</Trans>
+                    )}
+                  </InlineNote>
+                </WalletSwitchHint>
               )}
               {isConnected && !showUnsupported && !isSignerAvailable && !showLinkedFlow && (
                 <ButtonPrimary onClick={handleConnect} data-testid="affiliate-unlock">
@@ -843,6 +864,13 @@ export default function AccountAffiliate() {
     </RewardsWrapper>
   )
 }
+
+const WalletSwitchHint = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+`
 
 const ModalContent = styled.div`
   display: flex;
