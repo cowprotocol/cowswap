@@ -1,15 +1,17 @@
-import { useAtomValue, useSetAtom, WritableAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback, useEffect } from 'react'
 
-import { ordersTableFiltersAtom, ordersTableTabsAtom, partiallyUpdateOrdersTableFiltersAtom } from '../state/ordersTable.atoms'
-import { OrdersTableFilters, TabParams } from '../state/ordersTable.types'
-import { SetStateAction, useCallback, useEffect } from 'react'
-import { DEFAULT_ORDERS_TABLE_FILTERS } from '../state/ordersTable.atoms'
-import { buildOrdersTableUrl } from 'modules/ordersTable/utils/url/buildOrdersTableUrl'
-import { useNavigate } from 'common/hooks/useNavigate'
-import { useLocation } from 'react-router'
-import { TabOrderTypes } from '../state/ordersTable.types'
-import { OrderTabId } from 'modules/ordersTable/state/tabs/ordersTableTabs.constants'
 import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
+import { OrderTabId } from 'modules/ordersTable/state/tabs/ordersTableTabs.constants'
+
+import {
+  ordersTableFiltersAtom,
+  ordersTableTabsAtom,
+  partiallyUpdateOrdersTableFiltersAtom,
+} from '../state/ordersTable.atoms'
+import { DEFAULT_ORDERS_TABLE_FILTERS } from '../state/ordersTable.atoms'
+import { OrdersTableFilters, TabParams } from '../state/ordersTable.types'
+import { TabOrderTypes } from '../state/ordersTable.types'
 
 export function useOrdersTableFilters(): OrdersTableFilters {
   return useAtomValue(ordersTableFiltersAtom)
@@ -19,7 +21,7 @@ export function useOrdersTableTabs(): TabParams[] {
   return useAtomValue(ordersTableTabsAtom)
 }
 
-export function usePartiallyUpdateOrdersTableFiltersAtom() {
+export function usePartiallyUpdateOrdersTableFiltersAtom(): (filters: Partial<OrdersTableFilters>) => void {
   const partiallyUpdateOrdersTableFilters = useSetAtom(partiallyUpdateOrdersTableFiltersAtom)
 
   /*
@@ -32,28 +34,29 @@ export function usePartiallyUpdateOrdersTableFiltersAtom() {
   }
   */
 
+  return useCallback(
+    (filters: Partial<OrdersTableFilters>) => {
+      const resetPagination = filters.hasOwnProperty('searchTerm') || filters.hasOwnProperty('historyStatusFilter')
+      const resetQueryParams = filters.hasOwnProperty('currentTabId') && filters.currentTabId !== OrderTabId.history
 
+      const completeUpdate = { ...filters }
 
-  return useCallback((filters: Partial<OrdersTableFilters>) => {
-    const resetPagination = filters.hasOwnProperty("searchTerm") || filters.hasOwnProperty("historyStatusFilter");
-    const resetQueryParams = filters.hasOwnProperty("currentTabId") && filters.currentTabId !== OrderTabId.history;
+      if (resetPagination) {
+        completeUpdate.currentPageNumber = 1
+      }
 
-    const completeUpdate = { ...filters }
+      if (resetQueryParams) {
+        completeUpdate.searchTerm = ''
+        completeUpdate.historyStatusFilter = HistoryStatusFilter.FILLED
+      }
 
-    if (resetPagination) {
-      completeUpdate.currentPageNumber = 1;
-    }
+      // TODO: There should be no need to call resetPagination to call navigate. Just changing the currentPageNumber
+      // value should be enough. useValidatePageUrlParams or something else should take care of syncing the URL.
 
-    if (resetQueryParams) {
-      completeUpdate.searchTerm = '';
-      completeUpdate.historyStatusFilter = HistoryStatusFilter.FILLED;
-    }
-
-    // TODO: There should be no need to call resetPagination to call navigate. Just changing the currentPageNumber
-    // value should be enough. useValidatePageUrlParams or something else should take care of syncing the URL.
-
-    partiallyUpdateOrdersTableFilters(completeUpdate)
-  }, [partiallyUpdateOrdersTableFilters])
+      partiallyUpdateOrdersTableFilters(completeUpdate)
+    },
+    [partiallyUpdateOrdersTableFilters],
+  )
 }
 
 export interface UseResetOrdersTableFiltersProps extends Partial<OrdersTableFilters> {
@@ -61,8 +64,10 @@ export interface UseResetOrdersTableFiltersProps extends Partial<OrdersTableFilt
   syncWithUrl?: boolean
 }
 
+// TODO: Move to atoms observing the URL?
 export function useResetOrdersTableFilters({
-  syncWithUrl = true,
+  // TODO: Not implemented:
+  // syncWithUrl = true,
   ...ordersTableFilters
 }: UseResetOrdersTableFiltersProps): void {
   const setOrdersTableFilters = useSetAtom(ordersTableFiltersAtom)
@@ -71,6 +76,8 @@ export function useResetOrdersTableFilters({
     setOrdersTableFilters({ ...DEFAULT_ORDERS_TABLE_FILTERS, ...ordersTableFilters })
 
     // TODO: Reset on unmount... Unnecessary re-render or better for performance?
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /*

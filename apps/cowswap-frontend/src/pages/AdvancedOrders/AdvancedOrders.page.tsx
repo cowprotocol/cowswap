@@ -18,6 +18,8 @@ import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
   SetupFallbackHandlerWarning,
@@ -31,8 +33,6 @@ import {
   useTwapSlippage,
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
-import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
-import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 

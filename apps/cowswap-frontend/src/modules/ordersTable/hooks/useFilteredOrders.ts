@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'

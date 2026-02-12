@@ -6,15 +6,15 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
+
 import { parseOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './AffectedPermitOrderWithActions.styled'
 
-import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
 import { getActivityUrl } from '../../utils/url/getActivityUrl'
-import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
 export type AffectedPermitOrderProps = {
   order: Order

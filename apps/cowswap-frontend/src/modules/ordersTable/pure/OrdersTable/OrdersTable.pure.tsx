@@ -3,6 +3,8 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
 import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
+import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
+import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 
 import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
@@ -19,8 +21,6 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
-import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
-import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
@@ -36,10 +36,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   // TODO: Shouldn't the default be 1?
   const { orderType, currentPageNumber = 0 } = useOrdersTableFilters() || {}
 
-  const {
-    filteredOrders,
-    balancesAndAllowances,
-  } = useOrdersTableState() || {}
+  const { filteredOrders, balancesAndAllowances } = useOrdersTableState() || {}
 
   const orderActions = useOrderActions()
 
@@ -103,13 +100,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
             {ordersPage.map((item) => {
               const id = isParsedOrder(item) ? item.id : item.parent.id
 
-              return (
-                <OrdersTableRow
-                  key={id}
-                  currentTab={currentTab}
-                  isTwapTable={isTwapTable}
-                  item={item} />
-              )
+              return <OrdersTableRow key={id} currentTab={currentTab} isTwapTable={isTwapTable} item={item} />
             })}
           </Rows>
         </TableInner>

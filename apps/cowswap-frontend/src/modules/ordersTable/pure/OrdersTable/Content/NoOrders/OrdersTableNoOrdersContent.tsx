@@ -8,15 +8,14 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget/hooks/useInjectedWidgetParams'
 import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
+import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
 
 import { HistoryStatusFilter } from '../../../../hooks/useFilteredOrders'
 import { useNoOrdersAnimation } from '../../../../hooks/useNoOrdersAnimation'
-import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
-import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 
 const Lottie = lazy(() => import('lottie-react'))
 

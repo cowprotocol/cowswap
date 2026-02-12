@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
-import { useLocation } from 'react-router'
 import { useSetAtom, useAtomValue } from 'jotai'
+import { useEffect } from 'react'
+
+import { useLocation } from 'react-router'
 
 import { ordersTableUrlSearchAtom, ordersTableUrlSyncEffectAtom } from '../../state/ordersTable.atoms'
 

@@ -10,7 +10,7 @@ import { useOrders } from 'legacy/state/orders/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
-import { LimitOrdersPermitUpdater, OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { LimitOrdersPermitUpdater, OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'

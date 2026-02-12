@@ -29,14 +29,13 @@ export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
     0,
   )
 
-  console.log(activeTabIndex, tabs);
+  console.log(activeTabIndex, tabs)
 
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     const tabId = event.target.value as OrderTabId
     navigate(buildOrdersTableUrl({ tabId, pageNumber: 1 }))
 
-
-    console.log("navigate =", buildOrdersTableUrl({ tabId, pageNumber: 1 }))
+    console.log('navigate =', buildOrdersTableUrl({ tabId, pageNumber: 1 }))
   }
 
   return (

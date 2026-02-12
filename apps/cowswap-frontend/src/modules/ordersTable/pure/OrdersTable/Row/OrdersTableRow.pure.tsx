@@ -4,6 +4,7 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
+import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
 import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
 
@@ -12,24 +13,18 @@ import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../state/ordersTable.types'
-import { TabOrderTypes } from '../../../state/ordersTable.types'
 import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/usePendingOrderPermitValidity'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
-import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
-  isTwapTable: boolean;
+  isTwapTable: boolean
   item: OrderTableItem
 }
 
-export function OrdersTableRow({
-  currentTab,
-  isTwapTable,
-  item,
-}: OrderTableRowProps): ReactNode {
+export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const tableState = useOrdersTableState()

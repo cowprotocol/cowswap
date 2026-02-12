@@ -1,10 +1,12 @@
 import { atom } from 'jotai'
-import { cowSwapStore, AppState } from 'legacy/state'
+
 import { shallowEqual } from 'react-redux'
+
+import { cowSwapStore, AppState } from 'legacy/state'
 
 export function atomFromReduxSelector<T>(
   selector: (state: AppState) => T,
-  equalityFn: (a: T, b: T) => boolean = shallowEqual
+  equalityFn: (a: T, b: T) => boolean = shallowEqual,
 ) {
   const baseAtom = atom<T>(selector(cowSwapStore.getState()))
 

@@ -1,28 +1,36 @@
 import { atom } from 'jotai'
+
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import { balancesAtom } from '@cowprotocol/balances-and-allowances'
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
+import { walletInfoAtom } from '@cowprotocol/wallet'
+
 import { observe } from 'jotai-effect'
-import { atomWithHash, atomWithLocation } from 'jotai-location'
+import { atomWithLocation } from 'jotai-location'
+
+import { cowSwapStore } from 'legacy/state'
+import { Order } from 'legacy/state/orders/actions'
+import {
+  setIsOrderUnfillable as createSetIsOrderUnfillableAction,
+  SetIsOrderUnfillableParams,
+} from 'legacy/state/orders/actions'
+import { _concatOrdersState } from 'legacy/state/orders/hooks'
+import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork } from 'legacy/state/orders/reducer'
+import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
+import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
+import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
+
+import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/hooks/useFilteredOrders'
+import { getOrdersTableList } from 'modules/ordersTable/hooks/useOrdersTableList'
+
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { OrdersTableState, OrdersTableFilters, TabOrderTypes, OrdersTableList } from './ordersTable.types'
-import { ORDERS_TABLE_TABS, OrderTabId } from './tabs/ordersTableTabs.constants'
-import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/hooks/useFilteredOrders'
-import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
-import { walletInfoAtom } from '@cowprotocol/wallet'
-import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork } from 'legacy/state/orders/reducer'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
-import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
-import { _concatOrdersState } from 'legacy/state/orders/hooks'
-import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
-import { UiOrderType } from '@cowprotocol/types'
-import { Order } from 'legacy/state/orders/actions'
-import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
-import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
-import { getOrdersTableList } from 'modules/ordersTable/hooks/useOrdersTableList'
-import { balancesAtom } from '@cowprotocol/balances-and-allowances'
-import { cowSwapStore } from 'legacy/state'
-import { setIsOrderUnfillable as createSetIsOrderUnfillableAction, SetIsOrderUnfillableParams } from 'legacy/state/orders/actions'
+import { ORDERS_TABLE_TABS, OrderTabId } from './tabs/ordersTableTabs.constants'
 
 export const ordersTableStateAtom = atom<OrdersTableState>({
   reduxOrders: [],
@@ -55,11 +63,11 @@ export const DEFAULT_ORDERS_TABLE_FILTERS = {
 export const ordersTableFiltersAtom = atom<OrdersTableFilters>(DEFAULT_ORDERS_TABLE_FILTERS)
 
 export const ordersTableTabsAtom = atom((get) => {
-  console.log("ordersTableTabAtom atom");
+  console.log('ordersTableTabAtom atom')
 
   const { account } = get(walletInfoAtom)
   // const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
-  const isProviderNetworkUnsupported = false;
+  const isProviderNetworkUnsupported = false
 
   if (!account || isProviderNetworkUnsupported) {
     return []
@@ -102,11 +110,11 @@ const reduxOrdersStateByChainAtom = atom((get) => (chainId: SupportedChainId) =>
 
 export const { updateAtom: partiallyUpdateOrdersTableFiltersAtom } = atomWithPartialUpdate(ordersTableFiltersAtom)
 
-const locationAtom = atomWithLocation();
-const locationHashAtom = atom((get) => get(locationAtom).hash)
-const locationPathnameAtom = atom((get) => get(locationHashAtom)?.slice(1).split('?')[0])
-const locationStringSearchParamsAtom = atom((get) => `?${get(locationHashAtom)?.slice(1).split('?')[1] || ""}`)
-const locationSearchParamsAtom = atom((get) => new URLSearchParams(get(locationStringSearchParamsAtom)))
+export const locationAtom = atomWithLocation()
+export const locationHashAtom = atom((get) => get(locationAtom).hash)
+export const locationPathnameAtom = atom((get) => get(locationHashAtom)?.slice(1).split('?')[0])
+export const locationStringSearchParamsAtom = atom((get) => `?${get(locationHashAtom)?.slice(1).split('?')[1] || ''}`)
+export const locationSearchParamsAtom = atom((get) => new URLSearchParams(get(locationStringSearchParamsAtom)))
 
 /*
 const ordersTableURLParamsAtom = atom((get) => {
@@ -138,23 +146,23 @@ ordersTableFiltersAtom.onMount = () => {
 
 ordersTableStateAtom.onMount = () => {
   const unobserve = observe((get, set) => {
-    console.log("observe");
+    console.log('observe')
 
     const { chainId, account } = get(walletInfoAtom)
     const ordersTableFilters = get(ordersTableFiltersAtom)
-    const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom);
-    const reduxOrdersStateInCurrentChain = selectReduxOrdersStateByChain(chainId);
+    const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom)
+    const reduxOrdersStateInCurrentChain = selectReduxOrdersStateByChain(chainId)
 
-    console.log("New data: ", {
+    console.log('New data: ', {
       chainId,
       account,
       ordersTableFilters,
       reduxOrdersStateInCurrentChain,
       test: get(locationSearchParamsAtom),
-     });
+    })
 
-    let reduxOrders: Order[] = []
-    let ordersTokensSet = new Set<string>();
+    const reduxOrders: Order[] = []
+    const ordersTokensSet = new Set<string>()
 
     if (reduxOrdersStateInCurrentChain && account) {
       const accountLowerCase = account.toLowerCase()
@@ -205,7 +213,7 @@ ordersTableStateAtom.onMount = () => {
 
         reduxOrders.push(mappedOrder)
         ordersTokensSet.add(mappedOrder.inputToken.address.toLowerCase())
-      });
+      })
 
       const ordersTokens = Array.from(ordersTokensSet)
 
@@ -231,7 +239,8 @@ ordersTableStateAtom.onMount = () => {
         signing: [],
       }
 
-      const setIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => cowSwapStore.dispatch(createSetIsOrderUnfillableAction(params));
+      const setIsOrderUnfillable = (params: SetIsOrderUnfillableParams) =>
+        cowSwapStore.dispatch(createSetIsOrderUnfillableAction(params))
 
       ordersList = getOrdersTableList(
         reduxOrders,
@@ -242,11 +251,11 @@ ordersTableStateAtom.onMount = () => {
         setIsOrderUnfillable,
       )
 
-      const { currentTabId, searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom);
+      const { currentTabId, searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
 
       const orders = ordersList[currentTabId]
 
-      console.log("orders =", orders, currentTabId);
+      console.log('orders =', orders, currentTabId)
 
       const filteredOrders = getFilteredOrders(orders, {
         searchTerm,
@@ -272,7 +281,7 @@ ordersTableStateAtom.onMount = () => {
         hasHydratedOrders,
       })
 
-      console.log("5");
+      console.log('5')
     }
 
     /*
@@ -299,6 +308,6 @@ ordersTableStateAtom.onMount = () => {
   }, jotaiStore)
 
   return () => {
-    unobserve();
+    unobserve()
   }
 }

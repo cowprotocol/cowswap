@@ -3,8 +3,13 @@ import { useCallback, useMemo } from 'react'
 
 import type { Order } from 'legacy/state/orders/actions'
 
+import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
+
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
+import {
+  ordersToCancelAtom,
+  updateOrdersToCancelAtom,
+} from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -15,7 +20,6 @@ import {
   useSelectReceiptOrder,
 } from '../containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { OrderActions } from '../state/ordersTable.types'
-import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 function toggleOrderInCancellationList(state: CancellableOrder[], order: CancellableOrder): CancellableOrder[] {
   const isOrderIncluded = state.find((item) => item.id === order.id)

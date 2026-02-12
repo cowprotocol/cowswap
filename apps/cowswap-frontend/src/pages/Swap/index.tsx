@@ -7,13 +7,13 @@ import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 import { SwapUpdaters, SwapWidget } from 'modules/swap'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
-import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
-import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 
 export function SwapPage(): ReactNode {
   const params = useParams()

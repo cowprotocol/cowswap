@@ -20,11 +20,9 @@ import {
 } from './OrdersTableWidget.styled'
 
 import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
-import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { useOrdersTableFilters, usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/useOrdersTableFilters'
-import { useSyncOrdersTableUrl } from '../../hooks/url/useSyncOrdersTableUrl'
+import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import { OrdersTableParams } from '../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
@@ -38,7 +36,6 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
-// eslint-disable-next-line max-lines-per-function
 export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/): ReactNode {
   const { i18n } = useLingui()
 
@@ -83,7 +80,7 @@ export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/):
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
 
-      { /* <OrdersTableStateUpdater orders={ allOrders } /> */ }
+      {/* <OrdersTableStateUpdater orders={ allOrders } /> */}
 
       <OrdersTableContainer>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}

@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersContent'
@@ -12,7 +14,6 @@ import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTable } from '../OrdersTable.pure'
-import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 
 interface OrdersTableContentProps {
   currentTab: OrderTabId
@@ -47,7 +48,7 @@ export function OrdersTableContent({
       historyStatusFilter={historyStatusFilter}
       hasHydratedOrders={isHydrated}
       displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
-      hasOrders={ !!orders?.length }
+      hasOrders={!!orders?.length}
     />
   ) : (
     <OrdersTable currentTab={currentTab} />

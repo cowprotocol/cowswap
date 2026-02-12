@@ -10,7 +10,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { ordersMock } from './ordersTable.mock'
 
 import { ordersTableStateAtom } from '../state/ordersTable.atoms'
-import { OrderActions, TabOrderTypes } from '../state/ordersTable.types'
+import { OrderActions } from '../state/ordersTable.types'
 import { OrderTab, OrderTabId } from '../state/tabs/ordersTableTabs.constants'
 
 const tabs: OrderTab[] = [
