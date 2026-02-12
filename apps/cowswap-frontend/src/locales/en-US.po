@@ -1588,6 +1588,11 @@ msgstr "Remove list"
 msgid "Help Center"
 msgstr "Help Center"
 
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+#: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
+msgid "Last updated"
+msgstr "Last updated"
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!"
 #~ msgstr "Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!"
@@ -2365,6 +2370,10 @@ msgstr "Warning sign. Wallet not supported"
 #: apps/cowswap-frontend/src/common/containers/CancellationModal/index.tsx
 msgid "to receiver"
 msgstr "to receiver"
+
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "To proceed, change the network in your wallet"
+msgstr "To proceed, change the network in your wallet"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Show progress"
@@ -3321,6 +3330,7 @@ msgid "Add Pre-hook"
 msgstr "Add Pre-hook"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 msgid "Switch to Ethereum"
 msgstr "Switch to Ethereum"
 
@@ -3475,8 +3485,8 @@ msgstr "Get support on Discord"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
-msgid "Last updated: {statsUpdatedDisplay}"
-msgstr "Last updated: {statsUpdatedDisplay}"
+#~ msgid "Last updated: {statsUpdatedDisplay}"
+#~ msgstr "Last updated: {statsUpdatedDisplay}"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Remove liquidity from a CoW AMM pool before the swap"
@@ -6904,6 +6914,11 @@ msgstr "Loading {accountProxyLabel}"
 msgid "Manage"
 msgstr "Manage"
 
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+#: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
+msgid "Rewards data updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear here."
+msgstr "Rewards data updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear here."
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/traderReferralCodeModal.helpers.tsx
 msgid "We weren't able to check your eligibility. Feel free to continue, but you won't receive rewards if you traded on CoW Swap before."
 msgstr "We weren't able to check your eligibility. Feel free to continue, but you won't receive rewards if you traded on CoW Swap before."
@@ -7170,6 +7185,10 @@ msgstr "Hours"
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageTokens/index.tsx
 msgid "Clear all"
 msgstr "Clear all"
+
+#: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
+msgid "To proceed, change the network in your {walletName}"
+msgstr "To proceed, change the network in your {walletName}"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmedButton/ConfirmedButton.tsx
 msgid "Please click confirm to {action}."

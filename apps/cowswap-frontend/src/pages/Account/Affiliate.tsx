@@ -582,9 +582,9 @@ export default function AccountAffiliate() {
                   </ButtonPrimary>
                   <InlineNote>
                     {walletName ? (
-                      <Trans>To proceed change the network in your {walletName}</Trans>
+                      <Trans>To proceed, change the network in your {walletName}</Trans>
                     ) : (
-                      <Trans>To proceed change the network in your wallet</Trans>
+                      <Trans>To proceed, change the network in your wallet</Trans>
                     )}
                   </InlineNote>
                 </WalletSwitchHint>
