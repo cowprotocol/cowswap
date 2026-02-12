@@ -8,7 +8,7 @@ import { t } from '@lingui/core/macro'
 import { TokensVirtualRow } from './types'
 
 import { tokensListSorter } from '../../utils/tokensListSorter'
-import { getNoRouteTooltip } from '../constants'
+import { getCheckingRouteTooltip, getNoRouteTooltip } from '../constants'
 
 type BalancesMap = BalancesState['values'] | undefined
 
@@ -68,6 +68,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
 
   if (recentTokens?.length) {
     const noRouteTooltip = getNoRouteTooltip()
+    const checkingRouteTooltip = getCheckingRouteTooltip()
 
     composedRows.push({
       type: 'title',
@@ -88,17 +89,24 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
         return
       }
 
-      // Only disable if: in bridge mode AND map is loaded AND token not in map
-      const shouldDisable =
-        areTokensFromBridge &&
-        bridgeSupportedTokensMap !== null &&
-        !bridgeSupportedTokensMap[getAddressKey(token.address)]
+      // In bridge mode:
+      // - While the map is loading (null), disable to prevent "select then reset".
+      // - Once loaded, disable if token isn't bridgeable.
+      const shouldDisable = areTokensFromBridge
+        ? bridgeSupportedTokensMap === null
+          ? true
+          : bridgeSupportedTokensMap !== null && !bridgeSupportedTokensMap[getAddressKey(token.address)]
+        : false
 
       composedRows.push({
         type: 'token',
         token,
         disabled: shouldDisable,
-        disabledReason: shouldDisable ? noRouteTooltip : undefined,
+        disabledReason: shouldDisable
+          ? bridgeSupportedTokensMap === null
+            ? checkingRouteTooltip
+            : noRouteTooltip
+          : undefined,
       })
     })
   }
