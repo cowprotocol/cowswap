@@ -114,7 +114,11 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
-      swapSlippageBps: userSlippageBps ?? smartSlippageBpsRef.current,
+      /**
+       * Specify only the user entered slippage
+       * Because if it's not specified, SDK will suggest a slippage, so no need to pass it in quote request
+       */
+      ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
     }
 
     return {
