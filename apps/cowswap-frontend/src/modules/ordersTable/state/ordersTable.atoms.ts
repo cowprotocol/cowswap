@@ -7,9 +7,9 @@ import { jotaiStore } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
+import { createHashHistory, Location } from 'history'
 
 import { observe } from 'jotai-effect'
-import { atomWithLocation } from 'jotai-location'
 
 import { cowSwapStore } from 'legacy/state'
 import { Order } from 'legacy/state/orders/actions'
@@ -52,9 +52,9 @@ export const ordersTableStateAtom = atom<OrdersTableState>({
 
 export const DEFAULT_ORDERS_TABLE_FILTERS = {
   orderType: TabOrderTypes.LIMIT,
-  currentPageNumber: 1, // TODO: Init from URL...
+  // currentPageNumber: 1, // TODO: Init from URL...
   // tabs: [],
-  currentTabId: OrderTabId.open, // TODO: Init from URL...
+  // currentTabId: OrderTabId.open, // TODO: Init from URL...
   searchTerm: '',
   historyStatusFilter: HistoryStatusFilter.FILLED,
   displayOrdersOnlyForSafeApp: false,
@@ -74,7 +74,8 @@ export const ordersTableTabsAtom = atom((get) => {
   }
 
   const { ordersList } = get(ordersTableStateAtom)
-  const { currentTabId } = get(ordersTableFiltersAtom)
+  const ordersTableURLParams = get(ordersTableURLParamsAtom)
+  const currentTabId = ordersTableURLParams.tab || OrderTabId.open;
 
   return ORDERS_TABLE_TABS.filter((tab) => {
     // Always show OPEN and HISTORY tabs
@@ -110,17 +111,38 @@ const reduxOrdersStateByChainAtom = atom((get) => (chainId: SupportedChainId) =>
 
 export const { updateAtom: partiallyUpdateOrdersTableFiltersAtom } = atomWithPartialUpdate(ordersTableFiltersAtom)
 
-export const locationAtom = atomWithLocation()
-export const locationHashAtom = atom((get) => get(locationAtom).hash)
-export const locationPathnameAtom = atom((get) => get(locationHashAtom)?.slice(1).split('?')[0])
-export const locationStringSearchParamsAtom = atom((get) => `?${get(locationHashAtom)?.slice(1).split('?')[1] || ''}`)
-export const locationSearchParamsAtom = atom((get) => new URLSearchParams(get(locationStringSearchParamsAtom)))
+export const hashHistory = createHashHistory();
 
-/*
-const ordersTableURLParamsAtom = atom((get) => {
-  console.log("ordersTableURLParamsAtom");
+hashHistory.listen((event) => {
+  console.log("location", event)
+})
 
+
+export const locationAtom = atom<Location>({
+  key: '',
+  pathname: '',
+  search: '',
+  hash: '',
+  state: undefined,
+})
+
+locationAtom.onMount = (setAtom) => {
+  hashHistory.listen((event) => {
+    setAtom(event.location)
+  })
+}
+
+export const locationPathnameAtom = atom((get) => get(locationAtom).pathname)
+export const locationSearchAtom = atom((get) => get(locationAtom).search)
+export const locationSearchParamsAtom = atom((get) => new URLSearchParams(get(locationSearchAtom)))
+
+export const ordersTableURLParamsAtom = atom((get) => {
   const locationSearchParams = get(locationSearchParamsAtom)
+
+  console.log("ordersTableURLParamsAtom", {
+    tab: locationSearchParams.get("tab") as OrderTabId | undefined,
+    page: parseInt(locationSearchParams.get("page") || "") || undefined,
+  });
 
   return {
     tab: locationSearchParams.get("tab") as OrderTabId | undefined,
@@ -128,6 +150,7 @@ const ordersTableURLParamsAtom = atom((get) => {
   }
 })
 
+/*
 ordersTableFiltersAtom.onMount = () => {
   console.log("ordersTableFiltersAtom MOUNT");
 
@@ -251,7 +274,9 @@ ordersTableStateAtom.onMount = () => {
         setIsOrderUnfillable,
       )
 
-      const { currentTabId, searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
+      const { searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
+      const ordersTableURLParams = get(ordersTableURLParamsAtom)
+      const currentTabId = ordersTableURLParams.tab || OrderTabId.open;
 
       const orders = ordersList[currentTabId]
 

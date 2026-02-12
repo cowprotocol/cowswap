@@ -5,7 +5,8 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { observe } from 'jotai-effect'
 
-import { ordersTableFiltersAtom } from 'modules/ordersTable'
+import { ordersTableURLParamsAtom } from 'modules/ordersTable/state/ordersTable.atoms'
+import { OrderTabId } from 'modules/ordersTable/state/tabs/ordersTableTabs.constants'
 
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
@@ -31,7 +32,8 @@ export const removeOrdersToCancelAtom = atom(null, (get, set, ordersUids: string
 
 const resetOrdersToCancelKeyAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
-  const { currentTabId } = get(ordersTableFiltersAtom)
+  const ordersTableURLParams = get(ordersTableURLParamsAtom)
+  const currentTabId = ordersTableURLParams.tab || OrderTabId.open;
 
   return [chainId, account, currentTabId].join('::')
 })

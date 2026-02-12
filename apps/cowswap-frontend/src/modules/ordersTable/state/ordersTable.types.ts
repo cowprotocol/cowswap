@@ -65,11 +65,11 @@ export interface OrdersTableState {
 export interface OrdersTableFilters {
   // Page:
   orderType: TabOrderTypes
-  currentPageNumber: number
+  // currentPageNumber: number
 
   // Tab:
   // tabs: TabParams[]
-  currentTabId: OrderTabId
+  // currentTabId: OrderTabId
 
   // Query:
   searchTerm: string

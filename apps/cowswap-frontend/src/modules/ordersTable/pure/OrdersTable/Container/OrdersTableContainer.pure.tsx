@@ -13,17 +13,21 @@ import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDispl
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
+import { useAtomValue } from 'jotai'
+import { ordersTableURLParamsAtom } from '../../../state/ordersTable.atoms'
 
 export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode {
   const { account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
-  const { currentTabId, searchTerm, historyStatusFilter } = useOrdersTableFilters() || {}
+  const { searchTerm, historyStatusFilter } = useOrdersTableFilters() || {}
+  const ordersTableURLParams = useAtomValue(ordersTableURLParamsAtom)
+  const currentTabId = ordersTableURLParams.tab || OrderTabId.open;
 
   const tabs = useOrdersTableTabs()
 
-  console.log('tabs =', tabs)
+  console.log('tabs =', tabs, currentTabId)
 
   /*
   TODO: Why was it done this way instead of getting currentTabId from the atom?
