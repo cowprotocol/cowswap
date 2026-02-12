@@ -7,7 +7,6 @@ import { jotaiStore } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
-import { createHashHistory, Location } from 'history'
 
 import { observe } from 'jotai-effect'
 
@@ -23,14 +22,15 @@ import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
 
-import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/hooks/useFilteredOrders'
-import { getOrdersTableList } from 'modules/ordersTable/hooks/useOrdersTableList'
+import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/utils/getFilteredOrders'
+import { getOrdersTableList } from 'modules/ordersTable/utils/getOrdersTableList'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { OrdersTableState, OrdersTableFilters, TabOrderTypes, OrdersTableList } from './ordersTable.types'
+import { OrdersTableState, OrdersTableFilters, TabOrderTypes } from './ordersTable.types'
+import { tabParamAtom } from './params/ordersTableParams.atoms'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
-import { ORDERS_TABLE_TABS, OrderTabId } from './tabs/ordersTableTabs.constants'
+import { OrderTabId } from './tabs/ordersTableTabs.constants'
 
 export const ordersTableStateAtom = atom<OrdersTableState>({
   reduxOrders: [],
@@ -62,42 +62,19 @@ export const DEFAULT_ORDERS_TABLE_FILTERS = {
 
 export const ordersTableFiltersAtom = atom<OrdersTableFilters>(DEFAULT_ORDERS_TABLE_FILTERS)
 
-export const ordersTableTabsAtom = atom((get) => {
-  console.log('ordersTableTabAtom atom')
+export const { updateAtom: partiallyUpdateOrdersTableFiltersAtom } = atomWithPartialUpdate(ordersTableFiltersAtom)
 
-  const { account } = get(walletInfoAtom)
-  // const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
-  const isProviderNetworkUnsupported = false
+ordersTableFiltersAtom.onMount = () => {
+  observe((get, set) => {
+    get(tabParamAtom)
 
-  if (!account || isProviderNetworkUnsupported) {
-    return []
-  }
-
-  const { ordersList } = get(ordersTableStateAtom)
-  const ordersTableURLParams = get(ordersTableURLParamsAtom)
-  const currentTabId = ordersTableURLParams.tab || OrderTabId.open;
-
-  return ORDERS_TABLE_TABS.filter((tab) => {
-    // Always show OPEN and HISTORY tabs
-    if (tab.id === OrderTabId.open || tab.id === OrderTabId.history) {
-      return true
-    }
-
-    // Only include the unfillable tab if there are unfillable orders
-    if (tab.id === OrderTabId.unfillable) {
-      return ordersList[tab.id].length > 0
-    }
-
-    // Only include the signing tab if there are signing orders
-    if (tab.id === OrderTabId.signing) {
-      return ordersList[tab.id].length > 0
-    }
-
-    return false
-  }).map((tab) => {
-    return { ...tab, isActive: tab.id === currentTabId, count: ordersList[tab.id].length }
+    // Reset filters if tab changes:
+    set(partiallyUpdateOrdersTableFiltersAtom as any, {
+      searchTerm: '',
+      historyStatusFilter: HistoryStatusFilter.FILLED,
+    })
   })
-})
+}
 
 const reduxOrdersStateAtom = atomFromReduxSelector<OrdersState>((appState) => appState.orders)
 
@@ -109,93 +86,27 @@ const reduxOrdersStateByChainAtom = atom((get) => (chainId: SupportedChainId) =>
   return { ...getDefaultNetworkState(chainId), ...reduxOrdersStateByChain }
 })
 
-export const { updateAtom: partiallyUpdateOrdersTableFiltersAtom } = atomWithPartialUpdate(ordersTableFiltersAtom)
-
-export const hashHistory = createHashHistory();
-
-hashHistory.listen((event) => {
-  console.log("location", event)
-})
-
-
-export const locationAtom = atom<Location>({
-  key: '',
-  pathname: '',
-  search: '',
-  hash: '',
-  state: undefined,
-})
-
-locationAtom.onMount = (setAtom) => {
-  hashHistory.listen((event) => {
-    setAtom(event.location)
-  })
-}
-
-export const locationPathnameAtom = atom((get) => get(locationAtom).pathname)
-export const locationSearchAtom = atom((get) => get(locationAtom).search)
-export const locationSearchParamsAtom = atom((get) => new URLSearchParams(get(locationSearchAtom)))
-
-export const ordersTableURLParamsAtom = atom((get) => {
-  const locationSearchParams = get(locationSearchParamsAtom)
-
-  console.log("ordersTableURLParamsAtom", {
-    tab: locationSearchParams.get("tab") as OrderTabId | undefined,
-    page: parseInt(locationSearchParams.get("page") || "") || undefined,
-  });
-
-  return {
-    tab: locationSearchParams.get("tab") as OrderTabId | undefined,
-    page: parseInt(locationSearchParams.get("page") || "") || undefined,
-  }
-})
-
-/*
-ordersTableFiltersAtom.onMount = () => {
-  console.log("ordersTableFiltersAtom MOUNT");
-
-  return observe((get, set) => {
-    const { tab, page } = get(ordersTableURLParamsAtom)
-
-    console.log("ordersTabId =", tab, "ordersPage =", page);
-
-    set(partiallyUpdateOrdersTableFiltersAtom as any, {
-      currentTabId: tab,
-      currentPageNumber: page,
-    } as Partial<OrdersTableFilters>)
-  })
-}
-*/
-
 ordersTableStateAtom.onMount = () => {
   const unobserve = observe((get, set) => {
-    console.log('observe')
-
     const { chainId, account } = get(walletInfoAtom)
-    const ordersTableFilters = get(ordersTableFiltersAtom)
     const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom)
     const reduxOrdersStateInCurrentChain = selectReduxOrdersStateByChain(chainId)
 
-    console.log('New data: ', {
-      chainId,
-      account,
-      ordersTableFilters,
-      reduxOrdersStateInCurrentChain,
-      test: get(locationSearchParamsAtom),
-    })
+    console.log('1. reduxOrdersStateInCurrentChain =', reduxOrdersStateInCurrentChain)
 
     const reduxOrders: Order[] = []
     const ordersTokensSet = new Set<string>()
 
     if (reduxOrdersStateInCurrentChain && account) {
+      const ordersTableFilters = get(ordersTableFiltersAtom)
+
       const accountLowerCase = account.toLowerCase()
 
+      // TODO: Map this directly from the URL:
       const uiOrderType: UiOrderType = {
         [TabOrderTypes.LIMIT]: UiOrderType.LIMIT,
         [TabOrderTypes.ADVANCED]: UiOrderType.TWAP,
       }[ordersTableFilters.orderType]
-
-      // TODO: In the same loop, generate all this:
 
       /*
       const ordersTokens = useMemo(() => getOrdersInputTokens(allOrders), [allOrders])
@@ -216,11 +127,14 @@ ordersTableStateAtom.onMount = () => {
       const tabs = useTabs(ordersList, currentTabId)
       */
 
+      // TODO: Can this be optimized instead of looping through orders various times?
+
       // TODO: Also extract pending in the same loop.
 
       // TODO: TWAPs need additional processing, do it in the same loop.
 
-      // TODO: Maybe instead of using _concatOrdersState we can process only the ones we need (mapping rdersTableFilters.orderType to OrderTypeKeys)
+      // TODO: Maybe instead of using _concatOrdersState we can process only the ones we need (mapping ordersTableFilters.orderType to OrderTypeKeys)
+
       _concatOrdersState(reduxOrdersStateInCurrentChain, ORDER_LIST_KEYS).forEach((order) => {
         if (!order) return
 
@@ -240,6 +154,8 @@ ordersTableStateAtom.onMount = () => {
 
       const ordersTokens = Array.from(ordersTokensSet)
 
+      console.log('2. reduxOrders =', reduxOrders)
+
       const balancesState = get(balancesAtom)
       // const allowancesState = get(allowancesAtom) // TODO: Needs ordersTokens to get allowances...
       const pendingOrdersPermitValidityState = get(pendingOrdersPermitValidityStateAtom)
@@ -255,17 +171,10 @@ ordersTableStateAtom.onMount = () => {
 
       // All orders of orderType:
 
-      let ordersList: OrdersTableList = {
-        open: [],
-        history: [],
-        unfillable: [],
-        signing: [],
-      }
-
       const setIsOrderUnfillable = (params: SetIsOrderUnfillableParams) =>
         cowSwapStore.dispatch(createSetIsOrderUnfillableAction(params))
 
-      ordersList = getOrdersTableList(
+      const ordersList = getOrdersTableList(
         reduxOrders,
         ordersTableFilters.orderType,
         chainId,
@@ -274,13 +183,14 @@ ordersTableStateAtom.onMount = () => {
         setIsOrderUnfillable,
       )
 
+      console.log('3. ordersList =', ordersList)
+
       const { searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
-      const ordersTableURLParams = get(ordersTableURLParamsAtom)
-      const currentTabId = ordersTableURLParams.tab || OrderTabId.open;
+      const currentTabId = get(tabParamAtom)
 
       const orders = ordersList[currentTabId]
 
-      console.log('orders =', orders, currentTabId)
+      console.log(`4. orders (${currentTabId}) =`, orders)
 
       const filteredOrders = getFilteredOrders(orders, {
         searchTerm,
@@ -288,13 +198,10 @@ ordersTableStateAtom.onMount = () => {
         historyStatusFilter: currentTabId === OrderTabId.history ? historyStatusFilter : HistoryStatusFilter.ALL,
       })
 
+      console.log(`5. filteredOrders (${currentTabId}) =`, filteredOrders)
+
       // const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
       const hasHydratedOrders = Array.isArray(orders)
-
-      // Tabs:
-
-      //const { currentTabId, currentPageNumber } = useCurrentTab(ordersList)
-      // const tabs = useTabs(ordersList, currentTabId)
 
       set(ordersTableStateAtom, {
         reduxOrders,
@@ -302,34 +209,11 @@ ordersTableStateAtom.onMount = () => {
         orders,
         filteredOrders,
         balancesAndAllowances,
-        // orderActions,
         hasHydratedOrders,
       })
 
       console.log('5')
     }
-
-    /*
-    // TODO: This was also in OrdersTableStateUpdater:
-
-    set(partiallyUpdateOrdersTableFiltersAtom, {
-      tabs,
-      currentTabId,
-      currentPageNumber
-    })
-
-    useEffect(() => {
-      partiallyUpdateOrdersTableFilters({ currentTabId })
-    }, [currentTabId])
-
-    useEffect(() => {
-      partiallyUpdateOrdersTableFilters({ currentPageNumber })
-    }, [currentPageNumber])
-
-    useEffect(() => {
-      partiallyUpdateOrdersTableFilters({ tabs })
-    }, [tabs])
-    */
   }, jotaiStore)
 
   return () => {

@@ -6,7 +6,7 @@ import { MessageDescriptor } from '@lingui/core'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import type { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
+import type { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 
 import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'

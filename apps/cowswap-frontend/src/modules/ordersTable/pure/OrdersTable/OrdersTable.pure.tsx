@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
@@ -5,6 +6,7 @@ import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { pageParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
 import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
@@ -34,7 +36,8 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const ordersToCancelMap = useOrdersToCancelMap()
 
   // TODO: Shouldn't the default be 1?
-  const { orderType, currentPageNumber = 0 } = useOrdersTableFilters() || {}
+  const { orderType } = useOrdersTableFilters() || {}
+  const currentPageNumber = useAtomValue(pageParamAtom)
 
   const { filteredOrders, balancesAndAllowances } = useOrdersTableState() || {}
 

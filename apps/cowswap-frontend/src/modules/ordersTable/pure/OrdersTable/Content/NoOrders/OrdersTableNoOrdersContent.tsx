@@ -12,9 +12,9 @@ import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
 
-import { HistoryStatusFilter } from '../../../../hooks/useFilteredOrders'
 import { useNoOrdersAnimation } from '../../../../hooks/useNoOrdersAnimation'
 import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
+import { HistoryStatusFilter } from '../../../../utils/getFilteredOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 
 const Lottie = lazy(() => import('lottie-react'))

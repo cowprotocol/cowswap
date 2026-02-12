@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useMemo } from 'react'
 
 import { t } from '@lingui/core/macro'
@@ -6,6 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
+import { ordersTableParamsAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -19,17 +21,15 @@ import {
   Select,
 } from './OrdersTableWidget.styled'
 
-import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
+import { useOrdersTableFilters } from '../../hooks/useOrdersTableFilters'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
-import { useOrdersTableFilters, usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/useOrdersTableFilters'
+import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import { OrdersTableParams } from '../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
-import { ordersTableURLParamsAtom } from '../../state/ordersTable.atoms'
-import { useAtomValue } from 'jotai'
 
 function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
   const start = (pageNumber - 1) * pageSize
@@ -39,7 +39,6 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
-// eslint-disable-next-line max-lines-per-function
 export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/): ReactNode {
   const { i18n } = useLingui()
 
@@ -60,9 +59,9 @@ export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/):
   }
 
   const { filteredOrders, reduxOrders } = useOrdersTableState() || {}
-  const ordersTableURLParams = useAtomValue(ordersTableURLParamsAtom)
-  const currentTabId = ordersTableURLParams.tab || OrderTabId.open;
-  const currentPageNumber = ordersTableURLParams.page || 1;
+  const ordersTableParams = useAtomValue(ordersTableParamsAtom)
+  const currentTabId = ordersTableParams.tab
+  const currentPageNumber = ordersTableParams.page
   const pendingOrdersPrices = usePendingOrdersPrices()
 
   const pendingOrders = useMemo(() => {
@@ -87,7 +86,7 @@ export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/):
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
 
-      { /* <OrdersTableStateUpdater orders={ allOrders } /> */ }
+      {/* <OrdersTableStateUpdater orders={ allOrders } /> */}
 
       <OrdersTableContainer>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}

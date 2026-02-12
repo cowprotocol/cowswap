@@ -10,9 +10,9 @@ import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersConten
 import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletContent'
 import { OrdersTableUnsupportedNetworkContent } from './UnsupportedNetwork/OrdersTableUnsupportedNetworkContent'
 
-import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
+import { HistoryStatusFilter } from '../../../utils/getFilteredOrders'
 import { OrdersTable } from '../OrdersTable.pure'
 
 interface OrdersTableContentProps {

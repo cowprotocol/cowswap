@@ -6,11 +6,12 @@ import { SetIsOrderUnfillableParams } from 'legacy/state/orders/actions'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
+import { getOrderParams } from './getOrderParams'
+import { groupOrdersTable } from './groupOrdersTable'
+import { getParsedOrderFromTableItem, isParsedOrder } from './orderTableGroupUtils'
+
 import { OrdersTableList, OrderTableItem, TabOrderTypes } from '../state/ordersTable.types'
 import { PendingOrdersPermitValidityState } from '../state/permit/pendingOrdersPermitValidity.atom'
-import { getOrderParams } from '../utils/getOrderParams'
-import { groupOrdersTable } from '../utils/groupOrdersTable'
-import { getParsedOrderFromTableItem, isParsedOrder } from '../utils/orderTableGroupUtils'
 
 const ORDER_LIMIT = 1000
 

@@ -1,9 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { PropsWithChildren, ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
-import { useOrdersTableFilters, useOrdersTableTabs } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { tabParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -13,8 +15,6 @@ import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDispl
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
-import { useAtomValue } from 'jotai'
-import { ordersTableURLParamsAtom } from '../../../state/ordersTable.atoms'
 
 export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode {
   const { account } = useWalletInfo()
@@ -22,20 +22,7 @@ export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
   const { searchTerm, historyStatusFilter } = useOrdersTableFilters() || {}
-  const ordersTableURLParams = useAtomValue(ordersTableURLParamsAtom)
-  const currentTabId = ordersTableURLParams.tab || OrderTabId.open;
-
-  const tabs = useOrdersTableTabs()
-
-  console.log('tabs =', tabs, currentTabId)
-
-  /*
-  TODO: Why was it done this way instead of getting currentTabId from the atom?
-  const currentTab = useMemo(() => {
-    const activeTab = tabs?.find((tab) => tab.isActive)
-    return activeTab?.id || OrderTabId.open
-  }, [tabs])
-  */
+  const currentTabId = useAtomValue(tabParamAtom)
 
   return (
     <styledEl.Wrapper>
@@ -43,7 +30,7 @@ export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode
         <>
           <styledEl.TopContainer>
             <styledEl.TabsContainer>
-              {tabs && <OrdersTabs tabs={tabs} />}
+              <OrdersTabs />
               {children && (
                 <styledEl.RightContainer $isHistoryTab={currentTabId === OrderTabId.history /* || OrderTabId.open */}>
                   {children}

@@ -18,8 +18,8 @@ import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
-import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
-import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
+import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
   SetupFallbackHandlerWarning,

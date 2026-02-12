@@ -16,9 +16,9 @@ import {
   TriggerAppziLimitOrdersSurveyUpdater,
   PromoBannerUpdater,
 } from 'modules/limitOrders'
-import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
-import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
 import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
+import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { AlternativeLimitOrderPage } from './AlternativeLimitOrder.page'

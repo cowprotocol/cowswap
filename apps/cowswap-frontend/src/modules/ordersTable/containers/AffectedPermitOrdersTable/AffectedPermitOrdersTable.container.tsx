@@ -2,13 +2,13 @@ import { ReactNode } from 'react'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders'
-import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
-import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
+import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
 
 import * as styledEl from './AffectedPermitOrdersTable.styled'
 
-import { usePendingOrdersPrices } from '../../../orders'
+import { useResetOrdersTableFilters } from '../../hooks/useResetOrdersTableFilters'
+import { TabOrderTypes } from '../../state/ordersTable.types'
+import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { AffectedPermitOrderWithActions } from '../AffectedPermitOrderWithActions/AffectedPermitOrderWithActions.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
 
