@@ -27,6 +27,9 @@ export interface TokenListContext {
   areTokensLoading: boolean
   areTokensFromBridge: boolean
 
+  // Bridge support map (null when loading, populated when bridge tokens are fetched)
+  bridgeSupportedTokensMap: Record<string, boolean> | null
+
   // UI config
   hideFavoriteTokensTooltip: boolean
   selectedTargetChainId: number | undefined
@@ -71,6 +74,7 @@ export function useTokenListContext(): TokenListContext {
       recentTokens,
       areTokensLoading: tokensState.isLoading,
       areTokensFromBridge: tokensState.areTokensFromBridge,
+      bridgeSupportedTokensMap: tokensState.bridgeSupportedTokensMap,
       hideFavoriteTokensTooltip: isInjectedWidget(),
       selectedTargetChainId: widgetState.selectedTargetChainId,
       onClearRecentTokens: clearRecentTokens,
@@ -81,6 +85,7 @@ export function useTokenListContext(): TokenListContext {
       tokensState.tokens,
       tokensState.isLoading,
       tokensState.areTokensFromBridge,
+      tokensState.bridgeSupportedTokensMap,
       favoriteTokens,
       recentTokens,
       widgetState.selectedTargetChainId,
