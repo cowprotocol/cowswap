@@ -22,6 +22,7 @@ export function RowRewards(): ReactNode {
   const traderReferralCodeActions = useTraderReferralCodeActions()
   const shouldHideForIneligible =
     AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE && traderReferralCode.wallet.status === 'ineligible'
+  const eligibilityCheckIsLoading = traderReferralCode.wallet.status === 'unknown'
 
   const linkedCode = getLinkedCode(traderReferralCode)
   const hasLinkedCode = Boolean(linkedCode)
@@ -32,7 +33,7 @@ export function RowRewards(): ReactNode {
     traderReferralCodeActions.openModal('rewards')
   }
 
-  if (!isRowRewardsVisible || shouldHideForIneligible) {
+  if (!isRowRewardsVisible || shouldHideForIneligible || eligibilityCheckIsLoading) {
     return null
   }
 

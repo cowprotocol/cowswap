@@ -109,7 +109,7 @@ Audit:
 - FE checks prior orders and informs users if they are eligible
 - Dune filters out ineligible traders
 - Low fee swaps do not count towards eligible volume (see `min_fee_bps` in the dune queries)
-- FE can fail to determine the eligibility. It reads historical orders from the orderbook API via `useOrdersFromOrderBook`. If the orderbook fetch fails or takes longer than 30s, the wallet eligibility is marked as unknown and the modal shows a warning message explaining rewards may not apply.
+- FE can fail to determine eligibility if this all-chain fetch fails or takes longer than 30s; in that case wallet eligibility is marked as unknown and the modal shows a warning message explaining rewards may not apply.
 
 ## 8) Environments
 

@@ -6,6 +6,7 @@ import {
   NativePriceResponse,
   PartialApiContext,
   SupportedChainId as ChainId,
+  Trade,
   TotalSurplus,
 } from '@cowprotocol/cow-sdk'
 
@@ -37,6 +38,17 @@ export async function getOrders(
   context: PartialApiContext,
 ): Promise<EnrichedOrder[]> {
   return orderBookApi.getOrders(params, context)
+}
+
+export async function getTrades(
+  params: {
+    owner: Address
+    offset?: number
+    limit?: number
+  },
+  context: PartialApiContext,
+): Promise<Trade[]> {
+  return orderBookApi.getTrades(params, context)
 }
 
 export async function getNativePrice(chainId: ChainId, currencyAddress: string): Promise<NativePriceResponse> {

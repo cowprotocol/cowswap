@@ -56,10 +56,6 @@ select
   trades.referrer_code,
   bound_ref.bound_code as bound_referrer_code,
   date_diff('day', first_ref_trade.first_ref_trade_time, trades.block_time) as days_since_bound,
-  sum(trades.usd_value)
-    over (partition by trades.trader, trades.referrer_code order by trades.block_time) as cum_volume_for_code,
-  sum(case when not trades.is_excluded_low_fee then trades.usd_value else 0 end)
-    over (partition by trades.trader, trades.referrer_code order by trades.block_time) as cum_eligible_volume_for_code,
   first_trade.first_trade_time,
   first_ref_trade.first_ref_trade_time,
   trades.block_time = first_trade.first_trade_time as is_first_trade,

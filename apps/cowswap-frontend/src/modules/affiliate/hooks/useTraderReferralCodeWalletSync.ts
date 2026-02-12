@@ -1,18 +1,8 @@
-import { useAtomValue } from 'jotai'
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { SupportedChainId, areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { TraderEligibilityStatus, useAffiliateTraderEligibility } from './useAffiliateTraderEligibility'
 
-import { useSelector } from 'react-redux'
-
-import { AppState } from 'legacy/state'
-import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
-import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer'
-
-import { AFFILIATE_ELIGIBILITY_LOADING_WARNING_MS } from 'modules/affiliate/config/affiliateProgram.const'
-import { ordersFromApiStatusAtom } from 'modules/orders/state/ordersFromApiStatusAtom'
-
-import { TraderReferralCodeContextValue } from '../lib/affiliateProgramTypes'
+import { TraderReferralCodeContextValue, TraderWalletReferralCodeState } from '../lib/affiliateProgramTypes'
 
 interface WalletSyncParams {
   account?: string
@@ -22,77 +12,99 @@ interface WalletSyncParams {
   savedCode?: string
 }
 
+enum WalletStateStatus {
+  UNKNOWN = 'unknown',
+  DISCONNECTED = 'disconnected',
+  UNSUPPORTED = 'unsupported',
+  ELIGIBLE = 'eligible',
+  LINKED = 'linked',
+  INELIGIBLE = 'ineligible',
+  ELIGIBILITY_UNKNOWN = 'eligibility-unknown',
+}
+
 export function useTraderReferralCodeWalletSync(params: WalletSyncParams): void {
   const { account, chainId, supportedNetwork, actions, savedCode } = params
-  const ordersState = useSelector<AppState, OrdersState | undefined>((state) => state.orders)
-  const ordersFromApiStatus = useAtomValue(ordersFromApiStatusAtom)
-  const [hasLoadingTimeout, setHasLoadingTimeout] = useState(false)
-  const hasOrders = useMemo(() => {
-    if (!account) {
-      return false
-    }
+  const shouldRunEligibilityCheck = Boolean(account && supportedNetwork)
+  const { status: eligibilityStatus, hasLoadingTimeout } = useAffiliateTraderEligibility({
+    account,
+    enabled: shouldRunEligibilityCheck,
+  })
+  const { setWalletState } = actions
 
-    if (!ordersState) {
-      return false
-    }
-
-    return Object.entries(ordersState).some(([networkId, networkState]) => {
-      const resolvedChainId = Number(networkId) as SupportedChainId
-      const fullState = { ...getDefaultNetworkState(resolvedChainId), ...(networkState || {}) }
-      const ordersMap = flatOrdersStateNetwork(fullState)
-
-      return Object.values(ordersMap).some(
-        (order) => order?.order.owner && areAddressesEqual(order.order.owner, account),
-      )
-    })
-  }, [account, ordersState])
+  const walletState = useMemo(
+    () =>
+      resolveWalletState({
+        account,
+        chainId,
+        supportedNetwork,
+        eligibilityStatus,
+        shouldRunEligibilityCheck,
+        hasLoadingTimeout,
+        savedCode,
+      }),
+    [account, chainId, eligibilityStatus, hasLoadingTimeout, savedCode, shouldRunEligibilityCheck, supportedNetwork],
+  )
 
   useEffect(() => {
-    if (ordersFromApiStatus !== 'loading') {
-      setHasLoadingTimeout(false)
-      return
-    }
+    setWalletState(walletState)
+  }, [setWalletState, walletState])
+}
 
-    setHasLoadingTimeout(false)
-    const timer = setTimeout(() => {
-      setHasLoadingTimeout(true)
-    }, AFFILIATE_ELIGIBILITY_LOADING_WARNING_MS)
+interface ResolveWalletStateParams {
+  account?: string
+  chainId?: number
+  supportedNetwork: boolean
+  eligibilityStatus: TraderEligibilityStatus
+  shouldRunEligibilityCheck: boolean
+  hasLoadingTimeout: boolean
+  savedCode?: string
+}
 
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [ordersFromApiStatus])
+function resolveWalletState(params: ResolveWalletStateParams): TraderWalletReferralCodeState {
+  const { account, chainId, supportedNetwork, shouldRunEligibilityCheck } = params
 
-  useLayoutEffect(() => {
-    if (!account) {
-      actions.setWalletState({ status: 'disconnected' })
-      return
-    }
+  if (!account) {
+    return DISCONNECTED_WALLET_STATE
+  }
 
-    if (!supportedNetwork) {
-      actions.setWalletState({ status: 'unsupported', chainId })
-      return
-    }
+  if (!supportedNetwork) {
+    return { status: WalletStateStatus.UNSUPPORTED, chainId }
+  }
 
-    if (ordersFromApiStatus === 'error') {
-      actions.setWalletState({ status: 'eligibility-unknown', reason: 'orders_fetch_failed' })
-      return
-    }
+  if (!shouldRunEligibilityCheck) {
+    return UNKNOWN_WALLET_STATE
+  }
 
-    if (hasLoadingTimeout) {
-      actions.setWalletState({ status: 'eligibility-unknown', reason: 'orders_fetch_timeout' })
-      return
-    }
+  return resolveEligibilityWalletState(params)
+}
 
-    if (hasOrders) {
-      if (savedCode) {
-        actions.setWalletState({ status: 'linked', code: savedCode })
-      } else {
-        actions.setWalletState({ status: 'ineligible', reason: 'This wallet already placed an order.' })
-      }
-      return
-    }
+function resolveEligibilityWalletState(params: ResolveWalletStateParams): TraderWalletReferralCodeState {
+  const { eligibilityStatus, hasLoadingTimeout, savedCode } = params
 
-    actions.setWalletState({ status: 'eligible' })
-  }, [account, actions, chainId, hasLoadingTimeout, hasOrders, ordersFromApiStatus, savedCode, supportedNetwork])
+  if (hasLoadingTimeout) {
+    return ELIGIBILITY_UNKNOWN_WALLET_STATE
+  }
+
+  switch (eligibilityStatus) {
+    case TraderEligibilityStatus.ERROR:
+      return ELIGIBILITY_UNKNOWN_WALLET_STATE
+    case TraderEligibilityStatus.LOADING:
+    case TraderEligibilityStatus.IDLE:
+      return UNKNOWN_WALLET_STATE
+    case TraderEligibilityStatus.HAS_PAST_TRADES:
+      return savedCode ? { status: WalletStateStatus.LINKED, code: savedCode } : INELIGIBLE_EXISTING_TRADE_WALLET_STATE
+    case TraderEligibilityStatus.NO_PAST_TRADES:
+      return ELIGIBLE_WALLET_STATE
+  }
+}
+
+const DISCONNECTED_WALLET_STATE: TraderWalletReferralCodeState = { status: WalletStateStatus.DISCONNECTED }
+const UNKNOWN_WALLET_STATE: TraderWalletReferralCodeState = { status: WalletStateStatus.UNKNOWN }
+const ELIGIBLE_WALLET_STATE: TraderWalletReferralCodeState = { status: WalletStateStatus.ELIGIBLE }
+const ELIGIBILITY_UNKNOWN_WALLET_STATE: TraderWalletReferralCodeState = {
+  status: WalletStateStatus.ELIGIBILITY_UNKNOWN,
+}
+const INELIGIBLE_EXISTING_TRADE_WALLET_STATE: TraderWalletReferralCodeState = {
+  status: WalletStateStatus.INELIGIBLE,
+  reason: 'This wallet already executed a trade.',
 }
