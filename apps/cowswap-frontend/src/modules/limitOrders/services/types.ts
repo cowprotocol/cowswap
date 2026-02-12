@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20, GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
-import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
@@ -10,16 +9,18 @@ import { TypedAppDataHooks } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
+import type { Config } from 'wagmi'
+
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
   // validTo must be calculated just before signing of an order
-  postOrderParams: Omit<PostOrderParams, 'validTo' | 'signer'>
+  postOrderParams: Omit<PostOrderParams, 'validTo' | 'config'>
   typedHooks?: TypedAppDataHooks
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
   dispatch: AppDispatch
   rateImpact: number
-  signer: JsonRpcSigner
+  config: Config
   allowsOffchainSigning: boolean
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
