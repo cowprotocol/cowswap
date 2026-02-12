@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
-import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
 import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 import { SwapUpdaters, SwapWidget } from 'modules/swap'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'

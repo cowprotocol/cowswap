@@ -211,8 +211,6 @@ ordersTableStateAtom.onMount = () => {
         balancesAndAllowances,
         hasHydratedOrders,
       })
-
-      console.log('5')
     }
   }, jotaiStore)
 
