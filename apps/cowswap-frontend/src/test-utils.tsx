@@ -17,6 +17,7 @@ import { cowSwapStore } from 'legacy/state'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { LanguageProvider } from './i18n'
+import enMessages from './locales/en-US.po'
 
 type JotaiStore = ReturnType<typeof createStore>
 
@@ -35,7 +36,7 @@ const MockThemeProvider = ({ children }: { children: React.ReactNode }): ReactNo
 
 const WithProviders = ({ children }: { children?: ReactNode }): ReactNode => {
   return (
-    <LanguageProvider>
+    <LanguageProvider messages={enMessages}>
       <MockedI18nProvider>
         <Provider store={cowSwapStore}>
           <Web3Provider>
