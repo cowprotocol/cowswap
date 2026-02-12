@@ -6,6 +6,7 @@ import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
+import { PayoutAddressConfirmationWarning } from './PayoutAddressConfirmationWarning'
 import { Body, Footer, ModalContainer, Subtitle, Title } from './styles'
 import { TraderReferralCodeForm } from './TraderReferralCodeForm'
 import { TraderReferralCodeModalContentProps } from './TraderReferralCodeModal.types'
@@ -60,6 +61,13 @@ export function TraderReferralCodeModalContent(props: TraderReferralCodeModalCon
           shouldShowInfo={props.shouldShowInfo}
           variant={props.infoVariant}
         />
+        {props.showPayoutAddressConfirmation && props.payoutAddress && (
+          <PayoutAddressConfirmationWarning
+            account={props.payoutAddress}
+            checked={props.payoutAddressConfirmed}
+            onToggle={props.onTogglePayoutAddressConfirmed}
+          />
+        )}
       </Body>
 
       <Footer>
@@ -142,8 +150,8 @@ function TraderReferralCodeSubtitle({
           {programCopy ? (
             <Trans>
               Code binds on your first eligible trade. Earn {programCopy.rewardAmount} {programCopy.rewardCurrency} per{' '}
-              {programCopy.triggerVolume} eligible volume in {programCopy.timeCapDays} days. Payouts happen on Ethereum
-              mainnet.
+              ${programCopy.triggerVolume} of eligible volume in {programCopy.timeCapDays} days. Payouts happen on
+              Ethereum mainnet.
             </Trans>
           ) : (
             <Trans>
@@ -159,13 +167,13 @@ function TraderReferralCodeSubtitle({
             isConnected ? (
               <Trans>
                 Code binds on your first eligible trade. Earn {programCopy.rewardAmount} {programCopy.rewardCurrency}{' '}
-                per {programCopy.triggerVolume} eligible volume in {programCopy.timeCapDays} days. Payouts happen on
+                per ${programCopy.triggerVolume} of eligible volume in {programCopy.timeCapDays} days. Payouts happen on
                 Ethereum mainnet.
               </Trans>
             ) : (
               <Trans>
                 Connect to verify eligibility. Code binds on your first eligible trade. Earn {programCopy.rewardAmount}{' '}
-                {programCopy.rewardCurrency} per {programCopy.triggerVolume} eligible volume in{' '}
+                {programCopy.rewardCurrency} per ${programCopy.triggerVolume} of eligible volume in{' '}
                 {programCopy.timeCapDays} days. Payouts happen on Ethereum mainnet.
               </Trans>
             )

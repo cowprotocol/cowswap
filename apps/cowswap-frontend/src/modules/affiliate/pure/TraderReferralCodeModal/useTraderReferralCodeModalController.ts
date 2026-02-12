@@ -1,7 +1,8 @@
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { FormEvent, RefObject, useCallback, useMemo, useRef } from 'react'
 
 import { CowAnalytics } from '@cowprotocol/analytics'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { ordersFromApiStatusAtom } from 'modules/orders/state/ordersFromApiStatusAtom'
 
@@ -20,11 +21,13 @@ import { useTraderReferralCodeActions } from '../../hooks/useTraderReferralCodeA
 import { useTraderReferralCodeModalState } from '../../hooks/useTraderReferralCodeModalState'
 import { TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 import { isReferralCodeLengthValid, getIncomingIneligibleCode } from '../../lib/affiliateProgramUtils'
+import { payoutAddressConfirmationAtom } from '../../state/payoutAddressConfirmationAtom'
 
 export interface TraderReferralCodeModalControllerParams {
   modalState: ReturnType<typeof useTraderReferralCodeModalState>
   actions: ReturnType<typeof useTraderReferralCodeActions>
   account?: string
+  chainId?: number
   supportedNetwork: boolean
   toggleWalletModal: () => void
   navigate: NavigateFunction
@@ -42,7 +45,7 @@ export interface TraderReferralCodeModalControllerResult {
 export function useTraderReferralCodeModalController(
   params: TraderReferralCodeModalControllerParams,
 ): TraderReferralCodeModalControllerResult {
-  const { modalState, actions, account, supportedNetwork, toggleWalletModal, navigate, analytics } = params
+  const { modalState, actions, account, chainId, supportedNetwork, toggleWalletModal, navigate, analytics } = params
   const ordersFromApiStatus = useAtomValue(ordersFromApiStatusAtom)
   const {
     traderReferralCode,
@@ -58,7 +61,13 @@ export function useTraderReferralCodeModalController(
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const ctaRef = useRef<HTMLButtonElement | null>(null)
+  const [payoutAddressConfirmationByWallet, setPayoutAddressConfirmationByWallet] =
+    useAtom(payoutAddressConfirmationAtom)
+  const normalizedAccount = account?.toLowerCase()
+  const payoutAddressConfirmed = normalizedAccount ? !!payoutAddressConfirmationByWallet[normalizedAccount] : false
   const effectiveWalletStatus = supportedNetwork ? wallet.status : 'unsupported'
+  const showPayoutAddressConfirmation =
+    Boolean(account) && chainId !== undefined && chainId !== SupportedChainId.MAINNET
 
   const primaryCta = useMemo(
     () =>
@@ -71,6 +80,23 @@ export function useTraderReferralCodeModalController(
       }),
     [effectiveWalletStatus, hasCode, hasValidLength, uiState, verification],
   )
+  const isPrimaryActionBlockedByPayoutConfirmation =
+    showPayoutAddressConfirmation && !payoutAddressConfirmed && ['save', 'verify'].includes(primaryCta.action)
+  const effectivePrimaryCta = useMemo(
+    () => (isPrimaryActionBlockedByPayoutConfirmation ? { ...primaryCta, disabled: true } : primaryCta),
+    [isPrimaryActionBlockedByPayoutConfirmation, primaryCta],
+  )
+  const togglePayoutAddressConfirmed = useCallback(
+    (checked: boolean) => {
+      if (!normalizedAccount) return
+
+      setPayoutAddressConfirmationByWallet((prev) => ({
+        ...prev,
+        [normalizedAccount]: checked,
+      }))
+    },
+    [normalizedAccount, setPayoutAddressConfirmationByWallet],
+  )
 
   useTraderReferralCodeModalFocus(traderReferralCode.modalOpen, uiState, inputRef, ctaRef)
   useTraderReferralCodeModalAnalytics(traderReferralCode, uiState, analytics)
@@ -80,7 +106,7 @@ export function useTraderReferralCodeModalController(
     analytics,
     account,
     displayCode,
-    primaryCta,
+    primaryCta: effectivePrimaryCta,
     toggleWalletModal,
     navigate,
     inputRef,
@@ -126,8 +152,12 @@ export function useTraderReferralCodeModalController(
       onRemove: handlers.onRemove,
       onSave: handlers.onSave,
       onChange: handlers.onChange,
-      primaryCta,
+      primaryCta: effectivePrimaryCta,
       hasRejection,
+      showPayoutAddressConfirmation,
+      payoutAddress: account,
+      payoutAddressConfirmed,
+      onTogglePayoutAddressConfirmed: togglePayoutAddressConfirmed,
       infoMessage: statusCopy.infoMessage,
       shouldShowInfo: statusCopy.shouldShowInfo,
       infoVariant: statusCopy.variant,

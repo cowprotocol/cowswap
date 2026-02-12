@@ -6,7 +6,6 @@ export const StatusMessage = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin: 0 0 10px;
 `
 
 export const SpinnerRow = styled.div`

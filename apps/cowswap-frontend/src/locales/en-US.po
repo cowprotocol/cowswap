@@ -477,6 +477,10 @@ msgstr "amount per"
 msgid "Provide a valid referral code"
 msgstr "Provide a valid referral code"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/PayoutAddressConfirmationWarning.tsx
+msgid "I have access to this address on Ethereum."
+msgstr "I have access to this address on Ethereum."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Bridging failed. Refund started..."
 msgstr "Bridging failed. Refund started..."
@@ -1394,13 +1398,9 @@ msgstr "Want to try out limit orders?"
 msgid "smart contracts (e.g. Safe)"
 msgstr "smart contracts (e.g. Safe)"
 
-#. placeholder {0}: programCopy.rewardAmount
-#. placeholder {1}: programCopy.rewardCurrency
-#. placeholder {2}: programCopy.triggerVolume
-#. placeholder {3}: programCopy.timeCapDays
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
-msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
-msgstr "Connect to verify eligibility. Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
+#~ msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
+#~ msgstr "Connect to verify eligibility. Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/CountDown.tsx
 msgid "Quote refresh in"
@@ -2883,6 +2883,10 @@ msgstr "Partner fee can not be less than 0!"
 msgid "No order history"
 msgstr "No order history"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/PayoutAddressConfirmationWarning.tsx
+msgid "Rewards will be sent on Ethereum to"
+msgstr "Rewards will be sent on Ethereum to"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
 msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
@@ -3532,6 +3536,14 @@ msgstr "Share on X"
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Total claimable rewards:"
 msgstr "Total claimable rewards:"
+
+#. placeholder {0}: programCopy.rewardAmount
+#. placeholder {1}: programCopy.rewardCurrency
+#. placeholder {2}: programCopy.triggerVolume
+#. placeholder {3}: programCopy.timeCapDays
+#: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
+msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
+msgstr "Connect to verify eligibility. Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 
 #: libs/common-utils/src/legacyAddressUtils.ts
 #~ msgid "View on"
@@ -5294,14 +5306,10 @@ msgstr "Add <0/> to {walletName}"
 msgid "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
 msgstr "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
 
-#. placeholder {0}: programCopy.rewardAmount
-#. placeholder {1}: programCopy.rewardCurrency
-#. placeholder {2}: programCopy.triggerVolume
-#. placeholder {3}: programCopy.timeCapDays
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
-msgid "Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
-msgstr "Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
+#~ msgid "Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
+#~ msgstr "Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at least"
@@ -5532,6 +5540,15 @@ msgstr "Cancelled order"
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 msgid "Affiliate stats are temporarily unavailable. Try again later."
 msgstr "Affiliate stats are temporarily unavailable. Try again later."
+
+#. placeholder {0}: programCopy.rewardAmount
+#. placeholder {1}: programCopy.rewardCurrency
+#. placeholder {2}: programCopy.triggerVolume
+#. placeholder {3}: programCopy.timeCapDays
+#: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
+msgid "Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
+msgstr "Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Limit Order Settings"

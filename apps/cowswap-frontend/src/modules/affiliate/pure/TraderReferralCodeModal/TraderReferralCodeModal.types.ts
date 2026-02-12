@@ -30,6 +30,10 @@ export interface TraderReferralCodeModalContentProps {
   onChange(event: FormEvent<HTMLInputElement>): void
   primaryCta: PrimaryCta
   hasRejection: boolean
+  showPayoutAddressConfirmation: boolean
+  payoutAddress?: string
+  payoutAddressConfirmed: boolean
+  onTogglePayoutAddressConfirmed(checked: boolean): void
   infoMessage: string
   shouldShowInfo: boolean
   infoVariant: StatusColorVariant

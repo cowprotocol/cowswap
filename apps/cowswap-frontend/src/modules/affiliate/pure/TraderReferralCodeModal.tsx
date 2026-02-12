@@ -30,6 +30,7 @@ export function TraderReferralCodeModal(): ReactNode {
     modalState,
     actions,
     account,
+    chainId,
     supportedNetwork,
     toggleWalletModal,
     navigate,
