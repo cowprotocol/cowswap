@@ -204,7 +204,7 @@ function getTxActivityStatus(tx: EnhancedTransactionDetails): ActivityStatus {
 }
 
 function getIsReceiptConfirmed(tx: EnhancedTransactionDetails): boolean {
-  return tx.receipt?.status === 'success'
+  return tx.receipt?.status === 'success' || typeof tx.receipt?.status === 'undefined'
 }
 
 export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
