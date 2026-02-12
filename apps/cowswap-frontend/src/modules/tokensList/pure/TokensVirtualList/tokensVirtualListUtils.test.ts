@@ -44,7 +44,7 @@ describe('buildVirtualRows', () => {
     }
   })
 
-  it('should not disable recent tokens when bridge map is loading (null)', () => {
+  it('should disable recent tokens when bridge map is loading (null)', () => {
     const result = buildVirtualRows({
       ...defaultParams,
       recentTokens: [mockToken],
@@ -55,7 +55,7 @@ describe('buildVirtualRows', () => {
     const tokenRow = result.find((r) => r.type === 'token')
     expect(tokenRow?.type).toBe('token')
     if (tokenRow?.type === 'token') {
-      expect(tokenRow.disabled).toBeFalsy()
+      expect(tokenRow.disabled).toBeTruthy()
     }
   })
 

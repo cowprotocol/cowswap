@@ -9,6 +9,7 @@ import { useIsHooksTradeType } from 'modules/trade'
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
 import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 
+import { InvalidBridgeOutputUpdater } from './InvalidBridgeOutputUpdater'
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { SetupSwapAmountsFromUrlUpdater } from './SetupSwapAmountsFromUrlUpdater'
 import { UnfillableSwapOrdersUpdater } from './UnfillableSwapOrdersUpdater'
@@ -35,6 +36,7 @@ export function SwapUpdaters(): ReactNode {
       <UnfillableSwapOrdersUpdater />
       <EthFlowDeadlineUpdater deadlineState={swapDeadlineState} />
       <SetupSwapAmountsFromUrlUpdater />
+      <InvalidBridgeOutputUpdater />
       <QuoteObserverUpdater />
       <Erc20ApproveWidget isPartialApprovalEnabled={enablePartialApprovalBySettings} />
       {slippage && (
