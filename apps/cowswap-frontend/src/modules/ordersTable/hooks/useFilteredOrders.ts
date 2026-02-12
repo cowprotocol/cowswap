@@ -83,40 +83,38 @@ export interface UseFilteredOrdersFilters {
   historyStatusFilter: HistoryStatusFilter
 }
 
-export function useFilteredOrders(
+export function getFilteredOrders(
   orders: OrderTableItem[],
   { searchTerm, historyStatusFilter }: UseFilteredOrdersFilters,
 ): OrderTableItem[] {
-  return useMemo(() => {
-    if (!searchTerm && historyStatusFilter === HistoryStatusFilter.ALL) return orders
+  if (!searchTerm && historyStatusFilter === HistoryStatusFilter.ALL) return orders
 
-    const searchTermLower = searchTerm.toLowerCase().trim()
+  const searchTermLower = searchTerm.toLowerCase().trim()
 
-    // First try exact symbol matches (case-insensitive)
-    const exactMatches = orders.filter((order) => {
-      const parsedOrder = getParsedOrderFromTableItem(order)
-      const displayBasedOnFilled = filterByStatus(parsedOrder, historyStatusFilter)
+  // First try exact symbol matches (case-insensitive)
+  const exactMatches = orders.filter((order) => {
+    const parsedOrder = getParsedOrderFromTableItem(order)
+    const displayBasedOnFilled = filterByStatus(parsedOrder, historyStatusFilter)
 
-      return displayBasedOnFilled && filterBySymbolExact(parsedOrder, searchTermLower)
-    })
+    return displayBasedOnFilled && filterBySymbolExact(parsedOrder, searchTermLower)
+  })
 
-    // If we have exact matches, return those
-    if (exactMatches.length > 0) {
-      return exactMatches
-    }
+  // If we have exact matches, return those
+  if (exactMatches.length > 0) {
+    return exactMatches
+  }
 
-    // Otherwise, fall back to partial matches and address search
-    return orders.filter((order) => {
-      const parsedOrder = getParsedOrderFromTableItem(order)
-      const displayBasedOnFilled = filterByStatus(parsedOrder, historyStatusFilter)
+  // Otherwise, fall back to partial matches and address search
+  return orders.filter((order) => {
+    const parsedOrder = getParsedOrderFromTableItem(order)
+    const displayBasedOnFilled = filterByStatus(parsedOrder, historyStatusFilter)
 
-      if (!displayBasedOnFilled) return false
+    if (!displayBasedOnFilled) return false
 
-      const symbolMatch = filterBySymbolPartial(parsedOrder, searchTermLower)
+    const symbolMatch = filterBySymbolPartial(parsedOrder, searchTermLower)
 
-      if (symbolMatch) return true
+    if (symbolMatch) return true
 
-      return filterByAddress(parsedOrder, searchTermLower)
-    })
-  }, [orders, searchTerm, historyStatusFilter])
+    return filterByAddress(parsedOrder, searchTermLower)
+  })
 }

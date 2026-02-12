@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState, useEffect } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -7,7 +7,6 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
 
-import { useNavigate } from 'common/hooks/useNavigate'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -20,13 +19,12 @@ import {
   Select,
 } from './OrdersTableWidget.styled'
 
-import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
 import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { useOrdersTableFilters, usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/useOrdersTableFilters'
+import { useSyncOrdersTableUrl } from '../../hooks/url/useSyncOrdersTableUrl'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
 import { OrdersTableParams } from '../../state/ordersTable.types'
-import { OrdersTableStateUpdater } from '../../state/OrdersTable.updater'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
@@ -59,7 +57,7 @@ export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/):
     partiallyUpdateOrdersTableFilters({ historyStatusFilter: e.target.value as HistoryStatusFilter })
   }
 
-  const { filteredOrders, orders } = useOrdersTableState() || {}
+  const { filteredOrders, reduxOrders } = useOrdersTableState() || {}
   const { currentTabId, currentPageNumber } = useOrdersTableFilters()
   const pendingOrdersPrices = usePendingOrdersPrices()
 
@@ -91,7 +89,7 @@ export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/):
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
         {/* Show filters only if there are orders */}
-        {!!orders?.length && (
+        {!!reduxOrders?.length && (
           <>
             {/* Show onlyFilled select only in history tab */}
             {currentTabId === OrderTabId.history && (

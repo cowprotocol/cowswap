@@ -14,13 +14,14 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
 import { getActivityUrl } from '../../utils/url/getActivityUrl'
+import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
 export type AffectedPermitOrderProps = {
   order: Order
 }
 
 export function AffectedPermitOrderWithActions({ order }: AffectedPermitOrderProps): ReactNode {
-  const { orderActions } = useOrdersTableState() ?? {}
+  const orderActions = useOrderActions()
   const parsedOrder = parseOrder(order)
   const cancelOrder = orderActions?.getShowCancellationModal(parsedOrder)
   const activityUrl = getActivityUrl(order.inputToken.chainId, parsedOrder)

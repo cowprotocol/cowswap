@@ -17,6 +17,7 @@ import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/us
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
+import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
@@ -36,10 +37,11 @@ export function OrdersTableRow({
   const getSpotPrice = useGetSpotPrice()
   const pendingOrdersPrices = usePendingOrdersPrices()
   const ordersToCancelMap = useOrdersToCancelMap()
+  const orderActions = useOrderActions()
 
   if (!tableState) return null
 
-  const { balancesAndAllowances, orderActions } = tableState
+  const { balancesAndAllowances } = tableState
 
   const isRowSelectable = allowsOffchainSigning
 

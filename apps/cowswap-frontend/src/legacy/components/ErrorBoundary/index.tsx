@@ -115,6 +115,8 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
           const { error: localError } = this.state
           const error = localError || sentryError
 
+          console.error('ErrorBoundaryComponent', localError, sentryError)
+
           const isChunkLoadError =
             error?.name === 'ChunkLoadError' || error?.message.includes('Failed to fetch dynamically imported module')
 

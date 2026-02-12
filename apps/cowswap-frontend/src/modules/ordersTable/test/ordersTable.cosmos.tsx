@@ -64,10 +64,16 @@ function Wrapper(): null {
 
   useEffect(() => {
     setOrdersTableState({
+      reduxOrders: [],
       orders: ordersMock,
+      ordersList: {
+        open: ordersMock,
+        history: [],
+        unfillable: [],
+        signing: [],
+      },
       filteredOrders: ordersMock,
       balancesAndAllowances: balancesAndAllowances,
-      orderActions: orderActions,
       hasHydratedOrders: true,
     })
   }, [setOrdersTableState])

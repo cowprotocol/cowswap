@@ -14,7 +14,7 @@ import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDispl
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
-import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { useOrdersTableFilters, useOrdersTableTabs } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 
 export function OrdersTableContainer({
   children,
@@ -24,11 +24,14 @@ export function OrdersTableContainer({
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
   const {
-    tabs,
     currentTabId,
     searchTerm,
     historyStatusFilter,
   } = useOrdersTableFilters() || {}
+
+  const tabs = useOrdersTableTabs()
+
+  console.log("tabs =", tabs);
 
   /*
   TODO: Why was it done this way instead of getting currentTabId from the atom?

@@ -106,6 +106,7 @@
     "framer-motion": "^11.3.29",
     "jotai": "2.16.2",
     "jotai-effect": "^2.2.3",
+    "jotai-location": "^0.6.2",
     "jsbi": "^3.1.4",
     "json-stringify-deterministic": "^1.0.12",
     "launchdarkly-react-client-sdk": "^3.0.4",

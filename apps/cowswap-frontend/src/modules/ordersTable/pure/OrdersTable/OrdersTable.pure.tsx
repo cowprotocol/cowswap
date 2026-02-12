@@ -20,6 +20,7 @@ import { TabOrderTypes } from '../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
 import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
+import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
@@ -38,8 +39,9 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const {
     filteredOrders,
     balancesAndAllowances,
-    orderActions,
   } = useOrdersTableState() || {}
+
+  const orderActions = useOrderActions()
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
 

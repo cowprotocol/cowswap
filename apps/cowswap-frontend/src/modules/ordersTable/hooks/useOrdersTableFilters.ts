@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom, WritableAtom } from 'jotai'
 
-import { ordersTableFiltersAtom, partiallyUpdateOrdersTableFiltersAtom } from '../state/ordersTable.atoms'
-import { OrdersTableFilters } from '../state/ordersTable.types'
+import { ordersTableFiltersAtom, ordersTableTabsAtom, partiallyUpdateOrdersTableFiltersAtom } from '../state/ordersTable.atoms'
+import { OrdersTableFilters, TabParams } from '../state/ordersTable.types'
 import { SetStateAction, useCallback, useEffect } from 'react'
 import { DEFAULT_ORDERS_TABLE_FILTERS } from '../state/ordersTable.atoms'
 import { buildOrdersTableUrl } from 'modules/ordersTable/utils/url/buildOrdersTableUrl'
@@ -13,6 +13,10 @@ import { HistoryStatusFilter } from 'modules/ordersTable/hooks/useFilteredOrders
 
 export function useOrdersTableFilters(): OrdersTableFilters {
   return useAtomValue(ordersTableFiltersAtom)
+}
+
+export function useOrdersTableTabs(): TabParams[] {
+  return useAtomValue(ordersTableTabsAtom)
 }
 
 export function usePartiallyUpdateOrdersTableFiltersAtom() {

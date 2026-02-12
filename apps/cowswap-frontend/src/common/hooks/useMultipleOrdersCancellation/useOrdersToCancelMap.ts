@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { ordersToCancelAtom } from './state'
+import { ordersToCancelAtom } from './ordersToCancel.atom'
 
 export function useOrdersToCancelMap(): Record<string, true> {
   const ordersToCancel = useAtomValue(ordersToCancelAtom)

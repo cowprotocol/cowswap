@@ -52,13 +52,13 @@ export interface OrderActions {
 }
 
 export interface OrdersTableState {
+  reduxOrders: Order[]
+  ordersList: OrdersTableList
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]
   hasHydratedOrders: boolean
-
-  // TODO: Move these 2 to their own hooks:
   balancesAndAllowances: BalancesAndAllowances
-  orderActions: OrderActions
+  // orderActions: OrderActions
 }
 
 export interface OrdersTableFilters {
@@ -67,7 +67,7 @@ export interface OrdersTableFilters {
   currentPageNumber: number
 
   // Tab:
-  tabs: TabParams[]
+  // tabs: TabParams[]
   currentTabId: OrderTabId
 
   // Query:
