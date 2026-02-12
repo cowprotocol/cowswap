@@ -16,7 +16,7 @@ import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
-import { SettlementContractData } from 'common/hooks/useContract'
+import type { SettlementContractData } from 'common/hooks/useContract'
 
 export enum FlowType {
   REGULAR = 'REGULAR',

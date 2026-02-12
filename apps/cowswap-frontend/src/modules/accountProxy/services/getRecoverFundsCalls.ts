@@ -1,6 +1,6 @@
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
-import { encodePacked, Hex, encodeAbiParameters } from 'viem'
+import { encodePacked, encodeAbiParameters, type Hex } from 'viem'
 
 import { toKeccak256 } from 'common/utils/toKeccak256'
 

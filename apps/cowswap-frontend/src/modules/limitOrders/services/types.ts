@@ -9,7 +9,7 @@ import { TypedAppDataHooks } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
-import { SettlementContractData } from 'common/hooks/useContract'
+import type { SettlementContractData } from 'common/hooks/useContract'
 
 import type { Config } from 'wagmi'
 

@@ -3,14 +3,14 @@ import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
 
 import { estimateGas, writeContract } from '@wagmi/core'
-import { encodeFunctionData, Hex } from 'viem'
-import { Config } from 'wagmi'
+import { encodeFunctionData, type Hex } from 'viem'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { logTradeFlowError } from 'modules/trade/utils/logger'
 
-import { SettlementContractData } from '../useContract'
+import type { SettlementContractData } from '../useContract'
+import type { Config } from 'wagmi'
 
 // Fallback If we couldn't estimate gas for on-chain cancellation
 const CANCELLATION_GAS_LIMIT_DEFAULT = 150000n

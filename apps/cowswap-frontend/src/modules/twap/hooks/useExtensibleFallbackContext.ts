@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Config, useConfig } from 'wagmi'
+import { type Config, useConfig } from 'wagmi'
 
-import { SettlementContractData, useGP2SettlementContractData } from 'common/hooks/useContract'
+import { type SettlementContractData, useGP2SettlementContractData } from 'common/hooks/useContract'
 
 export interface ExtensibleFallbackContext {
   chainId: SupportedChainId

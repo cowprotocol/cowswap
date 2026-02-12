@@ -2,11 +2,12 @@ import { SupportedChainId, ZERO_ADDRESS } from '@cowprotocol/cow-sdk'
 import { GPv2SettlementAbi } from '@cowprotocol/cowswap-abis'
 
 import { writeContract } from '@wagmi/core'
-import { Config } from 'wagmi'
 
 import { extensibleFallbackSetupTxs } from './extensibleFallbackSetupTxs'
 
 import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
+
+import type { Config } from 'wagmi'
 
 jest.mock('@wagmi/core', () => ({
   writeContract: jest.fn(),

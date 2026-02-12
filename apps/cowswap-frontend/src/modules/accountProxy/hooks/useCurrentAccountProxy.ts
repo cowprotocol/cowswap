@@ -6,8 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { getBytecode, readContract, getStorageAt } from '@wagmi/core'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
-import { Address, Hex, encodeAbiParameters } from 'viem'
-import { useConfig, Config } from 'wagmi'
+import { type Address, encodeAbiParameters, type Hex } from 'viem'
+import { type Config, useConfig } from 'wagmi'
 
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
