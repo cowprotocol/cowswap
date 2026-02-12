@@ -12,17 +12,6 @@ import { getCheckingRouteTooltip, getNoRouteTooltip } from '../constants'
 
 const SEARCH_RESULTS_LIMIT = 100
 
-function getDisabledReason(
-  disabled: boolean,
-  bridgeSupportedTokensMap: Record<string, boolean> | null | undefined,
-  noRouteTooltip: string,
-  checkingRouteTooltip: string,
-): string | undefined {
-  if (!disabled) return undefined
-
-  return bridgeSupportedTokensMap === null ? checkingRouteTooltip : noRouteTooltip
-}
-
 function appendTokenRows(params: {
   entries: TokenSearchRow[]
   tokens: TokenWithLogo[]
@@ -41,7 +30,11 @@ function appendTokenRows(params: {
       type: 'token',
       token,
       disabled,
-      disabledReason: getDisabledReason(disabled, bridgeSupportedTokensMap, noRouteTooltip, checkingRouteTooltip),
+      disabledReason: disabled
+        ? bridgeSupportedTokensMap === null
+          ? checkingRouteTooltip
+          : noRouteTooltip
+        : undefined,
     })
   }
 }
