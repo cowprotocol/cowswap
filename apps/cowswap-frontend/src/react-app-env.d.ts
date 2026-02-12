@@ -65,3 +65,7 @@ declare module 'multihashes' {
 
   declare function toB58String(hash: Uint8Array): string
 }
+
+declare module '*.po' {
+  export const messages: typeof import('@lingui/core').Messages
+}
