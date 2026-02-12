@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20, GPv2Settlement } from '@cowprotocol/cowswap-abis'
+import { Erc20 } from '@cowprotocol/cowswap-abis'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 
 import { AppDispatch } from 'legacy/state'
@@ -9,6 +9,8 @@ import { TypedAppDataHooks } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
+import { SettlementContractData } from 'common/hooks/useContract'
+
 import type { Config } from 'wagmi'
 
 export interface TradeFlowContext {
@@ -16,7 +18,7 @@ export interface TradeFlowContext {
   // validTo must be calculated just before signing of an order
   postOrderParams: Omit<PostOrderParams, 'validTo' | 'config'>
   typedHooks?: TypedAppDataHooks
-  settlementContract: GPv2Settlement
+  settlementContract: Omit<SettlementContractData, 'chainId'>
   chainId: SupportedChainId
   dispatch: AppDispatch
   rateImpact: number

@@ -24,7 +24,7 @@ import {
 } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
-import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 
 import { useSetSigningStep } from './useSetSigningStep'
@@ -68,7 +68,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const closeModals = useCloseModals()
   const dispatch = useDispatch<AppDispatch>()
   const tradeConfirmActions = useTradeConfirmActions()
-  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const { chainId: settlementChainId, ...settlementContract } = useGP2SettlementContractData()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
   const addBridgeOrder = useAddBridgeOrder()

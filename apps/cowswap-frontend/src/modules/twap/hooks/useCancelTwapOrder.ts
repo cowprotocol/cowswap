@@ -4,13 +4,14 @@ import { useCallback } from 'react'
 import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+import { useConfig } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
-import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useGP2SettlementContractData } from 'common/hooks/useContract'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
 import { processTwapCancellation } from '../services/processTwapCancellation'
@@ -18,11 +19,14 @@ import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderStatus } from '../types'
 
+import type { Hex } from 'viem'
+
 export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Promise<OnChainCancellation> {
+  const config = useConfig()
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const sendBatchTransactions = useSendBatchTransactions()
-  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const { chainId: settlementChainId, ...settlementContract } = useGP2SettlementContractData()
   const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
   const { t } = useLingui()
 
@@ -37,10 +41,11 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
       }
 
       const partOrder = twapPartOrders[twapOrderId]?.sort((a, b) => a.order.validTo - b.order.validTo)[0]
-      const partOrderId = partOrder?.uid
+      const partOrderId = partOrder?.uid as Hex
 
       const context = {
         composableCowContract,
+        config,
         settlementContract,
         orderId: twapOrderId,
         partOrderId,
@@ -66,6 +71,7 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
     },
     [
       composableCowContract,
+      config,
       settlementContract,
       composableCowChainId,
       settlementChainId,

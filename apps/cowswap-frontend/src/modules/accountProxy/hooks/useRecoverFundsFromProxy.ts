@@ -16,6 +16,8 @@ import { useCowShedHooks } from './useCowShedHooks'
 
 import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 
+import type { Hex } from 'viem'
+
 const INFINITE_DEADLINE = 99999999999
 const DEFAULT_GAS_LIMIT = 600_000n
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
@@ -67,12 +69,12 @@ export function useRecoverFundsFromProxy(
       // This field is supposed to be used with orders, but here we just do a transaction
       const validTo = INFINITE_DEADLINE
 
-      const encodedSignature = await cowShedHooks.signCalls(
+      const encodedSignature = (await cowShedHooks.signCalls(
         calls,
         nonce,
         BigInt(validTo),
         ContractsSigningScheme.EIP712, // TODO: support other signing types
-      )
+      )) as Hex
 
       setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
 

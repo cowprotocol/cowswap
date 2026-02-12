@@ -18,7 +18,7 @@ import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'module
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -32,7 +32,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
   const isSafeWallet = useIsSafeWallet()
-  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const { chainId: settlementChainId, ...settlementContract } = useGP2SettlementContractData()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
   const quoteState = useTradeQuote()

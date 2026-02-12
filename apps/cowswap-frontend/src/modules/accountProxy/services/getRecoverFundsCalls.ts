@@ -1,13 +1,13 @@
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { pack } from '@ethersproject/solidity'
+
+import { encodePacked, Hex, encodeAbiParameters } from 'viem'
 
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
-const fnSelector = (sig: string): string => toKeccak256(sig).slice(0, 10)
+const fnSelector = (sig: string): Hex => toKeccak256(sig).slice(0, 10) as Hex
 
-const fnCalldata = (sig: string, encodedData: string): string =>
-  pack(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
+const fnCalldata = (sig: string, encodedData: Hex): Hex =>
+  encodePacked(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
 
 interface RefoverFundsCallParams {
   account: string
@@ -17,18 +17,23 @@ interface RefoverFundsCallParams {
   selectedTokenAddress: string
 }
 
+type CoWShedCall = ICoWShedCall & {
+  callData: Hex
+}
+
 export function getRecoverFundsCalls({
   account,
   proxyAddress,
   selectedTokenAddress,
   tokenBalance,
   isNativeToken,
-}: RefoverFundsCallParams): ICoWShedCall[] {
+}: RefoverFundsCallParams): CoWShedCall[] {
+  const tokenBalanceBigInt = BigInt(tokenBalance)
   return isNativeToken
     ? [
         {
           target: account,
-          callData: fnCalldata('send(uint256)', defaultAbiCoder.encode(['uint256'], [tokenBalance])),
+          callData: fnCalldata('send(uint256)', encodeAbiParameters([{ type: 'uint256' }], [tokenBalanceBigInt])),
           value: BigInt(tokenBalance),
           isDelegateCall: false,
           allowFailure: false,
@@ -39,7 +44,7 @@ export function getRecoverFundsCalls({
           target: selectedTokenAddress,
           callData: fnCalldata(
             'approve(address,uint256)',
-            defaultAbiCoder.encode(['address', 'uint256'], [proxyAddress, tokenBalance]),
+            encodeAbiParameters([{ type: 'address' }, { type: 'uint256' }], [proxyAddress, tokenBalanceBigInt]),
           ),
           value: 0n,
           isDelegateCall: false,
@@ -49,7 +54,10 @@ export function getRecoverFundsCalls({
           target: selectedTokenAddress,
           callData: fnCalldata(
             'transferFrom(address,address,uint256)',
-            defaultAbiCoder.encode(['address', 'address', 'uint256'], [proxyAddress, account, tokenBalance]),
+            encodeAbiParameters(
+              [{ type: 'address' }, { type: 'address' }, { type: 'uint256' }],
+              [proxyAddress, account, tokenBalanceBigInt],
+            ),
           ),
           value: 0n,
           isDelegateCall: false,
