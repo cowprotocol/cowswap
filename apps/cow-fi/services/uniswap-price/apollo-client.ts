@@ -1,11 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { Reference } from '@apollo/client/utilities'
 
-const GRAPHQL_URL = process.env.NEXT_PUBLIC_AWS_API_ENDPOINT
-
-if (!GRAPHQL_URL) {
-  throw new Error('AWS URL MISSING FROM ENVIRONMENT')
-}
+const GRAPHQL_URL = '/api/proxies/tokens'
 
 export const apolloClient = new ApolloClient({
   connectToDevTools: true,
