@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
@@ -64,7 +63,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
       if (getIsNativeToken(chainId, address)) return acc
 
-      acc[address.toLowerCase()] = BigNumber.from(balances[index]?.result || 0)
+      acc[address.toLowerCase()] = BigInt(balances[index]?.result || 0)
       return acc
     }, {})
 
