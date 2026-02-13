@@ -8,7 +8,6 @@ import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 import { pageParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
-import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
@@ -23,6 +22,7 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
+import { ordersToCancelMapAtom } from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
@@ -33,7 +33,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = usePendingOrdersPrices()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
-  const ordersToCancelMap = useOrdersToCancelMap()
+  const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
 
   // TODO: Shouldn't the default be 1?
   const { orderType } = useOrdersTableFilters() || {}

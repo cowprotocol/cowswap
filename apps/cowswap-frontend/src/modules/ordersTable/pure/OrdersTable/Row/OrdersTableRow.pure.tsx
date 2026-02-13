@@ -5,8 +5,6 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
-import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
-
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 
 import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
@@ -16,6 +14,8 @@ import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/us
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
+import { useAtomValue } from 'jotai'
+import { ordersToCancelMapAtom } from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
@@ -30,7 +30,7 @@ export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowP
   const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
   const getSpotPrice = useGetSpotPrice()
   const pendingOrdersPrices = usePendingOrdersPrices()
-  const ordersToCancelMap = useOrdersToCancelMap()
+  const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
   const orderActions = useOrderActions()
 
   if (!tableState) return null

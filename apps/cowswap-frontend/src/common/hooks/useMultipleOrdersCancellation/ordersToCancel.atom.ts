@@ -12,6 +12,16 @@ import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancella
 
 export const ordersToCancelAtom = atom<CancellableOrder[]>([])
 
+export const ordersToCancelMapAtom = atom((get) => {
+  const ordersToCancel = get(ordersToCancelAtom)
+
+  return ordersToCancel.reduce((acc, orderToCancel) => {
+    acc[orderToCancel.id] = true
+
+    return acc
+  }, {} as Record<string, true>)
+})
+
 export const updateOrdersToCancelAtom = atom(null, (get, set, nextState: CancellableOrder[]) => {
   set(ordersToCancelAtom, () => {
     return nextState.filter(isOrderOffChainCancellable)
