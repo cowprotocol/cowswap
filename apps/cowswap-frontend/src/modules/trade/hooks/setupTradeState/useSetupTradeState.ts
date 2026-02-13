@@ -4,7 +4,6 @@ import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
@@ -30,9 +29,6 @@ export function useSetupTradeState(): void {
 
   const isWindowVisible = useIsWindowVisible()
   const prevIsWindowVisible = usePrevious(isWindowVisible)
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
   const tradeStateFromUrl = useTradeStateFromUrl()
@@ -238,10 +234,10 @@ export function useSetupTradeState(): void {
     const targetChainId = urlChainId ?? rememberedUrlStateRef.current?.chainId ?? currentChainId
     switchNetworkInWallet(targetChainId, providerChainId)
 
-    console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
+    console.debug('[TRADE STATE]', 'Set chainId to provider', { providerChainId, urlChainId })
     // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, urlChainId])
+  }, [urlChainId])
 
   /**
    * On chainId in provider changes
