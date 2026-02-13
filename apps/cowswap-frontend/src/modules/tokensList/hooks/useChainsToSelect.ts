@@ -88,6 +88,9 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     }
 
     // BUY token selection - include disabled chains info
+    // Note: walletUnsupportedChainIds is intentionally NOT passed for OUTPUT.
+    // Instead of disabling destination chains, we show a blocking warning in the swap form
+    // when the user tries to bridge to an unsupported chain (see useShouldBlockUnsupportedDestination).
     return createOutputChainsState({
       selectedTargetChainId,
       chainId: sourceChainId,
@@ -96,7 +99,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       supportedChains,
       isLoading,
       routesAvailability,
-      walletUnsupportedChainIds,
+      walletUnsupportedChainIds: undefined,
     })
   }, [
     field,

@@ -479,7 +479,7 @@ describe('useChainsToSelect hook', () => {
     expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
   })
 
-  it('disables Coinbase SCW unsupported chains for buy token when isCoinbaseWallet is true', () => {
+  it('does NOT disable Coinbase SCW unsupported chains for buy token (blocking is handled in swap form)', () => {
     mockUseIsCoinbaseWallet.mockReturnValue(true)
     // Simulate Coinbase SCW capabilities: only Mainnet supported, Gnosis not
     mockUseWalletSupportedChainIds.mockReturnValue(new Set([SupportedChainId.MAINNET]))
@@ -502,12 +502,11 @@ describe('useChainsToSelect hook', () => {
     const { result } = renderHook(() => useChainsToSelect())
 
     expect(result.current).toBeDefined()
-    // Gnosis should be disabled as a bridge destination for Coinbase SCW
-    expect(result.current?.disabledChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBe(true)
-    // Source chain (Mainnet) should not be disabled
-    expect(result.current?.disabledChainIds?.has(SupportedChainId.MAINNET)).toBeFalsy()
-    // walletUnsupportedChainIds should be set for tooltip differentiation
-    expect(result.current?.walletUnsupportedChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+    // Gnosis should NOT be wallet-disabled for buy token — swap form shows a blocking warning instead
+    expect(result.current?.walletUnsupportedChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBeFalsy()
+    // Both chains should be selectable
+    expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+    expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.MAINNET)).toBe(true)
   })
 
   it('does not disable chains when isCoinbaseWallet is false', () => {
@@ -608,11 +607,11 @@ describe('useChainsToSelect hook', () => {
     expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
   })
 
-  it('excludes source chain from Coinbase SCW disabled set', () => {
+  it('does not apply wallet restrictions for buy token OUTPUT even when connected on unsupported chain', () => {
     mockUseIsCoinbaseWallet.mockReturnValue(true)
     // Simulate Coinbase SCW capabilities: only Mainnet supported
     mockUseWalletSupportedChainIds.mockReturnValue(new Set([SupportedChainId.MAINNET]))
-    // Connect on Gnosis (unsupported by Coinbase SCW) — bridging FROM it should still work
+    // Connect on Gnosis (unsupported by Coinbase SCW)
     mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.GNOSIS_CHAIN } as WalletInfo)
     mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
     mockUseBridgeSupportedNetworks.mockReturnValueOnce(
@@ -633,7 +632,7 @@ describe('useChainsToSelect hook', () => {
     const { result } = renderHook(() => useChainsToSelect())
 
     expect(result.current).toBeDefined()
-    // Source chain (Gnosis) should NOT be disabled even though it's not in wallet supported chains
-    expect(result.current?.disabledChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBeFalsy()
+    // No wallet-based restrictions for OUTPUT — swap form handles this via blocking warning
+    expect(result.current?.walletUnsupportedChainIds).toBeFalsy()
   })
 })
