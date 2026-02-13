@@ -105,4 +105,47 @@ describe('useTokensToSelect', () => {
     expect(result.current.areTokensFromBridge).toBe(true)
     expect(result.current.tokens).toEqual([lineaToken])
   })
+
+  it('passes sellChainId/buyChainId when selecting output token on a different chain', () => {
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.OUTPUT,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+        oppositeToken: mainnetToken,
+      }),
+    )
+    mockUseChainsToSelect.mockReturnValue({
+      defaultChainId: SupportedChainId.LINEA,
+      chains: [],
+      isLoading: false,
+    })
+
+    renderHook(() => useTokensToSelect())
+
+    expect(mockUseBridgeSupportedTokens).toHaveBeenCalledWith({
+      buyChainId: SupportedChainId.LINEA,
+      sellChainId: SupportedChainId.MAINNET,
+    })
+  })
+
+  it('uses oppositeToken chainId as sellChainId when wallet network differs from trade network', () => {
+    const arbitrumToken = { ...mainnetToken, chainId: SupportedChainId.ARBITRUM_ONE } as TokenWithLogo
+
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.OUTPUT,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+        oppositeToken: arbitrumToken, // sell token on Arbitrum, wallet on Mainnet
+      }),
+    )
+    mockUseChainsToSelect.mockReturnValue(undefined)
+
+    renderHook(() => useTokensToSelect())
+
+    expect(mockUseBridgeSupportedTokens).toHaveBeenCalledWith({
+      buyChainId: SupportedChainId.MAINNET,
+      sellChainId: SupportedChainId.ARBITRUM_ONE,
+    })
+  })
 })
