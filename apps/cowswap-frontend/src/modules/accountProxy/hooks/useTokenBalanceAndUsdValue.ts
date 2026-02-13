@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -17,7 +17,7 @@ export function useTokenBalanceAndUsdValue(tokenAddress: string | undefined): To
   const tokensByAddress = useTokensByAddressMap()
   const { values: balances } = useTokensBalances()
 
-  const tokenKey = tokenAddress ? getTokenAddressKey(tokenAddress) : undefined
+  const tokenKey = tokenAddress ? getAddressKey(tokenAddress) : undefined
 
   const token = !!tokenKey && tokensByAddress[tokenKey]
   const balanceRaw = !!tokenKey && balances[tokenKey]

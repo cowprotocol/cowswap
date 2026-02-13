@@ -20,6 +20,8 @@ export function TokenSearchContent({
   searchResults,
   importToken,
   selectTokenContext,
+  areTokensFromBridge = false,
+  bridgeSupportedTokensMap,
 }: TokenSearchContentProps): ReactNode {
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
 
@@ -54,6 +56,8 @@ export function TokenSearchContent({
     blockchainResult,
     inactiveListsResult,
     externalApiResult,
+    bridgeSupportedTokensMap,
+    areTokensFromBridge,
   })
 
   const getItemView = useCallback(
@@ -77,7 +81,7 @@ export function TokenSearchContent({
   if (isTokenNotFound)
     return (
       <styledEl.TokenNotFound>
-        <Trans>No tokens found</Trans>
+        {areTokensFromBridge ? <Trans>No available tokens found to bridge</Trans> : <Trans>No tokens found</Trans>}
       </styledEl.TokenNotFound>
     )
 

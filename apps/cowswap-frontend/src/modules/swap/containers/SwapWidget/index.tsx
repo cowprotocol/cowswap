@@ -148,16 +148,16 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   }
 
   const inputCurrencyPreviewInfo = {
-    amount: inputCurrencyInfo.amount,
-    fiatAmount: inputCurrencyInfo.fiatAmount,
-    balance: inputCurrencyInfo.balance,
+    amount: inputCurrencyAmount,
+    fiatAmount: inputCurrencyFiatAmount,
+    balance: inputCurrencyBalance,
     label: isSellTrade ? t`Sell amount` : t`Expected sell amount`,
   }
 
   const outputCurrencyPreviewInfo = {
-    amount: outputCurrencyInfo.amount,
-    fiatAmount: outputCurrencyInfo.fiatAmount,
-    balance: outputCurrencyInfo.balance,
+    amount: outputCurrencyAmount,
+    fiatAmount: outputCurrencyFiatAmount,
+    balance: outputCurrencyBalance,
     label: isSellTrade ? t`Receive (before fees)` : t`Buy exactly`,
   }
 

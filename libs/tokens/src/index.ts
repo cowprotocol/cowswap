@@ -21,7 +21,8 @@ export * from './types'
 export type { TokensByAddress, TokensBySymbol } from './state/tokens/allTokensAtom'
 export type { ListSearchResponse } from './hooks/lists/useSearchList'
 export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
-export type { RestrictedTokenListState, TokenId } from './state/restrictedTokens/restrictedTokensAtom'
+export type { RestrictedTokenListState } from './state/restrictedTokens/restrictedTokensAtom'
+export type { TokenId } from '@cowprotocol/cow-sdk'
 export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
 
 // Hooks
@@ -61,7 +62,7 @@ export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTok
 export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
 
 // Utils
-export { getTokenId } from './state/restrictedTokens/restrictedTokensAtom'
+export { getTokenId } from '@cowprotocol/cow-sdk'
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'

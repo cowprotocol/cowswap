@@ -28,7 +28,7 @@ export const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey:
 
 export const bridgingSdk = new BridgingSdk({
   providers: [bungeeBridgeProvider, acrossBridgeProvider, nearIntentsBridgeProvider],
-  enableLogging: false,
+  enableLogging: !!localStorage.getItem('enableBridgingSdkLogs'),
   tradingSdk,
   orderBookApi,
 })

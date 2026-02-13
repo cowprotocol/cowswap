@@ -35,6 +35,7 @@
     "preview": "nx run cowswap-frontend:preview",
     "test": "pnpm run test:all",
     "test:all": "nx run-many -t test",
+    "typecheck": "nx run-many -t typecheck",
     "e2e": "nx run-many -t e2e",
     "e2e:open": "nx run-many -t e2e:open",
     "lint": "nx run-many -t lint",

@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { getOrderParams } from './getOrderParams'
 
-import { ordersMock } from '../pure/OrdersTableContainer/orders.mock'
+import { ordersMock } from '../test/ordersTable.mock'
 
 // TODO: Break down this large function into smaller functions
 

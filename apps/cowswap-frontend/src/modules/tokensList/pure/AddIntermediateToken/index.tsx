@@ -1,7 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 
 import { useAddTokenImportCallback } from 'modules/tokensList/hooks/useAddTokenImportCallback'
 import { ImportTokenItem } from 'modules/tokensList/pure/ImportTokenItem'
