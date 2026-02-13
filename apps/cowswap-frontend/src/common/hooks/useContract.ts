@@ -13,7 +13,6 @@ import {
   Erc20,
   Erc20Abi,
   GPv2SettlementAbi,
-  VCow,
   vCowAbi,
   Weth,
   WethAbi,
@@ -129,7 +128,6 @@ export function useEthFlowContract(): {
 }
 
 export type SettlementContractData = ContractData<typeof GPv2SettlementAbi>
-
 export function useGP2SettlementContractData(): UseContractResult<SettlementContractData> {
   const { chainId } = useWalletInfo()
 
@@ -140,6 +138,13 @@ export function useGP2SettlementContractData(): UseContractResult<SettlementCont
   }
 }
 
-export function useVCowContract(): UseContractResultLegacy<VCow> {
-  return useContract<VCow>(V_COW_CONTRACT_ADDRESS, vCowAbi, true)
+export type VCowContractData = Omit<ContractData<typeof vCowAbi>, 'address'> & { address: string | null }
+export function useVCowContractData(): UseContractResult<VCowContractData> {
+  const { chainId } = useWalletInfo()
+
+  return {
+    abi: vCowAbi,
+    address: V_COW_CONTRACT_ADDRESS[chainId],
+    chainId,
+  }
 }
