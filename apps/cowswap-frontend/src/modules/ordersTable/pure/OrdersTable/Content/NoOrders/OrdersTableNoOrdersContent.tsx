@@ -2,9 +2,11 @@ import { ReactNode, useMemo, lazy, Suspense } from 'react'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
+import { useIsSafeViaWc } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
 
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
@@ -31,13 +33,9 @@ export function OrdersTableNoOrdersContent({
   hasHydratedOrders,
 }: OrdersTableNoOrdersContentProps): ReactNode {
   const { darkMode: isDarkMode } = useTheme()
-  const {
-    orderType,
-    isSafeViaWc,
-    displayOrdersOnlyForSafeApp,
-    injectedWidgetParams,
-    orders = [],
-  } = useOrdersTableState() || {}
+  const isSafeViaWc = useIsSafeViaWc()
+  const injectedWidgetParams = useInjectedWidgetParams()
+  const { orderType, displayOrdersOnlyForSafeApp, orders = [] } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()

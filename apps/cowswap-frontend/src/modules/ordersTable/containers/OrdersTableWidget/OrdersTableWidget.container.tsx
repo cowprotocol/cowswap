@@ -5,6 +5,8 @@ import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { usePendingOrdersPrices } from 'modules/orders'
+
 import { useNavigate } from 'common/hooks/useNavigate'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -74,7 +76,8 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
     resetPagination()
   }
 
-  const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
+  const { filteredOrders, orders, currentTabId, currentPageNumber } = useOrdersTableState() || {}
+  const pendingOrdersPrices = usePendingOrdersPrices()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
 
   useEffect(() => {
