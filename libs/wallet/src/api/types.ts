@@ -1,8 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 
-import { injected, walletConnect, coinbaseWallet, safe } from '@wagmi/connectors'
 import { Address } from 'viem'
+import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
 
 export const ConnectionType = {
   COINBASE_WALLET: coinbaseWallet.type,

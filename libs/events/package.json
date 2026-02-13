@@ -13,6 +13,6 @@
     "@cowprotocol/cow-sdk": "7.3.5",
     "@cowprotocol/sdk-bridging": "1.7.4",
     "@cowprotocol/types": "workspace:*",
-    "viem": "^2.45.0"
+    "viem": "^2.45.1"
   }
 }

@@ -22,7 +22,7 @@
     "@ethersproject/wallet": "5.7.0",
     "ethers": "5.7.2",
     "ms.macro": "^2.0.0",
-    "viem": "^2.45.0"
+    "viem": "^2.45.1"
   },
   "devDependencies": {
     "@types/ms.macro": "^2.0.0"

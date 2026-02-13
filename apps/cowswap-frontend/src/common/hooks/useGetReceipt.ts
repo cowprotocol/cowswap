@@ -4,8 +4,8 @@ import { retry, RetryableError, RetryOptions } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
-import { getTransactionReceipt } from '@wagmi/core'
 import { useConfig } from 'wagmi'
+import { getTransactionReceipt } from 'wagmi/actions'
 
 import type { TransactionReceipt, Hex } from 'viem'
 

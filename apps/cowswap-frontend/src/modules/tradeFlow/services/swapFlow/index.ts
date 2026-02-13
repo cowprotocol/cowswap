@@ -5,10 +5,10 @@ import { CoWShedEip1271SignatureInvalid } from '@cowprotocol/sdk-cow-shed'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
-import { sendTransaction } from '@wagmi/core'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'

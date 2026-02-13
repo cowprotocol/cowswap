@@ -5,10 +5,10 @@ import type { Deferrable } from '@ethersproject/properties'
 import type { Web3Provider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 
-import { estimateGas } from '@wagmi/core'
 import useSWR from 'swr'
 import { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
+import { estimateGas } from 'wagmi/actions'
 
 import type { SWRConfiguration } from 'swr'
 

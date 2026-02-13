@@ -43,8 +43,8 @@
     "@web3-react/core": "^8.2.3",
     "ethers": "5.7.2",
     "react": "19.1.2",
-    "viem": "^2.45.0",
-    "wagmi": "3.4.1"
+    "viem": "^2.45.1",
+    "wagmi": "3.4.2"
   },
   "devDependencies": {
     "@types/react": "19.1.3"

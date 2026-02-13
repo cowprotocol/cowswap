@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
-import { sendCalls } from '@wagmi/core'
 import { useConfig } from 'wagmi'
+import { sendCalls } from 'wagmi/actions'
 
 import { useWalletCapabilities } from './useWalletCapabilities'
 

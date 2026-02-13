@@ -33,7 +33,6 @@
     "@ethersproject/properties": "5.7.0",
     "@ethersproject/providers": "5.7.0",
     "@lingui/react": "^5.4.1",
-    "@wagmi/core": "^3.3.1",
     "@web3-react/core": "^8.2.3",
     "copy-to-clipboard": "^3.2.0",
     "ethers": "5.7.2",
@@ -46,8 +45,8 @@
     "styled-components": "5.3.11",
     "swr": "^2.3.3",
     "timeago.js": "^4.0.2",
-    "viem": "^2.45.0",
-    "wagmi": "3.4.1"
+    "viem": "^2.45.1",
+    "wagmi": "3.4.2"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.0",

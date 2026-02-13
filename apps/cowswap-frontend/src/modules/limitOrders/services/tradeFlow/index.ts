@@ -4,8 +4,8 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
-import { sendTransaction } from '@wagmi/core'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'

@@ -2,8 +2,10 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 import { getAddress } from '@ethersproject/address'
 
-import { Config, readContracts } from '@wagmi/core'
 import { erc20Abi } from 'viem'
+import { readContracts } from 'wagmi/actions'
+
+import type { Config } from 'wagmi'
 
 export async function fetchTokenFromBlockchain(
   tokenAddress: string,

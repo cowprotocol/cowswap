@@ -2,8 +2,8 @@ import { useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
 
-import { getTransactionCount } from '@wagmi/core'
 import { useConfig } from 'wagmi'
+import { getTransactionCount } from 'wagmi/actions'
 
 import { useAllTransactions } from './TransactionHooksMod'
 
