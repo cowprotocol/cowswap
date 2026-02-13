@@ -12,6 +12,7 @@ import { Connector } from '@web3-react/types'
 import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk'
 
 const EVENT_DELAY_MS = 1000
+const EAGER_CONNECTION_TIMEOUT_MS = 5000
 
 /**
  * Patched version of
@@ -45,6 +46,8 @@ export class CoinbaseWallet extends Connector {
 
   private currentAccountAddress: string | null = null
 
+  private pendingTimeouts = new Set<ReturnType<typeof setTimeout>>()
+
   private get connected(): boolean {
     return !!this.currentAccountAddress
   }
@@ -59,9 +62,11 @@ export class CoinbaseWallet extends Connector {
    * Because of that, we need a delay here and in onAccountsChanged
    */
   private onConnect = ({ chainId }: ProviderConnectInfo): void => {
-    setTimeout(() => {
+    const id = setTimeout(() => {
+      this.pendingTimeouts.delete(id)
       this.actions.update({ chainId: parseChainId(chainId) })
     }, EVENT_DELAY_MS)
+    this.pendingTimeouts.add(id)
   }
 
   private onDisconnect = (error: ProviderRpcError): void => {
@@ -74,7 +79,8 @@ export class CoinbaseWallet extends Connector {
   }
 
   private onAccountsChanged = (accounts: string[]): void => {
-    setTimeout(() => {
+    const id = setTimeout(() => {
+      this.pendingTimeouts.delete(id)
       if (accounts.length === 0) {
         // handle this edge case by disconnecting
         this.actions.resetState()
@@ -82,6 +88,7 @@ export class CoinbaseWallet extends Connector {
         this.actions.update({ accounts })
       }
     }, EVENT_DELAY_MS)
+    this.pendingTimeouts.add(id)
   }
 
   private async isomorphicInitialize(): Promise<void> {
@@ -121,7 +128,13 @@ export class CoinbaseWallet extends Connector {
 
       // Wallets may resolve eth_chainId and hang on eth_requestAccounts pending user interaction, which may include changing
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
-      const accounts = (await provider.request({ method: 'eth_requestAccounts' })) as string[]
+      // During eager connection (no user gesture), add a timeout to prevent indefinite hangs if the popup is blocked.
+      const accounts = (await Promise.race([
+        provider.request({ method: 'eth_requestAccounts' }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Eager connection timed out')), EAGER_CONNECTION_TIMEOUT_MS),
+        ),
+      ])) as string[]
       if (!accounts.length) throw new Error('No accounts returned')
       const chainId = (await provider.request({ method: 'eth_chainId' })) as string
       this.currentAccountAddress = accounts[0]
@@ -226,6 +239,11 @@ export class CoinbaseWallet extends Connector {
 
   public cleanUpProvider(): void {
     this.eagerConnection = undefined
+
+    for (const id of this.pendingTimeouts) {
+      clearTimeout(id)
+    }
+    this.pendingTimeouts.clear()
 
     if (this.provider) {
       const provider = this.provider as CoinbaseWalletProvider
