@@ -21,7 +21,7 @@ import {
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
-import { Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 
 const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
   Object.entries(WRAPPED_NATIVE_CURRENCIES).map(([chainId, token]) => [chainId, token.address]),
@@ -45,7 +45,7 @@ export function useContract<T extends Contract = Contract>(
 ): UseContractResult<T> {
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
-  const defaultProvider = useWalletProvider()
+  const defaultProvider = useWalletProvider() as JsonRpcProvider
   const { account, chainId } = useWalletInfo()
   const provider = customProvider || defaultProvider
 
