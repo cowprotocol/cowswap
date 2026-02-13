@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { DefaultBridgeProvider } from '@cowprotocol/sdk-bridging'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { useIsCoinbaseWallet, useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import {
   acrossBridgeProvider,
@@ -27,6 +27,7 @@ export function BridgeProvidersUpdater(): null {
   const { isNearIntentsBridgeProviderEnabled, isAcrossBridgeProviderEnabled, isBungeeBridgeProviderEnabled } =
     useFeatureFlags()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const isCoinbaseWallet = useIsCoinbaseWallet()
 
   useEffect(() => {
     // Skip updating till all flags are loaded
@@ -43,8 +44,11 @@ export function BridgeProvidersUpdater(): null {
 
       toggleProvider(newProviders, nearIntentsBridgeProvider, isNearIntentsBridgeProviderEnabled)
 
-      // Only Near intents provider should be available for smart-contract wallets
-      if (isSmartContractWallet) {
+      // Coinbase SCW had full bridge access production (was treated as EOA).
+      // Other SCWs (Safe, unknown) were already Near-only. Preserve both behaviors.
+      // IMPORTANT: both branches must toggle — state persists across wallet transitions
+      // (new Set(providers)), so an else is required to re-enable after a Safe/SCW session.
+      if (isSmartContractWallet && !isCoinbaseWallet) {
         toggleProvider(newProviders, bungeeBridgeProvider, false)
         toggleProvider(newProviders, acrossBridgeProvider, false)
       } else {
@@ -61,6 +65,7 @@ export function BridgeProvidersUpdater(): null {
     isAcrossBridgeProviderEnabled,
     isBungeeBridgeProviderEnabled,
     isSmartContractWallet,
+    isCoinbaseWallet,
     setBridgeProviders,
   ])
 

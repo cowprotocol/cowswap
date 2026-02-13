@@ -98,12 +98,12 @@ export const LinkOutCircle = styled(ArrowDownCircle)`
   height: 16px;
   flex-shrink: 0;
 `
-export const FlyoutRow = styled.button<{ active: boolean }>`
+export const FlyoutRow = styled.button<{ active: boolean; disabled$?: boolean }>`
   align-items: center;
   background-color: ${({ active, theme }) => (active ? theme.bg2 : 'transparent')};
   border-radius: 8px;
   border: 0;
-  cursor: pointer;
+  cursor: ${({ disabled$ }) => (disabled$ ? 'not-allowed' : 'pointer')};
   display: flex;
   font-weight: 400;
   justify-content: space-between;
@@ -112,10 +112,11 @@ export const FlyoutRow = styled.button<{ active: boolean }>`
   width: 100%;
   color: ${({ active, theme }) => (active ? theme.white : `var(${UI.COLOR_TEXT})`)};
   appearance: none;
+  opacity: ${({ disabled$ }) => (disabled$ ? 0.5 : 1)};
 
   &:hover {
-    color: ${({ theme, active }) => !active && theme.text1};
-    background: ${({ theme, active }) => !active && transparentize(theme.text, 0.9)};
+    color: ${({ theme, active, disabled$ }) => !active && !disabled$ && theme.text1};
+    background: ${({ theme, active, disabled$ }) => !active && !disabled$ && transparentize(theme.text, 0.9)};
   }
 
   &:focus-visible {

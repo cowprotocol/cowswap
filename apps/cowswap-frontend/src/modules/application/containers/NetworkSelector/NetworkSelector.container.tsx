@@ -1,9 +1,9 @@
-import { ReactNode, useRef, type MouseEvent } from 'react'
+import { ReactNode, useMemo, useRef, type MouseEvent } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains, useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsCoinbaseWallet, useWalletSupportedChainIds, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
@@ -43,6 +43,19 @@ const createSelectHandler =
     void onSelectChain(targetChainId, true)
   }
 
+function useDisabledChainIds(availableChains: number[]): Set<number> | undefined {
+  const isCoinbaseWallet = useIsCoinbaseWallet()
+  const walletSupportedChainIds = useWalletSupportedChainIds()
+  // Coinbase SCW doesn't exist on unsupported chains — show them as disabled
+  return useMemo(
+    () =>
+      isCoinbaseWallet && walletSupportedChainIds
+        ? new Set(availableChains.filter((id) => !walletSupportedChainIds.has(id)))
+        : undefined,
+    [isCoinbaseWallet, walletSupportedChainIds, availableChains],
+  )
+}
+
 export function NetworkSelector(): ReactNode {
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
@@ -66,6 +79,7 @@ export function NetworkSelector(): ReactNode {
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
   const availableChains = useAvailableChains()
+  const disabledChainIds = useDisabledChainIds(availableChains)
   const { t } = useLingui()
 
   const handleClose = createCloseHandler(isOpen, toggleModal)
@@ -112,6 +126,7 @@ export function NetworkSelector(): ReactNode {
                   isDarkMode={isDarkMode}
                   onSelectChain={handleSelectChain}
                   availableChains={availableChains}
+                  disabledChainIds={disabledChainIds}
                 />
               </styledEl.FlayoutMenuList>
             </styledEl.FlyoutMenuScrollable>
