@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
-import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
@@ -11,6 +11,8 @@ import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFro
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 import { TradeType } from 'modules/trade/types/TradeType'
+
+import { SwitchInProgressError, useSwitchNetworkWithGuidance } from 'common/hooks/useSwitchNetworkWithGuidance'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
@@ -34,7 +36,7 @@ export function useSetupTradeState(): void {
   // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const tradeNavigate = useTradeNavigate()
-  const switchNetwork = useSwitchNetwork()
+  const switchNetwork = useSwitchNetworkWithGuidance()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
   const tradeTypeInfo = useTradeTypeInfoFromUrl()
@@ -63,11 +65,14 @@ export function useSetupTradeState(): void {
         // Because it's a normal situation when we are not in Gnosis safe App
         if (error.name === 'NoSafeContext') return
 
-        console.error('Network switching error: ', error)
+        // SwitchInProgressError is benign — skip noisy logging but still revert URL below
+        if (!(error instanceof SwitchInProgressError)) {
+          console.error('Network switching error: ', error)
+        }
 
-        // If user rejected the network switch, revert the URL to the provider's current chain
-        // This ensures URL and wallet stay in sync, and user can try again
-        if (isRejectRequestProviderError(error) && currentProviderChainId) {
+        // Revert URL when switch failed — wallet is still on old chain.
+        // Covers: user rejection, timeout, in-flight guard, and other provider errors.
+        if (currentProviderChainId) {
           const defaultState = getDefaultTradeRawState(currentProviderChainId)
           tradeNavigate(currentProviderChainId, defaultState)
         }
