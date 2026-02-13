@@ -1,6 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, useMemo } from 'react'
 
+import { useStateWithDeferredValue } from '@cowprotocol/common-hooks'
+
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 
@@ -42,16 +44,19 @@ const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfilla
 export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/): ReactNode {
   const { i18n } = useLingui()
 
-  const { searchTerm, historyStatusFilter } = useOrdersTableFilters()
+  const { searchTerm: searchTermFilter, historyStatusFilter } = useOrdersTableFilters()
   const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
+
+  const [searchTerm, setSearchTerm] = useStateWithDeferredValue(searchTermFilter, (searchTerm) => {
+    partiallyUpdateOrdersTableFilters({ searchTerm })
+  })
 
   const resetSearchTerm = (): void => {
     partiallyUpdateOrdersTableFilters({ searchTerm: '' })
   }
 
-  // TODO: Debounce:
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    partiallyUpdateOrdersTableFilters({ searchTerm: e.target.value })
+    setSearchTerm(e.target.value)
   }
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
