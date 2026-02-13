@@ -10,6 +10,7 @@ import { useIsCurrentTradeBridging, useTradePriceImpact, useTradeRouteContext } 
 import { HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
+import { useShouldBlockUnsupportedDestination } from '../../hooks/useShouldBlockUnsupportedDestination'
 import {
   useShouldCheckBridgingRecipient,
   useSmartContractRecipientConfirmed,
@@ -19,15 +20,19 @@ import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { SwapFormState, useSwapFormState } from '../../hooks/useSwapFormState'
 import { SmartContractReceiverWarning } from '../../pure/SmartContractReceiverWarning'
 import { TwapSuggestionBanner } from '../../pure/TwapSuggestionBanner'
+import { UnsupportedDestinationWarning } from '../../pure/UnsupportedDestinationWarning'
 
 interface WarningsProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
   hideQuoteAmount: boolean
+  onEnableCustomRecipient: () => void
 }
 
-export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): ReactNode {
+export function Warnings({ buyingFiatAmount, hideQuoteAmount, onEnableCustomRecipient }: WarningsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } = useSwapDerivedState()
+  // Used by both Warnings (banner visibility) and TradeButtons (isDisabled). Keep in sync.
+  const shouldBlockUnsupportedDestination = useShouldBlockUnsupportedDestination()
   const formState = useSwapFormState()
   const tradeUrlParams = useTradeRouteContext()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
@@ -45,6 +50,9 @@ export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): 
   const showTwapSuggestionBanner =
     (!enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)) && !isCurrentTradeBridging
 
+  const showSmartContractRecipientWarning =
+    shouldCheckBridgingRecipient && !!account && !!outputChainId && !isFractionFalsy(outputCurrencyAmount)
+
   // Reset SmartContractRecipientConfirmed when trade params are changed
   useEffect(() => {
     if (!outputChainId) return
@@ -57,15 +65,21 @@ export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): 
       {inputCurrency && !isNativeSellInHooksStore && <MetamaskTransactionWarning sellToken={inputCurrency} />}
       {isNativeSellInHooksStore && <SellNativeWarningBanner />}
       {!hideQuoteAmount && <HighFeeWarning />}
-      {shouldCheckBridgingRecipient && account && outputChainId && !isFractionFalsy(outputCurrencyAmount) && (
+      {/* Hard block (unsupported dest) takes precedence over soft check (bridging recipient) */}
+      {shouldBlockUnsupportedDestination && outputChainId ? (
+        <UnsupportedDestinationWarning
+          destinationChainId={outputChainId}
+          onEnableCustomRecipient={onEnableCustomRecipient}
+        />
+      ) : showSmartContractRecipientWarning ? (
         <SmartContractReceiverWarning
-          account={account}
+          account={account!}
           recipient={recipient}
-          chainId={outputChainId}
+          chainId={outputChainId!}
           checked={smartContractRecipientConfirmed}
           toggle={toggleSmartContractRecipientConfirmed}
         />
-      )}
+      ) : null}
       {showTwapSuggestionBanner && (
         <TwapSuggestionBanner
           chainId={chainId}
