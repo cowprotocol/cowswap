@@ -61,8 +61,8 @@ const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => (
 ))
 
 function getReferrerCode(affiliateTrader: AffiliateTraderWithSavedCode): string | undefined {
-  if (affiliateTrader.wallet.status === 'linked') {
-    return affiliateTrader.wallet.code
+  if (affiliateTrader.savedCode) {
+    return affiliateTrader.savedCode
   }
 
   if (affiliateTrader.verification.kind === 'linked') {

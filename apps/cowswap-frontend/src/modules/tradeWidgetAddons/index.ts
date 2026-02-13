@@ -1,7 +1,7 @@
 export { RowDeadline } from './containers/RowDeadline'
 export { RowSlippage } from './containers/RowSlippage'
 export { TradeRateDetails } from './containers/TradeRateDetails'
-export { RowRewards, useIsRowRewardsVisible } from './containers/RowRewards'
+export { RowRewards } from './containers/RowRewards'
 export { SettingsTab } from './containers/SettingsTab'
 export { HighFeeWarning } from './containers/HighFeeWarning'
 export { MetamaskTransactionWarning } from './containers/MetamaskTransactionWarning'

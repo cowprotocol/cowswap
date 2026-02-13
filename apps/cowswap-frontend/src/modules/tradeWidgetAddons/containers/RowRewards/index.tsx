@@ -8,10 +8,9 @@ import { Trans } from '@lingui/react/macro'
 
 import { AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE } from 'modules/affiliate/config/affiliateProgram.const'
 import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
+import { useIsRewardsRowVisible } from 'modules/affiliate/hooks/useIsRowRewardsVisible'
 import { AffiliateTraderWithSavedCode, affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
 import { openTraderReferralCodeModalAtom } from 'modules/affiliate/state/affiliateTraderWriteAtoms'
-
-import { useIsRewardsRowVisible } from './hooks/useIsRewardsRowVisible'
 
 import { RowRewardsContent } from '../../pure/Row/RowRewards'
 

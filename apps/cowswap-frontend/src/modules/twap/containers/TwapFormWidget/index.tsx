@@ -7,6 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useIsRewardsRowVisible } from 'modules/affiliate/hooks/useIsRowRewardsVisible'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -15,7 +16,7 @@ import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { RowRewards, useIsRowRewardsVisible } from 'modules/tradeWidgetAddons'
+import { RowRewards } from 'modules/tradeWidgetAddons'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -77,7 +78,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const localFormValidation = useTwapFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const isRowRewardsVisible = useIsRowRewardsVisible()
+  const isRowRewardsVisible = useIsRewardsRowVisible()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
