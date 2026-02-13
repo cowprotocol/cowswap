@@ -3,14 +3,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PartnerProgramParams } from './affiliateProgramUtils'
 
 /**
- * Flags how the referral modal was launched:
- * - 'ui': user clicked through our surfaces (header CTA, rewards hub, etc.)
- * - 'deeplink': modal auto-opened from a `?ref=` query
- * - 'rewards': user visited the rewards dashboard and had no code yet
- */
-export type TraderReferralCodeModalSource = 'ui' | 'deeplink' | 'rewards'
-
-/**
  * Categorises referral verification failures so UI copy can react:
  * - 'network': request failed or timed out
  * - 'unknown': any other error case we can't classify yet
@@ -58,26 +50,13 @@ export type TraderWalletReferralCodeState =
   | { status: 'ineligible'; reason: string; linkedCode?: string }
   | { status: 'eligibility-unknown'; reason?: string }
 
-export interface TraderReferralCodeState {
+export interface AffiliateTraderState {
   modalOpen: boolean
-  modalSource: TraderReferralCodeModalSource | null
   editMode: boolean
   inputCode: string
-  savedCode?: string
   incomingCode?: string
   incomingCodeReason?: TraderReferralCodeIncomingReason
-  previousVerification?: TraderReferralCodeVerificationStatus
   verification: TraderReferralCodeVerificationStatus
-  wallet: TraderWalletReferralCodeState
-  shouldAutoVerify: boolean
-  lastVerificationRequest?: {
-    code: string
-    timestamp: number
-  }
-  pendingVerificationRequest?: {
-    id: number
-    code?: string
-  }
 }
 
 export interface TraderReferralCodeApiConfig {
@@ -95,10 +74,6 @@ export interface TraderReferralCodeVerificationResponse {
   data?: TraderReferralCodeResponse
   text: string
 }
-
-/**
- * Shape returned by the referral verification endpoint.
- */
 
 export interface TraderWalletReferralCodeStatusRequest {
   account: string
@@ -145,6 +120,33 @@ export interface TraderStatsResponse {
   lastUpdatedAt: string
 }
 
+export interface TraderActivityRow {
+  date: string
+  chainId: SupportedChainId
+  chainName: string
+  orderUid: string
+  txHash?: string
+  sellToken: string
+  buyToken: string
+  sellAmount: string
+  buyAmount: string
+  feeAmount?: string
+  feeToken?: string
+  status: string
+  referrerCode?: string
+  isEligible: boolean
+  ineligibleReason?: string
+}
+
+export type AffiliatePayoutHistoryRole = 'affiliate' | 'trader'
+
+export interface PayoutHistoryRow {
+  date: string
+  amount: string
+  txHash: string
+  chainId: SupportedChainId
+}
+
 export interface PartnerStatsResponse {
   affiliate_address: string
   referrer_code: string
@@ -163,29 +165,4 @@ export interface PartnerCreateRequest {
   code: string
   walletAddress: string
   signedMessage: string
-}
-
-export interface TraderReferralCodeContextValue extends TraderReferralCodeState {
-  cancelVerification: () => void
-  actions: TraderReferralCodeActions
-}
-
-export interface TraderReferralCodeActions {
-  openModal(source: TraderReferralCodeModalSource, options?: { code?: string }): void
-  closeModal(): void
-  setInputCode(value: string): void
-  enableEditMode(): void
-  disableEditMode(): void
-  saveCode(code: string): void
-  removeCode(): void
-  setIncomingCode(code?: string): void
-  setIncomingCodeReason(reason?: TraderReferralCodeIncomingReason): void
-  setWalletState(state: TraderWalletReferralCodeState): void
-  startVerification(code: string): void
-  completeVerification(status: TraderReferralCodeVerificationStatus): void
-  setShouldAutoVerify(value: boolean): void
-  setSavedCode(code?: string): void
-  requestVerification(code?: string): void
-  clearPendingVerification(id: number): void
-  registerCancelVerification(handler: () => void): void
 }

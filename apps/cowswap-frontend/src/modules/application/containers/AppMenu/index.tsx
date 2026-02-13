@@ -42,7 +42,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isAffiliateProgramEnabled = false } = useFeatureFlags()
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))

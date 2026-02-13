@@ -58,7 +58,7 @@ export const AccountOverview = (): ReactNode => {
 
 export default function Account(): ReactNode {
   const { pathname } = useLocation()
-  const { isAffiliateProgramEnabled = false } = useFeatureFlags()
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
   const [id, name] = getPropsFromRoute(pathname, isAffiliateProgramEnabled)
   return (
     <Wrapper>

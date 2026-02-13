@@ -14,11 +14,12 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
   SupportedChainId.LENS,
   SupportedChainId.BNB,
   SupportedChainId.LINEA,
-  SupportedChainId.SEPOLIA,
+  // SupportedChainId.SEPOLIA,
   SupportedChainId.PLASMA,
 ] as const
 
-export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliateTrader:v2'
+export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliateTrader:v3'
+export const AFFILIATE_PAYOUT_ADDRESS_CONFIRMATION_STORAGE_KEY = 'cowswap:affiliatePayoutAddressConfirmation:v0'
 
 export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.map(
   (chainId) => CHAIN_INFO[chainId].label,
@@ -31,6 +32,12 @@ export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 export const AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS = 6
 export const AFFILIATE_REWARDS_UPDATE_LAG_HOURS = 1
+export const AFFILIATE_PAYOUT_SOURCE_AFFILIATE = '0x7c84f6fd89379a2E1E585b591C0360388D4a413D'
+export const AFFILIATE_PAYOUT_SOURCE_TRADER = '0x6e6e6BBF90439F55AB4d5E22B919544e10d99609'
+export const AFFILIATE_PAYOUT_HISTORY_CHAIN_ID = SupportedChainId.MAINNET
+export const AFFILIATE_PAYOUT_HISTORY_START_DATE = '2026-01-01'
+export const AFFILIATE_PAYOUT_HISTORY_ROW_LIMIT = 10
+export const AFFILIATE_PAYOUT_HISTORY_PAGE_BLOCK_RANGE = 100_000n
 
 export const VERIFICATION_DEBOUNCE_MS = 350
 export const VERIFICATION_RETRY_DELAY_MS = 3_000

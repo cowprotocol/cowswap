@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
+import { AffiliateTraderWithSavedCode, affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
 import { useUtm } from 'modules/utm'
@@ -31,8 +32,8 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
   const userConsent = useRwaConsentForAppData()
-  const traderReferralCode = useTraderReferralCode()
-  const referrerCode = getReferrerCode(traderReferralCode)
+  const affiliateTrader = useAtomValue(affiliateTraderAtom)
+  const referrerCode = getReferrerCode(affiliateTrader)
 
   if (!chainId) return null
 
@@ -59,17 +60,17 @@ const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => (
   </>
 ))
 
-function getReferrerCode(traderReferralCode: ReturnType<typeof useTraderReferralCode>): string | undefined {
-  if (traderReferralCode.wallet.status === 'linked') {
-    return traderReferralCode.wallet.code
+function getReferrerCode(affiliateTrader: AffiliateTraderWithSavedCode): string | undefined {
+  if (affiliateTrader.wallet.status === 'linked') {
+    return affiliateTrader.wallet.code
   }
 
-  if (traderReferralCode.verification.kind === 'linked') {
-    return traderReferralCode.verification.linkedCode
+  if (affiliateTrader.verification.kind === 'linked') {
+    return affiliateTrader.verification.linkedCode
   }
 
-  if (traderReferralCode.verification.kind === 'valid' && traderReferralCode.savedCode) {
-    return traderReferralCode.savedCode
+  if (affiliateTrader.verification.kind === 'valid' && affiliateTrader.savedCode) {
+    return affiliateTrader.savedCode
   }
 
   return undefined

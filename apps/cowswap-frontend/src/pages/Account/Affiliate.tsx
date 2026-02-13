@@ -32,15 +32,17 @@ import {
   AFFILIATE_REWARDS_UPDATE_LAG_HOURS,
   VERIFICATION_DEBOUNCE_MS,
 } from 'modules/affiliate/config/affiliateProgram.const'
+import { usePayoutHistory } from 'modules/affiliate/hooks/usePayoutHistory'
 import { PartnerCodeResponse, PartnerStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
 import {
   buildPartnerTypedData,
+  formatRefCode,
   formatUsdcCompact,
   formatUsdCompact,
   generateSuggestedCode,
-  isReferralCodeLengthValid,
-  sanitizeReferralCode,
 } from 'modules/affiliate/lib/affiliateProgramUtils'
+import { HowItWorks } from 'modules/affiliate/pure/HowItWorks'
+import { PayoutHistoryTable } from 'modules/affiliate/pure/PayoutHistoryTable'
 import {
   ReferralCodeInputRow,
   type TrailingIconKind,
@@ -90,7 +92,6 @@ import {
   StatusText,
   LinkedMetaList,
 } from 'modules/affiliate/pure/shared'
-import { TraderReferralCodeHowItWorksLink } from 'modules/affiliate/pure/TraderReferralCodeIneligibleCopy'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useModalState } from 'common/hooks/useModalState'
@@ -155,12 +156,8 @@ export default function AccountAffiliate() {
   const qrCodeRef = useRef<QRCode | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const normalizedCode = useMemo(() => sanitizeReferralCode(inputCode), [inputCode])
-  const hasInvalidChars = useMemo(() => inputCode.trim().toUpperCase() !== normalizedCode, [inputCode, normalizedCode])
-  const isCodeValid = useMemo(
-    () => isReferralCodeLengthValid(normalizedCode) && !hasInvalidChars,
-    [hasInvalidChars, normalizedCode],
-  )
+  const normalizedCode = useMemo(() => formatRefCode(inputCode) ?? '', [inputCode])
+  const isCodeValid = useMemo(() => Boolean(normalizedCode), [normalizedCode])
   const codeTooltip = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
   const referralTrafficTooltip = t`This chart tracks eligible volume left to unlock the next reward.`
   const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
@@ -470,7 +467,7 @@ export default function AccountAffiliate() {
   const handleInputChange = useCallback((event: FormEvent<HTMLInputElement>) => {
     setHasEdited(true)
     setErrorMessage(null)
-    setInputCode(sanitizeReferralCode(event.currentTarget.value))
+    setInputCode(event.currentTarget.value.trim().toUpperCase())
   }, [])
 
   const handleGenerate = useCallback(() => {
@@ -523,6 +520,10 @@ export default function AccountAffiliate() {
   const nextPayoutLabel = statsReady ? formatUsdcCompact(partnerStats?.next_payout) : formatUsdcCompact(0)
   const totalEarnedLabel = statsReady ? formatUsdcCompact(partnerStats?.total_earned) : EMPTY_VALUE_LABEL
   const paidOutLabel = statsReady ? formatUsdcCompact(partnerStats?.paid_out) : EMPTY_VALUE_LABEL
+  const { rows: payoutHistoryRows, loading: payoutHistoryLoading } = usePayoutHistory({
+    account: account || undefined,
+    role: 'affiliate',
+  })
   const leftToNextRewardLabel = statsReady ? formatUsdCompact(partnerStats?.left_to_next_reward) : EMPTY_VALUE_LABEL
   const totalVolumeLabel = statsReady ? formatUsdCompact(partnerStats?.total_volume) : EMPTY_VALUE_LABEL
   const activeReferralsLabel = statsReady ? formatNumber(partnerStats?.active_traders) : EMPTY_VALUE_LABEL
@@ -561,7 +562,7 @@ export default function AccountAffiliate() {
             <HeroSubtitle>
               <Trans>
                 You and your referrals can earn a flat fee <br /> for the eligible volume done through the app.{' '}
-                <TraderReferralCodeHowItWorksLink />
+                <HowItWorks />
               </Trans>
             </HeroSubtitle>
             <HeroActions>
@@ -804,6 +805,7 @@ export default function AccountAffiliate() {
             </RewardsCol2Card>
             <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={statsLoadingCombined} />
           </RewardsThreeColumnGrid>
+          <PayoutHistoryTable rows={payoutHistoryRows} showLoader={payoutHistoryLoading} />
 
           <AffiliateTermsFaqLinks align="center" />
         </>

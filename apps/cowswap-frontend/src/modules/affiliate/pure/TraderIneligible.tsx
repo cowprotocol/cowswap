@@ -2,23 +2,13 @@ import { ReactNode } from 'react'
 
 import { Trans } from '@lingui/react/macro'
 
-import { HowItWorksLink } from './shared'
+import { HowItWorks } from './HowItWorks'
 
-import { AFFILIATE_HOW_IT_WORKS_URL } from '../config/affiliateProgram.const'
-
-export interface TraderReferralCodeIneligibleCopyProps {
+interface TraderIneligibleProps {
   incomingCode?: string
 }
 
-export function TraderReferralCodeHowItWorksLink(): ReactNode {
-  return (
-    <HowItWorksLink as="a" href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
-      <Trans>How it works.</Trans>
-    </HowItWorksLink>
-  )
-}
-
-export function TraderReferralCodeIneligibleCopy(props: TraderReferralCodeIneligibleCopyProps): ReactNode {
+export function TraderIneligible(props: TraderIneligibleProps): ReactNode {
   const { incomingCode } = props
 
   return (
@@ -38,7 +28,7 @@ export function TraderReferralCodeIneligibleCopy(props: TraderReferralCodeInelig
           </Trans>{' '}
         </>
       )}
-      <TraderReferralCodeHowItWorksLink />
+      <HowItWorks />
     </>
   )
 }

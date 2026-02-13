@@ -6,17 +6,22 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
 
-import { isReferralCodeLengthValid, sanitizeReferralCode, type PartnerProgramParams } from './affiliateProgramUtils'
+import { formatRefCode, type PartnerProgramParams } from './affiliateProgramUtils'
 
 import { VERIFICATION_RETRY_DELAY_MS } from '../config/affiliateProgram.const'
 
 import type {
+  TraderReferralCodeIncomingReason,
   TraderReferralCodeResponse,
-  TraderReferralCodeContextValue,
   TraderReferralCodeVerificationResponse,
   TraderReferralCodeVerificationStatus,
-  TraderWalletReferralCodeState,
 } from './affiliateProgramTypes'
+
+interface TraderReferralVerificationActions {
+  startVerification(code: string): void
+  setIncomingCodeReason(reason?: TraderReferralCodeIncomingReason): void
+  setSavedCode(code?: string): void
+}
 
 export interface PerformVerificationParams {
   rawCode: string
@@ -24,18 +29,14 @@ export interface PerformVerificationParams {
   chainId?: number
   supportedNetwork: boolean
   toggleWalletModal: () => void
-  actions: TraderReferralCodeContextValue['actions']
+  actions: TraderReferralVerificationActions
   analytics: CowAnalytics
   pendingVerificationRef: RefObject<number | null>
-  applyVerificationResult: (
-    status: TraderReferralCodeVerificationStatus,
-    walletState?: TraderWalletReferralCodeState,
-  ) => void
+  applyVerificationResult: (status: TraderReferralCodeVerificationStatus) => void
   trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
   incomingCode?: string
   savedCode?: string
   currentVerification: TraderReferralCodeVerificationStatus
-  previousVerification?: TraderReferralCodeVerificationStatus
 }
 
 interface SanitizedContext {
@@ -107,10 +108,7 @@ export async function performVerification(params: PerformVerificationParams): Pr
 
     const preserveExisting =
       Boolean(baseParams.incomingCode) &&
-      shouldPreserveExistingCode(
-        baseParams.previousVerification ?? baseParams.currentVerification,
-        baseParams.savedCode,
-      )
+      shouldPreserveExistingCode(baseParams.currentVerification, baseParams.savedCode)
 
     handleCodeStatusResponse({
       response,
@@ -119,7 +117,7 @@ export async function performVerification(params: PerformVerificationParams): Pr
       applyVerificationResult,
       trackVerifyResult,
       preserveExisting,
-      currentVerification: baseParams.previousVerification ?? baseParams.currentVerification,
+      currentVerification: baseParams.currentVerification,
     })
     pendingVerificationRef.current = null
   } catch (error) {
@@ -134,7 +132,7 @@ export async function performVerification(params: PerformVerificationParams): Pr
   }
 }
 
-export async function isOwnAffiliateCode(params: { account: string; code: string }): Promise<boolean> {
+async function isOwnAffiliateCode(params: { account: string; code: string }): Promise<boolean> {
   const { account, code } = params
 
   try {
@@ -144,16 +142,16 @@ export async function isOwnAffiliateCode(params: { account: string; code: string
       return false
     }
 
-    return sanitizeReferralCode(affiliateCode.code) === sanitizeReferralCode(code)
+    return formatRefCode(affiliateCode.code) === formatRefCode(code)
   } catch {
     return false
   }
 }
 
 function sanitizeAndValidate(params: PerformVerificationParams): SanitizedContext | null {
-  const sanitizedCode = sanitizeReferralCode(params.rawCode)
+  const sanitizedCode = formatRefCode(params.rawCode)
 
-  if (!sanitizedCode || !isReferralCodeLengthValid(sanitizedCode)) {
+  if (!sanitizedCode) {
     return null
   }
 
@@ -166,7 +164,7 @@ function sanitizeAndValidate(params: PerformVerificationParams): SanitizedContex
 function ensurePrerequisites(
   params: PerformVerificationParams,
 ): params is PerformVerificationParams & { account: string; chainId: SupportedChainId } {
-  const { account, chainId, supportedNetwork, toggleWalletModal, actions } = params
+  const { account, chainId, supportedNetwork, toggleWalletModal } = params
 
   if (!account) {
     toggleWalletModal()
@@ -174,7 +172,6 @@ function ensurePrerequisites(
   }
 
   if (!supportedNetwork || chainId === undefined) {
-    actions.setWalletState({ status: 'unsupported', chainId })
     return false
   }
 
@@ -192,10 +189,9 @@ function startVerificationRequest(params: {
   pendingVerificationRef.current = requestId
   actions.startVerification(sanitizedCode)
   analytics.sendEvent({
-    category: 'referral',
+    category: 'affiliate',
     action: 'verify_started',
-    label: 'verify_code',
-    value: sanitizedCode.length,
+    label: sanitizedCode,
   })
 
   return requestId
@@ -215,11 +211,8 @@ function shouldPreserveExistingCode(
 function handleCodeStatusResponse(params: {
   response: TraderReferralCodeVerificationResponse
   sanitizedCode: string
-  actions: TraderReferralCodeContextValue['actions']
-  applyVerificationResult: (
-    status: TraderReferralCodeVerificationStatus,
-    walletState?: TraderWalletReferralCodeState,
-  ) => void
+  actions: TraderReferralVerificationActions
+  applyVerificationResult: (status: TraderReferralCodeVerificationStatus) => void
   trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
   preserveExisting: boolean
   currentVerification: TraderReferralCodeVerificationStatus
@@ -258,12 +251,12 @@ function handleCodeStatusResponse(params: {
     kind: 'valid',
     code: sanitizedCode,
     eligible: true,
-    programParams: toPartnerProgramParams(response.data),
+    programParams: toProgramParams(response.data),
   })
   trackVerifyResult('valid', true)
 }
 
-function toPartnerProgramParams(data?: TraderReferralCodeResponse): PartnerProgramParams | undefined {
+function toProgramParams(data?: TraderReferralCodeResponse): PartnerProgramParams | undefined {
   if (!data) {
     return undefined
   }
@@ -286,18 +279,16 @@ function toPartnerProgramParams(data?: TraderReferralCodeResponse): PartnerProgr
 
 function restoreExistingVerificationState(params: {
   currentVerification: TraderReferralCodeVerificationStatus
-  applyVerificationResult: (
-    status: TraderReferralCodeVerificationStatus,
-    walletState?: TraderWalletReferralCodeState,
-  ) => void
+  applyVerificationResult: (status: TraderReferralCodeVerificationStatus) => void
 }): void {
   const { currentVerification, applyVerificationResult } = params
 
   if (currentVerification.kind === 'linked') {
-    applyVerificationResult(
-      { kind: 'linked', code: currentVerification.code, linkedCode: currentVerification.linkedCode },
-      { status: 'linked', code: currentVerification.linkedCode },
-    )
+    applyVerificationResult({
+      kind: 'linked',
+      code: currentVerification.code,
+      linkedCode: currentVerification.linkedCode,
+    })
     return
   }
 
@@ -319,10 +310,7 @@ async function applyVerificationError(params: {
   sanitizedCode: string
   requestId: number
   pendingVerificationRef: PerformVerificationParams['pendingVerificationRef']
-  applyVerificationResult: (
-    status: TraderReferralCodeVerificationStatus,
-    walletState?: TraderWalletReferralCodeState,
-  ) => void
+  applyVerificationResult: (status: TraderReferralCodeVerificationStatus) => void
   trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
 }): Promise<void> {
   const { error, sanitizedCode, requestId, pendingVerificationRef, applyVerificationResult, trackVerifyResult } = params

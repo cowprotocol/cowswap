@@ -17,9 +17,9 @@ import {
   TagGroup,
 } from './styles'
 
-import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
+import { TraderReferralCodeModalUiState } from '../../hooks/useAffiliateTraderModalState'
 import { TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
-import { isReferralCodeLengthValid } from '../../lib/affiliateProgramUtils'
+import { formatRefCode } from '../../lib/affiliateProgramUtils'
 import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput/ReferralCodeInputRow'
 import { LabelContent } from '../shared'
 
@@ -180,7 +180,7 @@ function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
   const showEdit = canEdit && (Boolean(savedCode) || allowDisconnectedEdit)
   const showRemove =
     !isUnsupported && (isEditing || allowDisconnectedEdit) && (Boolean(savedCode) || allowDisconnectedEdit)
-  const canSubmitSave = !isUnsupported && (isEditing || uiState === 'empty') && isReferralCodeLengthValid(displayCode)
+  const canSubmitSave = !isUnsupported && (isEditing || uiState === 'empty') && Boolean(formatRefCode(displayCode))
 
   return {
     hasError,

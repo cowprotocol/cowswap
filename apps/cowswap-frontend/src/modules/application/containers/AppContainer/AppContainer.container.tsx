@@ -12,11 +12,8 @@ import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
-import { TraderReferralCodeController } from 'modules/affiliate/containers/TraderReferralCodeController'
-import { TraderReferralCodeDeepLinkHandler } from 'modules/affiliate/containers/TraderReferralCodeDeepLinkHandler'
-import { TraderReferralCodeModal } from 'modules/affiliate/pure/TraderReferralCodeModal'
-import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/pure/TraderReferralCodeNetworkBanner'
-import { TraderReferralCodeProvider } from 'modules/affiliate/state/TraderReferralCodeContext'
+import { AffiliateTraderModal } from 'modules/affiliate/containers/AffiliateTraderModal'
+import { AffiliateTraderRefUrlSideEffect } from 'modules/affiliate/containers/AffiliateTraderRefUrlSideEffect'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -48,7 +45,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
-  const { isYieldEnabled, isAffiliateProgramEnabled = false } = useFeatureFlags()
+  const { isYieldEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -126,15 +123,11 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   }
 
   return (
-    <TraderReferralCodeProvider>
-      <>
-        <TraderReferralCodeDeepLinkHandler />
-        <TraderReferralCodeController />
-        <TraderReferralCodeNetworkBanner />
-        <TraderReferralCodeModal />
-        {appContent}
-      </>
-    </TraderReferralCodeProvider>
+    <>
+      <AffiliateTraderRefUrlSideEffect />
+      <AffiliateTraderModal />
+      {appContent}
+    </>
   )
 }
 

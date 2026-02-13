@@ -1,18 +1,18 @@
-import { formatDateWithTimezone, formatLocaleNumber } from '@cowprotocol/common-utils'
+import { formatLocaleNumber } from '@cowprotocol/common-utils'
 import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
-import { TraderReferralCodeVerificationStatus } from './affiliateProgramTypes'
+import { AFFILIATE_SUPPORTED_CHAIN_IDS } from '../config/affiliateProgram.const'
 
-import { AFFILIATE_REWARDS_CURRENCY, AFFILIATE_SUPPORTED_CHAIN_IDS } from '../config/affiliateProgram.const'
+const REFERRER_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
 
-export const AFFILIATE_TYPED_DATA_DOMAIN = {
+const AFFILIATE_TYPED_DATA_DOMAIN = {
   name: 'CoW Swap Affiliate',
   version: '1',
 } as const
 
-export const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
+const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
   AffiliateCode: [
     { name: 'walletAddress', type: 'address' },
     { name: 'code', type: 'string' },
@@ -20,40 +20,26 @@ export const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
   ],
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function buildPartnerTypedData(params: { walletAddress: string; code: string; chainId: number }) {
+type TypedDataMsg = { walletAddress: string; code: string; chainId: number }
+
+type AffiliatePartnerTypedDataMsg = {
+  domain: typeof AFFILIATE_TYPED_DATA_DOMAIN
+  types: Record<string, TypedDataField[]>
+  message: TypedDataMsg
+}
+
+export function buildPartnerTypedData(message: TypedDataMsg): AffiliatePartnerTypedDataMsg {
   return {
-    domain: {
-      ...AFFILIATE_TYPED_DATA_DOMAIN,
-    },
+    domain: AFFILIATE_TYPED_DATA_DOMAIN,
     types: AFFILIATE_TYPED_DATA_TYPES,
-    message: {
-      walletAddress: params.walletAddress,
-      code: params.code,
-      chainId: params.chainId,
-    },
+    message,
   }
 }
 
-const CODE_ALLOWED_REGEX = /[A-Z0-9_-]/
-
-export function sanitizeReferralCode(raw: string): string {
-  if (!raw) {
-    return ''
-  }
-
-  const next = raw
-    .trim()
-    .toUpperCase()
-    .split('')
-    .filter((char) => CODE_ALLOWED_REGEX.test(char))
-    .join('')
-
-  return next.slice(0, 20)
-}
-
-export function isReferralCodeLengthValid(code: string): boolean {
-  return code.length >= 5 && code.length <= 20
+export function formatRefCode(value?: string | null): string | undefined {
+  if (!value) return undefined
+  const normalized = value.trim().toUpperCase()
+  return REFERRER_CODE_PATTERN.test(normalized) ? normalized : undefined
 }
 
 export type PartnerProgramParams = {
@@ -61,24 +47,6 @@ export type PartnerProgramParams = {
   triggerVolumeUsd: number
   timeCapDays: number
   volumeCapUsd: number
-}
-
-export function getPartnerProgramCopyValues(params: PartnerProgramParams): {
-  rewardAmount: string
-  rewardCurrency: string
-  triggerVolume: string
-  timeCapDays: number
-} {
-  return {
-    rewardAmount: formatInteger(params.traderRewardAmount),
-    rewardCurrency: AFFILIATE_REWARDS_CURRENCY,
-    triggerVolume: formatInteger(params.triggerVolumeUsd),
-    timeCapDays: params.timeCapDays,
-  }
-}
-
-function formatInteger(value: number): string {
-  return value.toLocaleString(i18n.locale, { maximumFractionDigits: 0 })
 }
 
 export function formatCompactNumber(value: number | null | undefined): string {
@@ -101,29 +69,6 @@ export function formatUsdCompact(value: number | null | undefined): string {
 export function formatUsdcCompact(value: number | null | undefined): string {
   const formatted = formatCompactNumber(value)
   return formatted === '-' ? '-' : `${formatted} USDC`
-}
-
-export function getIncomingIneligibleCode(
-  incomingCode: string | undefined,
-  verification: TraderReferralCodeVerificationStatus,
-): string | undefined {
-  if (incomingCode) {
-    return incomingCode
-  }
-
-  if (verification.kind === 'ineligible') {
-    return verification.code
-  }
-
-  return undefined
-}
-
-export function formatUpdatedAt(value: Date | null): string {
-  if (!value) {
-    return '-'
-  }
-
-  return formatDateWithTimezone(value) ?? '-'
 }
 
 export function generateSuggestedCode(): string {

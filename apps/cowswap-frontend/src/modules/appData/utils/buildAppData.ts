@@ -3,6 +3,8 @@ import { stringifyDeterministic } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
 
+import { formatRefCode } from 'modules/affiliate/lib/affiliateProgramUtils'
+
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { filterHooks, HooksFilter } from './appDataFilter'
@@ -18,13 +20,6 @@ import {
   AppDataWidget,
   TypedAppDataHooks,
 } from '../types'
-
-const REFERRER_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
-
-function normalizeReferrerCode(value: string): string | undefined {
-  const normalized = value.trim().toUpperCase()
-  return REFERRER_CODE_PATTERN.test(normalized) ? normalized : undefined
-}
 
 export type BuildAppDataParams = {
   appCode: string
@@ -63,7 +58,7 @@ export async function buildAppData({
   replacedOrderUid,
   userConsent,
 }: BuildAppDataParams): Promise<AppDataInfo> {
-  const normalizedReferrerCode = referrerCode ? normalizeReferrerCode(referrerCode) : undefined
+  const normalizedReferrerCode = referrerCode ? formatRefCode(referrerCode) : undefined
 
   const referrerParams: AppDataRootSchema['metadata']['referrer'] = normalizedReferrerCode
     ? { code: normalizedReferrerCode }

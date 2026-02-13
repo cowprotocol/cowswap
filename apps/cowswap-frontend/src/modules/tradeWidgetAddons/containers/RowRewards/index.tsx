@@ -1,39 +1,45 @@
+import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 
 import { AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE } from 'modules/affiliate/config/affiliateProgram.const'
-import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
-import { useTraderReferralCodeActions } from 'modules/affiliate/hooks/useTraderReferralCodeActions'
+import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
+import { AffiliateTraderWithSavedCode, affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
+import { openTraderReferralCodeModalAtom } from 'modules/affiliate/state/affiliateTraderWriteAtoms'
+
+import { useIsRewardsRowVisible } from './hooks/useIsRewardsRowVisible'
 
 import { RowRewardsContent } from '../../pure/Row/RowRewards'
 
-export function useIsRowRewardsVisible(): boolean {
-  const { isAffiliateProgramEnabled = false } = useFeatureFlags()
-  return isAffiliateProgramEnabled && !isInjectedWidget()
-}
-
 export function RowRewards(): ReactNode {
-  const isRowRewardsVisible = useIsRowRewardsVisible()
-  const traderReferralCode = useTraderReferralCode()
-  const traderReferralCodeActions = useTraderReferralCodeActions()
+  const isRewardsRowVisible = useIsRewardsRowVisible()
+  const affiliateTrader = useAtomValue(affiliateTraderAtom)
+  const openModal = useSetAtom(openTraderReferralCodeModalAtom)
+  const { account } = useWalletInfo()
+  const chainId = useWalletChainId()
+  const { walletStatus, linkedCode } = useAffiliateTraderWallet({
+    account,
+    chainId,
+    savedCode: affiliateTrader.savedCode,
+  })
   const shouldHideForIneligible =
-    AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE && traderReferralCode.wallet.status === 'ineligible'
-  const eligibilityCheckIsLoading = traderReferralCode.wallet.status === 'unknown'
+    AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE && walletStatus === TraderWalletStatus.INELIGIBLE
+  const eligibilityCheckIsLoading = walletStatus === TraderWalletStatus.UNKNOWN
 
-  const linkedCode = getLinkedCode(traderReferralCode)
-  const hasLinkedCode = Boolean(linkedCode)
-  const hasSavedValidCode = shouldShowSavedCode(traderReferralCode, hasLinkedCode)
-  const displayCode = linkedCode ?? (hasSavedValidCode ? traderReferralCode.savedCode : undefined)
+  const currentLinkedCode = getLinkedCode(affiliateTrader, walletStatus, linkedCode)
+  const hasLinkedCode = Boolean(currentLinkedCode)
+  const hasSavedValidCode = shouldShowSavedCode(affiliateTrader, hasLinkedCode)
+  const displayCode = currentLinkedCode ?? (hasSavedValidCode ? affiliateTrader.savedCode : undefined)
   const tooltipContent = getTooltipContent(hasLinkedCode, hasSavedValidCode)
   const handleOpenModal = (): void => {
-    traderReferralCodeActions.openModal('rewards')
+    openModal()
   }
 
-  if (!isRowRewardsVisible || shouldHideForIneligible || eligibilityCheckIsLoading) {
+  if (!isRewardsRowVisible || shouldHideForIneligible || eligibilityCheckIsLoading) {
     return null
   }
 
@@ -47,9 +53,13 @@ export function RowRewards(): ReactNode {
   )
 }
 
-function getLinkedCode(traderReferralCode: ReturnType<typeof useTraderReferralCode>): string | undefined {
-  if (traderReferralCode.wallet.status === 'linked') {
-    return traderReferralCode.wallet.code
+function getLinkedCode(
+  traderReferralCode: AffiliateTraderWithSavedCode,
+  walletStatus: ReturnType<typeof useAffiliateTraderWallet>['walletStatus'],
+  linkedCode?: string,
+): string | undefined {
+  if (walletStatus === TraderWalletStatus.LINKED) {
+    return linkedCode
   }
 
   if (traderReferralCode.verification.kind === 'linked') {
@@ -59,10 +69,7 @@ function getLinkedCode(traderReferralCode: ReturnType<typeof useTraderReferralCo
   return undefined
 }
 
-function shouldShowSavedCode(
-  traderReferralCode: ReturnType<typeof useTraderReferralCode>,
-  hasLinkedCode: boolean,
-): boolean {
+function shouldShowSavedCode(traderReferralCode: AffiliateTraderWithSavedCode, hasLinkedCode: boolean): boolean {
   if (hasLinkedCode) {
     return false
   }

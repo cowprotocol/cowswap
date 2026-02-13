@@ -1,3 +1,4 @@
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
@@ -24,15 +25,12 @@ import {
   AFFILIATE_REWARDS_UPDATE_LAG_HOURS,
   AFFILIATE_SUPPORTED_NETWORK_NAMES,
 } from 'modules/affiliate/config/affiliateProgram.const'
-import { useTraderReferralCode } from 'modules/affiliate/hooks/useTraderReferralCode'
-import { useTraderReferralCodeActions } from 'modules/affiliate/hooks/useTraderReferralCodeActions'
+import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
+import { usePayoutHistory } from 'modules/affiliate/hooks/usePayoutHistory'
+import { useTraderActivity } from 'modules/affiliate/hooks/useTraderActivity'
 import { TraderStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
-import {
-  formatUsdcCompact,
-  formatUsdCompact,
-  getIncomingIneligibleCode,
-  isSupportedReferralNetwork,
-} from 'modules/affiliate/lib/affiliateProgramUtils'
+import { formatUsdcCompact, formatUsdCompact } from 'modules/affiliate/lib/affiliateProgramUtils'
+import { PayoutHistoryTable } from 'modules/affiliate/pure/PayoutHistoryTable'
 import {
   AffiliateTermsFaqLinks,
   BottomMetaRow,
@@ -67,11 +65,21 @@ import {
   ValidStatusBadge,
   LabelContent,
 } from 'modules/affiliate/pure/shared'
-import { TraderReferralCodeIneligibleCopy } from 'modules/affiliate/pure/TraderReferralCodeIneligibleCopy'
-import { TraderReferralCodeNetworkBanner } from 'modules/affiliate/pure/TraderReferralCodeNetworkBanner'
+import { TraderActivityTable } from 'modules/affiliate/pure/TraderActivityTable'
+import { TraderIneligible } from 'modules/affiliate/pure/TraderIneligible'
+import { UnsupportedNetwork } from 'modules/affiliate/pure/UnsupportedNetwork'
+import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
+import {
+  openTraderReferralCodeModalAtom,
+  setTraderReferralSavedCodeAtom,
+} from 'modules/affiliate/state/affiliateTraderWriteAtoms'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
+import * as tabsEl from 'common/pure/Tabs'
+import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
+
 const MIN_LOADING_MS = 200
+type RewardsHistoryTab = 'activity' | 'payouts'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function, complexity
 export default function AccountMyRewards() {
@@ -79,18 +87,23 @@ export default function AccountMyRewards() {
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
   const toggleWalletModal = useToggleWalletModal()
-  const traderReferralCode = useTraderReferralCode()
-  const traderReferralCodeActions = useTraderReferralCodeActions()
+  const affiliateTrader = useAtomValue(affiliateTraderAtom)
+  const setSavedCode = useSetAtom(setTraderReferralSavedCodeAtom)
+  const openModal = useSetAtom(openTraderReferralCodeModalAtom)
   const [traderStats, setTraderStats] = useState<TraderStatsResponse | null>(null)
   const [loading, setLoading] = useState(false)
+  const [historyTab, setHistoryTab] = useState<RewardsHistoryTab>('activity')
 
   const isConnected = Boolean(account)
-  const supportedNetwork = chainId === undefined ? true : isSupportedReferralNetwork(chainId)
+  const { walletStatus, linkedCode, supportedNetwork } = useAffiliateTraderWallet({
+    account,
+    chainId,
+    savedCode: affiliateTrader.savedCode,
+  })
   const isUnsupportedNetwork = Boolean(account) && !supportedNetwork
-  const incomingIneligibleCode = getIncomingIneligibleCode(
-    traderReferralCode.incomingCode,
-    traderReferralCode.verification,
-  )
+  const incomingIneligibleCode =
+    affiliateTrader.incomingCode ||
+    (affiliateTrader.verification.kind === 'ineligible' ? affiliateTrader.verification.code : undefined)
 
   const numberFormatter = useMemo(() => new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }), [])
   const formatNumber = useCallback(
@@ -116,9 +129,8 @@ export default function AccountMyRewards() {
         }
 
         setTraderStats(stats)
-        if (stats?.bound_referrer_code && traderReferralCode.savedCode !== stats.bound_referrer_code) {
-          traderReferralCodeActions.setSavedCode(stats.bound_referrer_code)
-          traderReferralCodeActions.setWalletState({ status: 'linked', code: stats.bound_referrer_code })
+        if (stats?.bound_referrer_code && affiliateTrader.savedCode !== stats.bound_referrer_code) {
+          setSavedCode(stats.bound_referrer_code)
         }
       } catch {
         if (cancelled) {
@@ -135,25 +147,21 @@ export default function AccountMyRewards() {
     return () => {
       cancelled = true
     }
-  }, [account, traderReferralCode.savedCode, traderReferralCodeActions])
+  }, [account, setSavedCode, affiliateTrader.savedCode])
 
   const statsReady = Boolean(traderStats)
   const statsLinkedCode = traderStats?.bound_referrer_code
-  const isLinked = Boolean(statsLinkedCode) || traderReferralCode.wallet.status === 'linked'
-  const isIneligible = traderReferralCode.wallet.status === 'ineligible' && isConnected && !statsLinkedCode
+  const isLinked = Boolean(statsLinkedCode) || walletStatus === TraderWalletStatus.LINKED
+  const isIneligible = walletStatus === TraderWalletStatus.INELIGIBLE && isConnected && !statsLinkedCode
   const programParams =
-    traderReferralCode.verification.kind === 'valid'
-      ? traderReferralCode.verification.programParams
-      : traderReferralCode.previousVerification?.kind === 'valid'
-        ? traderReferralCode.previousVerification.programParams
-        : undefined
+    affiliateTrader.verification.kind === 'valid' ? affiliateTrader.verification.programParams : undefined
   const rewardAmountLabel = programParams ? formatUsdCompact(programParams?.traderRewardAmount) : 'reward'
-  const linkedWalletCode = traderReferralCode.wallet.status === 'linked' ? traderReferralCode.wallet.code : undefined
+  const linkedWalletCode = walletStatus === TraderWalletStatus.LINKED ? linkedCode : undefined
   const traderCode = isConnected
     ? (statsLinkedCode ??
       linkedWalletCode ??
-      traderReferralCode.savedCode ??
-      (traderReferralCode.verification.kind === 'valid' ? traderReferralCode.verification.code : undefined))
+      affiliateTrader.savedCode ??
+      (affiliateTrader.verification.kind === 'valid' ? affiliateTrader.verification.code : undefined))
     : undefined
   const traderHasCode = Boolean(traderCode)
   const triggerVolume = typeof programParams?.triggerVolumeUsd === 'number' ? programParams.triggerVolumeUsd : null
@@ -191,20 +199,27 @@ export default function AccountMyRewards() {
   )
   const statsUpdatedAbsoluteLabel = formatDateWithTimezone(approxStatsUpdatedAt)
   const statsUpdatedTitle = statsUpdatedAbsoluteLabel ?? undefined
-
-  const handleOpenRewardsModal = useCallback(() => {
-    traderReferralCodeActions.openModal('rewards')
-  }, [traderReferralCodeActions])
+  const { rows: traderActivityRows, loading: traderActivityLoading } = useTraderActivity({
+    account: account || undefined,
+    boundReferrerCode: traderStats?.bound_referrer_code,
+    linkedSince: traderStats?.linked_since,
+    rewardsEnd: traderStats?.rewards_end,
+  })
+  const { rows: payoutHistoryRows, loading: payoutHistoryLoading } = usePayoutHistory({
+    account: account || undefined,
+    role: 'trader',
+  })
 
   const handleConnect = useCallback(() => {
     toggleWalletModal()
   }, [toggleWalletModal])
+  const shouldShowUnsupportedNetworkBanner = walletStatus === TraderWalletStatus.UNSUPPORTED
 
   const supportedNetworks = AFFILIATE_SUPPORTED_NETWORK_NAMES.join(', ')
 
   return (
     <>
-      <TraderReferralCodeNetworkBanner forceVisible onlyWhenUnsupported />
+      {shouldShowUnsupportedNetworkBanner && <UnsupportedNetwork />}
       <RewardsWrapper>
         <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 
@@ -216,7 +231,7 @@ export default function AccountMyRewards() {
               <Trans>Your wallet is ineligible</Trans>
             </IneligibleTitle>
             <IneligibleSubtitle>
-              <TraderReferralCodeIneligibleCopy incomingCode={incomingIneligibleCode} />
+              <TraderIneligible incomingCode={incomingIneligibleCode} />
             </IneligibleSubtitle>
           </IneligibleCard>
         ) : isUnsupportedNetwork ? (
@@ -226,7 +241,8 @@ export default function AccountMyRewards() {
               <Trans>Switch network</Trans>
             </UnsupportedNetworkHeader>
             <UnsupportedNetworkMessage>
-              <Trans>Please connect your wallet to one of our supported networks: {supportedNetworks}.</Trans>
+              <UnsupportedNetworksText />
+              <br />({supportedNetworks})
             </UnsupportedNetworkMessage>
           </UnsupportedNetworkCard>
         ) : !traderHasCode ? (
@@ -251,7 +267,7 @@ export default function AccountMyRewards() {
                     <Trans>Connect wallet</Trans>
                   </ButtonPrimary>
                 ) : (
-                  <ButtonPrimary onClick={handleOpenRewardsModal}>
+                  <ButtonPrimary onClick={() => openModal()}>
                     <Trans>Add code</Trans>
                   </ButtonPrimary>
                 )}
@@ -298,7 +314,7 @@ export default function AccountMyRewards() {
                 </LinkedMetaList>
                 {!isLinked && (
                   <HeroActions>
-                    <ButtonPrimary onClick={handleOpenRewardsModal}>
+                    <ButtonPrimary onClick={() => openModal()}>
                       <Trans>Edit code</Trans>
                     </ButtonPrimary>
                   </HeroActions>
@@ -354,6 +370,19 @@ export default function AccountMyRewards() {
 
               <NextPayoutCard payoutLabel={nextPayoutLabel} showLoader={loading} />
             </RewardsThreeColumnGrid>
+            <tabsEl.Tabs>
+              <tabsEl.Tab $active={historyTab === 'activity'} onClick={() => setHistoryTab('activity')}>
+                <Trans>Rewards activity</Trans>
+              </tabsEl.Tab>
+              <tabsEl.Tab $active={historyTab === 'payouts'} onClick={() => setHistoryTab('payouts')}>
+                <Trans>Payout history</Trans>
+              </tabsEl.Tab>
+            </tabsEl.Tabs>
+            {historyTab === 'activity' ? (
+              <TraderActivityTable rows={traderActivityRows} showLoader={traderActivityLoading} />
+            ) : (
+              <PayoutHistoryTable rows={payoutHistoryRows} showLoader={payoutHistoryLoading} />
+            )}
           </>
         )}
       </RewardsWrapper>

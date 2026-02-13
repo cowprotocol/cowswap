@@ -1,6 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
 
-import { ButtonOutlined, ButtonPrimary, Font, HelpTooltip, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, ButtonPrimary, Font, HelpTooltip, Media, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -484,17 +484,19 @@ export const UnsupportedNetworkCard = styled(Card)`
   gap: 12px;
 `
 
-export const UnsupportedNetworkHeader = styled.h3`
+export const UnsupportedNetworkHeader = styled.h2`
   margin: 0;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 20px;
+  font-size: 21px;
   color: var(${UI.COLOR_DANGER});
+  font-weight: 600;
 `
 
 export const UnsupportedNetworkMessage = styled.p`
   margin: 0;
+  text-align: center;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
@@ -712,13 +714,4 @@ export const LabelContent = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 0px;
-`
-
-export const HowItWorksLink = styled(LinkStyledButton)`
-  color: var(${UI.COLOR_LINK});
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
 `

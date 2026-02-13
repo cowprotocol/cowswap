@@ -80,7 +80,7 @@ const lazyRoutes: LazyRouteProps[] = [
 ]
 
 export function RoutesApp(): ReactNode {
-  const { isAffiliateProgramEnabled = false } = useFeatureFlags()
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
 
   return (
     <Routes>

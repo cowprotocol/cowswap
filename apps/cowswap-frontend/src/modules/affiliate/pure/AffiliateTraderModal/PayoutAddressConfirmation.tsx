@@ -38,17 +38,15 @@ const ConfirmCheckbox = styled.label`
   }
 `
 
-interface PayoutAddressConfirmationWarningProps {
+interface PayoutAddressConfirmationProps {
   account: string
   checked: boolean
   onToggle(checked: boolean): void
 }
 
-export function PayoutAddressConfirmationWarning({
-  account,
-  checked,
-  onToggle,
-}: PayoutAddressConfirmationWarningProps): ReactNode {
+export function PayoutAddressConfirmation(props: PayoutAddressConfirmationProps): ReactNode {
+  const { account, checked, onToggle } = props
+
   return (
     <InlineBanner bannerType={StatusColorVariant.Info} orientation={BannerOrientation.Horizontal} breakWord>
       <Content>

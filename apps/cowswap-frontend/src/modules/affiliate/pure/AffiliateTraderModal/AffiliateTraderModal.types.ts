@@ -2,7 +2,7 @@ import { FormEvent, RefObject } from 'react'
 
 import { StatusColorVariant } from '@cowprotocol/ui'
 
-import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
+import { TraderReferralCodeModalUiState } from '../../hooks/useAffiliateTraderModalState'
 import { TraderReferralCodeIncomingReason, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 
 export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElement | null
@@ -15,31 +15,53 @@ export interface PrimaryCta {
 
 export interface TraderReferralCodeModalContentProps {
   uiState: TraderReferralCodeModalUiState
+  hasRejection: boolean
+  subtitle: TraderReferralCodeSubtitleProps
+  form: TraderReferralCodeFormSectionProps
+  status: TraderReferralCodeStatusSectionProps
+  payout: TraderReferralCodePayoutSectionProps
+  primaryCta: PrimaryCta
+  onPrimaryClick(): void
+  ctaRef: RefObject<HTMLButtonElement | null>
+  onDismiss(): void
+}
+
+export interface TraderReferralCodeSubtitleProps {
+  uiState: TraderReferralCodeModalUiState
+  hasRejection: boolean
+  verification: TraderReferralCodeVerificationStatus
+  incomingIneligibleCode?: string
+  isConnected: boolean
+  rejectionCode?: string
+  rejectionReason?: TraderReferralCodeIncomingReason
+  isLinked: boolean
+}
+
+export interface TraderReferralCodeFormSectionProps {
+  isVisible: boolean
+  uiState: TraderReferralCodeModalUiState
   isConnected: boolean
   savedCode?: string
   displayCode: string
   verification: TraderReferralCodeVerificationStatus
-  incomingIneligibleCode?: string
-  rejectionCode?: string
-  rejectionReason?: TraderReferralCodeIncomingReason
-  isLinked: boolean
-  onPrimaryClick(): void
   onEdit(): void
   onRemove(): void
   onSave(): void
   onChange(event: FormEvent<HTMLInputElement>): void
-  primaryCta: PrimaryCta
-  hasRejection: boolean
+  inputRef: RefObject<HTMLInputElement | null>
+}
+
+export interface TraderReferralCodeStatusSectionProps {
+  infoMessage: string
+  shouldShowInfo: boolean
+  infoVariant: StatusColorVariant
+}
+
+export interface TraderReferralCodePayoutSectionProps {
   showPayoutAddressConfirmation: boolean
   payoutAddress?: string
   payoutAddressConfirmed: boolean
   onTogglePayoutAddressConfirmed(checked: boolean): void
-  infoMessage: string
-  shouldShowInfo: boolean
-  infoVariant: StatusColorVariant
-  inputRef: RefObject<HTMLInputElement | null>
-  ctaRef: RefObject<HTMLButtonElement | null>
-  onDismiss(): void
 }
 
 export interface StatusCopyResult {

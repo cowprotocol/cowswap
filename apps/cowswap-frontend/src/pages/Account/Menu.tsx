@@ -35,7 +35,7 @@ const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId, isAffiliateProgramEnabled
 
 export function AccountMenu(): ReactNode {
   const { chainId } = useWalletInfo()
-  const { isAffiliateProgramEnabled = false } = useFeatureFlags()
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
   const { extractTextFromStringOrI18nDescriptor } = useExtractText()
 
   return (

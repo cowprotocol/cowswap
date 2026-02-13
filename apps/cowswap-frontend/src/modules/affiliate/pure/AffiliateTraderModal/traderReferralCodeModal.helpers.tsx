@@ -5,16 +5,14 @@ import { StatusColorVariant } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
-import { PrimaryCta, StatusCopyResult } from './TraderReferralCodeModal.types'
+import { PrimaryCta, StatusCopyResult } from './AffiliateTraderModal.types'
 
-import {
-  useTraderReferralCodeModalState,
-  TraderReferralCodeModalUiState,
-} from '../../hooks/useTraderReferralCodeModalState'
-import { TraderReferralCodeVerificationStatus, TraderWalletReferralCodeState } from '../../lib/affiliateProgramTypes'
+import { useAffiliateTraderModalState, TraderReferralCodeModalUiState } from '../../hooks/useAffiliateTraderModalState'
+import { TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
+import { TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 
-type VerificationKind = ReturnType<typeof useTraderReferralCodeModalState>['verification']['kind']
-type WalletStatus = TraderWalletReferralCodeState['status']
+type VerificationKind = TraderReferralCodeVerificationStatus['kind']
+type WalletStatus = TraderWalletStatus
 
 export function computePrimaryCta(params: {
   uiState: TraderReferralCodeModalUiState
@@ -51,7 +49,7 @@ export function computePrimaryCta(params: {
   const disabledLabel = staticDisabledLabels[uiState]
 
   if (disabledLabel) {
-    return disabledCta(disabledLabel)
+    return { label: disabledLabel, disabled: true, action: 'none' }
   }
 
   if (uiState === 'empty') {
@@ -65,10 +63,6 @@ export function computePrimaryCta(params: {
   return verifyCta(hasValidLength, hasCode, verificationKind, walletStatus)
 }
 
-function disabledCta(label: string): PrimaryCta {
-  return { label, disabled: true, action: 'none' }
-}
-
 function verifyCta(
   hasValidLength: boolean,
   hasCode: boolean,
@@ -76,7 +70,7 @@ function verifyCta(
   walletStatus: WalletStatus,
 ): PrimaryCta {
   if (walletStatus === 'unsupported') {
-    return disabledCta(t`Unsupported Network`)
+    return { label: t`Unsupported Network`, disabled: true, action: 'none' }
   }
 
   const requiresConnection = walletStatus === 'disconnected' || walletStatus === 'unknown'
@@ -133,7 +127,7 @@ export function useTraderReferralCodeModalFocus(
 }
 
 export function useTraderReferralCodeModalAnalytics(
-  traderReferralCode: ReturnType<typeof useTraderReferralCodeModalState>['traderReferralCode'],
+  traderReferralCode: ReturnType<typeof useAffiliateTraderModalState>,
   uiState: TraderReferralCodeModalUiState,
   analytics: CowAnalytics,
 ): void {
@@ -143,9 +137,9 @@ export function useTraderReferralCodeModalAnalytics(
   useEffect(() => {
     if (traderReferralCode.modalOpen && !wasOpenRef.current) {
       analytics.sendEvent({
-        category: 'referral',
+        category: 'affiliate',
         action: 'modal_opened',
-        label: traderReferralCode.modalSource ?? 'unknown',
+        label: 'modal',
       })
     }
 
@@ -154,7 +148,7 @@ export function useTraderReferralCodeModalAnalytics(
     if (!traderReferralCode.modalOpen) {
       lastUiStateRef.current = null
     }
-  }, [analytics, traderReferralCode.modalOpen, traderReferralCode.modalSource])
+  }, [analytics, traderReferralCode.modalOpen])
 
   useEffect(() => {
     if (!traderReferralCode.modalOpen) {
@@ -163,20 +157,20 @@ export function useTraderReferralCodeModalAnalytics(
 
     if (uiState === 'linked' && lastUiStateRef.current !== 'linked') {
       analytics.sendEvent({
-        category: 'referral',
+        category: 'affiliate',
         action: 'view_linked',
-        label: traderReferralCode.modalSource ?? 'unknown',
+        label: 'modal',
       })
     }
 
     if (uiState === 'ineligible' && lastUiStateRef.current !== 'ineligible') {
       analytics.sendEvent({
-        category: 'referral',
+        category: 'affiliate',
         action: 'view_ineligible',
-        label: traderReferralCode.modalSource ?? 'unknown',
+        label: 'modal',
       })
     }
 
     lastUiStateRef.current = uiState
-  }, [analytics, traderReferralCode.modalOpen, traderReferralCode.modalSource, uiState])
+  }, [analytics, traderReferralCode.modalOpen, uiState])
 }
