@@ -9,5 +9,5 @@ export function useGetConfirmButtonLabel(variant: ConfirmButtonLabelVariant, isB
     return isBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`
   }
 
-  return isBridging ? t`Swap and Bridge` : t`Swap`
+  return isBridging ? t`Confirm Swap and Bridge` : t`Confirm Swap`
 }
