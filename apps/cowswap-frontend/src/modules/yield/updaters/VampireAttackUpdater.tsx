@@ -73,7 +73,9 @@ export function VampireAttackUpdater(): null {
         const aBalance = lpTokensWithBalances[a.token.address.toLowerCase()].balance
         const bBalance = lpTokensWithBalances[b.token.address.toLowerCase()].balance
 
-        return +bBalance.sub(aBalance).toString()
+        if (aBalance === bBalance) return 0
+
+        return aBalance > bBalance ? -1 : 1
       }),
     }
   }, [lpTokensWithBalancesCount, lpTokensWithBalances, cowAmmLpTokens, poolsInfo])

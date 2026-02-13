@@ -68,13 +68,13 @@ export interface TwapOrderItem {
 }
 
 export interface ConditionalOrderParams {
-  staticInput: string
-  salt: string
+  staticInput: Hex
+  salt: Hex
   handler: string
 }
 
 export interface TwapOrderInfo {
-  id: string
+  id: Hex
   orderStruct: TWAPOrderStruct
   safeData: TwapOrdersSafeData
 }

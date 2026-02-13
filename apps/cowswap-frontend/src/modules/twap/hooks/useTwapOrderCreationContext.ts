@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20 } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -23,7 +22,6 @@ export interface TwapOrderCreationContext {
   needsZeroApproval: boolean
   spender: string
   currentBlockFactoryAddress: string
-  erc20Contract: Erc20
   chainId: SupportedChainId
 }
 
@@ -41,7 +39,6 @@ export function useTwapOrderCreationContext(
     if (
       // check for missing dependencies
       !composableCowContract ||
-      !erc20Contract ||
       !spender ||
       !currentBlockFactoryAddress ||
       // Ensure token and composable cow contracts are on the same chain
@@ -51,7 +48,6 @@ export function useTwapOrderCreationContext(
 
     return {
       composableCowContract,
-      erc20Contract,
       needsApproval,
       needsZeroApproval,
       spender,
@@ -60,7 +56,6 @@ export function useTwapOrderCreationContext(
     }
   }, [
     composableCowContract,
-    erc20Contract,
     spender,
     currentBlockFactoryAddress,
     needsApproval,
