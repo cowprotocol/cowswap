@@ -6,6 +6,7 @@ import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { useConnection } from 'wagmi'
 
 import { useWalletCapabilities } from './hooks/useWalletCapabilities'
+export { useWalletSupportedChainIds } from './hooks/useWalletSupportedChainIds'
 import {
   gnosisSafeInfoAtom,
   walletDetailsAtom,

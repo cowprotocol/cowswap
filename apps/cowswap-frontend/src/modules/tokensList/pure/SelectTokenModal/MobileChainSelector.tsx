@@ -55,6 +55,7 @@ function ChainChipList({
       {orderedChains.map((chain) => {
         const isDisabled = chainsState.disabledChainIds?.has(chain.id) ?? false
         const isLoading = chainsState.loadingChainIds?.has(chain.id) ?? false
+        const isWalletUnsupported = chainsState.walletUnsupportedChainIds?.has(chain.id) ?? false
         const clickEvent =
           isSwapMode && buildClickEvent && !isDisabled && !isLoading ? buildClickEvent(chain) : undefined
 
@@ -66,6 +67,7 @@ function ChainChipList({
             onSelectChain={onSelectChain}
             isDisabled={isDisabled}
             isLoading={isLoading}
+            isWalletUnsupported={isWalletUnsupported}
             isTooltipVisible={activeTooltipChainId === chain.id}
             onDisabledClick={onDisabledClick}
             onHideTooltip={onHideTooltip}

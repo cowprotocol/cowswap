@@ -2,9 +2,11 @@ import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { AccountType } from '@cowprotocol/types'
 import { Connector as LegacyConnector } from '@web3-react/types'
 
+import * as newUseIsCoinbaseWallet from './wagmi/hooks/useIsCoinbaseWallet'
 import * as newUseIsSmartContract from './wagmi/hooks/useIsSmartContractWallet'
 import * as newUseIsWalletConnect from './wagmi/hooks/useIsWalletConnect'
 import * as newUseWalletMetadata from './wagmi/hooks/useWalletMetadata'
+import * as legacyUseIsCoinbaseWallet from './web3-react/hooks/useIsCoinbaseWallet'
 import * as legacyUseIsSmartContractWallet from './web3-react/hooks/useIsSmartContractWallet'
 import * as legacyUseIsWalletConnect from './web3-react/hooks/useIsWalletConnect'
 import * as legacyUseWalletMetadata from './web3-react/hooks/useWalletMetadata'
@@ -24,6 +26,12 @@ export function useIsSmartContractWallet(): boolean | undefined {
   const newIsSmartContractWallet = newUseIsSmartContract.useIsSmartContractWallet()
   const legacyIsSmartContractWallet = legacyUseIsSmartContractWallet.useIsSmartContractWallet()
   return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsSmartContractWallet : legacyIsSmartContractWallet
+}
+
+export function useIsCoinbaseWallet(): boolean {
+  const newResult = newUseIsCoinbaseWallet.useIsCoinbaseWallet()
+  const legacyResult = legacyUseIsCoinbaseWallet.useIsCoinbaseWallet()
+  return LAUNCH_DARKLY_VIEM_MIGRATION ? newResult : legacyResult
 }
 
 export function getIsWalletConnect(connector: LegacyConnector): boolean {

@@ -74,6 +74,7 @@ export function ChainPanel({
           onSelectChain={onSelectChain}
           disabledChainIds={chainsState?.disabledChainIds}
           loadingChainIds={chainsState?.loadingChainIds}
+          walletUnsupportedChainIds={chainsState?.walletUnsupportedChainIds}
           tradeType={tradeType}
           field={field}
           counterChainId={counterChainId}

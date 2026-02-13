@@ -18,6 +18,7 @@ export interface ChainsSelectorProps {
   isLoading: boolean
   disabledChainIds?: Set<number>
   loadingChainIds?: Set<number>
+  walletUnsupportedChainIds?: Set<number>
   tradeType?: TradeType
   field?: Field
   counterChainId?: ChainInfo['id']
