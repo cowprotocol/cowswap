@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useAvailableChains, useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsCoinbaseWallet, useWalletSupportedChainIds, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
 
@@ -38,6 +38,8 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const availableChains = useAvailableChains()
   const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
   const shouldHideNetworkSelector = useShouldHideNetworkSelector()
+  const isCoinbaseWallet = useIsCoinbaseWallet()
+  const walletSupportedChainIds = useWalletSupportedChainIds()
 
   const supportedChains = useMemo(() => {
     return availableChains.reduce((acc, id) => {
@@ -51,6 +53,15 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   // not necessarily the wallet network. This keeps chain availability accurate when wallet network != trade network.
   const sourceChainId =
     field === Field.OUTPUT && oppositeToken?.chainId ? (oppositeToken.chainId as SupportedChainId) : chainId
+
+  // Only restrict chains for Coinbase SDK wallets with detected SCW capabilities.
+  // For Coinbase SCW, capability keys = chains where the smart contract is deployed.
+  // Coinbase EOA (no atomic capabilities) -> walletSupportedChainIds is undefined -> no filtering.
+  const walletUnsupportedChainIds = useMemo(() => {
+    if (!isCoinbaseWallet || !walletSupportedChainIds) return undefined
+    // Exclude source chain (chainId) — user is connected to it, bridging FROM it is valid
+    return new Set(availableChains.filter((id) => id !== chainId && !walletSupportedChainIds.has(id)))
+  }, [isCoinbaseWallet, walletSupportedChainIds, availableChains, chainId])
 
   const destinationChainIds = useMemo(() => supportedChains.map((c) => c.id), [supportedChains])
   const isBuyField = field === Field.OUTPUT
@@ -71,6 +82,8 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
         defaultChainId: selectedTargetChainId,
         chains: shouldHideNetworkSelector ? [] : sortChainsByDisplayOrder(supportedChains),
         isLoading: false,
+        disabledChainIds: walletUnsupportedChainIds,
+        walletUnsupportedChainIds,
       }
     }
 
@@ -83,6 +96,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       supportedChains,
       isLoading,
       routesAvailability,
+      walletUnsupportedChainIds,
     })
   }, [
     field,
@@ -96,5 +110,6 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     isAdvancedTradeType,
     routesAvailability,
     shouldHideNetworkSelector,
+    walletUnsupportedChainIds,
   ])
 }

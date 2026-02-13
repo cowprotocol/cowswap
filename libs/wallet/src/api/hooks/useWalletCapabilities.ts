@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { LAUNCH_DARKLY_VIEM_MIGRATION, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -18,9 +20,9 @@ export type WalletCapabilities = {
   atomic?: { status: 'supported' | 'ready' | 'unsupported' }
 }
 
-const requestTimeout = ms`10s`
+export type CapabilitiesPerChain = Record<number, WalletCapabilities>
 
-const EMPTY_SWR_RESPONSE = { data: undefined, isLoading: true }
+const requestTimeout = ms`10s`
 
 /**
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
@@ -41,14 +43,19 @@ function shouldCheckCapabilities(
   return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }
 
-export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
+export function useWalletCapabilities(): {
+  data: WalletCapabilities | undefined
+  allChains: CapabilitiesPerChain | undefined
+  isLoading: boolean
+} {
   const provider = useWalletProvider()
   const newIsWalletConnect = useIsWalletConnect()
   const legacyIsWalletConnect = legacyUseIsWalletConnect()
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
 
-  const capabilities = useCapabilities({ account, chainId })
+  // Wagmi path: omit chainId to get the full per-chain capabilities map
+  const capabilities = useCapabilities({ account })
 
   let isWalletConnect = legacyIsWalletConnect
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
@@ -59,13 +66,15 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
     shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId,
   )
 
+  // Legacy (SWR) path: fetch the full per-chain capabilities map.
+  // chainId stays in the key to trigger refetch on chain switch.
   const swrResponse = useSWR<
-    WalletCapabilities | undefined,
+    CapabilitiesPerChain | undefined,
     unknown,
     readonly [Web3Provider, string, SupportedChainId] | null
   >(
     shouldFetchCapabilities ? [provider!, account!, chainId] : null,
-    ([provider, account, chainId]) => {
+    ([provider, account, _chainId]) => {
       return new Promise((resolve) => {
         const timeout = setTimeout(() => {
           resolve(undefined)
@@ -80,10 +89,13 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
               resolve(undefined)
               return
             }
-            const chainIdHex = '0x' + (+chainId).toString(16)
 
-            // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
-            resolve(result[chainIdHex] || result[Object.keys(result)[0]])
+            // Convert hex chain ID keys to numeric
+            const numericMap: CapabilitiesPerChain = {}
+            for (const [hexKey, caps] of Object.entries(result)) {
+              numericMap[parseInt(hexKey, 16)] = caps
+            }
+            resolve(numericMap)
           })
           .catch((error) => {
             console.error('useWalletCapabilities() error', error)
@@ -95,11 +107,29 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
     SWR_NO_REFRESH_OPTIONS,
   )
 
+  // Determine the full per-chain map based on the active code path
+  const allChains = useMemo((): CapabilitiesPerChain | undefined => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return capabilities.data as CapabilitiesPerChain | undefined
+    }
+    return swrResponse.data
+  }, [capabilities.data, swrResponse.data])
+
+  // Derive current chain's capabilities from the full map (backward-compat for existing consumers)
+  const data = useMemo((): WalletCapabilities | undefined => {
+    if (!allChains || !chainId) return undefined
+    // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
+    return allChains[chainId] || allChains[Number(Object.keys(allChains)[0])]
+  }, [allChains, chainId])
+
+  let isLoading: boolean
   if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    return capabilities
+    isLoading = capabilities.isLoading
   } else if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
-    return EMPTY_SWR_RESPONSE
+    isLoading = true
+  } else {
+    isLoading = swrResponse.isLoading
   }
 
-  return swrResponse
+  return { data, allChains, isLoading }
 }

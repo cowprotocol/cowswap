@@ -339,5 +339,35 @@ describe('chainsState', () => {
 
       expect(result.chains).toBeDefined()
     })
+
+    it('includes walletUnsupportedChainIds in disabled set and passes through for tooltip', () => {
+      const walletUnsupportedChainIds = new Set([SupportedChainId.GNOSIS_CHAIN])
+      const result = createOutputChainsState(createOptions({ walletUnsupportedChainIds }))
+
+      expect(result.disabledChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+      // walletUnsupportedChainIds should be passed through for tooltip differentiation
+      expect(result.walletUnsupportedChainIds).toBe(walletUnsupportedChainIds)
+    })
+
+    it('walletUnsupportedChainIds containing source chain still allows it as default', () => {
+      // Even if walletUnsupportedChainIds includes the source chain, resolveDefaultChainId
+      // returns it as fallback because the source chain is always in the ordered list.
+      // In practice, the caller (useChainsToSelect) excludes chainId from the set,
+      // so this edge case only arises from a programming error.
+      const result = createOutputChainsState(
+        createOptions({
+          chainId: SupportedChainId.MAINNET,
+          selectedTargetChainId: SupportedChainId.GNOSIS_CHAIN,
+          walletUnsupportedChainIds: new Set([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN]),
+        }),
+      )
+
+      // Both are in walletUnsupportedChainIds → disabled in the UI
+      expect(result.disabledChainIds?.has(SupportedChainId.MAINNET)).toBe(true)
+      expect(result.disabledChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+      // But resolveDefaultChainId still picks source chain as fallback
+      // (selectedTarget Gnosis is disabled, so it falls through to sourceInList check)
+      expect(result.defaultChainId).toBe(SupportedChainId.MAINNET)
+    })
   })
 })
