@@ -1,8 +1,8 @@
 import { SignatureVerifierMuxerAbi } from '@cowprotocol/cowswap-abis'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
-import { writeContract } from '@wagmi/core'
 import { encodeFunctionData } from 'viem'
+import { writeContract } from 'wagmi/actions'
 
 import { COMPOSABLE_COW_ADDRESS, SAFE_EXTENSIBLE_HANDLER_ADDRESS } from 'modules/advancedOrders/const'
 

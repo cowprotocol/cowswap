@@ -2,8 +2,8 @@
 import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
 
-import { estimateGas, writeContract } from '@wagmi/core'
 import { encodeFunctionData, type Hex } from 'viem'
+import { estimateGas, writeContract } from 'wagmi/actions'
 
 import { Order } from 'legacy/state/orders/actions'
 

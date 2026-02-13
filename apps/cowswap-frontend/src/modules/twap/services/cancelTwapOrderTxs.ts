@@ -5,8 +5,8 @@ import { ContractsOrder } from '@cowprotocol/sdk-contracts-ts'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { estimateGas } from '@wagmi/core'
 import { encodeFunctionData } from 'viem'
+import { estimateGas } from 'wagmi/actions'
 
 import { SettlementContractData } from 'common/hooks/useContract'
 import { toKeccak256 } from 'common/utils/toKeccak256'

@@ -1,6 +1,6 @@
 import { SignatureVerifierMuxerAbi } from '@cowprotocol/cowswap-abis'
 
-import { readContract, writeContract } from '@wagmi/core'
+import { readContract, writeContract } from 'wagmi/actions'
 
 import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders/const'
 

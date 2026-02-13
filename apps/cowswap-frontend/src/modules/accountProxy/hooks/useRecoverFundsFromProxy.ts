@@ -7,10 +7,10 @@ import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { writeContract } from '@wagmi/core'
 import ms from 'ms.macro'
 import { stringToHex } from 'viem'
 import { useConfig } from 'wagmi'
+import { writeContract } from 'wagmi/actions'
 
 import { useCowShedHooks } from './useCowShedHooks'
 

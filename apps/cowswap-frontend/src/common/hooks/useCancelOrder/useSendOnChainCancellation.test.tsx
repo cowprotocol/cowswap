@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { act, renderHook } from '@testing-library/react'
-import { writeContract } from '@wagmi/core'
+import { writeContract } from 'wagmi/actions'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
@@ -30,7 +30,7 @@ jest.mock('@cowprotocol/wallet', () => {
     useSendBatchTransactions: jest.fn().mockResolvedValue('0x01'),
   }
 })
-jest.mock('@wagmi/core', () => {
+jest.mock('wagmi/actions', () => {
   return {
     estimateGas: jest.fn(() => Promise.resolve(1n)),
     writeContract: jest.fn(() => Promise.resolve(settlementCancellationTxHash)),
