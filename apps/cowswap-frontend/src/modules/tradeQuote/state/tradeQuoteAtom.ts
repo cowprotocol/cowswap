@@ -1,7 +1,12 @@
 import { atom } from 'jotai'
 
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteResults } from '@cowprotocol/sdk-bridging'
+
+import { providerNetworkSupportedAtom } from 'entities/common/providerNetworkSupported.atom'
+
+import { derivedTradeStateAtom } from 'modules/trade'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
@@ -65,3 +70,18 @@ export const updateTradeQuoteAtom = atom(
     })
   },
 )
+
+export const currentTradeQuoteAtom = atom<TradeQuoteState>((get) => {
+  const isProviderNetworkUnsupported = get(providerNetworkSupportedAtom)
+  const state = get(derivedTradeStateAtom)
+  const tradeQuotes = get(tradeQuotesAtom)
+
+  const inputCurrency = state?.inputCurrency
+  const outputCurrency = state?.outputCurrency
+
+  if (!inputCurrency || !outputCurrency || isProviderNetworkUnsupported === true) {
+    return DEFAULT_TRADE_QUOTE_STATE
+  }
+
+  return tradeQuotes[getCurrencyAddress(inputCurrency).toLowerCase()] || DEFAULT_TRADE_QUOTE_STATE
+})
