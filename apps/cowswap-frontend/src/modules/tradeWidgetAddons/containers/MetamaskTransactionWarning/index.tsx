@@ -3,16 +3,15 @@ import { useEffect, useState } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EthereumProvider } from '@cowprotocol/iframe-transport'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWidgetProviderMetaInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-import { Connector, useConnection } from 'wagmi'
-
-import type { Client } from 'viem'
 
 const Banner = styled(InlineBanner)`
   font-size: 14px;
@@ -67,9 +66,7 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
  * Fetch the Metamask version using the method defined in https://docs.metamask.io/wallet/reference/json-rpc-methods/web3_clientversion
  * Returns null if the version could not be fetched
  */
-async function getMetamaskVersion(connector: Connector): Promise<string | null> {
-  const provider = (await connector.getProvider()) as Client
-
+async function getMetamaskVersion(provider: EthereumProvider): Promise<string | null> {
   if (!provider) return null
 
   try {
@@ -116,8 +113,6 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
   const [isAffected, setIsAffected] = useState<boolean | undefined>(false)
   const [currentVersion, setCurrentVersion] = useState<string>('')
 
-  const { connector } = useConnection()
-
   const isMetamaskBrowserExtension = useIsMetamaskBrowserExtensionWallet()
 
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
@@ -126,15 +121,17 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
 
   const isMetamask = isMetamaskBrowserExtension || isWidgetMetamaskBrowserExtension
 
+  const provider = useWalletProvider()
+
   useEffect(() => {
-    if (!isMetamask || !connector) {
+    if (!isMetamask || !provider) {
       setIsAffected(false)
       return
     }
 
     // Here we know we are connected to a form of Metamask
     // Fetch the version
-    getMetamaskVersion(connector).then((version) => {
+    getMetamaskVersion(provider as EthereumProvider).then((version) => {
       if (!version) {
         // No version found, assume the wallet is affected
         setIsAffected(undefined)
@@ -164,7 +161,7 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
       const isAffected = isMetamaskSemverSmallerThanTarget(semver, VERSION_WHERE_BUG_WAS_FIXED)
       setIsAffected(isAffected)
     })
-  }, [isMetamask, connector])
+  }, [isMetamask, provider])
 
   // If we don't know, show it according to the isMetamask flag
   const shouldDisplayMetamaskWarning = isAffected === undefined ? isMetamask : isAffected
