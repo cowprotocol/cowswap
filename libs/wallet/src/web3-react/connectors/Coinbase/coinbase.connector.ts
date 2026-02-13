@@ -1,4 +1,5 @@
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
+import { isCoinbaseWalletBrowser, isMobile } from '@cowprotocol/common-utils'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 import type {
   Actions,
@@ -9,10 +10,20 @@ import type {
 } from '@web3-react/types'
 import { Connector } from '@web3-react/types'
 
-import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk'
+import { createCoinbaseWalletSDK, type CoinbaseWalletProvider } from '@coinbase/wallet-sdk'
 
 const EVENT_DELAY_MS = 1000
 const EAGER_CONNECTION_TIMEOUT_MS = 5000
+
+function getCoinbaseWalletPreference(): { options: 'all' | 'smartWalletOnly' } {
+  // Mobile Safari/Chrome can dead-end after selecting "Open Coinbase Wallet" in the keys flow.
+  // Restrict mobile web to the smart-wallet path, which is currently the reliable route.
+  if (isMobile && !isCoinbaseWalletBrowser) {
+    return { options: 'smartWalletOnly' }
+  }
+
+  return { options: 'all' }
+}
 
 /**
  * Patched version of
@@ -40,8 +51,6 @@ export interface CoinbaseWalletConstructorArgs {
 }
 
 export class CoinbaseWallet extends Connector {
-  private eagerConnection?: Promise<void>
-
   private currentChainId: string | null = null
 
   private currentAccountAddress: string | null = null
@@ -91,23 +100,22 @@ export class CoinbaseWallet extends Connector {
     this.pendingTimeouts.add(id)
   }
 
-  private async isomorphicInitialize(): Promise<void> {
-    if (this.eagerConnection) return
+  private isomorphicInitialize(): void {
+    if (this.provider) return
 
-    await (this.eagerConnection = import('@coinbase/wallet-sdk').then((m) => {
-      const sdk = m.createCoinbaseWalletSDK({
-        appName: 'CoW Swap',
-        appChainIds: ALL_SUPPORTED_CHAIN_IDS,
-        appLogoUrl: CowImage,
-      })
+    const sdk = createCoinbaseWalletSDK({
+      appName: 'CoW Swap',
+      appChainIds: ALL_SUPPORTED_CHAIN_IDS,
+      appLogoUrl: CowImage,
+      preference: getCoinbaseWalletPreference(),
+    })
 
-      this.provider = sdk.getProvider()
+    this.provider = sdk.getProvider()
 
-      this.provider.on('connect', this.onConnect)
-      this.provider.on('disconnect', this.onDisconnect)
-      this.provider.on('chainChanged', this.onChainChanged)
-      this.provider.on('accountsChanged', this.onAccountsChanged)
-    }))
+    this.provider.on('connect', this.onConnect)
+    this.provider.on('disconnect', this.onDisconnect)
+    this.provider.on('chainChanged', this.onChainChanged)
+    this.provider.on('accountsChanged', this.onAccountsChanged)
   }
 
   /** {@inheritdoc Connector.connectEagerly} */
@@ -115,7 +123,7 @@ export class CoinbaseWallet extends Connector {
     const cancelActivation = this.actions.startActivation()
 
     try {
-      await this.isomorphicInitialize()
+      this.isomorphicInitialize()
 
       const provider = this.provider as CoinbaseWalletProvider
 
@@ -188,7 +196,7 @@ export class CoinbaseWallet extends Connector {
     const cancelActivation = this.actions.startActivation()
 
     try {
-      await this.isomorphicInitialize()
+      this.isomorphicInitialize()
       if (!this.provider) throw new Error('No provider')
 
       const provider = this.provider as CoinbaseWalletProvider
@@ -238,8 +246,6 @@ export class CoinbaseWallet extends Connector {
   }
 
   public cleanUpProvider(): void {
-    this.eagerConnection = undefined
-
     for (const id of this.pendingTimeouts) {
       clearTimeout(id)
     }
