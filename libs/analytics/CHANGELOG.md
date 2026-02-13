@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/analytics-v2.1.0...analytics-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-hooks bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/events bumped to 3.2.0
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/analytics-v2.0.1...analytics-v2.1.0) (2026-02-05)
 
 

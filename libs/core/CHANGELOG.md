@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/core-v2.1.0...core-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* add fallback for restricted ondo token list ([#6978](https://github.com/cowprotocol/cowswap/issues/6978)) ([5da5ea5](https://github.com/cowprotocol/cowswap/commit/5da5ea599db82956e3f0ed3022c7ec3882f0552d))
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### 🔧 Miscellaneous
+
+* fix some minor issues in the comments ([#6988](https://github.com/cowprotocol/cowswap/issues/6988)) ([9d547cc](https://github.com/cowprotocol/cowswap/commit/9d547cc16304b4d692b8daf7c5ab4219895fadce))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.0
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/core-v2.0.1...core-v2.1.0) (2026-02-05)
 
 
