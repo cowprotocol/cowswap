@@ -37,7 +37,9 @@ export function useBridgeSupportedTokens(
     async ([params]) => {
       if (typeof params === 'undefined') return null
 
-      return bridgingSdk.getBuyTokens(params).then((result) => {
+      try {
+        const result = await bridgingSdk.getBuyTokens(params)
+
         const tokens = result.tokens.reduce<TokenWithLogo[]>((acc, token) => {
           if (!token || token.chainId === undefined || !token.address) {
             console.warn('[bridgeTokens] Ignoring malformed token', token)
@@ -63,11 +65,13 @@ export function useBridgeSupportedTokens(
         }, [])
         const isRouteAvailable = tokens.length > 0 ? result.isRouteAvailable : false
 
-        return {
-          isRouteAvailable,
-          tokens,
-        }
-      })
+        return { isRouteAvailable, tokens }
+      } catch (error) {
+        // Treat failures as "no route" to avoid leaving the UI in an inconsistent cross-chain state
+        // (e.g. stale targetChainId + output token from a previous selection).
+        console.warn('[bridgeTokens] Failed to fetch buy tokens', error)
+        return { isRouteAvailable: false, tokens: [] }
+      }
     },
     SWR_NO_REFRESH_OPTIONS,
   )
