@@ -25,7 +25,6 @@ interface OrdersTableNoOrdersContentProps {
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   hasHydratedOrders: boolean
-  displayOrdersOnlyForSafeApp: boolean
   hasOrders: boolean
 }
 
@@ -35,7 +34,6 @@ export function OrdersTableNoOrdersContent({
   searchTerm,
   historyStatusFilter,
   hasHydratedOrders,
-  displayOrdersOnlyForSafeApp,
   hasOrders,
 }: OrdersTableNoOrdersContentProps): ReactNode {
   const { darkMode: isDarkMode } = useTheme()
@@ -67,7 +65,6 @@ export function OrdersTableNoOrdersContent({
         searchTerm,
         historyStatusFilter,
         isSafeViaWc,
-        displayOrdersOnlyForSafeApp,
       }),
     }),
     [
@@ -79,7 +76,6 @@ export function OrdersTableNoOrdersContent({
       searchTerm,
       historyStatusFilter,
       isSafeViaWc,
-      displayOrdersOnlyForSafeApp,
     ],
   )
 

@@ -55,7 +55,6 @@ export function AdvancedOrdersPage(): ReactNode {
 
   useResetOrdersTableFilters({
     historyStatusFilter: HistoryStatusFilter.FILLED,
-    displayOrdersOnlyForSafeApp: true,
   })
 
   return (

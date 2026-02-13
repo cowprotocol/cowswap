@@ -58,7 +58,6 @@ export const DEFAULT_ORDERS_TABLE_FILTERS = {
   // currentTabId: OrderTabId.open, // TODO: Init from URL...
   searchTerm: '',
   historyStatusFilter: HistoryStatusFilter.FILLED,
-  displayOrdersOnlyForSafeApp: false,
 } as const satisfies OrdersTableFilters
 
 export const ordersTableFiltersAtom = atom<OrdersTableFilters>(DEFAULT_ORDERS_TABLE_FILTERS)

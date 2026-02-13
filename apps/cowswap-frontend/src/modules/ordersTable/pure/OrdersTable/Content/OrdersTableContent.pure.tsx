@@ -30,7 +30,6 @@ export function OrdersTableContent({
 }: OrdersTableContentProps): ReactNode {
   const orderType = useAtomValue(locationOrderTypeAtom);
   const { orders, filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
-  const { displayOrdersOnlyForSafeApp } = useOrdersTableFilters() || {}
   const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { account } = useWalletInfo()
@@ -50,7 +49,6 @@ export function OrdersTableContent({
       searchTerm={searchTerm}
       historyStatusFilter={historyStatusFilter}
       hasHydratedOrders={isHydrated}
-      displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
       hasOrders={!!orders?.length}
     />
   ) : (

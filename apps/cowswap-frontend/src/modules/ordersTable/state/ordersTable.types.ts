@@ -77,7 +77,7 @@ export interface OrdersTableFilters {
   historyStatusFilter: HistoryStatusFilter
 
   // Other:
-  displayOrdersOnlyForSafeApp: boolean
+  // displayOrdersOnlyForSafeApp: boolean
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>
