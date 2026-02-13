@@ -159,6 +159,7 @@ export interface NewModalProps {
   children?: React.ReactNode
   modalMode?: boolean
   justifyContent?: string
+  showBackButton?: boolean
 }
 
 export function NewModal({
@@ -170,13 +171,14 @@ export function NewModal({
   title,
   children,
   onDismiss,
+  showBackButton = true,
 }: NewModalProps): ReactNode {
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
     <Wrapper maxWidth={maxWidth} minHeight={minHeight} modalMode={modalMode}>
       <ModalInner>
-        {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
+        {!modalMode && showBackButton && <BackButtonStyled onClick={onDismissCallback} />}
         {title && (
           <Heading modalMode={!!modalMode}>
             {title}{' '}

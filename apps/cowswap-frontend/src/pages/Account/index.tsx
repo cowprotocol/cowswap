@@ -4,7 +4,7 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { Outlet, useLocation } from 'react-router'
+import { Outlet, useLocation, matchPath } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Content, Title } from 'modules/application/pure/Page'
@@ -21,6 +21,15 @@ const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages
 const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
 function _getPropsFromRoute(route: string): string[] {
+  if (
+    matchPath(RoutesEnum.ACCOUNT_PROXIES, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_RECOVER, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_HELP, route)
+  ) {
+    return ['account-proxy', t`Account Proxy`]
+  }
+
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', t`Account overview`]

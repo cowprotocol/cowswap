@@ -9,8 +9,9 @@ import {
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
 } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
@@ -22,6 +23,7 @@ import {
   AccountProxyRecoverPage,
   AccountProxiesPage,
 } from 'modules/accountProxy'
+import { parameterizeRoute } from 'modules/accountProxy/utils/parameterizeRoute'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
@@ -50,6 +52,25 @@ function ExternalRedirect({ url }: { url: string }): null {
   }, [url])
 
   return null
+}
+
+function LegacyAccountProxyRedirect({ target }: { target: RoutesValues }): ReactNode {
+  const { search } = useLocation()
+  const { chainId, proxyAddress, tokenAddress } = useParams()
+
+  const parsedChainId = Number(chainId)
+
+  if (!chainId || Number.isNaN(parsedChainId)) {
+    return <Navigate to={RoutesEnum.ACCOUNT} replace />
+  }
+
+  const to = parameterizeRoute(target, {
+    chainId: parsedChainId as SupportedChainId,
+    proxyAddress,
+    tokenAddress,
+  })
+
+  return <Navigate to={`${to}${search}`} replace />
 }
 
 type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
@@ -83,15 +104,31 @@ export function RoutesApp(): ReactNode {
       <Route path={RoutesEnum.ACCOUNT} element={<Account />}>
         <Route path={RoutesEnum.ACCOUNT} element={<AccountOverview />} />
         <Route path={RoutesEnum.ACCOUNT_TOKENS} element={<AccountTokensOverview />} />
+        <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<AccountProxyWidgetPage />}>
+          <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
+          <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
+          <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
+          <Route index element={<AccountProxiesPage />} />
+        </Route>
         <Route path="*" element={<AccountNotFound />} />
       </Route>
 
-      <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<AccountProxyWidgetPage />}>
-        <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
-        <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
-        <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
-        <Route index element={<AccountProxiesPage />} />
-      </Route>
+      <Route
+        path={RoutesEnum.LEGACY_ACCOUNT_PROXIES}
+        element={<LegacyAccountProxyRedirect target={RoutesEnum.ACCOUNT_PROXIES} />}
+      />
+      <Route
+        path={RoutesEnum.LEGACY_ACCOUNT_PROXY}
+        element={<LegacyAccountProxyRedirect target={RoutesEnum.ACCOUNT_PROXY} />}
+      />
+      <Route
+        path={RoutesEnum.LEGACY_ACCOUNT_PROXY_RECOVER}
+        element={<LegacyAccountProxyRedirect target={RoutesEnum.ACCOUNT_PROXY_RECOVER} />}
+      />
+      <Route
+        path={RoutesEnum.LEGACY_ACCOUNT_PROXY_HELP}
+        element={<LegacyAccountProxyRedirect target={RoutesEnum.ACCOUNT_PROXY_HELP} />}
+      />
       <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
       <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 

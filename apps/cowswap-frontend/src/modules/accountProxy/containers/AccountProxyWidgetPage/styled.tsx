@@ -29,7 +29,6 @@ export const ModalWrapper = styled.div<{ $modalMode: boolean }>`
 export const WidgetWrapper = styled.div`
   width: 100%;
   max-width: ${WIDGET_MAX_WIDTH.swap};
-  margin: 0 auto;
   position: relative;
 `
 
