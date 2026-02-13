@@ -6,7 +6,7 @@ import { useIsSafeViaWc } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget/hooks/useInjectedWidgetParams'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
 
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
