@@ -18,7 +18,7 @@ export interface TradeFlowContext {
   // validTo must be calculated just before signing of an order
   postOrderParams: Omit<PostOrderParams, 'validTo' | 'config'>
   typedHooks?: TypedAppDataHooks
-  settlementContract: Omit<SettlementContractData, 'chainId'>
+  settlementContract: SettlementContractData
   chainId: SupportedChainId
   dispatch: AppDispatch
   rateImpact: number

@@ -29,12 +29,21 @@ const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
 
 export const ethFlowEnv: CowEnv = isProd || isStaging || isEns ? 'prod' : 'staging'
 
-export type UseContractResult<T extends Contract = Contract> = {
+export type UseContractResultLegacy<T extends Contract = Contract> = {
   contract: T | null
   error: unknown | null
   loading: boolean
   chainId: SupportedChainId
 }
+
+export type ContractData<T> = {
+  abi: T
+  address: string
+}
+
+export type UseContractResult<T> = {
+  chainId: SupportedChainId
+} & T
 
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
@@ -42,7 +51,7 @@ export function useContract<T extends Contract = Contract>(
   ABI: ContractInterface,
   withSignerIfPossible = true,
   customProvider?: Web3Provider,
-): UseContractResult<T> {
+): UseContractResultLegacy<T> {
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
   const defaultProvider = useWalletProvider() as JsonRpcProvider
@@ -93,19 +102,22 @@ export function useContract<T extends Contract = Contract>(
         loading: false,
       }
     }
-  }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as UseContractResult<T>
+  }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as UseContractResultLegacy<T>
 }
 
-export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): UseContractResult<Erc20> {
+export function useTokenContract(
+  tokenAddress?: string,
+  withSignerIfPossible?: boolean,
+): UseContractResultLegacy<Erc20> {
   return useContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible)
 }
 
-export function useWethContract(withSignerIfPossible?: boolean): UseContractResult<Weth> {
+export function useWethContract(withSignerIfPossible?: boolean): UseContractResultLegacy<Weth> {
   return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
 }
 
 export function useEthFlowContract(): {
-  result: UseContractResult<CoWSwapEthFlow>
+  result: UseContractResultLegacy<CoWSwapEthFlow>
 } {
   const { chainId } = useWalletInfo()
 
@@ -116,13 +128,9 @@ export function useEthFlowContract(): {
   }
 }
 
-export type SettlementContractData = {
-  abi: typeof GPv2SettlementAbi
-  address: string
-  chainId: SupportedChainId
-}
+export type SettlementContractData = ContractData<typeof GPv2SettlementAbi>
 
-export function useGP2SettlementContractData(): SettlementContractData {
+export function useGP2SettlementContractData(): UseContractResult<SettlementContractData> {
   const { chainId } = useWalletInfo()
 
   return {
@@ -132,6 +140,6 @@ export function useGP2SettlementContractData(): SettlementContractData {
   }
 }
 
-export function useVCowContract(): UseContractResult<VCow> {
+export function useVCowContract(): UseContractResultLegacy<VCow> {
   return useContract<VCow>(V_COW_CONTRACT_ADDRESS, vCowAbi, true)
 }

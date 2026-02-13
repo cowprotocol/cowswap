@@ -1,12 +1,13 @@
 import { USDC_LENS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { isZkSyncChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 import { ContractsOrder } from '@cowprotocol/sdk-contracts-ts'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { encodeFunctionData } from 'viem'
 import { estimateGas } from 'wagmi/actions'
+
+import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import { SettlementContractData } from 'common/hooks/useContract'
 import { toKeccak256 } from 'common/utils/toKeccak256'
@@ -22,10 +23,10 @@ import type { Hex } from 'viem'
 import type { Config } from 'wagmi'
 
 export interface CancelTwapOrderContext {
-  composableCowContract: ComposableCoW
+  composableCowContract: ComposableCowContractData
   config: Config
-  settlementContract: Omit<SettlementContractData, 'chainId'>
-  orderId: string
+  settlementContract: SettlementContractData
+  orderId: Hex
   chainId: SupportedChainId
   partOrderId?: Hex
 }
@@ -34,7 +35,7 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
   const { composableCowContract, settlementContract, orderId, partOrderId } = context
   const cancelTwapOrderTx = {
     to: composableCowContract.address,
-    data: composableCowContract.interface.encodeFunctionData('remove', [orderId]),
+    data: encodeFunctionData({ abi: composableCowContract.abi, functionName: 'remove', args: [orderId] }),
     value: '0',
     operation: 0,
   }
@@ -60,7 +61,10 @@ export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext
   }
 
   const { composableCowContract, config, settlementContract, orderId, partOrderId } = context
-  const cancelComposableCowTxCost = (await composableCowContract.estimateGas.remove(orderId)).toBigInt()
+  const cancelComposableCowTxCost = await estimateGas(config, {
+    to: composableCowContract.address,
+    data: encodeFunctionData({ abi: composableCowContract.abi, functionName: 'remove', args: [orderId] }),
+  })
 
   if (!partOrderId) return cancelComposableCowTxCost
 
@@ -88,10 +92,16 @@ export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext
 async function estimateZkSyncCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<bigint> {
   const { composableCowContract, config, settlementContract, partOrderId: hasPartOrder, chainId } = context
 
-  const orderId = getFakeTwapOrderId(chainId)
-  const cancelComposableCowTxCost = (
-    await composableCowContract.connect(FAKE_OWNER).estimateGas.remove(orderId)
-  ).toBigInt()
+  const orderId = getFakeTwapOrderId(chainId) as Hex
+  const cancelComposableCowTxCost = await estimateGas(config, {
+    account: FAKE_OWNER,
+    to: composableCowContract.address,
+    data: encodeFunctionData({
+      abi: composableCowContract.abi,
+      functionName: 'remove',
+      args: [orderId],
+    }),
+  })
 
   if (!hasPartOrder) {
     return cancelComposableCowTxCost
