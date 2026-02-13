@@ -1,5 +1,4 @@
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
-import { isCoinbaseWalletBrowser, isMobile } from '@cowprotocol/common-utils'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 import type {
   Actions,
@@ -14,16 +13,6 @@ import { createCoinbaseWalletSDK, type CoinbaseWalletProvider } from '@coinbase/
 
 const EVENT_DELAY_MS = 1000
 const EAGER_CONNECTION_TIMEOUT_MS = 5000
-
-function getCoinbaseWalletPreference(): { options: 'all' | 'smartWalletOnly' } {
-  // Mobile Safari/Chrome can dead-end after selecting "Open Coinbase Wallet" in the keys flow.
-  // Restrict mobile web to the smart-wallet path, which is currently the reliable route.
-  if (isMobile && !isCoinbaseWalletBrowser) {
-    return { options: 'smartWalletOnly' }
-  }
-
-  return { options: 'all' }
-}
 
 /**
  * Patched version of
@@ -107,7 +96,7 @@ export class CoinbaseWallet extends Connector {
       appName: 'CoW Swap',
       appChainIds: ALL_SUPPORTED_CHAIN_IDS,
       appLogoUrl: CowImage,
-      preference: getCoinbaseWalletPreference(),
+      preference: { options: 'all' },
     })
 
     this.provider = sdk.getProvider()
