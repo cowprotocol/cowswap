@@ -25,6 +25,8 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
+// Used by both Warnings (banner visibility) and TradeButtons (isDisabled). Keep in sync.
+import { useShouldBlockUnsupportedDestination } from '../../hooks/useShouldBlockUnsupportedDestination'
 import {
   useShouldCheckBridgingRecipient,
   useSmartContractRecipientConfirmed,
@@ -64,6 +66,7 @@ export function TradeButtons({
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
   const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
+  const shouldBlockUnsupportedDestination = useShouldBlockUnsupportedDestination()
   const isSafeWallet = useIsSafeWallet()
 
   const { confirmTrade } = useConfirmTradeWithRwaCheck()
@@ -110,6 +113,7 @@ export function TradeButtons({
     !isTradeContextReady ||
     !feeWarningAccepted ||
     !isNoImpactWarningAccepted ||
+    shouldBlockUnsupportedDestination ||
     (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false)
 
   if (!tradeFormButtonContext) return null
