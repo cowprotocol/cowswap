@@ -2,8 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
-import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
+import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
 import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'

@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
-import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
+import { usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 import { pageParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'

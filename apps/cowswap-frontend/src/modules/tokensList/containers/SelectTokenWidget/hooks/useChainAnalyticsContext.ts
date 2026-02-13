@@ -7,6 +7,7 @@ import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade/types'
 
+import { useChainsToSelect } from '../../../hooks/useChainsToSelect'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 
 export interface ChainAnalyticsContext {
@@ -17,8 +18,10 @@ export interface ChainAnalyticsContext {
 
 export function useChainAnalyticsContext(): ChainAnalyticsContext {
   const { tradeType, field, oppositeToken, selectedTargetChainId } = useSelectTokenWidgetState()
+  const chainsToSelect = useChainsToSelect()
   const { chainId } = useWalletInfo()
   const oppositeChainId = oppositeToken?.chainId
+  const resolvedTargetChainId = chainsToSelect?.defaultChainId ?? selectedTargetChainId ?? chainId
 
   const counterChainId = useMemo(() => {
     if (!field) {
@@ -30,11 +33,11 @@ export function useChainAnalyticsContext(): ChainAnalyticsContext {
     }
 
     if (field === Field.INPUT) {
-      return selectedTargetChainId ?? chainId
+      return resolvedTargetChainId
     }
 
     return chainId
-  }, [field, oppositeChainId, selectedTargetChainId, chainId])
+  }, [field, oppositeChainId, resolvedTargetChainId, chainId])
 
   return useMemo(
     () => ({

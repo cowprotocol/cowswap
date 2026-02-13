@@ -6,7 +6,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
+import { usePendingOrdersPrices } from 'modules/orders'
 import { ordersTableParamsAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
@@ -63,6 +63,14 @@ export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/):
   const currentTabId = ordersTableParams.tab
   const currentPageNumber = ordersTableParams.page
   const pendingOrdersPrices = usePendingOrdersPrices()
+
+  // TODO: Make sure this is accounted for:
+  /*
+  useEffect(() => {
+    // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
+    if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
+  }, [currentTabId])
+  */
 
   const pendingOrders = useMemo(() => {
     const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
