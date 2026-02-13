@@ -15,6 +15,7 @@ import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDispl
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
+import { locationOrderTypeAtom } from 'common/state/routesState'
 
 export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode {
   const { account } = useWalletInfo()

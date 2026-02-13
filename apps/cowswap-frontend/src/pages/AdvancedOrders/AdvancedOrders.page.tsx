@@ -17,7 +17,7 @@ import {
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { OrdersTableWidget } from 'modules/ordersTable'
 import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
 import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
@@ -54,7 +54,6 @@ export function AdvancedOrdersPage(): ReactNode {
   const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
   useResetOrdersTableFilters({
-    orderType: TabOrderTypes.ADVANCED,
     historyStatusFilter: HistoryStatusFilter.FILLED,
     displayOrdersOnlyForSafeApp: true,
   })

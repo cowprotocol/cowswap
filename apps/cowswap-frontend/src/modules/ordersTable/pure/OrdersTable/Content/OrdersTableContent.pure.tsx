@@ -14,6 +14,8 @@ import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { HistoryStatusFilter } from '../../../utils/getFilteredOrders'
 import { OrdersTable } from '../OrdersTable.pure'
+import { locationOrderTypeAtom } from 'common/state/routesState'
+import { useAtomValue } from 'jotai'
 
 interface OrdersTableContentProps {
   currentTab: OrderTabId
@@ -26,8 +28,9 @@ export function OrdersTableContent({
   searchTerm,
   historyStatusFilter,
 }: OrdersTableContentProps): ReactNode {
+  const orderType = useAtomValue(locationOrderTypeAtom);
   const { orders, filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
-  const { orderType, displayOrdersOnlyForSafeApp } = useOrdersTableFilters() || {}
+  const { displayOrdersOnlyForSafeApp } = useOrdersTableFilters() || {}
   const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { account } = useWalletInfo()

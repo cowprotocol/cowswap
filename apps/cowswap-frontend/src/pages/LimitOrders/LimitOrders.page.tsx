@@ -17,7 +17,6 @@ import {
   PromoBannerUpdater,
 } from 'modules/limitOrders'
 import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
-import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
@@ -31,7 +30,6 @@ export function LimitOrdersPage() {
   const { i18n } = useLingui()
 
   useResetOrdersTableFilters({
-    orderType: TabOrderTypes.LIMIT,
     historyStatusFilter: HistoryStatusFilter.FILLED,
   })
 

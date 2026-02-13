@@ -4,10 +4,8 @@ import { useEffect } from 'react'
 import { ordersTableFiltersAtom } from '../state/ordersTable.atoms'
 import { DEFAULT_ORDERS_TABLE_FILTERS } from '../state/ordersTable.atoms'
 import { OrdersTableFilters } from '../state/ordersTable.types'
-import { TabOrderTypes } from '../state/ordersTable.types'
 
 export interface UseResetOrdersTableFiltersProps extends Partial<OrdersTableFilters> {
-  orderType: TabOrderTypes
   syncWithUrl?: boolean
 }
 

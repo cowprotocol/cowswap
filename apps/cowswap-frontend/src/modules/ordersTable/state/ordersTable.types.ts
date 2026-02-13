@@ -19,6 +19,7 @@ export interface OrdersTablePageParams {
 }
 
 export enum TabOrderTypes {
+  SWAP = 'swap',
   LIMIT = 'limit',
   ADVANCED = 'advanced',
 }
@@ -64,7 +65,7 @@ export interface OrdersTableState {
 
 export interface OrdersTableFilters {
   // Page:
-  orderType: TabOrderTypes
+  // orderType: TabOrderTypes
   // currentPageNumber: number
 
   // Tab:

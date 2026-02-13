@@ -5,7 +5,6 @@ import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
 import { usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
-import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 import { pageParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
@@ -23,6 +22,7 @@ import { TabOrderTypes } from '../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
 import { ordersToCancelMapAtom } from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
+import { locationOrderTypeAtom } from 'common/state/routesState'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
@@ -35,8 +35,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
 
-  // TODO: Shouldn't the default be 1?
-  const { orderType } = useOrdersTableFilters() || {}
+  const orderType = useAtomValue(locationOrderTypeAtom);
   const currentPageNumber = useAtomValue(pageParamAtom)
 
   const { filteredOrders, balancesAndAllowances } = useOrdersTableState() || {}

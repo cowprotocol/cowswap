@@ -7,7 +7,6 @@ import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPri
 import * as styledEl from './AffectedPermitOrdersTable.styled'
 
 import { useResetOrdersTableFilters } from '../../hooks/useResetOrdersTableFilters'
-import { TabOrderTypes } from '../../state/ordersTable.types'
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { AffectedPermitOrderWithActions } from '../AffectedPermitOrderWithActions/AffectedPermitOrderWithActions.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
@@ -20,7 +19,6 @@ export function AffectedPermitOrdersTable({ orders }: AffectedPermitOrdersTableP
   const pendingOrdersPrices = usePendingOrdersPrices()
 
   useResetOrdersTableFilters({
-    orderType: TabOrderTypes.LIMIT,
     historyStatusFilter: HistoryStatusFilter.FILLED,
   })
 

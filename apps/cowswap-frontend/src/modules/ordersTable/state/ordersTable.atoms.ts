@@ -31,6 +31,7 @@ import { OrdersTableState, OrdersTableFilters, TabOrderTypes } from './ordersTab
 import { tabParamAtom } from './params/ordersTableParams.atoms'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
 import { OrderTabId } from './tabs/ordersTableTabs.constants'
+import { locationOrderTypeAtom } from 'common/state/routesState'
 
 export const ordersTableStateAtom = atom<OrdersTableState>({
   reduxOrders: [],
@@ -51,7 +52,7 @@ export const ordersTableStateAtom = atom<OrdersTableState>({
 })
 
 export const DEFAULT_ORDERS_TABLE_FILTERS = {
-  orderType: TabOrderTypes.LIMIT,
+  // orderType: TabOrderTypes.LIMIT,
   // currentPageNumber: 1, // TODO: Init from URL...
   // tabs: [],
   // currentTabId: OrderTabId.open, // TODO: Init from URL...
@@ -98,15 +99,14 @@ ordersTableStateAtom.onMount = () => {
     const ordersTokensSet = new Set<string>()
 
     if (reduxOrdersStateInCurrentChain && account) {
-      const ordersTableFilters = get(ordersTableFiltersAtom)
-
+      const orderType = get(locationOrderTypeAtom);
       const accountLowerCase = account.toLowerCase()
 
-      // TODO: Map this directly from the URL:
       const uiOrderType: UiOrderType = {
+        [TabOrderTypes.SWAP]: UiOrderType.LIMIT, // TODO: Is this correct (for AffectedPermitOrdersTable / SwapPage)?
         [TabOrderTypes.LIMIT]: UiOrderType.LIMIT,
         [TabOrderTypes.ADVANCED]: UiOrderType.TWAP,
-      }[ordersTableFilters.orderType]
+      }[orderType]
 
       /*
       const ordersTokens = useMemo(() => getOrdersInputTokens(allOrders), [allOrders])
@@ -176,7 +176,7 @@ ordersTableStateAtom.onMount = () => {
 
       const ordersList = getOrdersTableList(
         reduxOrders,
-        ordersTableFilters.orderType,
+        orderType,
         chainId,
         balancesAndAllowances,
         pendingOrdersPermitValidityState,
