@@ -5,7 +5,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
+import { usePendingOrdersPrices } from 'modules/orders'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
