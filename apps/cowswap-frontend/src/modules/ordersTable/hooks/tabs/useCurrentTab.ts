@@ -18,6 +18,7 @@ const DEFAULT_STATE: CurrentTabState = {
   currentPageNumber: 1,
 }
 
+// TODO: Move into atoms:
 export function useCurrentTab(ordersList: OrdersTableList): CurrentTabState {
   const { account } = useWalletInfo()
   const location = useLocation()

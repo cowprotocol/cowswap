@@ -6,9 +6,9 @@ import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { HistoryStatusFilter } from '../../../../hooks/useFilteredOrders'
 import { TabOrderTypes } from '../../../../state/ordersTable.types'
 import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
+import { HistoryStatusFilter } from '../../../../utils/getFilteredOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 import { LoadMoreOrdersButton } from '../../LoadMore/Button/LoadMoreOrdersButton'
 
@@ -61,7 +61,6 @@ export interface GetDescriptionOptions {
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   isSafeViaWc?: boolean
-  displayOrdersOnlyForSafeApp?: boolean
 }
 
 export function getDescription({
@@ -73,11 +72,10 @@ export function getDescription({
   searchTerm,
   historyStatusFilter,
   isSafeViaWc,
-  displayOrdersOnlyForSafeApp,
 }: GetDescriptionOptions): React.ReactNode[] {
   const areOrdersFiltered = hasOrders && (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL)
 
-  if (!areOrdersFiltered && displayOrdersOnlyForSafeApp && isSafeViaWc) {
+  if (!areOrdersFiltered && orderType ===TabOrderTypes.ADVANCED && isSafeViaWc) {
     const currentTabText = currentTab === OrderTabId.history ? t`orders history` : t`your orders`
 
     return [

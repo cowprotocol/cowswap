@@ -17,7 +17,9 @@ import {
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { OrdersTableWidget } from 'modules/ordersTable'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
+import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
   SetupFallbackHandlerWarning,
@@ -51,6 +53,10 @@ export function AdvancedOrdersPage(): ReactNode {
   const advancedWidgetParams = { disablePriceImpact }
   const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
+  useResetOrdersTableFilters({
+    historyStatusFilter: HistoryStatusFilter.FILLED,
+  })
+
   return (
     <>
       <PageTitle title={i18n._(PAGE_TITLES.ADVANCED)} />
@@ -82,11 +88,7 @@ export function AdvancedOrdersPage(): ReactNode {
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper>
             <Suspense fallback={<Loading />}>
-              <OrdersTableWidget
-                displayOrdersOnlyForSafeApp
-                orderType={TabOrderTypes.ADVANCED}
-                orders={allEmulatedOrders}
-              />
+              <OrdersTableWidget /* orders={allEmulatedOrders} */ />
             </Suspense>
           </styledEl.SecondaryWrapper>
         )}

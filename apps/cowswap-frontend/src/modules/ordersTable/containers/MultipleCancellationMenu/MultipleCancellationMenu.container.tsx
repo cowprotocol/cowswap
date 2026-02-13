@@ -7,7 +7,10 @@ import { Trans } from '@lingui/react/macro'
 import { Trash2 } from 'react-feather'
 
 import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCancellation'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import {
+  ordersToCancelAtom,
+  updateOrdersToCancelAtom,
+} from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

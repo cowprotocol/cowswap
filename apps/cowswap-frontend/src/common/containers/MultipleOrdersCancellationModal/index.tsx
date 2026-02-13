@@ -13,7 +13,10 @@ import { LegacyConfirmationModalContent } from 'legacy/components/TransactionCon
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 
 import { getIsOrderBookTypedError } from 'api/cowProtocol'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import {
+  ordersToCancelAtom,
+  updateOrdersToCancelAtom,
+} from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'

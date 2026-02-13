@@ -16,6 +16,8 @@ import {
   TriggerAppziLimitOrdersSurveyUpdater,
   PromoBannerUpdater,
 } from 'modules/limitOrders'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
+import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { AlternativeLimitOrderPage } from './AlternativeLimitOrder.page'
@@ -26,6 +28,10 @@ import { RegularLimitOrdersPage } from './RegularLimitOrders.page'
 export function LimitOrdersPage() {
   const isAlternative = useIsAlternativeOrderModalVisible()
   const { i18n } = useLingui()
+
+  useResetOrdersTableFilters({
+    historyStatusFilter: HistoryStatusFilter.FILLED,
+  })
 
   return (
     <>

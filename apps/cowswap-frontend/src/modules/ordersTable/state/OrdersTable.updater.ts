@@ -44,10 +44,10 @@ interface OrdersTableStateUpdaterProps extends OrdersTableParams {
 
 export function OrdersTableStateUpdater({
   orders: allOrders,
-  orderType,
+  // orderType,
   searchTerm = '',
   historyStatusFilter,
-  displayOrdersOnlyForSafeApp = false,
+  // displayOrdersOnlyForSafeApp = false,
   syncWithUrl = true,
 }: OrdersTableStateUpdaterProps): ReactNode {
   const { chainId } = useWalletInfo()

@@ -10,7 +10,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { ordersMock } from './ordersTable.mock'
 
 import { ordersTableStateAtom } from '../state/ordersTable.atoms'
-import { OrderActions, TabOrderTypes } from '../state/ordersTable.types'
+import { OrderActions } from '../state/ordersTable.types'
 import { OrderTab, OrderTabId } from '../state/tabs/ordersTableTabs.constants'
 
 const tabs: OrderTab[] = [
@@ -64,15 +64,16 @@ function Wrapper(): null {
 
   useEffect(() => {
     setOrdersTableState({
-      displayOrdersOnlyForSafeApp: false,
-      currentPageNumber: 1,
+      reduxOrders: [],
       orders: ordersMock,
+      ordersList: {
+        open: ordersMock,
+        history: [],
+        unfillable: [],
+        signing: [],
+      },
       filteredOrders: ordersMock,
-      tabs: tabs,
       balancesAndAllowances: balancesAndAllowances,
-      orderActions: orderActions,
-      orderType: TabOrderTypes.LIMIT,
-      currentTabId: OrderTabId.open,
       hasHydratedOrders: true,
     })
   }, [setOrdersTableState])

@@ -2,6 +2,10 @@
 export { BalancesAndAllowancesUpdater } from './updaters/BalancesAndAllowancesUpdater'
 export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updaters/PriorityTokensUpdater'
 
+// Atoms
+export { balancesAtom } from './state/balancesAtom'
+// export { allowancesAtom } from './state/allowancesAtom'
+
 // Hooks
 export { useTokensBalances } from './hooks/useTokensBalances'
 export { useNativeTokenBalance } from './hooks/useNativeTokenBalance'

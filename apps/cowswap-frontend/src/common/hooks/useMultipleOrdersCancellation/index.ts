@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 
 // TODO: Add proper return type annotation
