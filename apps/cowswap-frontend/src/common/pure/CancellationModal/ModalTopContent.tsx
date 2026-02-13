@@ -98,7 +98,7 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
   const isOnChainType = type === 'onChain'
   const typeLabel = isOnChainType ? t`on-chain` : t`off-chain`
 
-  const txCostAmount = txCost && !txCost.isZero() ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
+  const txCostAmount = txCost ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
   return (
     <Wrapper>

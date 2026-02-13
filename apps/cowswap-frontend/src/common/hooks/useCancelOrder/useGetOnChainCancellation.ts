@@ -4,6 +4,7 @@ import { useCallback } from 'react'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
+import { useConfig } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -14,17 +15,20 @@ import {
   getOnChainCancellation,
   OnChainCancellation,
 } from 'common/hooks/useCancelOrder/onChainCancellation'
-import { useEthFlowContract, useGP2SettlementContract } from 'common/hooks/useContract'
+import { useEthFlowContract, useGP2SettlementContractData } from 'common/hooks/useContract'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getIsTheLastTwapPart } from 'utils/orderUtils/getIsTheLastTwapPart'
 
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
+  const config = useConfig()
   const {
     result: { contract: ethFlowContract, chainId: ethFlowChainId },
   } = useEthFlowContract()
-  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const settlementContractData = useGP2SettlementContractData()
   const cancelTwapOrder = useCancelTwapOrder()
   const { t } = useLingui()
+
+  const { chainId: settlementChainId } = settlementContractData
 
   return useCallback(
     (order: Order) => {
@@ -48,8 +52,8 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
         return getEthFlowCancellation(ethFlowContract!, order)
       }
 
-      return getOnChainCancellation(settlementContract!, order)
+      return getOnChainCancellation({ config, order, settlementContractData })
     },
-    [ethFlowChainId, settlementChainId, settlementContract, t, cancelTwapOrder, ethFlowContract],
+    [config, ethFlowChainId, settlementChainId, settlementContractData, t, cancelTwapOrder, ethFlowContract],
   )
 }

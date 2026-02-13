@@ -5,12 +5,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { act, renderHook } from '@testing-library/react'
+import { writeContract } from '@wagmi/core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
 
-import { useEthFlowContract, useGP2SettlementContract } from 'common/hooks/useContract'
+import { useEthFlowContract } from 'common/hooks/useContract'
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
@@ -29,12 +30,17 @@ jest.mock('@cowprotocol/wallet', () => {
     useSendBatchTransactions: jest.fn().mockResolvedValue('0x01'),
   }
 })
+jest.mock('@wagmi/core', () => {
+  return {
+    estimateGas: jest.fn(() => Promise.resolve(1n)),
+    writeContract: jest.fn(() => Promise.resolve(settlementCancellationTxHash)),
+  }
+})
 
 jest.mock('common/hooks/useContract', () => {
   return {
     ...jest.requireActual('common/hooks/useContract'),
     useEthFlowContract: jest.fn(),
-    useGP2SettlementContract: jest.fn(),
   }
 })
 jest.mock('modules/twap/hooks/useSetPartOrderCancelling', () => {
@@ -75,10 +81,10 @@ const transactionAdder = jest.fn()
 const mockUseTransactionAdder = useTransactionAdder as jest.MockedFunction<typeof useTransactionAdder>
 
 const mockUseEthFlowContract = useEthFlowContract as jest.MockedFunction<typeof useEthFlowContract>
-const mockUseGP2SettlementContract = useGP2SettlementContract as jest.MockedFunction<typeof useGP2SettlementContract>
 
 const ethFlowInvalidationMock = jest.fn()
-const settlementInvalidationMock = jest.fn()
+
+const mockWriteContract = writeContract as jest.MockedFunction<typeof writeContract>
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -118,26 +124,9 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
         loading: false,
       },
     })
-
-    settlementInvalidationMock.mockResolvedValue({ hash: settlementCancellationTxHash })
-
-    mockUseGP2SettlementContract.mockReturnValue({
-      contract: {
-        estimateGas: {
-          invalidateOrder: () => Promise.resolve(BigNumber.from(200)),
-        },
-        invalidateOrder: settlementInvalidationMock,
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
-      chainId,
-      error: null,
-      loading: false,
-    })
   })
 
   afterEach(() => {
-    settlementInvalidationMock.mockClear()
     ethFlowInvalidationMock.mockClear()
   })
 
@@ -165,8 +154,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
       await result.current({ ...orderMock, inputToken: COW_TOKEN_TO_CHAIN[chainId]! })
     })
 
-    expect(settlementInvalidationMock).toHaveBeenCalledTimes(1)
-    expect(settlementInvalidationMock.mock.calls[0]).toMatchSnapshot()
+    expect(mockWriteContract).toHaveBeenCalledTimes(1)
     expect(transactionAdder.mock.calls[0][0].hash).toBe(settlementCancellationTxHash)
   })
 

@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useLingui } from '@lingui/react/macro'
 import { Pocket } from 'react-feather'
@@ -31,13 +30,10 @@ interface CowShedInfoProps {
 
 export function CowShedInfo({ className, onClick }: CowShedInfoProps): ReactNode {
   const { chainId } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const proxyAddress = useCurrentAccountProxyAddress()
   const { i18n } = useLingui()
 
-  if (!provider || !proxyAddress) return null
+  if (!proxyAddress) return null
 
   const accountProxyLink = getProxyAccountUrl(chainId)
 

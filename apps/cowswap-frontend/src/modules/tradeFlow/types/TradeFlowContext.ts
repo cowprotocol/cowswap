@@ -1,5 +1,5 @@
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
-import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/cowswap-abis'
+import type { Erc20, Weth } from '@cowprotocol/cowswap-abis'
 import type { Command } from '@cowprotocol/types'
 import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
@@ -15,6 +15,8 @@ import type { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit }
 import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
+
+import type { SettlementContractData } from 'common/hooks/useContract'
 
 export enum FlowType {
   REGULAR = 'REGULAR',
@@ -45,7 +47,7 @@ export interface TradeFlowContext {
   tradeConfirmActions: TradeConfirmActions
   swapFlowAnalyticsContext: TradeFlowAnalyticsContext
   orderParams: PostOrderParams
-  contract: GPv2Settlement
+  contract: Omit<SettlementContractData, 'chainId'>
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   permitAmountToSign?: bigint

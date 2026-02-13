@@ -52,15 +52,3 @@ exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When is ETH-
   },
 ]
 `;
-
-exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When is NOT ETH-flow order, then should call settlement contract 1`] = `
-[
-  "xx1",
-  {
-    "gasLimit": {
-      "hex": "0xf0",
-      "type": "BigNumber",
-    },
-  },
-]
-`;

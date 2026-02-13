@@ -5,7 +5,6 @@ import type { Web3Provider } from '@ethersproject/providers'
 import { useConnection } from 'wagmi'
 
 export function useWalletProvider(): Web3Provider | undefined {
-  // TODO this will probably be removed eventually
   const [provider, setProvider] = useState<Web3Provider | undefined>()
 
   const { connector } = useConnection()

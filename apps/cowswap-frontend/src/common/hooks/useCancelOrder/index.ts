@@ -104,8 +104,8 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
         openModal()
         // Estimate tx cost in case when OnChain cancellation is used
         getOnChainTxInfo(order).then(({ estimatedGas }) => {
-          const gasPrice = +(gasPrices?.average || '0')
-          const txCost = calculateGasMargin(estimatedGas).mul(gasPrice)
+          const gasPrice = BigInt(gasPrices?.average || '0')
+          const txCost = calculateGasMargin(estimatedGas) * gasPrice
 
           setContext({ txCost })
         })
