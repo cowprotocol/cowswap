@@ -214,6 +214,12 @@ module.exports = [
           'newlines-between': 'always',
         },
       ],
+      'import/no-internal-modules': [
+        'error',
+        {
+          forbid: ['modules/*/**'],
+        },
+      ],
       'no-restricted-globals': [
         'error',
         'event',
