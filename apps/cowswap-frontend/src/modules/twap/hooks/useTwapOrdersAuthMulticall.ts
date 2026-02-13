@@ -30,6 +30,7 @@ export function useTwapOrdersAuthMulticall(
       functionName: 'singleOrders' as const,
       args,
     })),
+    query: { enabled: !!input },
   })
 
   return useMemo(() => {
