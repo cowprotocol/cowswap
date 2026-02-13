@@ -43,6 +43,8 @@
 - As a trader, I want to be told the code is only stored locally until I place a trade because the wallet is not bound yet.
 - As a developer, I want to persist the code locally and include it in first APP_DATA because attribution happens on first trade.
 - As a developer, I want APP_DATA referrer payload compatible with the current referrer schema (`metadata.referrer.code`, 5-20 A-Z0-9-_) because invalid appData breaks attribution.
+- As a trader, I want my saved referral code recovered after local storage reset because I should not lose attribution context between sessions.
+- As a developer, I want referral recovery to check local fulfilled orders first (fullAppData/hash-resolved appData) and then fallback to orderbook history appData lookups because order payloads may not include full appData inline.
 
 ## Error handling / edge cases
 - As a developer, I want duplicate code to return 409 because it is a conflict.

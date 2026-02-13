@@ -13,6 +13,7 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
 import { AffiliateTraderModal } from 'modules/affiliate/containers/AffiliateTraderModal'
+import { AffiliateTraderRecoverySideEffect } from 'modules/affiliate/containers/AffiliateTraderRecoverySideEffect'
 import { AffiliateTraderRefUrlSideEffect } from 'modules/affiliate/containers/AffiliateTraderRefUrlSideEffect'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
@@ -124,6 +125,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   return (
     <>
+      <AffiliateTraderRecoverySideEffect />
       <AffiliateTraderRefUrlSideEffect />
       <AffiliateTraderModal />
       {appContent}
