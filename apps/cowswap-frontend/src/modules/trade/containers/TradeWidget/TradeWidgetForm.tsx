@@ -2,7 +2,7 @@ import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
-import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -18,7 +18,7 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
-import { TradeType } from 'modules/trade'
+import { TradeType, useDerivedTradeState } from 'modules/trade'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
@@ -30,6 +30,7 @@ import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
 import { PoweredFooter } from 'common/pure/PoweredFooter'
 
 import * as styledEl from './styled'
+import { mapCurrencyInfo } from './TradeWidgetForm.utils'
 import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
@@ -38,6 +39,7 @@ import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
+import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
 import { QuotePolingProgress } from '../QuotePolingProgress'
@@ -70,7 +72,11 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const { orderKind } = useDerivedTradeState() || {}
   const { darkMode } = useTheme()
+
+  const isSellTrade = !!orderKind && isSellOrder(orderKind)
+  const hideQuoteAmount = useShouldHideQuoteAmounts()
 
   const { slots, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, topContent, middleContent, bottomContent, outerContent } = slots
@@ -91,18 +97,36 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     isPriceStatic = false,
   } = params
 
-  const inputCurrencyInfo = useMemo(
-    () => (isWrapOrUnwrap ? { ...props.inputCurrencyInfo, receiveAmountInfo: null } : props.inputCurrencyInfo),
-    [isWrapOrUnwrap, props.inputCurrencyInfo],
-  )
+  const inputCurrencyInfo = useMemo(() => {
+    const info = isPriceStatic
+      ? props.inputCurrencyInfo
+      : mapCurrencyInfo(props.inputCurrencyInfo, !isSellTrade, hideQuoteAmount)
 
-  const outputCurrencyInfo = useMemo(
-    () =>
-      isWrapOrUnwrap
-        ? { ...props.outputCurrencyInfo, amount: props.inputCurrencyInfo.amount, receiveAmountInfo: null }
-        : props.outputCurrencyInfo,
-    [isWrapOrUnwrap, props.outputCurrencyInfo, props.inputCurrencyInfo.amount],
-  )
+    if (isWrapOrUnwrap) {
+      return { ...info, receiveAmountInfo: null }
+    }
+
+    return info
+  }, [isWrapOrUnwrap, props.inputCurrencyInfo, hideQuoteAmount, isSellTrade, isPriceStatic])
+
+  const outputCurrencyInfo = useMemo(() => {
+    const info = isPriceStatic
+      ? props.outputCurrencyInfo
+      : mapCurrencyInfo(props.outputCurrencyInfo, isSellTrade, hideQuoteAmount)
+
+    if (isWrapOrUnwrap) {
+      return { ...info, amount: props.inputCurrencyInfo.amount, receiveAmountInfo: null }
+    }
+
+    return info
+  }, [
+    isWrapOrUnwrap,
+    props.outputCurrencyInfo,
+    props.inputCurrencyInfo.amount,
+    hideQuoteAmount,
+    isSellTrade,
+    isPriceStatic,
+  ])
 
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()

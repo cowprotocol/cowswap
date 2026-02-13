@@ -4,7 +4,7 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteResults } from '@cowprotocol/sdk-bridging'
 
-import { providerNetworkSupportedAtom } from 'entities/common/providerNetworkSupported.atom'
+import { isProviderNetworkUnsupportedAtom } from 'entities/common/isProviderNetworkUnsupported.atom'
 
 import { derivedTradeStateAtom } from 'modules/trade'
 
@@ -72,7 +72,7 @@ export const updateTradeQuoteAtom = atom(
 )
 
 export const currentTradeQuoteAtom = atom<TradeQuoteState>((get) => {
-  const isProviderNetworkUnsupported = get(providerNetworkSupportedAtom)
+  const isProviderNetworkUnsupported = get(isProviderNetworkUnsupportedAtom)
   const state = get(derivedTradeStateAtom)
   const tradeQuotes = get(tradeQuotesAtom)
 
