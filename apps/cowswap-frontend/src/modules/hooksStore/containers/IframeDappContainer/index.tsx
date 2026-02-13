@@ -130,7 +130,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     if (!iframeWindow || !isIframeActive) return
 
     // Omit unnecessary parameter
-    const { addHook: _, editHook: _1, signer: _2, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
+    const { addHook: _, editHook: _1, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
 
     hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, iframeContext)
   }, [context, isIframeActive])
