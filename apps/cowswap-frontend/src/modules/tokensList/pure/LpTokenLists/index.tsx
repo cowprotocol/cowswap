@@ -82,7 +82,7 @@ export function LpTokenLists({
 
       const tokenAddressLower = token.address.toLowerCase()
       const balance = balances ? balances[tokenAddressLower] : undefined
-      const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
+      const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, `0x${balance.toString(16)}`) : undefined
       const info = poolsInfo?.[tokenAddressLower]?.info
 
       const onInfoClick: MouseEventHandler<HTMLDivElement> = (e) => {

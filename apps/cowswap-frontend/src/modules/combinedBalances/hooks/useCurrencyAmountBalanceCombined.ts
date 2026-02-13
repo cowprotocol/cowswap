@@ -19,6 +19,6 @@ export function useCurrencyAmountBalanceCombined(
 
     if (!balance) return undefined
 
-    return CurrencyAmount.fromRawAmount(token, balance.toHexString())
+    return CurrencyAmount.fromRawAmount(token, `0x${balance.toString(16)}`)
   }, [token, balances, chainId])
 }

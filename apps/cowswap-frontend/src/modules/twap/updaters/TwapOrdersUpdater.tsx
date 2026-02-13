@@ -3,11 +3,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 
 import { twapOrdersAtom } from 'entities/twap'
 import ms from 'ms.macro'
+
+import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useAllTwapOrdersInfo } from '../hooks/useAllTwapOrdersInfo'
@@ -26,7 +27,7 @@ const AUTH_TIME_THRESHOLD = ms`1m`
 export function TwapOrdersUpdater(props: {
   safeAddress: string
   chainId: SupportedChainId
-  composableCowContract: ComposableCoW
+  composableCowContract: ComposableCowContractData
 }): null {
   const { safeAddress, chainId, composableCowContract } = props
 

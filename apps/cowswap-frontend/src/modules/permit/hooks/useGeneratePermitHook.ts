@@ -10,6 +10,7 @@ import {
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
 
@@ -36,7 +37,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const provider = useWalletProvider() as JsonRpcProvider
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {

@@ -47,7 +47,7 @@ export interface TradeFlowContext {
   tradeConfirmActions: TradeConfirmActions
   swapFlowAnalyticsContext: TradeFlowAnalyticsContext
   orderParams: PostOrderParams
-  contract: Omit<SettlementContractData, 'chainId'>
+  contract: SettlementContractData
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   permitAmountToSign?: bigint

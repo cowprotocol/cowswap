@@ -34,9 +34,10 @@ export function useOrdersFillability(orders: GenericOrder[]): Record<string, Ord
 
       const balance = balances[inputTokenAddress]
       const allowance = allowances?.[inputTokenAddress]
+      const sellAmount = BigInt(order.sellAmount)
 
       acc[order.id] = {
-        hasEnoughBalance: balance ? balance.gte(order.sellAmount) : undefined,
+        hasEnoughBalance: balance ? balance > sellAmount : undefined,
         hasEnoughAllowance: allowance ? allowance.gte(order.sellAmount) : undefined,
         hasPermit: doesOrderHavePermit(order),
         order,

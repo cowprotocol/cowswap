@@ -37,7 +37,7 @@ export async function estimateApprove(
 
     return {
       approveAmount,
-      gasLimit: GAS_LIMIT_DEFAULT,
+      gasLimit: BigNumber.from(GAS_LIMIT_DEFAULT),
     }
   }
 }

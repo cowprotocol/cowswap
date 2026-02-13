@@ -2,7 +2,6 @@ import { useAtom } from 'jotai/index'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { balancesAtom, balancesCacheAtom } from '../state/balancesAtom'
 
@@ -28,7 +27,7 @@ export function BalancesCacheUpdater({ chainId, account, excludedTokens }: Balan
         (acc, tokenAddress) => {
           const balance = balancesValues[tokenAddress]
 
-          if (balance && !balance.isZero()) {
+          if (balance) {
             acc[tokenAddress] = balance.toString()
           }
 
@@ -41,7 +40,7 @@ export function BalancesCacheUpdater({ chainId, account, excludedTokens }: Balan
       // Remove zero balances from the current cache
       const updatedCache = Object.keys(currentCache).reduce(
         (acc, tokenAddress) => {
-          if (!balancesValues[tokenAddress]?.isZero()) {
+          if (balancesValues[tokenAddress]) {
             acc[tokenAddress] = currentCache[tokenAddress]
           }
 
@@ -91,12 +90,12 @@ export function BalancesCacheUpdater({ chainId, account, excludedTokens }: Balan
             (acc, tokenAddress) => {
               // Do not override excludedTokens with cache
               if (!excludedTokens.has(tokenAddress)) {
-                acc[tokenAddress] = BigNumber.from(cache[tokenAddress])
+                acc[tokenAddress] = BigInt(cache[tokenAddress])
               }
 
               return acc
             },
-            {} as Record<string, BigNumber>,
+            {} as Record<string, bigint>,
           ),
         },
       }

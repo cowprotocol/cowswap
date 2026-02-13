@@ -9,6 +9,8 @@ import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { TwapOrdersExecutionMap } from '../hooks/useTwapOrdersExecutions'
 import { TwapOrderInfo, TwapOrderItem, TwapOrdersAuthResult, TwapOrdersExecution, TwapOrdersSafeData } from '../types'
 
+import type { Hex } from 'viem'
+
 export function buildTwapOrdersItems(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -33,7 +35,7 @@ function getTwapOrderItem(
   chainId: SupportedChainId,
   safeAddress: string,
   safeData: TwapOrdersSafeData,
-  id: string,
+  id: Hex,
   authorized: boolean | undefined,
   executionInfo: TwapOrdersExecution,
 ): TwapOrderItem {

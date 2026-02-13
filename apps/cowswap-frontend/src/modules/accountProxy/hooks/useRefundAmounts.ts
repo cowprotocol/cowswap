@@ -32,7 +32,7 @@ export function useRefundAmounts(): TokenUsdAmounts | null {
         token,
         balance,
         usdAmount: usdPrice?.price
-          ? usdPrice.price.quote(CurrencyAmount.fromRawAmount(token, balance.toHexString()))
+          ? usdPrice.price.quote(CurrencyAmount.fromRawAmount(token, `0x${balance.toString(16)}`))
           : undefined,
         isLoading: !!usdPrice?.isLoading,
       }

@@ -66,7 +66,7 @@ export function getOrderParams(
 }
 
 function _hasEnoughBalanceAndAllowance(params: {
-  balance: BigNumber | undefined
+  balance: bigint | undefined
   allowance: BigNumber | undefined
   partiallyFillable: boolean
   sellAmount: CurrencyAmount<Token>

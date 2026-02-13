@@ -7,6 +7,7 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChai
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -52,7 +53,7 @@ export function usePermitInfo(
   const { chainId } = useWalletInfo()
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const provider = useWalletProvider() as JsonRpcProvider
 
   const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
   const isNative = !!token && getIsNativeToken(token)

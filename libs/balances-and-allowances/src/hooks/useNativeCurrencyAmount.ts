@@ -10,8 +10,8 @@ export function useNativeCurrencyAmount(
   chainId: SupportedChainId,
   account: string | undefined,
 ): CurrencyAmount<TokenWithLogo> | undefined {
-  const { data } = useNativeTokenBalance(account, chainId)
-  const balance = data && data.toHexString()
+  const { data } = useNativeTokenBalance(account)
+  const balance = data?.value && `0x${data.value.toString(16)}`
 
   return useMemo(() => {
     if (!balance) return undefined

@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
 
-import type { Web3Provider } from '@ethersproject/providers'
-
 import { useConnection } from 'wagmi'
 
-export function useWalletProvider(): Web3Provider | undefined {
-  const [provider, setProvider] = useState<Web3Provider | undefined>()
+export function useWalletProvider(): unknown | undefined {
+  const [provider, setProvider] = useState<unknown | undefined>()
 
   const { connector } = useConnection()
 
@@ -14,7 +12,7 @@ export function useWalletProvider(): Web3Provider | undefined {
     const getProvider = async (): Promise<void> => {
       try {
         const provider = await connector.getProvider()
-        setProvider(provider as Web3Provider)
+        setProvider(provider)
       } catch (error) {
         console.error(error.message)
         setProvider(undefined)

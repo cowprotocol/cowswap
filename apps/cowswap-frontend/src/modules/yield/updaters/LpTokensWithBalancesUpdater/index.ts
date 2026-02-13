@@ -24,7 +24,7 @@ export function LpTokensWithBalancesUpdater() {
       const addressLower = token.address.toLowerCase()
       const balance = balances[addressLower]
 
-      if (balance && !balance.isZero()) {
+      if (balance) {
         acc.count++
         acc.tokens[addressLower] = { token, balance }
       }

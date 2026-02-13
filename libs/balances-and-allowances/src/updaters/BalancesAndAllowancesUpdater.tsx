@@ -36,7 +36,7 @@ export function BalancesAndAllowancesUpdater({
   const allTokens = useAllActiveTokens()
 
   const targetChainTokensMap = useTokensByAddressMapForChain(chainId)
-  const { data: nativeTokenBalance } = useNativeTokenBalance(account, chainId)
+  const { data: nativeTokenBalance } = useNativeTokenBalance(account)
 
   const tokenAddresses = useMemo(() => {
     if (allTokens.chainId !== chainId) {
@@ -63,7 +63,7 @@ export function BalancesAndAllowancesUpdater({
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
     if (nativeToken && nativeTokenBalance) {
-      updateTokenBalance(nativeToken.address, nativeTokenBalance)
+      updateTokenBalance(nativeToken.address, nativeTokenBalance.value)
     }
   }, [isBffSwitchedOn, nativeTokenBalance, chainId, updateTokenBalance])
 

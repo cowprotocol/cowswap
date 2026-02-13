@@ -32,8 +32,8 @@ jest.mock('@cowprotocol/wallet', () => {
 })
 jest.mock('wagmi/actions', () => {
   return {
-    estimateGas: jest.fn(() => Promise.resolve(1n)),
-    writeContract: jest.fn(() => Promise.resolve(settlementCancellationTxHash)),
+    estimateGas: jest.fn().mockResolvedValue(1n),
+    writeContract: jest.fn().mockResolvedValue(settlementCancellationTxHash),
   }
 })
 

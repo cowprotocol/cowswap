@@ -1,15 +1,19 @@
 import { delay, isTruthy } from '@cowprotocol/common-utils'
 import { SAFE_TRANSACTION_SERVICE_URL } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import ms from 'ms.macro'
+import { decodeFunctionData } from 'viem'
+
+import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import { SafeTransactionParams } from 'common/types'
 
 import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
+
+import type { Hex } from 'viem'
 
 // ComposableCoW.createWithContext method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
@@ -25,7 +29,7 @@ type TwapDataArray = TwapOrdersSafeData[]
 export async function fetchTwapOrdersFromSafe(
   chainId: SupportedChainId,
   safeAddress: string,
-  composableCowContract: ComposableCoW,
+  composableCowContract: ComposableCowContractData,
   setData: (state: TwapDataArray) => void,
   /**
    * Example of the second chunk url:
@@ -86,7 +90,7 @@ function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string
 }
 
 function parseSafeTransactionsResult(
-  composableCowContract: ComposableCoW,
+  composableCowContract: ComposableCowContractData,
   results: AllTransactionsListResponse['results'],
 ): TwapOrdersSafeData[] {
   return results
@@ -97,9 +101,10 @@ function parseSafeTransactionsResult(
 
       if (selectorIndex < 0) return null
 
-      const callData = '0x' + result.data.substring(selectorIndex)
-
-      const conditionalOrderParams = parseConditionalOrderParams(composableCowContract, callData)
+      const conditionalOrderParams = parseConditionalOrderParams(
+        composableCowContract,
+        `0x${result.data.substring(selectorIndex)}`,
+      )
 
       if (!conditionalOrderParams) return null
 
@@ -120,11 +125,14 @@ function isSafeMultisigTransactionListResponse(response: any): response is SafeM
 }
 
 function parseConditionalOrderParams(
-  composableCowContract: ComposableCoW,
-  callData: string,
+  composableCowContract: ComposableCowContractData,
+  callData: Hex,
 ): ConditionalOrderParams | null {
   try {
-    const _result = composableCowContract.interface.decodeFunctionData('createWithContext', callData)
+    const _result = decodeFunctionData({
+      abi: composableCowContract.abi,
+      data: callData,
+    })
     // TODO: Replace any with proper type definitions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { params } = _result as any as { params: ConditionalOrderParams }

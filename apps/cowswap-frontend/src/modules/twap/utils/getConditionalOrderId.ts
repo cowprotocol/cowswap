@@ -2,6 +2,8 @@ import { encodeAbiParameters, keccak256 } from 'viem'
 
 import { ConditionalOrderParams } from '../types'
 
+import type { Hex } from 'viem'
+
 const CONDITIONAL_ORDER_PARAMS_STRUCT = {
   type: 'tuple',
   components: [
@@ -11,6 +13,6 @@ const CONDITIONAL_ORDER_PARAMS_STRUCT = {
   ],
 }
 
-export function getConditionalOrderId(params: ConditionalOrderParams): string {
+export function getConditionalOrderId(params: ConditionalOrderParams): Hex {
   return keccak256(encodeAbiParameters([CONDITIONAL_ORDER_PARAMS_STRUCT], [params]))
 }

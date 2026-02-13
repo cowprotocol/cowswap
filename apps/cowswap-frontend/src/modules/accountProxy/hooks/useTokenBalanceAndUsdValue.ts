@@ -22,7 +22,7 @@ export function useTokenBalanceAndUsdValue(tokenAddress: string | undefined): To
   const token = !!tokenKey && tokensByAddress[tokenKey]
   const balanceRaw = !!tokenKey && balances[tokenKey]
 
-  const balance = (token && balanceRaw && CurrencyAmount.fromRawAmount(token, balanceRaw.toHexString())) || null
+  const balance = (token && balanceRaw && CurrencyAmount.fromRawAmount(token, `0x${balanceRaw.toString(16)}`)) || null
 
   const { value: usdValue } = useUsdAmount(balance)
 

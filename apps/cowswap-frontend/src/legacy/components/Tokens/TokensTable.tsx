@@ -227,7 +227,9 @@ export function TokenTable({
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {
               const balanceRaw = balances && balances[data.address.toLowerCase()]
-              const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, balanceRaw.toHexString()) : undefined
+              const balance = balanceRaw
+                ? CurrencyAmount.fromRawAmount(data, `0x${balanceRaw.toString(16)}`)
+                : undefined
 
               const allowancesRaw = allowances && allowances[data.address.toLowerCase()]
               const allowance = allowancesRaw
