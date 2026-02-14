@@ -6,7 +6,7 @@ import { EIP6963ProviderDetail } from '@cowprotocol/types'
 import {
   CoinbaseWalletOption,
   CoinbaseSmartWalletOption,
-  CoinbaseWalletAppOption,
+  BaseAppHint,
   isIosExternalBrowser,
   InjectedOption as DefaultInjectedOption,
   MetaMaskSdkOption,
@@ -52,8 +52,10 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
   if (showCoinbase) {
     if (isIosExternalBrowser()) {
       coinbaseOptions = [
-        <CoinbaseSmartWalletOption key="CoinbaseSmartWalletOption" {...connectionProps} />,
-        <CoinbaseWalletAppOption key="CoinbaseWalletAppOption" {...connectionProps} />,
+        <div key="coinbase-ios">
+          <CoinbaseSmartWalletOption {...connectionProps} />
+          <BaseAppHint />
+        </div>,
       ]
     } else {
       coinbaseOptions = [<CoinbaseWalletOption key="CoinbaseWalletOption" {...connectionProps} />]

@@ -2,7 +2,7 @@ import { render, RenderResult, screen } from '@testing-library/react'
 
 // --- Stub component names used as test IDs ---
 const COINBASE_SMART_WALLET = 'CoinbaseSmartWalletOption'
-const COINBASE_WALLET_APP = 'CoinbaseWalletAppOption'
+const BASE_APP_HINT = 'BaseAppHint'
 const COINBASE_WALLET = 'CoinbaseWalletOption'
 
 // --- Mock flags we control per-test ---
@@ -15,7 +15,7 @@ let mockIsIosExternalBrowser = false
 jest.mock('@cowprotocol/wallet', () => ({
   CoinbaseWalletOption: () => <div data-testid="CoinbaseWalletOption" />,
   CoinbaseSmartWalletOption: () => <div data-testid="CoinbaseSmartWalletOption" />,
-  CoinbaseWalletAppOption: () => <div data-testid="CoinbaseWalletAppOption" />,
+  BaseAppHint: () => <div data-testid="BaseAppHint" />,
   isIosExternalBrowser: () => mockIsIosExternalBrowser,
   InjectedOption: () => <div data-testid="InjectedOption" />,
   MetaMaskSdkOption: () => <div data-testid="MetaMaskSdkOption" />,
@@ -59,13 +59,13 @@ describe('ConnectWalletOptions — Coinbase wallet rendering', () => {
     mockIsIosExternalBrowser = false
   })
 
-  it('renders split Coinbase options on iOS external browser', () => {
+  it('renders Smart Wallet + Base App hint on iOS external browser', () => {
     mockIsIosExternalBrowser = true
 
     renderOptions()
 
     expect(screen.getByTestId(COINBASE_SMART_WALLET)).toBeTruthy()
-    expect(screen.getByTestId(COINBASE_WALLET_APP)).toBeTruthy()
+    expect(screen.getByTestId(BASE_APP_HINT)).toBeTruthy()
     expect(screen.queryByTestId(COINBASE_WALLET)).toBeNull()
   })
 
@@ -76,6 +76,6 @@ describe('ConnectWalletOptions — Coinbase wallet rendering', () => {
 
     expect(screen.getByTestId(COINBASE_WALLET)).toBeTruthy()
     expect(screen.queryByTestId(COINBASE_SMART_WALLET)).toBeNull()
-    expect(screen.queryByTestId(COINBASE_WALLET_APP)).toBeNull()
+    expect(screen.queryByTestId(BASE_APP_HINT)).toBeNull()
   })
 })

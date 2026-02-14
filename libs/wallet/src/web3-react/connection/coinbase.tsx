@@ -1,6 +1,9 @@
 import { ReactNode } from 'react'
 
+import { UI } from '@cowprotocol/ui'
 import { initializeConnector } from '@web3-react/core'
+
+import styled from 'styled-components/macro'
 
 import { onError } from './onError'
 
@@ -63,4 +66,17 @@ export function CoinbaseSmartWalletOption({ tryActivation, selectedWallet }: Con
       subheader="Passkey / Smart Account"
     />
   )
+}
+
+const HintText = styled.p`
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  font-size: 12px;
+  margin: 4px 0 0;
+  text-align: center;
+`
+
+export function BaseAppHint(): ReactNode {
+  const host = typeof window !== 'undefined' ? window.location.host : 'swap.cow.fi'
+
+  return <HintText>Already have the Base app? Open {host} in the app&apos;s browser.</HintText>
 }
