@@ -47,7 +47,7 @@ export { ConnectWalletOption } from './api/pure/ConnectWalletOption'
 export { TrezorOption } from './web3-react/connection/trezor'
 export { WalletConnectV2Option } from './web3-react/connection/walletConnectV2'
 export { CoinbaseWalletOption, CoinbaseSmartWalletOption } from './web3-react/connection/coinbase'
-export { CoinbaseWalletAppOption } from './web3-react/connection/coinbaseViaWalletConnect'
+export { CoinbaseWalletAppOption } from './web3-react/connection/coinbaseWalletApp'
 export { isIosExternalBrowser } from './web3-react/utils/isIosExternalBrowser'
 export { MetaMaskSdkOption } from './web3-react/connection/metaMaskSdk'
 

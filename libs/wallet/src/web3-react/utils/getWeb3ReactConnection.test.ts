@@ -1,6 +1,6 @@
 /**
  * Tests for getWeb3ReactConnection — verifies the connector/ConnectionType
- * resolution logic, particularly the ordering of Coinbase-via-WC vs generic WC.
+ * resolution logic.
  *
  * All connection modules are mocked to prevent instantiation of real connectors
  * (which require browser APIs). The WalletConnectV2Connector class mock is
@@ -37,7 +37,6 @@ const stubActions = {
 
 const MOCK_COINBASE_CONNECTION = { __brand: 'coinbase' } as unknown as Web3ReactConnection
 const MOCK_WC_CONNECTION = { __brand: 'wc' } as unknown as Web3ReactConnection
-const MOCK_COINBASE_WC_CONNECTION = { __brand: 'coinbaseWc' } as unknown as Web3ReactConnection
 
 // Static connections need real Connector instances for the `.find()` lookup
 const mockInjectedConnector = new StubConnector(stubActions)
@@ -71,16 +70,6 @@ const MOCK_METAMASK_CONNECTION: Web3ReactConnection = {
   type: ConnectionType.METAMASK,
 }
 
-// Connector instance that isCoinbaseWcConnector will recognize
-const mockCoinbaseWcConnectorInstance = new StubConnector(stubActions)
-
-// ---------------------------------------------------------------------------
-// Mock isCoinbaseWcConnector — needs a reference to the connector instance.
-// We define the fn here so the factory can capture it via closure.
-// ---------------------------------------------------------------------------
-
-const mockIsCoinbaseWcConnector = jest.fn((c: unknown) => c === mockCoinbaseWcConnectorInstance)
-const mockGetCoinbaseWcConnection = jest.fn().mockReturnValue(MOCK_COINBASE_WC_CONNECTION)
 const mockGetWalletConnectV2Connection = jest.fn().mockReturnValue(MOCK_WC_CONNECTION)
 
 // ---------------------------------------------------------------------------
@@ -95,11 +84,6 @@ jest.mock('../connection/coinbase', () => ({
   get coinbaseWalletConnection() {
     return MOCK_COINBASE_CONNECTION
   },
-}))
-
-jest.mock('../connection/coinbaseViaWalletConnect', () => ({
-  getCoinbaseWcConnection: mockGetCoinbaseWcConnection,
-  isCoinbaseWcConnector: mockIsCoinbaseWcConnector,
 }))
 
 jest.mock('../connection/injectedWallet', () => ({
@@ -140,8 +124,7 @@ jest.mock('../connection/walletConnectV2', () => ({
 // hoisting issue. We need `instanceof` to work for StubConnector subclass.
 jest.mock('../connectors/WalletConnectV2Connector', () => {
   // Return an empty class that nothing will actually be instanceof,
-  // since we test the WC path via ConnectionType string and the
-  // Coinbase-via-WC path via isCoinbaseWcConnector.
+  // since we test the WC path via ConnectionType string.
   return {
     WalletConnectV2Connector: class MockWc {},
   }
@@ -163,25 +146,7 @@ const { getWeb3ReactConnection } = require('./getWeb3ReactConnection') as typeof
 describe('getWeb3ReactConnection', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsCoinbaseWcConnector.mockImplementation((c: unknown) => c === mockCoinbaseWcConnectorInstance)
-    mockGetCoinbaseWcConnection.mockReturnValue(MOCK_COINBASE_WC_CONNECTION)
     mockGetWalletConnectV2Connection.mockReturnValue(MOCK_WC_CONNECTION)
-  })
-
-  it('returns Coinbase-via-WC connection when isCoinbaseWcConnector returns true', () => {
-    const result = getWeb3ReactConnection(mockCoinbaseWcConnectorInstance)
-
-    expect(result).toBe(MOCK_COINBASE_WC_CONNECTION)
-  })
-
-  it('calls isCoinbaseWcConnector before checking WalletConnectV2Connector instanceof', () => {
-    getWeb3ReactConnection(mockCoinbaseWcConnectorInstance)
-
-    // isCoinbaseWcConnector should have been called
-    expect(mockIsCoinbaseWcConnector).toHaveBeenCalledWith(mockCoinbaseWcConnectorInstance)
-    // getCoinbaseWcConnection should have been called (not getWalletConnectV2Connection)
-    expect(mockGetCoinbaseWcConnection).toHaveBeenCalled()
-    expect(mockGetWalletConnectV2Connection).not.toHaveBeenCalled()
   })
 
   it('returns generic WC connection for ConnectionType.WALLET_CONNECT_V2 string', () => {
