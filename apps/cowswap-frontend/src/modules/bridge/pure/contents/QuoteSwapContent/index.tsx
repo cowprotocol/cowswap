@@ -10,7 +10,7 @@ import { Trans } from '@lingui/react/macro'
 import { ProxyRecipient } from 'modules/accountProxy'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
-import { RowSlippage } from 'modules/tradeWidgetAddons'
+import { RowRewards, RowSlippage, useIsRowRewardsVisible } from 'modules/tradeWidgetAddons'
 
 import { QuoteSwapContext } from '../../../types'
 import { ProxyAccountBanner } from '../../ProxyAccountBanner'
@@ -111,6 +111,13 @@ function createMinReceiveContent(
   }
 }
 
+function createRewardsContent(): ContentItem {
+  return {
+    withTimelineDot: true,
+    content: <RowRewards />,
+  }
+}
+
 export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDetailsContentProps): ReactNode {
   const {
     receiveAmountInfo,
@@ -125,10 +132,12 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
     isSlippageModified,
   } = context
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
+  const isRowRewardsVisible = useIsRowRewardsVisible()
   const contents = [
     createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
     !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
+    !isBridgeQuoteRecipient && isRowRewardsVisible && createRewardsContent(),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
   ]
 

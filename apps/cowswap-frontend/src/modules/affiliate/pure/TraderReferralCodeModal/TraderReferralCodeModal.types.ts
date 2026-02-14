@@ -1,0 +1,49 @@
+import { FormEvent, RefObject } from 'react'
+
+import { StatusColorVariant } from '@cowprotocol/ui'
+
+import { TraderReferralCodeModalUiState } from '../../hooks/useTraderReferralCodeModalState'
+import { TraderReferralCodeIncomingReason, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+
+export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElement | null
+
+export interface PrimaryCta {
+  label: string
+  disabled: boolean
+  action: 'none' | 'save' | 'verify' | 'viewRewards' | 'goBack'
+}
+
+export interface TraderReferralCodeModalContentProps {
+  uiState: TraderReferralCodeModalUiState
+  isConnected: boolean
+  savedCode?: string
+  displayCode: string
+  verification: TraderReferralCodeVerificationStatus
+  incomingIneligibleCode?: string
+  rejectionCode?: string
+  rejectionReason?: TraderReferralCodeIncomingReason
+  isLinked: boolean
+  onPrimaryClick(): void
+  onEdit(): void
+  onRemove(): void
+  onSave(): void
+  onChange(event: FormEvent<HTMLInputElement>): void
+  primaryCta: PrimaryCta
+  hasRejection: boolean
+  showPayoutAddressConfirmation: boolean
+  payoutAddress?: string
+  payoutAddressConfirmed: boolean
+  onTogglePayoutAddressConfirmed(checked: boolean): void
+  infoMessage: string
+  shouldShowInfo: boolean
+  infoVariant: StatusColorVariant
+  inputRef: RefObject<HTMLInputElement | null>
+  ctaRef: RefObject<HTMLButtonElement | null>
+  onDismiss(): void
+}
+
+export interface StatusCopyResult {
+  shouldShowInfo: boolean
+  infoMessage: string
+  variant: StatusColorVariant
+}
