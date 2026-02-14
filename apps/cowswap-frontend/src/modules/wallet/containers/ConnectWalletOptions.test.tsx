@@ -1,12 +1,7 @@
 import { render, RenderResult, screen } from '@testing-library/react'
 
 // --- Stub component names used as test IDs ---
-const COINBASE_SMART_WALLET = 'CoinbaseSmartWalletOption'
-const BASE_APP_HINT = 'BaseAppHint'
 const COINBASE_WALLET = 'CoinbaseWalletOption'
-
-// --- Mock flags we control per-test ---
-let mockIsIosExternalBrowser = false
 
 // Fully mock @cowprotocol/wallet — it transitively imports browser-only connectors
 // that cannot be instantiated in a jsdom/test environment.
@@ -14,9 +9,6 @@ let mockIsIosExternalBrowser = false
 // ignore all incoming props to avoid React warnings about unknown DOM attributes.
 jest.mock('@cowprotocol/wallet', () => ({
   CoinbaseWalletOption: () => <div data-testid="CoinbaseWalletOption" />,
-  CoinbaseSmartWalletOption: () => <div data-testid="CoinbaseSmartWalletOption" />,
-  BaseAppHint: () => <div data-testid="BaseAppHint" />,
-  isIosExternalBrowser: () => mockIsIosExternalBrowser,
   InjectedOption: () => <div data-testid="InjectedOption" />,
   MetaMaskSdkOption: () => <div data-testid="MetaMaskSdkOption" />,
   WalletConnectV2Option: () => <div data-testid="WalletConnectV2Option" />,
@@ -55,27 +47,9 @@ function renderOptions(): RenderResult {
 }
 
 describe('ConnectWalletOptions — Coinbase wallet rendering', () => {
-  afterEach(() => {
-    mockIsIosExternalBrowser = false
-  })
-
-  it('renders Smart Wallet + Base App hint on iOS external browser', () => {
-    mockIsIosExternalBrowser = true
-
-    renderOptions()
-
-    expect(screen.getByTestId(COINBASE_SMART_WALLET)).toBeTruthy()
-    expect(screen.getByTestId(BASE_APP_HINT)).toBeTruthy()
-    expect(screen.queryByTestId(COINBASE_WALLET)).toBeNull()
-  })
-
-  it('renders single CoinbaseWalletOption on non-iOS', () => {
-    mockIsIosExternalBrowser = false
-
+  it('renders single CoinbaseWalletOption', () => {
     renderOptions()
 
     expect(screen.getByTestId(COINBASE_WALLET)).toBeTruthy()
-    expect(screen.queryByTestId(COINBASE_SMART_WALLET)).toBeNull()
-    expect(screen.queryByTestId(BASE_APP_HINT)).toBeNull()
   })
 })

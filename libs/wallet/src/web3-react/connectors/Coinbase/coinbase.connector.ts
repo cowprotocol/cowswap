@@ -10,20 +10,11 @@ import type {
 import { Connector } from '@web3-react/types'
 
 import { coinbaseDebug } from '../../utils/coinbaseDebugLogger'
-import { isIosExternalBrowser } from '../../utils/isIosExternalBrowser'
 
 import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk'
 
 const EVENT_DELAY_MS = 1000
 const EAGER_CONNECTION_TIMEOUT_MS = 5000
-
-function getCoinbaseWalletPreference(): { options: 'all' | 'smartWalletOnly' } {
-  if (isIosExternalBrowser()) {
-    return { options: 'smartWalletOnly' }
-  }
-
-  return { options: 'all' }
-}
 
 /**
  * Patched version of
@@ -106,7 +97,7 @@ export class CoinbaseWallet extends Connector {
     if (this.eagerConnection) return
 
     await (this.eagerConnection = import('@coinbase/wallet-sdk').then((m) => {
-      const preference = getCoinbaseWalletPreference()
+      const preference = { options: 'all' as const }
       coinbaseDebug('isomorphicInitialize', { preference })
 
       const sdk = m.createCoinbaseWalletSDK({
