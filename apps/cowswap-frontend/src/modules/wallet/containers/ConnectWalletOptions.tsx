@@ -5,6 +5,9 @@ import { isMobile, isInjectedWidget, isTruthy } from '@cowprotocol/common-utils'
 import { EIP6963ProviderDetail } from '@cowprotocol/types'
 import {
   CoinbaseWalletOption,
+  CoinbaseSmartWalletOption,
+  CoinbaseWalletAppOption,
+  isIosExternalBrowser,
   InjectedOption as DefaultInjectedOption,
   MetaMaskSdkOption,
   WalletConnectV2Option,
@@ -43,11 +46,19 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
     <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
   ) : null
 
-  const coinbaseWalletOption =
-    (!hasCoinbaseEip6963 && !(isMobile && isWidget) && (
-      <CoinbaseWalletOption key="CoinbaseWalletOption" {...connectionProps} />
-    )) ??
-    null
+  const showCoinbase = !hasCoinbaseEip6963 && !(isMobile && isWidget)
+
+  let coinbaseOptions: ReactNode[] = []
+  if (showCoinbase) {
+    if (isIosExternalBrowser()) {
+      coinbaseOptions = [
+        <CoinbaseSmartWalletOption key="CoinbaseSmartWalletOption" {...connectionProps} />,
+        <CoinbaseWalletAppOption key="CoinbaseWalletAppOption" {...connectionProps} />,
+      ]
+    } else {
+      coinbaseOptions = [<CoinbaseWalletOption key="CoinbaseWalletOption" {...connectionProps} />]
+    }
+  }
 
   const walletConnectionV2Option =
     ((!isInjectedMobileBrowser || isWidget) && (
@@ -70,7 +81,7 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
     injectedOption,
     metaMaskSdkOption,
     walletConnectionV2Option,
-    coinbaseWalletOption,
+    ...coinbaseOptions,
     /*{trezorOption}*/
   ].filter(isTruthy)
 

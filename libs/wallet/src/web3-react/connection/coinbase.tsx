@@ -44,3 +44,23 @@ export function CoinbaseWalletOption({ tryActivation, selectedWallet }: Connecti
     />
   )
 }
+
+const coinbaseSmartWalletOption = {
+  color: '#315CF5',
+  icon: CoinbaseImage,
+  id: 'coinbase-smart-wallet',
+}
+
+export function CoinbaseSmartWalletOption({ tryActivation, selectedWallet }: ConnectionOptionProps): ReactNode {
+  const isActive = useIsActiveConnection(selectedWallet, coinbaseWalletConnection)
+
+  return (
+    <ConnectWalletOption
+      {...coinbaseSmartWalletOption}
+      isActive={isActive}
+      onClick={() => tryActivation(coinbaseWalletConnection.connector)}
+      header="Coinbase Smart Wallet"
+      subheader="Passkey / Smart Account"
+    />
+  )
+}

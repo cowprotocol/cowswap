@@ -9,10 +9,21 @@ import type {
 } from '@web3-react/types'
 import { Connector } from '@web3-react/types'
 
-import { createCoinbaseWalletSDK, type CoinbaseWalletProvider } from '@coinbase/wallet-sdk'
+import { coinbaseDebug } from '../../utils/coinbaseDebugLogger'
+import { isIosExternalBrowser } from '../../utils/isIosExternalBrowser'
+
+import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk'
 
 const EVENT_DELAY_MS = 1000
 const EAGER_CONNECTION_TIMEOUT_MS = 5000
+
+function getCoinbaseWalletPreference(): { options: 'all' | 'smartWalletOnly' } {
+  if (isIosExternalBrowser()) {
+    return { options: 'smartWalletOnly' }
+  }
+
+  return { options: 'all' }
+}
 
 /**
  * Patched version of
@@ -40,6 +51,8 @@ export interface CoinbaseWalletConstructorArgs {
 }
 
 export class CoinbaseWallet extends Connector {
+  private eagerConnection?: Promise<void>
+
   private currentChainId: string | null = null
 
   private currentAccountAddress: string | null = null
@@ -89,30 +102,36 @@ export class CoinbaseWallet extends Connector {
     this.pendingTimeouts.add(id)
   }
 
-  private isomorphicInitialize(): void {
-    if (this.provider) return
+  private async isomorphicInitialize(): Promise<void> {
+    if (this.eagerConnection) return
 
-    const sdk = createCoinbaseWalletSDK({
-      appName: 'CoW Swap',
-      appChainIds: ALL_SUPPORTED_CHAIN_IDS,
-      appLogoUrl: CowImage,
-      preference: { options: 'all' },
-    })
+    await (this.eagerConnection = import('@coinbase/wallet-sdk').then((m) => {
+      const preference = getCoinbaseWalletPreference()
+      coinbaseDebug('isomorphicInitialize', { preference })
 
-    this.provider = sdk.getProvider()
+      const sdk = m.createCoinbaseWalletSDK({
+        appName: 'CoW Swap',
+        appChainIds: ALL_SUPPORTED_CHAIN_IDS,
+        appLogoUrl: CowImage,
+        preference,
+      })
 
-    this.provider.on('connect', this.onConnect)
-    this.provider.on('disconnect', this.onDisconnect)
-    this.provider.on('chainChanged', this.onChainChanged)
-    this.provider.on('accountsChanged', this.onAccountsChanged)
+      this.provider = sdk.getProvider()
+
+      this.provider.on('connect', this.onConnect)
+      this.provider.on('disconnect', this.onDisconnect)
+      this.provider.on('chainChanged', this.onChainChanged)
+      this.provider.on('accountsChanged', this.onAccountsChanged)
+    }))
   }
 
   /** {@inheritdoc Connector.connectEagerly} */
   public async connectEagerly(): Promise<void> {
+    coinbaseDebug('connectEagerly start')
     const cancelActivation = this.actions.startActivation()
 
     try {
-      this.isomorphicInitialize()
+      await this.isomorphicInitialize()
 
       const provider = this.provider as CoinbaseWalletProvider
 
@@ -154,6 +173,7 @@ export class CoinbaseWallet extends Connector {
    */
   // eslint-disable-next-line complexity
   public async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
+    coinbaseDebug('activate start', { desiredChainIdOrChainParameters })
     const desiredChainId =
       typeof desiredChainIdOrChainParameters === 'number'
         ? desiredChainIdOrChainParameters
@@ -185,7 +205,7 @@ export class CoinbaseWallet extends Connector {
     const cancelActivation = this.actions.startActivation()
 
     try {
-      this.isomorphicInitialize()
+      await this.isomorphicInitialize()
       if (!this.provider) throw new Error('No provider')
 
       const provider = this.provider as CoinbaseWalletProvider
@@ -235,6 +255,8 @@ export class CoinbaseWallet extends Connector {
   }
 
   public cleanUpProvider(): void {
+    this.eagerConnection = undefined
+
     for (const id of this.pendingTimeouts) {
       clearTimeout(id)
     }

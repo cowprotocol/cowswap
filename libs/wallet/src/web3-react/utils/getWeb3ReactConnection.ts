@@ -3,6 +3,7 @@ import { Connector } from '@web3-react/types'
 
 import { ConnectionType } from '../../api/types'
 import { coinbaseWalletConnection } from '../connection/coinbase'
+import { getCoinbaseWcConnection, isCoinbaseWcConnector } from '../connection/coinbaseViaWalletConnect'
 import { injectedWalletConnection } from '../connection/injectedWallet'
 import { metaMaskSdkConnection } from '../connection/metaMaskSdk'
 import { networkConnection } from '../connection/network'
@@ -26,6 +27,11 @@ const connectionTypeToConnection: Record<
 const STATIC_CONNECTIONS: Web3ReactConnection[] = Object.values(connectionTypeToConnection)
 
 export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3ReactConnection {
+  // Coinbase-via-WC check MUST come before generic WC (both use WalletConnectV2Connector)
+  if (c instanceof Connector && isCoinbaseWcConnector(c)) {
+    return getCoinbaseWcConnection(getCurrentChainIdFromUrl())
+  }
+
   if (c instanceof WalletConnectV2Connector || c === ConnectionType.WALLET_CONNECT_V2) {
     return getWalletConnectV2Connection(getCurrentChainIdFromUrl())
   }
