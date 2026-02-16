@@ -42,7 +42,7 @@ export function processApprovalTransaction(
           owner: account,
           spender,
           amount: approvedAmount,
-          blockNumber: Number(txResponse.blockNumber),
+          blockNumber: txResponse.blockNumber,
           chainId,
         }
       }

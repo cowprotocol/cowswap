@@ -139,7 +139,7 @@ interface ProcessTransactionConfirmationParams {
     owner: string
     spender: string
     amount: bigint
-    blockNumber: number
+    blockNumber: bigint
     chainId: number
   }) => void
 }
