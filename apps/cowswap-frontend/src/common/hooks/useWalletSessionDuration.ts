@@ -8,6 +8,11 @@ export function useWalletSessionDuration(): void {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const startRef = useRef<number>(0)
+  const walletNameRef = useRef<string | undefined>(walletName)
+
+  useEffect(() => {
+    walletNameRef.current = walletName
+  }, [walletName])
 
   useEffect(() => {
     if (!account || !chainId) {
@@ -30,7 +35,7 @@ export function useWalletSessionDuration(): void {
       cowAnalytics.sendEvent({
         category: 'Wallet',
         action: 'wallet_session_duration',
-        label: walletName || 'Unknown',
+        label: walletNameRef.current || 'Unknown',
         value: durationSec,
       })
     }
@@ -47,5 +52,5 @@ export function useWalletSessionDuration(): void {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       sendDuration()
     }
-  }, [account, chainId, walletName, cowAnalytics])
+  }, [account, chainId, cowAnalytics])
 }
