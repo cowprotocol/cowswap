@@ -583,7 +583,7 @@ export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithL
    * This might break assumptions elsewhere in the code
    */
   [SupportedChainId.PLASMA]: USDT_PLASMA,
-  [SupportedChainId.INK]: USDC_INK,
+  [SupportedChainId.INK]: USDCE_INK,
 }
 
 /**
@@ -753,7 +753,7 @@ const LINEA_STABLECOINS = [USDC_LINEA.address].map((t) => t.toLowerCase())
 
 const PLASMA_STABLECOINS = [USDT_PLASMA.address].map((t) => t.toLowerCase())
 
-const INK_STABLECOINS = [USDC_INK.address, USDT_INK.address].map((t) => t.toLowerCase())
+const INK_STABLECOINS = [USDC_INK.address, USDCE_INK.address, USDT_INK.address].map((t) => t.toLowerCase())
 
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
