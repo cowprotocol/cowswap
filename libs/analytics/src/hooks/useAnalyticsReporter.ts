@@ -8,7 +8,7 @@ import { useLocation } from 'react-router'
 
 import { AnalyticsContext, CowAnalytics } from '../CowAnalytics'
 import { PixelAnalytics, PixelEvent } from '../pixels/PixelAnalytics'
-import { Category } from '../types'
+import { Category, GtmEvent } from '../types'
 import { WebVitalsAnalytics } from '../webVitals/WebVitalsAnalytics'
 
 let initiatedPixel = false
@@ -119,8 +119,9 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps): void {
     cowAnalytics.sendEvent({
       category: 'Wallet',
       action: 'chain_switched',
-      label: `${prevChainId} -> ${chainId}`,
-    })
+      previousChainId: prevChainId.toString(),
+      newChainId: chainId.toString(),
+    } as GtmEvent<'Wallet'>)
   }, [account, prevAccount, chainId, prevChainId, cowAnalytics])
 
   // Set analytics context: user account and wallet name
