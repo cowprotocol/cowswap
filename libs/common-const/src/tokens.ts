@@ -544,6 +544,16 @@ export const USDC_INK = new TokenWithLogo(
   'USDC',
 )
 
+export const USDCE_INK = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.INK,
+  // https://explorer.inkonchain.com/token/0xF1815bd50389c46847f0Bda824eC8da914045D14
+  '0xF1815bd50389c46847f0Bda824eC8da914045D14',
+  6,
+  'USDC.e',
+  'Stargate Bridged USDC',
+)
+
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(
