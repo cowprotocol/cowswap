@@ -2,12 +2,13 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Nullish } from '@cowprotocol/types'
 import { defaultAbiCoder } from '@ethersproject/abi'
-import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { getAddress } from '@ethersproject/address'
 import { id } from '@ethersproject/hash'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { SetOptimisticAllowanceParams } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
+
+import type { TransactionReceipt } from 'viem'
 
 // ERC20 Approval event signature: Approval(address indexed owner, address indexed spender, uint256 value)
 const APPROVAL_EVENT_TOPIC = id('Approval(address,address,uint256)')
@@ -23,7 +24,7 @@ export function processApprovalTransaction(
   { chainId, currency, account, spender }: ApprovalTransactionParams,
   txResponse: TransactionReceipt,
 ): SetOptimisticAllowanceParams | null {
-  if (txResponse.status !== 1) {
+  if (txResponse.status !== 'success') {
     throw new Error('Approval transaction failed')
   }
 
@@ -41,7 +42,7 @@ export function processApprovalTransaction(
           owner: account,
           spender,
           amount: approvedAmount,
-          blockNumber: txResponse.blockNumber,
+          blockNumber: Number(txResponse.blockNumber),
           chainId,
         }
       }
@@ -73,8 +74,8 @@ function extractApprovalAmountFromLogs(
       if (log.topics[0] !== APPROVAL_EVENT_TOPIC) return false
 
       // Verify owner and spender match (topics[1] = owner, topics[2] = spender)
-      const logOwner = getAddress('0x' + log.topics[1].slice(26))
-      const logSpender = getAddress('0x' + log.topics[2].slice(26))
+      const logOwner = getAddress('0x' + log.topics[1]?.slice(26))
+      const logSpender = getAddress('0x' + log.topics[2]?.slice(26))
 
       return getAddressKey(logOwner) === getAddressKey(owner) && getAddressKey(logSpender) === getAddressKey(spender)
     })

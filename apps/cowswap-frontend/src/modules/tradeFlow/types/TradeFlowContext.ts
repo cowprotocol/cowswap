@@ -1,5 +1,4 @@
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
-import type { Erc20 } from '@cowprotocol/cowswap-abis'
 import type { Command } from '@cowprotocol/types'
 import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
@@ -59,6 +58,6 @@ export interface SafeBundleFlowContext {
   sendBatchTransactions: SendBatchTxCallback
   wrappedNativeContract: WethContractData
   needsApproval: boolean
-  erc20Contract: Erc20
+  tokenAddress: string
   amountToApprove: CurrencyAmount<Currency>
 }

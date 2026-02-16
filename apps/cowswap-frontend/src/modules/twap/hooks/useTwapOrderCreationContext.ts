@@ -13,7 +13,6 @@ import {
 } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { useNeedsZeroApproval } from 'modules/zeroApproval'
 
-import { useTokenContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 export interface TwapOrderCreationContext {
@@ -30,9 +29,8 @@ export function useTwapOrderCreationContext(
 ): TwapOrderCreationContext | null {
   const { chainId: composableCowChainId, ...composableCowContract } = useComposableCowContractData()
   const needsApproval = useNeedsApproval(inputAmount)
-  const { contract: erc20Contract, chainId: erc20ChainId } = useTokenContract(inputAmount?.currency.address)
   const spender = useTradeSpenderAddress()
-  const needsZeroApproval = useNeedsZeroApproval(erc20Contract, spender, inputAmount)
+  const needsZeroApproval = useNeedsZeroApproval(inputAmount?.currency.address, spender, inputAmount)
   const currentBlockFactoryAddress = composableCowChainId ? CURRENT_BLOCK_FACTORY_ADDRESS[composableCowChainId] : null
 
   return useMemo(() => {
@@ -40,9 +38,7 @@ export function useTwapOrderCreationContext(
       // check for missing dependencies
       !composableCowContract ||
       !spender ||
-      !currentBlockFactoryAddress ||
-      // Ensure token and composable cow contracts are on the same chain
-      composableCowChainId !== erc20ChainId
+      !currentBlockFactoryAddress
     )
       return null
 
@@ -61,6 +57,5 @@ export function useTwapOrderCreationContext(
     needsApproval,
     needsZeroApproval,
     composableCowChainId,
-    erc20ChainId,
   ])
 }

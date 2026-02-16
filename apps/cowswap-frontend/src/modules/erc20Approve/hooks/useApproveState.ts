@@ -25,7 +25,7 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
 } {
   const token = getCurrencyToApprove(amountToApprove)
   const tokenAddress = token?.address?.toLowerCase()
-  const currentAllowance = useTokenAllowance(token).data
+  const currentAllowance = useTokenAllowance(token)
   const pendingApproval = useHasPendingApproval(tokenAddress)
 
   const approvalStateBase = useSafeMemo(() => {

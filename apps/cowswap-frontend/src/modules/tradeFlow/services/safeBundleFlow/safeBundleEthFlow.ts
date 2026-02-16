@@ -1,6 +1,5 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20 } from '@cowprotocol/cowswap-abis'
 import { UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 import { Percent } from '@uniswap/sdk-core'
@@ -82,7 +81,7 @@ export async function safeBundleEthFlow(
 
     if (needsApproval) {
       const approveTx = await buildApproveTx({
-        erc20Contract: wrappedNativeContract as unknown as Erc20,
+        tokenAddress: wrappedNativeContract.address,
         spender,
         amountToApprove: BigInt(amountToApprove.quotient.toString()),
       })

@@ -7,7 +7,7 @@ import { useSendBatchTransactions } from '@cowprotocol/wallet'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useAmountsToSignFromQuote } from 'modules/trade'
 
-import { useTokenContract, useWethContractData } from 'common/hooks/useContract'
+import { useWethContractData } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 import { SafeBundleFlowContext } from '../types/TradeFlowContext'
@@ -23,13 +23,12 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
 
   const needsApproval = useNeedsApproval(maximumSendSellAmount)
-  const inputCurrencyAddress = useMemo(() => {
+  const tokenAddress = useMemo(() => {
     return maximumSendSellAmount ? getCurrencyAddress(maximumSendSellAmount.currency) : undefined
   }, [maximumSendSellAmount])
-  const { contract: erc20Contract } = useTokenContract(inputCurrencyAddress)
 
   return useMemo(() => {
-    if (!spender || !wrappedNativeContract || !erc20Contract || !amountToApprove) {
+    if (!spender || !wrappedNativeContract || !tokenAddress || !amountToApprove) {
       return null
     }
 
@@ -38,8 +37,8 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
       sendBatchTransactions,
       wrappedNativeContract,
       needsApproval,
-      erc20Contract,
+      tokenAddress,
       amountToApprove,
     }
-  }, [spender, sendBatchTransactions, wrappedNativeContract, needsApproval, erc20Contract, amountToApprove])
+  }, [spender, sendBatchTransactions, wrappedNativeContract, needsApproval, tokenAddress, amountToApprove])
 }
