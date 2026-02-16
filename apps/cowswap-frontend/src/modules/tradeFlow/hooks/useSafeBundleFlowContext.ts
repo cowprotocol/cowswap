@@ -7,7 +7,7 @@ import { useSendBatchTransactions } from '@cowprotocol/wallet'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useAmountsToSignFromQuote } from 'modules/trade'
 
-import { useTokenContract, useWethContract } from 'common/hooks/useContract'
+import { useTokenContract, useWethContractData } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 import { SafeBundleFlowContext } from '../types/TradeFlowContext'
@@ -17,7 +17,7 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
 
   const amountToApprove = useGetAmountToSignApprove()
   const sendBatchTransactions = useSendBatchTransactions()
-  const { contract: wrappedNativeContract } = useWethContract()
+  const wrappedNativeContract = useWethContractData()
 
   // todo check for safe wallet
   const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}

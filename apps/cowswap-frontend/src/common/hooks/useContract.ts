@@ -7,15 +7,7 @@ import {
 } from '@cowprotocol/common-const'
 import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
-import {
-  CoWSwapEthFlowAbi,
-  Erc20,
-  Erc20Abi,
-  GPv2SettlementAbi,
-  vCowAbi,
-  Weth,
-  WethAbi,
-} from '@cowprotocol/cowswap-abis'
+import { CoWSwapEthFlowAbi, Erc20, Erc20Abi, GPv2SettlementAbi, vCowAbi, WethAbi } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
@@ -110,8 +102,15 @@ export function useTokenContract(
   return useContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible)
 }
 
-export function useWethContract(withSignerIfPossible?: boolean): UseContractResultLegacy<Weth> {
-  return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
+export type WethContractData = ContractData<typeof WethAbi>
+export function useWethContractData(): UseContractResult<WethContractData> {
+  const { chainId } = useWalletInfo()
+
+  return {
+    abi: WethAbi,
+    address: WETH_CONTRACT_ADDRESS_MAP[chainId],
+    chainId,
+  }
 }
 
 export type EthFlowContractData = ContractData<typeof CoWSwapEthFlowAbi>

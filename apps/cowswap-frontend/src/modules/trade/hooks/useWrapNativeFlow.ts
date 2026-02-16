@@ -5,6 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
+import { useConfig } from 'wagmi'
 
 import {
   wrapUnwrapCallback,
@@ -14,7 +15,7 @@ import {
 } from 'legacy/hooks/useWrapCallback'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useWethContract } from 'common/hooks/useContract'
+import { useWethContractData } from 'common/hooks/useContract'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
@@ -34,8 +35,9 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
 }
 
 function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapContext | null {
+  const config = useConfig()
   const { account } = useWalletInfo()
-  const { contract: wethContract, chainId: wethChainId } = useWethContract()
+  const { chainId: wethChainId, ...wethContract } = useWethContractData()
   const addTransaction = useTransactionAdder()
   const [, setWrapNativeState] = useWrapNativeScreenState()
   const analytics = useCowAnalytics()
@@ -47,6 +49,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
 
     return {
       chainId: wethChainId,
+      config,
       account,
       wethContract,
       amount,
@@ -59,7 +62,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
         setWrapNativeState({ isOpen: true })
       },
     }
-  }, [wethChainId, wethContract, amount, addTransaction, setWrapNativeState, account, analytics])
+  }, [wethChainId, config, wethContract, amount, addTransaction, setWrapNativeState, account, analytics])
 }
 
 function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback | null {

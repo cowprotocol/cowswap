@@ -6,6 +6,7 @@ import type { MetaTransactionData } from '@safe-global/types-kit'
 import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { encodeFunctionData } from 'viem'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -13,7 +14,6 @@ import { mapUnsignedOrderToOrder, type PostOrderParams, wrapErrorInOperatorError
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
-import { buildWrapTx } from 'modules/operations/bundle/buildWrapTx'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -70,12 +70,11 @@ export async function safeBundleEthFlow(
     const txs: MetaTransactionData[] = []
 
     logTradeFlow(LOG_PREFIX, 'STEP 2: wrap native token')
-    const wrapTx = await buildWrapTx({ wrappedNativeContract, weiAmount: nativeAmountInWei })
 
     txs.push({
-      to: wrapTx.to!,
-      data: wrapTx.data!,
-      value: wrapTx.value!.toString(),
+      to: wrappedNativeContract.address,
+      data: encodeFunctionData({ abi: wrappedNativeContract.abi, functionName: 'deposit' }),
+      value: nativeAmountInWei,
       operation: 0,
     })
 
