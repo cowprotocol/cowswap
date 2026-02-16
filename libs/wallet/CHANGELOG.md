@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/wallet-v2.1.0...wallet-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### 🐛 Bug Fixes
+
+* **wallet:** update coinbase connector ([#6998](https://github.com/cowprotocol/cowswap/issues/6998)) ([8b0a2ea](https://github.com/cowprotocol/cowswap/commit/8b0a2eae20acad06f504ebc5edfbbb27b1f811aa))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/core bumped to 2.2.0
+    * @cowprotocol/ens bumped to 2.2.0
+    * @cowprotocol/iframe-transport bumped to 2.0.3
+    * @cowprotocol/types bumped to 3.2.0
+    * @cowprotocol/ui bumped to 2.2.0
+    * @cowprotocol/wallet-provider bumped to 2.1.1
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/wallet-v2.0.1...wallet-v2.1.0) (2026-02-05)
 
 
