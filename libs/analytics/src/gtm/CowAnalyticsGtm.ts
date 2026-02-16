@@ -174,6 +174,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
         eventType: 'wallet_disconnection',
         previousWalletAddress: this.previousAccount,
         previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
+        ...this.getDimensions(),
       })
       this.setContext(AnalyticsContext.walletName, undefined)
       return
@@ -199,6 +200,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
         event: 'wallet_connected',
         eventType: 'wallet_initial_connection',
         ...commonEventProps,
+        ...this.getDimensions(),
       })
     }
     // Wallet switched (account changes from one defined value to another)
@@ -209,6 +211,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
         previousWalletAddress: this.previousAccount,
         previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
         ...commonEventProps,
+        ...this.getDimensions(),
       })
     }
 
