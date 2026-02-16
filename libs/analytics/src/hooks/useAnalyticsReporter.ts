@@ -13,6 +13,13 @@ import { WebVitalsAnalytics } from '../webVitals/WebVitalsAnalytics'
 
 let initiatedPixel = false
 let initiated = false
+const NOT_CONNECTED_WALLET_NAME = 'Not connected'
+
+type BrowserType = 'desktop' | 'mobileWeb3' | 'mobileRegular'
+
+interface CachedDocumentWindow extends Window {
+  __isDocumentCached?: boolean
+}
 
 interface UseAnalyticsReporterProps {
   account: string | undefined
@@ -25,14 +32,53 @@ interface UseAnalyticsReporterProps {
   injectedWidgetAppId?: string
 }
 
+function getBrowserType(win: Window): BrowserType {
+  return !isMobile ? 'desktop' : 'web3' in win || 'ethereum' in win ? 'mobileWeb3' : 'mobileRegular'
+}
+
+function getServiceWorkerAction(win: Window): 'Cache hit' | 'Cache miss' | 'Not installed' {
+  const installed = Boolean(win.navigator.serviceWorker?.controller)
+  const hit = Boolean((win as CachedDocumentWindow).__isDocumentCached)
+  return installed ? (hit ? 'Cache hit' : 'Cache miss') : 'Not installed'
+}
+
+function reportInitAnalytics({
+  cowAnalytics,
+  webVitalsAnalytics,
+}: Pick<UseAnalyticsReporterProps, 'cowAnalytics' | 'webVitalsAnalytics'>): void {
+  if (initiated) {
+    return
+  }
+  initiated = true
+
+  webVitalsAnalytics?.reportWebVitals()
+
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  cowAnalytics.setContext(AnalyticsContext.customBrowserType, getBrowserType(window))
+  cowAnalytics.sendEvent({
+    category: Category.SERVICE_WORKER,
+    action: getServiceWorkerAction(window),
+    nonInteraction: true,
+  })
+}
+
+function reportInitPixel(pixelAnalytics?: PixelAnalytics): void {
+  if (initiatedPixel) {
+    return
+  }
+
+  pixelAnalytics?.sendAllPixels(PixelEvent.INIT)
+  initiatedPixel = true
+}
+
 /**
  * Common hook used by all apps to report some basic data to analytics
  * @param props
  */
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
+export function useAnalyticsReporter(props: UseAnalyticsReporterProps): void {
   const {
     account,
     walletName,
@@ -46,40 +92,10 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
   const { pathname, search } = useLocation()
 
   const prevAccount = usePrevious(account)
+  const prevChainId = usePrevious(chainId)
 
-  // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
   useEffect(() => {
-    if (initiated) {
-      return
-    }
-    initiated = true
-
-    // Report Web Vitals
-    webVitalsAnalytics?.reportWebVitals()
-
-    // Set browser type
-    if (typeof window !== 'undefined') {
-      cowAnalytics.setContext(
-        AnalyticsContext.customBrowserType,
-        !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular',
-      )
-    }
-
-    // Report service worker status
-    if (typeof window !== 'undefined') {
-      const installed = Boolean(window.navigator.serviceWorker?.controller)
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const hit = Boolean((window as any).__isDocumentCached)
-      const action = installed ? (hit ? 'Cache hit' : 'Cache miss') : 'Not installed'
-
-      cowAnalytics.sendEvent({
-        category: Category.SERVICE_WORKER,
-        action,
-        nonInteraction: true,
-      })
-    }
+    reportInitAnalytics({ cowAnalytics, webVitalsAnalytics })
   }, [webVitalsAnalytics, cowAnalytics])
 
   // Set analytics context: chainId
@@ -91,10 +107,28 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
     cowAnalytics.setContext(AnalyticsContext.chainId, chainId.toString())
   }, [chainId, cowAnalytics])
 
+  // Track chain switching only when wallet is connected
+  useEffect(() => {
+    // This hook is reused in Explorer, where `chainId` changes but no wallet is connected (`account` is undefined).
+    // We only want wallet chain-switch analytics, so require both current and previous account.
+    // Also skip no-op updates where chain did not actually change.
+    if (!account || !prevAccount || !chainId || !prevChainId || chainId === prevChainId) {
+      return
+    }
+
+    cowAnalytics.sendEvent({
+      category: 'Wallet',
+      action: 'chain_switched',
+      label: `${prevChainId} -> ${chainId}`,
+    })
+  }, [account, prevAccount, chainId, prevChainId, cowAnalytics])
+
   // Set analytics context: user account and wallet name
   useEffect(() => {
-    cowAnalytics.setUserAccount(account, account ? walletName : 'Not connected')
-    cowAnalytics.setContext(AnalyticsContext.walletName, account ? walletName : 'Not connected')
+    const walletNameForContext = account ? walletName : NOT_CONNECTED_WALLET_NAME
+
+    cowAnalytics.setUserAccount(account, walletNameForContext)
+    cowAnalytics.setContext(AnalyticsContext.walletName, walletNameForContext)
 
     // Handle pixel tracking on wallet connection
     if (!prevAccount && account && pixelAnalytics) {
@@ -108,14 +142,7 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
 
   // Handle initiate pixel tracking
   useEffect(() => {
-    if (!initiatedPixel) {
-      if (pixelAnalytics) {
-        // Sent all pixels
-        pixelAnalytics.sendAllPixels(PixelEvent.INIT)
-      }
-
-      initiatedPixel = true
-    }
+    reportInitPixel(pixelAnalytics)
   }, [pixelAnalytics])
 
   useEffect(() => {
