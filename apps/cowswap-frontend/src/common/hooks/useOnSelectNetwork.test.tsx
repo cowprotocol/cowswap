@@ -71,6 +71,9 @@ describe('useOnSelectNetwork', () => {
       await result.current(SupportedChainId.GNOSIS_CHAIN)
     })
 
+    expect(mockSwitchNetworkWithGuidance).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
+      source: 'networkSelector',
+    })
     expect(mockSetChainIdToUrl).not.toHaveBeenCalled()
     expect(mockAddSnackbar).not.toHaveBeenCalled()
   })
@@ -86,6 +89,9 @@ describe('useOnSelectNetwork', () => {
       await result.current(SupportedChainId.GNOSIS_CHAIN)
     })
 
+    expect(mockSwitchNetworkWithGuidance).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
+      source: 'networkSelector',
+    })
     expect(mockSetChainIdToUrl).not.toHaveBeenCalled()
     expect(mockAddSnackbar).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -106,6 +112,9 @@ describe('useOnSelectNetwork', () => {
       await result.current(SupportedChainId.GNOSIS_CHAIN)
     })
 
+    expect(mockSwitchNetworkWithGuidance).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
+      source: 'networkSelector',
+    })
     expect(mockSetChainIdToUrl).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
     expect(mockAddSnackbar).not.toHaveBeenCalled()
   })

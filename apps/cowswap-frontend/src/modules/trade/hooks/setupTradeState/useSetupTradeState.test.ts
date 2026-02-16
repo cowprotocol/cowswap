@@ -115,6 +115,9 @@ describe('useSetupTradeState - switchNetworkInWallet error handling', () => {
       renderHook(() => useSetupTradeState())
     })
 
+    expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
+      source: 'tradeStateSync',
+    })
     expect(mockTradeNavigate).toHaveBeenCalledWith(SupportedChainId.MAINNET, {
       chainId: SupportedChainId.MAINNET,
       targetChainId: null,
@@ -131,6 +134,9 @@ describe('useSetupTradeState - switchNetworkInWallet error handling', () => {
       renderHook(() => useSetupTradeState())
     })
 
+    expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
+      source: 'tradeStateSync',
+    })
     // Should revert to MAINNET (the provider's current chain)
     expect(mockTradeNavigate).toHaveBeenCalledWith(SupportedChainId.MAINNET, {
       chainId: SupportedChainId.MAINNET,
@@ -149,6 +155,9 @@ describe('useSetupTradeState - switchNetworkInWallet error handling', () => {
       renderHook(() => useSetupTradeState())
     })
 
+    expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
+      source: 'tradeStateSync',
+    })
     expect(mockTradeNavigate).toHaveBeenCalledWith(SupportedChainId.MAINNET, {
       chainId: SupportedChainId.MAINNET,
       targetChainId: null,
@@ -167,6 +176,9 @@ describe('useSetupTradeState - switchNetworkInWallet error handling', () => {
       renderHook(() => useSetupTradeState())
     })
 
+    expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
+      source: 'tradeStateSync',
+    })
     const revertCalls = mockTradeNavigate.mock.calls.filter((call: unknown[]) => call[0] === SupportedChainId.MAINNET)
     expect(revertCalls).toHaveLength(0)
   })
@@ -179,6 +191,9 @@ describe('useSetupTradeState - switchNetworkInWallet error handling', () => {
       renderHook(() => useSetupTradeState())
     })
 
+    expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
+      source: 'tradeStateSync',
+    })
     // tradeNavigate should not be called with MAINNET for revert
     const revertCalls = mockTradeNavigate.mock.calls.filter((call: unknown[]) => call[0] === SupportedChainId.MAINNET)
     expect(revertCalls).toHaveLength(0)

@@ -27,7 +27,7 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       try {
         setWalletConnectionError(undefined)
-        await switchNetwork(targetChain)
+        await switchNetwork(targetChain, { source: 'networkSelector' })
 
         setChainIdToUrl(targetChain)
         // TODO: Replace any with proper type definitions

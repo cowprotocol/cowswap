@@ -11,13 +11,11 @@ import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 export interface ConnectorActivationContext {
   skipNetworkChanging?: boolean
 
-  beforeActivation(): void
+  beforeActivation(connectionType: ConnectionType): void
 
   afterActivation(isHardWareWallet: boolean, connectionType: ConnectionType): void
 
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onActivationError(error: any): void
+  onActivationError(error: unknown, connectionType: ConnectionType): void
 }
 
 // TODO: Add proper return type annotation
@@ -43,17 +41,15 @@ export function useActivateConnector({
 
       try {
         setPendingConnector(connector)
-        beforeActivation()
+        beforeActivation(connectionType)
 
         await connector.activate(skipNetworkChanging ? undefined : getCurrentChainIdFromUrl())
 
         afterActivation(isHardWareWallet, connectionType)
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error(`[tryActivation] web3-react connection error`, error)
 
-        onActivationError(error)
+        onActivationError(error, connectionType)
       }
     },
     [chainId, skipNetworkChanging, afterActivation, beforeActivation, onActivationError],
