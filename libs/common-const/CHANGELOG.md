@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/common-const-v2.2.0...common-const-v2.2.1) (2026-02-16)
+
+
+### 🐛 Bug Fixes
+
+* **ink:** add USDC.e to Ink ([#7017](https://github.com/cowprotocol/cowswap/issues/7017)) ([ed2245f](https://github.com/cowprotocol/cowswap/commit/ed2245ff35f36c60dd48cae00bd3ba35aa9cfd57))
+
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/common-const-v2.1.0...common-const-v2.2.0) (2026-02-13)
 
 
