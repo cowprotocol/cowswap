@@ -15,7 +15,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 import { useConfig, useReadContract } from 'wagmi'
-import { writeContract } from 'wagmi/actions'
+import { writeContract, getTransactionReceipt } from 'wagmi/actions'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
@@ -23,7 +23,7 @@ import { ContractData, UseContractResult } from 'common/hooks/useContract'
 
 import { fetchClaim } from './claimData'
 
-import type { Hex } from 'viem'
+import type { Hex, TransactionReceipt } from 'viem'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
@@ -110,7 +110,7 @@ export const useCowFromLockedGnoBalances = () => {
 
   const claimed = useMemo(() => {
     const [_allocatedTokens, claimed] = data || [0n, 0n]
-    CurrencyAmount.fromRawAmount(_COW, claimed.toString())
+    return CurrencyAmount.fromRawAmount(_COW, claimed.toString())
   }, [data])
 
   return useMemo(
@@ -134,7 +134,7 @@ export function useClaimCowFromLockedGnoCallback({
   openModal,
   closeModal,
   isFirstClaim,
-}: ClaimCallbackParams): () => Promise<Hex> {
+}: ClaimCallbackParams): () => Promise<TransactionReceipt> {
   const config = useConfig()
   const { account } = useWalletInfo()
   const { chainId: merkleDropChainId, ...merkleDrop } = useMerkleDropContract()
@@ -179,16 +179,13 @@ export function useClaimCowFromLockedGnoCallback({
     const summary = t`Claim vested` + ` COW`
     openModal(summary)
 
-    return claimPromise
-      .then((txHash) => {
-        addTransaction({
-          swapLockedGNOvCow: true,
-          hash: txHash,
-          summary,
-        })
-        return txHash
-      })
-      .finally(closeModal)
+    const txHash = await claimPromise
+    addTransaction({
+      swapLockedGNOvCow: true,
+      hash: txHash,
+      summary,
+    })
+    return getTransactionReceipt(config, { hash: txHash }).finally(closeModal)
   }, [
     config,
     account,
