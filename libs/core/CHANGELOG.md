@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/core-v2.2.0...core-v2.2.1) (2026-02-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.1
+
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/core-v2.1.0...core-v2.2.0) (2026-02-13)
 
 
