@@ -13,15 +13,27 @@ import {
 const mockSwitchNetwork = jest.fn()
 const mockAddSnackbar = jest.fn()
 const mockRemoveSnackbar = jest.fn()
+const mockSendEvent = jest.fn()
 
 jest.mock('@cowprotocol/wallet', () => ({
   useIsCoinbaseWallet: jest.fn(),
   useSwitchNetwork: () => mockSwitchNetwork,
+  useWalletInfo: () => ({
+    chainId: 1,
+  }),
 }))
 
 jest.mock('@cowprotocol/snackbars', () => ({
   useAddSnackbar: () => mockAddSnackbar,
   useRemoveSnackbar: () => mockRemoveSnackbar,
+}))
+
+jest.mock('@cowprotocol/analytics', () => ({
+  ...jest.requireActual('@cowprotocol/analytics'),
+  __resetGtmInstance: jest.fn(),
+  useCowAnalytics: () => ({
+    sendEvent: mockSendEvent,
+  }),
 }))
 
 // isMobile is a module-level constant; mock the whole module and override per test
@@ -72,6 +84,7 @@ describe('useSwitchNetworkWithGuidance', () => {
     expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
     expect(mockAddSnackbar).not.toHaveBeenCalled()
     expect(mockRemoveSnackbar).not.toHaveBeenCalled()
+    expect(mockSendEvent).not.toHaveBeenCalled()
   })
 
   // Test #2: Desktop Coinbase (isMobile=false)
@@ -88,6 +101,25 @@ describe('useSwitchNetworkWithGuidance', () => {
 
     expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
     expect(mockAddSnackbar).not.toHaveBeenCalled()
+    expect(mockSendEvent).toHaveBeenCalledTimes(2)
+    expect(mockSendEvent).toHaveBeenNthCalledWith(
+      1,
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        stage: 'switchStart',
+        source: 'networkSelector',
+        result: 'started',
+      }),
+    )
+    expect(mockSendEvent).toHaveBeenNthCalledWith(
+      2,
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        stage: 'switchSuccess',
+        source: 'networkSelector',
+        result: 'success',
+      }),
+    )
   })
 
   // Test #3: Mobile Coinbase + switch succeeds
@@ -110,6 +142,13 @@ describe('useSwitchNetworkWithGuidance', () => {
     )
     expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
+    expect(mockSendEvent).toHaveBeenCalledWith(
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        stage: 'switchSuccess',
+        source: 'networkSelector',
+      }),
+    )
   })
 
   // Test #4: Mobile Coinbase + switch times out
@@ -139,6 +178,14 @@ describe('useSwitchNetworkWithGuidance', () => {
     expect(error).toBeDefined()
     expect(error!.message).toContain('Timeout')
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
+    expect(mockSendEvent).toHaveBeenCalledWith(
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        stage: 'switchError',
+        result: 'error',
+        source: 'networkSelector',
+      }),
+    )
 
     jest.useRealTimers()
   })
@@ -164,6 +211,13 @@ describe('useSwitchNetworkWithGuidance', () => {
     expect(error).toBe(rejectionError)
     expect(mockAddSnackbar).toHaveBeenCalled()
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
+    expect(mockSendEvent).toHaveBeenCalledWith(
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        stage: 'switchError',
+        source: 'networkSelector',
+      }),
+    )
   })
 
   // Test #6: Mobile Coinbase + concurrent from same instance
@@ -203,6 +257,14 @@ describe('useSwitchNetworkWithGuidance', () => {
 
     expect(firstDone).toBe(true)
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
+    expect(mockSendEvent).toHaveBeenCalledWith(
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        stage: 'switchBlockedInFlight',
+        result: 'blocked',
+        source: 'networkSelector',
+      }),
+    )
   })
 
   // Test #7: Mobile Coinbase + concurrent from different instances
