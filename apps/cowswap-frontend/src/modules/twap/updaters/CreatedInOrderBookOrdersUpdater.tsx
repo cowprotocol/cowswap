@@ -13,6 +13,8 @@ import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 
 import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } from 'modules/orders'
 
+import { fetchMissingPartOrders } from './fetchMissingPartOrders'
+
 import { useTwapPartOrdersList } from '../hooks/useTwapPartOrdersList'
 import { TwapPartOrderItem, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
@@ -35,7 +37,7 @@ const isVirtualPart = false
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CreatedInOrderBookOrdersUpdater() {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const prodOrders = useSWRProdOrders()
   const getTokensForOrdersList = useTokensForOrdersList()
@@ -54,11 +56,33 @@ export function CreatedInOrderBookOrdersUpdater() {
   // Take only orders related to TWAP from prod API response
   const partOrdersFromProd = useAsyncMemo(
     async () => {
-      const ordersInfo = prodOrders.reduce<TwapOrderInfo[]>((acc, order) => {
-        const item = twapPartOrdersMap[order.uid]
+      if (!chainId || !account) return []
+
+      const existingOrdersByUid = prodOrders.reduce<Record<string, EnrichedOrder>>((acc, order) => {
+        acc[order.uid] = order
+        return acc
+      }, {})
+
+      const partOrderIds = Object.keys(twapPartOrdersMap)
+      // Since prodOrders only has the last 100 orders, we might need to fetch some missing orders separately
+      const fallbackOrders = await fetchMissingPartOrders(
+        chainId,
+        account.toLowerCase(),
+        partOrderIds,
+        existingOrdersByUid,
+      )
+
+      const allOrdersByUid = [...prodOrders, ...fallbackOrders].reduce<Record<string, EnrichedOrder>>((acc, order) => {
+        acc[order.uid] = order
+        return acc
+      }, {})
+
+      const ordersInfo = partOrderIds.reduce<TwapOrderInfo[]>((acc, uid) => {
+        const order = allOrdersByUid[uid]
+        const item = twapPartOrdersMap[uid]
         const parent = twapOrders[item?.twapOrderId]
 
-        if (parent) {
+        if (order && parent) {
           acc.push({
             item,
             parent,
@@ -77,7 +101,7 @@ export function CreatedInOrderBookOrdersUpdater() {
         })
         .filter(isTruthy)
     },
-    [prodOrders, twapPartOrdersMap, getTokensForOrdersList, twapOrders],
+    [chainId, account, prodOrders, twapPartOrdersMap, twapPartOrdersList, getTokensForOrdersList, twapOrders],
     [],
   )
 
