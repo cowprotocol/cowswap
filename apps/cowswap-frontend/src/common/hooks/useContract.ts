@@ -8,7 +8,6 @@ import {
 import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
-  CoWSwapEthFlow,
   CoWSwapEthFlowAbi,
   Erc20,
   Erc20Abi,
@@ -115,15 +114,16 @@ export function useWethContract(withSignerIfPossible?: boolean): UseContractResu
   return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
 }
 
-export function useEthFlowContract(): {
-  result: UseContractResultLegacy<CoWSwapEthFlow>
-} {
+export type EthFlowContractData = ContractData<typeof CoWSwapEthFlowAbi>
+export function useEthFlowContractData(): UseContractResult<EthFlowContractData> {
   const { chainId } = useWalletInfo()
 
   const contractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId)
 
   return {
-    result: useContract<CoWSwapEthFlow>(contractAddress, CoWSwapEthFlowAbi, true),
+    abi: CoWSwapEthFlowAbi,
+    address: contractAddress,
+    chainId,
   }
 }
 
