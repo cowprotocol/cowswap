@@ -11,7 +11,7 @@ export interface ExtensibleFallbackContext {
   chainId: SupportedChainId
   config: Config
   safeAddress: string
-  settlementContract: Omit<SettlementContractData, 'chainId'>
+  settlementContract: SettlementContractData
 }
 
 export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null {

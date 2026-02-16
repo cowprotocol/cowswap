@@ -8,7 +8,8 @@ import useSWR from 'swr'
 export function useENSResolverContract(address: string | undefined): EnsPublicResolver | undefined {
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const provider = useWalletProvider() as any
   const chainId = useWalletChainId()
 
   const { data } = useSWR(

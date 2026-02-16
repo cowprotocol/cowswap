@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react'
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import useSWR, { SWRConfiguration } from 'swr'
 
@@ -76,7 +75,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address) => {
       address = address.toLowerCase()
       const balance = data[address] || '0'
-      acc[address] = BigNumber.from(balance)
+      acc[address] = BigInt(balance)
       return acc
     }, {})
 

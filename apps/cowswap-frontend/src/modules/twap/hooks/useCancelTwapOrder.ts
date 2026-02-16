@@ -8,7 +8,7 @@ import { useConfig } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
@@ -21,17 +21,17 @@ import { TwapOrderStatus } from '../types'
 
 import type { Hex } from 'viem'
 
-export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Promise<OnChainCancellation> {
+export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promise<OnChainCancellation> {
   const config = useConfig()
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const sendBatchTransactions = useSendBatchTransactions()
   const { chainId: settlementChainId, ...settlementContract } = useGP2SettlementContractData()
-  const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
+  const { chainId: composableCowChainId, ...composableCowContract } = useComposableCowContractData()
   const { t } = useLingui()
 
   return useCallback(
-    async (twapOrderId: string, order: Order) => {
+    async (twapOrderId: Hex, order: Order) => {
       if (!composableCowContract || !settlementContract) {
         throw new Error(t`Context is not full to cancel TWAP order`)
       }

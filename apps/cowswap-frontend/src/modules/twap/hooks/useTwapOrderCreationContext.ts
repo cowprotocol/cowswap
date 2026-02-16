@@ -2,32 +2,33 @@ import { useMemo } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW, Erc20 } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
-import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import {
+  ComposableCowContractData,
+  useComposableCowContractData,
+} from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { useNeedsZeroApproval } from 'modules/zeroApproval'
 
 import { useTokenContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 export interface TwapOrderCreationContext {
-  composableCowContract: ComposableCoW
+  composableCowContract: ComposableCowContractData
   needsApproval: boolean
   needsZeroApproval: boolean
   spender: string
   currentBlockFactoryAddress: string
-  erc20Contract: Erc20
   chainId: SupportedChainId
 }
 
 export function useTwapOrderCreationContext(
   inputAmount: Nullish<CurrencyAmount<Token>>,
 ): TwapOrderCreationContext | null {
-  const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
+  const { chainId: composableCowChainId, ...composableCowContract } = useComposableCowContractData()
   const needsApproval = useNeedsApproval(inputAmount)
   const { contract: erc20Contract, chainId: erc20ChainId } = useTokenContract(inputAmount?.currency.address)
   const spender = useTradeSpenderAddress()
@@ -38,7 +39,6 @@ export function useTwapOrderCreationContext(
     if (
       // check for missing dependencies
       !composableCowContract ||
-      !erc20Contract ||
       !spender ||
       !currentBlockFactoryAddress ||
       // Ensure token and composable cow contracts are on the same chain
@@ -48,7 +48,6 @@ export function useTwapOrderCreationContext(
 
     return {
       composableCowContract,
-      erc20Contract,
       needsApproval,
       needsZeroApproval,
       spender,
@@ -57,7 +56,6 @@ export function useTwapOrderCreationContext(
     }
   }, [
     composableCowContract,
-    erc20Contract,
     spender,
     currentBlockFactoryAddress,
     needsApproval,

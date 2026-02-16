@@ -1,19 +1,18 @@
 import { useMemo } from 'react'
 
-import { ComposableCoW } from '@cowprotocol/cowswap-abis'
-import { useSingleContractMultipleData } from '@cowprotocol/multicall'
+import { useReadContracts } from 'wagmi'
 
-import ms from 'ms.macro'
+import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import { TwapOrdersAuthResult } from '../types'
 
+import type { Hex } from 'viem'
+
 const EMPTY_AUTH_RESULT = {}
-const MULTICALL_OPTIONS = {}
-const SWR_CONFIG = { refreshInterval: ms`30s` }
 
 export function useTwapOrdersAuthMulticall(
   safeAddress: string,
-  composableCowContract: ComposableCoW,
+  composableCowContract: ComposableCowContractData,
   pendingTwapOrderIds: string[],
 ): TwapOrdersAuthResult | null {
   // Use stringified key to avoid excessive multicalls
@@ -21,26 +20,27 @@ export function useTwapOrdersAuthMulticall(
 
   const input = useMemo(() => {
     if (!orderIdsKey) return undefined
-    return orderIdsKey.split(',').map((id) => [safeAddress, id])
+    return orderIdsKey.split(',').map((id) => [safeAddress, id] as [string, Hex])
   }, [safeAddress, orderIdsKey])
 
-  const { data, isLoading } = useSingleContractMultipleData<[boolean]>(
-    composableCowContract,
-    'singleOrders',
-    input,
-    MULTICALL_OPTIONS,
-    SWR_CONFIG,
-  )
-  const loadedResults = data?.results
+  const { data, isLoading } = useReadContracts({
+    contracts: input!.map((args) => ({
+      abi: composableCowContract.abi,
+      address: composableCowContract.address,
+      functionName: 'singleOrders' as const,
+      args,
+    })),
+    query: { enabled: !!input },
+  })
 
   return useMemo(() => {
     if (pendingTwapOrderIds.length === 0) return EMPTY_AUTH_RESULT
 
-    if (isLoading || !loadedResults || loadedResults.length !== pendingTwapOrderIds.length) return null
+    if (isLoading || !data || data.length !== pendingTwapOrderIds.length) return null
 
     return pendingTwapOrderIds.reduce((acc, id, index) => {
-      acc[id] = loadedResults[index]?.[0]
+      acc[id] = data[index]?.result
       return acc
     }, {} as TwapOrdersAuthResult)
-  }, [pendingTwapOrderIds, loadedResults, isLoading])
+  }, [pendingTwapOrderIds, data, isLoading])
 }

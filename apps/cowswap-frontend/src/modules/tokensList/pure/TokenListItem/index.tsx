@@ -5,7 +5,6 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { areAddressesEqual, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, HoverTooltip, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
-import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -26,7 +25,7 @@ const LoadingElement = (
 export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: Nullish<Currency>
-  balance: BigNumber | undefined
+  balance: bigint | undefined
   usdAmount?: CurrencyAmount<Currency> | null
 
   onSelectToken?: TokenSelectionHandler
@@ -106,7 +105,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   const shouldShowBalances = isWalletConnected && isSupportedChain
   const shouldFormatBalances = shouldShowBalances && hasIntersected
   const balanceAmount =
-    shouldFormatBalances && balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
+    shouldFormatBalances && balance ? CurrencyAmount.fromRawAmount(token, `0x${balance.toString(16)}`) : undefined
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected || disabled) {
