@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.1.3](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v2.1.2...widget-configurator-v2.1.3) (2026-02-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.0
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-hooks bumped to 2.2.0
+    * @cowprotocol/events bumped to 3.2.0
+    * @cowprotocol/types bumped to 3.2.0
+    * @cowprotocol/widget-lib bumped to 1.1.2
+    * @cowprotocol/widget-react bumped to 1.0.5
+
 ## [2.1.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v2.1.1...widget-configurator-v2.1.2) (2026-02-10)
 
 

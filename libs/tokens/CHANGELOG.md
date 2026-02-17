@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.1.0...tokens-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-hooks bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/core bumped to 2.2.0
+    * @cowprotocol/types bumped to 3.2.0
+    * @cowprotocol/ui bumped to 2.2.0
+    * @cowprotocol/wallet-provider bumped to 2.1.1
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.0.1...tokens-v2.1.0) (2026-02-05)
 
 

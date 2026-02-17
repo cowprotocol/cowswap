@@ -7,7 +7,7 @@ import { useIsSafeViaWc } from '@cowprotocol/wallet'
 import { useLingui } from '@lingui/react/macro'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
+import { useLoadMoreOrders } from 'modules/orders'
 import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
@@ -67,16 +67,7 @@ export function OrdersTableNoOrdersContent({
         isSafeViaWc,
       }),
     }),
-    [
-      currentTab,
-      hasOrders,
-      displayLimit,
-      hasMoreOrders,
-      orderType,
-      searchTerm,
-      historyStatusFilter,
-      isSafeViaWc,
-    ],
+    [currentTab, hasOrders, displayLimit, hasMoreOrders, orderType, searchTerm, historyStatusFilter, isSafeViaWc],
   )
 
   return (

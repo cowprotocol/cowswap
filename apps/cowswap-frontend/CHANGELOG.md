@@ -1,5 +1,46 @@
 # Changelog
 
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.1.1...cowswap-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* enhance token search results with bridge support ([#6975](https://github.com/cowprotocol/cowswap/issues/6975)) ([90a791b](https://github.com/cowprotocol/cowswap/commit/90a791b74d2a7f98badb88157b1e825e387e6543))
+
+
+### 🐛 Bug Fixes
+
+* allow claiming GNO vesting after due date ([#7000](https://github.com/cowprotocol/cowswap/issues/7000)) ([b067c06](https://github.com/cowprotocol/cowswap/commit/b067c063e35a17cde5d48b1649fbe05e15e8d634))
+* **bridge:** refetch quote when switching manual/auto slippage ([#7008](https://github.com/cowprotocol/cowswap/issues/7008)) ([6cf141f](https://github.com/cowprotocol/cowswap/commit/6cf141f54f25681d13bf697ba34b0703f9927b31))
+* **bridge:** use original quote amounts from SDK ([#6974](https://github.com/cowprotocol/cowswap/issues/6974)) ([759edc7](https://github.com/cowprotocol/cowswap/commit/759edc7d8b157e75366f2f4eb0db65af01d02839))
+* improve token selection in bridging mode ([#6977](https://github.com/cowprotocol/cowswap/issues/6977)) ([d8f23af](https://github.com/cowprotocol/cowswap/commit/d8f23afc20ef7743cc989753e191ca5ac06b7062))
+* preload i18n messages before initial render ([#6969](https://github.com/cowprotocol/cowswap/issues/6969)) ([c426343](https://github.com/cowprotocol/cowswap/commit/c426343e3f566d1aaf6053dd8ed7031c1a1f79a5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.0
+    * @cowprotocol/balances-and-allowances bumped to 2.2.0
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-hooks bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/core bumped to 2.2.0
+    * @cowprotocol/ens bumped to 2.2.0
+    * @cowprotocol/events bumped to 3.2.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.3
+    * @cowprotocol/iframe-transport bumped to 2.0.3
+    * @cowprotocol/multicall bumped to 2.2.0
+    * @cowprotocol/permit-utils bumped to 2.2.0
+    * @cowprotocol/snackbars bumped to 2.0.3
+    * @cowprotocol/tokens bumped to 2.2.0
+    * @cowprotocol/types bumped to 3.2.0
+    * @cowprotocol/ui bumped to 2.2.0
+    * @cowprotocol/wallet bumped to 2.2.0
+    * @cowprotocol/wallet-provider bumped to 2.1.1
+    * @cowprotocol/widget-lib bumped to 1.1.2
+
 ## [2.1.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.1.0...cowswap-v2.1.1) (2026-02-10)
 
 
