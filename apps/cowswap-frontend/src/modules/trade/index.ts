@@ -1,6 +1,5 @@
 // Export types first to avoid circular dependency (getDefaultTradeRawState etc. used by yield, limitOrders, etc.)
 export * from './types'
-export * from './types/TradeDerivedState'
 export * from './const/common'
 export * from './state/tradeTypeAtom'
 export * from './state/derivedTradeStateAtom'
