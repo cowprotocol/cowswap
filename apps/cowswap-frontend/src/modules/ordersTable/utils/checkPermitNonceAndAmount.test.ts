@@ -1,10 +1,12 @@
 import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo } from '@cowprotocol/permit-utils'
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { Eip2612PermitUtils } from '@cowprotocol/permit-utils/src/imports/1inchPermitUtils'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { checkPermitNonceAndAmount } from './checkPermitNonceAndAmount'
 import { extractPermitData } from './extractPermitData'
+
+import type { PublicClient } from 'viem'
 
 jest.mock('@cowprotocol/permit-utils', () => ({
   checkIsCallDataAValidPermit: jest.fn(),
@@ -23,13 +25,13 @@ const mockExtractPermitData = extractPermitData as jest.MockedFunction<typeof ex
 
 // Type for the permit utils instance
 interface PermitUtilsInstance {
-  getTokenNonce: (tokenAddress: string, account: string) => Promise<number>
+  getTokenNonce: jest.MockedFunction<(tokenAddress: string, account: string) => Promise<number>>
 }
 
 describe('checkPermitNonceAndAmount', () => {
   const mockAccount = '0x1234567890123456789012345678901234567890'
   const mockChainId = 1
-  const mockProvider = {} as JsonRpcProvider
+  const mockClient = {} as PublicClient
   const mockOrder: Order = {
     id: 'test-order-id',
     sellToken: '0x1234567890123456789012345678901234567890',
@@ -53,7 +55,7 @@ describe('checkPermitNonceAndAmount', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    mockGetPermitUtilsInstance.mockReturnValue(mockEip2612Utils)
+    mockGetPermitUtilsInstance.mockResolvedValue(mockEip2612Utils as unknown as Eip2612PermitUtils)
   })
 
   describe('DAI-like permits', () => {
@@ -68,7 +70,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -89,7 +91,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -109,7 +111,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -129,7 +131,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -151,7 +153,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -180,7 +182,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -202,7 +204,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -227,7 +229,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -248,7 +250,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,
@@ -273,7 +275,7 @@ describe('checkPermitNonceAndAmount', () => {
       const result = await checkPermitNonceAndAmount(
         mockAccount,
         mockChainId,
-        mockProvider,
+        mockClient,
         mockOrder,
         mockPermitCallData,
         mockPermitInfo,

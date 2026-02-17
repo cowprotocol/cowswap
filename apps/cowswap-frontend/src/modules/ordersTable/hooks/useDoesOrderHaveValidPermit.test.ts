@@ -2,12 +2,11 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotoc
 import { Erc20__factory } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
-import type { Web3Provider } from '@ethersproject/providers'
 
 import { renderHook } from '@testing-library/react'
 import useSWR from 'swr'
+import { usePublicClient } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -36,6 +35,11 @@ jest.mock('@cowprotocol/wallet-provider', () => ({
   useWalletProvider: jest.fn(),
 }))
 
+jest.mock('wagmi', () => ({
+  useConfig: jest.fn().mockReturnValue({}),
+  usePublicClient: jest.fn().mockReturnValue({}),
+}))
+
 jest.mock('modules/permit', () => ({
   usePermitInfo: jest.fn(),
 }))
@@ -60,7 +64,7 @@ jest.mock('../utils/checkPermitNonceAndAmount', () => ({
 const erc20Interface = Erc20__factory.createInterface()
 
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseWalletProvider = useWalletProvider as jest.MockedFunction<typeof useWalletProvider>
+const mockUsePublicClient = usePublicClient as jest.MockedFunction<typeof usePublicClient>
 const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
 const mockIsPending = isPending as jest.MockedFunction<typeof isPending>
 const mockGetOrderPermitIfExists = getOrderPermitIfExists as jest.MockedFunction<typeof getOrderPermitIfExists>
@@ -83,7 +87,6 @@ function createEip2612PermitCallData(owner: string, spender: string, value: Ethe
 describe('useDoesOrderHaveValidPermit', () => {
   const mockAccount = '0x1234567890123456789012345678901234567890'
   const mockChainId = SupportedChainId.MAINNET
-  const mockProvider = {} as Web3Provider
   const mockOrder = {
     id: 'test-order-id',
     sellToken: '0x1234567890123456789012345678901234567890',
@@ -109,7 +112,6 @@ describe('useDoesOrderHaveValidPermit', () => {
 
     // Default mocks
     mockUseWalletInfo.mockReturnValue({ account: mockAccount, chainId: mockChainId })
-    mockUseWalletProvider.mockReturnValue(mockProvider)
     mockUsePermitInfo.mockReturnValue(mockPermitInfo)
     mockIsPending.mockReturnValue(true)
     mockGetOrderPermitIfExists.mockReturnValue(mockPermit)
@@ -142,9 +144,9 @@ describe('useDoesOrderHaveValidPermit', () => {
     })
   })
 
-  describe('when provider is not available', () => {
+  describe('when public client is not available', () => {
     it('should return undefined', () => {
-      mockUseWalletProvider.mockReturnValue(undefined)
+      mockUsePublicClient.mockReturnValueOnce(undefined)
 
       const { result } = renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.SWAP))
 

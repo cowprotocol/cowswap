@@ -1,53 +1,49 @@
-import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
-import { TypedDataField } from '@ethersproject/abstract-signer'
-import { BigNumber } from '@ethersproject/bignumber'
-import type { JsonRpcProvider } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
-
-import { getContract } from './getContract'
+import { encodeFunctionData, decodeAbiParameters } from 'viem'
 
 import type { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
+import type { Address, WalletClient, PublicClient, Hex } from 'viem'
 
 export class PermitProviderConnector implements ProviderConnector {
   constructor(
-    private provider: JsonRpcProvider,
-    private walletSigner?: Wallet | undefined,
+    private publicClient: PublicClient,
+    private walletClient: WalletClient,
   ) {}
 
-  contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {
-    const contract = getContract(address || '', abi, this.provider)
-
-    return contract.interface.encodeFunctionData(methodName, methodParams)
+  contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): Hex {
+    return encodeFunctionData({ abi, functionName: methodName, args: methodParams })
   }
 
-  signTypedData(_walletAddress: string, typedData: EIP712TypedData, _typedDataHash: string): Promise<string> {
+  signTypedData(walletAddress: Address, typedData: EIP712TypedData, _typedDataHash: string): Promise<Hex> {
     // Removes `EIP712Domain` as it's already part of EIP712 (see https://ethereum.stackexchange.com/a/151930/55204)
     // and EthersJS complains when a type is not needed (see https://github.com/ethers-io/ethers.js/discussions/4000)
-    const types = Object.keys(typedData.types).reduce<Record<string, TypedDataField[]>>((acc, type) => {
-      if (type !== 'EIP712Domain') {
-        acc[type] = typedData.types[type]
-      }
-      return acc
-    }, {})
+    const types = Object.fromEntries(Object.entries(typedData.types).filter(([type]) => type !== 'EIP712Domain'))
 
-    const signer = this.walletSigner || this.provider.getSigner()
-
-    return signer._signTypedData(typedData.domain, types, typedData.message)
-  }
-
-  ethCall(contractAddress: string, callData: string): Promise<string> {
-    return this.provider.call({
-      to: contractAddress,
-      data: callData,
+    return this.walletClient.signTypedData({
+      account: walletAddress,
+      domain: typedData.domain,
+      types,
+      primaryType: typedData.primaryType,
+      message: typedData.message,
     })
   }
 
-  decodeABIParameter<T>(type: string, hex: string): T {
-    return defaultAbiCoder.decode([type], hex)[0]
+  ethCall(contractAddress: Address, callData: Hex): Promise<string> {
+    return this.publicClient
+      .call({
+        to: contractAddress,
+        data: callData,
+      })
+      .then(({ data }) => data || '0x')
   }
 
-  decodeABIParameters<T>(types: AbiInput[], hex: string): T {
-    const decodedValues = defaultAbiCoder.decode(types as unknown as (ParamType | string)[], hex) as T
+  decodeABIParameter<T>(type: string, hex: Hex): T {
+    const [decoded] = decodeAbiParameters([{ type }], hex)
+
+    return decoded as T
+  }
+
+  decodeABIParameters<T>(types: AbiInput[], hex: Hex): T {
+    const decodedValues = decodeAbiParameters(types, hex)
 
     // Ethersjs decodes numbers as BigNumber instances
     // However, 1inch utils do not deal with BigNumber instances,
@@ -56,12 +52,9 @@ export class PermitProviderConnector implements ProviderConnector {
     if (decodedValues && typeof decodedValues === 'object') {
       const copy: Record<string, unknown> = {}
 
-      Object.keys(decodedValues).forEach((key) => {
-        // @ts-ignore
-        const value = decodedValues[key]
-        if (BigNumber.isBigNumber(value)) {
-          // @ts-ignore
-          copy[key] = value.toHexString()
+      Object.entries(decodedValues).forEach(([key, value]) => {
+        if (typeof value === 'bigint') {
+          copy[key] = `0x${value.toString(16)}`
         } else {
           copy[key] = value
         }

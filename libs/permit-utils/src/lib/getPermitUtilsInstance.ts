@@ -1,6 +1,6 @@
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import { Address, createWalletClient, http, PublicClient } from 'viem'
 
-import { PERMIT_SIGNER } from '../const'
+import { PERMIT_ACCOUNT } from '../const'
 import { PermitProviderConnector } from '../utils/PermitProviderConnector'
 
 import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
@@ -14,11 +14,15 @@ const CHAIN_UTILS_CACHE = new Map<number, Eip2612PermitUtils>()
  */
 const PROVIDER_UTILS_CACHE = new Map<string, Eip2612PermitUtils>()
 
-export async function getPermitUtilsInstance(
-  chainId: number,
-  provider: JsonRpcProvider,
-  account?: string | undefined,
-): Promise<Eip2612PermitUtils> {
+export async function getPermitUtilsInstance({
+  chainId,
+  publicClient,
+  account,
+}: {
+  chainId: number
+  publicClient: PublicClient
+  account?: Address
+}): Promise<Eip2612PermitUtils> {
   const chainCache = CHAIN_UTILS_CACHE.get(chainId)
 
   if (!account && chainCache) {
@@ -31,8 +35,13 @@ export async function getPermitUtilsInstance(
     return providerCache
   }
 
-  // TODO: allow to receive the signer as a parameter
-  const web3ProviderConnector = new PermitProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
+  const walletClient = createWalletClient({
+    account: account || PERMIT_ACCOUNT,
+    chain: publicClient.chain,
+    transport: http(),
+  })
+
+  const web3ProviderConnector = new PermitProviderConnector(publicClient, walletClient)
   const Eip2612PermitUtilsClass = await import('../imports/1inchPermitUtils').then((r) => r.Eip2612PermitUtils)
   const eip2612PermitUtils = new Eip2612PermitUtilsClass(web3ProviderConnector, { enabledCheckSalt: true })
 
