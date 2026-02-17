@@ -11,6 +11,11 @@ on:
         description: 'Application to deploy. Options are: COWSWAP, EXPLORER'
         required: true
         type: string
+      disable_nx_cache:
+        description: 'Disable NX cache'
+        required: false
+        type: boolean
+        default: false
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -48,6 +53,7 @@ jobs:
         run: vercel build -t $VERCEL_TOKEN --prod
         env:
           NX_CONFIGURATION: ${{ inputs.env_name == 'prod' && 'production' || inputs.env_name }}
+          NX_SKIP_NX_CACHE: ${{ inputs.disable_nx_cache }}
           REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
           REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
