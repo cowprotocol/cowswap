@@ -14,7 +14,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
-import { NetworksList } from 'common/pure/NetworksList'
+import { NetworksList } from 'common/pure/NetworksList/NetworksList.pure'
 
 import * as styledEl from './NetworkSelector.styled'
 

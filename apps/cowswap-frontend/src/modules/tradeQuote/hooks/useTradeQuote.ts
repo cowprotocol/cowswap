@@ -5,6 +5,7 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { useDerivedTradeState } from 'modules/trade'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { tradeQuotesAtom } from '../state/tradeQuoteAtom'
@@ -13,6 +14,7 @@ import { DEFAULT_TRADE_QUOTE_STATE } from '../state/tradeQuoteAtom'
 
 export function useTradeQuote(): TradeQuoteState {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const state = useDerivedTradeState()
   const tradeQuotes = useAtomValue(tradeQuotesAtom)
 
@@ -20,10 +22,10 @@ export function useTradeQuote(): TradeQuoteState {
   const outputCurrency = state?.outputCurrency
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || isProviderNetworkUnsupported) {
+    if (!inputCurrency || !outputCurrency || isProviderNetworkUnsupported || isProviderNetworkDeprecated) {
       return DEFAULT_TRADE_QUOTE_STATE
     }
 
     return tradeQuotes[getCurrencyAddress(inputCurrency).toLowerCase()] || DEFAULT_TRADE_QUOTE_STATE
-  }, [inputCurrency, outputCurrency, tradeQuotes, isProviderNetworkUnsupported])
+  }, [inputCurrency, outputCurrency, tradeQuotes, isProviderNetworkUnsupported, isProviderNetworkDeprecated])
 }

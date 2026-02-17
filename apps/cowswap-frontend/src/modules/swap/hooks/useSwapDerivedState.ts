@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { TradeType, useBuildTradeDerivedState } from 'modules/trade'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import {
@@ -20,6 +21,7 @@ export function useSwapDerivedState(): SwapDerivedState {
 
 export function useFillSwapDerivedState(): void {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
   const rawState = useAtomValue(swapRawStateAtom)
   const derivedState = useBuildTradeDerivedState(swapRawStateAtom, true)
@@ -28,7 +30,7 @@ export function useFillSwapDerivedState(): void {
 
   useEffect(() => {
     updateDerivedState(
-      isProviderNetworkUnsupported
+      isProviderNetworkUnsupported || isProviderNetworkDeprecated
         ? DEFAULT_SWAP_DERIVED_STATE
         : {
             ...derivedState,
@@ -37,5 +39,12 @@ export function useFillSwapDerivedState(): void {
             isUnlocked: rawState.isUnlocked,
           },
     )
-  }, [derivedState, slippage, updateDerivedState, isProviderNetworkUnsupported, rawState.isUnlocked])
+  }, [
+    derivedState,
+    slippage,
+    updateDerivedState,
+    isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
+    rawState.isUnlocked,
+  ])
 }

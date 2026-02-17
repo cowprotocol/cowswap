@@ -233,6 +233,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.NetworkNotSupported]: {
     text: <Trans>Unsupported Network</Trans>,
   },
+  [TradeFormValidation.NetworkDeprecated]: {
+    text: <Trans>Unsupported Network</Trans>,
+  },
   [TradeFormValidation.SafeReadonlyUser]: {
     text: (
       <>

@@ -10,6 +10,7 @@ import {
 import { TradeType } from 'modules/trade'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { useIsWidgetUnlocked } from './useIsWidgetUnlocked'
@@ -24,13 +25,14 @@ export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useFillLimitOrdersDerivedState() {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const updateDerivedState = useSetAtom(limitOrdersDerivedStateAtom)
   const isUnlocked = useIsWidgetUnlocked()
   const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom, false)
 
   useEffect(() => {
     updateDerivedState(
-      isProviderNetworkUnsupported
+      isProviderNetworkUnsupported || isProviderNetworkDeprecated
         ? DEFAULT_LIMIT_DERIVED_STATE
         : {
             ...derivedState,
@@ -39,5 +41,5 @@ export function useFillLimitOrdersDerivedState() {
             tradeType: TradeType.LIMIT_ORDER,
           },
     )
-  }, [derivedState, updateDerivedState, isUnlocked, isProviderNetworkUnsupported])
+  }, [derivedState, updateDerivedState, isUnlocked, isProviderNetworkUnsupported, isProviderNetworkDeprecated])
 }
