@@ -1,6 +1,6 @@
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 

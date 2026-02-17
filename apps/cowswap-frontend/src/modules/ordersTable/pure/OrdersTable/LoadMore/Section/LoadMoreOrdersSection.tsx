@@ -4,7 +4,7 @@ import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/react/macro'
 
-import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
+import { useLoadMoreOrders } from 'modules/orders'
 
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 import { LoadMoreOrdersButton } from '../Button/LoadMoreOrdersButton'

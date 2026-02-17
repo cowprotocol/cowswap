@@ -11,7 +11,7 @@ import { Trans } from '@lingui/react/macro'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { getOrderTypeReceiveAmounts, useIsEoaEthFlow } from 'modules/trade'
-import { ReceiveAmountInfo } from 'modules/trade/types'
+import { ReceiveAmountInfo } from 'modules/trade'
 
 import { FeeItem } from './FeeItem'
 import { NetworkFeeItem } from './NetworkFeeItem'

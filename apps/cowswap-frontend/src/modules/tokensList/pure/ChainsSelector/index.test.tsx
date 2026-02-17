@@ -1,6 +1,6 @@
 import type { ChainInfo } from '@cowprotocol/cow-sdk'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade'
 
 import { makeBuildClickEvent } from './analytics'
 
