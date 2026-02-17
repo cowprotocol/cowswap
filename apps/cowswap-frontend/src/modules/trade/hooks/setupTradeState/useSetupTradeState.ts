@@ -6,11 +6,10 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { getDefaultTradeRawState, TradeRawState, TradeType } from 'modules/trade'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
-import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
-import { TradeType } from 'modules/trade/types/TradeType'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'

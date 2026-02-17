@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade'
 
 import { MobileChainPanelCard, MobileChainPanelOverlay } from './styled'
 

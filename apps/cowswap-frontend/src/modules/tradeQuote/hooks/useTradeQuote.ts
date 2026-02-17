@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useDerivedTradeState } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 

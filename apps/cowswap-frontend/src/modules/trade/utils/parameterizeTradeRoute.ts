@@ -1,6 +1,6 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
+import { TradeUrlParams } from 'modules/trade'
 
 import { RoutesValues } from 'common/constants/routes'
 

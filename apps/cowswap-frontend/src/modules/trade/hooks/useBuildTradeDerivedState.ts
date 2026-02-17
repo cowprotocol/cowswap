@@ -11,7 +11,7 @@ import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { Nullish } from 'types'
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
-import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
+import { ExtendedTradeRawState } from 'modules/trade'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'

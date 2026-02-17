@@ -5,7 +5,7 @@ import { ButtonPrimary, Media } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { useLoadMoreOrders } from 'modules/orders/hooks/useLoadMoreOrders'
+import { useLoadMoreOrders } from 'modules/orders'
 
 export function LoadMoreOrdersButton(): ReactNode {
   const { loadMore, hasMoreOrders, isLoading } = useLoadMoreOrders()

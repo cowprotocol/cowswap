@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
+import { TradeDerivedState } from 'modules/trade'
 
 import { derivedTradeStateAtom } from '../state/derivedTradeStateAtom'
 
