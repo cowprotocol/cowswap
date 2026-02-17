@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/common-const-v2.2.1...common-const-v2.2.2) (2026-02-17)
+
+
+### 🐛 Bug Fixes
+
+* **ink:** move usdc back to ink favorites ([#7024](https://github.com/cowprotocol/cowswap/issues/7024)) ([cec6c39](https://github.com/cowprotocol/cowswap/commit/cec6c39d85d27d30a7fe4607065ccf60cfde4fa6))
+
 ## [2.2.1](https://github.com/cowprotocol/cowswap/compare/common-const-v2.2.0...common-const-v2.2.1) (2026-02-16)
 
 
