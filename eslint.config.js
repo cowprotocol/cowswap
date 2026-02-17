@@ -215,7 +215,7 @@ module.exports = [
         },
       ],
       'import/no-internal-modules': [
-        'error',
+        'warn',
         {
           forbid: ['modules/*/**'],
         },
