@@ -31,6 +31,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   const tradeQuote = useTradeQuote()
   const volumeFeeBps = useVolumeFee()?.volumeBps
   const orderKind = derivedTradeState?.orderKind
+  const derivedSlippage = derivedTradeState?.slippage
 
   const quoteResults = tradeQuote?.quote?.quoteResults
   const quoteResponse = quoteResults?.quoteResponse
@@ -50,11 +51,11 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
       orderParams,
       inputCurrency,
       outputCurrency,
-      slippagePercent: bpsToPercent(slippage),
+      slippagePercent: derivedSlippage || bpsToPercent(slippage),
       partnerFeeBps: volumeFeeBps,
       protocolFeeBps,
     }
-  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, slippage, protocolFeeBps])
+  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, slippage, protocolFeeBps, derivedSlippage])
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
