@@ -10,7 +10,10 @@ import { NavigateFunction } from 'common/hooks/useNavigate'
 import { AffiliateTraderModalState } from './useAffiliateTraderModalState'
 import { TraderWalletStatus } from './useAffiliateTraderWallet'
 
-import { TraderReferralCodeVerificationStatus } from '../lib/affiliateProgramTypes'
+import {
+  TraderReferralCodeVerificationResult,
+  TraderReferralCodeVerificationStatus,
+} from '../lib/affiliateProgramTypes'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
 import {
   FocusableElement,
@@ -35,7 +38,6 @@ import {
   removeTraderReferralCodeAtom,
   saveTraderReferralCodeAtom,
   setTraderReferralCodeInputAtom,
-  setTraderReferralIncomingCodeReasonAtom,
 } from '../state/affiliateTraderWriteAtoms'
 
 export interface TraderReferralCodeModalControllerParams {
@@ -71,7 +73,7 @@ export function useAffiliateTraderModalController(
     runVerification,
     cancelVerification,
   } = params
-  const { uiState, displayCode, hasCode, hasValidLength, walletStatus, verification, savedCode } = modalState
+  const { uiState, displayCode, hasCode, hasValidLength, walletStatus, verificationStatus, savedCode } = modalState
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const ctaRef = useRef<HTMLButtonElement | null>(null)
@@ -81,7 +83,7 @@ export function useAffiliateTraderModalController(
     uiState,
     hasValidLength,
     hasCode,
-    verificationKind: verification.kind,
+    verificationKind: verificationStatus,
     walletStatus: effectiveWalletStatus,
     account,
     chainId,
@@ -99,7 +101,7 @@ export function useAffiliateTraderModalController(
     toggleWalletModal,
     navigate,
     inputRef,
-    verificationKind: verification.kind,
+    verificationKind: verificationStatus,
     runVerification,
     cancelVerification,
   })
@@ -116,7 +118,7 @@ export function useAffiliateTraderModalController(
     uiState,
     savedCode,
     displayCode,
-    verification,
+    verificationStatus,
     handlers,
     effectivePrimaryCta,
     inputRef,
@@ -155,7 +157,7 @@ function useEffectivePrimaryCta(params: {
   uiState: AffiliateTraderModalState['uiState']
   hasValidLength: boolean
   hasCode: boolean
-  verificationKind: TraderReferralCodeVerificationStatus['kind']
+  verificationKind: TraderReferralCodeVerificationStatus
   walletStatus: TraderWalletStatus
   account?: string
   chainId?: number
@@ -189,7 +191,7 @@ function useContentProps(params: {
   uiState: AffiliateTraderModalState['uiState']
   savedCode?: string
   displayCode: string
-  verification: AffiliateTraderModalState['verification']
+  verificationStatus: AffiliateTraderModalState['verificationStatus']
   handlers: TraderReferralCodeModalHandlers
   effectivePrimaryCta: PrimaryCta
   inputRef: RefObject<HTMLInputElement | null>
@@ -204,7 +206,7 @@ function useContentProps(params: {
     uiState,
     savedCode,
     displayCode,
-    verification,
+    verificationStatus,
     handlers,
     effectivePrimaryCta,
     inputRef,
@@ -229,7 +231,7 @@ function useContentProps(params: {
           isConnected: !!account,
           savedCode,
           displayCode,
-          verification,
+          verificationStatus,
           onEdit: handlers.onEdit,
           onRemove: handlers.onRemove,
           onSave: handlers.onSave,
@@ -258,7 +260,7 @@ function useContentProps(params: {
     savedCode,
     togglePayoutAddressConfirmed,
     uiState,
-    verification,
+    verificationStatus,
   ])
 }
 
@@ -270,7 +272,7 @@ interface TraderReferralCodeModalHandlersParams {
   toggleWalletModal: () => void
   navigate: NavigateFunction
   inputRef: RefObject<HTMLInputElement | null>
-  verificationKind: TraderReferralCodeVerificationStatus['kind']
+  verificationKind: TraderReferralCodeVerificationStatus
   runVerification(code: string): Promise<void>
   cancelVerification(): void
 }
@@ -307,17 +309,15 @@ function useTraderReferralCodeModalHandlers(
   const saveCode = useSetAtom(saveTraderReferralCodeAtom)
   const removeCode = useSetAtom(removeTraderReferralCodeAtom)
   const completeVerification = useSetAtom(completeTraderReferralVerificationAtom)
-  const setIncomingCodeReason = useSetAtom(setTraderReferralIncomingCodeReasonAtom)
 
   const cancelInFlightVerification = useCallback(() => {
     cancelVerification()
 
     if (verificationKind === 'checking') {
-      completeVerification({ kind: 'idle' })
+      const idleResult: TraderReferralCodeVerificationResult = { kind: 'idle' }
+      completeVerification(idleResult)
     }
-
-    setIncomingCodeReason(undefined)
-  }, [cancelVerification, completeVerification, setIncomingCodeReason, verificationKind])
+  }, [cancelVerification, completeVerification, verificationKind])
 
   const onClose = useCallback(() => {
     cancelInFlightVerification()

@@ -6,81 +6,48 @@ import { TraderReferralCodeSubtitleProps } from './AffiliateTraderModal.types'
 import { Subtitle } from './styles'
 
 import { AFFILIATE_REWARDS_CURRENCY } from '../../config/affiliateProgram.const'
-import { TraderReferralCodeIncomingReason, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+import { AffiliateProgramParams, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 import { HowItWorks } from '../HowItWorks'
 import { TraderIneligible } from '../TraderIneligible'
 
 export function AffiliateTraderSubtitle(props: TraderReferralCodeSubtitleProps): ReactNode {
-  const { isLinked, hasRejection, rejectionCode, uiState } = props
+  const { isLinked, uiState } = props
 
-  if (isLinked && !hasRejection) {
-    return <LinkedSubtitle />
-  }
-
-  if (hasRejection && rejectionCode) {
-    return <RejectedSubtitle rejectionCode={rejectionCode} rejectionReason={props.rejectionReason} />
+  if (isLinked) {
+    return (
+      <Subtitle>
+        <Trans>Your wallet is already linked to a referral code.</Trans> <HowItWorks />
+      </Subtitle>
+    )
   }
 
   if (uiState === 'ineligible') {
-    return <IneligibleSubtitle incomingCode={props.incomingIneligibleCode} />
+    return (
+      <Subtitle>
+        <TraderIneligible refCode={props.refCode} />
+      </Subtitle>
+    )
   }
 
-  return <ProgramSubtitle verification={props.verification} isConnected={props.isConnected} />
-}
-
-function LinkedSubtitle(): ReactNode {
   return (
-    <Subtitle>
-      <Trans>Your wallet is already linked to a referral code.</Trans> <HowItWorks />
-    </Subtitle>
-  )
-}
-
-function RejectedSubtitle({
-  rejectionCode,
-  rejectionReason,
-}: {
-  rejectionCode: string
-  rejectionReason?: TraderReferralCodeIncomingReason
-}): ReactNode {
-  return (
-    <Subtitle>
-      <Trans>
-        The code <strong>{rejectionCode}</strong> from your link wasn’t applied.
-      </Trans>
-      {rejectionReason === 'invalid' && (
-        <>
-          {' '}
-          <Trans>It isn't a valid referral code.</Trans>
-        </>
-      )}
-      {rejectionReason === 'ineligible' && (
-        <>
-          {' '}
-          <Trans>This wallet isn't eligible.</Trans>
-        </>
-      )}{' '}
-      <HowItWorks />
-    </Subtitle>
-  )
-}
-
-function IneligibleSubtitle({ incomingCode }: { incomingCode?: string }): ReactNode {
-  return (
-    <Subtitle>
-      <TraderIneligible incomingCode={incomingCode} />
-    </Subtitle>
+    <ProgramSubtitle
+      verificationStatus={props.verificationStatus}
+      verificationProgramParams={props.verificationProgramParams}
+      isConnected={props.isConnected}
+    />
   )
 }
 
 function ProgramSubtitle({
-  verification,
+  verificationStatus,
+  verificationProgramParams,
   isConnected,
 }: {
-  verification: TraderReferralCodeVerificationStatus
+  verificationStatus: TraderReferralCodeVerificationStatus
+  verificationProgramParams?: AffiliateProgramParams
   isConnected: boolean
 }): ReactNode {
-  const programParams = verification.kind === 'valid' ? verification.programParams : undefined
+  const programParams = verificationStatus === 'valid' ? verificationProgramParams : undefined
   const rewardAmount = programParams ? formatInteger(programParams.traderRewardAmount) : undefined
   const triggerVolume = programParams ? formatInteger(programParams.triggerVolumeUsd) : undefined
   const timeCapDays = programParams?.timeCapDays

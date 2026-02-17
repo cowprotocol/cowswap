@@ -1,17 +1,20 @@
-import { ReactElement } from 'react'
+import { useAtomValue } from 'jotai'
+import { ReactNode } from 'react'
 
 import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import { formatShortDate } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { TraderWalletStatus } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
-import { TraderStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
+import { useAffiliateTraderStats } from 'modules/affiliate/hooks/useAffiliateTraderStats'
+import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
+import { useToggleAffiliateModal } from 'modules/affiliate/hooks/useToggleAffiliateModal'
 import {
   CardTitle,
   HeroActions,
@@ -21,19 +24,11 @@ import {
   LinkedCodeText,
   LinkedMetaList,
   MetricItem,
-  RewardsCol1Card,
+  ColumnOneCard,
   RewardsHeader,
   ValidStatusBadge,
 } from 'modules/affiliate/pure/shared'
-
-interface AffiliateTraderCodeCardProps {
-  loading: boolean
-  walletStatus: TraderWalletStatus
-  linkedCode?: string
-  savedCode?: string
-  traderStats?: TraderStatsResponse
-  onEditCode: () => void
-}
+import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
 
 interface CodeCardViewModel {
   isLinked: boolean
@@ -42,57 +37,28 @@ interface CodeCardViewModel {
   rewardsEndLabel: string
 }
 
-function getTraderCode(params: {
-  isConnected: boolean
-  statsLinkedCode?: string
-  linkedWalletCode?: string
-  savedCode?: string
-}): string {
-  const { isConnected, statsLinkedCode, linkedWalletCode, savedCode } = params
-  if (!isConnected) return '-'
-
-  return statsLinkedCode ?? linkedWalletCode ?? savedCode ?? '-'
-}
-
-function getCodeCardViewModel(params: {
-  isConnected: boolean
-  walletStatus: TraderWalletStatus
-  linkedCode?: string
-  savedCode?: string
-  traderStats?: TraderStatsResponse
-}): CodeCardViewModel {
-  const { isConnected, walletStatus, linkedCode, savedCode, traderStats } = params
-  const statsLinkedCode = traderStats?.bound_referrer_code
-  const isLinked = Boolean(statsLinkedCode) || walletStatus === TraderWalletStatus.LINKED
-  const linkedWalletCode = walletStatus === TraderWalletStatus.LINKED ? linkedCode : undefined
-
-  return {
+export function AffiliateTraderCodeInfo(): ReactNode {
+  const { account } = useWalletInfo()
+  const chainId = useWalletChainId()
+  const affiliateTrader = useAtomValue(affiliateTraderAtom)
+  const toggleAffiliateModal = useToggleAffiliateModal()
+  const { walletStatus } = useAffiliateTraderWallet({
+    account,
+    chainId,
+    savedCode: affiliateTrader.savedCode,
+  })
+  const { data: traderStats, isLoading: loading } = useAffiliateTraderStats(account)
+  const isLinked = walletStatus === TraderWalletStatus.LINKED
+  const codeCardViewModel: CodeCardViewModel = {
     isLinked,
-    traderCode: getTraderCode({ isConnected, statsLinkedCode, linkedWalletCode, savedCode }),
+    traderCode: affiliateTrader.savedCode ?? '-',
     linkedSinceLabel: formatShortDate(traderStats?.linked_since) ?? '-',
     rewardsEndLabel: formatShortDate(traderStats?.rewards_end) ?? '-',
   }
-}
-
-export function AffiliateTraderCodeCard({
-  loading,
-  walletStatus,
-  linkedCode,
-  savedCode,
-  traderStats,
-  onEditCode,
-}: AffiliateTraderCodeCardProps): ReactElement {
-  const { account } = useWalletInfo()
-  const { isLinked, traderCode, linkedSinceLabel, rewardsEndLabel } = getCodeCardViewModel({
-    isConnected: !!account,
-    walletStatus,
-    linkedCode,
-    savedCode,
-    traderStats,
-  })
+  const { traderCode, linkedSinceLabel, rewardsEndLabel } = codeCardViewModel
 
   return (
-    <RewardsCol1Card showLoader={loading}>
+    <ColumnOneCard showLoader={loading}>
       <RewardsHeader>
         <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
       </RewardsHeader>
@@ -128,11 +94,11 @@ export function AffiliateTraderCodeCard({
       </LinkedMetaList>
       {!isLinked && (
         <HeroActions>
-          <ButtonPrimary onClick={onEditCode}>
+          <ButtonPrimary onClick={toggleAffiliateModal}>
             <Trans>Edit code</Trans>
           </ButtonPrimary>
         </HeroActions>
       )}
-    </RewardsCol1Card>
+    </ColumnOneCard>
   )
 }

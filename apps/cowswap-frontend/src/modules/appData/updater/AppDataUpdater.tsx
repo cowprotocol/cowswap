@@ -3,7 +3,7 @@ import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { AffiliateTraderWithSavedCode, affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
+import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
 import { useUtm } from 'modules/utm'
@@ -32,8 +32,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
   const userConsent = useRwaConsentForAppData()
-  const affiliateTrader = useAtomValue(affiliateTraderAtom)
-  const referrerCode = getReferrerCode(affiliateTrader)
+  const { savedCode: referrerCode } = useAtomValue(affiliateTraderAtom)
 
   if (!chainId) return null
 
@@ -59,19 +58,3 @@ const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => (
     <AppDataInfoUpdater {...params} />
   </>
 ))
-
-function getReferrerCode(affiliateTrader: AffiliateTraderWithSavedCode): string | undefined {
-  if (affiliateTrader.savedCode) {
-    return affiliateTrader.savedCode
-  }
-
-  if (affiliateTrader.verification.kind === 'linked') {
-    return affiliateTrader.verification.linkedCode
-  }
-
-  if (affiliateTrader.verification.kind === 'valid' && affiliateTrader.savedCode) {
-    return affiliateTrader.savedCode
-  }
-
-  return undefined
-}

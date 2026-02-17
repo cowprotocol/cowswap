@@ -13,10 +13,12 @@ import { formatRefCode } from '../lib/affiliateProgramUtils'
 export const affiliateTraderStateAtom = atom<AffiliateTraderState>({
   modalOpen: false,
   editMode: false,
-  inputCode: '',
-  incomingCode: undefined,
-  incomingCodeReason: undefined,
-  verification: { kind: 'idle' },
+  code: '',
+  codeOrigin: 'none',
+  verificationStatus: 'idle',
+  verificationEligible: undefined,
+  verificationProgramParams: undefined,
+  verificationErrorMessage: undefined,
 })
 
 export const affiliateTraderStoredCodeAtom = atomWithStorage<string | undefined>(

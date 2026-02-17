@@ -6,20 +6,19 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
 
-import { formatRefCode, type PartnerProgramParams } from './affiliateProgramUtils'
+import { type AffiliateProgramParams } from './affiliateProgramTypes'
+import { formatRefCode } from './affiliateProgramUtils'
 
 import { VERIFICATION_RETRY_DELAY_MS } from '../config/affiliateProgram.const'
 
 import type {
-  TraderReferralCodeIncomingReason,
   TraderReferralCodeResponse,
   TraderReferralCodeVerificationResponse,
-  TraderReferralCodeVerificationStatus,
+  TraderReferralCodeVerificationResult,
 } from './affiliateProgramTypes'
 
 interface TraderReferralVerificationActions {
   startVerification(code: string): void
-  setIncomingCodeReason(reason?: TraderReferralCodeIncomingReason): void
   setSavedCode(code?: string): void
 }
 
@@ -32,11 +31,10 @@ export interface PerformVerificationParams {
   actions: TraderReferralVerificationActions
   analytics: CowAnalytics
   pendingVerificationRef: RefObject<number | null>
-  applyVerificationResult: (status: TraderReferralCodeVerificationStatus) => void
+  applyVerificationResult: (status: TraderReferralCodeVerificationResult) => void
   trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
-  incomingCode?: string
   savedCode?: string
-  currentVerification: TraderReferralCodeVerificationStatus
+  currentVerification: TraderReferralCodeVerificationResult
 }
 
 interface SanitizedContext {
@@ -106,18 +104,12 @@ export async function performVerification(params: PerformVerificationParams): Pr
       return
     }
 
-    const preserveExisting =
-      Boolean(baseParams.incomingCode) &&
-      shouldPreserveExistingCode(baseParams.currentVerification, baseParams.savedCode)
-
     handleCodeStatusResponse({
       response,
       sanitizedCode,
       actions,
       applyVerificationResult,
       trackVerifyResult,
-      preserveExisting,
-      currentVerification: baseParams.currentVerification,
     })
     pendingVerificationRef.current = null
   } catch (error) {
@@ -136,7 +128,7 @@ async function isOwnAffiliateCode(params: { account: string; code: string }): Pr
   const { account, code } = params
 
   try {
-    const affiliateCode = await bffAffiliateApi.getAffiliateCode(account)
+    const affiliateCode = await bffAffiliateApi.getPartnerInfo(account)
 
     if (!affiliateCode?.code) {
       return false
@@ -197,42 +189,17 @@ function startVerificationRequest(params: {
   return requestId
 }
 
-function shouldPreserveExistingCode(
-  currentVerification: TraderReferralCodeVerificationStatus,
-  savedCode?: string,
-): boolean {
-  if (!savedCode) {
-    return false
-  }
-
-  return currentVerification.kind === 'valid' || currentVerification.kind === 'linked'
-}
-
 function handleCodeStatusResponse(params: {
   response: TraderReferralCodeVerificationResponse
   sanitizedCode: string
   actions: TraderReferralVerificationActions
-  applyVerificationResult: (status: TraderReferralCodeVerificationStatus) => void
+  applyVerificationResult: (status: TraderReferralCodeVerificationResult) => void
   trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
-  preserveExisting: boolean
-  currentVerification: TraderReferralCodeVerificationStatus
 }): void {
-  const { response, sanitizedCode, actions, applyVerificationResult, trackVerifyResult, preserveExisting } = params
-  const { currentVerification } = params
+  const { response, sanitizedCode, actions, applyVerificationResult, trackVerifyResult } = params
 
   if (!response.ok) {
     if (response.status === 404 || response.status === 403) {
-      actions.setIncomingCodeReason('invalid')
-
-      if (preserveExisting) {
-        restoreExistingVerificationState({
-          currentVerification,
-          applyVerificationResult,
-        })
-        trackVerifyResult('invalid', false)
-        return
-      }
-
       applyVerificationResult({ kind: 'invalid', code: sanitizedCode })
       trackVerifyResult('invalid', false)
       return
@@ -245,7 +212,6 @@ function handleCodeStatusResponse(params: {
     return
   }
 
-  actions.setIncomingCodeReason(undefined)
   actions.setSavedCode(sanitizedCode)
   applyVerificationResult({
     kind: 'valid',
@@ -256,7 +222,7 @@ function handleCodeStatusResponse(params: {
   trackVerifyResult('valid', true)
 }
 
-function toProgramParams(data?: TraderReferralCodeResponse): PartnerProgramParams | undefined {
+function toProgramParams(data?: TraderReferralCodeResponse): AffiliateProgramParams | undefined {
   if (!data) {
     return undefined
   }
@@ -277,40 +243,12 @@ function toProgramParams(data?: TraderReferralCodeResponse): PartnerProgramParam
   }
 }
 
-function restoreExistingVerificationState(params: {
-  currentVerification: TraderReferralCodeVerificationStatus
-  applyVerificationResult: (status: TraderReferralCodeVerificationStatus) => void
-}): void {
-  const { currentVerification, applyVerificationResult } = params
-
-  if (currentVerification.kind === 'linked') {
-    applyVerificationResult({
-      kind: 'linked',
-      code: currentVerification.code,
-      linkedCode: currentVerification.linkedCode,
-    })
-    return
-  }
-
-  if (currentVerification.kind === 'valid') {
-    applyVerificationResult({
-      kind: 'valid',
-      code: currentVerification.code,
-      eligible: currentVerification.eligible,
-      programParams: currentVerification.programParams,
-    })
-    return
-  }
-
-  applyVerificationResult(currentVerification)
-}
-
 async function applyVerificationError(params: {
   error: unknown
   sanitizedCode: string
   requestId: number
   pendingVerificationRef: PerformVerificationParams['pendingVerificationRef']
-  applyVerificationResult: (status: TraderReferralCodeVerificationStatus) => void
+  applyVerificationResult: (status: TraderReferralCodeVerificationResult) => void
   trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
 }): Promise<void> {
   const { error, sanitizedCode, requestId, pendingVerificationRef, applyVerificationResult, trackVerifyResult } = params

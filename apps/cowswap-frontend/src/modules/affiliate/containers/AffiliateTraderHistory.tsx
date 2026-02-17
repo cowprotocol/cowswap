@@ -1,10 +1,12 @@
-import { ReactElement, useState } from 'react'
+import { ReactNode, useState } from 'react'
+
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
+import { useAffiliateTraderStats } from 'modules/affiliate/hooks/useAffiliateTraderStats'
 import { usePayoutHistory } from 'modules/affiliate/hooks/usePayoutHistory'
 import { useTraderActivity } from 'modules/affiliate/hooks/useTraderActivity'
-import { TraderStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
 import { PayoutHistoryTable } from 'modules/affiliate/pure/PayoutHistoryTable'
 import { TraderActivityTable } from 'modules/affiliate/pure/TraderActivityTable'
 
@@ -12,13 +14,10 @@ import * as tabsEl from 'common/pure/Tabs'
 
 type RewardsHistoryTab = 'activity' | 'payouts'
 
-interface AffiliateTraderHistoryProps {
-  account?: string
-  traderStats?: TraderStatsResponse
-}
-
-export function AffiliateTraderHistory({ account, traderStats }: AffiliateTraderHistoryProps): ReactElement {
+export function AffiliateTraderHistory(): ReactNode {
   const [historyTab, setHistoryTab] = useState<RewardsHistoryTab>('activity')
+  const { account } = useWalletInfo()
+  const { data: traderStats } = useAffiliateTraderStats(account)
   const { rows: traderActivityRows, loading: traderActivityLoading } = useTraderActivity({
     account,
     boundReferrerCode: traderStats?.bound_referrer_code,

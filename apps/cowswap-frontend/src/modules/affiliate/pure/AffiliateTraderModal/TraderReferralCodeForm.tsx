@@ -23,7 +23,7 @@ import { formatRefCode } from '../../lib/affiliateProgramUtils'
 import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput/ReferralCodeInputRow'
 import { LabelContent } from '../shared'
 
-const VERIFICATION_ERROR_KINDS: ReadonlySet<TraderReferralCodeVerificationStatus['kind']> = new Set([
+const VERIFICATION_ERROR_KINDS: ReadonlySet<TraderReferralCodeVerificationStatus> = new Set([
   'invalid',
   'error',
   'ineligible',
@@ -34,7 +34,7 @@ export interface TraderReferralCodeFormProps {
   isConnected: boolean
   savedCode?: string
   displayCode: string
-  verification: TraderReferralCodeVerificationStatus
+  verificationStatus: TraderReferralCodeVerificationStatus
   onEdit(): void
   onRemove(): void
   onSave(): void
@@ -49,7 +49,7 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
     isConnected,
     savedCode,
     displayCode,
-    verification,
+    verificationStatus,
     onEdit,
     onRemove,
     onSave,
@@ -59,21 +59,21 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
   } = props
 
   const isEditingUi = uiState === 'editing' || uiState === 'invalid' || uiState === 'ineligible' || uiState === 'error'
-  const showPendingLabelInInput = isConnected && shouldShowPendingLabel(verification) && isEditingUi
-  const showValidLabelInInput = verification.kind === 'valid' && isEditingUi
+  const showPendingLabelInInput = isConnected && shouldShowPendingLabel(verificationStatus) && isEditingUi
+  const showValidLabelInInput = verificationStatus === 'valid' && isEditingUi
   const { hasError, isEditing, isInputDisabled, trailingIconKind, showEdit, showRemove, canSubmitSave, isLinked } =
     deriveFormFlags({
       uiState,
       isConnected,
-      verification,
+      verificationStatus,
       savedCode,
       displayCode,
       showPendingLabelInInput,
       showValidLabelInInput,
     })
-  const showPendingTag = isConnected && verification.kind === 'pending' && !showPendingLabelInInput
-  const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
-  const isChecking = verification.kind === 'checking'
+  const showPendingTag = isConnected && verificationStatus === 'pending' && !showPendingLabelInInput
+  const showValidTag = verificationStatus === 'valid' && !showValidLabelInInput
+  const isChecking = verificationStatus === 'checking'
   const submitAction = canSubmitSave ? onSave : onPrimaryClick
 
   const tooltipCopy = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
@@ -119,7 +119,7 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
 interface DeriveFormFlagsParams {
   uiState: TraderReferralCodeModalUiState
   isConnected: boolean
-  verification: TraderReferralCodeVerificationStatus
+  verificationStatus: TraderReferralCodeVerificationStatus
   savedCode?: string
   displayCode: string
   showPendingLabelInInput: boolean
@@ -167,13 +167,13 @@ interface BaseFlags {
 
 // eslint-disable-next-line complexity
 function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
-  const { uiState, isConnected, verification, savedCode, displayCode } = params
+  const { uiState, isConnected, verificationStatus, savedCode, displayCode } = params
 
   // Unsupported network deliberately hides every edit affordance to avoid no-op buttons.
   const isUnsupported = uiState === 'unsupported'
   const isEditing = uiState === 'editing' || uiState === 'invalid' || uiState === 'ineligible' || uiState === 'error'
   const isLinked = uiState === 'linked'
-  const hasError = VERIFICATION_ERROR_KINDS.has(verification.kind)
+  const hasError = VERIFICATION_ERROR_KINDS.has(verificationStatus)
   const isInputDisabled = isUnsupported || (!isEditing && uiState !== 'empty')
   const canEdit = !isUnsupported && !isEditing && !isLinked && uiState !== 'empty'
   const allowDisconnectedEdit = uiState === 'pending' && !isConnected && Boolean(displayCode)
@@ -248,8 +248,8 @@ function TraderReferralCodeActions({
   )
 }
 
-function shouldShowPendingLabel(verification: TraderReferralCodeVerificationStatus): boolean {
-  return verification.kind === 'pending'
+function shouldShowPendingLabel(verificationStatus: TraderReferralCodeVerificationStatus): boolean {
+  return verificationStatus === 'pending'
 }
 
 function resolveTrailingIconKind(params: {

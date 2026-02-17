@@ -3,7 +3,7 @@ import { FormEvent, RefObject } from 'react'
 import { StatusColorVariant } from '@cowprotocol/ui'
 
 import { TraderReferralCodeModalUiState } from '../../hooks/useAffiliateTraderModalState'
-import { TraderReferralCodeIncomingReason, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+import { AffiliateProgramParams, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 
 export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElement | null
 
@@ -29,11 +29,12 @@ export interface TraderReferralCodeModalContentProps {
 export interface TraderReferralCodeSubtitleProps {
   uiState: TraderReferralCodeModalUiState
   hasRejection: boolean
-  verification: TraderReferralCodeVerificationStatus
-  incomingIneligibleCode?: string
+  verificationStatus: TraderReferralCodeVerificationStatus
+  verificationProgramParams?: AffiliateProgramParams
+  verificationErrorMessage?: string
+  refCode?: string
   isConnected: boolean
   rejectionCode?: string
-  rejectionReason?: TraderReferralCodeIncomingReason
   isLinked: boolean
 }
 
@@ -43,7 +44,7 @@ export interface TraderReferralCodeFormSectionProps {
   isConnected: boolean
   savedCode?: string
   displayCode: string
-  verification: TraderReferralCodeVerificationStatus
+  verificationStatus: TraderReferralCodeVerificationStatus
   onEdit(): void
   onRemove(): void
   onSave(): void

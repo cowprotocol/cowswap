@@ -8,10 +8,10 @@ import { IneligibleCard, IneligibleSubtitle, IneligibleTitle } from 'modules/aff
 import { TraderIneligible } from 'modules/affiliate/pure/TraderIneligible'
 
 interface AffiliateTraderIneligibleProps {
-  incomingIneligibleCode?: string
+  refCode?: string
 }
 
-export function AffiliateTraderIneligible({ incomingIneligibleCode }: AffiliateTraderIneligibleProps): ReactElement {
+export function AffiliateTraderIneligible({ refCode: refCode }: AffiliateTraderIneligibleProps): ReactElement {
   return (
     <IneligibleCard>
       <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
@@ -20,7 +20,7 @@ export function AffiliateTraderIneligible({ incomingIneligibleCode }: AffiliateT
         <Trans>Your wallet is ineligible</Trans>
       </IneligibleTitle>
       <IneligibleSubtitle>
-        <TraderIneligible incomingCode={incomingIneligibleCode} />
+        <TraderIneligible refCode={refCode} />
       </IneligibleSubtitle>
     </IneligibleCard>
   )

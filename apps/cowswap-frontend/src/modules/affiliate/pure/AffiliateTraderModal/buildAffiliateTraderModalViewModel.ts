@@ -2,6 +2,8 @@ import { FormEvent } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { t } from '@lingui/core/macro'
+
 import { TraderReferralCodeModalContentProps } from './AffiliateTraderModal.types'
 import { getStatusCopy } from './traderReferralCodeModal.helpers'
 
@@ -22,22 +24,28 @@ type FormViewModel = Omit<TraderReferralCodeModalContentProps['form'], 'inputRef
 export function buildAffiliateTraderModalViewModel(params: BuildAffiliateTraderModalViewModelParams): ModalViewModel {
   const { modalState, account, chainId, payoutAddressConfirmed } = params
   const { uiState, displayCode, walletStatus, ...traderReferralCode } = modalState
-  const { savedCode, verification, incomingCode, incomingCodeReason } = traderReferralCode
-  const hasRejection = Boolean(incomingCodeReason)
+  const {
+    savedCode,
+    verificationStatus,
+    verificationEligible,
+    verificationProgramParams,
+    verificationErrorMessage,
+  } = traderReferralCode
+  const hasRejection = false
 
   return {
     hasRejection,
     subtitle: buildSubtitleSection({
       uiState,
       hasRejection,
-      verification,
-      incomingCode,
+      verificationStatus,
+      verificationProgramParams,
+      verificationErrorMessage,
       savedCode,
       displayCode,
-      incomingCodeReason,
       isConnected: !!account,
     }),
-    status: buildStatusSection(verification, walletStatus),
+    status: buildStatusSection(verificationStatus, verificationProgramParams, verificationEligible, walletStatus),
     payout: {
       showPayoutAddressConfirmation: !!account && chainId !== undefined && chainId !== SupportedChainId.MAINNET,
       payoutAddress: account,
@@ -52,7 +60,7 @@ export function buildFormViewModel(params: {
   isConnected: boolean
   savedCode?: string
   displayCode: string
-  verification: AffiliateTraderModalState['verification']
+  verificationStatus: AffiliateTraderModalState['verificationStatus']
   onEdit(): void
   onRemove(): void
   onSave(): void
@@ -64,7 +72,7 @@ export function buildFormViewModel(params: {
     isConnected: params.isConnected,
     savedCode: params.savedCode,
     displayCode: params.displayCode,
-    verification: params.verification,
+    verificationStatus: params.verificationStatus,
     onEdit: params.onEdit,
     onRemove: params.onRemove,
     onSave: params.onSave,
@@ -75,38 +83,51 @@ export function buildFormViewModel(params: {
 function buildSubtitleSection(params: {
   uiState: AffiliateTraderModalState['uiState']
   hasRejection: boolean
-  verification: AffiliateTraderModalState['verification']
-  incomingCode?: string
+  verificationStatus: AffiliateTraderModalState['verificationStatus']
+  verificationProgramParams?: AffiliateTraderModalState['verificationProgramParams']
+  verificationErrorMessage?: AffiliateTraderModalState['verificationErrorMessage']
   savedCode?: string
   displayCode: string
-  incomingCodeReason?: AffiliateTraderModalState['incomingCodeReason']
   isConnected: boolean
 }): ModalViewModel['subtitle'] {
-  const { uiState, hasRejection, verification, incomingCode, savedCode, displayCode, incomingCodeReason, isConnected } =
-    params
-  const verificationCode = 'code' in verification ? verification.code : undefined
-  const codeForDisplay = incomingCode || verificationCode || savedCode || displayCode
+  const {
+    uiState,
+    hasRejection,
+    verificationStatus,
+    verificationProgramParams,
+    verificationErrorMessage: rawVerificationErrorMessage,
+    savedCode,
+    displayCode,
+    isConnected,
+  } = params
+  const codeForDisplay = savedCode || displayCode
 
   return {
     uiState,
     hasRejection,
-    verification,
-    incomingIneligibleCode: incomingCode || (verification.kind === 'ineligible' ? verification.code : undefined),
+    verificationStatus,
+    verificationProgramParams,
+    verificationErrorMessage:
+      uiState === 'error' && verificationStatus === 'error'
+        ? (rawVerificationErrorMessage ?? t`Unable to verify code`)
+        : undefined,
+    refCode: verificationStatus === 'ineligible' ? codeForDisplay : undefined,
     isConnected,
-    rejectionCode: hasRejection ? codeForDisplay : undefined,
-    rejectionReason: incomingCodeReason,
+    rejectionCode: undefined,
     isLinked: uiState === 'linked',
   }
 }
 
 function buildStatusSection(
-  verification: AffiliateTraderModalState['verification'],
+  verificationStatus: AffiliateTraderModalState['verificationStatus'],
+  verificationProgramParams: AffiliateTraderModalState['verificationProgramParams'],
+  verificationEligible: AffiliateTraderModalState['verificationEligible'],
   walletStatus: AffiliateTraderModalState['walletStatus'],
 ): ModalViewModel['status'] {
-  const timeCapDays = verification.kind === 'valid' ? verification.programParams?.timeCapDays : undefined
+  const timeCapDays = verificationStatus === 'valid' ? verificationProgramParams?.timeCapDays : undefined
   const eligibilityUnknown = walletStatus === 'eligibility-unknown'
   const eligibilityCheckIsLoading = walletStatus === 'unknown'
-  const statusCopy = getStatusCopy(verification, timeCapDays, eligibilityUnknown)
+  const statusCopy = getStatusCopy(verificationStatus, verificationEligible, timeCapDays, eligibilityUnknown)
 
   return eligibilityUnknown || !eligibilityCheckIsLoading
     ? {

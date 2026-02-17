@@ -12,7 +12,7 @@ import {
   AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS,
   AFFILIATE_REWARDS_UPDATE_LAG_HOURS,
 } from 'modules/affiliate/config/affiliateProgram.const'
-import { PartnerCodeResponse, PartnerStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
+import { PartnerInfoResponse, PartnerStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
 import { formatUsdCompact, formatUsdcCompact } from 'modules/affiliate/lib/affiliateProgramUtils'
 import {
   BottomMetaRow,
@@ -21,7 +21,7 @@ import {
   DonutValue,
   LabelContent,
   MetricItem,
-  RewardsCol2Card,
+  ColumnTwoCard,
   RewardsMetricsList,
   RewardsMetricsRow,
   TitleWithTooltip,
@@ -32,7 +32,7 @@ const EMPTY_VALUE_LABEL = '-'
 interface AffiliatePartnerTrafficCardProps {
   loading: boolean
   partnerStats: PartnerStatsResponse | null
-  programParams: PartnerCodeResponse | null
+  programParams: PartnerInfoResponse | null
 }
 
 export function AffiliatePartnerTrafficCard({
@@ -74,7 +74,7 @@ export function AffiliatePartnerTrafficCard({
   const activeReferralsLabel = statsReady && typeof partnerStats.active_traders === 'number' ? String(partnerStats.active_traders) : EMPTY_VALUE_LABEL
 
   return (
-    <RewardsCol2Card showLoader={loading}>
+    <ColumnTwoCard showLoader={loading}>
       <CardTitle>
         <TitleWithTooltip>
           <span>
@@ -138,6 +138,6 @@ export function AffiliatePartnerTrafficCard({
           <HelpTooltip text={statsUpdatedTooltip} />
         </LabelContent>
       </BottomMetaRow>
-    </RewardsCol2Card>
+    </ColumnTwoCard>
   )
 }

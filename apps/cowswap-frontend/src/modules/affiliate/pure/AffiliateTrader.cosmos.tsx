@@ -8,6 +8,7 @@ import { ButtonPrimary, UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { NextPayoutCard } from './NextPayoutCard'
 import {
   BottomMetaRow,
   CardTitle,
@@ -27,9 +28,8 @@ import {
   LinkedCodeText,
   LinkedMetaList,
   MetricItem,
-  NextPayoutCard,
-  RewardsCol1Card,
-  RewardsCol2Card,
+  ColumnOneCard,
+  ColumnTwoCard,
   RewardsHeader,
   RewardsMetricsList,
   RewardsMetricsRow,
@@ -72,7 +72,7 @@ function LinkedCodeState(): ReactNode {
     <Frame>
       <PageWrapper>
         <ThreeColumnGrid>
-          <RewardsCol1Card>
+          <ColumnOneCard>
             <RewardsHeader>
               <CardTitle>Active referral code</CardTitle>
             </RewardsHeader>
@@ -95,9 +95,9 @@ function LinkedCodeState(): ReactNode {
                 <strong>Apr 12, 2026</strong>
               </MetricItem>
             </LinkedMetaList>
-          </RewardsCol1Card>
+          </ColumnOneCard>
 
-          <RewardsCol2Card>
+          <ColumnTwoCard>
             <CardTitle>Next $10 reward</CardTitle>
             <RewardsMetricsRow>
               <RewardsMetricsList>
@@ -126,9 +126,9 @@ function LinkedCodeState(): ReactNode {
                 Last updated: ~2 hours ago
               </span>
             </BottomMetaRow>
-          </RewardsCol2Card>
+          </ColumnTwoCard>
 
-          <NextPayoutCard payoutLabel="20 USDC" />
+          <NextPayoutCard payout="20 USDC" />
         </ThreeColumnGrid>
       </PageWrapper>
     </Frame>
@@ -140,7 +140,7 @@ function ValidNotLinkedState(): ReactNode {
     <Frame>
       <PageWrapper>
         <ThreeColumnGrid>
-          <RewardsCol1Card>
+          <ColumnOneCard>
             <RewardsHeader>
               <CardTitle>Referral code</CardTitle>
             </RewardsHeader>
@@ -156,8 +156,8 @@ function ValidNotLinkedState(): ReactNode {
             <HeroActions>
               <ButtonPrimary onClick={() => alert('Edit code')}>Edit code</ButtonPrimary>
             </HeroActions>
-          </RewardsCol1Card>
-          <RewardsCol2Card>
+          </ColumnOneCard>
+          <ColumnTwoCard>
             <CardTitle>Next $10 reward</CardTitle>
             <RewardsMetricsRow>
               <RewardsMetricsList>
@@ -167,8 +167,8 @@ function ValidNotLinkedState(): ReactNode {
                 </MetricItem>
               </RewardsMetricsList>
             </RewardsMetricsRow>
-          </RewardsCol2Card>
-          <NextPayoutCard payoutLabel="0 USDC" />
+          </ColumnTwoCard>
+          <NextPayoutCard payout="0 USDC" />
         </ThreeColumnGrid>
       </PageWrapper>
     </Frame>

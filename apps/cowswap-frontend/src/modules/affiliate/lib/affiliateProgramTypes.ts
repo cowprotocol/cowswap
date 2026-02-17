@@ -1,34 +1,36 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { PartnerProgramParams } from './affiliateProgramUtils'
-
 /**
  * Categorises referral verification failures so UI copy can react:
  * - 'network': request failed or timed out
  * - 'unknown': any other error case we can't classify yet
  */
 export type TraderReferralCodeVerificationErrorType = 'network' | 'unknown'
-export type TraderReferralCodeIncomingReason = 'invalid' | 'ineligible'
 
 /**
- * State machine describing the referral code lifecycle:
- * - 'idle': modal hasn't captured a code yet
- * - 'pending': code captured but we still need wallet/network before verifying
- * - 'checking': verification request in flight
- * - 'valid': backend accepted the code; `eligible` indicates next steps
- * - 'invalid': backend rejected the code
- * - 'linked': wallet already bound to `linkedCode`
- * - 'ineligible': wallet can't use the code; optional `incomingCode` shows what triggered it
- * - 'error': verification failed; includes error type + message for UI feedback
+ * Flat verification status used by UI state.
  */
 export type TraderReferralCodeVerificationStatus =
+  | 'idle'
+  | 'pending'
+  | 'checking'
+  | 'valid'
+  | 'invalid'
+  | 'linked'
+  | 'ineligible'
+  | 'error'
+
+/**
+ * Verification result payload returned from API flows before flattening to UI state.
+ */
+export type TraderReferralCodeVerificationResult =
   | { kind: 'idle' }
   | { kind: 'pending'; code: string }
   | { kind: 'checking'; code: string }
-  | { kind: 'valid'; code: string; eligible: boolean; programParams?: PartnerProgramParams }
+  | { kind: 'valid'; code: string; eligible: boolean; programParams?: AffiliateProgramParams }
   | { kind: 'invalid'; code: string }
   | { kind: 'linked'; code: string; linkedCode: string }
-  | { kind: 'ineligible'; code: string; reason: string; incomingCode?: string }
+  | { kind: 'ineligible'; code: string; reason: string }
   | { kind: 'error'; code: string; errorType: TraderReferralCodeVerificationErrorType; message: string }
 
 /**
@@ -53,10 +55,19 @@ export type TraderWalletReferralCodeState =
 export interface AffiliateTraderState {
   modalOpen: boolean
   editMode: boolean
-  inputCode: string
-  incomingCode?: string
-  incomingCodeReason?: TraderReferralCodeIncomingReason
-  verification: TraderReferralCodeVerificationStatus
+  code: string
+  codeOrigin: 'none' | 'url' | 'stored' | 'manual'
+  verificationStatus: TraderReferralCodeVerificationStatus
+  verificationEligible?: boolean
+  verificationProgramParams?: AffiliateProgramParams
+  verificationErrorMessage?: string
+}
+
+export type AffiliateProgramParams = {
+  traderRewardAmount: number
+  triggerVolumeUsd: number
+  timeCapDays: number
+  volumeCapUsd: number
 }
 
 export interface TraderReferralCodeApiConfig {
@@ -94,7 +105,7 @@ export interface TraderReferralCodeResponse {
   volumeCap?: number
 }
 
-export interface PartnerCodeResponse {
+export interface PartnerInfoResponse {
   code: string
   createdAt: string
   rewardAmount: number

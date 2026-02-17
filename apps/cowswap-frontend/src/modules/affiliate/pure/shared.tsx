@@ -1,8 +1,7 @@
 import type { ReactElement, ReactNode } from 'react'
 
-import { ButtonOutlined, ButtonPrimary, Font, HelpTooltip, Media, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, ButtonPrimary, Font, Media, UI } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
@@ -190,7 +189,7 @@ export const CardStack = styled(Card)`
   gap: 24px;
 `
 
-export const RewardsCol1Card = styled(CardStack)`
+export const ColumnOneCard = styled(CardStack)`
   grid-column: 1 / 2;
   grid-row: 1;
   align-items: center;
@@ -201,7 +200,7 @@ export const RewardsCol1Card = styled(CardStack)`
   }
 `
 
-export const RewardsCol2Card = styled(CardStack)`
+export const ColumnTwoCard = styled(CardStack)`
   grid-column: 2 / 3;
   grid-row: 1;
 
@@ -212,7 +211,7 @@ export const RewardsCol2Card = styled(CardStack)`
   }
 `
 
-export const RewardsCol3Card = styled(CardStack)`
+export const ColumnThreeCard = styled(CardStack)`
   grid-column: 3 / 4;
   grid-row: 1;
   align-items: center;
@@ -521,46 +520,11 @@ export const BottomMetaRow = styled(MetaRow)`
   margin-top: auto;
 `
 
-const USDC_LOGO_URL = 'https://files.cow.fi/token-lists/images/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png'
-
 export const TitleWithTooltip = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 6px;
 `
-
-const PayoutNote = styled(InlineNote)`
-  margin-top: auto;
-`
-
-type NextPayoutCardProps = {
-  payoutLabel: ReactNode
-  showLoader?: boolean
-}
-
-export function NextPayoutCard({ payoutLabel, showLoader = false }: NextPayoutCardProps): ReactElement {
-  return (
-    <RewardsCol3Card showLoader={showLoader}>
-      <CardTitle>
-        <TitleWithTooltip>
-          <span>
-            <Trans>Next payout</Trans>
-          </span>
-          <HelpTooltip
-            text={t`The amount you should expect to receive at the next payout, if no further volume is generated.`}
-          />
-        </TitleWithTooltip>
-      </CardTitle>
-      <PayoutValue>
-        <img src={USDC_LOGO_URL} height={36} width={36} alt="" role="presentation" />
-        {payoutLabel}
-      </PayoutValue>
-      <PayoutNote>
-        <Trans>Paid weekly via airdrop.</Trans>
-      </PayoutNote>
-    </RewardsCol3Card>
-  )
-}
 
 export const DonutValue = styled.div``
 

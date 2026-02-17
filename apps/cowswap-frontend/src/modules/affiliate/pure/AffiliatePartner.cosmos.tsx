@@ -9,6 +9,7 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { ReferralCodeInputRow } from './ReferralCodeInput/ReferralCodeInputRow'
+import { NextPayoutCard } from './NextPayoutCard'
 import {
   AffiliateTermsFaqLinks,
   BottomMetaRow,
@@ -39,10 +40,9 @@ import {
   LinkedLinkText,
   MetricItem,
   MiniAction,
-  NextPayoutCard,
   PrimaryAction,
-  RewardsCol1Card,
-  RewardsCol2Card,
+  ColumnOneCard,
+  ColumnTwoCard,
   RewardsMetricsList,
   RewardsMetricsRow,
   ThreeColumnGrid,
@@ -91,7 +91,7 @@ function CreateCodeState(): ReactNode {
     <Frame>
       <PageWrapper>
         <ThreeColumnGrid>
-          <RewardsCol1Card>
+          <ColumnOneCard>
             <CardTitle>Create your referral code</CardTitle>
             <BottomMetaRow as="div">
               <Form>
@@ -125,8 +125,8 @@ function CreateCodeState(): ReactNode {
                 <PrimaryAction disabled={!canSave}>Save & lock code</PrimaryAction>
               </Form>
             </BottomMetaRow>
-          </RewardsCol1Card>
-          <RewardsCol2Card>
+          </ColumnOneCard>
+          <ColumnTwoCard>
             <CardTitle>Your referral traffic</CardTitle>
             <RewardsMetricsRow>
               <RewardsMetricsList>
@@ -146,8 +146,8 @@ function CreateCodeState(): ReactNode {
                 </DonutValue>
               </Donut>
             </RewardsMetricsRow>
-          </RewardsCol2Card>
-          <NextPayoutCard payoutLabel="0 USDC" />
+          </ColumnTwoCard>
+          <NextPayoutCard payout="0 USDC" />
         </ThreeColumnGrid>
       </PageWrapper>
     </Frame>
@@ -159,7 +159,7 @@ function LinkedState(): ReactNode {
     <Frame>
       <PageWrapper>
         <ThreeColumnGrid>
-          <RewardsCol1Card>
+          <ColumnOneCard>
             <CardTitle>Your referral code</CardTitle>
             <LinkedCard>
               <LinkedCodeRow>
@@ -184,9 +184,9 @@ function LinkedState(): ReactNode {
                 <LinkedActionButton onClick={() => alert('Open QR modal')}>Download QR</LinkedActionButton>
               </LinkedActions>
             </LinkedFooter>
-          </RewardsCol1Card>
+          </ColumnOneCard>
 
-          <RewardsCol2Card>
+          <ColumnTwoCard>
             <CardTitle>Your referral traffic</CardTitle>
             <RewardsMetricsRow>
               <RewardsMetricsList>
@@ -215,9 +215,9 @@ function LinkedState(): ReactNode {
                 Last updated: ~1 hour ago
               </span>
             </BottomMetaRow>
-          </RewardsCol2Card>
+          </ColumnTwoCard>
 
-          <NextPayoutCard payoutLabel="80 USDC" />
+          <NextPayoutCard payout="80 USDC" />
         </ThreeColumnGrid>
       </PageWrapper>
     </Frame>

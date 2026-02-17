@@ -10,13 +10,12 @@ import { performVerification } from '../lib/affiliateProgram'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
 import {
   completeTraderReferralVerificationAtom,
-  setTraderReferralIncomingCodeReasonAtom,
   setTraderReferralSavedCodeAtom,
   startTraderReferralVerificationAtom,
 } from '../state/affiliateTraderWriteAtoms'
 
 import type { AffiliateTraderModalState } from './useAffiliateTraderModalState'
-import type { TraderReferralCodeVerificationStatus } from '../lib/affiliateProgramTypes'
+import type { TraderReferralCodeVerificationResult } from '../lib/affiliateProgramTypes'
 
 interface VerificationParams {
   traderReferralCode: AffiliateTraderModalState
@@ -36,7 +35,6 @@ export function useAffiliateTraderVerification(params: VerificationParams): Trad
   const { traderReferralCode, account, chainId, supportedNetwork, analytics, toggleWalletModal } = params
   const pendingVerificationRef = useRef<number | null>(null)
   const completeVerification = useSetAtom(completeTraderReferralVerificationAtom)
-  const setIncomingCodeReason = useSetAtom(setTraderReferralIncomingCodeReasonAtom)
   const setSavedCode = useSetAtom(setTraderReferralSavedCodeAtom)
   const startVerification = useSetAtom(startTraderReferralVerificationAtom)
   const trackVerifyResult = useCallback(
@@ -53,8 +51,8 @@ export function useAffiliateTraderVerification(params: VerificationParams): Trad
   )
 
   const applyVerificationResult = useCallback(
-    (status: TraderReferralCodeVerificationStatus) => {
-      completeVerification(status)
+    (result: TraderReferralCodeVerificationResult) => {
+      completeVerification(result)
     },
     [completeVerification],
   )
@@ -69,26 +67,21 @@ export function useAffiliateTraderVerification(params: VerificationParams): Trad
         toggleWalletModal,
         actions: {
           startVerification,
-          setIncomingCodeReason,
           setSavedCode,
         },
         analytics,
         pendingVerificationRef,
         applyVerificationResult,
         trackVerifyResult,
-        incomingCode: traderReferralCode.incomingCode,
         savedCode: traderReferralCode.savedCode,
-        currentVerification: traderReferralCode.verification,
+        currentVerification: toVerificationResult(traderReferralCode),
       }),
     [
       account,
       analytics,
       applyVerificationResult,
       chainId,
-      traderReferralCode.incomingCode,
-      traderReferralCode.savedCode,
-      traderReferralCode.verification,
-      setIncomingCodeReason,
+      traderReferralCode,
       setSavedCode,
       startVerification,
       supportedNetwork,
@@ -122,7 +115,7 @@ interface AutoVerificationCodeParams {
 function getAutoVerificationCode(params: AutoVerificationCodeParams): string | undefined {
   const { traderReferralCode, account, chainId, supportedNetwork } = params
 
-  if (!traderReferralCode.modalOpen || traderReferralCode.verification.kind !== 'pending') {
+  if (!traderReferralCode.modalOpen || traderReferralCode.verificationStatus !== 'pending') {
     return undefined
   }
 
@@ -137,7 +130,92 @@ function getAutoVerificationCode(params: AutoVerificationCodeParams): string | u
     return undefined
   }
 
-  return formatRefCode(traderReferralCode.incomingCode ?? traderReferralCode.inputCode ?? traderReferralCode.savedCode)
+  return formatRefCode(traderReferralCode.code ?? traderReferralCode.savedCode)
+}
+
+function toVerificationResult(state: AffiliateTraderModalState): TraderReferralCodeVerificationResult {
+  if (state.verificationStatus === 'idle') {
+    return { kind: 'idle' }
+  }
+
+  const code = formatRefCode(state.code)
+  if (!code) {
+    return { kind: 'idle' }
+  }
+
+  if (state.verificationStatus === 'valid') {
+    return toValidVerificationResult(state, code)
+  }
+
+  if (state.verificationStatus === 'linked') {
+    return toLinkedVerificationResult(state, code)
+  }
+
+  if (state.verificationStatus === 'ineligible') {
+    return toIneligibleVerificationResult(state, code)
+  }
+
+  if (state.verificationStatus === 'error') {
+    return toErrorVerificationResult(state, code)
+  }
+
+  return toSimpleVerificationResult(state.verificationStatus, code)
+}
+
+function toSimpleVerificationResult(
+  verificationStatus: AffiliateTraderModalState['verificationStatus'],
+  code: string,
+): TraderReferralCodeVerificationResult {
+  if (verificationStatus === 'pending') return { kind: 'pending', code }
+  if (verificationStatus === 'checking') return { kind: 'checking', code }
+  if (verificationStatus === 'invalid') return { kind: 'invalid', code }
+  return { kind: 'idle' }
+}
+
+function toValidVerificationResult(
+  state: AffiliateTraderModalState,
+  code: string,
+): TraderReferralCodeVerificationResult {
+  return {
+    kind: 'valid',
+    code,
+    eligible: state.verificationEligible ?? true,
+    programParams: state.verificationProgramParams,
+  }
+}
+
+function toLinkedVerificationResult(
+  _state: AffiliateTraderModalState,
+  code: string,
+): TraderReferralCodeVerificationResult {
+  return {
+    kind: 'linked',
+    code,
+    linkedCode: code,
+  }
+}
+
+function toIneligibleVerificationResult(
+  _state: AffiliateTraderModalState,
+  code: string,
+): TraderReferralCodeVerificationResult {
+  return {
+    kind: 'ineligible',
+    code,
+    reason: '',
+  }
+}
+
+function toErrorVerificationResult(
+  state: AffiliateTraderModalState,
+  code: string,
+): TraderReferralCodeVerificationResult {
+  return {
+    kind: 'error',
+    code,
+    errorType: 'unknown',
+    message: state.verificationErrorMessage ?? '',
+  }
 }
 
 function useAutoVerificationEffect(params: {

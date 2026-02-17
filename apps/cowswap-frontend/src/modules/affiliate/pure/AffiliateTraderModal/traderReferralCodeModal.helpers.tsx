@@ -11,7 +11,7 @@ import { useAffiliateTraderModalState, TraderReferralCodeModalUiState } from '..
 import { TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
 import { TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 
-type VerificationKind = TraderReferralCodeVerificationStatus['kind']
+type VerificationKind = TraderReferralCodeVerificationStatus
 type WalletStatus = TraderWalletStatus
 
 export function computePrimaryCta(params: {
@@ -83,7 +83,8 @@ function verifyCta(
 }
 
 export function getStatusCopy(
-  verification: TraderReferralCodeVerificationStatus,
+  verificationStatus: TraderReferralCodeVerificationStatus,
+  verificationEligible: boolean | undefined,
   timeCapDays: number | undefined,
   eligibilityUnknown: boolean,
 ): StatusCopyResult {
@@ -96,7 +97,7 @@ export function getStatusCopy(
   }
 
   return {
-    shouldShowInfo: verification.kind === 'valid' && verification.eligible,
+    shouldShowInfo: verificationStatus === 'valid' && verificationEligible === true,
     variant: StatusColorVariant.Info,
     infoMessage: timeCapDays
       ? t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for ${timeCapDays} days.`

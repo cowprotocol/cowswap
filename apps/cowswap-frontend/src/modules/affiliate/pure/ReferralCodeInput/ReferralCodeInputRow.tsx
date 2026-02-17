@@ -38,7 +38,7 @@ interface ReferralCodeInputRowProps {
   onChange(event: FormEvent<HTMLInputElement>): void
   onPrimaryClick(): void
   onSave(): void
-  inputRef: RefObject<HTMLInputElement | null>
+  inputRef?: RefObject<HTMLInputElement | null>
   isLoading?: boolean
   inputId?: string
   placeholder?: string

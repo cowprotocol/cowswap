@@ -11,7 +11,7 @@ import {
   STATUS_CODES_TO_RETRY,
 } from '../config/affiliateProgram.const'
 import {
-  PartnerCodeResponse,
+  PartnerInfoResponse,
   PartnerCreateRequest,
   PartnerStatsResponse,
   TraderReferralCodeResponse,
@@ -93,7 +93,7 @@ class BffAffiliateApi {
     const { account } = request
     const url = this.buildUrl(`affiliate/${account}`)
 
-    const { response, data, text } = await this.fetchJsonResponse<PartnerCodeResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<PartnerInfoResponse>(url, {
       method: 'GET',
       headers: JSON_HEADERS,
     })
@@ -112,9 +112,9 @@ class BffAffiliateApi {
 
     throw buildReferralError(response.status, text, data as { message?: string } | undefined)
   }
-  async getAffiliateCode(account: string): Promise<PartnerCodeResponse | null> {
+  async getPartnerInfo(account: string): Promise<PartnerInfoResponse | null> {
     const url = this.buildUrl(`affiliate/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<PartnerCodeResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<PartnerInfoResponse>(url, {
       method: 'GET',
       headers: JSON_HEADERS,
     })
@@ -172,11 +172,11 @@ class BffAffiliateApi {
 
     throw buildReferralError(response.status, text, data as { message?: string } | undefined)
   }
-  async createAffiliateCode(request: PartnerCreateRequest): Promise<PartnerCodeResponse> {
+  async createAffiliateCode(request: PartnerCreateRequest): Promise<PartnerInfoResponse> {
     const url = this.buildUrl(`affiliate/${request.walletAddress}`)
     const body = JSON.stringify(request)
 
-    const { response, data, text } = await this.fetchJsonResponse<PartnerCodeResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<PartnerInfoResponse>(url, {
       method: 'POST',
       headers: JSON_HEADERS,
       body,

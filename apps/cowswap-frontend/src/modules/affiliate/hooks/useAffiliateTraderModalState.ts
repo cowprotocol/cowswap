@@ -41,15 +41,12 @@ function buildTraderReferralCodeModalState(
   traderReferralCode: TraderReferralCodeSnapshot,
   walletStatus: TraderWalletStatus,
 ): AffiliateTraderModalState {
-  const { inputCode, savedCode, verification, editMode, incomingCode } = traderReferralCode
-  const verificationCode = 'code' in verification ? verification.code : undefined
-  // Prefer the code the user is actively verifying (incoming/verification) so the UI
-  // reflects what the backend is checking even if a different value lives in storage.
-  const displayCode = editMode ? inputCode : (verificationCode ?? savedCode ?? inputCode)
-  const hasCode = Boolean(verificationCode || incomingCode || savedCode || inputCode)
+  const { code, savedCode, verificationStatus, editMode } = traderReferralCode
+  const displayCode = code
+  const hasCode = Boolean(code || savedCode)
   const hasValidLength = Boolean(formatRefCode(displayCode))
   const isEditing = editMode || (!savedCode && hasCode)
-  const uiState = deriveUiState(verification.kind, walletStatus, hasCode, isEditing, editMode)
+  const uiState = deriveUiState(verificationStatus, walletStatus, hasCode, isEditing, editMode)
 
   return {
     ...traderReferralCode,
@@ -63,7 +60,7 @@ function buildTraderReferralCodeModalState(
 
 // eslint-disable-next-line complexity
 function deriveUiState(
-  verificationKind: TraderReferralCodeSnapshot['verification']['kind'],
+  verificationStatus: TraderReferralCodeSnapshot['verificationStatus'],
   walletStatus: TraderWalletStatus,
   hasCode: boolean,
   isEditing: boolean,
@@ -74,7 +71,7 @@ function deriveUiState(
     return 'unsupported'
   }
 
-  if (!isEditing && (verificationKind === 'linked' || walletStatus === 'linked')) {
+  if (!isEditing && (verificationStatus === 'linked' || walletStatus === 'linked')) {
     return 'linked'
   }
 
@@ -82,7 +79,7 @@ function deriveUiState(
     return 'editing'
   }
 
-  switch (verificationKind) {
+  switch (verificationStatus) {
     case 'checking':
       return 'checking'
     case 'invalid':

@@ -1,11 +1,14 @@
-import { ReactElement } from 'react'
+import { ReactNode } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { ButtonPrimary } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+
+import { useToggleAffiliateModal } from 'modules/affiliate/hooks/useToggleAffiliateModal'
 import {
   AffiliateTermsFaqLinks,
   HeroActions,
@@ -15,16 +18,10 @@ import {
   HeroTitle,
 } from 'modules/affiliate/pure/shared'
 
-interface AffiliateTraderOnboardProps {
-  onConnect: () => void
-  onAddCode: () => void
-}
-
-export function AffiliateTraderOnboard({
-  onConnect,
-  onAddCode,
-}: AffiliateTraderOnboardProps): ReactElement {
+export function AffiliateTraderOnboard(): ReactNode {
   const { account } = useWalletInfo()
+  const toggleWalletModal = useToggleWalletModal()
+  const toggleAffiliateModal = useToggleAffiliateModal()
 
   return (
     <HeroCard>
@@ -44,12 +41,12 @@ export function AffiliateTraderOnboard({
           </Trans>
         </HeroSubtitle>
         <HeroActions>
-          {!!account ? (
-            <ButtonPrimary onClick={onAddCode}>
+          {account ? (
+            <ButtonPrimary onClick={toggleAffiliateModal}>
               <Trans>Add code</Trans>
             </ButtonPrimary>
           ) : (
-            <ButtonPrimary onClick={onConnect}>
+            <ButtonPrimary onClick={toggleWalletModal}>
               <Trans>Connect wallet</Trans>
             </ButtonPrimary>
           )}

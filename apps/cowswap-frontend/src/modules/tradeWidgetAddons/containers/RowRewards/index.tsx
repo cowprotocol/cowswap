@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -9,15 +9,15 @@ import { Trans } from '@lingui/react/macro'
 import { AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE } from 'modules/affiliate/config/affiliateProgram.const'
 import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
 import { useIsRewardsRowVisible } from 'modules/affiliate/hooks/useIsRowRewardsVisible'
+import { useToggleAffiliateModal } from 'modules/affiliate/hooks/useToggleAffiliateModal'
 import { AffiliateTraderWithSavedCode, affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
-import { openTraderReferralCodeModalAtom } from 'modules/affiliate/state/affiliateTraderWriteAtoms'
 
 import { RowRewardsContent } from '../../pure/Row/RowRewards'
 
 export function RowRewards(): ReactNode {
   const isRewardsRowVisible = useIsRewardsRowVisible()
   const affiliateTrader = useAtomValue(affiliateTraderAtom)
-  const openModal = useSetAtom(openTraderReferralCodeModalAtom)
+  const toggleAffiliateModal = useToggleAffiliateModal()
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
   const { walletStatus, linkedCode } = useAffiliateTraderWallet({
@@ -34,9 +34,6 @@ export function RowRewards(): ReactNode {
   const hasSavedValidCode = shouldShowSavedCode(affiliateTrader, hasLinkedCode)
   const displayCode = currentLinkedCode ?? (hasSavedValidCode ? affiliateTrader.savedCode : undefined)
   const tooltipContent = getTooltipContent(hasLinkedCode, hasSavedValidCode)
-  const handleOpenModal = (): void => {
-    openModal()
-  }
 
   if (!isRewardsRowVisible || shouldHideForIneligible || eligibilityCheckIsLoading) {
     return null
@@ -46,8 +43,8 @@ export function RowRewards(): ReactNode {
     <RowRewardsContent
       linkedCode={displayCode}
       tooltipContent={tooltipContent}
-      onAddCode={!displayCode ? handleOpenModal : undefined}
-      onManageCode={displayCode ? handleOpenModal : undefined}
+      onAddCode={!displayCode ? toggleAffiliateModal : undefined}
+      onManageCode={displayCode ? toggleAffiliateModal : undefined}
     />
   )
 }

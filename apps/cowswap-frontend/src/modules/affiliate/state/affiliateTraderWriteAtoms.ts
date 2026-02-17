@@ -2,30 +2,27 @@ import { atom } from 'jotai'
 
 import { affiliateTraderStateAtom, affiliateTraderStoredCodeAtom } from './affiliateTraderAtom'
 
-import {
-  TraderReferralCodeIncomingReason,
-  AffiliateTraderState,
-  TraderReferralCodeVerificationStatus,
-} from '../lib/affiliateProgramTypes'
+import { AffiliateTraderState, TraderReferralCodeVerificationResult } from '../lib/affiliateProgramTypes'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
 
 export const openTraderReferralCodeModalAtom = atom(null, (get, set, refCode?: string) => {
   const storedCode = get(affiliateTraderStoredCodeAtom)
   const savedCode = storedCode ? formatRefCode(storedCode) : undefined
   set(affiliateTraderStateAtom, (prev) => {
-    const sanitizedIncoming = refCode ? formatRefCode(refCode) : undefined
-    const isLinked = prev.verification.kind === 'linked'
-    const nextInputCode = resolveInputCode(prev, sanitizedIncoming, isLinked, savedCode)
-    const nextVerification = resolveVerification(prev, sanitizedIncoming, isLinked, savedCode)
+    const sanitizedRefCode = refCode ? formatRefCode(refCode) : undefined
+    const isLinked = prev.verificationStatus === 'linked'
+    const nextCode = resolveCode(prev, sanitizedRefCode, isLinked, savedCode)
+    const nextVerificationStatus = resolveVerificationStatus(prev, sanitizedRefCode, isLinked, savedCode)
+    const codeOrigin: AffiliateTraderState['codeOrigin'] = sanitizedRefCode ? 'url' : savedCode ? 'stored' : 'manual'
 
     return {
       ...prev,
       modalOpen: true,
       editMode: false,
-      incomingCode: sanitizedIncoming,
-      incomingCodeReason: undefined,
-      inputCode: nextInputCode,
-      verification: nextVerification,
+      code: nextCode,
+      codeOrigin,
+      verificationStatus: nextVerificationStatus,
+      ...clearVerificationMeta(),
     }
   })
 })
@@ -34,22 +31,19 @@ export const closeTraderReferralCodeModalAtom = atom(null, (_get, set) => {
     ...prev,
     modalOpen: false,
     editMode: false,
-    incomingCode: undefined,
-    incomingCodeReason: undefined,
   }))
 })
 export const setTraderReferralCodeInputAtom = atom(null, (_get, set, value: string) => {
   set(affiliateTraderStateAtom, (prev) => {
     const sanitized = normalizeRefCodeInput(value)
-    const hasChanged = sanitized !== prev.inputCode
-    const shouldClearIncoming = Boolean(prev.incomingCode) && sanitized !== prev.incomingCode
+    const hasChanged = sanitized !== prev.code
 
     return {
       ...prev,
-      inputCode: sanitized,
-      incomingCode: shouldClearIncoming ? undefined : prev.incomingCode,
-      incomingCodeReason: hasChanged ? undefined : prev.incomingCodeReason,
-      verification: prev.verification.kind === 'pending' ? prev.verification : { kind: 'idle' },
+      code: sanitized,
+      codeOrigin: 'manual',
+      verificationStatus: prev.verificationStatus === 'pending' ? 'pending' : 'idle',
+      ...(hasChanged ? clearVerificationMeta() : undefined),
     }
   })
 })
@@ -66,15 +60,19 @@ export const saveTraderReferralCodeAtom = atom(null, (_get, set, code: string) =
     if (!sanitized) {
       return {
         ...prev,
-        inputCode: '',
-        verification: { kind: 'idle' },
+        code: '',
+        codeOrigin: 'none',
+        verificationStatus: 'idle',
+        ...clearVerificationMeta(),
       }
     }
 
     return {
       ...prev,
-      inputCode: sanitized,
-      verification: { kind: 'pending', code: sanitized },
+      code: sanitized,
+      codeOrigin: 'manual',
+      verificationStatus: 'pending',
+      ...clearVerificationMeta(),
       editMode: false,
     }
   })
@@ -83,25 +81,12 @@ export const removeTraderReferralCodeAtom = atom(null, (_get, set) => {
   set(affiliateTraderStoredCodeAtom, undefined)
   set(affiliateTraderStateAtom, (prev) => ({
     ...prev,
-    inputCode: '',
-    incomingCode: undefined,
-    incomingCodeReason: undefined,
-    verification: { kind: 'idle' },
+    code: '',
+    codeOrigin: 'none',
+    verificationStatus: 'idle',
+    ...clearVerificationMeta(),
   }))
 })
-export const setTraderReferralIncomingCodeAtom = atom(null, (_get, set, code?: string) => {
-  set(affiliateTraderStateAtom, (prev) => ({
-    ...prev,
-    incomingCode: code ? formatRefCode(code) : undefined,
-    incomingCodeReason: undefined,
-  }))
-})
-export const setTraderReferralIncomingCodeReasonAtom = atom(
-  null,
-  (_get, set, reason?: TraderReferralCodeIncomingReason) => {
-    set(affiliateTraderStateAtom, (prev) => ({ ...prev, incomingCodeReason: reason }))
-  },
-)
 export const startTraderReferralVerificationAtom = atom(null, (_get, set, code: string) => {
   set(affiliateTraderStateAtom, (prev) => {
     const sanitized = formatRefCode(code)
@@ -111,16 +96,20 @@ export const startTraderReferralVerificationAtom = atom(null, (_get, set, code: 
 
     return {
       ...prev,
-      verification: { kind: 'checking', code: sanitized },
+      code: sanitized,
+      verificationStatus: 'checking',
+      ...clearVerificationMeta(),
     }
   })
 })
 export const completeTraderReferralVerificationAtom = atom(
   null,
-  (_get, set, status: TraderReferralCodeVerificationStatus) => {
+  (_get, set, result: TraderReferralCodeVerificationResult) => {
     set(affiliateTraderStateAtom, (prev) => ({
       ...prev,
-      verification: status,
+      code: 'code' in result ? result.code : prev.code,
+      verificationStatus: result.kind,
+      ...toVerificationMeta(result),
     }))
   },
 )
@@ -131,46 +120,82 @@ export const setTraderReferralSavedCodeAtom = atom(null, (_get, set, code?: stri
     if (!savedCode) {
       return {
         ...prev,
-        inputCode: '',
-        verification: { kind: 'idle' },
+        code: '',
+        codeOrigin: 'none',
+        verificationStatus: 'idle',
+        ...clearVerificationMeta(),
       }
     }
 
     return {
       ...prev,
-      inputCode: savedCode,
-      verification: { kind: 'pending', code: savedCode },
+      code: savedCode,
+      codeOrigin: 'stored',
+      verificationStatus: 'pending',
+      ...clearVerificationMeta(),
     }
   })
 })
 
-function resolveInputCode(
+function resolveCode(
   prev: AffiliateTraderState,
-  incomingCode: string | undefined,
+  refCode: string | undefined,
   isLinked: boolean,
   savedCode?: string,
 ): string {
-  const candidate = isLinked ? savedCode || prev.inputCode || '' : (incomingCode ?? prev.inputCode ?? savedCode ?? '')
+  const candidate = isLinked ? savedCode || prev.code || '' : (refCode ?? prev.code ?? savedCode ?? '')
   return normalizeRefCodeInput(candidate)
 }
 
-function resolveVerification(
+function resolveVerificationStatus(
   prev: AffiliateTraderState,
-  incomingCode: string | undefined,
+  refCode: string | undefined,
   isLinked: boolean,
   savedCode?: string,
-): TraderReferralCodeVerificationStatus {
-  if (!incomingCode && savedCode && !isLinked && prev.verification.kind === 'idle') {
-    return { kind: 'pending', code: savedCode }
+): AffiliateTraderState['verificationStatus'] {
+  if (!refCode && savedCode && !isLinked && prev.verificationStatus === 'idle') {
+    return 'pending'
   }
 
-  if (!incomingCode || incomingCode === savedCode || isLinked) {
-    return prev.verification
+  if (!refCode || refCode === savedCode || isLinked) {
+    return prev.verificationStatus
   }
 
-  return { kind: 'pending', code: incomingCode }
+  return 'pending'
 }
 
 function normalizeRefCodeInput(value: string): string {
   return value.trim().toUpperCase()
+}
+
+function clearVerificationMeta(): Pick<
+  AffiliateTraderState,
+  'verificationEligible' | 'verificationProgramParams' | 'verificationErrorMessage'
+> {
+  return {
+    verificationEligible: undefined,
+    verificationProgramParams: undefined,
+    verificationErrorMessage: undefined,
+  }
+}
+
+function toVerificationMeta(
+  result: TraderReferralCodeVerificationResult,
+): Pick<AffiliateTraderState, 'verificationEligible' | 'verificationProgramParams' | 'verificationErrorMessage'> {
+  if (result.kind === 'valid') {
+    return {
+      ...clearVerificationMeta(),
+      verificationEligible: result.eligible,
+      verificationProgramParams: result.programParams,
+    }
+  }
+
+  if (result.kind === 'error') {
+    return {
+      ...clearVerificationMeta(),
+      verificationErrorMessage: result.message,
+    }
+  }
+
+  return clearVerificationMeta()
 }
