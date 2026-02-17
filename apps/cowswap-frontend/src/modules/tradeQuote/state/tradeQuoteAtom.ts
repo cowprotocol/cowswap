@@ -6,7 +6,7 @@ import { BridgeProviderQuoteError, BridgeQuoteResults } from '@cowprotocol/sdk-b
 
 import { isProviderNetworkUnsupportedAtom } from 'entities/common/isProviderNetworkUnsupported.atom'
 
-import { derivedTradeStateAtom } from 'modules/trade'
+import { derivedTradeStateAtom } from 'modules/trade/state/derivedTradeStateAtom'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
