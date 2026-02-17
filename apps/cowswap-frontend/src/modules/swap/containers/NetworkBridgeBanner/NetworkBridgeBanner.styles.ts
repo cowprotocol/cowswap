@@ -11,6 +11,10 @@ export const HideSmall = styled.span`
   }
 `
 
+export const Small = styled.span`
+  width: 100%;
+`
+
 export const L2Icon = styled.img`
   width: 24px;
   height: 24px;

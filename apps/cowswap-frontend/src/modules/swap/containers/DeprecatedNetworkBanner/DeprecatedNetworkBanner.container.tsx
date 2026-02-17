@@ -37,9 +37,9 @@ export function DeprecatedNetworkBanner(): ReactNode {
               <styledEl.Header>
                 <Trans>{label} has been deactivated</Trans>
               </styledEl.Header>
-              <p>
+              <styledEl.Small>
                 <Trans>You can see your past transactions in Explorer</Trans>
-              </p>
+              </styledEl.Small>
             </AutoRow>
           </styledEl.BodyText>
           <styledEl.StyledArrowUpRight color={textColor} />

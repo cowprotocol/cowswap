@@ -3183,6 +3183,13 @@ packages:
       cross-fetch: ^3.x
       ipfs-only-hash: ^4.x
       multiformats: ^9.x
+    peerDependenciesMeta:
+      '@openzeppelin/merkle-tree':
+        optional: true
+      ipfs-only-hash:
+        optional: true
+      multiformats:
+        optional: true
 
   '@cowprotocol/sdk-app-data@4.6.3-pr-801-3ede00d9.0':
     resolution: {integrity: sha512-I6413viaFp6lrmFSPDTFRj9Sqdyibo/Km7vPKp7HS0COjCu5riojoJibhAhlDfx4iJoDt+g/MQF4SRTCKQbAcg==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/4.6.3-pr-801-3ede00d9.0/a80d20b613903199257beb44f0d931cec6eead00}
@@ -18160,8 +18167,9 @@ snapshots:
       '@cowprotocol/sdk-order-book': 0.6.4-pr-801-3ede00d9.0(encoding@0.1.13)
       '@cowprotocol/sdk-order-signing': 0.1.31-pr-801-3ede00d9.0(encoding@0.1.13)
       '@cowprotocol/sdk-trading': 0.10.1-pr-801-3ede00d9.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@openzeppelin/merkle-tree': 1.0.8
       cross-fetch: 4.0.0(encoding@0.1.13)
+    optionalDependencies:
+      '@openzeppelin/merkle-tree': 1.0.8
       ipfs-only-hash: 4.0.0(encoding@0.1.13)
       multiformats: 9.9.0
     transitivePeerDependencies:
@@ -18177,8 +18185,9 @@ snapshots:
       '@cowprotocol/sdk-order-book': 0.6.4-pr-801-3ede00d9.0(encoding@0.1.13)
       '@cowprotocol/sdk-order-signing': 0.1.31-pr-801-3ede00d9.0(encoding@0.1.13)
       '@cowprotocol/sdk-trading': 0.10.1-pr-801-3ede00d9.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@openzeppelin/merkle-tree': 1.0.8
       cross-fetch: 4.0.0(encoding@0.1.13)
+    optionalDependencies:
+      '@openzeppelin/merkle-tree': 1.0.8
       ipfs-only-hash: 4.0.0(encoding@0.1.13)
       multiformats: 9.9.0
     transitivePeerDependencies:
