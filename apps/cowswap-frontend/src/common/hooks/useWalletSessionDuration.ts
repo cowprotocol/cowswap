@@ -21,15 +21,15 @@ export function useWalletSessionDuration(): void {
 
     startRef.current = Date.now()
 
-    const sendDuration = (): void => {
+    const sendDuration = (): boolean => {
       if (!startRef.current) {
-        return
+        return false
       }
 
       const durationSec = Math.round((Date.now() - startRef.current) / 1000)
 
       if (durationSec < 1) {
-        return
+        return false
       }
 
       cowAnalytics.sendEvent({
@@ -38,11 +38,18 @@ export function useWalletSessionDuration(): void {
         label: walletNameRef.current || 'Unknown',
         value: durationSec,
       })
+
+      return true
     }
 
     const handleVisibilityChange = (): void => {
       if (document.visibilityState === 'hidden') {
-        sendDuration()
+        const didSend = sendDuration()
+
+        // Use delta checkpoints across hide cycles instead of cumulative values from the initial connect time.
+        if (didSend) {
+          startRef.current = Date.now()
+        }
       }
     }
 
