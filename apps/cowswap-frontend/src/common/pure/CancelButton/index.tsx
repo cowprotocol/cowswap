@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
@@ -11,7 +11,9 @@ export type CancelButtonProps = {
   className?: string
 } & PropsWithChildren
 
-export function CancelButton({ onClick, children, className }: CancelButtonProps): ReactNode {
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function CancelButton({ onClick, children, className }: CancelButtonProps) {
   return (
     <LinkStyledButton onClick={onClick} className={className} color={`var(${UI.COLOR_DANGER})`}>
       {children || <Trans>Cancel order</Trans>}
