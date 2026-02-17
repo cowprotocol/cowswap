@@ -1,6 +1,6 @@
 import { useWalletDetails } from '@cowprotocol/wallet'
 
-import { useIsEoaEthFlow } from '../useIsEoaEthFlow'
+import { useIsEoaEthFlow } from './useIsEoaEthFlow'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
