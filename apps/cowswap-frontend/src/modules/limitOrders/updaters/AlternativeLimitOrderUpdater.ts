@@ -7,11 +7,10 @@ import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Price } from '@uniswap/sdk-core'
 
-import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade'
+import { DEFAULT_TRADE_DERIVED_STATE, useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade'
 
 import { GenericOrder } from 'common/types'
 
-import { DEFAULT_TRADE_DERIVED_STATE } from '../../trade'
 import { useLimitOrdersDerivedState } from '../hooks/useLimitOrdersDerivedState'
 import { useUpdateLimitOrdersRawState } from '../hooks/useLimitOrdersRawState'
 import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
