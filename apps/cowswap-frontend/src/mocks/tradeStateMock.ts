@@ -56,6 +56,10 @@ export const inputCurrencyInfoMock: CurrencyInfo = {
       sellAmount: tryParseCurrencyAmount('110', inputCurrency),
       buyAmount: tryParseCurrencyAmount('530', outputCurrency),
     },
+    amountsToSign: {
+      sellAmount: tryParseCurrencyAmount('120', inputCurrency),
+      buyAmount: tryParseCurrencyAmount('530', outputCurrency),
+    },
   },
   currency: inputCurrency,
   balance: tryParseCurrencyAmount('250', inputCurrency),

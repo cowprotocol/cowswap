@@ -54,6 +54,7 @@ export function getReceiveAmountInfo(
     afterNetworkCosts,
     afterPartnerFees: mapSellBuyAmounts(result.afterPartnerFees, currencies),
     afterSlippage: mapSellBuyAmounts(result.afterSlippage, currencies),
+    amountsToSign: mapSellBuyAmounts(result.amountsToSign, currencies),
   }
 }
 

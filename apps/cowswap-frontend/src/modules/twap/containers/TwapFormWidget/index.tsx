@@ -55,9 +55,8 @@ interface TwapFormWidget {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
+// eslint-disable-next-line max-lines-per-function
+export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
@@ -81,9 +80,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
 
-  const limitPriceAfterSlippage = usePrice(
-    receiveAmountInfo?.afterSlippage.sellAmount,
-    receiveAmountInfo?.afterSlippage.buyAmount,
+  const executionPrice = usePrice(
+    receiveAmountInfo?.amountsToSign.sellAmount,
+    receiveAmountInfo?.amountsToSign.buyAmount,
   )
 
   const widgetDeadline = useInjectedWidgetDeadline(TradeType.ADVANCED)
@@ -199,9 +198,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
         upDownArrowsLeftAlign={true}
         prefixComponent={
           <em>
-            {limitPriceAfterSlippage ? (
+            {executionPrice ? (
               <styledEl.ExecutionPriceStyled
-                executionPrice={limitPriceAfterSlippage}
+                executionPrice={executionPrice}
                 isInverted={isInverted}
                 hideFiat
                 hideSeparator
