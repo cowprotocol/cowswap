@@ -11,12 +11,12 @@ import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { Nullish } from 'types'
 
 import { useCurrencyAmountBalanceCombined } from 'modules/combinedBalances'
-import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { TradeDerivedState } from '../types'
+import { ExtendedTradeRawState } from '../types/TradeRawState'
 
 export function useBuildTradeDerivedState(
   stateAtom: Atom<ExtendedTradeRawState>,
