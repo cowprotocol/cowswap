@@ -583,7 +583,7 @@ export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithL
    * This might break assumptions elsewhere in the code
    */
   [SupportedChainId.PLASMA]: USDT_PLASMA,
-  [SupportedChainId.INK]: USDCE_INK,
+  [SupportedChainId.INK]: USDC_INK,
 }
 
 /**

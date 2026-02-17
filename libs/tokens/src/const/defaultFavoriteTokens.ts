@@ -27,13 +27,11 @@ import {
   USDC_POLYGON,
   USDC_SEPOLIA,
   USDCe_GNOSIS_CHAIN,
-  USDCE_INK,
   USDT,
   USDT_ARBITRUM_ONE,
   USDT_AVALANCHE,
   USDT_BASE,
   USDT_BNB,
-  USDT_INK,
   USDT_LINEA,
   USDT_PLASMA,
   USDT_POLYGON,
@@ -43,6 +41,8 @@ import {
   WETH_GNOSIS_CHAIN,
   WETH_PLASMA,
   WRAPPED_NATIVE_CURRENCIES,
+  USDT_INK,
+  USDC_INK,
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -136,5 +136,5 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDT_PLASMA,
     WETH_PLASMA,
   ]),
-  [SupportedChainId.INK]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.INK], USDT_INK, USDCE_INK]),
+  [SupportedChainId.INK]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.INK], USDT_INK, USDC_INK]),
 }
