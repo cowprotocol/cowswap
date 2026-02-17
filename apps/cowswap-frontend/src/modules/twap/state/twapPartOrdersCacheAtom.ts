@@ -18,7 +18,7 @@ export interface UpdateTwapPartOrdersCachePayload {
   entries: TwapPartOrdersCacheByUid
 }
 
-export const twapPartOrdersCacheAtom = atomWithIdbStorage<TwapPartOrdersCache>('twap-part-orders-cache:v0', {})
+export const twapPartOrdersCacheAtom = atomWithIdbStorage<TwapPartOrdersCache>('twapPartOrdersCache:v0', {})
 
 export const updateTwapPartOrdersCacheAtom = atom(null, async (get, set, payload: UpdateTwapPartOrdersCachePayload) => {
   const { chainId, owner, entries } = payload
