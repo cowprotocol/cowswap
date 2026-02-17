@@ -35,13 +35,13 @@ const COW_AIRDROP = {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AirdropHookApp({ context }: HookDappProps) {
   const { data: claimData, isValidating, error } = useClaimData(COW_AIRDROP)
-  const { data: gasLimit } = useGasLimit({ to: claimData?.contract.address, data: claimData?.callData })
+  const { data: gasLimit } = useGasLimit({ to: claimData?.contractAddress, data: claimData?.callData })
 
   const clickOnAddHook = useCallback(async () => {
     if (!context || !claimData || !gasLimit) return
     context.addHook({
       hook: {
-        target: claimData.contract.address,
+        target: claimData.contractAddress,
         callData: claimData.callData,
         gasLimit,
       },
@@ -58,7 +58,7 @@ export function AirdropHookApp({ context }: HookDappProps) {
     context.editHook({
       ...context.hookToEdit,
       hook: {
-        target: claimData.contract.address,
+        target: claimData.contractAddress,
         callData: claimData.callData,
         gasLimit,
       },

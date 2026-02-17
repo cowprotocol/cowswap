@@ -1,6 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Airdrop } from '@cowprotocol/cowswap-abis'
 
 import type { Address } from 'viem'
 
@@ -11,7 +10,7 @@ export interface AirdropDataInfo {
 }
 export interface IClaimData extends AirdropDataInfo {
   isClaimed: boolean
-  contract: Airdrop
+  contractAddress: string
   callData: string
   token: TokenWithLogo
   formattedAmount: string

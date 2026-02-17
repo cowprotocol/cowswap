@@ -30,25 +30,3 @@ exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When a trans
   },
 ]
 `;
-
-exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When is ETH-flow order, then should call eth-flow contract 1`] = `
-[
-  {
-    "appData": "0x001",
-    "buyAmount": "2",
-    "buyToken": "0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB",
-    "feeAmount": undefined,
-    "partiallyFillable": false,
-    "quoteId": 0,
-    "receiver": "0x0000000000000000000000000000000000000000",
-    "sellAmount": "1",
-    "validTo": "34245345432",
-  },
-  {
-    "gasLimit": {
-      "hex": "0x78",
-      "type": "BigNumber",
-    },
-  },
-]
-`;

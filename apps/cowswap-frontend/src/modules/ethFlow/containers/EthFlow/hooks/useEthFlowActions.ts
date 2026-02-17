@@ -78,7 +78,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
       return sendTransaction('wrap', () => {
         if (!callbacks.wrap) return Promise.resolve(undefined)
 
-        return callbacks.wrap({ useModals }).then((res) => res?.hash)
+        return callbacks.wrap({ useModals }).then((res) => res || undefined)
       })
     }
 

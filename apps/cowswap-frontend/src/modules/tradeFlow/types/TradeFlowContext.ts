@@ -1,5 +1,4 @@
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
-import type { Erc20, Weth } from '@cowprotocol/cowswap-abis'
 import type { Command } from '@cowprotocol/types'
 import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
@@ -16,7 +15,7 @@ import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
-import type { SettlementContractData } from 'common/hooks/useContract'
+import type { SettlementContractData, WethContractData } from 'common/hooks/useContract'
 
 export enum FlowType {
   REGULAR = 'REGULAR',
@@ -57,8 +56,8 @@ export interface TradeFlowContext {
 export interface SafeBundleFlowContext {
   spender: string
   sendBatchTransactions: SendBatchTxCallback
-  wrappedNativeContract: Weth
+  wrappedNativeContract: WethContractData
   needsApproval: boolean
-  erc20Contract: Erc20
+  tokenAddress: string
   amountToApprove: CurrencyAmount<Currency>
 }

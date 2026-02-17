@@ -1,5 +1,4 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20 } from '@cowprotocol/cowswap-abis'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 
 import { AppDispatch } from 'legacy/state'
@@ -31,7 +30,6 @@ export interface TradeFlowContext {
 }
 
 export interface SafeBundleFlowContext extends TradeFlowContext {
-  erc20Contract: Erc20
   spender: string
   sendBatchTransactions: SendBatchTxCallback
 }
