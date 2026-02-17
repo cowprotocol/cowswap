@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/tokens-v2.2.1...tokens-v2.2.2) (2026-02-17)
+
+
+### 🐛 Bug Fixes
+
+* **ink:** move usdc back to ink favorites ([#7024](https://github.com/cowprotocol/cowswap/issues/7024)) ([cec6c39](https://github.com/cowprotocol/cowswap/commit/cec6c39d85d27d30a7fe4607065ccf60cfde4fa6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-hooks bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+    * @cowprotocol/core bumped to 2.2.2
+    * @cowprotocol/ui bumped to 2.2.2
+    * @cowprotocol/wallet-provider bumped to 2.1.3
+
 ## [2.2.1](https://github.com/cowprotocol/cowswap/compare/tokens-v2.2.0...tokens-v2.2.1) (2026-02-16)
 
 

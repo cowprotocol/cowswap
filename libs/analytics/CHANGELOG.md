@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/analytics-v2.2.1...analytics-v2.2.2) (2026-02-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-hooks bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+
 ## [2.2.1](https://github.com/cowprotocol/cowswap/compare/analytics-v2.2.0...analytics-v2.2.1) (2026-02-16)
 
 

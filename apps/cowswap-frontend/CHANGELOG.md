@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.2.1...cowswap-v2.2.2) (2026-02-17)
+
+
+### 🐛 Bug Fixes
+
+* **ink:** move usdc back to ink favorites ([#7024](https://github.com/cowprotocol/cowswap/issues/7024)) ([cec6c39](https://github.com/cowprotocol/cowswap/commit/cec6c39d85d27d30a7fe4607065ccf60cfde4fa6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.2
+    * @cowprotocol/balances-and-allowances bumped to 2.2.2
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-hooks bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+    * @cowprotocol/core bumped to 2.2.2
+    * @cowprotocol/ens bumped to 2.2.2
+    * @cowprotocol/multicall bumped to 2.2.2
+    * @cowprotocol/snackbars bumped to 2.0.5
+    * @cowprotocol/tokens bumped to 2.2.2
+    * @cowprotocol/ui bumped to 2.2.2
+    * @cowprotocol/wallet bumped to 2.2.2
+    * @cowprotocol/wallet-provider bumped to 2.1.3
+
 ## [2.2.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.2.0...cowswap-v2.2.1) (2026-02-16)
 
 
