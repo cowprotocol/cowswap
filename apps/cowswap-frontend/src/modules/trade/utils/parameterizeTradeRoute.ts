@@ -1,8 +1,8 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { TradeUrlParams } from 'modules/trade'
-
 import { RoutesValues } from 'common/constants/routes'
+
+import { TradeUrlParams } from '../types/TradeRawState'
 
 /**
  * When input currency is not set and user select output currency, we build a link like:

@@ -7,7 +7,6 @@ import {
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useUpdateSwapRawState } from 'modules/swap/hooks/useUpdateSwapRawState'
-import { ExtendedTradeRawState } from 'modules/trade'
 import { useUpdateYieldRawState } from 'modules/yield/hooks/useUpdateYieldRawState'
 import { useYieldRawState } from 'modules/yield/hooks/useYieldRawState'
 
@@ -16,6 +15,7 @@ import { Routes, RoutesValues } from 'common/constants/routes'
 import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
 
 import { TradeType } from '../types'
+import { ExtendedTradeRawState } from '../types/TradeRawState'
 
 const EMPTY_TRADE_STATE = {}
 
