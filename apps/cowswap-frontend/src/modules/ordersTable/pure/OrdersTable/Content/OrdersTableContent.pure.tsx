@@ -2,8 +2,6 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
-
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersContent'

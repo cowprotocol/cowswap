@@ -23,7 +23,6 @@ import {
   Select,
 } from './OrdersTableWidget.styled'
 
-import { useOrdersTableFilters } from '../../hooks/useOrdersTableFilters'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
@@ -32,6 +31,7 @@ import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
+import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
   const start = (pageNumber - 1) * pageSize
@@ -44,7 +44,7 @@ const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfilla
 export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/): ReactNode {
   const { i18n } = useLingui()
 
-  const { searchTerm: searchTermFilter, historyStatusFilter } = useOrdersTableFilters()
+  const { searchTerm: searchTermFilter, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
   const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
 
   const [searchTerm, setSearchTerm] = useStateWithDeferredValue(searchTermFilter, (searchTerm) => {

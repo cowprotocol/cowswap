@@ -4,7 +4,6 @@ import { PropsWithChildren, ReactNode } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
-import { useOrdersTableFilters } from 'modules/ordersTable/hooks/useOrdersTableFilters'
 import { tabParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -15,14 +14,14 @@ import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDispl
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
-import { locationOrderTypeAtom } from 'common/state/routesState'
+import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode {
   const { account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
-  const { searchTerm, historyStatusFilter } = useOrdersTableFilters() || {}
+  const { searchTerm, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
   const currentTabId = useAtomValue(tabParamAtom)
 
   return (

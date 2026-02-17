@@ -15,6 +15,8 @@ export function useResetOrdersTableFilters({
   // syncWithUrl = true,
   ...ordersTableFilters
 }: UseResetOrdersTableFiltersProps): void {
+  console.trace("useResetOrdersTableFilters");
+
   const setOrdersTableFilters = useSetAtom(ordersTableFiltersAtom)
 
   useEffect(() => {
