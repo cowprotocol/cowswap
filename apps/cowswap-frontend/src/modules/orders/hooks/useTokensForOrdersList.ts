@@ -9,7 +9,7 @@ import { Token } from '@uniswap/sdk-core'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
-export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<TokensByAddress> {
+export function useTokensForOrdersList(): (tokensToFetch: string[], signal?: AbortSignal) => Promise<TokensByAddress> {
   const { chainId } = useWalletInfo()
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
@@ -18,9 +18,11 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
   const addUserTokens = useAddUserToken()
 
   const getToken = useCallback(
-    async (address: string) => {
+    async (address: string, signal?: AbortSignal) => {
+      if (signal?.aborted) return null
       if (!provider) return null
-      return fetchTokenFromBlockchain(address, chainId, provider).then(TokenWithLogo.fromToken)
+      const token = await fetchTokenFromBlockchain(address, chainId, provider).then(TokenWithLogo.fromToken)
+      return signal?.aborted ? null : token
     },
     [chainId, provider],
   )
@@ -33,7 +35,9 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
   allTokensRef.current = allTokens
 
   return useCallback(
-    async (_tokensToFetch: string[]) => {
+    async (_tokensToFetch: string[], signal?: AbortSignal) => {
+      if (signal?.aborted) return allTokensRef.current
+
       const tokens = allTokensRef.current
 
       const tokensToFetch = _tokensToFetch.reduce<string[]>((acc, token) => {
@@ -45,7 +49,8 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
         return acc
       }, [])
 
-      const fetchedTokens = await _fetchTokens(tokensToFetch, getToken)
+      const fetchedTokens = await _fetchTokens(tokensToFetch, getToken, signal)
+      if (signal?.aborted) return tokens
 
       // Add fetched tokens to the user-added tokens store to avoid re-fetching them
       const tokensToAdd = Object.values(fetchedTokens).filter(isTruthy)
@@ -66,14 +71,16 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
 
 async function _fetchTokens(
   tokensToFetch: string[],
-  getToken: (address: string) => Promise<Token | null>,
+  getToken: (address: string, signal?: AbortSignal) => Promise<Token | null>,
+  signal?: AbortSignal,
 ): Promise<TokensByAddress> {
-  if (tokensToFetch.length === 0) {
+  if (tokensToFetch.length === 0 || signal?.aborted) {
     return {}
   }
 
-  const promises = tokensToFetch.map((address) => getToken(address))
+  const promises = tokensToFetch.map((address) => getToken(address, signal))
   const settledPromises = await Promise.allSettled(promises)
+  if (signal?.aborted) return {}
 
   return settledPromises.reduce<TokensByAddress>((acc, promiseResult) => {
     if (promiseResult.status === 'fulfilled' && promiseResult.value) {

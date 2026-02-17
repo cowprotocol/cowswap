@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -43,6 +43,38 @@ const EMPTY_RESULT: UseCreatedInOrderBookPartOrdersResult = {
   cacheEntries: EMPTY_CACHE,
 }
 
+function getOrdersInfo(
+  partOrderIds: string[],
+  allOrdersByUid: Record<string, EnrichedOrder>,
+  twapPartOrdersMap: Record<string, TwapPartOrderItem>,
+  twapOrders: Record<string, TwapOrderItem>,
+): TwapOrderInfo[] {
+  return partOrderIds.reduce<TwapOrderInfo[]>((acc, uid) => {
+    const order = allOrdersByUid[uid]
+    const item = twapPartOrdersMap[uid]
+    const parent = twapOrders[item?.twapOrderId]
+
+    if (order && parent) {
+      acc.push({ item, parent, order })
+    }
+
+    return acc
+  }, [])
+}
+
+function getCacheEntries(ordersInfo: TwapOrderInfo[]): TwapPartOrdersCacheByUid {
+  return ordersInfo.reduce<TwapPartOrdersCacheByUid>((acc, { item, parent, order }) => {
+    if (!TWAP_FINAL_STATUSES.includes(parent.status)) return acc
+
+    acc[item.uid] = {
+      twapOrderId: item.twapOrderId,
+      enrichedOrder: order,
+    }
+
+    return acc
+  }, {})
+}
+
 export function useCreatedInOrderBookPartOrders({
   chainId,
   owner,
@@ -52,6 +84,12 @@ export function useCreatedInOrderBookPartOrders({
   const twapPartOrdersList = useTwapPartOrdersList()
   const twapOrders = useAtomValue(twapOrdersAtom)
   const { cacheByUid, cachedFinalizedTwapOrderIds } = useTwapPartOrdersCache()
+  const abortControllerRef = useRef<AbortController | null>(null)
+
+  useEffect(() => {
+    return () => abortControllerRef.current?.abort()
+  }, [])
+
   const twapPartOrdersMap = useMemo(() => {
     return twapPartOrdersList.reduce<Record<string, TwapPartOrderItem>>((acc, val) => {
       acc[val.uid] = val
@@ -61,7 +99,13 @@ export function useCreatedInOrderBookPartOrders({
 
   return useAsyncMemo(
     async () => {
+      abortControllerRef.current?.abort()
+      const abortController = new AbortController()
+      abortControllerRef.current = abortController
+      const { signal } = abortController
+
       if (!chainId || !owner) return EMPTY_RESULT
+
       const ordersFromProdByUid = prodOrders.reduce<Record<string, EnrichedOrder>>((acc, order) => {
         acc[order.uid] = order
         return acc
@@ -78,8 +122,10 @@ export function useCreatedInOrderBookPartOrders({
         return !cachedFinalizedTwapOrderIds.has(twapPartOrdersMap[uid].twapOrderId)
       })
       const fallbackOrders = partOrderIdsToCheck.length
-        ? await fetchMissingPartOrders(chainId, owner, partOrderIdsToCheck, existingOrdersByUid)
+        ? await fetchMissingPartOrders(chainId, owner, partOrderIdsToCheck, existingOrdersByUid, signal)
         : []
+      if (signal.aborted) return EMPTY_RESULT
+
       const allOrdersByUid = fallbackOrders.reduce<Record<string, EnrichedOrder>>(
         (acc, order) => {
           acc[order.uid] = order
@@ -88,33 +134,25 @@ export function useCreatedInOrderBookPartOrders({
         { ...existingOrdersByUid },
       )
 
-      const ordersInfo = partOrderIds.reduce<TwapOrderInfo[]>((acc, uid) => {
-        const order = allOrdersByUid[uid]
-        const item = twapPartOrdersMap[uid]
-        const parent = twapOrders[item?.twapOrderId]
+      const ordersInfo = getOrdersInfo(partOrderIds, allOrdersByUid, twapPartOrdersMap, twapOrders)
+      const allTokens = await getTokensForOrdersList(getTokensListFromOrders(ordersInfo), signal)
+      if (signal.aborted) return EMPTY_RESULT
 
-        if (order && parent) {
-          acc.push({ item, parent, order })
-        }
+      const cacheEntries = getCacheEntries(ordersInfo)
+      if (signal.aborted) return EMPTY_RESULT
 
-        return acc
-      }, [])
-      const allTokens = await getTokensForOrdersList(getTokensListFromOrders(ordersInfo))
-      const cacheEntries = ordersInfo.reduce<TwapPartOrdersCacheByUid>((acc, { item, parent, order }) => {
-        if (!TWAP_FINAL_STATUSES.includes(parent.status)) return acc
-
-        acc[item.uid] = {
-          twapOrderId: item.twapOrderId,
-          enrichedOrder: order,
-        }
-
-        return acc
-      }, {})
       const orders = ordersInfo
         .map(({ item, parent, order }) => mapPartOrderToStoreOrder(item, order, isVirtualPart, parent, allTokens))
         .filter(isTruthy)
+      if (signal.aborted) return EMPTY_RESULT
 
-      return { orders, cacheEntries }
+      const result = { orders, cacheEntries }
+
+      if (abortControllerRef.current === abortController) {
+        abortControllerRef.current = null
+      }
+
+      return result
     },
     [
       chainId,
