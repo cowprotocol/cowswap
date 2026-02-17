@@ -33,13 +33,13 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: bool
     ...(isAffiliateProgramEnabled
       ? [
           {
-            href: Routes.ACCOUNT_MY_REWARDS,
+            href: Routes.ACCOUNT_AFFILIATE_TRADER,
             label: msg`My Rewards`,
             badge: msg`New`,
             badgeType: BadgeTypes.ALERT,
           },
           {
-            href: Routes.ACCOUNT_AFFILIATE,
+            href: Routes.ACCOUNT_AFFILIATE_PARTNER,
             label: msg`Affiliate`,
             badge: msg`New`,
             badgeType: BadgeTypes.ALERT,

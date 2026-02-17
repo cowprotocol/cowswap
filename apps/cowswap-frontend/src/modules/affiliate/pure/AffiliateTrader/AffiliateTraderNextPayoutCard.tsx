@@ -4,12 +4,15 @@ import { TraderStatsResponse } from 'modules/affiliate/lib/affiliateProgramTypes
 import { formatUsdcCompact } from 'modules/affiliate/lib/affiliateProgramUtils'
 import { NextPayoutCard } from 'modules/affiliate/pure/shared'
 
-interface MyRewardsNextPayoutCardProps {
+interface AffiliateTraderNextPayoutCardProps {
   loading: boolean
   traderStats?: TraderStatsResponse
 }
 
-export function MyRewardsNextPayoutCard({ loading, traderStats }: MyRewardsNextPayoutCardProps): ReactElement {
+export function AffiliateTraderNextPayoutCard({
+  loading,
+  traderStats,
+}: AffiliateTraderNextPayoutCardProps): ReactElement {
   const nextPayoutValue = traderStats?.next_payout
   const nextPayoutLabel =
     nextPayoutValue !== null && nextPayoutValue !== undefined

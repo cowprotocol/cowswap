@@ -45,8 +45,8 @@ import {
   RewardsCol2Card,
   RewardsMetricsList,
   RewardsMetricsRow,
-  RewardsThreeColumnGrid,
-  RewardsWrapper,
+  ThreeColumnGrid,
+  PageWrapper,
 } from './shared'
 
 const Frame = styled.div`
@@ -59,7 +59,7 @@ const Frame = styled.div`
 function HeroState(): ReactNode {
   return (
     <Frame>
-      <RewardsWrapper>
+      <PageWrapper>
         <HeroCard>
           <HeroContent>
             <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
@@ -73,7 +73,7 @@ function HeroState(): ReactNode {
             <AffiliateTermsFaqLinks />
           </HeroContent>
         </HeroCard>
-      </RewardsWrapper>
+      </PageWrapper>
     </Frame>
   )
 }
@@ -89,8 +89,8 @@ function CreateCodeState(): ReactNode {
 
   return (
     <Frame>
-      <RewardsWrapper>
-        <RewardsThreeColumnGrid>
+      <PageWrapper>
+        <ThreeColumnGrid>
           <RewardsCol1Card>
             <CardTitle>Create your referral code</CardTitle>
             <BottomMetaRow as="div">
@@ -148,8 +148,8 @@ function CreateCodeState(): ReactNode {
             </RewardsMetricsRow>
           </RewardsCol2Card>
           <NextPayoutCard payoutLabel="0 USDC" />
-        </RewardsThreeColumnGrid>
-      </RewardsWrapper>
+        </ThreeColumnGrid>
+      </PageWrapper>
     </Frame>
   )
 }
@@ -157,8 +157,8 @@ function CreateCodeState(): ReactNode {
 function LinkedState(): ReactNode {
   return (
     <Frame>
-      <RewardsWrapper>
-        <RewardsThreeColumnGrid>
+      <PageWrapper>
+        <ThreeColumnGrid>
           <RewardsCol1Card>
             <CardTitle>Your referral code</CardTitle>
             <LinkedCard>
@@ -218,8 +218,8 @@ function LinkedState(): ReactNode {
           </RewardsCol2Card>
 
           <NextPayoutCard payoutLabel="80 USDC" />
-        </RewardsThreeColumnGrid>
-      </RewardsWrapper>
+        </ThreeColumnGrid>
+      </PageWrapper>
     </Frame>
   )
 }

@@ -11,20 +11,20 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useAffiliateTraderRewardsStats } from 'modules/affiliate/hooks/useAffiliateTraderRewardsStats'
 import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
-import { MyRewardsCodeCard } from 'modules/affiliate/pure/AffiliateTrader/MyRewardsCodeCard'
-import { MyRewardsHistorySection } from 'modules/affiliate/pure/AffiliateTrader/MyRewardsHistorySection'
-import { MyRewardsIneligible } from 'modules/affiliate/pure/AffiliateTrader/MyRewardsIneligible'
-import { MyRewardsMetricsCard } from 'modules/affiliate/pure/AffiliateTrader/MyRewardsMetricsCard'
-import { MyRewardsNextPayoutCard } from 'modules/affiliate/pure/AffiliateTrader/MyRewardsNextPayoutCard'
-import { MyRewardsNoTraderCode } from 'modules/affiliate/pure/AffiliateTrader/MyRewardsNoTraderCode'
-import { MyRewardsUnsupportedNetwork } from 'modules/affiliate/pure/AffiliateTrader/MyRewardsUnsupportedNetwork'
-import { RewardsThreeColumnGrid, RewardsWrapper } from 'modules/affiliate/pure/shared'
+import { AffiliateTraderCodeCard } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderCodeCard'
+import { AffiliateTraderHistory } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderHistory'
+import { AffiliateTraderIneligible } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderIneligible'
+import { AffiliateTraderMetricsCard } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderMetricsCard'
+import { AffiliateTraderNextPayoutCard } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderNextPayoutCard'
+import { AffiliateTraderOnboard } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderOnboard'
+import { AffiliateTraderUnsupportedNetwork } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork'
+import { ThreeColumnGrid, PageWrapper } from 'modules/affiliate/pure/shared'
 import { UnsupportedNetwork } from 'modules/affiliate/pure/UnsupportedNetwork'
 import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
 import { openTraderReferralCodeModalAtom } from 'modules/affiliate/state/affiliateTraderWriteAtoms'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
-export default function AccountMyRewards(): ReactNode {
+export default function AffiliateTrader(): ReactNode {
   const { i18n } = useLingui()
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
@@ -32,13 +32,12 @@ export default function AccountMyRewards(): ReactNode {
   const affiliateTrader = useAtomValue(affiliateTraderAtom)
   const openModal = useSetAtom(openTraderReferralCodeModalAtom)
 
-  const isConnected = Boolean(account)
   const { walletStatus, linkedCode, supportedNetwork } = useAffiliateTraderWallet({
     account,
     chainId,
     savedCode: affiliateTrader.savedCode,
   })
-  const isUnsupportedNetwork = Boolean(account) && !supportedNetwork
+  const isUnsupportedNetwork = !!account && !supportedNetwork
   const incomingIneligibleCode =
     affiliateTrader.incomingCode ||
     (affiliateTrader.verification.kind === 'ineligible' ? affiliateTrader.verification.code : undefined)
@@ -48,50 +47,47 @@ export default function AccountMyRewards(): ReactNode {
   })
 
   const statsLinkedCode = traderStats?.bound_referrer_code
-  const isIneligible = walletStatus === TraderWalletStatus.INELIGIBLE && isConnected && !statsLinkedCode
   const linkedWalletCode = walletStatus === TraderWalletStatus.LINKED ? linkedCode : undefined
-  const traderCode = isConnected ? (statsLinkedCode ?? linkedWalletCode ?? affiliateTrader.savedCode) : undefined
-  const traderHasCode = Boolean(traderCode)
+  const isIneligible = walletStatus === TraderWalletStatus.INELIGIBLE && !statsLinkedCode
+  const traderCode =
+    walletStatus === TraderWalletStatus.DISCONNECTED
+      ? undefined
+      : (statsLinkedCode ?? linkedWalletCode ?? affiliateTrader.savedCode)
 
   return (
     <>
       {walletStatus === TraderWalletStatus.UNSUPPORTED && <UnsupportedNetwork />}
-      <RewardsWrapper>
+      <PageWrapper>
         <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 
         {isIneligible ? (
-          <MyRewardsIneligible incomingIneligibleCode={incomingIneligibleCode} />
+          <AffiliateTraderIneligible incomingIneligibleCode={incomingIneligibleCode} />
         ) : isUnsupportedNetwork ? (
-          <MyRewardsUnsupportedNetwork />
-        ) : !traderHasCode ? (
-          <MyRewardsNoTraderCode
-            isConnected={isConnected}
-            onConnect={toggleWalletModal}
-            onAddCode={() => openModal()}
-          />
+          <AffiliateTraderUnsupportedNetwork />
+        ) : !traderCode ? (
+          <AffiliateTraderOnboard onConnect={toggleWalletModal} onAddCode={() => openModal()} />
         ) : (
           <>
-            <RewardsThreeColumnGrid>
-              <MyRewardsCodeCard
+            <ThreeColumnGrid>
+              <AffiliateTraderCodeCard
                 loading={loading}
-                isConnected={isConnected}
                 walletStatus={walletStatus}
                 linkedCode={linkedCode}
                 savedCode={affiliateTrader.savedCode}
                 traderStats={traderStats}
                 onEditCode={() => openModal()}
               />
-              <MyRewardsMetricsCard
+              <AffiliateTraderMetricsCard
                 loading={loading}
                 traderStats={traderStats}
                 verification={affiliateTrader.verification}
               />
-              <MyRewardsNextPayoutCard loading={loading} traderStats={traderStats} />
-            </RewardsThreeColumnGrid>
-            <MyRewardsHistorySection account={account} traderStats={traderStats} />
+              <AffiliateTraderNextPayoutCard loading={loading} traderStats={traderStats} />
+            </ThreeColumnGrid>
+            <AffiliateTraderHistory account={account} traderStats={traderStats} />
           </>
         )}
-      </RewardsWrapper>
+      </PageWrapper>
     </>
   )
 }

@@ -12,12 +12,12 @@ import * as tabsEl from 'common/pure/Tabs'
 
 type RewardsHistoryTab = 'activity' | 'payouts'
 
-interface MyRewardsHistorySectionProps {
+interface AffiliateTraderHistoryProps {
   account?: string
   traderStats?: TraderStatsResponse
 }
 
-export function MyRewardsHistorySection({ account, traderStats }: MyRewardsHistorySectionProps): ReactElement {
+export function AffiliateTraderHistory({ account, traderStats }: AffiliateTraderHistoryProps): ReactElement {
   const [historyTab, setHistoryTab] = useState<RewardsHistoryTab>('activity')
   const { rows: traderActivityRows, loading: traderActivityLoading } = useTraderActivity({
     account,

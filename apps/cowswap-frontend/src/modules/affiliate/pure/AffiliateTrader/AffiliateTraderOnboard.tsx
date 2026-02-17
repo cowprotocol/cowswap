@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -14,13 +15,17 @@ import {
   HeroTitle,
 } from 'modules/affiliate/pure/shared'
 
-interface MyRewardsNoTraderCodeProps {
-  isConnected: boolean
+interface AffiliateTraderOnboardProps {
   onConnect: () => void
   onAddCode: () => void
 }
 
-export function MyRewardsNoTraderCode({ isConnected, onConnect, onAddCode }: MyRewardsNoTraderCodeProps): ReactElement {
+export function AffiliateTraderOnboard({
+  onConnect,
+  onAddCode,
+}: AffiliateTraderOnboardProps): ReactElement {
+  const { account } = useWalletInfo()
+
   return (
     <HeroCard>
       <HeroContent>
@@ -39,13 +44,13 @@ export function MyRewardsNoTraderCode({ isConnected, onConnect, onAddCode }: MyR
           </Trans>
         </HeroSubtitle>
         <HeroActions>
-          {!isConnected ? (
-            <ButtonPrimary onClick={onConnect}>
-              <Trans>Connect wallet</Trans>
-            </ButtonPrimary>
-          ) : (
+          {!!account ? (
             <ButtonPrimary onClick={onAddCode}>
               <Trans>Add code</Trans>
+            </ButtonPrimary>
+          ) : (
+            <ButtonPrimary onClick={onConnect}>
+              <Trans>Connect wallet</Trans>
             </ButtonPrimary>
           )}
         </HeroActions>

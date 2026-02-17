@@ -23,7 +23,6 @@ export function buildAffiliateTraderModalViewModel(params: BuildAffiliateTraderM
   const { modalState, account, chainId, payoutAddressConfirmed } = params
   const { uiState, displayCode, walletStatus, ...traderReferralCode } = modalState
   const { savedCode, verification, incomingCode, incomingCodeReason } = traderReferralCode
-  const isConnected = Boolean(account)
   const hasRejection = Boolean(incomingCodeReason)
 
   return {
@@ -36,11 +35,11 @@ export function buildAffiliateTraderModalViewModel(params: BuildAffiliateTraderM
       savedCode,
       displayCode,
       incomingCodeReason,
-      isConnected,
+      isConnected: !!account,
     }),
     status: buildStatusSection(verification, walletStatus),
     payout: {
-      showPayoutAddressConfirmation: Boolean(account) && chainId !== undefined && chainId !== SupportedChainId.MAINNET,
+      showPayoutAddressConfirmation: !!account && chainId !== undefined && chainId !== SupportedChainId.MAINNET,
       payoutAddress: account,
       payoutAddressConfirmed,
       onTogglePayoutAddressConfirmed: params.onTogglePayoutAddressConfirmed,

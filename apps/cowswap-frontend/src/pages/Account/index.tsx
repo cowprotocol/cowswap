@@ -29,9 +29,9 @@ function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): s
       return ['account-governance', t`Governance`]
     case RoutesEnum.ACCOUNT_TOKENS:
       return ['account-tokens', t`Tokens overview`]
-    case RoutesEnum.ACCOUNT_AFFILIATE:
+    case RoutesEnum.ACCOUNT_AFFILIATE_PARTNER:
       return isAffiliateProgramEnabled ? ['account-affiliate', t`Rewards hub - Affiliate`] : []
-    case RoutesEnum.ACCOUNT_MY_REWARDS:
+    case RoutesEnum.ACCOUNT_AFFILIATE_TRADER:
       return isAffiliateProgramEnabled ? ['account-my-rewards', t`Rewards hub - My Rewards`] : []
     default:
       return []

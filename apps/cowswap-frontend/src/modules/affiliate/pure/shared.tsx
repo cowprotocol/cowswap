@@ -12,7 +12,7 @@ import { Card, ExtLink } from 'pages/Account/styled'
 
 export type BadgeTone = 'neutral' | 'info' | 'success' | 'error'
 
-export const RewardsWrapper = styled.div`
+export const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -82,14 +82,10 @@ export const PrimaryAction = styled(ButtonPrimary)`
   width: 100%;
 `
 
-export const RewardsGrid = styled.div`
+export const ThreeColumnGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-`
-
-export const RewardsThreeColumnGrid = styled(RewardsGrid)`
   grid-template-columns: minmax(0, 2fr) minmax(0, 2.5fr) minmax(0, 1.5fr);
+  gap: 16px;
 
   ${Media.upToMedium()} {
     grid-template-columns: 1fr;

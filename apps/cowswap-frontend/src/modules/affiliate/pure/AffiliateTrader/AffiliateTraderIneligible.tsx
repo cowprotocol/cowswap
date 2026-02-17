@@ -7,11 +7,11 @@ import { Trans } from '@lingui/react/macro'
 import { IneligibleCard, IneligibleSubtitle, IneligibleTitle } from 'modules/affiliate/pure/shared'
 import { TraderIneligible } from 'modules/affiliate/pure/TraderIneligible'
 
-interface MyRewardsIneligibleProps {
+interface AffiliateTraderIneligibleProps {
   incomingIneligibleCode?: string
 }
 
-export function MyRewardsIneligible({ incomingIneligibleCode }: MyRewardsIneligibleProps): ReactElement {
+export function AffiliateTraderIneligible({ incomingIneligibleCode }: AffiliateTraderIneligibleProps): ReactElement {
   return (
     <IneligibleCard>
       <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />

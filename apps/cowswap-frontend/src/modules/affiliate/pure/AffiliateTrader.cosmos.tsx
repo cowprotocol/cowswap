@@ -33,8 +33,8 @@ import {
   RewardsHeader,
   RewardsMetricsList,
   RewardsMetricsRow,
-  RewardsThreeColumnGrid,
-  RewardsWrapper,
+  ThreeColumnGrid,
+  PageWrapper,
   UnsupportedNetworkCard,
   UnsupportedNetworkHeader,
   UnsupportedNetworkMessage,
@@ -51,7 +51,7 @@ const Frame = styled.div`
 function AddCodeState(): ReactNode {
   return (
     <Frame>
-      <RewardsWrapper>
+      <PageWrapper>
         <HeroCard>
           <HeroContent>
             <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
@@ -62,7 +62,7 @@ function AddCodeState(): ReactNode {
             </HeroActions>
           </HeroContent>
         </HeroCard>
-      </RewardsWrapper>
+      </PageWrapper>
     </Frame>
   )
 }
@@ -70,8 +70,8 @@ function AddCodeState(): ReactNode {
 function LinkedCodeState(): ReactNode {
   return (
     <Frame>
-      <RewardsWrapper>
-        <RewardsThreeColumnGrid>
+      <PageWrapper>
+        <ThreeColumnGrid>
           <RewardsCol1Card>
             <RewardsHeader>
               <CardTitle>Active referral code</CardTitle>
@@ -129,8 +129,8 @@ function LinkedCodeState(): ReactNode {
           </RewardsCol2Card>
 
           <NextPayoutCard payoutLabel="20 USDC" />
-        </RewardsThreeColumnGrid>
-      </RewardsWrapper>
+        </ThreeColumnGrid>
+      </PageWrapper>
     </Frame>
   )
 }
@@ -138,8 +138,8 @@ function LinkedCodeState(): ReactNode {
 function ValidNotLinkedState(): ReactNode {
   return (
     <Frame>
-      <RewardsWrapper>
-        <RewardsThreeColumnGrid>
+      <PageWrapper>
+        <ThreeColumnGrid>
           <RewardsCol1Card>
             <RewardsHeader>
               <CardTitle>Referral code</CardTitle>
@@ -169,8 +169,8 @@ function ValidNotLinkedState(): ReactNode {
             </RewardsMetricsRow>
           </RewardsCol2Card>
           <NextPayoutCard payoutLabel="0 USDC" />
-        </RewardsThreeColumnGrid>
-      </RewardsWrapper>
+        </ThreeColumnGrid>
+      </PageWrapper>
     </Frame>
   )
 }
@@ -178,14 +178,14 @@ function ValidNotLinkedState(): ReactNode {
 function UnsupportedNetworkState(): ReactNode {
   return (
     <Frame>
-      <RewardsWrapper>
+      <PageWrapper>
         <UnsupportedNetworkCard>
           <UnsupportedNetworkHeader>Switch network</UnsupportedNetworkHeader>
           <UnsupportedNetworkMessage>
             Please connect your wallet to one of our supported networks.
           </UnsupportedNetworkMessage>
         </UnsupportedNetworkCard>
-      </RewardsWrapper>
+      </PageWrapper>
     </Frame>
   )
 }
@@ -193,13 +193,13 @@ function UnsupportedNetworkState(): ReactNode {
 function IneligibleState(): ReactNode {
   return (
     <Frame>
-      <RewardsWrapper>
+      <PageWrapper>
         <IneligibleCard>
           <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
           <IneligibleTitle>Your wallet is ineligible</IneligibleTitle>
           <IneligibleSubtitle>This wallet cannot link this referral code. Try another code.</IneligibleSubtitle>
         </IneligibleCard>
-      </RewardsWrapper>
+      </PageWrapper>
     </Frame>
   )
 }

@@ -4,6 +4,7 @@ import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import { formatShortDate } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -25,9 +26,8 @@ import {
   ValidStatusBadge,
 } from 'modules/affiliate/pure/shared'
 
-interface MyRewardsCodeCardProps {
+interface AffiliateTraderCodeCardProps {
   loading: boolean
-  isConnected: boolean
   walletStatus: TraderWalletStatus
   linkedCode?: string
   savedCode?: string
@@ -74,17 +74,17 @@ function getCodeCardViewModel(params: {
   }
 }
 
-export function MyRewardsCodeCard({
+export function AffiliateTraderCodeCard({
   loading,
-  isConnected,
   walletStatus,
   linkedCode,
   savedCode,
   traderStats,
   onEditCode,
-}: MyRewardsCodeCardProps): ReactElement {
+}: AffiliateTraderCodeCardProps): ReactElement {
+  const { account } = useWalletInfo()
   const { isLinked, traderCode, linkedSinceLabel, rewardsEndLabel } = getCodeCardViewModel({
-    isConnected,
+    isConnected: !!account,
     walletStatus,
     linkedCode,
     savedCode,

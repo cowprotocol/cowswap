@@ -168,7 +168,7 @@ function useEffectivePrimaryCta(params: {
     [hasCode, hasValidLength, uiState, verificationKind, walletStatus],
   )
   const blockedByPayoutConfirmation =
-    Boolean(account) &&
+    !!account &&
     chainId !== undefined &&
     chainId !== SupportedChainId.MAINNET &&
     !payoutAddressConfirmed &&
@@ -226,7 +226,7 @@ function useContentProps(params: {
       form: {
         ...buildFormViewModel({
           uiState,
-          isConnected: Boolean(account),
+          isConnected: !!account,
           savedCode,
           displayCode,
           verification,
@@ -379,7 +379,7 @@ function useTraderReferralCodeModalHandlers(
     if (primaryCta.action === 'viewRewards') {
       analytics.sendEvent({ category: 'affiliate', action: 'cta_clicked', label: 'view_rewards' })
       onClose()
-      navigate(Routes.ACCOUNT_MY_REWARDS)
+      navigate(Routes.ACCOUNT_AFFILIATE_TRADER)
       return
     }
 

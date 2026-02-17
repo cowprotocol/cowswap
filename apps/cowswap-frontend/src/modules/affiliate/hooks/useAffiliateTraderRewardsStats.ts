@@ -45,6 +45,6 @@ export function useAffiliateTraderRewardsStats(
 
   return {
     traderStats: data,
-    loading: Boolean(account) && isLoading,
+    loading: !!account && isLoading,
   }
 }

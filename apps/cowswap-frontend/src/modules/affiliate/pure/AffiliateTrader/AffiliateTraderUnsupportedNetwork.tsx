@@ -12,7 +12,7 @@ import {
 
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
-export function MyRewardsUnsupportedNetwork(): ReactElement {
+export function AffiliateTraderUnsupportedNetwork(): ReactElement {
   const supportedNetworks = AFFILIATE_SUPPORTED_NETWORK_NAMES.join(', ')
 
   return (

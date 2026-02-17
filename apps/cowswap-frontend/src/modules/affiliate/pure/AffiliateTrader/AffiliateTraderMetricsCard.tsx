@@ -26,7 +26,7 @@ import {
   RewardsMetricsRow,
 } from 'modules/affiliate/pure/shared'
 
-interface MyRewardsMetricsCardProps {
+interface AffiliateTraderMetricsCardProps {
   loading: boolean
   traderStats?: TraderStatsResponse
   verification: TraderReferralCodeVerificationStatus
@@ -82,7 +82,11 @@ function getRewardsMetricsViewModel(
   }
 }
 
-export function MyRewardsMetricsCard({ loading, traderStats, verification }: MyRewardsMetricsCardProps): ReactElement {
+export function AffiliateTraderMetricsCard({
+  loading,
+  traderStats,
+  verification,
+}: AffiliateTraderMetricsCardProps): ReactElement {
   const { i18n } = useLingui()
   const {
     rewardAmountLabel,
