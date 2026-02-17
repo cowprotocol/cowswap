@@ -7,7 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade'
 
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 

@@ -6,7 +6,7 @@ import { renderHook } from '@testing-library/react'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade'
 
 import { useChainsToSelect, createInputChainsState, createOutputChainsState } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
