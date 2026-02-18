@@ -1,4 +1,4 @@
-import { encodeFunctionData, decodeAbiParameters } from 'viem'
+import { encodeFunctionData, decodeAbiParameters, bytesToHex } from 'viem'
 
 import type { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
 import type { Address, WalletClient, PublicClient, Hex } from 'viem'
@@ -10,7 +10,14 @@ export class PermitProviderConnector implements ProviderConnector {
   ) {}
 
   contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): Hex {
-    return encodeFunctionData({ abi, functionName: methodName, args: methodParams })
+    const normalizedParams = methodParams.map((param) => {
+      if (!(param instanceof Uint8Array)) {
+        return param
+      }
+      return bytesToHex(param)
+    })
+
+    return encodeFunctionData({ abi, functionName: methodName, args: normalizedParams })
   }
 
   signTypedData(walletAddress: Address, typedData: EIP712TypedData, _typedDataHash: string): Promise<Hex> {

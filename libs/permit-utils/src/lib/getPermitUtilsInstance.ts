@@ -1,4 +1,4 @@
-import { Address, createWalletClient, http, PublicClient } from 'viem'
+import { Address, createWalletClient, custom, PublicClient } from 'viem'
 
 import { PERMIT_ACCOUNT } from '../const'
 import { PermitProviderConnector } from '../utils/PermitProviderConnector'
@@ -38,7 +38,7 @@ export async function getPermitUtilsInstance({
   const walletClient = createWalletClient({
     account: account || PERMIT_ACCOUNT,
     chain: publicClient.chain,
-    transport: http(),
+    transport: custom(window.ethereum!),
   })
 
   const web3ProviderConnector = new PermitProviderConnector(publicClient, walletClient)
