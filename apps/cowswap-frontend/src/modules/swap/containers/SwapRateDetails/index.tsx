@@ -24,7 +24,7 @@ const FeeSummaryWithVerification = styled.span`
   align-items: center;
   gap: 6px;
 
-  > div {
+  .quoteVerificationWrapper {
     display: inline-flex;
     align-items: center;
     line-height: 0;
@@ -52,7 +52,9 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
       const feeWithVerificationIcon = showQuoteVerificationIcon ? (
         <FeeSummaryWithVerification>
           {feeElement}
-          <QuoteVerificationIcon isVerified={quoteVerified} />
+          <span className="quoteVerificationWrapper">
+            <QuoteVerificationIcon isVerified={quoteVerified} />
+          </span>
         </FeeSummaryWithVerification>
       ) : (
         feeElement
