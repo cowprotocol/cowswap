@@ -10,6 +10,7 @@ import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
 
 import { Messages } from '@lingui/core'
+import { setupTurnstileRequestInterceptor, TurnstileWidget } from 'entities/turnstile'
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
@@ -39,6 +40,7 @@ const helmetContext = {}
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
+setupTurnstileRequestInterceptor()
 
 if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -62,6 +64,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                       <Web3ProviderInstance>
                         <BlockNumberProvider>
                           <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                            <TurnstileWidget />
                             <WalletUnsupportedNetworkBanner />
                             <Updaters />
                             <Toasts />

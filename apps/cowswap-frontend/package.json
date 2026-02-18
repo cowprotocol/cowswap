@@ -80,6 +80,7 @@
     "@lingui/core": "^5.4.1",
     "@lingui/macro": "^5.4.1",
     "@lingui/react": "^5.4.1",
+    "@marsidev/react-turnstile": "^1.4.2",
     "@reach/dialog": "^0.18.0",
     "@reach/menu-button": "^0.18.0",
     "@react-spring/web": "^9.6.1",
