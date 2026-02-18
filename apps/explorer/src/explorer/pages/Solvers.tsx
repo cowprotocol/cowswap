@@ -36,8 +36,8 @@ const Solvers = (): React.ReactNode => {
       <StyledSearch />
       <h1>Solvers</h1>
       <Subtitle>
-        Discover solver teams, supported networks, environments, and deployment addresses sourced from CMS. Expand any
-        solver row for per-network payout details.
+        Discover solver teams, supported networks, environments, and deployment addresses. Expand any solver row for
+        per-network payout details.
       </Subtitle>
       <Section>
         <SnapshotAccordion $expanded={isSnapshotExpanded}>
