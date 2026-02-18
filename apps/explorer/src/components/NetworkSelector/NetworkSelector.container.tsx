@@ -68,7 +68,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
             return (
               <Option to={'../' + url} color={network.color} key={itemNetworkId}>
                 <div className="dot" />
-                <div className={`name ${itemNetworkId === networkId && 'selected'}`}>
+                <div className={`name ${itemNetworkId === networkId ? 'selected' : ''}`}>
                   {network.label}
                   {isDeprecated && ' (deprecated)'}
                 </div>

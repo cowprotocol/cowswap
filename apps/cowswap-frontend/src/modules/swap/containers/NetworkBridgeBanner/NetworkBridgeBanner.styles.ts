@@ -52,7 +52,7 @@ export const StyledArrowUpRight = styled(ArrowUpRight)`
   height: 24px;
 `
 
-export const ContentWrapper = styled.div<{ darkMode: boolean; logoUrl: string }>`
+export const ContentWrapper = styled.div<{ logoUrl: string }>`
   background: var(${UI.COLOR_PAPER_DARKER});
   transition:
     color var(${UI.ANIMATION_DURATION}) ease-in-out,

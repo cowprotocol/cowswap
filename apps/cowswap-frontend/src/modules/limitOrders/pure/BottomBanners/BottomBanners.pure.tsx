@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, ReactNode } from 'react'
 
 import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { ClosableBanner } from '@cowprotocol/ui'
@@ -7,7 +7,7 @@ import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link as ReactRouterLink } from 'react-router'
 
-import { DeprecatedNetworkBanner } from 'modules/swap/containers/DeprecatedNetworkBanner/DeprecatedNetworkBanner.container'
+import { DeprecatedNetworkBanner } from 'modules/swap'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -16,7 +16,7 @@ import * as styledEl from './BottomBanners.styled'
 
 const LOCAL_STORAGE_KEY = 'limitOrders_showInfoBanner'
 
-export function BottomBanners(): React.ReactNode {
+export function BottomBanners(): ReactNode {
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   const callback = useCallback(

@@ -128,8 +128,10 @@ export default function TokensOverview(): ReactNode {
       )}
       <Overview>
         <PageTitle title={i18n._(PAGE_TITLES.TOKENS_OVERVIEW)} />
-        {isProviderNetworkUnsupported || isProviderNetworkDeprecated ? (
+        {isProviderNetworkUnsupported ? (
           <Trans>Unsupported network</Trans>
+        ) : isProviderNetworkDeprecated ? (
+          <Trans>Deprecated network</Trans>
         ) : (
           <TokensTableContent
             provider={provider}

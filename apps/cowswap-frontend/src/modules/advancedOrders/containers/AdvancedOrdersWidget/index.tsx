@@ -140,7 +140,7 @@ export function AdvancedOrdersWidget({
         handleUnlock={() => updateAdvancedOrdersState({ isUnlocked: true })}
       />
     ),
-    outerContent: <>{isUnlocked && <BottomBanners />}</>,
+    outerContent: isUnlocked ? <BottomBanners /> : null,
   }
 
   const tradeWidgetParams: TradeWidgetParams = {

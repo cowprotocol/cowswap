@@ -234,7 +234,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </>
       )
     },
-    outerContent: <>{isUnlocked && <BottomBanners />}</>,
+    outerContent: isUnlocked ? <BottomBanners /> : null,
   }
 
   const params: TradeWidgetParams = {

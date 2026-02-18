@@ -243,7 +243,11 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                   <CurrencyArrowSeparator
                     isCollapsed={compactView}
                     hasSeparatorLine={!compactView}
-                    onSwitchTokens={isProviderNetworkUnsupported ? () => void 0 : throttledOnSwitchTokens}
+                    onSwitchTokens={
+                      isProviderNetworkUnsupported || isProviderNetworkDeprecated
+                        ? () => void 0
+                        : throttledOnSwitchTokens
+                    }
                     isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
                     disabled={shouldLockForAlternativeOrder || isOutputTokenUnsupported}
                     isDarkMode={darkMode}

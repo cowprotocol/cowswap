@@ -30,7 +30,7 @@ export function NetworkBridgeBanner(): ReactNode {
 
   return (
     <styledEl.RootWrapper>
-      <styledEl.ContentWrapper darkMode={darkMode} logoUrl={logoUrl}>
+      <styledEl.ContentWrapper logoUrl={logoUrl}>
         <styledEl.LinkOutToBridge href={bridge}>
           <styledEl.BodyText color={textColor}>
             <styledEl.L2Icon src={logoUrl} />

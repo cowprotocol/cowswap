@@ -21,7 +21,7 @@ export const Logo = styled.img`
   }
 `
 
-export const NetworkLabel = styled.div<{ color: string }>`
+export const NetworkLabel = styled.div`
   flex: 1 1 auto;
   margin: 0 auto 0 8px;
   font-size: 15px;
