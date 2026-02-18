@@ -1,14 +1,7 @@
-import { useMemo } from 'react'
+import { useAtomValue } from 'jotai'
 
-import { isChainDeprecated } from '@cowprotocol/cow-sdk'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
+import { isProviderNetworkDeprecatedAtom } from 'entities/common/isProviderNetworkDeprecated.atom'
 
 export function useIsProviderNetworkDeprecated(): boolean {
-  const chainId = useWalletChainId()
-
-  return useMemo(() => {
-    if (!chainId) return false
-
-    return isChainDeprecated(chainId)
-  }, [chainId])
+  return useAtomValue(isProviderNetworkDeprecatedAtom)
 }
