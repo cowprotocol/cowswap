@@ -6,10 +6,11 @@ import { faFill } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { DetailsTableTooltips } from './detailsTableTooltips'
-import { LinkButton, Wrapper } from './styled'
+import { LinkButton, SolverBadge, SolverBadgeFallback, SolverBadgeLogo, SolverBadgeName, Wrapper } from './styled'
 
 import { Order } from '../../../api/operator'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 import { DecodeAppData } from '../../AppData/DecodeAppData'
 import { DetailRow } from '../../common/DetailRow'
 import { FilledProgress } from '../FilledProgress'
@@ -20,14 +21,33 @@ import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
 
 interface VerboseDetailsProps {
   order: Order
+  solvedBy?: OrderSolverInfo
+  isSolvedByLoading?: boolean
   isPriceInverted: boolean
   invertPrice: Command
   showFillsButton: boolean | undefined
   viewFills: Command
 }
 
+function renderSolvedBy(solvedBy?: OrderSolverInfo): ReactNode {
+  if (!solvedBy) return '-'
+
+  return (
+    <SolverBadge>
+      {solvedBy.image ? (
+        <SolverBadgeLogo src={solvedBy.image} alt={`${solvedBy.displayName} logo`} />
+      ) : (
+        <SolverBadgeFallback>{solvedBy.displayName.charAt(0).toUpperCase()}</SolverBadgeFallback>
+      )}
+      <SolverBadgeName>{solvedBy.displayName}</SolverBadgeName>
+    </SolverBadge>
+  )
+}
+
 export function VerboseDetails({
   order,
+  solvedBy,
+  isSolvedByLoading,
   invertPrice,
   isPriceInverted,
   showFillsButton,
@@ -86,6 +106,9 @@ export function VerboseDetails({
       </DetailRow>
       <DetailRow label="Costs & Fees" tooltipText={DetailsTableTooltips.fees}>
         <GasFeeDisplay order={order} />
+      </DetailRow>
+      <DetailRow label="Solved by" tooltipText={DetailsTableTooltips.solvedBy} isLoading={isSolvedByLoading}>
+        {renderSolvedBy(solvedBy)}
       </DetailRow>
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => (

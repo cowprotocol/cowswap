@@ -1,7 +1,15 @@
 import { orderBookSDK } from 'cowSdk'
 
 import { backoffOpts } from './operator.constants'
-import { GetOrderParams, GetTxOrdersParams, RawOrder, RawTrade, GetTradesParams } from './types'
+import {
+  GetOrderParams,
+  GetTxOrdersParams,
+  RawOrder,
+  RawTrade,
+  GetTradesParams,
+  GetOrderCompetitionStatusParams,
+  OrderCompetitionStatus,
+} from './types'
 
 export { getAccountOrders } from './accountOrderUtils'
 
@@ -115,4 +123,31 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const trades = await Promise.all([tradesPromise, tradesPromiseBarn])
 
   return [...trades[0], ...trades[1]]
+}
+
+/**
+ * Gets order competition status from prod and staging (barn).
+ *
+ * Uses `Promise.any`, so the first fulfilled response wins.
+ * Returns `undefined` if neither environment has status data.
+ */
+export async function getOrderCompetitionStatus(
+  params: GetOrderCompetitionStatusParams,
+): Promise<OrderCompetitionStatus | undefined> {
+  const { networkId, orderId } = params
+  const context = { chainId: networkId, backoffOpts }
+
+  const statusPromise = orderBookSDK.getOrderCompetitionStatus(orderId, context).catch((error) => {
+    console.error('[getOrderCompetitionStatus] Error getting PROD order status', orderId, networkId, error)
+    throw error
+  })
+
+  const statusPromiseBarn = orderBookSDK
+    .getOrderCompetitionStatus(orderId, { ...context, env: 'staging' })
+    .catch((error) => {
+      console.error('[getOrderCompetitionStatus] Error getting BARN order status', orderId, networkId, error)
+      throw error
+    })
+
+  return Promise.any([statusPromise, statusPromiseBarn]).catch(() => undefined)
 }

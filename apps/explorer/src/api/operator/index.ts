@@ -14,5 +14,6 @@ export const {
   getAccountOrders,
   getTxOrders,
   getTrades,
+  getOrderCompetitionStatus,
   // functions that only have a mock
 } = useMock ? { ...mockApi } : { ...realApi }
