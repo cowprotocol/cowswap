@@ -1,22 +1,17 @@
 import { useMemo } from 'react'
 
-import { safeNamehash } from '@cowprotocol/common-utils'
+import { useEnsAddress } from 'wagmi'
 
-import { useENSResolverMethod } from './useENSResolverMethod'
+import { normalize } from '../utils/normalize'
 
 /**
  * Does a lookup for an ENS name to find its address.
  */
 export function useENSAddress(ensName?: string | null): { loading: boolean; address: string | null } {
-  const ensNodeArgument = useMemo(() => (ensName === null ? undefined : safeNamehash(ensName)), [ensName])
-
-  const { data: addr, isLoading: addrLoading } = useENSResolverMethod('addr', ensNodeArgument)
+  const request = useEnsAddress({ name: normalize(ensName || undefined) })
 
   return useMemo(
-    () => ({
-      address: addr ?? null,
-      loading: addrLoading,
-    }),
-    [addr, addrLoading],
+    () => ({ loading: request.isLoading, address: request.data || null }),
+    [request.isLoading, request.data],
   )
 }

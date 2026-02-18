@@ -17,7 +17,7 @@ export function useCurrencyAmountBalanceCombined(
 
     const balance = balances[token.address.toLowerCase()]
 
-    if (!balance) return undefined
+    if (!balance && balance !== 0n) return undefined
 
     return CurrencyAmount.fromRawAmount(token, `0x${balance.toString(16)}`)
   }, [token, balances, chainId])

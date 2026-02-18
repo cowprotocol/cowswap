@@ -31,10 +31,6 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
 }))
 
-jest.mock('@cowprotocol/wallet-provider', () => ({
-  useWalletProvider: jest.fn(),
-}))
-
 jest.mock('wagmi', () => ({
   useConfig: jest.fn().mockReturnValue({}),
   usePublicClient: jest.fn().mockReturnValue({}),

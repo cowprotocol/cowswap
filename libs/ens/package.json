@@ -24,17 +24,11 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.5",
-    "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
-    "@cowprotocol/cowswap-abis": "workspace:*",
-    "@cowprotocol/wallet-provider": "workspace:*",
-    "@ethersproject/bignumber": "5.7.0",
-    "@ethersproject/bytes": "5.7.0",
-    "@ethersproject/hash": "5.7.0",
-    "ethers": "5.7.2",
     "react": "19.1.2",
-    "swr": "^2.3.3"
+    "swr": "^2.3.3",
+    "viem": "^2.45.1",
+    "wagmi": "3.4.2"
   },
   "devDependencies": {
     "@types/react": "19.1.3"
