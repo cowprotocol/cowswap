@@ -84,6 +84,14 @@ const Home = React.lazy(
     ),
 )
 
+const Solvers = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "Solvers_chunk"*/
+      './pages/Solvers'
+    ),
+)
+
 const Order = React.lazy(
   () =>
     import(
@@ -147,6 +155,7 @@ const AppContent = (): React.ReactNode => {
             <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
             <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
             <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
+            <Route path={pathPrefix + '/solvers'} element={<Solvers />} />
             <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
             <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
             <Route path="*" element={<NotFound />} />

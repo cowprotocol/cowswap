@@ -1,66 +1,208 @@
-export type SolverInfo = {
-  address: string
-  name: string
-  environment: string
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import type {
+  CmsEntity,
+  CmsSolverAttributes,
+  CmsSolverNetworkAttributes,
+  CmsSolversResponse,
+  CmsSolverWithRequiredFields,
+  SolverDeployment,
+  SolverInfo,
+  SolverNetworkInfo,
+  SolversInfo,
+} from './fetchSolversInfo.types'
+
+export type { SolverDeployment, SolverInfo, SolverNetworkInfo, SolversInfo } from './fetchSolversInfo.types'
+
+const CMS_BASE_URL =
+  process.env.REACT_APP_CMS_BASE_URL || process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api'
+const CMS_ORIGIN = new URL(CMS_BASE_URL).origin
+const SOLVERS_QUERY = [
+  'fields[0]=solverId',
+  'fields[1]=displayName',
+  'fields[2]=description',
+  'fields[3]=website',
+  'fields[4]=active',
+  'populate[image][fields][0]=url',
+  'populate[solver_networks][fields][0]=active',
+  'populate[solver_networks][fields][1]=address',
+  'populate[solver_networks][fields][2]=payoutAddress',
+  'populate[solver_networks][fields][3]=payout_address',
+  'populate[solver_networks][populate][network][fields][0]=chainId',
+  'populate[solver_networks][populate][environment][fields][0]=name',
+  'pagination[pageSize]=200',
+].join('&')
+const SOLVERS_API_URL = `${CMS_BASE_URL}/solvers?${SOLVERS_QUERY}`
+
+let solversInfoCache: SolversInfo | undefined
+
+export async function fetchSolversInfo(network?: number): Promise<SolversInfo> {
+  if (!solversInfoCache) {
+    const response = await fetch(SOLVERS_API_URL)
+
+    if (!response.ok) {
+      const details = await response.text().catch(() => '')
+      throw new Error(`Failed to fetch solvers info: [${response.status}] ${details}`)
+    }
+
+    const body = (await response.json()) as CmsSolversResponse
+    solversInfoCache = mapCmsSolversToSolversInfo(body.data || [])
+  }
+
+  return filterSolversByNetwork(solversInfoCache, network)
 }
 
-export type SolversInfo = SolverInfo[]
-
-const SOLVER_SOURCE_PER_NETWORK = {
-  1: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/models/cow_protocol/ethereum/cow_protocol_ethereum_solvers.sql',
-  100: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/deprecated-dune-v1-abstractions/xdai/gnosis_protocol_v2/view_solvers.sql',
+function mapCmsSolversToSolversInfo(cmsSolvers: CmsEntity<CmsSolverAttributes>[]): SolversInfo {
+  return cmsSolvers
+    .map(mapCmsSolver)
+    .filter(isDefined)
+    .sort((a, b) => a.displayName.localeCompare(b.displayName))
 }
 
-/**
- * This is a very dirty temporary solution to get the solver info dynamically
- *
- * The source file is a SQL with the structure that we care about looking like:
- * FROM (VALUES ('0xf2d21ad3c88170d4ae52bbbeba80cb6078d276f4', 'prod', 'MIP'),
- *              ('0x15f4c337122ec23859ec73bec00ab38445e45304', 'prod', 'Gnosis_ParaSwap'),
- * The regex below extracts the 3 fields we are looking for and ignore the rest
- */
-const REGEX = /\('(0x[0-9a-fA-F]{40})',\s*'(\w+)',\s*'([\w\s]+)'\)/g
+function mapSolverDeployments(entries: CmsEntity<CmsSolverNetworkAttributes>[]): SolverDeployment[] {
+  return entries.map(mapSolverDeployment).filter(isDefined).sort(sortSolverDeployments)
+}
 
-const SOLVERS_INFO_CACHE: Record<number, SolversInfo> = {}
+function mapSolverNetworks(deployments: SolverDeployment[]): SolverNetworkInfo[] {
+  const chainIdToEnvironments = new Map<number, Set<string>>()
 
-export async function fetchSolversInfo(network: number): Promise<SolversInfo> {
-  const url = SOLVER_SOURCE_PER_NETWORK[network]
+  for (const deployment of deployments) {
+    if (!deployment.active) {
+      continue
+    }
 
+    const currentEnvironments = chainIdToEnvironments.get(deployment.chainId) || new Set<string>()
+    if (deployment.environment) {
+      currentEnvironments.add(deployment.environment)
+    }
+    chainIdToEnvironments.set(deployment.chainId, currentEnvironments)
+  }
+
+  return [...chainIdToEnvironments.entries()]
+    .map(([chainId, environments]) => ({
+      chainId,
+      chainName: getChainName(chainId),
+      environments: [...environments].sort(),
+    }))
+    .sort((a, b) => a.chainName.localeCompare(b.chainName))
+}
+
+function getChainName(chainId: number): string {
+  return CHAIN_INFO[chainId as SupportedChainId]?.label || `Chain ${chainId}`
+}
+
+function normalizeCmsImageUrl(url?: string | null): string | undefined {
   if (!url) {
-    return []
+    return undefined
   }
 
-  const cache = SOLVERS_INFO_CACHE[network]
-  if (cache) {
-    return cache
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url
   }
 
-  try {
-    const response = await fetch(url)
-    const result = _parseSolverInfo(await response.text())
+  if (url.startsWith('/')) {
+    return `${CMS_ORIGIN}${url}`
+  }
 
-    SOLVERS_INFO_CACHE[network] = result
+  return `${CMS_ORIGIN}/${url}`
+}
 
-    return result
-  } catch {
-    console.error(`Failed to fetch solvers info from '${url}'`)
-    return []
+function filterSolversByNetwork(allSolvers: SolversInfo, network?: number): SolversInfo {
+  if (!network) {
+    return allSolvers
+  }
+
+  return allSolvers
+    .map((solver) => {
+      const deployments = solver.deployments.filter((deployment) => deployment.chainId === network)
+
+      return {
+        ...solver,
+        deployments,
+        networks: mapSolverNetworks(deployments),
+      }
+    })
+    .filter((solver) => solver.deployments.length > 0)
+}
+
+function mapCmsSolver(solver: CmsEntity<CmsSolverAttributes>): SolverInfo | undefined {
+  const attributes = solver.attributes
+
+  if (!hasRequiredSolverFields(attributes)) {
+    return undefined
+  }
+
+  const deployments = mapSolverDeployments(attributes.solver_networks?.data || [])
+  const networks = mapSolverNetworks(deployments)
+
+  if (!networks.length) {
+    return undefined
+  }
+
+  return {
+    solverId: attributes.solverId,
+    displayName: attributes.displayName,
+    description: attributes.description || undefined,
+    website: attributes.website || undefined,
+    image: normalizeCmsImageUrl(attributes.image?.data?.attributes?.url),
+    networks,
+    deployments,
   }
 }
 
-function _parseSolverInfo(body: string): SolversInfo {
-  const info: SolversInfo = []
+function hasRequiredSolverFields(attributes?: CmsSolverAttributes | null): attributes is CmsSolverWithRequiredFields {
+  return !!attributes?.solverId && !!attributes.displayName && attributes.active !== false
+}
 
-  const matches = body.matchAll(REGEX)
+function mapSolverDeployment(entry: CmsEntity<CmsSolverNetworkAttributes>): SolverDeployment | undefined {
+  const attributes = entry.attributes
+  const chainId = getChainId(attributes)
 
-  // Each match has 4 entries:
-  // 1. The whole capture group
-  // 2. The address
-  // 3. The environment
-  // 4. The name
-  for (const [, address, environment, name] of matches) {
-    info.push({ address, environment, name })
+  if (!chainId) {
+    return undefined
   }
 
-  return info
+  return {
+    chainId,
+    chainName: getChainName(chainId),
+    environment: getEnvironmentName(attributes),
+    address: getAddress(attributes),
+    payoutAddress: getPayoutAddress(attributes),
+    active: isDeploymentActive(attributes),
+  }
+}
+
+function sortSolverDeployments(a: SolverDeployment, b: SolverDeployment): number {
+  const byChain = a.chainName.localeCompare(b.chainName)
+  if (byChain !== 0) return byChain
+
+  const byEnvironment = (a.environment || '').localeCompare(b.environment || '')
+  if (byEnvironment !== 0) return byEnvironment
+
+  return (a.address || '').localeCompare(b.address || '')
+}
+
+function isDefined<T>(value: T | undefined): value is T {
+  return value !== undefined
+}
+
+function getChainId(attributes?: CmsSolverNetworkAttributes | null): number | undefined {
+  return attributes?.network?.data?.attributes?.chainId || undefined
+}
+
+function getEnvironmentName(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
+  return attributes?.environment?.data?.attributes?.name || undefined
+}
+
+function getAddress(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
+  return attributes?.address || undefined
+}
+
+function getPayoutAddress(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
+  return attributes?.payoutAddress || attributes?.payout_address || undefined
+}
+
+function isDeploymentActive(attributes?: CmsSolverNetworkAttributes | null): boolean {
+  return attributes?.active !== false
 }
