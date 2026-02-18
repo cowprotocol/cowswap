@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { isMobile, withTimeout } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar, useRemoveSnackbar } from '@cowprotocol/snackbars'
-import { useIsCoinbaseWallet, useSwitchNetwork } from '@cowprotocol/wallet'
+import { ConnectionType, useConnectionType, useSwitchNetwork } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -27,7 +27,8 @@ export class SwitchInProgressError extends Error {
 
 export function useSwitchNetworkWithGuidance(): (targetChain: SupportedChainId) => Promise<void> {
   const switchNetwork = useSwitchNetwork()
-  const isCoinbaseWallet = useIsCoinbaseWallet()
+  const connectionType = useConnectionType()
+  const isCoinbaseWallet = connectionType === ConnectionType.COINBASE_WALLET
   const addSnackbar = useAddSnackbar()
   const removeSnackbar = useRemoveSnackbar()
 

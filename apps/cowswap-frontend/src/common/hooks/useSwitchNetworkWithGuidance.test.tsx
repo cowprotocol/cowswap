@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ConnectionType } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
 
@@ -15,7 +16,8 @@ const mockAddSnackbar = jest.fn()
 const mockRemoveSnackbar = jest.fn()
 
 jest.mock('@cowprotocol/wallet', () => ({
-  useIsCoinbaseWallet: jest.fn(),
+  ...jest.requireActual('@cowprotocol/wallet'),
+  useConnectionType: jest.fn(),
   useSwitchNetwork: () => mockSwitchNetwork,
 }))
 
@@ -34,7 +36,7 @@ jest.mock('@cowprotocol/common-utils', () => ({
 
 let mockedIsMobile = false
 
-const { useIsCoinbaseWallet } = jest.requireMock('@cowprotocol/wallet')
+const { useConnectionType } = jest.requireMock('@cowprotocol/wallet')
 
 // --- Helpers ---
 
@@ -55,12 +57,12 @@ describe('useSwitchNetworkWithGuidance', () => {
     jest.clearAllMocks()
     _resetInFlightState()
     mockedIsMobile = false
-    ;(useIsCoinbaseWallet as jest.Mock).mockReturnValue(false)
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.INJECTED)
   })
 
   // Test #1: Non-Coinbase wallet
   it('calls switchNetwork directly for non-Coinbase wallet', async () => {
-    ;(useIsCoinbaseWallet as jest.Mock).mockReturnValue(false)
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.INJECTED)
     mockSwitchNetwork.mockResolvedValue(undefined)
 
     const { result } = renderHook(() => useSwitchNetworkWithGuidance())
@@ -76,7 +78,7 @@ describe('useSwitchNetworkWithGuidance', () => {
 
   // Test #2: Desktop Coinbase (isMobile=false)
   it('calls switchNetwork directly for desktop Coinbase wallet', async () => {
-    ;(useIsCoinbaseWallet as jest.Mock).mockReturnValue(true)
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = false
     mockSwitchNetwork.mockResolvedValue(undefined)
 
@@ -92,7 +94,7 @@ describe('useSwitchNetworkWithGuidance', () => {
 
   // Test #3: Mobile Coinbase + switch succeeds
   it('shows guidance snackbar and removes it on success for mobile Coinbase', async () => {
-    ;(useIsCoinbaseWallet as jest.Mock).mockReturnValue(true)
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
     mockSwitchNetwork.mockResolvedValue(undefined)
 
@@ -114,7 +116,7 @@ describe('useSwitchNetworkWithGuidance', () => {
 
   // Test #4: Mobile Coinbase + switch times out
   it('removes snackbar and rethrows on timeout for mobile Coinbase', async () => {
-    ;(useIsCoinbaseWallet as jest.Mock).mockReturnValue(true)
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
     // Never resolves → timeout will fire
     mockSwitchNetwork.mockReturnValue(new Promise(() => {}))
@@ -145,7 +147,7 @@ describe('useSwitchNetworkWithGuidance', () => {
 
   // Test #5: Mobile Coinbase + user rejects
   it('removes snackbar and rethrows on rejection for mobile Coinbase', async () => {
-    ;(useIsCoinbaseWallet as jest.Mock).mockReturnValue(true)
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
     const rejectionError = new Error('User rejected')
     mockSwitchNetwork.mockRejectedValue(rejectionError)
@@ -168,7 +170,7 @@ describe('useSwitchNetworkWithGuidance', () => {
 
   // Test #6: Mobile Coinbase + concurrent from same instance
   it('throws SwitchInProgressError for concurrent call from same instance', async () => {
-    ;(useIsCoinbaseWallet as jest.Mock).mockReturnValue(true)
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
 
     const { promise, resolve } = createResolvablePromise()
@@ -207,7 +209,7 @@ describe('useSwitchNetworkWithGuidance', () => {
 
   // Test #7: Mobile Coinbase + concurrent from different instances
   it('shares in-flight guard across different hook instances', async () => {
-    ;(useIsCoinbaseWallet as jest.Mock).mockReturnValue(true)
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
 
     const { promise, resolve } = createResolvablePromise()
