@@ -45,7 +45,6 @@
     "@cowprotocol/events": "workspace:*",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@cowprotocol/iframe-transport": "workspace:*",
-    "@cowprotocol/multicall": "workspace:*",
     "@cowprotocol/permit-utils": "workspace:*",
     "@cowprotocol/sdk-bridging": "1.7.4",
     "@cowprotocol/sdk-contracts-ts": "1.5.0",

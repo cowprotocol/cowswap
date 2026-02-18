@@ -580,9 +580,6 @@ importers:
       '@cowprotocol/iframe-transport':
         specifier: workspace:*
         version: link:../../libs/iframe-transport
-      '@cowprotocol/multicall':
-        specifier: workspace:*
-        version: link:../../libs/multicall
       '@cowprotocol/permit-utils':
         specifier: workspace:*
         version: link:../../libs/permit-utils
@@ -1345,9 +1342,6 @@ importers:
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
-      '@cowprotocol/multicall':
-        specifier: workspace:*
-        version: link:../multicall
       '@cowprotocol/tokens':
         specifier: workspace:*
         version: link:../tokens
@@ -1726,27 +1720,9 @@ importers:
 
   libs/multicall:
     dependencies:
-      '@cowprotocol/common-const':
-        specifier: workspace:*
-        version: link:../common-const
-      '@cowprotocol/cow-sdk':
-        specifier: 7.3.5
-        version: 7.3.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
-      '@cowprotocol/types':
-        specifier: workspace:*
-        version: link:../types
-      '@cowprotocol/wallet':
-        specifier: workspace:*
-        version: link:../wallet
-      '@cowprotocol/wallet-provider':
-        specifier: workspace:*
-        version: link:../wallet-provider
-      '@ethersproject/abi':
-        specifier: 5.7.0
-        version: 5.7.0
       '@ethersproject/contracts':
         specifier: 5.7.0
         version: 5.7.0
@@ -1756,19 +1732,6 @@ importers:
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      jotai:
-        specifier: 2.16.2
-        version: 2.16.2(@babel/core@7.28.4)(@babel/template@7.27.2)(@types/react@19.1.3)(react@19.1.2)
-      react:
-        specifier: 19.1.2
-        version: 19.1.2
-      swr:
-        specifier: ^2.3.3
-        version: 2.3.3(react@19.1.2)
-    devDependencies:
-      '@types/react':
-        specifier: 19.1.3
-        version: 19.1.3
 
   libs/permit-utils:
     dependencies:
