@@ -7,26 +7,29 @@ import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
-import { SwapUpdaters, SwapWidget } from 'modules/swap'
+import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
+import { HydrateAtom } from 'common/state/HydrateAtom'
 
 export function SwapPage(): ReactNode {
   const params = useParams()
   const { i18n } = useLingui()
+  const swapDerivedStateToFill = useSwapDerivedStateToFill()
 
   if (!params.chainId) {
     return <SwapPageRedirect />
   }
 
   return (
-    <>
+    <HydrateAtom atom={swapDerivedStateAtom} state={swapDerivedStateToFill}>
       <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
+
       <SwapUpdaters />
       <SwapWidget />
-    </>
+    </HydrateAtom>
   )
 }
 

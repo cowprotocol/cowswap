@@ -1,12 +1,10 @@
 import { useMemo } from 'react'
 
-import { bpsToPercent } from '@cowprotocol/common-utils'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
 import { Currency } from '@uniswap/sdk-core'
 
 import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
-import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -38,24 +36,22 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   const orderParams = quoteResponse?.quote
   const protocolFeeBps = useTradeQuoteProtocolFee()
 
-  const { value: slippage } = useTradeSlippageValueAndType()
-
   const { inputCurrency, outputCurrency } = useQuoteCurrencies()
 
   return useMemo(() => {
     // Avoid states mismatch
     if (orderKind !== orderParams?.kind) return null
-    if (!orderParams || !inputCurrency || !outputCurrency) return null
+    if (!orderParams || !inputCurrency || !outputCurrency || !derivedSlippage) return null
 
     return {
       orderParams,
       inputCurrency,
       outputCurrency,
-      slippagePercent: derivedSlippage || bpsToPercent(slippage),
+      slippagePercent: derivedSlippage,
       partnerFeeBps: volumeFeeBps,
       protocolFeeBps,
     }
-  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, slippage, protocolFeeBps, derivedSlippage])
+  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, protocolFeeBps, derivedSlippage])
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
