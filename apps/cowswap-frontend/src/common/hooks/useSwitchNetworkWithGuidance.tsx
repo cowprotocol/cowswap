@@ -4,7 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isMobile, withTimeout } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar, useRemoveSnackbar } from '@cowprotocol/snackbars'
-import { useIsCoinbaseWallet, useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
+import { ConnectionType, useConnectionType, useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -190,7 +190,8 @@ export function useSwitchNetworkWithGuidance(): (
 ) => Promise<void> {
   const cowAnalytics = useCowAnalytics()
   const switchNetwork = useSwitchNetwork()
-  const isCoinbaseWallet = useIsCoinbaseWallet()
+  const connectionType = useConnectionType()
+  const isCoinbaseWallet = connectionType === ConnectionType.COINBASE_WALLET
   const { chainId } = useWalletInfo()
   const addSnackbar = useAddSnackbar()
   const removeSnackbar = useRemoveSnackbar()
