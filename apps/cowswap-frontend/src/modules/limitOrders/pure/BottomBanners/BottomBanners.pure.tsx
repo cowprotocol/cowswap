@@ -12,13 +12,11 @@ import { DeprecatedNetworkBanner } from 'modules/swap/containers/DeprecatedNetwo
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 
-import * as styledEl from './styled'
+import * as styledEl from './BottomBanners.styled'
 
 const LOCAL_STORAGE_KEY = 'limitOrders_showInfoBanner'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function InfoBanner() {
+export function BottomBanners(): React.ReactNode {
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   const callback = useCallback(

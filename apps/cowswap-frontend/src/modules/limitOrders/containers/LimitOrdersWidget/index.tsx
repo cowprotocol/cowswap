@@ -34,7 +34,7 @@ import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedSta
 import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
-import { InfoBanner } from '../../pure/InfoBanner'
+import { BottomBanners } from '../../pure/BottomBanners/BottomBanners.pure'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { DeadlineInput } from '../DeadlineInput'
@@ -234,7 +234,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </>
       )
     },
-    outerContent: <>{isUnlocked && <InfoBanner />}</>,
+    outerContent: <>{isUnlocked && <BottomBanners />}</>,
   }
 
   const params: TradeWidgetParams = {
