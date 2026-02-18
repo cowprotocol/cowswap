@@ -3,7 +3,7 @@ import { type ReactNode } from 'react'
 import { HoverTooltip, UI } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import { BiCheckShield } from 'react-icons/bi'
+import { BiCheckShield, BiShield } from 'react-icons/bi'
 import styled from 'styled-components/macro'
 
 interface BaseQuoteVerificationProps {
@@ -21,12 +21,21 @@ const CompactIconTooltip = styled(HoverTooltip)`
   }
 `
 
-const VerificationIcon = styled(BiCheckShield).attrs({ viewBox: VERIFICATION_ICON_VIEW_BOX })<{ $isVerified: boolean }>`
+const VerifiedIcon = styled(BiCheckShield).attrs({ viewBox: VERIFICATION_ICON_VIEW_BOX })`
   --size: 13px;
   display: block;
   width: var(--size);
   height: var(--size);
-  color: ${({ $isVerified }) => ($isVerified ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  color: var(${UI.COLOR_SUCCESS});
+  flex-shrink: 0;
+`
+
+const UnverifiedIcon = styled(BiShield).attrs({ viewBox: VERIFICATION_ICON_VIEW_BOX })`
+  --size: 13px;
+  display: block;
+  width: var(--size);
+  height: var(--size);
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   flex-shrink: 0;
 `
 
@@ -66,13 +75,21 @@ function getVerificationTooltipText(isVerified: boolean): ReactNode {
   )
 }
 
+interface VerificationIconProps {
+  isVerified: boolean
+}
+
+function VerificationIcon({ isVerified }: VerificationIconProps): ReactNode {
+  return isVerified ? <VerifiedIcon /> : <UnverifiedIcon />
+}
+
 export function QuoteVerificationIcon({ isVerified }: BaseQuoteVerificationProps): ReactNode {
   const isVerifiedState = !!isVerified
 
   return (
     <CompactIconTooltip wrapInContainer content={getVerificationTooltipText(isVerifiedState)}>
       <CompactIconWrapper>
-        <VerificationIcon $isVerified={isVerifiedState} />
+        <VerificationIcon isVerified={isVerifiedState} />
       </CompactIconWrapper>
     </CompactIconTooltip>
   )
@@ -85,7 +102,7 @@ export function QuoteVerificationBadge({ isVerified }: BaseQuoteVerificationProp
   return (
     <HoverTooltip wrapInContainer content={getVerificationTooltipText(isVerifiedState)}>
       <VerificationBadge $isVerified={isVerifiedState}>
-        <VerificationIcon $isVerified={isVerifiedState} />
+        <VerificationIcon isVerified={isVerifiedState} />
         <VerificationLabel>{isVerifiedState ? t`Verified` : t`Unverified`}</VerificationLabel>
       </VerificationBadge>
     </HoverTooltip>
