@@ -2,9 +2,8 @@ import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
-import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
-import { useUtm } from 'modules/utm'
+import { useAppCodeWidgetAware } from 'modules/injectedWidget'
+import { useReplacedOrderUid } from 'modules/trade'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { AppDataHooksUpdater } from './AppDataHooksUpdater'
@@ -24,7 +23,6 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const { chainId } = useWalletInfo()
 
   const appCode = useAppCode()
-  const utm = useUtm()
   const typedHooks = useAppDataHooks()
   const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
   const volumeFee = useVolumeFee()
@@ -40,7 +38,6 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
       slippageBips={slippageBips}
       isSmartSlippage={isSmartSlippage}
       orderClass={orderClass}
-      utm={utm}
       typedHooks={typedHooks}
       volumeFee={volumeFee}
       replacedOrderUid={replacedOrderUid}

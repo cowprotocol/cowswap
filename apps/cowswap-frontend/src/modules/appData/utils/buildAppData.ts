@@ -1,4 +1,3 @@
-import { UtmParams } from '@cowprotocol/common-utils'
 import { stringifyDeterministic, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
@@ -27,7 +26,6 @@ export type BuildAppDataParams = {
   isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
   referrerAccount?: string
-  utm: UtmParams | undefined
   typedHooks?: TypedAppDataHooks
   widget?: AppDataWidget
   partnerFee?: AppDataPartnerFee
@@ -51,7 +49,6 @@ export async function buildAppData({
   appCode,
   environment,
   orderClass: orderClassName,
-  utm,
   typedHooks,
   widget,
   partnerFee,
@@ -74,7 +71,6 @@ export async function buildAppData({
       referrer: referrerParams,
       quote: quoteParams,
       orderClass,
-      utm,
       hooks: typedAppDataHooksToAppDataHooks(typedHooks),
       widget,
       partnerFee,

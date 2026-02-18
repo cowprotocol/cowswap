@@ -1,10 +1,10 @@
 import { useSetAtom } from 'jotai'
+import { type ReactNode } from 'react'
 
 import { useAsyncEffect } from '@cowprotocol/common-hooks'
-import { UtmParams } from '@cowprotocol/common-utils'
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
+import { type AppCodeWithWidgetMetadata } from 'modules/injectedWidget'
 
 import { UserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
 import { appDataInfoAtom } from '../state/atoms'
@@ -18,7 +18,6 @@ export interface UseAppDataParams {
   slippageBips: number
   isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
-  utm: UtmParams | undefined
   typedHooks?: TypedAppDataHooks
   volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
@@ -29,21 +28,17 @@ export interface UseAppDataParams {
  * Fetches and updates appDataInfo whenever a dependency changes
  * The hook can be called only from an updater
  */
-// TODO: Break down this large function into smaller functions
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
   chainId,
   slippageBips,
   isSmartSlippage,
   orderClass,
-  utm,
   typedHooks,
   volumeFee,
   replacedOrderUid,
   userConsent,
-}: UseAppDataParams) {
+}: UseAppDataParams): ReactNode {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
@@ -62,7 +57,6 @@ export function AppDataInfoUpdater({
       appCode,
       environment,
       orderClass,
-      utm,
       typedHooks,
       partnerFee: volumeFee,
       widget,
@@ -74,10 +68,8 @@ export function AppDataInfoUpdater({
       const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
 
       setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
+    } catch (error: unknown) {
+      console.error(`[useAppData] failed to build appData, falling back to default`, params, error)
       setAppDataInfo(getAppData())
     }
   }, [
@@ -86,7 +78,6 @@ export function AppDataInfoUpdater({
     setAppDataInfo,
     slippageBips,
     orderClass,
-    utm,
     typedHooks,
     volumeFee,
     replacedOrderUid,

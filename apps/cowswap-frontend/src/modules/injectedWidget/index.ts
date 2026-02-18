@@ -4,5 +4,7 @@ export { useInjectedWidgetParams, useWidgetPartnerFee } from './hooks/useInjecte
 export { useInjectedWidgetDeadline } from './hooks/useInjectedWidgetDeadline'
 export { useInjectedWidgetMetaData } from './hooks/useInjectedWidgetMetaData'
 export { useInjectedWidgetPalette } from './hooks/useInjectedWidgetPalette'
+export { useAppCodeWidgetAware } from './hooks/useAppCodeWidgetAware'
+export type { AppCodeWithWidgetMetadata } from './hooks/useAppCodeWidgetAware'
 export { injectedWidgetPartnerFeeAtom } from './state/injectedWidgetParamsAtom'
 export { WidgetMarkdownContent } from './pure/WidgetMarkdownContent'
