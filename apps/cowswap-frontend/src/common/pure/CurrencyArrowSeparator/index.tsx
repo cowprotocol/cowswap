@@ -15,20 +15,19 @@ export interface CurrencyArrowSeparatorProps {
   onSwitchTokens(): void
 }
 
-export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps): ReactNode {
-  const {
-    isLoading,
-    onSwitchTokens,
-    isCollapsed = true,
-    hasSeparatorLine,
-    disabled = false,
-    isDarkMode = false,
-  } = props
+export function CurrencyArrowSeparator({
+  isLoading,
+  onSwitchTokens,
+  isCollapsed = true,
+  hasSeparatorLine,
+  disabled = false,
+  isDarkMode = false,
+}: CurrencyArrowSeparatorProps): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
-    <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine} disabled={disabled}>
-      <styledEl.LoadingWrapper isLoading={isLoading} onClick={disabled ? undefined : onSwitchTokens}>
+    <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine}>
+      <styledEl.LoadingWrapper $isLoading={isLoading} disabled={disabled} onClick={onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
           <CowLoadingIcon size={26} isDarkMode={isDarkMode} />
         ) : (

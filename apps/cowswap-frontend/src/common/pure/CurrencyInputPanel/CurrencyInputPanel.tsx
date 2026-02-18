@@ -187,7 +187,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
       className="token-amount-input"
       prependSymbol={isUsdValuesMode ? '$' : ''}
       value={isProviderNetworkUnsupported || isProviderNetworkDeprecated ? '' : typedValue}
-      readOnly={inputDisabled}
+      readOnly={inputDisabled || disabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}
     />
