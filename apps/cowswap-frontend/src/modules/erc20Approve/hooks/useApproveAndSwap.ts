@@ -42,9 +42,10 @@ export function useApproveAndSwap({
       const isPermitSigned = await generatePermitToTrade()
       if (isPermitSigned) {
         onApproveConfirm(null)
+        return true
       }
 
-      return true
+      return false
     }
 
     return false
