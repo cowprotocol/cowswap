@@ -13,11 +13,12 @@ import { QuoteVerificationBadge } from './QuoteVerificationIndicator'
 
 import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper, TransactionText } from '../../pure/Row/styled'
 
-const QuoteIdValueWrapper = styled.span`
+const QuoteIdValueWrapper = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
+  line-height: 1;
 `
 
 const QuoteIdReference = styled.span`
@@ -31,8 +32,10 @@ const QuoteIdTransactionText = styled(TransactionText)`
 const CopyQuoteIdButton = styled(LinkStyledButton)`
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   padding: 0;
+  line-height: 0;
   opacity: 0.8;
 
   &:hover,
