@@ -24,6 +24,7 @@ import {
   SolverLogoFallback,
 } from './SolversDirectoryTable.styles'
 
+import { AddressLink } from '../../components/common/AddressLink'
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
 
 export const ALL_FILTER = 'all'
@@ -181,8 +182,26 @@ function renderDetailsRow(solver: SolverInfo, deployments: SolverDeployment[]): 
             >
               <span>{deployment.chainName}</span>
               <span>{deployment.environment || '-'}</span>
-              <Mono>{deployment.address || '-'}</Mono>
-              <Mono>{deployment.payoutAddress || '-'}</Mono>
+              {deployment.address ? (
+                <AddressLink
+                  address={deployment.address}
+                  chainId={deployment.chainId}
+                  showIcon
+                  showNetworkName={false}
+                />
+              ) : (
+                <Mono>-</Mono>
+              )}
+              {deployment.payoutAddress ? (
+                <AddressLink
+                  address={deployment.payoutAddress}
+                  chainId={deployment.chainId}
+                  showIcon
+                  showNetworkName={false}
+                />
+              ) : (
+                <Mono>-</Mono>
+              )}
               <span>{deployment.active ? 'Yes' : 'No'}</span>
             </DeploymentsGridRow>
           ))}
