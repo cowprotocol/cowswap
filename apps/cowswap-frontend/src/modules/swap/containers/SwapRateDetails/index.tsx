@@ -42,7 +42,7 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
   const quoteId = quoteResponse?.id
   const quoteVerified = quoteResponse?.verified
   const quoteExpiration = quoteResponse?.expiration
-  const showQuoteVerificationIcon = !!quoteResponse && !quoteError
+  const showQuoteVerificationIcon = !!quoteResponse
 
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
