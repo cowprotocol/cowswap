@@ -1,5 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
+import styled from 'styled-components/macro'
+
 import {
   BridgeAccordionSummary,
   useQuoteBridgeContext,
@@ -8,7 +10,7 @@ import {
   QuoteDetails,
 } from 'modules/bridge'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { TradeRateDetails } from 'modules/tradeWidgetAddons'
+import { QuoteVerificationIcon, TradeRateDetails } from 'modules/tradeWidgetAddons'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
@@ -17,20 +19,46 @@ export interface SwapRateDetailsProps {
   deadline: number
 }
 
+const FeeSummaryWithVerification = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  > div {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+  }
+`
+
 export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps): ReactNode {
-  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
+  const { isLoading: isRateLoading, bridgeQuote, quote, error: quoteError } = useTradeQuote()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
 
   const providerDetails = bridgeQuote?.providerInfo
   const bridgeEstimatedTime = bridgeQuote?.expectedFillTimeSeconds
+  const quoteResponse = quoteError ? undefined : quote?.quoteResults.quoteResponse
+  const quoteId = quoteResponse?.id
+  const quoteVerified = quoteResponse?.verified
+  const quoteExpiration = quoteResponse?.expiration
+  const showQuoteVerificationIcon = !!quoteResponse && !quoteError
 
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
 
   const feeWrapper = useCallback(
     (feeElement: ReactNode, isOpen: boolean) => {
-      if (!providerDetails) return feeElement
+      const feeWithVerificationIcon = showQuoteVerificationIcon ? (
+        <FeeSummaryWithVerification>
+          {feeElement}
+          <QuoteVerificationIcon isVerified={quoteVerified} />
+        </FeeSummaryWithVerification>
+      ) : (
+        feeElement
+      )
+
+      if (!providerDetails) return feeWithVerificationIcon
 
       return (
         <BridgeAccordionSummary
@@ -38,11 +66,11 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
           bridgeProtocol={providerDetails}
           isOpen={isOpen}
         >
-          {feeElement}
+          {feeWithVerificationIcon}
         </BridgeAccordionSummary>
       )
     },
-    [bridgeEstimatedTime, providerDetails],
+    [bridgeEstimatedTime, providerDetails, quoteVerified, showQuoteVerificationIcon],
   )
 
   return (
@@ -50,6 +78,9 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
       isTradePriceUpdating={isRateLoading}
       rateInfoParams={rateInfoParams}
       deadline={deadline}
+      quoteId={quoteId}
+      quoteVerified={quoteVerified}
+      quoteExpiration={quoteExpiration}
       accordionContent={
         shouldDisplayBridgeDetails &&
         providerDetails &&
@@ -60,7 +91,7 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
           </>
         )
       }
-      feeWrapper={shouldDisplayBridgeDetails && providerDetails ? feeWrapper : undefined}
+      feeWrapper={feeWrapper}
     />
   )
 }
