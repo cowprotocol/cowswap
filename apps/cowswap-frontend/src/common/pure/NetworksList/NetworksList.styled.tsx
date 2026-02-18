@@ -80,7 +80,6 @@ export const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
 export const ActiveRowWrapper = styled.div`
   background-color: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 8px;
-  cursor: pointer;
   width: 100%;
   padding: 8px;
   margin: 12px 0;
