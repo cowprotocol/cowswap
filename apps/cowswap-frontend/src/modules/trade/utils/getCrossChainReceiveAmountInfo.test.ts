@@ -91,45 +91,44 @@ describe('getCrossChainReceiveAmountInfo - adjusts SDK getQuoteAmountsAndCosts()
       expect(stringifyTokenAmount(beforeAllFees.sellAmount)).toBe('3.498095279000888547 USDT (56)')
 
       // buyAmount: Genuine spot price in destination currency (USDC) before any fees are deducted
-      // Calculation: afterProtocolFees.buyAmount + protocolFee
-      //            = 3.353914 USDC + 0.00067 USDC
-      //            = 3.354584 USDC
-      expect(stringifyTokenAmount(beforeAllFees.buyAmount)).toBe('3.354584 USDC (8453)')
+      // Calculation: bridgeBuyAmount + protocolFee
+      //            = 3.353244 USDC + 0.00067 USDC
+      //            = 3.353914 USDC
+      expect(stringifyTokenAmount(beforeAllFees.buyAmount)).toBe('3.353914 USDC (8453)')
     })
     it('Before network costs', () => {
       // sellAmount: Same as beforeAllFees (genuine spot price)
-      // buyAmount: beforeAllFees.buyAmount - networkFee
-      //          = 3.363299 USDC - 0.009385 USDC
-      //          = 3.353914 USDC
+      // buyAmount (= afterProtocolFees): beforeAllFees.buyAmount - protocolFee
+      //          = 3.353914 USDC - 0.00067 USDC
+      //          = 3.353244 USDC (this equals bridgeBuyAmount)
       expect(stringifyTokenAmounts(beforeNetworkCosts)).toBe(
-        'Sell: 3.498095279000888547 USDT (56), buy: 3.353914 USDC (8453)',
+        'Sell: 3.498095279000888547 USDT (56), buy: 3.353244 USDC (8453)',
       )
     })
     it('After networks costs', () => {
       // sellAmount: Raw API sellAmount with network costs baked in
       //           = 3.488333738720117691 USDT (orderParams.sellAmount)
-      // buyAmount: Same as beforeNetworkCosts.buyAmount (3.353914 USDC)
+      // buyAmount: Same as beforeNetworkCosts.buyAmount (3.353244 USDC)
+      //           For SELL orders, network costs only affect the sell side
       expect(stringifyTokenAmounts(afterNetworkCosts)).toBe(
-        'Sell: 3.488333738720117691 USDT (56), buy: 3.353914 USDC (8453)',
+        'Sell: 3.488333738720117691 USDT (56), buy: 3.353244 USDC (8453)',
       )
     })
     it('After partner fees', () => {
       // sellAmount: Same as afterNetworkCosts (raw API sellAmount)
       // buyAmount: afterNetworkCosts.buyAmount - partnerFee
-      //          = 3.353914 USDC - 0.001006 USDC
-      //          = 3.352908 USDC
+      //          = 3.353244 USDC - 0.001006 USDC
+      //          = 3.352238 USDC
       expect(stringifyTokenAmounts(afterPartnerFees)).toBe(
-        'Sell: 3.488333738720117691 USDT (56), buy: 3.352908 USDC (8453)',
+        'Sell: 3.488333738720117691 USDT (56), buy: 3.352238 USDC (8453)',
       )
     })
     it('After slippage', () => {
       // sellAmount: Same as afterPartnerFees (slippage doesn't affect sell amount in sell orders)
       // buyAmount: afterPartnerFees.buyAmount adjusted for slippage tolerance
-      //          = 3.352908 USDC * (1 - 3.73%)
-      //          = 3.227845 USDC (minimum amount accounting for slippage)
-      expect(stringifyTokenAmounts(afterSlippage)).toBe(
-        'Sell: 3.488333738720117691 USDT (56), buy: 3.227845 USDC (8453)',
-      )
+      //          = 3.352238 USDC * (1 - 3.73%)
+      //          = 3.2272 USDC (minimum amount accounting for slippage)
+      expect(stringifyTokenAmounts(afterSlippage)).toBe('Sell: 3.488333738720117691 USDT (56), buy: 3.2272 USDC (8453)')
     })
     it('Protocol fee', () => {
       // Protocol fee: 0.02% of bridgeBuyAmount (3.353244 USDC)
@@ -164,9 +163,9 @@ describe('getCrossChainReceiveAmountInfo - adjusts SDK getQuoteAmountsAndCosts()
     })
     it('After fees', () => {
       // Final amount user receives: afterPartnerFees.buyAmount - bridgeFee.amountInDestinationCurrency
-      // Calculation: 3.352908 USDC - 0.004694 USDC = 3.348214 USDC
+      // Calculation: 3.352238 USDC - 0.004694 USDC = 3.347544 USDC
       // This is the actual USDC amount that will arrive on the destination chain (Base)
-      expect(stringifyTokenAmount(amountAfterFees)).toBe('3.348214 USDC (8453)')
+      expect(stringifyTokenAmount(amountAfterFees)).toBe('3.347544 USDC (8453)')
     })
   })
 })
