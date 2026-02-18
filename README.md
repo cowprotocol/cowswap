@@ -200,7 +200,7 @@ The API endpoint is configured using the environment variable
 `REACT_APP_ORDER_BOOK_URLS`:
 
 ```ini
-REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5":"https://YOUR_HOST"}
+REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5":"https://YOUR_HOST"}'
 ```
 
 ## BFF API Endpoints (Backend for Frontend)
