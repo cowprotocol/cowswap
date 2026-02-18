@@ -49,11 +49,11 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   return (
     <SelectorContainer ref={selectContainer} onClick={(): void => setOpen(!open)}>
       {' '}
-      <NetworkLabel color={currentNetwork.color}>{currentNetworkName}</NetworkLabel>
+      <NetworkLabel $color={currentNetwork.color}>{currentNetworkName}</NetworkLabel>
       <span className={`arrow ${open && 'open'}`} />
       {open && (
         // eslint-disable-next-line react-hooks/refs
-        <OptionsContainer width={selectContainer.current?.offsetWidth || 0}>
+        <OptionsContainer $width={selectContainer.current?.offsetWidth || 0}>
           {availableChains.map((itemNetworkId) => {
             const network = CHAIN_INFO[itemNetworkId]
 
@@ -66,7 +66,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
 
             const isDeprecated = isChainDeprecated(itemNetworkId)
             return (
-              <Option to={'../' + url} color={network.color} key={itemNetworkId}>
+              <Option to={'../' + url} $color={network.color} key={itemNetworkId}>
                 <div className="dot" />
                 <div className={`name ${itemNetworkId === networkId ? 'selected' : ''}`}>
                   {network.label}

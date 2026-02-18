@@ -21,8 +21,8 @@ export const L2Icon = styled.img`
   margin-right: 16px;
 `
 
-export const BodyText = styled.div`
-  color: ${({ color }) => (color ? color : 'inherit')};
+export const BodyText = styled.div<{ $color: string }>`
+  color: ${({ $color }) => ($color ? $color : 'inherit')};
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -52,7 +52,7 @@ export const StyledArrowUpRight = styled(ArrowUpRight)`
   height: 24px;
 `
 
-export const ContentWrapper = styled.div<{ logoUrl: string }>`
+export const ContentWrapper = styled.div<{ $logoUrl: string }>`
   background: var(${UI.COLOR_PAPER_DARKER});
   transition:
     color var(${UI.ANIMATION_DURATION}) ease-in-out,
@@ -66,7 +66,7 @@ export const ContentWrapper = styled.div<{ logoUrl: string }>`
   color: inherit;
 
   :before {
-    background-image: url(${({ logoUrl }) => logoUrl});
+    background-image: url(${({ $logoUrl }) => $logoUrl});
     background-repeat: no-repeat;
     background-size: 300px;
     content: '';

@@ -30,9 +30,9 @@ export function NetworkBridgeBanner(): ReactNode {
 
   return (
     <styledEl.RootWrapper>
-      <styledEl.ContentWrapper logoUrl={logoUrl}>
+      <styledEl.ContentWrapper $logoUrl={logoUrl}>
         <styledEl.LinkOutToBridge href={bridge}>
-          <styledEl.BodyText color={textColor}>
+          <styledEl.BodyText $color={textColor}>
             <styledEl.L2Icon src={logoUrl} />
             <AutoRow>
               <styledEl.Header>
