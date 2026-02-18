@@ -16,17 +16,17 @@ export interface NetworksListProps {
   currentChainId: SupportedChainId | null
   isDarkMode: boolean
   availableChains: SupportedChainId[]
-
   onSelectChain(targetChainId: SupportedChainId): void
 }
 
-// TODO: Break down this large function into smaller functions
-export function NetworksList(props: NetworksListProps): ReactNode {
-  const { currentChainId, isDarkMode, availableChains, onSelectChain } = props
-
+export function NetworksList({
+  currentChainId,
+  isDarkMode,
+  availableChains,
+  onSelectChain,
+}: NetworksListProps): ReactNode {
   return (
     <>
-      {/* TODO: Break down this large function into smaller functions */}
       {availableChains.map((targetChainId: SupportedChainId) => {
         const info = getChainInfo(targetChainId)
         const { label, logo } = info
@@ -45,16 +45,19 @@ export function NetworksList(props: NetworksListProps): ReactNode {
           >
             <styledEl.Logo src={logoUrl} />
             <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
+
             {isDeprecatedNetwork && (
               <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
                 <Trans>VIEW ONLY</Trans>
               </Badge>
             )}
+
             {isNewNetwork && !isDeprecatedNetwork && (
               <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
                 <Trans>NEW</Trans>
               </Badge>
             )}
+
             {isActive && <styledEl.FlyoutRowActiveIndicator active />}
           </styledEl.FlyoutRow>
         )
