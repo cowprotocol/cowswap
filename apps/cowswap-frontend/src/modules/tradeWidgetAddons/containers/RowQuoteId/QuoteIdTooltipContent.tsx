@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
+
+import { displayTime } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { getQuoteExpiresInLabel, type QuoteExpirationInput } from './quoteId'
+import { useTradeQuoteCounter } from 'modules/tradeQuote'
 
-const REFRESH_INTERVAL_MS = 1000
+import { type QuoteExpirationInput } from './quoteId'
 
 const TooltipContainer = styled.div`
   display: flex;
@@ -37,19 +39,8 @@ interface QuoteIdTooltipContentProps {
 }
 
 export function QuoteIdTooltipContent({ expiration }: QuoteIdTooltipContentProps): ReactNode {
-  const [nowMs, setNowMs] = useState(() => Date.now())
-
-  useEffect(() => {
-    if (!expiration) return undefined
-
-    const interval = setInterval(() => {
-      setNowMs(Date.now())
-    }, REFRESH_INTERVAL_MS)
-
-    return () => clearInterval(interval)
-  }, [expiration])
-
-  const expiresIn = useMemo(() => getQuoteExpiresInLabel(expiration, nowMs), [expiration, nowMs])
+  const quoteRefreshCounter = useTradeQuoteCounter()
+  const refreshIn = displayTime(quoteRefreshCounter)
 
   return (
     <TooltipContainer>
@@ -57,12 +48,12 @@ export function QuoteIdTooltipContent({ expiration }: QuoteIdTooltipContentProps
         <Trans>Share this reference when reporting an issue with this quote.</Trans>
       </TooltipHeadline>
 
-      {expiresIn ? (
+      {expiration ? (
         <TooltipMetaRow>
           <TooltipMetaLabel>
             <Trans>Refresh in:</Trans>
           </TooltipMetaLabel>
-          <TooltipMetaValue>{expiresIn}</TooltipMetaValue>
+          <TooltipMetaValue>{refreshIn}</TooltipMetaValue>
         </TooltipMetaRow>
       ) : null}
     </TooltipContainer>
