@@ -41,7 +41,7 @@ export function NetworksList({
             key={targetChainId}
             type="button"
             onClick={() => onSelectChain(targetChainId)}
-            active={isActive}
+            $active={isActive}
           >
             <styledEl.Logo src={logoUrl} />
             <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
@@ -58,7 +58,7 @@ export function NetworksList({
               </Badge>
             )}
 
-            {isActive && <styledEl.FlyoutRowActiveIndicator active />}
+            {isActive && <styledEl.FlyoutRowActiveIndicator $active />}
           </styledEl.FlyoutRow>
         )
 

@@ -27,7 +27,7 @@ export function CurrencyArrowSeparator({
 
   return (
     <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine}>
-      <styledEl.LoadingWrapper $isLoading={isLoading} disabled={disabled} onClick={onSwitchTokens}>
+      <styledEl.LoadingWrapper type="button" $isLoading={isLoading} disabled={disabled} onClick={onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
           <CowLoadingIcon size={26} isDarkMode={isDarkMode} />
         ) : (
