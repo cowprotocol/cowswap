@@ -1,5 +1,5 @@
 export const TURNSTILE_SITE_KEY = process.env.REACT_APP_TURNSTILE_SITE_KEY || ''
-export const TURNSTILE_TOKEN_HEADER_NAME = 'cf-turnstile-response'
+export const TURNSTILE_TOKEN_HEADER_NAME = 'X-Auth-Token'
 
 const DEFAULT_ORDER_BOOK_HOSTS = ['api.cow.fi', 'barn.api.cow.fi']
 
