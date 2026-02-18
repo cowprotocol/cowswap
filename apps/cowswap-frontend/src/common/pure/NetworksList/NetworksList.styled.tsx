@@ -48,8 +48,8 @@ export const FlyoutRow = styled.button<{ $active: boolean }>`
   appearance: none;
 
   &:hover {
-    color: ${({ theme, $active }) => !$active && theme.text1};
-    background: ${({ theme, $active }) => !$active && transparentize(theme.text, 0.9)};
+    color: ${({ theme, $active }) => ($active ? 'inherit' : theme.text1)};
+    background: ${({ theme, $active }) => ($active ? 'inherit' : transparentize(theme.text, 0.9))};
   }
 
   &:focus-visible {
