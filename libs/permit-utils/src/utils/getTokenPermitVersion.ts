@@ -1,15 +1,10 @@
-import { defaultAbiCoder } from '@ethersproject/abi'
-import type { JsonRpcProvider } from '@ethersproject/providers'
-
-import { getContract } from './getContract'
+import { decodeAbiParameters, type Address, type Hex } from 'viem'
+import { Config } from 'wagmi'
+import { readContract } from 'wagmi/actions'
 
 import { VERSION_ABIS } from '../abi/versionAbis'
 
-export async function getTokenPermitVersion(
-  tokenAddress: string,
-  provider: JsonRpcProvider,
-  index = 0,
-): Promise<string> {
+export async function getTokenPermitVersion(tokenAddress: Address, config: Config, index = 0): Promise<string> {
   const abi = VERSION_ABIS[index]
 
   if (!abi) {
@@ -17,9 +12,7 @@ export async function getTokenPermitVersion(
   }
 
   try {
-    const contract = getContract(tokenAddress, abi, provider)
-    const data = contract.interface.encodeFunctionData(abi[0].name)
-    const response = await provider.call({ to: tokenAddress, data })
+    const response = (await readContract(config, { abi, address: tokenAddress, functionName: abi[0].name })) as string
 
     if (response === '0x' || Number.isNaN(Number(response))) {
       return '1'
@@ -28,8 +21,9 @@ export async function getTokenPermitVersion(
       return response
     }
 
-    return defaultAbiCoder.decode(['string'], response).toString()
+    const [decoded] = decodeAbiParameters([{ type: 'string' }], response as Hex)
+    return decoded
   } catch {
-    return getTokenPermitVersion(tokenAddress, provider, index + 1)
+    return getTokenPermitVersion(tokenAddress, config, index + 1)
   }
 }

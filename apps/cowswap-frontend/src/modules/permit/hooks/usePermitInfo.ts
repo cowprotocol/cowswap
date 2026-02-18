@@ -6,11 +6,10 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { JsonRpcProvider } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
+import { useConfig, usePublicClient } from 'wagmi'
 
 import { TradeType } from 'modules/trade/types'
 
@@ -30,7 +29,7 @@ const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 
-export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
+export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, bigint> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
 
 /**
  * Check whether the token is permittable, and returns the permit info for it
@@ -50,10 +49,9 @@ export function usePermitInfo(
   tradeType: Nullish<TradeType>,
   customSpender?: string,
 ): IsTokenPermittableResult {
+  const config = useConfig()
   const { chainId } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider() as JsonRpcProvider
+  const publicClient = usePublicClient()
 
   const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
   const isNative = !!token && getIsNativeToken(token)
@@ -76,7 +74,7 @@ export function usePermitInfo(
       !chainId ||
       !isPermitEnabled ||
       !lowerCaseAddress ||
-      !provider ||
+      !publicClient ||
       permitInfo !== undefined ||
       isNative ||
       // Do not try to load when pre-generated info is loading
@@ -89,29 +87,32 @@ export function usePermitInfo(
 
     const minGasLimit = PERMIT_GAS_LIMIT_MIN[chainId]
 
-    getTokenPermitInfo({ spender, tokenAddress: lowerCaseAddress, chainId, provider, minGasLimit }).then((result) => {
-      if ('error' in result) {
-        // When error, we don't know. Log and don't cache.
-        console.debug(
-          `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`,
-        )
-      } else {
-        // TODO: there is a Single Responsibility Principle breach here. This hook should not be responsible for caching.
-        // TODO: better to create a separate updater for caching.
-        // Otherwise, we know it is permittable or not. Cache it.
-        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
-      }
-    })
+    getTokenPermitInfo({ chainId, config, minGasLimit, publicClient, spender, tokenAddress: lowerCaseAddress }).then(
+      (result) => {
+        if ('error' in result) {
+          // When error, we don't know. Log and don't cache.
+          console.debug(
+            `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`,
+          )
+        } else {
+          // TODO: there is a Single Responsibility Principle breach here. This hook should not be responsible for caching.
+          // TODO: better to create a separate updater for caching.
+          // Otherwise, we know it is permittable or not. Cache it.
+          addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
+        }
+      },
+    )
   }, [
     addPermitInfo,
     chainId,
+    config,
     isNative,
-    isPermitEnabled,
     lowerCaseAddress,
+    isPermitEnabled,
     permitInfo,
     preGeneratedInfo,
     preGeneratedIsLoading,
-    provider,
+    publicClient,
     spender,
   ])
 
