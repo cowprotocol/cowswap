@@ -33,6 +33,7 @@
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
+    "@metamask/jazzicon": "^2.0.0",
     "@reown/appkit": "^1.8.17",
     "@reown/appkit-adapter-wagmi": "^1.8.17",
     "@safe-global/api-kit": "^4.0.1",
