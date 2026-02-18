@@ -13,6 +13,7 @@ import RedirectToSearch from 'components/RedirectToSearch'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { TableState } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
+import { OrderSolverInfo, useOrderSolver } from 'hooks/useOrderSolver'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useLocation } from 'react-router'
 import { knownBridgeProviders } from 'sdk/cowSdk'
@@ -74,6 +75,8 @@ const tabItems = (
   isPriceInverted: boolean,
   invertPrice: Command,
   hasMultipleTrades: boolean,
+  solvedBy?: OrderSolverInfo,
+  isSolvedByLoading?: boolean,
 ): TabItemInterface[] => {
   const order = getOrderWithTxHash(_order, trades, hasMultipleTrades)
   const areTokensLoaded = Boolean(order?.buyToken && order?.sellToken)
@@ -99,6 +102,8 @@ const tabItems = (
       >
         <VerboseDetails
           order={order}
+          solvedBy={solvedBy}
+          isSolvedByLoading={isSolvedByLoading}
           showFillsButton={showFills}
           viewFills={() => onChangeTab(TabView.FILLS)}
           isPriceInverted={isPriceInverted}
@@ -171,6 +176,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const [redirectTo, setRedirectTo] = useState(false)
   const updateQueryString = useUpdateQueryString()
   const crossChainOrderResponse = useCrossChainOrder(order?.uid)
+  const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(order)
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>
@@ -248,6 +254,8 @@ export const OrderDetails: React.FC<Props> = (props) => {
             isPriceInverted,
             invertPrice,
             trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1) || !!tableState.hasNextPage,
+            solvedBy,
+            isSolvedByLoading,
           )}
           selectedTab={tabViewSelected}
           updateSelectedTab={(key: number): void => onChangeTab(key)}
