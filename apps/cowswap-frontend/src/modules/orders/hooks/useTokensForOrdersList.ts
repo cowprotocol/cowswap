@@ -9,6 +9,10 @@ import { Token } from '@uniswap/sdk-core'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
+export function getTokensForOrdersList(tokensToFetch: string[]): Promise<TokensByAddress> {
+
+}
+
 export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<TokensByAddress> {
   const { chainId } = useWalletInfo()
   // TODO M-6 COW-573

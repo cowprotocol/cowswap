@@ -21,7 +21,7 @@ import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork } from 'legacy/state/o
 import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
-
+import { emulatedPartOrdersAtom } from 'modules/twap/hooks/useEmulatedPartOrders'
 import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/utils/getFilteredOrders'
 import { getOrdersTableList } from 'modules/ordersTable/utils/getOrdersTableList'
 
@@ -32,6 +32,7 @@ import { tabParamAtom } from './params/ordersTableParams.atoms'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
 import { OrderTabId } from './tabs/ordersTableTabs.constants'
 import { locationOrderTypeAtom } from 'common/state/routesState'
+import { emulatedTwapOrdersAtom } from 'modules/twap/hooks/useEmulatedTwapOrders'
 
 export const ordersTableStateAtom = atom<OrdersTableState>({
   reduxOrders: [],
@@ -150,6 +151,31 @@ ordersTableStateAtom.onMount = () => {
         reduxOrders.push(mappedOrder)
         ordersTokensSet.add(mappedOrder.inputToken.address.toLowerCase())
       })
+
+      if (orderType === TabOrderTypes.ADVANCED) {
+        // TWAP - useAllEmulatedOrders()
+
+        // reduxOrders = useOrders(chainId, account, UiOrderType.TWAP)
+
+        const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
+        const emulatedPartOrders = get(emulatedPartOrdersAtom)
+        const isBundlingSupported = useIsTxBundlingSupported()
+
+        const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
+
+        if (!isBundlingSupported) return []
+
+        // TODO: AdvancedOrdersPage needs this plus pendingOrders:
+        // const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
+
+        return emulatedTwapOrders
+          .concat(emulatedPartOrders)
+          .concat(discreteTwapOrders)
+
+      } else if (orderType === TabOrderTypes.LIMIT) {
+        // Limit:
+
+      }
 
       const ordersTokens = Array.from(ordersTokensSet)
 
