@@ -4,10 +4,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useENSName } from '@cowprotocol/ens'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { Address } from 'viem'
-import { useChainId, useConnection, useEnsName } from 'wagmi'
+import { useChainId, useConnection } from 'wagmi'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
@@ -40,7 +41,7 @@ function checkIsSupportedWallet(walletName?: string): boolean {
 }
 
 function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
-  const { data: ensName } = useEnsName({ address: account })
+  const { ENSName: ensName } = useENSName(account ?? undefined)
   const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData(standaloneMode)
   const isSafeApp = useIsSafeApp()
