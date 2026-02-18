@@ -27,7 +27,7 @@ function getWinnerSolver(value?: OrderCompetitionStatus['value']): string | unde
   if (!value?.length) return undefined
 
   const executedSolvers = value.filter((solver) => !!solver.executedAmounts)
-  const winner = executedSolvers[executedSolvers.length - 1] || value[value.length - 1]
+  const winner = executedSolvers[executedSolvers.length - 1]
 
   return winner?.solver
 }
@@ -36,6 +36,10 @@ export function useOrderSolver(order: Order | null): UseOrderSolverResult {
   const networkId = useNetworkId()
   const [solver, setSolver] = useState<OrderSolverInfo | undefined>()
   const [isLoading, setIsLoading] = useState(false)
+  const orderStatusSignal = order?.status
+  const executedBuyAmountSignal = order?.executedBuyAmount.toString()
+  const executedSellAmountSignal = order?.executedSellAmount.toString()
+  const executionDateSignal = order?.executionDate?.getTime()
 
   useEffect(() => {
     if (!networkId || !order?.uid) {
@@ -86,7 +90,7 @@ export function useOrderSolver(order: Order | null): UseOrderSolverResult {
     return (): void => {
       cancelled = true
     }
-  }, [networkId, order?.uid])
+  }, [networkId, order?.uid, orderStatusSignal, executedBuyAmountSignal, executedSellAmountSignal, executionDateSignal])
 
   return useMemo(() => ({ solver, isLoading }), [solver, isLoading])
 }
