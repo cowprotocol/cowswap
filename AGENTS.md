@@ -85,6 +85,55 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 - **Release automation:** Confirm release-please/deployment status before raising manual hotfix/retry PRs. Close duplicates once automation succeeds.
 
+### Branch-scoped AGENTS enforcement (AI task protocol)
+
+- Use this protocol when asked to "apply/fix AGENTS.md rules in this branch."
+- **Mandatory context loading:**
+  - Read root `AGENTS.md`.
+  - Read the nearest additive `AGENTS.md` for each touched file (especially `apps/cowswap-frontend/AGENTS.md` when applicable).
+- **Scope constraints:**
+  - Default to changing only files already touched in the current branch versus `develop`.
+  - Allow minimal additional files only when required for correctness (type safety, imports/exports, runtime behavior, or tests).
+  - Every additional file must be explicitly listed in the final report with a one-line justification.
+  - Keep diff surface minimal.
+  - Do not edit unrelated files.
+- **Required process:**
+  1. Compute touched files with:
+     ```bash
+     git diff --name-only $(git merge-base HEAD develop)..HEAD
+     ```
+  2. Audit only those files for AGENTS.md violations.
+  3. Fix violations directly.
+  4. Keep architecture/import boundaries correct (prefer module barrel imports; avoid forbidden/internal patterns).
+  5. Follow TypeScript/React rules (no `any`, no non-null assertions, no unstable nested components, explicit safe typing).
+  6. Follow frontend module hygiene:
+     - `index.tsx` should be entry/export only when possible.
+     - Put component logic in `*.container.tsx`.
+     - Put styles in `*.styled.ts`.
+     - Import styles as:
+       ```ts
+       import * as styledEl from './X.styled'
+       ```
+  7. Reuse existing utilities/hooks instead of creating new ones.
+  8. Run verification:
+     - File-level eslint for changed files.
+     - Targeted tests for affected area.
+     - Do not run `pnpm lint --fix`.
+- **Command toolkit (recommended):**
+  - Compute touched files:
+    ```bash
+    git diff --name-only $(git merge-base HEAD develop)..HEAD
+    ```
+  - Collect lintable touched files (`.ts/.tsx/.js/.jsx`) and lint only those.
+  - Run targeted tests nearest to the changed feature/module (project target or test path scoped command).
+  - If a command is skipped, report why (for example, missing target or environment limitation).
+- **Response format for this task:**
+  1. Findings first (severity ordered), each with `file:line`.
+  2. Exact fixes made, with file references.
+  3. Additional files changed beyond touched set (if any), each with justification.
+  4. Commands run and pass/fail result.
+  5. Residual risks/testing gaps (if any).
+
 ---
 
 ## Architecture & Module Boundaries
