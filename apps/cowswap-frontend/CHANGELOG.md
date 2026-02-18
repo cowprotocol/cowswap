@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.2.2...cowswap-v2.2.3) (2026-02-18)
+
+
+### 🐛 Bug Fixes
+
+* **twap:** apply price protection to trade ([#7031](https://github.com/cowprotocol/cowswap/issues/7031)) ([424171d](https://github.com/cowprotocol/cowswap/commit/424171d0416d7a69452d8bb850069ee9e327e40d))
+
 ## [2.2.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.2.1...cowswap-v2.2.2) (2026-02-17)
 
 
