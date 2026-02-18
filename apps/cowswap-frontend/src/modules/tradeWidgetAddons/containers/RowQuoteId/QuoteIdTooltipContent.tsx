@@ -5,6 +5,7 @@ import { displayTime } from '@cowprotocol/common-utils'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
+import { useIsQuoteUpdatePossible } from 'modules/trade'
 import { useTradeQuoteCounter } from 'modules/tradeQuote'
 
 import { type QuoteExpirationInput } from './quoteId'
@@ -39,8 +40,9 @@ interface QuoteIdTooltipContentProps {
 }
 
 export function QuoteIdTooltipContent({ expiration }: QuoteIdTooltipContentProps): ReactNode {
+  const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
   const quoteRefreshCounter = useTradeQuoteCounter()
-  const refreshIn = displayTime(quoteRefreshCounter)
+  const refreshInLabel = displayTime(quoteRefreshCounter)
 
   return (
     <TooltipContainer>
@@ -48,12 +50,12 @@ export function QuoteIdTooltipContent({ expiration }: QuoteIdTooltipContentProps
         <Trans>Share this reference when reporting an issue with this quote.</Trans>
       </TooltipHeadline>
 
-      {expiration ? (
+      {expiration && isQuoteUpdatePossible ? (
         <TooltipMetaRow>
           <TooltipMetaLabel>
             <Trans>Refresh in:</Trans>
           </TooltipMetaLabel>
-          <TooltipMetaValue>{refreshIn}</TooltipMetaValue>
+          <TooltipMetaValue>{refreshInLabel}</TooltipMetaValue>
         </TooltipMetaRow>
       ) : null}
     </TooltipContainer>
