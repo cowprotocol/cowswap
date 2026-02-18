@@ -4,13 +4,13 @@ import { useEffect } from 'react'
 
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { ChainInfo, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { ChainInfo, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'
 
-import { TOKENS_LISTS_UPDATER_INTERVAL, getFulfilledResults, getIsTimeToUpdate } from './helpers'
+import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
 
 import { fetchTokenList } from '../../services/fetchTokenList'
 import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
@@ -37,7 +37,7 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
+const NETWORKS_WITHOUT_RESTRICTIONS: SupportedChainId[] = [SupportedChainId.SEPOLIA]
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
