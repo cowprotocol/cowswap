@@ -48,7 +48,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
     background-color: var(${UI.COLOR_PAPER_DARKER});
     color: var(${UI.COLOR_BUTTON_TEXT_DISABLED});
     border: 0;
-    cursor: auto;
+    cursor: not-allowed;
     animation: none;
     transform: none;
   }
