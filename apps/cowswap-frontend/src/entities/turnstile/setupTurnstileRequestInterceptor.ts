@@ -27,12 +27,6 @@ export function setupTurnstileRequestInterceptor(): void {
   const nativeFetch = window.fetch.bind(window)
 
   window.fetch = (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-    const turnstileToken = getTurnstileToken()
-
-    if (!turnstileToken) {
-      return nativeFetch(input, init)
-    }
-
     let request: Request
     try {
       request = new Request(input, init)
@@ -50,6 +44,12 @@ export function setupTurnstileRequestInterceptor(): void {
     }
 
     if (!shouldAttachTurnstileToken(url, request.method.toUpperCase())) {
+      return nativeFetch(request)
+    }
+
+    const turnstileToken = getTurnstileToken()
+
+    if (!turnstileToken) {
       return nativeFetch(request)
     }
 
