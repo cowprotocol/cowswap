@@ -971,7 +971,7 @@ importers:
         version: 1.5.0
       '@cowprotocol/sdk-ethers-v5-adapter':
         specifier: 0.3.6
-        version: 0.3.6(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+        version: 0.3.6(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@cowprotocol/sdk-subgraph':
         specifier: 0.3.4
         version: 0.3.4(encoding@0.1.13)
@@ -981,9 +981,6 @@ importers:
       '@cowprotocol/ui':
         specifier: workspace:*
         version: link:../../libs/ui
-      '@ethersproject/strings':
-        specifier: 5.7.0
-        version: 5.7.0
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.7.1
         version: 6.7.2
@@ -1047,9 +1044,6 @@ importers:
       date-fns:
         specifier: ^2.29.3
         version: 2.30.0
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       flexsearch:
         specifier: ^0.8.164
         version: 0.8.164
@@ -1107,6 +1101,9 @@ importers:
       swr:
         specifier: ^2.3.3
         version: 2.3.3(react@19.1.2)
+      viem:
+        specifier: ^2.45.1
+        version: 2.45.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
       web3:
         specifier: ^1.10.3
         version: 1.10.3(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10)
@@ -18573,6 +18570,13 @@ snapshots:
       '@ethersproject/abstract-signer': 5.8.0
       '@typechain/ethers-v5': 11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)
       ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+
+  '@cowprotocol/sdk-ethers-v5-adapter@0.3.6(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+    dependencies:
+      '@cowprotocol/sdk-common': 0.6.0
+      '@ethersproject/abstract-signer': 5.8.0
+      '@typechain/ethers-v5': 11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)
+      ethers: 6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
   '@cowprotocol/sdk-order-book@0.6.4(encoding@0.1.13)':
     dependencies:
