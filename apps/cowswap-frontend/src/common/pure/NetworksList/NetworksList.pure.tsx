@@ -48,7 +48,7 @@ export function NetworksList({
 
             {isDeprecatedNetwork && (
               <Badge
-                type={isDarkMode ? BadgeTypes.ALERT : BadgeTypes.ALERT2}
+                type={isDarkMode ? BadgeTypes.ALERT : isActive ? BadgeTypes.ALERT2 : BadgeTypes.ALERT}
                 style={isActive ? { marginRight: '10px' } : undefined}
               >
                 <Trans>READ-ONLY</Trans>
