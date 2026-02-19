@@ -12,7 +12,6 @@
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "@cowprotocol/cow-sdk": "7.3.5",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
-    "ethers": "5.7.2",
     "ms.macro": "^2.0.0",
     "viem": "^2.45.1",
     "wagmi": "3.4.2"
