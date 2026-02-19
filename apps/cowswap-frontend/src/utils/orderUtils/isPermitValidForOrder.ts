@@ -23,7 +23,7 @@ function validateEip2612Permit(
       functionName === 'permit' &&
       areAddressesEqual(spender, spenderAddress) &&
       areAddressesEqual(owner, ownerAddress) &&
-      deadline > BigInt(Date.now() / 1000)
+      deadline > BigInt(Math.floor(Date.now() / 1000))
     ) {
       return {
         isValid: true,
@@ -50,7 +50,7 @@ function validateDaiPermit(callData: Hex, spenderAddress: string, ownerAddress: 
       functionName === 'permit' &&
       areAddressesEqual(spender, spenderAddress) &&
       areAddressesEqual(holder, ownerAddress) &&
-      expiry > BigInt(Date.now() / 1000)
+      expiry > BigInt(Math.floor(Date.now() / 1000))
     ) {
       // DAI permit has no value in the call data, so we assume it's always max approval
       return {
