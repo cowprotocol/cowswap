@@ -10,6 +10,7 @@ import JSBI from 'jsbi'
 import { PendingOrdersPrices } from 'modules/orders'
 import { useTwapOrderByChildId } from 'modules/twap'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 
 import { useCloseReceiptModal, useGetAlternativeOrderModalContext, useSelectedOrder } from './OrdersReceiptModal.hooks'
@@ -32,7 +33,9 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
   const twapOrder = twapOrderById || twapOrderByChildId
   const isTwapPartOrder = !!twapOrderByChildId
 
-  const alternativeOrderModalContext = useGetAlternativeOrderModalContext(order)
+  const isChainIdDeprecated = useIsProviderNetworkDeprecated()
+  const alternativeOrderModalContextFromHook = useGetAlternativeOrderModalContext(order)
+  const alternativeOrderModalContext = isChainIdDeprecated ? undefined : alternativeOrderModalContextFromHook
 
   if (!chainId || !order) {
     return null
