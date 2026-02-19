@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
+import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { AutoRow } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -18,19 +19,20 @@ export function DeprecatedNetworkBanner(): ReactNode {
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const theme = useTheme()
   const [darkMode] = useDarkModeManager()
-  const { label, logo, explorer } = getChainInfo(chainId)
 
-  if (!isProviderNetworkDeprecated) {
+  if (!isProviderNetworkDeprecated || !chainId) {
     return null
   }
 
+  const { label, logo } = getChainInfo(chainId)
   const textColor = theme.text1
   const logoUrl = darkMode ? logo.dark : logo.light
+  const cowExplorerUrl = getExplorerBaseUrl(chainId)
 
   return (
     <styledEl.RootWrapper>
-      <styledEl.ContentWrapper $logoUrl={logoUrl}>
-        <styledEl.LinkOutToBridge href={explorer}>
+      <styledEl.ContentWrapper $logoUrl={cowExplorerUrl}>
+        <styledEl.LinkOutToBridge href={cowExplorerUrl}>
           <styledEl.BodyText $color={textColor}>
             <styledEl.L2Icon src={logoUrl} />
             <AutoRow>
