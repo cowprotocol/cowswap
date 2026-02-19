@@ -27,7 +27,13 @@ export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps): Reac
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
-    <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine} disabled={disabled}>
+    <styledEl.Box
+      id="currency-arrow-separator"
+      data-isLoading={isLoading ? true : undefined}
+      isCollapsed={isCollapsed}
+      hasSeparatorLine={hasSeparatorLine}
+      disabled={disabled}
+    >
       <styledEl.LoadingWrapper isLoading={isLoading} onClick={disabled ? undefined : onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
           <CowLoadingIcon size={26} isDarkMode={isDarkMode} />

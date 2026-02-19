@@ -51,6 +51,7 @@ describe('Swap (custom)', () => {
 
     // input amounts
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
+    cy.get('#currency-arrow-separator').should('not.have.attr', 'data-isLoading')
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     cy.get('#do-trade-button').should('contain.text', 'Swap').click()
@@ -73,6 +74,7 @@ describe('Swap (custom)', () => {
     cy.unlockCrossChainSwap()
 
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
+    cy.get('#currency-arrow-separator').should('not.have.attr', 'data-isLoading')
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
@@ -97,6 +99,7 @@ describe('Swap (custom)', () => {
     cy.unlockCrossChainSwap()
 
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
+    cy.get('#currency-arrow-separator').should('not.have.attr', 'data-isLoading')
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 400 })
 
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
