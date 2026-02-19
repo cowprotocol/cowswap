@@ -20,7 +20,7 @@ export function CodeCreationStatusSection(props: CodeCreationStatusSectionProps)
   const { walletStatus, verificationStatus, verificationProgramParams, verificationEligible } = props
   const timeCapDays = verificationStatus === 'valid' ? verificationProgramParams?.timeCapDays : undefined
   const eligibilityUnknown = walletStatus === TraderWalletStatus.ELIGIBILITY_UNKNOWN
-  const eligibilityCheckIsLoading = walletStatus === TraderWalletStatus.UNKNOWN
+  const eligibilityCheckIsLoading = walletStatus === TraderWalletStatus.PENDING
   const shouldShowInfo = eligibilityUnknown
     ? true
     : verificationStatus === 'valid' && verificationEligible === true && !eligibilityCheckIsLoading

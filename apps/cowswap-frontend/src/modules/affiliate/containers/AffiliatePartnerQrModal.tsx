@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 
 import COW_LOGO_ACCENT from '@cowprotocol/assets/images/logo-icon-cow-circle-accent.svg'
 import COW_LOGO_BLACK from '@cowprotocol/assets/images/logo-icon-cow-circle-black.svg'
@@ -42,7 +42,7 @@ export function AffiliatePartnerQrModal({
   isOpen,
   refCode: refCode,
   onDismiss,
-}: AffiliatePartnerQrModalProps): ReactElement {
+}: AffiliatePartnerQrModalProps): ReactNode {
   const qrCodeRef = useRef<QRCode | null>(null)
   const referralLink = getReferralLink(refCode)
 

@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { HowItWorks } from './HowItWorks'
 
-interface TraderIneligibleProps {
+export interface TraderIneligibleProps {
   refCode?: string
 }
 

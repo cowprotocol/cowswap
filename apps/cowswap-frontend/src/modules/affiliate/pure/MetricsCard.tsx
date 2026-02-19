@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { useMemo } from 'react'
 
 import { useTimeAgo } from '@cowprotocol/common-hooks'
@@ -51,7 +51,7 @@ export function MetricsCard({
   donutValue,
   donutLabel,
   donutHint,
-}: MetricsCardProps): ReactElement {
+}: MetricsCardProps): ReactNode {
   const { i18n } = useLingui()
   const approxUpdatedAt = useMemo(
     () => getApproxStatsUpdatedAt(AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS, AFFILIATE_REWARDS_UPDATE_LAG_HOURS),

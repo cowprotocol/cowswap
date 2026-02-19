@@ -26,8 +26,6 @@ export function AffiliateTraderStats(): ReactNode {
   const progressToNextReward = getProgressToNextReward(triggerVolume, stats?.left_to_next_rewards)
   const rewardsProgressPercent = getReferralTrafficPercent(triggerVolume, progressToNextReward)
   const rewardsProgressLabel = triggerVolume !== null ? formatUsdCompact(progressToNextReward) : formatUsdCompact(0)
-  const hasTriggerVolume = triggerVolume !== null
-  const triggerVolumeLabel = hasTriggerVolume ? formatUsdCompact(triggerVolume) : formatUsdCompact(0)
   const items: MetricsCardItem[] = [
     {
       label: <Trans>Left to next {rewardAmountLabel}</Trans>,
@@ -36,11 +34,12 @@ export function AffiliateTraderStats(): ReactNode {
     { label: <Trans>Total earned</Trans>, value: formatUsdcCompact(stats?.total_earned) },
     { label: <Trans>Received</Trans>, value: formatUsdcCompact(stats?.paid_out) },
   ]
-  const donutHint = hasTriggerVolume ? (
-    <>
-      <Trans>of</Trans> {triggerVolumeLabel}
-    </>
-  ) : undefined
+  const donutHint =
+    triggerVolume !== null ? (
+      <>
+        <Trans>of</Trans> {formatUsdCompact(triggerVolume)}
+      </>
+    ) : undefined
 
   return (
     <MetricsCard

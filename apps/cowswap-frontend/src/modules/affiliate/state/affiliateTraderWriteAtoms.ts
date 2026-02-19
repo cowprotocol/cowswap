@@ -1,24 +1,26 @@
 import { atom } from 'jotai'
 
-import { affiliateTraderStateAtom, affiliateTraderStoredCodeAtom } from './affiliateTraderAtom'
+import {
+  affiliateTraderStateAtom,
+  affiliateTraderStoredStateAtom,
+  AffiliateTraderInMemoryState,
+} from './affiliateTraderAtom'
 
-import { AffiliateTraderState, TraderReferralCodeVerificationResult } from '../lib/affiliateProgramTypes'
+import { TraderReferralCodeVerificationResult } from '../lib/affiliateProgramTypes'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
 
 export const openTraderReferralCodeModalAtom = atom(null, (get, set, refCode?: string) => {
-  const storedCode = get(affiliateTraderStoredCodeAtom)
-  const savedCode = storedCode ? formatRefCode(storedCode) : undefined
+  const storedState = get(affiliateTraderStoredStateAtom)
+  const savedCode = storedState?.savedCode
   set(affiliateTraderStateAtom, (prev) => {
     const sanitizedRefCode = refCode ? formatRefCode(refCode) : undefined
     const nextCode = resolveCode(prev, sanitizedRefCode, savedCode)
     const nextVerificationStatus = resolveVerificationStatus(prev, sanitizedRefCode, savedCode)
-    const codeOrigin: AffiliateTraderState['codeOrigin'] = sanitizedRefCode ? 'url' : savedCode ? 'stored' : 'manual'
 
     return {
       ...prev,
       modalOpen: true,
-      code: nextCode,
-      codeOrigin,
+      codeInput: nextCode,
       verificationStatus: nextVerificationStatus,
       ...clearVerificationMeta(),
     }
@@ -33,12 +35,11 @@ export const closeTraderReferralCodeModalAtom = atom(null, (_get, set) => {
 export const setTraderReferralCodeInputAtom = atom(null, (_get, set, value: string) => {
   set(affiliateTraderStateAtom, (prev) => {
     const sanitized = normalizeRefCodeInput(value)
-    const hasChanged = sanitized !== prev.code
+    const hasChanged = sanitized !== prev.codeInput
 
     return {
       ...prev,
-      code: sanitized,
-      codeOrigin: 'manual',
+      codeInput: sanitized,
       verificationStatus: prev.verificationStatus === 'pending' ? 'pending' : 'idle',
       ...(hasChanged ? clearVerificationMeta() : undefined),
     }
@@ -51,8 +52,7 @@ export const saveTraderReferralCodeAtom = atom(null, (_get, set, code: string) =
     if (!sanitized) {
       return {
         ...prev,
-        code: '',
-        codeOrigin: 'none',
+        codeInput: '',
         verificationStatus: 'idle',
         ...clearVerificationMeta(),
       }
@@ -60,19 +60,17 @@ export const saveTraderReferralCodeAtom = atom(null, (_get, set, code: string) =
 
     return {
       ...prev,
-      code: sanitized,
-      codeOrigin: 'manual',
+      codeInput: sanitized,
       verificationStatus: 'pending',
       ...clearVerificationMeta(),
     }
   })
 })
 export const removeTraderReferralCodeAtom = atom(null, (_get, set) => {
-  set(affiliateTraderStoredCodeAtom, undefined)
+  set(affiliateTraderStoredStateAtom, undefined)
   set(affiliateTraderStateAtom, (prev) => ({
     ...prev,
-    code: '',
-    codeOrigin: 'none',
+    codeInput: '',
     verificationStatus: 'idle',
     ...clearVerificationMeta(),
   }))
@@ -86,7 +84,7 @@ export const startTraderReferralVerificationAtom = atom(null, (_get, set, code: 
 
     return {
       ...prev,
-      code: sanitized,
+      codeInput: sanitized,
       verificationStatus: 'checking',
       ...clearVerificationMeta(),
     }
@@ -97,21 +95,20 @@ export const completeTraderReferralVerificationAtom = atom(
   (_get, set, result: TraderReferralCodeVerificationResult) => {
     set(affiliateTraderStateAtom, (prev) => ({
       ...prev,
-      code: 'code' in result ? result.code : prev.code,
+      codeInput: 'code' in result ? result.code : prev.codeInput,
       verificationStatus: result.kind,
       ...toVerificationMeta(result),
     }))
   },
 )
 export const setTraderReferralSavedCodeAtom = atom(null, (_get, set, code?: string) => {
-  const savedCode = code ? formatRefCode(code) : undefined
-  set(affiliateTraderStoredCodeAtom, savedCode)
+  const savedCode = code
+  set(affiliateTraderStoredStateAtom, savedCode ? { savedCode, isLinked: false } : undefined)
   set(affiliateTraderStateAtom, (prev) => {
     if (!savedCode) {
       return {
         ...prev,
-        code: '',
-        codeOrigin: 'none',
+        codeInput: '',
         verificationStatus: 'idle',
         ...clearVerificationMeta(),
       }
@@ -119,24 +116,37 @@ export const setTraderReferralSavedCodeAtom = atom(null, (_get, set, code?: stri
 
     return {
       ...prev,
-      code: savedCode,
-      codeOrigin: 'stored',
+      codeInput: savedCode,
       verificationStatus: 'pending',
       ...clearVerificationMeta(),
     }
   })
 })
+export const setRecoveredTraderReferralCodeAtom = atom(null, (_get, set, code?: string) => {
+  const savedCode = code
+  set(affiliateTraderStoredStateAtom, savedCode ? { savedCode, isLinked: true } : undefined)
+  set(affiliateTraderStateAtom, (prev) => {
+    if (!savedCode) {
+      return prev
+    }
 
-function resolveCode(prev: AffiliateTraderState, refCode: string | undefined, savedCode?: string): string {
-  const candidate = refCode ?? prev.code ?? savedCode ?? ''
+    return {
+      ...prev,
+      codeInput: savedCode,
+    }
+  })
+})
+
+function resolveCode(prev: AffiliateTraderInMemoryState, refCode: string | undefined, savedCode?: string): string {
+  const candidate = refCode ?? prev.codeInput ?? savedCode ?? ''
   return normalizeRefCodeInput(candidate)
 }
 
 function resolveVerificationStatus(
-  prev: AffiliateTraderState,
+  prev: AffiliateTraderInMemoryState,
   refCode: string | undefined,
   savedCode?: string,
-): AffiliateTraderState['verificationStatus'] {
+): AffiliateTraderInMemoryState['verificationStatus'] {
   if (!refCode && savedCode && prev.verificationStatus === 'idle') {
     return 'pending'
   }
@@ -153,7 +163,7 @@ function normalizeRefCodeInput(value: string): string {
 }
 
 function clearVerificationMeta(): Pick<
-  AffiliateTraderState,
+  AffiliateTraderInMemoryState,
   'verificationEligible' | 'verificationProgramParams' | 'verificationErrorMessage'
 > {
   return {
@@ -165,7 +175,10 @@ function clearVerificationMeta(): Pick<
 
 function toVerificationMeta(
   result: TraderReferralCodeVerificationResult,
-): Pick<AffiliateTraderState, 'verificationEligible' | 'verificationProgramParams' | 'verificationErrorMessage'> {
+): Pick<
+  AffiliateTraderInMemoryState,
+  'verificationEligible' | 'verificationProgramParams' | 'verificationErrorMessage'
+> {
   if (result.kind === 'valid') {
     return {
       ...clearVerificationMeta(),

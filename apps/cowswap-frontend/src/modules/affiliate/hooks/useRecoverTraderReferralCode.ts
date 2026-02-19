@@ -1,7 +1,8 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
 import { Address, areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { orderBookApi } from 'cowSdk'
 import { useSelector } from 'react-redux'
@@ -15,7 +16,8 @@ import { getOrders } from 'api/cowProtocol'
 
 import { AFFILIATE_SUPPORTED_CHAIN_IDS } from '../config/affiliateProgram.const'
 import { extractFullAppDataFromResponse, getAppDataHash, getReferrerCodeFromAppData } from '../lib/traderActivity'
-import { setTraderReferralSavedCodeAtom } from '../state/affiliateTraderWriteAtoms'
+import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
+import { setRecoveredTraderReferralCodeAtom } from '../state/affiliateTraderWriteAtoms'
 import { logAffiliate } from '../utils/logger'
 
 const ORDERBOOK_RECOVERY_LIMIT_PER_CHAIN = 30
@@ -24,32 +26,29 @@ type AppDataGetter = {
   getAppData?: (appDataHash: string, context: { chainId: SupportedChainId }) => Promise<unknown>
 }
 
-interface UseRecoverTraderReferralCodeParams {
-  account?: string
-  savedCode?: string
-}
-
-export function useRecoverTraderReferralCode({ account, savedCode }: UseRecoverTraderReferralCodeParams): void {
-  const setSavedCode = useSetAtom(setTraderReferralSavedCodeAtom)
+export function useRecoverTraderReferralCode(): void {
+  const { account } = useWalletInfo()
+  const { isLinked } = useAtomValue(affiliateTraderAtom)
+  const setRecoveredCode = useSetAtom(setRecoveredTraderReferralCodeAtom)
   const ordersState = useSelector<AppState, OrdersState | undefined>((state) => state.orders)
   const attemptedAccountsRef = useRef<Set<string>>(new Set())
 
   const localCode = useMemo(() => {
-    if (!account || !ordersState || savedCode) {
+    if (!account || !ordersState || isLinked) {
       return undefined
     }
 
     return getReferrerCodeFromLocalOrders(ordersState, account)
-  }, [account, ordersState, savedCode])
+  }, [account, isLinked, ordersState])
 
   useEffect(() => {
-    if (!account || savedCode) {
+    if (!account || isLinked) {
       return
     }
 
     if (localCode) {
       logAffiliate('Recovered trader referral code from local orders:', localCode)
-      setSavedCode(localCode)
+      setRecoveredCode(localCode)
       return
     }
 
@@ -70,7 +69,7 @@ export function useRecoverTraderReferralCode({ account, savedCode }: UseRecoverT
       }
 
       logAffiliate('Recovered trader referral code from orderbook appData:', recoveredCode)
-      setSavedCode(recoveredCode)
+      setRecoveredCode(recoveredCode)
     }
 
     recoverFromOrderbook()
@@ -78,7 +77,7 @@ export function useRecoverTraderReferralCode({ account, savedCode }: UseRecoverT
     return () => {
       isCancelled = true
     }
-  }, [account, localCode, savedCode, setSavedCode])
+  }, [account, isLinked, localCode, setRecoveredCode])
 }
 
 function getReferrerCodeFromLocalOrders(ordersState: OrdersState, account: string): string | undefined {

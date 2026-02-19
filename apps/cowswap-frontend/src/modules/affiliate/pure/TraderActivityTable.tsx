@@ -13,7 +13,7 @@ import styled from 'styled-components/macro'
 import { Card } from 'pages/Account/styled'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
-import { Badge, CardTitle } from './shared'
+import { Badge } from './shared'
 
 import { TraderActivityRow } from '../lib/affiliateProgramTypes'
 
@@ -292,9 +292,6 @@ interface TraderActivityTableProps {
 export function TraderActivityTable({ rows, showLoader = false }: TraderActivityTableProps): ReactNode {
   return (
     <TableCard showLoader={showLoader}>
-      <CardTitle>
-        <Trans>Rewards activity</Trans>
-      </CardTitle>
       {rows.length === 0 ? (
         <EmptyText>
           <Trans>Your rewards activity will show here.</Trans>

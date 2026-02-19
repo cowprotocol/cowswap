@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -7,7 +7,7 @@ import { useAffiliatePartnerStats } from 'modules/affiliate/hooks/useAffiliatePa
 import { formatUsdcCompact } from 'modules/affiliate/lib/affiliateProgramUtils'
 import { NextPayoutCard } from 'modules/affiliate/pure/NextPayoutCard'
 
-export function AffiliatePartnerNextPayout(): ReactElement {
+export function AffiliatePartnerNextPayout(): ReactNode {
   const { account } = useWalletInfo()
 
   const { data: info, isLoading: codeLoading } = useAffiliatePartnerInfo(account)

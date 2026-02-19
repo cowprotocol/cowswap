@@ -38,13 +38,13 @@ export function useTraderReferralCodeHandlers(
   }, [inputRef, removeCode])
 
   const onSave = useCallback(() => {
-    const refCode = affiliateTrader.code ? formatRefCode(affiliateTrader.code) : undefined
+    const refCode = affiliateTrader.codeInput ? formatRefCode(affiliateTrader.codeInput) : undefined
     if (!refCode) {
       return
     }
 
-    saveCode(affiliateTrader.code)
-  }, [affiliateTrader.code, saveCode])
+    saveCode(affiliateTrader.codeInput)
+  }, [affiliateTrader.codeInput, saveCode])
 
   const onChange = useCallback(
     (event: FormEvent<HTMLInputElement>) => {

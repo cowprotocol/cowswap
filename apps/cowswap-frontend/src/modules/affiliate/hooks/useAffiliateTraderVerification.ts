@@ -8,6 +8,7 @@ import { TraderWalletStatus } from './useAffiliateTraderWallet'
 import { VERIFICATION_DEBOUNCE_MS } from '../config/affiliateProgram.const'
 import { performVerification } from '../lib/affiliateProgram'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
+import { AffiliateTraderAtom } from '../state/affiliateTraderAtom'
 import {
   completeTraderReferralVerificationAtom,
   setTraderReferralSavedCodeAtom,
@@ -15,9 +16,8 @@ import {
 } from '../state/affiliateTraderWriteAtoms'
 
 import type { TraderReferralCodeVerificationResult } from '../lib/affiliateProgramTypes'
-import type { AffiliateTraderWithSavedCode } from '../state/affiliateTraderAtom'
 
-type TraderReferralCodeState = AffiliateTraderWithSavedCode & {
+type TraderReferralCodeState = AffiliateTraderAtom & {
   walletStatus: TraderWalletStatus
 }
 
@@ -134,7 +134,7 @@ function getAutoVerificationCode(params: AutoVerificationCodeParams): string | u
     return undefined
   }
 
-  return formatRefCode(traderReferralCode.code ?? traderReferralCode.savedCode)
+  return formatRefCode(traderReferralCode.codeInput ?? traderReferralCode.savedCode)
 }
 
 function toVerificationResult(state: TraderReferralCodeState): TraderReferralCodeVerificationResult {
@@ -142,7 +142,7 @@ function toVerificationResult(state: TraderReferralCodeState): TraderReferralCod
     return { kind: 'idle' }
   }
 
-  const code = formatRefCode(state.code)
+  const code = formatRefCode(state.codeInput)
   if (!code) {
     return { kind: 'idle' }
   }

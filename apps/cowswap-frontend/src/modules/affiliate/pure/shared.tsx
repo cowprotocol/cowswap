@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { ButtonOutlined, ButtonPrimary, Font, Media, UI } from '@cowprotocol/ui'
 
@@ -163,7 +163,7 @@ const LinksRow = styled.div<{ $align: 'inline' | 'center' }>`
   color: var(${UI.COLOR_TEXT_OPACITY_60});
 `
 
-export function AffiliateTermsFaqLinks({ align = 'inline' }: { align?: 'inline' | 'center' }): ReactElement {
+export function AffiliateTermsFaqLinks({ align = 'inline' }: { align?: 'inline' | 'center' }): ReactNode {
   return (
     <LinksRow $align={align}>
       <ExtLink href={AFFILIATE_TERMS_URL} target="_blank">
@@ -621,7 +621,7 @@ type DonutProps = {
   children: ReactNode
 }
 
-export function Donut({ $value, children }: DonutProps): ReactElement {
+export function Donut({ $value, children }: DonutProps): ReactNode {
   const hasProgress = $value > 0
 
   return (

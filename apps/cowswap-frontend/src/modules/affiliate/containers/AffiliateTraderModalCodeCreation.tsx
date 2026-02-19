@@ -36,9 +36,9 @@ import { CodeCreationSubtitle } from '../pure/AffiliateTraderModal/CodeCreationS
 import { Body, Footer, Title } from '../pure/AffiliateTraderModal/styles'
 import { TraderReferralCodeForm } from '../pure/AffiliateTraderModal/TraderReferralCodeForm'
 import { StatusText } from '../pure/shared'
-import { affiliateTraderAtom, AffiliateTraderWithSavedCode } from '../state/affiliateTraderAtom'
+import { AffiliateTraderAtom, affiliateTraderAtom } from '../state/affiliateTraderAtom'
 
-type CodeCreationModalState = AffiliateTraderWithSavedCode & {
+type CodeCreationModalState = AffiliateTraderAtom & {
   walletStatus: TraderWalletStatus
   codeCreationUiState: TraderReferralCodeCodeCreationUiState
 }
@@ -62,13 +62,10 @@ export function AffiliateTraderModalCodeCreation(): ReactNode {
   const affiliateTrader = useAtomValue(affiliateTraderAtom)
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
-  const { walletStatus, supportedNetwork } = useAffiliateTraderWallet({
-    account,
-    chainId,
-    savedCode: affiliateTrader.savedCode,
-  })
+  const { walletStatus } = useAffiliateTraderWallet()
+  const supportedNetwork = walletStatus !== TraderWalletStatus.UNSUPPORTED
   const traderReferralCode = useMemo<CodeCreationModalState>(() => {
-    const hasCode = Boolean(affiliateTrader.code || affiliateTrader.savedCode)
+    const hasCode = Boolean(affiliateTrader.codeInput || affiliateTrader.savedCode)
     const codeCreationUiState =
       affiliateTrader.verificationStatus === 'checking'
         ? 'checking'
@@ -94,7 +91,7 @@ export function AffiliateTraderModalCodeCreation(): ReactNode {
   const handlers = useTraderReferralCodeHandlers(inputRef)
   const { onEdit: sharedOnEdit, onRemove: sharedOnRemove, onSave: sharedOnSave } = handlers
   const [isEditMode, setIsEditMode] = useState(false)
-  const hasCode = Boolean(traderReferralCode.code || traderReferralCode.savedCode)
+  const hasCode = Boolean(traderReferralCode.codeInput || traderReferralCode.savedCode)
   const uiState = useMemo(
     () => (isEditMode && hasCode ? 'editing' : traderReferralCode.codeCreationUiState),
     [hasCode, isEditMode, traderReferralCode.codeCreationUiState],
@@ -120,7 +117,7 @@ export function AffiliateTraderModalCodeCreation(): ReactNode {
     setIsEditMode(!traderReferralCode.savedCode && hasCode)
   }, [hasCode, traderReferralCode.modalOpen, traderReferralCode.savedCode])
   const { payoutAddressConfirmed, togglePayoutAddressConfirmed } = usePayoutAddressConfirmation(account)
-  const displayCode = traderReferralCode.code
+  const displayCode = traderReferralCode.codeInput
   const savedCode = traderReferralCode.savedCode
   useEffect(() => {
     if (!traderReferralCode.modalOpen) {

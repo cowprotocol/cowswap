@@ -7,35 +7,53 @@ import {
   AFFILIATE_PAYOUT_ADDRESS_CONFIRMATION_STORAGE_KEY,
   AFFILIATE_TRADER_STORAGE_KEY,
 } from '../config/affiliateProgram.const'
-import { AffiliateTraderState } from '../lib/affiliateProgramTypes'
-import { formatRefCode } from '../lib/affiliateProgramUtils'
+import { AffiliateProgramParams, TraderReferralCodeVerificationStatus } from '../lib/affiliateProgramTypes'
 
-export const affiliateTraderStateAtom = atom<AffiliateTraderState>({
+export interface AffiliateTraderInMemoryState {
+  modalOpen: boolean
+  codeInput: string
+  verificationStatus: TraderReferralCodeVerificationStatus
+  verificationEligible?: boolean
+  verificationProgramParams?: AffiliateProgramParams
+  verificationErrorMessage?: string
+}
+
+export const affiliateTraderStateAtom = atom<AffiliateTraderInMemoryState>({
   modalOpen: false,
-  code: '',
-  codeOrigin: 'none',
+  codeInput: '',
   verificationStatus: 'idle',
   verificationEligible: undefined,
   verificationProgramParams: undefined,
   verificationErrorMessage: undefined,
 })
 
-export const affiliateTraderStoredCodeAtom = atomWithStorage<string | undefined>(
+export interface AffiliateTraderStoredState {
+  /**
+   * Persisted referral code for trader flows, stored after verification success or recovery.
+   */
+  savedCode?: string
+  /**
+   * Persisted linkage flag set when code is recovered from trader's fulfilled orders.
+   */
+  isLinked?: boolean
+}
+
+export const affiliateTraderStoredStateAtom = atomWithStorage<AffiliateTraderStoredState | undefined>(
   AFFILIATE_TRADER_STORAGE_KEY,
   undefined,
   undefined,
   { getOnInit: true },
 )
 
-export type AffiliateTraderWithSavedCode = AffiliateTraderState & { savedCode?: string }
-export const affiliateTraderAtom = atom<AffiliateTraderWithSavedCode>((get) => {
+export interface AffiliateTraderAtom extends AffiliateTraderInMemoryState, AffiliateTraderStoredState {}
+
+export const affiliateTraderAtom = atom<AffiliateTraderAtom>((get) => {
   const state = get(affiliateTraderStateAtom)
-  const storedCode = get(affiliateTraderStoredCodeAtom)
-  const savedCode = storedCode ? formatRefCode(storedCode) : undefined
+  const storedState = get(affiliateTraderStoredStateAtom)
 
   return {
     ...state,
-    savedCode,
+    ...storedState,
   }
 })
 

@@ -2,8 +2,6 @@ import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -22,27 +20,21 @@ import { PageTitle } from 'modules/application/containers/PageTitle'
 
 export default function AffiliateTrader(): ReactNode {
   const { i18n } = useLingui()
-  const { account } = useWalletInfo()
-  const chainId = useWalletChainId()
 
-  const affiliateTrader = useAtomValue(affiliateTraderAtom)
-  const { walletStatus, supportedNetwork } = useAffiliateTraderWallet({
-    account,
-    chainId,
-    savedCode: affiliateTrader.savedCode,
-  })
+  const { savedCode, codeInput } = useAtomValue(affiliateTraderAtom)
+  const { walletStatus } = useAffiliateTraderWallet()
 
   return (
     <>
-      {!!account && !supportedNetwork && <UnsupportedNetwork />}
+      {walletStatus === TraderWalletStatus.UNSUPPORTED && <UnsupportedNetwork />}
       <PageWrapper>
         <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 
         {walletStatus === TraderWalletStatus.INELIGIBLE ? (
-          <AffiliateTraderIneligible refCode={affiliateTrader.code} />
-        ) : !!account && !supportedNetwork ? (
+          <AffiliateTraderIneligible refCode={codeInput} />
+        ) : walletStatus === TraderWalletStatus.UNSUPPORTED ? (
           <AffiliateTraderUnsupportedNetwork />
-        ) : !affiliateTrader.savedCode ? (
+        ) : !savedCode ? (
           <AffiliateTraderOnboard />
         ) : (
           <>

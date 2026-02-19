@@ -42,16 +42,6 @@ export type TraderWalletReferralCodeState =
   | { status: 'ineligible'; reason: string; linkedCode?: string }
   | { status: 'eligibility-unknown'; reason?: string }
 
-export interface AffiliateTraderState {
-  modalOpen: boolean
-  code: string
-  codeOrigin: 'none' | 'url' | 'stored' | 'manual'
-  verificationStatus: TraderReferralCodeVerificationStatus
-  verificationEligible?: boolean
-  verificationProgramParams?: AffiliateProgramParams
-  verificationErrorMessage?: string
-}
-
 export type AffiliateProgramParams = {
   traderRewardAmount: number
   triggerVolumeUsd: number

@@ -1,4 +1,4 @@
-import { ReactElement, useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -25,7 +25,7 @@ import {
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
-export function AffiliatePartnerOnboard(): ReactElement {
+export function AffiliatePartnerOnboard(): ReactNode {
   const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()

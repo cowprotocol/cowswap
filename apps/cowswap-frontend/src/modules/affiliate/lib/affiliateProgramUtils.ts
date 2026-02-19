@@ -3,9 +3,9 @@ import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
-import { PartnerInfoResponse, PartnerStatsResponse } from './affiliateProgramTypes'
+import { PartnerInfoResponse } from './affiliateProgramTypes'
 
-import { AFFILIATE_SUPPORTED_CHAIN_IDS } from '../config/affiliateProgram.const'
+import { AFFILIATE_PAYOUT_HISTORY_CHAIN_ID, AFFILIATE_SUPPORTED_CHAIN_IDS } from '../config/affiliateProgram.const'
 
 const REFERRER_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
 const EMPTY_VALUE_LABEL = '-'
@@ -54,10 +54,8 @@ export function toValidDate(value: string | undefined): Date | null {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
-export function formatCompactNumber(value: number | null | undefined): string {
-  if (value === null || value === undefined) {
-    return '-'
-  }
+export function formatCompactNumber(value?: number): string {
+  if (typeof value !== 'number') return EMPTY_VALUE_LABEL
 
   return formatLocaleNumber({
     number: value,
@@ -66,56 +64,14 @@ export function formatCompactNumber(value: number | null | undefined): string {
   })
 }
 
-export function formatUsdCompact(value: number | null | undefined): string {
+export function formatUsdCompact(value?: number): string {
   const formatted = formatCompactNumber(value)
-  return formatted === '-' ? '-' : `$${formatted}`
+  return formatted === EMPTY_VALUE_LABEL ? EMPTY_VALUE_LABEL : `$${formatted}`
 }
 
-export function formatUsdcCompact(value: number | null | undefined): string {
+export function formatUsdcCompact(value?: number): string {
   const formatted = formatCompactNumber(value)
-  return formatted === '-' ? '-' : `${formatted} USDC`
-}
-
-export interface AffiliateTrafficCardLabels {
-  activeReferralsLabel: string
-  leftToNextRewardLabel: string
-  paidOutLabel: string
-  progressToNextRewardLabel: string
-  referralTrafficPercent: number
-  rewardAmountLabel: string
-  showTriggerVolume: boolean
-  totalEarnedLabel: string
-  totalVolumeLabel: string
-  triggerVolumeLabel: string
-}
-
-export function getTrafficCardLabels(
-  partnerStats: PartnerStatsResponse | null,
-  programParams: PartnerInfoResponse | null,
-): AffiliateTrafficCardLabels {
-  const triggerVolume = typeof programParams?.triggerVolume === 'number' ? programParams.triggerVolume : null
-  const progressToNextReward = getProgressToNextReward(triggerVolume, partnerStats?.left_to_next_reward)
-
-  return {
-    activeReferralsLabel: formatOptionalInteger(partnerStats?.active_traders),
-    leftToNextRewardLabel: formatOptionalAmount(partnerStats?.left_to_next_reward, formatUsdCompact),
-    paidOutLabel: formatOptionalAmount(partnerStats?.paid_out, formatUsdcCompact),
-    progressToNextRewardLabel: formatUsdCompact(progressToNextReward),
-    referralTrafficPercent: getReferralTrafficPercent(triggerVolume, progressToNextReward),
-    rewardAmountLabel: getRewardAmountLabel(programParams),
-    showTriggerVolume: triggerVolume !== null,
-    totalEarnedLabel: formatOptionalAmount(partnerStats?.total_earned, formatUsdcCompact),
-    totalVolumeLabel: formatOptionalAmount(partnerStats?.total_volume, formatUsdCompact),
-    triggerVolumeLabel: formatUsdCompact(triggerVolume ?? 0),
-  }
-}
-
-export function formatOptionalAmount(value: number | undefined, formatter: (value: number) => string): string {
-  return typeof value === 'number' ? formatter(value) : EMPTY_VALUE_LABEL
-}
-
-export function formatOptionalInteger(value: number | undefined): string {
-  return typeof value === 'number' ? String(value) : EMPTY_VALUE_LABEL
+  return formatted === EMPTY_VALUE_LABEL ? EMPTY_VALUE_LABEL : `${formatted} USDC`
 }
 
 export function getRewardAmountLabel(programParams: PartnerInfoResponse | null): string {
@@ -164,10 +120,12 @@ function randomDigits(length: number): string {
   return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
 }
 
-export function isSupportedReferralNetwork(chainId: number | undefined | null): boolean {
-  if (!chainId) {
-    return false
-  }
-
+export function isSupportedTradingNetwork(chainId?: number): boolean {
+  if (!chainId) return true
   return AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId as number)
+}
+
+export function isSupportedPayoutsNetwork(chainId?: number): boolean {
+  if (!chainId) return true
+  return chainId === AFFILIATE_PAYOUT_HISTORY_CHAIN_ID
 }

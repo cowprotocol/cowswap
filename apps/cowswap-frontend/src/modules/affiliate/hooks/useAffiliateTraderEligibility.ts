@@ -52,23 +52,18 @@ export function useAffiliateTraderEligibility(params: UseAffiliateTraderEligibil
     if (!isEnabled) {
       return TraderEligibilityStatus.IDLE
     }
-
     if (hasLocalTrades) {
       return TraderEligibilityStatus.HAS_PAST_TRADES
     }
-
     if (isLoading || hasOrderbookTrades === undefined) {
       return TraderEligibilityStatus.LOADING
     }
-
     if (error) {
       return TraderEligibilityStatus.ERROR
     }
-
     if (hasOrderbookTrades) {
       return TraderEligibilityStatus.HAS_PAST_TRADES
     }
-
     return TraderEligibilityStatus.NO_PAST_TRADES
   }, [error, hasLocalTrades, hasOrderbookTrades, isEnabled, isLoading])
 

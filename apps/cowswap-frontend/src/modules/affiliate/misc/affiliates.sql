@@ -119,7 +119,8 @@ affiliate_rewards as (
     sum(eligible_volume) as referral_volume,
     count(*) as swaps,
     count(*) as total_trades,
-    count(distinct trader) as traders
+    count(distinct trader) as traders,
+    sum(case when (bound_time + time_cap_days * interval '1' day) > now() and (volume_cap = 0 or cum_volume < volume_cap) then 1 else 0 end) as active_traders
   from capped_trades
   group by 1
 ),
@@ -174,6 +175,7 @@ select
       (coalesce(affiliate_rewards.referral_volume, 0) % affiliate_program_data.trigger_volume)
   end as left_to_next_reward,
   coalesce(affiliate_rewards.total_trades, 0) as total_trades,
+  coalesce(affiliate_rewards.active_traders, 0) as active_traders,
   coalesce(affiliate_rewards.traders, 0) as total_traders
 from affiliate_program_data
 left join affiliate_rewards on affiliate_rewards.code = affiliate_program_data.code

@@ -13,9 +13,9 @@ import { TraderIneligible } from '../pure/TraderIneligible'
 import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
 
 export function AffiliateTraderModalIneligible(): ReactNode {
-  const { code, savedCode } = useAtomValue(affiliateTraderAtom)
+  const { codeInput, savedCode } = useAtomValue(affiliateTraderAtom)
   const toggleAffiliateModal = useToggleAffiliateModal()
-  const refCode = savedCode || code
+  const refCode = savedCode || codeInput
   const analytics = useCowAnalytics()
 
   useEffect(() => {

@@ -3,8 +3,6 @@ import { ReactNode, useEffect, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ModalHeader } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { CowModal } from 'common/pure/Modal'
 
@@ -20,15 +18,8 @@ import { UnsupportedNetwork } from '../pure/UnsupportedNetwork'
 import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
 
 export function AffiliateTraderModal(): ReactNode {
-  const { account } = useWalletInfo()
-  const chainId = useWalletChainId()
-
-  const { modalOpen, savedCode } = useAtomValue(affiliateTraderAtom)
-  const { walletStatus } = useAffiliateTraderWallet({
-    account,
-    chainId,
-    savedCode,
-  })
+  const { modalOpen } = useAtomValue(affiliateTraderAtom)
+  const { walletStatus } = useAffiliateTraderWallet()
   const toggleAffiliateModal = useToggleAffiliateModal()
 
   const analytics = useCowAnalytics()

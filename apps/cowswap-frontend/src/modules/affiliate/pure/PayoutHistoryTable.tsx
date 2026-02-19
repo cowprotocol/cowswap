@@ -17,8 +17,6 @@ import styled from 'styled-components/macro'
 
 import { Card } from 'pages/Account/styled'
 
-import { CardTitle } from './shared'
-
 import { getPayoutHistoryNetworkLabel } from '../hooks/usePayoutHistory'
 import { PayoutHistoryRow } from '../lib/affiliateProgramTypes'
 
@@ -144,10 +142,11 @@ function PayoutHistoryTableRow({ row, copiedTxHash, onCopyTxHash }: PayoutHistor
 
 interface PayoutHistoryTableProps {
   rows: PayoutHistoryRow[]
+  header?: ReactNode
   showLoader?: boolean
 }
 
-export function PayoutHistoryTable({ rows, showLoader = false }: PayoutHistoryTableProps): ReactNode {
+export function PayoutHistoryTable({ rows, header, showLoader = false }: PayoutHistoryTableProps): ReactNode {
   const [copiedTxHash, setCopiedTxHash] = useState<string | undefined>(undefined)
 
   const handleCopyTxHash = useCallback((txHash: string): void => {
@@ -163,9 +162,7 @@ export function PayoutHistoryTable({ rows, showLoader = false }: PayoutHistoryTa
 
   return (
     <TableCard showLoader={showLoader}>
-      <CardTitle>
-        <Trans>Payout history</Trans>
-      </CardTitle>
+      {header}
       {rows.length === 0 ? (
         <EmptyText>
           <Trans>Your payout history will show here.</Trans>

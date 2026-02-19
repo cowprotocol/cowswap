@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactNode } from 'react'
 
 import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
@@ -12,9 +12,7 @@ import {
 
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
-export function AffiliateTraderUnsupportedNetwork(): ReactElement {
-  const supportedNetworks = AFFILIATE_SUPPORTED_NETWORK_NAMES.join(', ')
-
+export function AffiliateTraderUnsupportedNetwork(): ReactNode {
   return (
     <UnsupportedNetworkCard>
       <UnsupportedNetworkHeader>
@@ -23,7 +21,7 @@ export function AffiliateTraderUnsupportedNetwork(): ReactElement {
       </UnsupportedNetworkHeader>
       <UnsupportedNetworkMessage>
         <UnsupportedNetworksText />
-        <br />({supportedNetworks})
+        <br />({AFFILIATE_SUPPORTED_NETWORK_NAMES.join(', ')})
       </UnsupportedNetworkMessage>
     </UnsupportedNetworkCard>
   )
