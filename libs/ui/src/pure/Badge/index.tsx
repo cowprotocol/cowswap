@@ -44,7 +44,3 @@ export const Badge = styled.div<{ type?: BadgeType }>`
     fill: ${({ type }) => badgeColors[type || 'default']};
   }
 `
-export const ReadOnlyBadge = styled(Badge)`
-  background: var(${UI.COLOR_BADGE_YELLOW_BG});
-  color: var(${UI.COLOR_BADGE_YELLOW_TEXT});
-`
