@@ -122,14 +122,16 @@ export function STYLESHEET(): StylesheetCSS[] {
         'curve-style': 'unbundled-bezier',
         color: Color.neutral0,
         'line-color': Color.explorer_grey,
-        'line-opacity': 0.8,
-        'text-background-color': Color.neutral100,
-        'text-background-opacity': 1,
-        'text-background-padding': '4px',
+        'line-opacity': 0.9,
+        'text-background-color': Color.explorer_bg2,
+        'text-background-opacity': 0.95,
+        'text-background-padding': '3px',
         'text-background-shape': 'roundrectangle',
-        'font-size': '16px',
+        'font-size': '12px',
         'min-zoomed-font-size': 8,
         'text-rotation': 'autorotate',
+        'text-wrap': 'wrap',
+        'text-max-width': '120px',
       },
     },
     {
@@ -141,7 +143,7 @@ export function STYLESHEET(): StylesheetCSS[] {
       },
     },
     {
-      selector: 'edge.sell,edge.amm',
+      selector: 'edge.sell',
       css: {
         'line-color': Color.explorer_textError,
         'target-arrow-color': Color.explorer_textError,
@@ -152,6 +154,13 @@ export function STYLESHEET(): StylesheetCSS[] {
       css: {
         'line-color': Color.explorer_green1,
         'target-arrow-color': Color.explorer_green1,
+      },
+    },
+    {
+      selector: 'edge.amm',
+      css: {
+        'line-color': Color.explorer_grey,
+        'target-arrow-color': Color.explorer_grey,
       },
     },
     {
@@ -168,6 +177,27 @@ export function STYLESHEET(): StylesheetCSS[] {
         'target-arrow-color': Color.explorer_orange1,
         'text-background-color': Color.explorer_orange1,
         color: Color.neutral100,
+      },
+    },
+    {
+      selector: 'edge.focus',
+      css: {
+        width: 3.2,
+      },
+    },
+    {
+      selector: 'node.focus',
+      css: {
+        'border-color': Color.explorer_orange1,
+        'border-style': 'solid',
+        'border-width': 3,
+        'border-opacity': 0.75,
+      },
+    },
+    {
+      selector: 'node.dimmed,edge.dimmed',
+      css: {
+        opacity: 0.2,
       },
     },
     {

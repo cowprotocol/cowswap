@@ -118,13 +118,14 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
     const tokenAmount = token?.decimals
       ? formattingAmountPrecision(new BigNumber(transfer.value), token, FormatAmountPrecision.highPrecision)
       : '-'
+    const edgeLabel = tokenAmount === '-' ? tokenSymbol : `${tokenAmount} ${tokenSymbol}`
 
     const source = builder.getById(fromId)
     const target = builder.getById(transfer.to)
     builder.edge(
       { type: source?.data.type, id: fromId },
       { type: target?.data.type, id: transfer.to },
-      `${tokenSymbol}`,
+      edgeLabel,
       kind,
       {
         from: fromId,
@@ -412,7 +413,7 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
       id: edge.to,
       type: edge.hyperNode === 'to' ? TypeNodeOnTx.Hyper : TypeNodeOnTx.Token,
     }
-    const label = getLabel(edge, contractsMap)
+    const label = getLabel(edge, contractsMap, tokens)
     const kind = edge.trade ? TypeEdgeOnTx.user : TypeEdgeOnTx.amm
     const tooltip = getTooltip(edge, tokens)
     builder.edge(source, target, label, kind, tooltip)
@@ -425,15 +426,21 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
   )
 }
 
-function getLabel(edge: TokenEdge, contractsMap: Record<string, string>): string {
-  if (edge.trade) {
-    return abbreviateString(edge.trade.orderUid, 6, 4)
-  } else if (edge.hyperNode) {
+function getLabel(
+  edge: TokenEdge,
+  contractsMap: Record<string, string>,
+  tokens: Record<string, SingleErc20State>,
+): string {
+  if (edge.hyperNode) {
     return ''
-  } else if (edge.toTransfer && edge.fromTransfer) {
-    return contractsMap[edge.address] || abbreviateString(edge.address, 6, 4)
   }
-  return 'add transfer info'
+
+  const amountLabel = getAmountLabel(edge, tokens)
+  if (amountLabel) {
+    return amountLabel
+  }
+
+  return contractsMap[edge.address] || abbreviateString(edge.address, 6, 4)
 }
 
 function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): Record<string, string> {
@@ -515,4 +522,24 @@ function getTokenTooltipAmount(token: SingleErc20State, value: string | undefine
   const sign_char = sign && sign > 0 ? '' : '-'
 
   return `${sign_char}${amount} ${tokenSymbol}`
+}
+
+function getUnsignedTokenTooltipAmount(token: SingleErc20State, value: string | undefined): string {
+  const amount = getTokenTooltipAmount(token, value)
+
+  return amount.startsWith('-') ? amount.slice(1) : amount
+}
+
+function getAmountLabel(edge: TokenEdge, tokens: Record<string, SingleErc20State>): string | undefined {
+  const soldValue = edge.trade?.sellAmount || edge.fromTransfer?.value
+  const boughtValue = edge.trade?.buyAmount || edge.toTransfer?.value
+
+  if (!soldValue || !boughtValue) {
+    return undefined
+  }
+
+  const sold = getUnsignedTokenTooltipAmount(tokens[edge.from], soldValue)
+  const bought = getUnsignedTokenTooltipAmount(tokens[edge.to], boughtValue)
+
+  return `${sold} -> ${bought}`
 }
