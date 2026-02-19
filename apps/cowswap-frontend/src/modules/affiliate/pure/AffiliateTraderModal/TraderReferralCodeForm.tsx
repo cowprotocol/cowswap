@@ -6,6 +6,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
 
+import { TraderReferralCodeCodeCreationUiState } from './AffiliateTraderModal.types'
 import {
   FormActions,
   FormActionButton,
@@ -17,20 +18,15 @@ import {
   TagGroup,
 } from './styles'
 
-import { TraderReferralCodeModalUiState } from '../../hooks/useAffiliateTraderModalState'
 import { TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 import { formatRefCode } from '../../lib/affiliateProgramUtils'
 import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput/ReferralCodeInputRow'
 import { LabelContent } from '../shared'
 
-const VERIFICATION_ERROR_KINDS: ReadonlySet<TraderReferralCodeVerificationStatus> = new Set([
-  'invalid',
-  'error',
-  'ineligible',
-])
+const VERIFICATION_ERROR_KINDS: ReadonlySet<TraderReferralCodeVerificationStatus> = new Set(['invalid', 'error'])
 
 export interface TraderReferralCodeFormProps {
-  uiState: TraderReferralCodeModalUiState
+  uiState: TraderReferralCodeCodeCreationUiState
   isConnected: boolean
   savedCode?: string
   displayCode: string
@@ -58,10 +54,10 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
     inputRef,
   } = props
 
-  const isEditingUi = uiState === 'editing' || uiState === 'invalid' || uiState === 'ineligible' || uiState === 'error'
+  const isEditingUi = uiState === 'editing' || uiState === 'invalid' || uiState === 'error'
   const showPendingLabelInInput = isConnected && shouldShowPendingLabel(verificationStatus) && isEditingUi
   const showValidLabelInInput = verificationStatus === 'valid' && isEditingUi
-  const { hasError, isEditing, isInputDisabled, trailingIconKind, showEdit, showRemove, canSubmitSave, isLinked } =
+  const { hasError, isEditing, isInputDisabled, trailingIconKind, showEdit, showRemove, canSubmitSave } =
     deriveFormFlags({
       uiState,
       isConnected,
@@ -103,7 +99,7 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
         hasError={hasError}
         isInputDisabled={isInputDisabled || isChecking}
         isEditing={isEditing}
-        isLinked={isLinked}
+        isLinked={false}
         trailingIconKind={isChecking ? 'pending' : trailingIconKind}
         canSubmitSave={canSubmitSave}
         onChange={onChange}
@@ -117,7 +113,7 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
 }
 
 interface DeriveFormFlagsParams {
-  uiState: TraderReferralCodeModalUiState
+  uiState: TraderReferralCodeCodeCreationUiState
   isConnected: boolean
   verificationStatus: TraderReferralCodeVerificationStatus
   savedCode?: string
@@ -134,15 +130,12 @@ interface FormFlags {
   showEdit: boolean
   showRemove: boolean
   canSubmitSave: boolean
-  isLinked: boolean
 }
 
 function deriveFormFlags(params: DeriveFormFlagsParams): FormFlags {
-  // Split the boolean soup into small helpers so the main render stays readable
-  // and lint-compliant. This also makes the unsupported-network rules explicit.
+  // Split the boolean soup into small helpers so the main render stays readable and lint-compliant.
   const base = computeBaseFlags(params)
   const trailingIconKind = resolveTrailingIconKind({
-    isLinked: base.isLinked,
     hasError: base.hasError,
     showPendingLabelInInput: params.showPendingLabelInInput,
     showValidLabelInInput: params.showValidLabelInInput,
@@ -161,26 +154,19 @@ interface BaseFlags {
   showEdit: boolean
   showRemove: boolean
   canSubmitSave: boolean
-  isLinked: boolean
-  isUnsupported: boolean
 }
 
-// eslint-disable-next-line complexity
 function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
   const { uiState, isConnected, verificationStatus, savedCode, displayCode } = params
 
-  // Unsupported network deliberately hides every edit affordance to avoid no-op buttons.
-  const isUnsupported = uiState === 'unsupported'
-  const isEditing = uiState === 'editing' || uiState === 'invalid' || uiState === 'ineligible' || uiState === 'error'
-  const isLinked = uiState === 'linked'
+  const isEditing = uiState === 'editing' || uiState === 'invalid' || uiState === 'error'
   const hasError = VERIFICATION_ERROR_KINDS.has(verificationStatus)
-  const isInputDisabled = isUnsupported || (!isEditing && uiState !== 'empty')
-  const canEdit = !isUnsupported && !isEditing && !isLinked && uiState !== 'empty'
+  const isInputDisabled = !isEditing && uiState !== 'empty'
+  const canEdit = !isEditing && uiState !== 'empty'
   const allowDisconnectedEdit = uiState === 'pending' && !isConnected && Boolean(displayCode)
   const showEdit = canEdit && (Boolean(savedCode) || allowDisconnectedEdit)
-  const showRemove =
-    !isUnsupported && (isEditing || allowDisconnectedEdit) && (Boolean(savedCode) || allowDisconnectedEdit)
-  const canSubmitSave = !isUnsupported && (isEditing || uiState === 'empty') && Boolean(formatRefCode(displayCode))
+  const showRemove = (isEditing || allowDisconnectedEdit) && (Boolean(savedCode) || allowDisconnectedEdit)
+  const canSubmitSave = (isEditing || uiState === 'empty') && Boolean(formatRefCode(displayCode))
 
   return {
     hasError,
@@ -189,8 +175,6 @@ function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
     showEdit,
     showRemove,
     canSubmitSave,
-    isLinked,
-    isUnsupported,
   }
 }
 
@@ -253,15 +237,10 @@ function shouldShowPendingLabel(verificationStatus: TraderReferralCodeVerificati
 }
 
 function resolveTrailingIconKind(params: {
-  isLinked: boolean
   hasError: boolean
   showPendingLabelInInput: boolean
   showValidLabelInInput: boolean
 }): TrailingIconKind | undefined {
-  if (params.isLinked) {
-    return 'lock'
-  }
-
   if (params.hasError) {
     return 'error'
   }

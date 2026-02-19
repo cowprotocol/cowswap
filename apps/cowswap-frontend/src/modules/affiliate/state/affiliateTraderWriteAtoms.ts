@@ -10,15 +10,13 @@ export const openTraderReferralCodeModalAtom = atom(null, (get, set, refCode?: s
   const savedCode = storedCode ? formatRefCode(storedCode) : undefined
   set(affiliateTraderStateAtom, (prev) => {
     const sanitizedRefCode = refCode ? formatRefCode(refCode) : undefined
-    const isLinked = prev.verificationStatus === 'linked'
-    const nextCode = resolveCode(prev, sanitizedRefCode, isLinked, savedCode)
-    const nextVerificationStatus = resolveVerificationStatus(prev, sanitizedRefCode, isLinked, savedCode)
+    const nextCode = resolveCode(prev, sanitizedRefCode, savedCode)
+    const nextVerificationStatus = resolveVerificationStatus(prev, sanitizedRefCode, savedCode)
     const codeOrigin: AffiliateTraderState['codeOrigin'] = sanitizedRefCode ? 'url' : savedCode ? 'stored' : 'manual'
 
     return {
       ...prev,
       modalOpen: true,
-      editMode: false,
       code: nextCode,
       codeOrigin,
       verificationStatus: nextVerificationStatus,
@@ -30,7 +28,6 @@ export const closeTraderReferralCodeModalAtom = atom(null, (_get, set) => {
   set(affiliateTraderStateAtom, (prev) => ({
     ...prev,
     modalOpen: false,
-    editMode: false,
   }))
 })
 export const setTraderReferralCodeInputAtom = atom(null, (_get, set, value: string) => {
@@ -46,12 +43,6 @@ export const setTraderReferralCodeInputAtom = atom(null, (_get, set, value: stri
       ...(hasChanged ? clearVerificationMeta() : undefined),
     }
   })
-})
-export const enableTraderReferralCodeEditModeAtom = atom(null, (_get, set) => {
-  set(affiliateTraderStateAtom, (prev) => ({ ...prev, editMode: true }))
-})
-export const disableTraderReferralCodeEditModeAtom = atom(null, (_get, set) => {
-  set(affiliateTraderStateAtom, (prev) => ({ ...prev, editMode: false }))
 })
 export const saveTraderReferralCodeAtom = atom(null, (_get, set, code: string) => {
   set(affiliateTraderStateAtom, (prev) => {
@@ -73,7 +64,6 @@ export const saveTraderReferralCodeAtom = atom(null, (_get, set, code: string) =
       codeOrigin: 'manual',
       verificationStatus: 'pending',
       ...clearVerificationMeta(),
-      editMode: false,
     }
   })
 })
@@ -137,27 +127,21 @@ export const setTraderReferralSavedCodeAtom = atom(null, (_get, set, code?: stri
   })
 })
 
-function resolveCode(
-  prev: AffiliateTraderState,
-  refCode: string | undefined,
-  isLinked: boolean,
-  savedCode?: string,
-): string {
-  const candidate = isLinked ? savedCode || prev.code || '' : (refCode ?? prev.code ?? savedCode ?? '')
+function resolveCode(prev: AffiliateTraderState, refCode: string | undefined, savedCode?: string): string {
+  const candidate = refCode ?? prev.code ?? savedCode ?? ''
   return normalizeRefCodeInput(candidate)
 }
 
 function resolveVerificationStatus(
   prev: AffiliateTraderState,
   refCode: string | undefined,
-  isLinked: boolean,
   savedCode?: string,
 ): AffiliateTraderState['verificationStatus'] {
-  if (!refCode && savedCode && !isLinked && prev.verificationStatus === 'idle') {
+  if (!refCode && savedCode && prev.verificationStatus === 'idle') {
     return 'pending'
   }
 
-  if (!refCode || refCode === savedCode || isLinked) {
+  if (!refCode || refCode === savedCode) {
     return prev.verificationStatus
   }
 

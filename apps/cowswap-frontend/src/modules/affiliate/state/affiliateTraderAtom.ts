@@ -12,7 +12,6 @@ import { formatRefCode } from '../lib/affiliateProgramUtils'
 
 export const affiliateTraderStateAtom = atom<AffiliateTraderState>({
   modalOpen: false,
-  editMode: false,
   code: '',
   codeOrigin: 'none',
   verificationStatus: 'idle',

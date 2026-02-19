@@ -19,8 +19,8 @@ export function AffiliateTraderStats(): ReactNode {
   const { account } = useWalletInfo()
   const affiliateTrader = useAtomValue(affiliateTraderAtom)
   const { data: stats, isLoading } = useAffiliateTraderStats(account)
+  const { verificationProgramParams: programParams } = affiliateTrader
 
-  const programParams = affiliateTrader.verificationProgramParams
   const rewardAmountLabel = programParams ? formatUsdCompact(programParams.traderRewardAmount) : 'reward'
   const triggerVolume = typeof programParams?.triggerVolumeUsd === 'number' ? programParams.triggerVolumeUsd : null
   const progressToNextReward = getProgressToNextReward(triggerVolume, stats?.left_to_next_rewards)

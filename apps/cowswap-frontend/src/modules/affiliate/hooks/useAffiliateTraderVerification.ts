@@ -14,11 +14,15 @@ import {
   startTraderReferralVerificationAtom,
 } from '../state/affiliateTraderWriteAtoms'
 
-import type { AffiliateTraderModalState } from './useAffiliateTraderModalState'
 import type { TraderReferralCodeVerificationResult } from '../lib/affiliateProgramTypes'
+import type { AffiliateTraderWithSavedCode } from '../state/affiliateTraderAtom'
+
+type TraderReferralCodeState = AffiliateTraderWithSavedCode & {
+  walletStatus: TraderWalletStatus
+}
 
 interface VerificationParams {
-  traderReferralCode: AffiliateTraderModalState
+  traderReferralCode: TraderReferralCodeState
   account?: string
   chainId?: number
   supportedNetwork: boolean
@@ -106,7 +110,7 @@ export function useAffiliateTraderVerification(params: VerificationParams): Trad
 }
 
 interface AutoVerificationCodeParams {
-  traderReferralCode: AffiliateTraderModalState
+  traderReferralCode: TraderReferralCodeState
   account?: string
   chainId?: number
   supportedNetwork: boolean
@@ -133,7 +137,7 @@ function getAutoVerificationCode(params: AutoVerificationCodeParams): string | u
   return formatRefCode(traderReferralCode.code ?? traderReferralCode.savedCode)
 }
 
-function toVerificationResult(state: AffiliateTraderModalState): TraderReferralCodeVerificationResult {
+function toVerificationResult(state: TraderReferralCodeState): TraderReferralCodeVerificationResult {
   if (state.verificationStatus === 'idle') {
     return { kind: 'idle' }
   }
@@ -147,14 +151,6 @@ function toVerificationResult(state: AffiliateTraderModalState): TraderReferralC
     return toValidVerificationResult(state, code)
   }
 
-  if (state.verificationStatus === 'linked') {
-    return toLinkedVerificationResult(state, code)
-  }
-
-  if (state.verificationStatus === 'ineligible') {
-    return toIneligibleVerificationResult(state, code)
-  }
-
   if (state.verificationStatus === 'error') {
     return toErrorVerificationResult(state, code)
   }
@@ -163,7 +159,7 @@ function toVerificationResult(state: AffiliateTraderModalState): TraderReferralC
 }
 
 function toSimpleVerificationResult(
-  verificationStatus: AffiliateTraderModalState['verificationStatus'],
+  verificationStatus: TraderReferralCodeState['verificationStatus'],
   code: string,
 ): TraderReferralCodeVerificationResult {
   if (verificationStatus === 'pending') return { kind: 'pending', code }
@@ -172,10 +168,7 @@ function toSimpleVerificationResult(
   return { kind: 'idle' }
 }
 
-function toValidVerificationResult(
-  state: AffiliateTraderModalState,
-  code: string,
-): TraderReferralCodeVerificationResult {
+function toValidVerificationResult(state: TraderReferralCodeState, code: string): TraderReferralCodeVerificationResult {
   return {
     kind: 'valid',
     code,
@@ -184,32 +177,7 @@ function toValidVerificationResult(
   }
 }
 
-function toLinkedVerificationResult(
-  _state: AffiliateTraderModalState,
-  code: string,
-): TraderReferralCodeVerificationResult {
-  return {
-    kind: 'linked',
-    code,
-    linkedCode: code,
-  }
-}
-
-function toIneligibleVerificationResult(
-  _state: AffiliateTraderModalState,
-  code: string,
-): TraderReferralCodeVerificationResult {
-  return {
-    kind: 'ineligible',
-    code,
-    reason: '',
-  }
-}
-
-function toErrorVerificationResult(
-  state: AffiliateTraderModalState,
-  code: string,
-): TraderReferralCodeVerificationResult {
+function toErrorVerificationResult(state: TraderReferralCodeState, code: string): TraderReferralCodeVerificationResult {
   return {
     kind: 'error',
     code,
@@ -219,7 +187,7 @@ function toErrorVerificationResult(
 }
 
 function useAutoVerificationEffect(params: {
-  traderReferralCode: AffiliateTraderModalState
+  traderReferralCode: TraderReferralCodeState
   account?: string
   chainId?: number
   supportedNetwork: boolean

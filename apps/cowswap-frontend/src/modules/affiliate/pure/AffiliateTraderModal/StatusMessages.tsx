@@ -2,12 +2,7 @@ import { ReactNode } from 'react'
 
 import { StatusColorVariant } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
-
-import { InlineAlert, StatusMessage, TitleAccent } from './styles'
-
-import { TraderReferralCodeModalUiState } from '../../hooks/useAffiliateTraderModalState'
+import { InlineAlert, StatusMessage } from './styles'
 
 export interface TraderReferralCodeStatusMessagesProps {
   infoMessage: string
@@ -27,36 +22,4 @@ export function TraderReferralCodeStatusMessages(props: TraderReferralCodeStatus
       </InlineAlert>
     </StatusMessage>
   )
-}
-
-export function getModalTitle(
-  uiState: TraderReferralCodeModalUiState,
-  options: { hasRejection?: boolean } = {},
-): ReactNode {
-  const { hasRejection = false } = options
-
-  if (uiState === 'linked' || (uiState === 'valid' && hasRejection)) {
-    return t`Already linked to a referral code`
-  }
-
-  if (uiState === 'valid') {
-    return (
-      <>
-        <Trans>Referral code</Trans>
-        <br />
-        <span>
-          <Trans>successfully</Trans>{' '}
-          <TitleAccent>
-            <Trans>applied!</Trans>
-          </TitleAccent>
-        </span>
-      </>
-    )
-  }
-
-  if (uiState === 'ineligible') {
-    return t`Your wallet is ineligible`
-  }
-
-  return t`Enter referral code`
 }

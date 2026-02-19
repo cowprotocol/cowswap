@@ -2,6 +2,7 @@ import { useMemo, useState, useCallback, ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import {
   getTotalCosts,
@@ -23,7 +24,6 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { RowDeadline } from '../RowDeadline'
-import { RowRewards } from '../RowRewards'
 import { RowSlippage } from '../RowSlippage'
 
 interface TradeRateDetailsProps {
@@ -100,7 +100,7 @@ export function TradeRateDetails({
       />
       {/* Always show slippage inside accordion */}
       {slippageRow}
-      <RowRewards />
+      <AffiliateTraderRewardsRow />
       <RowDeadline deadline={deadline} />
     </>
   )

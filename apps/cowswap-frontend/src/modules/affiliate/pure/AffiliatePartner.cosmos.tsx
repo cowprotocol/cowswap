@@ -8,8 +8,8 @@ import { RotateCw } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { ReferralCodeInputRow } from './ReferralCodeInput/ReferralCodeInputRow'
 import { NextPayoutCard } from './NextPayoutCard'
+import { ReferralCodeInputRow } from './ReferralCodeInput/ReferralCodeInputRow'
 import {
   AffiliateTermsFaqLinks,
   BottomMetaRow,

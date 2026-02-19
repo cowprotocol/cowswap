@@ -9,7 +9,8 @@ import { useLingui } from '@lingui/react/macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { useIsRewardsRowVisible } from 'modules/affiliate/hooks/useIsRowRewardsVisible'
+import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
+import { useIsRewardsRowVisible } from 'modules/affiliate/hooks/useIsRewardsRowVisible'
 import { useAppData } from 'modules/appData'
 import {
   QuoteDetails,
@@ -30,7 +31,7 @@ import {
   useCommonTradeConfirmContext,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { HighFeeWarning, RowDeadline, RowRewards } from 'modules/tradeWidgetAddons'
+import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -79,7 +80,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
   const labelsAndTooltips = useLabelsAndTooltips()
-  const isRowRewardsVisible = useIsRewardsRowVisible()
+  const isRewardsRowVisible = useIsRewardsRowVisible()
 
   const { values: balances } = useTokensBalancesCombined()
 
@@ -171,7 +172,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     withTimelineDot={false}
                   >
                     <>
-                      {isRowRewardsVisible && <RowRewards />}
+                      {isRewardsRowVisible && <AffiliateTraderRewardsRow />}
                       <RowDeadline deadline={deadline} />
                     </>
                   </TradeBasicConfirmDetails>

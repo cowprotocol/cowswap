@@ -2,45 +2,22 @@ import { FormEvent, RefObject } from 'react'
 
 import { StatusColorVariant } from '@cowprotocol/ui'
 
-import { TraderReferralCodeModalUiState } from '../../hooks/useAffiliateTraderModalState'
 import { AffiliateProgramParams, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+
+export type TraderReferralCodeCodeCreationUiState =
+  | 'empty'
+  | 'editing'
+  | 'pending'
+  | 'checking'
+  | 'invalid'
+  | 'valid'
+  | 'error'
 
 export type FocusableElement = HTMLElement | HTMLInputElement | HTMLButtonElement | null
 
-export interface PrimaryCta {
-  label: string
-  disabled: boolean
-  action: 'none' | 'save' | 'verify' | 'viewRewards' | 'goBack'
-}
-
-export interface TraderReferralCodeModalContentProps {
-  uiState: TraderReferralCodeModalUiState
-  hasRejection: boolean
-  subtitle: TraderReferralCodeSubtitleProps
-  form: TraderReferralCodeFormSectionProps
-  status: TraderReferralCodeStatusSectionProps
-  payout: TraderReferralCodePayoutSectionProps
-  primaryCta: PrimaryCta
-  onPrimaryClick(): void
-  ctaRef: RefObject<HTMLButtonElement | null>
-  onDismiss(): void
-}
-
-export interface TraderReferralCodeSubtitleProps {
-  uiState: TraderReferralCodeModalUiState
-  hasRejection: boolean
-  verificationStatus: TraderReferralCodeVerificationStatus
-  verificationProgramParams?: AffiliateProgramParams
-  verificationErrorMessage?: string
-  refCode?: string
-  isConnected: boolean
-  rejectionCode?: string
-  isLinked: boolean
-}
-
 export interface TraderReferralCodeFormSectionProps {
   isVisible: boolean
-  uiState: TraderReferralCodeModalUiState
+  uiState: TraderReferralCodeCodeCreationUiState
   isConnected: boolean
   savedCode?: string
   displayCode: string
@@ -65,8 +42,32 @@ export interface TraderReferralCodePayoutSectionProps {
   onTogglePayoutAddressConfirmed(checked: boolean): void
 }
 
-export interface StatusCopyResult {
-  shouldShowInfo: boolean
-  infoMessage: string
-  variant: StatusColorVariant
+export interface AffiliateTraderModalCodeCreationViewModel {
+  uiState: TraderReferralCodeCodeCreationUiState
+  verificationStatus: TraderReferralCodeVerificationStatus
+  verificationProgramParams?: AffiliateProgramParams
+  verificationErrorMessage?: string
+  isConnected: boolean
+  form: TraderReferralCodeFormSectionProps
+  status: TraderReferralCodeStatusSectionProps
+  payout: TraderReferralCodePayoutSectionProps
+  onConnectWallet(): void
+}
+
+export interface AffiliateTraderModalCodeInfoViewModel {
+  uiState: 'valid'
+  verificationStatus: TraderReferralCodeVerificationStatus
+  verificationProgramParams?: AffiliateProgramParams
+  isConnected: boolean
+  status: TraderReferralCodeStatusSectionProps
+  onViewRewards(): void
+}
+
+export interface AffiliateTraderModalIneligibleViewModel {
+  refCode?: string
+  onClose(): void
+}
+
+export interface AffiliateTraderModalUnsupportedViewModel {
+  isConnected: boolean
 }

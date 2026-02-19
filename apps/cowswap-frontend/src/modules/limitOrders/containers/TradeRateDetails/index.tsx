@@ -2,10 +2,10 @@ import { ReactElement, useCallback, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
 
+import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
 import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
-import { RowRewards } from 'modules/tradeWidgetAddons'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
@@ -54,7 +54,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
     return (
       <>
         {tradeFees}
-        <RowRewards />
+        <AffiliateTraderRewardsRow />
       </>
     )
   }
@@ -72,7 +72,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
         />
         <Box noMargin>
           {tradeFees}
-          <RowRewards />
+          <AffiliateTraderRewardsRow />
         </Box>
       </>
     )
@@ -86,7 +86,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       toggleAccordion={toggleAccordion}
     >
       {tradeFees}
-      <RowRewards />
+      <AffiliateTraderRewardsRow />
     </TradeTotalCostsDetails>
   )
 }

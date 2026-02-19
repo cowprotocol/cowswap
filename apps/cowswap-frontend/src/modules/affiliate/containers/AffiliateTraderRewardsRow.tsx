@@ -8,13 +8,13 @@ import { Trans } from '@lingui/react/macro'
 
 import { AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE } from 'modules/affiliate/config/affiliateProgram.const'
 import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
-import { useIsRewardsRowVisible } from 'modules/affiliate/hooks/useIsRowRewardsVisible'
+import { useIsRewardsRowVisible } from 'modules/affiliate/hooks/useIsRewardsRowVisible'
 import { useToggleAffiliateModal } from 'modules/affiliate/hooks/useToggleAffiliateModal'
 import { AffiliateTraderWithSavedCode, affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
 
-import { RowRewardsContent } from '../../pure/Row/RowRewards'
+import { RowRewardsContent } from '../../tradeWidgetAddons/pure/Row/RowRewards'
 
-export function RowRewards(): ReactNode {
+export function AffiliateTraderRewardsRow(): ReactNode {
   const isRewardsRowVisible = useIsRewardsRowVisible()
   const affiliateTrader = useAtomValue(affiliateTraderAtom)
   const toggleAffiliateModal = useToggleAffiliateModal()
@@ -29,15 +29,15 @@ export function RowRewards(): ReactNode {
     AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE && walletStatus === TraderWalletStatus.INELIGIBLE
   const eligibilityCheckIsLoading = walletStatus === TraderWalletStatus.UNKNOWN
 
+  if (!isRewardsRowVisible || shouldHideForIneligible || eligibilityCheckIsLoading) {
+    return null
+  }
+
   const currentLinkedCode = getLinkedCode(affiliateTrader, walletStatus, linkedCode)
   const hasLinkedCode = Boolean(currentLinkedCode)
   const hasSavedValidCode = shouldShowSavedCode(affiliateTrader, hasLinkedCode)
   const displayCode = currentLinkedCode ?? (hasSavedValidCode ? affiliateTrader.savedCode : undefined)
   const tooltipContent = getTooltipContent(hasLinkedCode, hasSavedValidCode)
-
-  if (!isRewardsRowVisible || shouldHideForIneligible || eligibilityCheckIsLoading) {
-    return null
-  }
 
   return (
     <RowRewardsContent
@@ -55,11 +55,7 @@ function getLinkedCode(
   linkedCode?: string,
 ): string | undefined {
   if (walletStatus === TraderWalletStatus.LINKED) {
-    return linkedCode
-  }
-
-  if (traderReferralCode.verification.kind === 'linked') {
-    return traderReferralCode.verification.linkedCode
+    return linkedCode ?? traderReferralCode.savedCode
   }
 
   return undefined
@@ -70,7 +66,7 @@ function shouldShowSavedCode(traderReferralCode: AffiliateTraderWithSavedCode, h
     return false
   }
 
-  return traderReferralCode.verification.kind === 'valid' && Boolean(traderReferralCode.savedCode)
+  return traderReferralCode.verificationStatus === 'valid' && Boolean(traderReferralCode.savedCode)
 }
 
 function getTooltipContent(hasLinkedCode: boolean, hasSavedValidCode: boolean): ReactNode {

@@ -1,16 +1,20 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { openTraderReferralCodeModalAtom } from '../state/affiliateTraderWriteAtoms'
+import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
+import { closeTraderReferralCodeModalAtom, openTraderReferralCodeModalAtom } from '../state/affiliateTraderWriteAtoms'
 
-type ToggleAffiliateModal = {
-  (): void
-}
+export function useToggleAffiliateModal(): () => void {
+  const { modalOpen } = useAtomValue(affiliateTraderAtom)
 
-export function useToggleAffiliateModal(): ToggleAffiliateModal {
   const openModal = useSetAtom(openTraderReferralCodeModalAtom)
+  const closeModal = useSetAtom(closeTraderReferralCodeModalAtom)
 
   return useCallback(() => {
-    openModal()
-  }, [openModal])
+    if (modalOpen) {
+      closeModal()
+    } else {
+      openModal()
+    }
+  }, [closeModal, modalOpen, openModal])
 }

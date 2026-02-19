@@ -6,7 +6,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useIsRewardsRowVisible } from 'modules/affiliate/hooks/useIsRowRewardsVisible'
+import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
 import {
   TradeConfirmation,
   TradeConfirmModal,
@@ -16,7 +16,6 @@ import {
 } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
-import { RowRewards } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -101,7 +100,6 @@ export function TwapConfirmModal() {
 
   const priceImpact = useTradePriceImpact()
   const fallbackHandlerIsNotSet = useIsFallbackHandlerRequired()
-  const isRowRewardsVisible = useIsRewardsRowVisible()
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
@@ -164,7 +162,7 @@ export function TwapConfirmModal() {
                 }}
               />
             )}
-            {isRowRewardsVisible && <RowRewards />}
+            <AffiliateTraderRewardsRow />
             <DividerHorizontal />
             <TwapConfirmDetails
               startTime={twapOrder?.startTime}

@@ -10,15 +10,7 @@ export type TraderReferralCodeVerificationErrorType = 'network' | 'unknown'
 /**
  * Flat verification status used by UI state.
  */
-export type TraderReferralCodeVerificationStatus =
-  | 'idle'
-  | 'pending'
-  | 'checking'
-  | 'valid'
-  | 'invalid'
-  | 'linked'
-  | 'ineligible'
-  | 'error'
+export type TraderReferralCodeVerificationStatus = 'idle' | 'pending' | 'checking' | 'valid' | 'invalid' | 'error'
 
 /**
  * Verification result payload returned from API flows before flattening to UI state.
@@ -29,8 +21,6 @@ export type TraderReferralCodeVerificationResult =
   | { kind: 'checking'; code: string }
   | { kind: 'valid'; code: string; eligible: boolean; programParams?: AffiliateProgramParams }
   | { kind: 'invalid'; code: string }
-  | { kind: 'linked'; code: string; linkedCode: string }
-  | { kind: 'ineligible'; code: string; reason: string }
   | { kind: 'error'; code: string; errorType: TraderReferralCodeVerificationErrorType; message: string }
 
 /**
@@ -54,7 +44,6 @@ export type TraderWalletReferralCodeState =
 
 export interface AffiliateTraderState {
   modalOpen: boolean
-  editMode: boolean
   code: string
   codeOrigin: 'none' | 'url' | 'stored' | 'manual'
   verificationStatus: TraderReferralCodeVerificationStatus
