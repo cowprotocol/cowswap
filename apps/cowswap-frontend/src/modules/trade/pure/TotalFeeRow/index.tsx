@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'

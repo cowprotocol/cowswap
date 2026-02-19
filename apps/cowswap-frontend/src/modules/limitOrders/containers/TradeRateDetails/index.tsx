@@ -2,6 +2,8 @@ import { ReactElement, useCallback, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
 
+import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
+import { useIsRewardsRowEnabled } from 'modules/affiliate/hooks/useIsRewardsRowEnabled'
 import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
@@ -21,6 +23,7 @@ interface TradeRateDetailsProps {
 export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps): ReactElement {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(alwaysExpanded)
   const { volumeBps: partnerFeeBps } = useVolumeFee() || {}
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()
   const protocolFeeAmount = useLimitOrderProtocolFeeAmount()
   const volumeFeeTooltip = useVolumeFeeTooltip()
@@ -50,7 +53,12 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   )
 
   if (!rateInfoParams) {
-    return tradeFees
+    return (
+      <>
+        {tradeFees}
+        {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+      </>
+    )
   }
 
   if (alwaysExpanded) {
@@ -64,7 +72,10 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
           fontSize={13}
           fontBold
         />
-        <Box noMargin>{tradeFees}</Box>
+        <Box noMargin>
+          {tradeFees}
+          {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+        </Box>
       </>
     )
   }
@@ -77,6 +88,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       toggleAccordion={toggleAccordion}
     >
       {tradeFees}
+      {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
     </TradeTotalCostsDetails>
   )
 }

@@ -1,6 +1,6 @@
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import { i18n } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
@@ -15,12 +15,12 @@ import { Routes } from 'common/constants/routes'
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ACCOUNT_ITEM = (chainId: SupportedChainId) => ({
+const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean) => ({
   label: msg`Account`,
   children: [
     {
       href: '/account',
-      label: msg`Account`,
+      label: msg`Overview`,
     },
     {
       href: '/account/tokens',
@@ -30,6 +30,22 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId) => ({
       href: `/${chainId}/account-proxy`,
       label: ACCOUNT_PROXY_LABEL,
     },
+    ...(isAffiliateProgramEnabled
+      ? [
+          {
+            href: Routes.ACCOUNT_AFFILIATE_TRADER,
+            label: msg`My Rewards`,
+            badge: msg`New`,
+            badgeType: BadgeTypes.ALERT,
+          },
+          {
+            href: Routes.ACCOUNT_AFFILIATE_PARTNER,
+            label: msg`Affiliate`,
+            badge: msg`New`,
+            badgeType: BadgeTypes.ALERT,
+          },
+        ]
+      : []),
   ],
 })
 
@@ -106,13 +122,15 @@ const MORE_ITEM = {
   ],
 }
 
-export const NAV_ITEMS = (chainId: SupportedChainId): MenuItem[] => {
-  const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId)
+export const NAV_ITEMS = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean): MenuItem[] => {
+  const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId, isAffiliateProgramEnabled)
   const accountItem: MenuItem = {
     label: i18n._(_ACCOUNT_ITEM.label),
-    children: _ACCOUNT_ITEM.children.map(({ href, label }) => ({
+    children: _ACCOUNT_ITEM.children.map(({ href, label, badge, badgeType }) => ({
       href,
       label: i18n._(label),
+      badge: badge ? i18n._(badge) : undefined,
+      badgeType,
     })),
   }
 

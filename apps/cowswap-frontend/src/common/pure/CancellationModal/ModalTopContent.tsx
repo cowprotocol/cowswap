@@ -1,13 +1,12 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import { TokenAmount, UI } from '@cowprotocol/ui'
+import { TokenAmount, UI, LinkStyledButton } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
-import { LinkStyledButton } from 'theme'
 
 import NotificationBanner from 'legacy/components/NotificationBanner'
 

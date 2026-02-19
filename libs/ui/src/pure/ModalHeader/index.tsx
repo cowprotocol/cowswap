@@ -7,7 +7,7 @@ import * as styledEl from './styled'
 import { BackButton } from '../BackButton'
 
 export interface ModalHeaderProps {
-  children: ReactNode
+  children?: ReactNode
 
   onBack?(): void
 

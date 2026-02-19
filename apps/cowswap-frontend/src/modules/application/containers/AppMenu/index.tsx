@@ -1,7 +1,7 @@
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -42,6 +42,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
@@ -89,9 +90,9 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
           }
         }),
       },
-      ...NAV_ITEMS(chainId),
+      ...NAV_ITEMS(chainId, isAffiliateProgramEnabled),
     ]
-  }, [t, menuItems, chainId, getTradeUrlParams])
+  }, [t, menuItems, chainId, getTradeUrlParams, isAffiliateProgramEnabled])
 
   if (isInjectedWidgetMode) return null
 

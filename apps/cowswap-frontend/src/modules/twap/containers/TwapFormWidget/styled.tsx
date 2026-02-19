@@ -25,11 +25,12 @@ export const Row = styled.div`
   }
 `
 
-export const RateInfoWrapper = styled.div`
+export const FooterBox = styled.div`
   width: 100%;
-  padding: 10px;
+  padding: 0 6px;
   gap: 4px;
   display: flex;
+  flex-flow: column wrap;
 
   ${RateWrapper} {
     text-align: right;

@@ -7,6 +7,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
+import { useIsRewardsRowEnabled } from 'modules/affiliate/hooks/useIsRewardsRowEnabled'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useGetReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -59,6 +61,7 @@ interface TwapFormWidget {
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const { account } = useWalletInfo()
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
 
@@ -175,8 +178,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   return (
     <>
       {!isWrapOrUnwrap && !hideQuoteAmount && (
-        <styledEl.Row>
-          <styledEl.RateInfoWrapper>
+        <>
+          <styledEl.FooterBox>
             <RateInfo
               label={tooltips.price.label}
               rateInfoParams={rateInfoParams}
@@ -184,8 +187,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
               fontSize={13}
               rightAlign
             />
-          </styledEl.RateInfoWrapper>
-        </styledEl.Row>
+            {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+          </styledEl.FooterBox>
+        </>
       )}
       <TradeNumberInput
         value={+twapOrderSlippage.toFixed(2)}

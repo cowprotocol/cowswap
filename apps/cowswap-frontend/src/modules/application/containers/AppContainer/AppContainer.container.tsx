@@ -12,6 +12,9 @@ import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
+import { AffiliateTraderModal } from 'modules/affiliate/containers/AffiliateTraderModal'
+import { AffiliateTraderRecoverySideEffect } from 'modules/affiliate/containers/AffiliateTraderRecoverySideEffect'
+import { AffiliateTraderRefUrlSideEffect } from 'modules/affiliate/containers/AffiliateTraderRefUrlSideEffect'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -43,6 +46,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
+  const { isYieldEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -56,8 +60,6 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
 
   useInitializeUtm()
-
-  const { isYieldEnabled } = useFeatureFlags()
   const isInjectedWidgetMode = isInjectedWidget()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
@@ -87,7 +89,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
-  return (
+  const appContent = (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
       <styledEl.AppWrapper>
         <URLWarning />
@@ -115,6 +117,19 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
+  )
+
+  if (!isAffiliateProgramEnabled) {
+    return appContent
+  }
+
+  return (
+    <>
+      <AffiliateTraderRecoverySideEffect />
+      <AffiliateTraderRefUrlSideEffect />
+      <AffiliateTraderModal />
+      {appContent}
+    </>
   )
 }
 

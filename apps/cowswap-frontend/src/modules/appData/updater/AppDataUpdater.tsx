@@ -1,7 +1,9 @@
+import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
 import { useUtm } from 'modules/utm'
@@ -30,13 +32,13 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
   const userConsent = useRwaConsentForAppData()
+  const { savedCode: refCode } = useAtomValue(affiliateTraderAtom)
 
   if (!chainId) return null
 
   return (
     <AppDataUpdaterMemo
       appCodeWithWidgetMetadata={appCodeWithWidgetMetadata}
-      chainId={chainId}
       slippageBips={slippageBips}
       isSmartSlippage={isSmartSlippage}
       orderClass={orderClass}
@@ -45,6 +47,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
       volumeFee={volumeFee}
       replacedOrderUid={replacedOrderUid}
       userConsent={userConsent}
+      refCode={refCode}
     />
   )
 })

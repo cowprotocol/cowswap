@@ -2,6 +2,8 @@ import { useMemo, useState, useCallback, ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
+import { useIsRewardsRowEnabled } from 'modules/affiliate/hooks/useIsRewardsRowEnabled'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import {
   getTotalCosts,
@@ -48,6 +50,7 @@ export function TradeRateDetails({
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const swapReceiveAmountInfo = useGetSwapReceiveAmountInfo()
   const shouldPayGas = useShouldPayGas()
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const { error: quoteError } = useTradeQuote()
 
@@ -99,6 +102,7 @@ export function TradeRateDetails({
       />
       {/* Always show slippage inside accordion */}
       {slippageRow}
+      {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
       <RowDeadline deadline={deadline} />
     </>
   )
