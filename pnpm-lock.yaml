@@ -1513,36 +1513,6 @@ importers:
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
-      '@ethersproject/abstract-provider':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/address':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/bignumber':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/constants':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/contracts':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/hash':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/providers':
-        specifier: 5.7.0
-        version: 5.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@ethersproject/sha2':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/strings':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/units':
-        specifier: 5.7.0
-        version: 5.7.0
       '@lingui/core':
         specifier: ^5.4.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)
@@ -1567,9 +1537,6 @@ importers:
       cids:
         specifier: ^1.0.0
         version: 1.1.9
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       fast-safe-stringify:
         specifier: ^2.0.8
         version: 2.1.1
