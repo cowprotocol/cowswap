@@ -25,7 +25,7 @@ export function useTwapOrder(): TWAPOrder | null {
   return useMemo(() => {
     if (!inputCurrencyAmount || !receiveAmountInfo) return null
 
-    const { sellAmount, buyAmount } = receiveAmountInfo.afterSlippage
+    const { sellAmount, buyAmount } = receiveAmountInfo.amountsToSign
 
     return {
       sellAmount: sellAmount as CurrencyAmount<Token>,

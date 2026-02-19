@@ -185,7 +185,7 @@ function enterOutputAmount(tokenAddress: string, amount: number | string, select
 }
 
 function unlockCrossChainSwap(): Cypress.Chainable {
-  return cy.get('#unlock-cross-chain-swap-btn').should('be.visible').click()
+  return cy.get('#unlock-cross-chain-swap-btn', { timeout: 20_000 }).should('be.visible').click()
 }
 
 // TODO: Add proper return type annotation

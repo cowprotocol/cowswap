@@ -19,11 +19,10 @@ export function calculateTwapReceivedAmountInfo(
     afterPartnerFees,
     afterSlippage,
     beforeAllFees,
+    amountsToSign,
   } = info
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const scaleAmount = (amount: CurrencyAmount<Currency>) => amount.multiply(numOfParts)
+  const scaleAmount = (amount: CurrencyAmount<Currency>): CurrencyAmount<Currency> => amount.multiply(numOfParts)
 
   return {
     isSell,
@@ -63,6 +62,10 @@ export function calculateTwapReceivedAmountInfo(
     afterSlippage: {
       sellAmount: scaleAmount(afterSlippage.sellAmount),
       buyAmount: scaleAmount(afterSlippage.buyAmount),
+    },
+    amountsToSign: {
+      sellAmount: scaleAmount(amountsToSign.sellAmount),
+      buyAmount: scaleAmount(amountsToSign.buyAmount),
     },
   }
 }

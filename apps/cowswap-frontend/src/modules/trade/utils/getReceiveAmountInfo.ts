@@ -28,8 +28,6 @@ export function getReceiveAmountInfo(
       ...orderParams,
       buyAmount: buyAmountOverride ? buyAmountOverride.quotient.toString() : orderParams.buyAmount,
     },
-    sellDecimals: inputCurrency.decimals,
-    buyDecimals: outputCurrency.decimals,
     slippagePercentBps: Number(slippagePercent.numerator),
     partnerFeeBps,
     protocolFeeBps,
@@ -54,6 +52,7 @@ export function getReceiveAmountInfo(
     afterNetworkCosts,
     afterPartnerFees: mapSellBuyAmounts(result.afterPartnerFees, currencies),
     afterSlippage: mapSellBuyAmounts(result.afterSlippage, currencies),
+    amountsToSign: mapSellBuyAmounts(result.amountsToSign, currencies),
   }
 }
 
