@@ -1,5 +1,3 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 /**
  * Categorises referral verification failures so UI copy can react:
  * - 'network': request failed or timed out
@@ -23,25 +21,6 @@ export type TraderReferralCodeVerificationResult =
   | { kind: 'invalid'; code: string }
   | { kind: 'error'; code: string; errorType: TraderReferralCodeVerificationErrorType; message: string }
 
-/**
- * Represents the wallet's relationship with the referral program:
- * - 'unknown': we haven't fetched or inferred anything yet
- * - 'disconnected': user lacks a connected wallet
- * - 'unsupported': wallet network doesn't match supported IDs (optional `chainId` for display)
- * - 'eligible': wallet can bind the provided code
- * - 'linked': wallet already bound to the given `code`
- * - 'ineligible': wallet rejected with `reason`; may also expose an existing `linkedCode`
- * - 'eligibility-unknown': wallet history could not be verified; optional `reason` for UI copy
- */
-export type TraderWalletReferralCodeState =
-  | { status: 'unknown' }
-  | { status: 'disconnected' }
-  | { status: 'unsupported'; chainId?: SupportedChainId | number }
-  | { status: 'eligible' }
-  | { status: 'linked'; code: string }
-  | { status: 'ineligible'; reason: string; linkedCode?: string }
-  | { status: 'eligibility-unknown'; reason?: string }
-
 export type AffiliateProgramParams = {
   traderRewardAmount: number
   triggerVolumeUsd: number
@@ -61,7 +40,7 @@ export interface TraderReferralCodeVerificationRequest {
 export interface TraderReferralCodeVerificationResponse {
   status: number
   ok: boolean
-  data?: TraderReferralCodeResponse
+  data?: TraderInfoResponse
   text: string
 }
 
@@ -76,12 +55,12 @@ export interface TraderWalletReferralCodeStatusResponse {
   }
 }
 
-export interface TraderReferralCodeResponse {
+export interface TraderInfoResponse {
   code: string
-  traderRewardAmount?: number
-  triggerVolume?: number
-  timeCapDays?: number
-  volumeCap?: number
+  traderRewardAmount: number
+  triggerVolume: number
+  timeCapDays: number
+  volumeCap: number
 }
 
 export interface PartnerInfoResponse {
@@ -108,33 +87,6 @@ export interface TraderStatsResponse {
   paid_out: number
   next_payout: number
   lastUpdatedAt: string
-}
-
-export interface TraderActivityRow {
-  date: string
-  chainId: SupportedChainId
-  chainName: string
-  orderUid: string
-  txHash?: string
-  sellToken: string
-  buyToken: string
-  sellAmount: string
-  buyAmount: string
-  feeAmount?: string
-  feeToken?: string
-  status: string
-  referrerCode?: string
-  isEligible: boolean
-  ineligibleReason?: string
-}
-
-export type AffiliatePayoutHistoryRole = 'affiliate' | 'trader'
-
-export interface PayoutHistoryRow {
-  date: string
-  amount: string
-  txHash: string
-  chainId: SupportedChainId
 }
 
 export interface PartnerStatsResponse {

@@ -9,7 +9,6 @@ import { AffiliatePartnerCodeCreation } from 'modules/affiliate/containers/Affil
 import { AffiliatePartnerCodeInfo } from 'modules/affiliate/containers/AffiliatePartnerCodeInfo'
 import { AffiliatePartnerNextPayout } from 'modules/affiliate/containers/AffiliatePartnerNextPayout'
 import { AffiliatePartnerOnboard } from 'modules/affiliate/containers/AffiliatePartnerOnboard'
-import { AffiliatePartnerPayoutHistory } from 'modules/affiliate/containers/AffiliatePartnerPayoutHistory'
 import { AffiliatePartnerStats } from 'modules/affiliate/containers/AffiliatePartnerStats'
 import { useAffiliatePartnerInfo } from 'modules/affiliate/hooks/useAffiliatePartnerInfo'
 import { isSupportedPayoutsNetwork } from 'modules/affiliate/lib/affiliateProgramUtils'
@@ -36,7 +35,6 @@ export default function AffiliatePartner(): ReactNode {
             <AffiliatePartnerStats />
             <AffiliatePartnerNextPayout />
           </ThreeColumnGrid>
-          <AffiliatePartnerPayoutHistory />
           <AffiliateTermsFaqLinks align="center" />
         </>
       )}

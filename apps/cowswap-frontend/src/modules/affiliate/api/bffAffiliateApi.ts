@@ -14,7 +14,7 @@ import {
   PartnerInfoResponse,
   PartnerCreateRequest,
   PartnerStatsResponse,
-  TraderReferralCodeResponse,
+  TraderInfoResponse,
   TraderReferralCodeVerificationResponse,
   TraderReferralCodeVerificationRequest,
   TraderStatsResponse,
@@ -75,7 +75,7 @@ class BffAffiliateApi {
   ): Promise<TraderReferralCodeVerificationResponse> {
     const { code } = request
     const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
-    const { response, data, text } = await this.fetchJsonResponse<TraderReferralCodeResponse>(url, {
+    const { response, data, text } = await this.fetchJsonResponse<TraderInfoResponse>(url, {
       method: 'GET',
       headers: JSON_HEADERS,
     })

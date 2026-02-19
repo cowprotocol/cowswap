@@ -12,7 +12,7 @@ import { formatRefCode } from './affiliateProgramUtils'
 import { VERIFICATION_RETRY_DELAY_MS } from '../config/affiliateProgram.const'
 
 import type {
-  TraderReferralCodeResponse,
+  TraderInfoResponse,
   TraderReferralCodeVerificationResponse,
   TraderReferralCodeVerificationResult,
 } from './affiliateProgramTypes'
@@ -222,7 +222,7 @@ function handleCodeStatusResponse(params: {
   trackVerifyResult('valid', true)
 }
 
-function toProgramParams(data?: TraderReferralCodeResponse): AffiliateProgramParams | undefined {
+function toProgramParams(data?: TraderInfoResponse): AffiliateProgramParams | undefined {
   if (!data) {
     return undefined
   }

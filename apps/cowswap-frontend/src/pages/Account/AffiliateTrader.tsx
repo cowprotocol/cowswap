@@ -6,7 +6,6 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useLingui } from '@lingui/react/macro'
 
 import { AffiliateTraderCodeInfo } from 'modules/affiliate/containers/AffiliateTraderCodeInfo'
-import { AffiliateTraderHistory } from 'modules/affiliate/containers/AffiliateTraderHistory'
 import { AffiliateTraderNextPayout } from 'modules/affiliate/containers/AffiliateTraderNextPayout'
 import { AffiliateTraderOnboard } from 'modules/affiliate/containers/AffiliateTraderOnboard'
 import { AffiliateTraderStats } from 'modules/affiliate/containers/AffiliateTraderStats'
@@ -43,7 +42,6 @@ export default function AffiliateTrader(): ReactNode {
               <AffiliateTraderStats />
               <AffiliateTraderNextPayout />
             </ThreeColumnGrid>
-            <AffiliateTraderHistory />
           </>
         )}
       </PageWrapper>
