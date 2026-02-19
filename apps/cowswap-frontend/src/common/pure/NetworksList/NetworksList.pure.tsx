@@ -47,8 +47,8 @@ export function NetworksList({
             <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
 
             {isDeprecatedNetwork && (
-              <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
-                <Trans>VIEW ONLY</Trans>
+              <Badge type={BadgeTypes.ALERT} style={isActive ? { marginRight: '10px' } : undefined}>
+                <Trans>READ-ONLY</Trans>
               </Badge>
             )}
 
