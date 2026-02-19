@@ -1,36 +1,33 @@
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId, areAddressesEqual } from '@cowprotocol/cow-sdk'
-import { Erc20__factory, type Erc20Interface } from '@cowprotocol/cowswap-abis'
+import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
-import { Interface } from '@ethersproject/abi'
-import { BigNumber } from '@ethersproject/bignumber'
-import { MaxUint256 } from '@ethersproject/constants'
 
-const erc20Interface = Erc20__factory.createInterface()
-
-const daiInterface = new Interface(oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI) as Erc20Interface
+import { maxUint256, decodeFunctionData, type Hex } from 'viem'
 
 export interface PermitValidationResult {
   isValid: boolean
-  amount: BigNumber | null
+  amount: bigint | null
 }
 
 function validateEip2612Permit(
-  callData: string,
+  callData: Hex,
   spenderAddress: string,
   ownerAddress: string,
 ): PermitValidationResult | null {
   try {
-    const decoded = erc20Interface.decodeFunctionData('permit', callData)
+    const { functionName, args } = decodeFunctionData({ abi: Erc20Abi, data: callData })
+
+    const [owner, spender, value, deadline] = args as readonly unknown[] as [string, string, bigint, bigint]
 
     if (
-      decoded &&
-      areAddressesEqual(decoded.spender, spenderAddress) &&
-      areAddressesEqual(decoded.owner, ownerAddress) &&
-      (decoded.deadline as BigNumber)?.toNumber() > Date.now() / 1000
+      functionName === 'permit' &&
+      areAddressesEqual(spender, spenderAddress) &&
+      areAddressesEqual(owner, ownerAddress) &&
+      deadline > BigInt(Date.now() / 1000)
     ) {
       return {
         isValid: true,
-        amount: decoded.value as BigNumber,
+        amount: value,
       }
     }
   } catch {
@@ -40,24 +37,25 @@ function validateEip2612Permit(
   return null
 }
 
-function validateDaiPermit(
-  callData: string,
-  spenderAddress: string,
-  ownerAddress: string,
-): PermitValidationResult | null {
+function validateDaiPermit(callData: Hex, spenderAddress: string, ownerAddress: string): PermitValidationResult | null {
   try {
-    const decoded = daiInterface.decodeFunctionData('permit', callData)
+    const { functionName, args } = decodeFunctionData({
+      abi: oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI,
+      data: callData,
+    })
+
+    const [holder, spender, _nonce, expiry] = args as readonly unknown[] as [string, string, bigint, bigint]
 
     if (
-      decoded &&
-      areAddressesEqual(decoded.spender, spenderAddress) &&
-      areAddressesEqual(decoded.holder, ownerAddress) &&
-      (decoded.expiry as BigNumber)?.toNumber() > Date.now() / 1000
+      functionName === 'permit' &&
+      areAddressesEqual(spender, spenderAddress) &&
+      areAddressesEqual(holder, ownerAddress) &&
+      expiry > BigInt(Date.now() / 1000)
     ) {
       // DAI permit has no value in the call data, so we assume it's always max approval
       return {
         isValid: true,
-        amount: MaxUint256,
+        amount: maxUint256,
       }
     }
   } catch {
@@ -68,7 +66,7 @@ function validateDaiPermit(
 }
 
 export function isPermitDecodedCalldataValid(
-  callData: string,
+  callData: Hex,
   chainId: SupportedChainId,
   ownerAddress: string,
   spenderAddress?: string,

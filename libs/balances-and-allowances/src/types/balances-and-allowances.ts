@@ -1,7 +1,5 @@
-import type { BigNumber } from '@ethersproject/bignumber'
-
 export interface BalancesAndAllowances {
   balances: Record<string, bigint | undefined>
-  allowances?: Record<string, BigNumber | undefined>
+  allowances?: Record<string, bigint | undefined>
   isLoading: boolean
 }

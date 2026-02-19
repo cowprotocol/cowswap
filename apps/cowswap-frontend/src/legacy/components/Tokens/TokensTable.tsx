@@ -5,7 +5,6 @@ import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
 import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
-import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
@@ -48,7 +47,7 @@ type TokenTableParams = {
   tokensData: TokenWithLogo[] | undefined
   maxItems?: number
   balances?: BalancesState['values']
-  allowances: Record<string, BigNumber | undefined> | undefined
+  allowances: Record<string, bigint | undefined> | undefined
   page: number
   setPage: (page: number) => void
   query: string
@@ -233,7 +232,7 @@ export function TokenTable({
 
               const allowancesRaw = allowances && allowances[data.address.toLowerCase()]
               const allowance = allowancesRaw
-                ? CurrencyAmount.fromRawAmount(data, allowancesRaw.toHexString())
+                ? CurrencyAmount.fromRawAmount(data, `0x${allowancesRaw.toString(16)}`)
                 : undefined
 
               if (data) {
