@@ -11,7 +11,7 @@ export const Routes = {
   HOME: '/',
   SWAP: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/:inputCurrencyId?/:outputCurrencyId?`,
   HOOKS: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/hooks/:inputCurrencyId?/:outputCurrencyId?`,
-  LIMIT_ORDER: `/:chainId?${TRADE_WIDGET_PREFIX}/limit/:inputCurrencyId?/:outputCurrencyId?`,
+  LIMIT_ORDERS: `/:chainId?${TRADE_WIDGET_PREFIX}/limit/:inputCurrencyId?/:outputCurrencyId?`,
   YIELD: `/:chainId?${TRADE_WIDGET_PREFIX}/yield/:inputCurrencyId?/:outputCurrencyId?`,
   ADVANCED_ORDERS: `/:chainId?${TRADE_WIDGET_PREFIX}/advanced/:inputCurrencyId?/:outputCurrencyId?`,
   LONG_LIMIT_ORDER: `/:chainId?${TRADE_WIDGET_PREFIX}/limit-orders/:inputCurrencyId?/:outputCurrencyId?`,
@@ -73,7 +73,7 @@ export const MENU_ITEMS: I18nIMenuItem[] = [
     description: msg`Trade tokens`,
   },
   {
-    route: Routes.LIMIT_ORDER,
+    route: Routes.LIMIT_ORDERS,
     label: msg`Limit`,
     fullLabel: msg`Limit order`,
     description: msg`Set your own price`,

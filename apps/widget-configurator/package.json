@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/widget-configurator",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "CoW Swap widget configurator",
   "main": "src/main.tsx",
   "author": "",

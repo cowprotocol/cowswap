@@ -26,10 +26,10 @@ import {
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
-import AdvancedOrdersPage from 'pages/AdvancedOrders'
+import { AdvancedOrdersPage } from 'pages/AdvancedOrders/AdvancedOrders.page'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
-import LimitOrderPage from 'pages/LimitOrders'
+import { LimitOrdersPage } from 'pages/LimitOrders/LimitOrders.page'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
 
@@ -110,7 +110,7 @@ export function RoutesApp(): ReactNode {
 
       {/*Swap*/}
       <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
-      <Route path={RoutesEnum.LIMIT_ORDER} element={<LimitOrderPage />} />
+      <Route path={RoutesEnum.LIMIT_ORDERS} element={<LimitOrdersPage />} />
       <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />

@@ -1,7 +1,10 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
+import { usePendingOrdersPrices } from 'modules/orders'
+
+import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
@@ -21,21 +24,19 @@ export interface OrdersTableProps {
   currentTab: OrderTabId
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const { chainId } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const {
     orderType,
-    selectedOrders,
-    allowsOffchainSigning,
     filteredOrders,
-    pendingOrdersPrices,
     balancesAndAllowances,
-    getSpotPrice,
     orderActions,
     currentPageNumber = 0,
   } = useOrdersTableState() || {}
+  const pendingOrdersPrices = usePendingOrdersPrices()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
+  const ordersToCancelMap = useOrdersToCancelMap()
 
   const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
 
@@ -48,18 +49,6 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
 
   const isRowSelectable = !!allowsOffchainSigning
 
-  const selectedOrdersMap = useMemo(() => {
-    if (!selectedOrders) return {}
-
-    return selectedOrders.reduce(
-      (acc, val) => {
-        acc[val.id] = true
-        return acc
-      },
-      {} as { [key: string]: true },
-    )
-  }, [selectedOrders])
-
   const cancellableOrders = useMemo(
     () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromTableItem(item))),
     [ordersPage],
@@ -68,8 +57,8 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const allOrdersSelected = useMemo(() => {
     if (!cancellableOrders.length) return false
 
-    return cancellableOrders.every((item) => selectedOrdersMap[getParsedOrderFromTableItem(item).id])
-  }, [cancellableOrders, selectedOrdersMap])
+    return cancellableOrders.every((item) => ordersToCancelMap[getParsedOrderFromTableItem(item).id])
+  }, [cancellableOrders, ordersToCancelMap])
 
   const getPageUrl = useCallback((index: number) => buildOrdersTableUrl({ pageNumber: index }), [buildOrdersTableUrl])
 
@@ -101,15 +90,15 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
             allOrdersSelected={allOrdersSelected}
             visibleHeaders={visibleHeaders}
             isRowSelectable={isRowSelectable}
+            isTwapTable={orderType === TabOrderTypes.ADVANCED}
           />
 
           <Rows>
-            {getSpotPrice &&
-              ordersPage.map((item) => {
-                const id = isParsedOrder(item) ? item.id : item.parent.id
+            {ordersPage.map((item) => {
+              const id = isParsedOrder(item) ? item.id : item.parent.id
 
-                return <OrdersTableRow key={id} item={item} currentTab={currentTab} />
-              })}
+              return <OrdersTableRow key={id} item={item} currentTab={currentTab} />
+            })}
           </Rows>
         </TableInner>
       </TableBox>

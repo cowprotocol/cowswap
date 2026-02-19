@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/events-v3.1.0...events-v3.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.2.0
+
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/events-v3.0.1...events-v3.1.0) (2026-02-05)
 
 

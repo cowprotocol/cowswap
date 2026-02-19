@@ -15,7 +15,7 @@ import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 
-export function RegularLimitOrders(): ReactNode {
+export function RegularLimitOrdersPage(): ReactNode {
   const isUnlocked = useIsWidgetUnlocked()
   const { chainId, account } = useWalletInfo()
   const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)

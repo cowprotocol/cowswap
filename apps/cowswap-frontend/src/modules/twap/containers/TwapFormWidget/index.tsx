@@ -10,7 +10,7 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
 import { useIsRewardsRowEnabled } from 'modules/affiliate/hooks/useIsRewardsRowEnabled'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
-import { useGetReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -80,6 +80,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
+  const hideQuoteAmount = useShouldHideQuoteAmounts()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -176,7 +177,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
 
   return (
     <>
-      {!isWrapOrUnwrap && (
+      {!isWrapOrUnwrap && !hideQuoteAmount && (
         <>
           <styledEl.FooterBox>
             <RateInfo
@@ -203,7 +204,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
         upDownArrowsLeftAlign={true}
         prefixComponent={
           <em>
-            {limitPriceAfterSlippage ? (
+            {limitPriceAfterSlippage && !hideQuoteAmount ? (
               <styledEl.ExecutionPriceStyled
                 executionPrice={limitPriceAfterSlippage}
                 isInverted={isInverted}

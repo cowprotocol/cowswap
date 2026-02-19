@@ -1,16 +1,12 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import type { Command } from '@cowprotocol/types'
-import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
-import type { Currency, Price, Token } from '@uniswap/sdk-core'
+import type { Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import type { PendingOrdersPrices, SpotPricesKeyParams } from 'modules/orders'
-
 import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
-import type { CancellableOrder } from 'common/utils/isOrderCancellable'
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import type { OrderTabId } from './tabs/ordersTableTabs.constants'
@@ -44,7 +40,6 @@ export interface TabParams {
 export interface OrdersTableParams {
   orders: Order[]
   orderType: TabOrderTypes
-  isTwapTable?: boolean
   displayOrdersOnlyForSafeApp?: boolean
 }
 
@@ -63,23 +58,15 @@ export interface OrderActions {
 
 export interface OrdersTableState {
   currentTabId: OrderTabId
-  isSafeViaWc: boolean
   displayOrdersOnlyForSafeApp: boolean
   orderType: TabOrderTypes
-  injectedWidgetParams: Partial<CowSwapWidgetAppParams>
   tabs: TabParams[]
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]
   hasHydratedOrders: boolean
-  allowsOffchainSigning: boolean
   balancesAndAllowances: BalancesAndAllowances
   orderActions: OrderActions
   currentPageNumber: number
-  pendingOrdersPrices: PendingOrdersPrices
-  getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
-  pendingActivitiesCount: number
-  isTwapTable: boolean
-  selectedOrders: CancellableOrder[]
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>

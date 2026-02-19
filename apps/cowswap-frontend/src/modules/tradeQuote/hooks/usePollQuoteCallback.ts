@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useCallback, useRef } from 'react'
 
-import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
@@ -28,6 +28,7 @@ export function usePollQuoteCallback(
   tradeQuoteRef.current = tradeQuote
 
   const { quoteParams, appData, inputCurrency, hasSmartSlippage } = quoteParamsState || {}
+  const hasSmartSlippagePrev = usePrevious(hasSmartSlippage)
 
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
@@ -71,13 +72,20 @@ export function usePollQuoteCallback(
         )
       }
 
+      const isBridge = quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
+      /**
+       * In bridging mode, bridge deposit amount (input amount) is the swap min receive amount
+       * Because of that, we cannot change slippage without refetching the quote
+       */
+      const smartSlippageModeChanged = isBridge && hasSmartSlippagePrev !== hasSmartSlippage
+
       const context: QuoteUpdateContext = {
         currentQuote: tradeQuoteRef.current,
         quoteParams,
         appData,
         fetchQuote,
         hasParamsChanged,
-        forceUpdate,
+        forceUpdate: smartSlippageModeChanged || forceUpdate,
         isBrowserOnline: isOnlineRef.current && isWindowVisible,
         isConfirmOpen,
         fastQuote,
@@ -99,6 +107,7 @@ export function usePollQuoteCallback(
       quotePollingParams,
       getCorrelatedTokensByChainId,
       hasSmartSlippage,
+      hasSmartSlippagePrev,
     ],
   )
 }

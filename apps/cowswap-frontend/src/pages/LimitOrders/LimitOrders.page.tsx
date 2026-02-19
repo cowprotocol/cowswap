@@ -18,12 +18,12 @@ import {
 } from 'modules/limitOrders'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
-import { AlternativeLimitOrder } from './AlternativeLimitOrder'
-import { RegularLimitOrders } from './RegularLimitOrders'
+import { AlternativeLimitOrderPage } from './AlternativeLimitOrder.page'
+import { RegularLimitOrdersPage } from './RegularLimitOrders.page'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function LimitOrderPage() {
+export function LimitOrdersPage() {
   const isAlternative = useIsAlternativeOrderModalVisible()
   const { i18n } = useLingui()
 
@@ -37,14 +37,14 @@ export default function LimitOrderPage() {
       {isAlternative ? (
         <>
           <AlternativeLimitOrderUpdater />
-          <AlternativeLimitOrder />
+          <AlternativeLimitOrderPage />
         </>
       ) : (
         <>
           <InitialPriceUpdater />
           <SetupLimitOrderAmountsFromUrlUpdater />
           <TriggerAppziLimitOrdersSurveyUpdater />
-          <RegularLimitOrders />
+          <RegularLimitOrdersPage />
         </>
       )}
       <PageTitle title={i18n._(PAGE_TITLES.LIMIT_ORDERS)} />
