@@ -574,16 +574,18 @@ function detectPossibleCowSignal(
     const matchedVolume = flow.sellVolume < flow.buyVolume ? flow.sellVolume : flow.buyVolume
 
     if (flow.sellers.size && flow.buyers.size && uniqueParticipants > 1 && matchedVolume > 0) {
-      const symbol = tokens[tokenAddress]?.symbol || abbreviateString(tokenAddress, 6, 4)
+      const symbol = tokens[tokenAddress]?.symbol || TOKEN_SYMBOL_UNKNOWN
       acc.push(symbol)
     }
 
     return acc
   }, [])
 
+  const uniquePossibleCowTokenLabels = Array.from(new Set(possibleCowTokenLabels))
+
   return {
-    hasPossibleCow: possibleCowTokenLabels.length > 0,
-    possibleCowTokenLabels,
+    hasPossibleCow: uniquePossibleCowTokenLabels.length > 0,
+    possibleCowTokenLabels: uniquePossibleCowTokenLabels,
   }
 }
 

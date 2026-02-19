@@ -82,7 +82,7 @@ export function LeftNodes({
               y={y}
             />
             {route.surplusLabel && surplusSide === 'sell' ? (
-              <SurplusText label={route.surplusLabel} model={model} x={model.leftX} y={y} />
+              <SurplusText label={route.surplusLabel} model={model} side={surplusSide} x={model.leftX} y={y} />
             ) : null}
             {route.surplusLabel && surplusSide === 'receive' ? (
               <SurplusIndicator label={route.surplusLabel} model={model} side={surplusSide} x={model.leftX} y={y} />
@@ -162,7 +162,7 @@ export function RightNodes({
               />
             ) : null}
             {route.surplusLabel && surplusSide === 'receive' ? (
-              <SurplusText label={route.surplusLabel} model={model} x={model.rightX} y={y} />
+              <SurplusText label={route.surplusLabel} model={model} side={surplusSide} x={model.rightX} y={y} />
             ) : null}
             {route.surplusLabel && surplusSide === 'sell' ? (
               <SurplusIndicator label={route.surplusLabel} model={model} side={surplusSide} x={model.rightX} y={y} />
@@ -369,12 +369,13 @@ type SurplusTextProps = {
   x: number
   y: number
   label: string
+  side: 'sell' | 'receive'
   model: SankeyModel
 }
 
-function SurplusText({ x, y, label, model }: SurplusTextProps): ReactNode {
+function SurplusText({ x, y, label, side, model }: SurplusTextProps): ReactNode {
   const surplusLabel = `${label} surplus`
-  const tooltip = getSurplusTooltip(label, 'receive')
+  const tooltip = getSurplusTooltip(label, side)
 
   return (
     <g>
