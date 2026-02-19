@@ -1,6 +1,4 @@
-import type { RequestArguments } from '@web3-react/types'
-
-import type EventEmitter from 'eventemitter3'
+import type { EIP1193Provider } from 'viem'
 
 export interface EIP6963ProviderInfo {
   uuid: string
@@ -13,12 +11,6 @@ export interface EIP6963ProviderInfo {
 export interface EIP6963ProviderDetail {
   info: EIP6963ProviderInfo
   provider: EIP1193Provider
-}
-
-// https://eips.ethereum.org/EIPS/eip-1193
-export type EIP1193Provider = EventEmitter & {
-  isConnected?: () => boolean
-  request<T>(args: RequestArguments): Promise<T>
 }
 
 export interface EIP6963AnnounceProviderEvent extends CustomEvent {
