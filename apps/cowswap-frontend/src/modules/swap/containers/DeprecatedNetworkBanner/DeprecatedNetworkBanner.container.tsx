@@ -29,9 +29,9 @@ export function DeprecatedNetworkBanner(): ReactNode {
 
   return (
     <styledEl.RootWrapper>
-      <styledEl.ContentWrapper darkMode={darkMode} logoUrl={logoUrl}>
+      <styledEl.ContentWrapper $logoUrl={logoUrl}>
         <styledEl.LinkOutToBridge href={explorer}>
-          <styledEl.BodyText color={textColor}>
+          <styledEl.BodyText $color={textColor}>
             <styledEl.L2Icon src={logoUrl} />
             <AutoRow>
               <styledEl.Header>
