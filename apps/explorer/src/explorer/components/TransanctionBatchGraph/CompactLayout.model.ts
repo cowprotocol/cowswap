@@ -1,18 +1,30 @@
+import { computeCowTextLayout, formatAmountWithUsd, formatCowSavingsLabel } from './CompactLayout.visuals'
 import { CompactRoute, CowFlowSummary } from './types'
 
 export const DESKTOP_CHART_WIDTH = 1280
 export const MOBILE_CHART_WIDTH = 580
 export const DESKTOP_NODE_WIDTH = 260
 export const MOBILE_NODE_WIDTH = 160
-export const DESKTOP_NODE_HEIGHT = 96
-export const MOBILE_NODE_HEIGHT = 84
+// Node heights are computed dynamically by computeNodeHeight() based on
+// what content each card needs (surplus labels, flow hint pills, etc.).
+// All cards use the same height — the maximum needed across all routes,
+// similar to how CSS flexbox stretches all items to the tallest.
 const DESKTOP_CHART_PADDING = 32
 const MOBILE_CHART_PADDING = 24
 const DESKTOP_ROW_GAP = 24
 const MOBILE_ROW_GAP = 18
-const DESKTOP_COW_NODE_HEIGHT = 104
-const MOBILE_COW_NODE_HEIGHT = 94
+const DEFAULT_COW_NODE_HEIGHT = 116
 const CENTER_NODE_GAP = 18
+
+// Content layout constants for dynamic height computation.
+// These represent the bottom edge of the amount icon area (from card top)
+// and the space needed by optional bottom elements (flow hint pills, surplus text).
+const AMOUNT_CONTENT_BOTTOM_DESKTOP = 72
+const AMOUNT_CONTENT_BOTTOM_MOBILE = 68
+const BOTTOM_ELEMENT_GAP = 10
+const FLOW_HINT_PILL_DEPTH = 24
+const SURPLUS_TEXT_DEPTH = 22
+const MIN_BOTTOM_PADDING = 10
 const LABEL_FONT_SIZE = 12
 const LABEL_HORIZONTAL_PADDING = 4
 const LABEL_VERTICAL_PADDING = 2
@@ -23,8 +35,10 @@ export type LinkShape = {
   id: string
   routeId: string
   path: string
+  sourceX: number
   labelX: number
   labelY: number
+  targetX: number
   width: number
   label: string
   tooltipLabel: string
@@ -65,11 +79,15 @@ export function createSankeyModel(
   showUsdValues = false,
   isMobile = false,
 ): SankeyModel {
-  const config = getLayoutConfig(isMobile)
+  const nodeHeight = computeNodeHeight(routes, isMobile)
+  const baseConfig = getLayoutConfig(isMobile)
+  const cowNodeHeight = cowFlow
+    ? computeCowNodeHeight(cowFlow, showUsdValues, baseConfig.nodeWidth)
+    : baseConfig.cowNodeHeight
+  const config = { ...baseConfig, nodeHeight, cowNodeHeight }
   const cowMaps = getCowMaps(cowFlow)
   const layout = getBaseLayout(routes.length, !!cowFlow, config)
-  const { chartHeight, leftX, centerX, rightX, routeY, routeHeight, cowY, cowHeight, getRowY, nodeWidth, nodeHeight } =
-    layout
+  const { chartHeight, leftX, centerX, rightX, routeY, routeHeight, cowY, cowHeight, getRowY, nodeWidth } = layout
   const getRouteAnchorY = (index: number): number => routeY + ((index + 1) / (routes.length + 1)) * routeHeight
 
   const routesWithValues = routes.map((route) => buildRouteWithValues(route, cowMaps))
@@ -111,16 +129,11 @@ export function createSankeyModel(
     nodeHeight,
     cowNodeHeight: config.cowNodeHeight,
   })
-  const alignedLabels = resolveLabelCollisions({
-    links: [...sellLinks, ...buyLinks, ...cowInLinks, ...cowOutLinks],
+  const resolved = resolveAndApplyLabels(
+    { sell: sellLinks, buy: buyLinks, cowIn: cowInLinks, cowOut: cowOutLinks },
     chartHeight,
-    chartPadding: config.chartPadding,
-  })
-  const applyAlignedLabels = (links: LinkShape[]): LinkShape[] =>
-    links.map((link) => ({
-      ...link,
-      labelY: alignedLabels.get(link.id) ?? link.labelY,
-    }))
+    config.chartPadding,
+  )
 
   return {
     chartWidth: config.chartWidth,
@@ -134,10 +147,7 @@ export function createSankeyModel(
     routeHeight,
     cowY,
     cowHeight,
-    sellLinks: applyAlignedLabels(sellLinks),
-    buyLinks: applyAlignedLabels(buyLinks),
-    cowInLinks: applyAlignedLabels(cowInLinks),
-    cowOutLinks: applyAlignedLabels(cowOutLinks),
+    ...resolved,
     getRowY,
   }
 }
@@ -195,15 +205,29 @@ type LayoutConfig = {
   cowNodeHeight: number
 }
 
-function getLayoutConfig(isMobile: boolean): LayoutConfig {
+type CurveProfile = {
+  firstControlXRatio: number
+  secondControlXRatio: number
+}
+
+const DEFAULT_CURVE_PROFILE: CurveProfile = {
+  firstControlXRatio: 0.33,
+  secondControlXRatio: 0.67,
+}
+
+const SELL_CURVE_PROFILE: CurveProfile = {
+  firstControlXRatio: 0.18,
+  secondControlXRatio: 0.82,
+}
+
+function getLayoutConfig(isMobile: boolean): Omit<LayoutConfig, 'nodeHeight'> {
   if (isMobile) {
     return {
       chartWidth: MOBILE_CHART_WIDTH,
       chartPadding: MOBILE_CHART_PADDING,
       rowGap: MOBILE_ROW_GAP,
       nodeWidth: MOBILE_NODE_WIDTH,
-      nodeHeight: MOBILE_NODE_HEIGHT,
-      cowNodeHeight: MOBILE_COW_NODE_HEIGHT,
+      cowNodeHeight: DEFAULT_COW_NODE_HEIGHT,
     }
   }
 
@@ -212,9 +236,51 @@ function getLayoutConfig(isMobile: boolean): LayoutConfig {
     chartPadding: DESKTOP_CHART_PADDING,
     rowGap: DESKTOP_ROW_GAP,
     nodeWidth: DESKTOP_NODE_WIDTH,
-    nodeHeight: DESKTOP_NODE_HEIGHT,
-    cowNodeHeight: DESKTOP_COW_NODE_HEIGHT,
+    cowNodeHeight: DEFAULT_COW_NODE_HEIGHT,
   }
+}
+
+/**
+ * Compute the node card height dynamically based on route content.
+ * All cards use the same height (the max needed), like CSS flexbox.
+ *
+ * Layout bands from top:
+ *   Tag header  → y+16
+ *   Address     → y+40
+ *   Amount icon → bottom at y+72 (desktop) / y+68 (mobile)
+ *   Bottom slot → flow hint pill (24px depth) and/or surplus text (22px depth)
+ */
+function computeNodeHeight(routes: CompactRoute[], isMobile: boolean): number {
+  const contentBottom = isMobile ? AMOUNT_CONTENT_BOTTOM_MOBILE : AMOUNT_CONTENT_BOTTOM_DESKTOP
+
+  // Determine the deepest bottom element across all route cards.
+  // Flow hint pills appear on right-side cards for all displayed routes
+  // (every route has sell/buy flows → AMM/CoW/Mixed hints are always shown).
+  let maxBottomDepth = routes.length > 0 ? FLOW_HINT_PILL_DEPTH : 0
+
+  // Surplus text/indicator may also appear at card bottom (side-by-side with pill).
+  for (const route of routes) {
+    if (route.surplusLabel) {
+      maxBottomDepth = Math.max(maxBottomDepth, SURPLUS_TEXT_DEPTH)
+      break
+    }
+  }
+
+  if (maxBottomDepth === 0) {
+    return contentBottom + MIN_BOTTOM_PADDING
+  }
+
+  return contentBottom + BOTTOM_ELEMENT_GAP + maxBottomDepth
+}
+
+function computeCowNodeHeight(cowFlow: CowFlowSummary, showUsdValues: boolean, nodeWidth: number): number {
+  const matchedLabel = showUsdValues
+    ? formatAmountWithUsd(cowFlow.matchedAmountLabel, cowFlow.matchedAmountUsdValue, true)
+    : cowFlow.matchedAmountLabel
+  const savingsLabel = formatCowSavingsLabel(cowFlow.estimatedLpFeeSavingsUsd)
+  const layout = computeCowTextLayout(matchedLabel, savingsLabel, !!cowFlow.tokenAddress, nodeWidth)
+
+  return layout.totalHeight
 }
 
 function getBaseLayout(rows: number, hasCow: boolean, config: LayoutConfig): BaseLayout {
@@ -368,9 +434,11 @@ function buildSellLinks(
     acc.push({
       id: `sell-link-${item.route.id}`,
       routeId: item.route.id,
-      path: buildBezierPath(startX, startY, endX, endY),
+      path: buildBezierPath(startX, startY, endX, endY, SELL_CURVE_PROFILE),
+      sourceX: startX,
       labelX: (startX + endX) / 2,
       labelY: getLabelY(startY, endY),
+      targetX: endX,
       width: getFlowWidth(getFlowDisplayValue(item.ammSellValue, item.ammSellUsdValue, showUsdValues), maxFlow),
       label: displayLabel,
       tooltipLabel: flowTooltipLabel(displayLabel, item.route.sellAmountLabel, item.ammSellUsdValue, showUsdValues),
@@ -413,8 +481,10 @@ function buildBuyLinks(
       id: `buy-link-${item.route.id}`,
       routeId: item.route.id,
       path: buildBezierPath(startX, startY, endX, endY),
+      sourceX: startX,
       labelX: (startX + endX) / 2,
       labelY: getLabelY(startY, endY),
+      targetX: endX,
       width: getFlowWidth(getFlowDisplayValue(item.ammBuyValue, item.ammBuyUsdValue, showUsdValues), maxFlow),
       label: displayLabel,
       tooltipLabel: flowTooltipLabel(displayLabel, item.route.buyAmountLabel, item.ammBuyUsdValue, showUsdValues),
@@ -465,8 +535,10 @@ function buildCowInLinks(
       id: `cow-in-${allocation.routeId}`,
       routeId: allocation.routeId,
       path: buildBezierPath(startX, startY, endX, endY),
+      sourceX: startX,
       labelX: (startX + endX) / 2,
       labelY: getLabelY(startY, endY),
+      targetX: endX,
       width: getFlowWidth(
         getFlowDisplayValue(allocation.amountValue, allocation.amountUsdValue, showUsdValues),
         maxFlow,
@@ -523,8 +595,10 @@ function buildCowOutLinks(
       id: `cow-out-${allocation.routeId}`,
       routeId: allocation.routeId,
       path: buildBezierPath(startX, startY, endX, endY),
+      sourceX: startX,
       labelX: (startX + endX) / 2,
       labelY: getLabelY(startY, endY),
+      targetX: endX,
       width: getFlowWidth(
         getFlowDisplayValue(allocation.amountValue, allocation.amountUsdValue, showUsdValues),
         maxFlow,
@@ -638,10 +712,16 @@ function getFlowDisplayValue(value: number, usdValue: number | undefined, showUs
   return showUsdValues && usdValue ? usdValue : value
 }
 
-function buildBezierPath(startX: number, startY: number, endX: number, endY: number): string {
+function buildBezierPath(
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  curveProfile: CurveProfile = DEFAULT_CURVE_PROFILE,
+): string {
   const horizontalDistance = endX - startX
-  const firstControlPointX = startX + horizontalDistance * 0.33
-  const secondControlPointX = startX + horizontalDistance * 0.66
+  const firstControlPointX = startX + horizontalDistance * curveProfile.firstControlXRatio
+  const secondControlPointX = startX + horizontalDistance * curveProfile.secondControlXRatio
 
   return `M ${startX} ${startY} C ${firstControlPointX} ${startY}, ${secondControlPointX} ${endY}, ${endX} ${endY}`
 }
@@ -730,4 +810,24 @@ function estimateLabelHeight(): number {
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
+}
+
+type LinkGroups = { sell: LinkShape[]; buy: LinkShape[]; cowIn: LinkShape[]; cowOut: LinkShape[] }
+
+function resolveAndApplyLabels(
+  groups: LinkGroups,
+  chartHeight: number,
+  chartPadding: number,
+): { sellLinks: LinkShape[]; buyLinks: LinkShape[]; cowInLinks: LinkShape[]; cowOutLinks: LinkShape[] } {
+  const all = [...groups.sell, ...groups.buy, ...groups.cowIn, ...groups.cowOut]
+  const aligned = resolveLabelCollisions({ links: all, chartHeight, chartPadding })
+  const apply = (links: LinkShape[]): LinkShape[] =>
+    links.map((link) => ({ ...link, labelY: aligned.get(link.id) ?? link.labelY }))
+
+  return {
+    sellLinks: apply(groups.sell),
+    buyLinks: apply(groups.buy),
+    cowInLinks: apply(groups.cowIn),
+    cowOutLinks: apply(groups.cowOut),
+  }
 }

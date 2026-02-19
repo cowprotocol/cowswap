@@ -4,14 +4,15 @@ import { useWindowSize } from '@cowprotocol/common-hooks'
 
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, StylesheetCSS } from 'cytoscape'
 
+import { buildBatchInsights } from './batchInsights'
 import { LAYOUTS } from './layouts'
 import { buildContractViewNodes, buildTokenViewNodes, getTokenAddress } from './nodesBuilder'
 import { BuildSettlementParams, buildTradesBasedSettlement, buildTransfersBasedSettlement } from './settlementBuilder'
-import { CustomLayoutOptions, GetTxBatchTradesResult, PopperInstance, ViewType } from './types'
+import { CustomLayoutOptions, GetTxBatchTradesResult, LayoutMode, PopperInstance, ViewType } from './types'
 import { bindPopper, removePopper, updateLayout } from './utils'
 
 import { Order } from '../../../api/operator'
-import { traceToTransfersAndTrades } from '../../../api/tenderly'
+import { Trace, traceToTransfersAndTrades } from '../../../api/tenderly'
 import UnknownToken from '../../../assets/img/question1.svg'
 import { useMultipleErc20 } from '../../../hooks/useErc20'
 import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
@@ -50,7 +51,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
   const [resetZoom, setResetZoom] = useState<boolean | null>(null)
-  const [layout, setLayout] = useState(LAYOUTS.grid)
+  const [layout, setLayout] = useState(LAYOUTS.fcose)
   const { height } = useWindowSize()
   const heightSize = height && height - HEIGHT_HEADER_FOOTER
   const [failedToLoadGraph, setFailedToLoadGraph] = useState(false)
@@ -112,45 +113,65 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     const cy = cytoscapeRef.current
     if (!cy || !elements.length) return
 
+    const focusEdge = (edge: Cytoscape.EdgeSingular): void => {
+      cy.elements().addClass('dimmed')
+      edge.removeClass('dimmed').addClass('focus hover')
+      edge.source().removeClass('dimmed').addClass('focus')
+      edge.target().removeClass('dimmed').addClass('focus')
+      document.getElementById('tx-graph')?.classList.add('hover')
+    }
+
+    const focusNode = (node: Cytoscape.NodeSingular): void => {
+      cy.elements().addClass('dimmed')
+      node.removeClass('dimmed').addClass('focus')
+      node.connectedEdges().removeClass('dimmed').addClass('focus')
+      node.connectedEdges().connectedNodes().removeClass('dimmed').addClass('focus')
+
+      if (node.data('href')) {
+        node.addClass('hover')
+        document.getElementById('tx-graph')?.classList.add('hover')
+      }
+    }
+
+    const clearFocus = (): void => {
+      cy.elements().removeClass('dimmed')
+      cy.elements().removeClass('focus')
+      cy.elements().removeClass('hover')
+      document.getElementById('tx-graph')?.classList.remove('hover')
+    }
+
     cy.on('mouseover touchstart', 'edge', (event): void => {
       const target = event.target
       const targetData: NodeDataDefinition | EdgeDataDefinition = target.data()
 
       bindPopper(event, targetData, cyPopperRef)
+      focusEdge(target)
     })
-    cy.on('mouseover', 'edge', (event): void => {
-      event.target.addClass('hover')
-      document.getElementById('tx-graph')?.classList.add('hover')
-    })
-    cy.on('mouseout', 'edge', (event): void => {
-      event.target.removeClass('hover')
-      document.getElementById('tx-graph')?.classList.remove('hover')
+    cy.on('mouseout', 'edge', () => {
+      clearFocus()
     })
     cy.on('mouseover touchstart', 'node', (event): void => {
       const target = event.target
       const targetData: NodeDataDefinition | EdgeDataDefinition = target.data()
 
       bindPopper(event, targetData, cyPopperRef)
+      focusNode(target)
     })
-    cy.on('mouseover', 'node', (event): void => {
-      if (event.target.data('href')) {
-        event.target.addClass('hover')
-        document.getElementById('tx-graph')?.classList.add('hover')
-      }
-    })
-    cy.on('mouseout', 'node', (event): void => {
-      event.target.removeClass('hover')
-      document.getElementById('tx-graph')?.classList.remove('hover')
+    cy.on('mouseout', 'node', () => {
+      clearFocus()
     })
     cy.on('tap', 'node', (event): void => {
       const href = event.target.data('href')
       href && window.open(href, '_blank')
     })
+    cy.on('tap', () => {
+      clearFocus()
+    })
     cy.nodes().noOverlap({ padding: 5 })
 
     return (): void => {
       cy.removeAllListeners()
-      document.getElementById('tx-graph')?.classList.remove('hover')
+      clearFocus()
       removePopper(cyPopperRef)
     }
   }, [cytoscapeRef, elements.length])
@@ -219,6 +240,13 @@ const DEFAULT_VIEW_TYPE = ViewType.TRANSFERS
 const DEFAULT_VIEW_NAME = ViewType[DEFAULT_VIEW_TYPE]
 
 const VISUALIZATION_PARAM_NAME = 'vis'
+const LAYOUT_MODE_PARAM_NAME = 'mode'
+const LAYOUT_MODE_QUERY_TO_ENUM: Record<string, LayoutMode> = {
+  sankey: LayoutMode.COMPACT,
+  legacy: LayoutMode.GRAPH,
+  compact: LayoutMode.COMPACT,
+  graph: LayoutMode.GRAPH,
+}
 
 function useQueryViewParams(): string {
   const query = useQuery()
@@ -229,6 +257,34 @@ function useUpdateVisQuery(): (vis: string) => void {
   const updateQueryString = useUpdateQueryString()
 
   return useCallback((vis: string) => updateQueryString(VISUALIZATION_PARAM_NAME, vis), [updateQueryString])
+}
+
+export function useQueryLayoutMode(): LayoutMode | undefined {
+  const query = useQuery()
+  const rawLayoutMode = query.get(LAYOUT_MODE_PARAM_NAME)?.toLowerCase()
+
+  if (!rawLayoutMode) {
+    return undefined
+  }
+
+  return LAYOUT_MODE_QUERY_TO_ENUM[rawLayoutMode]
+}
+
+export function useUpdateLayoutModeQuery(): (layoutMode: LayoutMode) => void {
+  const query = useQuery()
+  const updateQueryString = useUpdateQueryString()
+
+  return useCallback(
+    (layoutMode: LayoutMode) => {
+      const nextModeParam = layoutMode === LayoutMode.COMPACT ? 'sankey' : 'legacy'
+      if (query.get(LAYOUT_MODE_PARAM_NAME) === nextModeParam) {
+        return
+      }
+
+      updateQueryString(LAYOUT_MODE_PARAM_NAME, nextModeParam)
+    },
+    [query, updateQueryString],
+  )
 }
 
 // TODO: Break down this large function into smaller functions
@@ -284,11 +340,27 @@ export function useTxBatchData(
     networkId,
   })
 
+  const allTokens = useMemo(() => ({ ...orderTokens, ...missingTokens }), [missingTokens, orderTokens])
+
+  const batchInsights = useMemo(
+    () =>
+      buildBatchInsights({
+        networkId,
+        orders,
+        trades,
+        transfers,
+        contracts: txData.contracts,
+        tokens: allTokens,
+        txSender: getTxSenderAddress(txData.trace),
+      }),
+    [networkId, orders, trades, transfers, txData.contracts, allTokens, txData.trace],
+  )
+
   // Build settlement object
   const txSettlement = useMemo(() => {
     const params: BuildSettlementParams = {
       networkId,
-      tokens: { ...orderTokens, ...missingTokens },
+      tokens: allTokens,
       txData,
       orders,
       trades,
@@ -298,11 +370,16 @@ export function useTxBatchData(
     return visualization === ViewType.TRADES
       ? buildTradesBasedSettlement(params)
       : buildTransfersBasedSettlement(params)
-  }, [networkId, orderTokens, missingTokens, txData, orders, trades, transfers, visualization])
+  }, [networkId, allTokens, txData, orders, trades, transfers, visualization])
 
   return useMemo(
-    () => ({ txSettlement, error: txData.error, isLoading: txData.isLoading || areTokensLoading }),
-    [txSettlement, txData.error, txData.isLoading, areTokensLoading],
+    () => ({
+      txSettlement,
+      error: txData.error,
+      isLoading: txData.isLoading || areTokensLoading,
+      batchInsights,
+    }),
+    [txSettlement, txData.error, txData.isLoading, areTokensLoading, batchInsights],
   )
 }
 
@@ -327,4 +404,34 @@ export function useVisualization(): UseVisualizationReturn {
   }, [updateVisQuery, visualizationViewSelected])
 
   return { visualization: visualizationViewSelected, onChangeVisualization }
+}
+
+function getTxSenderAddress(trace: Trace | undefined): string | undefined {
+  if (!trace) {
+    return undefined
+  }
+
+  const directTraceFrom = getStringValue((trace as unknown as Record<string, unknown>).from)
+  if (directTraceFrom) {
+    return directTraceFrom
+  }
+
+  const transaction = (trace as unknown as Record<string, unknown>).transaction
+  if (typeof transaction === 'object' && transaction !== null) {
+    const from = getStringValue((transaction as Record<string, unknown>).from)
+    if (from) {
+      return from
+    }
+
+    const fromAddress = getStringValue((transaction as Record<string, unknown>).from_address)
+    if (fromAddress) {
+      return fromAddress
+    }
+  }
+
+  return undefined
+}
+
+function getStringValue(value: unknown): string | undefined {
+  return typeof value === 'string' && value.length > 0 ? value : undefined
 }

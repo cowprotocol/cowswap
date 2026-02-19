@@ -41,6 +41,11 @@ export enum ViewType {
   TRADES,
 }
 
+export enum LayoutMode {
+  GRAPH = 'graph',
+  COMPACT = 'compact',
+}
+
 export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose' | 'circle' | 'concentric'
 
 export type CustomLayoutOptions = LayoutOptions & {
@@ -107,6 +112,68 @@ export type GetTxBatchTradesResult = {
   txSettlement: Settlement | undefined
   error: string
   isLoading: boolean
+  batchInsights: BatchInsights
+}
+
+export type CompactTokenInfo = {
+  address: string
+  symbol: string
+  name?: string
+}
+
+export type CompactRoute = {
+  id: string
+  traderAddress: string
+  traderLabel: string
+  receiverAddress: string
+  receiverLabel: string
+  sellAmountLabel: string
+  buyAmountLabel: string
+  sellAmountValue: number
+  buyAmountValue: number
+  sellAmountUsdValue?: number
+  buyAmountUsdValue?: number
+  sellToken?: CompactTokenInfo
+  buyToken?: CompactTokenInfo
+  surplusLabel?: string
+  surplusSide?: 'sell' | 'receive'
+}
+
+export type CowFlowAllocation = {
+  routeId: string
+  amountValue: number
+  amountLabel: string
+  amountUsdValue?: number
+}
+
+export type CowFlowSummary = {
+  tokenSymbol: string
+  tokenAddress?: string
+  matchedAmountValue: number
+  matchedAmountLabel: string
+  matchedAmountUsdValue?: number
+  estimatedLpFeeSavingsUsd: number
+  confidence: 'heuristic' | 'confirmed'
+  providerAllocations: CowFlowAllocation[]
+  receiverAllocations: CowFlowAllocation[]
+}
+
+export type BatchInsights = {
+  orderCount: number
+  tradeCount: number
+  transferCount: number
+  interactionCount: number
+  dexLabel: string
+  dexAddress?: string
+  hasPossibleCow: boolean
+  possibleCowTokenLabels: string[]
+  useCompactByDefault: boolean
+  compactRoutes: CompactRoute[]
+  cowFlow?: CowFlowSummary
+  hasUsdEstimates: boolean
+  solverAddress?: string
+  bridgeOrdersCount: number
+  surplusOrdersCount: number
 }
 
 export interface PopperInstance {
