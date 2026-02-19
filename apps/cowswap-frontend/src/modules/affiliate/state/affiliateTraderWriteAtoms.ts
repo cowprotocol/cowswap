@@ -6,8 +6,9 @@ import {
   AffiliateTraderInMemoryState,
 } from './affiliateTraderAtom'
 
-import { TraderReferralCodeVerificationResult } from '../lib/affiliateProgramTypes'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
+
+import type { TraderReferralCodeVerificationResult } from '../hooks/useAffiliateTraderVerification'
 
 export const openTraderReferralCodeModalAtom = atom(null, (get, set, refCode?: string) => {
   const storedState = get(affiliateTraderStoredStateAtom)
@@ -125,16 +126,6 @@ export const setTraderReferralSavedCodeAtom = atom(null, (_get, set, code?: stri
 export const setRecoveredTraderReferralCodeAtom = atom(null, (_get, set, code?: string) => {
   const savedCode = code
   set(affiliateTraderStoredStateAtom, savedCode ? { savedCode, isLinked: true } : undefined)
-  set(affiliateTraderStateAtom, (prev) => {
-    if (!savedCode) {
-      return prev
-    }
-
-    return {
-      ...prev,
-      codeInput: savedCode,
-    }
-  })
 })
 
 function resolveCode(prev: AffiliateTraderInMemoryState, refCode: string | undefined, savedCode?: string): string {

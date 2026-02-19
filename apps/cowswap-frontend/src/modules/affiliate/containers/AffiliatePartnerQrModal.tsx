@@ -10,9 +10,9 @@ import { Trans } from '@lingui/react/macro'
 import QRCode from 'react-qrcode-logo'
 import styled from 'styled-components/macro'
 
-import { getReferralLink } from 'modules/affiliate/lib/affiliateProgramUtils'
-
 import { CowModal } from 'common/pure/Modal'
+
+import { getReferralLink } from '../lib/affiliateProgramUtils'
 
 const QR_SIZE_PX = 220
 const QR_LOGO_SIZE_PX = 64

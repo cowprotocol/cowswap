@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { FormEvent, RefObject, useCallback } from 'react'
+import { FormEvent, useCallback } from 'react'
 
 import { useToggleAffiliateModal } from './useToggleAffiliateModal'
 
@@ -13,29 +13,21 @@ import {
 
 interface TraderReferralCodeHandlers {
   onClose(): void
-  onEdit(): void
   onRemove(): void
   onSave(): void
   onChange(event: FormEvent<HTMLInputElement>): void
 }
 
-export function useTraderReferralCodeHandlers(
-  inputRef: RefObject<HTMLInputElement | null>,
-): TraderReferralCodeHandlers {
+export function useTraderReferralCodeHandlers(): TraderReferralCodeHandlers {
   const affiliateTrader = useAtomValue(affiliateTraderAtom)
-  const close = useToggleAffiliateModal()
+  const onClose = useToggleAffiliateModal()
   const setInputCode = useSetAtom(setTraderReferralCodeInputAtom)
   const saveCode = useSetAtom(saveTraderReferralCodeAtom)
   const removeCode = useSetAtom(removeTraderReferralCodeAtom)
 
-  const onEdit = useCallback(() => {
-    setTimeout(() => inputRef.current?.focus(), 0)
-  }, [inputRef])
-
   const onRemove = useCallback(() => {
     removeCode()
-    setTimeout(() => inputRef.current?.focus(), 0)
-  }, [inputRef, removeCode])
+  }, [removeCode])
 
   const onSave = useCallback(() => {
     const refCode = affiliateTrader.codeInput ? formatRefCode(affiliateTrader.codeInput) : undefined
@@ -54,8 +46,7 @@ export function useTraderReferralCodeHandlers(
   )
 
   return {
-    onClose: close,
-    onEdit,
+    onClose,
     onRemove,
     onSave,
     onChange,

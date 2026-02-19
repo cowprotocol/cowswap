@@ -7,10 +7,12 @@ import { Trans } from '@lingui/react/macro'
 
 import { BottomMetaRow, CardTitle, ColumnThreeCard, InlineNote, PayoutValue, TitleWithTooltip } from './shared'
 
+import { formatUsdcCompact } from '../lib/affiliateProgramUtils'
+
 const USDC_LOGO_URL = 'https://files.cow.fi/token-lists/images/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png'
 
 type NextPayoutCardProps = {
-  payout: string
+  payout?: number
   showLoader?: boolean
 }
 
@@ -29,7 +31,7 @@ export function NextPayoutCard({ payout, showLoader }: NextPayoutCardProps): Rea
       </CardTitle>
       <PayoutValue>
         <img src={USDC_LOGO_URL} height={36} width={36} alt="" role="presentation" />
-        {payout}
+        {formatUsdcCompact(payout ?? 0)}
       </PayoutValue>
       <BottomMetaRow>
         <InlineNote>

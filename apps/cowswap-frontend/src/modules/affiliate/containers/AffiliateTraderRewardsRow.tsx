@@ -5,12 +5,11 @@ import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-import { AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE } from 'modules/affiliate/config/affiliateProgram.const'
-import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
-import { useToggleAffiliateModal } from 'modules/affiliate/hooks/useToggleAffiliateModal'
-import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
-
 import { StyledInfoIcon, StyledRowBetween, TextWrapper } from '../../tradeWidgetAddons/pure/Row/styled'
+import { AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE } from '../config/affiliateProgram.const'
+import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
+import { useToggleAffiliateModal } from '../hooks/useToggleAffiliateModal'
+import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
 
 export function AffiliateTraderRewardsRow(): ReactNode {
   const toggleAffiliateModal = useToggleAffiliateModal()

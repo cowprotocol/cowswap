@@ -32,7 +32,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
   const userConsent = useRwaConsentForAppData()
-  const { savedCode: referrerCode } = useAtomValue(affiliateTraderAtom)
+  const { savedCode: refCode } = useAtomValue(affiliateTraderAtom)
 
   if (!chainId) return null
 
@@ -47,7 +47,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
       volumeFee={volumeFee}
       replacedOrderUid={replacedOrderUid}
       userConsent={userConsent}
-      referrerCode={referrerCode}
+      refCode={refCode}
     />
   )
 })

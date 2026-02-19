@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { PayoutAddressConfirmation } from './PayoutAddressConfirmation'
+
+import { isSupportedPayoutsNetwork } from '../../../affiliate/lib/affiliateProgramUtils'
 
 export interface CodeCreationPayoutSectionProps {
   account?: string
@@ -13,7 +13,7 @@ export interface CodeCreationPayoutSectionProps {
 
 export function CodeCreationPayoutSection(props: CodeCreationPayoutSectionProps): ReactNode {
   const { account, chainId, payoutAddressConfirmed, onTogglePayoutAddressConfirmed } = props
-  const showPayoutAddressConfirmation = !!account && chainId !== undefined && chainId !== SupportedChainId.MAINNET
+  const showPayoutAddressConfirmation = !!account && !!chainId && !isSupportedPayoutsNetwork(chainId)
 
   if (!showPayoutAddressConfirmation || !account) {
     return null

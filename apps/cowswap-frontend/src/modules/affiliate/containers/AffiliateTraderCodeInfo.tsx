@@ -10,8 +10,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { useAffiliateTraderStats } from 'modules/affiliate/hooks/useAffiliateTraderStats'
-import { useToggleAffiliateModal } from 'modules/affiliate/hooks/useToggleAffiliateModal'
+import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
+import { useToggleAffiliateModal } from '../hooks/useToggleAffiliateModal'
 import {
   CardTitle,
   HeroActions,
@@ -24,8 +24,8 @@ import {
   ColumnOneCard,
   RewardsHeader,
   ValidStatusBadge,
-} from 'modules/affiliate/pure/shared'
-import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
+} from '../pure/shared'
+import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
 
 export function AffiliateTraderCodeInfo(): ReactNode {
   const { account } = useWalletInfo()

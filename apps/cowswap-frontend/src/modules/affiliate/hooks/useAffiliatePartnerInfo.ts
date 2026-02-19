@@ -1,7 +1,7 @@
 import useSWR, { SWRResponse } from 'swr'
 
-import { bffAffiliateApi } from 'modules/affiliate/api/bffAffiliateApi'
-import { PartnerInfoResponse } from 'modules/affiliate/lib/affiliateProgramTypes'
+import { bffAffiliateApi } from '../api/bffAffiliateApi'
+import { PartnerInfoResponse } from '../lib/affiliateProgramTypes'
 
 export function useAffiliatePartnerInfo(account: string | undefined): SWRResponse<PartnerInfoResponse | null, Error> {
   return useSWR<PartnerInfoResponse | null, Error>(

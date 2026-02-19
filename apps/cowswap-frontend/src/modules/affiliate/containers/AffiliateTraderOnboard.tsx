@@ -8,15 +8,8 @@ import { Trans } from '@lingui/react/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { useToggleAffiliateModal } from 'modules/affiliate/hooks/useToggleAffiliateModal'
-import {
-  AffiliateTermsFaqLinks,
-  HeroActions,
-  HeroCard,
-  HeroContent,
-  HeroSubtitle,
-  HeroTitle,
-} from 'modules/affiliate/pure/shared'
+import { useToggleAffiliateModal } from '../hooks/useToggleAffiliateModal'
+import { AffiliateTermsFaqLinks, HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle } from '../pure/shared'
 
 export function AffiliateTraderOnboard(): ReactNode {
   const { account } = useWalletInfo()

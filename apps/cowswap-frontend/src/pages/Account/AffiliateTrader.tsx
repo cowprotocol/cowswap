@@ -22,6 +22,7 @@ export default function AffiliateTrader(): ReactNode {
 
   const { savedCode, codeInput } = useAtomValue(affiliateTraderAtom)
   const { walletStatus } = useAffiliateTraderWallet()
+  console.log('📜 LOG > AffiliateTrader > walletStatus:', walletStatus)
 
   return (
     <>
@@ -33,7 +34,7 @@ export default function AffiliateTrader(): ReactNode {
           <AffiliateTraderIneligible refCode={codeInput} />
         ) : walletStatus === TraderWalletStatus.UNSUPPORTED ? (
           <AffiliateTraderUnsupportedNetwork />
-        ) : !savedCode ? (
+        ) : !savedCode || walletStatus === TraderWalletStatus.DISCONNECTED ? (
           <AffiliateTraderOnboard />
         ) : (
           <>

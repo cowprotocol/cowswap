@@ -1,4 +1,4 @@
-import { FormEvent, ReactNode, RefObject } from 'react'
+import { FormEvent, KeyboardEvent, ReactNode } from 'react'
 
 import { Badge, HelpTooltip } from '@cowprotocol/ui'
 
@@ -18,10 +18,12 @@ import {
   TagGroup,
 } from './styles'
 
-import { TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
 import { formatRefCode } from '../../lib/affiliateProgramUtils'
-import { ReferralCodeInputRow, type TrailingIconKind } from '../ReferralCodeInput/ReferralCodeInputRow'
+import { type RefCodeAdornmentVariant } from '../RefCodeInput/RefCodeAdornment'
+import { RefCodeInput } from '../RefCodeInput/RefCodeInput'
 import { LabelContent } from '../shared'
+
+import type { TraderReferralCodeVerificationStatus } from '../../hooks/useAffiliateTraderVerification'
 
 const VERIFICATION_ERROR_KINDS: ReadonlySet<TraderReferralCodeVerificationStatus> = new Set(['invalid', 'error'])
 
@@ -36,7 +38,6 @@ export interface TraderReferralCodeFormProps {
   onSave(): void
   onChange(event: FormEvent<HTMLInputElement>): void
   onPrimaryClick(): void
-  inputRef: RefObject<HTMLInputElement | null>
 }
 
 export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): ReactNode {
@@ -44,35 +45,39 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
     uiState,
     isConnected,
     savedCode,
-    displayCode,
+    displayCode: inputCode,
     verificationStatus,
     onEdit,
     onRemove,
     onSave,
     onChange,
     onPrimaryClick,
-    inputRef,
   } = props
 
   const isEditingUi = uiState === 'editing' || uiState === 'invalid' || uiState === 'error'
   const showPendingLabelInInput = isConnected && shouldShowPendingLabel(verificationStatus) && isEditingUi
   const showValidLabelInInput = verificationStatus === 'valid' && isEditingUi
-  const { hasError, isEditing, isInputDisabled, trailingIconKind, showEdit, showRemove, canSubmitSave } =
-    deriveFormFlags({
-      uiState,
-      isConnected,
-      verificationStatus,
-      savedCode,
-      displayCode,
-      showPendingLabelInInput,
-      showValidLabelInInput,
-    })
+  const { hasError, isInputDisabled, adornmentVariant, showEdit, showRemove, canSubmitSave } = deriveFormFlags({
+    uiState,
+    isConnected,
+    verificationStatus,
+    savedCode,
+    displayCode: inputCode,
+    showPendingLabelInInput,
+    showValidLabelInInput,
+  })
   const showPendingTag = isConnected && verificationStatus === 'pending' && !showPendingLabelInInput
   const showValidTag = verificationStatus === 'valid' && !showValidLabelInInput
-  const isChecking = verificationStatus === 'checking'
+  const isLoading = verificationStatus === 'checking'
   const submitAction = canSubmitSave ? onSave : onPrimaryClick
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
+    if (event.key !== 'Enter') {
+      return
+    }
 
-  const tooltipCopy = t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`
+    event.preventDefault()
+    submitAction()
+  }
 
   return (
     <FormGroup
@@ -82,10 +87,12 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
       }}
     >
       <LabelRow>
-        <Label htmlFor="referral-code-input">
+        <Label>
           <LabelContent>
             <Trans>Referral code</Trans>
-            <HelpTooltip text={tooltipCopy} />
+            <HelpTooltip
+              text={<Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>}
+            />
           </LabelContent>
         </Label>
         <LabelAffordances>
@@ -94,19 +101,14 @@ export function TraderReferralCodeForm(props: TraderReferralCodeFormProps): Reac
         </LabelAffordances>
       </LabelRow>
 
-      <ReferralCodeInputRow
-        displayCode={displayCode}
+      <RefCodeInput
         hasError={hasError}
-        isInputDisabled={isInputDisabled || isChecking}
-        isEditing={isEditing}
-        isLinked={false}
-        trailingIconKind={isChecking ? 'pending' : trailingIconKind}
-        canSubmitSave={canSubmitSave}
+        disabled={isInputDisabled}
+        isLoading={isLoading}
+        value={inputCode}
         onChange={onChange}
-        onPrimaryClick={onPrimaryClick}
-        onSave={onSave}
-        inputRef={inputRef}
-        isLoading={isChecking}
+        onKeyDown={onKeyDown}
+        adornmentVariant={adornmentVariant}
       />
     </FormGroup>
   )
@@ -126,7 +128,7 @@ interface FormFlags {
   hasError: boolean
   isEditing: boolean
   isInputDisabled: boolean
-  trailingIconKind: TrailingIconKind | undefined
+  adornmentVariant: RefCodeAdornmentVariant | undefined
   showEdit: boolean
   showRemove: boolean
   canSubmitSave: boolean
@@ -135,7 +137,8 @@ interface FormFlags {
 function deriveFormFlags(params: DeriveFormFlagsParams): FormFlags {
   // Split the boolean soup into small helpers so the main render stays readable and lint-compliant.
   const base = computeBaseFlags(params)
-  const trailingIconKind = resolveTrailingIconKind({
+  const adornmentVariant = resolveAdornmentVariant({
+    isLoading: params.verificationStatus === 'checking',
     hasError: base.hasError,
     showPendingLabelInInput: params.showPendingLabelInInput,
     showValidLabelInInput: params.showValidLabelInInput,
@@ -143,7 +146,7 @@ function deriveFormFlags(params: DeriveFormFlagsParams): FormFlags {
 
   return {
     ...base,
-    trailingIconKind,
+    adornmentVariant,
   }
 }
 
@@ -161,7 +164,8 @@ function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
 
   const isEditing = uiState === 'editing' || uiState === 'invalid' || uiState === 'error'
   const hasError = VERIFICATION_ERROR_KINDS.has(verificationStatus)
-  const isInputDisabled = !isEditing && uiState !== 'empty'
+  const isLoading = verificationStatus === 'checking'
+  const isInputDisabled = (!isEditing && uiState !== 'empty') || isLoading
   const canEdit = !isEditing && uiState !== 'empty'
   const allowDisconnectedEdit = uiState === 'pending' && !isConnected && Boolean(displayCode)
   const showEdit = canEdit && (Boolean(savedCode) || allowDisconnectedEdit)
@@ -236,11 +240,16 @@ function shouldShowPendingLabel(verificationStatus: TraderReferralCodeVerificati
   return verificationStatus === 'pending'
 }
 
-function resolveTrailingIconKind(params: {
+function resolveAdornmentVariant(params: {
+  isLoading: boolean
   hasError: boolean
   showPendingLabelInInput: boolean
   showValidLabelInInput: boolean
-}): TrailingIconKind | undefined {
+}): RefCodeAdornmentVariant | undefined {
+  if (params.isLoading) {
+    return 'checking'
+  }
+
   if (params.hasError) {
     return 'error'
   }

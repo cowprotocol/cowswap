@@ -7,7 +7,9 @@ import { t } from '@lingui/core/macro'
 import { TraderReferralCodeStatusMessages } from './StatusMessages'
 
 import { TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
-import { AffiliateProgramParams, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+import { AffiliateProgramParams } from '../../lib/affiliateProgramTypes'
+
+import type { TraderReferralCodeVerificationStatus } from '../../hooks/useAffiliateTraderVerification'
 
 export interface CodeCreationStatusSectionProps {
   walletStatus: TraderWalletStatus

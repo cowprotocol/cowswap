@@ -32,7 +32,7 @@ export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 export const AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS = 6
 export const AFFILIATE_REWARDS_UPDATE_LAG_HOURS = 1
-export const AFFILIATE_PAYOUT_HISTORY_CHAIN_ID = SupportedChainId.MAINNET
+export const AFFILIATE_PAYOUTS_CHAIN_ID = SupportedChainId.MAINNET
 
 export const VERIFICATION_DEBOUNCE_MS = 350
 export const VERIFICATION_RETRY_DELAY_MS = 3_000
@@ -48,6 +48,9 @@ export const RATE_LIMIT_INTERVAL_MS = 200
 export const BACKOFF_START_DELAY_MS = ms`1s`
 export const BACKOFF_TIME_MULTIPLE = 3
 export const BACKOFF_MAX_ATTEMPTS = 3
+
+export const REF_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
+export const REF_CODE_MAX_LENGTH = 20
 
 enum RetryableStatusCode {
   RequestTimeout = 408,

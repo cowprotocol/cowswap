@@ -1,8 +1,10 @@
-import { FormEvent, RefObject } from 'react'
+import { FormEvent } from 'react'
 
 import { StatusColorVariant } from '@cowprotocol/ui'
 
-import { AffiliateProgramParams, TraderReferralCodeVerificationStatus } from '../../lib/affiliateProgramTypes'
+import { AffiliateProgramParams } from '../../lib/affiliateProgramTypes'
+
+import type { TraderReferralCodeVerificationStatus } from '../../hooks/useAffiliateTraderVerification'
 
 export type TraderReferralCodeCodeCreationUiState =
   | 'empty'
@@ -26,7 +28,6 @@ export interface TraderReferralCodeFormSectionProps {
   onRemove(): void
   onSave(): void
   onChange(event: FormEvent<HTMLInputElement>): void
-  inputRef: RefObject<HTMLInputElement | null>
 }
 
 export interface TraderReferralCodeStatusSectionProps {

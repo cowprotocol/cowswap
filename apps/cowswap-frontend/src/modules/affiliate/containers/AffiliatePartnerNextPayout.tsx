@@ -2,10 +2,9 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useAffiliatePartnerInfo } from 'modules/affiliate/hooks/useAffiliatePartnerInfo'
-import { useAffiliatePartnerStats } from 'modules/affiliate/hooks/useAffiliatePartnerStats'
-import { formatUsdcCompact } from 'modules/affiliate/lib/affiliateProgramUtils'
-import { NextPayoutCard } from 'modules/affiliate/pure/NextPayoutCard'
+import { useAffiliatePartnerInfo } from '../hooks/useAffiliatePartnerInfo'
+import { useAffiliatePartnerStats } from '../hooks/useAffiliatePartnerStats'
+import { NextPayoutCard } from '../pure/NextPayoutCard'
 
 export function AffiliatePartnerNextPayout(): ReactNode {
   const { account } = useWalletInfo()
@@ -13,10 +12,5 @@ export function AffiliatePartnerNextPayout(): ReactNode {
   const { data: info, isLoading: codeLoading } = useAffiliatePartnerInfo(account)
   const { data: stats, isLoading: statsLoading } = useAffiliatePartnerStats(account, info?.code)
 
-  return (
-    <NextPayoutCard
-      showLoader={codeLoading || statsLoading}
-      payout={stats ? formatUsdcCompact(stats.next_payout) : formatUsdcCompact(0)}
-    />
-  )
+  return <NextPayoutCard showLoader={codeLoading || statsLoading} payout={stats?.next_payout} />
 }

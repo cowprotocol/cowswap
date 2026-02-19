@@ -15,7 +15,7 @@ export const Container = styled.div`
 `
 
 export const ExtLink = styled(ExternalLink)`
-  color: var(${UI.COLOR_TEXT});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   &:hover,
   &:focus {

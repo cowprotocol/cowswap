@@ -1,7 +1,6 @@
 import { ReactNode, useCallback } from 'react'
 
 import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -11,7 +10,12 @@ import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { HowItWorks } from 'modules/affiliate/pure/HowItWorks'
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
+
+import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
+import { isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
+import { HowItWorks } from '../pure/HowItWorks'
 import {
   AffiliateTermsFaqLinks,
   HeroActions,
@@ -20,24 +24,21 @@ import {
   HeroSubtitle,
   HeroTitle,
   InlineNote,
-} from 'modules/affiliate/pure/shared'
-
-import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
-import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
+} from '../pure/shared'
 
 export function AffiliatePartnerOnboard(): ReactNode {
   const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
   const onSelectNetwork = useOnSelectNetwork()
-  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
   const toggleWalletModal = useToggleWalletModal()
 
-  const isUnsupported = !!account && chainId !== SupportedChainId.MAINNET
+  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
+  const isUnsupportedNetwork = !isSupportedPayoutsNetwork(chainId)
   const isSignerAvailable = Boolean(provider)
 
   const onSwitchToMainnet = useCallback(() => {
-    onSelectNetwork(SupportedChainId.MAINNET)
+    onSelectNetwork(AFFILIATE_PAYOUTS_CHAIN_ID)
   }, [onSelectNetwork])
 
   return (
@@ -61,12 +62,12 @@ export function AffiliatePartnerOnboard(): ReactNode {
               <Trans>Connect wallet</Trans>
             </ButtonPrimary>
           )}
-          {!!account && isUnsupported && !shouldHideNetworkSelector && (
+          {!!account && isUnsupportedNetwork && !shouldHideNetworkSelector && (
             <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={onSwitchToMainnet}>
               <Trans>Switch to Ethereum</Trans>
             </ButtonPrimary>
           )}
-          {!!account && isUnsupported && shouldHideNetworkSelector && (
+          {!!account && isUnsupportedNetwork && shouldHideNetworkSelector && (
             <WalletSwitchHint>
               <ButtonPrimary buttonSize={ButtonSize.BIG} disabled>
                 <Trans>Switch to Ethereum</Trans>
@@ -80,14 +81,14 @@ export function AffiliatePartnerOnboard(): ReactNode {
               </InlineNote>
             </WalletSwitchHint>
           )}
-          {!!account && !isUnsupported && !isSignerAvailable && (
+          {!!account && !isUnsupportedNetwork && !isSignerAvailable && (
             <ButtonPrimary onClick={toggleWalletModal} data-testid="affiliate-unlock">
               <Trans>Become an affiliate</Trans>
             </ButtonPrimary>
           )}
         </HeroActions>
         <AffiliateTermsFaqLinks />
-        {isUnsupported && (
+        {isUnsupportedNetwork && (
           <InlineNote>
             <Trans>Affiliate payouts and registration happen on Ethereum mainnet.</Trans>
           </InlineNote>

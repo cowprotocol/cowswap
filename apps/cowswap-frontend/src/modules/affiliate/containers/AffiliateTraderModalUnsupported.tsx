@@ -6,9 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
-import { HowItWorks } from 'modules/affiliate/pure/HowItWorks'
-
 import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
+import { HowItWorks } from '../pure/HowItWorks'
 
 export function AffiliateTraderModalUnsupported(): ReactNode {
   const { account } = useWalletInfo()

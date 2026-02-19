@@ -22,7 +22,7 @@ export interface UseAppDataParams {
   volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
   userConsent?: UserConsentsMetadata
-  referrerCode?: string
+  refCode?: string
 }
 
 /**
@@ -42,7 +42,7 @@ export function AppDataInfoUpdater({
   volumeFee,
   replacedOrderUid,
   userConsent,
-  referrerCode,
+  refCode,
 }: UseAppDataParams) {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -67,7 +67,7 @@ export function AppDataInfoUpdater({
       widget,
       replacedOrderUid,
       userConsent,
-      referrerCode,
+      refCode,
     }
 
     try {
@@ -91,7 +91,7 @@ export function AppDataInfoUpdater({
     replacedOrderUid,
     isSmartSlippage,
     userConsent,
-    referrerCode,
+    refCode,
   ])
 
   return null

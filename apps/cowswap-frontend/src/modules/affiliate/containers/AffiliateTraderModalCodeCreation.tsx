@@ -1,11 +1,10 @@
 /* eslint-disable complexity */
 /* eslint-disable max-lines-per-function */
 import { useAtomValue } from 'jotai'
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
@@ -25,7 +24,7 @@ import {
 import { useAffiliateTraderVerification } from '../hooks/useAffiliateTraderVerification'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
 import { useToggleAffiliateModal } from '../hooks/useToggleAffiliateModal'
-import { formatRefCode } from '../lib/affiliateProgramUtils'
+import { formatRefCode, isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
 import {
   TraderReferralCodeCodeCreationUiState,
   TraderReferralCodeFormSectionProps,
@@ -87,9 +86,8 @@ export function AffiliateTraderModalCodeCreation(): ReactNode {
       codeCreationUiState,
     }
   }, [affiliateTrader, walletStatus])
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const handlers = useTraderReferralCodeHandlers(inputRef)
-  const { onEdit: sharedOnEdit, onRemove: sharedOnRemove, onSave: sharedOnSave } = handlers
+  const handlers = useTraderReferralCodeHandlers()
+  const { onRemove: sharedOnRemove, onSave: sharedOnSave } = handlers
   const [isEditMode, setIsEditMode] = useState(false)
   const hasCode = Boolean(traderReferralCode.codeInput || traderReferralCode.savedCode)
   const uiState = useMemo(
@@ -98,8 +96,7 @@ export function AffiliateTraderModalCodeCreation(): ReactNode {
   )
   const onEdit = useCallback(() => {
     setIsEditMode(true)
-    sharedOnEdit()
-  }, [sharedOnEdit])
+  }, [])
   const onRemove = useCallback(() => {
     setIsEditMode(false)
     sharedOnRemove()
@@ -119,15 +116,6 @@ export function AffiliateTraderModalCodeCreation(): ReactNode {
   const { payoutAddressConfirmed, togglePayoutAddressConfirmed } = usePayoutAddressConfirmation(account)
   const displayCode = traderReferralCode.codeInput
   const savedCode = traderReferralCode.savedCode
-  useEffect(() => {
-    if (!traderReferralCode.modalOpen) {
-      return
-    }
-
-    if (uiState === 'invalid' || uiState === 'editing' || uiState === 'empty') {
-      inputRef.current?.focus()
-    }
-  }, [inputRef, traderReferralCode.modalOpen, uiState])
   const verificationStatus = traderReferralCode.verificationStatus
   const verificationProgramParams = traderReferralCode.verificationProgramParams
   const verificationErrorMessage = traderReferralCode.verificationErrorMessage
@@ -159,7 +147,7 @@ export function AffiliateTraderModalCodeCreation(): ReactNode {
   const hasValidLength = Boolean(formatRefCode(displayCode))
   const disabledByInput = !hasEnteredCode || !hasValidLength
   const blockedByPayoutConfirmation =
-    !!account && chainId !== undefined && chainId !== SupportedChainId.MAINNET && !payoutAddressConfirmed
+    !!account && !!chainId && !isSupportedPayoutsNetwork(chainId) && !payoutAddressConfirmed
   const disabledByAction = disabledByInput || blockedByPayoutConfirmation
   const disabledStateLabelByUiState: Partial<Record<TraderReferralCodeFormSectionProps['uiState'], string>> = {
     checking: t`Checking code…`,
@@ -207,7 +195,6 @@ export function AffiliateTraderModalCodeCreation(): ReactNode {
                     ? onViewRewards
                     : onSave
           }
-          inputRef={inputRef}
         />
         {resolvedVerificationErrorMessage && (
           <StatusText $variant="error">{resolvedVerificationErrorMessage}</StatusText>

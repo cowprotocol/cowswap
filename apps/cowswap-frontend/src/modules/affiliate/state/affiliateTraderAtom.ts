@@ -7,7 +7,9 @@ import {
   AFFILIATE_PAYOUT_ADDRESS_CONFIRMATION_STORAGE_KEY,
   AFFILIATE_TRADER_STORAGE_KEY,
 } from '../config/affiliateProgram.const'
-import { AffiliateProgramParams, TraderReferralCodeVerificationStatus } from '../lib/affiliateProgramTypes'
+import { AffiliateProgramParams } from '../lib/affiliateProgramTypes'
+
+import type { TraderReferralCodeVerificationStatus } from '../hooks/useAffiliateTraderVerification'
 
 export interface AffiliateTraderInMemoryState {
   modalOpen: boolean

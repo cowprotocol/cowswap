@@ -16,7 +16,6 @@ import {
   PartnerStatsResponse,
   TraderInfoResponse,
   TraderReferralCodeVerificationResponse,
-  TraderReferralCodeVerificationRequest,
   TraderStatsResponse,
   TraderWalletReferralCodeStatusRequest,
   TraderWalletReferralCodeStatusResponse,
@@ -70,10 +69,7 @@ class BffAffiliateApi {
       },
     })
   }
-  async verifyReferralCode(
-    request: TraderReferralCodeVerificationRequest,
-  ): Promise<TraderReferralCodeVerificationResponse> {
-    const { code } = request
+  async verifyReferralCode(code: string): Promise<TraderReferralCodeVerificationResponse> {
     const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
     const { response, data, text } = await this.fetchJsonResponse<TraderInfoResponse>(url, {
       method: 'GET',
@@ -86,6 +82,18 @@ class BffAffiliateApi {
       data,
       text,
     }
+  }
+  async verifyReferralCodeAvailability(code: string): Promise<boolean> {
+    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
+    const { response, text } = await this.fetchJsonResponse<TraderInfoResponse>(url, {
+      method: 'GET',
+      headers: JSON_HEADERS,
+    })
+
+    if (response.status === 404) return true
+    if (response.ok || response.status === 403) return false
+
+    throw buildReferralError(response.status, text)
   }
   async getWalletReferralStatus(
     request: TraderWalletReferralCodeStatusRequest,

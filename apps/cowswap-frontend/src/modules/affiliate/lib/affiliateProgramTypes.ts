@@ -1,29 +1,6 @@
-/**
- * Categorises referral verification failures so UI copy can react:
- * - 'network': request failed or timed out
- * - 'unknown': any other error case we can't classify yet
- */
-export type TraderReferralCodeVerificationErrorType = 'network' | 'unknown'
-
-/**
- * Flat verification status used by UI state.
- */
-export type TraderReferralCodeVerificationStatus = 'idle' | 'pending' | 'checking' | 'valid' | 'invalid' | 'error'
-
-/**
- * Verification result payload returned from API flows before flattening to UI state.
- */
-export type TraderReferralCodeVerificationResult =
-  | { kind: 'idle' }
-  | { kind: 'pending'; code: string }
-  | { kind: 'checking'; code: string }
-  | { kind: 'valid'; code: string; eligible: boolean; programParams?: AffiliateProgramParams }
-  | { kind: 'invalid'; code: string }
-  | { kind: 'error'; code: string; errorType: TraderReferralCodeVerificationErrorType; message: string }
-
-export type AffiliateProgramParams = {
+export interface AffiliateProgramParams {
   traderRewardAmount: number
-  triggerVolumeUsd: number
+  triggerVolumeUsd: number // TODO rename to triggerVolume
   timeCapDays: number
   volumeCapUsd: number
 }
@@ -31,10 +8,6 @@ export type AffiliateProgramParams = {
 export interface TraderReferralCodeApiConfig {
   baseUrl: string
   timeoutMs?: number
-}
-
-export interface TraderReferralCodeVerificationRequest {
-  code: string
 }
 
 export interface TraderReferralCodeVerificationResponse {

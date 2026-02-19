@@ -1,10 +1,11 @@
 import { ReactNode } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BannerOrientation, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+
+import { AFFILIATE_PAYOUTS_CHAIN_ID } from 'modules/affiliate/config/affiliateProgram.const'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
@@ -52,7 +53,7 @@ export function PayoutAddressConfirmation(props: PayoutAddressConfirmationProps)
       <Content>
         <div>
           <Trans>Rewards will be sent on Ethereum to</Trans>{' '}
-          <AddressLink address={account} chainId={SupportedChainId.MAINNET} />
+          <AddressLink address={account} chainId={AFFILIATE_PAYOUTS_CHAIN_ID} />
         </div>
         <ConfirmCheckbox>
           <input type="checkbox" checked={checked} onChange={(event) => onToggle(event.target.checked)} />

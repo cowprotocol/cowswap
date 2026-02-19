@@ -3,8 +3,6 @@ import { stringifyDeterministic } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
 
-import { formatRefCode } from 'modules/affiliate/lib/affiliateProgramUtils'
-
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { filterHooks, HooksFilter } from './appDataFilter'
@@ -27,7 +25,7 @@ export type BuildAppDataParams = {
   slippageBips: number
   isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
-  referrerCode?: string
+  refCode?: string
   utm: UtmParams | undefined
   typedHooks?: TypedAppDataHooks
   widget?: AppDataWidget
@@ -47,7 +45,7 @@ async function generateAppDataFromDoc(
 export async function buildAppData({
   slippageBips,
   isSmartSlippage,
-  referrerCode,
+  refCode,
   appCode,
   environment,
   orderClass: orderClassName,
@@ -58,11 +56,7 @@ export async function buildAppData({
   replacedOrderUid,
   userConsent,
 }: BuildAppDataParams): Promise<AppDataInfo> {
-  const normalizedReferrerCode = referrerCode ? formatRefCode(referrerCode) : undefined
-
-  const referrerParams: AppDataRootSchema['metadata']['referrer'] = normalizedReferrerCode
-    ? { code: normalizedReferrerCode }
-    : undefined
+  const referrerParams: AppDataRootSchema['metadata']['referrer'] = refCode ? { code: refCode } : undefined
 
   const quoteParams = {
     slippageBips,

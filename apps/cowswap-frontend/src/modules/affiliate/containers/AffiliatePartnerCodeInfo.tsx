@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
-import ICON_QR_CODE from '@cowprotocol/assets/images/icon-qr-code.svg'
+import ICON_QR_CODE from '@cowprotocol/assets/images/icon-qr-code-v2.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { formatShortDate } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -11,9 +11,12 @@ import SVG from 'react-inlinesvg'
 
 import CopyHelper from 'legacy/components/Copy'
 
-import { AffiliatePartnerQrModal } from 'modules/affiliate/containers/AffiliatePartnerQrModal'
-import { useAffiliatePartnerInfo } from 'modules/affiliate/hooks/useAffiliatePartnerInfo'
-import { getReferralLink, toValidDate } from 'modules/affiliate/lib/affiliateProgramUtils'
+import { useModalState } from 'common/hooks/useModalState'
+
+import { AffiliatePartnerQrModal } from './AffiliatePartnerQrModal'
+
+import { useAffiliatePartnerInfo } from '../hooks/useAffiliatePartnerInfo'
+import { getReferralLink, toValidDate } from '../lib/affiliateProgramUtils'
 import {
   CardTitle,
   LinkedActionButton,
@@ -30,13 +33,10 @@ import {
   LinkedLinkText,
   LinkedMetaList,
   MetricItem,
-} from 'modules/affiliate/pure/shared'
-
-import { useModalState } from 'common/hooks/useModalState'
+} from '../pure/shared'
 
 export function AffiliatePartnerCodeInfo(): ReactNode {
   const { account } = useWalletInfo()
-  const { isModalOpen: isQrOpen, openModal: openQrModal, closeModal: closeQrModal } = useModalState()
   const { data: partnerInfo } = useAffiliatePartnerInfo(account)
 
   const refCode = partnerInfo?.code
@@ -45,6 +45,8 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
     () => encodeURIComponent(`Trade on CoW Swap with my referral code ${refCode}. ${referralLink} @CoWSwap`),
     [refCode, referralLink],
   )
+
+  const { isModalOpen, openModal, closeModal } = useModalState()
 
   if (!refCode) {
     return null
@@ -101,7 +103,7 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
             </LinkedActionIcon>
             <Trans>Share on X</Trans>
           </LinkedActionButton>
-          <LinkedActionButton onClick={openQrModal}>
+          <LinkedActionButton onClick={openModal}>
             <LinkedActionIcon>
               <SVG src={ICON_QR_CODE} width={14} height={14} />
             </LinkedActionIcon>
@@ -109,7 +111,7 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
           </LinkedActionButton>
         </LinkedActions>
       </LinkedFooter>
-      <AffiliatePartnerQrModal isOpen={isQrOpen} refCode={refCode} onDismiss={closeQrModal} />
+      <AffiliatePartnerQrModal isOpen={isModalOpen} refCode={refCode} onDismiss={closeModal} />
     </>
   )
 }

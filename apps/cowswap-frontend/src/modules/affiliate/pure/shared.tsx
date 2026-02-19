@@ -5,9 +5,9 @@ import { ButtonOutlined, ButtonPrimary, Font, Media, UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { AFFILIATE_HOW_IT_WORKS_URL, AFFILIATE_TERMS_URL } from 'modules/affiliate/config/affiliateProgram.const'
-
 import { Card, ExtLink } from 'pages/Account/styled'
+
+import { AFFILIATE_HOW_IT_WORKS_URL, AFFILIATE_TERMS_URL } from '../config/affiliateProgram.const'
 
 export type BadgeTone = 'neutral' | 'info' | 'success' | 'error'
 
@@ -70,6 +70,7 @@ export const HelperText = styled.span`
   color: var(${UI.COLOR_TEXT_OPACITY_60});
   line-height: 1.5;
   text-align: center;
+  max-width: 360px;
 `
 
 export const InlineError = styled.span`
@@ -79,16 +80,6 @@ export const InlineError = styled.span`
 
 export const PrimaryAction = styled(ButtonPrimary)`
   width: 100%;
-`
-
-export const ThreeColumnGrid = styled.div`
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 2.5fr) minmax(0, 1.5fr);
-  gap: 16px;
-
-  ${Media.upToMedium()} {
-    grid-template-columns: 1fr;
-  }
 `
 
 export const HeroCard = styled(Card)`
@@ -113,11 +104,6 @@ export const HeroTitle = styled.h2`
   font-weight: 600;
   color: var(${UI.COLOR_TEXT});
   text-align: center;
-
-  ${Media.upToSmall()} {
-    font-size: 24px;
-    max-width: 100%;
-  }
 `
 
 export const HeroSubtitle = styled.p`
@@ -127,11 +113,6 @@ export const HeroSubtitle = styled.p`
   line-height: 1.5;
   color: var(${UI.COLOR_TEXT_OPACITY_60});
   text-align: center;
-
-  ${Media.upToSmall()} {
-    font-size: 14px;
-    max-width: 90%;
-  }
 
   a {
     color: var(${UI.COLOR_LINK});
@@ -189,12 +170,22 @@ export const CardStack = styled(Card)`
   gap: 24px;
 `
 
+export const ThreeColumnGrid = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2.5fr) minmax(0, 1.5fr);
+  gap: 16px;
+
+  ${Media.upToLarge()} {
+    grid-template-columns: 1fr;
+  }
+`
+
 export const ColumnOneCard = styled(CardStack)`
   grid-column: 1 / 2;
   grid-row: 1;
   align-items: center;
 
-  ${Media.upToMedium()} {
+  ${Media.upToLarge()} {
     grid-column: 1 / -1;
     grid-row: auto;
   }
@@ -204,7 +195,7 @@ export const ColumnTwoCard = styled(CardStack)`
   grid-column: 2 / 3;
   grid-row: 1;
 
-  ${Media.upToMedium()} {
+  ${Media.upToLarge()} {
     grid-column: 1 / -1;
     grid-row: auto;
     min-height: unset;
@@ -216,7 +207,7 @@ export const ColumnThreeCard = styled(CardStack)`
   grid-row: 1;
   align-items: center;
 
-  ${Media.upToMedium()} {
+  ${Media.upToLarge()} {
     grid-column: 1 / -1;
     grid-row: auto;
     min-height: unset;
@@ -578,10 +569,7 @@ const DonutWrapper = styled.div<{ $value: number }>`
   flex: 0 0 auto;
   box-shadow: 0px 2.67px 5.33px 0px rgba(0, 0, 0, 0.12) inset;
 
-  ${Media.upToMedium()} {
-    --size: 169px;
-    --thickness: 18px;
-    --stroke-width: 10.6;
+  ${Media.upToExtraSmall()} {
     margin: 0 auto;
   }
 
@@ -639,7 +627,7 @@ export function Donut({ $value, children }: DonutProps): ReactNode {
 export const RewardsMetricsRow = styled(MetricsRow)`
   justify-content: space-between;
 
-  ${Media.upToMedium()} {
+  ${Media.upToExtraSmall()} {
     flex-direction: column;
     align-items: flex-start;
   }
