@@ -1,8 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
-import { getAddress } from '@ethersproject/address'
 
-import { erc20Abi } from 'viem'
+import { erc20Abi, getAddress } from 'viem'
 import { readContracts } from 'wagmi/actions'
 
 import type { Config } from 'wagmi'

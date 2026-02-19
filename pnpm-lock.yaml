@@ -35,18 +35,6 @@ importers:
       '@walletconnect/types':
         specifier: 2.17.3
         version: 2.17.3
-      '@web3-react/eip1193':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(react@19.1.2)
-      '@web3-react/empty':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(react@19.1.2)
-      '@web3-react/metamask':
-        specifier: ^8.2.4
-        version: 8.2.4(@types/react@19.1.3)(react@19.1.2)
-      '@web3-react/url':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(react@19.1.2)(utf-8-validate@5.0.10)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1354,18 +1342,9 @@ importers:
       '@cowprotocol/wallet-provider':
         specifier: workspace:*
         version: link:../wallet-provider
-      '@ethersproject/bignumber':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/contracts':
-        specifier: 5.7.0
-        version: 5.7.0
       '@uniswap/sdk-core':
         specifier: ^3.0.1
         version: 3.2.6
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       jotai:
         specifier: 2.16.2
         version: 2.16.2(@babel/core@7.28.4)(@babel/template@7.27.2)(@types/react@19.1.3)(react@19.1.2)
@@ -1609,6 +1588,12 @@ importers:
       ua-parser-js:
         specifier: ^1.0.32
         version: 1.0.38
+      viem:
+        specifier: ^2.45.1
+        version: 2.45.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
+      wagmi:
+        specifier: 3.4.2
+        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.23.3(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.0.2)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))(immer@10.0.2)(ox@0.11.3(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.45.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
     devDependencies:
       '@types/ms':
         specifier: ^2.1.0
@@ -1631,21 +1616,15 @@ importers:
       '@cowprotocol/cow-sdk':
         specifier: 7.3.5
         version: 7.3.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@ethersproject/providers':
-        specifier: 5.7.0
-        version: 5.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@safe-global/api-kit':
         specifier: ^4.0.1
         version: 4.0.1(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@safe-global/protocol-kit':
         specifier: ^1.2.0
-        version: 1.3.0(bufferutil@4.0.8)(encoding@0.1.13)(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)
+        version: 1.3.0(bufferutil@4.0.8)(encoding@0.1.13)(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)
       '@safe-global/types-kit':
         specifier: ^3.0.0
         version: 3.0.0(typescript@5.9.3)(zod@4.1.12)
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       jotai:
         specifier: 2.16.2
         version: 2.16.2(@babel/core@7.28.4)(@babel/template@7.27.2)(@types/react@19.1.3)(react@19.1.2)
@@ -1744,9 +1723,6 @@ importers:
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../hook-dapp-lib
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       ms.macro:
         specifier: ^2.0.0
         version: 2.0.0
@@ -1827,12 +1803,6 @@ importers:
       '@cowprotocol/wallet-provider':
         specifier: workspace:*
         version: link:../wallet-provider
-      '@ethersproject/address':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/providers':
-        specifier: 5.7.0
-        version: 5.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@lingui/core':
         specifier: ^5.4.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)
@@ -1848,9 +1818,6 @@ importers:
       ajv:
         specifier: ^6.12.6
         version: 6.12.6
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       graphql-request:
         specifier: 4.3.0
         version: 4.3.0(encoding@0.1.13)(graphql@16.12.0)
@@ -1903,13 +1870,9 @@ importers:
       '@uniswap/sdk-core':
         specifier: ^3.0.1
         version: 3.2.6
-      eventemitter3:
-        specifier: ^4.0.0
-        version: 4.0.7
-    devDependencies:
-      '@web3-react/types':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
+      viem:
+        specifier: ^2.45.1
+        version: 2.45.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
 
   libs/ui:
     dependencies:
@@ -2095,18 +2058,6 @@ importers:
 
   libs/wallet-provider:
     dependencies:
-      '@cowprotocol/common-const':
-        specifier: workspace:*
-        version: link:../common-const
-      '@ethersproject/providers':
-        specifier: 5.7.0
-        version: 5.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@web3-react/core':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       react:
         specifier: 19.1.2
         version: 19.1.2
@@ -4364,10 +4315,6 @@ packages:
   '@metamask/abi-utils@2.0.4':
     resolution: {integrity: sha512-StnIgUB75x7a7AgUhiaUZDpCsqGp7VkNnZh2XivXkJ6mPkE83U8ARGQj5MbRis7VJY8BC5V1AbB1fjdh0hupPQ==}
     engines: {node: '>=16.0.0'}
-
-  '@metamask/detect-provider@1.2.0':
-    resolution: {integrity: sha512-ocA76vt+8D0thgXZ7LxFPyqw3H7988qblgzddTDA6B8a/yU0uKV42QR/DhA+Jh11rJjxW0jKvwb5htA6krNZDQ==}
-    engines: {node: '>= 10'}
 
   '@metamask/eth-json-rpc-provider@1.0.1':
     resolution: {integrity: sha512-whiUMPlAOrVGmX8aKYVPvlKyG4CpQXiNNyt74vE1xb5sPvmx5oA7B/kOi/JdBvhGQq97U1/AVdXEdk2zkP8qyA==}
@@ -7948,23 +7895,11 @@ packages:
     peerDependencies:
       react: '>=16.8'
 
-  '@web3-react/eip1193@8.2.3':
-    resolution: {integrity: sha512-PdL8PCv3zgQrnowRlBK7PIO8G7v/nc31PYgarACo8mX+l5Y4+l7+ma/kpkULXp5yLtc4qlQYlCalmXpcbtl2FA==}
-
-  '@web3-react/empty@8.2.3':
-    resolution: {integrity: sha512-Uopeac2XgyJLmK8EawNmG1kferlSvklKgWzbianygriC3C3+6yHvflUBmHzYfcpZDq5gotP4JJr2bmhGAocQ5w==}
-
-  '@web3-react/metamask@8.2.4':
-    resolution: {integrity: sha512-4yoqDgvcB0QKUGSk00/fUipA3z5rOXcQYAwE0CABPa5lbTRAIm5i8F0Gj8UW7QO0pQus4UtjX0+JxWdclB7UrA==}
-
   '@web3-react/store@8.2.3':
     resolution: {integrity: sha512-qUJQ5pDsYYDra+/+glq2BmIS43HYAiEZ22sLLVh6E75WiZKRNOOqUxBDPe33KTIn718DLt51j+wd2FT+oT/kJQ==}
 
   '@web3-react/types@8.2.3':
     resolution: {integrity: sha512-kSG90QkN+n7IOtp10nQ44oS8J7jzfH9EmqnruwBpCGybh1FM/ohyRvUKWYZNfNE4wsjTSpKsINR0/VdDsZMHyg==}
-
-  '@web3-react/url@8.2.3':
-    resolution: {integrity: sha512-gOcs8uEbD+BKMvw2VhTWnD8Ls3aOmbebLwASu7daWYuM2eB8hS8AoqsEAbV1NnliNpY7ztd+L1Vi5CckiIhXcw==}
 
   '@web3modal/common@4.1.9':
     resolution: {integrity: sha512-UZ6dDQ5t6q+oUFMI2ONg3a8gctpNJTFj2qTdPic4/xHuktLf5nHm8LK9NGhMpUqjm7VRN95xpnTeM0gSSmcF6w==}
@@ -20291,8 +20226,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@metamask/detect-provider@1.2.0': {}
-
   '@metamask/eth-json-rpc-provider@1.0.1':
     dependencies:
       '@metamask/json-rpc-engine': 7.3.3
@@ -23700,7 +23633,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@safe-global/protocol-kit@1.3.0(bufferutil@4.0.8)(encoding@0.1.13)(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)':
+  '@safe-global/protocol-kit@1.3.0(bufferutil@4.0.8)(encoding@0.1.13)(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)':
     dependencies:
       '@ethersproject/address': 5.7.0
       '@ethersproject/bignumber': 5.7.0
@@ -23711,7 +23644,7 @@ snapshots:
       web3: 1.10.3(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10)
       web3-core: 1.10.3(encoding@0.1.13)
       web3-utils: 1.10.3
-      zksync-web3: 0.14.4(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      zksync-web3: 0.14.4(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -27336,32 +27269,6 @@ snapshots:
       - immer
       - utf-8-validate
 
-  '@web3-react/eip1193@8.2.3(@types/react@19.1.3)(react@19.1.2)':
-    dependencies:
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      eventemitter3: 4.0.7
-    transitivePeerDependencies:
-      - '@types/react'
-      - immer
-      - react
-
-  '@web3-react/empty@8.2.3(@types/react@19.1.3)(react@19.1.2)':
-    dependencies:
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - immer
-      - react
-
-  '@web3-react/metamask@8.2.4(@types/react@19.1.3)(react@19.1.2)':
-    dependencies:
-      '@metamask/detect-provider': 1.2.0
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - immer
-      - react
-
   '@web3-react/store@8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)':
     dependencies:
       '@ethersproject/address': 5.7.0
@@ -27379,17 +27286,6 @@ snapshots:
       - '@types/react'
       - immer
       - react
-
-  '@web3-react/url@8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(react@19.1.2)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@ethersproject/providers': 5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - immer
-      - react
-      - utf-8-validate
 
   '@web3modal/common@4.1.9':
     dependencies:
@@ -38651,9 +38547,9 @@ snapshots:
 
   zen-observable@0.8.15: {}
 
-  zksync-web3@0.14.4(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)):
+  zksync-web3@0.14.4(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)):
     dependencies:
-      ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      ethers: 6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
   zod-validation-error@4.0.2(zod@4.1.12):
     dependencies:

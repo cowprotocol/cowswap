@@ -18,6 +18,8 @@ import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 
 import { useDoesOrderHaveValidPermit } from './useDoesOrderHaveValidPermit'
 
+import type { Hex } from 'viem'
+
 // Mock SWR response interface
 interface MockSWRResponse {
   data: boolean | undefined
@@ -32,6 +34,8 @@ jest.mock('@cowprotocol/wallet', () => ({
 }))
 
 jest.mock('wagmi', () => ({
+  createConfig: jest.fn(),
+  http: jest.fn(),
   useConfig: jest.fn().mockReturnValue({}),
   usePublicClient: jest.fn().mockReturnValue({}),
 }))
@@ -66,7 +70,7 @@ const mockIsPending = isPending as jest.MockedFunction<typeof isPending>
 const mockGetOrderPermitIfExists = getOrderPermitIfExists as jest.MockedFunction<typeof getOrderPermitIfExists>
 const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
 
-function createEip2612PermitCallData(owner: string, spender: string, value: EthersBigNumber, deadline: number): string {
+function createEip2612PermitCallData(owner: string, spender: string, value: EthersBigNumber, deadline: number): Hex {
   const permitData = erc20Interface.encodeFunctionData('permit', [
     owner,
     spender,
@@ -77,7 +81,7 @@ function createEip2612PermitCallData(owner: string, spender: string, value: Ethe
     '0x0000000000000000000000000000000000000000000000000000000000000000', // s
   ])
   // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with EIP_2612_PERMIT_SELECTOR
-  return oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + permitData.slice(10)
+  return (oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + permitData.slice(10)) as Hex
 }
 
 describe('useDoesOrderHaveValidPermit', () => {
@@ -184,6 +188,7 @@ describe('useDoesOrderHaveValidPermit', () => {
 
   describe('when all conditions are met', () => {
     it('should call SWR with correct parameters', () => {
+      console.log('TEST QUE ME INTERESSA ----------')
       const { result: _result } = renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.SWAP))
 
       expect(mockUseSWR).toHaveBeenCalledWith(

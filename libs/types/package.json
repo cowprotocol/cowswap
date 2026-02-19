@@ -13,9 +13,6 @@
     "@cowprotocol/cow-sdk": "7.3.5",
     "@cowprotocol/sdk-bridging": "1.7.4",
     "@uniswap/sdk-core": "^3.0.1",
-    "eventemitter3": "^4.0.0"
-  },
-  "devDependencies": {
-    "@web3-react/types": "^8.2.3"
+    "viem": "^2.45.1"
   }
 }

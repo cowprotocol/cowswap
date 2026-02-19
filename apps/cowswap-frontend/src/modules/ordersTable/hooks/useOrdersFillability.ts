@@ -38,7 +38,7 @@ export function useOrdersFillability(orders: GenericOrder[]): Record<string, Ord
 
       acc[order.id] = {
         hasEnoughBalance: balance ? balance > sellAmount : undefined,
-        hasEnoughAllowance: allowance ? allowance.gte(order.sellAmount) : undefined,
+        hasEnoughAllowance: allowance ? allowance > sellAmount : undefined,
         hasPermit: doesOrderHavePermit(order),
         order,
       }
