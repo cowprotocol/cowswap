@@ -1,13 +1,21 @@
 /* eslint-disable complexity */
-/* eslint-disable @nx/enforce-module-boundaries */
 
-import { defaultAbiCoder } from '@ethersproject/abi'
-import type { BytesLike } from '@ethersproject/bytes'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import {
+  decodeAbiParameters,
+  decodeFunctionData,
+  encodeAbiParameters,
+  encodeFunctionResult,
+  Hex,
+  parseAbiItem,
+} from 'viem'
 
-// @cowprotocol/multicall takes long time to bundle, so import getMulticallContract directly
-import { getMulticallContract } from '../../../../../libs/multicall/src/utils/getMulticallContract'
 import { injected } from '../../support/ethereum'
+
+// Multicall3 ABI fragments
+const tryAggregateAbi = parseAbiItem(
+  'function tryAggregate(bool requireSuccess, (address target, bytes callData)[] calls) returns ((bool success, bytes returnData)[])',
+)
+const getEthBalanceAbi = parseAbiItem('function getEthBalance(address addr) view returns (uint256 balance)')
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
 function parseSendArgs(send: typeof injected.send, ...args: any[]) {
@@ -25,13 +33,13 @@ function parseSendArgs(send: typeof injected.send, ...args: any[]) {
     params = args[1]
   }
 
-  function getOriginalResult(): Promise<BytesLike> {
+  function getOriginalResult(): Promise<Hex> {
     if (callback) {
       return new Promise((resolve) => {
         send({ method, params }, resolve)
       })
     }
-    return send(...args)
+    return send(...args) as Promise<Hex>
   }
 
   function returnResult(value: unknown): Promise<unknown> | void {
@@ -57,7 +65,7 @@ function handleAddressEthCall(
   ethereum: typeof injected,
   to: string,
   dataMethod: string,
-  returnData: string,
+  returnData: Hex,
 ): MockMiddleware {
   const send = ethereum.send.bind(ethereum)
 
@@ -73,9 +81,11 @@ function handleAddressEthCall(
 
     // 0xbce38bd7 - multicall3 tryAggregate
     if (method === 'eth_call' && params?.[0]?.data?.startsWith('0xbce38bd7')) {
-      const multicall = getMulticallContract(ethereum.provider as JsonRpcProvider)
-      const functionData = multicall.interface.decodeFunctionData('tryAggregate', params?.[0]?.data)
-      const calls = functionData.calls as { callData: string; target: string }[]
+      const functionData = decodeFunctionData({
+        abi: [tryAggregateAbi],
+        data: params?.[0]?.data as Hex,
+      })
+      const calls = functionData.args[1] as readonly { target: string; callData: string }[]
 
       const indexes = calls.flatMap((x, idx) => {
         if (x.target.toLowerCase() === to.toLowerCase() && x.callData.startsWith(dataMethod)) {
@@ -86,15 +96,26 @@ function handleAddressEthCall(
 
       const result = await getOriginalResult()
 
-      const [decoded] = structuredClone(defaultAbiCoder.decode(['tuple(bool success, bytes returnData)[]'], result))
+      const [decoded] = decodeAbiParameters(
+        [{ type: 'tuple(bool success, bytes returnData)[]', name: 'results' }],
+        result,
+      ) as [readonly { success: boolean; returnData: Hex }[]]
+
+      const mutableDecoded = decoded.map((item) => ({ success: item.success, returnData: item.returnData }))
 
       indexes.forEach((idx) => {
-        const item = decoded[idx]
+        const item = mutableDecoded[idx]
         if (!item) return
-        item[1] = item.returnData = returnData
+        item.returnData = returnData
       })
 
-      return returnResult(multicall.interface.encodeFunctionResult('tryAggregate', [decoded]))
+      return returnResult(
+        encodeFunctionResult({
+          abi: [tryAggregateAbi],
+          functionName: 'tryAggregate',
+          result: mutableDecoded.map((item) => ({ success: item.success, returnData: item.returnData })),
+        }),
+      )
     }
 
     return undefined
@@ -102,14 +123,14 @@ function handleAddressEthCall(
 }
 
 export function handleTokenBalance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
-  return handleAddressEthCall(ethereum, tokenAddress, '0x70a08231', defaultAbiCoder.encode(['uint256'], [value]))
+  return handleAddressEthCall(ethereum, tokenAddress, '0x70a08231', encodeAbiParameters([{ type: 'uint256' }], [value]))
 }
 
 export function handleTokenAllowance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
-  return handleAddressEthCall(ethereum, tokenAddress, '0xdd62ed3e', defaultAbiCoder.encode(['uint256'], [value]))
+  return handleAddressEthCall(ethereum, tokenAddress, '0xdd62ed3e', encodeAbiParameters([{ type: 'uint256' }], [value]))
 }
 
-function handleNativeBalanceCall(ethereum: typeof injected, owner: string, returnData: string): MockMiddleware {
+function handleNativeBalanceCall(ethereum: typeof injected, owner: string, returnData: Hex): MockMiddleware {
   const send = ethereum.send.bind(ethereum)
 
   return async (...args) => {
@@ -121,12 +142,20 @@ function handleNativeBalanceCall(ethereum: typeof injected, owner: string, retur
 
     // 0x4d2301cc - multicall3 getEthBalance
     if (method === 'eth_call' && params?.[0]?.data?.startsWith('0x4d2301cc')) {
-      const multicall = getMulticallContract(ethereum.provider as JsonRpcProvider)
-      const functionData = multicall.interface.decodeFunctionData('getEthBalance', params?.[0]?.data)
-      const addr = functionData.addr as string
+      const functionData = decodeFunctionData({
+        abi: [getEthBalanceAbi],
+        data: params?.[0]?.data as Hex,
+      })
+      const addr = functionData.args[0] as string
 
       if (addr.toLowerCase() === owner.toLowerCase()) {
-        return returnResult(multicall.interface.encodeFunctionResult('getEthBalance', [returnData]))
+        return returnResult(
+          encodeFunctionResult({
+            abi: [getEthBalanceAbi],
+            functionName: 'getEthBalance',
+            result: BigInt(returnData),
+          }),
+        )
       }
     }
 
@@ -135,7 +164,7 @@ function handleNativeBalanceCall(ethereum: typeof injected, owner: string, retur
 }
 
 export function handleNativeBalance(ethereum: typeof injected, owner: string, value: bigint): MockMiddleware {
-  return handleNativeBalanceCall(ethereum, owner, defaultAbiCoder.encode(['uint256'], [value]))
+  return handleNativeBalanceCall(ethereum, owner, encodeAbiParameters([{ type: 'uint256' }], [value]))
 }
 
 export function mockSendCall(ethereum: typeof injected, middlewares: MockMiddleware[]): void {
