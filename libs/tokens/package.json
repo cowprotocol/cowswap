@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/tokens",
-  "version": "2.2.0",
+  "version": "2.2.2",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.5",
+    "@cowprotocol/cow-sdk": "7.3.7",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",

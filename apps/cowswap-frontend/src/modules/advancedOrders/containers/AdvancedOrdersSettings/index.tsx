@@ -7,6 +7,9 @@ import styled from 'styled-components/macro'
 import { Settings } from 'modules/advancedOrders/pure/Settings'
 import { SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import { useUpdateAdvancedOrdersRawState } from '../../hooks/useAdvancedOrdersRawState'
 import {
   advancedOrdersSettingsAtom,
@@ -29,6 +32,9 @@ export function AdvancedOrdersSettings() {
   const settingsState = useAtomValue(advancedOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateAdvancedOrdersSettingsAtom)
   const updateAdvancedOrdersRawState = useUpdateAdvancedOrdersRawState()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
+  const isSettingsDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
 
   const onStateChanged = useCallback(
     (state: Partial<AdvancedOrdersSettingsState>) => {
@@ -43,7 +49,7 @@ export function AdvancedOrdersSettings() {
   return (
     <MenuWrapper>
       <Menu>
-        <SettingsButton>
+        <SettingsButton disabled={isSettingsDisabled}>
           <SettingsIcon />
         </SettingsButton>
         <MenuPopover portal={false}>

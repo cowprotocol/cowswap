@@ -8,14 +8,16 @@ import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
-import { SwapUpdaters, SwapWidget } from 'modules/swap'
+import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
 import { getDefaultTradeRawState, parameterizeTradeRoute } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
+import { HydrateAtom } from 'common/state/HydrateAtom'
 
 export function SwapPage(): ReactNode {
   const params = useParams()
   const { i18n } = useLingui()
+  const swapDerivedStateToFill = useSwapDerivedStateToFill()
 
   useResetOrdersTableFilters({
     syncWithUrl: false,
@@ -26,11 +28,12 @@ export function SwapPage(): ReactNode {
   }
 
   return (
-    <>
+    <HydrateAtom atom={swapDerivedStateAtom} state={swapDerivedStateToFill}>
       <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
+
       <SwapUpdaters />
       <SwapWidget />
-    </>
+    </HydrateAtom>
   )
 }
 
