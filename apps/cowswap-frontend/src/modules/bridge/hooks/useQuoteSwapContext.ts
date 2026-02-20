@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useGetSwapReceiveAmountInfo } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -13,6 +13,24 @@ import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 
 import { QuoteSwapContext } from '../types'
 
+interface QuoteMeta {
+  quoteId: string | null
+  quoteVerified: boolean
+  quoteExpiration: string | null
+}
+
+function normalizeQuoteMeta(
+  quoteId: string | number | undefined,
+  quoteVerified: boolean | undefined,
+  quoteExpiration: string | undefined,
+): QuoteMeta {
+  return {
+    quoteId: quoteId === undefined ? null : String(quoteId),
+    quoteVerified: !!quoteVerified,
+    quoteExpiration: quoteExpiration || null,
+  }
+}
+
 export function useQuoteSwapContext(): QuoteSwapContext | null {
   const receiveAmountInfo = useGetSwapReceiveAmountInfo()
 
@@ -21,8 +39,13 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
   const { value: swapExpectedReceiveUsd } = useUsdAmount(quoteAmounts?.swapExpectedReceive)
 
   const slippage = useTradeSlippage()
-  const { bridgeQuote } = useTradeQuote()
+  const { bridgeQuote, quote, error: quoteError } = useTradeQuote()
   const isSlippageModified = useIsSlippageModified()
+  const quoteMeta = useMemo(() => {
+    const quoteResponse = quoteError ? undefined : quote?.quoteResults.quoteResponse
+
+    return normalizeQuoteMeta(quoteResponse?.id, quoteResponse?.verified, quoteResponse?.expiration)
+  }, [quote, quoteError])
 
   const cowShedAddress = useCurrentAccountProxy()?.data?.proxyAddress
   const bridgeReceiverOverride = bridgeQuote?.bridgeReceiverOverride || null
@@ -43,6 +66,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
       sellAmount: quoteAmounts.swapSellAmount,
       buyAmount: quoteAmounts.swapBuyAmount,
       slippage,
+      ...quoteMeta,
       isSlippageModified,
       recipient,
       bridgeReceiverOverride,
@@ -55,6 +79,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     receiveAmountInfo,
     quoteAmounts,
     slippage,
+    quoteMeta,
     isSlippageModified,
     recipient,
     swapMinReceiveAmountUsd,

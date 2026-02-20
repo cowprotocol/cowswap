@@ -1,4 +1,8 @@
 export { RowDeadline } from './containers/RowDeadline'
+export { RowQuoteId, QuoteIdValue } from './containers/RowQuoteId'
+export { QuoteIdTooltipContent } from './containers/RowQuoteId/QuoteIdTooltipContent'
+export { QuoteVerificationBadge, QuoteVerificationIcon } from './containers/RowQuoteId/QuoteVerificationIndicator'
+export { getQuoteExpiresInLabel } from './containers/RowQuoteId/quoteId'
 export { RowSlippage } from './containers/RowSlippage'
 export { TradeRateDetails } from './containers/TradeRateDetails'
 export { SettingsTab } from './containers/SettingsTab'
