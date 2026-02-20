@@ -6,13 +6,14 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
 
 const CHAIN_ID = 11155111
+const CHAIN_NAME = 'sepolia'
 
-const rawPrivateKey = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY') as string
-assert(rawPrivateKey, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
+const RAW_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY') as string
+assert(RAW_PRIVATE_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
 // Ensure private key has 0x prefix for viem
-const INTEGRATION_TEST_PRIVATE_KEY: Hex = rawPrivateKey.startsWith('0x')
-  ? (rawPrivateKey as Hex)
-  : (`0x${rawPrivateKey}` as Hex)
+const INTEGRATION_TEST_PRIVATE_KEY: Hex = RAW_PRIVATE_KEY.startsWith('0x')
+  ? (RAW_PRIVATE_KEY as Hex)
+  : `0x${RAW_PRIVATE_KEY}`
 
 const INTEGRATION_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY')
 const INTEGRATION_TESTS_ALCHEMY_KEY = Cypress.env('INTEGRATION_TESTS_ALCHEMY_KEY')
@@ -22,9 +23,9 @@ const NETWORK_URL = Cypress.env('REACT_APP_NETWORK_URL_' + CHAIN_ID)
 const PROVIDER_URL =
   NETWORK_URL ||
   (INTEGRATION_TESTS_ALCHEMY_KEY
-    ? `https://eth-sepolia.g.alchemy.com/v2/${INTEGRATION_TESTS_ALCHEMY_KEY}`
+    ? `https://eth-${CHAIN_NAME}.g.alchemy.com/v2/${INTEGRATION_TESTS_ALCHEMY_KEY}`
     : INTEGRATION_TESTS_INFURA_KEY
-      ? `https://sepolia.infura.io/v3/${INTEGRATION_TESTS_INFURA_KEY}`
+      ? `https://${CHAIN_NAME}.infura.io/v3/${INTEGRATION_TESTS_INFURA_KEY}`
       : undefined)
 
 assert(
@@ -52,14 +53,12 @@ const walletClient = createWalletClient({
 class CustomizedBridge {
   autoConnect = true
   chainId = CHAIN_ID
-  provider: PublicClient
+  publicClient: PublicClient
   walletClient: WalletClient
-  address: Address
 
-  constructor(walletClient: WalletClient, provider: PublicClient, address: Address) {
+  constructor(walletClient: WalletClient, publicClient: PublicClient) {
     this.walletClient = walletClient
-    this.provider = provider
-    this.address = address
+    this.publicClient = publicClient
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
@@ -72,10 +71,9 @@ class CustomizedBridge {
   async send(...args: any[]) {
     console.debug('send called', ...args)
     const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'
-    let callback: Function | undefined
-    let method: string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let params: any[]
+    let callback
+    let method
+    let params
     if (isCallbackForm) {
       callback = args[1]
       method = args[0].method
@@ -89,7 +87,6 @@ class CustomizedBridge {
     if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
       if (isCallbackForm) {
         callback!({ result: [TEST_ADDRESS_NEVER_USE] })
-        return
       } else {
         return Promise.resolve([TEST_ADDRESS_NEVER_USE])
       }
@@ -97,7 +94,6 @@ class CustomizedBridge {
     if (method === 'eth_chainId') {
       if (isCallbackForm) {
         callback!(null, { result: `0x${CHAIN_ID.toString(16)}` })
-        return
       } else {
         return Promise.resolve(`0x${CHAIN_ID.toString(16)}`)
       }
@@ -106,7 +102,7 @@ class CustomizedBridge {
       // If from is present on eth_call it errors, removing it makes the library set
       // from as the connected wallet which works fine
       if (params && params.length && params[0].from && method === 'eth_call') delete params[0].from
-      let result: unknown
+      let result
       // For sending a transaction if we call send it will error
       // as it wants gasLimit in sendTransaction but hexlify sets the property gas
       // to gasLimit which makes send transaction error.
@@ -116,33 +112,33 @@ class CustomizedBridge {
         delete txParams.from
 
         const hash = await this.walletClient.sendTransaction({
-          account: this.address,
+          account: this.walletClient.account!.address,
           to: txParams.to as Address,
-          data: txParams.data as Hex | undefined,
+          data: txParams.data as Hex,
           value: txParams.value ? BigInt(txParams.value) : undefined,
           gas: txParams.gas ? BigInt(txParams.gas) : txParams.gasLimit ? BigInt(txParams.gasLimit) : undefined,
           chain: sepolia,
         })
         result = hash
       } else if (method === 'eth_call') {
-        result = await this.provider.call({
+        result = await this.publicClient.call({
           to: params[0]?.to as Address,
           data: params[0]?.data as Hex,
         })
       } else if (method === 'eth_getBalance') {
-        const balance = await this.provider.getBalance({
+        const balance = await this.publicClient.getBalance({
           address: params[0] as Address,
           blockTag: params[1] as 'latest' | 'pending' | 'earliest' | undefined,
         })
         result = toHex(balance)
       } else if (method === 'eth_blockNumber') {
-        const blockNumber = await this.provider.getBlockNumber()
+        const blockNumber = await this.publicClient.getBlockNumber()
         result = toHex(blockNumber)
       } else if (method === 'eth_getTransactionReceipt') {
-        const receipt = await this.provider.getTransactionReceipt({ hash: params[0] as Hex })
+        const receipt = await this.publicClient.getTransactionReceipt({ hash: params[0] as Hex })
         result = receipt
       } else if (method === 'eth_estimateGas') {
-        const gas = await this.provider.estimateGas({
+        const gas = await this.publicClient.estimateGas({
           to: params[0].to as Address,
           data: params[0].data as Hex | undefined,
           value: params[0].value ? BigInt(params[0].value) : undefined,
@@ -150,7 +146,7 @@ class CustomizedBridge {
         result = toHex(gas)
       } else {
         // Fallback to raw request for other methods
-        result = await this.provider.request({
+        result = await this.publicClient.request({
           method: method as never,
           params: params as never,
         })
@@ -174,4 +170,4 @@ class CustomizedBridge {
   }
 }
 
-export const injected = new CustomizedBridge(walletClient, publicClient, account.address)
+export const injected = new CustomizedBridge(walletClient, publicClient)

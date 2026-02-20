@@ -12,10 +12,12 @@ import {
 import { injected } from '../../support/ethereum'
 
 // Multicall3 ABI fragments
-const tryAggregateAbi = parseAbiItem(
-  'function tryAggregate(bool requireSuccess, (address target, bytes callData)[] calls) returns ((bool success, bytes returnData)[])',
-)
-const getEthBalanceAbi = parseAbiItem('function getEthBalance(address addr) view returns (uint256 balance)')
+const TRY_AGGREGATE_ABI = [
+  parseAbiItem(
+    'function tryAggregate(bool requireSuccess, (address target, bytes callData)[] calls) returns ((bool success, bytes returnData)[])',
+  ),
+]
+const GET_ETH_BALANCE_ABI = [parseAbiItem('function getEthBalance(address addr) view returns (uint256 balance)')]
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
 function parseSendArgs(send: typeof injected.send, ...args: any[]) {
@@ -82,10 +84,10 @@ function handleAddressEthCall(
     // 0xbce38bd7 - multicall3 tryAggregate
     if (method === 'eth_call' && params?.[0]?.data?.startsWith('0xbce38bd7')) {
       const functionData = decodeFunctionData({
-        abi: [tryAggregateAbi],
+        abi: TRY_AGGREGATE_ABI,
         data: params?.[0]?.data as Hex,
       })
-      const calls = functionData.args[1] as readonly { target: string; callData: string }[]
+      const calls = functionData.args[1]
 
       const indexes = calls.flatMap((x, idx) => {
         if (x.target.toLowerCase() === to.toLowerCase() && x.callData.startsWith(dataMethod)) {
@@ -111,7 +113,7 @@ function handleAddressEthCall(
 
       return returnResult(
         encodeFunctionResult({
-          abi: [tryAggregateAbi],
+          abi: TRY_AGGREGATE_ABI,
           functionName: 'tryAggregate',
           result: mutableDecoded.map((item) => ({ success: item.success, returnData: item.returnData })),
         }),
@@ -142,16 +144,16 @@ function handleNativeBalanceCall(ethereum: typeof injected, owner: string, retur
 
     // 0x4d2301cc - multicall3 getEthBalance
     if (method === 'eth_call' && params?.[0]?.data?.startsWith('0x4d2301cc')) {
-      const functionData = decodeFunctionData({
-        abi: [getEthBalanceAbi],
+      const { args } = decodeFunctionData({
+        abi: GET_ETH_BALANCE_ABI,
         data: params?.[0]?.data as Hex,
       })
-      const addr = functionData.args[0] as string
+      const addr = args[0]
 
       if (addr.toLowerCase() === owner.toLowerCase()) {
         return returnResult(
           encodeFunctionResult({
-            abi: [getEthBalanceAbi],
+            abi: GET_ETH_BALANCE_ABI,
             functionName: 'getEthBalance',
             result: BigInt(returnData),
           }),

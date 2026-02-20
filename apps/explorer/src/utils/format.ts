@@ -2,7 +2,7 @@ import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { DEFAULT_DECIMALS, MINIMUM_ATOM_VALUE, ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER } from 'const'
 import { FormatAmountPrecision } from 'utils'
-import { hexToBytes, hexToString } from 'viem'
+import { hexToBytes, hexToString, type Hex } from 'viem'
 
 import {
   HIGH_PRECISION_DECIMALS,
@@ -294,8 +294,8 @@ export function formattingAmountPrecision(
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
 
 export function parseStringOrBytes32(value: string | undefined, defaultValue: string): string {
-  return value && BYTES32_REGEX.test(value) && hexToBytes(value as `0x${string}`)[31] === 0
-    ? hexToString(value as `0x${string}`).replace(/\0/g, '')
+  return value && BYTES32_REGEX.test(value) && hexToBytes(value as Hex)[31] === 0
+    ? hexToString(value as Hex).replace(/\0/g, '')
     : value && value.length > 0
       ? value
       : defaultValue
