@@ -21,10 +21,11 @@ import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useDerivedTradeState } from 'modules/trade'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
-import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
+import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
 import { PoweredFooter } from 'common/pure/PoweredFooter'
 
 import * as styledEl from './styled'
@@ -131,7 +132,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
-  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const tradeStateFromUrl = useTradeStateFromUrl()
@@ -173,7 +175,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
 
   const currencyInputCommonProps = {
-    isChainIdUnsupported,
+    isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
     chainId,
     areCurrenciesLoading,
     bothCurrenciesSet,
@@ -184,7 +187,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     displayTokenName,
     displayChainName,
     isBridging: isCurrentTradeBridging,
-  }
+  } as const satisfies Partial<CurrencyInputPanelProps>
 
   const openSellTokenSelect = useCallback(
     (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
@@ -265,9 +268,18 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                   <CurrencyArrowSeparator
                     isCollapsed={compactView}
                     hasSeparatorLine={!compactView}
-                    onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
+                    onSwitchTokens={
+                      isProviderNetworkUnsupported || isProviderNetworkDeprecated
+                        ? () => void 0
+                        : throttledOnSwitchTokens
+                    }
                     isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
-                    disabled={shouldLockForAlternativeOrder || isOutputTokenUnsupported}
+                    disabled={
+                      shouldLockForAlternativeOrder ||
+                      isOutputTokenUnsupported ||
+                      isProviderNetworkUnsupported ||
+                      isProviderNetworkDeprecated
+                    }
                     isDarkMode={darkMode}
                   />
                 </styledEl.CurrencySeparatorBox>

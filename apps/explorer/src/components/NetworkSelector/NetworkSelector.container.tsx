@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { isChainDeprecated } from '@cowprotocol/cow-sdk'
 
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
@@ -48,11 +49,11 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   return (
     <SelectorContainer ref={selectContainer} onClick={(): void => setOpen(!open)}>
       {' '}
-      <NetworkLabel color={currentNetwork.color}>{currentNetworkName}</NetworkLabel>
+      <NetworkLabel $color={currentNetwork.color}>{currentNetworkName}</NetworkLabel>
       <span className={`arrow ${open && 'open'}`} />
       {open && (
         // eslint-disable-next-line react-hooks/refs
-        <OptionsContainer width={selectContainer.current?.offsetWidth || 0}>
+        <OptionsContainer $width={selectContainer.current?.offsetWidth || 0}>
           {availableChains.map((itemNetworkId) => {
             const network = CHAIN_INFO[itemNetworkId]
 
@@ -63,10 +64,14 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
             const shouldPreservePath = ROUTES_WITH_PRESERVED_PATH.some((route) => pathSuffix?.startsWith(route))
             const url = shouldPreservePath ? `${network.urlAlias}/${pathSuffix || ''}` : network.urlAlias
 
+            const isDeprecated = isChainDeprecated(itemNetworkId)
             return (
-              <Option to={'../' + url} color={network.color} key={itemNetworkId}>
+              <Option to={'../' + url} $color={network.color} key={itemNetworkId}>
                 <div className="dot" />
-                <div className={`name ${itemNetworkId === networkId && 'selected'}`}>{network.label}</div>
+                <div className={`name ${itemNetworkId === networkId ? 'selected' : ''}`}>
+                  {network.label}
+                  {isDeprecated && ' (deprecated)'}
+                </div>
                 {itemNetworkId === networkId && <StyledFAIcon icon={faCheck} />}
               </Option>
             )
