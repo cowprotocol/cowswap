@@ -44,7 +44,6 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "quoteRequest": {
       "priceQuality": "optimal",
     },
-    "quoteSigner": undefined,
   },
 ]
 `;

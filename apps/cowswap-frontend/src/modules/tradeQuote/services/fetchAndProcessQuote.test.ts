@@ -170,7 +170,6 @@ describe('fetchAndProcessQuote', () => {
           priceQuality: PriceQuality.FAST,
         },
         appData: mockAppData,
-        quoteSigner: undefined,
       })
       expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(mockQuoteAndPost, null, mockFetchParams)
     })
@@ -206,7 +205,6 @@ describe('fetchAndProcessQuote', () => {
             priceQuality: PriceQuality.FAST,
           },
           appData: mockAppData,
-          quoteSigner: {},
         },
         options: {
           onQuoteResult: expect.any(Function),
@@ -244,7 +242,6 @@ describe('fetchAndProcessQuote', () => {
           priceQuality: PriceQuality.OPTIMAL,
         },
         appData: mockAppData,
-        quoteSigner: undefined,
       })
     })
 
@@ -277,7 +274,6 @@ describe('fetchAndProcessQuote', () => {
           priceQuality: PriceQuality.FAST,
         },
         appData: mockAppData,
-        quoteSigner: undefined,
         getCorrelatedTokens: mockGetCorrelatedTokens,
       })
     })
@@ -671,7 +667,6 @@ describe('fetchAndProcessQuote', () => {
           priceQuality: PriceQuality.FAST,
         },
         appData: undefined,
-        quoteSigner: undefined,
       })
     })
 

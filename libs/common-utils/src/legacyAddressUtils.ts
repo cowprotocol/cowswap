@@ -14,8 +14,12 @@ const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
+  if (!value) {
+    return false
+  }
+  const prefixed = value.startsWith('0x') ? value : `0x${value}`
   try {
-    return getAddress(value as never)
+    return getAddress(prefixed)
   } catch {
     return false
   }
