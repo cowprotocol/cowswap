@@ -24,8 +24,8 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.5",
     "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/cow-sdk": "7.3.5",
     "@cowprotocol/types": "workspace:*",
     "@ethersproject/abstract-provider": "5.7.0",
     "@ethersproject/address": "5.7.0",
@@ -54,7 +54,9 @@
     "multihashes": "^4.0.2",
     "quick-lru": "^7.0.0",
     "react": "19.1.2",
-    "ua-parser-js": "^1.0.32"
+    "ua-parser-js": "^1.0.32",
+    "viem": "^2.45.1",
+    "wagmi": "3.4.2"
   },
   "devDependencies": {
     "@types/ms": "^2.1.0",

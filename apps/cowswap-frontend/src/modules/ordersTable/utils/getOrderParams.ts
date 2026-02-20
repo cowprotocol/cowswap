@@ -1,7 +1,6 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
@@ -67,7 +66,7 @@ export function getOrderParams(
 
 function _hasEnoughBalanceAndAllowance(params: {
   balance: bigint | undefined
-  allowance: BigNumber | undefined
+  allowance: bigint | undefined
   partiallyFillable: boolean
   sellAmount: CurrencyAmount<Token>
 }): {
@@ -83,9 +82,9 @@ function _hasEnoughBalanceAndAllowance(params: {
   return { hasEnoughBalance, hasEnoughAllowance }
 }
 
-function getBiggerAmount(a: BigNumber | undefined, b: BigNumber | undefined): BigNumber | undefined {
+function getBiggerAmount(a: bigint | undefined, b: bigint | undefined): bigint | undefined {
   if (!a) return b
   if (!b) return a
 
-  return a.gt(b) ? a : b
+  return a > b ? a : b
 }

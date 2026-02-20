@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
-export type AllowancesState = Record<string, BigNumber | undefined>
+export type AllowancesState = Record<string, bigint | undefined>
 
 export function useTokenAllowances(tokenAddresses: string[]): {
   state: AllowancesState | undefined
@@ -32,7 +31,7 @@ export function useTokenAllowances(tokenAddresses: string[]): {
     if (!allowances?.length) return
 
     return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
-      acc[address.toLowerCase()] = BigNumber.from(allowances[index].result || 0)
+      acc[address.toLowerCase()] = BigInt(allowances[index].result || 0)
       return acc
     }, {})
   }, [tokenAddresses, allowances])

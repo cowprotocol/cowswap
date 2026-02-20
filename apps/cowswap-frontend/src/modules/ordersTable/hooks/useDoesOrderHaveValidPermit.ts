@@ -14,6 +14,8 @@ import { isPermitDecodedCalldataValid } from 'utils/orderUtils/isPermitValidForO
 
 import { checkPermitNonceAndAmount } from '../utils/checkPermitNonceAndAmount'
 
+import type { Hex } from 'viem'
+
 const SWR_CONFIG: SWRConfiguration = {
   refreshInterval: ms`30s`,
   revalidateOnFocus: false,
@@ -50,6 +52,6 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
   return isValid
 }
 
-function isPermitValid(permit: string | null, chainId: number, account: string | undefined): boolean {
+function isPermitValid(permit: Hex | null, chainId: number, account: string | undefined): boolean {
   return permit && account ? isPermitDecodedCalldataValid(permit, chainId, account).isValid : false
 }

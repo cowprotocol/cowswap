@@ -129,13 +129,12 @@ function parseConditionalOrderParams(
   callData: Hex,
 ): ConditionalOrderParams | null {
   try {
-    const _result = decodeFunctionData({
+    const { args } = decodeFunctionData({
       abi: composableCowContract.abi,
       data: callData,
     })
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { params } = _result as any as { params: ConditionalOrderParams }
+
+    const [params] = args as unknown as [ConditionalOrderParams]
 
     return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
   } catch {
