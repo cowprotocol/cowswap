@@ -396,9 +396,6 @@ importers:
       '@wagmi/core':
         specifier: ^3.3.1
         version: 3.3.1(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.11.3(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.45.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
-      '@web3-react/core':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
       color2k:
         specifier: ^2.0.2
         version: 2.0.2
@@ -505,9 +502,6 @@ importers:
       '@types/styled-components':
         specifier: 5.1.34
         version: 5.1.34
-      '@web3-react/types':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17)))
@@ -7766,17 +7760,6 @@ packages:
 
   '@walletconnect/window-metadata@1.0.1':
     resolution: {integrity: sha512-9koTqyGrM2cqFRW517BPY/iEtUDx2r1+Pwwu5m7sJ7ka79wi3EyqhqcICk/yDmv6jAS1rjKgTKXlEhanYjijcA==}
-
-  '@web3-react/core@8.2.3':
-    resolution: {integrity: sha512-0ezmRKhqQpoa9ct2/3erg60zBXfC/f/liYR1mfSGKtIroRkLnPARigZSV6pI+fi8bhfGJ0RKtFWyTCCWZzdq1w==}
-    peerDependencies:
-      react: '>=16.8'
-
-  '@web3-react/store@8.2.3':
-    resolution: {integrity: sha512-qUJQ5pDsYYDra+/+glq2BmIS43HYAiEZ22sLLVh6E75WiZKRNOOqUxBDPe33KTIn718DLt51j+wd2FT+oT/kJQ==}
-
-  '@web3-react/types@8.2.3':
-    resolution: {integrity: sha512-kSG90QkN+n7IOtp10nQ44oS8J7jzfH9EmqnruwBpCGybh1FM/ohyRvUKWYZNfNE4wsjTSpKsINR0/VdDsZMHyg==}
 
   '@web3modal/common@4.1.9':
     resolution: {integrity: sha512-UZ6dDQ5t6q+oUFMI2ONg3a8gctpNJTFj2qTdPic4/xHuktLf5nHm8LK9NGhMpUqjm7VRN95xpnTeM0gSSmcF6w==}
@@ -16981,21 +16964,6 @@ packages:
   zod@4.1.12:
     resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
-  zustand@4.4.0:
-    resolution: {integrity: sha512-2dq6wq4dSxbiPTamGar0NlIG/av0wpyWZJGeQYtUOLegIUvhM2Bf86ekPlmgpUtS5uR7HyetSiktYrGsdsyZgQ==}
-    engines: {node: '>=12.7.0'}
-    peerDependencies:
-      '@types/react': 19.1.3
-      immer: '>=9.0'
-      react: '>=16.8'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      immer:
-        optional: true
-      react:
-        optional: true
-
   zustand@5.0.0:
     resolution: {integrity: sha512-LE+VcmbartOPM+auOjCCLQOsQ05zUTp8RkgwRzefUk+2jISdMMFnxvyTjA4YNWr5ZGXYbVsEMZosttuxUBkojQ==}
     engines: {node: '>=12.20.0'}
@@ -18378,13 +18346,6 @@ snapshots:
       '@cowprotocol/sdk-common': 0.6.0
       '@cowprotocol/sdk-config': 0.7.3
       '@cowprotocol/sdk-contracts-ts': 1.5.0
-
-  '@cowprotocol/sdk-ethers-v5-adapter@0.3.6(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.6.0
-      '@ethersproject/abstract-signer': 5.8.0
-      '@typechain/ethers-v5': 11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)
-      ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
   '@cowprotocol/sdk-ethers-v5-adapter@0.3.6(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
     dependencies:
@@ -24783,16 +24744,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)':
-    dependencies:
-      '@ethersproject/abi': 5.8.0
-      '@ethersproject/providers': 5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      lodash: 4.17.21
-      ts-essentials: 7.0.3(typescript@5.9.3)
-      typechain: 8.3.2(typescript@5.9.3)
-      typescript: 5.9.3
-
   '@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
       '@ethersproject/abi': 5.8.0
@@ -27134,38 +27085,6 @@ snapshots:
     dependencies:
       '@walletconnect/window-getters': 1.0.1
       tslib: 1.14.1
-
-  '@web3-react/core@8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@web3-react/store': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      react: 19.1.2
-      zustand: 4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    optionalDependencies:
-      '@ethersproject/providers': 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - immer
-      - utf-8-validate
-
-  '@web3-react/store@8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)':
-    dependencies:
-      '@ethersproject/address': 5.7.0
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      zustand: 4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - immer
-      - react
-
-  '@web3-react/types@8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)':
-    dependencies:
-      zustand: 4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - immer
-      - react
 
   '@web3modal/common@4.1.9':
     dependencies:
@@ -38441,14 +38360,6 @@ snapshots:
     optional: true
 
   zod@4.1.12: {}
-
-  zustand@4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2):
-    dependencies:
-      use-sync-external-store: 1.2.0(react@19.1.2)
-    optionalDependencies:
-      '@types/react': 19.1.3
-      immer: 10.0.2
-      react: 19.1.2
 
   zustand@5.0.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)(use-sync-external-store@1.4.0(react@19.1.2)):
     optionalDependencies:
