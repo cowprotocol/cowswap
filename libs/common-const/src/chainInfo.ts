@@ -1,9 +1,7 @@
 import {
-  AdditionalTargetChainId,
   arbitrumOne,
   avalanche,
   base,
-  bitcoin,
   bnb,
   ChainInfo,
   gnosisChain,
@@ -38,7 +36,7 @@ export interface BaseChainInfo {
   readonly nativeCurrency: TokenWithLogo
 }
 
-export type ChainInfoMap = Record<SupportedChainId | typeof AdditionalTargetChainId.BITCOIN, BaseChainInfo>
+export type ChainInfoMap = Record<SupportedChainId, BaseChainInfo>
 
 function mapChainInfoToBaseChainInfo(
   chainInfo: ChainInfo,
@@ -151,12 +149,6 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'sepolia',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
   },
-  [AdditionalTargetChainId.BITCOIN]: {
-    ...mapChainInfoToBaseChainInfo(bitcoin),
-    name: 'bitcoin',
-    urlAlias: 'btc',
-    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.BITCOIN],
-  },
 }
 
 /**
@@ -180,6 +172,6 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
 
 export const CHAIN_INFO_ARRAY: BaseChainInfo[] = SORTED_CHAIN_IDS.map((id) => CHAIN_INFO[id])
 
-export function getChainInfo(chainId: SupportedChainId | typeof AdditionalTargetChainId.BITCOIN): BaseChainInfo {
+export function getChainInfo(chainId: SupportedChainId): BaseChainInfo {
   return CHAIN_INFO[chainId]
 }
