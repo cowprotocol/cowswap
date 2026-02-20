@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
@@ -72,8 +71,7 @@ export function useApproveAndSwap({
         const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= minAmountToSignForSwapBig)
 
         if (isApprovedAmountSufficient) {
-          const hash =
-            (tx.txResponse as TransactionReceipt).transactionHash || (tx.txResponse as TransactionResponse).hash
+          const hash = (tx.txResponse as TransactionReceipt).transactionHash
 
           onApproveConfirm(hash)
         } else {

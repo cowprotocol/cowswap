@@ -188,7 +188,7 @@ async function wrapContractCall({
     amount: amount.toString(),
     urlChainId: getRawCurrentChainIdFromUrl(),
     account,
-    tx,
+    tx: { ...tx.request, to: tx.request.address },
   })
 
   const txHash = await writeContract(config, tx.request)

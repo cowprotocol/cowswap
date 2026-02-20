@@ -1,10 +1,10 @@
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { maxUint256 } from 'viem'
 import { Config } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -82,7 +82,7 @@ export async function safeBundleFlow({
     const approveTx = await buildApproveTx({
       tokenAddress: sellToken.address,
       spender,
-      amountToApprove: MaxUint256.toBigInt(),
+      amountToApprove: maxUint256,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')

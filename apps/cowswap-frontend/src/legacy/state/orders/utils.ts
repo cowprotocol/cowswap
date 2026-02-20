@@ -7,6 +7,7 @@ import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-co
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
+import { toHex } from 'viem'
 
 import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 
@@ -400,7 +401,7 @@ export function getRemainderAmountsWithoutSurplus(order: GenericOrder): {
     return { sellAmount: sellRemainder, buyAmount: buyRemainder }
   }
 
-  const surplusAmount = JSBI.BigInt(`0x${surplusAmountBigNumber.decimalPlaces(0).toString(16)}`)
+  const surplusAmount = JSBI.BigInt(toHex(surplusAmountBigNumber.decimalPlaces(0).toString()))
 
   if (isSellOrder(order.kind)) {
     const buyAmount = JSBI.subtract(JSBI.BigInt(buyRemainder), surplusAmount).toString()
@@ -416,7 +417,7 @@ export function getRemainderAmountsWithoutSurplus(order: GenericOrder): {
 function getSurplusAmountBigNumber(order: GenericOrder): BigNumber {
   if ('executionData' in order) {
     // ParsedOrder
-    return order.executionData.surplusAmount
+    return new BigNumber(order.executionData.surplusAmount.toString())
   }
   // Order
   return getOrderSurplus(order).amount

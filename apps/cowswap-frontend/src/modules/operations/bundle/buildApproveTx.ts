@@ -1,6 +1,4 @@
-import { PopulatedTransaction } from '@ethersproject/contracts'
-
-import { erc20Abi, encodeFunctionData } from 'viem'
+import { erc20Abi, encodeFunctionData, type TransactionRequest } from 'viem'
 
 export type BuildApproveTxParams = {
   tokenAddress: string
@@ -11,7 +9,7 @@ export type BuildApproveTxParams = {
 /**
  * Builds the approval tx, without sending it
  */
-export async function buildApproveTx(params: BuildApproveTxParams): Promise<PopulatedTransaction> {
+export async function buildApproveTx(params: BuildApproveTxParams): Promise<TransactionRequest> {
   const { tokenAddress, spender, amountToApprove } = params
 
   return {

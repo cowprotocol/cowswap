@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import type { TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
@@ -30,7 +29,7 @@ const DEFAULT_APPROVE_PARAMS: TradeApproveCallbackParams = {
 
 export type TradeApproveResult<R> = { txResponse: R; approvedAmount: bigint | undefined }
 
-export type GenerecTradeApproveResult = TradeApproveResult<TransactionResponse> | TradeApproveResult<TransactionReceipt>
+export type GenerecTradeApproveResult = TradeApproveResult<TransactionReceipt>
 
 export interface TradeApproveCallback {
   (
@@ -38,7 +37,7 @@ export interface TradeApproveCallback {
     params?: TradeApproveCallbackParams & {
       waitForTxConfirmation?: false
     },
-  ): Promise<TradeApproveResult<TransactionResponse> | undefined>
+  ): Promise<TradeApproveResult<TransactionReceipt> | undefined>
 
   (
     amount: bigint,

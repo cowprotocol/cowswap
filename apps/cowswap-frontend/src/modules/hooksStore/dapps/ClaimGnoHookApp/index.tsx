@@ -5,17 +5,14 @@ import { SBCDepositContractAbi } from '@cowprotocol/cowswap-abis'
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { formatUnits } from 'ethers/lib/utils'
-import { encodeFunctionData } from 'viem'
+import { encodeFunctionData, formatUnits } from 'viem'
 import { Config, useConfig } from 'wagmi'
 import { readContract, estimateGas } from 'wagmi/actions'
 
-import { SBC_DEPOSIT_CONTRACT_ADDRESS, SBCDepositContract } from './const'
+import { SBC_DEPOSIT_CONTRACT_ADDRESS } from './const'
 
 import { HookDappProps } from '../../types/hooks'
 import { ContentWrapper, LoadingLabel, Text, Wrapper } from '../styled'
-
-const SbcDepositContractInterface = SBCDepositContract.interface
 
 /**
  * Dapp that creates the hook to the connected wallet GNO Rewards.
@@ -42,7 +39,7 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
       return null
     }
 
-    return SbcDepositContractInterface.encodeFunctionData('claimWithdrawal', [account])
+    return encodeFunctionData({ abi: SBCDepositContractAbi, functionName: 'claimWithdrawal', args: [account] })
   }, [account])
 
   useEffect(() => {

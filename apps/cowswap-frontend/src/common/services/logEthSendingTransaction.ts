@@ -1,14 +1,14 @@
-import type { PopulatedTransaction } from '@ethersproject/contracts'
-
 import { captureEvent } from '@sentry/browser'
 import { SentryEvents } from 'cow-react/sentry/events'
+
+import type { TransactionRequest } from 'viem'
 
 export interface EthSendingIntentionInfo {
   chainId: number
   urlChainId: number | null
   amount: string
   account: string
-  tx: PopulatedTransaction
+  tx: TransactionRequest
 }
 
 export function logEthSendingIntention(info: EthSendingIntentionInfo): string {
@@ -24,7 +24,7 @@ export function logEthSendingIntention(info: EthSendingIntentionInfo): string {
       txFrom: info.tx.from,
       txNonce: info.tx.nonce?.toString(),
       txData: info.tx.data,
-      txGasLimit: info.tx.gasLimit?.toString(),
+      txGasLimit: info.tx.gas?.toString(),
       txGasPrice: info.tx.gasPrice?.toString(),
       txType: info.tx.type?.toString(),
     },

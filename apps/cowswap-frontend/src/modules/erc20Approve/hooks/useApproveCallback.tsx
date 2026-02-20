@@ -4,7 +4,7 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
-import { encodeFunctionData, erc20Abi, TransactionReceipt } from 'viem'
+import { encodeFunctionData, erc20Abi, TransactionReceipt, toHex } from 'viem'
 import { Config, useConfig } from 'wagmi'
 import { estimateGas, writeContract, getTransactionReceipt } from 'wagmi/actions'
 
@@ -63,7 +63,7 @@ export function useApproveCallback(
       const tokenSymbol = token?.symbol
 
       const summary = amountToApprove > 0n ? t`Approve ${tokenSymbol}` : t`Revoke ${tokenSymbol} approval`
-      const amountToApproveStr = '0x' + amountToApprove.toString(16)
+      const amountToApproveStr = toHex(amountToApprove)
 
       if (!token || !spender) {
         console.error('Wrong input for approve: ', { token, amountToApproveStr, spender })

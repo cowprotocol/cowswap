@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { toHex } from 'viem'
+
 import { useTokensBalancesCombined } from './useTokensBalancesCombined'
 
 export function useCurrencyAmountBalanceCombined(
@@ -19,6 +21,6 @@ export function useCurrencyAmountBalanceCombined(
 
     if (!balance && balance !== 0n) return undefined
 
-    return CurrencyAmount.fromRawAmount(token, `0x${balance.toString(16)}`)
+    return CurrencyAmount.fromRawAmount(token, toHex(balance))
   }, [token, balances, chainId])
 }

@@ -613,51 +613,6 @@ importers:
       '@cowprotocol/widget-lib':
         specifier: workspace:*
         version: link:../../libs/widget-lib
-      '@ethersproject/abi':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/abstract-provider':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/abstract-signer':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/address':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/bignumber':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/bytes':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/constants':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/contracts':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/hash':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/keccak256':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/providers':
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@ethersproject/solidity':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/strings':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/units':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/wallet':
-        specifier: 5.7.0
-        version: 5.7.0
       '@lingui/core':
         specifier: ^5.4.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)
@@ -884,9 +839,6 @@ importers:
       '@types/styled-components':
         specifier: 5.1.34
         version: 5.1.34
-      '@web3-react/types':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
       jest-fetch-mock:
         specifier: ^3.0.3
         version: 3.0.3(encoding@0.1.13)

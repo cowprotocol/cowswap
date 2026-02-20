@@ -8,6 +8,7 @@ import { FiatAmount, HoverTooltip, LoadingRows, LoadingRowSmall, TokenAmount } f
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
+import { toHex } from 'viem'
 
 import * as styledEl from './styled'
 
@@ -105,7 +106,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   const shouldShowBalances = isWalletConnected && isSupportedChain
   const shouldFormatBalances = shouldShowBalances && hasIntersected
   const balanceAmount =
-    shouldFormatBalances && balance ? CurrencyAmount.fromRawAmount(token, `0x${balance.toString(16)}`) : undefined
+    shouldFormatBalances && balance ? CurrencyAmount.fromRawAmount(token, toHex(balance)) : undefined
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected || disabled) {

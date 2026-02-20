@@ -1,4 +1,4 @@
-import { encodeFunctionData, decodeAbiParameters, bytesToHex } from 'viem'
+import { encodeFunctionData, decodeAbiParameters, bytesToHex, toHex } from 'viem'
 
 import type { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
 import type { Address, WalletClient, PublicClient, Hex } from 'viem'
@@ -61,7 +61,7 @@ export class PermitProviderConnector implements ProviderConnector {
 
       Object.entries(decodedValues).forEach(([key, value]) => {
         if (typeof value === 'bigint') {
-          copy[key] = `0x${value.toString(16)}`
+          copy[key] = toHex(value)
         } else {
           copy[key] = value
         }

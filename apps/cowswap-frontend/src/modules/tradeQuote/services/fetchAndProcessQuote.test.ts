@@ -50,12 +50,6 @@ import { fetchAndProcessQuote } from './fetchAndProcessQuote'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
-import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
-
-// Mock dependencies
-jest.mock('../utils/getBridgeQuoteSigner', () => ({
-  getBridgeQuoteSigner: jest.fn(),
-}))
 
 jest.mock('api/cowProtocol/getIsOrderBookTypedError', () => ({
   getIsOrderBookTypedError: jest.fn(),
@@ -84,7 +78,6 @@ const mockTimings = {
 describe('fetchAndProcessQuote', () => {
   let mockTradeQuoteManager: jest.Mocked<TradeQuoteManager>
   let mockBridgingSdk: jest.Mocked<typeof bridgingSdk>
-  let mockGetBridgeQuoteSigner: jest.MockedFunction<typeof getBridgeQuoteSigner>
   let mockGetIsOrderBookTypedError: jest.MockedFunction<typeof getIsOrderBookTypedError>
   let mockMapOperatorErrorToQuoteError: jest.MockedFunction<typeof mapOperatorErrorToQuoteError>
   let mockOnlyResolvesLast: jest.MockedFunction<typeof onlyResolvesLast>
@@ -132,14 +125,12 @@ describe('fetchAndProcessQuote', () => {
     }
 
     mockBridgingSdk = bridgingSdk as jest.Mocked<typeof bridgingSdk>
-    mockGetBridgeQuoteSigner = getBridgeQuoteSigner as jest.MockedFunction<typeof getBridgeQuoteSigner>
     mockGetIsOrderBookTypedError = getIsOrderBookTypedError as jest.MockedFunction<typeof getIsOrderBookTypedError>
     mockMapOperatorErrorToQuoteError = mapOperatorErrorToQuoteError as jest.MockedFunction<
       typeof mapOperatorErrorToQuoteError
     >
     mockOnlyResolvesLast = onlyResolvesLast as jest.MockedFunction<typeof onlyResolvesLast>
 
-    mockGetBridgeQuoteSigner.mockReturnValue({} as jest.Mocked<any>)
     mockGetIsOrderBookTypedError.mockReturnValue(false)
     mockMapOperatorErrorToQuoteError.mockReturnValue({
       errorType: QuoteApiErrorCodes.UNHANDLED_ERROR,
@@ -208,7 +199,6 @@ describe('fetchAndProcessQuote', () => {
       )
 
       expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true)
-      expect(mockGetBridgeQuoteSigner).toHaveBeenCalledWith(SupportedChainId.MAINNET)
       expect(mockBridgingSdk.getBestQuote).toHaveBeenCalledWith({
         quoteBridgeRequest: crossChainQuoteParams,
         advancedSettings: {
