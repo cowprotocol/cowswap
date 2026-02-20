@@ -1,10 +1,12 @@
 import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { SupportedChainId, isChainDeprecated } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Badge, BadgeTypes } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+
+import { useDeprecatedChains } from 'common/hooks/useIsProviderNetworkDeprecated'
 
 import { ActiveRowLinks } from './ActiveRowLinks/ActiveRowLinks.pure'
 import * as styledEl from './NetworksList.styled'
@@ -25,6 +27,8 @@ export function NetworksList({
   availableChains,
   onSelectChain,
 }: NetworksListProps): ReactNode {
+  const deprecatedChains = useDeprecatedChains()
+
   return (
     <>
       {availableChains.map((targetChainId: SupportedChainId) => {
@@ -34,7 +38,7 @@ export function NetworksList({
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
         const isNewNetwork = NEW_NETWORK_IDS.has(targetChainId)
-        const isDeprecatedNetwork = isChainDeprecated(targetChainId)
+        const isDeprecatedNetwork = deprecatedChains.has(targetChainId)
 
         const rowContent = (
           <styledEl.FlyoutRow
