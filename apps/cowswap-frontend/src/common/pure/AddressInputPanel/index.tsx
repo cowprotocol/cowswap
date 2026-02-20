@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import {
@@ -88,7 +88,7 @@ const Input = styled.input<{ error?: boolean }>`
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line max-lines-per-function
 export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
@@ -105,7 +105,7 @@ export function AddressInputPanel({
   value: string
   onChange: (value: string) => void
   targetChainId?: SupportedChainId
-}) {
+}): ReactElement {
   const { t } = useLingui()
   const { chainId: walletChainId } = useWalletInfo()
   // Use targetChainId if provided (for cross-chain), otherwise fall back to wallet's chain

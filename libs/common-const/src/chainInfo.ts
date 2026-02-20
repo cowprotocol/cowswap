@@ -5,15 +5,15 @@ import {
   bnb,
   ChainInfo,
   gnosisChain,
+  HttpsString,
+  ink,
   lens,
   linea,
   mainnet,
   plasma,
   polygon,
   sepolia,
-  ink,
   SupportedChainId,
-  HttpsString,
 } from '@cowprotocol/cow-sdk'
 
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
