@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v2.2.2...common-utils-v2.3.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.3.0
+    * @cowprotocol/types bumped to 3.3.0
+
 ## [2.2.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v2.2.1...common-utils-v2.2.2) (2026-02-17)
 
 

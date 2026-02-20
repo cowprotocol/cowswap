@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.2.3...cowswap-v2.3.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.3.0
+    * @cowprotocol/balances-and-allowances bumped to 2.3.0
+    * @cowprotocol/common-const bumped to 2.3.0
+    * @cowprotocol/common-hooks bumped to 2.3.0
+    * @cowprotocol/common-utils bumped to 2.3.0
+    * @cowprotocol/core bumped to 2.3.0
+    * @cowprotocol/ens bumped to 2.3.0
+    * @cowprotocol/events bumped to 3.3.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.4
+    * @cowprotocol/iframe-transport bumped to 2.0.4
+    * @cowprotocol/multicall bumped to 2.3.0
+    * @cowprotocol/permit-utils bumped to 2.3.0
+    * @cowprotocol/snackbars bumped to 2.0.6
+    * @cowprotocol/tokens bumped to 2.3.0
+    * @cowprotocol/types bumped to 3.3.0
+    * @cowprotocol/ui bumped to 2.3.0
+    * @cowprotocol/wallet bumped to 2.3.0
+    * @cowprotocol/wallet-provider bumped to 2.1.4
+    * @cowprotocol/widget-lib bumped to 1.2.0
+
 ## [2.2.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.2.2...cowswap-v2.2.3) (2026-02-18)
 
 
