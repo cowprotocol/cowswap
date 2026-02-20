@@ -1,9 +1,9 @@
 import { EthereumProvider } from '@cowprotocol/widget-lib'
 
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import { useAppKitProvider } from '@reown/appkit/react'
 
 export function useProvider(): EthereumProvider | undefined {
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useAppKitProvider('eip155')
 
   return walletProvider as unknown as EthereumProvider
 }

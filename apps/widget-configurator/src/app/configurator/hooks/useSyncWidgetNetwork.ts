@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react'
 
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useWeb3ModalAccount, useSwitchNetwork } from '@web3modal/ethers5/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useSwitchChain } from 'wagmi'
 
 import { getNetworkOption, NetworkOption } from '../controls/NetworkControl'
 
@@ -11,8 +12,9 @@ export function useSyncWidgetNetwork(
   setNetworkControlState: (option: NetworkOption) => void,
   standaloneMode: boolean,
 ): void {
-  const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
-  const { switchNetwork } = useSwitchNetwork()
+  const { isConnected } = useAppKitAccount()
+  const { chainId: walletChainId } = useAppKitNetwork()
+  const { mutateAsync: switchNetwork } = useSwitchChain()
   const walletChainIdRef = useRef(walletChainId)
   const currentChainIdRef = useRef(chainId)
   // eslint-disable-next-line react-hooks/refs
@@ -24,10 +26,10 @@ export function useSyncWidgetNetwork(
   useEffect(() => {
     if (!isConnected || !walletChainId) return
 
-    const newNetwork = getNetworkOption(walletChainId)
+    const newNetwork = getNetworkOption(walletChainId as SupportedChainId)
 
     if (newNetwork) {
-      currentChainIdRef.current = walletChainId
+      currentChainIdRef.current = walletChainId as SupportedChainId
       setNetworkControlState(newNetwork)
     }
   }, [isConnected, walletChainId, setNetworkControlState])
@@ -43,6 +45,6 @@ export function useSyncWidgetNetwork(
     )
       return
 
-    switchNetwork(chainId)
-  }, [chainId, isConnected, switchNetwork, setNetworkControlState, standaloneMode])
+    switchNetwork({ chainId })
+  }, [chainId, isConnected, switchNetwork, standaloneMode])
 }

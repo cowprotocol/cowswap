@@ -3,6 +3,7 @@ import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } fr
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
@@ -25,7 +26,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitTheme } from '@reown/appkit/react'
 
 import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
@@ -74,8 +75,9 @@ export type WidgetMode = 'dapp' | 'standalone'
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Configurator({ title }: { title: string }) {
-  const { setThemeMode } = useWeb3ModalTheme()
-  const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
+  const { setThemeMode } = useAppKitTheme()
+  const { isConnected } = useAppKitAccount()
+  const { chainId: walletChainId } = useAppKitNetwork()
   const provider = useProvider()
   const cowAnalytics = useCowAnalytics()
 
@@ -171,7 +173,7 @@ export function Configurator({ title }: { title: string }) {
     swapDeadline,
     limitDeadline,
     advancedDeadline,
-    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
+    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : (walletChainId as SupportedChainId),
     theme: mode,
     currentTradeType,
     enabledTradeTypes,
