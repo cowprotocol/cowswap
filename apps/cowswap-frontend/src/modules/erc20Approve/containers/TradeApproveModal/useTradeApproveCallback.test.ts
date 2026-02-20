@@ -1,7 +1,6 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { Token } from '@uniswap/sdk-core'
 
 import { renderHook, waitFor } from '@testing-library/react'
@@ -15,6 +14,8 @@ import { useTradeApproveCallback } from './useTradeApproveCallback'
 import { LinguiWrapper } from '../../../../../LinguiJestProvider'
 import { useApproveCallback } from '../../hooks'
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
+
+import type { TransactionReceipt } from 'viem'
 
 jest.mock('@cowprotocol/analytics', () => ({
   useCowAnalytics: jest.fn(),
@@ -75,19 +76,12 @@ describe('useTradeApproveCallback', () => {
   const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // Valid address
   const mockChainId = 1
 
-  const createMockTransactionResponse = (status: 'success' | 'reverted'): TransactionResponse =>
+  const createMockTransactionResponse = (status: 'success' | 'reverted'): TransactionReceipt =>
     ({
       transactionHash: '0x15de6602b39be44ce9e6b57245deb4ee64ad28286c0f9f8094a6af2016e30591',
-      confirmations: 0,
       from: '0xfrom1234567890123456789012345678901234567890',
       status,
-      nonce: 1,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      gasLimit: { toString: () => '21000' } as any,
-      data: '0x',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      value: { toString: () => '0' } as any,
-      chainId: 1,
+      gasUsed: 21000n,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any
 
@@ -114,7 +108,7 @@ describe('useTradeApproveCallback', () => {
         owner: mockAccount,
         spender: mockSpenderAddress,
         amount: mockAmount,
-        blockNumber: 123456,
+        blockNumber: 123456n,
         chainId: mockChainId,
       })
 
@@ -129,14 +123,14 @@ describe('useTradeApproveCallback', () => {
           owner: mockAccount,
           spender: mockSpenderAddress,
           amount: mockAmount,
-          blockNumber: 123456,
+          blockNumber: 123456n,
           chainId: mockChainId,
         })
       })
     })
 
     it('should use actual approved amount from logs when user changes amount in wallet', async () => {
-      const userChangedAmount = BigInt('5000000000000000000') // User changed to 5 tokens instead of 1
+      const userChangedAmount = 5000000000000000000n // User changed to 5 tokens instead of 1
       const mockTxResponse = createMockTransactionResponse('success')
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue({
@@ -144,7 +138,7 @@ describe('useTradeApproveCallback', () => {
         owner: mockAccount,
         spender: mockSpenderAddress,
         amount: userChangedAmount,
-        blockNumber: 123456,
+        blockNumber: 123456n,
         chainId: mockChainId,
       })
 
@@ -159,7 +153,7 @@ describe('useTradeApproveCallback', () => {
           owner: mockAccount,
           spender: mockSpenderAddress,
           amount: userChangedAmount, // Should use the actual amount from logs, not mockAmount
-          blockNumber: 123456,
+          blockNumber: 123456n,
           chainId: mockChainId,
         })
       })

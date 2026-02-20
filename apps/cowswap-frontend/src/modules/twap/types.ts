@@ -30,7 +30,7 @@ export interface TWAPOrderStruct {
   // timeInterval
   t: number
   span: number
-  appData: string
+  appData: Hex
 }
 
 export enum TwapOrderStatus {

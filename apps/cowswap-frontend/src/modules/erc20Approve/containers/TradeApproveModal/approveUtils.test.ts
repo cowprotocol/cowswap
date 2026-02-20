@@ -1,13 +1,15 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { id } from '@ethersproject/hash'
 import { Token } from '@uniswap/sdk-core'
+
+import { encodeAbiParameters } from 'viem'
+
+import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { processApprovalTransaction } from './approveUtils'
 
 import type { Hex, TransactionReceipt } from 'viem'
 
-const APPROVAL_EVENT_TOPIC = id('Approval(address,address,uint256)') as Hex
+const APPROVAL_EVENT_TOPIC = toKeccak256('Approval(address,address,uint256)') as Hex
 
 describe('processApprovalTransaction', () => {
   const mockChainId = SupportedChainId.MAINNET
@@ -26,7 +28,7 @@ describe('processApprovalTransaction', () => {
 
   // Helper to encode approval amount
   const encodeAmount = (amount: bigint): Hex => {
-    return defaultAbiCoder.encode(['uint256'], [amount.toString()]) as Hex
+    return encodeAbiParameters([{ type: 'uint256' }], [amount])
   }
 
   const createMockTransactionReceipt = (

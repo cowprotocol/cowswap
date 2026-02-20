@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
-import { encodeFunctionData } from 'viem'
+import { encodeFunctionData, toHex } from 'viem'
 import { useConfig, useReadContract } from 'wagmi'
 import { estimateGas, writeContract } from 'wagmi/actions'
 
@@ -48,7 +48,7 @@ function useParseVCowResult(result: bigint | undefined) {
       return
     }
 
-    return CurrencyAmount.fromRawAmount(vCowToken, `0x${result.toString(16)}`)
+    return CurrencyAmount.fromRawAmount(vCowToken, toHex(result))
   }, [result, vCowToken])
 }
 

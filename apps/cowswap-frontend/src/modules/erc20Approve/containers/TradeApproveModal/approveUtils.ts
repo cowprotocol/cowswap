@@ -1,17 +1,17 @@
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Nullish } from '@cowprotocol/types'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { getAddress } from '@ethersproject/address'
-import { id } from '@ethersproject/hash'
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { SetOptimisticAllowanceParams } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
+import { getAddress, decodeAbiParameters } from 'viem'
+
+import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import type { TransactionReceipt } from 'viem'
 
 // ERC20 Approval event signature: Approval(address indexed owner, address indexed spender, uint256 value)
-const APPROVAL_EVENT_TOPIC = id('Approval(address,address,uint256)')
+const APPROVAL_EVENT_TOPIC = toKeccak256('Approval(address,address,uint256)')
 
 interface ApprovalTransactionParams {
   chainId: SupportedChainId
@@ -83,9 +83,7 @@ function extractApprovalAmountFromLogs(
     if (!approvalLog) return undefined
 
     // Parse the value from log data (3rd parameter of Approval event)
-    const value = defaultAbiCoder.decode(['uint256'], approvalLog.data)[0]
-
-    return BigInt(value.toString())
+    return decodeAbiParameters([{ type: 'uint256' }], approvalLog.data)[0]
   } catch (error) {
     console.error('Error extracting approval amount from logs:', error)
     return undefined

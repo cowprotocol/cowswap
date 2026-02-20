@@ -1,7 +1,4 @@
 import { calculateGasMargin } from '@cowprotocol/common-utils'
-import type { TransactionRequest } from '@ethersproject/abstract-provider'
-import { BigNumber } from '@ethersproject/bignumber'
-import type { Deferrable } from '@ethersproject/properties'
 
 import useSWR from 'swr'
 import { Address, Hex } from 'viem'
@@ -10,7 +7,10 @@ import { estimateGas } from 'wagmi/actions'
 
 import type { SWRConfiguration } from 'swr'
 
-type ITransactionData = Deferrable<TransactionRequest>
+type ITransactionData = {
+  to?: Address
+  data?: Hex
+}
 
 type IHookGasCalculator = (transactionData: ITransactionData) => Promise<string>
 
@@ -19,10 +19,10 @@ export const useHookGasLimitCalculator = (): IHookGasCalculator => {
 
   return async (transactionData) => {
     const gasEstimation = await estimateGas(config, {
-      to: transactionData.to as Address,
-      data: transactionData.data as Hex,
+      to: transactionData.to,
+      data: transactionData.data,
     })
-    return calculateGasMargin(BigNumber.from(gasEstimation)).toString()
+    return calculateGasMargin(gasEstimation).toString()
   }
 }
 

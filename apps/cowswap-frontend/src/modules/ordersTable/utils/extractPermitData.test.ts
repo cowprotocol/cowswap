@@ -1,9 +1,11 @@
 import { extractPermitData } from './extractPermitData'
 
+import type { Hex } from 'viem'
+
 describe('extractPermitData', () => {
   describe('unsupported permit', () => {
     it('should return unsupported for unknown selector', () => {
-      const unknownCallData = '0xunknown' + '0'.repeat(512)
+      const unknownCallData = ('0xunknown' + '0'.repeat(512)) as Hex
 
       const result = extractPermitData(unknownCallData)
 
@@ -15,7 +17,7 @@ describe('extractPermitData', () => {
 
   describe('error handling', () => {
     it('should handle invalid call data gracefully', () => {
-      const invalidCallData = 'invalid_data'
+      const invalidCallData = '0xinvalid_data' as Hex
 
       const result = extractPermitData(invalidCallData)
 

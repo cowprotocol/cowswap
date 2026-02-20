@@ -1,11 +1,11 @@
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20__factory } from '@cowprotocol/cowswap-abis'
+import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 
 import { renderHook } from '@testing-library/react'
 import useSWR from 'swr'
+import { encodeFunctionData } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -61,8 +61,6 @@ jest.mock('../utils/checkPermitNonceAndAmount', () => ({
   checkPermitNonceAndAmount: jest.fn(),
 }))
 
-const erc20Interface = Erc20__factory.createInterface()
-
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUsePublicClient = usePublicClient as jest.MockedFunction<typeof usePublicClient>
 const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
@@ -70,16 +68,20 @@ const mockIsPending = isPending as jest.MockedFunction<typeof isPending>
 const mockGetOrderPermitIfExists = getOrderPermitIfExists as jest.MockedFunction<typeof getOrderPermitIfExists>
 const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
 
-function createEip2612PermitCallData(owner: string, spender: string, value: EthersBigNumber, deadline: number): Hex {
-  const permitData = erc20Interface.encodeFunctionData('permit', [
-    owner,
-    spender,
-    value,
-    deadline,
-    0, // v
-    '0x0000000000000000000000000000000000000000000000000000000000000000', // r
-    '0x0000000000000000000000000000000000000000000000000000000000000000', // s
-  ])
+function createEip2612PermitCallData(owner: string, spender: string, value: bigint, deadline: bigint): Hex {
+  const permitData = encodeFunctionData({
+    abi: Erc20Abi,
+    functionName: 'permit',
+    args: [
+      owner,
+      spender,
+      value,
+      deadline,
+      0, // v
+      '0x0000000000000000000000000000000000000000000000000000000000000000', // r
+      '0x0000000000000000000000000000000000000000000000000000000000000000', // s
+    ],
+  })
   // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with EIP_2612_PERMIT_SELECTOR
   return (oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + permitData.slice(10)) as Hex
 }
@@ -102,8 +104,8 @@ describe('useDoesOrderHaveValidPermit', () => {
     },
   } as Order
   const spenderAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[mockChainId]
-  const futureDeadline = Math.floor(Date.now() / 1000) + 86400 // 24 hours from now
-  const permitValue = EthersBigNumber.from('1000000000000000000') // 1 token
+  const futureDeadline = BigInt(Math.floor(Date.now() / 1000) + 86400) // 24 hours from now
+  const permitValue = 1000000000000000000n // 1 token
   const mockPermit = createEip2612PermitCallData(mockAccount, spenderAddress, permitValue, futureDeadline)
   const mockPermitInfo = { type: 'eip-2612' as const }
 

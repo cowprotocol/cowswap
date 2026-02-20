@@ -1,17 +1,17 @@
 import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo } from '@cowprotocol/permit-utils'
 
-import { PublicClient } from 'viem'
-
 import { GenericOrder } from 'common/types'
 
 import { extractPermitData } from './extractPermitData'
+
+import type { Hex, PublicClient } from 'viem'
 
 export async function checkPermitNonceAndAmount(
   account: string,
   chainId: number,
   publicClient: PublicClient,
   order: GenericOrder,
-  permitCallData: string,
+  permitCallData: Hex,
   permitInfo: PermitInfo,
 ): Promise<boolean | undefined> {
   try {
