@@ -6,11 +6,11 @@ import { Badge, BadgeTypes } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-import { useDeprecatedChains } from 'common/hooks/useIsProviderNetworkDeprecated'
-
 import { ActiveRowLinks } from './ActiveRowLinks/ActiveRowLinks.pure'
 import * as styledEl from './NetworksList.styled'
 import { getLogo } from './NetworksList.utils'
+
+import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
 
 const NEW_NETWORK_IDS = new Set([SupportedChainId.PLASMA, SupportedChainId.INK])
 
