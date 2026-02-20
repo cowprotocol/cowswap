@@ -26,6 +26,7 @@ import { useIsTradeFormValidationPassed } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
@@ -45,7 +46,7 @@ import {
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
-import { BottomBanners } from '../BottomBanners'
+import { BottomBanners } from '../BottomBanners/BottomBanners.container'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
@@ -180,12 +181,14 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const isConnected = Boolean(account)
   const isNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
   const shouldShowLockScreen =
     isHydrated &&
     !isUnlocked &&
     !isNetworkUnsupported &&
+    !isNetworkDeprecated &&
     !isInjectedWidget() &&
     ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
 
