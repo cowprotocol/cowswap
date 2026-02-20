@@ -26,11 +26,13 @@ Documentation: [https://lingui.dev/](https://lingui.dev/introduction)
 ### Adding new strings to the app
 
 * Wrap new strings in Lingui macros: <code>t\`\`</code>, `<Trans>`, `msg`, etc. depending on context.
-* Build an updated language source file `en-US.po` with:
+* Update the language source file `en-US.po` and compile catalogs by running from the repo root:
 
 ```
 pnpm run i18n
 ```
+
+  For `cowswap-frontend`, this runs **extract** then **compile**: the `i18n` Nx target in `apps/cowswap-frontend/project.json` has `dependsOn: ["i18n:extract"]`, so when the root script runs `nx run-many -t i18n`, Nx runs `i18n:extract` first (which scans source and updates `.po` files), then the `i18n` target (which runs `lingui compile`). New strings are therefore added to the catalog and no longer show as message IDs (gibberish) in preview. To run only extract or only compile for this app, use `pnpx nx run cowswap-frontend:i18n:extract` or `pnpx nx run cowswap-frontend:i18n` (the latter still runs extract first because of the dependency).
 
 * Push your changes to the branch connected to your Crowdin project.
 * Crowdin should automatically pick up the changes, or you can sync manually.

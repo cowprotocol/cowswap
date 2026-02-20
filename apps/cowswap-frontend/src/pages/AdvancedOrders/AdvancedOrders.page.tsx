@@ -10,9 +10,10 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   advancedOrdersAtom,
+  advancedOrdersDerivedStateAtom,
   AdvancedOrdersWidget,
-  FillAdvancedOrdersDerivedStateUpdater,
   SetupAdvancedOrderAmountsFromUrlUpdater,
+  useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -31,6 +32,8 @@ import {
   useTwapSlippage,
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
+
+import { HydrateAtom } from 'common/state/HydrateAtom'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -51,10 +54,11 @@ export function AdvancedOrdersPage(): ReactNode {
   const advancedWidgetParams = { disablePriceImpact }
   const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
+  const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
+
   return (
-    <>
+    <HydrateAtom atom={advancedOrdersDerivedStateAtom} state={advancedOrdersDerivedStateToFill}>
       <PageTitle title={i18n._(PAGE_TITLES.ADVANCED)} />
-      <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper
         isUnlocked={isUnlocked}
@@ -91,6 +95,6 @@ export function AdvancedOrdersPage(): ReactNode {
           </styledEl.SecondaryWrapper>
         )}
       </styledEl.PageWrapper>
-    </>
+    </HydrateAtom>
   )
 }
