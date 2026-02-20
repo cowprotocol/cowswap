@@ -16,6 +16,7 @@ export interface CreateOutputChainsOptions {
     loadingChainIds: Set<number>
     isLoading: boolean
   }
+  walletUnsupportedChainIds?: Set<number>
 }
 
 export function filterDestinationChains(bridgeSupportedNetworks: ChainInfo[] | undefined): ChainInfo[] | undefined {
@@ -78,6 +79,7 @@ export function createOutputChainsState({
   supportedChains,
   isLoading,
   routesAvailability,
+  walletUnsupportedChainIds,
 }: CreateOutputChainsOptions): ChainsToSelectState {
   const chainSet = new Set(supportedChains.map((c) => c.id))
   const chainsWithCurrent = chainSet.has(chainId) ? supportedChains : [...supportedChains, currentChainInfo]
@@ -94,7 +96,11 @@ export function createOutputChainsState({
     isLoading,
   )
 
-  const disabledChainIds = new Set([...baseDisabledChainIds, ...routesAvailability.unavailableChainIds])
+  const disabledChainIds = new Set([
+    ...baseDisabledChainIds,
+    ...routesAvailability.unavailableChainIds,
+    ...(walletUnsupportedChainIds ?? []),
+  ])
 
   const resolvedDefaultChainId = resolveDefaultChainId(orderedChains, selectedTargetChainId, chainId, disabledChainIds)
 
@@ -104,5 +110,6 @@ export function createOutputChainsState({
     isLoading,
     disabledChainIds: disabledChainIds.size > 0 ? disabledChainIds : undefined,
     loadingChainIds: routesAvailability.loadingChainIds.size > 0 ? routesAvailability.loadingChainIds : undefined,
+    walletUnsupportedChainIds,
   }
 }

@@ -22,4 +22,5 @@ export interface ChainsToSelectState {
   isLoading?: boolean
   disabledChainIds?: Set<number>
   loadingChainIds?: Set<number>
+  walletUnsupportedChainIds?: Set<number>
 }

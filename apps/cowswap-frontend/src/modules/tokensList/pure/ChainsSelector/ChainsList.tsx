@@ -12,6 +12,7 @@ export interface ChainsListProps {
   isDarkMode: boolean
   disabledChainIds?: Set<number>
   loadingChainIds?: Set<number>
+  walletUnsupportedChainIds?: Set<number>
   buildClickEvent?: (chain: ChainInfo) => string
   isSwapMode?: boolean
 }
@@ -23,6 +24,7 @@ export function ChainsList({
   isDarkMode,
   disabledChainIds,
   loadingChainIds,
+  walletUnsupportedChainIds,
   buildClickEvent,
   isSwapMode = false,
 }: ChainsListProps): ReactNode {
@@ -31,6 +33,7 @@ export function ChainsList({
       {chains.map((chain) => {
         const isDisabled = disabledChainIds?.has(chain.id) ?? false
         const isLoading = loadingChainIds?.has(chain.id) ?? false
+        const isWalletUnsupported = walletUnsupportedChainIds?.has(chain.id) ?? false
         const clickEvent =
           isSwapMode && buildClickEvent && !isDisabled && !isLoading ? buildClickEvent(chain) : undefined
 
@@ -43,6 +46,7 @@ export function ChainsList({
             isDarkMode={isDarkMode}
             isDisabled={isDisabled}
             isLoading={isLoading}
+            isWalletUnsupported={isWalletUnsupported}
             clickEvent={clickEvent}
           />
         )

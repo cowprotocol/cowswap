@@ -1,12 +1,16 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useIsBridgingEnabled, useAvailableChains } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo, useIsCoinbaseWallet, useWalletSupportedChainIds, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
+import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade'
+
+import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
 import { useChainsToSelect, createInputChainsState, createOutputChainsState } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
@@ -21,9 +25,18 @@ const DEFAULT_ROUTES_AVAILABILITY = {
   isLoading: false,
 }
 
+// Minimal SWR response shape for mocking — omits mutate/error/isValidating which aren't used in tests
+function mockSWR(
+  data: ReturnType<typeof useBridgeSupportedNetworks>['data'],
+): ReturnType<typeof useBridgeSupportedNetworks> {
+  return { data, isLoading: false, error: undefined, isValidating: false, mutate: jest.fn() }
+}
+
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
+  useIsCoinbaseWallet: jest.fn().mockReturnValue(false),
+  useWalletSupportedChainIds: jest.fn().mockReturnValue(undefined),
 }))
 
 jest.mock('@cowprotocol/common-hooks', () => ({
@@ -49,18 +62,16 @@ jest.mock('common/hooks/useShouldHideNetworkSelector', () => ({
 
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
-
-const { useIsBridgingEnabled, useAvailableChains } = require('@cowprotocol/common-hooks')
+const mockUseIsCoinbaseWallet = useIsCoinbaseWallet as jest.MockedFunction<typeof useIsCoinbaseWallet>
+const mockUseWalletSupportedChainIds = useWalletSupportedChainIds as jest.MockedFunction<
+  typeof useWalletSupportedChainIds
+>
 const mockUseIsBridgingEnabled = useIsBridgingEnabled as jest.MockedFunction<typeof useIsBridgingEnabled>
 const mockUseAvailableChains = useAvailableChains as jest.MockedFunction<typeof useAvailableChains>
-
-const { useBridgeSupportedNetworks, useRoutesAvailability } = require('entities/bridgeProvider')
 const mockUseBridgeSupportedNetworks = useBridgeSupportedNetworks as jest.MockedFunction<
   typeof useBridgeSupportedNetworks
 >
 const mockUseRoutesAvailability = useRoutesAvailability as jest.MockedFunction<typeof useRoutesAvailability>
-
-const { useShouldHideNetworkSelector } = require('common/hooks/useShouldHideNetworkSelector')
 const mockUseShouldHideNetworkSelector = useShouldHideNetworkSelector as jest.MockedFunction<
   typeof useShouldHideNetworkSelector
 >
@@ -332,10 +343,7 @@ describe('useChainsToSelect hook', () => {
     mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
     mockUseIsBridgingEnabled.mockReturnValue(true)
     mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
-    mockUseBridgeSupportedNetworks.mockReturnValue({
-      data: [createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN)],
-      isLoading: false,
-    })
+    mockUseBridgeSupportedNetworks.mockReturnValue(mockSWR([createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN)]))
     mockUseRoutesAvailability.mockReturnValue(DEFAULT_ROUTES_AVAILABILITY)
     mockUseShouldHideNetworkSelector.mockReturnValue(false)
   })
@@ -399,10 +407,12 @@ describe('useChainsToSelect hook', () => {
   it('returns chains for SWAP + OUTPUT (buy token)', () => {
     // Include Mainnet in bridge data to exercise bridge destinations path
     // Use mockReturnValueOnce for test isolation
-    mockUseBridgeSupportedNetworks.mockReturnValueOnce({
-      data: [createChainInfoForTests(SupportedChainId.MAINNET), createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN)],
-      isLoading: false,
-    })
+    mockUseBridgeSupportedNetworks.mockReturnValueOnce(
+      mockSWR([
+        createChainInfoForTests(SupportedChainId.MAINNET),
+        createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+      ]),
+    )
 
     mockUseSelectTokenWidgetState.mockReturnValue(
       createWidgetState({
@@ -467,5 +477,162 @@ describe('useChainsToSelect hook', () => {
     // Verify it returns supported chains (Mainnet, Gnosis)
     expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.MAINNET)).toBe(true)
     expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+  })
+
+  it('does NOT disable Coinbase SCW unsupported chains for buy token (blocking is handled in swap form)', () => {
+    mockUseIsCoinbaseWallet.mockReturnValue(true)
+    // Simulate Coinbase SCW capabilities: only Mainnet supported, Gnosis not
+    mockUseWalletSupportedChainIds.mockReturnValue(new Set([SupportedChainId.MAINNET]))
+    mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
+    mockUseBridgeSupportedNetworks.mockReturnValueOnce(
+      mockSWR([
+        createChainInfoForTests(SupportedChainId.MAINNET),
+        createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+      ]),
+    )
+
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.OUTPUT,
+        tradeType: TradeType.SWAP,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const { result } = renderHook(() => useChainsToSelect())
+
+    expect(result.current).toBeDefined()
+    // Gnosis should NOT be wallet-disabled for buy token — swap form shows a blocking warning instead
+    expect(result.current?.walletUnsupportedChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBeFalsy()
+    // Both chains should be selectable
+    expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+    expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.MAINNET)).toBe(true)
+  })
+
+  it('does not disable chains when isCoinbaseWallet is false', () => {
+    mockUseIsCoinbaseWallet.mockReturnValue(false)
+    mockUseWalletSupportedChainIds.mockReturnValue(undefined)
+    mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
+    mockUseBridgeSupportedNetworks.mockReturnValueOnce(
+      mockSWR([
+        createChainInfoForTests(SupportedChainId.MAINNET),
+        createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+      ]),
+    )
+
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.OUTPUT,
+        tradeType: TradeType.SWAP,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const { result } = renderHook(() => useChainsToSelect())
+
+    expect(result.current).toBeDefined()
+    // No wallet-based chain restrictions for non-Coinbase wallets
+    expect(result.current?.disabledChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBeFalsy()
+  })
+
+  it('does not disable chains when isCoinbaseWallet is true but walletSupportedChainIds is undefined (EOA)', () => {
+    mockUseIsCoinbaseWallet.mockReturnValue(true)
+    mockUseWalletSupportedChainIds.mockReturnValue(undefined)
+    mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
+    mockUseBridgeSupportedNetworks.mockReturnValueOnce(
+      mockSWR([
+        createChainInfoForTests(SupportedChainId.MAINNET),
+        createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+      ]),
+    )
+
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.OUTPUT,
+        tradeType: TradeType.SWAP,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const { result } = renderHook(() => useChainsToSelect())
+
+    expect(result.current).toBeDefined()
+    // Coinbase EOA: no atomic capabilities -> no chain filtering
+    expect(result.current?.walletUnsupportedChainIds).toBeUndefined()
+  })
+
+  it('disables Coinbase SCW unsupported chains in sell token (INPUT) list', () => {
+    mockUseIsCoinbaseWallet.mockReturnValue(true)
+    // Simulate Coinbase SCW capabilities: only Mainnet supported
+    mockUseWalletSupportedChainIds.mockReturnValue(new Set([SupportedChainId.MAINNET]))
+    mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
+
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.INPUT,
+        tradeType: TradeType.SWAP,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const { result } = renderHook(() => useChainsToSelect())
+
+    expect(result.current).toBeDefined()
+    // Mainnet (supported) should be in the list and not disabled
+    expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.MAINNET)).toBe(true)
+    expect(result.current?.disabledChainIds?.has(SupportedChainId.MAINNET)).toBeFalsy()
+    // Gnosis (unsupported) should be in the list but disabled
+    expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+    expect(result.current?.disabledChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+    // walletUnsupportedChainIds should be set for tooltip differentiation
+    expect(result.current?.walletUnsupportedChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+  })
+
+  it('shows all chains in sell token (INPUT) list for non-Coinbase wallets', () => {
+    mockUseIsCoinbaseWallet.mockReturnValue(false)
+    mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
+
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.INPUT,
+        tradeType: TradeType.SWAP,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const { result } = renderHook(() => useChainsToSelect())
+
+    expect(result.current).toBeDefined()
+    expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.MAINNET)).toBe(true)
+    expect(result.current?.chains?.some((chain) => chain.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+  })
+
+  it('does not apply wallet restrictions for buy token OUTPUT even when connected on unsupported chain', () => {
+    mockUseIsCoinbaseWallet.mockReturnValue(true)
+    // Simulate Coinbase SCW capabilities: only Mainnet supported
+    mockUseWalletSupportedChainIds.mockReturnValue(new Set([SupportedChainId.MAINNET]))
+    // Connect on Gnosis (unsupported by Coinbase SCW)
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.GNOSIS_CHAIN } as WalletInfo)
+    mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
+    mockUseBridgeSupportedNetworks.mockReturnValueOnce(
+      mockSWR([
+        createChainInfoForTests(SupportedChainId.MAINNET),
+        createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+      ]),
+    )
+
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.OUTPUT,
+        tradeType: TradeType.SWAP,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const { result } = renderHook(() => useChainsToSelect())
+
+    expect(result.current).toBeDefined()
+    // No wallet-based restrictions for OUTPUT — swap form handles this via blocking warning
+    expect(result.current?.walletUnsupportedChainIds).toBeFalsy()
   })
 })

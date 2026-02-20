@@ -166,6 +166,10 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount],
   )
 
+  const enableCustomRecipient = useCallback(() => {
+    recipientToggleState[1](true)
+  }, [recipientToggleState])
+
   const handleImport = useCallback(() => {
     setShowAddIntermediateTokenModal(false)
   }, [])
@@ -205,7 +209,11 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
             {bottomContent}
             {!isRateLoading && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
-            <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
+            <Warnings
+              buyingFiatAmount={buyingFiatAmount}
+              hideQuoteAmount={hideQuoteAmount}
+              onEnableCustomRecipient={enableCustomRecipient}
+            />
             {tradeWarnings}
             <TradeButtons
               isTradeContextReady={doTrade.contextIsReady}
@@ -231,6 +239,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         isPrimaryValidationPassed,
         hideQuoteAmount,
         isRateLoading,
+        enableCustomRecipient,
       ],
     ),
   }

@@ -16,6 +16,7 @@ export interface ChainButtonProps {
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
   isLoading: boolean
+  isWalletUnsupported?: boolean
   clickEvent?: string
 }
 
@@ -26,12 +27,16 @@ export function ChainButton({
   onSelectChain,
   isDisabled,
   isLoading,
+  isWalletUnsupported,
   clickEvent,
 }: ChainButtonProps): ReactNode {
   const { t } = useLingui()
   const logoSrc = isDarkMode ? chain.logo.dark : chain.logo.light
   const accent = getChainAccent(chain.id)
-  const disabledTooltip = t`This destination is not supported for this source chain`
+  const walletUnsupportedTooltip = t`This chain is not supported by your connected wallet (Coinbase Smart Wallet)`
+  const disabledTooltip = isWalletUnsupported
+    ? walletUnsupportedTooltip
+    : t`This destination is not supported for this source chain`
   const loadingTooltip = t`Checking route availability...`
 
   const handleClick = (): void => {
