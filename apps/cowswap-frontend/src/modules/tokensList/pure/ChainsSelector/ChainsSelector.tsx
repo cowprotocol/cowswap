@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
-import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { ChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
@@ -16,8 +16,8 @@ export interface ChainsSelectorProps {
   onSelectChain: (chainId: ChainInfo) => void
   defaultChainId?: ChainInfo['id']
   isLoading: boolean
-  disabledChainIds?: Set<number>
-  loadingChainIds?: Set<number>
+  disabledChainIds?: Set<ChainId>
+  loadingChainIds?: Set<ChainId>
   tradeType?: TradeType
   field?: Field
   counterChainId?: ChainInfo['id']

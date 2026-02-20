@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { ChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 
 import { ChainButton } from './ChainButton'
 import * as styledEl from './styled'
@@ -10,8 +10,8 @@ export interface ChainsListProps {
   defaultChainId?: ChainInfo['id']
   onSelectChain(chain: ChainInfo): void
   isDarkMode: boolean
-  disabledChainIds?: Set<number>
-  loadingChainIds?: Set<number>
+  disabledChainIds?: Set<ChainId>
+  loadingChainIds?: Set<ChainId>
   buildClickEvent?: (chain: ChainInfo) => string
   isSwapMode?: boolean
 }

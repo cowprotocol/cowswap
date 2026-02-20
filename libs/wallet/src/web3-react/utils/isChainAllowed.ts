@@ -2,6 +2,7 @@ import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
 import { getWeb3ReactConnection } from './getWeb3ReactConnection'
+import { parseEvmChainId } from './parseChainId'
 
 import { ConnectionType } from '../../api/types'
 
@@ -15,8 +16,9 @@ const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
   [ConnectionType.TREZOR]: ALL_SUPPORTED_CHAIN_IDS,
 }
 
-export function isChainAllowed(connector: Connector, chainId: number): boolean {
+export function isChainAllowed(connector: Connector, chainId: string | number): boolean {
   const connection = getWeb3ReactConnection(connector)
+  const parsedChainId = parseEvmChainId(chainId)
 
-  return allowedChainsByWallet[connection.type].includes(chainId)
+  return allowedChainsByWallet[connection.type].includes(parsedChainId as SupportedChainId)
 }

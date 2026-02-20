@@ -1,15 +1,15 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 export interface RoutesAvailabilityResult {
-  unavailableChainIds: Set<number>
-  loadingChainIds: Set<number>
+  unavailableChainIds: Set<ChainId>
+  loadingChainIds: Set<ChainId>
   isLoading: boolean
 }
 
 export interface RouteCheckResult {
-  chainId: number
+  chainId: ChainId
   isAvailable: boolean
 }
 
@@ -19,7 +19,7 @@ export const EMPTY_ROUTES_RESULT: RoutesAvailabilityResult = {
   isLoading: false,
 }
 
-export function filterDestinationChains(destinationChainIds: number[], sourceChainId: number | undefined): number[] {
+export function filterDestinationChains(destinationChainIds: ChainId[], sourceChainId: number | undefined): ChainId[] {
   return destinationChainIds.filter((id) => id !== sourceChainId)
 }
 
@@ -28,8 +28,24 @@ export type RoutesAvailabilityKey = [SupportedChainId, string, string, string]
 export interface RoutesAvailabilityKeyParams {
   isBridgingEnabled: boolean
   sourceChainId: SupportedChainId | undefined
-  chainsToCheck: number[]
+  chainsToCheck: ChainId[]
   providersKey: string
+}
+
+const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' })
+
+const chainComparator = (a: ChainId, b: ChainId): number => {
+  const aIsNum = typeof a === 'number'
+  const bIsNum = typeof b === 'number'
+
+  if (typeof a === 'string' && typeof b === 'string') {
+    return collator.compare(a, b)
+  }
+
+  if (aIsNum && bIsNum) return a - b
+  if (aIsNum && !bIsNum) return -1 // numbers first
+
+  return 1
 }
 
 export function createAvailabilitySwrKey(params: RoutesAvailabilityKeyParams): RoutesAvailabilityKey | null {
@@ -39,15 +55,7 @@ export function createAvailabilitySwrKey(params: RoutesAvailabilityKeyParams): R
     return null
   }
 
-  return [
-    sourceChainId,
-    chainsToCheck
-      .slice()
-      .sort((a, b) => a - b)
-      .join(','),
-    providersKey,
-    'routesAvailability',
-  ]
+  return [sourceChainId, chainsToCheck.slice().sort(chainComparator).join(','), providersKey, 'routesAvailability']
 }
 
 export async function fetchRoutesAvailability(key: RoutesAvailabilityKey): Promise<RouteCheckResult[]> {
@@ -77,7 +85,7 @@ export interface BuildResultParams {
   swrKey: RoutesAvailabilityKey | null
   isLoading: boolean
   data: RouteCheckResult[] | undefined
-  chainsToCheck: number[]
+  chainsToCheck: ChainId[]
 }
 
 export function buildRoutesAvailabilityResult(params: BuildResultParams): RoutesAvailabilityResult {
@@ -95,7 +103,7 @@ export function buildRoutesAvailabilityResult(params: BuildResultParams): Routes
     }
   }
 
-  const unavailableChainIds = new Set<number>(
+  const unavailableChainIds = new Set<ChainId>(
     data.filter((result) => !result.isAvailable).map((result) => result.chainId),
   )
 

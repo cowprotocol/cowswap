@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/cow-sdk'
+import { ChainId, getTokenId } from '@cowprotocol/cow-sdk'
 
 export const RECENT_TOKENS_LIMIT = 4
 // Storage schema: { [chainId: number]: StoredRecentToken[] } serialized under this key.
@@ -7,7 +7,7 @@ export const RECENT_TOKENS_LIMIT = 4
 export const RECENT_TOKENS_STORAGE_KEY = 'selectTokenWidget:recentTokens:v0'
 
 export interface StoredRecentToken {
-  chainId: number
+  chainId: ChainId
   address: string
   decimals: number
   symbol?: string
@@ -16,7 +16,7 @@ export interface StoredRecentToken {
   tags?: string[]
 }
 
-export type StoredRecentTokensByChain = Record<number, StoredRecentToken[]>
+export type StoredRecentTokensByChain = Record<ChainId, StoredRecentToken[]>
 
 export function buildTokensByKey(tokens: TokenWithLogo[]): Map<string, TokenWithLogo> {
   const map = new Map<string, TokenWithLogo>()

@@ -1,7 +1,7 @@
 import { ReactNode, useRef } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
-import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { ChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 import { Tooltip } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
@@ -17,7 +17,7 @@ export interface ChainChipProps {
   isDisabled: boolean
   isLoading: boolean
   isTooltipVisible: boolean
-  onDisabledClick(chainId: number): void
+  onDisabledClick(chainId: ChainId): void
   onHideTooltip(): void
   clickEvent?: string
 }

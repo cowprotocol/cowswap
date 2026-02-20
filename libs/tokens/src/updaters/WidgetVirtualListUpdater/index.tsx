@@ -1,7 +1,9 @@
 import { useSetAtom } from 'jotai/index'
 import { useEffect } from 'react'
 
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
+import { TokenInfo as UniTokenInfo } from '@uniswap/token-lists'
 
 import { virtualListsStateAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
@@ -24,20 +26,29 @@ export function WidgetVirtualListUpdater({ customTokens, appCode }: WidgetVirtua
   useEffect(() => {
     if (!customTokens?.length) return
 
-    const list: ListState = {
-      source: VIRTUAL_LIST_SOURCE,
-      isEnabled: true,
-      widgetAppCode: appCode,
-      list: {
-        name: VIRTUAL_LIST_NAME,
-        tokens: customTokens.map((token) => ({
+    const tokens = customTokens
+      .map((token) => {
+        if (!isEvmChain(token.chainId)) return null
+
+        return {
           chainId: token.chainId,
           address: token.address,
           name: token.name,
           symbol: token.symbol,
           decimals: token.decimals,
           logoURI: token.logoURI,
-        })),
+        }
+      })
+      // UniTokenInfo would be replaced when we support non-evm tokens
+      .filter((token) => !!token) as UniTokenInfo[]
+
+    const list: ListState = {
+      source: VIRTUAL_LIST_SOURCE,
+      isEnabled: true,
+      widgetAppCode: appCode,
+      list: {
+        name: VIRTUAL_LIST_NAME,
+        tokens,
         version: { major: 0, minor: 0, patch: 0 },
         timestamp: new Date().toISOString(),
       },

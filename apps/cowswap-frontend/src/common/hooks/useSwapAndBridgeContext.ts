@@ -2,7 +2,7 @@
 import { useMemo } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -161,7 +161,7 @@ export function useSwapAndBridgeContext(
 
     const sourceChainData = getChainInfo(sourceChainId)
 
-    if (!sourceChainData || !destChainData) {
+    if (!sourceChainData || !(destChainData && isEvmChain(destChainData.id))) {
       return undefined
     }
 

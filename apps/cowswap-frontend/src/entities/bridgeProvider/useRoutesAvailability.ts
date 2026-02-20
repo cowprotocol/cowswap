@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
@@ -25,7 +25,7 @@ export type { RoutesAvailabilityResult } from './routesAvailabilityUtils'
  */
 export function useRoutesAvailability(
   sourceChainId: SupportedChainId | undefined,
-  destinationChainIds: number[],
+  destinationChainIds: ChainId[],
 ): RoutesAvailabilityResult {
   const isBridgingEnabled = useIsBridgingEnabled()
   const providerIds = useBridgeProvidersIds()

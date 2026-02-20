@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useAllActiveTokens, useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -46,6 +47,7 @@ export function useTokensToSelect(): TokensToSelectContext {
 
   const params: BuyTokensParams | undefined = useMemo(() => {
     if (!areTokensFromBridge) return undefined
+    if (!isEvmChain(targetChainId)) return undefined
 
     return { buyChainId: targetChainId, sellChainId: sourceChainId }
   }, [areTokensFromBridge, sourceChainId, targetChainId])

@@ -1,6 +1,6 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { ChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 import type { TokenListTags } from '@cowprotocol/tokens'
 
 import { PermitCompatibleTokens } from 'modules/permit'
@@ -18,8 +18,8 @@ export interface SelectTokenContext {
 
 export interface ChainsToSelectState {
   chains: ChainInfo[] | undefined
-  defaultChainId?: number
+  defaultChainId?: ChainId
   isLoading?: boolean
-  disabledChainIds?: Set<number>
-  loadingChainIds?: Set<number>
+  disabledChainIds?: Set<ChainId>
+  loadingChainIds?: Set<ChainId>
 }

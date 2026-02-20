@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { ChainInfo, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
@@ -21,6 +21,11 @@ export function useOnSelectChain(): OnSelectChainHandler {
 
   return useCallback(
     (chain: ChainInfo) => {
+      // we haven't supported non evm chains yet
+      if (!isEvmChain(chain.id)) {
+        return
+      }
+
       updateSelectTokenWidget({
         selectedTargetChainId: chain.id,
         open: true,

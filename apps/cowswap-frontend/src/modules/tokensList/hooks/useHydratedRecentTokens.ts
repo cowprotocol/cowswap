@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { ChainId } from '@cowprotocol/cow-sdk'
 
 import {
   getStoredTokenKey,
@@ -13,7 +14,7 @@ interface UseHydratedRecentTokensParams {
   storedTokensByChain: StoredRecentTokensByChain
   tokensByKey: Map<string, TokenWithLogo>
   favoriteKeys: Set<string>
-  activeChainId?: number
+  activeChainId?: ChainId
   maxItems?: number
 }
 

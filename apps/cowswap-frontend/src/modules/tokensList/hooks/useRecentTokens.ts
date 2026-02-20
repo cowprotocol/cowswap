@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { ChainId } from '@cowprotocol/cow-sdk'
 
 import { useHydratedRecentTokens } from './useHydratedRecentTokens'
 import { useRecentTokensStorage } from './useRecentTokensStorage'
@@ -15,7 +16,7 @@ import {
 interface UseRecentTokensParams {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
-  activeChainId?: number
+  activeChainId?: ChainId
   maxItems?: number
 }
 

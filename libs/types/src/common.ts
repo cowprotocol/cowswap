@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type Command = () => void
 
@@ -27,7 +27,7 @@ export enum UiOrderType {
 }
 
 export type TokenInfo = {
-  chainId: number
+  chainId: ChainId
   address: string
   name: string
   decimals: number

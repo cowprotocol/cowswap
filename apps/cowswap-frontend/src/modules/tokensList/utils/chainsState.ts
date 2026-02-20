@@ -1,4 +1,4 @@
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ChainId, ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { sortChainsByDisplayOrder } from './sortChainsByDisplayOrder'
 
@@ -12,8 +12,8 @@ export interface CreateOutputChainsOptions {
   supportedChains: ChainInfo[]
   isLoading: boolean
   routesAvailability: {
-    unavailableChainIds: Set<number>
-    loadingChainIds: Set<number>
+    unavailableChainIds: Set<ChainId>
+    loadingChainIds: Set<ChainId>
     isLoading: boolean
   }
 }
@@ -36,10 +36,10 @@ export function createInputChainsState(
 export function computeDisabledChainIds(
   orderedChains: ChainInfo[],
   chainId: SupportedChainId,
-  destinationIds: Set<number>,
+  destinationIds: Set<ChainId>,
   sourceSupported: boolean,
   isLoading: boolean,
-): Set<number> {
+): Set<ChainId> {
   if (isLoading) return new Set()
 
   return new Set(
@@ -57,8 +57,8 @@ export function resolveDefaultChainId(
   orderedChains: ChainInfo[],
   selectedTargetChainId: number,
   chainId: SupportedChainId,
-  disabledChainIds: Set<number>,
-): number {
+  disabledChainIds: Set<ChainId>,
+): ChainId {
   const isSelectedTargetValid =
     orderedChains.some((c) => c.id === selectedTargetChainId) && !disabledChainIds.has(selectedTargetChainId)
   if (isSelectedTargetValid) return selectedTargetChainId

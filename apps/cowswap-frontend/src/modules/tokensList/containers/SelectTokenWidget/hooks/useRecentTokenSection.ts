@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { ChainId } from '@cowprotocol/cow-sdk'
 
 import { useRecentTokens } from '../../../hooks/useRecentTokens'
 
@@ -13,7 +14,7 @@ export interface RecentTokenSection {
 export function useRecentTokenSection(
   allTokens: TokenWithLogo[],
   favoriteTokens: TokenWithLogo[],
-  activeChainId?: number,
+  activeChainId?: ChainId,
 ): RecentTokenSection {
   const { recentTokens, addRecentToken, clearRecentTokens } = useRecentTokens({
     allTokens,

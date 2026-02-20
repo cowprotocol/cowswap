@@ -8,6 +8,7 @@ import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useChainsToSelect } from './useChainsToSelect'
@@ -33,7 +34,7 @@ export interface TokenListContext {
 
   // UI config
   hideFavoriteTokensTooltip: boolean
-  selectedTargetChainId: number | undefined
+  selectedTargetChainId: ChainId | undefined
 
   // Callbacks
   onClearRecentTokens: () => void

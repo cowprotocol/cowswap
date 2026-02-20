@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/cow-sdk'
+import { ChainId, getTokenId } from '@cowprotocol/cow-sdk'
 
 import { recentTokensStorageAtom } from '../state/recentTokensStorageAtom'
 import {
@@ -14,7 +14,7 @@ import {
 export interface RecentTokensStorageState {
   storedTokensByChain: StoredRecentTokensByChain
   addRecentToken: (token: TokenWithLogo) => void
-  clearRecentTokens: (chainId: number) => void
+  clearRecentTokens: (chainId: ChainId) => void
 }
 
 interface UseRecentTokensStorageParams {
@@ -42,7 +42,7 @@ export function useRecentTokensStorage({
   )
 
   const clearRecentTokens = useCallback(
-    (chainId: number) => {
+    (chainId: ChainId) => {
       setStoredTokensByChain((prev) => {
         if (!prev[chainId]?.length) return prev
         return { ...prev, [chainId]: [] }
