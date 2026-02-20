@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.6-pr-792-95513eab.0",
+    "@cowprotocol/cow-sdk": "7.3.6-pr-792-871b9786.0",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cowswap-abis": "workspace:*",
