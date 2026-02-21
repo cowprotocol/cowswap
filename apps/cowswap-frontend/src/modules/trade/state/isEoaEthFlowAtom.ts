@@ -3,7 +3,8 @@ import { atom } from 'jotai'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { walletDetailsAtom } from '@cowprotocol/wallet'
 
-import { derivedTradeStateAtom, isWrapOrUnwrapAtom } from 'modules/trade'
+import { derivedTradeStateAtom } from './derivedTradeStateAtom'
+import { isWrapOrUnwrapAtom } from './isWrapOrUnwrapAtom'
 
 export const isEoaEthFlowAtom = atom((get) => {
   const { isSmartContractWallet } = get(walletDetailsAtom) || {}

@@ -35,17 +35,22 @@ interface SetupTradeAmountsParams {
  */
 export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: SetupTradeAmountsParams): void {
   const navigate = useNavigate()
-  const { search, pathname } = useLocation()
+  const { search } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
   const { updateState } = useTradeState()
   const state = useDerivedTradeState()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = state || {}
 
   const isAtLeastOneAmountIsSetRef = useRef(false)
+
   // eslint-disable-next-line react-hooks/refs
   isAtLeastOneAmountIsSetRef.current = Boolean(inputCurrencyAmount || outputCurrencyAmount)
 
   const cleanParams = useCallback(() => {
+    // Using browser API to have synchronous value of URL
+    // Because cleanParams is called in setTimeout() which is not in sync with React rendering cycle
+    const [pathname, search] = location.hash.split('?')
+
     if (!search) return
 
     const queryParams = new URLSearchParams(search)
@@ -63,8 +68,8 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_ORDER_KIND_KEY)
 
-    navigate({ pathname, search: queryParams.toString() }, { replace: true })
-  }, [navigate, pathname, search])
+    navigate({ pathname: pathname.slice(1), search: queryParams.toString() }, { replace: true })
+  }, [navigate])
 
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
@@ -113,7 +118,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
     if (hasUpdates) {
       // Clean params only when an update was applied or currencies are loaded
-      if (inputCurrency || outputCurrency || orderKind) {
+      if (inputCurrency || outputCurrency) {
         setTimeout(cleanParams)
       }
 

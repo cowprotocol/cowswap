@@ -12,10 +12,11 @@ import { Nullish } from 'types'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap } from 'modules/trade'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useDerivedTradeState } from 'modules/trade'
 import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -38,6 +39,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
@@ -62,7 +64,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
-    if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
+    if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
     if (!inputCurrency || !outputCurrency || !orderKind) return
 
     const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
@@ -132,6 +134,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     account,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
     userSlippageBps,
   ])
 

@@ -4,7 +4,7 @@ import { darken, transparentize } from 'color2k'
 import { AlertTriangle, ChevronDown, X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { TAP_DESKTOP, TAP_MOBILE } from 'common/pure/NetworksList/NetworksList.const'
+import { TAP_DESKTOP, TAP_MOBILE } from 'common/pure/NetworksList/NetworksList.constants'
 
 const CLOSE_ICON_SIZE = '24px'
 

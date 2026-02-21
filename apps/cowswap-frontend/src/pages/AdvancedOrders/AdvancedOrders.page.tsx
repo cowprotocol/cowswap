@@ -10,9 +10,10 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   advancedOrdersAtom,
+  advancedOrdersDerivedStateAtom,
   AdvancedOrdersWidget,
-  FillAdvancedOrdersDerivedStateUpdater,
   SetupAdvancedOrderAmountsFromUrlUpdater,
+  useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -32,9 +33,11 @@ import {
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
+import { HydrateAtom } from 'common/state/HydrateAtom'
+
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
-export default function AdvancedOrdersPage(): ReactNode {
+export function AdvancedOrdersPage(): ReactNode {
   const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
@@ -51,10 +54,11 @@ export default function AdvancedOrdersPage(): ReactNode {
   const advancedWidgetParams = { disablePriceImpact }
   const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
+  const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
+
   return (
-    <>
+    <HydrateAtom atom={advancedOrdersDerivedStateAtom} state={advancedOrdersDerivedStateToFill}>
       <PageTitle title={i18n._(PAGE_TITLES.ADVANCED)} />
-      <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper
         isUnlocked={isUnlocked}
@@ -83,7 +87,6 @@ export default function AdvancedOrdersPage(): ReactNode {
           <styledEl.SecondaryWrapper>
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
-                isTwapTable
                 displayOrdersOnlyForSafeApp
                 orderType={TabOrderTypes.ADVANCED}
                 orders={allEmulatedOrders}
@@ -92,6 +95,6 @@ export default function AdvancedOrdersPage(): ReactNode {
           </styledEl.SecondaryWrapper>
         )}
       </styledEl.PageWrapper>
-    </>
+    </HydrateAtom>
   )
 }

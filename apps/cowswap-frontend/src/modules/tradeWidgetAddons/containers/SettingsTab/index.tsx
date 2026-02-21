@@ -18,6 +18,8 @@ import { Toggle } from 'legacy/components/Toggle'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import * as styledEl from './styled'
 
@@ -75,11 +77,15 @@ export function SettingsTab({
     [toggleEnablePartialApprovalAux, enablePartialApproval],
   )
 
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
+  const isSettingsDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
+
   return (
     <Menu>
       <SettingsTabController buttonRef={menuButtonRef}>
         <styledEl.StyledMenu className={className}>
-          <styledEl.StyledMenuButton ref={menuButtonRef} id="open-settings-dialog-button">
+          <styledEl.StyledMenuButton ref={menuButtonRef} id="open-settings-dialog-button" disabled={isSettingsDisabled}>
             <SettingsIcon />
           </styledEl.StyledMenuButton>
           <styledEl.MenuFlyout portal={false}>

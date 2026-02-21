@@ -1,5 +1,61 @@
 # Changelog
 
+## [2.1.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.1...cow-fi-v2.1.2) (2026-02-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.2
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-hooks bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+    * @cowprotocol/core bumped to 2.2.2
+    * @cowprotocol/ui bumped to 2.2.2
+    * @cowprotocol/wallet bumped to 2.2.2
+    * @cowprotocol/wallet-provider bumped to 2.1.3
+
+## [2.1.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.0...cow-fi-v2.1.1) (2026-02-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.1
+    * @cowprotocol/common-const bumped to 2.2.1
+    * @cowprotocol/common-hooks bumped to 2.2.1
+    * @cowprotocol/common-utils bumped to 2.2.1
+    * @cowprotocol/core bumped to 2.2.1
+    * @cowprotocol/ui bumped to 2.2.1
+    * @cowprotocol/wallet bumped to 2.2.1
+    * @cowprotocol/wallet-provider bumped to 2.1.2
+
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.4...cow-fi-v2.1.0) (2026-02-13)
+
+
+### ✨ Features
+
+* **cow-fi:** add affiliate program terms page ([#6986](https://github.com/cowprotocol/cowswap/issues/6986)) ([833d6b5](https://github.com/cowprotocol/cowswap/commit/833d6b5dfd920939730a37bcf3a985b0e37896a1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.0
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-hooks bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/core bumped to 2.2.0
+    * @cowprotocol/events bumped to 3.2.0
+    * @cowprotocol/types bumped to 3.2.0
+    * @cowprotocol/ui bumped to 2.2.0
+    * @cowprotocol/wallet bumped to 2.2.0
+    * @cowprotocol/wallet-provider bumped to 2.1.1
+    * @cowprotocol/widget-react bumped to 1.0.5
+
 ## [2.0.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.3...cow-fi-v2.0.4) (2026-02-10)
 
 

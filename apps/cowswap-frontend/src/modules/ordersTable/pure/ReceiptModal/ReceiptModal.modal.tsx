@@ -16,7 +16,7 @@ import { CloseIcon } from 'theme'
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
 
-import { TwapOrderItem } from 'modules/twap/types'
+import { TwapOrderItem } from 'modules/twap'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
@@ -57,7 +57,7 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
-  alternativeOrderModalContext: AlternativeOrderModalContext
+  alternativeOrderModalContext?: AlternativeOrderModalContext
 }
 
 const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {

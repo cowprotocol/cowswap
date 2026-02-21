@@ -1,5 +1,63 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/tokens-v2.2.1...tokens-v2.2.2) (2026-02-17)
+
+
+### 🐛 Bug Fixes
+
+* **ink:** move usdc back to ink favorites ([#7024](https://github.com/cowprotocol/cowswap/issues/7024)) ([cec6c39](https://github.com/cowprotocol/cowswap/commit/cec6c39d85d27d30a7fe4607065ccf60cfde4fa6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-hooks bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+    * @cowprotocol/core bumped to 2.2.2
+    * @cowprotocol/ui bumped to 2.2.2
+    * @cowprotocol/wallet-provider bumped to 2.1.3
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/tokens-v2.2.0...tokens-v2.2.1) (2026-02-16)
+
+
+### 🐛 Bug Fixes
+
+* **ink:** add USDC.e to Ink ([#7017](https://github.com/cowprotocol/cowswap/issues/7017)) ([ed2245f](https://github.com/cowprotocol/cowswap/commit/ed2245ff35f36c60dd48cae00bd3ba35aa9cfd57))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.1
+    * @cowprotocol/common-hooks bumped to 2.2.1
+    * @cowprotocol/common-utils bumped to 2.2.1
+    * @cowprotocol/core bumped to 2.2.1
+    * @cowprotocol/ui bumped to 2.2.1
+    * @cowprotocol/wallet-provider bumped to 2.1.2
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.1.0...tokens-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-hooks bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/core bumped to 2.2.0
+    * @cowprotocol/types bumped to 3.2.0
+    * @cowprotocol/ui bumped to 2.2.0
+    * @cowprotocol/wallet-provider bumped to 2.1.1
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.0.1...tokens-v2.1.0) (2026-02-05)
 
 

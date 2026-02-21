@@ -1,5 +1,47 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.2.1...common-hooks-v2.2.2) (2026-02-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.2.0...common-hooks-v2.2.1) (2026-02-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.1
+    * @cowprotocol/common-utils bumped to 2.2.1
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.1.0...common-hooks-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* add scroll to network selector when needed ([#6962](https://github.com/cowprotocol/cowswap/issues/6962)) ([9688722](https://github.com/cowprotocol/cowswap/commit/968872287030f604fc3ce5b6c11758a98f3334ed))
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### 🔧 Miscellaneous
+
+* Refactor incorrect use of components called as functions plus some other code smells ([#6940](https://github.com/cowprotocol/cowswap/issues/6940)) ([553c5f3](https://github.com/cowprotocol/cowswap/commit/553c5f3d557d5eecfeb317b3bdb1899f2b7c1275))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/types bumped to 3.2.0
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.0.1...common-hooks-v2.1.0) (2026-02-05)
 
 

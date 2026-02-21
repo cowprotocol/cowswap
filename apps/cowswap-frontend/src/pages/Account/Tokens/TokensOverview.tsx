@@ -28,6 +28,7 @@ import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import {
@@ -85,6 +86,7 @@ export default function TokensOverview(): ReactNode {
   const { query, debouncedQuery, prevQuery, handleSearch, clearSearch } = useTokenSearch(page, setPage)
   const theme = useTheme()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   const handleRestoreTokens = useCallback(() => {
     removeAllFavoriteTokens()
@@ -97,7 +99,7 @@ export default function TokensOverview(): ReactNode {
 
   return (
     <>
-      {!isProviderNetworkUnsupported && (
+      {!isProviderNetworkUnsupported && !isProviderNetworkDeprecated && (
         <TokensOverviewHeader
           isMenuOpen={isMenuOpen}
           selectedView={selectedView}
@@ -116,6 +118,8 @@ export default function TokensOverview(): ReactNode {
         <PageTitle title={i18n._(PAGE_TITLES.TOKENS_OVERVIEW)} />
         {isProviderNetworkUnsupported ? (
           <Trans>Unsupported network</Trans>
+        ) : isProviderNetworkDeprecated ? (
+          <Trans>Deprecated network</Trans>
         ) : (
           <TokensTableContent
             selectedView={selectedView}

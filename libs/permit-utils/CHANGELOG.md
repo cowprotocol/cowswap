@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.1.0...permit-utils-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.3
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.0.1...permit-utils-v2.1.0) (2026-02-05)
 
 

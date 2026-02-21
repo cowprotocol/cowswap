@@ -11,6 +11,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { useWatchAsset } from 'wagmi'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { WatchAssetInWallet as WatchAssetInWalletPure } from '../../pure/WatchAssetInWallet'
@@ -31,6 +32,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const { icon, walletName } = useWalletDetails()
   const { mutateAsync: watchAsset } = useWatchAsset()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isAssetWatchingSupported = useIsAssetWatchingSupported()
   const cowAnalytics = useCowAnalytics()
 
@@ -72,7 +74,14 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
       })
   }, [watchAsset, logoURL, token, cowAnalytics])
 
-  if (!currency || !icon || !walletName || isProviderNetworkUnsupported || !isAssetWatchingSupported) {
+  if (
+    !currency ||
+    !icon ||
+    !walletName ||
+    isProviderNetworkUnsupported ||
+    isProviderNetworkDeprecated ||
+    !isAssetWatchingSupported
+  ) {
     return fallback || null
   }
 

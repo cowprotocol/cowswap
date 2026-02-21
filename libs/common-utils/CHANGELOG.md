@@ -1,5 +1,38 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v2.2.1...common-utils-v2.2.2) (2026-02-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.2
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v2.2.0...common-utils-v2.2.1) (2026-02-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.1
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v2.1.0...common-utils-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/types bumped to 3.2.0
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v2.0.1...common-utils-v2.1.0) (2026-02-05)
 
 

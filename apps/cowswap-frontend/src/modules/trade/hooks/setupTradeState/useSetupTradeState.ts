@@ -5,16 +5,15 @@ import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowp
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
-import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
-import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
-import { TradeType } from 'modules/trade/types/TradeType'
-
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
+import { useTradeNavigate } from '../../hooks/useTradeNavigate'
+import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
+import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
+import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
+import { TradeType } from '../../types/TradeType'
 import { useTradeState } from '../useTradeState'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()

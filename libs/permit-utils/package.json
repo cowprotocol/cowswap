@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/permit-utils",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "type": "commonjs",
   "main": "./src/index.ts",
   "types": "./src/index.d.ts",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
-    "@cowprotocol/cow-sdk": "7.3.5",
+    "@cowprotocol/cow-sdk": "7.3.7",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "ms.macro": "^2.0.0",
     "viem": "^2.45.1",

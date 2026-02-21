@@ -23,6 +23,7 @@ import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useSetSwapVCowStatus, useSwapVCowCallback, useSwapVCowStatus, useVCowData } from 'legacy/state/cowToken/hooks'
 
 import { useBlockNumber } from 'common/hooks/useBlockNumber'
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
@@ -60,6 +61,7 @@ export default function Profile() {
   const cowContractAddress = COW_CONTRACT_ADDRESS[chainId]
   const nativeWrappedToken = WETH[chainId]
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const blockNumber = useBlockNumber()
   const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
   const [shouldUpdate, setShouldUpdate] = useState<boolean>(false)
@@ -236,7 +238,7 @@ export default function Profile() {
 
       <ErrorModal />
 
-      {isCardsLoading && !isProviderNetworkUnsupported ? (
+      {isCardsLoading && !isProviderNetworkUnsupported && !isProviderNetworkDeprecated ? (
         <Card>
           <CardsLoader>
             <CardsSpinner size="42px" />
@@ -299,7 +301,7 @@ export default function Profile() {
                     <Trans>Available COW balance</Trans>
                   </i>
                   <b>
-                    {!isProviderNetworkUnsupported && (
+                    {!isProviderNetworkUnsupported && !isProviderNetworkDeprecated && (
                       <TokenAmount amount={cowBalance} defaultValue="0" tokenSymbol={cowToken} />
                     )}
                   </b>

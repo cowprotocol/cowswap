@@ -20,7 +20,7 @@ import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { ApprovalState, getApprovalState, useApproveCallback } from 'modules/erc20Approve'
-import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
+import { parameterizeTradeRoute } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { percentToBps } from '@cowprotocol/common-utils'
 
@@ -8,46 +10,48 @@ import { PageTitle } from 'modules/application/containers/PageTitle'
 import {
   AlternativeLimitOrderUpdater,
   ExecutionPriceUpdater,
-  FillLimitOrdersDerivedStateUpdater,
   InitialPriceUpdater,
   LIMIT_ORDER_SLIPPAGE,
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
   TriggerAppziLimitOrdersSurveyUpdater,
   PromoBannerUpdater,
+  limitOrdersDerivedStateAtom,
+  useLimitOrdersDerivedStateToFill,
 } from 'modules/limitOrders'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
-import { AlternativeLimitOrder } from './AlternativeLimitOrder'
-import { RegularLimitOrders } from './RegularLimitOrders'
+import { HydrateAtom } from 'common/state/HydrateAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function LimitOrderPage() {
+import { AlternativeLimitOrderPage } from './AlternativeLimitOrder.page'
+import { RegularLimitOrdersPage } from './RegularLimitOrders.page'
+
+export function LimitOrdersPage(): ReactNode {
   const isAlternative = useIsAlternativeOrderModalVisible()
   const { i18n } = useLingui()
 
+  const limitOrdersDerivedStateToFill = useLimitOrdersDerivedStateToFill()
+
   return (
-    <>
+    <HydrateAtom atom={limitOrdersDerivedStateAtom} state={limitOrdersDerivedStateToFill}>
       <AppDataUpdater orderClass="limit" slippageBips={percentToBps(LIMIT_ORDER_SLIPPAGE)} />
       <QuoteObserverUpdater />
-      <FillLimitOrdersDerivedStateUpdater />
       <ExecutionPriceUpdater />
       <PromoBannerUpdater />
       {isAlternative ? (
         <>
           <AlternativeLimitOrderUpdater />
-          <AlternativeLimitOrder />
+          <AlternativeLimitOrderPage />
         </>
       ) : (
         <>
           <InitialPriceUpdater />
           <SetupLimitOrderAmountsFromUrlUpdater />
           <TriggerAppziLimitOrdersSurveyUpdater />
-          <RegularLimitOrders />
+          <RegularLimitOrdersPage />
         </>
       )}
       <PageTitle title={i18n._(PAGE_TITLES.LIMIT_ORDERS)} />
-    </>
+    </HydrateAtom>
   )
 }
