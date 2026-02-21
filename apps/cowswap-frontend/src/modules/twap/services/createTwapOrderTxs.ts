@@ -1,5 +1,6 @@
-import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/types-kit'
+
+import { encodeFunctionData, erc20Abi, maxUint256 } from 'viem'
 
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../types'
@@ -9,30 +10,22 @@ export function createTwapOrderTxs(
   paramsStruct: ConditionalOrderParams,
   context: TwapOrderCreationContext,
 ): MetaTransactionData[] {
-  const {
-    composableCowContract,
-    needsApproval,
-    needsZeroApproval,
-    erc20Contract,
-    spender,
-    currentBlockFactoryAddress,
-  } = context
+  const { composableCowContract, needsApproval, needsZeroApproval, spender, currentBlockFactoryAddress } = context
 
   const { sellAmount } = order
 
   const sellTokenAddress = sellAmount.currency.address
-  const sellAmountAtoms = MaxUint256.toString()
+  const sellAmountAtoms = maxUint256
 
   const txs: MetaTransactionData[] = []
 
   const createOrderTx = {
     to: composableCowContract.address,
-    data: composableCowContract.interface.encodeFunctionData('createWithContext', [
-      paramsStruct,
-      currentBlockFactoryAddress,
-      '0x',
-      true,
-    ]),
+    data: encodeFunctionData({
+      abi: composableCowContract.abi,
+      functionName: 'createWithContext',
+      args: [paramsStruct, currentBlockFactoryAddress, '0x', true],
+    }),
     value: '0',
     operation: 0,
   }
@@ -43,7 +36,7 @@ export function createTwapOrderTxs(
 
   const approveTx = {
     to: sellTokenAddress,
-    data: erc20Contract.interface.encodeFunctionData('approve', [spender, sellAmountAtoms]),
+    data: encodeFunctionData({ abi: erc20Abi, functionName: 'approve', args: [spender, sellAmountAtoms] }),
     value: '0',
     operation: 0,
   }
@@ -54,7 +47,7 @@ export function createTwapOrderTxs(
 
   const zeroApproveTx = {
     to: sellAmount.currency.address,
-    data: erc20Contract.interface.encodeFunctionData('approve', [spender, '0']),
+    data: encodeFunctionData({ abi: erc20Abi, functionName: 'approve', args: [spender, 0n] }),
     value: '0',
     operation: 0,
   }

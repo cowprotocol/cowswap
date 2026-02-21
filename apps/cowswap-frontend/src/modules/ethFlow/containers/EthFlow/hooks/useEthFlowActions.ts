@@ -70,7 +70,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
         ? amountToApprove || MAX_APPROVE_AMOUNT
         : MAX_APPROVE_AMOUNT
       return sendTransaction('approve', () => {
-        return callbacks.approve(unitsToApprove).then((res) => res?.txResponse.hash)
+        return callbacks.approve(unitsToApprove).then((res) => res?.txResponse.transactionHash)
       })
     }
 
@@ -78,7 +78,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
       return sendTransaction('wrap', () => {
         if (!callbacks.wrap) return Promise.resolve(undefined)
 
-        return callbacks.wrap({ useModals }).then((res) => res?.hash)
+        return callbacks.wrap({ useModals }).then((res) => res || undefined)
       })
     }
 

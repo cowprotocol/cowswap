@@ -4,6 +4,7 @@ import { useCallback } from 'react'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
+import { useConfig } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -14,15 +15,14 @@ import {
   getOnChainCancellation,
   OnChainCancellation,
 } from 'common/hooks/useCancelOrder/onChainCancellation'
-import { useEthFlowContract, useGP2SettlementContract } from 'common/hooks/useContract'
+import { useEthFlowContractData, useGP2SettlementContractData } from 'common/hooks/useContract'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getIsTheLastTwapPart } from 'utils/orderUtils/getIsTheLastTwapPart'
 
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
-  const {
-    result: { contract: ethFlowContract, chainId: ethFlowChainId },
-  } = useEthFlowContract()
-  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const config = useConfig()
+  const { chainId: ethFlowChainId, ...ethFlowContract } = useEthFlowContractData()
+  const { chainId: settlementChainId, ...settlementContractData } = useGP2SettlementContractData()
   const cancelTwapOrder = useCancelTwapOrder()
   const { t } = useLingui()
 
@@ -45,11 +45,11 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
       const isEthFlowOrder = getIsNativeToken(order.inputToken)
 
       if (isEthFlowOrder) {
-        return getEthFlowCancellation(ethFlowContract!, order)
+        return getEthFlowCancellation({ config, ethFlowContract, order })
       }
 
-      return getOnChainCancellation(settlementContract!, order)
+      return getOnChainCancellation({ config, order, settlementContractData })
     },
-    [ethFlowChainId, settlementChainId, settlementContract, t, cancelTwapOrder, ethFlowContract],
+    [config, ethFlowChainId, settlementChainId, settlementContractData, t, cancelTwapOrder, ethFlowContract],
   )
 }

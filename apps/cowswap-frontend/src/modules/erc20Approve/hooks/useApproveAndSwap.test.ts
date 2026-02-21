@@ -1,4 +1,3 @@
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { Token } from '@uniswap/sdk-core'
 
 import { renderHook, waitFor } from '@testing-library/react'
@@ -12,6 +11,8 @@ import { useTokenSupportsPermit } from '../../permit'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { TradeApproveResult } from '../containers'
 import { useIsPartialApproveSelectedByUser, useUpdateApproveProgressModalState } from '../state'
+
+import type { TransactionReceipt } from 'viem'
 
 jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
@@ -51,21 +52,16 @@ describe('useApproveAndSwap', () => {
       from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
       contractAddress: mockToken.address,
       transactionIndex: 1,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      gasUsed: { toString: () => '21000' } as any,
+      gasUsed: 21000n,
       logsBloom: '0x',
       blockHash: '0xblockhash',
       transactionHash: '0xtxhash',
       logs: [],
-      blockNumber: 123456,
-      confirmations: 1,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cumulativeGasUsed: { toString: () => '21000' } as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      effectiveGasPrice: { toString: () => '1000000000' } as any,
-      byzantium: true,
-      type: 2,
-      status: 1,
+      blockNumber: 123456n,
+      cumulativeGasUsed: 21000n,
+      effectiveGasPrice: 1000000000n,
+      type: 'legacy',
+      status: 'success',
     }
   }
 

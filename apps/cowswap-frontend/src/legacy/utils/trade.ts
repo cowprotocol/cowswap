@@ -14,13 +14,13 @@ import {
   SigningScheme,
   SupportedChainId as ChainId,
   UnsignedOrder,
+  Signer,
 } from '@cowprotocol/cow-sdk'
-import type { Signer } from '@ethersproject/abstract-signer'
-import type { JsonRpcSigner } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
+import { Config } from 'wagmi'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -32,7 +32,7 @@ import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorEr
 export type PostOrderParams = {
   account: string
   chainId: ChainId
-  signer: JsonRpcSigner
+  config: Config
   kind: OrderKind
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
@@ -52,7 +52,7 @@ export type PostOrderParams = {
   isSafeWallet: boolean
 }
 
-export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'signer' | 'validTo'> & {
+export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'config' | 'validTo'> & {
   orderId: string
   signature: string
   signingScheme: SigningScheme

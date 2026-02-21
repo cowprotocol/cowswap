@@ -1,23 +1,23 @@
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
-import { getContract } from '@cowprotocol/common-utils'
 import { areAddressesEqual, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { BigNumber } from '@ethersproject/bignumber'
-import type { BaseContract } from '@ethersproject/contracts'
-import { id } from '@ethersproject/hash'
-import type { Web3Provider } from '@ethersproject/providers'
 
 import ms from 'ms.macro'
 import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
-import { Address } from 'viem'
+import { type Address, encodeAbiParameters, type Hex } from 'viem'
+import { type Config, useConfig } from 'wagmi'
+import { getBytecode, readContract, getStorageAt } from 'wagmi/actions'
+
+import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { useCowShedHooks } from './useCowShedHooks'
 
-function slot(name: string): string {
-  return defaultAbiCoder.encode(['bytes32'], [BigNumber.from(id(name)).sub(1)])
+function slot(name: string): Hex {
+  return encodeAbiParameters(
+    [{ type: 'bytes32' }],
+    [`0x${(BigInt(toKeccak256(name)) - 1n).toString(16).padStart(64, '0')}`],
+  )
 }
 
 const COW_SHED_ABI = [
@@ -28,7 +28,7 @@ const COW_SHED_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
-]
+] as const
 
 const IMPLEMENTATION_STORAGE_SLOT = slot('eip1967.proxy.implementation')
 
@@ -39,20 +39,15 @@ const IMPLEMENTATION_STORAGE_SLOT = slot('eip1967.proxy.implementation')
  * @param proxy Address of the proxy contract.
  * @returns The address of the contract storing the proxy implementation.
  */
-export async function implementationAddress(provider: Web3Provider, proxy: string): Promise<string> {
-  const storage = await provider.getStorageAt(proxy, IMPLEMENTATION_STORAGE_SLOT)
+export async function implementationAddress(config: Config, proxy: string): Promise<string> {
+  const storage = await getStorageAt(config, {
+    address: proxy,
+    slot: IMPLEMENTATION_STORAGE_SLOT,
+  })
 
-  if (storage === '0x') return ZERO_ADDRESS
+  if (!storage || storage === '0x') return ZERO_ADDRESS
 
-  const [implementation] = defaultAbiCoder.decode(['address'], storage)
-
-  return implementation
-}
-
-interface CoWShedContract extends BaseContract {
-  callStatic: {
-    trustedExecutor(): Promise<string>
-  }
+  return `0x${storage.slice(-40)}`
 }
 
 interface ProxyAndAccount {
@@ -83,23 +78,21 @@ const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount | undefined> = {
 }
 
 export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefined, unknown, typeof SWR_OPTIONS> {
+  const config = useConfig()
   const { account, chainId } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
 
   return useSWR(
-    account && provider && cowShedHooks ? [account, chainId, 'useCurrentAccountProxyAddress'] : null,
+    account && cowShedHooks ? [account, chainId, 'useCurrentAccountProxyAddress'] : null,
     async ([account, chainId]) => {
-      if (!provider || !cowShedHooks) return
+      if (!cowShedHooks) return
 
       const proxyAddress = cowShedHooks.proxyOf(account)
-      const proxyCode = await provider.getCode(proxyAddress)
+      const proxyCode = await getBytecode(config, { address: proxyAddress })
       const isProxyDeployed = !!proxyCode && proxyCode !== '0x'
 
       const isProxySetupValid = isProxyDeployed
-        ? await getIsProxySetupValid(chainId, proxyAddress, provider, cowShedHooks)
+        ? await getIsProxySetupValid(chainId, proxyAddress, config, cowShedHooks)
         : true
 
       return {
@@ -121,26 +114,18 @@ export function useCurrentAccountProxyAddress(): string | undefined {
 async function getIsProxySetupValid(
   chainId: SupportedChainId,
   proxyAddress: string,
-  provider: Web3Provider,
+  config: Config,
   cowShedHooks: CowShedHooks,
 ): Promise<boolean | null> {
-  const providerNetwork = await provider.getNetwork()
-
-  // Skip validation if network mismatch
-  if (providerNetwork.chainId !== chainId) return true
-
-  console.debug('[CoWShed validation] networks', {
-    providerNetwork,
+  console.debug('[CoWShed validation] network', {
     chainId,
   })
 
-  const shedContract = getContract(proxyAddress, COW_SHED_ABI, provider) as CoWShedContract
   const expectedImplementation = cowShedHooks.getImplementationAddress()
   const expectedFactoryAddress = cowShedHooks.getFactoryAddress()
 
   try {
-    const implementation = await implementationAddress(provider, proxyAddress)
-
+    const implementation = await implementationAddress(config, proxyAddress)
     // If implementation is zero, it means proxy is not deployed and is considered as valid
     if (areAddressesEqual(implementation, ZERO_ADDRESS)) {
       return true
@@ -161,7 +146,11 @@ async function getIsProxySetupValid(
   }
 
   try {
-    const trustedExecutor = await shedContract.callStatic.trustedExecutor()
+    const trustedExecutor = await readContract(config, {
+      abi: COW_SHED_ABI,
+      address: proxyAddress,
+      functionName: 'trustedExecutor',
+    })
 
     const isTrustedExecutorValid = areAddressesEqual(trustedExecutor, expectedFactoryAddress)
 

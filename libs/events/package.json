@@ -12,6 +12,7 @@
   "dependencies": {
     "@cowprotocol/cow-sdk": "7.3.7",
     "@cowprotocol/sdk-bridging": "1.7.6",
-    "@cowprotocol/types": "workspace:*"
+    "@cowprotocol/types": "workspace:*",
+    "viem": "^2.45.1"
   }
 }

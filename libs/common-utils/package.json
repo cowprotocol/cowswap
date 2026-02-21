@@ -24,19 +24,9 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.7",
     "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/cow-sdk": "7.3.7",
     "@cowprotocol/types": "workspace:*",
-    "@ethersproject/abstract-provider": "5.7.0",
-    "@ethersproject/address": "5.7.0",
-    "@ethersproject/bignumber": "5.7.0",
-    "@ethersproject/constants": "5.7.0",
-    "@ethersproject/contracts": "5.7.0",
-    "@ethersproject/hash": "5.7.0",
-    "@ethersproject/providers": "5.7.0",
-    "@ethersproject/sha2": "5.7.0",
-    "@ethersproject/strings": "5.7.0",
-    "@ethersproject/units": "5.7.0",
     "@lingui/core": "^5.4.1",
     "@lingui/macro": "^5.4.1",
     "@lingui/react": "^5.4.1",
@@ -45,7 +35,6 @@
     "@uniswap/sdk-core": "^3.0.1",
     "bignumber.js": "^9.1.2",
     "cids": "^1.0.0",
-    "ethers": "5.7.2",
     "fast-safe-stringify": "^2.0.8",
     "jotai": "^2.2.0",
     "jsbi": "^3.1.4",
@@ -54,7 +43,9 @@
     "multihashes": "^4.0.2",
     "quick-lru": "^7.0.0",
     "react": "19.1.2",
-    "ua-parser-js": "^1.0.32"
+    "ua-parser-js": "^1.0.32",
+    "viem": "^2.45.1",
+    "wagmi": "3.4.2"
   },
   "devDependencies": {
     "@types/ms": "^2.1.0",

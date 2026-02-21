@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { BigNumber } from '@ethersproject/bignumber'
 import { Token } from '@uniswap/sdk-core'
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
@@ -9,12 +8,12 @@ const PRIORITISED_TOKENS = ['COW', 'GNO']
 // compare two token amounts with highest one coming first
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function balanceComparator(balanceA: BigNumber | undefined, balanceB: BigNumber | undefined) {
+export function balanceComparator(balanceA: bigint | undefined, balanceB: bigint | undefined) {
   if (balanceA && balanceB) {
-    return balanceA.gt(balanceB) ? -1 : balanceA.eq(balanceB) ? 0 : 1
-  } else if (balanceA && balanceA.gt('0')) {
+    return balanceA > balanceB ? -1 : balanceA === balanceB ? 0 : 1
+  } else if (balanceA && balanceA > 0n) {
     return -1
-  } else if (balanceB && balanceB.gt('0')) {
+  } else if (balanceB && balanceB > 0n) {
     return 1
   }
   return 0

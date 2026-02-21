@@ -185,7 +185,7 @@ module.exports = [
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
+              pattern: '{@cowprotocol,@uniswap,@safe-global}/**',
               group: 'external',
               position: 'before',
             },

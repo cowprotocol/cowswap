@@ -1,8 +1,25 @@
-import type { Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
+import { useState, useEffect } from 'react'
 
-export function useWalletProvider(): Web3Provider | undefined {
-  const { provider } = useWeb3React()
+import { useConnection } from 'wagmi'
+
+export function useWalletProvider(): unknown | undefined {
+  const [provider, setProvider] = useState<unknown | undefined>()
+
+  const { connector } = useConnection()
+
+  useEffect(() => {
+    if (!connector) return
+    const getProvider = async (): Promise<void> => {
+      try {
+        const provider = await connector.getProvider()
+        setProvider(provider)
+      } catch (error) {
+        console.error(error.message)
+        setProvider(undefined)
+      }
+    }
+    getProvider()
+  }, [connector])
 
   return provider
 }

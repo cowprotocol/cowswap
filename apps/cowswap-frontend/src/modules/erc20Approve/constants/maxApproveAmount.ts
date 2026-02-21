@@ -1,3 +1,3 @@
-import { MaxUint256 } from '@ethersproject/constants'
+import { maxUint256 } from 'viem'
 
-export const MAX_APPROVE_AMOUNT = MaxUint256.toBigInt()
+export const MAX_APPROVE_AMOUNT = maxUint256

@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { useLingui } from '@lingui/react/macro'
+import { useConfig } from 'wagmi'
 
 import { Field } from 'legacy/state/types'
 
@@ -18,15 +19,26 @@ import { useTradeFlowType } from './useTradeFlowType'
 
 import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundleFlow'
 import { swapFlow } from '../services/swapFlow'
-import { FlowType } from '../types/TradeFlowContext'
+import { FlowType, SafeBundleFlowContext, TradeFlowContext } from '../types/TradeFlowContext'
 
-export function useHandleSwap(
-  params: TradeFlowParams,
-  actions: TradeWidgetActions,
-): { callback(): Promise<false | void>; contextIsReady: boolean } {
+function useTradeFlow(params: TradeFlowParams): {
+  tradeFlowType: FlowType
+  tradeFlowContext: TradeFlowContext | null
+  safeBundleFlowContext: SafeBundleFlowContext | null
+} {
   const tradeFlowType = useTradeFlowType()
   const tradeFlowContext = useTradeFlowContext(params)
   const safeBundleFlowContext = useSafeBundleFlowContext()
+
+  return { tradeFlowType, tradeFlowContext, safeBundleFlowContext }
+}
+
+export function useHandleSwap(
+  params: TradeFlowParams,
+  { onUserInput, onChangeRecipient }: TradeWidgetActions,
+): { callback(): Promise<false | void>; contextIsReady: boolean } {
+  const config = useConfig()
+  const { tradeFlowType, tradeFlowContext, safeBundleFlowContext } = useTradeFlow(params)
   const isBridge = getAreBridgeCurrencies(
     tradeFlowContext?.context.inputAmount.currency,
     tradeFlowContext?.context.outputAmount.currency,
@@ -34,7 +46,6 @@ export function useHandleSwap(
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee(isBridge)
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
-  const { onUserInput, onChangeRecipient } = actions
   const analytics = useTradeFlowAnalytics()
   const { t } = useLingui()
 
@@ -66,13 +77,14 @@ export function useHandleSwap(
         if (!safeBundleFlowContext) throw new Error(t`Safe bundle flow context is not ready`)
 
         logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
-        return safeBundleApprovalFlow(
-          tradeFlowContext,
-          safeBundleFlowContext,
+        return safeBundleApprovalFlow({
+          tradeContext: tradeFlowContext,
+          safeBundleContext: safeBundleFlowContext,
           priceImpactParams,
           confirmPriceImpactWithoutFee,
           analytics,
-        )
+          config,
+        })
       }
       if (tradeFlowType === FlowType.SAFE_BUNDLE_ETH) {
         if (!safeBundleFlowContext) throw new Error(t`Safe bundle flow context is not ready`)
@@ -97,6 +109,7 @@ export function useHandleSwap(
       onUserInput(Field.INPUT, '')
     }
   }, [
+    config,
     tradeFlowContext,
     tradeFlowType,
     priceImpactParams,

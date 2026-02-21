@@ -65,8 +65,6 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
   const walletProvider = useWalletProvider()
 
   // eslint-disable-next-line react-hooks/refs
@@ -119,9 +117,9 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   }, [])
 
   useLayoutEffect(() => {
-    if (!walletProvider || !walletProvider.provider || !bridgeRef.current) return
+    if (!walletProvider || !bridgeRef.current) return
 
-    bridgeRef.current.onConnect(walletProvider.provider as EthereumProvider)
+    bridgeRef.current.onConnect(walletProvider as EthereumProvider)
   }, [walletProvider])
 
   useLayoutEffect(() => {
@@ -130,7 +128,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     if (!iframeWindow || !isIframeActive) return
 
     // Omit unnecessary parameter
-    const { addHook: _, editHook: _1, signer: _2, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
+    const { addHook: _, editHook: _1, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
 
     hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, iframeContext)
   }, [context, isIframeActive])

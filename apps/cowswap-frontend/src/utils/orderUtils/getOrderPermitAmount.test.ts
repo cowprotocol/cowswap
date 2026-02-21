@@ -1,28 +1,22 @@
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20__factory } from '@cowprotocol/cowswap-abis'
+import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
-import { Interface } from '@ethersproject/abi'
-import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
-import { MaxUint256 } from '@ethersproject/constants'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
+import { maxUint256, encodeFunctionData } from 'viem'
 
 import { getOrderPermitAmount } from './getOrderPermitAmount'
 import { ParsedOrder } from './parseOrder'
-
-const erc20Interface = Erc20__factory.createInterface()
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const daiInterface = new Interface(oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI as any)
 
 // eslint-disable-next-line max-lines-per-function
 describe('getOrderPermitAmount', () => {
   const chainId = SupportedChainId.MAINNET
   const spenderAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId].toLowerCase()
   const ownerAddress = '0x1234567890123456789012345678901234567890'
-  const futureDeadline = Math.floor(Date.now() / 1000) + 86400 // 24 hours from now
-  const pastDeadline = Math.floor(Date.now() / 1000) - 86400 // 24 hours ago
-  const permitValue = EthersBigNumber.from('1000000000000000000') // 1 token
+  const futureDeadline = BigInt(Math.floor(Date.now() / 1000) + 86400) // 24 hours from now
+  const pastDeadline = BigInt(Math.floor(Date.now() / 1000) - 86400) // 24 hours ago
+  const permitValue = 1000000000000000000n // 1 token
 
   const baseOrder: Partial<ParsedOrder> = {
     id: 'test-order-id',
@@ -65,21 +59,20 @@ describe('getOrderPermitAmount', () => {
     },
   }
 
-  function createEip2612PermitCallData(
-    owner: string,
-    spender: string,
-    value: EthersBigNumber,
-    deadline: number,
-  ): string {
-    const permitData = erc20Interface.encodeFunctionData('permit', [
-      owner,
-      spender,
-      value,
-      deadline,
-      0, // v
-      '0x0000000000000000000000000000000000000000000000000000000000000000', // r
-      '0x0000000000000000000000000000000000000000000000000000000000000000', // s
-    ])
+  function createEip2612PermitCallData(owner: string, spender: string, value: bigint, deadline: bigint): string {
+    const permitData = encodeFunctionData({
+      abi: Erc20Abi,
+      functionName: 'permit',
+      args: [
+        owner,
+        spender,
+        value,
+        deadline,
+        0, // v
+        '0x0000000000000000000000000000000000000000000000000000000000000000', // r
+        '0x0000000000000000000000000000000000000000000000000000000000000000', // s
+      ],
+    })
     // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with EIP_2612_PERMIT_SELECTOR
     return oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + permitData.slice(10)
   }
@@ -87,20 +80,24 @@ describe('getOrderPermitAmount', () => {
   function createDaiPermitCallData(
     holder: string,
     spender: string,
-    nonce: number,
-    expiry: number,
+    nonce: bigint,
+    expiry: bigint,
     allowed: boolean,
   ): string {
-    const permitData = daiInterface.encodeFunctionData('permit', [
-      holder,
-      spender,
-      nonce,
-      expiry,
-      allowed,
-      0, // v
-      '0x0000000000000000000000000000000000000000000000000000000000000000', // r
-      '0x0000000000000000000000000000000000000000000000000000000000000000', // s
-    ])
+    const permitData = encodeFunctionData({
+      abi: oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI,
+      functionName: 'permit',
+      args: [
+        holder,
+        spender,
+        nonce,
+        expiry,
+        allowed,
+        0, // v
+        '0x0000000000000000000000000000000000000000000000000000000000000000', // r
+        '0x0000000000000000000000000000000000000000000000000000000000000000', // s
+      ],
+    })
     // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with DAI_PERMIT_SELECTOR
     return oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR + permitData.slice(10)
   }
@@ -287,7 +284,7 @@ describe('getOrderPermitAmount', () => {
 
   describe('DAI permit', () => {
     it('should return MaxUint256 when permit is valid', () => {
-      const callData = createDaiPermitCallData(ownerAddress, spenderAddress, 0, futureDeadline, true)
+      const callData = createDaiPermitCallData(ownerAddress, spenderAddress, 0n, futureDeadline, true)
       const order = {
         ...baseOrder,
         fullAppData: JSON.stringify({
@@ -307,12 +304,12 @@ describe('getOrderPermitAmount', () => {
       const result = getOrderPermitAmount(chainId, order)
 
       expect(result).not.toBeNull()
-      expect(result?.toString()).toBe(MaxUint256.toString())
+      expect(result?.toString()).toBe(maxUint256.toString())
     })
 
     it('should return null when spender does not match', () => {
       const wrongSpender = '0x9999999999999999999999999999999999999999'
-      const callData = createDaiPermitCallData(ownerAddress, wrongSpender, 0, futureDeadline, true)
+      const callData = createDaiPermitCallData(ownerAddress, wrongSpender, 0n, futureDeadline, true)
       const order = {
         ...baseOrder,
         fullAppData: JSON.stringify({
@@ -336,7 +333,7 @@ describe('getOrderPermitAmount', () => {
 
     it('should return null when holder does not match', () => {
       const wrongHolder = '0x9999999999999999999999999999999999999999'
-      const callData = createDaiPermitCallData(wrongHolder, spenderAddress, 0, futureDeadline, true)
+      const callData = createDaiPermitCallData(wrongHolder, spenderAddress, 0n, futureDeadline, true)
       const order = {
         ...baseOrder,
         fullAppData: JSON.stringify({
@@ -359,7 +356,7 @@ describe('getOrderPermitAmount', () => {
     })
 
     it('should return null when expiry has expired', () => {
-      const callData = createDaiPermitCallData(ownerAddress, spenderAddress, 0, pastDeadline, true)
+      const callData = createDaiPermitCallData(ownerAddress, spenderAddress, 0n, pastDeadline, true)
       const order = {
         ...baseOrder,
         fullAppData: JSON.stringify({
@@ -383,7 +380,7 @@ describe('getOrderPermitAmount', () => {
 
     it('should continue to next hook when decoding fails', () => {
       const invalidCallData = oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR + 'invalid'
-      const validCallData = createDaiPermitCallData(ownerAddress, spenderAddress, 0, futureDeadline, true)
+      const validCallData = createDaiPermitCallData(ownerAddress, spenderAddress, 0n, futureDeadline, true)
       const order = {
         ...baseOrder,
         fullAppData: JSON.stringify({
@@ -407,7 +404,7 @@ describe('getOrderPermitAmount', () => {
       const result = getOrderPermitAmount(chainId, order)
 
       expect(result).not.toBeNull()
-      expect(result?.toString()).toBe(MaxUint256.toString())
+      expect(result?.toString()).toBe(maxUint256.toString())
     })
   })
 })

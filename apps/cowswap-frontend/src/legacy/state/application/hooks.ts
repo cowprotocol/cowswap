@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { Command } from '@cowprotocol/types'
 
 import { createAction } from '@reduxjs/toolkit'
+import { useAppKit } from '@reown/appkit/react'
 
 import { ApplicationModal } from './reducer'
 
@@ -28,7 +29,9 @@ export function useCloseModal(_modal: ApplicationModal): Command {
 }
 
 export function useToggleWalletModal(): Command {
-  return useToggleModal(ApplicationModal.WALLET)
+  const { open } = useAppKit()
+
+  return () => open()
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced

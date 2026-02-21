@@ -6,7 +6,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useHooks } from 'entities/orderHooks/useHooks'
-import { BigNumber } from 'ethers'
 
 import { usePreHookBalanceDiff } from 'modules/hooksStore/hooks/useBalancesDiff'
 import { useIsHooksTradeType } from 'modules/trade'
@@ -48,13 +47,11 @@ function applyBalanceDiffs(
   Object.entries(balanceDiff).forEach(([address, diff]) => {
     const currentBalance = normalizedValues[address]
     if (currentBalance === undefined) return
-    const balanceWithDiff = currentBalance.add(BigNumber.from(diff))
+    const balanceWithDiff = currentBalance + BigInt(diff)
 
     // If the balance with diff is negative, set the balance to 0
     // This avoid the UI crashing in case of some error
-    normalizedValues[address] = balanceWithDiff.isNegative()
-      ? BigNumber.from(0)
-      : currentBalance.add(BigNumber.from(diff))
+    normalizedValues[address] = balanceWithDiff < 0n ? 0n : currentBalance + BigInt(diff)
   })
 
   return {

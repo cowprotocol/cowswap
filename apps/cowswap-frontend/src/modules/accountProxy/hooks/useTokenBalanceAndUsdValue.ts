@@ -6,6 +6,8 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { toHex } from 'viem'
+
 import { useUsdAmount } from 'modules/usdAmount'
 
 interface TokenBalanceAndUsdValue {
@@ -22,7 +24,7 @@ export function useTokenBalanceAndUsdValue(tokenAddress: string | undefined): To
   const token = !!tokenKey && tokensByAddress[tokenKey]
   const balanceRaw = !!tokenKey && balances[tokenKey]
 
-  const balance = (token && balanceRaw && CurrencyAmount.fromRawAmount(token, balanceRaw.toHexString())) || null
+  const balance = (token && balanceRaw && CurrencyAmount.fromRawAmount(token, toHex(balanceRaw))) || null
 
   const { value: usdValue } = useUsdAmount(balance)
 

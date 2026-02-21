@@ -8,29 +8,47 @@ import {
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/cowswap-abis'
+import { MerkleDropAbi, TokenDistroAbi } from '@cowprotocol/cowswap-abis'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
-import useSWR from 'swr'
+import { useConfig, useReadContract } from 'wagmi'
+import { writeContract, getTransactionReceipt } from 'wagmi/actions'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useContract, UseContractResult } from 'common/hooks/useContract'
+import { ContractData, UseContractResult } from 'common/hooks/useContract'
 
 import { fetchClaim } from './claimData'
+
+import type { Hex, TransactionReceipt } from 'viem'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 
-const useMerkleDropContract = (): UseContractResult<MerkleDrop> =>
-  useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
+type MerdleDropContractData = Omit<ContractData<typeof MerkleDropAbi>, 'address'> & { address: string | null }
+const useMerkleDropContract = (): UseContractResult<MerdleDropContractData> => {
+  const { chainId } = useWalletInfo()
 
-const useTokenDistroContract = (): UseContractResult<TokenDistro> =>
-  useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
+  return {
+    abi: MerkleDropAbi,
+    address: MERKLE_DROP_CONTRACT_ADDRESSES[chainId],
+    chainId,
+  }
+}
+
+type TokenDistroContractData = Omit<ContractData<typeof TokenDistroAbi>, 'address'> & { address: string | null }
+const useTokenDistroContract = (): UseContractResult<TokenDistroContractData> => {
+  const { chainId } = useWalletInfo()
+
+  return {
+    abi: TokenDistroAbi,
+    address: TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId],
+    chainId,
+  }
+}
 
 export const useAllocation = (): CurrencyAmount<Token> => {
   const { t } = useLingui()
@@ -78,16 +96,22 @@ export const useCowFromLockedGnoBalances = () => {
     .multiply(Math.min(Date.now() - LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION))
     .divide(LOCKED_GNO_VESTING_DURATION)
 
-  const { contract: tokenDistro } = useTokenDistroContract()
+  const tokenDistro = useTokenDistroContract()
 
-  const { data, isLoading } = useSWR(
-    account && tokenDistro && allocated?.greaterThan(0)
-      ? ['useCowFromLockedGnoBalances', account, allocated, tokenDistro]
-      : null,
-    async ([, _account, , _tokenDistro]) => _tokenDistro.balances(_account),
-  )
+  const { data, isLoading } = useReadContract({
+    abi: tokenDistro.abi,
+    address: tokenDistro.address!,
+    functionName: 'balances',
+    args: [account!],
+    query: {
+      enabled: !!tokenDistro.address && !!account,
+    },
+  })
 
-  const claimed = useMemo(() => CurrencyAmount.fromRawAmount(_COW, data ? data.claimed.toString() : 0), [data])
+  const claimed = useMemo(() => {
+    const [_allocatedTokens, claimed] = data || [0n, 0n]
+    return CurrencyAmount.fromRawAmount(_COW, claimed.toString())
+  }, [data])
 
   return useMemo(
     () => ({
@@ -110,10 +134,11 @@ export function useClaimCowFromLockedGnoCallback({
   openModal,
   closeModal,
   isFirstClaim,
-}: ClaimCallbackParams): () => Promise<ContractTransaction> {
+}: ClaimCallbackParams): () => Promise<TransactionReceipt> {
+  const config = useConfig()
   const { account } = useWalletInfo()
-  const { contract: merkleDrop, chainId: merkleDropChainId } = useMerkleDropContract()
-  const { contract: tokenDistro, chainId: tokenDistroChainId } = useTokenDistroContract()
+  const { chainId: merkleDropChainId, ...merkleDrop } = useMerkleDropContract()
+  const { chainId: tokenDistroChainId, ...tokenDistro } = useTokenDistroContract()
   const { t } = useLingui()
 
   const addTransaction = useTransactionAdder()
@@ -123,7 +148,7 @@ export function useClaimCowFromLockedGnoCallback({
       throw new Error(t`Not connected`)
     }
 
-    if (!merkleDrop || !tokenDistro) {
+    if (!merkleDrop.address || !tokenDistro.address) {
       throw new Error(t`Contract not present or not connected to any supported chain`)
     }
 
@@ -138,21 +163,31 @@ export function useClaimCowFromLockedGnoCallback({
 
     // On the very first claim we need to provide the merkle proof.
     // Afterwards the allocation will be already in the tokenDistro contract and we can just claim it there.
-    const claimPromise = isFirstClaim ? merkleDrop.claim(index, amount, proof) : tokenDistro.claim()
+    const claimPromise = isFirstClaim
+      ? writeContract(config, {
+          abi: merkleDrop.abi,
+          address: merkleDrop.address,
+          functionName: 'claim',
+          args: [BigInt(index), BigInt(amount), proof as Hex[]],
+        })
+      : writeContract(config, {
+          abi: tokenDistro.abi,
+          address: tokenDistro.address,
+          functionName: 'claim',
+        })
+
     const summary = t`Claim vested` + ` COW`
     openModal(summary)
 
-    return claimPromise
-      .then((tx) => {
-        addTransaction({
-          swapLockedGNOvCow: true,
-          hash: tx.hash,
-          summary,
-        })
-        return tx
-      })
-      .finally(closeModal)
+    const txHash = await claimPromise
+    addTransaction({
+      swapLockedGNOvCow: true,
+      hash: txHash,
+      summary,
+    })
+    return getTransactionReceipt(config, { hash: txHash }).finally(closeModal)
   }, [
+    config,
     account,
     merkleDrop,
     tokenDistro,

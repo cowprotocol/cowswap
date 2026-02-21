@@ -5,11 +5,11 @@ import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
 import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
-import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { toHex } from 'viem'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -48,7 +48,7 @@ type TokenTableParams = {
   tokensData: TokenWithLogo[] | undefined
   maxItems?: number
   balances?: BalancesState['values']
-  allowances: Record<string, BigNumber | undefined> | undefined
+  allowances: Record<string, bigint | undefined> | undefined
   page: number
   setPage: (page: number) => void
   query: string
@@ -227,12 +227,10 @@ export function TokenTable({
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {
               const balanceRaw = balances && balances[data.address.toLowerCase()]
-              const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, balanceRaw.toHexString()) : undefined
+              const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, toHex(balanceRaw)) : undefined
 
               const allowancesRaw = allowances && allowances[data.address.toLowerCase()]
-              const allowance = allowancesRaw
-                ? CurrencyAmount.fromRawAmount(data, allowancesRaw.toHexString())
-                : undefined
+              const allowance = allowancesRaw ? CurrencyAmount.fromRawAmount(data, toHex(allowancesRaw)) : undefined
 
               if (data) {
                 return (

@@ -1,34 +1,36 @@
 import { useCallback } from 'react'
 
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { MetaTransactionData } from '@safe-global/types-kit'
+
+import { useConfig } from 'wagmi'
+import { sendCalls } from 'wagmi/actions'
 
 import { useWalletCapabilities } from './useWalletCapabilities'
 
-import { useSafeAppsSdk } from '../../web3-react/hooks/useSafeAppsSdk'
+import { useSafeAppsSdk } from '../../wagmi/hooks/useSafeAppsSdk'
 import { useWalletInfo } from '../hooks'
+
+import type { Hex } from 'viem'
 
 export type SendBatchTxCallback = (txs: MetaTransactionData[]) => Promise<string>
 
 export function useSendBatchTransactions(): SendBatchTxCallback {
-  // TODO this will be fixed in M-3 COW-569
+  const config = useConfig()
   const safeAppsSdk = useSafeAppsSdk()
-  const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const { data: capabilities } = useWalletCapabilities()
   const isAtomicBatchSupported = capabilities?.atomic?.status === 'supported'
 
   return useCallback(
     async (txs: MetaTransactionData[]) => {
-      if (isAtomicBatchSupported && provider && account && chainId) {
-        const chainIdHex = '0x' + (+chainId).toString(16)
-        const calls = txs.map((tx) => ({ ...tx, chainId: chainIdHex }))
+      if (isAtomicBatchSupported && account && chainId) {
+        const calls = txs.map(({ to, value, data }) => ({ to, value: BigInt(value), data: data as Hex }))
 
-        return provider
-          .send('wallet_sendCalls', [{ version: '1.0', from: account, calls, chainId: chainIdHex }])
-          .then((res) => {
-            return typeof res === 'string' ? res : res.id
-          })
+        return sendCalls(config, {
+          account,
+          calls,
+          chainId,
+        }).then((res) => res.id)
       }
 
       if (safeAppsSdk) {
@@ -39,6 +41,6 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
         throw new Error('Batch transactions sending is not supported')
       }
     },
-    [isAtomicBatchSupported, provider, account, chainId, safeAppsSdk],
+    [isAtomicBatchSupported, config, account, chainId, safeAppsSdk],
   )
 }

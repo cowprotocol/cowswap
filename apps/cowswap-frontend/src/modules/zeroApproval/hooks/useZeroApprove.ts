@@ -4,7 +4,6 @@ import { useCallback } from 'react'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import type SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -15,6 +14,8 @@ import { useSafeApiKit } from 'common/hooks/useSafeApiKit'
 import { pollUntil } from 'common/utils/pollUntil'
 
 import { zeroApprovalState } from '../state/zeroApprovalState'
+
+import type { TransactionReceipt } from 'viem'
 
 async function waitForSafeTransactionExecution({
   safeApiKit,
@@ -58,9 +59,9 @@ export function useZeroApprove(
 
       // For Wallet Connect based Safe Wallet connections, wait for transaction to be executed.
       if (txReceipt && safeApiKit && isSafeWallet && isWalletConnect) {
-        return waitForSafeTransactionExecution({ safeApiKit, txHash: txReceipt.hash })
+        return waitForSafeTransactionExecution({ safeApiKit, txHash: txReceipt.transactionHash })
       } else {
-        return await txReceipt?.wait()
+        return await txReceipt
       }
     } finally {
       setZeroApprovalState({ isApproving: false })

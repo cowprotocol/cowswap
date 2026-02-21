@@ -1,6 +1,8 @@
-import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders/const'
+import { SignatureVerifierMuxerAbi } from '@cowprotocol/cowswap-abis'
 
-import { getSignatureVerifierContract } from './getSignatureVerifierContract'
+import { readContract, writeContract } from 'wagmi/actions'
+
+import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders/const'
 
 import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
@@ -16,14 +18,21 @@ export enum ExtensibleFallbackVerification {
 export async function verifyExtensibleFallback(
   context: ExtensibleFallbackContext,
 ): Promise<ExtensibleFallbackVerification> {
-  const { chainId, safeAddress, settlementContract } = context
+  const { chainId, config, safeAddress, settlementContract } = context
   const composableCowContractAddress = COMPOSABLE_COW_ADDRESS[chainId]
-  const domainSeparator = await settlementContract.callStatic.domainSeparator()
-
-  const signatureVerifierContract = await getSignatureVerifierContract(context)
+  const domainSeparator = await writeContract(config, {
+    abi: settlementContract.abi,
+    address: settlementContract.address,
+    functionName: 'domainSeparator',
+  })
 
   try {
-    const domainVerifier = await signatureVerifierContract.callStatic.domainVerifiers(safeAddress, domainSeparator)
+    const domainVerifier = await readContract(config, {
+      abi: SignatureVerifierMuxerAbi,
+      address: safeAddress,
+      functionName: 'domainVerifiers',
+      args: [safeAddress, domainSeparator],
+    })
 
     if (domainVerifier.toLowerCase() === composableCowContractAddress.toLowerCase()) {
       return ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER

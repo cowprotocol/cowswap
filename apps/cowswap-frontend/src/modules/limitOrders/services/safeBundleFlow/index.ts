@@ -1,10 +1,11 @@
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { maxUint256 } from 'viem'
+import { Config } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -29,14 +30,23 @@ const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-export async function safeBundleFlow(
-  params: SafeBundleFlowContext,
-  priceImpact: PriceImpact,
-  settingsState: LimitOrdersSettingsState,
-  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-  analytics: TradeFlowAnalytics,
-  beforeTrade?: Command,
-): Promise<string> {
+export async function safeBundleFlow({
+  params,
+  priceImpact,
+  settingsState,
+  confirmPriceImpactWithoutFee,
+  analytics,
+  beforeTrade,
+  config,
+}: {
+  params: SafeBundleFlowContext
+  priceImpact: PriceImpact
+  settingsState: LimitOrdersSettingsState
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
+  analytics: TradeFlowAnalytics
+  beforeTrade?: Command
+  config: Config
+}): Promise<string> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
@@ -61,7 +71,7 @@ export async function safeBundleFlow(
   analytics.approveAndPresign(swapFlowAnalyticsContext)
   beforeTrade?.()
 
-  const { chainId, postOrderParams, erc20Contract, spender, dispatch, sendBatchTransactions } = params
+  const { chainId, postOrderParams, spender, dispatch, sendBatchTransactions } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
 
@@ -70,9 +80,9 @@ export async function safeBundleFlow(
     // In the feature users will be able to sort/add steps as they see fit
     logTradeFlow(LOG_PREFIX, 'STEP 2: build approval tx')
     const approveTx = await buildApproveTx({
-      erc20Contract,
+      tokenAddress: sellToken.address,
       spender,
-      amountToApprove: MaxUint256.toBigInt(),
+      amountToApprove: maxUint256,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
@@ -139,15 +149,16 @@ export async function safeBundleFlow(
     ]
 
     const shouldZeroApprove = await shouldZeroApproveFn({
-      tokenContract: erc20Contract,
+      tokenAddress: sellToken.address,
       spender,
       amountToApprove: inputAmount,
       forceApprove: true,
+      config,
     })
 
     if (shouldZeroApprove) {
       const zeroApproveTx = await buildZeroApproveTx({
-        erc20Contract,
+        tokenAddress: sellToken.address,
         spender,
       })
       safeTransactionData.unshift({

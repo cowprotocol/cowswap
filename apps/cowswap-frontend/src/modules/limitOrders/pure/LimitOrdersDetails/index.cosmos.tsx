@@ -54,7 +54,7 @@ const tradeContext: TradeFlowContext = {
   rateImpact: 0,
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  signer: {} as any,
+  config: {} as any,
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   settlementContract: {} as any,

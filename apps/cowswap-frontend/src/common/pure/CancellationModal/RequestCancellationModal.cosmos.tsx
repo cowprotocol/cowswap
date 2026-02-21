@@ -1,5 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber'
-
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
 import { RequestCancellationModal } from './RequestCancellationModal'
@@ -14,7 +12,7 @@ const props: Omit<RequestCancellationModalProps, 'defaultType'> = {
   },
   shortId: '0x11111',
   summary: 'This was the order that got cancelled bla bla',
-  txCost: BigNumber.from('150000000000000000'),
+  txCost: 150000000000000000n,
   nativeCurrency: MAINNET_NATIVE_CURRENCY,
 }
 

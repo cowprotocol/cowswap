@@ -1,20 +1,21 @@
 import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo } from '@cowprotocol/permit-utils'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { GenericOrder } from 'common/types'
 
 import { extractPermitData } from './extractPermitData'
 
+import type { Hex, PublicClient } from 'viem'
+
 export async function checkPermitNonceAndAmount(
   account: string,
   chainId: number,
-  provider: JsonRpcProvider,
+  publicClient: PublicClient,
   order: GenericOrder,
-  permitCallData: string,
+  permitCallData: Hex,
   permitInfo: PermitInfo,
 ): Promise<boolean | undefined> {
   try {
-    const eip2612Utils = await getPermitUtilsInstance(chainId, provider, account)
+    const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient, account })
     const sellTokenAddress = order.inputToken.address
 
     const { permitNonce, permitAmount, permitType } = extractPermitData(permitCallData)
