@@ -19,6 +19,8 @@ import {
   limitOrdersDerivedStateAtom,
   useLimitOrdersDerivedStateToFill,
 } from 'modules/limitOrders'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
+import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { HydrateAtom } from 'common/state/HydrateAtom'
@@ -29,6 +31,10 @@ import { RegularLimitOrdersPage } from './RegularLimitOrders.page'
 export function LimitOrdersPage(): ReactNode {
   const isAlternative = useIsAlternativeOrderModalVisible()
   const { i18n } = useLingui()
+
+  useResetOrdersTableFilters({
+    historyStatusFilter: HistoryStatusFilter.FILLED,
+  })
 
   const limitOrdersDerivedStateToFill = useLimitOrdersDerivedStateToFill()
 

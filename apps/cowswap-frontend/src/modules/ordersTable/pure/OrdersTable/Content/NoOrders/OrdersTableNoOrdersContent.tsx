@@ -8,39 +8,41 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useLoadMoreOrders } from 'modules/orders'
+import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
 
-import { HistoryStatusFilter } from '../../../../hooks/useFilteredOrders'
 import { useNoOrdersAnimation } from '../../../../hooks/useNoOrdersAnimation'
-import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
+import { HistoryStatusFilter } from '../../../../utils/getFilteredOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 
 const Lottie = lazy(() => import('lottie-react'))
 
 interface OrdersTableNoOrdersContentProps {
+  orderType: TabOrderTypes
   currentTab: OrderTabId
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   hasHydratedOrders: boolean
+  hasOrders: boolean
 }
 
 export function OrdersTableNoOrdersContent({
+  orderType,
   currentTab,
   searchTerm,
   historyStatusFilter,
   hasHydratedOrders,
+  hasOrders,
 }: OrdersTableNoOrdersContentProps): ReactNode {
   const { darkMode: isDarkMode } = useTheme()
   const isSafeViaWc = useIsSafeViaWc()
   const injectedWidgetParams = useInjectedWidgetParams()
-  const { orderType, displayOrdersOnlyForSafeApp, orders = [] } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
   const { limit, isLoading, hasMoreOrders } = useLoadMoreOrders()
-  const hasOrders = orders.length > 0
   const displayLimit = isLoading ? limit - AMOUNT_OF_ORDERS_TO_FETCH : limit
 
   const { title, description } = useMemo(
@@ -63,20 +65,9 @@ export function OrdersTableNoOrdersContent({
         searchTerm,
         historyStatusFilter,
         isSafeViaWc,
-        displayOrdersOnlyForSafeApp,
       }),
     }),
-    [
-      currentTab,
-      hasOrders,
-      displayLimit,
-      hasMoreOrders,
-      orderType,
-      searchTerm,
-      historyStatusFilter,
-      isSafeViaWc,
-      displayOrdersOnlyForSafeApp,
-    ],
+    [currentTab, hasOrders, displayLimit, hasMoreOrders, orderType, searchTerm, historyStatusFilter, isSafeViaWc],
   )
 
   return (

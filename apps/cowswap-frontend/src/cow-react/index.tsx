@@ -15,7 +15,7 @@ import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import SvgCacheProvider from 'react-inlinesvg/provider'
 import { Provider } from 'react-redux'
-import { HashRouter } from 'react-router'
+import { unstable_HistoryRouter as HistoryRouter } from 'react-router'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { ThemeProvider } from 'theme'
 
@@ -30,6 +30,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
+import { hashHistory } from '../common/constants/routes'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
@@ -56,7 +57,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
           <Provider store={cowSwapStore}>
             <AtomProvider store={jotaiStore}>
               <ThemeProvider>
-                <HashRouter>
+                <HistoryRouter history={hashHistory}>
                   <LanguageProvider messages={localeMessages}>
                     <WithLDProvider>
                       <Web3ProviderInstance>
@@ -71,7 +72,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                       </Web3ProviderInstance>
                     </WithLDProvider>
                   </LanguageProvider>
-                </HashRouter>
+                </HistoryRouter>
               </ThemeProvider>
             </AtomProvider>
           </Provider>

@@ -6,6 +6,8 @@ import { MessageDescriptor } from '@lingui/core'
 
 import type { Order } from 'legacy/state/orders/actions'
 
+import type { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
+
 import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -17,6 +19,7 @@ export interface OrdersTablePageParams {
 }
 
 export enum TabOrderTypes {
+  SWAP = 'swap',
   LIMIT = 'limit',
   ADVANCED = 'advanced',
 }
@@ -39,34 +42,42 @@ export interface TabParams {
 
 export interface OrdersTableParams {
   orders: Order[]
-  orderType: TabOrderTypes
-  displayOrdersOnlyForSafeApp?: boolean
 }
 
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
   getAlternativeOrderModalContext: (order: ParsedOrder) => AlternativeOrderModalContext
-
   selectReceiptOrder(order: ParsedOrder): void
-
   toggleOrderForCancellation(order: ParsedOrder): void
-
   toggleOrdersForCancellation(orders: ParsedOrder[]): void
-
   approveOrderToken(token: Token): void
 }
 
 export interface OrdersTableState {
-  currentTabId: OrderTabId
-  displayOrdersOnlyForSafeApp: boolean
-  orderType: TabOrderTypes
-  tabs: TabParams[]
+  reduxOrders: Order[]
+  ordersList: OrdersTableList
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]
   hasHydratedOrders: boolean
   balancesAndAllowances: BalancesAndAllowances
-  orderActions: OrderActions
-  currentPageNumber: number
+  // orderActions: OrderActions
+}
+
+export interface OrdersTableFilters {
+  // Page:
+  // orderType: TabOrderTypes
+  // currentPageNumber: number
+
+  // Tab:
+  // tabs: TabParams[]
+  // currentTabId: OrderTabId
+
+  // Query:
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
+
+  // Other:
+  // displayOrdersOnlyForSafeApp: boolean
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>

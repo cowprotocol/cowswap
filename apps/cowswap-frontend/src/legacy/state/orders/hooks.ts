@@ -102,7 +102,7 @@ export type SetIsOrderRefundedBatchCallback = (params: SetIsOrderRefundedBatch) 
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
+export function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
 
   const firstState = state[keys[0]] || {}

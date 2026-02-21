@@ -3,34 +3,35 @@ import { useMemo } from 'react'
 
 import { useMachineTimeMs } from '@cowprotocol/common-hooks'
 import { TokensByAddress } from '@cowprotocol/tokens'
-
+import { atom } from 'jotai'
 import { twapOrdersAtom, TwapOrdersList } from 'entities/twap'
 import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { useTwapPartOrdersList } from './useTwapPartOrdersList'
-
-import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
+import { TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
+import { twapOrdersTokensLoadableAtom } from 'entities/twap/hooks/useTwapOrdersTokens'
 
 const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
-export function useEmulatedPartOrders(tokensByAddress: TokensByAddress | undefined): Order[] {
-  const twapOrders = useAtomValue(twapOrdersAtom)
-  const twapParticleOrders = useTwapPartOrdersList()
+export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
+  const twapOrders = get(twapOrdersAtom)
+  const twapParticleOrders = get(twapPartOrdersListAtom)
+  const twapOrdersTokensLoadable = useAtomValue(twapOrdersTokensLoadableAtom)
+
   // Update emulated part orders every 5 seconds to recalculate expired state
+  // TODO: Replace this with an atom version and try to make
+  // refresh interval smart...
   const refresher = useMachineTimeMs(EMULATED_ORDERS_REFRESH_MS)
 
-  return useMemo(() => {
-    // It's not possible, just to prevent react-hooks/exhaustive-deps errors
-    if (!refresher) return []
-    if (!tokensByAddress) return []
+  // It's not possible, just to prevent react-hooks/exhaustive-deps errors
+  if (!refresher) return []
+  if (!twapOrdersTokensLoadable || twapOrdersTokensLoadable.state !== 'hasData') return []
 
-    return emulatePartOrders(twapParticleOrders, twapOrders, tokensByAddress)
-  }, [twapParticleOrders, twapOrders, tokensByAddress, refresher])
-}
+  return emulatePartOrders(twapParticleOrders, twapOrders, twapOrdersTokensLoadable.data)
+})
 
 function emulatePartOrders(
   twapParticleOrders: TwapPartOrderItem[],

@@ -51,7 +51,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { fetchAndClassifyOrder } from './utils'
 
 import { useBlockNumber } from '../../hooks/useBlockNumber'
-import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
+import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
 
 /**
  *

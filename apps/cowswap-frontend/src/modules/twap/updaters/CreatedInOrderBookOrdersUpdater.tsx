@@ -10,10 +10,9 @@ import { twapOrdersAtom } from 'entities/twap'
 import { useAsyncMemo } from 'use-async-memo'
 
 import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
-
+import { twapPartOrdersListAtom } from 'modules/twap/state/twapPartOrdersAtom'
 import { useTokensForOrdersList, getTokensListFromOrders, useSWRProdOrders } from 'modules/orders'
 
-import { useTwapPartOrdersList } from '../hooks/useTwapPartOrdersList'
 import { TwapPartOrderItem, updatePartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
@@ -39,7 +38,7 @@ export function CreatedInOrderBookOrdersUpdater() {
   const isSafeWallet = useIsSafeWallet()
   const prodOrders = useSWRProdOrders()
   const getTokensForOrdersList = useTokensForOrdersList()
-  const twapPartOrdersList = useTwapPartOrdersList()
+  const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
   const twapOrders = useAtomValue(twapOrdersAtom)
   const updatePartOrders = useSetAtom(updatePartOrdersAtom)
   const addOrUpdateOrders = useAddOrUpdateOrders()

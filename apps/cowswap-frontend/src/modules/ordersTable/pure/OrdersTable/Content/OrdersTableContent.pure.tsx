@@ -8,10 +8,12 @@ import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersConten
 import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletContent'
 import { OrdersTableUnsupportedNetworkContent } from './UnsupportedNetwork/OrdersTableUnsupportedNetworkContent'
 
-import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
+import { HistoryStatusFilter } from '../../../utils/getFilteredOrders'
 import { OrdersTable } from '../OrdersTable.pure'
+import { locationOrderTypeAtom } from 'common/state/routesState'
+import { useAtomValue } from 'jotai'
 
 interface OrdersTableContentProps {
   currentTab: OrderTabId
@@ -20,17 +22,18 @@ interface OrdersTableContentProps {
 }
 
 export function OrdersTableContent({
+  currentTab,
   searchTerm,
   historyStatusFilter,
-  currentTab,
 }: OrdersTableContentProps): ReactNode {
-  const { filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
+  const orderType = useAtomValue(locationOrderTypeAtom);
+  const { orders, filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
   const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { account } = useWalletInfo()
 
   if (!account) {
-    return <OrdersTableNoWalletContent />
+    return <OrdersTableNoWalletContent orderType={orderType} />
   }
 
   if (isProviderNetworkUnsupported) {
@@ -39,10 +42,12 @@ export function OrdersTableContent({
 
   return filteredOrders?.length === 0 ? (
     <OrdersTableNoOrdersContent
+      orderType={orderType}
       currentTab={currentTab}
       searchTerm={searchTerm}
       historyStatusFilter={historyStatusFilter}
       hasHydratedOrders={isHydrated}
+      hasOrders={!!orders?.length}
     />
   ) : (
     <OrdersTable currentTab={currentTab} />

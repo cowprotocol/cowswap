@@ -7,15 +7,18 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
+import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
-import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 
-export function OrdersTableNoWalletContent(): ReactNode {
-  const { orderType } = useOrdersTableState() || {}
+export interface OrdersTableNoWalletContentProps {
+  orderType: TabOrderTypes
+}
+
+export function OrdersTableNoWalletContent({ orderType }: OrdersTableNoWalletContentProps): ReactNode {
   const pendingActivitiesCount = usePendingActivitiesCount()
 
   return (

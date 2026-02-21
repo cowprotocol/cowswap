@@ -4,6 +4,9 @@ import { BadgeTypes } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
+import { createHashHistory } from 'history'
+
+export const hashHistory = createHashHistory()
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 

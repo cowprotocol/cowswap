@@ -1,10 +1,10 @@
-import { useAtomValue } from 'jotai'
+import { atom, useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useMachineTimeMs } from '@cowprotocol/common-hooks'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
+import { twapOrdersTokensLoadableAtom } from 'entities/twap/hooks/useTwapOrdersTokens'
 import { twapOrdersListAtom, mapTwapOrderToStoreOrder } from 'entities/twap'
 import ms from 'ms.macro'
 
@@ -20,29 +20,31 @@ const EMULATED_ORDERS_REFRESH_MS = ms`5s`
  * So, there might be a race condition when we have an order but haven't fetched its token yet
  * Because of it, we wrap mapTwapOrderToStoreOrder() in try/catch and just don't add an order to the list
  */
-export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefined): Order[] {
+export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
   const { account, chainId } = useWalletInfo()
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
+  const twapOrdersTokensLoadable = useAtomValue(twapOrdersTokensLoadableAtom)
+
   // Update emulated twap orders every 5 seconds to recalculate expired state
+  // TODO: Replace this with an atom version and try to make
+  // refresh interval smart...
   const refresher = useMachineTimeMs(EMULATED_ORDERS_REFRESH_MS)
 
   const accountLowerCase = account?.toLowerCase()
 
-  return useMemo(() => {
-    // It's not possible, just to prevent react-hooks/exhaustive-deps errors
-    if (!refresher) return []
-    if (!tokensByAddress) return []
+  // It's not possible, just to prevent react-hooks/exhaustive-deps errors
+  if (!refresher) return []
+  if (!twapOrdersTokensLoadable || twapOrdersTokensLoadable.state !== 'hasData') return []
 
-    return allTwapOrders.reduce<Order[]>((acc, order) => {
-      if (order.chainId !== chainId || order.safeAddress.toLowerCase() !== accountLowerCase) {
-        return acc
-      }
-
-      const storeOrder = mapTwapOrderToStoreOrder(order, tokensByAddress)
-
-      if (storeOrder) acc.push(storeOrder)
-
+  return allTwapOrders.reduce<Order[]>((acc, order) => {
+    if (order.chainId !== chainId || order.safeAddress.toLowerCase() !== accountLowerCase) {
       return acc
-    }, [])
-  }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])
-}
+    }
+
+    const storeOrder = mapTwapOrderToStoreOrder(order, twapOrdersTokensLoadable.data)
+
+    if (storeOrder) acc.push(storeOrder)
+
+    return acc
+  }, [])
+})

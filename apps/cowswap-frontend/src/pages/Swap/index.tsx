@@ -7,6 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
+import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
 import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
 import { getDefaultTradeRawState, parameterizeTradeRoute } from 'modules/trade'
 
@@ -17,6 +18,10 @@ export function SwapPage(): ReactNode {
   const params = useParams()
   const { i18n } = useLingui()
   const swapDerivedStateToFill = useSwapDerivedStateToFill()
+
+  useResetOrdersTableFilters({
+    syncWithUrl: false,
+  })
 
   if (!params.chainId) {
     return <SwapPageRedirect />
