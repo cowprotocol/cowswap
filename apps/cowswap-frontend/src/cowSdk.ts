@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import { RPC_URLS } from '@cowprotocol/common-const'
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import {
   AbstractProviderAdapter,
@@ -7,6 +8,7 @@ import {
   MetadataApi,
   OrderBookApi,
   setGlobalAdapter,
+  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
@@ -20,7 +22,7 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
 
 setGlobalAdapter(
   new ViemAdapter({
-    provider: createPublicClient({ chain: mainnet, transport: http(mainnet.rpcUrls.default.http[0]) }),
+    provider: createPublicClient({ chain: mainnet, transport: http(RPC_URLS[SupportedChainId.MAINNET]) }),
   }) as AbstractProviderAdapter,
 )
 

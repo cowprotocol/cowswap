@@ -1,16 +1,33 @@
 import { useEffect } from 'react'
 
-import { bungeeAffiliateCode, getRpcProvider } from '@cowprotocol/common-const'
+import { bungeeAffiliateCode, RPC_URLS } from '@cowprotocol/common-const'
 import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
-import { OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AbstractProviderAdapter, OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { AcrossBridgeProvider, BungeeBridgeProvider, NearIntentsBridgeProvider } from '@cowprotocol/sdk-bridging'
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
+
+import { Chain, createPublicClient, http } from 'viem'
+import {
+  arbitrum,
+  avalanche,
+  base,
+  bsc,
+  gnosis,
+  ink,
+  lens,
+  linea,
+  mainnet,
+  plasma,
+  polygon,
+  sepolia,
+} from 'viem/chains'
 
 import { useNetworkId } from '../state/network'
 
-export const cowSdkAdapter = new EthersV5Adapter({
-  provider: getRpcProvider(SupportedChainId.MAINNET)!,
-})
+export const cowSdkAdapter = new ViemAdapter({
+  provider: createPublicClient({ chain: mainnet, transport: http(RPC_URLS[SupportedChainId.MAINNET]) }),
+}) as AbstractProviderAdapter
 
 export const orderBookApi = new OrderBookApi()
 
@@ -41,17 +58,33 @@ function getBungeeApiBase(): string | undefined {
 
 setGlobalAdapter(cowSdkAdapter)
 
+const CHAINS: Record<SupportedChainId, Chain> = {
+  [SupportedChainId.MAINNET]: mainnet,
+  [SupportedChainId.BNB]: bsc,
+  [SupportedChainId.GNOSIS_CHAIN]: gnosis,
+  [SupportedChainId.POLYGON]: polygon,
+  [SupportedChainId.LENS]: lens,
+  [SupportedChainId.BASE]: base,
+  [SupportedChainId.PLASMA]: plasma,
+  [SupportedChainId.ARBITRUM_ONE]: arbitrum,
+  [SupportedChainId.AVALANCHE]: avalanche,
+  [SupportedChainId.LINEA]: linea,
+  [SupportedChainId.INK]: ink,
+  [SupportedChainId.SEPOLIA]: sepolia,
+}
+
 export function CowSdkUpdater(): null {
   const chainId = useNetworkId()
 
   useEffect(() => {
     if (!chainId) return
 
-    const provider = getRpcProvider(chainId)
-    if (provider) {
-      cowSdkAdapter.setProvider(provider)
-      cowSdkAdapter.setSigner(provider.getSigner())
-    }
+    setGlobalAdapter(
+      new ViemAdapter({
+        provider: createPublicClient({ chain: CHAINS[chainId], transport: http(RPC_URLS[chainId]) }),
+        signer: PERMIT_ACCOUNT,
+      }) as AbstractProviderAdapter,
+    )
   }, [chainId])
 
   return null
