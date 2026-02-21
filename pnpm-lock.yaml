@@ -1192,17 +1192,7 @@ importers:
         specifier: ^15.5.9
         version: 15.5.9
 
-  libs/abis:
-    dependencies:
-      '@ethersproject/abi':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@ethersproject/providers':
-        specifier: 5.7.0
-        version: 5.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+  libs/abis: {}
 
   libs/analytics:
     dependencies:
@@ -1264,9 +1254,6 @@ importers:
       '@cowprotocol/cow-sdk':
         specifier: 7.3.5
         version: 7.3.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/cowswap-abis':
-        specifier: workspace:*
-        version: link:../abis
       '@cowprotocol/tokens':
         specifier: workspace:*
         version: link:../tokens
@@ -1665,9 +1652,6 @@ importers:
       '@cowprotocol/cow-sdk':
         specifier: 7.3.5
         version: 7.3.5(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/cowswap-abis':
-        specifier: workspace:*
-        version: link:../abis
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types

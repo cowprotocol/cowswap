@@ -29,7 +29,6 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
