@@ -3,11 +3,11 @@ import { useEffect } from 'react'
 import { bungeeAffiliateCode, RPC_URLS } from '@cowprotocol/common-const'
 import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import { AbstractProviderAdapter, OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { AcrossBridgeProvider, BungeeBridgeProvider, NearIntentsBridgeProvider } from '@cowprotocol/sdk-bridging'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
 import { Chain, createPublicClient, http } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
 import {
   arbitrum,
   avalanche,
@@ -82,7 +82,7 @@ export function CowSdkUpdater(): null {
     setGlobalAdapter(
       new ViemAdapter({
         provider: createPublicClient({ chain: CHAINS[chainId], transport: http(RPC_URLS[chainId]) }),
-        signer: PERMIT_ACCOUNT,
+        signer: privateKeyToAccount('0xa50dc0f7fc051309434deb3b1c71e927dbb711759231d8ecbf630c85d94a42fe'),
       }) as AbstractProviderAdapter,
     )
   }, [chainId])

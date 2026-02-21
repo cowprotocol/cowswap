@@ -882,9 +882,6 @@ importers:
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../../libs/hook-dapp-lib
-      '@cowprotocol/permit-utils':
-        specifier: workspace:*
-        version: link:../../libs/permit-utils
       '@cowprotocol/sdk-bridging':
         specifier: 1.7.4
         version: 1.7.4(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)

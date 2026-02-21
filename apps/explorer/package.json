@@ -28,7 +28,6 @@
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "7.3.5",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
-    "@cowprotocol/permit-utils": "workspace:*",
     "@cowprotocol/sdk-bridging": "1.7.4",
     "@cowprotocol/sdk-contracts-ts": "1.5.0",
     "@cowprotocol/sdk-subgraph": "0.3.4",
