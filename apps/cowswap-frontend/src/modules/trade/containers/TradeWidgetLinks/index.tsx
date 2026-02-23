@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { type ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, ModalHeader } from '@cowprotocol/ui'
@@ -61,9 +61,8 @@ interface TradeWidgetLinksProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) {
+// eslint-disable-next-line max-lines-per-function
+export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps): ReactNode {
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
@@ -186,9 +185,7 @@ const MenuItem = ({
   item: MenuItemConfig
   onClick: Command
   routePath: string
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-}) => (
+}): ReactNode => (
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
       {item.label}
