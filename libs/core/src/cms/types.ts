@@ -49,5 +49,5 @@ export interface NotificationModel {
   createdAt: string
   url: string | null
   thumbnail: string | null
-  location?: NotificationLocation
+  location?: NotificationLocation | null
 }
