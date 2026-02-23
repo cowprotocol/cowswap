@@ -239,12 +239,10 @@ function randomDigits(length: number): string {
   return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
 }
 
-export function isSupportedTradingNetwork(chainId?: number): boolean {
-  if (!chainId) return true
-  return AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId as number)
+export function isSupportedTradingNetwork(chainId: number): boolean {
+  return AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId)
 }
 
-export function isSupportedPayoutsNetwork(chainId?: number): boolean {
-  if (!chainId) return true
+export function isSupportedPayoutsNetwork(chainId: number): boolean {
   return chainId === AFFILIATE_PAYOUTS_CHAIN_ID
 }

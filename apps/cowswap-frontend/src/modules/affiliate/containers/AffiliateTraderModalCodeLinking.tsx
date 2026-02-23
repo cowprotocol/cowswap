@@ -3,7 +3,6 @@ import { type ReactNode, useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 
@@ -22,8 +21,7 @@ import {
 } from '../state/affiliateTraderPayoutConfirmationAtom'
 
 export function AffiliateTraderModalCodeLinking(): ReactNode {
-  const { account } = useWalletInfo()
-  const chainId = useWalletChainId()
+  const { account, chainId } = useWalletInfo()
   const analytics = useCowAnalytics()
   const toggleWalletModal = useToggleWalletModal()
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
@@ -79,7 +77,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
     <AffiliateTradeCodeForm
       walletStatus={walletStatus}
       account={account}
-      requiresPayoutConfirmation={!!account && !!chainId && !isSupportedPayoutsNetwork(chainId)}
+      requiresPayoutConfirmation={!!account && !isSupportedPayoutsNetwork(chainId)}
       codeInfo={codeInfo}
       payoutConfirmed={payoutConfirmed}
       onTogglePayoutConfirmed={onTogglePayoutConfirmed}

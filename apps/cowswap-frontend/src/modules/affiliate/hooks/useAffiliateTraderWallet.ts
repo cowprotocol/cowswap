@@ -2,7 +2,6 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { TraderEligibilityStatus, useAffiliateTraderEligibility } from './useAffiliateTraderEligibility'
 
@@ -27,8 +26,7 @@ export enum TraderWalletStatus {
 }
 
 export function useAffiliateTraderWallet(): TraderWalletStatus {
-  const { account } = useWalletInfo()
-  const chainId = useWalletChainId()
+  const { account, chainId } = useWalletInfo()
   const { isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
 
   const supportedTradingNetwork = isSupportedTradingNetwork(chainId)
