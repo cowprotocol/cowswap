@@ -25,6 +25,13 @@ export function useHasOrderbookTrades(params: UseHasOrderbookTradesParams): UseH
   return useSWR<boolean>(
     enabled ? ['affiliate-eligibility', account] : null,
     async () => (!account ? false : checkIfTraderHasPastTrades(account)),
-    { refreshInterval: AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS },
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS,
+      refreshInterval: AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS,
+      revalidateIfStale: true,
+      revalidateOnMount: true,
+    },
   )
 }

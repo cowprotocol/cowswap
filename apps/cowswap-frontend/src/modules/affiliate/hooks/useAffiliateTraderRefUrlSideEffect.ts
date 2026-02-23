@@ -7,27 +7,34 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useLocation } from 'react-router'
 
 import { formatRefCode } from '../lib/affiliateProgramUtils'
-import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { affiliateTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { logAffiliate } from '../utils/logger'
 
 export function useAffiliateTraderRefUrlSideEffect(): void {
   const { isAffiliateProgramEnabled } = useFeatureFlags()
-  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
+  const setAffiliateModalOpen = useSetAtom(affiliateTraderModalAtom)
   const location = useLocation()
   const analytics = useCowAnalytics()
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search)
-    const refCodeParam = searchParams.get('ref')
+    const routerSearchParams = new URLSearchParams(location.search || '')
+    const windowSearchParams = new URLSearchParams(window.location.search || '')
+    const refCodeParam = windowSearchParams.get('ref') ?? routerSearchParams.get('ref')
     const refCode = formatRefCode(refCodeParam)
+
+    if (refCodeParam && !refCode) {
+      logAffiliate('Invalid ref code in URL', { refCodeParam })
+    }
 
     if (!refCode || !refCodeParam || !isAffiliateProgramEnabled) return
 
-    toggleAffiliateModal()
+    logAffiliate('Ref code found in URL, opening affiliate modal', { refCode })
+    setAffiliateModalOpen(true)
 
     analytics.sendEvent({
       category: 'affiliate',
       action: 'referral_url_opened',
       label: refCode,
     })
-  }, [analytics, isAffiliateProgramEnabled, location.search, toggleAffiliateModal])
+  }, [analytics, isAffiliateProgramEnabled, location.search, setAffiliateModalOpen])
 }

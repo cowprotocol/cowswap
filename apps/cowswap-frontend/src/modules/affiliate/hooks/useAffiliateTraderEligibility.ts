@@ -6,6 +6,7 @@ import { useHasLocalTrades } from './useHasLocalTrades'
 import { useHasOrderbookTrades } from './useHasOrderbookTrades'
 
 import { AFFILIATE_ELIGIBILITY_LOADING_WARNING_MS } from '../config/affiliateProgram.const'
+import { logAffiliate } from '../utils/logger'
 
 export enum TraderEligibilityStatus {
   IDLE = 'idle',
@@ -77,6 +78,7 @@ export function useAffiliateTraderEligibility(params: UseAffiliateTraderEligibil
 
     setHasLoadingTimeout(false)
     const timer = setTimeout(() => {
+      logAffiliate(`Eligibility check is taking longer than ${AFFILIATE_ELIGIBILITY_LOADING_WARNING_MS / 1000}s`)
       setHasLoadingTimeout(true)
     }, AFFILIATE_ELIGIBILITY_LOADING_WARNING_MS)
 

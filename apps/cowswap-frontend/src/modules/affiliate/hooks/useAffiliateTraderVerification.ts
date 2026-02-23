@@ -17,12 +17,12 @@ interface VerificationParams {
   setError(error?: string): void
 }
 
-export interface TraderReferralCodeVerificationHandle {
+export interface UseAffiliateTraderVerificationResult {
   isVerifying: boolean
   verifyCode(code: string, account: string): Promise<void>
 }
 
-export function useAffiliateTraderVerification(params: VerificationParams): TraderReferralCodeVerificationHandle {
+export function useAffiliateTraderVerification(params: VerificationParams): UseAffiliateTraderVerificationResult {
   const { setError } = params
   const analytics = useCowAnalytics()
   const [isVerifying, setIsVerifying] = useState(false)
@@ -36,7 +36,7 @@ export function useAffiliateTraderVerification(params: VerificationParams): Trad
 
       try {
         if (!formatRefCode(code)) {
-          logAffiliate(safeShortenAddress(account), 'Trader verification failed: invalid referral code format')
+          logAffiliate(safeShortenAddress(account), 'Code verification failed: invalid referral code format')
           setError(t`This code is invalid. Try another.`)
           return
         }
@@ -45,7 +45,7 @@ export function useAffiliateTraderVerification(params: VerificationParams): Trad
           await bffAffiliateApi.verifyCode(code)
         } catch (error) {
           if (error instanceof ApiError && (error.status === 404 || error.status === 403)) {
-            logAffiliate(safeShortenAddress(account), 'Trader verification failed: invalid referral code')
+            logAffiliate(safeShortenAddress(account), 'Code verification failed: invalid referral code')
             setError(t`This code is invalid. Try another.`)
             return
           }
@@ -55,7 +55,7 @@ export function useAffiliateTraderVerification(params: VerificationParams): Trad
 
         const partnerInfo = await bffAffiliateApi.getPartnerInfo(account)
         if (partnerInfo?.code === code) {
-          logAffiliate(safeShortenAddress(account), 'Trader verification failed: self-referral')
+          logAffiliate(safeShortenAddress(account), 'Code verification failed: self-referral')
           setError(t`You cannot apply your own referral code.`)
           return
         }
@@ -70,7 +70,7 @@ export function useAffiliateTraderVerification(params: VerificationParams): Trad
         })
       } catch (error) {
         setError(t`Affiliate service is unreachable. Try again later.`)
-        logAffiliate(safeShortenAddress(account), `Trader verification failed`, error)
+        logAffiliate(safeShortenAddress(account), `Code verification failed`, error)
       } finally {
         setIsVerifying(false)
       }

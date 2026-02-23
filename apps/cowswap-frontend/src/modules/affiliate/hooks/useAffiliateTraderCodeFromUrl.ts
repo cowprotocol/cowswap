@@ -1,4 +1,4 @@
-import { type Dispatch, useEffect, type SetStateAction } from 'react'
+import { useEffect } from 'react'
 
 import { useLocation } from 'react-router'
 
@@ -6,42 +6,41 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { formatRefCode } from '../lib/affiliateProgramUtils'
 
-interface UseAffiliateTraderCodeFromUrlParams {
-  savedCode?: string
-  setError: Dispatch<SetStateAction<string | undefined>>
-  setCodeInput(value: string): void
-}
-
-export function useAffiliateTraderCodeFromUrl({
-  savedCode,
-  setError,
-  setCodeInput,
-}: UseAffiliateTraderCodeFromUrlParams): void {
+export function useAffiliateTraderCodeFromUrl(onRecoveredFromUrl: (code: string) => void): void {
   const location = useLocation()
   const navigate = useNavigate()
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search)
-    const refCodeParam = searchParams.get('ref')
-    const refCodeFromUrl = formatRefCode(refCodeParam)
+    const routerSearchParams = new URLSearchParams(location.search || '')
+    const windowSearchParams = new URLSearchParams(window.location.search || '')
+    const windowRefCodeParam = windowSearchParams.get('ref')
+    const routerRefCodeParam = routerSearchParams.get('ref')
 
-    setCodeInput(refCodeFromUrl ?? savedCode ?? '')
-    setError(undefined)
+    if (windowRefCodeParam) {
+      const refCodeFromUrl = formatRefCode(windowRefCodeParam)
+      if (refCodeFromUrl) onRecoveredFromUrl(refCodeFromUrl)
 
-    if (!refCodeParam || !refCodeFromUrl) {
+      windowSearchParams.delete('ref')
+      const nextWindowSearch = windowSearchParams.toString()
+      const nextUrl = `${window.location.pathname}${nextWindowSearch ? `?${nextWindowSearch}` : ''}${window.location.hash}`
+
+      window.history.replaceState(window.history.state, '', nextUrl)
       return
+    } else if (routerRefCodeParam) {
+      const refCodeFromUrl = formatRefCode(routerRefCodeParam)
+      if (refCodeFromUrl) onRecoveredFromUrl(refCodeFromUrl)
+
+      routerSearchParams.delete('ref')
+      const nextSearch = routerSearchParams.toString()
+
+      navigate(
+        {
+          pathname: location.pathname,
+          search: nextSearch ? `?${nextSearch}` : '',
+          hash: location.hash,
+        },
+        { replace: true },
+      )
     }
-
-    searchParams.delete('ref')
-    const nextSearch = searchParams.toString()
-
-    navigate(
-      {
-        pathname: location.pathname,
-        search: nextSearch ? `?${nextSearch}` : '',
-        hash: location.hash,
-      },
-      { replace: true },
-    )
-  }, [location.hash, location.pathname, location.search, navigate, savedCode, setCodeInput, setError])
+  }, [location.hash, location.pathname, location.search, navigate, onRecoveredFromUrl])
 }

@@ -10,7 +10,6 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useAffiliateTraderCodeInput } from '../hooks/useAffiliateTraderCodeInput'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
-import { useAffiliateTraderVerification } from '../hooks/useAffiliateTraderVerification'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
 import { isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
 import { AffiliateTradeCodeForm } from '../pure/AffiliateTraderModal/AffiliateTradeCodeForm'
@@ -19,6 +18,7 @@ import {
   affiliateTraderPayoutConfirmationAtom,
   setAffiliateTraderPayoutConfirmationAtom,
 } from '../state/affiliateTraderPayoutConfirmationAtom'
+import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export function AffiliateTraderModalCodeLinking(): ReactNode {
   const { account, chainId } = useWalletInfo()
@@ -29,9 +29,8 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const walletStatus = useAffiliateTraderWallet()
   const payoutConfirmed = useAtomValue(affiliateTraderPayoutConfirmationAtom)
   const setPayoutConfirmed = useSetAtom(setAffiliateTraderPayoutConfirmationAtom)
-  const { codeInput, savedCode, error, setError, onChange, onEdit, onRemove } = useAffiliateTraderCodeInput()
-
-  const { isVerifying, verifyCode } = useAffiliateTraderVerification({ setError })
+  const { codeInput, error, isVerifying, verifyCode, onChange, onEdit, onRemove } = useAffiliateTraderCodeInput()
+  const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const { data: codeInfo } = useAffiliateTraderInfo(savedCode)
 
   const onTogglePayoutConfirmed = useCallback(
