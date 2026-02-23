@@ -25,7 +25,6 @@ const NotificationLink = styled.a`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 14px;
   color: currentColor;
   text-decoration: none;
 
@@ -67,22 +66,22 @@ export function CowSpeechBubbleNotificationBanner({
       <NotificationText>
         <strong>{title}</strong>
         <NotificationDescription>{description}</NotificationDescription>
+        {url && (
+          <NotificationLink
+            href={url}
+            target={linkTarget}
+            rel={linkTarget === '_blank' ? 'noopener noreferrer' : ''}
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+              action: 'Click speech bubble notification link',
+              label: 'notification bubble',
+              value: id,
+            })}
+          >
+            {t`Learn more`}
+          </NotificationLink>
+        )}
       </NotificationText>
-      {url && (
-        <NotificationLink
-          href={url}
-          target={linkTarget}
-          rel={linkTarget === '_blank' ? 'noopener noreferrer' : ''}
-          data-click-event={toCowSwapGtmEvent({
-            category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-            action: 'Click speech bubble notification link',
-            label: 'notification bubble',
-            value: id,
-          })}
-        >
-          {t`Learn more`}
-        </NotificationLink>
-      )}
     </CowSpeechBubble>
   )
 }
