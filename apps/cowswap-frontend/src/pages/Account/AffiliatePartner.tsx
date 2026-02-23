@@ -5,14 +5,19 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { AffiliatePartnerCodeCreation } from 'modules/affiliate/containers/AffiliatePartnerCodeCreation'
-import { AffiliatePartnerCodeInfo } from 'modules/affiliate/containers/AffiliatePartnerCodeInfo'
-import { AffiliatePartnerNextPayout } from 'modules/affiliate/containers/AffiliatePartnerNextPayout'
-import { AffiliatePartnerOnboard } from 'modules/affiliate/containers/AffiliatePartnerOnboard'
-import { AffiliatePartnerStats } from 'modules/affiliate/containers/AffiliatePartnerStats'
-import { useAffiliatePartnerInfo } from 'modules/affiliate/hooks/useAffiliatePartnerInfo'
-import { isSupportedPayoutsNetwork } from 'modules/affiliate/lib/affiliateProgramUtils'
-import { AffiliateTermsFaqLinks, ColumnOneCard, ThreeColumnGrid, PageWrapper } from 'modules/affiliate/pure/shared'
+import {
+  AffiliatePartnerCodeCreation,
+  AffiliatePartnerCodeInfo,
+  AffiliatePartnerNextPayout,
+  AffiliatePartnerOnboard,
+  AffiliatePartnerStats,
+  useAffiliatePartnerInfo,
+  isSupportedPayoutsNetwork,
+  AffiliateTermsFaqLinks,
+  ColumnOneCard,
+  ThreeColumnGrid,
+  PageWrapper,
+} from 'modules/affiliate'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 export default function AffiliatePartner(): ReactNode {

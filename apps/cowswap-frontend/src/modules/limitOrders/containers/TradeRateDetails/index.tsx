@@ -2,8 +2,7 @@ import { ReactElement, useCallback, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { AffiliateTraderRewardsRow } from 'modules/affiliate/containers/AffiliateTraderRewardsRow'
-import { useIsRewardsRowEnabled } from 'modules/affiliate/hooks/useIsRewardsRowEnabled'
+import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'

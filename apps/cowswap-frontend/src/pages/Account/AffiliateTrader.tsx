@@ -5,16 +5,20 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { AffiliateTraderCodeInfo } from 'modules/affiliate/containers/AffiliateTraderCodeInfo'
-import { AffiliateTraderNextPayout } from 'modules/affiliate/containers/AffiliateTraderNextPayout'
-import { AffiliateTraderOnboard } from 'modules/affiliate/containers/AffiliateTraderOnboard'
-import { AffiliateTraderStats } from 'modules/affiliate/containers/AffiliateTraderStats'
-import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate/hooks/useAffiliateTraderWallet'
-import { AffiliateTraderIneligible } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderIneligible'
-import { AffiliateTraderUnsupportedNetwork } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork'
-import { ThreeColumnGrid, PageWrapper } from 'modules/affiliate/pure/shared'
-import { UnsupportedNetwork } from 'modules/affiliate/pure/UnsupportedNetwork'
-import { affiliateTraderSavedCodeAtom } from 'modules/affiliate/state/affiliateTraderSavedCodeAtom'
+import {
+  AffiliateTraderCodeInfo,
+  AffiliateTraderNextPayout,
+  AffiliateTraderOnboard,
+  AffiliateTraderStats,
+  TraderWalletStatus,
+  useAffiliateTraderWallet,
+  AffiliateTraderIneligible,
+  AffiliateTraderUnsupportedNetwork,
+  ThreeColumnGrid,
+  PageWrapper,
+  UnsupportedNetwork,
+  affiliateTraderSavedCodeAtom,
+} from 'modules/affiliate'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 export default function AffiliateTrader(): ReactNode {

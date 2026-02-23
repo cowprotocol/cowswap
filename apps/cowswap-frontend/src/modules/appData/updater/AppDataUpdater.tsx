@@ -3,7 +3,7 @@ import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { affiliateTraderSavedCodeAtom } from 'modules/affiliate/state/affiliateTraderSavedCodeAtom'
+import { affiliateTraderSavedCodeAtom } from 'modules/affiliate'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
 import { useUtm } from 'modules/utm'
