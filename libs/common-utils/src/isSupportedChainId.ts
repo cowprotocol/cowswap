@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSupportedChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { parseEvmLikeChain } from './parseEvmLikeChain'
 
@@ -7,7 +7,7 @@ export function isSupportedChainId(chainId: string | number | undefined): chainI
 
   try {
     const parsed = parseEvmLikeChain(chainId)
-    return isSupportedChainId(parsed)
+    return isSupportedChain(parsed)
   } catch {
     return false
   }
