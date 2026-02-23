@@ -1,9 +1,9 @@
-import { type CSSProperties, type ReactNode, useCallback, useMemo, useState } from 'react'
+import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
 
 import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { ClosableBanner, Footer, Media } from '@cowprotocol/ui'
+import { Footer, Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import Snowfall from 'react-snowfall'
@@ -13,16 +13,17 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
+import { useSpeechBubbleNotification } from 'modules/notifications/hooks/useSpeechBubbleNotification'
 import { useInitializeUtm } from 'modules/utm'
 
-import { BANNER_IDS } from 'common/constants/banners'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
 import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
-import { CowSpeechBubble } from '../App/CowSpeechBubble'
+import { CowSpeechBubbleHiringBanner } from '../App/CowSpeechBubbleHiringBanner'
+import { CowSpeechBubbleNotificationBanner } from '../App/CowSpeechBubbleNotificationBanner'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
 import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
@@ -176,12 +177,6 @@ const SNOWFALL_STYLE: CSSProperties = {
   left: 0,
 }
 
-function CowSpeechBubbleBanner(): ReactNode {
-  const callback = useCallback((close: () => void) => <CowSpeechBubble show onClose={close} />, [])
-
-  return <ClosableBanner storageKey={BANNER_IDS.HIRING_SPEECH_BUBBLE} callback={callback} />
-}
-
 interface FooterSectionProps {
   show: boolean
   showCowSpeechBubble: boolean
@@ -189,13 +184,25 @@ interface FooterSectionProps {
 }
 
 function FooterSection({ show, showCowSpeechBubble, pageScene }: FooterSectionProps): ReactNode {
+  const { currentNotification, dismiss } = useSpeechBubbleNotification()
+
   if (!show) {
     return null
   }
 
+  let bubbleElement: React.ReactNode = null
+
+  if (showCowSpeechBubble) {
+    if (currentNotification) {
+      bubbleElement = <CowSpeechBubbleNotificationBanner currentNotification={currentNotification} onClose={dismiss} />
+    } else {
+      bubbleElement = <CowSpeechBubbleHiringBanner />
+    }
+  }
+
   return (
     <styledEl.FooterSlot>
-      {showCowSpeechBubble && <CowSpeechBubbleBanner />}
+      {bubbleElement}
       {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
       <Footer productVariant={PRODUCT_VARIANT} additionalFooterContent={ADDITIONAL_FOOTER_CONTENT} hasTouchFooter />
     </styledEl.FooterSlot>

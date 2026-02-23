@@ -6,6 +6,8 @@ import ICON_MESSAGE_READ from '@cowprotocol/assets/images/icon-message-read.svg'
 import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
+import { isSidebarNotification } from 'modules/notifications/utils/filterNotifications.utils'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import {
@@ -73,19 +75,26 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
   const unreadNotifications = useUnreadNotifications()
   const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
 
-  const groups = useMemo(() => (notifications ? groupNotificationsByDate(notifications) : null), [notifications])
+  const sidebarNotifications = useMemo(
+    () => (notifications ? notifications.filter(isSidebarNotification) : null),
+    [notifications],
+  )
+  const groups = useMemo(
+    () => (sidebarNotifications ? groupNotificationsByDate(sidebarNotifications) : null),
+    [sidebarNotifications],
+  )
 
   useEffect(() => {
-    if (!notifications) return
+    if (!sidebarNotifications) return
 
     const timeoutId = setTimeout(() => {
-      markNotificationsAsRead(notifications.map(({ id }) => id) || [])
+      markNotificationsAsRead(sidebarNotifications.map(({ id }) => id) || [])
     }, NOTIFICATION_MARK_READ_DELAY_MS)
 
     return () => {
       clearTimeout(timeoutId)
     }
-  }, [notifications, markNotificationsAsRead])
+  }, [sidebarNotifications, markNotificationsAsRead])
 
   return (
     <>
