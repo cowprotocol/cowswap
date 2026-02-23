@@ -37,7 +37,6 @@ import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
-import { useWalletSessionDuration } from 'common/hooks/useWalletSessionDuration'
 import { SurplusInvalidationListenerUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { ConnectionStatusUpdater } from 'common/updaters/ConnectionStatusUpdater'
@@ -57,13 +56,13 @@ import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
+import { WalletSessionDurationUpdater } from 'common/updaters/WalletSessionDurationUpdater'
 import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 
 import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
-  useWalletSessionDuration()
 
   const { standaloneMode } = useInjectedWidgetParams()
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
@@ -97,6 +96,7 @@ export function Updaters(): ReactNode {
       <OrdersFromApiUpdater />
       <GasUpdater />
       <SentryUpdater />
+      <WalletSessionDurationUpdater />
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />

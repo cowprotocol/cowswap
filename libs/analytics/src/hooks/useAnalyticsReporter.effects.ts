@@ -15,9 +15,11 @@ import { PixelAnalytics, PixelEvent } from '../pixels/PixelAnalytics'
 import { Category } from '../types'
 import { WebVitalsAnalytics } from '../webVitals/WebVitalsAnalytics'
 
+// Prevent duplicate initialization when React strict mode or re-renders
+// cause effects to run multiple times. WeakSet allows GC when the instance
+// is dereferenced.
 const initializedAnalyticsInstances = new WeakSet<CowAnalytics>()
 const initializedPixelInstances = new WeakSet<PixelAnalytics>()
-const NOT_CONNECTED_WALLET_NAME = 'Not connected'
 
 type BrowserType = 'desktop' | 'mobileWeb3' | 'mobileRegular'
 
@@ -26,14 +28,6 @@ interface CachedDocumentWindow extends Window {
 }
 
 interface ChainSwitchEffectParams extends ChainSwitchGuardInput {
-  cowAnalytics: CowAnalytics
-}
-
-interface UserContextEffectParams {
-  account: string | undefined
-  walletName: string | undefined
-  prevAccount: string | null | undefined
-  pixelAnalytics?: PixelAnalytics
   cowAnalytics: CowAnalytics
 }
 
@@ -109,24 +103,7 @@ export function useChainSwitchAnalytics({
   }, [account, prevAccount, chainId, prevChainId, cowAnalytics])
 }
 
-export function useUserContext({
-  account,
-  walletName,
-  prevAccount,
-  pixelAnalytics,
-  cowAnalytics,
-}: UserContextEffectParams): void {
-  useEffect(() => {
-    const walletNameForContext = account ? walletName : NOT_CONNECTED_WALLET_NAME
-
-    cowAnalytics.setUserAccount(account, walletNameForContext)
-    cowAnalytics.setContext(AnalyticsContext.walletName, walletNameForContext)
-
-    if (!prevAccount && account && pixelAnalytics) {
-      pixelAnalytics.sendAllPixels(PixelEvent.CONNECT_WALLET)
-    }
-  }, [account, walletName, prevAccount, pixelAnalytics, cowAnalytics])
-}
+export { useUserContext } from './useUserContext'
 
 export function usePageViewTracking(cowAnalytics: CowAnalytics, pathname: string, search: string): void {
   useEffect(() => {

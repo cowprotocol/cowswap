@@ -13,6 +13,7 @@ export type EventOptions = {
   label?: string
   value?: number
   nonInteraction?: boolean
+  chainId?: number
 }
 
 export interface OutboundLinkParams {

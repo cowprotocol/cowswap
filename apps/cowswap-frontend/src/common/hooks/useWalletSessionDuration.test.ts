@@ -6,15 +6,10 @@ import { act, renderHook } from '@testing-library/react'
 
 import { useWalletSessionDuration } from './useWalletSessionDuration'
 
-jest.mock('@cowprotocol/analytics', () => {
-  const actual = jest.requireActual('@cowprotocol/analytics') as typeof import('@cowprotocol/analytics')
-
-  return {
-    ...actual,
-    __resetGtmInstance: jest.fn(),
-    useCowAnalytics: jest.fn(),
-  }
-})
+jest.mock('@cowprotocol/analytics', () => ({
+  __resetGtmInstance: jest.fn(),
+  useCowAnalytics: jest.fn(),
+}))
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletDetails: jest.fn(),
@@ -73,21 +68,24 @@ describe('useWalletSessionDuration', () => {
   it('emits delta checkpoints on hide and one final checkpoint on cleanup', () => {
     const { unmount } = renderHook(() => useWalletSessionDuration())
 
-    nowMs = 4_000
+    // First hide: 6s elapsed (>= 5s threshold)
+    nowMs = 7_000
     act(() => {
       setVisibilityState('hidden')
       document.dispatchEvent(new Event('visibilitychange'))
       setVisibilityState('visible')
     })
 
-    nowMs = 9_000
+    // Second hide: 6s elapsed since last checkpoint
+    nowMs = 13_000
     act(() => {
       setVisibilityState('hidden')
       document.dispatchEvent(new Event('visibilitychange'))
       setVisibilityState('visible')
     })
 
-    nowMs = 12_000
+    // Cleanup: 6s elapsed since last checkpoint
+    nowMs = 19_000
     unmount()
 
     expect(sendEventMock).toHaveBeenCalledTimes(3)
@@ -95,26 +93,30 @@ describe('useWalletSessionDuration', () => {
       category: 'Wallet',
       action: 'wallet_session_duration',
       label: 'Rainbow',
-      value: 3,
+      value: 6,
+      chainId: 1,
     })
     expect(sendEventMock).toHaveBeenNthCalledWith(2, {
       category: 'Wallet',
       action: 'wallet_session_duration',
       label: 'Rainbow',
-      value: 5,
+      value: 6,
+      chainId: 1,
     })
     expect(sendEventMock).toHaveBeenNthCalledWith(3, {
       category: 'Wallet',
       action: 'wallet_session_duration',
       label: 'Rainbow',
-      value: 3,
+      value: 6,
+      chainId: 1,
     })
   })
 
-  it('does not emit when elapsed duration is below one second', () => {
+  it('does not emit when elapsed duration is below five seconds', () => {
     const { unmount } = renderHook(() => useWalletSessionDuration())
 
-    nowMs = 1_400
+    // 4.5s elapsed — below 5s threshold (even though it would round to 5)
+    nowMs = 5_500
     act(() => {
       setVisibilityState('hidden')
       document.dispatchEvent(new Event('visibilitychange'))
@@ -132,6 +134,7 @@ describe('useWalletSessionDuration', () => {
     mockUseWalletDetails.mockReturnValue(buildWalletDetails('MetaMask'))
     rerender()
 
+    // 8s elapsed (>= 5s threshold)
     nowMs = 9_000
     act(() => {
       setVisibilityState('hidden')
@@ -144,6 +147,29 @@ describe('useWalletSessionDuration', () => {
       action: 'wallet_session_duration',
       label: 'MetaMask',
       value: 8,
+      chainId: 1,
+    })
+  })
+
+  it('emits last connected wallet name on disconnect cleanup', () => {
+    const { rerender } = renderHook(() => useWalletSessionDuration())
+
+    // Advance 6s (>= 5s threshold)
+    nowMs = 7_000
+
+    // Disconnect: account and walletName become undefined
+    mockUseWalletInfo.mockReturnValue({ account: undefined, chainId: 1 })
+    mockUseWalletDetails.mockReturnValue(buildWalletDetails(undefined as unknown as string))
+    rerender()
+
+    // The cleanup of the previous effect should emit with 'Rainbow', not 'Unknown'
+    expect(sendEventMock).toHaveBeenCalledTimes(1)
+    expect(sendEventMock).toHaveBeenCalledWith({
+      category: 'Wallet',
+      action: 'wallet_session_duration',
+      label: 'Rainbow',
+      value: 6,
+      chainId: 1,
     })
   })
 })
