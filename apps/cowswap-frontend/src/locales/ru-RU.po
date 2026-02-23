@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-02-20 15:31\n"
+"PO-Revision-Date: 2026-02-23 13:28\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -725,6 +725,10 @@ msgstr "Отмена заказа"
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
 msgstr "<0><1>Вложенный vCOW</1> является частью баланса вашего vCOW токена, который полностью доступен для преобразования в COW токен. </0><2>Это включает в себя любой vCOW полученный через <3>Эирдроп.</3></2><4>При преобразовании оставшегося vCOW баланса в COW, весь вестренный баланс будет преобразован.</4>"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
+msgid "Quote verified by CoW Protocol simulation"
+msgstr "Котировка подтверждена симуляцией CoW Protocol"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown Hook"
@@ -1648,6 +1652,10 @@ msgstr "Функция мостов управляется исключител�
 #: libs/ui/src/pure/ContextMenu/ContextMenuCopyButton.tsx
 #~ msgid "Copy address"
 #~ msgstr "Copy address"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteIdTooltipContent.tsx
+msgid "Refresh in:"
+msgstr "Обновление через:"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/LimitPriceRow.tsx
 msgid "The limit price"
@@ -2834,6 +2842,10 @@ msgstr "Стоимость моста <0/>"
 msgid "Reset"
 msgstr "Сброс"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteIdTooltipContent.tsx
+msgid "Share this reference when reporting an issue with this quote."
+msgstr "Укажите этот идентификатор при сообщении о проблеме с этой котировкой."
+
 #: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "No fee for order placement!"
 msgstr "Плата за размещение заказа!"
@@ -2959,6 +2971,10 @@ msgstr "Уменьшите ваше проскальзывание, разбив
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "CoW Swap – это единственная биржа, которая совпадает с Coincidences of Wants (CoWs): равноправная замена, которая сэкономит на расчетно-расчетных расходах."
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/index.tsx
+msgid "Copied!"
+msgstr "Скопировано!"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
 msgstr "CoW Swap использует выделенный {accountProxyLabelString}, управляется только вами, чтобы обеспечить плавный мостик. Подтвердите адрес получателя выше <0/>"
@@ -2997,6 +3013,10 @@ msgstr "Защита цен"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve {wrappedSymbol} failed!"
 msgstr "Не удалось утвердить {wrappedSymbol}!"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
+msgid "Verified"
+msgstr "Подтверждена"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Hooks are interactions before/after order execution."
@@ -3525,6 +3545,10 @@ msgstr "Лимит ордера"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 msgid "Insufficient allowance"
 msgstr "Недостаточно надбавки"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
+msgid "Unverified"
+msgstr "Не подтверждена"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
@@ -5318,6 +5342,10 @@ msgstr "Мост через"
 #~ msgid "Swap bridged via your {ACCOUNT_PROXY_LABEL}: <0/>"
 #~ msgstr "Swap bridged via your {ACCOUNT_PROXY_LABEL}: <0/>"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/index.tsx
+msgid "Copy full quote ID"
+msgstr "Скопировать полный ID котировки"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Simulation report"
 msgstr "Отчет по моделированию"
@@ -5545,6 +5573,10 @@ msgstr "Хорошие новости"
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "yield"
 msgstr "доходность"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
+msgid "Quote not yet verified by CoW Protocol simulation"
+msgstr "Котировка еще не подтверждена симуляцией CoW Protocol"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Buy token"
@@ -6483,6 +6515,11 @@ msgstr "Цитата будет обновлена в {time}"
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Dark mode"
 msgstr "Темный режим"
+
+#: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/index.tsx
+msgid "Quote ID"
+msgstr "ID котировки"
 
 #: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
