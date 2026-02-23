@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -9,12 +10,12 @@ import { Trans } from '@lingui/react/macro'
 import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { useToggleAffiliateModal } from '../hooks/useToggleAffiliateModal'
 import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
 import { HowItWorks } from '../pure/HowItWorks'
+import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
 export function AffiliateTraderModalCodeInfo(): ReactNode {
-  const toggleAffiliateModal = useToggleAffiliateModal()
+  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
   const analytics = useCowAnalytics()
   const navigate = useNavigate()
 

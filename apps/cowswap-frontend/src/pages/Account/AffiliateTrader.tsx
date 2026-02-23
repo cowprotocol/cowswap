@@ -14,15 +14,14 @@ import { AffiliateTraderIneligible } from 'modules/affiliate/pure/AffiliateTrade
 import { AffiliateTraderUnsupportedNetwork } from 'modules/affiliate/pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork'
 import { ThreeColumnGrid, PageWrapper } from 'modules/affiliate/pure/shared'
 import { UnsupportedNetwork } from 'modules/affiliate/pure/UnsupportedNetwork'
-import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
+import { affiliateTraderSavedCodeAtom } from 'modules/affiliate/state/affiliateTraderSavedCodeAtom'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 export default function AffiliateTrader(): ReactNode {
   const { i18n } = useLingui()
 
-  const { savedCode, codeInput } = useAtomValue(affiliateTraderAtom)
+  const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const { walletStatus } = useAffiliateTraderWallet()
-  console.log('📜 LOG > AffiliateTrader > walletStatus:', walletStatus)
 
   return (
     <>
@@ -31,7 +30,7 @@ export default function AffiliateTrader(): ReactNode {
         <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 
         {walletStatus === TraderWalletStatus.INELIGIBLE ? (
-          <AffiliateTraderIneligible refCode={codeInput} />
+          <AffiliateTraderIneligible />
         ) : walletStatus === TraderWalletStatus.UNSUPPORTED ? (
           <AffiliateTraderUnsupportedNetwork />
         ) : !savedCode || walletStatus === TraderWalletStatus.DISCONNECTED ? (

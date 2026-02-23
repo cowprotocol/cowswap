@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
@@ -8,13 +9,13 @@ import { Trans } from '@lingui/react/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { useToggleAffiliateModal } from '../hooks/useToggleAffiliateModal'
 import { AffiliateTermsFaqLinks, HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle } from '../pure/shared'
+import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
 export function AffiliateTraderOnboard(): ReactNode {
   const { account } = useWalletInfo()
   const toggleWalletModal = useToggleWalletModal()
-  const toggleAffiliateModal = useToggleAffiliateModal()
+  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
 
   return (
     <HeroCard>

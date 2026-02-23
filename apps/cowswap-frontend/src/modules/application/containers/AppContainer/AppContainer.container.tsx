@@ -13,8 +13,6 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
 import { AffiliateTraderModal } from 'modules/affiliate/containers/AffiliateTraderModal'
-import { AffiliateTraderRecoverySideEffect } from 'modules/affiliate/containers/AffiliateTraderRecoverySideEffect'
-import { AffiliateTraderRefUrlSideEffect } from 'modules/affiliate/containers/AffiliateTraderRefUrlSideEffect'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -89,7 +87,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
-  const appContent = (
+  return (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
       <styledEl.AppWrapper>
         <URLWarning />
@@ -115,21 +113,9 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
         {/* Render MobileHeaderControls outside of MenuBar on mobile */}
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
+        {isAffiliateProgramEnabled && <AffiliateTraderModal />}
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
-  )
-
-  if (!isAffiliateProgramEnabled) {
-    return appContent
-  }
-
-  return (
-    <>
-      <AffiliateTraderRecoverySideEffect />
-      <AffiliateTraderRefUrlSideEffect />
-      <AffiliateTraderModal />
-      {appContent}
-    </>
   )
 }
 

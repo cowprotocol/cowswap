@@ -48,10 +48,6 @@ export const Title = styled.h2`
   }
 `
 
-export const TitleAccent = styled.span`
-  color: var(${UI.COLOR_SUCCESS_TEXT});
-`
-
 export const Subtitle = styled.p`
   margin: 0 auto 24px;
   width: 100%;
@@ -67,11 +63,7 @@ export const Subtitle = styled.p`
   }
 `
 
-export const FormGroup = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`
+export const FormGroup = styled.form``
 
 export const LabelRow = styled.div`
   display: flex;

@@ -5,9 +5,9 @@ import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trad
 import { Trans } from '@lingui/react/macro'
 
 import { IneligibleCard, IneligibleSubtitle, IneligibleTitle } from '../shared'
-import { TraderIneligible, TraderIneligibleProps } from '../TraderIneligible'
+import { TraderIneligible } from '../TraderIneligible'
 
-export function AffiliateTraderIneligible({ refCode }: TraderIneligibleProps): ReactNode {
+export function AffiliateTraderIneligible(): ReactNode {
   return (
     <IneligibleCard>
       <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
@@ -16,7 +16,7 @@ export function AffiliateTraderIneligible({ refCode }: TraderIneligibleProps): R
         <Trans>Your wallet is ineligible</Trans>
       </IneligibleTitle>
       <IneligibleSubtitle>
-        <TraderIneligible refCode={refCode} />
+        <TraderIneligible />
       </IneligibleSubtitle>
     </IneligibleCard>
   )

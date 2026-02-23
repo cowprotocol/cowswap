@@ -3,7 +3,7 @@ import React from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { affiliateTraderAtom } from 'modules/affiliate/state/affiliateTraderAtom'
+import { affiliateTraderSavedCodeAtom } from 'modules/affiliate/state/affiliateTraderSavedCodeAtom'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
 import { useUtm } from 'modules/utm'
@@ -32,7 +32,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
   const userConsent = useRwaConsentForAppData()
-  const { savedCode: refCode } = useAtomValue(affiliateTraderAtom)
+  const { savedCode: refCode } = useAtomValue(affiliateTraderSavedCodeAtom)
 
   if (!chainId) return null
 

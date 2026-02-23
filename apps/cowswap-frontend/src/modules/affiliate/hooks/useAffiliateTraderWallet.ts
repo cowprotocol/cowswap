@@ -7,7 +7,7 @@ import { useWalletChainId } from '@cowprotocol/wallet-provider'
 import { TraderEligibilityStatus, useAffiliateTraderEligibility } from './useAffiliateTraderEligibility'
 
 import { isSupportedTradingNetwork } from '../lib/affiliateProgramUtils'
-import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
+import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export enum TraderWalletStatus {
   // Eligibility check is still resolving.
@@ -34,7 +34,7 @@ interface UseAffiliateTraderWalletResult {
 export function useAffiliateTraderWallet(): UseAffiliateTraderWalletResult {
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
-  const { isLinked } = useAtomValue(affiliateTraderAtom)
+  const { isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
 
   const supportedTradingNetwork = isSupportedTradingNetwork(chainId)
   const { status: eligibilityStatus, hasLoadingTimeout } = useAffiliateTraderEligibility({

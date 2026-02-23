@@ -9,8 +9,7 @@ import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer
 
 import { decodeAppData } from 'modules/appData'
 
-import { PartnerInfoResponse } from './affiliateProgramTypes'
-
+import { PartnerInfoResponse } from '../api/bffAffiliateApi.types'
 import {
   AFFILIATE_PAYOUTS_CHAIN_ID,
   AFFILIATE_SUPPORTED_CHAIN_IDS,
@@ -195,10 +194,10 @@ export function formatUsdcCompact(value?: number): string {
   return formatted === EMPTY_VALUE_LABEL ? EMPTY_VALUE_LABEL : `${formatted} USDC`
 }
 
-export function getPartnerRewardAmountLabel(programParams?: PartnerInfoResponse | null): string {
-  if (!programParams) return 'reward'
+export function getPartnerRewardAmountLabel(codeInfo?: PartnerInfoResponse | null): string {
+  if (!codeInfo) return 'reward'
 
-  const { rewardAmount, revenueSplitAffiliatePct } = programParams
+  const { rewardAmount, revenueSplitAffiliatePct } = codeInfo
   return formatUsdCompact(rewardAmount * (revenueSplitAffiliatePct / 100))
 }
 

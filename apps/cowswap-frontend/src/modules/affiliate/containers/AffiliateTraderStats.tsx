@@ -3,8 +3,10 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
+import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
 import {
   formatUsdcCompact,
@@ -13,21 +15,22 @@ import {
   getReferralTrafficPercent,
 } from '../lib/affiliateProgramUtils'
 import { MetricsCard } from '../pure/MetricsCard'
-import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
+import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export function AffiliateTraderStats(): ReactNode {
   const { account } = useWalletInfo()
-  const affiliateTrader = useAtomValue(affiliateTraderAtom)
-  const { data: stats, isLoading } = useAffiliateTraderStats(account)
-  const { verificationProgramParams: programParams } = affiliateTrader
+  const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
+  const { data: info, isLoading: codeLoading } = useAffiliateTraderInfo(savedCode)
+  const { data: stats, isLoading: statsLoading } = useAffiliateTraderStats(account)
 
-  const rewardAmountLabel = programParams ? formatUsdCompact(programParams.traderRewardAmount) : 'reward'
-  const progressToNextReward = getProgressToNextReward(programParams?.triggerVolumeUsd, stats?.left_to_next_rewards)
+  const rewardAmountLabel = info ? formatUsdCompact(info.traderRewardAmount) : 'reward'
+  const progressToNextReward = getProgressToNextReward(info?.triggerVolume, stats?.left_to_next_rewards)
 
   return (
     <MetricsCard
-      showLoader={isLoading}
+      showLoader={codeLoading || statsLoading}
       title={<Trans>Next {rewardAmountLabel} reward</Trans>}
+      titleTooltip={t`This chart tracks eligible volume left to unlock the next reward.`}
       items={[
         {
           label: <Trans>Left to next {rewardAmountLabel}</Trans>,
@@ -36,12 +39,12 @@ export function AffiliateTraderStats(): ReactNode {
         { label: <Trans>Total earned</Trans>, value: formatUsdcCompact(stats?.total_earned) },
         { label: <Trans>Received</Trans>, value: formatUsdcCompact(stats?.paid_out) },
       ]}
-      donutValue={getReferralTrafficPercent(programParams?.triggerVolumeUsd, progressToNextReward)}
+      donutValue={getReferralTrafficPercent(info?.triggerVolume, progressToNextReward)}
       donutLabel={formatUsdCompact(progressToNextReward)}
       donutSubtitle={
-        programParams?.triggerVolumeUsd && (
+        info?.triggerVolume && (
           <>
-            <Trans>of</Trans> {formatUsdCompact(programParams.triggerVolumeUsd)}
+            <Trans>of</Trans> {formatUsdCompact(info.triggerVolume)}
           </>
         )
       }

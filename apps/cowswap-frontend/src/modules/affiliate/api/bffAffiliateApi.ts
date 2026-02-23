@@ -1,6 +1,15 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
+import { wait } from 'common/utils/wait'
+
+import {
+  PartnerInfoResponse,
+  PartnerCreateRequest,
+  PartnerStatsResponse,
+  TraderInfoResponse,
+  TraderStatsResponse,
+} from './bffAffiliateApi.types'
 
 import {
   AFFILIATE_API_TIMEOUT_MS,
@@ -8,51 +17,29 @@ import {
   BACKOFF_START_DELAY_MS,
   BACKOFF_TIME_MULTIPLE,
   RATE_LIMIT_INTERVAL_MS,
-  STATUS_CODES_TO_RETRY,
+  VERIFICATION_MIN_RESPONSE_DELAY_MS,
+  VERIFICATION_RETRY_DELAY_MS,
 } from '../config/affiliateProgram.const'
 import {
-  PartnerInfoResponse,
-  PartnerCreateRequest,
-  PartnerStatsResponse,
-  TraderInfoResponse,
-  TraderReferralCodeVerificationResponse,
-  TraderStatsResponse,
-  TraderWalletReferralCodeStatusRequest,
-  TraderWalletReferralCodeStatusResponse,
-} from '../lib/affiliateProgramTypes'
+  ApiError,
+  fetchWithTimeout,
+  JSON_HEADERS,
+  parseJsonResponse,
+  STATUS_CODES_TO_RETRY,
+  RetryableResponseError,
+  unwrapOk,
+} from '../utils/api-utils'
 
-const TIMEOUT_ERROR_MESSAGE = 'Unable to reach referral service'
-const JSON_HEADERS = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-}
-
-type FetchJsonResponse<T> = {
-  response: Response
-  data?: T
-  text: string
-}
-
-class RetryableResponseError extends Error {
-  readonly rawApiError: { status: number }
-
-  constructor(status: number) {
-    super(`Retryable response (${status})`)
-    this.rawApiError = { status }
-  }
-}
-
-function buildReferralError(status: number, text: string, data?: { message?: string }): Error {
-  const message = data?.message || text || `Referral service error (${status})`
-  const error = new Error(message)
-  ;(error as Error & { status?: number }).status = status
-  return error
-}
+import type { ApiErrorPayload, FetchJsonResponse } from '../utils/api-utils'
 
 class BffAffiliateApi {
   private readonly baseUrl: string
   private readonly timeoutMs: number
   private readonly fetchRateLimited: ReturnType<typeof fetchWithRateLimit>
+
+  /**
+   * Configuration
+   */
 
   constructor(baseUrl: string, timeoutMs: number = AFFILIATE_API_TIMEOUT_MS) {
     this.baseUrl = baseUrl.replace(/\/$/, '')
@@ -69,183 +56,97 @@ class BffAffiliateApi {
       },
     })
   }
-  async verifyReferralCode(code: string): Promise<TraderReferralCodeVerificationResponse> {
-    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
-    const { response, data, text } = await this.fetchJsonResponse<TraderInfoResponse>(url, {
-      method: 'GET',
-      headers: JSON_HEADERS,
-    })
 
-    return {
-      status: response.status,
-      ok: response.ok,
-      data,
-      text,
-    }
-  }
-  async verifyReferralCodeAvailability(code: string): Promise<boolean> {
-    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
-    const { response, text } = await this.fetchJsonResponse<TraderInfoResponse>(url, {
-      method: 'GET',
-      headers: JSON_HEADERS,
-    })
-
-    if (response.status === 404) return true
-    if (response.ok || response.status === 403) return false
-
-    throw buildReferralError(response.status, text)
-  }
-  async getWalletReferralStatus(
-    request: TraderWalletReferralCodeStatusRequest,
-  ): Promise<TraderWalletReferralCodeStatusResponse> {
-    const { account } = request
-    const url = this.buildUrl(`affiliate/${account}`)
-
-    const { response, data, text } = await this.fetchJsonResponse<PartnerInfoResponse>(url, {
-      method: 'GET',
-      headers: JSON_HEADERS,
-    })
-
-    if (response.ok) {
-      return {
-        wallet: {
-          linkedCode: data?.code,
-        },
-      }
-    }
-
-    if (response.status === 404) {
-      return { wallet: {} }
-    }
-
-    throw buildReferralError(response.status, text, data as { message?: string } | undefined)
-  }
-  async getPartnerInfo(account: string): Promise<PartnerInfoResponse | null> {
-    const url = this.buildUrl(`affiliate/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<PartnerInfoResponse>(url, {
-      method: 'GET',
-      headers: JSON_HEADERS,
-    })
-
-    if (response.ok) {
-      if (!data) {
-        throw buildReferralError(response.status, text, { message: 'Affiliate response missing' })
-      }
-      return data
-    }
-
-    if (response.status === 404) {
-      return null
-    }
-
-    throw buildReferralError(response.status, text, data as { message?: string } | undefined)
-  }
-  async getTraderStats(account: string): Promise<TraderStatsResponse | null> {
-    const url = this.buildUrl(`affiliate/trader-stats/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<TraderStatsResponse>(url, {
-      method: 'GET',
-      headers: JSON_HEADERS,
-    })
-
-    if (response.ok) {
-      if (!data) {
-        throw buildReferralError(response.status, text, { message: 'Trader stats response missing' })
-      }
-      return data
-    }
-
-    if (response.status === 404) {
-      return null
-    }
-
-    throw buildReferralError(response.status, text, data as { message?: string } | undefined)
-  }
-  async getAffiliateStats(account: string): Promise<PartnerStatsResponse | null> {
-    const url = this.buildUrl(`affiliate/affiliate-stats/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<PartnerStatsResponse>(url, {
-      method: 'GET',
-      headers: JSON_HEADERS,
-    })
-
-    if (response.ok) {
-      if (!data) {
-        throw buildReferralError(response.status, text, { message: 'Affiliate stats response missing' })
-      }
-      return data
-    }
-
-    if (response.status === 404) {
-      return null
-    }
-
-    throw buildReferralError(response.status, text, data as { message?: string } | undefined)
-  }
-  async createAffiliateCode(request: PartnerCreateRequest): Promise<PartnerInfoResponse> {
-    const url = this.buildUrl(`affiliate/${request.walletAddress}`)
-    const body = JSON.stringify(request)
-
-    const { response, data, text } = await this.fetchJsonResponse<PartnerInfoResponse>(url, {
-      method: 'POST',
-      headers: JSON_HEADERS,
-      body,
-    })
-
-    if (response.ok) {
-      if (!data) {
-        throw buildReferralError(response.status, text, { message: 'Affiliate response missing' })
-      }
-      return data
-    }
-
-    throw buildReferralError(response.status, text, data as { message?: string } | undefined)
-  }
   private buildUrl(path: string): string {
     const normalizedPath = path.replace(/^\//, '')
     return `${this.baseUrl}/${normalizedPath}`
   }
-  private async fetchJsonResponse<T>(input: string, init: RequestInit): Promise<FetchJsonResponse<T>> {
-    const response = await this.fetchWithBackoffAndRateLimit(input, init)
 
-    const text = await response.text().catch(() => '')
-    let data: T | undefined
-
-    if (text) {
-      try {
-        data = JSON.parse(text) as T
-      } catch {
-        data = undefined
+  private async fetchJsonResponse<T>(input: string, init?: RequestInit): Promise<FetchJsonResponse<T>> {
+    const response = await this.fetchRateLimited(async () => {
+      const requestInit = {
+        method: 'GET',
+        headers: JSON_HEADERS,
+        ...init,
       }
-    }
-
-    return { response, data, text }
-  }
-  private async fetchWithBackoffAndRateLimit(input: RequestInfo, init: RequestInit): Promise<Response> {
-    return this.fetchRateLimited(async () => {
-      const response = await this.fetchWithTimeout(input, init)
+      const response = this.timeoutMs
+        ? await fetchWithTimeout(input, requestInit, this.timeoutMs)
+        : await fetch(input, requestInit)
       if (STATUS_CODES_TO_RETRY.includes(response.status)) {
         throw new RetryableResponseError(response.status)
       }
       return response
     })
+    return parseJsonResponse<T>(response)
   }
-  private async fetchWithTimeout(input: RequestInfo, init: RequestInit): Promise<Response> {
-    if (!this.timeoutMs) {
-      return fetch(input, init)
-    }
 
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs)
+  /**
+   * API
+   */
 
+  async verifyCode(code: string): Promise<TraderInfoResponse> {
+    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
     try {
-      return await fetch(input, { ...init, signal: controller.signal })
+      const [result] = await Promise.all([
+        this.fetchJsonResponse<TraderInfoResponse>(url),
+        wait(VERIFICATION_MIN_RESPONSE_DELAY_MS),
+      ])
+      return unwrapOk(result, 'Trader response missing')
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error(TIMEOUT_ERROR_MESSAGE)
-      }
+      await wait(VERIFICATION_RETRY_DELAY_MS)
       throw error
-    } finally {
-      clearTimeout(timeoutId)
     }
+  }
+
+  async verifyCodeAvailability(code: string): Promise<boolean> {
+    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
+    const { response, text } = await this.fetchJsonResponse<TraderInfoResponse>(url)
+
+    if (response.status === 404) return true
+    if (response.ok || response.status === 403) return false
+
+    throw new ApiError(response.status, text)
+  }
+
+  async createCode(request: PartnerCreateRequest): Promise<PartnerInfoResponse> {
+    const url = this.buildUrl(`affiliate/${request.walletAddress}`)
+    const result = await this.fetchJsonResponse<PartnerInfoResponse>(url, {
+      method: 'POST',
+      body: JSON.stringify(request),
+    })
+    return unwrapOk(result, 'Affiliate response missing')
+  }
+
+  async getTraderInfo(code: string): Promise<TraderInfoResponse | null> {
+    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
+    const { response, data, text } = await this.fetchJsonResponse<TraderInfoResponse>(url)
+    if (response.status === 404) return null
+    if (response.ok) return data ?? null
+    throw new ApiError(response.status, text, data as ApiErrorPayload)
+  }
+
+  async getPartnerInfo(account: string): Promise<PartnerInfoResponse | null> {
+    const url = this.buildUrl(`affiliate/${account}`)
+    const { response, data, text } = await this.fetchJsonResponse<PartnerInfoResponse>(url)
+    if (response.status === 404) return null
+    if (response.ok) return data ?? null
+    throw new ApiError(response.status, text, data as ApiErrorPayload)
+  }
+
+  async getTraderStats(account: string): Promise<TraderStatsResponse | null> {
+    const url = this.buildUrl(`affiliate/trader-stats/${account}`)
+    const { response, data, text } = await this.fetchJsonResponse<TraderStatsResponse>(url)
+    if (response.status === 404) return null
+    if (response.ok) return data ?? null
+    throw new ApiError(response.status, text, data as ApiErrorPayload)
+  }
+
+  async getAffiliateStats(account: string): Promise<PartnerStatsResponse | null> {
+    const url = this.buildUrl(`affiliate/affiliate-stats/${account}`)
+    const { response, data, text } = await this.fetchJsonResponse<PartnerStatsResponse>(url)
+    if (response.status === 404) return null
+    if (response.ok) return data ?? null
+    throw new ApiError(response.status, text, data as ApiErrorPayload)
   }
 }
 

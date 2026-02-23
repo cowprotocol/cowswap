@@ -10,9 +10,10 @@ type AffiliatePartnerCodeErrorMessageProps = {
 }
 
 function mapErrorCodeToMessage(error: AffiliatePartnerCodeCreateError): string {
-  if (error.code === 'signatureRejected') return t`Signature request rejected.`
-  if (error.code === 'unavailable') return t`This code is taken. Generate another one.`
-  if (error.code === 'networkError') return t`Affiliate service is unreachable. Try again later.`
+  if (error === AffiliatePartnerCodeCreateError.SignatureRejected) return t`Signature request rejected.`
+  if (error === AffiliatePartnerCodeCreateError.Unavailable) return t`This code is taken. Generate another one.`
+  if (error === AffiliatePartnerCodeCreateError.NetworkError)
+    return t`Affiliate service is unreachable. Try again later.`
   return t`Unable to create affiliate code.`
 }
 

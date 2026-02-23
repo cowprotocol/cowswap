@@ -1,21 +1,19 @@
-type ErrorWithCodeAndStatus = Error & { status?: number; code?: number }
+import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
-export type AffiliatePartnerCodeCreateErrorCode = 'signatureRejected' | 'unavailable' | 'networkError' | 'createFailed'
+import { ApiError } from '../utils/api-utils'
 
-export interface AffiliatePartnerCodeCreateError {
-  code: AffiliatePartnerCodeCreateErrorCode
+export enum AffiliatePartnerCodeCreateError {
+  SignatureRejected = 'signatureRejected',
+  Unavailable = 'unavailable',
+  NetworkError = 'networkError',
 }
 
 export function mapAffiliatePartnerCodeCreateError(error: unknown): AffiliatePartnerCodeCreateError {
-  if (!(error instanceof Error)) {
-    return { code: 'createFailed' }
+  if (isRejectRequestProviderError(error)) return AffiliatePartnerCodeCreateError.SignatureRejected
+
+  if (error instanceof ApiError && (error.status === 409 || error.status === 403)) {
+    return AffiliatePartnerCodeCreateError.Unavailable
   }
 
-  const errorWithCodeAndStatus = error as ErrorWithCodeAndStatus
-
-  if (errorWithCodeAndStatus.code === 4001) return { code: 'signatureRejected' }
-  if (errorWithCodeAndStatus.status === 409) return { code: 'unavailable' }
-  if (errorWithCodeAndStatus.status === 403) return { code: 'unavailable' }
-
-  return { code: 'createFailed' }
+  return AffiliatePartnerCodeCreateError.NetworkError
 }

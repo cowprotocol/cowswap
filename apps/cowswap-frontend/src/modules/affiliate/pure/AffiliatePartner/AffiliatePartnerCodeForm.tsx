@@ -48,7 +48,7 @@ export function AffiliatePartnerCodeForm({
   onCreate,
   ...rest
 }: AffiliatePartnerCodeFormProps): ReactNode {
-  const hasError = showInvalidFormat || error?.code === 'unavailable'
+  const hasError = showInvalidFormat || error === AffiliatePartnerCodeCreateError.Unavailable
 
   const handleInputKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>): void => {

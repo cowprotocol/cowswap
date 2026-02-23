@@ -7,7 +7,7 @@ import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
 import {
-  AffiliatePartnerCodeCreateError,
+  type AffiliatePartnerCodeCreateError,
   mapAffiliatePartnerCodeCreateError,
 } from '../lib/affiliatePartnerCodeCreateError'
 import { buildPartnerTypedData } from '../lib/affiliateProgramUtils'
@@ -48,7 +48,7 @@ export function useAffiliatePartnerCodeCreate({
       })
       const signedMessage = await signer._signTypedData(typedData.domain, typedData.types, typedData.message)
 
-      await bffAffiliateApi.createAffiliateCode({
+      await bffAffiliateApi.createCode({
         code,
         walletAddress: account,
         signedMessage,

@@ -1,9 +1,9 @@
-import { ORDER_BOOK_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
 import { Address } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
 import { checkIfTraderHasPastTrades } from '../api/checkIfTraderHasPastTrades'
+import { AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS } from '../config/affiliateProgram.const'
 
 interface UseHasOrderbookTradesParams {
   account?: Address
@@ -25,6 +25,6 @@ export function useHasOrderbookTrades(params: UseHasOrderbookTradesParams): UseH
   return useSWR<boolean>(
     enabled ? ['affiliate-eligibility', account] : null,
     async () => (!account ? false : checkIfTraderHasPastTrades(account)),
-    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL },
+    { refreshInterval: AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS },
   )
 }

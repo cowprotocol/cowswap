@@ -6,7 +6,7 @@ import useSWR from 'swr'
 
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { VERIFICATION_DEBOUNCE_MS } from '../config/affiliateProgram.const'
-import { type AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
+import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
 
 export enum PartnerCodeAvailability {
   Idle = 'idle',
@@ -43,10 +43,10 @@ export function useAffiliatePartnerCodeAvailability(
     !waitingForDebouncedInput && debouncedCode ? ['affiliate-partner-code-availability', debouncedCode] : null,
     async ([, code]) => {
       try {
-        return await bffAffiliateApi.verifyReferralCodeAvailability(code as string)
+        return await bffAffiliateApi.verifyCodeAvailability(code as string)
       } catch {}
 
-      setError({ code: 'networkError' })
+      setError(AffiliatePartnerCodeCreateError.NetworkError)
       return false
     },
     {

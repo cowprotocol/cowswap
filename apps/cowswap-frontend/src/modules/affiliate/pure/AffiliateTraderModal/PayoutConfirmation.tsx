@@ -39,14 +39,16 @@ const ConfirmCheckbox = styled.label`
   }
 `
 
-interface PayoutAddressConfirmationProps {
-  account: string
-  checked: boolean
-  onToggle(checked: boolean): void
+export interface PayoutConfirmationProps {
+  account?: string
+  payoutConfirmed: boolean
+  onTogglePayoutConfirmed(checked: boolean): void
 }
 
-export function PayoutAddressConfirmation(props: PayoutAddressConfirmationProps): ReactNode {
-  const { account, checked, onToggle } = props
+export function PayoutConfirmation(props: PayoutConfirmationProps): ReactNode {
+  const { account, payoutConfirmed, onTogglePayoutConfirmed } = props
+
+  if (!account) return
 
   return (
     <InlineBanner bannerType={StatusColorVariant.Info} orientation={BannerOrientation.Horizontal} breakWord>
@@ -56,7 +58,11 @@ export function PayoutAddressConfirmation(props: PayoutAddressConfirmationProps)
           <AddressLink address={account} chainId={AFFILIATE_PAYOUTS_CHAIN_ID} />
         </div>
         <ConfirmCheckbox>
-          <input type="checkbox" checked={checked} onChange={(event) => onToggle(event.target.checked)} />
+          <input
+            type="checkbox"
+            checked={payoutConfirmed}
+            onChange={(event) => onTogglePayoutConfirmed(event.target.checked)}
+          />
           <Trans>I have access to this address on Ethereum.</Trans>
         </ConfirmCheckbox>
       </Content>

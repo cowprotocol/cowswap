@@ -274,8 +274,8 @@ export const RewardsHeader = styled.div`
 export const ValidStatusBadge = styled(LinkedBadge)`
   color: var(${UI.COLOR_SUCCESS_TEXT});
 
-  svg {
-    fill: currentColor;
+  svg path {
+    fill: var(${UI.COLOR_SUCCESS_TEXT});
   }
 `
 

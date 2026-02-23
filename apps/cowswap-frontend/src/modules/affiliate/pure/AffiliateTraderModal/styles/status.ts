@@ -1,4 +1,4 @@
-import { UI, InlineBanner } from '@cowprotocol/ui'
+import { InlineBanner } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -6,16 +6,6 @@ export const StatusMessage = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-`
-
-export const SpinnerRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 9px;
-  background: var(${UI.COLOR_NEUTRAL_98});
-  color: var(${UI.COLOR_TEXT});
 `
 
 export const Footer = styled.div`
@@ -29,9 +19,4 @@ export const InlineAlert = styled(InlineBanner)`
   border-radius: 9px;
   padding: 12px 16px;
   text-align: center;
-`
-
-export const ErrorInline = styled(InlineBanner)`
-  border-radius: 9px;
-  padding: 12px 16px;
 `

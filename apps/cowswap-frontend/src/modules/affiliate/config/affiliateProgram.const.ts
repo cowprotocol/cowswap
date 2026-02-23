@@ -18,8 +18,8 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
   SupportedChainId.PLASMA,
 ] as const
 
-export const AFFILIATE_TRADER_STORAGE_KEY = 'cowswap:affiliateTrader:v3'
-export const AFFILIATE_PAYOUT_ADDRESS_CONFIRMATION_STORAGE_KEY = 'cowswap:affiliatePayoutAddressConfirmation:v0'
+export const AFFILIATE_TRADER_SAVED_CODES_STORAGE_KEY = 'cowswap:affiliateTraderSavedCodes:v0'
+export const AFFILIATE_TRADER_PAYOUT_CONFIRMATIONS_STORAGE_KEY = 'cowswap:affiliateTraderPayoutConfirmations:v0'
 
 export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.map(
   (chainId) => CHAIN_INFO[chainId].label,
@@ -35,10 +35,12 @@ export const AFFILIATE_REWARDS_UPDATE_LAG_HOURS = 1
 export const AFFILIATE_PAYOUTS_CHAIN_ID = SupportedChainId.MAINNET
 
 export const VERIFICATION_DEBOUNCE_MS = 350
+export const VERIFICATION_MIN_RESPONSE_DELAY_MS = 500
 export const VERIFICATION_RETRY_DELAY_MS = 3_000
 
 // Timeout applied to referral service requests so UI fails fast on network issues
 export const AFFILIATE_API_TIMEOUT_MS = 10_000
+export const AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS = ms`5m`
 
 export const AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE = true
 
@@ -51,17 +53,3 @@ export const BACKOFF_MAX_ATTEMPTS = 3
 
 export const REF_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
 export const REF_CODE_MAX_LENGTH = 20
-
-enum RetryableStatusCode {
-  RequestTimeout = 408,
-  TooEarly = 425,
-  TooManyRequests = 429,
-  InternalServerError = 500,
-  BadGateway = 502,
-  ServiceUnavailable = 503,
-  GatewayTimeout = 504,
-}
-
-export const STATUS_CODES_TO_RETRY: number[] = Object.values(RetryableStatusCode).filter(
-  (value): value is number => typeof value === 'number',
-)

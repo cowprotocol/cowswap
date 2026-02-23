@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
 import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
@@ -10,8 +10,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
+import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
-import { useToggleAffiliateModal } from '../hooks/useToggleAffiliateModal'
 import {
   CardTitle,
   HeroActions,
@@ -25,18 +25,20 @@ import {
   RewardsHeader,
   ValidStatusBadge,
 } from '../pure/shared'
-import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
+import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export function AffiliateTraderCodeInfo(): ReactNode {
   const { account } = useWalletInfo()
-  const { savedCode, isLinked } = useAtomValue(affiliateTraderAtom)
-  const toggleAffiliateModal = useToggleAffiliateModal()
+  const { savedCode, isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
+  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
 
-  const { data: stats, isLoading } = useAffiliateTraderStats(account)
+  const { data: stats, isLoading: statsLoading } = useAffiliateTraderStats(account)
+  const { data: info, isLoading: codeLoading } = useAffiliateTraderInfo(savedCode)
 
   return (
-    <ColumnOneCard showLoader={isLoading}>
-      {!stats ? null : (
+    <ColumnOneCard showLoader={statsLoading || codeLoading}>
+      {!info ? null : (
         <>
           <RewardsHeader>
             <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
@@ -62,13 +64,13 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <span>
                 <Trans>Linked since</Trans>
               </span>
-              <strong>{isLinked ? formatShortDate(stats.linked_since) : '-'}</strong>
+              <strong>{isLinked && stats ? formatShortDate(stats.linked_since) : '-'}</strong>
             </MetricItem>
             <MetricItem>
               <span>
                 <Trans>Rewards end</Trans>
               </span>
-              <strong>{isLinked ? formatShortDate(stats.rewards_end) : '-'}</strong>
+              <strong>{isLinked && stats ? formatShortDate(stats.rewards_end) : '-'}</strong>
             </MetricItem>
           </LinkedMetaList>
           {!isLinked && (

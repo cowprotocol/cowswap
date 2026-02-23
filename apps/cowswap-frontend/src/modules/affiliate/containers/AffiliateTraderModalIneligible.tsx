@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { ReactNode, useCallback, useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -7,15 +7,12 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-import { useToggleAffiliateModal } from '../hooks/useToggleAffiliateModal'
 import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
 import { TraderIneligible } from '../pure/TraderIneligible'
-import { affiliateTraderAtom } from '../state/affiliateTraderAtom'
+import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
 export function AffiliateTraderModalIneligible(): ReactNode {
-  const { codeInput, savedCode } = useAtomValue(affiliateTraderAtom)
-  const toggleAffiliateModal = useToggleAffiliateModal()
-  const refCode = savedCode || codeInput
+  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
   const analytics = useCowAnalytics()
 
   useEffect(() => {
@@ -39,7 +36,7 @@ export function AffiliateTraderModalIneligible(): ReactNode {
           <Trans>Your wallet is ineligible</Trans>
         </Title>
         <Subtitle>
-          <TraderIneligible refCode={refCode} />
+          <TraderIneligible />
         </Subtitle>
       </Body>
       <Footer>

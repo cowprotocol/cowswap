@@ -1,4 +1,4 @@
-import { UI, Badge } from '@cowprotocol/ui'
+import { Badge, ButtonOutlined, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -26,17 +26,12 @@ export const FormActions = styled.div`
   gap: 12px;
 `
 
-export const FormActionButton = styled.button<{ variant: 'outline' | 'filled' }>`
+export const FormActionButton = styled(ButtonOutlined)`
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: var(${UI.FONT_SIZE_SMALL});
-  color: ${({ variant }) => (variant === 'filled' ? `var(${UI.COLOR_INFO_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
-  background: ${({ variant }) => (variant === 'filled' ? `var(${UI.COLOR_INFO_BG})` : `var(${UI.COLOR_PAPER})`)};
-  border: ${({ variant }) => (variant === 'outline' ? `1px solid var(${UI.COLOR_BORDER})` : 'none')};
-  cursor: pointer;
   padding: 4px 12px;
-  border-radius: 999px;
   font-weight: 600;
 
   &:disabled {

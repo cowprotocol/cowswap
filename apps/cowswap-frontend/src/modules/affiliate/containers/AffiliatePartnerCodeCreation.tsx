@@ -8,7 +8,7 @@ import {
   useAffiliatePartnerCodeAvailability,
 } from '../hooks/useAffiliatePartnerCodeAvailability'
 import { useAffiliatePartnerCodeCreate } from '../hooks/useAffiliatePartnerCodeCreate'
-import { type AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
+import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
 import { formatRefCode, generateSuggestedCode, isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
 import { AffiliatePartnerCodeForm } from '../pure/AffiliatePartner/AffiliatePartnerCodeForm'
 
@@ -20,19 +20,18 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
 
   const [error, setError] = useState<AffiliatePartnerCodeCreateError | undefined>()
   const [inputCode, setInputCode] = useState(generateSuggestedCode())
-  const isCodeValid = Boolean(formatRefCode(inputCode))
+  const isInputValid = Boolean(formatRefCode(inputCode))
 
-  const availability = useAffiliatePartnerCodeAvailability(inputCode, isCreateEnabled && isCodeValid, setError)
-  const { submitting: isSubmitting, onCreate } = useAffiliatePartnerCodeCreate({
+  const availability = useAffiliatePartnerCodeAvailability(inputCode, isCreateEnabled && isInputValid, setError)
+  const { submitting, onCreate } = useAffiliatePartnerCodeCreate({
     account,
     provider,
     code: inputCode,
     setError,
   })
 
-  const showInvalidFormat = !!inputCode && !isCodeValid
-  const canSubmit =
-    isCreateEnabled && isCodeValid && availability === PartnerCodeAvailability.Available && !isSubmitting
+  const showInvalidFormat = !!inputCode && !isInputValid
+  const canSubmit = isCreateEnabled && isInputValid && availability === PartnerCodeAvailability.Available && !submitting
 
   const onCodeChange = useCallback((event: FormEvent<HTMLInputElement>): void => {
     setInputCode(event.currentTarget.value.trim().toUpperCase())
@@ -49,7 +48,7 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
       showInvalidFormat={showInvalidFormat}
       availability={availability}
       canSubmit={canSubmit}
-      submitting={isSubmitting}
+      submitting={submitting}
       error={error}
       onCreate={onCreate}
       onGenerate={onGenerate}

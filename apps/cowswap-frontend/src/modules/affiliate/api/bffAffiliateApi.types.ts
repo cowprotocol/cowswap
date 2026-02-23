@@ -1,33 +1,3 @@
-export interface AffiliateProgramParams {
-  traderRewardAmount: number
-  triggerVolumeUsd: number // TODO rename to triggerVolume
-  timeCapDays: number
-  volumeCapUsd: number
-}
-
-export interface TraderReferralCodeApiConfig {
-  baseUrl: string
-  timeoutMs?: number
-}
-
-export interface TraderReferralCodeVerificationResponse {
-  status: number
-  ok: boolean
-  data?: TraderInfoResponse
-  text: string
-}
-
-export interface TraderWalletReferralCodeStatusRequest {
-  account: string
-}
-
-export interface TraderWalletReferralCodeStatusResponse {
-  wallet: {
-    linkedCode?: string
-    ineligibleReason?: string
-  }
-}
-
 export interface TraderInfoResponse {
   code: string
   traderRewardAmount: number
