@@ -24,7 +24,7 @@ export function AffiliateTraderModal(): ReactNode {
 
   const isModalOpen = useAtomValue(affiliateTraderModalAtom)
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
-  const { walletStatus } = useAffiliateTraderWallet()
+  const walletStatus = useAffiliateTraderWallet()
 
   const analytics = useCowAnalytics()
   const wasOpenRef = useRef(false)

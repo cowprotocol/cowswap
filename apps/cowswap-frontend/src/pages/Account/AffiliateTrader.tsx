@@ -21,7 +21,7 @@ export default function AffiliateTrader(): ReactNode {
   const { i18n } = useLingui()
 
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
-  const { walletStatus } = useAffiliateTraderWallet()
+  const walletStatus = useAffiliateTraderWallet()
 
   return (
     <>

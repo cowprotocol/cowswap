@@ -28,7 +28,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const toggleWalletModal = useToggleWalletModal()
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
 
-  const { walletStatus } = useAffiliateTraderWallet()
+  const walletStatus = useAffiliateTraderWallet()
   const payoutConfirmed = useAtomValue(affiliateTraderPayoutConfirmationAtom)
   const setPayoutConfirmed = useSetAtom(setAffiliateTraderPayoutConfirmationAtom)
   const { codeInput, savedCode, error, setError, onChange, onEdit, onRemove } = useAffiliateTraderCodeInput()

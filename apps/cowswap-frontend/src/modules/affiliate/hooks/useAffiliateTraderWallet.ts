@@ -26,12 +26,7 @@ export enum TraderWalletStatus {
   ELIGIBILITY_UNKNOWN = 'eligibility-unknown',
 }
 
-interface UseAffiliateTraderWalletResult {
-  walletStatus: TraderWalletStatus
-  eligibilityStatus: TraderEligibilityStatus
-}
-
-export function useAffiliateTraderWallet(): UseAffiliateTraderWalletResult {
+export function useAffiliateTraderWallet(): TraderWalletStatus {
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
   const { isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
@@ -64,8 +59,5 @@ export function useAffiliateTraderWallet(): UseAffiliateTraderWalletResult {
     return TraderWalletStatus.PENDING
   }, [account, eligibilityStatus, hasLoadingTimeout, isLinked, supportedTradingNetwork])
 
-  return {
-    walletStatus,
-    eligibilityStatus,
-  }
+  return walletStatus
 }

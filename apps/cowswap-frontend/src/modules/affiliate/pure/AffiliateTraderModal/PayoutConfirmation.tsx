@@ -5,9 +5,9 @@ import { BannerOrientation, InlineBanner, StatusColorVariant, UI } from '@cowpro
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { AFFILIATE_PAYOUTS_CHAIN_ID } from 'modules/affiliate/config/affiliateProgram.const'
-
 import { AddressLink } from 'common/pure/AddressLink'
+
+import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../../config/affiliateProgram.const'
 
 const Content = styled.div`
   display: flex;

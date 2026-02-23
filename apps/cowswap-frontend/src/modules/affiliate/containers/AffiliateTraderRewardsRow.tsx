@@ -15,7 +15,7 @@ export function AffiliateTraderRewardsRow(): ReactNode {
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
 
   const { savedCode, isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
-  const { walletStatus } = useAffiliateTraderWallet()
+  const walletStatus = useAffiliateTraderWallet()
 
   if (AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE && walletStatus === TraderWalletStatus.INELIGIBLE) {
     return null
