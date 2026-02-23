@@ -6,10 +6,15 @@ import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Check, Copy } from 'react-feather'
 
-import { formatQuoteIdReference, getQuoteIdString, type QuoteExpirationInput, type QuoteIdInput } from './quoteId'
 import { QuoteIdTooltipContent } from './QuoteIdTooltipContent'
 import { QuoteVerificationBadge } from './QuoteVerificationIndicator'
 import * as styledEl from './RowQuoteId.styled'
+import {
+  formatQuoteIdReference,
+  getQuoteIdString,
+  type QuoteExpirationInput,
+  type QuoteIdInput,
+} from './RowQuoteId.utils'
 
 import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper } from '../../pure/Row/styled'
 

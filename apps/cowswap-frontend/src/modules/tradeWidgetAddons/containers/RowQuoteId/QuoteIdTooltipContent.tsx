@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 import { useIsQuoteUpdatePossible } from 'modules/trade'
 import { useTradeQuoteCounter } from 'modules/tradeQuote'
 
-import { type QuoteExpirationInput } from './quoteId'
+import { type QuoteExpirationInput } from './RowQuoteId.utils'
 
 const TooltipContainer = styled.div`
   display: flex;

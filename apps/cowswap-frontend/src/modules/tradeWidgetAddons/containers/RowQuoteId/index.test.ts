@@ -1,4 +1,4 @@
-import { formatQuoteIdReference, getQuoteExpiresInLabel, getQuoteIdString } from './quoteId'
+import { formatQuoteIdReference, getQuoteExpiresInLabel, getQuoteIdString } from './RowQuoteId.utils'
 
 describe('RowQuoteId', () => {
   describe('formatQuoteIdReference()', () => {
