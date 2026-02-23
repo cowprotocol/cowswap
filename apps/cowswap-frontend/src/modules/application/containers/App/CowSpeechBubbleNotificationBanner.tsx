@@ -34,6 +34,16 @@ const NotificationLink = styled.a`
   }
 `
 
+function isInternal(href: string): boolean {
+  if (href.startsWith('/')) return true
+
+  try {
+    return new URL(href).hostname === window.location.hostname
+  } catch {
+    return false
+  }
+}
+
 export interface CowSpeechBubbleNotificationBannerProps {
   currentNotification: NotificationModel | null
   onClose: () => void
@@ -50,7 +60,7 @@ export function CowSpeechBubbleNotificationBanner({
   }
 
   const { title, description, url, id } = currentNotification
-  const linkTarget = url && (url.includes(window.location.host) || url.startsWith('/')) ? '_parent' : '_blank'
+  const linkTarget = url && isInternal(url) ? '_parent' : '_blank'
 
   return (
     <CowSpeechBubble padding="small" onClose={onClose} closeButtonAriaLabel={t`Dismiss notification`}>
@@ -66,11 +76,11 @@ export function CowSpeechBubbleNotificationBanner({
           data-click-event={toCowSwapGtmEvent({
             category: CowSwapAnalyticsCategory.NOTIFICATIONS,
             action: 'Click speech bubble notification link',
-            label: title,
+            label: 'notification bubble',
             value: id,
           })}
         >
-          {t`View`}
+          {t`Learn more`}
         </NotificationLink>
       )}
     </CowSpeechBubble>

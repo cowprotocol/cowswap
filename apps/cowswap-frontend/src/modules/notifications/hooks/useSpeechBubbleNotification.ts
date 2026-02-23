@@ -18,16 +18,12 @@ export function useSpeechBubbleNotification(): {
   const markNotificationsAsRead = useSetAtom(markNotificationsAsReadCloneArrayAtom)
 
   const speechBubbleNotifications = useMemo(() => {
-    if (!notifications) return []
-
     return (notifications || [])
       .filter(isSpeechBubbleNotification)
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   }, [notifications])
 
   const currentNotification = useMemo(() => {
-    if (!speechBubbleNotifications) return null
-
     return speechBubbleNotifications.find(({ id }) => unreadNotifications[id]) || null
   }, [speechBubbleNotifications, unreadNotifications])
 
@@ -37,5 +33,5 @@ export function useSpeechBubbleNotification(): {
     markNotificationsAsRead([currentNotification.id])
   }, [currentNotification, markNotificationsAsRead])
 
-  return { currentNotification, dismiss }
+  return useMemo(() => ({ currentNotification, dismiss }), [currentNotification, dismiss])
 }

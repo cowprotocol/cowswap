@@ -6,6 +6,8 @@ export function useDelay(delayMs: number | null): boolean {
   useEffect(() => {
     if (typeof delayMs !== 'number' || delayMs <= 0) return
 
+    setHasDelayElapsed(false)
+
     const timeoutId = window.setTimeout(() => {
       setHasDelayElapsed(true)
     }, delayMs)

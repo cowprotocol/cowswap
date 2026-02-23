@@ -88,7 +88,7 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
     if (!sidebarNotifications) return
 
     const timeoutId = setTimeout(() => {
-      markNotificationsAsRead(sidebarNotifications.map(({ id }) => id) || [])
+      markNotificationsAsRead(sidebarNotifications.map(({ id }) => id))
     }, NOTIFICATION_MARK_READ_DELAY_MS)
 
     return () => {

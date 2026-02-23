@@ -190,7 +190,7 @@ function FooterSection({ show, showCowSpeechBubble, pageScene }: FooterSectionPr
     return null
   }
 
-  let bubbleElement: React.ReactNode = null
+  let bubbleElement: ReactNode = null
 
   if (showCowSpeechBubble) {
     if (currentNotification) {
