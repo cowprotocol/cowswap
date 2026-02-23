@@ -13,7 +13,7 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
-import { useSpeechBubbleNotification } from 'modules/notifications/hooks/useSpeechBubbleNotification'
+import { useSpeechBubbleNotification } from 'modules/notifications'
 import { useInitializeUtm } from 'modules/utm'
 
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
