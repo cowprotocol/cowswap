@@ -1,13 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import {
-  ALL_FILTER,
-  buildBodyRows,
-  filterSolvers,
-  getEnvironmentOptions,
-  getNetworkOptions,
-} from './SolversDirectoryTable.helpers'
+import { ALL_FILTER, filterSolvers, getEnvironmentOptions, getNetworkOptions } from './SolversDirectoryTable.helpers'
 import { Table } from './SolversDirectoryTable.styles'
+import { SolversDirectoryTableBody } from './SolversDirectoryTableBody'
 import { SolversDirectoryTableFilters } from './SolversDirectoryTableFilters'
 
 import { SolverInfo } from '../../utils/fetchSolversInfo'
@@ -37,11 +32,6 @@ export function SolversDirectoryTable({
     setExpandedRows((current) => ({ ...current, [solverId]: !current[solverId] }))
   }, [])
 
-  const body = useMemo(
-    () => buildBodyRows(filteredSolvers, expandedRows, networkFilter, environmentFilter, toggleExpandedRow),
-    [environmentFilter, expandedRows, filteredSolvers, networkFilter, toggleExpandedRow],
-  )
-
   useEffect(() => {
     onFilteredCountChange?.(filteredSolvers.length)
   }, [filteredSolvers.length, onFilteredCountChange])
@@ -70,7 +60,15 @@ export function SolversDirectoryTable({
             <th>Description</th>
           </tr>
         }
-        body={body}
+        body={
+          <SolversDirectoryTableBody
+            filteredSolvers={filteredSolvers}
+            expandedRows={expandedRows}
+            networkFilter={networkFilter}
+            environmentFilter={environmentFilter}
+            onToggle={toggleExpandedRow}
+          />
+        }
       />
     </>
   )

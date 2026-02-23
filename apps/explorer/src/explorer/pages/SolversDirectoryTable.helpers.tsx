@@ -1,8 +1,3 @@
-import React from 'react'
-
-import { Placeholder } from './Solvers.styles'
-import { SolverDetailsRow, SolverSummaryRow } from './SolversDirectoryTableRows'
-
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
 
 export const ALL_FILTER = 'all'
@@ -22,7 +17,7 @@ function matchesSearch(solver: SolverInfo, query: string): boolean {
   return searchableFields.join(' ').toLowerCase().includes(normalizedQuery)
 }
 
-function filterDeployments(
+export function filterDeployments(
   deployments: SolverDeployment[],
   networkFilter: string,
   environmentFilter: string,
@@ -36,15 +31,23 @@ function filterDeployments(
 
 export function getNetworkOptions(solversInfo: SolverInfo[]): [number, string][] {
   const entries = new Map<number, string>()
-  solversInfo.forEach((solver) => solver.networks.forEach((network) => entries.set(network.chainId, network.chainName)))
+
+  solversInfo.forEach((solver) => {
+    solver.networks.forEach((network) => entries.set(network.chainId, network.chainName))
+  })
+
   return [...entries.entries()].sort((a, b) => a[1].localeCompare(b[1]))
 }
 
 export function getEnvironmentOptions(solversInfo: SolverInfo[]): string[] {
   const environments = new Set<string>()
-  solversInfo.forEach((solver) =>
-    solver.networks.forEach((network) => network.environments.forEach((env) => environments.add(env))),
-  )
+
+  solversInfo.forEach((solver) => {
+    solver.networks.forEach((network) => {
+      network.environments.forEach((environment) => environments.add(environment))
+    })
+  })
+
   return [...environments].sort()
 }
 
@@ -62,34 +65,5 @@ export function filterSolvers(
       solver.networks.some((network) => network.environments.includes(environmentFilter))
 
     return isNetworkMatch && isEnvironmentMatch && matchesSearch(solver, query)
-  })
-}
-
-export function buildBodyRows(
-  solvers: SolverInfo[],
-  expandedRows: Record<string, boolean>,
-  networkFilter: string,
-  environmentFilter: string,
-  onToggle: (solverId: string) => void,
-): React.ReactNode {
-  if (!solvers.length) {
-    return (
-      <tr>
-        <td colSpan={5}>
-          <Placeholder>No solvers match your current filters.</Placeholder>
-        </td>
-      </tr>
-    )
-  }
-
-  return solvers.flatMap((solver) => {
-    const isExpanded = !!expandedRows[solver.solverId]
-    const deployments = filterDeployments(solver.deployments, networkFilter, environmentFilter)
-    const summary = (
-      <SolverSummaryRow key={solver.solverId} solver={solver} isExpanded={isExpanded} onToggle={onToggle} />
-    )
-
-    if (!isExpanded) return [summary]
-    return [summary, <SolverDetailsRow key={`${solver.solverId}-details`} solver={solver} deployments={deployments} />]
   })
 }

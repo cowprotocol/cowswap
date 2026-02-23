@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { Placeholder } from './Solvers.styles'
@@ -27,8 +26,20 @@ import {
 import { AddressLink } from '../../components/common/AddressLink'
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
 
+type ChainInfoEntry = {
+  logo?: {
+    light?: string
+  }
+}
+
+const CHAIN_INFO_BY_ID = CHAIN_INFO as Partial<Record<number, ChainInfoEntry>>
+
 function getChainIcon(chainId: number): string | undefined {
-  return CHAIN_INFO[chainId as SupportedChainId]?.logo?.light || undefined
+  if (!Object.prototype.hasOwnProperty.call(CHAIN_INFO_BY_ID, chainId)) {
+    return undefined
+  }
+
+  return CHAIN_INFO_BY_ID[chainId]?.logo?.light || undefined
 }
 
 function SolverIcon({ solver }: { solver: SolverInfo }): React.ReactNode {

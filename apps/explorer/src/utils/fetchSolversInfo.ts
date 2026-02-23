@@ -18,7 +18,7 @@ export type { SolverDeployment, SolverInfo, SolverNetworkInfo, SolversInfo } fro
 
 const CMS_BASE_URL =
   process.env.REACT_APP_CMS_BASE_URL || process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api'
-const CMS_ORIGIN = new URL(CMS_BASE_URL).origin
+const CMS_ORIGIN = getCmsOrigin(CMS_BASE_URL)
 const SOLVERS_QUERY = [
   'fields[0]=solverId',
   'fields[1]=displayName',
@@ -90,6 +90,18 @@ function mapCmsSolversToSolversInfo(cmsSolvers: CmsEntity<CmsSolverAttributes>[]
     .sort((a, b) => a.displayName.localeCompare(b.displayName))
 }
 
+function getCmsOrigin(baseUrl: string): string {
+  try {
+    return new URL(baseUrl).origin
+  } catch {
+    if (typeof window !== 'undefined' && window.location?.origin) {
+      return window.location.origin
+    }
+
+    return ''
+  }
+}
+
 function mapSolverDeployments(entries: CmsEntity<CmsSolverNetworkAttributes>[]): SolverDeployment[] {
   return entries.map(mapSolverDeployment).filter(isDefined).sort(sortSolverDeployments)
 }
@@ -132,28 +144,33 @@ function normalizeCmsImageUrl(url?: string | null): string | undefined {
   }
 
   if (url.startsWith('/')) {
-    return `${CMS_ORIGIN}${url}`
+    return CMS_ORIGIN ? `${CMS_ORIGIN}${url}` : url
   }
 
-  return `${CMS_ORIGIN}/${url}`
+  return CMS_ORIGIN ? `${CMS_ORIGIN}/${url}` : `/${url}`
 }
 
 function filterSolversByNetwork(allSolvers: SolversInfo, network?: number): SolversInfo {
-  if (!network) {
+  if (network === undefined) {
     return allSolvers
   }
 
   return allSolvers
     .map((solver) => {
       const deployments = solver.deployments.filter((deployment) => deployment.chainId === network)
+      const networks = mapSolverNetworks(deployments)
+
+      if (!networks.length) {
+        return undefined
+      }
 
       return {
         ...solver,
         deployments,
-        networks: mapSolverNetworks(deployments),
+        networks,
       }
     })
-    .filter((solver) => solver.deployments.length > 0)
+    .filter(isDefined)
 }
 
 function mapCmsSolver(solver: CmsEntity<CmsSolverAttributes>): SolverInfo | undefined {

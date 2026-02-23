@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { fetchSolversInfo, SolversInfo } from 'utils/fetchSolversInfo'
 
-type UseSolversInfo = {
+export type UseSolversInfoResult = {
   solversInfo: SolversInfo
   isLoading: boolean
   error: string | null
@@ -10,7 +10,7 @@ type UseSolversInfo = {
 
 const EMPTY_SOLVERS_INFO: SolversInfo = []
 
-export function useSolversInfo(network?: number): UseSolversInfo {
+export function useSolversInfo(network?: number): UseSolversInfoResult {
   const [solversInfo, setSolversInfo] = useState<SolversInfo>(EMPTY_SOLVERS_INFO)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -44,5 +44,12 @@ export function useSolversInfo(network?: number): UseSolversInfo {
     }
   }, [network])
 
-  return { solversInfo, isLoading, error }
+  return useMemo(
+    () => ({
+      solversInfo,
+      isLoading,
+      error,
+    }),
+    [error, isLoading, solversInfo],
+  )
 }

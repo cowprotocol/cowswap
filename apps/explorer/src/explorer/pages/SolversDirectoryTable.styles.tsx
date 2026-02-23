@@ -4,6 +4,33 @@ import styled from 'styled-components/macro'
 
 import { SimpleTable } from '../../components/common/SimpleTable'
 
+const DEPLOYMENTS_GRID_TEMPLATE_COLUMNS = '12rem 8rem 1fr 1fr 6rem'
+
+type EnvTagPalette = {
+  color: string
+  background: string
+  border: string
+}
+
+const DEFAULT_ENV_TAG_PALETTE: EnvTagPalette = {
+  color: Color.explorer_orange1,
+  background: Color.explorer_orangeOpacity,
+  border: Color.explorer_orange1,
+}
+
+const ENV_TAG_PALETTE_MAP: Record<string, EnvTagPalette> = {
+  prod: {
+    color: Color.explorer_green1,
+    background: Color.explorer_greenOpacity,
+    border: Color.explorer_green1,
+  },
+  barn: DEFAULT_ENV_TAG_PALETTE,
+}
+
+function getEnvTagPalette(environment: string): EnvTagPalette {
+  return ENV_TAG_PALETTE_MAP[environment] || DEFAULT_ENV_TAG_PALETTE
+}
+
 export const Controls = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -142,11 +169,9 @@ export const EnvTag = styled.span<{ $environment: string }>`
   font-size: 1.2rem;
   font-weight: 600;
   text-transform: lowercase;
-  color: ${({ $environment }): string => ($environment === 'prod' ? Color.explorer_green1 : Color.explorer_orange1)};
-  background: ${({ $environment }): string =>
-    $environment === 'prod' ? Color.explorer_greenOpacity : Color.explorer_orangeOpacity};
-  border: 0.1rem solid
-    ${({ $environment }): string => ($environment === 'prod' ? Color.explorer_green1 : Color.explorer_orange1)};
+  color: ${({ $environment }): string => getEnvTagPalette($environment).color};
+  background: ${({ $environment }): string => getEnvTagPalette($environment).background};
+  border: 0.1rem solid ${({ $environment }): string => getEnvTagPalette($environment).border};
 `
 
 export const NetworkIcon = styled.img`
@@ -170,7 +195,7 @@ export const DeploymentsPanelTitle = styled.h3`
 
 export const DeploymentsGridHeader = styled.div`
   display: grid;
-  grid-template-columns: 12rem 8rem 1fr 1fr 6rem;
+  grid-template-columns: ${DEPLOYMENTS_GRID_TEMPLATE_COLUMNS};
   gap: 0.8rem;
   color: ${Color.explorer_textSecondary2};
   font-size: 1.1rem;
@@ -179,7 +204,7 @@ export const DeploymentsGridHeader = styled.div`
 
 export const DeploymentsGridRow = styled.div`
   display: grid;
-  grid-template-columns: 12rem 8rem 1fr 1fr 6rem;
+  grid-template-columns: ${DEPLOYMENTS_GRID_TEMPLATE_COLUMNS};
   gap: 0.8rem;
   padding: 0.6rem 0;
   border-top: 0.1rem solid ${Color.explorer_border};
