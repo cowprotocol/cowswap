@@ -5,7 +5,7 @@ import type { NotificationModel } from '@cowprotocol/core'
 
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { markNotificationsAsReadCloneArrayAtom } from 'modules/notifications/state/readNotificationsAtom'
-import { isSidebarNotification } from 'modules/notifications/utils/filterNotifications.utils'
+import { isSpeechBubbleNotification } from 'modules/notifications/utils/filterNotifications.utils'
 
 import { useAccountNotifications } from './useAccountNotifications'
 
@@ -21,7 +21,7 @@ export function useSpeechBubbleNotification(): {
     if (!notifications) return []
 
     return (notifications || [])
-      .filter(isSidebarNotification)
+      .filter(isSpeechBubbleNotification)
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   }, [notifications])
 
