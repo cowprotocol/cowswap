@@ -29,7 +29,7 @@ import {
   useCommonTradeConfirmContext,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
+import { HighFeeWarning, RowDeadline, RowQuoteId } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -68,12 +68,13 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const swapBridgeClickEventData = useSwapBridgeClickEventData()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
-  const { bridgeQuote } = useTradeQuote()
+  const { bridgeQuote, quote, error: quoteError } = useTradeQuote()
 
   const bridgeProvider = bridgeQuote?.providerInfo
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
+  const quoteResponse = quoteError ? undefined : quote?.quoteResults.quoteResponse
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
@@ -105,7 +106,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     return true
   }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
-  const confirmText = useGetConfirmButtonLabel('swap', shouldDisplayBridgeDetails)
+  const confirmText = useGetConfirmButtonLabel('swap', shouldDisplayBridgeDetails, true)
 
   const swapBridgeClickEvent = useMemo(
     () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click' }),
@@ -169,6 +170,11 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     withTimelineDot={false}
                   >
                     <RowDeadline deadline={deadline} />
+                    <RowQuoteId
+                      quoteId={quoteResponse?.id}
+                      isVerified={quoteResponse?.verified}
+                      expiration={quoteResponse?.expiration}
+                    />
                   </TradeBasicConfirmDetails>
                 )}
                 {restContent}
