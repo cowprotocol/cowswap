@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-02-20 15:31\n"
+"PO-Revision-Date: 2026-02-23 13:28\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -725,6 +725,10 @@ msgstr "Orden de cancelación"
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
 msgstr "<0><1>Vested vCOW</1> es la porción de su saldo de token vCOW, que está completamente disponible para convertir al token COW. </0><2>Esto incluye cualquier vCU recibida a través de un <3>airdrop.</3></2><4>Al convertir tu saldo vCU adquirido a COW, tu saldo invertido será convertido.</4>"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
+msgid "Quote verified by CoW Protocol simulation"
+msgstr "Cotización verificada por la simulación de CoW Protocol"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown Hook"
@@ -1648,6 +1652,10 @@ msgstr "La característica de bridging está operada exclusivamente por el terce
 #: libs/ui/src/pure/ContextMenu/ContextMenuCopyButton.tsx
 #~ msgid "Copy address"
 #~ msgstr "Copy address"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteIdTooltipContent.tsx
+msgid "Refresh in:"
+msgstr "Se actualiza en:"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/LimitPriceRow.tsx
 msgid "The limit price"
@@ -2834,6 +2842,10 @@ msgstr "Puente cuesta <0/>"
 msgid "Reset"
 msgstr "Resetear"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteIdTooltipContent.tsx
+msgid "Share this reference when reporting an issue with this quote."
+msgstr "Comparte esta referencia al reportar un problema con esta cotización."
+
 #: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "No fee for order placement!"
 msgstr "¡Sin cargo por realizar el pedido!"
@@ -2959,6 +2971,10 @@ msgstr "Reduce su deslizamiento rompiendo grandes pedidos en pequeños"
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "El intercambio de coW es el único intercambio que coincide con Coincidencias de Wants (CoWs): swaps peer-to-peer que ahorran en costos de liquidación."
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/index.tsx
+msgid "Copied!"
+msgstr "¡Copiado!"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
 msgstr "CoW Swap utiliza un {accountProxyLabelString} dedicado, controlado solo por ti, para asegurar un puente liso. Confirma la dirección del destinatario anterior es <0/>"
@@ -2997,6 +3013,10 @@ msgstr "Protección de precios"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve {wrappedSymbol} failed!"
 msgstr "¡Aprobar {wrappedSymbol} falló!"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
+msgid "Verified"
+msgstr "Verificada"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Hooks are interactions before/after order execution."
@@ -3525,6 +3545,10 @@ msgstr "Limitar pedido"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 msgid "Insufficient allowance"
 msgstr "Permiso insuficiente"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
+msgid "Unverified"
+msgstr "No verificada"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
@@ -5318,6 +5342,10 @@ msgstr "Bridged vía"
 #~ msgid "Swap bridged via your {ACCOUNT_PROXY_LABEL}: <0/>"
 #~ msgstr "Swap bridged via your {ACCOUNT_PROXY_LABEL}: <0/>"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/index.tsx
+msgid "Copy full quote ID"
+msgstr "Copiar el ID completo de la cotización"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Simulation report"
 msgstr "Informe de simulación"
@@ -5545,6 +5573,10 @@ msgstr "Las buenas noticias"
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "yield"
 msgstr "rendimiento"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
+msgid "Quote not yet verified by CoW Protocol simulation"
+msgstr "Cotización aún no verificada por la simulación de CoW Protocol"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Buy token"
@@ -6483,6 +6515,11 @@ msgstr "La cotización se actualizará en {time}"
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Dark mode"
 msgstr "Modo oscuro"
+
+#: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/index.tsx
+msgid "Quote ID"
+msgstr "ID de cotización"
 
 #: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
