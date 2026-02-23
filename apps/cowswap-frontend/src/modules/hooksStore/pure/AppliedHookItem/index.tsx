@@ -22,6 +22,7 @@ interface HookItemProp {
   account: string | undefined
   hookDetails: CowHookDetails
   dapp: HookDapp | undefined
+  disabled?: boolean
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
   editHook: (uuid: string) => void
@@ -34,8 +35,17 @@ const isBundleSimulationReady = true
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, max-lines-per-function
+export function AppliedHookItem({
+  account,
+  hookDetails,
+  dapp,
+  disabled = false,
+  isPreHook,
+  editHook,
+  removeHook,
+  index,
+}: HookItemProp) {
   const { isValidating, mutate } = useTenderlyBundleSimulation()
   const { i18n } = useLingui()
   const simulationData = useSimulationData(hookDetails.uuid)
@@ -60,13 +70,17 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
           {isValidating && <styledEl.Spinner />}
         </styledEl.HookItemInfo>
         <styledEl.HookItemActions>
-          <styledEl.ActionBtn onClick={() => mutate()} disabled={isValidating}>
+          <styledEl.ActionBtn onClick={() => mutate()} disabled={isValidating || disabled}>
             <RefreshCw size={14} />
           </styledEl.ActionBtn>
-          <styledEl.ActionBtn onClick={() => editHook(hookDetails.uuid)}>
+          <styledEl.ActionBtn onClick={disabled ? undefined : () => editHook(hookDetails.uuid)} disabled={disabled}>
             <Edit2 size={14} />
           </styledEl.ActionBtn>
-          <styledEl.ActionBtn onClick={() => removeHook(hookDetails.uuid, isPreHook)} actionType="remove">
+          <styledEl.ActionBtn
+            onClick={disabled ? undefined : () => removeHook(hookDetails.uuid, isPreHook)}
+            actionType="remove"
+            disabled={disabled}
+          >
             <Trash2 size={14} />
           </styledEl.ActionBtn>
         </styledEl.HookItemActions>

@@ -1,28 +1,15 @@
 import { RowFixed, UI } from '@cowprotocol/ui'
 
-import { MenuButton, MenuList } from '@reach/menu-button'
+import { MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-export const StyledMenuButton = styled(MenuButton)`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: transparent;
-  margin: 0;
-  padding: 0;
-  color: inherit;
-  display: flex;
-  align-items: center;
+import { SettingsButton } from 'modules/trade/pure/Settings/styled'
 
-  &:hover,
-  &:focus {
-    cursor: pointer;
-    outline: none;
-    color: currentColor;
-  }
-`
+// TODO: There's some duplication between this file and modules/trade/pure/Settings/styled.
+// Using a re-export here until that's addressed properly.
+
+export const StyledMenuButton = SettingsButton
 
 export const StyledMenu = styled.div`
   margin: 0;

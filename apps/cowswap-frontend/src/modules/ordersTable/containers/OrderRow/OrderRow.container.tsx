@@ -15,6 +15,7 @@ import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { RateInfo } from 'common/pure/RateInfo'
@@ -101,12 +102,13 @@ export function OrderRow({
   }, [spotPrice, feeAmount, order])
   const isSafeWallet = useIsSafeWallet()
 
+  const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const showCancellationModal = useMemo(() => {
     return orderActions.getShowCancellationModal(order)
   }, [orderActions, order])
   const alternativeOrderModalContext = useMemo(
-    () => orderActions.getAlternativeOrderModalContext(order),
-    [order, orderActions],
+    () => (isChainIdDeprecated ? undefined : orderActions.getAlternativeOrderModalContext(order)),
+    [order, orderActions, isChainIdDeprecated],
   )
 
   const withAllowanceWarning = hasEnoughAllowance === false
