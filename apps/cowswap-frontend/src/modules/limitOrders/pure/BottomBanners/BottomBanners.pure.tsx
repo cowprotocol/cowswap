@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, ReactNode } from 'react'
 
 import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { ClosableBanner } from '@cowprotocol/ui'
@@ -7,15 +7,18 @@ import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link as ReactRouterLink } from 'react-router'
 
-import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { DeprecatedNetworkBanner } from 'modules/swap'
 
-import * as styledEl from './styled'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+
+import * as styledEl from './BottomBanners.styled'
 
 const LOCAL_STORAGE_KEY = 'limitOrders_showInfoBanner'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function InfoBanner() {
+export function BottomBanners(): ReactNode {
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
+
   const callback = useCallback(
     (close: () => void) => (
       <styledEl.InfoPopup>
@@ -47,6 +50,10 @@ export function InfoBanner() {
     ),
     [],
   )
+
+  if (isProviderNetworkDeprecated) {
+    return <DeprecatedNetworkBanner />
+  }
 
   return <ClosableBanner storageKey={LOCAL_STORAGE_KEY} callback={callback} />
 }

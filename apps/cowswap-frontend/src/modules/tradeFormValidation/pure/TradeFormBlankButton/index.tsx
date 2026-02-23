@@ -42,6 +42,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
     cursor: auto;
     animation: none;
     transform: none;
+    cursor: not-allowed;
   }
 `
 
