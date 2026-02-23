@@ -1,4 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { getCmsClient } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import type {
@@ -33,24 +34,53 @@ const SOLVERS_QUERY = [
   'populate[solver_networks][populate][environment][fields][0]=name',
   'pagination[pageSize]=200',
 ].join('&')
-const SOLVERS_API_URL = `${CMS_BASE_URL}/solvers?${SOLVERS_QUERY}`
 
 let solversInfoCache: SolversInfo | undefined
 
 export async function fetchSolversInfo(network?: number): Promise<SolversInfo> {
   if (!solversInfoCache) {
-    const response = await fetch(SOLVERS_API_URL)
+    const cmsClient = getCmsClient()
+    const { data, error, response } = await cmsClient.GET('/solvers', {
+      params: {
+        query: {},
+      },
+      querySerializer: serializeSolversQuery,
+    })
 
-    if (!response.ok) {
-      const details = await response.text().catch(() => '')
+    if (!response.ok || error) {
+      const details = formatCmsError(error) || response.statusText
       throw new Error(`Failed to fetch solvers info: [${response.status}] ${details}`)
     }
 
-    const body = (await response.json()) as CmsSolversResponse
-    solversInfoCache = mapCmsSolversToSolversInfo(body.data || [])
+    const body = data as CmsSolversResponse | undefined
+    solversInfoCache = mapCmsSolversToSolversInfo(body?.data || [])
   }
 
   return filterSolversByNetwork(solversInfoCache, network)
+}
+
+function serializeSolversQuery(_params: unknown): string {
+  return SOLVERS_QUERY
+}
+
+function formatCmsError(error: unknown): string {
+  if (!error) {
+    return ''
+  }
+
+  if (typeof error === 'string') {
+    return error
+  }
+
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  try {
+    return JSON.stringify(error)
+  } catch {
+    return String(error)
+  }
 }
 
 function mapCmsSolversToSolversInfo(cmsSolvers: CmsEntity<CmsSolverAttributes>[]): SolversInfo {
