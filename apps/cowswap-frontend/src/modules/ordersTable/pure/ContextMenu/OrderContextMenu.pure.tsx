@@ -13,7 +13,7 @@ export interface OrderContextMenuProps {
   openReceipt: Command
   activityUrl: string | undefined
   showCancellationModal: Command | null
-  alternativeOrderModalContext: AlternativeOrderModalContext
+  alternativeOrderModalContext?: AlternativeOrderModalContext
 }
 
 export function OrderContextMenu({

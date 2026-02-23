@@ -52,6 +52,7 @@ import {
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { LastTimePriceUpdateResetUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
+import { ProviderNetworkSupportedUpdater } from 'common/updaters/ProviderNetworkSupportedUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
@@ -110,6 +111,7 @@ export function Updaters(): ReactNode {
       <SurplusInvalidationListenerUpdater />
       <BridgingEnabledUpdater />
       <FaviconAnimationUpdater />
+      <ProviderNetworkSupportedUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}

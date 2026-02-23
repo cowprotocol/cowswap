@@ -10,7 +10,8 @@ export const Wrapper = styled.div`
   padding: 0;
 `
 
-export const AddHookButton = styled.div`
+export const AddHookButton = styled.button`
+  background: transparent;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -37,10 +38,16 @@ export const AddHookButton = styled.div`
     }
   }
 
-  &:hover {
+  &:not(:disabled):hover {
     border-color: var(${UI.COLOR_PRIMARY});
     color: var(${UI.COLOR_PRIMARY});
     background-color: var(${UI.COLOR_PRIMARY_OPACITY_10});
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `
 
