@@ -42,16 +42,16 @@ function getServiceWorkerAction(win: Window): 'Cache hit' | 'Cache miss' | 'Not 
 }
 
 function reportInitAnalytics(cowAnalytics: CowAnalytics, webVitalsAnalytics: WebVitalsAnalytics | undefined): void {
+  if (typeof window === 'undefined') {
+    return
+  }
+
   if (initializedAnalyticsInstances.has(cowAnalytics)) {
     return
   }
 
   initializedAnalyticsInstances.add(cowAnalytics)
   webVitalsAnalytics?.reportWebVitals()
-
-  if (typeof window === 'undefined') {
-    return
-  }
 
   cowAnalytics.setContext(AnalyticsContext.customBrowserType, getBrowserType(window))
   cowAnalytics.sendEvent({
