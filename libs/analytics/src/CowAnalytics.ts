@@ -1,3 +1,5 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 export enum AnalyticsContext {
   chainId = 'chainId',
   walletName = 'walletName',
@@ -13,7 +15,7 @@ export type EventOptions = {
   label?: string
   value?: number
   nonInteraction?: boolean
-  chainId?: number
+  chainId?: SupportedChainId
 }
 
 export interface OutboundLinkParams {
