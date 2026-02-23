@@ -6,8 +6,6 @@ import ICON_MESSAGE_READ from '@cowprotocol/assets/images/icon-message-read.svg'
 import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
-import { isSidebarNotification } from 'modules/notifications/utils/filterNotifications.utils'
-
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import {
@@ -24,6 +22,7 @@ import { NOTIFICATION_MARK_READ_DELAY_MS } from '../../constants'
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
 import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
+import { isSidebarNotification } from '../../utils/filterNotifications.utils'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
 
 interface EmptyNotificationsProps {

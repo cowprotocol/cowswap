@@ -4,7 +4,10 @@ export function useDelay(delayMs: number | null): boolean {
   const [hasDelayElapsed, setHasDelayElapsed] = useState(!(typeof delayMs === 'number' && delayMs > 0))
 
   useEffect(() => {
-    if (typeof delayMs !== 'number' || delayMs <= 0) return
+    if (typeof delayMs !== 'number' || delayMs <= 0) {
+      setHasDelayElapsed(true)
+      return
+    }
 
     setHasDelayElapsed(false)
 
