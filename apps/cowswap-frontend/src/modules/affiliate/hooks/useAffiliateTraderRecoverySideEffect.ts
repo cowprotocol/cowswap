@@ -18,7 +18,7 @@ export function useAffiliateTraderRecoverySideEffect(): void {
   const localCode = useRefCodeFromLocalTrades(account)
   const { data: orderbookCode } = useRefCodeFromOrderbookTrades({
     account,
-    enabled: !localCode && !!account,
+    enabled: !localCode,
   })
 
   useEffect(() => {

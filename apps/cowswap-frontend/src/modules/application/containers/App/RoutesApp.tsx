@@ -47,7 +47,7 @@ const AccountAffiliatePartner = lazy(() => import(/* webpackChunkName: "affiliat
 const AccountAffiliateTrader = lazy(
   () => import(/* webpackChunkName: "affiliate_trader" */ 'pages/Account/AffiliateTrader'),
 )
-const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
+const AccountNotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 
 function ExternalRedirect({ url }: { url: string }): null {
   useEffect(() => {

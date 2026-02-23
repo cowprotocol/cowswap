@@ -22,7 +22,7 @@ export function useRefCodeFromOrderbookTrades(
   const { account, enabled } = params
 
   return useSWR<string | undefined>(
-    enabled ? ['affiliate-refCode-orderbook', account] : null,
+    enabled && !!account ? ['affiliate-refCode-orderbook', account] : null,
     async () => (!account ? undefined : findRefCodeInPastTrades(account)),
     { refreshInterval: AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS },
   )

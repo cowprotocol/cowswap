@@ -23,7 +23,7 @@ export function useHasOrderbookTrades(params: UseHasOrderbookTradesParams): UseH
   const { account, enabled } = params
 
   return useSWR<boolean>(
-    enabled ? ['affiliate-eligibility', account] : null,
+    enabled && !!account ? ['affiliate-eligibility', account] : null,
     async () => (!account ? false : checkIfTraderHasPastTrades(account)),
     {
       revalidateOnFocus: false,

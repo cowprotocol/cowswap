@@ -10,6 +10,8 @@ export type AffiliateTraderPayoutConfirmation = Record<string, boolean>
 const affiliateTraderPayoutConfirmationByWalletAtom = atomWithStorage<AffiliateTraderPayoutConfirmation>(
   AFFILIATE_TRADER_PAYOUT_CONFIRMATIONS_STORAGE_KEY,
   {},
+  undefined,
+  { getOnInit: true },
 )
 
 export const setAffiliateTraderPayoutConfirmationAtom = atom(null, (get, set, isConfirmed: boolean): void => {

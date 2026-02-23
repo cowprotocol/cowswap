@@ -56,11 +56,11 @@ export function useAffiliateTraderEligibility(params: UseAffiliateTraderEligibil
     if (hasLocalTrades) {
       return TraderEligibilityStatus.HAS_PAST_TRADES
     }
-    if (isLoading || hasOrderbookTrades === undefined) {
-      return TraderEligibilityStatus.LOADING
-    }
     if (error) {
       return TraderEligibilityStatus.ERROR
+    }
+    if (isLoading || hasOrderbookTrades === undefined) {
+      return TraderEligibilityStatus.LOADING
     }
     if (hasOrderbookTrades) {
       return TraderEligibilityStatus.HAS_PAST_TRADES

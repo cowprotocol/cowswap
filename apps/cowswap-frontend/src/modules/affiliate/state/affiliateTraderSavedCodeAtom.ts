@@ -19,6 +19,8 @@ export interface AffiliateTraderSavedCodeState {
 const affiliateTraderSavedCodeByWalletAtom = atomWithStorage<Record<string, AffiliateTraderSavedCodeState | undefined>>(
   AFFILIATE_TRADER_SAVED_CODES_STORAGE_KEY,
   {},
+  undefined,
+  { getOnInit: true },
 )
 
 export const setAffiliateTraderSavedCodeAtom = atom(
