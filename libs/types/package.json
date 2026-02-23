@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/types",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "CoW Swap types",
   "type": "commonjs",
   "main": "./src/index.ts",
