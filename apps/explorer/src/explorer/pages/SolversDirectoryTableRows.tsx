@@ -66,7 +66,11 @@ function NetworkChips({ solver }: { solver: SolverInfo }): React.ReactNode {
 function EnvironmentTags({ solver }: { solver: SolverInfo }): React.ReactNode {
   const environments = new Set<string>()
 
-  solver.networks.forEach((network) => network.environments.forEach((environment) => environments.add(environment)))
+  solver.networks.forEach((network) => {
+    network.environments.forEach((environment) => {
+      environments.add(environment)
+    })
+  })
 
   return (
     <EnvTags>
@@ -86,11 +90,17 @@ type SolverSummaryRowProps = {
 }
 
 export function SolverSummaryRow({ solver, isExpanded, onToggle }: SolverSummaryRowProps): React.ReactNode {
+  const toggleAriaLabel = `Toggle deployments for solver ${solver.displayName} (${solver.solverId})`
+
   return (
     <tr>
       <td className="solver">
         <SolverCell>
-          <ExpandButton onClick={(): void => onToggle(solver.solverId)} aria-label="Toggle deployments">
+          <ExpandButton
+            onClick={(): void => onToggle(solver.solverId)}
+            aria-expanded={isExpanded}
+            aria-label={toggleAriaLabel}
+          >
             {isExpanded ? '▾' : '▸'}
           </ExpandButton>
           <SolverIcon solver={solver} />

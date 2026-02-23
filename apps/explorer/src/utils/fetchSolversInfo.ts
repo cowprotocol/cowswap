@@ -1,6 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getCmsClient } from '@cowprotocol/core'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import type {
   CmsEntity,
@@ -19,6 +18,7 @@ export type { SolverDeployment, SolverInfo, SolverNetworkInfo, SolversInfo } fro
 const CMS_BASE_URL =
   process.env.REACT_APP_CMS_BASE_URL || process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api'
 const CMS_ORIGIN = getCmsOrigin(CMS_BASE_URL)
+const CHAIN_INFO_BY_ID = CHAIN_INFO as Partial<Record<number, { label?: string }>>
 const SOLVERS_QUERY = [
   'fields[0]=solverId',
   'fields[1]=displayName',
@@ -67,15 +67,12 @@ function formatCmsError(error: unknown): string {
   if (!error) {
     return ''
   }
-
   if (typeof error === 'string') {
     return error
   }
-
   if (error instanceof Error) {
     return error.message
   }
-
   try {
     return JSON.stringify(error)
   } catch {
@@ -97,7 +94,6 @@ function getCmsOrigin(baseUrl: string): string {
     if (typeof window !== 'undefined' && window.location?.origin) {
       return window.location.origin
     }
-
     return ''
   }
 }
@@ -108,12 +104,10 @@ function mapSolverDeployments(entries: CmsEntity<CmsSolverNetworkAttributes>[]):
 
 function mapSolverNetworks(deployments: SolverDeployment[]): SolverNetworkInfo[] {
   const chainIdToEnvironments = new Map<number, Set<string>>()
-
   for (const deployment of deployments) {
     if (!deployment.active) {
       continue
     }
-
     const currentEnvironments = chainIdToEnvironments.get(deployment.chainId) || new Set<string>()
     if (deployment.environment) {
       currentEnvironments.add(deployment.environment)
@@ -131,18 +125,16 @@ function mapSolverNetworks(deployments: SolverDeployment[]): SolverNetworkInfo[]
 }
 
 function getChainName(chainId: number): string {
-  return CHAIN_INFO[chainId as SupportedChainId]?.label || `Chain ${chainId}`
+  return CHAIN_INFO_BY_ID[chainId]?.label || `Chain ${chainId}`
 }
 
 function normalizeCmsImageUrl(url?: string | null): string | undefined {
   if (!url) {
     return undefined
   }
-
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url
   }
-
   if (url.startsWith('/')) {
     return CMS_ORIGIN ? `${CMS_ORIGIN}${url}` : url
   }
@@ -154,16 +146,13 @@ function filterSolversByNetwork(allSolvers: SolversInfo, network?: number): Solv
   if (network === undefined) {
     return allSolvers
   }
-
   return allSolvers
     .map((solver) => {
       const deployments = solver.deployments.filter((deployment) => deployment.chainId === network)
       const networks = mapSolverNetworks(deployments)
-
       if (!networks.length) {
         return undefined
       }
-
       return {
         ...solver,
         deployments,
@@ -175,18 +164,14 @@ function filterSolversByNetwork(allSolvers: SolversInfo, network?: number): Solv
 
 function mapCmsSolver(solver: CmsEntity<CmsSolverAttributes>): SolverInfo | undefined {
   const attributes = solver.attributes
-
   if (!hasRequiredSolverFields(attributes)) {
     return undefined
   }
-
   const deployments = mapSolverDeployments(attributes.solver_networks?.data || [])
   const networks = mapSolverNetworks(deployments)
-
   if (!networks.length) {
     return undefined
   }
-
   return {
     solverId: attributes.solverId,
     displayName: attributes.displayName,
@@ -205,11 +190,9 @@ function hasRequiredSolverFields(attributes?: CmsSolverAttributes | null): attri
 function mapSolverDeployment(entry: CmsEntity<CmsSolverNetworkAttributes>): SolverDeployment | undefined {
   const attributes = entry.attributes
   const chainId = getChainId(attributes)
-
   if (!chainId) {
     return undefined
   }
-
   return {
     chainId,
     chainName: getChainName(chainId),
@@ -223,10 +206,8 @@ function mapSolverDeployment(entry: CmsEntity<CmsSolverNetworkAttributes>): Solv
 function sortSolverDeployments(a: SolverDeployment, b: SolverDeployment): number {
   const byChain = a.chainName.localeCompare(b.chainName)
   if (byChain !== 0) return byChain
-
   const byEnvironment = (a.environment || '').localeCompare(b.environment || '')
   if (byEnvironment !== 0) return byEnvironment
-
   return (a.address || '').localeCompare(b.address || '')
 }
 

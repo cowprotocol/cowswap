@@ -33,7 +33,9 @@ export function getNetworkOptions(solversInfo: SolverInfo[]): [number, string][]
   const entries = new Map<number, string>()
 
   solversInfo.forEach((solver) => {
-    solver.networks.forEach((network) => entries.set(network.chainId, network.chainName))
+    solver.networks.forEach((network) => {
+      entries.set(network.chainId, network.chainName)
+    })
   })
 
   return [...entries.entries()].sort((a, b) => a[1].localeCompare(b[1]))
@@ -44,7 +46,9 @@ export function getEnvironmentOptions(solversInfo: SolverInfo[]): string[] {
 
   solversInfo.forEach((solver) => {
     solver.networks.forEach((network) => {
-      network.environments.forEach((environment) => environments.add(environment))
+      network.environments.forEach((environment) => {
+        environments.add(environment)
+      })
     })
   })
 
