@@ -33,7 +33,7 @@ export const SectionTitle = styled.h2`
 
 export const SectionTitleMeta = styled.span`
   color: ${Color.explorer_textSecondary2};
-  font-size: 16px;
+  font-size: 1.6rem;
 `
 
 export const Section = styled.section`
@@ -91,7 +91,7 @@ export const SnapshotContent = styled.div`
 
 export const ChartWrapper = styled.div`
   width: 100%;
-  border: 0.1rem solid rgba(255, 255, 255, 0.06);
+  border: 0.1rem solid ${Color.explorer_border};
   border-radius: 0.6rem;
   overflow: hidden;
 
