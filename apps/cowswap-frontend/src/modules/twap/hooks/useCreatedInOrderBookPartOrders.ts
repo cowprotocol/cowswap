@@ -37,44 +37,6 @@ export interface UseCreatedInOrderBookPartOrdersResult {
   cacheEntries: TwapPartOrdersCacheByUid
 }
 
-const isVirtualPart = false
-const EMPTY_RESULT: UseCreatedInOrderBookPartOrdersResult = {
-  orders: [],
-  cacheEntries: EMPTY_CACHE,
-}
-
-function getOrdersInfo(
-  partOrderIds: string[],
-  allOrdersByUid: Record<string, EnrichedOrder>,
-  twapPartOrdersMap: Record<string, TwapPartOrderItem>,
-  twapOrders: Record<string, TwapOrderItem>,
-): TwapOrderInfo[] {
-  return partOrderIds.reduce<TwapOrderInfo[]>((acc, uid) => {
-    const order = allOrdersByUid[uid]
-    const item = twapPartOrdersMap[uid]
-    const parent = twapOrders[item?.twapOrderId]
-
-    if (order && parent) {
-      acc.push({ item, parent, order })
-    }
-
-    return acc
-  }, [])
-}
-
-function getCacheEntries(ordersInfo: TwapOrderInfo[]): TwapPartOrdersCacheByUid {
-  return ordersInfo.reduce<TwapPartOrdersCacheByUid>((acc, { item, parent, order }) => {
-    if (!TWAP_FINAL_STATUSES.includes(parent.status)) return acc
-
-    acc[item.uid] = {
-      twapOrderId: item.twapOrderId,
-      enrichedOrder: order,
-    }
-
-    return acc
-  }, {})
-}
-
 export function useCreatedInOrderBookPartOrders({
   chainId,
   owner,
@@ -166,4 +128,42 @@ export function useCreatedInOrderBookPartOrders({
     ],
     EMPTY_RESULT,
   )
+}
+
+const isVirtualPart = false
+const EMPTY_RESULT: UseCreatedInOrderBookPartOrdersResult = {
+  orders: [],
+  cacheEntries: EMPTY_CACHE,
+}
+
+function getOrdersInfo(
+  partOrderIds: string[],
+  allOrdersByUid: Record<string, EnrichedOrder>,
+  twapPartOrdersMap: Record<string, TwapPartOrderItem>,
+  twapOrders: Record<string, TwapOrderItem>,
+): TwapOrderInfo[] {
+  return partOrderIds.reduce<TwapOrderInfo[]>((acc, uid) => {
+    const order = allOrdersByUid[uid]
+    const item = twapPartOrdersMap[uid]
+    const parent = twapOrders[item?.twapOrderId]
+
+    if (order && parent) {
+      acc.push({ item, parent, order })
+    }
+
+    return acc
+  }, [])
+}
+
+function getCacheEntries(ordersInfo: TwapOrderInfo[]): TwapPartOrdersCacheByUid {
+  return ordersInfo.reduce<TwapPartOrdersCacheByUid>((acc, { item, parent, order }) => {
+    if (!TWAP_FINAL_STATUSES.includes(parent.status)) return acc
+
+    acc[item.uid] = {
+      twapOrderId: item.twapOrderId,
+      enrichedOrder: order,
+    }
+
+    return acc
+  }, {})
 }

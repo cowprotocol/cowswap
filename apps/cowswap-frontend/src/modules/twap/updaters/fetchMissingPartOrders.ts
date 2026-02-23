@@ -1,4 +1,4 @@
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { getOrders } from 'api/cowProtocol'
 
@@ -27,7 +27,7 @@ function shouldStopScanning(
 }
 
 export async function fetchMissingPartOrders(
-  chainId: number,
+  chainId: SupportedChainId,
   owner: string,
   partOrderIds: string[],
   existingOrdersByUid: Record<string, EnrichedOrder>,

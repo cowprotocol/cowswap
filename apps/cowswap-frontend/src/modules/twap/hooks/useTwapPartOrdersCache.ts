@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TwapPartOrdersCacheByUid, twapPartOrdersCacheAtom } from '../state/twapPartOrdersCacheAtom'
@@ -18,7 +19,7 @@ export function useTwapPartOrdersCache(): UseTwapPartOrdersCacheResult {
 
   const cacheByUid = useMemo(() => {
     if (!chainId || !account) return EMPTY_CACHE
-    const scopeKey = `${chainId}:${account.toLowerCase()}`
+    const scopeKey = `${chainId}:${getAddressKey(account)}`
     return twapPartOrdersCache[scopeKey] || EMPTY_CACHE
   }, [chainId, account, twapPartOrdersCache])
 
@@ -29,8 +30,11 @@ export function useTwapPartOrdersCache(): UseTwapPartOrdersCacheResult {
     }, new Set<string>())
   }, [cacheByUid])
 
-  return {
-    cacheByUid,
-    cachedFinalizedTwapOrderIds,
-  }
+  return useMemo(
+    () => ({
+      cacheByUid,
+      cachedFinalizedTwapOrderIds,
+    }),
+    [cacheByUid, cachedFinalizedTwapOrderIds],
+  )
 }
