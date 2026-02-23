@@ -7,7 +7,7 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
@@ -15,6 +15,7 @@ import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trad
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
@@ -28,6 +29,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isOnline = useIsOnline()
   const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
 
@@ -82,6 +84,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isApproveRequired,
       isInsufficientBalanceOrderAllowed,
       isProviderNetworkUnsupported,
+      isProviderNetworkDeprecated,
       isOnline,
       derivedTradeState,
       intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
@@ -105,6 +108,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isInsufficientBalanceOrderAllowed,
     isOnline,
     isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
     isRestrictedForCountry,
     isSafeReadonlyUser,
     isSupportedWallet,

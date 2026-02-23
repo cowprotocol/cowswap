@@ -10,8 +10,7 @@ import { Pocket } from 'react-feather'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { useCurrentAccountProxyAddress } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
-import { getProxyAccountUrl } from 'modules/accountProxy/utils/getProxyAccountUrl'
+import { getProxyAccountUrl, useCurrentAccountProxyAddress } from 'modules/accountProxy'
 
 const ProxyPageLink = styled(Link)`
   display: flex;
