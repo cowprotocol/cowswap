@@ -384,6 +384,10 @@ msgstr "This is the current market price, including the fee."
 msgid "Convert to COW <0/>"
 msgstr "Convert to COW <0/>"
 
+#: apps/cowswap-frontend/src/modules/swap/containers/DeprecatedNetworkBanner/DeprecatedNetworkBanner.container.tsx
+msgid "You can see your past transactions in Explorer"
+msgstr "You can see your past transactions in Explorer"
+
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
 msgid "Dismiss"
@@ -978,7 +982,7 @@ msgstr "You possibly have other items to claim, but not Airdrops"
 msgid "APR"
 msgstr "APR"
 
-#: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
+#: apps/cowswap-frontend/src/common/pure/NetworksList/ActiveRowLinks/ActiveRowLinks.pure.tsx
 msgid "CoW Protocol Explorer"
 msgstr "CoW Protocol Explorer"
 
@@ -1405,6 +1409,10 @@ msgstr "Your account is affected by the AnySwap Hack"
 msgid "COW vesting from locked GNO"
 msgstr "COW vesting from locked GNO"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Deprecated Network"
+msgstr "Deprecated Network"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 #~ msgid "Limit price (incl.costs)"
 #~ msgstr "Limit price (incl.costs)"
@@ -1465,7 +1473,7 @@ msgstr "A minimum of <0>{time}</0> between parts is required. Decrease the numbe
 msgid "Remove list"
 msgstr "Remove list"
 
-#: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
+#: apps/cowswap-frontend/src/common/pure/NetworksList/ActiveRowLinks/ActiveRowLinks.pure.tsx
 msgid "Help Center"
 msgstr "Help Center"
 
@@ -1945,7 +1953,7 @@ msgstr "<0>Note:</0> {symbol} specifically requires 2 approval transactions. The
 msgid "Earn higher returns with reduced impermanent loss"
 msgstr "Earn higher returns with reduced impermanent loss"
 
-#: apps/cowswap-frontend/src/modules/swap/containers/BottomBanners/index.tsx
+#: apps/cowswap-frontend/src/modules/swap/containers/BottomBanners/BottomBanners.container.tsx
 msgid "Funds stuck? <0>Recover your funds</0>"
 msgstr "Funds stuck? <0>Recover your funds</0>"
 
@@ -2270,7 +2278,7 @@ msgstr "days"
 msgid "This hook is compatible with {compatibleWith}."
 msgstr "This hook is compatible with {compatibleWith}."
 
-#: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
+#: apps/cowswap-frontend/src/common/pure/NetworksList/ActiveRowLinks/ActiveRowLinks.pure.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeStepRow.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
@@ -2335,7 +2343,7 @@ msgstr "Unsupported network. Please change to Gnosis Chain"
 msgid "Debug Step:"
 msgstr "Debug Step:"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/pure/InfoBanner/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/BottomBanners/BottomBanners.pure.tsx
 msgid "Your order may not fill exactly when the market price reaches your limit price."
 msgstr "Your order may not fill exactly when the market price reaches your limit price."
 
@@ -3267,7 +3275,7 @@ msgstr "Connected with"
 msgid "balance detected."
 msgstr "balance detected."
 
-#: apps/cowswap-frontend/src/modules/swap/containers/NetworkBridgeBanner/NetworkBridgeBanner.tsx
+#: apps/cowswap-frontend/src/modules/swap/containers/NetworkBridgeBanner/NetworkBridgeBanner.container.tsx
 msgid "Deposit tokens to the {label} network."
 msgstr "Deposit tokens to the {label} network."
 
@@ -3745,6 +3753,10 @@ msgstr "Trade alert settings info"
 msgid "Define custom total time"
 msgstr "Define custom total time"
 
+#: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
+msgid "Deprecated network"
+msgstr "Deprecated network"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
@@ -4088,6 +4100,10 @@ msgstr "Unlock TWAP orders"
 msgid "Failed to cancel order"
 msgstr "Failed to cancel order"
 
+#: apps/cowswap-frontend/src/modules/swap/containers/DeprecatedNetworkBanner/DeprecatedNetworkBanner.container.tsx
+msgid "{label} has been deactivated"
+msgstr "{label} has been deactivated"
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Uniswap v2 Deposit"
 #~ msgstr "Uniswap v2 Deposit"
@@ -4232,6 +4248,10 @@ msgstr "Transaction"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/SafeTxFields.tsx
 msgid "Safe contracts have a so-called \"nonce.\" This is to ensure that each transaction can be executed only once so no replay attacks are possible."
 msgstr "Safe contracts have a so-called \"nonce.\" This is to ensure that each transaction can be executed only once so no replay attacks are possible."
+
+#: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
+msgid "READ-ONLY"
+msgstr "READ-ONLY"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 msgid "This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution."
@@ -5591,7 +5611,7 @@ msgstr "Learn more about <0>{orderType} orders ↗</0>"
 msgid "Network fees and costs"
 msgstr "Network fees and costs"
 
-#: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
+#: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
 msgid "NEW"
 msgstr "NEW"
 
@@ -6585,7 +6605,7 @@ msgstr "CowSwap Error"
 msgid "Customize your order size, expiration, and number of parts"
 msgstr "Customize your order size, expiration, and number of parts"
 
-#: apps/cowswap-frontend/src/modules/swap/containers/NetworkBridgeBanner/NetworkBridgeBanner.tsx
+#: apps/cowswap-frontend/src/modules/swap/containers/NetworkBridgeBanner/NetworkBridgeBanner.container.tsx
 msgid "{label} token bridge"
 msgstr "{label} token bridge"
 
@@ -6723,7 +6743,7 @@ msgstr "Failed to switch networks from the CoW Swap Interface. In order to use C
 #~ msgid "out of"
 #~ msgstr "out of"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/pure/InfoBanner/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/BottomBanners/BottomBanners.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/ZeroApprovalWarning/ZeroApprovalWarning.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/FallbackHandlerWarning.tsx
