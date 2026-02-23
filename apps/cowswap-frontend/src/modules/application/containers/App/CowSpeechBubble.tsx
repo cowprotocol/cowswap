@@ -3,19 +3,15 @@ import type { ReactNode } from 'react'
 import { Bubble, BubbleContent, CloseButton } from './CowSpeechBubble.styled'
 
 export interface CowSpeechBubbleProps {
-  show: boolean
+  padding: 'small' | 'normal'
   onClose: () => void
   closeButtonAriaLabel: string
   children: ReactNode
 }
 
-export function CowSpeechBubble({ show, onClose, closeButtonAriaLabel, children }: CowSpeechBubbleProps): ReactNode {
-  if (!show) {
-    return null
-  }
-
+export function CowSpeechBubble({ padding, onClose, closeButtonAriaLabel, children }: CowSpeechBubbleProps): ReactNode {
   return (
-    <Bubble>
+    <Bubble $padding={padding}>
       <CloseButton type="button" aria-label={closeButtonAriaLabel} onClick={onClose}>
         ×
       </CloseButton>

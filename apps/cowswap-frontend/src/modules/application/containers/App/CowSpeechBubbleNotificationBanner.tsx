@@ -12,7 +12,8 @@ import { CowSpeechBubble } from './CowSpeechBubble'
 const NotificationText = styled.span`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
+  text-align: left;
 `
 
 const NotificationDescription = styled.span`
@@ -52,7 +53,7 @@ export function CowSpeechBubbleNotificationBanner({
   const linkTarget = url && (url.includes(window.location.host) || url.startsWith('/')) ? '_parent' : '_blank'
 
   return (
-    <CowSpeechBubble show onClose={onClose} closeButtonAriaLabel={t`Dismiss notification`}>
+    <CowSpeechBubble padding="small" onClose={onClose} closeButtonAriaLabel={t`Dismiss notification`}>
       <NotificationText>
         <strong>{title}</strong>
         <NotificationDescription>{description}</NotificationDescription>

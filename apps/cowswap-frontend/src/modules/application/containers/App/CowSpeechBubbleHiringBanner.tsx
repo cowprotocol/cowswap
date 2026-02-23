@@ -38,8 +38,8 @@ function CowSpeechBubbleHiringContent({ onClose }: CowSpeechBubbleHiringContentP
   const displayedText = typingMessage.slice(0, charIndex)
   const showCursor = hasDelayElapsed && !isTypingComplete
 
-  return (
-    <CowSpeechBubble show={hasDelayElapsed} onClose={onClose} closeButtonAriaLabel={t`Dismiss hiring message`}>
+  return hasDelayElapsed ? (
+    <CowSpeechBubble padding="normal" onClose={onClose} closeButtonAriaLabel={t`Dismiss hiring message`}>
       <TypingLine role="status" aria-live="polite" aria-atomic="true">
         <span>{displayedText}</span>
         <Cursor $visible={showCursor} />
@@ -60,7 +60,7 @@ function CowSpeechBubbleHiringContent({ onClose }: CowSpeechBubbleHiringContentP
         <Arrow aria-hidden="true">→</Arrow>
       </JobsLink>
     </CowSpeechBubble>
-  )
+  ) : null
 }
 
 export function CowSpeechBubbleHiringBanner(): ReactNode {

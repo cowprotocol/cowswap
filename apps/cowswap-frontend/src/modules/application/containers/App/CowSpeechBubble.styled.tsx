@@ -22,16 +22,17 @@ const blink = keyframes`
   }
 `
 
-export const Bubble = styled.div`
+export const Bubble = styled.div<{ $padding: 'small' | 'normal' }>`
   position: absolute;
   right: 48%;
   top: -55px;
-  padding: 16px 20px;
+  padding: ${({ $padding }) => ($padding === 'small' ? '16px' : '16px 20px')};
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
-  border-radius: 18px 6px 18px 18px;
+  border-radius: 12px;
   box-shadow: 0 16px 36px -20px rgba(0, 0, 0, 0.45);
   max-width: 260px;
+  width: 260px;
   text-align: center;
   pointer-events: auto;
   z-index: 2;
@@ -49,10 +50,10 @@ export const Bubble = styled.div`
   &::after {
     content: '';
     position: absolute;
-    right: -22px;
-    bottom: 16px;
+    right: -16px;
+    top: 24px;
     border-style: solid;
-    border-width: 0 0 22px 22px;
+    border-width: 0 0 18px 18px;
     border-color: transparent transparent transparent var(${UI.COLOR_PAPER});
   }
 
@@ -60,12 +61,6 @@ export const Bubble = styled.div`
     right: 49%;
     top: -54px;
     max-width: 220px;
-
-    &::after {
-      right: -16px;
-      bottom: 14px;
-      border-width: 0 0 18px 18px;
-    }
   }
 
   ${Media.upToMedium()} {
@@ -88,7 +83,6 @@ export const BubbleContent = styled.div`
   gap: 12px;
   font-size: 16px;
   font-weight: 600;
-  padding: 10px;
 
   ${Media.upToSmall()} {
     font-size: 14px;
