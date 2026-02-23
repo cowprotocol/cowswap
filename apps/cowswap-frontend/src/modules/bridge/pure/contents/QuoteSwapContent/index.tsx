@@ -10,7 +10,7 @@ import { Trans } from '@lingui/react/macro'
 import { ProxyRecipient } from 'modules/accountProxy'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
-import { RowSlippage } from 'modules/tradeWidgetAddons'
+import { QuoteIdTooltipContent, QuoteIdValue, QuoteVerificationBadge, RowSlippage } from 'modules/tradeWidgetAddons'
 
 import { QuoteSwapContext } from '../../../types'
 import { ProxyAccountBanner } from '../../ProxyAccountBanner'
@@ -111,11 +111,27 @@ function createMinReceiveContent(
   }
 }
 
+function createQuoteIdContent(quoteId: string, quoteVerified?: boolean, quoteExpiration?: string | null): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        {t`Quote ID`} <QuoteVerificationBadge isVerified={quoteVerified} />
+        <InfoTooltip content={<QuoteIdTooltipContent expiration={quoteExpiration} />} size={14} />
+      </>
+    ),
+    content: <QuoteIdValue quoteId={quoteId} />,
+  }
+}
+
 export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDetailsContentProps): ReactNode {
   const {
     receiveAmountInfo,
     sellAmount,
     expectedReceive,
+    quoteId,
+    quoteVerified,
+    quoteExpiration,
     slippage,
     recipient,
     bridgeReceiverOverride,
@@ -130,6 +146,7 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
     !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
+    quoteId ? createQuoteIdContent(quoteId, quoteVerified, quoteExpiration) : null,
   ]
 
   return (
