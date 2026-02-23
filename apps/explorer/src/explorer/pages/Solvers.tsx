@@ -23,6 +23,8 @@ import { LoadingWrapper } from '../../components/common/LoadingWrapper'
 import { useSolversInfo } from '../../hooks/useSolversInfo'
 import { APP_TITLE } from '../const'
 
+const SOLVERS_DUNE_EMBED_URL = 'https://dune.com/embeds/5931238/9574995'
+
 const Solvers = (): React.ReactNode => {
   const { solversInfo, isLoading, error } = useSolversInfo()
   const [isSnapshotExpanded, setIsSnapshotExpanded] = useState(true)
@@ -49,11 +51,12 @@ const Solvers = (): React.ReactNode => {
             <SnapshotContent>
               <ChartWrapper>
                 <iframe
-                  src="https://dune.com/embeds/5931238/9574995"
+                  src={SOLVERS_DUNE_EMBED_URL}
                   title="Solvers across networks"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   allow="clipboard-write"
+                  sandbox="allow-scripts allow-same-origin"
                 />
               </ChartWrapper>
             </SnapshotContent>
