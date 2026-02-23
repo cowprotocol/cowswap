@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { type FormEvent, type ReactNode, useCallback, useMemo, useState } from 'react'
+import { type ReactNode, useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -9,7 +9,7 @@ import { t } from '@lingui/core/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { useAffiliateTraderCodeFromUrl } from '../hooks/useAffiliateTraderCodeFromUrl'
+import { useAffiliateTraderCodeInput } from '../hooks/useAffiliateTraderCodeInput'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderVerification } from '../hooks/useAffiliateTraderVerification'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
@@ -20,9 +20,7 @@ import {
   affiliateTraderPayoutConfirmationAtom,
   setAffiliateTraderPayoutConfirmationAtom,
 } from '../state/affiliateTraderPayoutConfirmationAtom'
-import { affiliateTraderSavedCodeAtom, setAffiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
-// eslint-disable-next-line max-lines-per-function
 export function AffiliateTraderModalCodeLinking(): ReactNode {
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
@@ -31,36 +29,12 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
 
   const { walletStatus } = useAffiliateTraderWallet()
-  const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const payoutConfirmed = useAtomValue(affiliateTraderPayoutConfirmationAtom)
-
-  const setSavedCode = useSetAtom(setAffiliateTraderSavedCodeAtom)
   const setPayoutConfirmed = useSetAtom(setAffiliateTraderPayoutConfirmationAtom)
-
-  const [codeInput, setCodeInput] = useState<string>(savedCode ?? '')
-  const [error, setError] = useState<string | undefined>(undefined)
-
-  useAffiliateTraderCodeFromUrl({ savedCode, setError, setCodeInput })
+  const { codeInput, savedCode, error, setError, onChange, onEdit, onRemove } = useAffiliateTraderCodeInput()
 
   const { isVerifying, verifyCode } = useAffiliateTraderVerification({ setError })
   const { data: codeInfo } = useAffiliateTraderInfo(savedCode)
-
-  const onChange = useCallback((event: FormEvent<HTMLInputElement>): void => {
-    setCodeInput(event.currentTarget.value.trim().toUpperCase())
-    setError(undefined)
-  }, [])
-
-  const onEdit = useCallback((): void => {
-    setSavedCode(undefined)
-    setCodeInput(savedCode ?? '')
-    setError(undefined)
-  }, [savedCode, setSavedCode])
-
-  const onRemove = useCallback((): void => {
-    setSavedCode(undefined)
-    setCodeInput('')
-    setError(undefined)
-  }, [setSavedCode])
 
   const onTogglePayoutConfirmed = useCallback(
     (checked: boolean): void => {
