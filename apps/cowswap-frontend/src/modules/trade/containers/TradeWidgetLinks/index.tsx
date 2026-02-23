@@ -30,11 +30,30 @@ interface MenuItemConfig {
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
+const WIDGET_QUERY_PARAMS_TO_PRESERVE = ['palette', 'theme'] as const
+
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
   swap: Routes.SWAP,
   limit: Routes.LIMIT_ORDERS,
   advanced: Routes.ADVANCED_ORDERS,
   yield: Routes.YIELD,
+}
+
+function appendPreservedWidgetParams(path: string, paramsToPreserve: Array<[string, string]>): string {
+  if (!paramsToPreserve.length) return path
+
+  const [pathname, search = ''] = path.split('?')
+  const queryParams = new URLSearchParams(search)
+
+  paramsToPreserve.forEach(([key, value]) => {
+    if (!queryParams.has(key)) {
+      queryParams.set(key, value)
+    }
+  })
+
+  const nextSearch = queryParams.toString()
+
+  return nextSearch ? `${pathname}?${nextSearch}` : pathname
 }
 
 interface TradeWidgetLinksProps {
@@ -65,6 +84,16 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     })
   }, [menuItems, enabledTradeTypes])
 
+  const preservedWidgetParams = useMemo((): Array<[string, string]> => {
+    const currentSearchParams = new URLSearchParams(location.search)
+
+    return WIDGET_QUERY_PARAMS_TO_PRESERVE.flatMap((queryParam): Array<[string, string]> => {
+      const queryValue = currentSearchParams.get(queryParam)
+
+      return queryValue ? [[queryParam, queryValue]] : []
+    })
+  }, [location.search])
+
   const menuItemsElements = useMemo(() => {
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
@@ -82,10 +111,11 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           } as TradeUrlParams)
         : getTradeUrlParams(item)
 
-      const routePath =
+      const routePathWithoutWidgetParams =
         isItemYield && !isCurrentPathYield
           ? addChainIdToRoute(item.route, chainId)
           : parameterizeTradeRoute(tradeUrlParams, item.route, !isCurrentPathYield)
+      const routePath = appendPreservedWidgetParams(routePathWithoutWidgetParams, preservedWidgetParams)
 
       const isActive = location.pathname.startsWith(routePath.split('?')[0])
 
@@ -106,6 +136,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     enabledItems,
     tradeContext,
     location.pathname,
+    preservedWidgetParams,
     handleMenuItemClick,
     getTradeStateByType,
     getTradeUrlParams,
