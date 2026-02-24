@@ -23,7 +23,7 @@ import { LoadingWrapper } from '../../components/common/LoadingWrapper'
 import { useSolversInfo } from '../../hooks/useSolversInfo'
 import { APP_TITLE } from '../const'
 
-const SOLVERS_DUNE_EMBED_URL = 'https://dune.com/embeds/5931238/9574995'
+const SOLVERS_DUNE_EMBED_URL = 'https://dune.com/embeds/5931238/9574995?darkMode=true'
 
 const Solvers = (): React.ReactNode => {
   const { solversInfo, isLoading, error } = useSolversInfo()
