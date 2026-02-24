@@ -1,5 +1,4 @@
 import {
-  Address,
   CompetitionOrderStatus,
   CowEnv,
   EnrichedOrder,
@@ -8,6 +7,8 @@ import {
   SupportedChainId as ChainId,
   Trade,
   TotalSurplus,
+  GetTradesRequest,
+  GetOrdersRequest,
 } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
@@ -29,25 +30,11 @@ export async function getOrder(chainId: ChainId, orderId: string, env?: CowEnv):
   return orderBookApi.getOrder(orderId, contextOverride)
 }
 
-export async function getOrders(
-  params: {
-    owner: Address
-    offset?: number
-    limit?: number
-  },
-  context: PartialApiContext,
-): Promise<EnrichedOrder[]> {
+export async function getOrders(params: GetOrdersRequest, context: PartialApiContext): Promise<EnrichedOrder[]> {
   return orderBookApi.getOrders(params, context)
 }
 
-export async function getTrades(
-  params: {
-    owner: Address
-    offset?: number
-    limit?: number
-  },
-  context: PartialApiContext,
-): Promise<Trade[]> {
+export async function getTrades(params: GetTradesRequest, context: PartialApiContext): Promise<Trade[]> {
   return orderBookApi.getTrades(params, context)
 }
 
