@@ -2,17 +2,18 @@ import { computeCowTextLayout, formatAmountWithUsd, formatCowSavingsLabel } from
 import { CompactRoute, CowFlowSummary } from './types'
 
 export const DESKTOP_CHART_WIDTH = 1280
-export const MOBILE_CHART_WIDTH = 580
+export const MOBILE_CHART_WIDTH = DESKTOP_CHART_WIDTH
 export const DESKTOP_NODE_WIDTH = 260
-export const MOBILE_NODE_WIDTH = 160
+export const MOBILE_NODE_WIDTH = DESKTOP_NODE_WIDTH
 // Node heights are computed dynamically by computeNodeHeight() based on
 // what content each card needs (surplus labels, flow hint pills, etc.).
 // All cards use the same height — the maximum needed across all routes,
 // similar to how CSS flexbox stretches all items to the tallest.
 const DESKTOP_CHART_PADDING = 32
-const MOBILE_CHART_PADDING = 24
+const MOBILE_CHART_PADDING = 34
 const DESKTOP_ROW_GAP = 24
-const MOBILE_ROW_GAP = 18
+const MOBILE_ROW_GAP = 28
+const MOBILE_MIN_CHART_HEIGHT = 430
 const DEFAULT_COW_NODE_HEIGHT = 116
 const CENTER_NODE_GAP = 18
 
@@ -203,6 +204,7 @@ type LayoutConfig = {
   nodeWidth: number
   nodeHeight: number
   cowNodeHeight: number
+  minChartHeight?: number
 }
 
 type CurveProfile = {
@@ -228,6 +230,7 @@ function getLayoutConfig(isMobile: boolean): Omit<LayoutConfig, 'nodeHeight'> {
       rowGap: MOBILE_ROW_GAP,
       nodeWidth: MOBILE_NODE_WIDTH,
       cowNodeHeight: DEFAULT_COW_NODE_HEIGHT,
+      minChartHeight: MOBILE_MIN_CHART_HEIGHT,
     }
   }
 
@@ -237,6 +240,7 @@ function getLayoutConfig(isMobile: boolean): Omit<LayoutConfig, 'nodeHeight'> {
     rowGap: DESKTOP_ROW_GAP,
     nodeWidth: DESKTOP_NODE_WIDTH,
     cowNodeHeight: DEFAULT_COW_NODE_HEIGHT,
+    minChartHeight: undefined,
   }
 }
 
@@ -284,9 +288,11 @@ function computeCowNodeHeight(cowFlow: CowFlowSummary, showUsdValues: boolean, n
 }
 
 function getBaseLayout(rows: number, hasCow: boolean, config: LayoutConfig): BaseLayout {
-  const { chartPadding, chartWidth, nodeHeight, nodeWidth, rowGap, cowNodeHeight } = config
+  const { chartPadding, chartWidth, nodeHeight, nodeWidth, rowGap, cowNodeHeight, minChartHeight } = config
   const rowsHeight = rows * nodeHeight + (rows - 1) * rowGap
-  const chartHeight = rowsHeight + chartPadding * 2
+  const naturalChartHeight = rowsHeight + chartPadding * 2
+  const chartHeight = Math.max(naturalChartHeight, minChartHeight || 0)
+  const rowsTop = chartPadding + (chartHeight - naturalChartHeight) / 2
   const innerWidth = chartWidth - chartPadding * 2
   const columnGap = Math.max(18, (innerWidth - nodeWidth * 3) / 2)
   const leftX = chartPadding
@@ -294,7 +300,7 @@ function getBaseLayout(rows: number, hasCow: boolean, config: LayoutConfig): Bas
   const rightX = centerX + nodeWidth + columnGap
   const routeHeight = Math.max(92, rows * 30 + 24)
   const totalCenterHeight = hasCow ? cowNodeHeight + CENTER_NODE_GAP + routeHeight : routeHeight
-  const sellSpanCenter = chartPadding + rowsHeight / 2
+  const sellSpanCenter = rowsTop + rowsHeight / 2
   const centerTopY = sellSpanCenter - totalCenterHeight / 2
   const cowY = hasCow ? centerTopY : undefined
   const routeY = hasCow ? centerTopY + cowNodeHeight + CENTER_NODE_GAP : centerTopY
@@ -311,7 +317,7 @@ function getBaseLayout(rows: number, hasCow: boolean, config: LayoutConfig): Bas
     routeHeight,
     cowY,
     cowHeight: hasCow ? cowNodeHeight : undefined,
-    getRowY: (index: number): number => chartPadding + index * (nodeHeight + rowGap),
+    getRowY: (index: number): number => rowsTop + index * (nodeHeight + rowGap),
   }
 }
 

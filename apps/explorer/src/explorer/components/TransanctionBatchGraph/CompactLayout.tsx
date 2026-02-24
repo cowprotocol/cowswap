@@ -19,6 +19,10 @@ const Wrapper = styled.div`
   overflow-x: auto;
   overflow-y: hidden;
   padding: 0.8rem;
+
+  ${Media.upToMedium()} {
+    padding: 1.2rem 0.8rem 1.5rem;
+  }
 `
 
 const Svg = styled.svg<{ $minWidth: number }>`
