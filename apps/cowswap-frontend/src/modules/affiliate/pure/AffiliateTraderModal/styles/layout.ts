@@ -16,7 +16,6 @@ export const Body = styled.div`
   flex-direction: column;
   padding: 10px;
   gap: 10px;
-  overflow-y: auto;
 
   > img {
     width: 100%;
@@ -63,7 +62,9 @@ export const Subtitle = styled.p`
   }
 `
 
-export const FormGroup = styled.form``
+export const FormGroup = styled.form`
+  overflow-y: auto;
+`
 
 export const LabelRow = styled.div`
   display: flex;

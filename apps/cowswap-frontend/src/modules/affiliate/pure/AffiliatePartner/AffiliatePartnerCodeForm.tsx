@@ -6,6 +6,8 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { RotateCw } from 'react-feather'
 
+import { REF_CODE_MIN_LENGTH } from 'modules/affiliate'
+
 import { AffiliatePartnerCodeErrorMessage } from './AffiliatePartnerCodeErrorMessage'
 
 import { PartnerCodeAvailability } from '../../hooks/useAffiliatePartnerCodeAvailability'
@@ -82,7 +84,7 @@ export function AffiliatePartnerCodeForm({
             </Label>
             <LabelActions>
               <MiniAction onClick={onGenerate} disabled={submitting}>
-                <Trans>generate</Trans>
+                <Trans>Generate</Trans>
                 <RotateCw size={10} strokeWidth={3} />
               </MiniAction>
             </LabelActions>
@@ -98,7 +100,12 @@ export function AffiliatePartnerCodeForm({
           />
           {showInvalidFormat && (
             <StatusText $variant="error">
-              <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
+              {/* we only check the lower limit because the upper limit is enforced by the input */}
+              {typeof rest?.value === 'string' && rest.value.length < REF_CODE_MIN_LENGTH ? (
+                <Trans>The code must be at least {REF_CODE_MIN_LENGTH} characters long.</Trans>
+              ) : (
+                <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
+              )}
             </StatusText>
           )}
           <PrimaryAction onClick={onCreate} disabled={!canSubmit}>

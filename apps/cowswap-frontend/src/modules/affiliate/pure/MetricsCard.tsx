@@ -96,8 +96,7 @@ export function MetricsCard({
           <HelpTooltip
             text={
               <Trans>
-                Rewards data updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear
-                here.`
+                Updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear here.
               </Trans>
             }
           />

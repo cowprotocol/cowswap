@@ -22,3 +22,5 @@ export { AffiliateTraderUnsupportedNetwork } from './pure/AffiliateTrader/Affili
 export { UnsupportedNetwork } from './pure/UnsupportedNetwork'
 
 export { affiliateTraderSavedCodeAtom } from './state/affiliateTraderSavedCodeAtom'
+
+export { REF_CODE_MIN_LENGTH } from './config/affiliateProgram.const'

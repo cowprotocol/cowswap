@@ -242,9 +242,9 @@ export const LinkedCodeRow = styled.div`
 export const LinkedCodeText = styled.span`
   font-weight: 700;
   letter-spacing: 0.5px;
-  text-transform: uppercase;
   font-size: 18px;
-  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   color: inherit;
   font-family: ${Font.familyMono};
 `

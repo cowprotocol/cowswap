@@ -5,7 +5,7 @@ import { Font, UI } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
-import { REF_CODE_MAX_LENGTH } from '../../config/affiliateProgram.const'
+import { REF_CODE_MAX_LENGTH, REF_CODE_MIN_LENGTH } from '../../config/affiliateProgram.const'
 
 export interface RefCodeInputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   compactSize?: boolean
@@ -15,6 +15,7 @@ export function RefCodeInputField({ compactSize = false, ...rest }: RefCodeInput
   return (
     <StyledInputField
       placeholder={t`ENTER CODE`}
+      minLength={REF_CODE_MIN_LENGTH}
       maxLength={REF_CODE_MAX_LENGTH}
       compactSize={compactSize}
       autoComplete="off"
