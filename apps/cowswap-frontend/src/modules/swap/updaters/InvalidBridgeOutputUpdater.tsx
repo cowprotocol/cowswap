@@ -8,9 +8,8 @@ import { useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/b
 import { useLocation } from 'react-router'
 
 import { useTradeTypeInfo } from 'modules/trade'
+import { parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
-import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { parameterizeTradeSearch } from 'modules/trade/utils/parameterizeTradeSearch'
 
 import type { RoutesValues } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'

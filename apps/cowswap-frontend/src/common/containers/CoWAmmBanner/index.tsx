@@ -14,7 +14,7 @@ import { t } from '@lingui/core/macro'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useTradeNavigate } from 'modules/trade'
-import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
+import { getDefaultTradeRawState } from 'modules/trade'
 import { useYieldRawState } from 'modules/yield/hooks/useYieldRawState'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 

@@ -6,7 +6,7 @@ import { renderHook } from '@testing-library/react'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType, useDerivedTradeState } from 'modules/trade'
-import { TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
+import { TradeDerivedState } from 'modules/trade'
 
 import { useApproveState } from './useApproveState'
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'

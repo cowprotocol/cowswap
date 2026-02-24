@@ -23,10 +23,10 @@ import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternati
 
 import { HydrateAtom } from 'common/state/HydrateAtom'
 
-import { AlternativeLimitOrder } from './AlternativeLimitOrder'
-import { RegularLimitOrders } from './RegularLimitOrders'
+import { AlternativeLimitOrderPage } from './AlternativeLimitOrder.page'
+import { RegularLimitOrdersPage } from './RegularLimitOrders.page'
 
-export default function LimitOrderPage(): ReactNode {
+export function LimitOrdersPage(): ReactNode {
   const isAlternative = useIsAlternativeOrderModalVisible()
   const { i18n } = useLingui()
 
@@ -41,14 +41,14 @@ export default function LimitOrderPage(): ReactNode {
       {isAlternative ? (
         <>
           <AlternativeLimitOrderUpdater />
-          <AlternativeLimitOrder />
+          <AlternativeLimitOrderPage />
         </>
       ) : (
         <>
           <InitialPriceUpdater />
           <SetupLimitOrderAmountsFromUrlUpdater />
           <TriggerAppziLimitOrdersSurveyUpdater />
-          <RegularLimitOrders />
+          <RegularLimitOrdersPage />
         </>
       )}
       <PageTitle title={i18n._(PAGE_TITLES.LIMIT_ORDERS)} />

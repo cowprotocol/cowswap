@@ -8,7 +8,7 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
-import { useGetReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -77,6 +77,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
+  const hideQuoteAmount = useShouldHideQuoteAmounts()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -173,7 +174,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
 
   return (
     <>
-      {!isWrapOrUnwrap && (
+      {!isWrapOrUnwrap && !hideQuoteAmount && (
         <styledEl.Row>
           <styledEl.RateInfoWrapper>
             <RateInfo
@@ -199,7 +200,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
         upDownArrowsLeftAlign={true}
         prefixComponent={
           <em>
-            {limitPriceAfterSlippage ? (
+            {limitPriceAfterSlippage && !hideQuoteAmount ? (
               <styledEl.ExecutionPriceStyled
                 executionPrice={limitPriceAfterSlippage}
                 isInverted={isInverted}

@@ -7,7 +7,7 @@ import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useDerivedTradeState } from 'modules/trade'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'

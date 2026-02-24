@@ -37,7 +37,7 @@ import { HydrateAtom } from 'common/state/HydrateAtom'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
-export default function AdvancedOrdersPage(): ReactNode {
+export function AdvancedOrdersPage(): ReactNode {
   const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
@@ -87,7 +87,6 @@ export default function AdvancedOrdersPage(): ReactNode {
           <styledEl.SecondaryWrapper>
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
-                isTwapTable
                 displayOrdersOnlyForSafeApp
                 orderType={TabOrderTypes.ADVANCED}
                 orders={allEmulatedOrders}

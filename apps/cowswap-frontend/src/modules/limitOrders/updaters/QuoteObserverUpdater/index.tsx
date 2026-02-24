@@ -7,7 +7,7 @@ import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useDerivedTradeState } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 

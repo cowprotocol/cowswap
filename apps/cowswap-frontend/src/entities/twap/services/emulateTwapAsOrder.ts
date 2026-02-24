@@ -1,6 +1,6 @@
 import { EnrichedOrder, OrderClass, OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 
-import { TwapOrderItem, TwapOrderStatus } from 'modules/twap/types'
+import { TwapOrderItem, TwapOrderStatus } from 'modules/twap'
 
 const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Pending]: OrderStatus.OPEN,

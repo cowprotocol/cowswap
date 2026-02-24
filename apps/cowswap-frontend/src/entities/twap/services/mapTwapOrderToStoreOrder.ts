@@ -2,7 +2,7 @@ import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { TwapOrderItem, TwapOrderStatus } from 'modules/twap/types'
+import { TwapOrderItem, TwapOrderStatus } from 'modules/twap'
 
 import { emulateTwapAsOrder } from './emulateTwapAsOrder'
 

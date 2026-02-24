@@ -9,7 +9,7 @@ import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/brid
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade'
 
 import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
