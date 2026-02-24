@@ -146,17 +146,23 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode, currency?.decimals],
   )
 
-  const handleMaxInput = useCallback(() => {
-    if (!maxBalance) {
-      return
-    }
+  const handleMaxInput = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
 
-    const value = isUsdValuesMode ? maxBalanceUsdAmount : maxBalance
+      if (!maxBalance) {
+        return
+      }
 
-    if (value) {
-      onUserInputDispatch(value.toExact(), isUsdValuesMode ? maxBalance.toExact() : undefined)
-    }
-  }, [maxBalance, onUserInputDispatch, isUsdValuesMode, maxBalanceUsdAmount])
+      const value = isUsdValuesMode ? maxBalanceUsdAmount : maxBalance
+
+      if (value) {
+        onUserInputDispatch(value.toExact(), isUsdValuesMode ? maxBalance.toExact() : undefined)
+      }
+    },
+    [maxBalance, onUserInputDispatch, isUsdValuesMode, maxBalanceUsdAmount],
+  )
 
   useEffect(() => {
     // Compare the actual string values to preserve trailing decimals
