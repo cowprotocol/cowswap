@@ -52,9 +52,11 @@ function NetworkChips({ solver }: { solver: SolverInfo }): React.ReactNode {
     <Networks>
       {solver.networks.map((network) => {
         const chainIcon = getChainIcon(network.chainId)
+        // Lens uses a black light logo, so we invert it to keep visibility on dark chips.
+        const isLensNetwork = network.chainName.toLowerCase() === 'lens'
         return (
           <NetworkChip key={`${solver.solverId}-${network.chainId}`}>
-            {chainIcon && <NetworkIcon src={chainIcon} alt="" />}
+            {chainIcon && <NetworkIcon src={chainIcon} alt="" $invert={isLensNetwork} />}
             {network.chainName}
           </NetworkChip>
         )

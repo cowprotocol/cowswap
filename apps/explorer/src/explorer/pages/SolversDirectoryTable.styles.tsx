@@ -174,10 +174,11 @@ export const EnvTag = styled.span<{ $environment: string }>`
   border: 0.1rem solid ${({ $environment }): string => getEnvTagPalette($environment).border};
 `
 
-export const NetworkIcon = styled.img`
+export const NetworkIcon = styled.img<{ $invert?: boolean }>`
   width: 1.35rem;
   height: 1.35rem;
   object-fit: contain;
+  filter: ${({ $invert }): string => ($invert ? 'invert(1)' : 'none')};
 `
 
 export const DeploymentsPanel = styled.div`
