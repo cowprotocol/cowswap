@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 
 import { Trans } from '@lingui/react/macro'
 
-import { Subtitle } from './styles'
+import { Subtitle } from './AffiliateTraderModal.shared'
 
 import { type TraderInfoResponse } from '../../api/bffAffiliateApi.types'
 import { PROGRAM_DEFAULTS } from '../../config/affiliateProgram.const'

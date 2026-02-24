@@ -16,7 +16,8 @@ export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
 
 export { isSupportedPayoutsNetwork } from './lib/affiliateProgramUtils'
 
-export { AffiliateTermsFaqLinks, ColumnOneCard, ThreeColumnGrid, PageWrapper } from './pure/shared'
+export { ColumnOneCard, ThreeColumnGrid } from './pure/AffiliateCards.shared'
+export { AffiliateTermsFaqLinks, PageWrapper } from './pure/AffiliateLayout.shared'
 export { AffiliateTraderIneligible } from './pure/AffiliateTrader/AffiliateTraderIneligible'
 export { AffiliateTraderUnsupportedNetwork } from './pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork'
 export { UnsupportedNetwork } from './pure/UnsupportedNetwork'

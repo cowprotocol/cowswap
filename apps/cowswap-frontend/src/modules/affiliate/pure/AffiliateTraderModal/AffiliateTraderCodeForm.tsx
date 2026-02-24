@@ -1,34 +1,25 @@
 import { type ReactNode } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
-import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
+import { ButtonPrimary, HelpTooltip, ButtonOutlined, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
+import styled from 'styled-components/macro'
 
+import { Footer, Body, FormGroup, Label, LabelRow, Title } from './AffiliateTraderModal.shared'
 import { CodeLinkingStatusSection } from './CodeLinkingStatusSection'
 import { CodeLinkingSubtitle } from './CodeLinkingSubtitle'
 import { PayoutConfirmation, type PayoutConfirmationProps } from './PayoutConfirmation'
-import {
-  Body,
-  Footer,
-  FormActionButton,
-  FormActionDanger,
-  FormActions,
-  FormGroup,
-  Label,
-  LabelAffordances,
-  LabelRow,
-  Title,
-} from './styles'
 
 import { type TraderInfoResponse } from '../../api/bffAffiliateApi.types'
 import { type TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
+import { StatusText } from '../AffiliateBadges.shared'
+import { LabelContent } from '../AffiliateMetrics.shared'
 import { RefCodeInput, type RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
-import { LabelContent, StatusText } from '../shared'
 
-export interface AffiliateTradeCodeFormProps
+export interface AffiliateTraderCodeFormProps
   extends Omit<PayoutConfirmationProps, 'payoutWallet'>,
     Pick<RefCodeInputProps, 'value' | 'onChange'> {
   walletStatus: TraderWalletStatus
@@ -43,7 +34,7 @@ export interface AffiliateTradeCodeFormProps
   onSubmit(): void
 }
 
-export function AffiliateTradeCodeForm({
+export function AffiliateTraderCodeForm({
   walletStatus,
   account,
   requiresPayoutConfirmation,
@@ -58,7 +49,7 @@ export function AffiliateTradeCodeForm({
   submitButtonLabel,
   onSubmit,
   ...inputProps
-}: AffiliateTradeCodeFormProps): ReactNode {
+}: AffiliateTraderCodeFormProps): ReactNode {
   return (
     <FormGroup
       onSubmit={(event) => {
@@ -121,3 +112,55 @@ export function AffiliateTradeCodeForm({
     </FormGroup>
   )
 }
+
+const LabelAffordances = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
+const FormActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
+const FormActionButton = styled(ButtonOutlined)`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(${UI.FONT_SIZE_SMALL});
+  padding: 4px 12px;
+  font-weight: 600;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:hover:enabled {
+    opacity: 0.8;
+  }
+`
+
+const FormActionDanger = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(${UI.FONT_SIZE_SMALL});
+  font-weight: 600;
+  color: var(${UI.COLOR_DANGER_TEXT});
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:hover:enabled {
+    opacity: 0.8;
+  }
+`

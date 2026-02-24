@@ -4,10 +4,12 @@ import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import ICON_QR_CODE from '@cowprotocol/assets/images/icon-qr-code-v2.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { formatShortDate } from '@cowprotocol/common-utils'
+import { ButtonOutlined } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 import CopyHelper from 'legacy/components/Copy'
 
@@ -17,23 +19,19 @@ import { AffiliatePartnerQrModal } from './AffiliatePartnerQrModal'
 
 import { useAffiliatePartnerInfo } from '../hooks/useAffiliatePartnerInfo'
 import { getReferralLink, toValidDate } from '../lib/affiliateProgramUtils'
+import { LinkedBadge } from '../pure/AffiliateBadges.shared'
 import {
   CardTitle,
-  LinkedActionButton,
-  LinkedActionIcon,
-  LinkedActions,
-  LinkedBadge,
   LinkedCard,
   LinkedCodeRow,
   LinkedCodeText,
-  LinkedCopy,
-  LinkedFooter,
   LinkedFooterNote,
+  LinkedMetaList,
+  LinkedCopy,
   LinkedLinkRow,
   LinkedLinkText,
-  LinkedMetaList,
-  MetricItem,
-} from '../pure/shared'
+} from '../pure/AffiliateCards.shared'
+import { MetricItem } from '../pure/AffiliateMetrics.shared'
 
 export function AffiliatePartnerCodeInfo(): ReactNode {
   const { account } = useWalletInfo()
@@ -115,3 +113,39 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
     </>
   )
 }
+
+const LinkedActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+`
+
+const LinkedFooter = styled.div`
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+`
+
+const LinkedActionButton = styled(ButtonOutlined)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 8px 14px;
+`
+
+const LinkedActionIcon = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+`

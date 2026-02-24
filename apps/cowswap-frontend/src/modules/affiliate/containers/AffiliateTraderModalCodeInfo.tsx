@@ -10,7 +10,7 @@ import { Trans } from '@lingui/react/macro'
 import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
+import { Body, Subtitle, Title, Footer } from '../pure/AffiliateTraderModal/AffiliateTraderModal.shared'
 import { HowItWorks } from '../pure/HowItWorks'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 

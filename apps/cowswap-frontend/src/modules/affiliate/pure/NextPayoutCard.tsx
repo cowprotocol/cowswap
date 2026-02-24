@@ -5,7 +5,9 @@ import { HelpTooltip } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { BottomMetaRow, CardTitle, ColumnThreeCard, InlineNote, PayoutValue, TitleWithTooltip } from './shared'
+import { CardTitle, ColumnThreeCard, PayoutValue } from './AffiliateCards.shared'
+import { InlineNote } from './AffiliateLayout.shared'
+import { BottomMetaRow, TitleWithTooltip } from './AffiliateMetrics.shared'
 
 import { formatUsdcCompact } from '../lib/affiliateProgramUtils'
 

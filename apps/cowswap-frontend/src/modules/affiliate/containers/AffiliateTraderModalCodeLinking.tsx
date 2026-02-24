@@ -12,7 +12,7 @@ import { useAffiliateTraderCodeInput } from '../hooks/useAffiliateTraderCodeInpu
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
 import { isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
-import { AffiliateTradeCodeForm } from '../pure/AffiliateTraderModal/AffiliateTradeCodeForm'
+import { AffiliateTraderCodeForm } from '../pure/AffiliateTraderModal/AffiliateTraderCodeForm'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import {
   affiliateTraderPayoutConfirmationAtom,
@@ -73,7 +73,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   ])
 
   return (
-    <AffiliateTradeCodeForm
+    <AffiliateTraderCodeForm
       walletStatus={walletStatus}
       account={account}
       requiresPayoutConfirmation={!!account && !isSupportedPayoutsNetwork(chainId)}
