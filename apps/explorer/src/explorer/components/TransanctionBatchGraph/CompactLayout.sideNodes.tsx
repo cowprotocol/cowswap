@@ -5,13 +5,7 @@ import { Color } from '@cowprotocol/ui'
 
 import { getItemOpacity, isRouteActive, RouteHoverHandlers } from './CompactLayout.interactions'
 import { SankeyModel } from './CompactLayout.model'
-import {
-  formatAmountWithUsd,
-  formatTokenAmount,
-  getAddressAccentColor,
-  getTokenLogo,
-  splitAmountUsdLabel,
-} from './CompactLayout.visuals'
+import { formatAmountWithUsd, getAddressAccentColor, getTokenLogo, splitAmountUsdLabel } from './CompactLayout.visuals'
 import { CompactRoute } from './types'
 
 import { Network } from '../../../types'
@@ -72,11 +66,7 @@ export function LeftNodes({
             <CardAddress href={traderLink} label={route.traderLabel} model={model} x={model.leftX} y={y} />
             <CardAmount
               iconHref={getTokenLogo(route.sellToken?.address, networkId)}
-              label={formatAmountWithUsd(
-                formatTokenAmount(route.sellAmountValue, route.sellToken?.symbol),
-                route.sellAmountUsdValue,
-                showUsdValues,
-              )}
+              label={formatAmountWithUsd(route.sellAmountLabel, route.sellAmountUsdValue, showUsdValues)}
               model={model}
               x={model.leftX}
               y={y}
@@ -143,11 +133,7 @@ export function RightNodes({
             <CardAddress href={receiverLink} label={route.receiverLabel} model={model} x={model.rightX} y={y} />
             <CardAmount
               iconHref={getTokenLogo(route.buyToken?.address, networkId)}
-              label={formatAmountWithUsd(
-                formatTokenAmount(route.buyAmountValue, route.buyToken?.symbol),
-                route.buyAmountUsdValue,
-                showUsdValues,
-              )}
+              label={formatAmountWithUsd(route.buyAmountLabel, route.buyAmountUsdValue, showUsdValues)}
               model={model}
               x={model.rightX}
               y={y}

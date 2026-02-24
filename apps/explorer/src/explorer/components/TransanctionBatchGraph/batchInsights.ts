@@ -319,7 +319,23 @@ function formatTokenValue(value: number): string {
     return value.toLocaleString(undefined, { maximumFractionDigits: 0 })
   }
 
-  return value.toLocaleString(undefined, { maximumFractionDigits: 4 })
+  if (value >= 1) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 4 })
+  }
+
+  if (value > 0 && value >= 0.0001) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 6 })
+  }
+
+  if (value > 0 && value >= 0.00000001) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 8 })
+  }
+
+  if (value > 0) {
+    return value.toExponential(2)
+  }
+
+  return '0'
 }
 
 function tokenAmountToNumber(amount: BigNumber, token: SingleErc20State | undefined): number {

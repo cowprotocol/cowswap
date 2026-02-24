@@ -429,6 +429,8 @@ function buildSellLinks(
       item.route.sellToken?.symbol,
       item.ammSellUsdValue,
       showUsdValues,
+      item.route.sellAmountValue,
+      item.route.sellAmountLabel,
     )
 
     acc.push({
@@ -475,6 +477,8 @@ function buildBuyLinks(
       item.route.buyToken?.symbol,
       item.ammBuyUsdValue,
       showUsdValues,
+      item.route.buyAmountValue,
+      item.route.buyAmountLabel,
     )
 
     acc.push({
@@ -661,7 +665,18 @@ function flowDisplayLabel(
   symbol: string | undefined,
   usdValue: number | undefined,
   showUsdValues: boolean,
+  routeAmountValue?: number,
+  routeAmountLabel?: string,
 ): string {
+  const fullRouteLabel = getFullRouteLabel(value, routeAmountValue, routeAmountLabel)
+  if (fullRouteLabel) {
+    if (showUsdValues && usdValue) {
+      return `${fullRouteLabel} (${formatUsd(usdValue)})`
+    }
+
+    return fullRouteLabel
+  }
+
   const fallbackSymbol = symbol || '?'
   if (value <= 0) {
     return `0 ${fallbackSymbol}`
@@ -673,6 +688,20 @@ function flowDisplayLabel(
   }
 
   return tokenLabel
+}
+
+function getFullRouteLabel(
+  value: number,
+  routeAmountValue: number | undefined,
+  routeAmountLabel: string | undefined,
+): string | undefined {
+  if (!routeAmountLabel || routeAmountValue === undefined) {
+    return undefined
+  }
+
+  const tolerance = Math.max(1e-9, routeAmountValue * 1e-6)
+
+  return Math.abs(value - routeAmountValue) <= tolerance ? routeAmountLabel : undefined
 }
 
 function flowTooltipLabel(
@@ -693,7 +722,23 @@ function formatTokenValue(value: number): string {
     return value.toLocaleString(undefined, { maximumFractionDigits: 2 })
   }
 
-  return value.toLocaleString(undefined, { maximumFractionDigits: 2 })
+  if (value >= 1) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 4 })
+  }
+
+  if (value > 0 && value >= 0.0001) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 6 })
+  }
+
+  if (value > 0 && value >= 0.00000001) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 8 })
+  }
+
+  if (value > 0) {
+    return value.toExponential(2)
+  }
+
+  return '0'
 }
 
 function formatUsd(value: number): string {

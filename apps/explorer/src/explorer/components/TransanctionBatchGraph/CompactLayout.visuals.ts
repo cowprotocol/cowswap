@@ -88,12 +88,6 @@ export function getTokenLogo(address: string | undefined, networkId: Network | u
   return getImageUrl(normalizedAddress) || UnknownToken
 }
 
-export function formatTokenAmount(value: number, symbol: string | undefined): string {
-  const amountLabel = value.toLocaleString(undefined, { maximumFractionDigits: 2 })
-
-  return `${amountLabel} ${symbol || '?'}`
-}
-
 export function getAddressAccentColor(address: string): string {
   const hash = hashAddress(address)
   return ADDRESS_COLORS[Math.abs(hash) % ADDRESS_COLORS.length]
