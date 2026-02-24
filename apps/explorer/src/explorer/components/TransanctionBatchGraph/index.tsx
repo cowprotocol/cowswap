@@ -29,7 +29,7 @@ import { LayoutMode, LayoutNames, ViewType } from './types'
 import { removePopper } from './utils'
 
 import { Order } from '../../../api/operator'
-import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
+import CowLoading from '../../../components/common/CowLoading'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { useSolversInfo } from '../../../hooks/useSolversInfo'
 import { Network } from '../../../types'
@@ -61,6 +61,32 @@ const GraphWrapper = styled.div`
   position: relative;
 `
 
+const LoadingStateWrapper = styled.div`
+  min-height: 42rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 2.4rem 1.6rem 3.2rem;
+  text-align: center;
+`
+
+const LoadingTextGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4rem;
+`
+
+const LoadingTitle = styled.h3`
+  margin: 0;
+  color: ${Color.neutral100};
+  font-size: 2.6rem;
+  line-height: 1.1;
+  font-weight: 600;
+`
+
 const LoadingStatusCycle = keyframes`
   from {
     transform: translateX(-120%);
@@ -70,20 +96,12 @@ const LoadingStatusCycle = keyframes`
   }
 `
 
-const LoadingProgressWrap = styled.div`
-  margin-top: 0.4rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.65rem;
-`
-
 const LoadingStatusText = styled.div`
   color: ${Color.explorer_textSecondary};
-  font-size: 1.25rem;
+  font-size: 1.6rem;
   font-weight: 500;
   letter-spacing: 0.01em;
-  min-height: 1.8rem;
+  min-height: 2.2rem;
 `
 
 const LoadingBarTrack = styled.div`
@@ -231,11 +249,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): ReactNode {
   )
 
   if (isLoading) {
-    return (
-      <LoadingWrapper message="Loading transaction graph">
-        <TransactionGraphLoadingProgress />
-      </LoadingWrapper>
-    )
+    return <TransactionGraphLoadingProgress />
   }
 
   if (layoutMode === LayoutMode.GRAPH && failedToLoadGraph) {
@@ -361,12 +375,16 @@ function TransactionGraphLoadingProgress(): ReactNode {
   const stageLabel = `${GRAPH_LOADING_STAGES[stageIndex]}${'.'.repeat(dotCount)}`
 
   return (
-    <LoadingProgressWrap>
-      <LoadingStatusText aria-live="polite">{stageLabel}</LoadingStatusText>
+    <LoadingStateWrapper>
+      <CowLoading />
+      <LoadingTextGroup>
+        <LoadingTitle>Loading transaction graph</LoadingTitle>
+        <LoadingStatusText aria-live="polite">{stageLabel}</LoadingStatusText>
+      </LoadingTextGroup>
       <LoadingBarTrack>
         <LoadingBarSweep />
       </LoadingBarTrack>
-    </LoadingProgressWrap>
+    </LoadingStateWrapper>
   )
 }
 
