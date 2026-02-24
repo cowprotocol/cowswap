@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.1](https://github.com/cowprotocol/cowswap/compare/common-const-v2.3.0...common-const-v2.3.1) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.3.1
+
 ## [2.3.0](https://github.com/cowprotocol/cowswap/compare/common-const-v2.2.2...common-const-v2.3.0) (2026-02-20)
 
 
