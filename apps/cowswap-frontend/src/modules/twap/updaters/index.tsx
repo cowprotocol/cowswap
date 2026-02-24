@@ -19,10 +19,12 @@ import { useTwapSlippage } from '../hooks/useTwapSlippage'
 export function TwapUpdaters() {
   const { account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { chainId: composableCowChainId, ...composableCowContract } = useComposableCowContractData()
+  const composableCowContract = useComposableCowContractData()
   const twapOrderSlippage = useTwapSlippage()
 
-  const shouldLoadTwapOrders = !!(isSafeWallet && account && composableCowContract)
+  const shouldLoadTwapOrders = !!(isSafeWallet && account && composableCowContract.address)
+
+  const composableCowChainId = composableCowContract.chainId
 
   return (
     <>

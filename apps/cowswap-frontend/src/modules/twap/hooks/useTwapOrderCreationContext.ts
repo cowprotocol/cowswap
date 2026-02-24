@@ -27,10 +27,11 @@ export interface TwapOrderCreationContext {
 export function useTwapOrderCreationContext(
   inputAmount: Nullish<CurrencyAmount<Token>>,
 ): TwapOrderCreationContext | null {
-  const { chainId: composableCowChainId, ...composableCowContract } = useComposableCowContractData()
+  const composableCowContract = useComposableCowContractData()
   const needsApproval = useNeedsApproval(inputAmount)
   const spender = useTradeSpenderAddress()
   const needsZeroApproval = useNeedsZeroApproval(inputAmount?.currency.address, spender, inputAmount)
+  const composableCowChainId = composableCowContract.chainId
   const currentBlockFactoryAddress = composableCowChainId ? CURRENT_BLOCK_FACTORY_ADDRESS[composableCowChainId] : null
 
   return useMemo(() => {
