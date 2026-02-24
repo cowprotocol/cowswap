@@ -1,9 +1,9 @@
 import IMAGE_APPDATA from 'assets/img/code.svg'
 import IMAGE_COW from 'assets/img/CowProtocol-logo.svg'
-import IMAGE_DEX from 'assets/img/Dex.svg'
 import IMAGE_DISCORD from 'assets/img/discord.svg'
 import IMAGE_DOC from 'assets/img/doc.svg'
 import IMAGE_ANALYTICS from 'assets/img/pie.svg'
+import { PiMathOperationsFill } from 'react-icons/pi'
 
 import { MenuItemKind, MenuTreeItem } from './types'
 
@@ -71,7 +71,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
           {
             title: 'Solvers',
             url: Routes.SOLVERS,
-            iconSVG: IMAGE_DEX,
+            iconComponent: PiMathOperationsFill,
           },
           {
             title: 'AppData',

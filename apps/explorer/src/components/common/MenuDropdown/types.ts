@@ -1,8 +1,13 @@
+import type { ComponentType, SVGProps } from 'react'
+
+export type MenuIconComponent = ComponentType<SVGProps<SVGSVGElement> & { size?: string | number }>
+
 export interface BasicMenuLink {
   title: string
   url: string
   icon?: string // If icon uses a regular <img /> tag
   iconSVG?: string // If icon is a <SVG> inline component
+  iconComponent?: MenuIconComponent
 }
 
 export interface MenuInternalLink extends BasicMenuLink {
@@ -29,6 +34,7 @@ export interface MenuImageProps {
   title: string
   iconSVG?: string
   icon?: string
+  iconComponent?: MenuIconComponent
 }
 
 export enum MenuItemKind {
