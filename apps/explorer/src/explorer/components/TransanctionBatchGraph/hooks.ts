@@ -22,6 +22,7 @@ import { getImageUrl } from '../../../utils'
 import { HEIGHT_HEADER_FOOTER } from '../../const'
 
 export type UseCytoscapeParams = {
+  enabled: boolean
   txBatchData: GetTxBatchTradesResult
   networkId: Network | undefined
 }
@@ -43,6 +44,7 @@ export type UseCytoscapeReturn = {
 // eslint-disable-next-line max-lines-per-function
 export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const {
+    enabled,
     txBatchData: { error, isLoading, txSettlement },
     networkId,
   } = params
@@ -61,14 +63,14 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     (ref: Cytoscape.Core | null) => {
       cytoscapeRef.current = ref
 
-      if (ref) {
+      if (enabled && ref && !ref.destroyed()) {
         ref.removeListener('resize')
         ref.on('resize', () => {
           updateLayout(ref, layout.name, true)
         })
       }
     },
-    [layout.name],
+    [enabled, layout.name],
   )
 
   const stableTxSettlement = JSON.stringify(txSettlement)
@@ -77,6 +79,10 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   useEffect(() => {
     try {
       setFailedToLoadGraph(false)
+      if (!enabled) {
+        return
+      }
+
       const cy = cytoscapeRef.current
       setElements([])
       if (
@@ -85,6 +91,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
         !networkId ||
         !heightSize ||
         !cy ||
+        cy.destroyed() ||
         !txSettlement ||
         !txSettlement.trades.length ||
         !txSettlement.transfers.length
@@ -107,11 +114,11 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       setFailedToLoadGraph(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error, isLoading, stableTxSettlement, networkId, heightSize, resetZoom, layout.name])
+  }, [enabled, error, isLoading, stableTxSettlement, networkId, heightSize, resetZoom, layout.name])
 
   useEffect(() => {
     const cy = cytoscapeRef.current
-    if (!cy || !elements.length) return
+    if (!enabled || !cy || cy.destroyed() || !elements.length) return
 
     const focusEdge = (edge: Cytoscape.EdgeSingular): void => {
       cy.elements().addClass('dimmed')
@@ -174,7 +181,23 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       clearFocus()
       removePopper(cyPopperRef)
     }
-  }, [cytoscapeRef, elements.length])
+  }, [enabled, cytoscapeRef, elements.length])
+
+  useEffect(() => {
+    if (enabled) return
+
+    const cy = cytoscapeRef.current
+    if (cy && !cy.destroyed()) {
+      cy.removeAllListeners()
+    }
+
+    cytoscapeRef.current = null
+    removePopper(cyPopperRef)
+    setResetZoom(null)
+    setElements([])
+    setTokensStylesheets([])
+    setFailedToLoadGraph(false)
+  }, [enabled])
 
   return useMemo(
     () => ({

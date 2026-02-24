@@ -153,7 +153,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): ReactNode {
   const { visualization, onChangeVisualization } = useVisualization()
   const queryLayoutMode = useQueryLayoutMode()
   const updateLayoutModeQuery = useUpdateLayoutModeQuery()
-  const [layoutMode, setLayoutMode] = useState(LayoutMode.GRAPH)
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => queryLayoutMode || LayoutMode.GRAPH)
   const visualizationForData = layoutMode === LayoutMode.GRAPH ? visualization : ViewType.TRADES
 
   const txBatchData = useTxBatchData(networkId, orders, txHash, visualizationForData)
@@ -175,15 +175,16 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): ReactNode {
     setCytoscape,
     cyPopperRef,
     tokensStylesheets,
-  } = useCytoscape({ networkId, txBatchData })
+  } = useCytoscape({ enabled: layoutMode === LayoutMode.GRAPH, networkId, txBatchData })
 
   const previousVisualization = usePrevious(visualizationForData)
 
   const visualizationChanged = previousVisualization !== visualizationForData
 
   useEffect(() => {
+    if (layoutMode !== LayoutMode.GRAPH) return
     if (visualizationChanged) setResetZoom(true)
-  }, [setResetZoom, visualizationChanged])
+  }, [layoutMode, setResetZoom, visualizationChanged])
 
   useEffect(() => {
     setAutoLayoutApplied(false)
@@ -237,7 +238,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): ReactNode {
     )
   }
 
-  if (failedToLoadGraph) {
+  if (layoutMode === LayoutMode.GRAPH && failedToLoadGraph) {
     return <p>Failed to load graph, please try again later</p>
   }
 
