@@ -17,6 +17,10 @@
     {
       "priority": 4,
       "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json"
+    },
+    {
+      "priority": 5,
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
     }
   ],
   "100": [
@@ -155,6 +159,10 @@
     {
       "priority": 4,
       "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json"
+    },
+    {
+      "priority": 5,
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
     }
   ],
   "232": [
