@@ -95,6 +95,14 @@ export const Select = styled.select`
 export const Table = styled(SimpleTable)`
   min-width: 98rem;
 
+  tbody tr.solver-summary-row td {
+    transition: background-color 0.14s ease;
+  }
+
+  tbody tr.solver-summary-row:hover td {
+    background: ${Color.explorer_bg2};
+  }
+
   td.solver {
     min-width: 28rem;
   }
@@ -282,10 +290,17 @@ export const DeploymentsGridRow = styled.div`
   grid-template-columns: ${DEPLOYMENTS_GRID_TEMPLATE_COLUMNS};
   min-width: ${DEPLOYMENTS_GRID_MIN_WIDTH};
   gap: 0.8rem;
-  padding: 0.6rem 0;
+  padding: 0.6rem 0.4rem;
+  margin: 0 -0.4rem;
   border-top: 0.1rem solid ${Color.explorer_border};
   align-items: center;
   font-size: 1.2rem;
+  border-radius: 0.4rem;
+  transition: background-color 0.14s ease;
+
+  &:hover {
+    background: ${Color.explorer_bg2};
+  }
 
   > :nth-child(3),
   > :nth-child(4) {

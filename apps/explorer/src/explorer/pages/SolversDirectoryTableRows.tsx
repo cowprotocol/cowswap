@@ -127,7 +127,7 @@ export function SolverSummaryRow({
   const environments = mapSummaryEnvironments(deployments)
 
   return (
-    <tr>
+    <tr className="solver-summary-row">
       <td className="solver">
         <SolverCell>
           <ExpandButton
@@ -216,7 +216,7 @@ export function SolverDetailsRow({ solver, deployments }: SolverDetailsRowProps)
   const hasAnyDeployments = hasActiveDeployments || hasInactiveDeployments
 
   return (
-    <tr>
+    <tr className="solver-details-row">
       <td colSpan={5}>
         <DeploymentsPanel>
           <DeploymentsPanelTitle>Solver and payout addresses by chain/environment</DeploymentsPanelTitle>
