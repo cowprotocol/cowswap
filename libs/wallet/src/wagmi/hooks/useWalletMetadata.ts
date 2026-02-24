@@ -43,7 +43,7 @@ function useWcPeerMetadata(connector?: Connector): WalletMetaData {
   }, [peerWalletName, connector])
 
   useEffect(() => {
-    if (!connector) {
+    if (!connector || typeof connector.getProvider !== 'function') {
       setPeerWalletName('')
       return
     }

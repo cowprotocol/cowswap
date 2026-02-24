@@ -8,7 +8,7 @@ export function useWalletProvider(): unknown | undefined {
   const { connector } = useConnection()
 
   useEffect(() => {
-    if (!connector) return
+    if (!connector || typeof connector.getProvider !== 'function') return
     const getProvider = async (): Promise<void> => {
       try {
         const provider = await connector.getProvider()
