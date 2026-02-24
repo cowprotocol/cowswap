@@ -2,8 +2,8 @@ import { formatQuoteIdReference, getQuoteExpiresInLabel, getQuoteIdString } from
 
 describe('RowQuoteId', () => {
   describe('formatQuoteIdReference()', () => {
-    it('formats UUID-like ids into support-friendly references', () => {
-      expect(formatQuoteIdReference('a3f2b91e-4d7c-8f21-b0c1-5f31e29b1111')).toBe('Q-A3F2B91E')
+    it('caps long ids and adds ellipsis', () => {
+      expect(formatQuoteIdReference('a3f2b91e-4d7c-8f21-b0c1-5f31e29b1111')).toBe('Q-A3F2B91E-4D7C-8F...')
     })
 
     it('works with short ids', () => {
