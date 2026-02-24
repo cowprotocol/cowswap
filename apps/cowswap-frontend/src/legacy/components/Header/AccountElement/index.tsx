@@ -13,7 +13,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
 import { useHasNotificationSubscription } from 'modules/notifications/hooks/useHasNotificationSubscription'
 import { useNotificationAlertDismissal } from 'modules/notifications/hooks/useNotificationAlertDismissal'
-import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
+import { useUnreadSidebarNotificationsCount } from 'modules/notifications/hooks/useUnreadSidebarNotificationsCount'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -60,18 +60,18 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
-  const nativeTokenSymbol = NATIVE_CURRENCIES[chainId].symbol
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
-
-  const unreadNotifications = useUnreadNotifications()
-  const unreadNotificationsCount = Object.keys(unreadNotifications).length
+  const unreadNotificationsCount = useUnreadSidebarNotificationsCount()
+  const { isDismissed, dismiss } = useNotificationAlertDismissal()
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { hasSubscription, isLoading } = useHasNotificationSubscription()
 
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const [shouldOpenSettings, setShouldOpenSettings] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const { isDismissed, dismiss } = useNotificationAlertDismissal()
-  const { areTelegramNotificationsEnabled } = useFeatureFlags()
-  const { hasSubscription, isLoading } = useHasNotificationSubscription()
+
+  const nativeTokenSymbol = NATIVE_CURRENCIES[chainId].symbol
+
   const shouldShowPopover =
     areTelegramNotificationsEnabled && !!account && !isDismissed && !hasSubscription && !isLoading
 
