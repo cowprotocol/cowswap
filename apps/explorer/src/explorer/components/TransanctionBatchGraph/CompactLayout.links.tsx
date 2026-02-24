@@ -357,27 +357,28 @@ function FlowEdgeLabel({
   isVisible,
 }: FlowEdgeLabelProps): ReactNode {
   const { amountLabel, usdLabel } = splitAmountUsdLabel(label)
+  const labelHeight = 18
 
   return (
     <g opacity={isVisible ? 1 : 0}>
       <rect
         fill="rgba(15, 18, 36, 0.94)"
-        height={16}
+        height={labelHeight}
         rx="4"
         stroke={labelBorderColor}
         strokeWidth="1"
         width={labelWidth}
         x={x - labelWidth / 2}
-        y={y - 8}
+        y={y - labelHeight / 2}
       />
       <text
-        dominantBaseline="middle"
         fill={isActive ? Color.neutral100 : 'rgba(233, 238, 255, 0.86)'}
         fontFamily='ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
         fontSize="12"
         textAnchor="middle"
         x={x}
         y={y}
+        dy="0.34em"
         style={{ fontVariantNumeric: 'tabular-nums', transition: 'opacity 160ms ease, fill 160ms ease' }}
       >
         <tspan>{amountLabel}</tspan>
