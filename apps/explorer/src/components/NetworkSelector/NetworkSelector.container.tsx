@@ -14,7 +14,7 @@ type networkSelectorProps = {
   networkId: number
 }
 
-const ROUTES_WITH_PRESERVED_PATH = ['address']
+const ROUTES_WITH_PRESERVED_PATH = ['address', 'solvers']
 
 export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) => {
   const selectContainer = useRef<HTMLInputElement>(null)
