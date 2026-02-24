@@ -63,7 +63,6 @@ const XSTOCKS_LIST_URL =
   'https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json'
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 export function TokensListsUpdater({
   chainId: currentChainId,
   isGeoBlockEnabled,
