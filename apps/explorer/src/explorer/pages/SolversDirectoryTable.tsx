@@ -1,13 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import {
-  ALL_FILTER,
-  buildBodyRows,
-  filterSolvers,
-  getEnvironmentOptions,
-  getNetworkOptions,
-} from './SolversDirectoryTable.helpers'
-import { Table } from './SolversDirectoryTable.styles'
+import { ALL_FILTER, filterSolvers, getEnvironmentOptions, getNetworkOptions } from './SolversDirectoryTable.helpers'
+import { Table, TableScrollHint } from './SolversDirectoryTable.styles'
+import { SolversDirectoryTableBody } from './SolversDirectoryTableBody'
 import { SolversDirectoryTableFilters } from './SolversDirectoryTableFilters'
 
 import { SolverInfo } from '../../utils/fetchSolversInfo'
@@ -24,23 +19,19 @@ export function SolversDirectoryTable({
   const [searchQuery, setSearchQuery] = useState('')
   const [networkFilter, setNetworkFilter] = useState(ALL_FILTER)
   const [environmentFilter, setEnvironmentFilter] = useState(ALL_FILTER)
+  const [activeFilter, setActiveFilter] = useState(ALL_FILTER)
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
 
   const networkOptions = useMemo(() => getNetworkOptions(solversInfo), [solversInfo])
   const environmentOptions = useMemo(() => getEnvironmentOptions(solversInfo), [solversInfo])
   const filteredSolvers = useMemo(
-    () => filterSolvers(solversInfo, searchQuery, networkFilter, environmentFilter),
-    [environmentFilter, networkFilter, searchQuery, solversInfo],
+    () => filterSolvers(solversInfo, searchQuery, networkFilter, environmentFilter, activeFilter),
+    [activeFilter, environmentFilter, networkFilter, searchQuery, solversInfo],
   )
 
   const toggleExpandedRow = useCallback((solverId: string): void => {
     setExpandedRows((current) => ({ ...current, [solverId]: !current[solverId] }))
   }, [])
-
-  const body = useMemo(
-    () => buildBodyRows(filteredSolvers, expandedRows, networkFilter, environmentFilter, toggleExpandedRow),
-    [environmentFilter, expandedRows, filteredSolvers, networkFilter, toggleExpandedRow],
-  )
 
   useEffect(() => {
     onFilteredCountChange?.(filteredSolvers.length)
@@ -52,26 +43,38 @@ export function SolversDirectoryTable({
         searchQuery={searchQuery}
         networkFilter={networkFilter}
         environmentFilter={environmentFilter}
+        activeFilter={activeFilter}
         networkOptions={networkOptions}
         environmentOptions={environmentOptions}
         setSearchQuery={setSearchQuery}
         setNetworkFilter={setNetworkFilter}
         setEnvironmentFilter={setEnvironmentFilter}
+        setActiveFilter={setActiveFilter}
       />
-      <Table
-        numColumns={5}
-        columnViewMobile
-        header={
-          <tr>
-            <th>Solver</th>
-            <th>Networks</th>
-            <th>Environments</th>
-            <th>Website</th>
-            <th>Description</th>
-          </tr>
-        }
-        body={body}
-      />
+      <TableScrollHint>
+        <Table
+          numColumns={5}
+          header={
+            <tr>
+              <th>Solver</th>
+              <th>Networks</th>
+              <th>Environments</th>
+              <th>Website</th>
+              <th>Description</th>
+            </tr>
+          }
+          body={
+            <SolversDirectoryTableBody
+              filteredSolvers={filteredSolvers}
+              expandedRows={expandedRows}
+              networkFilter={networkFilter}
+              environmentFilter={environmentFilter}
+              activeFilter={activeFilter}
+              onToggle={toggleExpandedRow}
+            />
+          }
+        />
+      </TableScrollHint>
     </>
   )
 }

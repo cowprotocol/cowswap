@@ -57,7 +57,7 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
-  alternativeOrderModalContext: AlternativeOrderModalContext
+  alternativeOrderModalContext?: AlternativeOrderModalContext
 }
 
 const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {

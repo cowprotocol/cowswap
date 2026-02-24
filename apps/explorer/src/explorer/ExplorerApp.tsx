@@ -48,9 +48,11 @@ if (SENTRY_DSN) {
   })
 }
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
+type WindowWithIpfsFlag = Window & { IS_IPFS?: boolean }
+
+const Router: typeof BrowserRouter & typeof HashRouter = (window as WindowWithIpfsFlag).IS_IPFS
+  ? HashRouter
+  : BrowserRouter
 
 const NotFound = React.lazy(
   () =>
@@ -188,9 +190,11 @@ export const ExplorerApp: React.FC = () => {
   )
 }
 
-export default withGlobalContext(
+const ExplorerAppWithGlobalContext = withGlobalContext(
   ExplorerApp,
   // Initial State
   INITIAL_STATE,
   rootReducer,
 )
+
+export default ExplorerAppWithGlobalContext

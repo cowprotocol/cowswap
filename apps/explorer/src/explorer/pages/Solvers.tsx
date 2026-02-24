@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { Helmet } from 'react-helmet'
+import { useLocation } from 'react-router'
 
 import {
   ChartWrapper,
@@ -21,17 +22,29 @@ import { SolversDirectoryTable } from './SolversDirectoryTable'
 
 import { LoadingWrapper } from '../../components/common/LoadingWrapper'
 import { useSolversInfo } from '../../hooks/useSolversInfo'
+import { NETWORK_PREFIXES } from '../../state/network/const'
 import { APP_TITLE } from '../const'
+
+const SOLVERS_DUNE_EMBED_URL = 'https://dune.com/embeds/5931238/9574995?darkMode=true'
+const SOLVERS_CANONICAL_URL = 'https://explorer.cow.fi/solvers'
 
 const Solvers = (): React.ReactNode => {
   const { solversInfo, isLoading, error } = useSolversInfo()
   const [isSnapshotExpanded, setIsSnapshotExpanded] = useState(true)
   const [shownCount, setShownCount] = useState(0)
+  const { pathname } = useLocation()
+  const [, firstPathSegment, secondPathSegment] = pathname.split('/')
+  const isPrefixedSolversPath =
+    firstPathSegment.length > 0 &&
+    NETWORK_PREFIXES.split('|').includes(firstPathSegment) &&
+    secondPathSegment === 'solvers'
 
   return (
     <Wrapper>
       <Helmet>
         <title>Solvers - {APP_TITLE}</title>
+        <link rel="canonical" href={SOLVERS_CANONICAL_URL} />
+        {isPrefixedSolversPath && <meta name="robots" content="noindex,follow" />}
       </Helmet>
       <StyledSearch />
       <h1>Solvers</h1>
@@ -49,11 +62,12 @@ const Solvers = (): React.ReactNode => {
             <SnapshotContent>
               <ChartWrapper>
                 <iframe
-                  src="https://dune.com/embeds/5931238/9574995"
+                  src={SOLVERS_DUNE_EMBED_URL}
                   title="Solvers across networks"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   allow="clipboard-write"
+                  sandbox="allow-scripts allow-same-origin"
                 />
               </ChartWrapper>
             </SnapshotContent>

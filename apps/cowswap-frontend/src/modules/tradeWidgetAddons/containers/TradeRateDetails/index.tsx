@@ -23,12 +23,16 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { RowDeadline } from '../RowDeadline'
+import { RowQuoteId } from '../RowQuoteId'
 import { RowSlippage } from '../RowSlippage'
 
 interface TradeRateDetailsProps {
   deadline: number
   rateInfoParams: RateInfoParams
   isTradePriceUpdating: boolean
+  quoteId?: string | number | null
+  quoteVerified?: boolean | null
+  quoteExpiration?: string | null
   accordionContent?: ReactNode
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
@@ -37,6 +41,9 @@ export function TradeRateDetails({
   rateInfoParams,
   deadline,
   isTradePriceUpdating,
+  quoteId,
+  quoteVerified,
+  quoteExpiration,
   accordionContent,
   feeWrapper,
 }: TradeRateDetailsProps): ReactNode {
@@ -100,6 +107,7 @@ export function TradeRateDetails({
       {/* Always show slippage inside accordion */}
       {slippageRow}
       <RowDeadline deadline={deadline} />
+      <RowQuoteId quoteId={quoteId} isVerified={quoteVerified} expiration={quoteExpiration} />
     </>
   )
 

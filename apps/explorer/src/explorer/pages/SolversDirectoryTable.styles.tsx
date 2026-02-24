@@ -1,8 +1,36 @@
-import { Color } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { SimpleTable } from '../../components/common/SimpleTable'
+
+const DEPLOYMENTS_GRID_TEMPLATE_COLUMNS = '12rem 8rem 1fr 1fr'
+const DEPLOYMENTS_GRID_MIN_WIDTH = '72rem'
+
+type EnvTagPalette = {
+  color: string
+  background: string
+  border: string
+}
+
+const DEFAULT_ENV_TAG_PALETTE: EnvTagPalette = {
+  color: Color.explorer_orange1,
+  background: Color.explorer_orangeOpacity,
+  border: Color.explorer_orange1,
+}
+
+const ENV_TAG_PALETTE_MAP: Record<string, EnvTagPalette> = {
+  prod: {
+    color: Color.explorer_green1,
+    background: Color.explorer_greenOpacity,
+    border: Color.explorer_green1,
+  },
+  barn: DEFAULT_ENV_TAG_PALETTE,
+}
+
+function getEnvTagPalette(environment: string): EnvTagPalette {
+  return ENV_TAG_PALETTE_MAP[environment] || DEFAULT_ENV_TAG_PALETTE
+}
 
 export const Controls = styled.div`
   display: flex;
@@ -12,18 +40,46 @@ export const Controls = styled.div`
   align-items: center;
 `
 
-export const Input = styled.input`
+export const SearchInputWrapper = styled.div`
+  position: relative;
   min-width: 26rem;
   flex: 1 1 32rem;
+`
+
+export const Input = styled.input`
+  width: 100%;
   border: 0.1rem solid ${Color.explorer_border};
   border-radius: 0.8rem;
   background: ${Color.explorer_bg2};
   color: ${Color.explorer_textSecondary2};
-  padding: 0.95rem 1.1rem;
+  padding: 0.95rem 3.8rem 0.95rem 1.1rem;
 
   &::placeholder {
     color: ${Color.explorer_textSecondary2};
     opacity: 1;
+  }
+`
+
+export const ClearInputButton = styled.button`
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: ${Color.explorer_textSecondary2};
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  border-radius: 50%;
+
+  &:hover {
+    color: ${Color.neutral100};
+    background: ${Color.explorer_bg};
   }
 `
 
@@ -37,6 +93,16 @@ export const Select = styled.select`
 `
 
 export const Table = styled(SimpleTable)`
+  min-width: 98rem;
+
+  tbody tr.solver-summary-row td {
+    transition: background-color 0.14s ease;
+  }
+
+  tbody tr.solver-summary-row:hover td {
+    background: ${Color.explorer_bg2};
+  }
+
   td.solver {
     min-width: 28rem;
   }
@@ -57,6 +123,27 @@ export const Table = styled(SimpleTable)`
   td.description {
     min-width: 18rem;
     white-space: normal;
+  }
+
+  ${Media.upToMedium()} {
+    min-width: 92rem;
+  }
+`
+
+export const TableScrollHint = styled.div`
+  position: relative;
+
+  ${Media.upToMedium()} {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 2rem;
+      width: 2.8rem;
+      pointer-events: none;
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
+    }
   }
 `
 
@@ -142,17 +229,16 @@ export const EnvTag = styled.span<{ $environment: string }>`
   font-size: 1.2rem;
   font-weight: 600;
   text-transform: lowercase;
-  color: ${({ $environment }): string => ($environment === 'prod' ? Color.explorer_green1 : Color.explorer_orange1)};
-  background: ${({ $environment }): string =>
-    $environment === 'prod' ? Color.explorer_greenOpacity : Color.explorer_orangeOpacity};
-  border: 0.1rem solid
-    ${({ $environment }): string => ($environment === 'prod' ? Color.explorer_green1 : Color.explorer_orange1)};
+  color: ${({ $environment }): string => getEnvTagPalette($environment).color};
+  background: ${({ $environment }): string => getEnvTagPalette($environment).background};
+  border: 0.1rem solid ${({ $environment }): string => getEnvTagPalette($environment).border};
 `
 
-export const NetworkIcon = styled.img`
+export const NetworkIcon = styled.img<{ $invert?: boolean }>`
   width: 1.35rem;
   height: 1.35rem;
   object-fit: contain;
+  filter: ${({ $invert }): string => ($invert ? 'invert(1)' : 'none')};
 `
 
 export const DeploymentsPanel = styled.div`
@@ -160,17 +246,39 @@ export const DeploymentsPanel = styled.div`
   border: 0.1rem solid ${Color.explorer_border};
   border-radius: 0.8rem;
   background: ${Color.explorer_bg2};
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 `
 
 export const DeploymentsPanelTitle = styled.h3`
-  margin: 0 0 0.8rem;
+  margin: 0 0 1.4rem;
   font-size: 1.3rem;
   color: ${Color.explorer_textSecondary1};
 `
 
+export const DeploymentsSection = styled.div<{ $muted?: boolean }>`
+  border-radius: 0.8rem;
+  padding: 0.8rem;
+  background: ${({ $muted }): string => ($muted ? 'transparent' : Color.explorer_bg)};
+  border: ${({ $muted }): string =>
+    $muted ? `0.1rem solid ${Color.explorer_tableRowBorder}` : `0.1rem solid ${Color.explorer_border}`};
+  opacity: ${({ $muted }): number => ($muted ? 0.88 : 1)};
+
+  &:not(:first-of-type) {
+    margin-top: 1.6rem;
+  }
+`
+
+export const DeploymentsSectionTitle = styled.h4<{ $muted?: boolean }>`
+  margin: 0 0 0.6rem;
+  font-size: 1.2rem;
+  color: ${({ $muted }): string => ($muted ? Color.explorer_textSecondary2 : Color.neutral100)};
+`
+
 export const DeploymentsGridHeader = styled.div`
   display: grid;
-  grid-template-columns: 12rem 8rem 1fr 1fr 6rem;
+  grid-template-columns: ${DEPLOYMENTS_GRID_TEMPLATE_COLUMNS};
+  min-width: ${DEPLOYMENTS_GRID_MIN_WIDTH};
   gap: 0.8rem;
   color: ${Color.explorer_textSecondary2};
   font-size: 1.1rem;
@@ -179,12 +287,32 @@ export const DeploymentsGridHeader = styled.div`
 
 export const DeploymentsGridRow = styled.div`
   display: grid;
-  grid-template-columns: 12rem 8rem 1fr 1fr 6rem;
+  grid-template-columns: ${DEPLOYMENTS_GRID_TEMPLATE_COLUMNS};
+  min-width: ${DEPLOYMENTS_GRID_MIN_WIDTH};
   gap: 0.8rem;
-  padding: 0.6rem 0;
+  padding: 0.6rem 0.4rem;
+  margin: 0 -0.4rem;
   border-top: 0.1rem solid ${Color.explorer_border};
   align-items: center;
   font-size: 1.2rem;
+  border-radius: 0.4rem;
+  transition: background-color 0.14s ease;
+
+  &:hover {
+    background: ${Color.explorer_bg2};
+  }
+
+  > :nth-child(3),
+  > :nth-child(4) {
+    min-width: 22rem;
+  }
+`
+
+export const DeploymentsEmpty = styled.span`
+  display: inline-block;
+  color: ${Color.explorer_textSecondary2};
+  font-size: 1.2rem;
+  padding: 0.2rem 0;
 `
 
 export const Mono = styled.span`

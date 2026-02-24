@@ -8,27 +8,28 @@ import { msg } from '@lingui/core/macro'
 import AppziButton from 'legacy/components/AppziButton'
 import { Version } from 'legacy/components/Version'
 
-import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+import { FortuneWidget } from 'modules/fortune'
 
 import { Routes } from 'common/constants/routes'
 
+import { getSolversExplorerUrl } from './menuConsts.utils'
+
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ACCOUNT_ITEM = (chainId: SupportedChainId) => ({
-  label: msg`Account`,
+const ACCOUNT_ITEM = (chainId: SupportedChainId): MenuItem => ({
+  label: i18n._(msg`Account`),
   children: [
     {
       href: '/account',
-      label: msg`Account`,
+      label: i18n._(msg`Account`),
     },
     {
       href: '/account/tokens',
-      label: msg`Tokens`,
+      label: i18n._(msg`Tokens`),
     },
     {
       href: `/${chainId}/account-proxy`,
-      label: ACCOUNT_PROXY_LABEL,
+      label: i18n._(ACCOUNT_PROXY_LABEL),
     },
   ],
 })
@@ -94,6 +95,11 @@ const MORE_ITEM = {
       external: true,
     },
     {
+      href: getSolversExplorerUrl(),
+      label: msg`Solvers`,
+      external: true,
+    },
+    {
       href: Routes.PLAY_COWRUNNER,
       label: msg`CoW Runner`,
       // icon: IMG_ICON_COW_RUNNER,
@@ -107,14 +113,7 @@ const MORE_ITEM = {
 }
 
 export const NAV_ITEMS = (chainId: SupportedChainId): MenuItem[] => {
-  const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId)
-  const accountItem: MenuItem = {
-    label: i18n._(_ACCOUNT_ITEM.label),
-    children: _ACCOUNT_ITEM.children.map(({ href, label }) => ({
-      href,
-      label: i18n._(label),
-    })),
-  }
+  const accountItem = ACCOUNT_ITEM(chainId)
 
   const learnItem: MenuItem = {
     label: i18n._(LEARN_ITEM.label),

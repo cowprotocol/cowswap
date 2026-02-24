@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/hook-dapp-lib",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "CoW Swap Hook Dapp Library. Allows you to develop pre/post hooks dapps for CoW Protocol.",
   "type": "commonjs",
   "main": "./src/index.ts",

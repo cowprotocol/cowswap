@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/events-v3.2.0...events-v3.3.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.3.0
+
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/events-v3.1.0...events-v3.2.0) (2026-02-13)
 
 

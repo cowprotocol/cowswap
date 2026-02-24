@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { fetchSolversInfo, SolversInfo } from 'utils/fetchSolversInfo'
 
-type UseSolversInfo = {
+export type UseSolversInfoResult = {
   solversInfo: SolversInfo
   isLoading: boolean
   error: string | null
@@ -10,39 +10,46 @@ type UseSolversInfo = {
 
 const EMPTY_SOLVERS_INFO: SolversInfo = []
 
-export function useSolversInfo(network?: number): UseSolversInfo {
+export function useSolversInfo(network?: number): UseSolversInfoResult {
   const [solversInfo, setSolversInfo] = useState<SolversInfo>(EMPTY_SOLVERS_INFO)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    let isSubscribed = true
+    const isSubscribedRef = { current: true }
 
     setIsLoading(true)
     setError(null)
 
     fetchSolversInfo(network)
       .then((info) => {
-        if (isSubscribed) {
+        if (isSubscribedRef.current) {
           setSolversInfo(info)
         }
       })
       .catch((error: unknown) => {
-        if (isSubscribed) {
+        if (isSubscribedRef.current) {
           setError(error instanceof Error ? error.message : 'Failed to load solvers info')
           setSolversInfo(EMPTY_SOLVERS_INFO)
         }
       })
       .finally(() => {
-        if (isSubscribed) {
+        if (isSubscribedRef.current) {
           setIsLoading(false)
         }
       })
 
     return () => {
-      isSubscribed = false
+      isSubscribedRef.current = false
     }
   }, [network])
 
-  return { solversInfo, isLoading, error }
+  return useMemo(
+    () => ({
+      solversInfo,
+      isLoading,
+      error,
+    }),
+    [error, isLoading, solversInfo],
+  )
 }

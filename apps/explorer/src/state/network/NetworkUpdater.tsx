@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -29,6 +29,8 @@ function getNetworkId(network = MAINNET_PREFIX): SupportedChainId {
 }
 
 const NETWORK_MATCH_REGEX = new RegExp(`^/(${NETWORK_PREFIXES})`)
+const CANONICAL_SOLVERS_PATH_PREFIX = '/solvers'
+const PREFIXED_SOLVERS_PATH_REGEX = new RegExp(`^/(${NETWORK_PREFIXES})/solvers(?:/|$)`)
 
 export const NetworkUpdater: React.FC = () => {
   // TODO: why not using useDispatch from https://react-redux.js.org/introduction/quick-start
@@ -36,10 +38,26 @@ export const NetworkUpdater: React.FC = () => {
   const [, dispatch] = useGlobalState()
   const currentNetworkId = useNetworkId()
   const location = useLocation()
+  const previousPathnameRef = useRef<string | null>(null)
 
   useEffect(() => {
+    const previousPathname = previousPathnameRef.current
+    previousPathnameRef.current = location.pathname
+
     const networkMatchArray = location.pathname.match(NETWORK_MATCH_REGEX)
     const network = networkMatchArray && networkMatchArray.length > 0 ? networkMatchArray[1] : undefined
+    const isCanonicalSolversPath =
+      location.pathname === CANONICAL_SOLVERS_PATH_PREFIX ||
+      location.pathname.startsWith(`${CANONICAL_SOLVERS_PATH_PREFIX}/`)
+    const previousWasPrefixedSolversPath =
+      previousPathname !== null && PREFIXED_SOLVERS_PATH_REGEX.test(previousPathname)
+    const shouldPreserveCurrentNetwork =
+      isCanonicalSolversPath && network === undefined && currentNetworkId !== null && !previousWasPrefixedSolversPath
+
+    if (shouldPreserveCurrentNetwork) {
+      return
+    }
+
     const networkId = getNetworkId(network)
 
     // Update the network if it's different
@@ -47,7 +65,7 @@ export const NetworkUpdater: React.FC = () => {
       dispatch(setNetwork(networkId))
       updateWeb3Provider(web3, networkId)
     }
-  }, [location, currentNetworkId, dispatch])
+  }, [location.pathname, currentNetworkId, dispatch])
 
   return null
 }

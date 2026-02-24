@@ -40,6 +40,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     if (props.isSafeWallet) {
       return (
         <ButtonError
+          id="do-trade-button"
           buttonSize={ButtonSize.BIG}
           onClick={props.onEthFlow}
           disabled={isDisabled}
@@ -62,6 +63,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
 
     return (
       <ButtonError
+        id="do-trade-button"
         buttonSize={ButtonSize.BIG}
         onClick={props.onEthFlow}
         disabled={isDisabled}
@@ -75,6 +77,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   },
   [SwapFormState.WrapAndSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <ButtonError
+      id="do-trade-button"
       buttonSize={ButtonSize.BIG}
       onClick={props.openSwapConfirm}
       disabled={isDisabled}
@@ -89,6 +92,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   ),
   [SwapFormState.WrapAndSwapAndBridge]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <ButtonError
+      id="do-trade-button"
       buttonSize={ButtonSize.BIG}
       onClick={props.openSwapConfirm}
       disabled={isDisabled}
@@ -124,7 +128,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     const symbol = currency?.symbol
 
     return (
-      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
+      <ButtonError id="do-trade-button" buttonSize={ButtonSize.BIG} disabled={true}>
         <div>
           <Trans>Selling {symbol} is not supported</Trans>
         </div>
