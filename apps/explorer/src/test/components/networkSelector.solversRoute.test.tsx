@@ -128,4 +128,29 @@ describe('NetworkSelector on /solvers', () => {
     )
     expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.ARBITRUM_ONE)
   })
+
+  it('switches back to mainnet on canonical solvers route without path change', async () => {
+    mockedUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.ARBITRUM_ONE])
+
+    const Wrapped = withGlobalContext(SelectorHarness, createInitialState(SupportedChainId.ARBITRUM_ONE), rootReducer)
+
+    render(
+      <MemoryRouter initialEntries={['/solvers']}>
+        <Wrapped />
+      </MemoryRouter>,
+    )
+
+    const arbitrumLabel = CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].label.toLowerCase()
+    const mainnetOptionLabel = CHAIN_INFO[SupportedChainId.MAINNET].label
+
+    fireEvent.click(screen.getByText(arbitrumLabel))
+    fireEvent.click(screen.getByText(mainnetOptionLabel))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('network-id').textContent).toBe(String(SupportedChainId.MAINNET))
+    })
+
+    expect(screen.getByTestId('location').textContent).toBe('/solvers')
+    expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.MAINNET)
+  })
 })

@@ -8,7 +8,11 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 import { NetworkLabel, Option, OptionsContainer, SelectorContainer, StyledFAIcon } from './NetworkSelector.styled'
 
+import { updateWeb3Provider } from '../../api/web3'
+import { web3 } from '../../explorer/api'
+import useGlobalState from '../../hooks/useGlobalState'
 import { usePathSuffix } from '../../state/network'
+import { setNetwork } from '../../state/network/actions'
 
 type networkSelectorProps = {
   networkId: number
@@ -22,6 +26,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   const currentNetwork = getChainInfo(networkId)
   const currentNetworkName = currentNetwork.label.toLowerCase()
   const [open, setOpen] = useState(false)
+  const [, dispatch] = useGlobalState()
   const pathSuffix = usePathSuffix()
   const availableChains = useAvailableChains()
 
@@ -83,6 +88,10 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
                 key={itemNetworkId}
                 onClick={(): void => {
                   setOpen(false)
+                  if (isSolversRoute && itemNetworkId !== networkId) {
+                    dispatch(setNetwork(itemNetworkId))
+                    updateWeb3Provider(web3, itemNetworkId)
+                  }
                 }}
               >
                 <div className="dot" />
