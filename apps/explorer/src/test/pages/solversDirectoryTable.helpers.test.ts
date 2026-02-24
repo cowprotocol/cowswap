@@ -4,6 +4,7 @@ import {
   ALL_FILTER,
   filterDeploymentsByActiveStatus,
   filterSolvers,
+  getEnvironmentOptions,
   getNetworkOptions,
 } from '../../explorer/pages/SolversDirectoryTable.helpers'
 import { SolversInfo } from '../../utils/fetchSolversInfo'
@@ -70,6 +71,13 @@ const SOLVERS_INFO: SolversInfo = [
         address: '0xdelta1',
         active: false,
       },
+      {
+        chainId: 10,
+        chainName: 'Optimism',
+        environment: 'qa',
+        address: '0xdelta2',
+        active: false,
+      },
     ],
   },
 ]
@@ -124,5 +132,11 @@ describe('filterSolvers active filter', () => {
         [8453, 'Base'],
       ]),
     )
+  })
+
+  it('includes environments that only exist on inactive deployments', () => {
+    const result = getEnvironmentOptions(SOLVERS_INFO)
+
+    expect(result).toEqual(expect.arrayContaining(['qa', 'prod']))
   })
 })

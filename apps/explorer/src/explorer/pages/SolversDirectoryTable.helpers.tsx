@@ -63,10 +63,10 @@ export function getEnvironmentOptions(solversInfo: SolverInfo[]): string[] {
   const environments = new Set<string>()
 
   solversInfo.forEach((solver) => {
-    solver.networks.forEach((network) => {
-      network.environments.forEach((environment) => {
-        environments.add(environment)
-      })
+    solver.deployments.forEach((deployment) => {
+      if (deployment.environment) {
+        environments.add(deployment.environment)
+      }
     })
   })
 

@@ -12,6 +12,8 @@ import { FortuneWidget } from 'modules/fortune'
 
 import { Routes } from 'common/constants/routes'
 
+import { getSolversExplorerUrl } from './menuConsts.utils'
+
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 
 const ACCOUNT_ITEM = (chainId: SupportedChainId): MenuItem => ({
@@ -93,7 +95,7 @@ const MORE_ITEM = {
       external: true,
     },
     {
-      href: 'https://explorer.cow.fi/solvers',
+      href: getSolversExplorerUrl(),
       label: msg`Solvers`,
       external: true,
     },
