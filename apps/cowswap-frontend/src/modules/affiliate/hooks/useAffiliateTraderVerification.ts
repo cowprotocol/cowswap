@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
@@ -78,5 +78,5 @@ export function useAffiliateTraderVerification(params: VerificationParams): UseA
     [analytics, setError, setSavedCode],
   )
 
-  return { isVerifying, verifyCode }
+  return useMemo(() => ({ isVerifying, verifyCode }), [isVerifying, verifyCode])
 }

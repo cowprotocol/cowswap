@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -63,5 +63,5 @@ export function useAffiliatePartnerCodeCreate({
     }
   }, [account, code, mutatePartnerInfo, provider, setError])
 
-  return { submitting, onCreate }
+  return useMemo(() => ({ submitting, onCreate }), [submitting, onCreate])
 }

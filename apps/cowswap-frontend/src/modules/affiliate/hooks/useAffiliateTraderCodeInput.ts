@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -69,13 +69,16 @@ export function useAffiliateTraderCodeInput(): UseAffiliateTraderCodeInputResult
     shouldAutoVerify.current = false
   }, [setError, setSavedCode])
 
-  return {
-    codeInput,
-    error,
-    isVerifying,
-    verifyCode,
-    onChange,
-    onEdit,
-    onRemove,
-  }
+  return useMemo(
+    () => ({
+      codeInput,
+      error,
+      isVerifying,
+      verifyCode,
+      onChange,
+      onEdit,
+      onRemove,
+    }),
+    [codeInput, error, isVerifying, verifyCode, onChange, onEdit, onRemove],
+  )
 }
