@@ -1,4 +1,5 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
 
@@ -37,7 +38,7 @@ export function buildBatchInsights(params: BuildBatchInsightsParams): BatchInsig
   const dexAddress = dexContract?.address || interactionAddresses[0]
   const cowSignal = detectPossibleCowSignal(trades, tokens, networkId)
   const compactRoutes = annotateRoutesWithUsdEstimates(buildCompactRoutes({ networkId, orders, trades, tokens }))
-  const cowFlow = buildCowFlow(compactRoutes, cowSignal.possibleCowTokenLabels)
+  const cowFlow = buildCowFlow(compactRoutes, cowSignal.possibleCowTokenAddresses)
   const hasUsdEstimates = compactRoutes.some((route) => route.sellAmountUsdValue || route.buyAmountUsdValue)
   const bridgeOrdersCount = safeOrders.filter((order) => !!order.bridgeProviderId).length
 
@@ -152,51 +153,65 @@ function formatTokenAmountLabel(amount: BigNumber, token: SingleErc20State | und
   return `${amountLabel} ${symbol}`
 }
 
-function buildCowFlow(routes: CompactRoute[], possibleCowTokenLabels: string[]): CowFlowSummary | undefined {
-  if (!routes.length || !possibleCowTokenLabels.length) {
+function buildCowFlow(routes: CompactRoute[], possibleCowTokenAddresses: string[]): CowFlowSummary | undefined {
+  if (!routes.length || !possibleCowTokenAddresses.length) {
     return undefined
   }
 
-  const bestToken = getBestCowToken(routes, possibleCowTokenLabels)
+  const bestToken = getBestCowToken(routes, possibleCowTokenAddresses)
   if (!bestToken) {
     return undefined
   }
 
-  const providers = routes.filter((route) => route.sellToken?.symbol === bestToken.symbol)
-  const receivers = routes.filter((route) => route.buyToken?.symbol === bestToken.symbol)
+  const providers = routes.filter((route) => areAddressesEqual(route.sellToken?.address, bestToken.address))
+  const receivers = routes.filter((route) => areAddressesEqual(route.buyToken?.address, bestToken.address))
   return buildCowFlowSummary(bestToken, providers, receivers, routes)
 }
 
-type BestCowToken = { symbol: string; matchedValue: number }
+type BestCowToken = { address: string; symbol: string; matchedValue: number }
 
-function getBestCowToken(routes: CompactRoute[], possibleCowTokenLabels: string[]): BestCowToken | undefined {
+function getBestCowToken(routes: CompactRoute[], possibleCowTokenAddresses: string[]): BestCowToken | undefined {
   let bestToken: BestCowToken | undefined
 
-  possibleCowTokenLabels.forEach((symbol) => {
-    const matchedValue = getTokenMatchedValue(routes, symbol)
+  possibleCowTokenAddresses.forEach((address) => {
+    const matchedValue = getTokenMatchedValue(routes, address)
     if (matchedValue <= 0) {
       return
     }
 
     if (!bestToken || matchedValue > bestToken.matchedValue) {
-      bestToken = { symbol, matchedValue }
+      const symbol = getTokenSymbolByAddress(routes, address)
+      bestToken = { address, symbol, matchedValue }
     }
   })
 
   return bestToken
 }
 
-function getTokenMatchedValue(routes: CompactRoute[], symbol: string): number {
+function getTokenMatchedValue(routes: CompactRoute[], tokenAddress: string): number {
   const sellValue = routes.reduce(
-    (sum, route) => (route.sellToken?.symbol === symbol ? sum + route.sellAmountValue : sum),
+    (sum, route) => (areAddressesEqual(route.sellToken?.address, tokenAddress) ? sum + route.sellAmountValue : sum),
     0,
   )
   const buyValue = routes.reduce(
-    (sum, route) => (route.buyToken?.symbol === symbol ? sum + route.buyAmountValue : sum),
+    (sum, route) => (areAddressesEqual(route.buyToken?.address, tokenAddress) ? sum + route.buyAmountValue : sum),
     0,
   )
 
   return Math.min(sellValue, buyValue)
+}
+
+function getTokenSymbolByAddress(routes: CompactRoute[], tokenAddress: string): string {
+  const providerSymbol = routes.find((route) => areAddressesEqual(route.sellToken?.address, tokenAddress))?.sellToken
+    ?.symbol
+  if (providerSymbol) {
+    return providerSymbol
+  }
+
+  const receiverSymbol = routes.find((route) => areAddressesEqual(route.buyToken?.address, tokenAddress))?.buyToken
+    ?.symbol
+
+  return receiverSymbol || TOKEN_SYMBOL_UNKNOWN
 }
 
 function buildCowFlowSummary(
@@ -212,8 +227,8 @@ function buildCowFlowSummary(
     return undefined
   }
 
-  const tokenAddress = providers[0]?.sellToken?.address || receivers[0]?.buyToken?.address
-  const tokenUsdPrice = getTokenUsdPrice(routes, bestToken.symbol)
+  const tokenAddress = bestToken.address
+  const tokenUsdPrice = getTokenUsdPrice(routes, bestToken.address)
   const providerAllocations = splitCowAllocation({
     matchedValue: bestToken.matchedValue,
     routes: providers,
@@ -274,10 +289,10 @@ function splitCowAllocation(params: SplitCowAllocationParams): CowFlowAllocation
     .filter((allocation) => allocation.amountValue > 0)
 }
 
-function getTokenUsdPrice(routes: CompactRoute[], symbol: string): number | undefined {
+function getTokenUsdPrice(routes: CompactRoute[], tokenAddress: string): number | undefined {
   const routesWithUsd = routes.filter(
     (route) =>
-      route.sellToken?.symbol === symbol &&
+      areAddressesEqual(route.sellToken?.address, tokenAddress) &&
       route.sellAmountValue > 0 &&
       route.sellAmountUsdValue !== undefined &&
       route.sellAmountUsdValue > 0,
@@ -294,7 +309,7 @@ function getTokenUsdPrice(routes: CompactRoute[], symbol: string): number | unde
 
   const routesWithBuyUsd = routes.filter(
     (route) =>
-      route.buyToken?.symbol === symbol &&
+      areAddressesEqual(route.buyToken?.address, tokenAddress) &&
       route.buyAmountValue > 0 &&
       route.buyAmountUsdValue !== undefined &&
       route.buyAmountUsdValue > 0,
@@ -540,6 +555,7 @@ function normalizeTokenAddress(networkId: Network | undefined, tokenAddress: str
 type PossibleCowSignal = {
   hasPossibleCow: boolean
   possibleCowTokenLabels: string[]
+  possibleCowTokenAddresses: string[]
 }
 
 function detectPossibleCowSignal(
@@ -548,7 +564,7 @@ function detectPossibleCowSignal(
   networkId: Network | undefined,
 ): PossibleCowSignal {
   if (trades.length < 2) {
-    return { hasPossibleCow: false, possibleCowTokenLabels: [] }
+    return { hasPossibleCow: false, possibleCowTokenAddresses: [], possibleCowTokenLabels: [] }
   }
 
   const tokenFlows = new Map<
@@ -585,22 +601,26 @@ function detectPossibleCowSignal(
     tokenFlows.set(buyToken, buyData)
   })
 
-  const possibleCowTokenLabels = Array.from(tokenFlows.entries()).reduce<string[]>((acc, [tokenAddress, flow]) => {
+  const possibleCowTokenAddresses = Array.from(tokenFlows.entries()).reduce<string[]>((acc, [tokenAddress, flow]) => {
     const uniqueParticipants = new Set([...flow.sellers, ...flow.buyers]).size
     const matchedVolume = flow.sellVolume < flow.buyVolume ? flow.sellVolume : flow.buyVolume
 
     if (flow.sellers.size && flow.buyers.size && uniqueParticipants > 1 && matchedVolume > 0) {
-      const symbol = tokens[tokenAddress]?.symbol || TOKEN_SYMBOL_UNKNOWN
-      acc.push(symbol)
+      acc.push(tokenAddress)
     }
 
     return acc
   }, [])
 
+  const uniquePossibleCowTokenAddresses = Array.from(new Set(possibleCowTokenAddresses))
+  const possibleCowTokenLabels = uniquePossibleCowTokenAddresses.map(
+    (tokenAddress) => tokens[tokenAddress]?.symbol || TOKEN_SYMBOL_UNKNOWN,
+  )
   const uniquePossibleCowTokenLabels = Array.from(new Set(possibleCowTokenLabels))
 
   return {
-    hasPossibleCow: uniquePossibleCowTokenLabels.length > 0,
+    hasPossibleCow: uniquePossibleCowTokenAddresses.length > 0,
+    possibleCowTokenAddresses: uniquePossibleCowTokenAddresses,
     possibleCowTokenLabels: uniquePossibleCowTokenLabels,
   }
 }

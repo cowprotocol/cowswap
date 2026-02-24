@@ -449,7 +449,7 @@ function buildSellLinks(
       targetX: endX,
       width: getFlowWidth(getFlowDisplayValue(item.ammSellValue, item.ammSellUsdValue, showUsdValues), maxFlow),
       label: displayLabel,
-      tooltipLabel: flowTooltipLabel(displayLabel, item.route.sellAmountLabel, item.ammSellUsdValue, showUsdValues),
+      tooltipLabel: flowTooltipLabel(displayLabel, item.ammSellUsdValue, showUsdValues),
       sourceY: startY,
       targetY: endY,
     })
@@ -497,7 +497,7 @@ function buildBuyLinks(
       targetX: endX,
       width: getFlowWidth(getFlowDisplayValue(item.ammBuyValue, item.ammBuyUsdValue, showUsdValues), maxFlow),
       label: displayLabel,
-      tooltipLabel: flowTooltipLabel(displayLabel, item.route.buyAmountLabel, item.ammBuyUsdValue, showUsdValues),
+      tooltipLabel: flowTooltipLabel(displayLabel, item.ammBuyUsdValue, showUsdValues),
       sourceY: startY,
       targetY: endY,
     })
@@ -710,17 +710,12 @@ function getFullRouteLabel(
   return Math.abs(value - routeAmountValue) <= tolerance ? routeAmountLabel : undefined
 }
 
-function flowTooltipLabel(
-  label: string,
-  fallbackLabel: string,
-  usdValue: number | undefined,
-  showUsdValues: boolean,
-): string {
-  if (!showUsdValues || usdValue === undefined) {
-    return fallbackLabel
+function flowTooltipLabel(label: string, usdValue: number | undefined, showUsdValues: boolean): string {
+  if (!showUsdValues || usdValue === undefined || label.includes('(')) {
+    return label
   }
 
-  return `${fallbackLabel} (${formatUsd(usdValue)})`
+  return `${label} (${formatUsd(usdValue)})`
 }
 
 function formatTokenValue(value: number): string {
