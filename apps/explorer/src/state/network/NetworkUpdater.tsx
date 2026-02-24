@@ -29,6 +29,7 @@ function getNetworkId(network = MAINNET_PREFIX): SupportedChainId {
 }
 
 const NETWORK_MATCH_REGEX = new RegExp(`^/(${NETWORK_PREFIXES})`)
+const CANONICAL_SOLVERS_PATH_PREFIX = '/solvers'
 
 export const NetworkUpdater: React.FC = () => {
   // TODO: why not using useDispatch from https://react-redux.js.org/introduction/quick-start
@@ -40,6 +41,15 @@ export const NetworkUpdater: React.FC = () => {
   useEffect(() => {
     const networkMatchArray = location.pathname.match(NETWORK_MATCH_REGEX)
     const network = networkMatchArray && networkMatchArray.length > 0 ? networkMatchArray[1] : undefined
+    const isCanonicalSolversPath =
+      location.pathname === CANONICAL_SOLVERS_PATH_PREFIX ||
+      location.pathname.startsWith(`${CANONICAL_SOLVERS_PATH_PREFIX}/`)
+    const shouldPreserveCurrentNetwork = isCanonicalSolversPath && network === undefined && currentNetworkId !== null
+
+    if (shouldPreserveCurrentNetwork) {
+      return
+    }
+
     const networkId = getNetworkId(network)
 
     // Update the network if it's different

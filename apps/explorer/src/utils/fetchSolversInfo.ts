@@ -31,6 +31,7 @@ const SOLVERS_QUERY = [
   'populate[solver_networks][fields][2]=payoutAddress',
   'populate[solver_networks][fields][3]=payout_address',
   'populate[solver_networks][populate][network][fields][0]=chainId',
+  'populate[solver_networks][populate][network][fields][1]=name',
   'populate[solver_networks][populate][environment][fields][0]=name',
   'pagination[pageSize]=200',
 ].join('&')
@@ -104,6 +105,7 @@ function mapSolverDeployments(entries: CmsEntity<CmsSolverNetworkAttributes>[]):
 
 function mapSolverNetworks(deployments: SolverDeployment[]): SolverNetworkInfo[] {
   const chainIdToEnvironments = new Map<number, Set<string>>()
+  const chainIdToName = new Map<number, string>()
   for (const deployment of deployments) {
     if (!deployment.active) {
       continue
@@ -113,19 +115,20 @@ function mapSolverNetworks(deployments: SolverDeployment[]): SolverNetworkInfo[]
       currentEnvironments.add(deployment.environment)
     }
     chainIdToEnvironments.set(deployment.chainId, currentEnvironments)
+    chainIdToName.set(deployment.chainId, deployment.chainName)
   }
 
   return [...chainIdToEnvironments.entries()]
     .map(([chainId, environments]) => ({
       chainId,
-      chainName: getChainName(chainId),
+      chainName: chainIdToName.get(chainId) || getChainName(chainId),
       environments: [...environments].sort(),
     }))
     .sort((a, b) => a.chainName.localeCompare(b.chainName))
 }
 
-function getChainName(chainId: number): string {
-  return CHAIN_INFO_BY_ID[chainId]?.label || `Chain ${chainId}`
+function getChainName(chainId: number, fallbackName?: string): string {
+  return CHAIN_INFO_BY_ID[chainId]?.label || fallbackName || `Chain ${chainId}`
 }
 
 function normalizeCmsImageUrl(url?: string | null): string | undefined {
@@ -193,9 +196,10 @@ function mapSolverDeployment(entry: CmsEntity<CmsSolverNetworkAttributes>): Solv
   if (!chainId) {
     return undefined
   }
+  const chainNameFromCms = getChainNameFromCms(attributes)
   return {
     chainId,
-    chainName: getChainName(chainId),
+    chainName: getChainName(chainId, chainNameFromCms),
     environment: getEnvironmentName(attributes),
     address: getAddress(attributes),
     payoutAddress: getPayoutAddress(attributes),
@@ -217,6 +221,11 @@ function isDefined<T>(value: T | undefined): value is T {
 
 function getChainId(attributes?: CmsSolverNetworkAttributes | null): number | undefined {
   return attributes?.network?.data?.attributes?.chainId || undefined
+}
+
+function getChainNameFromCms(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
+  const network = attributes?.network?.data?.attributes
+  return network?.name || network?.label || network?.chainName || undefined
 }
 
 function getEnvironmentName(attributes?: CmsSolverNetworkAttributes | null): string | undefined {

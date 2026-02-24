@@ -1,17 +1,21 @@
 import React from 'react'
 
-import { ALL_FILTER } from './SolversDirectoryTable.helpers'
-import { Controls, Input, Select } from './SolversDirectoryTable.styles'
+import { FiX } from 'react-icons/fi'
+
+import { ACTIVE_FILTER_ACTIVE, ACTIVE_FILTER_INACTIVE, ALL_FILTER } from './SolversDirectoryTable.helpers'
+import { ClearInputButton, Controls, Input, SearchInputWrapper, Select } from './SolversDirectoryTable.styles'
 
 interface FiltersBarProps {
   searchQuery: string
   networkFilter: string
   environmentFilter: string
+  activeFilter: string
   networkOptions: [number, string][]
   environmentOptions: string[]
   setSearchQuery: (value: string) => void
   setNetworkFilter: (value: string) => void
   setEnvironmentFilter: (value: string) => void
+  setActiveFilter: (value: string) => void
 }
 
 export function SolversDirectoryTableFilters(props: FiltersBarProps): React.ReactNode {
@@ -19,20 +23,29 @@ export function SolversDirectoryTableFilters(props: FiltersBarProps): React.Reac
     searchQuery,
     networkFilter,
     environmentFilter,
+    activeFilter,
     networkOptions,
     environmentOptions,
     setSearchQuery,
     setNetworkFilter,
     setEnvironmentFilter,
+    setActiveFilter,
   } = props
 
   return (
     <Controls>
-      <Input
-        value={searchQuery}
-        onChange={(event): void => setSearchQuery(event.target.value)}
-        placeholder="Search solver, backend ID, description, address, payout..."
-      />
+      <SearchInputWrapper>
+        <Input
+          value={searchQuery}
+          onChange={(event): void => setSearchQuery(event.target.value)}
+          placeholder="Search solver, backend ID, description, address, payout..."
+        />
+        {searchQuery && (
+          <ClearInputButton type="button" onClick={(): void => setSearchQuery('')} aria-label="Clear search">
+            <FiX size={16} aria-hidden />
+          </ClearInputButton>
+        )}
+      </SearchInputWrapper>
       <Select value={networkFilter} onChange={(event): void => setNetworkFilter(event.target.value)}>
         <option value={ALL_FILTER}>All networks</option>
         {networkOptions.map(([chainId, chainName]) => (
@@ -48,6 +61,11 @@ export function SolversDirectoryTableFilters(props: FiltersBarProps): React.Reac
             {environment}
           </option>
         ))}
+      </Select>
+      <Select value={activeFilter} onChange={(event): void => setActiveFilter(event.target.value)}>
+        <option value={ALL_FILTER}>All statuses</option>
+        <option value={ACTIVE_FILTER_ACTIVE}>Active</option>
+        <option value={ACTIVE_FILTER_INACTIVE}>Inactive</option>
       </Select>
     </Controls>
   )

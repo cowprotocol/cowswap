@@ -40,6 +40,15 @@ const SOLVERS_RESPONSE = {
                 environment: { data: { id: 2, attributes: { name: 'barn' } } },
               },
             },
+            {
+              id: 12,
+              attributes: {
+                active: false,
+                address: '0x5555555555555555555555555555555555555555',
+                network: { data: { id: 3, attributes: { chainId: 10, name: 'Optimism' } } },
+                environment: { data: { id: 3, attributes: { name: 'prod' } } },
+              },
+            },
           ],
         },
       },
@@ -73,11 +82,14 @@ describe('fetchSolversInfo', () => {
     expect(result[0].solverId).toBe('alpha')
     expect(result[0].displayName).toBe('Alpha Solver')
     expect(result[0].image).toBe('https://cms.cow.fi/uploads/alpha.png')
-    expect(result[0].deployments).toHaveLength(2)
-    expect(result[0].deployments.map((d) => d.payoutAddress)).toEqual([
-      '0x4444444444444444444444444444444444444444',
-      '0x2222222222222222222222222222222222222222',
-    ])
+    expect(result[0].deployments).toHaveLength(3)
+    expect(result[0].deployments.find((deployment) => deployment.chainId === 10)?.chainName).toBe('Optimism')
+    expect(result[0].deployments.map((d) => d.payoutAddress)).toEqual(
+      expect.arrayContaining([
+        '0x4444444444444444444444444444444444444444',
+        '0x2222222222222222222222222222222222222222',
+      ]),
+    )
   })
 
   it('filters deployments by network id when provided', async () => {

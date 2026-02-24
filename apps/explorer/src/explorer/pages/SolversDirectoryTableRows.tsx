@@ -5,9 +5,12 @@ import { ExternalLink } from '@cowprotocol/ui'
 
 import { Placeholder } from './Solvers.styles'
 import {
+  DeploymentsEmpty,
   DeploymentsGridHeader,
   DeploymentsGridRow,
   DeploymentsPanel,
+  DeploymentsSection,
+  DeploymentsSectionTitle,
   DeploymentsPanelTitle,
   EnvTag,
   EnvTags,
@@ -47,15 +50,44 @@ function SolverIcon({ solver }: { solver: SolverInfo }): React.ReactNode {
   return <SolverLogoFallback>{solver.displayName.charAt(0).toUpperCase()}</SolverLogoFallback>
 }
 
-function NetworkChips({ solver }: { solver: SolverInfo }): React.ReactNode {
+type SummaryNetwork = {
+  chainId: number
+  chainName: string
+}
+
+function mapSummaryNetworks(deployments: SolverDeployment[]): SummaryNetwork[] {
+  const byChainId = new Map<number, string>()
+
+  deployments.forEach((deployment) => {
+    byChainId.set(deployment.chainId, deployment.chainName)
+  })
+
+  return [...byChainId.entries()]
+    .map(([chainId, chainName]) => ({ chainId, chainName }))
+    .sort((a, b) => a.chainName.localeCompare(b.chainName))
+}
+
+function mapSummaryEnvironments(deployments: SolverDeployment[]): string[] {
+  const environments = new Set<string>()
+
+  deployments.forEach((deployment) => {
+    if (deployment.environment) {
+      environments.add(deployment.environment)
+    }
+  })
+
+  return [...environments].sort()
+}
+
+function NetworkChips({ solverId, networks }: { solverId: string; networks: SummaryNetwork[] }): React.ReactNode {
   return (
     <Networks>
-      {solver.networks.map((network) => {
+      {networks.map((network) => {
         const chainIcon = getChainIcon(network.chainId)
         // Lens uses a black light logo, so we invert it to keep visibility on dark chips.
         const isLensNetwork = network.chainName.toLowerCase() === 'lens'
         return (
-          <NetworkChip key={`${solver.solverId}-${network.chainId}`}>
+          <NetworkChip key={`${solverId}-${network.chainId}`}>
             {chainIcon && <NetworkIcon src={chainIcon} alt="" $invert={isLensNetwork} />}
             {network.chainName}
           </NetworkChip>
@@ -65,19 +97,11 @@ function NetworkChips({ solver }: { solver: SolverInfo }): React.ReactNode {
   )
 }
 
-function EnvironmentTags({ solver }: { solver: SolverInfo }): React.ReactNode {
-  const environments = new Set<string>()
-
-  solver.networks.forEach((network) => {
-    network.environments.forEach((environment) => {
-      environments.add(environment)
-    })
-  })
-
+function EnvironmentTags({ solverId, environments }: { solverId: string; environments: string[] }): React.ReactNode {
   return (
     <EnvTags>
-      {[...environments].sort().map((environment) => (
-        <EnvTag key={`${solver.solverId}-${environment}`} $environment={environment}>
+      {environments.map((environment) => (
+        <EnvTag key={`${solverId}-${environment}`} $environment={environment}>
           {environment}
         </EnvTag>
       ))}
@@ -87,12 +111,20 @@ function EnvironmentTags({ solver }: { solver: SolverInfo }): React.ReactNode {
 
 type SolverSummaryRowProps = {
   solver: SolverInfo
+  deployments: SolverDeployment[]
   isExpanded: boolean
   onToggle: (solverId: string) => void
 }
 
-export function SolverSummaryRow({ solver, isExpanded, onToggle }: SolverSummaryRowProps): React.ReactNode {
+export function SolverSummaryRow({
+  solver,
+  deployments,
+  isExpanded,
+  onToggle,
+}: SolverSummaryRowProps): React.ReactNode {
   const toggleAriaLabel = `Toggle deployments for solver ${solver.displayName} (${solver.solverId})`
+  const networks = mapSummaryNetworks(deployments)
+  const environments = mapSummaryEnvironments(deployments)
 
   return (
     <tr>
@@ -113,10 +145,10 @@ export function SolverSummaryRow({ solver, isExpanded, onToggle }: SolverSummary
         </SolverCell>
       </td>
       <td className="networks">
-        <NetworkChips solver={solver} />
+        <NetworkChips solverId={solver.solverId} networks={networks} />
       </td>
       <td className="envs">
-        <EnvironmentTags solver={solver} />
+        <EnvironmentTags solverId={solver.solverId} environments={environments} />
       </td>
       <td className="website">
         {solver.website ? (
@@ -137,48 +169,75 @@ type SolverDetailsRowProps = {
   deployments: SolverDeployment[]
 }
 
+type DeploymentsSectionRowsProps = {
+  solver: SolverInfo
+  deployments: SolverDeployment[]
+}
+
+function DeploymentsSectionRows({ solver, deployments }: DeploymentsSectionRowsProps): React.ReactNode {
+  return (
+    <>
+      <DeploymentsGridHeader>
+        <span>Chain</span>
+        <span>Env</span>
+        <span>Solver address</span>
+        <span>Payout address</span>
+      </DeploymentsGridHeader>
+      {deployments.map((deployment, index) => (
+        <DeploymentsGridRow key={`${solver.solverId}-${deployment.chainId}-${deployment.environment || 'na'}-${index}`}>
+          <span>{deployment.chainName}</span>
+          <span>{deployment.environment || '-'}</span>
+          {deployment.address ? (
+            <AddressLink address={deployment.address} chainId={deployment.chainId} showIcon showNetworkName={false} />
+          ) : (
+            <Mono>-</Mono>
+          )}
+          {deployment.payoutAddress ? (
+            <AddressLink
+              address={deployment.payoutAddress}
+              chainId={deployment.chainId}
+              showIcon
+              showNetworkName={false}
+            />
+          ) : (
+            <Mono>-</Mono>
+          )}
+        </DeploymentsGridRow>
+      ))}
+    </>
+  )
+}
+
 export function SolverDetailsRow({ solver, deployments }: SolverDetailsRowProps): React.ReactNode {
+  const activeDeployments = deployments.filter((deployment) => deployment.active)
+  const inactiveDeployments = deployments.filter((deployment) => !deployment.active)
+  const hasActiveDeployments = activeDeployments.length > 0
+  const hasInactiveDeployments = inactiveDeployments.length > 0
+  const hasAnyDeployments = hasActiveDeployments || hasInactiveDeployments
+
   return (
     <tr>
       <td colSpan={5}>
         <DeploymentsPanel>
           <DeploymentsPanelTitle>Solver and payout addresses by chain/environment</DeploymentsPanelTitle>
-          <DeploymentsGridHeader>
-            <span>Chain</span>
-            <span>Env</span>
-            <span>Solver address</span>
-            <span>Payout address</span>
-            <span>Active</span>
-          </DeploymentsGridHeader>
-          {deployments.map((deployment, index) => (
-            <DeploymentsGridRow
-              key={`${solver.solverId}-${deployment.chainId}-${deployment.environment || 'na'}-${index}`}
-            >
-              <span>{deployment.chainName}</span>
-              <span>{deployment.environment || '-'}</span>
-              {deployment.address ? (
-                <AddressLink
-                  address={deployment.address}
-                  chainId={deployment.chainId}
-                  showIcon
-                  showNetworkName={false}
-                />
-              ) : (
-                <Mono>-</Mono>
+          {hasAnyDeployments ? (
+            <>
+              {hasActiveDeployments && (
+                <DeploymentsSection>
+                  <DeploymentsSectionTitle>Active</DeploymentsSectionTitle>
+                  <DeploymentsSectionRows solver={solver} deployments={activeDeployments} />
+                </DeploymentsSection>
               )}
-              {deployment.payoutAddress ? (
-                <AddressLink
-                  address={deployment.payoutAddress}
-                  chainId={deployment.chainId}
-                  showIcon
-                  showNetworkName={false}
-                />
-              ) : (
-                <Mono>-</Mono>
+              {hasInactiveDeployments && (
+                <DeploymentsSection $muted>
+                  <DeploymentsSectionTitle $muted>Inactive</DeploymentsSectionTitle>
+                  <DeploymentsSectionRows solver={solver} deployments={inactiveDeployments} />
+                </DeploymentsSection>
               )}
-              <span>{deployment.active ? 'Yes' : 'No'}</span>
-            </DeploymentsGridRow>
-          ))}
+            </>
+          ) : (
+            <DeploymentsEmpty>No deployments match the current filters.</DeploymentsEmpty>
+          )}
         </DeploymentsPanel>
       </td>
     </tr>

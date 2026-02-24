@@ -38,6 +38,7 @@ export default function InternalExternalMenuLink({
   const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} iconComponent={iconComponent} />
   const menuImageExternal = <StyledIcon icon={faExternalLink} />
   const isExternal = kind === MenuItemKind.EXTERNAL_LINK
+  const noPrefix = isExternal ? undefined : link.noPrefix
 
   if (isExternal) {
     return (
@@ -49,7 +50,13 @@ export default function InternalExternalMenuLink({
     )
   } else {
     return (
-      <LinkWithPrefixNetwork className={className} to={url} target="_self" onClickOptional={handleMobileMenuOnClick}>
+      <LinkWithPrefixNetwork
+        className={className}
+        to={url}
+        target="_self"
+        onClickOptional={handleMobileMenuOnClick}
+        noPrefix={noPrefix}
+      >
         {menuImage}
         {title}
       </LinkWithPrefixNetwork>

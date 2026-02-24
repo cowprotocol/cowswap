@@ -12,6 +12,7 @@ export interface BasicMenuLink {
 
 export interface MenuInternalLink extends BasicMenuLink {
   kind?: undefined
+  noPrefix?: boolean
 }
 export interface MenuExternalLink extends BasicMenuLink {
   kind: MenuItemKind.EXTERNAL_LINK

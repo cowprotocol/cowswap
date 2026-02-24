@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Placeholder } from './Solvers.styles'
-import { filterDeployments } from './SolversDirectoryTable.helpers'
+import { filterDeployments, filterDeploymentsByActiveStatus } from './SolversDirectoryTable.helpers'
 import { SolverDetailsRow, SolverSummaryRow } from './SolversDirectoryTableRows'
 
 import { SolverInfo } from '../../utils/fetchSolversInfo'
@@ -11,6 +11,7 @@ type SolversDirectoryTableBodyProps = {
   expandedRows: Record<string, boolean>
   networkFilter: string
   environmentFilter: string
+  activeFilter: string
   onToggle: (solverId: string) => void
 }
 
@@ -19,6 +20,7 @@ export function SolversDirectoryTableBody({
   expandedRows,
   networkFilter,
   environmentFilter,
+  activeFilter,
   onToggle,
 }: SolversDirectoryTableBodyProps): React.ReactNode {
   if (!filteredSolvers.length) {
@@ -33,9 +35,18 @@ export function SolversDirectoryTableBody({
 
   return filteredSolvers.flatMap((solver) => {
     const isExpanded = !!expandedRows[solver.solverId]
-    const deployments = filterDeployments(solver.deployments, networkFilter, environmentFilter)
+    const deployments = filterDeploymentsByActiveStatus(
+      filterDeployments(solver.deployments, networkFilter, environmentFilter),
+      activeFilter,
+    )
     const summary = (
-      <SolverSummaryRow key={solver.solverId} solver={solver} isExpanded={isExpanded} onToggle={onToggle} />
+      <SolverSummaryRow
+        key={solver.solverId}
+        solver={solver}
+        deployments={deployments}
+        isExpanded={isExpanded}
+        onToggle={onToggle}
+      />
     )
 
     if (!isExpanded) {

@@ -40,6 +40,9 @@ export type CmsEnvironmentAttributes = {
 
 export type CmsNetworkAttributes = {
   chainId?: number | null
+  name?: string | null
+  label?: string | null
+  chainName?: string | null
 }
 
 export type CmsSolverNetworkAttributes = {

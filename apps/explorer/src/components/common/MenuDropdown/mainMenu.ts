@@ -72,6 +72,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
             title: 'Solvers',
             url: Routes.SOLVERS,
             iconComponent: PiMathOperationsFill,
+            noPrefix: true,
           },
           {
             title: 'AppData',

@@ -8,19 +8,24 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 import { NetworkLabel, Option, OptionsContainer, SelectorContainer, StyledFAIcon } from './NetworkSelector.styled'
 
-import { usePathSuffix } from '../../state/network'
+import { updateWeb3Provider } from '../../api/web3'
+import { web3 } from '../../explorer/api'
+import useGlobalState from '../../hooks/useGlobalState'
+import { setNetwork, usePathSuffix } from '../../state/network'
 
 type networkSelectorProps = {
   networkId: number
 }
 
-const ROUTES_WITH_PRESERVED_PATH = ['address', 'solvers']
+const ROUTES_WITH_NETWORK_PREFIX_PRESERVED_PATH = ['address']
+const SOLVERS_ROUTE_PREFIX = 'solvers'
 
 export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) => {
   const selectContainer = useRef<HTMLInputElement>(null)
   const currentNetwork = getChainInfo(networkId)
   const currentNetworkName = currentNetwork.label.toLowerCase()
   const [open, setOpen] = useState(false)
+  const [, dispatch] = useGlobalState()
   const pathSuffix = usePathSuffix()
   const availableChains = useAvailableChains()
 
@@ -58,15 +63,33 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
             const network = CHAIN_INFO[itemNetworkId]
 
             /**
-             * When path starts with 'address' we want to keep the same path
-             * It allows users to check their account in multiple networks without needing to search for it again
+             * Keep address path when switching chain, so users can check the same account on other networks.
              */
-            const shouldPreservePath = ROUTES_WITH_PRESERVED_PATH.some((route) => pathSuffix?.startsWith(route))
-            const url = shouldPreservePath ? `${network.urlAlias}/${pathSuffix || ''}` : network.urlAlias
+            const shouldPreservePath = ROUTES_WITH_NETWORK_PREFIX_PRESERVED_PATH.some((route) =>
+              pathSuffix?.startsWith(route),
+            )
+            const isSolversRoute = pathSuffix?.startsWith(SOLVERS_ROUTE_PREFIX)
+            const url = isSolversRoute
+              ? '/solvers'
+              : shouldPreservePath
+                ? `${network.urlAlias}/${pathSuffix || ''}`
+                : network.urlAlias
+            const optionTo = isSolversRoute ? url : `../${url}`
 
             const isDeprecated = isChainDeprecated(itemNetworkId)
             return (
-              <Option to={'../' + url} $color={network.color} key={itemNetworkId}>
+              <Option
+                to={optionTo}
+                $color={network.color}
+                key={itemNetworkId}
+                onClick={(): void => {
+                  setOpen(false)
+                  if (isSolversRoute && itemNetworkId !== networkId) {
+                    dispatch(setNetwork(itemNetworkId))
+                    updateWeb3Provider(web3, itemNetworkId)
+                  }
+                }}
+              >
                 <div className="dot" />
                 <div className={`name ${itemNetworkId === networkId ? 'selected' : ''}`}>
                   {network.label}

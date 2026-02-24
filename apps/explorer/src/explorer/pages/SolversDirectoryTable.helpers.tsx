@@ -1,6 +1,8 @@
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
 
 export const ALL_FILTER = 'all'
+export const ACTIVE_FILTER_ACTIVE = 'active'
+export const ACTIVE_FILTER_INACTIVE = 'inactive'
 
 function matchesSearch(solver: SolverInfo, query: string): boolean {
   const normalizedQuery = query.trim().toLowerCase()
@@ -29,12 +31,28 @@ export function filterDeployments(
   })
 }
 
+export function filterDeploymentsByActiveStatus(
+  deployments: SolverDeployment[],
+  activeFilter: string,
+): SolverDeployment[] {
+  if (activeFilter === ALL_FILTER) {
+    return deployments
+  }
+  if (activeFilter === ACTIVE_FILTER_ACTIVE) {
+    return deployments.filter((deployment) => deployment.active)
+  }
+  if (activeFilter === ACTIVE_FILTER_INACTIVE) {
+    return deployments.filter((deployment) => !deployment.active)
+  }
+  return deployments
+}
+
 export function getNetworkOptions(solversInfo: SolverInfo[]): [number, string][] {
   const entries = new Map<number, string>()
 
   solversInfo.forEach((solver) => {
-    solver.networks.forEach((network) => {
-      entries.set(network.chainId, network.chainName)
+    solver.deployments.forEach((deployment) => {
+      entries.set(deployment.chainId, deployment.chainName)
     })
   })
 
@@ -60,14 +78,12 @@ export function filterSolvers(
   query: string,
   networkFilter: string,
   environmentFilter: string,
+  activeFilter: string,
 ): SolverInfo[] {
   return solversInfo.filter((solver) => {
-    const isNetworkMatch =
-      networkFilter === ALL_FILTER || solver.networks.some((network) => String(network.chainId) === networkFilter)
-    const isEnvironmentMatch =
-      environmentFilter === ALL_FILTER ||
-      solver.networks.some((network) => network.environments.includes(environmentFilter))
+    const scopedDeployments = filterDeployments(solver.deployments, networkFilter, environmentFilter)
+    const visibleDeployments = filterDeploymentsByActiveStatus(scopedDeployments, activeFilter)
 
-    return isNetworkMatch && isEnvironmentMatch && matchesSearch(solver, query)
+    return visibleDeployments.length > 0 && matchesSearch(solver, query)
   })
 }

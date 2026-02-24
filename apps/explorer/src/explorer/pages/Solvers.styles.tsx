@@ -7,6 +7,14 @@ import { StyledSearch, Wrapper as WrapperMod } from './styled'
 export const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
 
+  ${Media.upToMedium()} {
+    padding: 0 1.2rem 4.2rem;
+  }
+
+  ${Media.upToSmall()} {
+    padding: 0 1rem 3.2rem;
+  }
+
   > h1 {
     font-size: 3.4rem;
     line-height: 1.05;
@@ -14,6 +22,12 @@ export const Wrapper = styled(WrapperMod)`
 
   > ${StyledSearch} {
     margin-bottom: 2rem;
+
+    ${Media.upToMedium()} {
+      width: 100%;
+      max-width: none;
+      margin: 1.2rem 0 2rem;
+    }
   }
 `
 
