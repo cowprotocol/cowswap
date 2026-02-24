@@ -107,6 +107,18 @@ describe('filterSolvers active filter', () => {
     expect(result).toEqual([])
   })
 
+  it('does not match addresses from deployments hidden by active filter', () => {
+    const result = filterSolvers(SOLVERS_INFO, '0xalpha2', ALL_FILTER, ALL_FILTER, ACTIVE_FILTER_ACTIVE)
+
+    expect(result).toEqual([])
+  })
+
+  it('matches addresses from deployments visible under current filters', () => {
+    const result = filterSolvers(SOLVERS_INFO, '0xalpha1', ALL_FILTER, ALL_FILTER, ACTIVE_FILTER_ACTIVE)
+
+    expect(result.map((solver) => solver.solverId)).toEqual(['alpha'])
+  })
+
   it('filters deployment rows strictly for Active', () => {
     const deployments = SOLVERS_INFO[0].deployments
     const result = filterDeploymentsByActiveStatus(deployments, ACTIVE_FILTER_ACTIVE)

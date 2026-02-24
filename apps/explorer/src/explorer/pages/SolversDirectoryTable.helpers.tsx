@@ -4,7 +4,7 @@ export const ALL_FILTER = 'all'
 export const ACTIVE_FILTER_ACTIVE = 'active'
 export const ACTIVE_FILTER_INACTIVE = 'inactive'
 
-function matchesSearch(solver: SolverInfo, query: string): boolean {
+function matchesSearch(solver: SolverInfo, query: string, deployments: SolverDeployment[]): boolean {
   const normalizedQuery = query.trim().toLowerCase()
   if (!normalizedQuery) return true
 
@@ -13,7 +13,7 @@ function matchesSearch(solver: SolverInfo, query: string): boolean {
     solver.solverId,
     solver.description || '',
     solver.website || '',
-    solver.deployments.map((deployment) => `${deployment.address || ''} ${deployment.payoutAddress || ''}`).join(' '),
+    deployments.map((deployment) => `${deployment.address || ''} ${deployment.payoutAddress || ''}`).join(' '),
   ]
 
   return searchableFields.join(' ').toLowerCase().includes(normalizedQuery)
@@ -84,6 +84,6 @@ export function filterSolvers(
     const scopedDeployments = filterDeployments(solver.deployments, networkFilter, environmentFilter)
     const visibleDeployments = filterDeploymentsByActiveStatus(scopedDeployments, activeFilter)
 
-    return visibleDeployments.length > 0 && matchesSearch(solver, query)
+    return visibleDeployments.length > 0 && matchesSearch(solver, query, visibleDeployments)
   })
 }

@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { render, screen, waitFor } from '@testing-library/react'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter, useNavigate } from 'react-router'
 
 import { updateWeb3Provider } from '../../api/web3'
 import { web3 } from '../../explorer/api'
@@ -58,6 +58,27 @@ function renderHarness(pathname: string, networkId: number | null): void {
   )
 }
 
+function NavigateOnMount({ to }: { to: string }): React.ReactNode {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    navigate(to)
+  }, [navigate, to])
+
+  return null
+}
+
+function renderHarnessWithNavigation(pathname: string, navigateTo: string, networkId: number | null): void {
+  const Wrapped = withGlobalContext(NetworkUpdaterHarness, createInitialState(networkId), rootReducer)
+
+  render(
+    <MemoryRouter initialEntries={[pathname]}>
+      <NavigateOnMount to={navigateTo} />
+      <Wrapped />
+    </MemoryRouter>,
+  )
+}
+
 describe('NetworkUpdater', () => {
   beforeEach(() => {
     mockedUpdateWeb3Provider.mockReset()
@@ -82,5 +103,17 @@ describe('NetworkUpdater', () => {
     })
 
     expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.BASE)
+  })
+
+  it('switches to mainnet when moving from prefixed solvers route to canonical solvers route', async () => {
+    const arbitrumAlias = CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].urlAlias
+
+    renderHarnessWithNavigation(`/${arbitrumAlias}/solvers`, '/solvers', SupportedChainId.ARBITRUM_ONE)
+
+    await waitFor(() => {
+      expect(screen.getByTestId('network-id').textContent).toBe(String(SupportedChainId.MAINNET))
+    })
+
+    expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.MAINNET)
   })
 })
