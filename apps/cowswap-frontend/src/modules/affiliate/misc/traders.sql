@@ -173,5 +173,5 @@ select
   ) as next_payout
 from capped_trades
 join affiliate_program_data on affiliate_program_data.code = capped_trades.referrer_code
-left join payouts on payouts.recipient = capped_trades.trader
+left join payouts on lower(cast(payouts.recipient as varchar)) = lower(cast(capped_trades.trader as varchar))
 group by 1,2,3;
