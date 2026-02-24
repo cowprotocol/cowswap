@@ -37,10 +37,12 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
 function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapContext | null {
   const config = useConfig()
   const { account } = useWalletInfo()
-  const { chainId: wethChainId, ...wethContract } = useWethContractData()
+  const wethContract = useWethContractData()
   const addTransaction = useTransactionAdder()
   const [, setWrapNativeState] = useWrapNativeScreenState()
   const analytics = useCowAnalytics()
+
+  const wethChainId = wethContract.chainId
 
   return useMemo(() => {
     if (!wethContract || !amount || !account) {

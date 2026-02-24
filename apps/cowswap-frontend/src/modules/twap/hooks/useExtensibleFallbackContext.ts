@@ -17,25 +17,18 @@ export interface ExtensibleFallbackContext {
 export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null {
   const config = useConfig()
   const { account } = useWalletInfo()
-  const {
-    abi: settlementContractAbi,
-    address: settlementContractAddress,
-    chainId: settlementChainId,
-  } = useGP2SettlementContractData()
+  const settlementContract = useGP2SettlementContractData()
 
   return useMemo(() => {
-    if (!account || !settlementContractAddress) {
+    if (!account || !settlementContract.address) {
       return null
     }
 
     return {
-      chainId: settlementChainId,
+      chainId: settlementContract.chainId,
       config,
       safeAddress: account,
-      settlementContract: {
-        abi: settlementContractAbi,
-        address: settlementContractAddress,
-      },
+      settlementContract,
     }
-  }, [account, config, settlementChainId, settlementContractAbi, settlementContractAddress])
+  }, [account, config, settlementContract])
 }

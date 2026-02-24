@@ -19,7 +19,7 @@ import { writeContract, getTransactionReceipt } from 'wagmi/actions'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { ContractData, UseContractResult } from 'common/hooks/useContract'
+import { UseContractResult } from 'common/hooks/useContract'
 
 import { fetchClaim } from './claimData'
 
@@ -28,26 +28,32 @@ import type { Hex, TransactionReceipt } from 'viem'
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 
-type MerdleDropContractData = Omit<ContractData<typeof MerkleDropAbi>, 'address'> & { address: string | null }
-const useMerkleDropContract = (): UseContractResult<MerdleDropContractData> => {
+type MerdleDropContractData = Omit<UseContractResult<typeof MerkleDropAbi>, 'address'> & { address: string | null }
+const useMerkleDropContract = (): MerdleDropContractData => {
   const { chainId } = useWalletInfo()
 
-  return {
-    abi: MerkleDropAbi,
-    address: MERKLE_DROP_CONTRACT_ADDRESSES[chainId],
-    chainId,
-  }
+  return useMemo(
+    () => ({
+      abi: MerkleDropAbi,
+      address: MERKLE_DROP_CONTRACT_ADDRESSES[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
 
-type TokenDistroContractData = Omit<ContractData<typeof TokenDistroAbi>, 'address'> & { address: string | null }
-const useTokenDistroContract = (): UseContractResult<TokenDistroContractData> => {
+type TokenDistroContractData = Omit<UseContractResult<typeof TokenDistroAbi>, 'address'> & { address: string | null }
+const useTokenDistroContract = (): TokenDistroContractData => {
   const { chainId } = useWalletInfo()
 
-  return {
-    abi: TokenDistroAbi,
-    address: TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId],
-    chainId,
-  }
+  return useMemo(
+    () => ({
+      abi: TokenDistroAbi,
+      address: TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
 
 export const useAllocation = (): CurrencyAmount<Token> => {
@@ -137,9 +143,12 @@ export function useClaimCowFromLockedGnoCallback({
 }: ClaimCallbackParams): () => Promise<TransactionReceipt> {
   const config = useConfig()
   const { account } = useWalletInfo()
-  const { chainId: merkleDropChainId, ...merkleDrop } = useMerkleDropContract()
-  const { chainId: tokenDistroChainId, ...tokenDistro } = useTokenDistroContract()
+  const merkleDrop = useMerkleDropContract()
+  const tokenDistro = useTokenDistroContract()
   const { t } = useLingui()
+
+  const merkleDropChainId = merkleDrop.chainId
+  const tokenDistroChainId = tokenDistro.chainId
 
   const addTransaction = useTransactionAdder()
 

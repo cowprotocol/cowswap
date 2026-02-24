@@ -103,8 +103,10 @@ export function useVCowData(): VCowData {
 export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackParams) {
   const config = useConfig()
   const { account } = useWalletInfo()
-  const { chainId, ...vCowContract } = useVCowContractData()
+  const vCowContract = useVCowContractData()
   const { t } = useLingui()
+
+  const { chainId } = vCowContract
 
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined

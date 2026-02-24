@@ -1,17 +1,22 @@
+import { useMemo } from 'react'
+
 import { ComposableCoWAbi } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { ContractData, UseContractResult } from 'common/hooks/useContract'
+import { UseContractResult } from 'common/hooks/useContract'
 
 import { COMPOSABLE_COW_ADDRESS } from '../const'
 
-export type ComposableCowContractData = ContractData<typeof ComposableCoWAbi>
-export function useComposableCowContractData(): UseContractResult<ComposableCowContractData> {
+export type ComposableCowContractData = UseContractResult<typeof ComposableCoWAbi>
+export function useComposableCowContractData(): ComposableCowContractData {
   const { chainId } = useWalletInfo()
 
-  return {
-    abi: ComposableCoWAbi,
-    address: COMPOSABLE_COW_ADDRESS[chainId],
-    chainId,
-  }
+  return useMemo(
+    () => ({
+      abi: ComposableCoWAbi,
+      address: COMPOSABLE_COW_ADDRESS[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }

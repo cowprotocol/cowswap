@@ -21,10 +21,13 @@ import { getIsTheLastTwapPart } from 'utils/orderUtils/getIsTheLastTwapPart'
 
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
   const config = useConfig()
-  const { chainId: ethFlowChainId, ...ethFlowContract } = useEthFlowContractData()
-  const { chainId: settlementChainId, ...settlementContractData } = useGP2SettlementContractData()
+  const ethFlowContract = useEthFlowContractData()
+  const settlementContract = useGP2SettlementContractData()
   const cancelTwapOrder = useCancelTwapOrder()
   const { t } = useLingui()
+
+  const ethFlowChainId = ethFlowContract.chainId
+  const settlementChainId = settlementContract.chainId
 
   return useCallback(
     (order: Order) => {
@@ -48,8 +51,8 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
         return getEthFlowCancellation({ config, ethFlowContract, order })
       }
 
-      return getOnChainCancellation({ config, order, settlementContractData })
+      return getOnChainCancellation({ config, order, settlementContract })
     },
-    [config, ethFlowChainId, settlementChainId, settlementContractData, t, cancelTwapOrder, ethFlowContract],
+    [config, ethFlowChainId, settlementChainId, settlementContract, t, cancelTwapOrder, ethFlowContract],
   )
 }

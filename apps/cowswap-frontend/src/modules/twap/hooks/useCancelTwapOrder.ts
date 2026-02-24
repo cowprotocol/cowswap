@@ -26,13 +26,16 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const sendBatchTransactions = useSendBatchTransactions()
-  const { chainId: settlementChainId, ...settlementContract } = useGP2SettlementContractData()
-  const { chainId: composableCowChainId, ...composableCowContract } = useComposableCowContractData()
+  const composableCowContract = useComposableCowContractData()
+  const settlementContract = useGP2SettlementContractData()
   const { t } = useLingui()
+
+  const composableCowChainId = composableCowContract.chainId
+  const settlementChainId = settlementContract.chainId
 
   return useCallback(
     async (twapOrderId: Hex, order: Order) => {
-      if (!composableCowContract || !settlementContract) {
+      if (!composableCowContract.address || !settlementContract.address) {
         throw new Error(t`Context is not full to cancel TWAP order`)
       }
 

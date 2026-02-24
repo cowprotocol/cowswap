@@ -32,7 +32,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
   const isSafeWallet = useIsSafeWallet()
-  const { chainId: settlementChainId, ...settlementContract } = useGP2SettlementContractData()
+  const settlementContract = useGP2SettlementContractData()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
   const quoteState = useTradeQuote()
@@ -54,6 +54,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const quoteId = quoteState.quote?.quoteResults.quoteResponse.id || undefined
 
   const partiallyFillable = settingsState.partialFillsEnabled
+
+  const settlementChainId = settlementContract.chainId
 
   // TODO: Reduce function complexity by extracting logic
 

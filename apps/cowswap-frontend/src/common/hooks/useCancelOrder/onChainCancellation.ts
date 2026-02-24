@@ -91,18 +91,18 @@ export async function getEthFlowCancellation({
 export async function getOnChainCancellation({
   config,
   order,
-  settlementContractData,
+  settlementContract,
 }: {
   config: Config
   order: Order
-  settlementContractData: SettlementContractData
+  settlementContract: SettlementContractData
 }): Promise<OnChainCancellation> {
   const cancelOrderParams = [order.id as Hex] as const
 
   const estimatedGas = await estimateGas(config, {
-    to: settlementContractData.address,
+    to: settlementContract.address,
     data: encodeFunctionData({
-      abi: settlementContractData.abi,
+      abi: settlementContract.abi,
       functionName: 'invalidateOrder',
       args: cancelOrderParams,
     }),
@@ -119,8 +119,8 @@ export async function getOnChainCancellation({
     estimatedGas,
     sendTransaction: (processCancelledOrder) => {
       return writeContract(config, {
-        abi: settlementContractData.abi,
-        address: settlementContractData.address,
+        abi: settlementContract.abi,
+        address: settlementContract.address,
         functionName: 'invalidateOrder',
         args: cancelOrderParams,
         gas: calculateGasMargin(estimatedGas),

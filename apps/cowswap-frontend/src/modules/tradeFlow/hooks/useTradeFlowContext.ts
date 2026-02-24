@@ -68,7 +68,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const closeModals = useCloseModals()
   const dispatch = useDispatch<AppDispatch>()
   const tradeConfirmActions = useTradeConfirmActions()
-  const { chainId: settlementChainId, ...settlementContract } = useGP2SettlementContractData()
+  const settlementContract = useGP2SettlementContractData()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
   const addBridgeOrder = useAddBridgeOrder()
@@ -87,6 +87,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   } = derivedTradeState || {}
 
   const validTo = getOrderValidTo(deadline, tradeQuote)
+
+  const settlementChainId = settlementContract.chainId
 
   return (
     useSWR(

@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import {
   getEthFlowContractAddresses,
   V_COW_CONTRACT_ADDRESS,
@@ -14,57 +16,62 @@ const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
 
 export const ethFlowEnv: CowEnv = isProd || isStaging || isEns ? 'prod' : 'staging'
 
-export type ContractData<T> = {
-  abi: T
-  address: string
-}
+export type UseContractResult<T> = { abi: T; address: string; chainId: SupportedChainId }
 
-export type UseContractResult<T> = {
-  chainId: SupportedChainId
-} & T
-
-export type WethContractData = ContractData<typeof WethAbi>
-export function useWethContractData(): UseContractResult<WethContractData> {
+export type WethContractData = UseContractResult<typeof WethAbi>
+export function useWethContractData(): WethContractData {
   const { chainId } = useWalletInfo()
 
-  return {
-    abi: WethAbi,
-    address: WETH_CONTRACT_ADDRESS_MAP[chainId],
-    chainId,
-  }
+  return useMemo(
+    () => ({
+      abi: WethAbi,
+      address: WETH_CONTRACT_ADDRESS_MAP[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
 
-export type EthFlowContractData = ContractData<typeof CoWSwapEthFlowAbi>
-export function useEthFlowContractData(): UseContractResult<EthFlowContractData> {
+export type EthFlowContractData = UseContractResult<typeof CoWSwapEthFlowAbi>
+export function useEthFlowContractData(): EthFlowContractData {
   const { chainId } = useWalletInfo()
 
   const contractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId)
 
-  return {
-    abi: CoWSwapEthFlowAbi,
-    address: contractAddress,
-    chainId,
-  }
+  return useMemo(
+    () => ({
+      abi: CoWSwapEthFlowAbi,
+      address: contractAddress,
+      chainId,
+    }),
+    [contractAddress, chainId],
+  )
 }
 
-export type SettlementContractData = ContractData<typeof GPv2SettlementAbi>
-export function useGP2SettlementContractData(): UseContractResult<SettlementContractData> {
+export type SettlementContractData = UseContractResult<typeof GPv2SettlementAbi>
+export function useGP2SettlementContractData(): SettlementContractData {
   const { chainId } = useWalletInfo()
 
-  return {
-    abi: GPv2SettlementAbi,
-    address: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId],
-    chainId,
-  }
+  return useMemo(
+    () => ({
+      abi: GPv2SettlementAbi,
+      address: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
 
-export type VCowContractData = Omit<ContractData<typeof vCowAbi>, 'address'> & { address: string | null }
-export function useVCowContractData(): UseContractResult<VCowContractData> {
+export type VCowContractData = Omit<UseContractResult<typeof vCowAbi>, 'address'> & { address: string | null }
+export function useVCowContractData(): VCowContractData {
   const { chainId } = useWalletInfo()
 
-  return {
-    abi: vCowAbi,
-    address: V_COW_CONTRACT_ADDRESS[chainId],
-    chainId,
-  }
+  return useMemo(
+    () => ({
+      abi: vCowAbi,
+      address: V_COW_CONTRACT_ADDRESS[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
