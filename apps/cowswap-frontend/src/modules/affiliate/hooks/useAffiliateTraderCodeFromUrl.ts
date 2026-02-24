@@ -25,7 +25,6 @@ export function useAffiliateTraderCodeFromUrl(onRecoveredFromUrl: (code: string)
       const nextUrl = `${window.location.pathname}${nextWindowSearch ? `?${nextWindowSearch}` : ''}${window.location.hash}`
 
       window.history.replaceState(window.history.state, '', nextUrl)
-      return
     } else if (routerRefCodeParam) {
       const refCodeFromUrl = formatRefCode(routerRefCodeParam)
       if (refCodeFromUrl) onRecoveredFromUrl(refCodeFromUrl)

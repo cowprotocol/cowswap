@@ -26,7 +26,7 @@ export class RetryableResponseError extends Error {
   }
 }
 
-export enum RetryableStatusCode {
+enum RetryableStatusCode {
   RequestTimeout = 408,
   TooEarly = 425,
   TooManyRequests = 429,
@@ -36,8 +36,8 @@ export enum RetryableStatusCode {
   GatewayTimeout = 504,
 }
 
-export const STATUS_CODES_TO_RETRY: number[] = Object.values(RetryableStatusCode).filter(
-  (value): value is number => typeof value === 'number',
+export const STATUS_CODES_TO_RETRY: ReadonlySet<number> = new Set(
+  Object.values(RetryableStatusCode).filter((value): value is number => typeof value === 'number'),
 )
 
 export class ApiError extends Error {
@@ -64,7 +64,11 @@ export async function parseJsonResponse<T>(response: Response): Promise<FetchJso
   return { response, data, text }
 }
 
-export async function fetchWithTimeout(input: RequestInfo, init: RequestInit, timeoutMs: number): Promise<Response> {
+export async function fetchWithTimeout(input: RequestInfo, init: RequestInit, timeoutMs?: number): Promise<Response> {
+  if (!timeoutMs) {
+    return fetch(input, init)
+  }
+
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 

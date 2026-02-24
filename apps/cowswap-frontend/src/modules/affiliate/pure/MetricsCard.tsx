@@ -56,7 +56,7 @@ export function MetricsCard({
   )
 
   const statsUpdatedTimeAgo = useTimeAgo(approxUpdatedAt, 60_000)
-  const statsUpdatedLabel = statsUpdatedTimeAgo ? ` ≈ ${statsUpdatedTimeAgo}` : '-'
+  const statsUpdatedLabel = statsUpdatedTimeAgo ? ` ~ ${statsUpdatedTimeAgo}` : '-'
   const statsUpdatedTitle = formatDateWithTimezone(approxUpdatedAt) ?? undefined
 
   return (
@@ -93,13 +93,7 @@ export function MetricsCard({
             <Trans>Last updated</Trans>
             <span title={statsUpdatedTitle}>{statsUpdatedLabel}</span>
           </span>
-          <HelpTooltip
-            text={
-              <Trans>
-                Updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear here.
-              </Trans>
-            }
-          />
+          <HelpTooltip text={<Trans>Updates every 6 hours</Trans>} />
         </LabelContent>
       </BottomMetaRow>
     </ColumnTwoCard>

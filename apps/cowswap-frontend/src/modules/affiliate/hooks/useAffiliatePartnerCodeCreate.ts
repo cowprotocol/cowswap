@@ -53,9 +53,8 @@ export function useAffiliatePartnerCodeCreate({
         walletAddress: account,
         signedMessage,
       })
-      try {
-        await mutatePartnerInfo()
-      } catch {}
+
+      await mutatePartnerInfo().catch()
     } catch (error) {
       setError(mapAffiliatePartnerCodeCreateError(error))
     } finally {

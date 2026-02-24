@@ -69,10 +69,8 @@ class BffAffiliateApi {
         headers: JSON_HEADERS,
         ...init,
       }
-      const response = this.timeoutMs
-        ? await fetchWithTimeout(input, requestInit, this.timeoutMs)
-        : await fetch(input, requestInit)
-      if (STATUS_CODES_TO_RETRY.includes(response.status)) {
+      const response = await fetchWithTimeout(input, requestInit, this.timeoutMs)
+      if (STATUS_CODES_TO_RETRY.has(response.status)) {
         throw new RetryableResponseError(response.status)
       }
       return response

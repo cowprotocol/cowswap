@@ -60,7 +60,6 @@ export function AffiliatePartnerQrModal({
     }),
     [],
   )
-  const qrPalette = useMemo(() => QR_COLORS[qrColor], [qrColor])
 
   return (
     <CowModal isOpen={isOpen} onDismiss={onDismiss}>
@@ -70,14 +69,14 @@ export function AffiliatePartnerQrModal({
         </ModalHeader>
         <ModalBody>
           <QrUrl>{referralLink}</QrUrl>
-          <QrFrame $bg={qrPalette.bg}>
+          <QrFrame $bg={QR_COLORS[qrColor].bg}>
             <QRCode
               ref={qrCodeRef}
               value={referralLink}
               size={QR_SIZE_PX}
               quietZone={2}
-              bgColor={qrPalette.bg}
-              fgColor={qrPalette.fg}
+              bgColor={QR_COLORS[qrColor].bg}
+              fgColor={QR_COLORS[qrColor].fg}
               logoImage={QR_LOGOS[qrColor]}
               logoWidth={QR_LOGO_SIZE_PX}
               logoHeight={QR_LOGO_SIZE_PX}

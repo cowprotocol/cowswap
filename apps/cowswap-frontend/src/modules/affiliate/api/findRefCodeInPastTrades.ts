@@ -8,19 +8,18 @@ import { AppDataOrder, extractFullAppDataFromOrder, getRefCodeFromAppData } from
 import { logAffiliate } from '../utils/logger'
 
 export async function findRefCodeInPastTrades(account: Address): Promise<string | undefined> {
-  for (const chainId of AFFILIATE_SUPPORTED_CHAIN_IDS) {
-    try {
-      const trades = (await getTrades({ owner: account, limit: 1 }, { chainId })) as unknown as AppDataOrder[]
+  const codesByChain = await Promise.all(
+    AFFILIATE_SUPPORTED_CHAIN_IDS.map(async (chainId) => {
+      try {
+        const trades = (await getTrades({ owner: account, limit: 1 }, { chainId })) as unknown as AppDataOrder[]
 
-      for (const order of trades) {
-        const code = getRefCodeFromAppData(extractFullAppDataFromOrder(order))
-
-        if (code) return code
+        return trades.map((trade) => getRefCodeFromAppData(extractFullAppDataFromOrder(trade)))
+      } catch (error) {
+        logAffiliate(safeShortenAddress(account), 'Failed to fetch trades for referral recovery', error, { chainId })
+        return []
       }
-    } catch (error) {
-      logAffiliate(safeShortenAddress(account), 'Failed to fetch trades for referral recovery', error, { chainId })
-    }
-  }
+    }),
+  )
 
-  return undefined
+  return codesByChain.flat().find((code) => !!code)
 }
