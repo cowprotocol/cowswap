@@ -257,6 +257,9 @@ export function BatchSummaryBar({
   const { orderCount, surplusOrdersCount, hasUsdEstimates } = batchInsights
   const surplusValueLabel = `${surplusOrdersCount} of ${orderCount}`
   const cowStat = getCowStatData(batchInsights)
+  const isSankeyMode = layoutMode === LayoutMode.COMPACT
+  const usdToggleEnabled = isSankeyMode && hasUsdEstimates
+  const displayUsdAsEnabled = isSankeyMode && showUsdValues
 
   return (
     <Wrapper>
@@ -309,15 +312,17 @@ export function BatchSummaryBar({
             </SegmentedButton>
           </SegmentedGroup>
 
-          <UsdToggleButton
-            $active={showUsdValues}
-            aria-pressed={showUsdValues}
-            disabled={!hasUsdEstimates}
-            onClick={(): void => onToggleUsdValues(!showUsdValues)}
-            type="button"
-          >
-            {showUsdValues ? 'USD: On' : 'USD: Off'}
-          </UsdToggleButton>
+          {isSankeyMode ? (
+            <UsdToggleButton
+              $active={displayUsdAsEnabled}
+              aria-pressed={displayUsdAsEnabled}
+              disabled={!usdToggleEnabled}
+              onClick={(): void => onToggleUsdValues(!displayUsdAsEnabled)}
+              type="button"
+            >
+              {displayUsdAsEnabled ? 'USD: On' : 'USD: Off'}
+            </UsdToggleButton>
+          ) : null}
         </ControlsPanel>
 
         {solverLabel ? <SolverMeta>{solverLabel}</SolverMeta> : null}
