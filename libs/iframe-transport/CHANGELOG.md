@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.0.6](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.5...iframe-transport-v2.0.6) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.3.2
+
 ## [2.0.5](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.4...iframe-transport-v2.0.5) (2026-02-24)
 
 
