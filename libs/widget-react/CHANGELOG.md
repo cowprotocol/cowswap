@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.7](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.6...widget-react-v1.0.7) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+* release 23-02 ([bab3bf6](https://github.com/cowprotocol/cowswap/commit/bab3bf640c5b0eacc7ead017ea68ab1eb1687aab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.3.1
+    * @cowprotocol/types bumped to 3.3.1
+    * @cowprotocol/widget-lib bumped to 1.2.1
+
 ## [1.0.6](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.5...widget-react-v1.0.6) (2026-02-20)
 
 

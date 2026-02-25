@@ -20,7 +20,9 @@ export function ThemeConfigUpdater(): null {
     const defaultTheme = getCowswapTheme(darkMode)
 
     if (isInjectedWidget()) {
-      setThemeConfig(mapWidgetTheme(injectedWidgetTheme, defaultTheme))
+      if (injectedWidgetTheme) {
+        setThemeConfig(mapWidgetTheme(injectedWidgetTheme, defaultTheme))
+      }
     } else {
       setThemeConfig(defaultTheme)
     }
