@@ -5,5 +5,11 @@ export function normalize(value: string | null | undefined): string {
   const safeToNormalize =
     safeValue.length > 0 && !safeValue.startsWith('.') && !safeValue.endsWith('.') && !safeValue.includes('..')
 
-  return safeToNormalize ? viemNormalize(safeValue) : ''
+  if (!safeToNormalize) return ''
+
+  try {
+    return viemNormalize(safeValue)
+  } catch {
+    return ''
+  }
 }
