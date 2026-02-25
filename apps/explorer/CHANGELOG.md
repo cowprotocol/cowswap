@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/explorer-v3.3.1...explorer-v3.3.2) (2026-02-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/ui bumped to 2.3.2
+
 ## [3.3.1](https://github.com/cowprotocol/cowswap/compare/explorer-v3.3.0...explorer-v3.3.1) (2026-02-24)
 
 

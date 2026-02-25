@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v2.3.1...balances-and-allowances-v2.3.2) (2026-02-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/core bumped to 2.4.0
+    * @cowprotocol/multicall bumped to 2.3.2
+    * @cowprotocol/tokens bumped to 2.4.0
+    * @cowprotocol/wallet bumped to 2.3.2
+
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v2.3.0...balances-and-allowances-v2.3.1) (2026-02-24)
 
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.4.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.3.1...tokens-v2.4.0) (2026-02-25)
+
+
+### ✨ Features
+
+* add xstocks token list ([#7073](https://github.com/cowprotocol/cowswap/issues/7073)) ([f532f26](https://github.com/cowprotocol/cowswap/commit/f532f26aa0d87ee32cac3d5be7ab9ab5f28abb02))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/core bumped to 2.4.0
+    * @cowprotocol/ui bumped to 2.3.2
+
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/tokens-v2.3.0...tokens-v2.3.1) (2026-02-24)
 
 

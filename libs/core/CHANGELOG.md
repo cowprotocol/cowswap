@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/cowprotocol/cowswap/compare/core-v2.3.1...core-v2.4.0) (2026-02-25)
+
+
+### ✨ Features
+
+* add xstocks token list ([#7073](https://github.com/cowprotocol/cowswap/issues/7073)) ([f532f26](https://github.com/cowprotocol/cowswap/commit/f532f26aa0d87ee32cac3d5be7ab9ab5f28abb02))
+
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/core-v2.3.0...core-v2.3.1) (2026-02-24)
 
 

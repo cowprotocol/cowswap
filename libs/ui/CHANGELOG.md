@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.2](https://github.com/cowprotocol/cowswap/compare/ui-v2.3.1...ui-v2.3.2) (2026-02-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/core bumped to 2.4.0
+
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/ui-v2.3.0...ui-v2.3.1) (2026-02-24)
 
 

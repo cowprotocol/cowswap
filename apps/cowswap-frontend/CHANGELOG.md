@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.5.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.4.0...cowswap-v2.5.0) (2026-02-25)
+
+
+### ✨ Features
+
+* add xstocks token list ([#7073](https://github.com/cowprotocol/cowswap/issues/7073)) ([f532f26](https://github.com/cowprotocol/cowswap/commit/f532f26aa0d87ee32cac3d5be7ab9ab5f28abb02))
+
+
+### 🐛 Bug Fixes
+
+* prevent input focus when max button is clicked ([#7075](https://github.com/cowprotocol/cowswap/issues/7075)) ([5dccd02](https://github.com/cowprotocol/cowswap/commit/5dccd025b854737547be73144eaf40c1a81bccca))
+
+
+### ♻️ Refactoring
+
+* update quote ID formatting to support ellipsis for long IDs ([#7076](https://github.com/cowprotocol/cowswap/issues/7076)) ([2267fbb](https://github.com/cowprotocol/cowswap/commit/2267fbb917cfdc2ae7292223faac6f5a3ee61212))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/balances-and-allowances bumped to 2.3.2
+    * @cowprotocol/core bumped to 2.4.0
+    * @cowprotocol/multicall bumped to 2.3.2
+    * @cowprotocol/snackbars bumped to 2.0.8
+    * @cowprotocol/tokens bumped to 2.4.0
+    * @cowprotocol/ui bumped to 2.3.2
+    * @cowprotocol/wallet bumped to 2.3.2
+
 ## [2.4.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.3.0...cowswap-v2.4.0) (2026-02-24)
 
 
