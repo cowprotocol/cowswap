@@ -14,7 +14,9 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
   return useMemo(() => {
     if (!receiveAmountInfo?.costs.bridgeFee || !bridgeQuote || !swapReceiveAmountInfo) return null
 
-    const { sellAmount: swapSellAmount, buyAmount: swapBuyAmount } = receiveAmountInfo.amountsToSign
+    const { sellAmount: swapSellAmount } = receiveAmountInfo.amountsToSign
+
+    const swapBuyAmount = swapReceiveAmountInfo.beforeAllFees.buyAmount
     const swapExpectedReceive = swapReceiveAmountInfo.afterPartnerFees.buyAmount
     const swapMinReceiveAmount = swapReceiveAmountInfo.amountsToSign.buyAmount
     const bridgeMinReceiveAmount = CurrencyAmount.fromRawAmount(
