@@ -2,7 +2,7 @@ import { TTLCache } from '@cowprotocol/cow-sdk'
 
 import { querySerializer } from './querySerializer'
 
-import { DEFAULT_CMS_REQUEST_TTL, ONDO_FALLBACK_TOKEN_LIST, XStocks_FALLBACK_TOKEN_LIST } from '../consts'
+import { DEFAULT_CMS_REQUEST_TTL, ONDO_FALLBACK_TOKEN_LIST } from '../consts'
 import { RestrictedTokenList, RestrictedTokenLists } from '../types'
 import { getCmsClient } from '../utils'
 
@@ -68,6 +68,6 @@ async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null>
     })
     .catch((error: Error) => {
       console.error('Failed to fetch restricted token lists', error)
-      return [ONDO_FALLBACK_TOKEN_LIST, XStocks_FALLBACK_TOKEN_LIST]
+      return [ONDO_FALLBACK_TOKEN_LIST]
     })
 }

@@ -7,7 +7,7 @@ export const DEFAULT_CMS_REQUEST_TTL = ms`1h`
 export const ONDO_TOKEN_LIST_URL =
   'https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json'
 
-export const RESTRICTED_COUNTRIES = [
+export const ONDO_RESTRICTED_COUNTRIES = [
   'AF',
   'DZ',
   'BY',
@@ -63,11 +63,5 @@ export const RESTRICTED_COUNTRIES = [
 export const ONDO_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
   name: 'Ondo Tokenized Stocks List',
   tokenListUrl: ONDO_TOKEN_LIST_URL,
-  restrictedCountries: [...RESTRICTED_COUNTRIES],
-} as const
-
-export const XStocks_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
-  name: 'xStocks Token List',
-  tokenListUrl: 'https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json',
-  restrictedCountries: [...RESTRICTED_COUNTRIES],
-} as const
+  restrictedCountries: [...ONDO_RESTRICTED_COUNTRIES],
+}
