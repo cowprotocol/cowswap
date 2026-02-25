@@ -17,6 +17,10 @@
     {
       "priority": 4,
       "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json"
+    },
+    {
+      "priority": 5,
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
     }
   ],
   "100": [
@@ -68,6 +72,10 @@
     {
       "priority": 5,
       "source": "https://raw.githubusercontent.com/balancer/tokenlists/refs/heads/main/generated/balancer.tokenlist.json"
+    },
+    {
+      "priority": 6,
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
     }
   ],
   "11155111": [
@@ -155,6 +163,10 @@
     {
       "priority": 4,
       "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json"
+    },
+    {
+      "priority": 5,
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
     }
   ],
   "232": [
@@ -203,6 +215,10 @@
       "priority": 2,
       "source": "https://files.cow.fi/token-lists/CoinGecko.57073.json",
       "enabledByDefault": true
+    },
+    {
+      "priority": 3,
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
     }
   ]
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/types-v3.3.0...types-v3.3.1) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
 ## [3.3.0](https://github.com/cowprotocol/cowswap/compare/types-v3.2.0...types-v3.3.0) (2026-02-20)
 
 
