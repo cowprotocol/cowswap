@@ -69,7 +69,7 @@ export function AffiliateTradeCodeForm({
       <Body>
         <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
         <Title>
-          <Trans>Enter referral code</Trans>
+          <Trans>Earn while you trade</Trans>
         </Title>
         <CodeLinkingSubtitle codeInfo={codeInfo} />
         <LabelRow>

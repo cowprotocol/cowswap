@@ -9,6 +9,13 @@ import { Trans } from '@lingui/react/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'
+import {
+  formatUsdcCompact,
+  formatUsdCompact,
+  getDefaultTraderRewardAmount,
+  getDefaultTriggerVolume,
+} from '../lib/affiliateProgramUtils'
 import { AffiliateTermsFaqLinks, HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle } from '../pure/shared'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
@@ -16,6 +23,9 @@ export function AffiliateTraderOnboard(): ReactNode {
   const { account } = useWalletInfo()
   const toggleWalletModal = useToggleWalletModal()
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
+  const traderRewardAmount = formatUsdcCompact(getDefaultTraderRewardAmount())
+  const triggerVolumeLabel = formatUsdCompact(getDefaultTriggerVolume())
+  const affiliateTimeCapDays = PROGRAM_DEFAULTS.AFFILIATE_TIME_CAP_DAYS
 
   return (
     <HeroCard>
@@ -26,10 +36,9 @@ export function AffiliateTraderOnboard(): ReactNode {
         </HeroTitle>
         <HeroSubtitle>
           <Trans>
-            Use a referral code to earn a flat fee for
+            Use a referral code to earn <strong>{traderRewardAmount}</strong> for
             <br />
-            the eligible volume done through the app.
-            <br />
+            every <strong>{triggerVolumeLabel}</strong> in eligible volume within {affiliateTimeCapDays} days.
             <br />
             New wallets only.
           </Trans>

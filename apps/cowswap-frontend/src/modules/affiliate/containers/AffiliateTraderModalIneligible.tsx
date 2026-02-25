@@ -8,6 +8,7 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 
 import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
+import { IneligibleImage } from '../pure/shared'
 import { TraderIneligible } from '../pure/TraderIneligible'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
@@ -31,7 +32,7 @@ export function AffiliateTraderModalIneligible(): ReactNode {
   return (
     <>
       <Body>
-        <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+        <IneligibleImage src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
         <Title>
           <Trans>Your wallet is ineligible</Trans>
         </Title>

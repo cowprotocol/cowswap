@@ -152,7 +152,7 @@ export function AffiliateTermsFaqLinks({ align = 'inline' }: { align?: 'inline' 
       </ExtLink>
       <Separator>•</Separator>
       <ExtLink href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank">
-        <Trans>FAQ</Trans>
+        <Trans>How it works</Trans>
       </ExtLink>
     </LinksRow>
   )
@@ -444,6 +444,14 @@ export const IneligibleCard = styled(Card)`
   text-align: center;
   gap: 20px;
   position: relative;
+
+  img {
+    filter: grayscale(100%) opacity(0.33);
+  }
+`
+
+export const IneligibleImage = styled.img`
+  filter: grayscale(100%) opacity(0.5);
 `
 
 export const IneligibleTitle = styled.h3`

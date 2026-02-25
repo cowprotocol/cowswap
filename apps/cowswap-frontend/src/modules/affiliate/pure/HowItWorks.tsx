@@ -19,7 +19,7 @@ const StyledLink = styled(LinkStyledButton)`
 export function HowItWorks(): ReactNode {
   return (
     <StyledLink as="a" href={AFFILIATE_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
-      <Trans>How it works.</Trans>
+      <Trans>See how it works.</Trans>
     </StyledLink>
   )
 }

@@ -1,4 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { isProdLike } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
@@ -26,7 +27,7 @@ export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.m
 )
 
 // TODO: replace placeholder URL once the referral docs are provisioned
-export const AFFILIATE_HOW_IT_WORKS_URL = 'https://docs.cow.fi'
+export const AFFILIATE_HOW_IT_WORKS_URL = 'https://cow.fi/learn'
 export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms'
 
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
@@ -54,3 +55,28 @@ export const BACKOFF_MAX_ATTEMPTS = 3
 export const REF_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
 export const REF_CODE_MIN_LENGTH = 5
 export const REF_CODE_MAX_LENGTH = 20
+
+/**
+ * Defaults params - keep them in sync with the cms env vars: `infrastructure/cms/index.ts`
+ */
+const PROGRAM_DEFAULTS_PROD = {
+  AFFILIATE_REWARD_AMOUNT: 20,
+  AFFILIATE_TRIGGER_VOLUME: 250_000,
+  AFFILIATE_TIME_CAP_DAYS: 90,
+  AFFILIATE_VOLUME_CAP: 50_000_000,
+  AFFILIATE_REVENUE_SPLIT_AFFILIATE_PCT: 50,
+  AFFILIATE_REVENUE_SPLIT_TRADER_PCT: 50,
+  AFFILIATE_REVENUE_SPLIT_DAO_PCT: 0,
+} as const
+
+const PROGRAM_DEFAULTS_STAGING = {
+  AFFILIATE_REWARD_AMOUNT: 2,
+  AFFILIATE_TRIGGER_VOLUME: 10,
+  AFFILIATE_TIME_CAP_DAYS: 1,
+  AFFILIATE_VOLUME_CAP: 20,
+  AFFILIATE_REVENUE_SPLIT_AFFILIATE_PCT: 33,
+  AFFILIATE_REVENUE_SPLIT_TRADER_PCT: 33,
+  AFFILIATE_REVENUE_SPLIT_DAO_PCT: 34,
+} as const
+
+export const PROGRAM_DEFAULTS = isProdLike ? PROGRAM_DEFAULTS_PROD : PROGRAM_DEFAULTS_STAGING

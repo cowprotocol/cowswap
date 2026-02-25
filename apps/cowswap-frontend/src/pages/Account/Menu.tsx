@@ -22,14 +22,14 @@ interface MenuItem {
 const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean): MenuItem[] => {
   return [
     { title: msg`Overview`, url: '/account' },
-    { title: msg`Tokens`, url: '/account/tokens' },
-    { title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) },
     ...(isAffiliateProgramEnabled
       ? [
-          { title: msg`My Rewards`, url: '/account/my-rewards' },
           { title: msg`Affiliate`, url: '/account/affiliate' },
+          { title: msg`My Rewards`, url: '/account/my-rewards' },
         ]
       : []),
+    { title: msg`Tokens`, url: '/account/tokens' },
+    { title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) },
   ]
 }
 

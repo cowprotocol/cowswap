@@ -9,10 +9,10 @@ import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer
 
 import { decodeAppData } from 'modules/appData'
 
-import { PartnerInfoResponse } from '../api/bffAffiliateApi.types'
 import {
   AFFILIATE_PAYOUTS_CHAIN_ID,
   AFFILIATE_SUPPORTED_CHAIN_IDS,
+  PROGRAM_DEFAULTS,
   REF_CODE_PATTERN,
 } from '../config/affiliateProgram.const'
 
@@ -194,10 +194,18 @@ export function formatUsdcCompact(value?: number): string {
   return formatted === EMPTY_VALUE_LABEL ? EMPTY_VALUE_LABEL : `${formatted} USDC`
 }
 
-export function getPartnerRewardAmountLabel(codeInfo?: PartnerInfoResponse | null): string {
-  if (!codeInfo) return 'reward'
+export function getDefaultTraderRewardAmount(): number {
+  return (PROGRAM_DEFAULTS.AFFILIATE_REWARD_AMOUNT * PROGRAM_DEFAULTS.AFFILIATE_REVENUE_SPLIT_TRADER_PCT) / 100
+}
 
-  const { rewardAmount, revenueSplitAffiliatePct } = codeInfo
+export function getDefaultTriggerVolume(): number {
+  return PROGRAM_DEFAULTS.AFFILIATE_TRIGGER_VOLUME
+}
+
+export function getPartnerRewardAmountLabel(
+  rewardAmount: number = PROGRAM_DEFAULTS.AFFILIATE_REWARD_AMOUNT,
+  revenueSplitAffiliatePct: number = PROGRAM_DEFAULTS.AFFILIATE_REVENUE_SPLIT_AFFILIATE_PCT,
+): string {
   return formatUsdCompact(rewardAmount * (revenueSplitAffiliatePct / 100))
 }
 

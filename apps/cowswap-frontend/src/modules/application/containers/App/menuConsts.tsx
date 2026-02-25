@@ -22,6 +22,22 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: bool
       href: '/account',
       label: msg`Overview`,
     },
+    ...(isAffiliateProgramEnabled
+      ? [
+          {
+            href: Routes.ACCOUNT_AFFILIATE_PARTNER,
+            label: msg`Affiliate`,
+            badge: msg`New`,
+            badgeType: BadgeTypes.ALERT,
+          },
+          {
+            href: Routes.ACCOUNT_AFFILIATE_TRADER,
+            label: msg`My Rewards`,
+            badge: msg`New`,
+            badgeType: BadgeTypes.ALERT,
+          },
+        ]
+      : []),
     {
       href: '/account/tokens',
       label: msg`Tokens`,
@@ -30,22 +46,6 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: bool
       href: `/${chainId}/account-proxy`,
       label: ACCOUNT_PROXY_LABEL,
     },
-    ...(isAffiliateProgramEnabled
-      ? [
-          {
-            href: Routes.ACCOUNT_AFFILIATE_TRADER,
-            label: msg`My Rewards`,
-            badge: msg`New`,
-            badgeType: BadgeTypes.ALERT,
-          },
-          {
-            href: Routes.ACCOUNT_AFFILIATE_PARTNER,
-            label: msg`Affiliate`,
-            badge: msg`New`,
-            badgeType: BadgeTypes.ALERT,
-          },
-        ]
-      : []),
   ],
 })
 

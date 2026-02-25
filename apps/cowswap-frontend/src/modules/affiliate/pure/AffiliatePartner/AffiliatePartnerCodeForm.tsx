@@ -69,8 +69,8 @@ export function AffiliatePartnerCodeForm({
       </CardTitle>
       <HelperText>
         <Trans>
-          Type or generate a code (subject to availability). Saving locks this code to your wallet and cannot be
-          changed. Links/codes don't reveal your wallet.
+          Pick something memorable or let us generate one for you. Once saved, your code is permanently linked to your
+          wallet, so choose wisely. Your code never reveals your wallet address.
         </Trans>
       </HelperText>
       <BottomMetaRow>

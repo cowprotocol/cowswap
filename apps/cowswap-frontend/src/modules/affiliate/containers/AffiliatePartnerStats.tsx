@@ -22,7 +22,7 @@ export function AffiliatePartnerStats(): ReactNode {
   const { data: info, isLoading: codeLoading } = useAffiliatePartnerInfo(account)
   const { data: stats, isLoading: statsLoading } = useAffiliatePartnerStats(account, info?.code)
 
-  const rewardAmountLabel = getPartnerRewardAmountLabel(info)
+  const rewardAmountLabel = getPartnerRewardAmountLabel(info?.rewardAmount, info?.revenueSplitAffiliatePct)
   const progressToNextReward = getProgressToNextReward(info?.triggerVolume, stats?.left_to_next_reward)
 
   return (
@@ -32,7 +32,7 @@ export function AffiliatePartnerStats(): ReactNode {
       titleTooltip={t`This chart tracks eligible volume left to unlock the next reward.`}
       items={[
         {
-          label: <Trans>Left to next {rewardAmountLabel}</Trans>,
+          label: <Trans>Volume left to next {rewardAmountLabel}</Trans>,
           value: formatUsdCompact(stats?.left_to_next_reward),
         },
         {
