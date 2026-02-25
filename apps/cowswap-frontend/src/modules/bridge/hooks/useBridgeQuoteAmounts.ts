@@ -20,7 +20,7 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
     const swapExpectedReceive = swapReceiveAmountInfo.afterPartnerFees.buyAmount
     const swapMinReceiveAmount = swapReceiveAmountInfo.amountsToSign.buyAmount
     const bridgeMinReceiveAmount = CurrencyAmount.fromRawAmount(
-      swapBuyAmount.currency,
+      receiveAmountInfo.amountsToSign.buyAmount.currency,
       bridgeQuote.amountsAndCosts.afterSlippage.buyAmount.toString(),
     )
 
