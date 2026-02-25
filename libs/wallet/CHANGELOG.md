@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.3.2](https://github.com/cowprotocol/cowswap/compare/wallet-v2.3.1...wallet-v2.3.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.3.2
+    * @cowprotocol/common-utils bumped to 2.3.2
+    * @cowprotocol/core bumped to 2.4.0
+    * @cowprotocol/ens bumped to 2.3.2
+    * @cowprotocol/iframe-transport bumped to 2.0.6
+    * @cowprotocol/types bumped to 3.3.2
+    * @cowprotocol/ui bumped to 2.3.2
+    * @cowprotocol/wallet-provider bumped to 2.1.6
+
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/wallet-v2.3.0...wallet-v2.3.1) (2026-02-24)
 
 
