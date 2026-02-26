@@ -73,11 +73,12 @@ export function AffiliateTradeCodeForm({
         </Title>
         <CodeLinkingSubtitle codeInfo={codeInfo} />
         <LabelRow>
-          <Label>
+          <Label htmlFor="referral-code">
             <LabelContent>
               <Trans>Referral code</Trans>
               <HelpTooltip
                 text={<Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>}
+                dimmed
               />
             </LabelContent>
           </Label>

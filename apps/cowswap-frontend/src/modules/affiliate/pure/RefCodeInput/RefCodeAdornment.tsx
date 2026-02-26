@@ -94,8 +94,8 @@ const RefCodeAdornmentContainer = styled.div<{ variant: RefCodeAdornmentVariant;
   color: ${({ variant }) => ADORNMENT_COLOR_MAP[variant]};
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     fill: ${({ variant }) => (variant === 'error' ? `var(${UI.COLOR_DANGER_TEXT})` : 'currentColor')};
   }
 

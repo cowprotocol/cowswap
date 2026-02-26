@@ -15,6 +15,7 @@ import {
   DonutValue,
   LabelContent,
   MetricItem,
+  MetricValue,
   RewardsMetricsList,
   RewardsMetricsRow,
   TitleWithTooltip,
@@ -65,7 +66,7 @@ export function MetricsCard({
         {titleTooltip ? (
           <TitleWithTooltip>
             <span>{title}</span>
-            <HelpTooltip text={titleTooltip} />
+            <HelpTooltip text={titleTooltip} dimmed noMargin />
           </TitleWithTooltip>
         ) : (
           <span>{title}</span>
@@ -76,7 +77,7 @@ export function MetricsCard({
           {items.map(({ label, value }, index) => (
             <MetricItem key={`${index}-${value}`}>
               <LabelContent>{label}</LabelContent>
-              <strong>{value}</strong>
+              <MetricValue>{value}</MetricValue>
             </MetricItem>
           ))}
         </RewardsMetricsList>
@@ -93,7 +94,7 @@ export function MetricsCard({
             <Trans>Last updated</Trans>
             <span title={statsUpdatedTitle}>{statsUpdatedLabel}</span>
           </span>
-          <HelpTooltip text={<Trans>Updates every 6 hours</Trans>} />
+          <HelpTooltip text={<Trans>Updates every 6 hours</Trans>} dimmed />
         </LabelContent>
       </BottomMetaRow>
     </ColumnTwoCard>

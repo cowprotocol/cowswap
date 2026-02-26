@@ -76,10 +76,13 @@ export function AffiliatePartnerCodeForm({
       <BottomMetaRow>
         <Form>
           <LabelRow>
-            <Label>
+            <Label htmlFor="referral-code">
               <LabelContent>
                 <Trans>Referral code</Trans>
-                <HelpTooltip text={t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`} />
+                <HelpTooltip
+                  text={t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`}
+                  dimmed
+                />
               </LabelContent>
             </Label>
             <LabelActions>
@@ -94,7 +97,6 @@ export function AffiliatePartnerCodeForm({
             hasError={hasError}
             disabled={submitting}
             adornmentVariant={ADORNMENT_VARIANT_MAP[availability]}
-            compactSize
             onKeyDown={handleInputKeyDown}
             {...rest}
           />

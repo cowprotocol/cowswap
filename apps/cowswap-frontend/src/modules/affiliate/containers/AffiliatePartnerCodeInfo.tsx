@@ -33,6 +33,7 @@ import {
   LinkedLinkText,
   LinkedMetaList,
   MetricItem,
+  MetricValue,
 } from '../pure/shared'
 
 export function AffiliatePartnerCodeInfo(): ReactNode {
@@ -81,9 +82,9 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
           <span>
             <Trans>Created on</Trans>
           </span>
-          <strong>
+          <MetricValue>
             {partnerInfo && toValidDate(partnerInfo.createdAt) ? formatShortDate(partnerInfo.createdAt) : '-'}
-          </strong>
+          </MetricValue>
         </MetricItem>
       </LinkedMetaList>
 

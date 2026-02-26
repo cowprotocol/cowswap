@@ -21,6 +21,7 @@ import {
   LinkedCodeText,
   LinkedMetaList,
   MetricItem,
+  MetricValue,
   ColumnOneCard,
   RewardsHeader,
   ValidStatusBadge,
@@ -64,13 +65,13 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <span>
                 <Trans>Linked since</Trans>
               </span>
-              <strong>{isLinked && stats ? formatShortDate(stats.linked_since) : '-'}</strong>
+              <MetricValue>{isLinked && stats ? formatShortDate(stats.linked_since) : '-'}</MetricValue>
             </MetricItem>
             <MetricItem>
               <span>
                 <Trans>Rewards end</Trans>
               </span>
-              <strong>{isLinked && stats ? formatShortDate(stats.rewards_end) : '-'}</strong>
+              <MetricValue>{isLinked && stats ? formatShortDate(stats.rewards_end) : '-'}</MetricValue>
             </MetricItem>
           </LinkedMetaList>
           {!isLinked && (

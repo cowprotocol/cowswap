@@ -42,7 +42,7 @@ const InputWrapper = styled.div<{
   gap: 12px;
   border: 1px solid ${({ $hasError }) => ($hasError ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_BORDER})`)};
   background: ${({ $hasError, $disabled }) =>
-    $hasError ? `var(${UI.COLOR_DANGER_BG})` : $disabled ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`};
+    $hasError ? `var(${UI.COLOR_DANGER_BG})` : $disabled ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ $hasError }) => ($hasError ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_TEXT})`)};
   border-radius: 9px;
   padding: ${({ $compactSize }) => ($compactSize ? '10px 12px' : '12px 14px')};
@@ -50,6 +50,7 @@ const InputWrapper = styled.div<{
   min-height: ${({ $compactSize }) => ($compactSize ? '48px' : '58px')};
   position: relative;
   overflow: hidden;
+  font-size: 18px;
 
   &:focus-within {
     border-color: ${({ $hasError }) => ($hasError ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_PRIMARY_LIGHTER})`)};

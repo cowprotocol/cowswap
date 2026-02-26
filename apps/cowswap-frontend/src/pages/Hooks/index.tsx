@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 import { HooksStoreWidget } from 'modules/hooksStore'
 import { swapDerivedStateAtom, SwapUpdaters, useSwapDerivedStateToFill } from 'modules/swap'
 import { getDefaultTradeRawState, parameterizeTradeRoute } from 'modules/trade'

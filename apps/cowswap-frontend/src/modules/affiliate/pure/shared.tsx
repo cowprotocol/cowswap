@@ -9,18 +9,21 @@ import { Card, ExtLink } from 'pages/Account/styled'
 
 import { AFFILIATE_HOW_IT_WORKS_URL, AFFILIATE_TERMS_URL } from '../config/affiliateProgram.const'
 
+const DEFAULT_CARD_MAX_WIDTH = 540
+
 export type BadgeTone = 'neutral' | 'info' | 'success' | 'error'
 
 export const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
 `
 
 export const Form = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 `
 
 export const LabelRow = styled.div`
@@ -28,6 +31,7 @@ export const LabelRow = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding: 0 0 0 5px;
 `
 
 export const Label = styled.label`
@@ -45,18 +49,21 @@ export const MiniAction = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 2px 6px;
-  border-radius: 999px;
+  padding: 3px 7px;
+  border-radius: 99px;
   border: 1px solid var(${UI.COLOR_BORDER});
   background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
-  font-size: 12px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-size: 13px;
   font-weight: 500;
+  line-height: 1;
   cursor: pointer;
   text-transform: lowercase;
+  transition: all 0.2s ease-in-out;
 
   &:hover:not(:disabled) {
     background: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_TEXT});
   }
 
   &:disabled {
@@ -67,10 +74,11 @@ export const MiniAction = styled.button`
 
 export const HelperText = styled.span`
   font-size: 13px;
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   line-height: 1.5;
   text-align: center;
-  max-width: 360px;
+  width: 100%;
+  padding: 0 5px 10px;
 `
 
 export const InlineError = styled.span`
@@ -82,11 +90,13 @@ export const PrimaryAction = styled(ButtonPrimary)`
   width: 100%;
 `
 
-export const HeroCard = styled(Card)`
-  max-width: 520px;
+export const HeroCard = styled(Card)<{ $maxWidth?: number }>`
+  max-width: ${({ $maxWidth }) => `${$maxWidth ?? DEFAULT_CARD_MAX_WIDTH}px`};
   align-items: center;
   justify-content: center;
   text-align: center;
+  background: var(${UI.COLOR_BLUE_100_PRIMARY});
+  padding: 40px 32px 16px;
 `
 
 export const HeroContent = styled.div`
@@ -96,22 +106,24 @@ export const HeroContent = styled.div`
   align-items: center;
 `
 
-export const HeroTitle = styled.h2`
+export const HeroTitle = styled.h2<{ $maxWidth?: number }>`
   margin: 0;
   width: 100%;
+  max-width: ${({ $maxWidth }) => ($maxWidth ? `${$maxWidth}px` : 'none')};
   padding: 0 10px;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 38px;
+  font-weight: 700;
   color: var(${UI.COLOR_TEXT});
   text-align: center;
 `
 
-export const HeroSubtitle = styled.p`
+export const HeroSubtitle = styled.p<{ $maxWidth?: number }>`
   margin: 0;
   width: 100%;
-  font-size: 15px;
+  max-width: ${({ $maxWidth }) => ($maxWidth ? `${$maxWidth}px` : 'none')};
+  font-size: 16px;
   line-height: 1.5;
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-align: center;
 
   a {
@@ -126,8 +138,11 @@ export const HeroSubtitle = styled.p`
 
 export const HeroActions = styled.div`
   display: flex;
+  flex-flow: column wrap;
+  align-items: center;
   justify-content: center;
-  min-width: 320px;
+  gap: 24px;
+  margin: 16px auto;
 `
 
 export const Separator = styled.span`
@@ -162,12 +177,15 @@ export const InlineNote = styled.p`
   margin: 0;
   font-size: 12px;
   color: var(${UI.COLOR_TEXT_OPACITY_60});
+  width: 100%;
+  text-align: center;
 `
 
 export const CardStack = styled(Card)`
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
+  padding: 24px 20px 20px;
 `
 
 export const ThreeColumnGrid = styled.div`
@@ -176,6 +194,10 @@ export const ThreeColumnGrid = styled.div`
   gap: 16px;
 
   ${Media.upToLarge()} {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  ${Media.upToMedium()} {
     grid-template-columns: 1fr;
   }
 `
@@ -184,10 +206,15 @@ export const ColumnOneCard = styled(CardStack)`
   grid-column: 1 / 2;
   grid-row: 1;
   align-items: center;
+  padding: 24px 10px 10px;
 
   ${Media.upToLarge()} {
-    grid-column: 1 / -1;
+    grid-column: 1 / 2;
     grid-row: auto;
+  }
+
+  ${Media.upToMedium()} {
+    grid-column: 1 / -1;
   }
 `
 
@@ -196,9 +223,13 @@ export const ColumnTwoCard = styled(CardStack)`
   grid-row: 1;
 
   ${Media.upToLarge()} {
-    grid-column: 1 / -1;
+    grid-column: 2 / 3;
     grid-row: auto;
     min-height: unset;
+  }
+
+  ${Media.upToMedium()} {
+    grid-column: 1 / -1;
   }
 `
 
@@ -216,8 +247,8 @@ export const ColumnThreeCard = styled(CardStack)`
 
 export const CardTitle = styled.h4`
   margin: 0;
-  font-size: 16px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-size: 18px;
+  color: var(${UI.COLOR_TEXT});
   font-weight: 600;
 `
 
@@ -425,20 +456,26 @@ export const MetricsList = styled.div`
 `
 
 export const MetaRow = styled.div`
+  width: 100%;
   margin: 0;
   font-size: 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-weight: 500;
 
-  span[title] {
+  > span {
+    font-weight: inherit;
+  }
+
+  > span > span[title] {
     cursor: help;
   }
 `
 
-export const IneligibleCard = styled(Card)`
-  max-width: 520px;
+export const IneligibleCard = styled(Card)<{ $maxWidth?: number }>`
+  max-width: ${({ $maxWidth }) => `${$maxWidth ?? DEFAULT_CARD_MAX_WIDTH}px`};
   flex-direction: column;
   align-items: center;
   text-align: center;
@@ -539,9 +576,6 @@ const DonutRing = styled.svg`
   circle {
     fill: none;
     stroke-width: var(--stroke-width);
-    cx: 50;
-    cy: 50;
-    r: var(--radius);
   }
 
   .donut-track {
@@ -558,7 +592,6 @@ const DonutRing = styled.svg`
   .donut-center {
     fill: var(${UI.COLOR_PAPER});
     stroke: none;
-    r: calc(50 - var(--stroke-width));
   }
 `
 
@@ -623,9 +656,9 @@ export function Donut({ $value, children }: DonutProps): ReactNode {
   return (
     <DonutWrapper $value={$value}>
       <DonutRing viewBox="0 0 100 100" aria-hidden="true">
-        <circle className="donut-track" pathLength="100" />
-        {hasProgress ? <circle className="donut-progress" pathLength="100" /> : null}
-        <circle className="donut-center" />
+        <circle className="donut-track" cx="50" cy="50" r="var(--radius)" pathLength="100" />
+        {hasProgress ? <circle className="donut-progress" cx="50" cy="50" r="var(--radius)" pathLength="100" /> : null}
+        <circle className="donut-center" cx="50" cy="50" r="calc(50 - var(--stroke-width))" />
       </DonutRing>
       {children}
     </DonutWrapper>
@@ -634,6 +667,7 @@ export function Donut({ $value, children }: DonutProps): ReactNode {
 
 export const RewardsMetricsRow = styled(MetricsRow)`
   justify-content: space-between;
+  margin: auto;
 
   ${Media.upToExtraSmall()} {
     flex-direction: column;
@@ -647,27 +681,26 @@ export const RewardsMetricsList = styled(MetricsList)`
   max-width: 420px;
 `
 
+export const MetricValue = styled.strong`
+  color: var(${UI.COLOR_TEXT});
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 500;
+`
+
 export const MetricItem = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-
   font-size: 13px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
-
-  strong {
-    color: var(${UI.COLOR_TEXT});
-    text-align: right;
-    white-space: nowrap;
-    font-weight: 500;
-  }
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 export const LabelContent = styled.span`
   display: inline-flex;
   align-items: center;
-  gap: 0px;
+  font-weight: 600;
 `

@@ -20,7 +20,12 @@ export function RefCodeInput({
   ...inputProps
 }: RefCodeInputProps): ReactNode {
   return (
-    <RefCodeInputWrapper hasError={hasError} disabled={disabled} isLoading={isLoading} compactSize={compactSize}>
+    <RefCodeInputWrapper
+      hasError={hasError}
+      disabled={disabled}
+      isLoading={isLoading || adornmentVariant === 'checking'}
+      compactSize={compactSize}
+    >
       <RefCodeInputField disabled={disabled} compactSize={compactSize} {...inputProps} />
       <RefCodeAdornment variant={adornmentVariant} />
     </RefCodeInputWrapper>

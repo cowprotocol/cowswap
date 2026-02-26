@@ -13,7 +13,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
-import { AFFILIATE_PAYOUTS_CHAIN_ID, PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'
+import { AFFILIATE_PAYOUTS_CHAIN_ID, AFFILIATE_TERMS_URL, PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'
 import {
   formatUsdCompact,
   getDefaultTriggerVolume,
@@ -21,15 +21,7 @@ import {
   isSupportedPayoutsNetwork,
 } from '../lib/affiliateProgramUtils'
 import { HowItWorks } from '../pure/HowItWorks'
-import {
-  AffiliateTermsFaqLinks,
-  HeroActions,
-  HeroCard,
-  HeroContent,
-  HeroSubtitle,
-  HeroTitle,
-  InlineNote,
-} from '../pure/shared'
+import { HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle, InlineNote } from '../pure/shared'
 
 export function AffiliatePartnerOnboard(): ReactNode {
   const provider = useWalletProvider()
@@ -53,15 +45,13 @@ export function AffiliatePartnerOnboard(): ReactNode {
     <HeroCard>
       <HeroContent>
         <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
-        <HeroTitle>
+        <HeroTitle $maxWidth={400}>
           <Trans>Invite your friends. Earn together.</Trans>
         </HeroTitle>
-        <HeroSubtitle>
+        <HeroSubtitle $maxWidth={400}>
           <Trans>
             Share your referral code and earn <strong>{partnerRewardAmount}</strong> for every{' '}
             <strong>{triggerVolumeLabel}</strong> in eligible volume within {affiliateTimeCapDays} days.
-            <br />
-            <HowItWorks />
           </Trans>
         </HeroSubtitle>
         <HeroActions>
@@ -71,7 +61,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
             </ButtonPrimary>
           )}
           {!!account && isUnsupportedNetwork && !shouldHideNetworkSelector && (
-            <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={onSwitchToMainnet}>
+            <ButtonPrimary buttonSize={ButtonSize.BIG} width={'320px'} onClick={onSwitchToMainnet}>
               <Trans>Switch to Ethereum</Trans>
             </ButtonPrimary>
           )}
@@ -94,13 +84,14 @@ export function AffiliatePartnerOnboard(): ReactNode {
               <Trans>Become an affiliate</Trans>
             </ButtonPrimary>
           )}
+          <HowItWorks />
         </HeroActions>
-        <AffiliateTermsFaqLinks />
-        {isUnsupportedNetwork && (
-          <InlineNote>
-            <Trans>Affiliate payouts and registration happen on Ethereum mainnet.</Trans>
-          </InlineNote>
-        )}
+        <InlineNote>
+          <Trans>Affiliate payouts and registration happen on Ethereum mainnet.</Trans>{' '}
+          <a href={AFFILIATE_TERMS_URL} target="_blank" rel="noopener noreferrer">
+            <Trans>See Terms</Trans>
+          </a>
+        </InlineNote>
       </HeroContent>
     </HeroCard>
   )
