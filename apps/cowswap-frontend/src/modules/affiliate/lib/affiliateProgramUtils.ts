@@ -15,7 +15,7 @@ import {
   REF_CODE_PATTERN,
 } from '../config/affiliateProgram.const'
 
-import type { TypedDataField } from '@ethersproject/abstract-signer'
+import type { TypedData } from 'viem'
 
 const EMPTY_VALUE_LABEL = '-'
 
@@ -24,15 +24,15 @@ const AFFILIATE_TYPED_DATA_DOMAIN = {
   version: '1',
 } as const
 
-const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
+const AFFILIATE_TYPED_DATA_TYPES = {
   AffiliateCode: [
     { name: 'walletAddress', type: 'address' },
     { name: 'code', type: 'string' },
     { name: 'chainId', type: 'uint256' },
   ],
-}
+} as const satisfies TypedData
 
-type TypedDataMsg = { walletAddress: string; code: string; chainId: number }
+type TypedDataMsg = { walletAddress: string; code: string; chainId: bigint }
 type JsonRecord = Record<string, object | string | number | boolean | null>
 
 export type AppDataResponse = {
@@ -48,7 +48,8 @@ export type AppDataOrder = AppDataResponse & {
 
 type AffiliatePartnerTypedDataMsg = {
   domain: typeof AFFILIATE_TYPED_DATA_DOMAIN
-  types: Record<string, TypedDataField[]>
+  types: TypedData
+  code: string
   message: TypedDataMsg
 }
 
@@ -56,6 +57,7 @@ export function buildPartnerTypedData(message: TypedDataMsg): AffiliatePartnerTy
   return {
     domain: AFFILIATE_TYPED_DATA_DOMAIN,
     types: AFFILIATE_TYPED_DATA_TYPES,
+    code: 'AffiliateCode' as const,
     message,
   }
 }
