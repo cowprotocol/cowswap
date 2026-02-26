@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type FormEvent, type ReactNode, useId } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
@@ -43,6 +43,11 @@ export interface AffiliateTradeCodeFormProps
   onSubmit(): void
 }
 
+function handleTradeCodeFormSubmit(event: FormEvent<HTMLFormElement>, onSubmit: () => void): void {
+  event.preventDefault()
+  onSubmit()
+}
+
 export function AffiliateTradeCodeForm({
   walletStatus,
   account,
@@ -59,13 +64,9 @@ export function AffiliateTradeCodeForm({
   onSubmit,
   ...inputProps
 }: AffiliateTradeCodeFormProps): ReactNode {
+  const referralCodeInputId = useId()
   return (
-    <FormGroup
-      onSubmit={(event) => {
-        event.preventDefault()
-        onSubmit()
-      }}
-    >
+    <FormGroup onSubmit={(event) => handleTradeCodeFormSubmit(event, onSubmit)}>
       <Body>
         <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
         <Title>
@@ -73,7 +74,7 @@ export function AffiliateTradeCodeForm({
         </Title>
         <CodeLinkingSubtitle codeInfo={codeInfo} />
         <LabelRow>
-          <Label htmlFor="referral-code">
+          <Label htmlFor={referralCodeInputId}>
             <LabelContent>
               <Trans>Referral code</Trans>
               <HelpTooltip
@@ -97,6 +98,7 @@ export function AffiliateTradeCodeForm({
           </LabelAffordances>
         </LabelRow>
         <RefCodeInput
+          id={referralCodeInputId}
           hasError={!!error}
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}

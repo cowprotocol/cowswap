@@ -1,4 +1,4 @@
-import { KeyboardEvent, ReactNode, useCallback } from 'react'
+import { KeyboardEvent, ReactNode, useCallback, useId } from 'react'
 
 import { HelpTooltip } from '@cowprotocol/ui'
 
@@ -51,6 +51,7 @@ export function AffiliatePartnerCodeForm({
   ...rest
 }: AffiliatePartnerCodeFormProps): ReactNode {
   const hasError = showInvalidFormat || error === AffiliatePartnerCodeCreateError.Unavailable
+  const referralCodeInputId = useId()
 
   const handleInputKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -76,7 +77,7 @@ export function AffiliatePartnerCodeForm({
       <BottomMetaRow>
         <Form>
           <LabelRow>
-            <Label htmlFor="referral-code">
+            <Label htmlFor={referralCodeInputId}>
               <LabelContent>
                 <Trans>Referral code</Trans>
                 <HelpTooltip
@@ -93,6 +94,7 @@ export function AffiliatePartnerCodeForm({
             </LabelActions>
           </LabelRow>
           <RefCodeInput
+            id={referralCodeInputId}
             isLoading={submitting}
             hasError={hasError}
             disabled={submitting}
