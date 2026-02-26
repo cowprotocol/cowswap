@@ -175,6 +175,7 @@ module.exports = [
           argsIgnorePattern: '^_',
         },
       ],
+      'import/no-duplicates': 'warn',
       'import/order': [
         'error',
         {

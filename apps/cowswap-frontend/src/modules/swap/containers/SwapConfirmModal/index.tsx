@@ -9,6 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { useAppData } from 'modules/appData'
 import {
   QuoteDetails,
@@ -79,6 +80,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
   const labelsAndTooltips = useLabelsAndTooltips()
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
 
   const { values: balances } = useTokensBalancesCombined()
 
@@ -169,6 +171,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     hideUsdValues
                     withTimelineDot={false}
                   >
+                    {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
                     <RowDeadline deadline={deadline} />
                     <RowQuoteId
                       quoteId={quoteResponse?.id}
