@@ -271,6 +271,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): ReactNode {
         <CompactLayout
           routes={batchInsights.compactRoutes}
           cowFlow={batchInsights.cowFlow}
+          executionBreakdown={batchInsights.executionBreakdown}
           dexAddress={batchInsights.dexAddress}
           dexLabel={batchInsights.dexLabel}
           hasPossibleCow={batchInsights.hasPossibleCow}

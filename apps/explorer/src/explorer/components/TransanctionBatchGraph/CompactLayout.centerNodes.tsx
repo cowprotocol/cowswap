@@ -2,14 +2,10 @@ import { type ReactNode, useState } from 'react'
 
 import { Color } from '@cowprotocol/ui'
 
+import { getExecutionSourceEndpoints, getSingleSpecialFlowLabel } from './CompactLayout.centerDetails'
 import { ActiveFlowFocus, hasRouteOverlap, RouteSelection } from './CompactLayout.interactions'
-import {
-  computeCowTextLayout,
-  formatAmountWithUsd,
-  formatCowSavingsLabel,
-  getAmmLogo,
-  getTokenLogo,
-} from './CompactLayout.visuals'
+import { computeCowTextLayout, formatAmountWithUsd, formatCowSavingsLabel, getTokenLogo } from './CompactLayout.visuals'
+import { ExecutionBreakdown, ExecutionHopEndpointKind, SETTLEMENT_RESIDUAL_LABEL } from './types'
 
 import CowProtocolIcon from '../../../assets/img/CoW-protocol.svg'
 import { Network } from '../../../types'
@@ -19,6 +15,9 @@ const GLASS_CARD_FILL = 'rgba(13, 16, 34, 0.9)'
 const CARD_SHEEN_FILL = 'rgba(255, 255, 255, 0.055)'
 const CARD_TEXT_SECONDARY = 'rgba(229, 235, 255, 0.68)'
 const ROUTE_ADDRESS_TEXT = 'rgba(214, 223, 255, 0.62)'
+const DETAILS_BADGE_FILL = 'rgba(15, 19, 40, 0.88)'
+const DETAILS_BADGE_STROKE = 'rgba(229, 235, 255, 0.42)'
+const DETAILS_BADGE_TEXT = 'rgba(229, 235, 255, 0.88)'
 
 type RouteNodeProps = {
   activeFlowFocus?: ActiveFlowFocus
@@ -31,9 +30,12 @@ type RouteNodeProps = {
   routeStroke: string
   dexLabel: string
   dexAddress?: string
+  executionBreakdown?: ExecutionBreakdown
   onRouteEnter: (selection: RouteSelection) => void
   onRouteLeave: () => void
+  onToggleDetails?: () => void
   routeExplorerLink?: string
+  executionHopCount?: number
 }
 
 export function RouteNode({
@@ -47,21 +49,32 @@ export function RouteNode({
   routeStroke,
   dexLabel,
   dexAddress,
+  executionBreakdown,
   onRouteEnter,
   onRouteLeave,
+  onToggleDetails,
   routeExplorerLink,
+  executionHopCount,
 }: RouteNodeProps): ReactNode {
   const opacity = getNodeOpacity(activeFlowFocus, activeRouteIds, connectedRouteIds, 'amm')
+  const isSettlementResidual = dexLabel === SETTLEMENT_RESIDUAL_LABEL
+  const hasExecutionBreakdown = Boolean(
+    executionBreakdown && (executionBreakdown.hops.length || executionBreakdown.venues.length),
+  )
   const borderColor = routeStroke === Color.explorer_yellow4 ? Color.explorer_border : routeStroke
-  const addressLabel = dexAddress ? abbreviateString(dexAddress, 8, 6) : 'No contract details'
-  const ammLogo = getAmmLogo(dexLabel, dexAddress)
-  const routeTitleX = ammLogo ? centerX + 36 : centerX + 14
+  const addressLines = getRouteDetailLines(isSettlementResidual, dexLabel, dexAddress, executionBreakdown)
+  const addressTextY = centerY + centerHeight - 16 - Math.max(addressLines.length - 1, 0) * 13
+  const metricsY = addressTextY - 18
+  const routeHeaderLogo = CowProtocolIcon
+  const titleLabel = 'internal routing'
+  const headerLabel = 'CoW Protocol'
+  const routeHeaderX = routeHeaderLogo ? centerX + 34 : centerX + 14
 
   return (
     <g
       onMouseEnter={(): void => onRouteEnter(connectedRouteIds)}
       onMouseLeave={onRouteLeave}
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: 'default' }}
     >
       <rect
         fill={GLASS_CARD_FILL}
@@ -80,22 +93,68 @@ export function RouteNode({
         y={centerY}
       />
       <rect fill={CARD_SHEEN_FILL} height={32} opacity={opacity} rx="12" width={nodeWidth} x={centerX} y={centerY} />
-      <text x={centerX + 14} y={centerY + 20}>
-        <tspan fill={CARD_TEXT_SECONDARY} fontSize="11.5">
-          AMM Route
-        </tspan>
-        <tspan dy="38" fill={Color.neutral100} fontSize="18" fontWeight="700" x={routeTitleX}>
-          {dexLabel}
-        </tspan>
-      </text>
-      {ammLogo ? <AmmLogoBadge centerX={centerX} centerY={centerY} logo={ammLogo} /> : null}
-      <RouteAddressLabel
-        href={routeExplorerLink}
-        label={addressLabel}
+      {routeHeaderLogo ? <RouteHeaderLogoBadge centerX={centerX} centerY={centerY} logo={routeHeaderLogo} /> : null}
+      <DetailsHintBadge onClick={onToggleDetails} x={centerX + nodeWidth - 16} y={centerY + 16} />
+      <RouteNodeTextBlock
+        addressLines={addressLines}
+        addressTextY={addressTextY}
+        executionHopCount={executionHopCount}
+        headerLabel={headerLabel}
+        headerX={routeHeaderX}
+        metricsY={metricsY}
+        routeExplorerLink={hasExecutionBreakdown ? undefined : routeExplorerLink}
+        titleLabel={titleLabel}
         x={centerX + 14}
-        y={centerY + centerHeight - 16}
+        y={centerY + 20}
       />
     </g>
+  )
+}
+
+type RouteNodeTextBlockProps = {
+  x: number
+  y: number
+  headerX: number
+  headerLabel: string
+  titleLabel: string
+  metricsY: number
+  addressTextY: number
+  addressLines: string[]
+  routeExplorerLink?: string
+  executionHopCount?: number
+}
+
+function RouteNodeTextBlock({
+  x,
+  y,
+  headerX,
+  headerLabel,
+  titleLabel,
+  metricsY,
+  addressTextY,
+  addressLines,
+  routeExplorerLink,
+  executionHopCount,
+}: RouteNodeTextBlockProps): ReactNode {
+  return (
+    <>
+      <text x={x} y={y}>
+        <tspan fill={CARD_TEXT_SECONDARY} fontSize="11.5" x={headerX}>
+          {headerLabel}
+        </tspan>
+        <tspan dy="38" fill={Color.neutral100} fontSize="18" fontWeight="700" x={x}>
+          {titleLabel}
+        </tspan>
+      </text>
+      {executionHopCount !== undefined ? (
+        <text fill={CARD_TEXT_SECONDARY} fontSize="12" x={x} y={metricsY}>
+          {`settlement hops: ${executionHopCount}`}
+        </text>
+      ) : null}
+      {addressLines.length ? (
+        <RouteAddressLabel lines={addressLines} fontSize={12.5} href={routeExplorerLink} x={x} y={addressTextY} />
+      ) : null}
+    </>
   )
 }
 
@@ -114,6 +173,7 @@ type CowNodeProps = {
   networkId: Network | undefined
   onRouteEnter: (selection: RouteSelection) => void
   onRouteLeave: () => void
+  onToggleDetails?: () => void
   showUsdValues: boolean
 }
 
@@ -132,6 +192,7 @@ export function CowNode({
   networkId,
   onRouteEnter,
   onRouteLeave,
+  onToggleDetails,
   showUsdValues,
 }: CowNodeProps): ReactNode {
   const prefersReducedMotion = usePrefersReducedMotion()
@@ -147,7 +208,7 @@ export function CowNode({
     <g
       onMouseEnter={(): void => onRouteEnter(connectedRouteIds)}
       onMouseLeave={onRouteLeave}
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: 'default' }}
     >
       <CowNodeBackground
         centerHeight={centerHeight}
@@ -166,6 +227,7 @@ export function CowNode({
         nodeWidth={nodeWidth}
         savingsLabel={savingsLabel}
       />
+      <DetailsHintBadge onClick={onToggleDetails} x={centerX + nodeWidth - 16} y={centerY + 16} />
     </g>
   )
 }
@@ -183,6 +245,35 @@ function getNodeOpacity(
   }
 
   return activeFlowFocus === nodeKind ? baseOpacity : Math.min(baseOpacity, 0.22)
+}
+
+function getRouteDetailLines(
+  isSettlementResidual: boolean,
+  dexLabel: string,
+  dexAddress: string | undefined,
+  executionBreakdown: ExecutionBreakdown | undefined,
+): string[] {
+  if (executionBreakdown && (executionBreakdown.hops.length || executionBreakdown.venues.length)) {
+    return getExecutionMixTreeLines(executionBreakdown)
+  }
+
+  if (isSettlementResidual) {
+    if (!executionBreakdown) {
+      return []
+    }
+
+    const sources = getExecutionSourceEndpoints(executionBreakdown)
+    if (!sources.length) {
+      return []
+    }
+
+    return splitRouteSourceLines(
+      `liquidity sources: ${sources.length} external contract${sources.length === 1 ? '' : 's'}`,
+    )
+  }
+
+  const routeSourceLabel = dexAddress ? `${dexLabel} · ${abbreviateString(dexAddress, 8, 6)}` : dexLabel
+  return splitRouteSourceLines(routeSourceLabel)
 }
 
 type CowNodeBackgroundProps = {
@@ -385,44 +476,66 @@ function usePrefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-type AmmLogoBadgeProps = {
+type RouteHeaderLogoBadgeProps = {
   centerX: number
   centerY: number
   logo: string
 }
 
-function AmmLogoBadge({ centerX, centerY, logo }: AmmLogoBadgeProps): ReactNode {
-  const iconCx = centerX + 22
-  const iconCy = centerY + 52
-  const iconClipId = `amm-logo-clip-${Math.round(centerX)}-${Math.round(centerY)}`
+function RouteHeaderLogoBadge({ centerX, centerY, logo }: RouteHeaderLogoBadgeProps): ReactNode {
+  return <image height="14" href={logo} width="14" x={centerX + 14} y={centerY + 9} />
+}
 
+type DetailsHintBadgeProps = {
+  x: number
+  y: number
+  onClick?: () => void
+}
+
+function DetailsHintBadge({ x, y, onClick }: DetailsHintBadgeProps): ReactNode {
   return (
-    <>
-      <defs>
-        <clipPath id={iconClipId}>
-          <circle cx={iconCx} cy={iconCy} r="8" />
-        </clipPath>
-      </defs>
-      <image clipPath={`url(#${iconClipId})`} height="16" href={logo} width="16" x={centerX + 14} y={centerY + 44} />
-    </>
+    <g
+      onClick={(event): void => {
+        event.stopPropagation()
+        onClick?.()
+      }}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
+    >
+      <title>Click for execution breakdown</title>
+      <circle cx={x} cy={y} fill={DETAILS_BADGE_FILL} r="7.2" stroke={DETAILS_BADGE_STROKE} strokeWidth="1" />
+      <text
+        fill={DETAILS_BADGE_TEXT}
+        fontSize="9"
+        fontWeight="700"
+        style={{ letterSpacing: '0.01em' }}
+        textAnchor="middle"
+        x={x}
+        y={y + 3.1}
+      >
+        i
+      </text>
+    </g>
   )
 }
 
 type RouteAddressLabelProps = {
   x: number
   y: number
-  label: string
+  lines: string[]
   href?: string
+  fontSize?: number
 }
 
-function RouteAddressLabel({ x, y, label, href }: RouteAddressLabelProps): ReactNode {
+function RouteAddressLabel({ x, y, lines, href, fontSize = 12.5 }: RouteAddressLabelProps): ReactNode {
   const [isHovered, setIsHovered] = useState(false)
   const showExternalIcon = Boolean(href)
+  const safeLines = lines.length ? lines : ['']
+  const lastLineIndex = safeLines.length - 1
 
   const text = (
     <text
       fill={ROUTE_ADDRESS_TEXT}
-      fontSize="12.5"
+      fontSize={fontSize}
       style={{
         cursor: href ? 'pointer' : 'default',
         textDecoration: href && isHovered ? 'underline' : 'none',
@@ -431,12 +544,16 @@ function RouteAddressLabel({ x, y, label, href }: RouteAddressLabelProps): React
       x={x}
       y={y}
     >
-      <tspan>{label}</tspan>
-      {showExternalIcon ? (
-        <tspan dx="4" fill={ROUTE_ADDRESS_TEXT} opacity={isHovered ? '0.92' : '0.55'}>
-          ↗
+      {safeLines.map((line, index) => (
+        <tspan key={`${line}-${index}`} dy={index === 0 ? 0 : 13} x={x}>
+          {line}
+          {showExternalIcon && index === lastLineIndex ? (
+            <tspan dx="4" fill={ROUTE_ADDRESS_TEXT} opacity={isHovered ? '0.92' : '0.55'}>
+              ↗
+            </tspan>
+          ) : null}
         </tspan>
-      ) : null}
+      ))}
     </text>
   )
 
@@ -451,4 +568,93 @@ function RouteAddressLabel({ x, y, label, href }: RouteAddressLabelProps): React
       </a>
     </g>
   )
+}
+
+function splitRouteSourceLines(label: string): string[] {
+  const SOURCE_LINE_CHAR_LIMIT = 37
+  const [sourcePrefix, sourceSuffix] = label.split(' · ')
+
+  if (!sourceSuffix) {
+    return limitRouteLineCount(wrapRouteLine(label, SOURCE_LINE_CHAR_LIMIT))
+  }
+
+  return limitRouteLineCount([
+    trimLine(sourcePrefix, SOURCE_LINE_CHAR_LIMIT),
+    trimLine(`· ${sourceSuffix}`, SOURCE_LINE_CHAR_LIMIT),
+  ])
+}
+
+function getExecutionMixTreeLines(executionBreakdown: ExecutionBreakdown): string[] {
+  const counts = executionBreakdown.hops.reduce(
+    (totals, hop) => {
+      totals[hop.fromKind] += 1
+      totals[hop.toKind] += 1
+      return totals
+    },
+    { settlement: 0, venue: 0, 'special-flow': 0, unknown: 0 } as Record<ExecutionHopEndpointKind, number>,
+  )
+
+  const mixLines: string[] = []
+  if (counts.venue) {
+    mixLines.push(`External endpoint touches: ${counts.venue}`)
+  }
+  if (counts['special-flow']) {
+    const specialFlowLabel = getSingleSpecialFlowLabel(executionBreakdown) || 'Special Flow'
+    mixLines.push(`${specialFlowLabel}: ${counts['special-flow']}`)
+  }
+  if (counts.unknown) {
+    mixLines.push(`Unknown: ${counts.unknown}`)
+  }
+
+  if (!mixLines.length && executionBreakdown.venues.length) {
+    mixLines.push(`External endpoint touches: ${executionBreakdown.venues.length}`)
+  }
+
+  const formattedMix = (mixLines.length ? mixLines : ['Settlement-only flow']).slice(0, 2)
+  return formattedMix.map((line, index) => `${index === formattedMix.length - 1 ? '└' : '├'}─ ${line}`)
+}
+
+function wrapRouteLine(text: string, maxChars: number): string[] {
+  const words = text.split(' ')
+  const lines: string[] = []
+  let currentLine = ''
+
+  words.forEach((word) => {
+    const candidateLine = currentLine ? `${currentLine} ${word}` : word
+
+    if (candidateLine.length > maxChars && currentLine) {
+      lines.push(currentLine)
+      currentLine = word
+      return
+    }
+
+    currentLine = candidateLine
+  })
+
+  if (currentLine) {
+    lines.push(currentLine)
+  }
+
+  return lines
+}
+
+function limitRouteLineCount(lines: string[]): string[] {
+  const maxLines = 2
+  if (lines.length <= maxLines) {
+    return lines
+  }
+
+  const trimmedLines = lines.slice(0, maxLines)
+  const lastLine = trimmedLines[maxLines - 1]
+
+  trimmedLines[maxLines - 1] = `${lastLine.slice(0, Math.max(lastLine.length - 1, 1))}…`
+  return trimmedLines
+}
+
+function trimLine(line: string, maxChars: number): string {
+  if (line.length <= maxChars) {
+    return line
+  }
+
+  return `${line.slice(0, Math.max(maxChars - 1, 1))}…`
 }

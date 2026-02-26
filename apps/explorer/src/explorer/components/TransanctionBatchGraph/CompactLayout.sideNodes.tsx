@@ -625,8 +625,8 @@ function getPureFlowHint(hasAnyAmm: boolean, hasAnyCow: boolean, dotColors: stri
 
   if (hasAnyAmm && !hasAnyCow) {
     return {
-      pillLabel: 'AMM',
-      tooltip: 'Fully routed through AMM.',
+      pillLabel: 'Liquidity',
+      tooltip: 'Fully routed through external liquidity sources.',
       dotColors,
     }
   }
@@ -643,7 +643,7 @@ function getMixedFlowHint({ hasSellViaAmm, hasSellViaCow, hasBuyViaAmm, hasBuyVi
 
 function describeLeg(legLabel: 'Sell' | 'Buy', viaCow: boolean, viaAmm: boolean): string {
   if (viaCow && viaAmm) {
-    return `${legLabel} leg split between CoW and AMM`
+    return `${legLabel} leg split between CoW and external liquidity`
   }
 
   if (viaCow) {
@@ -651,7 +651,7 @@ function describeLeg(legLabel: 'Sell' | 'Buy', viaCow: boolean, viaAmm: boolean)
   }
 
   if (viaAmm) {
-    return `${legLabel} leg routed through AMM`
+    return `${legLabel} leg routed through external liquidity`
   }
 
   return `${legLabel} leg not detected`

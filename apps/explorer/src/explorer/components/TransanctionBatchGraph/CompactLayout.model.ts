@@ -16,6 +16,7 @@ const MOBILE_ROW_GAP = 28
 const MOBILE_MIN_CHART_HEIGHT = 430
 const DEFAULT_COW_NODE_HEIGHT = 116
 const CENTER_NODE_GAP = 18
+const MIN_ROUTE_NODE_HEIGHT = 136
 
 // Content layout constants for dynamic height computation.
 // These represent the bottom edge of the amount icon area (from card top)
@@ -42,6 +43,7 @@ export type LinkShape = {
   targetX: number
   width: number
   label: string
+  detailsLabel: string
   tooltipLabel: string
   sourceY: number
   targetY: number
@@ -298,7 +300,7 @@ function getBaseLayout(rows: number, hasCow: boolean, config: LayoutConfig): Bas
   const leftX = chartPadding
   const centerX = leftX + nodeWidth + columnGap
   const rightX = centerX + nodeWidth + columnGap
-  const routeHeight = Math.max(92, rows * 30 + 24)
+  const routeHeight = Math.max(MIN_ROUTE_NODE_HEIGHT, rows * 32 + 26)
   const totalCenterHeight = hasCow ? cowNodeHeight + CENTER_NODE_GAP + routeHeight : routeHeight
   const sellSpanCenter = rowsTop + rowsHeight / 2
   const centerTopY = sellSpanCenter - totalCenterHeight / 2
@@ -438,6 +440,12 @@ function buildSellLinks(
       item.route.sellAmountValue,
       item.route.sellAmountLabel,
     )
+    const detailsLabel = flowDetailsLabel(
+      item.ammSellValue,
+      item.route.sellToken?.symbol,
+      item.ammSellUsdValue,
+      showUsdValues,
+    )
 
     acc.push({
       id: `sell-link-${item.route.id}`,
@@ -449,6 +457,7 @@ function buildSellLinks(
       targetX: endX,
       width: getFlowWidth(getFlowDisplayValue(item.ammSellValue, item.ammSellUsdValue, showUsdValues), maxFlow),
       label: displayLabel,
+      detailsLabel,
       tooltipLabel: flowTooltipLabel(displayLabel, item.ammSellUsdValue, showUsdValues),
       sourceY: startY,
       targetY: endY,
@@ -486,6 +495,12 @@ function buildBuyLinks(
       item.route.buyAmountValue,
       item.route.buyAmountLabel,
     )
+    const detailsLabel = flowDetailsLabel(
+      item.ammBuyValue,
+      item.route.buyToken?.symbol,
+      item.ammBuyUsdValue,
+      showUsdValues,
+    )
 
     acc.push({
       id: `buy-link-${item.route.id}`,
@@ -497,6 +512,7 @@ function buildBuyLinks(
       targetX: endX,
       width: getFlowWidth(getFlowDisplayValue(item.ammBuyValue, item.ammBuyUsdValue, showUsdValues), maxFlow),
       label: displayLabel,
+      detailsLabel,
       tooltipLabel: flowTooltipLabel(displayLabel, item.ammBuyUsdValue, showUsdValues),
       sourceY: startY,
       targetY: endY,
@@ -540,6 +556,12 @@ function buildCowInLinks(
       allocation.amountUsdValue,
       showUsdValues,
     )
+    const detailsLabel = flowDetailsLabel(
+      allocation.amountValue,
+      cowFlow.tokenSymbol,
+      allocation.amountUsdValue,
+      showUsdValues,
+    )
 
     acc.push({
       id: `cow-in-${allocation.routeId}`,
@@ -554,6 +576,7 @@ function buildCowInLinks(
         maxFlow,
       ),
       label,
+      detailsLabel,
       tooltipLabel:
         showUsdValues && allocation.amountUsdValue
           ? `${allocation.amountLabel} (${formatUsd(allocation.amountUsdValue)})`
@@ -600,6 +623,12 @@ function buildCowOutLinks(
       allocation.amountUsdValue,
       showUsdValues,
     )
+    const detailsLabel = flowDetailsLabel(
+      allocation.amountValue,
+      cowFlow.tokenSymbol,
+      allocation.amountUsdValue,
+      showUsdValues,
+    )
 
     acc.push({
       id: `cow-out-${allocation.routeId}`,
@@ -614,6 +643,7 @@ function buildCowOutLinks(
         maxFlow,
       ),
       label,
+      detailsLabel,
       tooltipLabel:
         showUsdValues && allocation.amountUsdValue
           ? `${allocation.amountLabel} (${formatUsd(allocation.amountUsdValue)})`
@@ -718,6 +748,22 @@ function flowTooltipLabel(label: string, usdValue: number | undefined, showUsdVa
   return `${label} (${formatUsd(usdValue)})`
 }
 
+function flowDetailsLabel(
+  value: number,
+  symbol: string | undefined,
+  usdValue: number | undefined,
+  showUsdValues: boolean,
+): string {
+  const fallbackSymbol = symbol || '?'
+  const tokenLabel = `${formatTokenValueDetailed(value)} ${fallbackSymbol}`
+
+  if (showUsdValues && usdValue !== undefined) {
+    return `${tokenLabel} (${formatUsd(usdValue)})`
+  }
+
+  return tokenLabel
+}
+
 function formatTokenValue(value: number): string {
   if (value >= 1000) {
     return value.toLocaleString(undefined, { maximumFractionDigits: 2 })
@@ -737,6 +783,26 @@ function formatTokenValue(value: number): string {
 
   if (value > 0) {
     return value.toExponential(2)
+  }
+
+  return '0'
+}
+
+function formatTokenValueDetailed(value: number): string {
+  if (value >= 1000) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 6 })
+  }
+
+  if (value >= 1) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 8 })
+  }
+
+  if (value > 0 && value >= 0.000001) {
+    return value.toLocaleString(undefined, { maximumFractionDigits: 10 })
+  }
+
+  if (value > 0) {
+    return value.toExponential(4)
   }
 
   return '0'

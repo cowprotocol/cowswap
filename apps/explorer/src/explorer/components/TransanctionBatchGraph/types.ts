@@ -158,6 +158,29 @@ export type CowFlowSummary = {
   receiverAllocations: CowFlowAllocation[]
 }
 
+export type ExecutionVenue = {
+  address: string
+  label: string
+}
+
+export type ExecutionHopEndpointKind = 'settlement' | 'venue' | 'special-flow' | 'unknown'
+
+export type ExecutionHop = {
+  id: string
+  fromAddress: string
+  fromLabel: string
+  fromKind: ExecutionHopEndpointKind
+  toAddress: string
+  toLabel: string
+  toKind: ExecutionHopEndpointKind
+  amountLabel: string
+}
+
+export type ExecutionBreakdown = {
+  venues: ExecutionVenue[]
+  hops: ExecutionHop[]
+}
+
 export type BatchInsights = {
   orderCount: number
   tradeCount: number
@@ -170,11 +193,14 @@ export type BatchInsights = {
   useCompactByDefault: boolean
   compactRoutes: CompactRoute[]
   cowFlow?: CowFlowSummary
+  executionBreakdown?: ExecutionBreakdown
   hasUsdEstimates: boolean
   solverAddress?: string
   bridgeOrdersCount: number
   surplusOrdersCount: number
 }
+
+export const SETTLEMENT_RESIDUAL_LABEL = 'CoW Protocol'
 
 export interface PopperInstance {
   scheduleUpdate: Command

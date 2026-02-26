@@ -1,10 +1,21 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
 
 import { getContractTrades, getTokenAddress } from './nodesBuilder'
-import { BatchInsights, CompactRoute, CompactTokenInfo, CowFlowAllocation, CowFlowSummary } from './types'
+import {
+  BatchInsights,
+  CompactRoute,
+  CompactTokenInfo,
+  CowFlowAllocation,
+  CowFlowSummary,
+  ExecutionBreakdown,
+  ExecutionHop,
+  ExecutionHopEndpointKind,
+  ExecutionVenue,
+  SETTLEMENT_RESIDUAL_LABEL,
+} from './types'
 
 import { Order } from '../../../api/operator'
 import { Contract, Trade, Transfer } from '../../../api/tenderly'
@@ -14,8 +25,13 @@ import { Network } from '../../../types'
 import { FormatAmountPrecision, abbreviateString, formatPercentage, formattedAmount } from '../../../utils'
 import { TOKEN_SYMBOL_UNKNOWN } from '../../const'
 
-const SETTLEMENT_CONTRACT_ADDRESSES = new Set(['0x9008d19f58aabd9ed0d60971565aa8510560ab41'])
+const SETTLEMENT_CONTRACT_ADDRESSES = new Set(
+  Object.values(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS)
+    .filter(Boolean)
+    .map((address) => address.toLowerCase()),
+)
 const SPECIAL_FLOW_CONTRACT_ADDRESSES = new Set(['0x40a50cf069e992aa4536211b23f286ef88752187'])
+const EXTERNAL_CONTRACT_FALLBACK_LABEL = 'External Contract'
 
 type BuildBatchInsightsParams = {
   networkId: Network | undefined
@@ -27,6 +43,11 @@ type BuildBatchInsightsParams = {
   txSender?: string
 }
 
+type DexRouteContext = {
+  dexLabel: string
+  dexAddress: string | undefined
+}
+
 export function buildBatchInsights(params: BuildBatchInsightsParams): BatchInsights {
   const { networkId, orders, trades, transfers, contracts, tokens, txSender } = params
   const orderCount = orders?.length || trades.length
@@ -35,10 +56,17 @@ export function buildBatchInsights(params: BuildBatchInsightsParams): BatchInsig
   const interactionAddresses = contractTrades.map((trade) => trade.address.toLowerCase())
   const interactionCount = contractTrades.length
   const dexContract = getPrimaryDexContract(contracts, orders, trades, interactionAddresses)
-  const dexAddress = dexContract?.address || interactionAddresses[0]
+  const { dexLabel, dexAddress } = buildDexRouteContext(dexContract, interactionAddresses)
   const cowSignal = detectPossibleCowSignal(trades, tokens, networkId)
   const compactRoutes = annotateRoutesWithUsdEstimates(buildCompactRoutes({ networkId, orders, trades, tokens }))
   const cowFlow = buildCowFlow(compactRoutes, cowSignal.possibleCowTokenAddresses)
+  const executionBreakdown = buildExecutionBreakdown({
+    contractTrades,
+    contracts,
+    networkId,
+    tokens,
+    transfers,
+  })
   const hasUsdEstimates = compactRoutes.some((route) => route.sellAmountUsdValue || route.buyAmountUsdValue)
   const bridgeOrdersCount = safeOrders.filter((order) => !!order.bridgeProviderId).length
 
@@ -47,17 +75,41 @@ export function buildBatchInsights(params: BuildBatchInsightsParams): BatchInsig
     tradeCount: trades.length,
     transferCount: transfers.length,
     interactionCount,
-    dexLabel: getDexLabel(dexContract),
+    dexLabel,
     dexAddress,
     hasPossibleCow: cowSignal.hasPossibleCow,
     possibleCowTokenLabels: cowSignal.possibleCowTokenLabels,
     useCompactByDefault: true,
     compactRoutes,
     cowFlow,
+    executionBreakdown,
     hasUsdEstimates,
     solverAddress: txSender?.toLowerCase(),
     bridgeOrdersCount,
     surplusOrdersCount: safeOrders.filter((order) => order.surplusPercentage.gt(0)).length,
+  }
+}
+
+function buildDexRouteContext(dexContract: Contract | undefined, interactionAddresses: string[]): DexRouteContext {
+  const fallbackDexAddress = interactionAddresses[0]
+
+  if (dexContract) {
+    return {
+      dexLabel: getDexLabel(dexContract),
+      dexAddress: dexContract.address,
+    }
+  }
+
+  if (fallbackDexAddress) {
+    return {
+      dexLabel: EXTERNAL_CONTRACT_FALLBACK_LABEL,
+      dexAddress: fallbackDexAddress,
+    }
+  }
+
+  return {
+    dexLabel: SETTLEMENT_RESIDUAL_LABEL,
+    dexAddress: undefined,
   }
 }
 
@@ -351,6 +403,301 @@ function formatTokenValue(value: number): string {
   }
 
   return '0'
+}
+
+type BuildExecutionBreakdownParams = {
+  contractTrades: Array<{ address: string }>
+  contracts: Contract[]
+  networkId: Network | undefined
+  tokens: Record<string, SingleErc20State>
+  transfers: Transfer[]
+}
+
+function buildExecutionBreakdown(params: BuildExecutionBreakdownParams): ExecutionBreakdown | undefined {
+  const { contractTrades, contracts, networkId, tokens, transfers } = params
+  if (!transfers.length) {
+    return undefined
+  }
+
+  const contractByAddress = new Map(contracts.map((contract) => [contract.address.toLowerCase(), contract]))
+  const contractAddresses = collectExecutionContractAddresses(contractTrades, transfers, contractByAddress)
+  const venuesByAddress = collectExecutionVenues(contractAddresses, contractByAddress)
+  const specialFlowLabelsByAddress = collectSpecialFlowLabels(contractByAddress)
+  const hops = collectExecutionHops(transfers, venuesByAddress, specialFlowLabelsByAddress, networkId, tokens)
+  const venues = Array.from(venuesByAddress.values()).sort((left, right) => left.label.localeCompare(right.label))
+
+  if (!venues.length && !hops.length) {
+    return undefined
+  }
+
+  return {
+    venues,
+    hops,
+  }
+}
+
+function collectExecutionContractAddresses(
+  contractTrades: Array<{ address: string }>,
+  transfers: Transfer[],
+  contractByAddress: Map<string, Contract>,
+): Set<string> {
+  const addresses = new Set(contractTrades.map((trade) => trade.address.toLowerCase()))
+
+  transfers.forEach((transfer) => {
+    maybeAddExecutionAddress(addresses, transfer.from, contractByAddress)
+    maybeAddExecutionAddress(addresses, transfer.to, contractByAddress)
+  })
+
+  return addresses
+}
+
+function maybeAddExecutionAddress(
+  addresses: Set<string>,
+  value: string,
+  contractByAddress: Map<string, Contract>,
+): void {
+  const address = value.toLowerCase()
+
+  if (isSettlementAddress(address) || SPECIAL_FLOW_CONTRACT_ADDRESSES.has(address) || contractByAddress.has(address)) {
+    addresses.add(address)
+  }
+}
+
+function collectSpecialFlowLabels(contractByAddress: Map<string, Contract>): Map<string, string> {
+  const labelsByAddress = new Map<string, string>()
+
+  SPECIAL_FLOW_CONTRACT_ADDRESSES.forEach((address) => {
+    const contract = contractByAddress.get(address)
+    labelsByAddress.set(address, getExecutionVenueLabel(contract, address))
+  })
+
+  return labelsByAddress
+}
+
+function collectExecutionVenues(
+  contractAddresses: Set<string>,
+  contractByAddress: Map<string, Contract>,
+): Map<string, ExecutionVenue> {
+  const venuesByAddress = new Map<string, ExecutionVenue>()
+
+  contractAddresses.forEach((address) => {
+    if (SETTLEMENT_CONTRACT_ADDRESSES.has(address) || SPECIAL_FLOW_CONTRACT_ADDRESSES.has(address)) {
+      return
+    }
+
+    const contract = contractByAddress.get(address)
+    if (contract?.contract_name.toLowerCase().includes('erc20token')) {
+      return
+    }
+
+    venuesByAddress.set(address, {
+      address,
+      label: getExecutionVenueLabel(contract, address),
+    })
+  })
+
+  return venuesByAddress
+}
+
+type AggregatedExecutionHop = {
+  fromAddress: string
+  fromLabel: string
+  fromKind: ExecutionHopEndpointKind
+  toAddress: string
+  toLabel: string
+  toKind: ExecutionHopEndpointKind
+  tokenAddress: string
+  totalValue: BigNumber
+  normalizedValue: number
+  priority: number
+}
+
+function collectExecutionHops(
+  transfers: Transfer[],
+  venuesByAddress: Map<string, ExecutionVenue>,
+  specialFlowLabelsByAddress: Map<string, string>,
+  networkId: Network | undefined,
+  tokens: Record<string, SingleErc20State>,
+): ExecutionHop[] {
+  const aggregatedByKey = new Map<string, AggregatedExecutionHop>()
+
+  transfers.forEach((transfer) => {
+    const aggregated = toAggregatedExecutionHop(
+      transfer,
+      venuesByAddress,
+      specialFlowLabelsByAddress,
+      networkId,
+      tokens,
+    )
+    if (!aggregated) {
+      return
+    }
+
+    const key = buildExecutionAggregationKey(aggregated)
+    const existing = aggregatedByKey.get(key)
+
+    if (!existing) {
+      aggregatedByKey.set(key, aggregated)
+      return
+    }
+
+    const mergedTotalValue = existing.totalValue.plus(aggregated.totalValue)
+    const mergedNormalizedValue = toNormalizedTokenAmount(mergedTotalValue, aggregated.tokenAddress, tokens)
+
+    aggregatedByKey.set(key, {
+      ...existing,
+      totalValue: mergedTotalValue,
+      normalizedValue: mergedNormalizedValue,
+    })
+  })
+
+  return Array.from(aggregatedByKey.values())
+    .sort(compareExecutionHops)
+    .map((hop, index) => ({
+      id: `execution-hop-${index}-${hop.fromLabel}-${hop.toLabel}-${hop.tokenAddress}`,
+      fromAddress: hop.fromAddress,
+      fromLabel: hop.fromLabel,
+      fromKind: hop.fromKind,
+      toAddress: hop.toAddress,
+      toLabel: hop.toLabel,
+      toKind: hop.toKind,
+      amountLabel: formatExecutionAmountLabel(hop.totalValue, hop.tokenAddress, tokens),
+    }))
+}
+
+function toAggregatedExecutionHop(
+  transfer: Transfer,
+  venuesByAddress: Map<string, ExecutionVenue>,
+  specialFlowLabelsByAddress: Map<string, string>,
+  networkId: Network | undefined,
+  tokens: Record<string, SingleErc20State>,
+): AggregatedExecutionHop | undefined {
+  const fromAddress = transfer.from.toLowerCase()
+  const toAddress = transfer.to.toLowerCase()
+  const fromKind = getExecutionNodeKind(fromAddress, venuesByAddress)
+  const toKind = getExecutionNodeKind(toAddress, venuesByAddress)
+  const fromLabel = getExecutionNodeLabel(fromAddress, venuesByAddress, specialFlowLabelsByAddress)
+  const toLabel = getExecutionNodeLabel(toAddress, venuesByAddress, specialFlowLabelsByAddress)
+
+  if (!fromLabel || !toLabel || fromAddress === toAddress) {
+    return undefined
+  }
+
+  const tokenAddress = normalizeTokenAddress(networkId, transfer.token)
+  const totalValue = new BigNumber(transfer.value)
+  const normalizedValue = toNormalizedTokenAmount(totalValue, tokenAddress, tokens)
+  const priority = isSettlementAddress(fromAddress) || isSettlementAddress(toAddress) ? 0 : 1
+
+  return {
+    fromAddress,
+    fromLabel,
+    fromKind,
+    toAddress,
+    toLabel,
+    toKind,
+    tokenAddress,
+    totalValue,
+    normalizedValue,
+    priority,
+  }
+}
+
+function getExecutionNodeKind(address: string, venuesByAddress: Map<string, ExecutionVenue>): ExecutionHopEndpointKind {
+  if (isSettlementAddress(address)) {
+    return 'settlement'
+  }
+
+  if (SPECIAL_FLOW_CONTRACT_ADDRESSES.has(address)) {
+    return 'special-flow'
+  }
+
+  if (venuesByAddress.has(address)) {
+    return 'venue'
+  }
+
+  return 'unknown'
+}
+
+function getExecutionNodeLabel(
+  address: string,
+  venuesByAddress: Map<string, ExecutionVenue>,
+  specialFlowLabelsByAddress: Map<string, string>,
+): string | undefined {
+  if (isSettlementAddress(address)) {
+    return SETTLEMENT_RESIDUAL_LABEL
+  }
+
+  if (SPECIAL_FLOW_CONTRACT_ADDRESSES.has(address)) {
+    return specialFlowLabelsByAddress.get(address) || abbreviateString(address, 8, 6)
+  }
+
+  return venuesByAddress.get(address)?.label
+}
+
+function buildExecutionAggregationKey(hop: AggregatedExecutionHop): string {
+  return `${hop.fromAddress}-${hop.toAddress}-${hop.tokenAddress}`
+}
+
+function compareExecutionHops(left: AggregatedExecutionHop, right: AggregatedExecutionHop): number {
+  if (left.priority !== right.priority) {
+    return left.priority - right.priority
+  }
+
+  if (left.normalizedValue !== right.normalizedValue) {
+    return right.normalizedValue - left.normalizedValue
+  }
+
+  if (left.fromLabel !== right.fromLabel) {
+    return left.fromLabel.localeCompare(right.fromLabel)
+  }
+
+  return left.toLabel.localeCompare(right.toLabel)
+}
+
+function isSettlementAddress(address: string): boolean {
+  return SETTLEMENT_CONTRACT_ADDRESSES.has(address)
+}
+
+function getExecutionVenueLabel(contract: Contract | undefined, fallbackAddress: string): string {
+  if (!contract) {
+    return abbreviateString(fallbackAddress, 8, 6)
+  }
+
+  return getDexLabel(contract)
+}
+
+function formatExecutionAmountLabel(
+  amountValue: BigNumber,
+  tokenAddress: string,
+  tokens: Record<string, SingleErc20State>,
+): string {
+  const token = tokens[tokenAddress]
+  const symbol = token?.symbol || TOKEN_SYMBOL_UNKNOWN
+
+  if (!token) {
+    return `${amountValue.toFormat(0)} ${symbol}`
+  }
+
+  const formatted = formattedAmount(token, amountValue, FormatAmountPrecision.highPrecision)
+  const amountLabel = formatted === '-' ? amountValue.toFormat(0) : formatted
+
+  return `${amountLabel} ${symbol}`
+}
+
+function toNormalizedTokenAmount(
+  amountValue: BigNumber,
+  tokenAddress: string,
+  tokens: Record<string, SingleErc20State>,
+): number {
+  const token = tokens[tokenAddress]
+
+  if (!token?.decimals) {
+    const raw = amountValue.toNumber()
+    return Number.isFinite(raw) ? Math.max(raw, 0) : 0
+  }
+
+  const normalized = amountValue.shiftedBy(-token.decimals).toNumber()
+  return Number.isFinite(normalized) ? Math.max(normalized, 0) : 0
 }
 
 function tokenAmountToNumber(amount: BigNumber, token: SingleErc20State | undefined): number {
@@ -670,16 +1017,23 @@ const KNOWN_DEX_LABELS: Array<{ terms: string[]; label: string }> = [
 
 function getDexLabel(contract: Contract | undefined): string {
   if (!contract) {
-    return 'AMM / DEX'
+    return SETTLEMENT_RESIDUAL_LABEL
   }
 
   const name = contract.contract_name
   const lowerName = name.toLowerCase()
 
-  if (lowerName.includes('erc20token')) return 'AMM / DEX'
+  if (lowerName.includes('erc20token')) return SETTLEMENT_RESIDUAL_LABEL
 
   const knownLabel = KNOWN_DEX_LABELS.find(({ terms }) => terms.every((term) => lowerName.includes(term)))?.label
   if (knownLabel) return knownLabel
 
-  return name.replace(/([a-z])([A-Z])/g, '$1 $2')
+  return humanizeContractName(name)
+}
+
+function humanizeContractName(name: string): string {
+  return name
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/\bCo W(?=[A-Z])/g, 'CoW')
+    .trim()
 }
