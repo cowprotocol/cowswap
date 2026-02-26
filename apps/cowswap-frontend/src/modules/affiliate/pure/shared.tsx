@@ -252,6 +252,13 @@ export const CardTitle = styled.h4`
   font-weight: 600;
 `
 
+export const LinkedCardGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+`
+
 export const LinkedCard = styled.div`
   border: 1px solid var(${UI.COLOR_INFO_BG});
   background: var(${UI.COLOR_PAPER});
@@ -265,14 +272,13 @@ export const LinkedCodeRow = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 16px;
+  padding: 14px 10px;
   background: var(${UI.COLOR_INFO_BG});
   color: var(${UI.COLOR_INFO_TEXT});
 `
 
 export const LinkedCodeText = styled.span`
   font-weight: 700;
-  letter-spacing: 0.5px;
   font-size: 18px;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -294,6 +300,7 @@ export const LinkedMetaList = styled.div`
   gap: 8px;
   flex: 1;
   width: 100%;
+  padding: 0 5px;
 `
 
 export const RewardsHeader = styled.div`
@@ -313,7 +320,7 @@ export const ValidStatusBadge = styled(LinkedBadge)`
 export const LinkedCopy = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   min-width: 0;
 `
 
@@ -321,8 +328,8 @@ export const LinkedLinkRow = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px 12px;
-  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  padding: 8px 10px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   border-top: 1px solid var(${UI.COLOR_BORDER});
 `
 
@@ -331,6 +338,11 @@ export const LinkedLinkText = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  > strong {
+    color: var(${UI.COLOR_TEXT});
+    font-weight: inherit;
+  }
 `
 
 export const LinkedActions = styled.div`
@@ -532,7 +544,6 @@ export const UnsupportedNetworkMessage = styled.p`
 `
 
 export const LinkedFooterNote = styled(MetaRow)`
-  width: 100%;
   justify-content: center;
   text-align: center;
 `
@@ -625,12 +636,6 @@ const DonutWrapper = styled.div<{ $value: number }>`
     align-items: center;
     gap: 2px;
     text-align: center;
-
-    small {
-      font-size: 15px;
-      color: var(${UI.COLOR_TEXT_OPACITY_60});
-      font-weight: 400;
-    }
   }
 
   ${DonutValue} {
@@ -640,6 +645,7 @@ const DonutWrapper = styled.div<{ $value: number }>`
 
     small {
       font-size: 15px;
+      color: var(${UI.COLOR_TEXT_OPACITY_60});
       font-weight: 400;
     }
   }

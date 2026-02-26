@@ -49,7 +49,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <LinkedCodeText>{savedCode}</LinkedCodeText>
               {isLinked ? (
                 <LinkedBadge>
-                  <SVG src={LockedIcon} width={12} height={10} />
+                  <SVG src={LockedIcon} width={16} height={16} />
                   <Trans>Linked</Trans>
                 </LinkedBadge>
               ) : (
