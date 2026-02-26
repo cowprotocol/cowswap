@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.3.1...permit-utils-v2.3.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.6
+
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.3.0...permit-utils-v2.3.1) (2026-02-24)
 
 
