@@ -24,7 +24,7 @@ export function useTwapOrdersAuthMulticall(
   }, [safeAddress, orderIdsKey])
 
   const { data, isLoading } = useReadContracts({
-    contracts: input!.map((args) => ({
+    contracts: (input || []).map((args) => ({
       abi: composableCowContract.abi,
       address: composableCowContract.address,
       functionName: 'singleOrders' as const,

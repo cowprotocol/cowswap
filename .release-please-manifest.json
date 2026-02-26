@@ -24,6 +24,5 @@
   "libs/abis": "3.0.0",
   "libs/balances-and-allowances": "2.3.1",
   "libs/iframe-transport": "2.0.5",
-  "libs/hook-dapp-lib": "2.0.5",
-  "libs/multicall": "2.3.1"
+  "libs/hook-dapp-lib": "2.0.5"
 }
