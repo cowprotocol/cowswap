@@ -135,7 +135,7 @@ class CustomizedBridge {
         const blockNumber = await this.publicClient.getBlockNumber()
         result = toHex(blockNumber)
       } else if (method === 'eth_getTransactionReceipt') {
-        const receipt = await this.publicClient.getTransactionReceipt({ hash: params[0] as Hex })
+        const receipt = await this.publicClient.waitForTransactionReceipt({ hash: params[0] as Hex })
         result = receipt
       } else if (method === 'eth_estimateGas') {
         const gas = await this.publicClient.estimateGas({

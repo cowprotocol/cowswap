@@ -15,7 +15,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 import { useConfig, useReadContract } from 'wagmi'
-import { writeContract, getTransactionReceipt } from 'wagmi/actions'
+import { writeContract, waitForTransactionReceipt } from 'wagmi/actions'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
@@ -194,7 +194,7 @@ export function useClaimCowFromLockedGnoCallback({
       hash: txHash,
       summary,
     })
-    return getTransactionReceipt(config, { hash: txHash }).finally(closeModal)
+    return waitForTransactionReceipt(config, { hash: txHash }).finally(closeModal)
   }, [
     config,
     account,

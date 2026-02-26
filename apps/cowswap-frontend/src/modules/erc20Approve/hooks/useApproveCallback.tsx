@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useLingui } from '@lingui/react/macro'
 import { encodeFunctionData, erc20Abi, TransactionReceipt, toHex } from 'viem'
 import { Config, useConfig } from 'wagmi'
-import { estimateGas, writeContract, getTransactionReceipt } from 'wagmi/actions'
+import { estimateGas, writeContract, waitForTransactionReceipt } from 'wagmi/actions'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
@@ -83,7 +83,7 @@ export function useApproveCallback(
         summary,
         approval: { tokenAddress: token.address, spender, amount: amountToApproveStr },
       })
-      return getTransactionReceipt(config, { hash: txHash })
+      return waitForTransactionReceipt(config, { hash: txHash })
     },
     [config, token, t, spender, addTransaction],
   )

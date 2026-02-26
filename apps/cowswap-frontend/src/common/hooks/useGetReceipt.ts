@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { useConfig } from 'wagmi'
-import { getTransactionReceipt } from 'wagmi/actions'
+import { waitForTransactionReceipt } from 'wagmi/actions'
 
 import type { TransactionReceipt, Hex } from 'viem'
 
@@ -27,7 +27,7 @@ export function useGetReceipt(chainId: SupportedChainId): GetReceipt {
       const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] || DEFAULT_RETRY_OPTIONS
 
       return retry(() => {
-        return getTransactionReceipt(config, { hash: hash as Hex }).then((receipt) => {
+        return waitForTransactionReceipt(config, { hash: hash as Hex }).then((receipt) => {
           if (receipt === null) {
             console.debug('[useGetReceipt] Retrying for hash', hash)
             throw new RetryableError()
