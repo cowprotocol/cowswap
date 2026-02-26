@@ -2,7 +2,7 @@ import { SignatureVerifierMuxerAbi } from '@cowprotocol/cowswap-abis'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { encodeFunctionData } from 'viem'
-import { writeContract } from 'wagmi/actions'
+import { readContract } from 'wagmi/actions'
 
 import { COMPOSABLE_COW_ADDRESS, SAFE_EXTENSIBLE_HANDLER_ADDRESS } from 'modules/advancedOrders/const'
 
@@ -11,7 +11,7 @@ import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext
 export async function extensibleFallbackSetupTxs(context: ExtensibleFallbackContext): Promise<MetaTransactionData[]> {
   const { chainId, config, safeAddress, settlementContract } = context
 
-  const domainSeparator = await writeContract(config, {
+  const domainSeparator = await readContract(config, {
     abi: settlementContract.abi,
     address: settlementContract.address,
     functionName: 'domainSeparator',

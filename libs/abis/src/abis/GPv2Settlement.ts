@@ -83,7 +83,7 @@ export default [
     inputs: [],
     name: 'domainSeparator',
     outputs: [{ name: '', type: 'bytes32' }],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
     type: 'function',
   },
 ] as const

@@ -1,6 +1,6 @@
 import { SignatureVerifierMuxerAbi } from '@cowprotocol/cowswap-abis'
 
-import { readContract, writeContract } from 'wagmi/actions'
+import { readContract } from 'wagmi/actions'
 
 import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders/const'
 
@@ -20,7 +20,7 @@ export async function verifyExtensibleFallback(
 ): Promise<ExtensibleFallbackVerification> {
   const { chainId, config, safeAddress, settlementContract } = context
   const composableCowContractAddress = COMPOSABLE_COW_ADDRESS[chainId]
-  const domainSeparator = await writeContract(config, {
+  const domainSeparator = await readContract(config, {
     abi: settlementContract.abi,
     address: settlementContract.address,
     functionName: 'domainSeparator',
