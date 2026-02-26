@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/types-v3.3.1...types-v3.3.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/types-v3.3.0...types-v3.3.1) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/types-v3.2.0...types-v3.3.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/types-v3.1.0...types-v3.2.0) (2026-02-13)
 
 

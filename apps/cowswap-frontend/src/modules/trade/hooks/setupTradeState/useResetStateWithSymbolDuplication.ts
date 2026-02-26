@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
 
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'

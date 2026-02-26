@@ -1,5 +1,42 @@
 # Changelog
 
+## [2.1.6](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.5...wallet-provider-v2.1.6) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.3.2
+
+## [2.1.5](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.4...wallet-provider-v2.1.5) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.3.1
+
+## [2.1.4](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.3...wallet-provider-v2.1.4) (2026-02-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.3.0
+
 ## [2.1.3](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.2...wallet-provider-v2.1.3) (2026-02-17)
 
 
