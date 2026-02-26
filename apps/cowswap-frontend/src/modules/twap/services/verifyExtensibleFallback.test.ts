@@ -11,7 +11,6 @@ import type { Config } from 'wagmi'
 
 jest.mock('wagmi/actions', () => ({
   readContract: jest.fn(),
-  writeContract: jest.fn(),
 }))
 
 const context: ExtensibleFallbackContext = {
@@ -21,6 +20,7 @@ const context: ExtensibleFallbackContext = {
   settlementContract: {
     abi: GPv2SettlementAbi,
     address: ZERO_ADDRESS,
+    chainId: 1,
   },
 }
 

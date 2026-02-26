@@ -20,13 +20,13 @@ export async function verifyExtensibleFallback(
 ): Promise<ExtensibleFallbackVerification> {
   const { chainId, config, safeAddress, settlementContract } = context
   const composableCowContractAddress = COMPOSABLE_COW_ADDRESS[chainId]
-  const domainSeparator = await readContract(config, {
-    abi: settlementContract.abi,
-    address: settlementContract.address,
-    functionName: 'domainSeparator',
-  })
-
   try {
+    const domainSeparator = await readContract(config, {
+      abi: settlementContract.abi,
+      address: settlementContract.address,
+      functionName: 'domainSeparator',
+    })
+
     const domainVerifier = await readContract(config, {
       abi: SignatureVerifierMuxerAbi,
       address: safeAddress,
