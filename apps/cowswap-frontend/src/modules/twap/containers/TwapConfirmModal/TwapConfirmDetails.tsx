@@ -48,8 +48,6 @@ export type TwapConfirmDetailsProps = {
   totalDuration: number | undefined
 }
 
-// TODO: Break down this large function into smaller functions
-
 export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: TwapConfirmDetailsProps) {
   const { partDuration, totalDuration, numOfParts } = props
 
@@ -60,11 +58,11 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const { sellAmount: inputPartAfterSlippageAmount, buyAmount: outputPartAfterSlippageAmount } =
-    receiveAmountInfo?.afterSlippage || {}
+  const { sellAmount: inputPartAmountToSign, buyAmount: outputPartAmountToSign } =
+    receiveAmountInfo?.amountsToSign || {}
 
-  const inputPartAmountUsd = useUsdAmount(inputPartAfterSlippageAmount).value
-  const outputPartAmountUsd = useUsdAmount(outputPartAfterSlippageAmount).value
+  const inputPartAmountUsd = useUsdAmount(inputPartAmountToSign).value
+  const outputPartAmountUsd = useUsdAmount(outputPartAmountToSign).value
 
   return (
     <Wrapper>
@@ -76,7 +74,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
       {/* Sell amount per part */}
       <ReviewOrderModalAmountRow
-        amount={inputPartAfterSlippageAmount}
+        amount={inputPartAmountToSign}
         fiatAmount={inputPartAmountUsd}
         tooltip={t`This is the amount that will be sold in each part of the TWAP order.`}
         label={t`Sell` + amountLabelSuffix}
@@ -85,7 +83,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
       {/* Buy amount per part */}
       <ReviewOrderModalAmountRow
-        amount={outputPartAfterSlippageAmount}
+        amount={outputPartAmountToSign}
         fiatAmount={outputPartAmountUsd}
         tooltip={t`This is the estimated amount you will receive for each part of the TWAP order.`}
         label={t`Buy` + amountLabelSuffix}

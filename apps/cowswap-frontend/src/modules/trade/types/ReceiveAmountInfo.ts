@@ -44,4 +44,5 @@ export interface ReceiveAmountInfo {
   afterNetworkCosts: Currencies
   afterPartnerFees: Currencies
   afterSlippage: Currencies
+  amountsToSign: Currencies
 }
