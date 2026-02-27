@@ -12,6 +12,7 @@ import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
+import { AffiliateTraderModal } from 'modules/affiliate'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -43,6 +44,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
+  const { isYieldEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -56,8 +58,6 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
 
   useInitializeUtm()
-
-  const { isYieldEnabled } = useFeatureFlags()
   const isInjectedWidgetMode = isInjectedWidget()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
@@ -113,6 +113,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
         {/* Render MobileHeaderControls outside of MenuBar on mobile */}
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
+        {isAffiliateProgramEnabled && <AffiliateTraderModal />}
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
   )

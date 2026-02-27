@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.2.1...widget-lib-v1.2.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.3.2
+    * @cowprotocol/iframe-transport bumped to 2.0.6
+
 ## [1.2.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.2.0...widget-lib-v1.2.1) (2026-02-24)
 
 

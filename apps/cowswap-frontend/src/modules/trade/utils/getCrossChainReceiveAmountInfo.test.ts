@@ -86,51 +86,52 @@ describe('getCrossChainReceiveAmountInfo - adjusts SDK getQuoteAmountsAndCosts()
     const { amountAfterFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
 
     it('Before all fees', () => {
-      // sellAmount: Taken directly from orderParams.sellAmount (3488333738720117691 raw = 3.488333738720117691 USDT)
-      expect(stringifyTokenAmount(beforeAllFees.sellAmount)).toBe('3.488333738720117691 USDT (56)')
+      // sellAmount: Genuine spot price = orderParams.sellAmount + feeAmount
+      //           = 3488333738720117691 + 9761540280770856 = 3498095279000888547
+      expect(stringifyTokenAmount(beforeAllFees.sellAmount)).toBe('3.498095279000888547 USDT (56)')
 
-      // buyAmount: This is the quote amount in destination currency (USDC) before any fees are deducted
+      // buyAmount: Genuine spot price in destination currency (USDC) before any fees are deducted
       // Calculation: bridgeBuyAmount + networkFee + protocolFee
-      //            = 3.353244 USDC + 0.009385 USDC + 0.00067 USDC
-      //            = 3.363299 USDC
-      expect(stringifyTokenAmount(beforeAllFees.buyAmount)).toBe('3.363299 USDC (8453)')
+      //            = 3.353244 USDC + 0.009383 USDC + 0.00067 USDC
+      //            = 3.363297 USDC
+      expect(stringifyTokenAmount(beforeAllFees.buyAmount)).toBe('3.363297 USDC (8453)')
     })
     it('Before network costs', () => {
-      // sellAmount: Same as beforeAllFees (no fees deducted from sell side in sell orders)
-      // buyAmount: beforeAllFees.buyAmount - networkFee
-      //          = 3.363299 USDC - 0.009385 USDC
-      //          = 3.353914 USDC
+      // sellAmount: Same as beforeAllFees (genuine spot price)
+      // buyAmount (= afterProtocolFees): beforeAllFees.buyAmount - protocolFee
+      //          = 3.363297 USDC - 0.00067 USDC
+      //          = 3.362627 USDC
       expect(stringifyTokenAmounts(beforeNetworkCosts)).toBe(
-        'Sell: 3.488333738720117691 USDT (56), buy: 3.353914 USDC (8453)',
+        'Sell: 3.498095279000888547 USDT (56), buy: 3.362627 USDC (8453)',
       )
     })
     it('After networks costs', () => {
-      // sellAmount: Original sellAmount + networkFee.amountInSellCurrency
-      //           = 3.488333738720117691 USDT + 0.009761540280770856 USDT
-      //           = 3.498095279000888547 USDT
-      // buyAmount: beforeNetworkCosts.buyAmount - protocolFee
-      //          = 3.353914 USDC - 0.00067 USDC
+      // sellAmount: Raw API sellAmount with network costs baked in
+      //           = 3.488333738720117691 USDT (orderParams.sellAmount)
+      // buyAmount: beforeNetworkCosts.buyAmount - networkFee
+      //          = 3.362627 USDC - 0.009383 USDC
       //          = 3.353244 USDC (this equals bridgeBuyAmount)
       expect(stringifyTokenAmounts(afterNetworkCosts)).toBe(
-        'Sell: 3.498095279000888547 USDT (56), buy: 3.353244 USDC (8453)',
+        'Sell: 3.488333738720117691 USDT (56), buy: 3.353244 USDC (8453)',
       )
     })
     it('After partner fees', () => {
-      // sellAmount: Same as afterNetworkCosts (no more fees from sell side)
+      // sellAmount: Same as afterNetworkCosts (raw API sellAmount)
       // buyAmount: afterNetworkCosts.buyAmount - partnerFee
-      //          = 3.353244 USDC - 0.001006 USDC
-      //          = 3.352238 USDC
+      //          = 3.353244 USDC - 0.001008 USDC
+      //          = 3.352236 USDC
       expect(stringifyTokenAmounts(afterPartnerFees)).toBe(
-        'Sell: 3.498095279000888547 USDT (56), buy: 3.352238 USDC (8453)',
+        'Sell: 3.488333738720117691 USDT (56), buy: 3.352236 USDC (8453)',
       )
     })
     it('After slippage', () => {
       // sellAmount: Same as afterPartnerFees (slippage doesn't affect sell amount in sell orders)
       // buyAmount: afterPartnerFees.buyAmount adjusted for slippage tolerance
-      //          = 3.352238 USDC * (1 - 3.73%)
-      //          = 3.352238 USDC * 0.9627
-      //          = 3.2272 USDC (minimum amount accounting for slippage)
-      expect(stringifyTokenAmounts(afterSlippage)).toBe('Sell: 3.498095279000888547 USDT (56), buy: 3.2272 USDC (8453)')
+      //          = 3.352236 USDC * (1 - 3.73%)
+      //          = 3.227198 USDC (minimum amount accounting for slippage)
+      expect(stringifyTokenAmounts(afterSlippage)).toBe(
+        'Sell: 3.488333738720117691 USDT (56), buy: 3.227198 USDC (8453)',
+      )
     })
     it('Protocol fee', () => {
       // Protocol fee: 0.02% of bridgeBuyAmount (3.353244 USDC)
@@ -140,20 +141,17 @@ describe('getCrossChainReceiveAmountInfo - adjusts SDK getQuoteAmountsAndCosts()
       expect(stringifyTokenAmount(protocolFee?.amount)).toBe('0.00067 USDC (8453)')
     })
     it('Partner fee', () => {
-      // Partner fee: 0.03% of bridgeBuyAmount (3.353244 USDC)
-      // Calculation: 3.353244 * 0.0003 = 0.00100597 32 USDC
-      // Rounded: 0.001006 USDC
-      expect(stringifyTokenAmount(partnerFeeAmount)).toBe('0.001006 USDC (8453)')
+      // Partner fee: 0.03% of beforeAllFees.buyAmount (3.363297 USDC)
+      // Calculation: 3.363297 * 0.0003 = 0.00100898 91 USDC
+      // Rounded: 0.001008 USDC
+      expect(stringifyTokenAmount(partnerFeeAmount)).toBe('0.001008 USDC (8453)')
     })
     it('Network fee', () => {
       // Network fee: Taken from orderParams.feeAmount (9761540280770856 raw)
       // In intermediate currency (BNB): 9761540280770856 / 10^18 = 0.009761540280770856 BNB
-      // Converted to destination currency (USDC) using exchange rate from bridge fees:
-      //   Exchange rate: 1 BNB ≈ 823.4 USDC (derived from bridgeFeeAmounts)
-      //   0.009761540280770856 BNB * 823.4 USDC/BNB ≈ 8.038 USDC
-      // Actual value in test: 0.009385 USDC
-      // Note: The SDK calculates this based on gas costs and converts to destination currency
-      expect(stringifyTokenAmount(networkFeeAmount)).toBe('0.009385 USDC (8453)')
+      // Converted to destination currency (USDC) using pure bigint cross-multiplication
+      // Note: The SDK now uses bigint math instead of floating-point for precision
+      expect(stringifyTokenAmount(networkFeeAmount)).toBe('0.009383 USDC (8453)')
     })
     it('Bridge fee', () => {
       // Bridge fee in destination currency: From bridgeFeeAmounts.amountInSellCurrency
@@ -168,9 +166,9 @@ describe('getCrossChainReceiveAmountInfo - adjusts SDK getQuoteAmountsAndCosts()
     })
     it('After fees', () => {
       // Final amount user receives: afterPartnerFees.buyAmount - bridgeFee.amountInDestinationCurrency
-      // Calculation: 3.352238 USDC - 0.004694 USDC = 3.347544 USDC
+      // Calculation: 3.352236 USDC - 0.004694 USDC = 3.347542 USDC
       // This is the actual USDC amount that will arrive on the destination chain (Base)
-      expect(stringifyTokenAmount(amountAfterFees)).toBe('3.347544 USDC (8453)')
+      expect(stringifyTokenAmount(amountAfterFees)).toBe('3.347542 USDC (8453)')
     })
   })
 })

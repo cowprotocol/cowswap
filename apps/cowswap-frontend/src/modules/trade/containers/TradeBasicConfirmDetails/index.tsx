@@ -103,30 +103,25 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
           fontSize={13}
         />
       </styledEl.RateInfoWrapper>
-
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
         withTimelineDot={withTimelineDot}
         networkCostsSuffix={networkCostsSuffix}
         networkCostsTooltipSuffix={networkCostsTooltipSuffix}
       />
-
       <ReviewOrderModalAmountRow
         highlighted
         amount={amountAfterFees}
         fiatAmount={amountAfterFeesUsd}
         label={expectReceiveLabel}
       />
-
       <DividerHorizontal />
-
       {/* Slippage */}
       {
         <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip={slippageTooltip} label={slippageLabel}>
           <PercentDisplay percent={slippage.toFixed(2)} />
         </ReviewOrderModalAmountRow>
       }
-
       {/* Min received */}
       <ReviewOrderModalAmountRow
         highlighted={true}
@@ -135,7 +130,6 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
         tooltip={minReceivedTooltip}
         label={minReceivedLabel}
       />
-
       {/* Limit Price */}
       {!hideLimitPrice && (
         <LimitPriceRow
@@ -145,7 +139,6 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
           limitPriceLabel={labelsAndTooltips?.limitPriceLabel}
         />
       )}
-
       {/*Recipient*/}
       <RecipientRow
         chainId={rateInfoParams.chainId}

@@ -8,6 +8,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { ProxyRecipient } from 'modules/accountProxy'
+import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { QuoteIdTooltipContent, QuoteIdValue, QuoteVerificationBadge, RowSlippage } from 'modules/tradeWidgetAddons'
@@ -124,6 +125,13 @@ function createQuoteIdContent(quoteId: string, quoteVerified?: boolean, quoteExp
   }
 }
 
+function createRewardsContent(): ContentItem {
+  return {
+    withTimelineDot: true,
+    content: <AffiliateTraderRewardsRow />,
+  }
+}
+
 export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDetailsContentProps): ReactNode {
   const {
     receiveAmountInfo,
@@ -141,10 +149,12 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
     isSlippageModified,
   } = context
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
   const contents = [
     createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
     !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
+    isRewardsRowEnabled && createRewardsContent(),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
     quoteId ? createQuoteIdContent(quoteId, quoteVerified, quoteExpiration) : null,
   ]
