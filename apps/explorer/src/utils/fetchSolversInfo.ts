@@ -107,9 +107,6 @@ function mapSolverNetworks(deployments: SolverDeployment[]): SolverNetworkInfo[]
   const chainIdToEnvironments = new Map<number, Set<string>>()
   const chainIdToName = new Map<number, string>()
   for (const deployment of deployments) {
-    if (!deployment.active) {
-      continue
-    }
     const currentEnvironments = chainIdToEnvironments.get(deployment.chainId) || new Set<string>()
     if (deployment.environment) {
       currentEnvironments.add(deployment.environment)

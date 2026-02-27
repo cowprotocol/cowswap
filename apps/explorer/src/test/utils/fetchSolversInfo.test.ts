@@ -115,4 +115,54 @@ describe('fetchSolversInfo', () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
+
+  it('keeps solvers that only have inactive deployments', async () => {
+    fetchMock.mockResponseOnce(
+      JSON.stringify({
+        data: [
+          {
+            id: 3,
+            attributes: {
+              solverId: 'inactive-only',
+              displayName: 'Inactive Only Solver',
+              active: true,
+              solver_networks: {
+                data: [
+                  {
+                    id: 13,
+                    attributes: {
+                      active: false,
+                      address: '0x9999999999999999999999999999999999999999',
+                      payoutAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                      network: { data: { id: 3, attributes: { chainId: 10, name: 'Optimism' } } },
+                      environment: { data: { id: 3, attributes: { name: 'prod' } } },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      }),
+    )
+
+    const { fetchSolversInfo } = await import('../../utils/fetchSolversInfo')
+    const allNetworks = await fetchSolversInfo()
+    const optimismOnly = await fetchSolversInfo(10)
+
+    expect(allNetworks).toHaveLength(1)
+    expect(allNetworks[0].solverId).toBe('inactive-only')
+    expect(allNetworks[0].deployments).toHaveLength(1)
+    expect(allNetworks[0].deployments[0].active).toBe(false)
+    expect(allNetworks[0].networks).toEqual([
+      {
+        chainId: 10,
+        chainName: 'Optimism',
+        environments: ['prod'],
+      },
+    ])
+
+    expect(optimismOnly).toHaveLength(1)
+    expect(optimismOnly[0].solverId).toBe('inactive-only')
+  })
 })
