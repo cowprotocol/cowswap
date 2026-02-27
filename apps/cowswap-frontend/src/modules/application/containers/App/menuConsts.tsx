@@ -1,8 +1,8 @@
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { BadgeType, BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
+import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
 import AppziButton from 'legacy/components/AppziButton'
@@ -16,8 +16,12 @@ import { getSolversExplorerUrl } from './menuConsts.utils'
 
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean) => ({
+type UntranslatedMenuItem = {
+  label: MessageDescriptor
+  children: Array<{ href: string; label: MessageDescriptor; badge?: MessageDescriptor; badgeType?: BadgeType }>
+}
+
+const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean): UntranslatedMenuItem => ({
   label: msg`Account`,
   children: [
     {
