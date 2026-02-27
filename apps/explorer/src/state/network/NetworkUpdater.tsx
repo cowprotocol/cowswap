@@ -31,6 +31,18 @@ function getNetworkId(network = MAINNET_PREFIX): SupportedChainId {
 const NETWORK_MATCH_REGEX = new RegExp(`^/(${NETWORK_PREFIXES})`)
 const CANONICAL_SOLVERS_PATH_PREFIX = '/solvers'
 const PREFIXED_SOLVERS_PATH_REGEX = new RegExp(`^/(${NETWORK_PREFIXES})/solvers(?:/|$)`)
+const SOLVERS_NETWORK_STATE_KEY = 'solversNetworkId'
+
+function getSolversNetworkIdFromState(locationState: unknown): SupportedChainId | undefined {
+  if (!locationState || typeof locationState !== 'object') {
+    return undefined
+  }
+  const value = (locationState as Record<string, unknown>)[SOLVERS_NETWORK_STATE_KEY]
+  if (typeof value !== 'number' || !(value in CHAIN_INFO)) {
+    return undefined
+  }
+  return value
+}
 
 export const NetworkUpdater: React.FC = () => {
   // TODO: why not using useDispatch from https://react-redux.js.org/introduction/quick-start
@@ -49,23 +61,31 @@ export const NetworkUpdater: React.FC = () => {
     const isCanonicalSolversPath =
       location.pathname === CANONICAL_SOLVERS_PATH_PREFIX ||
       location.pathname.startsWith(`${CANONICAL_SOLVERS_PATH_PREFIX}/`)
+    const selectedSolversNetworkId = getSolversNetworkIdFromState(location.state)
     const previousWasPrefixedSolversPath =
       previousPathname !== null && PREFIXED_SOLVERS_PATH_REGEX.test(previousPathname)
     const shouldPreserveCurrentNetwork =
-      isCanonicalSolversPath && network === undefined && currentNetworkId !== null && !previousWasPrefixedSolversPath
+      isCanonicalSolversPath &&
+      network === undefined &&
+      currentNetworkId !== null &&
+      !previousWasPrefixedSolversPath &&
+      selectedSolversNetworkId === undefined
 
     if (shouldPreserveCurrentNetwork) {
       return
     }
 
-    const networkId = getNetworkId(network)
+    const networkId =
+      isCanonicalSolversPath && network === undefined && selectedSolversNetworkId !== undefined
+        ? selectedSolversNetworkId
+        : getNetworkId(network)
 
     // Update the network if it's different
     if (currentNetworkId !== networkId) {
       dispatch(setNetwork(networkId))
       updateWeb3Provider(web3, networkId)
     }
-  }, [location.pathname, currentNetworkId, dispatch])
+  }, [location.pathname, location.state, currentNetworkId, dispatch])
 
   return null
 }

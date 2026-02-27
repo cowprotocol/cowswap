@@ -20,6 +20,7 @@ type networkSelectorProps = {
 
 const ROUTES_WITH_NETWORK_PREFIX_PRESERVED_PATH = ['address']
 const SOLVERS_ROUTE_PREFIX = 'solvers'
+const SOLVERS_NETWORK_STATE_KEY = 'solversNetworkId'
 
 export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) => {
   const selectContainer = useRef<HTMLInputElement>(null)
@@ -70,20 +71,16 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
               pathSuffix?.startsWith(route),
             )
             const isSolversRoute = pathSuffix?.startsWith(SOLVERS_ROUTE_PREFIX)
-            const solversPath = network.urlAlias
-              ? `/${network.urlAlias}/${SOLVERS_ROUTE_PREFIX}`
-              : `/${SOLVERS_ROUTE_PREFIX}`
-            const url = isSolversRoute
-              ? solversPath
-              : shouldPreservePath
-                ? `${network.urlAlias}/${pathSuffix || ''}`
-                : network.urlAlias
-            const optionTo = isSolversRoute ? url : `../${url}`
+            const canonicalSolversPath = `/${SOLVERS_ROUTE_PREFIX}`
+            const url = shouldPreservePath ? `${network.urlAlias}/${pathSuffix || ''}` : network.urlAlias
+            const optionTo = isSolversRoute ? canonicalSolversPath : `../${url}`
+            const optionState = isSolversRoute ? { [SOLVERS_NETWORK_STATE_KEY]: itemNetworkId } : undefined
 
             const isDeprecated = isChainDeprecated(itemNetworkId)
             return (
               <Option
                 to={optionTo}
+                state={optionState}
                 $color={network.color}
                 key={itemNetworkId}
                 onClick={(): void => {

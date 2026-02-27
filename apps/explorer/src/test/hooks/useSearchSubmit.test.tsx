@@ -1,29 +1,61 @@
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { act, renderHook } from '@testing-library/react'
-import { LocationDescriptorObject } from 'history'
 import { useSearchSubmit } from 'hooks/useSearchSubmit'
 import { MemoryRouter, useLocation } from 'react-router'
 
+import { GlobalStateContext } from '../../hooks/useGlobalState'
+import { Theme } from '../../theme/types'
+
 interface Props {
   children?: React.ReactNode
-  location?: LocationDescriptorObject
+  location?: string
+  networkId?: number | null
 }
 
 function wrapperMemoryRouter(props: Props): React.ReactNode {
-  return <MemoryRouter initialEntries={props.location ? [props.location] : undefined}>{props.children}</MemoryRouter>
+  const state = createState(props.networkId ?? null)
+
+  return (
+    <MemoryRouter initialEntries={props.location ? [props.location] : undefined}>
+      <GlobalStateContext.Provider value={[state, (): void => undefined]}>{props.children}</GlobalStateContext.Provider>
+    </MemoryRouter>
+  )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function runHook(query: string) {
+type TestState = {
+  theme: Theme
+  networkId: number | null
+}
+
+function createState(networkId: number | null): TestState {
+  return {
+    theme: Theme.DARK,
+    networkId,
+  }
+}
+
+type SearchSubmitHookState = {
+  location: ReturnType<typeof useLocation>
+  submit: ReturnType<typeof useSearchSubmit>
+}
+
+function runHook(query: string, options?: { location?: string; networkId?: number | null }): SearchSubmitHookState {
   const { result } = renderHook(
-    () => {
+    (): SearchSubmitHookState => {
       const location = useLocation()
       const submit = useSearchSubmit()
 
       return { location, submit }
     },
     {
-      wrapper: ({ children }) => wrapperMemoryRouter({ children }),
+      wrapper: ({ children }) =>
+        wrapperMemoryRouter({
+          children,
+          location: options?.location,
+          networkId: options?.networkId,
+        }),
     },
   )
 
@@ -31,7 +63,7 @@ function runHook(query: string) {
     result.current.submit(query)
   })
 
-  return result
+  return result.current
 }
 
 describe('useSearchSubmit', () => {
@@ -40,7 +72,7 @@ describe('useSearchSubmit', () => {
 
     const result = runHook(query)
 
-    expect(result.current.location.pathname).toBe(`/search/${query}`)
+    expect(result.location.pathname).toBe(`/search/${query}`)
   })
 
   it('should be /address/0x... when address string is valid', () => {
@@ -48,7 +80,7 @@ describe('useSearchSubmit', () => {
 
     const result = runHook(query)
 
-    expect(result.current.location.pathname).toBe(`/address/${query}`)
+    expect(result.location.pathname).toBe(`/address/${query}`)
   })
 
   it('should be /orders/0x... when orders string is valid', () => {
@@ -57,6 +89,17 @@ describe('useSearchSubmit', () => {
 
     const result = runHook(query)
 
-    expect(result.current.location.pathname).toBe(`/orders/${query}`)
+    expect(result.location.pathname).toBe(`/orders/${query}`)
+  })
+
+  it('should keep selected chain prefix on canonical /solvers', () => {
+    const query = 'invalid_search'
+
+    const result = runHook(query, {
+      location: '/solvers',
+      networkId: SupportedChainId.ARBITRUM_ONE,
+    })
+
+    expect(result.location.pathname).toBe(`/${CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].urlAlias}/search/${query}`)
   })
 })

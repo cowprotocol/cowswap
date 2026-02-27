@@ -75,7 +75,7 @@ describe('NetworkSelector on /solvers', () => {
     mockedUpdateWeb3Provider.mockReset()
   })
 
-  it('updates selected network and keeps solvers route prefixed to the selected chain', async () => {
+  it('updates selected network and keeps canonical /solvers route', async () => {
     mockedUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.ARBITRUM_ONE])
 
     const Wrapped = withGlobalContext(SelectorHarness, createInitialState(SupportedChainId.MAINNET), rootReducer)
@@ -96,9 +96,7 @@ describe('NetworkSelector on /solvers', () => {
       expect(screen.getByTestId('network-id').textContent).toBe(String(SupportedChainId.ARBITRUM_ONE))
     })
 
-    expect(screen.getByTestId('location').textContent).toBe(
-      `/${CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].urlAlias}/solvers`,
-    )
+    expect(screen.getByTestId('location').textContent).toBe('/solvers')
     expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.ARBITRUM_ONE)
   })
 
@@ -123,9 +121,7 @@ describe('NetworkSelector on /solvers', () => {
       expect(screen.getByTestId('network-id').textContent).toBe(String(SupportedChainId.ARBITRUM_ONE))
     })
 
-    expect(screen.getByTestId('location').textContent).toBe(
-      `/${CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].urlAlias}/solvers`,
-    )
+    expect(screen.getByTestId('location').textContent).toBe('/solvers')
     expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.ARBITRUM_ONE)
   })
 
@@ -152,5 +148,34 @@ describe('NetworkSelector on /solvers', () => {
 
     expect(screen.getByTestId('location').textContent).toBe('/solvers')
     expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.MAINNET)
+  })
+
+  it('keeps selected chain when switching from prefixed /solvers route', async () => {
+    mockedUseAvailableChains.mockReturnValue([
+      SupportedChainId.MAINNET,
+      SupportedChainId.ARBITRUM_ONE,
+      SupportedChainId.BASE,
+    ])
+
+    const Wrapped = withGlobalContext(SelectorHarness, createInitialState(SupportedChainId.ARBITRUM_ONE), rootReducer)
+
+    render(
+      <MemoryRouter initialEntries={[`/${CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].urlAlias}/solvers`]}>
+        <Wrapped />
+      </MemoryRouter>,
+    )
+
+    const arbitrumLabel = CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].label.toLowerCase()
+    const baseLabel = CHAIN_INFO[SupportedChainId.BASE].label
+
+    fireEvent.click(screen.getByText(arbitrumLabel))
+    fireEvent.click(screen.getByText(baseLabel))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('network-id').textContent).toBe(String(SupportedChainId.BASE))
+    })
+
+    expect(screen.getByTestId('location').textContent).toBe('/solvers')
+    expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.BASE)
   })
 })

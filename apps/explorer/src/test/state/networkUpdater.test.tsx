@@ -58,22 +58,27 @@ function renderHarness(pathname: string, networkId: number | null): void {
   )
 }
 
-function NavigateOnMount({ to }: { to: string }): React.ReactNode {
+function NavigateOnMount({ to, state }: { to: string; state?: Record<string, unknown> }): React.ReactNode {
   const navigate = useNavigate()
 
   useEffect(() => {
-    navigate(to)
-  }, [navigate, to])
+    navigate(to, { state })
+  }, [navigate, state, to])
 
   return null
 }
 
-function renderHarnessWithNavigation(pathname: string, navigateTo: string, networkId: number | null): void {
+function renderHarnessWithNavigation(
+  pathname: string,
+  navigateTo: string,
+  networkId: number | null,
+  state?: Record<string, unknown>,
+): void {
   const Wrapped = withGlobalContext(NetworkUpdaterHarness, createInitialState(networkId), rootReducer)
 
   render(
     <MemoryRouter initialEntries={[pathname]}>
-      <NavigateOnMount to={navigateTo} />
+      <NavigateOnMount to={navigateTo} state={state} />
       <Wrapped />
     </MemoryRouter>,
   )
@@ -115,5 +120,19 @@ describe('NetworkUpdater', () => {
     })
 
     expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.MAINNET)
+  })
+
+  it('respects selected chain from canonical solvers route navigation state', async () => {
+    const arbitrumAlias = CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].urlAlias
+
+    renderHarnessWithNavigation(`/${arbitrumAlias}/solvers`, '/solvers', SupportedChainId.ARBITRUM_ONE, {
+      solversNetworkId: SupportedChainId.BASE,
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('network-id').textContent).toBe(String(SupportedChainId.BASE))
+    })
+
+    expect(mockedUpdateWeb3Provider).toHaveBeenCalledWith(web3, SupportedChainId.BASE)
   })
 })
