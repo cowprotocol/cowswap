@@ -95,7 +95,8 @@ ordersTableStateAtom.onMount = () => {
 
     console.log('1. reduxOrdersStateInCurrentChain =', reduxOrdersStateInCurrentChain)
 
-    const reduxOrders: Order[] = []
+    let reduxOrders: Order[] = []
+
     const ordersTokensSet = new Set<string>()
 
     if (reduxOrdersStateInCurrentChain && account) {
@@ -153,32 +154,56 @@ ordersTableStateAtom.onMount = () => {
       })
 
       if (orderType === TabOrderTypes.ADVANCED) {
-        // TWAP: useAllEmulatedOrders()
+        /*
+        TWAP:
 
-        const isBundlingSupported = useIsTxBundlingSupported()
+        const allEmulatedOrders = useAllEmulatedOrders()
 
-        if (!isBundlingSupported) return []
+        const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
-        // reduxOrders = useOrders(chainId, account, UiOrderType.TWAP)
+        // Then allEmulatedOrders goes into the updater
+        */
 
-        // const twapOrdersTokens = useTwapOrdersTokens() // emulatedTwapOrdersAtom and emulatedPartOrdersAtom access twapOrdersTokens on their own
+        // TODO: To be implemented...
+        // const isBundlingSupported = useIsTxBundlingSupported()
+        const isBundlingSupported = true // useIsTxBundlingSupported()
 
-        // TODO: Use loadables here:
-        const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
-        const emulatedPartOrders = get(emulatedPartOrdersAtom)
+        if (!isBundlingSupported) {
+          reduxOrders = [];
+        } else {
+          // reduxOrders = useOrders(chainId, account, UiOrderType.TWAP)
 
-        const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
+          // const twapOrdersTokens = useTwapOrdersTokens() // emulatedTwapOrdersAtom and emulatedPartOrdersAtom access twapOrdersTokens on their own
+
+          const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
+          const emulatedPartOrders = get(emulatedPartOrdersAtom)
+
+          const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
 
 
-        // TODO: AdvancedOrdersPage needs this plus pendingOrders:
-        // const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
+          // TODO: AdvancedOrdersPage needs this plus pendingOrders:
+          // const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
-        return emulatedTwapOrders
-          .concat(emulatedPartOrders)
-          .concat(discreteTwapOrders)
-
+          reduxOrders = emulatedTwapOrders
+            .concat(emulatedPartOrders)
+            .concat(discreteTwapOrders)
+        }
       } else if (orderType === TabOrderTypes.LIMIT) {
-        // Limit: const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
+        /*
+        Limit:
+
+        const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
+
+        const pendingLimitOrders = useMemo(
+          () => allLimitOrders.filter((order) => order.status === OrderStatus.PENDING),
+          [allLimitOrders],
+        )
+
+        Then allLimitOrders goes into the updater
+
+        No extra processing here, we just continue with reduxOrders...
+
+        */
 
 
       }
@@ -250,4 +275,4 @@ ordersTableStateAtom.onMount = () => {
   }
 }
 
-// TODO: Create separate limitOrdersTable, twapOrdersTable and reduxOrders atom with onMount
+// TODO: Maybe create separate limitOrdersTable, twapOrdersTable and reduxOrders atom with onMount

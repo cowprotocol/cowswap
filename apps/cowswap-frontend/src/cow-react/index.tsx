@@ -1,5 +1,6 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
+import { useHydrateAtoms } from 'jotai/react/utils'
 import { ReactNode, StrictMode } from 'react'
 import './sentry'
 
@@ -9,6 +10,8 @@ import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { queryClientAtom } from 'jotai-tanstack-query'
 import { Messages } from '@lingui/core'
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -37,6 +40,19 @@ import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 const cowAnalytics = initGtm()
 const helmetContext = {}
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+})
+
+function HydrateQueryClient({ children }: { children: ReactNode }): ReactNode {
+  useHydrateAtoms([[queryClientAtom, queryClient]])
+  return children
+}
+
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
@@ -55,26 +71,30 @@ export function Main({ localeMessages }: MainProps): ReactNode {
       <SvgCacheProvider>
         <HelmetProvider context={helmetContext}>
           <Provider store={cowSwapStore}>
-            <AtomProvider store={jotaiStore}>
-              <ThemeProvider>
-                <HistoryRouter history={hashHistory}>
-                  <LanguageProvider messages={localeMessages}>
-                    <WithLDProvider>
-                      <Web3ProviderInstance>
-                        <BlockNumberProvider>
-                          <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                            <WalletUnsupportedNetworkBanner />
-                            <Updaters />
-                            <Toasts />
-                            <App />
-                          </CowAnalyticsProvider>
-                        </BlockNumberProvider>
-                      </Web3ProviderInstance>
-                    </WithLDProvider>
-                  </LanguageProvider>
-                </HistoryRouter>
-              </ThemeProvider>
-            </AtomProvider>
+            <QueryClientProvider client={queryClient}>
+              <AtomProvider store={jotaiStore}>
+                <HydrateQueryClient>
+                  <ThemeProvider>
+                    <HistoryRouter history={hashHistory}>
+                      <LanguageProvider messages={localeMessages}>
+                        <WithLDProvider>
+                          <Web3ProviderInstance>
+                            <BlockNumberProvider>
+                              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                                <WalletUnsupportedNetworkBanner />
+                                <Updaters />
+                                <Toasts />
+                                <App />
+                              </CowAnalyticsProvider>
+                            </BlockNumberProvider>
+                          </Web3ProviderInstance>
+                        </WithLDProvider>
+                      </LanguageProvider>
+                    </HistoryRouter>
+                  </ThemeProvider>
+                </HydrateQueryClient>
+              </AtomProvider>
+            </QueryClientProvider>
           </Provider>
         </HelmetProvider>
       </SvgCacheProvider>

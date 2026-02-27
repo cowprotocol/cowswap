@@ -1,77 +1,117 @@
-import { atom } from 'jotai'
-import { getTokensListFromOrders } from 'modules/orders'
-import { twapOrdersListAtom } from '../index'
-import { loadable } from 'jotai/utils'
-import { walletInfoAtom } from '@cowprotocol/wallet'
-import { addUserTokenAtom } from '../../../../../../libs/tokens/src/state/tokens/userAddedTokensAtom'
-import { tokensByAddressAtom } from '../../../../../../libs/tokens/src/state/tokens/allTokensAtom'
+/**
+ * TWAP order tokens: read atoms and hook backed by atomWithQuery (jotai-tanstack-query).
+ *
+ * To use: add QueryClientProvider in app root with client={twapOrdersTokensQueryClient},
+ * then use useTwapOrdersTokens() or twapOrdersTokensLoadableAtom as needed.
+ *
+ * Once adopted, switch useTwapOrdersTokens.ts to re-export from here and remove
+ * updateUserTokensForTwapOrdersAsyncAtom.
+ */
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
-import { isTruthy } from '@cowprotocol/common-utils'
-import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
-import { _fetchTokens } from 'modules/orders/hooks/useTokensForOrdersList'
+import type { TokensByAddress } from '@cowprotocol/tokens'
+import { walletInfoAtom } from '@cowprotocol/wallet'
+import { atom, useAtomValue } from 'jotai'
+import { loadable } from 'jotai/utils'
+import { atomFamily }from 'jotai-family'
+import { atomWithQuery } from 'jotai-tanstack-query'
+import { QueryClient } from '@tanstack/react-query'
+import { getTokensListFromOrders } from 'modules/orders'
 
-export const updateUserTokensForTwapOrdersAsyncAtom = atom(null, async (get, set) => {
-  const allTokensPromise = get(tokensByAddressAtom)
+import { twapOrdersListAtom } from '../index'
+import { tokensByAddressAtom } from '../../../../../../libs/tokens/src/state/tokens/allTokensAtom'
 
-  const allTokens = (await allTokensPromise).tokens
+// TODO: Move atoms to common/state/tokenByAddressQueryAtoms.ts	 and entities/twap/state/twapOrdersTokensAtoms.ts
 
-  const allTwapOrders = get(twapOrdersListAtom)
-  const tokensToFetch = getTokensListFromOrders(allTwapOrders)
-  const { chainId, provider } = get(walletInfoAtom)
+function tokenKey(chainId: number, address: string): string {
+  return `${chainId}::${address.toLowerCase()}`
+}
 
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
+function parseTokenKey(key: string): { chainId: number; address: string } {
+  const [chainIdStr, address] = key.split('::')
+  return { chainId: Number(chainIdStr), address: address ?? '' }
+}
 
-  const getToken = async (address: string, signal?: AbortSignal) => {
-    if (signal?.aborted) return null
-    if (!provider) return null
-    const token = await fetchTokenFromBlockchain(address, chainId, provider).then(TokenWithLogo.fromToken)
-    return signal?.aborted ? null : token
-  }
+export const twapOrdersTokensAddressesAtom = atom((get) =>
+  getTokensListFromOrders(get(twapOrdersListAtom)),
+)
 
-  // if (signal?.aborted) return allTokensRef.current
+// TODO: Maybe it's better to just create a module that stores the fetched tokens in memory.
+export const tokenQueryFamily = atomFamily((key: string) =>
+  atomWithQuery(
+    (get) => {
+      const { chainId, address } = parseTokenKey(key)
+      const { provider } = get(walletInfoAtom)
+      return {
+        queryKey: ['twapOrderToken', chainId, address] as const,
+        queryFn: async (): Promise<TokenWithLogo | null> => {
+          if (!provider) return null
 
-  const tokensNotAlreadyFetched = tokensToFetch.reduce<string[]>((acc, token) => {
-    const tokenLowercase = token.toLowerCase()
+          // TODO M-6 COW-573
+          // This flow will be reviewed and updated later, to include a wagmi alternative
+          const token = await fetchTokenFromBlockchain(address, chainId, provider)
 
-    if (!getTokenFromMapping(tokenLowercase, chainId, allTokens)) {
-      acc.push(tokenLowercase)
+          return TokenWithLogo.fromToken(token)
+        },
+      }
+    },
+  ),
+)
+
+export const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | null> => {
+  const { tokens, chainId } = await get(tokensByAddressAtom)
+  const twapOrdersTokensAddresses = get(twapOrdersTokensAddressesAtom)
+
+  // TODO: Before, new tokens would be added using addUserTokenAtom, so the next time they'll be available from
+  // tokensByAddressAtom. For now, we can skip that. Once everything's working again, we can consider moving
+  // all token-related logic to query atoms.
+  const twapOrdersTokens: TokensByAddress = {}
+
+  let missingTokens = 0;
+
+  for (const tokensAddresses of twapOrdersTokensAddresses) {
+    const keyLower = tokensAddresses.toLowerCase()
+
+    if (tokens[keyLower]) {
+      twapOrdersTokens[keyLower] = tokens[keyLower]
+    } else {
+      const tokenQueryAtom = tokenQueryFamily(tokenKey(chainId, keyLower));
+      const queryResult = get(tokenQueryAtom)
+
+      if (queryResult.data) {
+        twapOrdersTokens[keyLower] = queryResult.data
+      } else {
+        ++missingTokens
+      }
     }
-    return acc
-  }, [])
-
-  const fetchedTokens = await _fetchTokens(tokensNotAlreadyFetched, getToken/*, signal*/)
-
-  // if (signal?.aborted) return allTokens
-
-  // Add fetched tokens to the user-added tokens store to avoid re-fetching them
-  const tokensToAdd = Object.values(fetchedTokens).filter(isTruthy)
-
-  if (tokensToAdd.length > 0) {
-    // FIXME: this might be a cause of the problem when we get listed tokens as user-added tokens
-    // Since we use allTokensRef which is not a part of the hooks deps, there might be a race condition
-    console.log('Add missing tokens from orders as user-added: ', tokensToAdd)
-    set(addUserTokenAtom, tokensToAdd)
   }
 
-  // Merge fetched tokens with what's currently loaded
-  return { ...allTokens, ...fetchedTokens }
+  if (missingTokens > 0) return null;
+
+  const expectedAddresses = [...twapOrdersTokensAddresses].sort().join("::")
+  const loadedAddresses = Object.keys(twapOrdersTokens).sort().join("::")
+
+  if (expectedAddresses !== loadedAddresses) {
+    console.error('Tokens finished loading but addresses mismatch', expectedAddresses, loadedAddresses);
+    return null;
+  }
+
+  return twapOrdersTokens;
 })
 
-/*
-// TODO: Update to simply call the updater and then return its value or return twapOrdersListAtom
-export function useTwapOrdersTokens(): TokensByAddress | undefined {
-  const allTwapOrders = useAtomValue(twapOrdersListAtom)
+export const twapOrdersTokensLoadableAtom = loadable(twapOrdersTokensAsyncAtom)
 
-  const getTokensForOrdersList = useTokensForOrdersList()
+export const twapOrdersTokensAtom = atom((get): TokensByAddress | null => {
+  const loadableState = get(twapOrdersTokensLoadableAtom)
+  return loadableState.state === 'hasData' ? loadableState.data : null
+})
 
-  const tokensToFetch = useMemo(() => {
-    return getTokensListFromOrders(allTwapOrders)
-  }, [allTwapOrders])
-
-  return useAsyncMemo(() => getTokensForOrdersList(tokensToFetch), [getTokensForOrdersList, tokensToFetch])
+/**
+ * Returns the map of tokens for TWAP orders (known tokens + fetched via atomWithQuery).
+ * Same signature as the original useTwapOrdersTokens: TokensByAddress | undefined.
+ */
+export function useTwapOrdersTokens(): TokensByAddress | null {
+  const loadableState = useAtomValue(twapOrdersTokensLoadableAtom)
+  return loadableState.state === 'hasData' ? loadableState.data : null
 }
-*/
-
-// TODO: Review this

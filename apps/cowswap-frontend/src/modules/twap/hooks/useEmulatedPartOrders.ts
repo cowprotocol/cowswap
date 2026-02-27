@@ -1,36 +1,22 @@
-import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
-
-import { useMachineTimeMs } from '@cowprotocol/common-hooks'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { atom } from 'jotai'
-import { twapOrdersAtom, TwapOrdersList } from 'entities/twap'
-import ms from 'ms.macro'
 
+import { twapOrdersAtom, TwapOrdersList } from 'entities/twap'
+import { twapOrdersTokensAtom } from 'entities/twap/hooks/useTwapOrdersTokens'
 import { Order } from 'legacy/state/orders/actions'
 
 import { TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
-import { twapOrdersTokensLoadableAtom } from 'entities/twap/hooks/useTwapOrdersTokens'
 
-const EMULATED_ORDERS_REFRESH_MS = ms`5s`
-
-export const emulatedPartOrdersAtom = atom<Promise<Order[]>>(async (get) => {
+export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
   const twapOrders = get(twapOrdersAtom)
   const twapParticleOrders = get(twapPartOrdersListAtom)
-  const twapOrdersTokensLoadable = useAtomValue(twapOrdersTokensLoadableAtom)
+  const twapOrdersTokens = get(twapOrdersTokensAtom)
 
-  // Update emulated part orders every 5 seconds to recalculate expired state
-  // TODO: Replace this with an atom version and try to make
-  // refresh interval smart...
-  const refresher = useMachineTimeMs(EMULATED_ORDERS_REFRESH_MS)
+  if (!twapOrdersTokens) return []
 
-  // It's not possible, just to prevent react-hooks/exhaustive-deps errors
-  if (!refresher) return []
-  if (!twapOrdersTokensLoadable || twapOrdersTokensLoadable.state !== 'hasData') return []
-
-  return emulatePartOrders(twapParticleOrders, twapOrders, twapOrdersTokensLoadable.data)
+  return emulatePartOrders(twapParticleOrders, twapOrders, twapOrdersTokens)
 })
 
 function emulatePartOrders(
