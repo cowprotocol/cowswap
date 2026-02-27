@@ -18,7 +18,7 @@ import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 function useWalletInfo(): WalletInfo {
-  const { address, chainId, isConnected } = useConnection()
+  const { address, chainId, isConnected, connector } = useConnection()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
   return useMemo(
@@ -26,8 +26,9 @@ function useWalletInfo(): WalletInfo {
       chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active: isConnected,
       account: address,
+      connector,
     }),
-    [address, chainId, isConnected, isChainIdUnsupported],
+    [address, chainId, isConnected, connector, isChainIdUnsupported],
   )
 }
 

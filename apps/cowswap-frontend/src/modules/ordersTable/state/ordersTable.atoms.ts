@@ -153,17 +153,22 @@ ordersTableStateAtom.onMount = () => {
       })
 
       if (orderType === TabOrderTypes.ADVANCED) {
-        // TWAP - useAllEmulatedOrders()
+        // TWAP: useAllEmulatedOrders()
+
+        const isBundlingSupported = useIsTxBundlingSupported()
+
+        if (!isBundlingSupported) return []
 
         // reduxOrders = useOrders(chainId, account, UiOrderType.TWAP)
 
+        // const twapOrdersTokens = useTwapOrdersTokens() // emulatedTwapOrdersAtom and emulatedPartOrdersAtom access twapOrdersTokens on their own
+
+        // TODO: Use loadables here:
         const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
         const emulatedPartOrders = get(emulatedPartOrdersAtom)
-        const isBundlingSupported = useIsTxBundlingSupported()
 
         const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
 
-        if (!isBundlingSupported) return []
 
         // TODO: AdvancedOrdersPage needs this plus pendingOrders:
         // const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
@@ -173,7 +178,8 @@ ordersTableStateAtom.onMount = () => {
           .concat(discreteTwapOrders)
 
       } else if (orderType === TabOrderTypes.LIMIT) {
-        // Limit:
+        // Limit: const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
+
 
       }
 
@@ -243,3 +249,5 @@ ordersTableStateAtom.onMount = () => {
     unobserve()
   }
 }
+
+// TODO: Create separate limitOrdersTable, twapOrdersTable and reduxOrders atom with onMount

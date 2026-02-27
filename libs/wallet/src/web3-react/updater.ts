@@ -35,7 +35,7 @@ function checkIsSupportedWallet(walletName?: string): boolean {
 }
 
 function useWalletInfo(): WalletInfo {
-  const { account, chainId, isActive: active } = useWeb3React()
+  const { account, chainId, isActive: active, provider } = useWeb3React()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
   return useMemo(
@@ -43,8 +43,9 @@ function useWalletInfo(): WalletInfo {
       chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active,
       account: account as Address,
+      provider,
     }),
-    [chainId, active, account, isChainIdUnsupported],
+    [chainId, active, account, provider, isChainIdUnsupported],
   )
 }
 

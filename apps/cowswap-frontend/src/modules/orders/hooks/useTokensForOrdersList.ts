@@ -9,10 +9,6 @@ import { Token } from '@uniswap/sdk-core'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
-export function getTokensForOrdersList(tokensToFetch: string[]): Promise<TokensByAddress> {
-
-}
-
 export function useTokensForOrdersList(): (tokensToFetch: string[], signal?: AbortSignal) => Promise<TokensByAddress> {
   const { chainId } = useWalletInfo()
   // TODO M-6 COW-573
@@ -73,7 +69,7 @@ export function useTokensForOrdersList(): (tokensToFetch: string[], signal?: Abo
   )
 }
 
-async function _fetchTokens(
+export async function _fetchTokens(
   tokensToFetch: string[],
   getToken: (address: string, signal?: AbortSignal) => Promise<Token | null>,
   signal?: AbortSignal,

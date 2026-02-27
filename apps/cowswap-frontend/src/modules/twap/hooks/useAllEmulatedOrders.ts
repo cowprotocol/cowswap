@@ -1,3 +1,4 @@
+/*
 import { useMemo } from 'react'
 
 import { UiOrderType } from '@cowprotocol/types'
@@ -7,8 +8,6 @@ import { useTwapOrdersTokens } from 'entities/twap'
 
 import { Order } from 'legacy/state/orders/actions'
 import { useOrders } from 'legacy/state/orders/hooks'
-
-// TODO: Review this
 
 export function useAllEmulatedOrders(): Order[] {
   const { chainId, account } = useWalletInfo()
@@ -29,3 +28,4 @@ export function useAllEmulatedOrders(): Order[] {
     return emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)
   }, [emulatedTwapOrders, emulatedPartOrders, discreteTwapOrders, isBundlingSupported])
 }
+*/

@@ -3,6 +3,8 @@ import type { SafeInfoResponse } from '@safe-global/api-kit'
 
 import { injected, walletConnect, coinbaseWallet, safe } from '@wagmi/connectors'
 import { Address } from 'viem'
+import { Connector } from 'wagmi'
+import { Web3Provider } from '@ethersproject/providers'
 
 export const ConnectorType = {
   COINBASE_WALLET: coinbaseWallet.type,
@@ -27,6 +29,8 @@ export interface WalletInfo {
   chainId: SupportedChainId
   account?: Address
   active?: boolean
+  provider?: Web3Provider
+  connector?: Connector
 }
 
 export interface WalletDetails {

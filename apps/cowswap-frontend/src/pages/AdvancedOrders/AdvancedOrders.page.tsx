@@ -27,7 +27,6 @@ import {
   TwapConfirmModal,
   TwapFormWidget,
   TwapUpdaters,
-  useAllEmulatedOrders,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
   useTwapFormState,
@@ -44,7 +43,7 @@ export function AdvancedOrdersPage(): ReactNode {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
-  const allEmulatedOrders = useAllEmulatedOrders()
+  const allEmulatedOrders = useAtomValue(twapOrdersTableAtom)
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const twapFormValidation = useTwapFormState()

@@ -16,7 +16,7 @@ import { twapOrdersTokensLoadableAtom } from 'entities/twap/hooks/useTwapOrdersT
 
 const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
-export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
+export const emulatedPartOrdersAtom = atom<Promise<Order[]>>(async (get) => {
   const twapOrders = get(twapOrdersAtom)
   const twapParticleOrders = get(twapPartOrdersListAtom)
   const twapOrdersTokensLoadable = useAtomValue(twapOrdersTokensLoadableAtom)

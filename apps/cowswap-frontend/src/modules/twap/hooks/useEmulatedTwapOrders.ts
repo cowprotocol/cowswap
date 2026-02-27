@@ -20,7 +20,7 @@ const EMULATED_ORDERS_REFRESH_MS = ms`5s`
  * So, there might be a race condition when we have an order but haven't fetched its token yet
  * Because of it, we wrap mapTwapOrderToStoreOrder() in try/catch and just don't add an order to the list
  */
-export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
+export const emulatedTwapOrdersAtom = atom<Promise<Order[]>>(async (get) => {
   const { account, chainId } = useWalletInfo()
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
   const twapOrdersTokensLoadable = useAtomValue(twapOrdersTokensLoadableAtom)
