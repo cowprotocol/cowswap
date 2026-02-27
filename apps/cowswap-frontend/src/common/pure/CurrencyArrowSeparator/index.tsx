@@ -26,7 +26,12 @@ export function CurrencyArrowSeparator({
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
-    <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine}>
+    <styledEl.Box
+      id="currency-arrow-separator"
+      data-isLoading={isLoading ? true : undefined}
+      isCollapsed={isCollapsed}
+      hasSeparatorLine={hasSeparatorLine}
+    >
       <styledEl.LoadingWrapper type="button" $isLoading={isLoading} disabled={disabled} onClick={onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
           <CowLoadingIcon size={26} isDarkMode={isDarkMode} />
