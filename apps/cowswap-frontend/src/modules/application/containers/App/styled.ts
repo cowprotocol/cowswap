@@ -61,7 +61,11 @@ export const FooterSlot = styled.div`
   gap: 0;
 `
 
-export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVariant?: PageBackgroundVariant }>`
+export const BodyWrapper = styled.div<{
+  customTheme?: CowSwapTheme
+  backgroundVariant?: PageBackgroundVariant
+  $hasActiveSpeechBubbleNotification?: boolean
+}>`
   --marginBottomOffset: 65px;
   display: flex;
   flex-direction: row;
@@ -126,7 +130,8 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   }
 
   ${Media.upToSmall()} {
-    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 200px')};
+    padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
+      theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 300px' : '90px 16px 200px'};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
     background-size: ${({ customTheme }) =>
       customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};

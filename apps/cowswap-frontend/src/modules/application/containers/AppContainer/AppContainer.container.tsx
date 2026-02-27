@@ -1,12 +1,11 @@
-import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 
 import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import type { NotificationModel } from '@cowprotocol/core'
 import { Footer, Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-
-import Snowfall from 'react-snowfall'
 
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
@@ -22,9 +21,11 @@ import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarni
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
+import { CowSpeechBubbleHiringBanner } from './CowSpeechBubble/CowSpeechBubbleHiringBanner'
+import { CowSpeechBubbleNotificationBanner } from './CowSpeechBubble/CowSpeechBubbleNotificationBanner'
+import { SnowfallOverlay } from './SnowfallOverlay.pure'
+
 import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
-import { CowSpeechBubbleHiringBanner } from '../App/CowSpeechBubbleHiringBanner'
-import { CowSpeechBubbleNotificationBanner } from '../App/CowSpeechBubbleNotificationBanner'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
 import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
@@ -86,6 +87,8 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
     customTheme,
     isChristmasTheme,
   })
+  const { currentNotification, dismiss } = useSpeechBubbleNotification()
+  const hasActiveSpeechBubbleNotification = shouldRenderCowSpeechBubble && Boolean(currentNotification)
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
   return (
@@ -100,7 +103,11 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
         {isYieldEnabled && <CoWAmmBanner />}
 
-        <styledEl.BodyWrapper customTheme={customTheme} backgroundVariant={pageBackgroundVariant}>
+        <styledEl.BodyWrapper
+          customTheme={customTheme}
+          backgroundVariant={pageBackgroundVariant}
+          $hasActiveSpeechBubbleNotification={hasActiveSpeechBubbleNotification}
+        >
           {children}
           <styledEl.Marginer />
         </styledEl.BodyWrapper>
@@ -109,6 +116,8 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         <FooterSection
           show={!isInjectedWidgetMode}
           showCowSpeechBubble={shouldRenderCowSpeechBubble}
+          currentNotification={currentNotification}
+          onDismissNotification={dismiss}
           pageScene={pageScene}
         />
 
@@ -144,62 +153,32 @@ function shouldDisplayCowSpeechBubble({
   )
 }
 
-interface SnowfallOverlayProps {
-  show: boolean
-  isMobile: boolean
-  darkMode: boolean
-}
-
-function SnowfallOverlay({ show, isMobile, darkMode }: SnowfallOverlayProps): ReactNode {
-  if (!show) {
-    return null
-  }
-
-  const snowflakeCount = isMobile ? 25 : darkMode ? 75 : 200
-
-  return (
-    <Snowfall
-      style={SNOWFALL_STYLE}
-      snowflakeCount={snowflakeCount}
-      radius={[0.5, 2.0]}
-      speed={[0.5, 2.0]}
-      wind={[-0.5, 1.0]}
-    />
-  )
-}
-
-const SNOWFALL_STYLE: CSSProperties = {
-  position: 'fixed',
-  width: '100vw',
-  height: '100vh',
-  zIndex: 3,
-  pointerEvents: 'none',
-  top: 0,
-  left: 0,
-}
-
 interface FooterSectionProps {
   show: boolean
   showCowSpeechBubble: boolean
+  currentNotification: NotificationModel | null
+  onDismissNotification: () => void
   pageScene: ReactNode | null
 }
 
-function FooterSection({ show, showCowSpeechBubble, pageScene }: FooterSectionProps): ReactNode {
-  const { currentNotification, dismiss } = useSpeechBubbleNotification()
-
+function FooterSection({
+  show,
+  showCowSpeechBubble,
+  currentNotification,
+  onDismissNotification,
+  pageScene,
+}: FooterSectionProps): ReactNode {
   if (!show) {
     return null
   }
 
-  let bubbleElement: ReactNode = null
-
-  if (showCowSpeechBubble) {
-    if (currentNotification) {
-      bubbleElement = <CowSpeechBubbleNotificationBanner currentNotification={currentNotification} onClose={dismiss} />
-    } else {
-      bubbleElement = <CowSpeechBubbleHiringBanner />
-    }
-  }
+  const bubbleElement: ReactNode = showCowSpeechBubble ? (
+    currentNotification ? (
+      <CowSpeechBubbleNotificationBanner currentNotification={currentNotification} onClose={onDismissNotification} />
+    ) : (
+      <CowSpeechBubbleHiringBanner />
+    )
+  ) : null
 
   return (
     <styledEl.FooterSlot>
