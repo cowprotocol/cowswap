@@ -70,6 +70,12 @@ export const NAV_ITEMS: MenuItem[] = [
             external: true,
             utmContent: 'menubar-nav-item-cow-explorer',
           },
+          {
+            label: 'Solvers',
+            href: 'https://explorer.cow.fi/solvers',
+            external: true,
+            utmContent: 'menubar-nav-item-solvers',
+          },
         ],
       },
     ],
