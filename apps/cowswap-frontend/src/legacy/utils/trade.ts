@@ -4,6 +4,7 @@ import {
   formatTokenAmount,
   getCurrencyAddress,
   isAddress,
+  isBarnBackendEnv,
   isSellOrder,
   shortenAddress,
 } from '@cowprotocol/common-utils'
@@ -224,7 +225,12 @@ type OrderCancellationParams = {
 export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
   const { orderId, chainId, signer, cancelPendingOrder } = params
 
-  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer)
+  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(
+    orderId,
+    chainId,
+    signer,
+    isBarnBackendEnv ? 'staging' : 'prod',
+  )
 
   if (!signature) throw new Error(t`Signature is undefined!`)
 
