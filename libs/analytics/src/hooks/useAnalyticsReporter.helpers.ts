@@ -15,7 +15,11 @@ export function getChainContextValue(chainId: SupportedChainId | undefined): str
   return chainId?.toString()
 }
 
-export function shouldTrackChainSwitchedEvent(input: ChainSwitchGuardInput): input is ChainSwitchPayload {
+/**
+ * `chain_switched` is a wallet chain-change event, not a generic "session changed" event.
+ * Emit it only when the same wallet remains connected and chainId actually changes.
+ */
+export function shouldEmitChainSwitchedEventForSameWallet(input: ChainSwitchGuardInput): input is ChainSwitchPayload {
   const { account, prevAccount, chainId, prevChainId } = input
 
   if (account == null || prevAccount == null || chainId == null || prevChainId == null) {

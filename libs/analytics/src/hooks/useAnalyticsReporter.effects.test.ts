@@ -63,6 +63,20 @@ describe('useAnalyticsReporter effects', () => {
 
       expect(cowAnalytics.sendEvent).not.toHaveBeenCalled()
     })
+
+    it('does not send chain_switched when wallet changes even if chain also changes', () => {
+      const cowAnalytics = createAnalyticsMock()
+
+      useChainSwitchAnalytics({
+        account: '0x1111111111111111111111111111111111111111',
+        prevAccount: '0x2222222222222222222222222222222222222222',
+        chainId: SupportedChainId.BASE,
+        prevChainId: SupportedChainId.MAINNET,
+        cowAnalytics,
+      })
+
+      expect(cowAnalytics.sendEvent).not.toHaveBeenCalled()
+    })
   })
 
   describe('useUserContext', () => {

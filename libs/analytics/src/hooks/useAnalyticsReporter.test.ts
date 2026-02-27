@@ -1,12 +1,16 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { getChainContextValue, getChainSwitchedEvent, shouldTrackChainSwitchedEvent } from './useAnalyticsReporter'
+import {
+  getChainContextValue,
+  getChainSwitchedEvent,
+  shouldEmitChainSwitchedEventForSameWallet,
+} from './useAnalyticsReporter'
 
 describe('useAnalyticsReporter chain_switched helpers', () => {
-  describe('shouldTrackChainSwitchedEvent', () => {
+  describe('shouldEmitChainSwitchedEventForSameWallet', () => {
     it('returns true when wallet is connected and chain changed', () => {
       expect(
-        shouldTrackChainSwitchedEvent({
+        shouldEmitChainSwitchedEventForSameWallet({
           account: '0x1111111111111111111111111111111111111111',
           prevAccount: '0x1111111111111111111111111111111111111111',
           chainId: SupportedChainId.MAINNET,
@@ -17,7 +21,7 @@ describe('useAnalyticsReporter chain_switched helpers', () => {
 
     it('returns true when same wallet casing changes and chain changed', () => {
       expect(
-        shouldTrackChainSwitchedEvent({
+        shouldEmitChainSwitchedEventForSameWallet({
           account: '0x1111111111111111111111111111111111111111',
           prevAccount: '0x1111111111111111111111111111111111111111'.toUpperCase(),
           chainId: SupportedChainId.MAINNET,
@@ -28,7 +32,7 @@ describe('useAnalyticsReporter chain_switched helpers', () => {
 
     it('returns false when current account is missing', () => {
       expect(
-        shouldTrackChainSwitchedEvent({
+        shouldEmitChainSwitchedEventForSameWallet({
           account: undefined,
           prevAccount: '0x1111111111111111111111111111111111111111',
           chainId: SupportedChainId.MAINNET,
@@ -39,7 +43,7 @@ describe('useAnalyticsReporter chain_switched helpers', () => {
 
     it('returns false when previous account is missing (first wallet connect)', () => {
       expect(
-        shouldTrackChainSwitchedEvent({
+        shouldEmitChainSwitchedEventForSameWallet({
           account: '0x1111111111111111111111111111111111111111',
           prevAccount: undefined,
           chainId: SupportedChainId.MAINNET,
@@ -50,7 +54,7 @@ describe('useAnalyticsReporter chain_switched helpers', () => {
 
     it('returns false when chain id did not change', () => {
       expect(
-        shouldTrackChainSwitchedEvent({
+        shouldEmitChainSwitchedEventForSameWallet({
           account: '0x1111111111111111111111111111111111111111',
           prevAccount: '0x1111111111111111111111111111111111111111',
           chainId: SupportedChainId.MAINNET,
@@ -61,7 +65,7 @@ describe('useAnalyticsReporter chain_switched helpers', () => {
 
     it('returns false when account changed (account switch, not chain switch)', () => {
       expect(
-        shouldTrackChainSwitchedEvent({
+        shouldEmitChainSwitchedEventForSameWallet({
           account: '0x1111111111111111111111111111111111111111',
           prevAccount: '0x2222222222222222222222222222222222222222',
           chainId: SupportedChainId.MAINNET,

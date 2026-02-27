@@ -7,7 +7,7 @@ import {
   ChainSwitchGuardInput,
   getChainContextValue,
   getChainSwitchedEvent,
-  shouldTrackChainSwitchedEvent,
+  shouldEmitChainSwitchedEventForSameWallet,
 } from './useAnalyticsReporter.helpers'
 
 import { AnalyticsContext, CowAnalytics } from '../CowAnalytics'
@@ -90,12 +90,11 @@ export function useChainSwitchAnalytics({
   cowAnalytics,
 }: ChainSwitchEffectParams): void {
   useEffect(() => {
-    // This hook is reused in Explorer, where `chainId` changes but no wallet is connected (`account` is undefined).
-    // We only want wallet chain-switch analytics, so require the same wallet to be connected before/after chain change.
-    // Also skip no-op updates where chain did not actually change.
+    // Reused in contexts where chain can change without a connected wallet.
+    // Emit only wallet chain-switches: same account before/after and a real chainId change.
     const chainSwitchInput = { account, prevAccount, chainId, prevChainId }
 
-    if (!shouldTrackChainSwitchedEvent(chainSwitchInput)) {
+    if (!shouldEmitChainSwitchedEventForSameWallet(chainSwitchInput)) {
       return
     }
 

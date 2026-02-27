@@ -21,7 +21,7 @@ import { WebVitalsAnalytics } from '../webVitals/WebVitalsAnalytics'
 export {
   getChainContextValue,
   getChainSwitchedEvent,
-  shouldTrackChainSwitchedEvent,
+  shouldEmitChainSwitchedEventForSameWallet,
 } from './useAnalyticsReporter.helpers'
 
 interface UseAnalyticsReporterProps {
