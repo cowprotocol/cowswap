@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { id } from '@ethersproject/hash'
@@ -12,7 +12,7 @@ describe('processApprovalTransaction', () => {
   const mockChainId = SupportedChainId.MAINNET
   const mockTokenAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
   const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
-  const mockSpender = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
+  const mockSpender = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET]
   const mockAmount = BigInt('1000000000000000000')
   const mockBlockNumber = 123456
 

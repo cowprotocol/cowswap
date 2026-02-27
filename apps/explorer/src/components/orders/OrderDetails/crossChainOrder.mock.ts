@@ -1,4 +1,5 @@
 import { COW_CDN } from '@cowprotocol/common-const'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 export const crossChainOrderMock = {
@@ -28,7 +29,7 @@ export const crossChainOrderMock = {
     invalidated: false,
     status: 'fulfilled',
     class: 'limit',
-    settlementContract: '0x9008d19f58aabd9ed0d60971565aa8510560ab41',
+    settlementContract: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
     isLiquidityOrder: false,
     fullAppData: '',
     quote: {

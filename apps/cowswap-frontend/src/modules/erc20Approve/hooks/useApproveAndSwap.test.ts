@@ -1,3 +1,4 @@
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { Token } from '@uniswap/sdk-core'
 
@@ -47,7 +48,7 @@ describe('useApproveAndSwap', () => {
 
   const createMockTransactionReceipt = (): TransactionReceipt => {
     return {
-      to: '0x9008D19f58AAbD9eD0D60971565AA8510560ab41',
+      to: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
       from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
       contractAddress: mockToken.address,
       transactionIndex: 1,

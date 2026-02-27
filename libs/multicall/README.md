@@ -15,7 +15,7 @@ import { Erc20Abi, Erc20Interface } from '@cowprotocol/cowswap-abis'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 
 const ACCOUNT = '0x0000000000000000000000000000000000000000'
-const GP_VAULT_RELAYER = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110'
+const GP_VAULT_RELAYER = '0xD5D7ae3dD0C1c79DB7B0307e0d36AEf14eEee205'
 
 const TOKENS = [
   '0x5d30aD9C6374Bf925D0A75454fa327AACf778492',

@@ -1,6 +1,6 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getBlockExplorerUrl, isSellOrder } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
 import { ElementDefinition } from 'cytoscape'
@@ -191,7 +191,7 @@ function getInternalParentNode(groupNodes: Map<string, string>, transfer: Transf
 
 const ADDRESSES_TO_IGNORE = new Set()
 // CoW Protocol settlement contract
-ADDRESSES_TO_IGNORE.add('0x9008d19f58aabd9ed0d60971565aa8510560ab41')
+ADDRESSES_TO_IGNORE.add(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET])
 // ETH Flow contract
 ADDRESSES_TO_IGNORE.add('0x40a50cf069e992aa4536211b23f286ef88752187')
 
