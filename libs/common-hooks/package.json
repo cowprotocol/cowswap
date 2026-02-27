@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.8-pr-792-695e6bc1.0",
+    "@cowprotocol/cow-sdk": "7.3.8-pr-792-c82e7abb.0",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/types": "workspace:*",
