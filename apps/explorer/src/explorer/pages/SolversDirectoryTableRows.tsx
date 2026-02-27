@@ -1,113 +1,23 @@
 import React from 'react'
 
-import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { Placeholder } from './Solvers.styles'
 import {
   DeploymentsEmpty,
-  DeploymentsGridHeader,
-  DeploymentsGridRow,
   DeploymentsPanel,
+  DeploymentsPanelTitle,
   DeploymentsSection,
   DeploymentsSectionTitle,
-  DeploymentsPanelTitle,
-  EnvTag,
-  EnvTags,
   ExpandButton,
-  Mono,
-  NetworkChip,
-  NetworkIcon,
-  Networks,
   SolverCell,
   SolverDetails,
   SolverId,
-  SolverLogo,
-  SolverLogoFallback,
 } from './SolversDirectoryTable.styles'
+import { mapSummaryEnvironments, mapSummaryNetworks } from './SolversDirectoryTable.utils'
+import { DeploymentsSectionRows, EnvironmentTags, NetworkChips, SolverIcon } from './SolversDirectoryTableComponents'
 
-import { AddressLink } from '../../components/common/AddressLink'
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
-
-type ChainInfoEntry = {
-  logo?: {
-    light?: string
-  }
-}
-
-const CHAIN_INFO_BY_ID = CHAIN_INFO as Partial<Record<number, ChainInfoEntry>>
-
-function getChainIcon(chainId: number): string | undefined {
-  if (!Object.prototype.hasOwnProperty.call(CHAIN_INFO_BY_ID, chainId)) {
-    return undefined
-  }
-
-  return CHAIN_INFO_BY_ID[chainId]?.logo?.light || undefined
-}
-
-function SolverIcon({ solver }: { solver: SolverInfo }): React.ReactNode {
-  if (solver.image) return <SolverLogo src={solver.image} alt={`${solver.displayName} logo`} />
-  return <SolverLogoFallback>{solver.displayName.charAt(0).toUpperCase()}</SolverLogoFallback>
-}
-
-type SummaryNetwork = {
-  chainId: number
-  chainName: string
-}
-
-function mapSummaryNetworks(deployments: SolverDeployment[]): SummaryNetwork[] {
-  const byChainId = new Map<number, string>()
-
-  deployments.forEach((deployment) => {
-    byChainId.set(deployment.chainId, deployment.chainName)
-  })
-
-  return [...byChainId.entries()]
-    .map(([chainId, chainName]) => ({ chainId, chainName }))
-    .sort((a, b) => a.chainName.localeCompare(b.chainName))
-}
-
-function mapSummaryEnvironments(deployments: SolverDeployment[]): string[] {
-  const environments = new Set<string>()
-
-  deployments.forEach((deployment) => {
-    if (deployment.environment) {
-      environments.add(deployment.environment)
-    }
-  })
-
-  return [...environments].sort()
-}
-
-function NetworkChips({ solverId, networks }: { solverId: string; networks: SummaryNetwork[] }): React.ReactNode {
-  return (
-    <Networks>
-      {networks.map((network) => {
-        const chainIcon = getChainIcon(network.chainId)
-        // Lens uses a black light logo, so we invert it to keep visibility on dark chips.
-        const isLensNetwork = network.chainName.toLowerCase() === 'lens'
-        return (
-          <NetworkChip key={`${solverId}-${network.chainId}`}>
-            {chainIcon && <NetworkIcon src={chainIcon} alt="" $invert={isLensNetwork} />}
-            {network.chainName}
-          </NetworkChip>
-        )
-      })}
-    </Networks>
-  )
-}
-
-function EnvironmentTags({ solverId, environments }: { solverId: string; environments: string[] }): React.ReactNode {
-  return (
-    <EnvTags>
-      {environments.map((environment) => (
-        <EnvTag key={`${solverId}-${environment}`} $environment={environment}>
-          {environment}
-        </EnvTag>
-      ))}
-    </EnvTags>
-  )
-}
 
 type SolverSummaryRowProps = {
   solver: SolverInfo
@@ -167,45 +77,6 @@ export function SolverSummaryRow({
 type SolverDetailsRowProps = {
   solver: SolverInfo
   deployments: SolverDeployment[]
-}
-
-type DeploymentsSectionRowsProps = {
-  solver: SolverInfo
-  deployments: SolverDeployment[]
-}
-
-function DeploymentsSectionRows({ solver, deployments }: DeploymentsSectionRowsProps): React.ReactNode {
-  return (
-    <>
-      <DeploymentsGridHeader>
-        <span>Chain</span>
-        <span>Env</span>
-        <span>Solver address</span>
-        <span>Payout address</span>
-      </DeploymentsGridHeader>
-      {deployments.map((deployment, index) => (
-        <DeploymentsGridRow key={`${solver.solverId}-${deployment.chainId}-${deployment.environment || 'na'}-${index}`}>
-          <span>{deployment.chainName}</span>
-          <span>{deployment.environment || '-'}</span>
-          {deployment.address ? (
-            <AddressLink address={deployment.address} chainId={deployment.chainId} showIcon showNetworkName={false} />
-          ) : (
-            <Mono>-</Mono>
-          )}
-          {deployment.payoutAddress ? (
-            <AddressLink
-              address={deployment.payoutAddress}
-              chainId={deployment.chainId}
-              showIcon
-              showNetworkName={false}
-            />
-          ) : (
-            <Mono>-</Mono>
-          )}
-        </DeploymentsGridRow>
-      ))}
-    </>
-  )
 }
 
 export function SolverDetailsRow({ solver, deployments }: SolverDetailsRowProps): React.ReactNode {
