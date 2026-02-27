@@ -572,8 +572,8 @@ importers:
         specifier: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz
         version: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../../libs/abis
@@ -596,26 +596,26 @@ importers:
         specifier: workspace:*
         version: link:../../libs/permit-utils
       '@cowprotocol/sdk-bridging':
-        specifier: 2.0.0-pr-807-ad55c6a4.0
-        version: 2.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 2.0.0-pr-807-8b9cd890.0
+        version: 2.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/sdk-contracts-ts':
-        specifier: 1.6.1-pr-807-ad55c6a4.0
-        version: 1.6.1-pr-807-ad55c6a4.0
+        specifier: 1.6.1-pr-807-8b9cd890.0
+        version: 1.6.1-pr-807-8b9cd890.0
       '@cowprotocol/sdk-cow-shed':
-        specifier: 0.2.19-pr-807-ad55c6a4.0
-        version: 0.2.19-pr-807-ad55c6a4.0
+        specifier: 0.2.19-pr-807-8b9cd890.0
+        version: 0.2.19-pr-807-8b9cd890.0
       '@cowprotocol/sdk-ethers-v5-adapter':
-        specifier: 0.3.8-pr-807-ad55c6a4.0
-        version: 0.3.8-pr-807-ad55c6a4.0(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+        specifier: 0.3.8-pr-807-8b9cd890.0
+        version: 0.3.8-pr-807-8b9cd890.0(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@cowprotocol/sdk-order-book':
-        specifier: 1.0.0-pr-807-ad55c6a4.0
-        version: 1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)
+        specifier: 1.0.0-pr-807-8b9cd890.0
+        version: 1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)
       '@cowprotocol/sdk-trading':
-        specifier: 1.0.0-pr-807-ad55c6a4.0
-        version: 1.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 1.0.0-pr-807-8b9cd890.0
+        version: 1.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: 0.3.8-pr-807-ad55c6a4.0
-        version: 0.3.8-pr-807-ad55c6a4.0(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
+        specifier: 0.3.8-pr-807-8b9cd890.0
+        version: 0.3.8-pr-807-8b9cd890.0(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
       '@cowprotocol/snackbars':
         specifier: workspace:*
         version: link:../../libs/snackbars
@@ -976,23 +976,23 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../../libs/hook-dapp-lib
       '@cowprotocol/sdk-bridging':
-        specifier: 2.0.0-pr-807-ad55c6a4.0
-        version: 2.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 2.0.0-pr-807-8b9cd890.0
+        version: 2.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/sdk-contracts-ts':
-        specifier: 1.6.1-pr-807-ad55c6a4.0
-        version: 1.6.1-pr-807-ad55c6a4.0
+        specifier: 1.6.1-pr-807-8b9cd890.0
+        version: 1.6.1-pr-807-8b9cd890.0
       '@cowprotocol/sdk-ethers-v5-adapter':
-        specifier: 0.3.8-pr-807-ad55c6a4.0
-        version: 0.3.8-pr-807-ad55c6a4.0(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+        specifier: 0.3.8-pr-807-8b9cd890.0
+        version: 0.3.8-pr-807-8b9cd890.0(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@cowprotocol/sdk-subgraph':
-        specifier: 0.3.6-pr-807-ad55c6a4.0
-        version: 0.3.6-pr-807-ad55c6a4.0(encoding@0.1.13)
+        specifier: 0.3.6-pr-807-8b9cd890.0
+        version: 0.3.6-pr-807-8b9cd890.0(encoding@0.1.13)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../../libs/types
@@ -1178,14 +1178,14 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-const
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/sdk-composable':
-        specifier: 0.1.34-pr-807-ad55c6a4.0
-        version: 0.1.34-pr-807-ad55c6a4.0(encoding@0.1.13)
+        specifier: 0.1.34-pr-807-8b9cd890.0
+        version: 0.1.34-pr-807-8b9cd890.0(encoding@0.1.13)
       '@cowprotocol/sdk-ethers-v5-adapter':
-        specifier: 0.3.8-pr-807-ad55c6a4.0
-        version: 0.3.8-pr-807-ad55c6a4.0(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+        specifier: 0.3.8-pr-807-8b9cd890.0
+        version: 0.3.8-pr-807-8b9cd890.0(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1227,8 +1227,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-hooks
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../../libs/events
@@ -1309,8 +1309,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
@@ -1355,8 +1355,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1416,8 +1416,8 @@ importers:
   libs/common-const:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1453,8 +1453,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1541,8 +1541,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1650,8 +1650,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@ethersproject/providers':
         specifier: 5.7.0
         version: 5.7.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1696,8 +1696,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1730,11 +1730,11 @@ importers:
   libs/events:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/sdk-bridging':
-        specifier: 2.0.0-pr-807-ad55c6a4.0
-        version: 2.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 2.0.0-pr-807-8b9cd890.0
+        version: 2.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1760,8 +1760,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1806,8 +1806,8 @@ importers:
         specifier: ^1.5.1
         version: 1.5.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../hook-dapp-lib
@@ -1901,8 +1901,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1977,11 +1977,11 @@ importers:
   libs/types:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/sdk-bridging':
-        specifier: 2.0.0-pr-807-ad55c6a4.0
-        version: 2.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 2.0.0-pr-807-8b9cd890.0
+        version: 2.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@uniswap/sdk-core':
         specifier: ^3.0.1
         version: 3.2.6
@@ -2014,8 +2014,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -2114,8 +2114,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/ens':
         specifier: workspace:*
         version: link:../ens
@@ -2262,8 +2262,8 @@ importers:
   libs/widget-lib:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 7.3.8-pr-807-ad55c6a4.0
-        version: 7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+        specifier: 7.3.8-pr-807-8b9cd890.0
+        version: 7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
@@ -3181,66 +3181,66 @@ packages:
       react: ^16.X
       react-dom: ^16.X
 
-  '@cowprotocol/cow-sdk@7.3.8-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-F6EdSuhBSwkoE3sJfS9WXXEWf/wANtEd9hnfZcgb9A4xHVFCE91faJsgoI3ElJMPDv0p8whhJwLgQXRwVJ4tAQ==, tarball: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/7.3.8-pr-807-ad55c6a4.0/20677b08ea97e066dc3e24ad34abd41091d7afad}
+  '@cowprotocol/cow-sdk@7.3.8-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-iJSzQ27S1MlWvnfBiLXcJ/hsSO/BFcPcvOKni9iF8egZ2rG/RtVFf//1saHvIprHALkv9SKe/hWlN7rE59xbzA==, tarball: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/7.3.8-pr-807-8b9cd890.0/60d5321709673af51cdf4747de448d8d503bb20e}
     peerDependencies:
       '@openzeppelin/merkle-tree': ^1.x
       cross-fetch: ^3.x
       ipfs-only-hash: ^4.x
       multiformats: ^9.x
 
-  '@cowprotocol/sdk-app-data@4.6.5-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-oxStysxVi6Gm4x0yjq5aSic1saQnZqrYWc3GWJatqu/0TJrbYfRC31mShbrRt1mZIX4D8iY8ru3vZ43LxO19dw==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/4.6.5-pr-807-ad55c6a4.0/329c7e50df5ee21e7908596f53a6315c0034a55d}
+  '@cowprotocol/sdk-app-data@4.6.5-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-JA4KaiIEJruCUTtwbPIh27wMpDHll9MoJ/U20cd5pnKosysC+iE44bWzUtcWv4xRDtCbsw5fyWUIuRD7mWYpXA==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/4.6.5-pr-807-8b9cd890.0/128342873b823d1beab884ee2a6d9e1847969715}
     peerDependencies:
       ajv: ^8.x
       cross-fetch: ^3.x
       ipfs-only-hash: ^4.x
       multiformats: ^9.x
 
-  '@cowprotocol/sdk-bridging@2.0.0-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-kExlpgF1nQ1F9GuM8rHwZSW7ujqfgYBWJriUUJbLP5O/nytKOAGEutj8KR1fdyFqX1EWo3TRemUocN2z1F2L+A==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/2.0.0-pr-807-ad55c6a4.0/4c5228d11b0fe5d5b75c022ca79c606021ca49d5}
+  '@cowprotocol/sdk-bridging@2.0.0-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-LQWKCH2Ge9D/sUF3xThsyxI7F/LEVd6u5xKWopf4YXywnmHMl0rgVYslgmhNHw4qGQ8AbJeH8p4f+f1cAnuJ+A==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/2.0.0-pr-807-8b9cd890.0/3a27a8278da41113437ca4cd67fc09fc73feac79}
 
-  '@cowprotocol/sdk-common@0.6.2-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-1OshLVVI4vF3mtuLlPBdq3hPVcocr4Fxm7yciFZHlt2pML/44o8OPmLwfb31AqYiuOZhxjZDI/8W9uspxqQl1Q==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.6.2-pr-807-ad55c6a4.0/6bd17a23f84f236dd1d18730ee165f827dcf5abb}
+  '@cowprotocol/sdk-common@0.6.2-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-zfD/R24QjYZZj2vtihcfx6ya9SbjutP8u5tL2nR4OVABEmaX4SWCPnLSO72/SN7byADWsInYZvnVefnIfhzl9g==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.6.2-pr-807-8b9cd890.0/edb3e432be0abd5b9da45a9a1526c3f095789260}
 
-  '@cowprotocol/sdk-composable@0.1.34-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-+L4CadCevOdc/GWHPA53UAoWn8MgwV8kq0Y5GzRE3iirKP1BuNGbm5uuYZarxxvmygmUeuIDaJCCjeWBzKxixg==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/0.1.34-pr-807-ad55c6a4.0/ecc6d23cb384e8c228d4edcd488e2b7f2ff37e2a}
+  '@cowprotocol/sdk-composable@0.1.34-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-KlwQpec1RL9AjmbzK0g8+ksytl5GYXH3TaEtHEmQOGPPeNv9Bz7s2QN08nbgCz/7QIIhTTwyEfH8AHrmpkNJjw==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/0.1.34-pr-807-8b9cd890.0/ce87cdf3ee61c81631e8f5f18d674a53057df828}
 
-  '@cowprotocol/sdk-config@0.8.1-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-bxfLhqWZyQml24GB2z2E8CnG+AKVfo8ATJ9wcLx+O16aT3utwDQ1KEtJVWrTRemPrnwO2dirgpDCqITag5q+EQ==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-config/0.8.1-pr-807-ad55c6a4.0/6e25037e6ea29b9e86ee428c20445008bf286478}
+  '@cowprotocol/sdk-config@0.8.1-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-gL9yfXYFVjHqB41a2lyTscTf9yVGSaQKpjtcdKKWoPtqew1R52WInWC+4Q8iADsnLRwzEuCO3qrkK8Is8gMzsA==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-config/0.8.1-pr-807-8b9cd890.0/5a398977814d8caa790d27090160895161b7d343}
 
-  '@cowprotocol/sdk-contracts-ts@1.6.1-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-IsHwpOTPt95qWOC+4xDYI0c3J8sXdg6vKZX1jgtUp8Pwi9ZpAv4S6YNsADzG7XRHXq7Ts6FZqI7T0CLH2W9pMw==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/1.6.1-pr-807-ad55c6a4.0/3404cc533f4dc04657687d939daa27b457e799a3}
+  '@cowprotocol/sdk-contracts-ts@1.6.1-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-LjuVXbOolmJ++6XLw5NlUGd9jIsCkIbfgaQqPJHdCtW8/jgIA+KMIPOEgGBXb35k9OrvSclRQWLhHUNffEaqmQ==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/1.6.1-pr-807-8b9cd890.0/3b31071547321e28d9336f0d1e8479e49d68d635}
 
-  '@cowprotocol/sdk-cow-shed@0.2.19-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-PFA53liXrDSRr0XUQ1Fua22hgLC9Ou7wg+MSsDdnqs3CHCX2xzhcgdxbc4QzT9CPHLhQscPOu7CzJwSb1akiRA==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.2.19-pr-807-ad55c6a4.0/cd3be6cb3bce6c4dd27ba8a4f88370403bc13531}
+  '@cowprotocol/sdk-cow-shed@0.2.19-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-usIs3swlKQtR3nRKbSpFcBxc7MBT/yzvfhqLrg5SC1IHkugL2YdCfUJE1R7A7vm3d2ZaKhhpOziQ81usTWs0lA==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.2.19-pr-807-8b9cd890.0/6d79c53209049e18bbddb04e1ec899da0391e8e4}
 
-  '@cowprotocol/sdk-ethers-v5-adapter@0.3.8-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-CG8A/aF1KuAgWgvsEptuW5iQUEoDzOz2ZqZuCna2TfYI+jiJgaURV7UU4nXXhoOmmyFFz6A7m7CBRyIsCbcHwQ==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-ethers-v5-adapter/0.3.8-pr-807-ad55c6a4.0/219e2c5b4d8294eea39945beede0b47365e5915c}
+  '@cowprotocol/sdk-ethers-v5-adapter@0.3.8-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-Ry+wLJP4Hm+xeAiLQxktHP803jFXBp2GjDaL89DfVk4M8SaYpBGhtmug4WAOl/vXig7Fi0rEBfeOLE1/RdNHhw==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-ethers-v5-adapter/0.3.8-pr-807-8b9cd890.0/5e761494a8d2360dbd08f2f964617826c1ad5b66}
     peerDependencies:
       '@ethersproject/abstract-signer': ^5.8.0
       '@typechain/ethers-v5': ^11.1.2
       ethers: ^5.7.2
 
-  '@cowprotocol/sdk-order-book@1.0.0-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-uTgjQnqq/8WmtkqNa+yrKN+saGNN/6jIdB4RdV4VsWDBnfUsOyjB0DX5UVmrrY5prjZe2dURUc6HQoZ6aljC2A==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/1.0.0-pr-807-ad55c6a4.0/1de308c19566e04c5f91e019bff05bf25c006d3e}
+  '@cowprotocol/sdk-order-book@1.0.0-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-8NztvgsQmx+Ay55F59LxVAyk2KPTTvZ5jr5KXaZYNe11X1BPUuBwwv4hienLhPr9yXt1Nwh89DgsCIfsnVxEsQ==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/1.0.0-pr-807-8b9cd890.0/a29e4c5de5be439386b9a429940dfd47ecd87db9}
 
-  '@cowprotocol/sdk-order-signing@0.1.34-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-kYQ/kX4UecO0wMAYmKX8sEqif5BVd5ZONxWlXpxHXN8MPr1auAUY2cCMbT1RVvr7ZQs8SyhQ501WIqfHON6kBg==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/0.1.34-pr-807-ad55c6a4.0/0e994dddf412439e8609e87e7af69a936b542268}
+  '@cowprotocol/sdk-order-signing@0.1.34-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-vavO0VBDlc5B3dYLwXvlZnf0LDFEWFdFxUDmf3F4Xhc6KwBIEat+rwSLbd/T3rqmmlxoVvGseIb1fbdqTpaFLw==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/0.1.34-pr-807-8b9cd890.0/ce78303fb3dfa85cf4d861487c60c83e0e35c52b}
 
-  '@cowprotocol/sdk-subgraph@0.3.6-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-BR5sSEfqOSaC9tflh9rd6j0mBkyKIWcAeGX9jOkBK7PS9Y8QW9NiMWMSW8O53glWuBeQQb+glWdEQlf/HxRk1Q==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/0.3.6-pr-807-ad55c6a4.0/9c5e35835df8315ef2849dd015c2ef11fac683b1}
+  '@cowprotocol/sdk-subgraph@0.3.6-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-RfhiMVNJYi0mg/hZaggYIyA2fDWGNRfIMNDcQzk1ZdzE3bHL78DiC0NiwUedXwKHbAlMJZIIRzN6kBiji5skLg==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/0.3.6-pr-807-8b9cd890.0/defee7d7b8225f9181ed8854eb4066164b6c81fe}
 
-  '@cowprotocol/sdk-trading@1.0.0-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-SCNJtXs2K1Gc8Jm/4cAdYN//dBxxBVzfZ9ZtT06zp5UlO8eytcJRzHCcBLcmHzPaqEIgknoFLdzqbXOkYrqS2A==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/1.0.0-pr-807-ad55c6a4.0/a83aebfa3d7eede23b5e9a195f401e8ecb6e273a}
+  '@cowprotocol/sdk-trading@1.0.0-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-d5Nyl5RiBvLbFoRn7wUxgGDZNzfPkls8azjTP7w/fJIbuC5iFZpKQplKaVTZoWmE1zTrH1zYcyMSVx2soCO00w==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/1.0.0-pr-807-8b9cd890.0/16fe7eb9a34d8554562d8c26d7d22a7e47e0b61c}
 
-  '@cowprotocol/sdk-viem-adapter@0.3.8-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-RAjBX18o3UzJ2XFDnBbSHUiaDSSWIjannRQbXtrCcGE8uY/MkF3S1PSxUdZEHx07f0ucIrnEbdcmLx4VS76ZTw==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.8-pr-807-ad55c6a4.0/b1941622666663bb89060476d603eeafc3a38189}
+  '@cowprotocol/sdk-viem-adapter@0.3.8-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-h75A7cFFAJQ4SBrMunOJ18ADSbU9ywE+cTXJmQMff5lzrPkZ1ARxEAuZTObIiCvzBkr3ab7pv8+QiVIWHXiaxw==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.8-pr-807-8b9cd890.0/dc3370101e50b6228af3690e1f5103cd7beb97ff}
     peerDependencies:
       viem: ^2.28.4
 
-  '@cowprotocol/sdk-weiroll@0.1.19-pr-807-ad55c6a4.0':
-    resolution: {integrity: sha512-+vK2rTt+r4OY6PvueYi7rnt9KnDFbEj8V0ahtVxI4uXkXag+1qTMbjGxQSfnug0IPu2nq10VDDTXdipPOrDNrg==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.1.19-pr-807-ad55c6a4.0/3afee99af8b7828c81b7b9d469b80a188695cd6d}
+  '@cowprotocol/sdk-weiroll@0.1.19-pr-807-8b9cd890.0':
+    resolution: {integrity: sha512-SN9Yj2aDTLILBwT5sgWPu3nZKP2xa168EIjtDtXlYWmlIzcl7ip9v1MhZa1zqiPvs1hqEnXJ78+YWvsWh/tPeg==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.1.19-pr-807-8b9cd890.0/59bc66eeabe8f81ab7ad609d700d12170cd6eca7}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -18165,15 +18165,15 @@ snapshots:
       react: 19.1.2
       react-dom: 19.1.2(react@19.1.2)
 
-  '@cowprotocol/cow-sdk@7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
+  '@cowprotocol/cow-sdk@7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-ad55c6a4.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-ad55c6a4.0(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 1.0.0-pr-807-ad55c6a4.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-8b9cd890.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-8b9cd890.0(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 1.0.0-pr-807-8b9cd890.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@openzeppelin/merkle-tree': 1.0.8
       cross-fetch: 4.0.0(encoding@0.1.13)
       ipfs-only-hash: 4.0.0(encoding@0.1.13)
@@ -18182,15 +18182,15 @@ snapshots:
       - ajv
       - encoding
 
-  '@cowprotocol/cow-sdk@7.3.8-pr-807-ad55c6a4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
+  '@cowprotocol/cow-sdk@7.3.8-pr-807-8b9cd890.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-ad55c6a4.0(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 1.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-8b9cd890.0(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 1.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@openzeppelin/merkle-tree': 1.0.8
       cross-fetch: 4.0.0(encoding@0.1.13)
       ipfs-only-hash: 4.0.0(encoding@0.1.13)
@@ -18199,34 +18199,34 @@ snapshots:
       - ajv
       - encoding
 
-  '@cowprotocol/sdk-app-data@4.6.5-pr-807-ad55c6a4.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
+  '@cowprotocol/sdk-app-data@4.6.5-pr-807-8b9cd890.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
       ajv: 6.12.6
       cross-fetch: 4.0.0(encoding@0.1.13)
       ipfs-only-hash: 4.0.0(encoding@0.1.13)
       json-stringify-deterministic: 1.0.12
       multiformats: 9.9.0
 
-  '@cowprotocol/sdk-app-data@4.6.5-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
+  '@cowprotocol/sdk-app-data@4.6.5-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
       ajv: 8.17.1
       cross-fetch: 4.0.0(encoding@0.1.13)
       ipfs-only-hash: 4.0.0(encoding@0.1.13)
       json-stringify-deterministic: 1.0.12
       multiformats: 9.9.0
 
-  '@cowprotocol/sdk-bridging@2.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
+  '@cowprotocol/sdk-bridging@2.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-cow-shed': 0.2.19-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 1.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/sdk-weiroll': 0.1.19-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-cow-shed': 0.2.19-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 1.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-weiroll': 0.1.19-pr-807-8b9cd890.0
       '@defuse-protocol/one-click-sdk-typescript': 0.1.1-0.2
       json-stable-stringify: 1.3.0
     transitivePeerDependencies:
@@ -18237,88 +18237,88 @@ snapshots:
       - ipfs-only-hash
       - multiformats
 
-  '@cowprotocol/sdk-common@0.6.2-pr-807-ad55c6a4.0':
+  '@cowprotocol/sdk-common@0.6.2-pr-807-8b9cd890.0':
     dependencies:
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
 
-  '@cowprotocol/sdk-composable@0.1.34-pr-807-ad55c6a4.0(encoding@0.1.13)':
+  '@cowprotocol/sdk-composable@0.1.34-pr-807-8b9cd890.0(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-ad55c6a4.0(encoding@0.1.13)
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-8b9cd890.0(encoding@0.1.13)
       '@openzeppelin/merkle-tree': 1.0.8
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@cowprotocol/sdk-config@0.8.1-pr-807-ad55c6a4.0':
+  '@cowprotocol/sdk-config@0.8.1-pr-807-8b9cd890.0':
     dependencies:
       exponential-backoff: 3.1.3
       limiter: 2.1.0
 
-  '@cowprotocol/sdk-contracts-ts@1.6.1-pr-807-ad55c6a4.0':
+  '@cowprotocol/sdk-contracts-ts@1.6.1-pr-807-8b9cd890.0':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
 
-  '@cowprotocol/sdk-cow-shed@0.2.19-pr-807-ad55c6a4.0':
+  '@cowprotocol/sdk-cow-shed@0.2.19-pr-807-8b9cd890.0':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-8b9cd890.0
 
-  '@cowprotocol/sdk-ethers-v5-adapter@0.3.8-pr-807-ad55c6a4.0(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@cowprotocol/sdk-ethers-v5-adapter@0.3.8-pr-807-8b9cd890.0(@ethersproject/abstract-signer@5.7.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
       '@ethersproject/abstract-signer': 5.7.0
       '@typechain/ethers-v5': 11.1.2(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)
       ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
-  '@cowprotocol/sdk-ethers-v5-adapter@0.3.8-pr-807-ad55c6a4.0(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@cowprotocol/sdk-ethers-v5-adapter@0.3.8-pr-807-8b9cd890.0(@ethersproject/abstract-signer@5.8.0)(@typechain/ethers-v5@11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
       '@ethersproject/abstract-signer': 5.8.0
       '@typechain/ethers-v5': 11.1.2(@ethersproject/abi@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3)
       ethers: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
-  '@cowprotocol/sdk-order-book@1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)':
+  '@cowprotocol/sdk-order-book@1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
       cross-fetch: 3.2.0(encoding@0.1.13)
       exponential-backoff: 3.1.3
       limiter: 3.0.0
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-order-signing@0.1.34-pr-807-ad55c6a4.0(encoding@0.1.13)':
+  '@cowprotocol/sdk-order-signing@0.1.34-pr-807-8b9cd890.0(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-subgraph@0.3.6-pr-807-ad55c6a4.0(encoding@0.1.13)':
+  '@cowprotocol/sdk-subgraph@0.3.6-pr-807-8b9cd890.0(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
       graphql: 16.12.0
       graphql-request: 4.3.0(encoding@0.1.13)(graphql@16.12.0)
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-trading@1.0.0-pr-807-ad55c6a4.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
+  '@cowprotocol/sdk-trading@1.0.0-pr-807-8b9cd890.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-ad55c6a4.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-ad55c6a4.0(encoding@0.1.13)
+      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-8b9cd890.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-8b9cd890.0(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
@@ -18327,14 +18327,14 @@ snapshots:
       - ipfs-only-hash
       - multiformats
 
-  '@cowprotocol/sdk-trading@1.0.0-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
+  '@cowprotocol/sdk-trading@1.0.0-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-ad55c6a4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-ad55c6a4.0(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-ad55c6a4.0(encoding@0.1.13)
+      '@cowprotocol/sdk-app-data': 4.6.5-pr-807-8b9cd890.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-contracts-ts': 1.6.1-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-order-book': 1.0.0-pr-807-8b9cd890.0(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 0.1.34-pr-807-8b9cd890.0(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
@@ -18343,15 +18343,15 @@ snapshots:
       - ipfs-only-hash
       - multiformats
 
-  '@cowprotocol/sdk-viem-adapter@0.3.8-pr-807-ad55c6a4.0(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))':
+  '@cowprotocol/sdk-viem-adapter@0.3.8-pr-807-8b9cd890.0(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
       viem: 2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
 
-  '@cowprotocol/sdk-weiroll@0.1.19-pr-807-ad55c6a4.0':
+  '@cowprotocol/sdk-weiroll@0.1.19-pr-807-8b9cd890.0':
     dependencies:
-      '@cowprotocol/sdk-common': 0.6.2-pr-807-ad55c6a4.0
-      '@cowprotocol/sdk-config': 0.8.1-pr-807-ad55c6a4.0
+      '@cowprotocol/sdk-common': 0.6.2-pr-807-8b9cd890.0
+      '@cowprotocol/sdk-config': 0.8.1-pr-807-8b9cd890.0
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
