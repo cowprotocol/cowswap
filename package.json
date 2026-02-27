@@ -32,6 +32,7 @@
     "nx": "npx nx run",
     "ipfs": "nx run cowswap-frontend:ipfs",
     "i18n": "nx run-many -t i18n",
+    "i18n:extract": "nx run-many -t i18n:extract",
     "preview": "nx run cowswap-frontend:preview",
     "test": "pnpm run test:all",
     "test:all": "nx run-many -t test",

@@ -1,6 +1,7 @@
 import { lazy, ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -20,7 +21,7 @@ const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Acco
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
 const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
-function _getPropsFromRoute(route: string): string[] {
+function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): string[] {
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', t`Account overview`]
@@ -28,6 +29,10 @@ function _getPropsFromRoute(route: string): string[] {
       return ['account-governance', t`Governance`]
     case RoutesEnum.ACCOUNT_TOKENS:
       return ['account-tokens', t`Tokens overview`]
+    case RoutesEnum.ACCOUNT_AFFILIATE_PARTNER:
+      return isAffiliateProgramEnabled ? ['account-affiliate', t`Rewards hub - Affiliate`] : []
+    case RoutesEnum.ACCOUNT_AFFILIATE_TRADER:
+      return isAffiliateProgramEnabled ? ['account-my-rewards', t`Rewards hub - My Rewards`] : []
     default:
       return []
   }
@@ -53,7 +58,8 @@ export const AccountOverview = (): ReactNode => {
 
 export default function Account(): ReactNode {
   const { pathname } = useLocation()
-  const [id, name] = _getPropsFromRoute(pathname)
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
+  const [id, name] = getPropsFromRoute(pathname, isAffiliateProgramEnabled)
   return (
     <Wrapper>
       <AccountMenu />
