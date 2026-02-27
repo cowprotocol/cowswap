@@ -14,7 +14,7 @@ import {
   SolverDetails,
   SolverId,
 } from './SolversDirectoryTable.styles'
-import { mapSummaryEnvironments, mapSummaryNetworks } from './SolversDirectoryTable.utils'
+import { formatWebsiteUrl, mapSummaryEnvironments, mapSummaryNetworks } from './SolversDirectoryTable.utils'
 import { DeploymentsSectionRows, EnvironmentTags, NetworkChips, SolverIcon } from './SolversDirectoryTableComponents'
 
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
@@ -63,7 +63,7 @@ export function SolverSummaryRow({
       <td className="website">
         {solver.website ? (
           <ExternalLink href={solver.website} target="_blank">
-            Website
+            {formatWebsiteUrl(solver.website)} ↗
           </ExternalLink>
         ) : (
           <Placeholder>-</Placeholder>
