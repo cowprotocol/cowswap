@@ -6,7 +6,8 @@ import { faFill } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { DetailsTableTooltips } from './detailsTableTooltips'
-import { LinkButton, SolverBadge, SolverBadgeFallback, SolverBadgeLogo, SolverBadgeName, Wrapper } from './styled'
+import { SolvedByBadge } from './SolvedByBadge'
+import { LinkButton, TextLink, Wrapper } from './styled'
 
 import { Order } from '../../../api/operator'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
@@ -30,21 +31,7 @@ interface VerboseDetailsProps {
   viewFills: Command
 }
 
-function SolvedByBadge({ solvedBy }: { solvedBy?: OrderSolverInfo }): ReactNode {
-  if (!solvedBy) return '-'
-
-  return (
-    <SolverBadge>
-      {solvedBy.image ? (
-        <SolverBadgeLogo src={solvedBy.image} alt={`${solvedBy.displayName} logo`} />
-      ) : (
-        <SolverBadgeFallback>{solvedBy.displayName.charAt(0).toUpperCase()}</SolverBadgeFallback>
-      )}
-      <SolverBadgeName>{solvedBy.displayName}</SolverBadgeName>
-    </SolverBadge>
-  )
-}
-
+// eslint-disable-next-line max-lines-per-function
 export function VerboseDetails({
   order,
   solvedBy,
@@ -109,7 +96,15 @@ export function VerboseDetails({
         <GasFeeDisplay order={order} />
       </DetailRow>
       <DetailRow label="Solved by" tooltipText={DetailsTableTooltips.solvedBy}>
-        {isSolvedByLoading ? <Spinner spin size="1x" /> : <SolvedByBadge solvedBy={solvedBy} />}
+        {showFillsButton ? (
+          <TextLink onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
+            View all solvers
+          </TextLink>
+        ) : isSolvedByLoading ? (
+          <Spinner spin size="1x" />
+        ) : (
+          <SolvedByBadge solvedBy={solvedBy} />
+        )}
       </DetailRow>
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => (

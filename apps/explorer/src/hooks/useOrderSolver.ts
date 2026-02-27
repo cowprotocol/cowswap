@@ -88,6 +88,56 @@ async function resolveSolver(
   return buildSolverInfo(winnerSolverName, solvers)
 }
 
+async function resolveSolverByTxHash(networkId: number, txHash: string): Promise<OrderSolverInfo | undefined> {
+  const [competition, solvers] = await Promise.all([
+    getSolverCompetitionByTxHash({ networkId, txHash }),
+    fetchSolversInfo(networkId).catch(() => []),
+  ])
+
+  const winnerSolverName = getWinnerSolverFromCompetition(competition)
+  if (!winnerSolverName) return undefined
+
+  return buildSolverInfo(winnerSolverName, solvers)
+}
+
+export function useTradeSolver(txHash: string | undefined | null): UseOrderSolverResult {
+  const networkId = useNetworkId()
+  const [solver, setSolver] = useState<OrderSolverInfo | undefined>()
+  const [doneFor, setDoneFor] = useState<string | null>(null)
+
+  const currentKey = txHash || null
+
+  useEffect(() => {
+    if (!networkId || !txHash || !currentKey) {
+      setSolver(undefined)
+      setDoneFor(null)
+      return
+    }
+
+    let cancelled = false
+
+    resolveSolverByTxHash(networkId, txHash)
+      .then((result) => {
+        if (cancelled) return
+        setSolver(result)
+        setDoneFor(currentKey)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setSolver(undefined)
+        setDoneFor(currentKey)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [networkId, txHash, currentKey])
+
+  const isLoading = !!currentKey && !!networkId && doneFor !== currentKey
+
+  return useMemo(() => ({ solver, isLoading }), [solver, isLoading])
+}
+
 export function useOrderSolver(order: Order | null): UseOrderSolverResult {
   const networkId = useNetworkId()
   const [solver, setSolver] = useState<OrderSolverInfo | undefined>()

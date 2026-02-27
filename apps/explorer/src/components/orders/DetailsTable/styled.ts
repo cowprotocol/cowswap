@@ -52,10 +52,15 @@ export const WarningRow = styled.tr`
   background-color: ${Color.explorer_bg};
 `
 
-export const SolverBadge = styled.div`
+export const SolverBadge = styled(LinkWithPrefixNetwork)`
   display: inline-flex;
   align-items: center;
   gap: 0.8rem;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `
 
 export const SolverBadgeLogo = styled.img`
@@ -82,4 +87,14 @@ export const SolverBadgeFallback = styled.div`
 export const SolverBadgeName = styled.span`
   color: ${Color.explorer_textSecondary1};
   font-weight: ${({ theme }): string => theme.fontMedium};
+`
+
+export const TextLink = styled(LinkWithPrefixNetwork)`
+  color: ${Color.explorer_orange1};
+  font-weight: ${({ theme }): string => theme.fontMedium};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `

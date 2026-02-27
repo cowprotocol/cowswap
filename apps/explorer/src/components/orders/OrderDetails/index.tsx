@@ -152,7 +152,7 @@ function getOrderWithTxHash(order: Order | null, trades: Trade[], hasMultipleTra
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, complexity
 export const OrderDetails: React.FC<Props> = (props) => {
   const {
     order,
@@ -178,8 +178,9 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const crossChainOrderResponse = useCrossChainOrder(order?.uid)
   const hasMultipleTrades =
     trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1) || !!tableState.hasNextPage
+  const isMultiFill = order?.partiallyFillable && !order.txHash && hasMultipleTrades
   const orderWithTxHash = getOrderWithTxHash(order, trades, hasMultipleTrades)
-  const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(orderWithTxHash)
+  const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(isMultiFill ? null : orderWithTxHash)
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>
