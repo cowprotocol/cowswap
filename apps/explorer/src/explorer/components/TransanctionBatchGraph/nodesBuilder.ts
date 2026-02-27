@@ -1,6 +1,6 @@
 import { getChainInfo } from '@cowprotocol/common-const'
-import { getBlockExplorerUrl, isSellOrder } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getBlockExplorerUrl, isSellOrder, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
 import { ElementDefinition } from 'cytoscape'

@@ -1,4 +1,5 @@
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId, areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
+import { SupportedChainId, areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { Erc20__factory, type Erc20Interface } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 import { Interface } from '@ethersproject/abi'

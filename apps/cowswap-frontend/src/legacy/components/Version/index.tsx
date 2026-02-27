@@ -4,13 +4,12 @@ import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
 import ICON_X from '@cowprotocol/assets/images/x.svg'
 import { CODE_LINK } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { getEtherscanLink } from '@cowprotocol/common-utils'
 import {
-  CONTRACTS_PKG_VERSION,
+  getEtherscanLink,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
-  SupportedChainId as ChainId,
-} from '@cowprotocol/cow-sdk'
+} from '@cowprotocol/common-utils'
+import { CONTRACTS_PKG_VERSION, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UI, ExternalLink, Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

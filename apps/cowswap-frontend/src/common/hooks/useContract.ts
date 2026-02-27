@@ -5,8 +5,14 @@ import {
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
-import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  getContract,
+  isEns,
+  isProd,
+  isStaging,
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+} from '@cowprotocol/common-utils'
+import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   CoWSwapEthFlow,
   CoWSwapEthFlowAbi,
