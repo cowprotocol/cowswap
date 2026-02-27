@@ -8,7 +8,9 @@ import {
   RawTrade,
   GetTradesParams,
   GetOrderCompetitionStatusParams,
+  GetSolverCompetitionByTxHashParams,
   OrderCompetitionStatus,
+  SolverCompetitionResponse,
 } from './types'
 
 export { getAccountOrders } from './accountOrderUtils'
@@ -150,4 +152,29 @@ export async function getOrderCompetitionStatus(
     })
 
   return Promise.any([statusPromise, statusPromiseBarn]).catch(() => undefined)
+}
+
+/**
+ * Gets solver competition data by transaction hash from prod and staging (barn).
+ *
+ * Uses `Promise.any`, so the first fulfilled response wins.
+ * Returns `undefined` if neither environment has competition data.
+ */
+export async function getSolverCompetitionByTxHash(
+  params: GetSolverCompetitionByTxHashParams,
+): Promise<SolverCompetitionResponse | undefined> {
+  const { networkId, txHash } = params
+  const context = { chainId: networkId, backoffOpts }
+
+  const prodPromise = orderBookSDK.getSolverCompetition(txHash, context).catch((error) => {
+    console.error('[getSolverCompetitionByTxHash] Error getting PROD competition', txHash, networkId, error)
+    throw error
+  })
+
+  const barnPromise = orderBookSDK.getSolverCompetition(txHash, { ...context, env: 'staging' }).catch((error) => {
+    console.error('[getSolverCompetitionByTxHash] Error getting BARN competition', txHash, networkId, error)
+    throw error
+  })
+
+  return Promise.any([prodPromise, barnPromise]).catch(() => undefined)
 }

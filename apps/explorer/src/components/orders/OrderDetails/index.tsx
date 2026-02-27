@@ -176,7 +176,10 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const [redirectTo, setRedirectTo] = useState(false)
   const updateQueryString = useUpdateQueryString()
   const crossChainOrderResponse = useCrossChainOrder(order?.uid)
-  const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(order)
+  const hasMultipleTrades =
+    trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1) || !!tableState.hasNextPage
+  const orderWithTxHash = getOrderWithTxHash(order, trades, hasMultipleTrades)
+  const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(orderWithTxHash)
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>

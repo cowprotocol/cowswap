@@ -2,9 +2,15 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useNetworkId } from 'state/network'
 
-import { getOrderCompetitionStatus, Order, OrderCompetitionStatus } from 'api/operator'
+import {
+  getOrderCompetitionStatus,
+  getSolverCompetitionByTxHash,
+  Order,
+  OrderCompetitionStatus,
+  SolverCompetitionResponse,
+} from 'api/operator'
 
-import { fetchSolversInfo } from '../utils/fetchSolversInfo'
+import { SolverInfo, fetchSolversInfo } from '../utils/fetchSolversInfo'
 
 export type OrderSolverInfo = {
   solverId: string
@@ -32,65 +38,95 @@ function getWinnerSolver(value?: OrderCompetitionStatus['value']): string | unde
   return winner?.solver
 }
 
+function getWinnerSolverFromCompetition(competition?: SolverCompetitionResponse): string | undefined {
+  if (!competition?.solutions?.length) return undefined
+
+  const winner = competition.solutions.find((s) => s.isWinner)
+  if (!winner) return undefined
+
+  // The SDK's SolverSettlement type omits the `solver` field, but the API response includes it
+  return (winner as Record<string, unknown>).solver as string | undefined
+}
+
+function matchSolverByName(solverName: string, solvers: SolverInfo[]): SolverInfo | undefined {
+  const normalizedName = normalizeSolverId(solverName)
+  return solvers.find((candidate) => {
+    const normalizedSolverId = normalizeSolverId(candidate.solverId)
+    const normalizedDisplayName = normalizeSolverId(candidate.displayName)
+    return normalizedSolverId === normalizedName || normalizedDisplayName === normalizedName
+  })
+}
+
+function buildSolverInfo(winnerSolverName: string, solvers: SolverInfo[]): OrderSolverInfo {
+  const matchingSolver = matchSolverByName(winnerSolverName, solvers)
+  return {
+    solverId: matchingSolver?.solverId || winnerSolverName,
+    displayName: matchingSolver?.displayName || winnerSolverName,
+    image: matchingSolver?.image,
+  }
+}
+
+async function resolveSolver(
+  networkId: number,
+  orderUid: string,
+  txHash: string | undefined,
+): Promise<OrderSolverInfo | undefined> {
+  const [competitionStatus, solvers] = await Promise.all([
+    getOrderCompetitionStatus({ networkId, orderId: orderUid }),
+    fetchSolversInfo(networkId).catch(() => []),
+  ])
+
+  const winnerFromOrder = getWinnerSolver(competitionStatus?.value)
+
+  // Fallback: try fetching solver competition by txHash when per-order endpoint has no data
+  const winnerSolverName =
+    winnerFromOrder ||
+    (txHash ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash })) : undefined)
+
+  if (!winnerSolverName) return undefined
+
+  return buildSolverInfo(winnerSolverName, solvers)
+}
+
 export function useOrderSolver(order: Order | null): UseOrderSolverResult {
   const networkId = useNetworkId()
   const [solver, setSolver] = useState<OrderSolverInfo | undefined>()
-  const [isLoading, setIsLoading] = useState(false)
-  const orderStatusSignal = order?.status
-  const executedBuyAmountSignal = order?.executedBuyAmount.toString()
-  const executedSellAmountSignal = order?.executedSellAmount.toString()
-  const executionDateSignal = order?.executionDate?.getTime()
+  // Tracks which orderUid:txHash combo we finished resolving
+  const [doneFor, setDoneFor] = useState<string | null>(null)
+
+  const orderUid = order?.uid
+  const txHash = order?.txHash
+  const currentKey = orderUid ? `${orderUid}:${txHash || ''}` : null
 
   useEffect(() => {
-    if (!networkId || !order?.uid) {
+    if (!networkId || !orderUid || !currentKey) {
       setSolver(undefined)
-      setIsLoading(false)
+      setDoneFor(null)
       return
     }
 
     let cancelled = false
-    setIsLoading(true)
 
-    Promise.all([
-      getOrderCompetitionStatus({ networkId, orderId: order.uid }),
-      fetchSolversInfo(networkId).catch(() => []),
-    ])
-      .then(([competitionStatus, solvers]) => {
+    resolveSolver(networkId, orderUid, txHash)
+      .then((result) => {
         if (cancelled) return
 
-        const winnerSolver = getWinnerSolver(competitionStatus?.value)
-
-        if (!winnerSolver) {
-          setSolver(undefined)
-          return
-        }
-
-        const normalizedWinnerSolverId = normalizeSolverId(winnerSolver)
-        const matchingSolver = solvers.find((candidate) => {
-          const normalizedSolverId = normalizeSolverId(candidate.solverId)
-          const normalizedDisplayName = normalizeSolverId(candidate.displayName)
-          return normalizedSolverId === normalizedWinnerSolverId || normalizedDisplayName === normalizedWinnerSolverId
-        })
-
-        setSolver({
-          solverId: matchingSolver?.solverId || winnerSolver,
-          displayName: matchingSolver?.displayName || winnerSolver,
-          image: matchingSolver?.image,
-        })
+        setSolver(result)
+        setDoneFor(currentKey)
       })
       .catch(() => {
         if (cancelled) return
         setSolver(undefined)
-      })
-      .finally(() => {
-        if (cancelled) return
-        setIsLoading(false)
+        setDoneFor(currentKey)
       })
 
-    return (): void => {
+    return () => {
       cancelled = true
     }
-  }, [networkId, order?.uid, orderStatusSignal, executedBuyAmountSignal, executedSellAmountSignal, executionDateSignal])
+  }, [networkId, orderUid, txHash, currentKey])
+
+  // Loading if we have an order, a network, and haven't finished resolving for the current key
+  const isLoading = !!currentKey && !!networkId && doneFor !== currentKey
 
   return useMemo(() => ({ solver, isLoading }), [solver, isLoading])
 }

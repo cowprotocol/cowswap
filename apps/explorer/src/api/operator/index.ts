@@ -15,5 +15,6 @@ export const {
   getTxOrders,
   getTrades,
   getOrderCompetitionStatus,
+  getSolverCompetitionByTxHash,
   // functions that only have a mock
 } = useMock ? { ...mockApi } : { ...realApi }

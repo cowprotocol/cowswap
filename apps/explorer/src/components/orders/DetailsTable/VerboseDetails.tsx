@@ -13,6 +13,7 @@ import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 import { DecodeAppData } from '../../AppData/DecodeAppData'
 import { DetailRow } from '../../common/DetailRow'
+import Spinner from '../../common/Spinner'
 import { FilledProgress } from '../FilledProgress'
 import { GasFeeDisplay } from '../GasFeeDisplay'
 import { OrderHooksDetails } from '../OrderHooksDetails'
@@ -29,7 +30,7 @@ interface VerboseDetailsProps {
   viewFills: Command
 }
 
-function renderSolvedBy(solvedBy?: OrderSolverInfo): ReactNode {
+function SolvedByBadge({ solvedBy }: { solvedBy?: OrderSolverInfo }): ReactNode {
   if (!solvedBy) return '-'
 
   return (
@@ -107,8 +108,8 @@ export function VerboseDetails({
       <DetailRow label="Costs & Fees" tooltipText={DetailsTableTooltips.fees}>
         <GasFeeDisplay order={order} />
       </DetailRow>
-      <DetailRow label="Solved by" tooltipText={DetailsTableTooltips.solvedBy} isLoading={isSolvedByLoading}>
-        {renderSolvedBy(solvedBy)}
+      <DetailRow label="Solved by" tooltipText={DetailsTableTooltips.solvedBy}>
+        {isSolvedByLoading ? <Spinner spin size="1x" /> : <SolvedByBadge solvedBy={solvedBy} />}
       </DetailRow>
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => (
