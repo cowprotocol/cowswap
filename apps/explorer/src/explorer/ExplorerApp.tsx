@@ -48,9 +48,11 @@ if (SENTRY_DSN) {
   })
 }
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
+type WindowWithIpfsFlag = Window & { IS_IPFS?: boolean }
+
+const Router: typeof BrowserRouter & typeof HashRouter = (window as WindowWithIpfsFlag).IS_IPFS
+  ? HashRouter
+  : BrowserRouter
 
 const NotFound = React.lazy(
   () =>
@@ -81,6 +83,14 @@ const Home = React.lazy(
     import(
       /* webpackChunkName: "Trade_chunk"*/
       './pages/Home'
+    ),
+)
+
+const Solvers = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "Solvers_chunk"*/
+      './pages/Solvers'
     ),
 )
 
@@ -147,6 +157,7 @@ const AppContent = (): React.ReactNode => {
             <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
             <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
             <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
+            <Route path={pathPrefix + '/solvers'} element={<Solvers />} />
             <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
             <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
             <Route path="*" element={<NotFound />} />
@@ -179,9 +190,11 @@ export const ExplorerApp: React.FC = () => {
   )
 }
 
-export default withGlobalContext(
+const ExplorerAppWithGlobalContext = withGlobalContext(
   ExplorerApp,
   // Initial State
   INITIAL_STATE,
   rootReducer,
 )
+
+export default ExplorerAppWithGlobalContext
