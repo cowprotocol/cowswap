@@ -85,7 +85,7 @@ export const SolverBadgeFallback = styled.div`
 `
 
 export const SolverBadgeName = styled.span`
-  color: ${Color.explorer_textSecondary1};
+  color: ${Color.explorer_orange1};
   font-weight: ${({ theme }): string => theme.fontMedium};
 `
 
