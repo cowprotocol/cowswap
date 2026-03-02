@@ -62,17 +62,13 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   return [trade]
 }
 
-export async function getOrderCompetitionStatus(
+export const getOrderCompetitionStatus = async (
   _params: GetOrderCompetitionStatusParams,
-): Promise<OrderCompetitionStatus | undefined> {
-  return {
-    type: 'traded' as OrderCompetitionStatus['type'],
-    value: [{ solver: 'mock-solver', executedAmounts: { sell: '1', buy: '1' } }],
-  }
-}
+): Promise<OrderCompetitionStatus | undefined> => ({
+  type: 'traded' as OrderCompetitionStatus['type'],
+  value: [{ solver: 'mock-solver', executedAmounts: { sell: '1', buy: '1' } }],
+})
 
-export async function getSolverCompetitionByTxHash(
+export const getSolverCompetitionByTxHash = async (
   _params: GetSolverCompetitionByTxHashParams,
-): Promise<SolverCompetitionResponse | undefined> {
-  return undefined
-}
+): Promise<SolverCompetitionResponse | undefined> => undefined
