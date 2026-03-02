@@ -26,7 +26,7 @@ interface SubscriptionCheckEffectsParams {
   callSubscriptionApi: SubscriptionApiCaller
   setTgSubscribed: (value: boolean) => void
   skipNextCheckRef: MutableRefObject<boolean>
-  tgData: TelegramData | undefined
+  tgData: TelegramData | null
 }
 
 interface SubscriptionCheckParams {
@@ -52,7 +52,7 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
     callSubscriptionApi,
     setTgSubscribed,
     skipNextCheckRef,
-    tgData: tgData || undefined,
+    tgData: tgData,
   })
 
   const addTgSubscription = useCallback(
@@ -149,28 +149,22 @@ function useSubscriptionCheckEffects({
   skipNextCheckRef,
   tgData,
 }: SubscriptionCheckEffectsParams): void {
-  useEffect(() => {
-    if (!tgData || skipNextCheckRef.current) {
-      skipNextCheckRef.current = false
-      return
-    }
-    checkSubscriptionStatus({
-      callSubscriptionApi,
-      errorMessage: 'Failed to check Telegram subscription after authorization',
-      tgData,
-      onSuccess: setTgSubscribed,
-    })
-  }, [tgData, callSubscriptionApi, setTgSubscribed, skipNextCheckRef])
+  const tgDataRef = useRef(tgData)
 
   useEffect(() => {
-    if (!account || !tgData || skipNextCheckRef.current) return
+    tgDataRef.current = tgData
+  }, [tgData])
+
+  useEffect(() => {
+    if (!account || !tgDataRef.current || skipNextCheckRef.current) return
+
     checkSubscriptionStatus({
       callSubscriptionApi,
-      errorMessage: 'Failed to check Telegram subscription after account change',
-      tgData,
+      errorMessage: 'Failed to check Telegram subscription',
+      tgData: tgDataRef.current,
       onSuccess: setTgSubscribed,
     })
-  }, [account, tgData, callSubscriptionApi, setTgSubscribed, skipNextCheckRef])
+  }, [account, tgData?.username, callSubscriptionApi, setTgSubscribed, skipNextCheckRef])
 }
 
 function checkSubscriptionStatus({
