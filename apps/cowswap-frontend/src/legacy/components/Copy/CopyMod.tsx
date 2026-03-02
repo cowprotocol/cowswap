@@ -1,8 +1,7 @@
 import React, { MouseEvent } from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
-import { UI } from '@cowprotocol/ui'
-import { LinkStyledButton } from '@cowprotocol/ui'
+import { UI, LinkStyledButton } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { CheckCircle, Copy } from 'react-feather'

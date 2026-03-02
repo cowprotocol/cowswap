@@ -975,6 +975,9 @@ importers:
       '@cowprotocol/common-utils':
         specifier: workspace:*
         version: link:../../libs/common-utils
+      '@cowprotocol/core':
+        specifier: workspace:*
+        version: link:../../libs/core
       '@cowprotocol/cow-sdk':
         specifier: 7.3.8-pr-792-c82e7abb.0
         version: 7.3.8-pr-792-c82e7abb.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
@@ -1110,6 +1113,9 @@ importers:
       react-helmet:
         specifier: ^6.1.0
         version: 6.1.0(react@19.1.2)
+      react-icons:
+        specifier: ^5.2.1
+        version: 5.2.1(react@19.1.2)
       react-inlinesvg:
         specifier: ^4.1.5
         version: 4.2.0(react@19.1.2)

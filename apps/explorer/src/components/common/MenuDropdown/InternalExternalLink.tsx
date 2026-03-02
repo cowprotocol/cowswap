@@ -11,10 +11,12 @@ import SVG from 'react-inlinesvg'
 import { MenuImageProps, MenuItemKind, MenuLink } from './types'
 
 function MenuImage(props: MenuImageProps): React.ReactNode | null {
-  const { title, iconSVG, icon } = props
+  const { title, iconSVG, icon, iconComponent: IconComponent } = props
 
   if (iconSVG) {
     return <SVG src={iconSVG} description={`${title} icon`} />
+  } else if (IconComponent) {
+    return <IconComponent size="1.8rem" aria-hidden="true" focusable="false" />
   } else if (icon) {
     return <img src={icon} alt={`${title} icon`} />
   } else {
@@ -32,10 +34,11 @@ export default function InternalExternalMenuLink({
   handleMobileMenuOnClick,
   className,
 }: InternalExternalLinkProps): React.ReactNode {
-  const { kind, title, url, iconSVG, icon } = link
-  const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
+  const { kind, title, url, iconSVG, icon, iconComponent } = link
+  const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} iconComponent={iconComponent} />
   const menuImageExternal = <StyledIcon icon={faExternalLink} />
   const isExternal = kind === MenuItemKind.EXTERNAL_LINK
+  const noPrefix = isExternal ? undefined : link.noPrefix
 
   if (isExternal) {
     return (
@@ -47,7 +50,13 @@ export default function InternalExternalMenuLink({
     )
   } else {
     return (
-      <LinkWithPrefixNetwork className={className} to={url} target="_self" onClickOptional={handleMobileMenuOnClick}>
+      <LinkWithPrefixNetwork
+        className={className}
+        to={url}
+        target="_self"
+        onClickOptional={handleMobileMenuOnClick}
+        noPrefix={noPrefix}
+      >
         {menuImage}
         {title}
       </LinkWithPrefixNetwork>
