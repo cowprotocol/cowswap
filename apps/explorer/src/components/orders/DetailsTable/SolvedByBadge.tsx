@@ -6,18 +6,21 @@ import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 
 export function SolvedByBadge({ solvedBy }: { solvedBy?: OrderSolverInfo }): ReactNode {
   if (!solvedBy) return '-'
-  const displayNameInitial = solvedBy.displayName.trim().charAt(0).toUpperCase()
+  const displayName = solvedBy.displayName.trim() || solvedBy.solverId.trim() || 'Unknown solver'
+  const targetSolver = solvedBy.solverId.trim() || solvedBy.displayName.trim()
+  const solverDetailsLink = targetSolver ? `/solvers?solver=${encodeURIComponent(targetSolver)}` : '/solvers'
+  const displayNameInitial = displayName.charAt(0).toUpperCase()
   const solverIdInitial = solvedBy.solverId.trim().charAt(0).toUpperCase()
   const fallbackInitial = displayNameInitial || solverIdInitial || '?'
 
   return (
-    <SolverBadge to="/solvers">
+    <SolverBadge to={solverDetailsLink}>
       {solvedBy.image ? (
-        <SolverBadgeLogo src={solvedBy.image} alt={`${solvedBy.displayName} logo`} />
+        <SolverBadgeLogo src={solvedBy.image} alt={`${displayName} logo`} />
       ) : (
         <SolverBadgeFallback>{fallbackInitial}</SolverBadgeFallback>
       )}
-      <SolverBadgeName>{solvedBy.displayName}</SolverBadgeName>
+      <SolverBadgeName>{displayName}</SolverBadgeName>
     </SolverBadge>
   )
 }
