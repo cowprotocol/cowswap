@@ -81,8 +81,7 @@ const appKit = createAppKit({
   metadata,
   networks,
   projectId,
-  termsConditionsUrl:
-    'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
+  termsConditionsUrl: 'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi',
 })
 appKit.updateFeatures({
   connectorTypeOrder: ['recent', 'injected', 'featured', 'custom', 'external', 'recommended', 'walletConnect'],
