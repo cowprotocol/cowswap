@@ -36,6 +36,20 @@ export const GlobalStyle = createGlobalStyle`
     position: relative;
   }
 
+  body {
+    &::-webkit-scrollbar {
+      width: 0.6rem;
+      height: 0.6rem;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: ${Color.explorer_bgLighter};
+      border-radius: 2rem;
+    }
+    &::-webkit-scrollbar-track {
+      background: ${Color.explorer_bg2};
+    }
+  }
+
   // TODO: remove this once we have a proper way to set global CSS variables for all apps
   :root {
     --cow-color-alert-text: ${Color.explorer_yellow4};
