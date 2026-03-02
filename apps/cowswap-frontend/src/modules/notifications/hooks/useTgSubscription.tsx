@@ -7,7 +7,7 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { TgAuthorization } from './useTgAuthorization'
 
 import { tgSubscriptionAtom } from '../atoms/tgSubscriptionAtom'
-import { TG_DEV_BYPASS, type TelegramData, simulateDevModeApiCall, setDevSubscriptionState } from '../utils/devTg'
+import { TelegramData } from '../types'
 
 const EMPTY_SUBSCRIPTION_RESPONSE = Promise.resolve({ data: false as const })
 
@@ -103,7 +103,6 @@ function useSubscriptionApiCaller(
   return useCallback(
     (method: string, data: TelegramData) => {
       if (!account) return
-      if (TG_DEV_BYPASS) return simulateDevModeApiCall(method, setIsCmsCallInProgress, account)
       setIsCmsCallInProgress(true)
       return getCmsClient()
         .POST(method, { body: { account, data } })
@@ -163,11 +162,9 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
 
       setTgSubscribed(false)
       clearAuth()
-      if (TG_DEV_BYPASS && account) setDevSubscriptionState(account, false)
-
       return true
     },
-    [callSubscriptionApi, clearAuth, setTgSubscribed, account],
+    [callSubscriptionApi, clearAuth, setTgSubscribed],
   )
 
   const subscribeWithData = useCallback(
