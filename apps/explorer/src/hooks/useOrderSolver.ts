@@ -105,7 +105,7 @@ export function useTradeSolver(txHash: string | undefined | null): UseOrderSolve
   const [solver, setSolver] = useState<OrderSolverInfo | undefined>()
   const [doneFor, setDoneFor] = useState<string | null>(null)
 
-  const currentKey = txHash || null
+  const currentKey = txHash && networkId ? `${networkId}:${txHash}` : null
 
   useEffect(() => {
     if (!networkId || !txHash || !currentKey) {
@@ -146,7 +146,7 @@ export function useOrderSolver(order: Order | null): UseOrderSolverResult {
 
   const orderUid = order?.uid
   const txHash = order?.txHash
-  const currentKey = orderUid ? `${orderUid}:${txHash || ''}` : null
+  const currentKey = orderUid && networkId ? `${networkId}:${orderUid}:${txHash || ''}` : null
 
   useEffect(() => {
     if (!networkId || !orderUid || !currentKey) {
