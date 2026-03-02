@@ -75,7 +75,8 @@ export const BodyWrapper = styled.div<{
   flex: 1 1 auto;
   z-index: 2;
   color: inherit;
-  padding: ${({ theme }) => (theme.isWidget ? '16px 16px 0' : '150px 16px 176px')};
+  padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
+    theme.isWidget ? '16px 16px 0' : $hasActiveSpeechBubbleNotification ? '150px 16px 320px' : '150px 16px 176px'};
   margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1)')};
   border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
@@ -106,7 +107,8 @@ export const BodyWrapper = styled.div<{
   }};
 
   ${Media.upToMedium()} {
-    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '150px 16px 150px')};
+    padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
+      theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: ${({ customTheme }) =>
@@ -131,7 +133,7 @@ export const BodyWrapper = styled.div<{
 
   ${Media.upToSmall()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
-      theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 300px' : '90px 16px 200px'};
+      theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
     background-size: ${({ customTheme }) =>
       customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};

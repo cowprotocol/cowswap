@@ -33,11 +33,40 @@ const blink = keyframes`
   }
 `
 
+export const BubbleRow = styled.div`
+  position: absolute;
+  top: -55px;
+  right: 48%;
+  pointer-events: none;
+  z-index: 2;
+
+  ${Media.upToLarge()} {
+    right: 49%;
+    top: -54px;
+  }
+
+  ${Media.upToMedium()} {
+    right: 46%;
+    top: -60px;
+  }
+
+  ${Media.upToSmall()} {
+    right: 45%;
+    top: -55px;
+  }
+
+  ${Media.upToExtraSmall()} {
+    right: 38%;
+  }
+
+  ${Media.upToTiny()} {
+    right: 35%;
+  }
+`
+
 export const Bubble = styled.div<{ $variant: CowSpeechBubbleVariant }>`
   --notificationAnchorHeight: 104px;
-  position: absolute;
-  right: 48%;
-  top: -55px;
+  position: relative;
   padding: ${({ $variant }) => ($variant === 'notification' ? '16px' : '16px 20px')};
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
@@ -46,6 +75,7 @@ export const Bubble = styled.div<{ $variant: CowSpeechBubbleVariant }>`
   max-width: 260px;
   width: ${({ $variant }) => ($variant === 'notification' ? '260px' : 'auto')};
   overflow: visible;
+  max-height: min(280px, 50vh);
   text-align: center;
   pointer-events: auto;
   z-index: 2;
@@ -77,8 +107,6 @@ export const Bubble = styled.div<{ $variant: CowSpeechBubbleVariant }>`
   }
 
   ${Media.upToLarge()} {
-    right: 49%;
-    top: -54px;
     max-width: 220px;
 
     &::after {
@@ -88,14 +116,7 @@ export const Bubble = styled.div<{ $variant: CowSpeechBubbleVariant }>`
     }
   }
 
-  ${Media.upToMedium()} {
-    right: 46%;
-    top: -60px;
-  }
-
   ${Media.upToSmall()} {
-    right: 41%;
-    top: -55px;
     padding: 12px 16px;
     max-width: 200px;
     --notificationAnchorHeight: 92px;
