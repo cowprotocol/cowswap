@@ -152,7 +152,7 @@ function getOrderWithTxHash(order: Order | null, trades: Trade[], hasMultipleTra
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line max-lines-per-function
 export const OrderDetails: React.FC<Props> = (props) => {
   const {
     order,
@@ -257,7 +257,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
             onChangeTab,
             isPriceInverted,
             invertPrice,
-            trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1) || !!tableState.hasNextPage,
+            hasMultipleTrades,
             solvedBy,
             isSolvedByLoading,
           )}

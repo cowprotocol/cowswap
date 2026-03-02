@@ -18,7 +18,7 @@ export type OrderSolverInfo = {
   image?: string
 }
 
-type UseOrderSolverResult = {
+export type UseOrderSolverResult = {
   solver: OrderSolverInfo | undefined
   isLoading: boolean
 }
@@ -44,8 +44,14 @@ function getWinnerSolverFromCompetition(competition?: SolverCompetitionResponse)
   const winner = competition.solutions.find((s) => s.isWinner)
   if (!winner) return undefined
 
-  // The SDK's SolverSettlement type omits the `solver` field, but the API response includes it
-  return (winner as Record<string, unknown>).solver as string | undefined
+  return getWinnerSolverName(winner)
+}
+
+function getWinnerSolverName(winner: unknown): string | undefined {
+  if (!winner || typeof winner !== 'object' || !('solver' in winner)) return undefined
+
+  const solver = winner.solver
+  return typeof solver === 'string' ? solver : undefined
 }
 
 function matchSolverByName(solverName: string, solvers: SolverInfo[]): SolverInfo | undefined {

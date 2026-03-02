@@ -15,6 +15,33 @@ import {
 
 export { getAccountOrders } from './accountOrderUtils'
 
+/** Thrown when a competition endpoint returns an empty value so Promise.any can fallback to the other env. */
+class EmptyCompetitionResultError extends Error {
+  override readonly name = 'EmptyCompetitionResultError'
+}
+
+function ensureOrderCompetitionStatus(
+  status: OrderCompetitionStatus | undefined,
+  contextLabel: string,
+): OrderCompetitionStatus {
+  if (status == null) {
+    throw new EmptyCompetitionResultError(`${contextLabel}: empty order competition status`)
+  }
+
+  return status
+}
+
+function ensureSolverCompetition(
+  competition: SolverCompetitionResponse | undefined,
+  contextLabel: string,
+): SolverCompetitionResponse {
+  if (!competition?.solutions?.length) {
+    throw new EmptyCompetitionResultError(`${contextLabel}: empty solver competition`)
+  }
+
+  return competition
+}
+
 /**
  * Gets a single order by id.
  *
@@ -139,15 +166,23 @@ export async function getOrderCompetitionStatus(
   const { networkId, orderId } = params
   const context = { chainId: networkId, backoffOpts }
 
-  const statusPromise = orderBookSDK.getOrderCompetitionStatus(orderId, context).catch((error) => {
-    console.error('[getOrderCompetitionStatus] Error getting PROD order status', orderId, networkId, error)
-    throw error
-  })
+  const statusPromise = orderBookSDK
+    .getOrderCompetitionStatus(orderId, context)
+    .then((result) => ensureOrderCompetitionStatus(result, 'PROD'))
+    .catch((error) => {
+      if (!(error instanceof EmptyCompetitionResultError)) {
+        console.error('[getOrderCompetitionStatus] Error getting PROD order status', orderId, networkId, error)
+      }
+      throw error
+    })
 
   const statusPromiseBarn = orderBookSDK
     .getOrderCompetitionStatus(orderId, { ...context, env: 'staging' })
+    .then((result) => ensureOrderCompetitionStatus(result, 'BARN'))
     .catch((error) => {
-      console.error('[getOrderCompetitionStatus] Error getting BARN order status', orderId, networkId, error)
+      if (!(error instanceof EmptyCompetitionResultError)) {
+        console.error('[getOrderCompetitionStatus] Error getting BARN order status', orderId, networkId, error)
+      }
       throw error
     })
 
@@ -166,15 +201,25 @@ export async function getSolverCompetitionByTxHash(
   const { networkId, txHash } = params
   const context = { chainId: networkId, backoffOpts }
 
-  const prodPromise = orderBookSDK.getSolverCompetition(txHash, context).catch((error) => {
-    console.error('[getSolverCompetitionByTxHash] Error getting PROD competition', txHash, networkId, error)
-    throw error
-  })
+  const prodPromise = orderBookSDK
+    .getSolverCompetition(txHash, context)
+    .then((result) => ensureSolverCompetition(result, 'PROD'))
+    .catch((error) => {
+      if (!(error instanceof EmptyCompetitionResultError)) {
+        console.error('[getSolverCompetitionByTxHash] Error getting PROD competition', txHash, networkId, error)
+      }
+      throw error
+    })
 
-  const barnPromise = orderBookSDK.getSolverCompetition(txHash, { ...context, env: 'staging' }).catch((error) => {
-    console.error('[getSolverCompetitionByTxHash] Error getting BARN competition', txHash, networkId, error)
-    throw error
-  })
+  const barnPromise = orderBookSDK
+    .getSolverCompetition(txHash, { ...context, env: 'staging' })
+    .then((result) => ensureSolverCompetition(result, 'BARN'))
+    .catch((error) => {
+      if (!(error instanceof EmptyCompetitionResultError)) {
+        console.error('[getSolverCompetitionByTxHash] Error getting BARN competition', txHash, networkId, error)
+      }
+      throw error
+    })
 
   return Promise.any([prodPromise, barnPromise]).catch(() => undefined)
 }
