@@ -37,9 +37,10 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    --scrollbarWidth: 0.6rem;
     &::-webkit-scrollbar {
-      width: 0.6rem;
-      height: 0.6rem;
+      width: var(--scrollbarWidth);
+      height: var(--scrollbarWidth);
     }
     &::-webkit-scrollbar-thumb {
       background-color: ${Color.explorer_bgLighter};
