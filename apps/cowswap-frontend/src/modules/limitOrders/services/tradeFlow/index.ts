@@ -5,6 +5,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -22,6 +23,8 @@ import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAna
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
+
+import type { Hex } from 'viem'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
@@ -44,7 +47,7 @@ export async function tradeFlow(
     dispatch,
     generatePermitHook,
     quoteState,
-    signer,
+    config,
   } = params
   const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet, inputAmount, outputAmount } =
     postOrderParams
@@ -125,7 +128,11 @@ export async function tradeFlow(
     if (!postOrderParams.allowsOffchainSigning) {
       const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
-      presignTxHash = (await signer.sendTransaction(presignTx)).hash
+      presignTxHash = await sendTransaction(config, {
+        to: presignTx.to,
+        value: BigInt(presignTx.value),
+        data: presignTx.data as Hex,
+      })
     }
 
     const order = mapUnsignedOrderToOrder({

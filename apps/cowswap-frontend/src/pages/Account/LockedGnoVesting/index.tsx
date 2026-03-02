@@ -106,10 +106,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
       .then((tx) => {
         claimAnalytics('Sign')
         setStatus(ClaimStatus.SUBMITTED)
-        return tx.wait()
+        return tx
       })
       .then((tx) => {
-        const success = tx.status === 1
+        const success = tx.status === 'success'
         setStatus(success ? ClaimStatus.CONFIRMED : ClaimStatus.INITIAL)
 
         setTimeout(() => {

@@ -1,4 +1,3 @@
-import { Command } from '@cowprotocol/types'
 import { ButtonSecondary, Media } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
@@ -448,45 +447,10 @@ export const NetworkCard = styled(NetworkCardUni)`
   }
 `
 
-interface WalletSelectorProps {
-  isHardWareWallet?: boolean
-  onClick?: Command
-}
-
-export const WalletSelector = styled.div<WalletSelectorProps>`
+export const WalletSelector = styled.div`
   display: flex;
   border-radius: 16px;
   align-items: center;
   justify-content: center;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  ${({ isHardWareWallet }) =>
-    isHardWareWallet &&
-    `
-    cursor: pointer;
-    border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
-    background: transparent;
-    padding: 6px 10px;
-
-    &:after {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 4px solid var(${UI.COLOR_TEXT});
-      margin-left: 8px;
-      opacity: 0.5;
-      transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-    }
-
-    &:hover {
-      background: var(${UI.COLOR_TEXT_OPACITY_25});
-    }
-
-    &:hover::after {
-      opacity: 1;
-    }
-  `}
 `

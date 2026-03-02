@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
@@ -6,6 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { Currency } from '@uniswap/sdk-core'
 
+import { useAppKitTheme } from '@reown/appkit/react'
 import { shallowEqual } from 'react-redux'
 
 import { updateHooksEnabled, updateUserDarkMode, updateUserLocale } from './reducer'
@@ -27,7 +28,12 @@ export function useIsDarkMode(): boolean {
 
 export function useDarkModeManager(): [boolean, Command] {
   const dispatch = useAppDispatch()
+  const { setThemeMode } = useAppKitTheme()
   const darkMode = useIsDarkMode()
+
+  useEffect(() => {
+    setThemeMode(darkMode ? 'dark' : 'light')
+  }, [darkMode, setThemeMode])
 
   const toggleSetDarkMode = useCallback(() => {
     dispatch(updateUserDarkMode({ userDarkMode: !darkMode }))

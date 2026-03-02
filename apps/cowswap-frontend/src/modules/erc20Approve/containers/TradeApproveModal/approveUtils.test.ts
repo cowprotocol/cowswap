@@ -1,12 +1,15 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { id } from '@ethersproject/hash'
 import { Token } from '@uniswap/sdk-core'
+
+import { encodeAbiParameters } from 'viem'
+
+import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { processApprovalTransaction } from './approveUtils'
 
-const APPROVAL_EVENT_TOPIC = id('Approval(address,address,uint256)')
+import type { Hex, TransactionReceipt } from 'viem'
+
+const APPROVAL_EVENT_TOPIC = toKeccak256('Approval(address,address,uint256)') as Hex
 
 describe('processApprovalTransaction', () => {
   const mockChainId = SupportedChainId.MAINNET
@@ -14,21 +17,24 @@ describe('processApprovalTransaction', () => {
   const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
   const mockSpender = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
   const mockAmount = BigInt('1000000000000000000')
-  const mockBlockNumber = 123456
+  const mockBlockNumber = 123456n
 
   const mockToken = new Token(mockChainId, mockTokenAddress, 18, 'TEST', 'Test Token')
 
   // Helper to create padded address topic
-  const createAddressTopic = (address: string): string => {
-    return '0x' + '0'.repeat(24) + address.slice(2).toLowerCase()
+  const createAddressTopic = (address: string): Hex => {
+    return `0x${'0'.repeat(24)}${address.slice(2).toLowerCase()}`
   }
 
   // Helper to encode approval amount
-  const encodeAmount = (amount: bigint): string => {
-    return defaultAbiCoder.encode(['uint256'], [amount.toString()])
+  const encodeAmount = (amount: bigint): Hex => {
+    return encodeAbiParameters([{ type: 'uint256' }], [amount])
   }
 
-  const createMockTransactionReceipt = (status: number, logs: TransactionReceipt['logs'] = []): TransactionReceipt => {
+  const createMockTransactionReceipt = (
+    status: 'success' | 'reverted',
+    logs: TransactionReceipt['logs'] = [],
+  ): TransactionReceipt => {
     return {
       to: mockSpender,
       from: mockAccount,
@@ -41,13 +47,11 @@ describe('processApprovalTransaction', () => {
       transactionHash: '0xtxhash',
       logs,
       blockNumber: mockBlockNumber,
-      confirmations: 1,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cumulativeGasUsed: { toString: () => '21000' } as any,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       effectiveGasPrice: { toString: () => '1000000000' } as any,
-      byzantium: true,
-      type: 2,
+      type: 'legacy',
       status,
     }
   }
@@ -74,7 +78,7 @@ describe('processApprovalTransaction', () => {
   describe('successful approval extraction', () => {
     it('should extract approval data from valid transaction receipt', () => {
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, mockAmount)
-      const txReceipt = createMockTransactionReceipt(1, [approvalLog])
+      const txReceipt = createMockTransactionReceipt('success', [approvalLog])
 
       const result = processApprovalTransaction(
         {
@@ -99,7 +103,7 @@ describe('processApprovalTransaction', () => {
     it('should handle zero approval amount (revoke approval)', () => {
       const zeroAmount = BigInt('0')
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, zeroAmount)
-      const txReceipt = createMockTransactionReceipt(1, [approvalLog])
+      const txReceipt = createMockTransactionReceipt('success', [approvalLog])
 
       const result = processApprovalTransaction(
         {
@@ -124,17 +128,17 @@ describe('processApprovalTransaction', () => {
     it('should find correct approval log among multiple logs', () => {
       const otherLog = {
         blockNumber: mockBlockNumber,
-        blockHash: '0xblockhash',
+        blockHash: '0xblockhash' as Hex,
         transactionIndex: 1,
         removed: false,
         address: '0xOtherAddress000000000000000000000000000000',
-        data: '0x',
-        topics: ['0xothertopic'],
-        transactionHash: '0xtxhash',
+        data: '0x' as Hex,
+        topics: ['0xothertopic'] as [Hex, ...Hex[]],
+        transactionHash: '0xtxhash' as Hex,
         logIndex: 0,
       }
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, mockAmount)
-      const txReceipt = createMockTransactionReceipt(1, [otherLog, approvalLog, otherLog])
+      const txReceipt = createMockTransactionReceipt('success', [otherLog, approvalLog, otherLog])
 
       const result = processApprovalTransaction(
         {
@@ -160,7 +164,7 @@ describe('processApprovalTransaction', () => {
   describe('failed transaction handling', () => {
     it('should throw error when transaction status is not 1', () => {
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, mockAmount)
-      const txReceipt = createMockTransactionReceipt(0, [approvalLog])
+      const txReceipt = createMockTransactionReceipt('reverted', [approvalLog])
 
       expect(() =>
         processApprovalTransaction(
@@ -201,7 +205,7 @@ describe('processApprovalTransaction', () => {
       const actualAmount = BigInt('5000000000000000000')
 
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, actualAmount)
-      const txReceipt = createMockTransactionReceipt(1, [approvalLog])
+      const txReceipt = createMockTransactionReceipt('success', [approvalLog])
 
       const result = processApprovalTransaction(
         {
@@ -225,7 +229,7 @@ describe('processApprovalTransaction', () => {
       const wrongApprovalLog = createApprovalLog(mockTokenAddress, mockAccount, otherSpender, otherAmount)
       const correctApprovalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, mockAmount)
 
-      const txReceipt = createMockTransactionReceipt(1, [wrongApprovalLog, correctApprovalLog])
+      const txReceipt = createMockTransactionReceipt('success', [wrongApprovalLog, correctApprovalLog])
 
       const result = processApprovalTransaction(
         {

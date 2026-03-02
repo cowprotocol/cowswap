@@ -15,7 +15,8 @@ export function tokensListSorter(balances: BalancesState['values']): (a: TokenWi
     }
 
     if (aBalance && bBalance) {
-      return +bBalance.sub(aBalance)
+      if (aBalance === bBalance) return 0
+      return aBalance > bBalance ? -1 : 1
     }
 
     if (aBalance && !bBalance) {

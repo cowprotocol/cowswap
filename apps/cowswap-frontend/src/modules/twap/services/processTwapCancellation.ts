@@ -5,7 +5,7 @@ export function processTwapCancellation(txHash: string, onTxSuccess: () => void)
     if (data.transaction.hash === txHash) {
       ONCHAIN_TRANSACTIONS_EVENTS.off(listener)
 
-      if (data.receipt.status === 1) {
+      if (data.receipt.status === 'success') {
         onTxSuccess()
       }
     }

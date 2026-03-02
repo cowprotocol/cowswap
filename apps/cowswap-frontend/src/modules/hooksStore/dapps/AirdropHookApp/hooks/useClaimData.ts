@@ -1,19 +1,22 @@
 import { useCallback } from 'react'
 
 import { formatTokenAmount } from '@cowprotocol/common-utils'
-import { Airdrop, AirdropAbi } from '@cowprotocol/cowswap-abis'
+import { AirdropAbi } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 import { i18n } from '@lingui/core'
-import { msg, t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
-
-import { useContract } from 'common/hooks/useContract'
+import { encodeFunctionData } from 'viem'
+import { useConfig } from 'wagmi'
+import { readContract } from 'wagmi/actions'
 
 import { AirdropDataInfo, IAirdrop, IClaimData } from '../types'
+
+import type { Hex } from 'viem'
 
 type IntervalsType = { [key: string]: string }
 
@@ -110,35 +113,36 @@ const fetchAddressIsEligible = async ({
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useClaimData = (tokenToClaimData?: IAirdrop) => {
+  const config = useConfig()
   const { account } = useWalletInfo()
   const { i18n } = useLingui()
-  const { contract: airdropContract, chainId: airdropChainId } = useContract<Airdrop>(
-    tokenToClaimData?.address,
-    AirdropAbi,
-  )
 
   const fetchPreviewClaimableTokens = useCallback(
     async ({ dataBaseUrl, address }: PreviewClaimableTokensParams): Promise<IClaimData> => {
       const isEligibleData = await fetchAddressIsEligible({ dataBaseUrl, address })
-      if (!isEligibleData || !airdropContract || !isEligibleData.index || !tokenToClaimData || !account) {
+      if (!isEligibleData || !isEligibleData.index || !tokenToClaimData || !account) {
         throw new Error(i18n._(AIRDROP_PREVIEW_ERRORS.ERROR_FETCHING_DATA))
       }
 
-      const { chainId: tokenToClaimChainId, token: tokenToClaim } = tokenToClaimData
-      if (airdropChainId !== tokenToClaimChainId) {
-        throw new Error(
-          t`Airdrop token chain (${tokenToClaimChainId}) and airdrop contract chain (${airdropChainId}) should match`,
-        )
-      }
+      const { token: tokenToClaim } = tokenToClaimData
 
-      const isClaimed = await airdropContract?.isClaimed(isEligibleData.index)
+      const isClaimed = await readContract(config, {
+        abi: AirdropAbi,
+        address: tokenToClaimData.address,
+        functionName: 'isClaimed',
+        args: [BigInt(isEligibleData.index)],
+      })
 
-      const callData = airdropContract.interface.encodeFunctionData('claim', [
-        isEligibleData.index, //index
-        account, //claimant
-        isEligibleData.amount, //claimableAmount
-        isEligibleData.proof, //merkleProof
-      ])
+      const callData = encodeFunctionData({
+        abi: AirdropAbi,
+        functionName: 'claim',
+        args: [
+          BigInt(isEligibleData.index), //index
+          account, //claimant
+          BigInt(isEligibleData.amount), //claimableAmount
+          isEligibleData.proof as Hex[], //merkleProof
+        ],
+      })
 
       const formattedAmount = isEligibleData.amount
         ? `${formatTokenAmount(new Fraction(isEligibleData.amount, 10 ** tokenToClaim.decimals))} ${tokenToClaim.symbol}`
@@ -148,12 +152,12 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
         ...isEligibleData,
         isClaimed,
         callData,
-        contract: airdropContract,
+        contractAddress: tokenToClaimData.address,
         token: tokenToClaim,
         formattedAmount,
       }
     },
-    [airdropContract, tokenToClaimData, account, airdropChainId, i18n],
+    [config, tokenToClaimData, account, i18n],
   )
 
   return useSWR<IClaimData | undefined, Error>(

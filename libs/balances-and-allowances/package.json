@@ -29,20 +29,17 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cowswap-abis": "workspace:*",
-    "@cowprotocol/multicall": "workspace:*",
     "@cowprotocol/tokens": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/wallet": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
-    "@ethersproject/bignumber": "5.7.0",
-    "@ethersproject/contracts": "5.7.0",
     "@uniswap/sdk-core": "^3.0.1",
-    "ethers": "5.7.2",
     "jotai": "2.16.2",
     "ms.macro": "^2.0.0",
     "react": "19.1.2",
-    "swr": "^2.3.3"
+    "swr": "^2.3.3",
+    "viem": "^2.45.1",
+    "wagmi": "3.4.2"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.0",

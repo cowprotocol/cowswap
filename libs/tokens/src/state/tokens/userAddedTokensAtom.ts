@@ -5,8 +5,9 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
+
+import { getAddress } from 'viem'
 
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'

@@ -1,7 +1,7 @@
-import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
+import { parseUnits } from 'viem'
 
 /**
  * Parses a CurrencyAmount from the passed string.

@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
@@ -13,6 +12,8 @@ import { TradeType } from '../../trade'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { useIsPartialApproveSelectedByUser, useUpdateApproveProgressModalState } from '../state'
 import { getIsTradeApproveResult } from '../utils/getIsTradeApproveResult'
+
+import type { TransactionReceipt } from 'viem'
 
 export interface ApproveAndSwapProps {
   amountToApprove: CurrencyAmount<Currency>
@@ -70,8 +71,7 @@ export function useApproveAndSwap({
         const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= minAmountToSignForSwapBig)
 
         if (isApprovedAmountSufficient) {
-          const hash =
-            (tx.txResponse as TransactionReceipt).transactionHash || (tx.txResponse as TransactionResponse).hash
+          const hash = (tx.txResponse as TransactionReceipt).transactionHash
 
           onApproveConfirm(hash)
         } else {

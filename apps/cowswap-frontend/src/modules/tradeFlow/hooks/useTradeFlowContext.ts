@@ -1,11 +1,11 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
+import { useConfig } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -24,7 +24,7 @@ import {
 } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
-import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 
 import { useSetSigningStep } from './useSetSigningStep'
@@ -39,10 +39,8 @@ export interface TradeFlowParams {
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
+  const config = useConfig()
   const { account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()
@@ -69,7 +67,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const closeModals = useCloseModals()
   const dispatch = useDispatch<AppDispatch>()
   const tradeConfirmActions = useTradeConfirmActions()
-  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const settlementContract = useGP2SettlementContractData()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
   const addBridgeOrder = useAddBridgeOrder()
@@ -89,6 +87,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
 
   const validTo = getOrderValidTo(deadline, tradeQuote)
 
+  const settlementChainId = settlementContract.chainId
+
   return (
     useSWR(
       inputAmount &&
@@ -98,7 +98,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         sellToken &&
         buyToken &&
         account &&
-        provider &&
         appData &&
         tradeQuote.quote &&
         tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
@@ -123,7 +122,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             networkFee,
             outputAmount,
             permitInfo,
-            provider,
             recipient,
             recipientAddress,
             sellAmountBeforeFee,
@@ -158,7 +156,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         networkFee,
         outputAmount,
         permitInfo,
-        provider,
         recipient,
         recipientAddress,
         sellAmountBeforeFee,
@@ -210,7 +207,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           orderParams: {
             account,
             chainId,
-            signer: provider.getUncheckedSigner(),
+            config,
             kind: orderKind,
             inputAmount,
             outputAmount,

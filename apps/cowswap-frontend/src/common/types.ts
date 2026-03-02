@@ -4,6 +4,8 @@ import type { Order } from 'legacy/state/orders/actions'
 
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import type { Hex } from 'viem'
+
 export type GenericOrder = Order | ParsedOrder
 
 /**
@@ -14,8 +16,8 @@ export type GenericOrder = Order | ParsedOrder
  * parentId - this parameter is specified when it's a discrete (child) order
  */
 export type ComposableCowInfo = {
-  id?: string
-  parentId?: string
+  id?: Hex
+  parentId?: Hex
   isVirtualPart?: boolean
   isTheLastPart?: boolean
 }

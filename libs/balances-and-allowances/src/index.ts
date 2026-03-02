@@ -5,10 +5,8 @@ export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updat
 // Hooks
 export { useTokensBalances } from './hooks/useTokensBalances'
 export { useNativeTokenBalance } from './hooks/useNativeTokenBalance'
-export { useNativeTokensBalances } from './hooks/useNativeTokensBalances'
 export { useNativeCurrencyAmount } from './hooks/useNativeCurrencyAmount'
 export { useCurrencyAmountBalance } from './hooks/useCurrencyAmountBalance'
-export { useTokenBalanceForAccount } from './hooks/useTokenBalanceForAccount'
 export { usePersistBalancesViaWebCalls } from './hooks/usePersistBalancesViaWebCalls'
 export { useUpdateTokenBalance } from './hooks/useUpdateTokenBalance'
 export { useTokenAllowances } from './hooks/useTokenAllowances'

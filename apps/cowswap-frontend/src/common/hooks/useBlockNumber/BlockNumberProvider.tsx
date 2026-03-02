@@ -1,16 +1,16 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
+
+import { useWatchBlocks } from 'wagmi'
 
 import { BlockNumberContext } from './context'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BlockNumberProvider({ children }: { children: ReactNode }) {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const windowVisible = useIsWindowVisible()
   const activeChainId = useWalletChainId()
 
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({ chainId: activeChainId })
@@ -29,33 +29,15 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
     [activeChainId, setChainBlock],
   )
 
-  const windowVisible = useIsWindowVisible()
+  useWatchBlocks({
+    chainId: activeChainId,
+    enabled: Boolean(activeChainId) && windowVisible,
+    onBlock: (block) => onBlock(Number(block.number)),
+  })
+
   useEffect(() => {
-    let stale = false
-
-    if (provider && activeChainId && windowVisible) {
-      // If chainId hasn't changed, don't clear the block. This prevents re-fetching still valid data.
-      setChainBlock((chainBlock) => (chainBlock.chainId === activeChainId ? chainBlock : { chainId: activeChainId }))
-
-      provider
-        .getBlockNumber()
-        .then((block) => {
-          if (!stale) onBlock(block)
-        })
-        .catch((error) => {
-          console.error(`Failed to get block number for chainId ${activeChainId}`, error)
-        })
-
-      provider.on('block', onBlock)
-
-      return () => {
-        stale = true
-        provider.removeListener('block', onBlock)
-      }
-    }
-
-    return void 0
-  }, [activeChainId, provider, onBlock, setChainBlock, windowVisible])
+    setChainBlock((chainBlock) => (chainBlock.chainId === activeChainId ? chainBlock : { chainId: activeChainId }))
+  }, [activeChainId])
 
   const value = useMemo(
     () => ({

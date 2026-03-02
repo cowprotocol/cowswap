@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 
 import ms from 'ms.macro'
+
+import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
@@ -17,7 +18,7 @@ export function useFetchTwapOrdersFromSafe({
 }: {
   chainId: SupportedChainId
   safeAddress: string
-  composableCowContract: ComposableCoW
+  composableCowContract: ComposableCowContractData
 }): TwapOrdersSafeData[] {
   const [ordersSafeData, setOrdersSafeData] = useState<TwapOrdersSafeData[]>([])
   const updateInProgressRef = useRef(false)

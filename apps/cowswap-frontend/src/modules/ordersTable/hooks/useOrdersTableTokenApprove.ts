@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
-import { MaxUint256 } from '@ethersproject/constants'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { maxUint256, toHex } from 'viem'
 
 import { useApproveCurrency } from 'modules/erc20Approve'
 
@@ -12,7 +13,7 @@ export function useOrdersTableTokenApprove(): Dispatch<SetStateAction<Token | un
 
   // Infinite amount
   const amountToApprove = useMemo(() => {
-    return tokenToApprove ? CurrencyAmount.fromRawAmount(tokenToApprove, MaxUint256.toString()) : undefined
+    return tokenToApprove ? CurrencyAmount.fromRawAmount(tokenToApprove, toHex(maxUint256)) : undefined
   }, [tokenToApprove])
 
   const tradeApproveCallback = useApproveCurrency(amountToApprove)

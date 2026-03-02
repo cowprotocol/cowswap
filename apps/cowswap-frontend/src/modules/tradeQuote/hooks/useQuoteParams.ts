@@ -5,7 +5,6 @@ import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
@@ -23,7 +22,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 
-import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
+import { BRIDGE_QUOTE_ACCOUNT } from '../utils/getBridgeQuoteSigner'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
@@ -37,9 +36,6 @@ export interface QuoteParams {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -69,7 +65,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
-    if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
+    if (!inputCurrency || !outputCurrency || !orderKind) return
 
     const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
 
@@ -92,7 +88,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
      * Whe real one is not connected
      * See `SocketVerifier.callStatic.validateRotueId` in BridgingSDK
      */
-    const signer = account ? provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
     const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
 
     const quoteParams: QuoteBridgeRequest = {
@@ -110,7 +105,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
       account: owner,
       appCode,
-      signer,
 
       receiver,
       validFor: DEFAULT_QUOTE_TTL,
@@ -130,7 +124,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
     }
   }, [
-    provider,
     inputCurrency,
     outputCurrency,
     amount,

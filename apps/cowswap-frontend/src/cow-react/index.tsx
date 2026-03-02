@@ -7,7 +7,7 @@ import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
-import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
+import { Web3Provider } from '@cowprotocol/wallet'
 
 import { Messages } from '@lingui/core'
 import { LanguageProvider } from 'i18n'
@@ -20,7 +20,6 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { ThemeProvider } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
-import { useAppSelector } from 'legacy/state/hooks'
 
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'
@@ -59,7 +58,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                 <HashRouter>
                   <LanguageProvider messages={localeMessages}>
                     <WithLDProvider>
-                      <Web3ProviderInstance>
+                      <Web3Provider>
                         <BlockNumberProvider>
                           <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                             <WalletUnsupportedNetworkBanner />
@@ -68,7 +67,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                             <App />
                           </CowAnalyticsProvider>
                         </BlockNumberProvider>
-                      </Web3ProviderInstance>
+                      </Web3Provider>
                     </WithLDProvider>
                   </LanguageProvider>
                 </HashRouter>
@@ -78,17 +77,6 @@ export function Main({ localeMessages }: MainProps): ReactNode {
         </HelmetProvider>
       </SvgCacheProvider>
     </StrictMode>
-  )
-}
-
-function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-  const { standaloneMode } = useInjectedWidgetParams()
-
-  return (
-    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
-      <Web3Provider>{children}</Web3Provider>
-    </LegacyWeb3Provider>
   )
 }
 

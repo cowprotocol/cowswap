@@ -3,9 +3,7 @@ import { useHydrateAtoms } from 'jotai/utils'
 import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
-import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
-import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
-import { Connector } from '@web3-react/types'
+import { Web3Provider } from '@cowprotocol/wallet'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
@@ -41,11 +39,9 @@ const WithProviders = ({ children }: { children?: ReactNode }): ReactNode => {
     <LanguageProvider messages={enMessages}>
       <MockedI18nProvider>
         <Provider store={cowSwapStore}>
-          <LegacyWeb3Provider selectedWallet={undefined}>
-            <Web3Provider>
-              <MockThemeProvider>{children}</MockThemeProvider>
-            </Web3Provider>
-          </LegacyWeb3Provider>
+          <Web3Provider>
+            <MockThemeProvider>{children}</MockThemeProvider>
+          </Web3Provider>
         </Provider>
       </MockedI18nProvider>
     </LanguageProvider>
@@ -59,31 +55,11 @@ const customRender = (ui: ReactElement) => render(ui, { wrapper: WithProviders }
 export * from '@testing-library/react'
 export { customRender as render }
 
-class MockedConnector extends Connector {
-  activate(): Promise<void> {
-    return Promise.resolve()
-  }
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  getActions() {
-    return this.actions
-  }
-}
-
-export const [mockedConnector, mockedConnectorHooks] = initializeConnector<MockedConnector>(
-  (actions) => new MockedConnector(actions),
-)
-
 export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: Location }): ReactNode {
-  const connectors: [Connector, Web3ReactHooks][] = [[mockedConnector, mockedConnectorHooks]]
-
   return (
     <MemoryRouter initialEntries={location ? [location] : undefined}>
       <Provider store={cowSwapStore}>
-        <Web3ReactProvider connectors={connectors}>
-          <Web3Provider>{children}</Web3Provider>
-        </Web3ReactProvider>
+        <Web3Provider>{children}</Web3Provider>
       </Provider>
     </MemoryRouter>
   )

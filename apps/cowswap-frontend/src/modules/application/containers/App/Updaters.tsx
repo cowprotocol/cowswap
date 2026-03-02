@@ -1,14 +1,13 @@
 import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { MultiCallUpdater } from '@cowprotocol/multicall'
 import {
   RestrictedTokensListUpdater,
   TokensListsTagsUpdater,
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { HwAccountIndexUpdater, LegacyWalletUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -66,7 +65,7 @@ export function Updaters(): ReactNode {
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
-  const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
+  const { chainId: sourceChainId } = useSourceChainId()
   const bridgeNetworkInfo = useBridgeSupportedNetworks()
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
@@ -81,10 +80,7 @@ export function Updaters(): ReactNode {
       <ConnectionStatusUpdater />
       <TradingSdkUpdater />
       {/*Set custom chainId only when it differs from the wallet chainId*/}
-      {/*MultiCallUpdater will use wallet network by default if custom chainId is not provided*/}
-      <MultiCallUpdater chainId={sourceChainSource === 'wallet' ? undefined : sourceChainId} />
       <WalletUpdater standaloneMode={standaloneMode} />
-      <LegacyWalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />

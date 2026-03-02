@@ -1,34 +1,22 @@
-import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
-import { BigNumber } from '@ethersproject/bignumber'
+import { decodeAbiParameters, type Hex } from 'viem'
 
+import { TWAP_ORDER_STRUCT } from '../const'
 import { TWAPOrderStruct } from '../types'
 
-const TWAP_STRUCT_ABI = [
-  { name: 'sellToken', type: 'address' },
-  { name: 'buyToken', type: 'address' },
-  { name: 'receiver', type: 'address' },
-  { name: 'partSellAmount', type: 'uint256' },
-  { name: 'minPartLimit', type: 'uint256' },
-  { name: 't0', type: 'uint256' },
-  { name: 'n', type: 'uint256' },
-  { name: 't', type: 'uint256' },
-  { name: 'span', type: 'uint256' },
-  { name: 'appData', type: 'bytes32' },
-] as ParamType[]
-
-export function parseTwapOrderStruct(staticInput: string): TWAPOrderStruct {
-  const rawData = defaultAbiCoder.decode(TWAP_STRUCT_ABI, staticInput)
+export function parseTwapOrderStruct(staticInput: Hex): TWAPOrderStruct {
+  const [data] = decodeAbiParameters(TWAP_ORDER_STRUCT, staticInput)
+  const { sellToken, buyToken, receiver, partSellAmount, minPartLimit, t0, n, t, span, appData } = data
 
   return {
-    sellToken: rawData['sellToken'],
-    buyToken: rawData['buyToken'],
-    receiver: rawData['receiver'],
-    partSellAmount: (rawData['partSellAmount'] as BigNumber).toHexString(),
-    minPartLimit: (rawData['minPartLimit'] as BigNumber).toHexString(),
-    t0: (rawData['t0'] as BigNumber).toNumber(),
-    n: (rawData['n'] as BigNumber).toNumber(),
-    t: (rawData['t'] as BigNumber).toNumber(),
-    span: (rawData['span'] as BigNumber).toNumber(),
-    appData: rawData['appData'],
+    sellToken,
+    buyToken,
+    receiver,
+    partSellAmount: partSellAmount.toString(),
+    minPartLimit: minPartLimit.toString(),
+    t0: Number(t0),
+    n: Number(n),
+    t: Number(t),
+    span: Number(span),
+    appData,
   }
 }

@@ -8,6 +8,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -22,6 +23,8 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
+
+import type { Hex } from 'viem'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
@@ -170,19 +173,21 @@ export async function swapFlow(
       logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
       const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
-      presignTxHash = (
-        await orderParams.signer.sendTransaction(presignTx).catch((error) => {
-          /**
-           * When using Rabby and Safe, the presign transaction is not a real transaction
-           * It's a safe signature
-           */
-          if (error.transactionHash) {
-            return { hash: error.transactionHash }
-          } else {
-            throw error
-          }
-        })
-      ).hash
+      presignTxHash = await sendTransaction(orderParams.config, {
+        to: presignTx.to,
+        value: BigInt(presignTx.value),
+        data: presignTx.data as Hex,
+      }).catch((error) => {
+        /**
+         * When using Rabby and Safe, the presign transaction is not a real transaction
+         * It's a safe signature
+         */
+        if (error.transactionHash) {
+          return error.transactionHash
+        } else {
+          throw error
+        }
+      })
     }
 
     const order = mapUnsignedOrderToOrder({

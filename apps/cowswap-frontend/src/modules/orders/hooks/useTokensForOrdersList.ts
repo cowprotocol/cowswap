@@ -4,27 +4,25 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { fetchTokenFromBlockchain, TokensByAddress, useAddUserToken, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Token } from '@uniswap/sdk-core'
+
+import { useConfig } from 'wagmi'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 export function useTokensForOrdersList(): (tokensToFetch: string[], signal?: AbortSignal) => Promise<TokensByAddress> {
+  const config = useConfig()
   const { chainId } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const allTokens = useTokensByAddressMap()
   const addUserTokens = useAddUserToken()
 
   const getToken = useCallback(
     async (address: string, signal?: AbortSignal) => {
       if (signal?.aborted) return null
-      if (!provider) return null
-      const token = await fetchTokenFromBlockchain(address, chainId, provider).then(TokenWithLogo.fromToken)
+      const token = await fetchTokenFromBlockchain(address, chainId, config).then(TokenWithLogo.fromToken)
       return signal?.aborted ? null : token
     },
-    [chainId, provider],
+    [chainId, config],
   )
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added

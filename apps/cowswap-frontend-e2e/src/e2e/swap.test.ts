@@ -60,12 +60,11 @@ describe('Swap (custom)', () => {
 
   it('can swap ETH for USDC', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`, {
-      onBeforeLoad: async (win) => {
-        const address = await win.ethereum.signer.getAddress()
+      onBeforeLoad: (win) => {
         mockSendCall(win.ethereum, [
           handleNativeBalance(
             win.ethereum,
-            address,
+            win.ethereum.address,
             5n * 10n ** 18n, // 18 decimals
           ),
         ])
@@ -85,12 +84,11 @@ describe('Swap (custom)', () => {
   // ETH should be tradable but show Switch to Weth
   it('Swap ETH for USDC - shows optional Switch to WETH', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`, {
-      onBeforeLoad: async (win) => {
-        const address = await win.ethereum.signer.getAddress()
+      onBeforeLoad: (win) => {
         mockSendCall(win.ethereum, [
           handleNativeBalance(
             win.ethereum,
-            address,
+            win.ethereum.address,
             5n * 10n ** 18n, // 18 decimals
           ),
         ])

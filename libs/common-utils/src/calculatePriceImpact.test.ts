@@ -1,8 +1,8 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, Percent, Token, WETH9 } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
+import { parseUnits } from 'viem'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

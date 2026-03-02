@@ -64,7 +64,7 @@
       "executor": "@nx/jest:jest",
       "options": {
         "passWithNoTests": true,
-        "jestConfig": "apps/cowswap-frontend/jest.config.ts"
+        "jestConfig": "apps/cowswap-frontend/jest.config.mjs"
       }
     },
     "ipfs": {

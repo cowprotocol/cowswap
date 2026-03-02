@@ -1,11 +1,8 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getAddress } from '@ethersproject/address'
-import { AddressZero } from '@ethersproject/constants'
-import { Contract, ContractInterface } from '@ethersproject/contracts'
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
 import { t } from '@lingui/core/macro'
+import { getAddress } from 'viem'
 
 import { getExplorerOrderLink } from './explorer'
 
@@ -17,8 +14,12 @@ const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
+  if (!value) {
+    return false
+  }
+  const prefixed = value.startsWith('0x') ? value : `0x${value}`
   try {
-    return getAddress(value as never)
+    return getAddress(prefixed)
   } catch {
     return false
   }
@@ -31,30 +32,6 @@ export function shortenAddress(address: string, chars = 4): string {
     throw Error(`Invalid 'address' parameter '${address}'.`)
   }
   return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
-}
-
-// account is not optional
-export function getSigner(provider: JsonRpcProvider, account: string): JsonRpcSigner {
-  return provider.getSigner(account).connectUnchecked()
-}
-
-// account is optional
-export function getProviderOrSigner(provider: JsonRpcProvider, account?: string): JsonRpcProvider | JsonRpcSigner {
-  return account ? getSigner(provider, account) : provider
-}
-
-// account is optional
-export function getContract(
-  address: string,
-  ABI: ContractInterface,
-  provider: JsonRpcProvider,
-  account?: string,
-): Contract {
-  if (!isAddress(address) || address === AddressZero) {
-    throw Error(`Invalid 'address' parameter '${address}'.`)
-  }
-
-  return new Contract(address, ABI, getProviderOrSigner(provider, account))
 }
 
 export function escapeRegExp(string: string): string {

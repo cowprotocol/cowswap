@@ -9,7 +9,8 @@ import {
   PermitHookData,
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+
+import { usePublicClient, useConfig } from 'wagmi'
 
 import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
 
@@ -22,6 +23,8 @@ import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
  * Hook that returns callback to generate permit hook data
  */
 export function useGeneratePermitHook(): GeneratePermitHook {
+  const config = useConfig()
+  const publicClient = usePublicClient()
   const { chainId } = useWalletInfo()
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
@@ -33,10 +36,6 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   // Here we force an individual read of each atom, which does populate them properly
   useAtomValue(staticPermitCacheAtom)
   useAtomValue(userPermitCacheAtom)
-
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
@@ -52,11 +51,11 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
       const amount = maybeAmount ?? MAX_APPROVE_AMOUNT
 
-      if (!provider || !isSupportedPermitInfo(permitInfo)) {
+      if (!publicClient || !isSupportedPermitInfo(permitInfo)) {
         return
       }
 
-      const eip2612Utils = await getPermitUtilsInstance(chainId, provider, account)
+      const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient })
       const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
       // Always get the nonce for the real account, to know whether the cache should be invalidated
@@ -75,15 +74,15 @@ export function useGeneratePermitHook(): GeneratePermitHook {
       try {
         preSignCallback?.()
         hookData = await generatePermitHook({
-          chainId,
-          inputToken,
-          spender,
-          provider,
-          permitInfo,
-          eip2612Utils,
           account,
-          nonce,
           amount,
+          chainId,
+          config,
+          eip2612Utils,
+          inputToken,
+          nonce,
+          permitInfo,
+          spender,
         })
       } finally {
         postSignCallback?.()
@@ -93,6 +92,6 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
       return hookData
     },
-    [provider, chainId, getCachedPermit, storePermit],
+    [config, publicClient, chainId, getCachedPermit, storePermit],
   )
 }

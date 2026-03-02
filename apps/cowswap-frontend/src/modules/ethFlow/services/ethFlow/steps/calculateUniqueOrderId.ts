@@ -2,7 +2,6 @@ import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
 import type { ContractsOrder as Order } from '@cowprotocol/cow-sdk'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
-import { CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
@@ -10,6 +9,8 @@ import { t } from '@lingui/core/macro'
 import { getSignOrderParams, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow } from 'modules/trade/utils/logger'
+
+import { EthFlowContractData } from 'common/hooks/useContract'
 
 import { EthFlowOrderExistsCallback } from '../../../hooks/useCheckEthFlowOrderExists'
 
@@ -37,7 +38,7 @@ function adjustAmounts(params: PostOrderParams): PostOrderParams {
 
 export async function calculateUniqueOrderId(
   orderParams: PostOrderParams,
-  ethFlowContract: CoWSwapEthFlow,
+  ethFlowContract: EthFlowContractData,
   checkEthFlowOrderExists: EthFlowOrderExistsCallback,
 ): Promise<UniqueOrderIdResult> {
   logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)

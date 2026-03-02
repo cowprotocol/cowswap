@@ -3,6 +3,8 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { SafeTransactionParams } from 'common/types'
 
+import type { Hex } from 'viem'
+
 // Read more: https://github.com/rndlabs/composable-cow#data-structure
 export interface TWAPOrder {
   sellAmount: CurrencyAmount<Token>
@@ -28,7 +30,7 @@ export interface TWAPOrderStruct {
   // timeInterval
   t: number
   span: number
-  appData: string
+  appData: Hex
 }
 
 export enum TwapOrderStatus {
@@ -60,19 +62,19 @@ export interface TwapOrderItem {
   executedDate?: string
   submissionDate: string
   safeAddress: string
-  id: string
+  id: Hex
   safeTxParams?: SafeTransactionParams
   executionInfo: TwapOrdersExecution
 }
 
 export interface ConditionalOrderParams {
-  staticInput: string
-  salt: string
+  staticInput: Hex
+  salt: Hex
   handler: string
 }
 
 export interface TwapOrderInfo {
-  id: string
+  id: Hex
   orderStruct: TWAPOrderStruct
   safeData: TwapOrdersSafeData
 }

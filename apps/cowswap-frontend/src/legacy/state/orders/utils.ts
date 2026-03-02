@@ -416,7 +416,7 @@ export function getRemainderAmountsWithoutSurplus(order: GenericOrder): {
 function getSurplusAmountBigNumber(order: GenericOrder): BigNumber {
   if ('executionData' in order) {
     // ParsedOrder
-    return order.executionData.surplusAmount
+    return new BigNumber(order.executionData.surplusAmount.toString())
   }
   // Order
   return getOrderSurplus(order).amount
