@@ -28,6 +28,7 @@ import {
 import { getApproxStatsUpdatedAt } from '../lib/affiliateProgramUtils'
 
 export interface MetricsCardItem {
+  id: string
   label: ReactNode
   value: string
 }
@@ -75,8 +76,8 @@ export function MetricsCard({
       </CardTitle>
       <RewardsMetricsRow>
         <RewardsMetricsList>
-          {items.map(({ label, value }, index) => (
-            <MetricItem key={`${index}-${value}`}>
+          {items.map(({ id, label, value }) => (
+            <MetricItem key={id}>
               <LabelContent>{label}</LabelContent>
               <MetricValue>{value}</MetricValue>
             </MetricItem>
