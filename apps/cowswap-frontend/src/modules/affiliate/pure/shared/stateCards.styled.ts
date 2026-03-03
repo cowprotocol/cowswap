@@ -13,14 +13,11 @@ export const IneligibleCard = styled(Card)<{ $maxWidth?: number }>`
   text-align: center;
   gap: 20px;
   position: relative;
-
-  img {
-    filter: grayscale(100%) opacity(0.33);
-  }
 `
 
 export const IneligibleImage = styled.img`
-  filter: grayscale(100%) opacity(0.5);
+  filter: ${({ theme }) =>
+    theme.darkMode ? 'grayscale(100%) opacity(0.5)' : 'grayscale(100%) brightness(0.86) contrast(1.08) opacity(0.78)'};
 `
 
 export const IneligibleTitle = styled.h3`
@@ -32,6 +29,7 @@ export const IneligibleTitle = styled.h3`
 export const IneligibleSubtitle = styled.p`
   margin: 0;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+  line-height: 1.5;
   max-width: 520px;
 
   strong {
