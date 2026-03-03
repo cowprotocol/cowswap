@@ -137,7 +137,7 @@ export const BubbleContent = styled.div<{ $variant: CowSpeechBubbleVariant }>`
         `
       : css`
           align-items: stretch;
-          max-height: min(220px, 45vh);
+          max-height: min(226px, 45vh);
           overflow-y: auto;
           padding-right: 4px;
           scrollbar-gutter: stable;
