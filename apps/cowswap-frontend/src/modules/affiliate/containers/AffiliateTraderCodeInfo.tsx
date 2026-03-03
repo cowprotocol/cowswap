@@ -65,13 +65,13 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <span>
                 <Trans>Linked since</Trans>
               </span>
-              <MetricValue>{isLinked && stats ? formatShortDate(stats.linked_since) : '-'}</MetricValue>
+              <MetricValue>{isLinked && stats ? (formatShortDate(stats.linked_since) ?? '-') : '-'}</MetricValue>
             </MetricItem>
             <MetricItem>
               <span>
                 <Trans>Rewards end</Trans>
               </span>
-              <MetricValue>{isLinked && stats ? formatShortDate(stats.rewards_end) : '-'}</MetricValue>
+              <MetricValue>{isLinked && stats ? (formatShortDate(stats.rewards_end) ?? '-') : '-'}</MetricValue>
             </MetricItem>
           </LinkedMetaList>
           {!isLinked && (
