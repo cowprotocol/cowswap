@@ -25,7 +25,12 @@ function setVisibilityState(state: VisibilityStateValue): void {
   })
 }
 
-function buildWalletDetails(walletName: string): WalletDetails {
+function dispatchVisibilityChange(state: VisibilityStateValue): void {
+  setVisibilityState(state)
+  document.dispatchEvent(new Event('visibilitychange'))
+}
+
+function buildWalletDetails(walletName: string | undefined): WalletDetails {
   return {
     walletName,
     isSmartContractWallet: false,
@@ -71,17 +76,15 @@ describe('useWalletSessionDuration', () => {
     // First hide: 6s elapsed (>= 5s threshold)
     nowMs = 7_000
     act(() => {
-      setVisibilityState('hidden')
-      document.dispatchEvent(new Event('visibilitychange'))
-      setVisibilityState('visible')
+      dispatchVisibilityChange('hidden')
+      dispatchVisibilityChange('visible')
     })
 
     // Second hide: 6s elapsed since last checkpoint
     nowMs = 13_000
     act(() => {
-      setVisibilityState('hidden')
-      document.dispatchEvent(new Event('visibilitychange'))
-      setVisibilityState('visible')
+      dispatchVisibilityChange('hidden')
+      dispatchVisibilityChange('visible')
     })
 
     // Cleanup: 6s elapsed since last checkpoint
@@ -118,8 +121,7 @@ describe('useWalletSessionDuration', () => {
     // 4.5s elapsed — below 5s threshold (even though it would round to 5)
     nowMs = 5_500
     act(() => {
-      setVisibilityState('hidden')
-      document.dispatchEvent(new Event('visibilitychange'))
+      dispatchVisibilityChange('hidden')
     })
 
     unmount()
@@ -137,8 +139,7 @@ describe('useWalletSessionDuration', () => {
     // 8s elapsed (>= 5s threshold)
     nowMs = 9_000
     act(() => {
-      setVisibilityState('hidden')
-      document.dispatchEvent(new Event('visibilitychange'))
+      dispatchVisibilityChange('hidden')
     })
 
     expect(sendEventMock).toHaveBeenCalledTimes(1)
@@ -159,10 +160,74 @@ describe('useWalletSessionDuration', () => {
 
     // Disconnect: account and walletName become undefined
     mockUseWalletInfo.mockReturnValue({ account: undefined, chainId: 1 })
-    mockUseWalletDetails.mockReturnValue(buildWalletDetails(undefined as unknown as string))
+    mockUseWalletDetails.mockReturnValue(buildWalletDetails(undefined))
     rerender()
 
     // The cleanup of the previous effect should emit with 'Rainbow', not 'Unknown'
+    expect(sendEventMock).toHaveBeenCalledTimes(1)
+    expect(sendEventMock).toHaveBeenCalledWith({
+      category: 'Wallet',
+      action: 'wallet_session_duration',
+      label: 'Rainbow',
+      value: 6,
+      chainId: 1,
+    })
+  })
+
+  it('does not count hidden time between checkpoints', () => {
+    const { unmount } = renderHook(() => useWalletSessionDuration())
+
+    // 6s visible => emits first checkpoint
+    nowMs = 7_000
+    act(() => {
+      dispatchVisibilityChange('hidden')
+    })
+
+    // 20s hidden => must not be counted
+    nowMs = 27_000
+    act(() => {
+      dispatchVisibilityChange('visible')
+    })
+
+    // 2s visible after returning => below threshold, should not emit
+    nowMs = 29_000
+    act(() => {
+      dispatchVisibilityChange('hidden')
+    })
+
+    unmount()
+
+    expect(sendEventMock).toHaveBeenCalledTimes(1)
+    expect(sendEventMock).toHaveBeenLastCalledWith({
+      category: 'Wallet',
+      action: 'wallet_session_duration',
+      label: 'Rainbow',
+      value: 6,
+      chainId: 1,
+    })
+  })
+
+  it('accumulates visible chunks across hidden periods until threshold is reached', () => {
+    renderHook(() => useWalletSessionDuration())
+
+    // 3s visible => no emit yet
+    nowMs = 4_000
+    act(() => {
+      dispatchVisibilityChange('hidden')
+    })
+
+    // Hidden for 30s => ignored
+    nowMs = 34_000
+    act(() => {
+      dispatchVisibilityChange('visible')
+    })
+
+    // Another 3s visible => total visible 6s => emit once
+    nowMs = 37_000
+    act(() => {
+      dispatchVisibilityChange('hidden')
+    })
+
     expect(sendEventMock).toHaveBeenCalledTimes(1)
     expect(sendEventMock).toHaveBeenCalledWith({
       category: 'Wallet',

@@ -6,20 +6,23 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 const MIN_SESSION_DURATION_MS = 5_000
 
 /**
- * Tracks how long a wallet stays connected on a visible page.
+ * Tracks visible engagement while a wallet is connected.
  *
- * Session duration is captured via two triggers:
+ * Duration is accumulated only while `document.visibilityState === 'visible'`.
+ * Hidden intervals are paused and excluded from `wallet_session_duration`.
+ *
+ * Checkpoints are flushed on:
  * 1. `visibilitychange` — fires when the tab goes hidden (tab switch, minimize).
- *    Short interruptions (< MIN_SESSION_DURATION_MS) are filtered out.
  * 2. Effect cleanup — fires on unmount (wallet disconnect, chain change, navigation).
  *
- * Each trigger sends a delta checkpoint, not cumulative time.
+ * Each flush sends a visible-time delta checkpoint when it reaches the minimum threshold.
  */
 export function useWalletSessionDuration(): void {
   const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
-  const startRef = useRef<number>(0)
+  const visibleStartRef = useRef<number | null>(null)
+  const accumulatedVisibleMsRef = useRef<number>(0)
   const walletNameRef = useRef<string | undefined>(walletName)
 
   // Sync walletNameRef via useEffect so that cleanup of the *previous* effect
@@ -33,14 +36,28 @@ export function useWalletSessionDuration(): void {
       return
     }
 
-    startRef.current = Date.now()
+    visibleStartRef.current = document.visibilityState === 'visible' ? Date.now() : null
+    accumulatedVisibleMsRef.current = 0
 
-    const sendDuration = (): boolean => {
-      if (!startRef.current) {
-        return false
+    const pauseVisibleTracking = (): void => {
+      if (visibleStartRef.current === null) {
+        return
       }
 
-      const elapsedMs = Date.now() - startRef.current
+      accumulatedVisibleMsRef.current += Date.now() - visibleStartRef.current
+      visibleStartRef.current = null
+    }
+
+    const resumeVisibleTracking = (): void => {
+      if (document.visibilityState !== 'visible' || visibleStartRef.current !== null) {
+        return
+      }
+
+      visibleStartRef.current = Date.now()
+    }
+
+    const sendDuration = (): boolean => {
+      const elapsedMs = accumulatedVisibleMsRef.current
 
       if (elapsedMs < MIN_SESSION_DURATION_MS) {
         return false
@@ -56,25 +73,28 @@ export function useWalletSessionDuration(): void {
         chainId,
       })
 
+      accumulatedVisibleMsRef.current = 0
       return true
     }
 
     const handleVisibilityChange = (): void => {
       if (document.visibilityState === 'hidden') {
-        const didSend = sendDuration()
-
-        // Use delta checkpoints across hide cycles instead of cumulative values from the initial connect time.
-        if (didSend) {
-          startRef.current = Date.now()
-        }
+        pauseVisibleTracking()
+        sendDuration()
+        return
       }
+
+      resumeVisibleTracking()
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
+      pauseVisibleTracking()
       sendDuration()
+      visibleStartRef.current = null
+      accumulatedVisibleMsRef.current = 0
     }
   }, [account, chainId, cowAnalytics])
 }
