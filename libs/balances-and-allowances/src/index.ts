@@ -4,7 +4,7 @@ export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updat
 
 // Atoms
 export { balancesAtom } from './state/balancesAtom'
-// export { allowancesAtom } from './state/allowancesAtom'
+export { allowancesAtom, tokenAllowancesLoadableAtomFamily } from './state/allowancesAtom'
 
 // Hooks
 export { useTokensBalances } from './hooks/useTokensBalances'

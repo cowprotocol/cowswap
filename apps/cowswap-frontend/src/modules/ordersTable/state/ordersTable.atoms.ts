@@ -1,12 +1,14 @@
 import { atom } from 'jotai'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
-import { balancesAtom } from '@cowprotocol/balances-and-allowances'
+import { balancesAtom, tokenAllowancesLoadableAtomFamily } from '@cowprotocol/balances-and-allowances'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
+
+import { loadable } from 'jotai/utils'
 
 import { observe } from 'jotai-effect'
 
@@ -208,21 +210,23 @@ ordersTableStateAtom.onMount = () => {
 
       }
 
-      const ordersTokens = Array.from(ordersTokensSet)
+      const ordersTokensAddresses = Array.from(ordersTokensSet)
 
       console.log('2. reduxOrders =', reduxOrders)
 
       const balancesState = get(balancesAtom)
-      // const allowancesState = get(allowancesAtom) // TODO: Needs ordersTokens to get allowances...
+      const allowancesLoadable = get(tokenAllowancesLoadableAtomFamily(ordersTokensAddresses))
       const pendingOrdersPermitValidityState = get(pendingOrdersPermitValidityStateAtom)
 
       const { isLoading: balancesLoading, values: balances } = balancesState
-      // const { isLoading: allowancesLoading, state: allowances } = allowancesState
+      const allowancesLoading = allowancesLoadable.state === 'loading'
+      const allowances =
+        allowancesLoadable.state === 'hasData' ? allowancesLoadable.data : undefined
 
       const balancesAndAllowances: BalancesAndAllowances = {
-        isLoading: balancesLoading /* || allowancesLoading*/,
+        isLoading: balancesLoading || allowancesLoading,
         balances,
-        allowances: {},
+        allowances,
       }
 
       // All orders of orderType:

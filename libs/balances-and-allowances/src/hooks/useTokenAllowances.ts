@@ -24,6 +24,17 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   state: AllowancesState | undefined
   isLoading: boolean
 } {
+  // TODO: Use tokenAllowancesLoadableAtomFamily
+
+  /*
+
+  const loadable = useLoadable(tokenAllowancesLoadableAtomFamily(tokenAddresses))
+  const isLoading = loadable.state === 'loading'
+  const state = loadable.state === 'hasData' ? loadable.data : undefined
+  return { state, isLoading }
+
+  */
+
   const { chainId, account } = useWalletInfo()
 
   const spender = useTradeSpenderAddress()
