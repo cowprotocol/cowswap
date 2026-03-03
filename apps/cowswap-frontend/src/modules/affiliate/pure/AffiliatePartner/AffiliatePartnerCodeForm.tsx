@@ -9,6 +9,7 @@ import { RotateCw } from 'react-feather'
 import { REF_CODE_MIN_LENGTH } from 'modules/affiliate'
 
 import { AffiliatePartnerCodeErrorMessage } from './AffiliatePartnerCodeErrorMessage'
+import { getAffiliatePartnerUnavailableAdornmentLabel } from './AffiliatePartnerCodeErrorMessage.utils'
 
 import { PartnerCodeAvailability } from '../../hooks/useAffiliatePartnerCodeAvailability'
 import { AffiliatePartnerCodeCreateError } from '../../lib/affiliatePartnerCodeCreateError'
@@ -99,6 +100,7 @@ export function AffiliatePartnerCodeForm({
             hasError={hasError}
             disabled={submitting}
             adornmentVariant={ADORNMENT_VARIANT_MAP[availability]}
+            adornmentLabel={getAdornmentLabel(availability, error)}
             onKeyDown={handleInputKeyDown}
             {...rest}
           />
@@ -127,4 +129,12 @@ const ADORNMENT_VARIANT_MAP: Record<PartnerCodeAvailability, RefCodeAdornmentVar
   [PartnerCodeAvailability.Checking]: 'checking',
   [PartnerCodeAvailability.Available]: 'available',
   [PartnerCodeAvailability.Unavailable]: 'error',
+}
+
+function getAdornmentLabel(
+  availability: PartnerCodeAvailability,
+  error?: AffiliatePartnerCodeCreateError,
+): string | undefined {
+  if (availability !== PartnerCodeAvailability.Unavailable) return undefined
+  return getAffiliatePartnerUnavailableAdornmentLabel(error)
 }

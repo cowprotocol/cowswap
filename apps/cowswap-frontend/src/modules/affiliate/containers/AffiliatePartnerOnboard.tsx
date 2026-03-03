@@ -21,7 +21,15 @@ import {
   isSupportedPayoutsNetwork,
 } from '../lib/affiliateProgramUtils'
 import { HowItWorks } from '../pure/HowItWorks'
-import { HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle, InlineNote } from '../pure/shared'
+import {
+  AffiliateInlineLink,
+  HeroActions,
+  HeroCard,
+  HeroContent,
+  HeroSubtitle,
+  HeroTitle,
+  InlineNote,
+} from '../pure/shared'
 
 export function AffiliatePartnerOnboard(): ReactNode {
   const provider = useWalletProvider()
@@ -88,9 +96,9 @@ export function AffiliatePartnerOnboard(): ReactNode {
         </HeroActions>
         <InlineNote>
           <Trans>Affiliate payouts and registration happen on Ethereum mainnet.</Trans>{' '}
-          <a href={AFFILIATE_TERMS_URL} target="_blank" rel="noopener noreferrer">
+          <AffiliateInlineLink href={AFFILIATE_TERMS_URL} target="_blank" rel="noopener noreferrer">
             <Trans>See Terms</Trans>
-          </a>
+          </AffiliateInlineLink>
         </InlineNote>
       </HeroContent>
     </HeroCard>

@@ -24,7 +24,7 @@ export function SideMenu({
 
 const Wrapper = styled.div<{ longList?: boolean }>`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   font-size: 16px;
   font-weight: 500;
   line-height: 1;
@@ -50,12 +50,13 @@ const Wrapper = styled.div<{ longList?: boolean }>`
 
     ${({ longList }) => (longList ? Media.upToMedium : Media.upToSmall)()} {
       height: auto;
+      width: 100%;
     }
   }
 
   > div > ul {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -66,6 +67,7 @@ const Wrapper = styled.div<{ longList?: boolean }>`
       border-radius: 16px;
       padding: 12px;
       margin: 0 0 24px;
+      width: 100%;
     }
 
     > li {

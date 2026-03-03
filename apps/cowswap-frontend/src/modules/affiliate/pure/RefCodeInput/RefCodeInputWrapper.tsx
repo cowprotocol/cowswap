@@ -1,6 +1,6 @@
 import { PropsWithChildren, ReactNode } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -9,6 +9,7 @@ interface RefCodeInputWrapperProps extends PropsWithChildren {
   disabled: boolean
   isLoading: boolean
   compactSize?: boolean
+  belowAdornmentMode?: 'none' | 'auto' | 'always'
 }
 
 export function RefCodeInputWrapper({
@@ -16,6 +17,7 @@ export function RefCodeInputWrapper({
   disabled,
   isLoading,
   compactSize,
+  belowAdornmentMode = 'none',
   ...rest
 }: RefCodeInputWrapperProps): ReactNode {
   return (
@@ -24,6 +26,7 @@ export function RefCodeInputWrapper({
       $disabled={disabled}
       $isLoading={isLoading}
       $compactSize={compactSize}
+      $belowAdornmentMode={belowAdornmentMode}
       {...rest}
     />
   )
@@ -34,6 +37,7 @@ const InputWrapper = styled.div<{
   $disabled: boolean
   $isLoading: boolean
   $compactSize?: boolean
+  $belowAdornmentMode: 'none' | 'auto' | 'always'
 }>`
   display: flex;
   align-items: center;
@@ -44,7 +48,7 @@ const InputWrapper = styled.div<{
   background: ${({ $hasError, $disabled }) =>
     $hasError ? `var(${UI.COLOR_DANGER_BG})` : $disabled ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ $hasError }) => ($hasError ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_TEXT})`)};
-  border-radius: 9px;
+  border-radius: ${({ $belowAdornmentMode }) => ($belowAdornmentMode === 'always' ? '9px 9px 0 0' : '9px')};
   padding: ${({ $compactSize }) => ($compactSize ? '10px 12px' : '12px 14px')};
   transition: border 0.2s ease;
   min-height: ${({ $compactSize }) => ($compactSize ? '48px' : '58px')};
@@ -71,6 +75,14 @@ const InputWrapper = styled.div<{
         inset: 0;
         z-index: 0;
         pointer-events: none;
+      }
+    `}
+
+  ${({ $belowAdornmentMode }) =>
+    $belowAdornmentMode === 'auto' &&
+    css`
+      ${Media.upToSmall()} {
+        border-radius: 9px 9px 0 0;
       }
     `}
 `

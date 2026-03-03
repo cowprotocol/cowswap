@@ -7,12 +7,11 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { Donut } from './Donut.pure'
 import {
   BottomMetaRow,
   CardTitle,
   ColumnTwoCard,
-  Donut,
-  DonutValue,
   LabelContent,
   MetricItem,
   MetricValue,
@@ -81,11 +80,9 @@ export function MetricsCard({
             </MetricItem>
           ))}
         </RewardsMetricsList>
-        <Donut $value={donutValue}>
-          <DonutValue>
-            <span>{donutLabel}</span>
-            {donutSubtitle ? <small>{donutSubtitle}</small> : null}
-          </DonutValue>
+        <Donut value={donutValue}>
+          <span>{donutLabel}</span>
+          {donutSubtitle ? <small>{donutSubtitle}</small> : null}
         </Donut>
       </RewardsMetricsRow>
       <BottomMetaRow>
