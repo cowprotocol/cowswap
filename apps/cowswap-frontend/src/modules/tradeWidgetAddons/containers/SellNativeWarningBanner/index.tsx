@@ -50,12 +50,15 @@ export function SellNativeWarningBanner() {
         <Button onClick={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}>
           <Trans>Switch to {wrappedNativeSymbol}</Trans>
         </Button>
+        {' '}
         <Trans>or</Trans>
+        {' '}
         <Button onClick={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped, undefined, queryParams)}>
           <Trans>
             Wrap {nativeSymbol} to {wrappedNativeSymbol}
           </Trans>
         </Button>
+        {' '}
         <Trans>first.</Trans>
       </p>
     </InlineBanner>
