@@ -4,7 +4,7 @@ import { AffiliatePartnerCodeCreateError } from '../../lib/affiliatePartnerCodeC
 
 export function getAffiliatePartnerCodeErrorMessage(error: AffiliatePartnerCodeCreateError): string {
   if (error === AffiliatePartnerCodeCreateError.SignatureRejected) return t`Signature request rejected.`
-  if (error === AffiliatePartnerCodeCreateError.Unavailable) return t`This code is taken. Generate another one.`
+  if (error === AffiliatePartnerCodeCreateError.Unavailable) return getAffiliateCodeTakenMessage()
   if (error === AffiliatePartnerCodeCreateError.NetworkError)
     return t`Affiliate service is unreachable. Try again later.`
   return t`Unable to create affiliate code.`
@@ -12,5 +12,9 @@ export function getAffiliatePartnerCodeErrorMessage(error: AffiliatePartnerCodeC
 
 export function getAffiliatePartnerUnavailableAdornmentLabel(error?: AffiliatePartnerCodeCreateError): string {
   if (error === AffiliatePartnerCodeCreateError.NetworkError) return t`Error`
+  return getAffiliateCodeTakenMessage()
+}
+
+function getAffiliateCodeTakenMessage(): string {
   return t`This code is taken. Generate another one.`
 }
