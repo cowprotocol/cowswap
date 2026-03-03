@@ -53,8 +53,10 @@ export interface OrderActions {
   approveOrderToken(token: Token): void
 }
 
+// TODO: Add TS Doc about what each of them is:
 export interface OrdersTableState {
   reduxOrders: Order[]
+  pendingOrders: Order[]
   ordersList: OrdersTableList
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]

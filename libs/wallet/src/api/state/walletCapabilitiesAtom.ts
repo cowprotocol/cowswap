@@ -1,20 +1,17 @@
-import { getCapabilities } from 'wagmi/actions'
-
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
-import { walletInfoAtom } from '../state'
-import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
-
-import { config } from '../../wagmi/config'
-import { useWidgetProviderMetaInfo } from 'src/api/hooks/useWidgetProviderMetaInfo'
-import { getRpcProvider, LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
+import { getRpcProvider } from '@cowprotocol/common-const'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
-import { useWalletCapabilities } from 'src/api/hooks/useWalletCapabilities'
-import { isSafeAppAtom, isSafeViaWcAtom, useIsSafeApp } from 'src/web3-react/hooks/useWalletMetadata'
+
+import { isSafeAppAtom, isSafeViaWcAtom } from 'src/web3-react/hooks/useWalletMetadata'
+import { getCapabilities } from 'wagmi/actions'
+
+import { config } from '../../wagmi/config'
+import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
+import { walletInfoAtom } from '../state'
 
 function fetchWidgetProviderMetaInfo(chainId: SupportedChainId): Promise<ProviderMetaInfoPayload | null> {
   // TODO M-6 COW-573
@@ -27,9 +24,8 @@ function fetchWidgetProviderMetaInfo(chainId: SupportedChainId): Promise<Provide
     })
   }
 
-  return Promise.resolve(null);
+  return Promise.resolve(null)
 }
-
 
 /**
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
@@ -37,7 +33,7 @@ function fetchWidgetProviderMetaInfo(chainId: SupportedChainId): Promise<Provide
  */
 export async function getShouldCheckCapabilities(
   isWalletConnect: boolean,
-  chainId: SupportedChainId
+  chainId: SupportedChainId,
 ): Promise<boolean> {
   // When widget in the mobile device, wait till providerWcMetadata is loaded
   // In order to detect if is connected to WalletConnect
@@ -86,7 +82,7 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
 
     if (!result) return undefined
 
-    const chainIdHex = `0x${ chainId.toString(16) }`
+    const chainIdHex = `0x${chainId.toString(16)}`
     const byChain = result as Record<string, WalletCapabilities> | WalletCapabilities
 
     if (typeof (byChain as Record<string, WalletCapabilities>)[chainIdHex] !== 'undefined') {
@@ -119,3 +115,5 @@ export const isBundlingSupportedAtom = atom(async (get): Promise<boolean | null>
 
   return !!get(isSafeViaWcAtom) && walletCapabilities.atomic?.status === 'supported'
 })
+
+export const isBundlingSupportedLoadableAtom = loadable(isBundlingSupportedAtom)

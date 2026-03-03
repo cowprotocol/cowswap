@@ -1,44 +1,46 @@
 import { atom } from 'jotai'
 
-import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
-import { balancesAtom, tokenAllowancesLoadableAtomFamily } from '@cowprotocol/balances-and-allowances'
+import {
+  BalancesAndAllowances,
+  balancesAtom,
+  tokenAllowancesLoadableFamily,
+} from '@cowprotocol/balances-and-allowances'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { walletInfoAtom } from '@cowprotocol/wallet'
-
-import { loadable } from 'jotai/utils'
+import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wallet'
 
 import { observe } from 'jotai-effect'
 
 import { cowSwapStore } from 'legacy/state'
-import { Order } from 'legacy/state/orders/actions'
 import {
+  OrderStatus,
+  Order,
   setIsOrderUnfillable as createSetIsOrderUnfillableAction,
   SetIsOrderUnfillableParams,
 } from 'legacy/state/orders/actions'
 import { _concatOrdersState } from 'legacy/state/orders/hooks'
-import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork } from 'legacy/state/orders/reducer'
-import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
+import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork, getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
-import { emulatedPartOrdersAtom } from 'modules/twap/hooks/useEmulatedPartOrders'
+
 import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/utils/getFilteredOrders'
 import { getOrdersTableList } from 'modules/ordersTable/utils/getOrdersTableList'
+import { emulatedPartOrdersAtom } from 'modules/twap/hooks/useEmulatedPartOrders'
+import { emulatedTwapOrdersAtom } from 'modules/twap/hooks/useEmulatedTwapOrders'
 
+import { locationOrderTypeAtom } from 'common/state/routesState'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { OrdersTableState, OrdersTableFilters, TabOrderTypes } from './ordersTable.types'
 import { tabParamAtom } from './params/ordersTableParams.atoms'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
 import { OrderTabId } from './tabs/ordersTableTabs.constants'
-import { locationOrderTypeAtom } from 'common/state/routesState'
-import { emulatedTwapOrdersAtom } from 'modules/twap/hooks/useEmulatedTwapOrders'
-import { isBundlingSupportedAtom } from '../../../../../../libs/wallet/src/api/state/walletCapabilitiesAtom'
 
 export const ordersTableStateAtom = atom<OrdersTableState>({
   reduxOrders: [],
+  pendingOrders: [],
   orders: [],
   ordersList: {
     open: [],
@@ -73,6 +75,7 @@ ordersTableFiltersAtom.onMount = () => {
     get(tabParamAtom)
 
     // Reset filters if tab changes:
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     set(partiallyUpdateOrdersTableFiltersAtom as any, {
       searchTerm: '',
       historyStatusFilter: HistoryStatusFilter.FILLED,
@@ -90,7 +93,13 @@ const reduxOrdersStateByChainAtom = atom((get) => (chainId: SupportedChainId) =>
   return { ...getDefaultNetworkState(chainId), ...reduxOrdersStateByChain }
 })
 
+function setIsOrderUnfillable(params: SetIsOrderUnfillableParams): void {
+  cowSwapStore.dispatch(createSetIsOrderUnfillableAction(params))
+}
+
+// eslint-disable-next-line max-lines-per-function
 ordersTableStateAtom.onMount = () => {
+  // eslint-disable-next-line max-lines-per-function
   const unobserve = observe((get, set) => {
     const { chainId, account } = get(walletInfoAtom)
     const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom)
@@ -103,7 +112,7 @@ ordersTableStateAtom.onMount = () => {
     const ordersTokensSet = new Set<string>()
 
     if (reduxOrdersStateInCurrentChain && account) {
-      const orderType = get(locationOrderTypeAtom);
+      const orderType = get(locationOrderTypeAtom)
       const accountLowerCase = account.toLowerCase()
 
       const uiOrderType: UiOrderType = {
@@ -167,10 +176,12 @@ ordersTableStateAtom.onMount = () => {
         // Then allEmulatedOrders goes into the updater
         */
 
-        const isBundlingSupported = get(isBundlingSupportedAtom)
+        const isBundlingSupportedLoadable = get(isBundlingSupportedLoadableAtom)
+        const isBundlingSupported =
+          isBundlingSupportedLoadable.state === 'hasData' ? !!isBundlingSupportedLoadable.data : false
 
         if (!isBundlingSupported) {
-          reduxOrders = [];
+          reduxOrders = []
         } else {
           // reduxOrders = useOrders(chainId, account, UiOrderType.TWAP)
 
@@ -181,13 +192,10 @@ ordersTableStateAtom.onMount = () => {
 
           const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
 
-
           // TODO: AdvancedOrdersPage needs this plus pendingOrders:
           // const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
-          reduxOrders = emulatedTwapOrders
-            .concat(emulatedPartOrders)
-            .concat(discreteTwapOrders)
+          reduxOrders = emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)
         }
       } else if (orderType === TabOrderTypes.LIMIT) {
         /*
@@ -205,22 +213,29 @@ ordersTableStateAtom.onMount = () => {
         No extra processing here, we just continue with reduxOrders...
 
         */
-
-
       }
 
+      const pendingOrders: Order[] = reduxOrders.filter((order) => order.status === OrderStatus.PENDING)
+
+      // TODO: This can probably be optimized, as we are loading allowances for all orders tokens regardless of order
+      // type or status.
       const ordersTokensAddresses = Array.from(ordersTokensSet)
 
       console.log('2. reduxOrders =', reduxOrders)
 
       const balancesState = get(balancesAtom)
-      const allowancesLoadable = get(tokenAllowancesLoadableAtomFamily(ordersTokensAddresses))
+      const allowancesLoadable = get(
+        tokenAllowancesLoadableFamily({
+          chainId,
+          account,
+          tokenAddresses: ordersTokensAddresses,
+        }),
+      )
       const pendingOrdersPermitValidityState = get(pendingOrdersPermitValidityStateAtom)
 
       const { isLoading: balancesLoading, values: balances } = balancesState
       const allowancesLoading = allowancesLoadable.state === 'loading'
-      const allowances =
-        allowancesLoadable.state === 'hasData' ? allowancesLoadable.data : undefined
+      const allowances = allowancesLoadable.state === 'hasData' ? allowancesLoadable.data : undefined
 
       const balancesAndAllowances: BalancesAndAllowances = {
         isLoading: balancesLoading || allowancesLoading,
@@ -229,9 +244,6 @@ ordersTableStateAtom.onMount = () => {
       }
 
       // All orders of orderType:
-
-      const setIsOrderUnfillable = (params: SetIsOrderUnfillableParams) =>
-        cowSwapStore.dispatch(createSetIsOrderUnfillableAction(params))
 
       const ordersList = getOrdersTableList(
         reduxOrders,
@@ -264,6 +276,7 @@ ordersTableStateAtom.onMount = () => {
 
       set(ordersTableStateAtom, {
         reduxOrders,
+        pendingOrders,
         ordersList,
         orders,
         filteredOrders,

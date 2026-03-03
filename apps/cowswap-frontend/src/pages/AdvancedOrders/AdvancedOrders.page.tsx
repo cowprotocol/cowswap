@@ -6,7 +6,6 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useLingui } from '@lingui/react/macro'
 
 import { Loading } from 'legacy/components/FlashingLoading'
-import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   advancedOrdersAtom,
@@ -20,6 +19,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
+import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
@@ -43,7 +43,7 @@ export function AdvancedOrdersPage(): ReactNode {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
-  const allEmulatedOrders = useAtomValue(twapOrdersTableAtom)
+  const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const twapFormValidation = useTwapFormState()
@@ -53,7 +53,6 @@ export function AdvancedOrdersPage(): ReactNode {
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
-  const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
   useResetOrdersTableFilters({
     historyStatusFilter: HistoryStatusFilter.FILLED,
@@ -91,7 +90,7 @@ export function AdvancedOrdersPage(): ReactNode {
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper>
             <Suspense fallback={<Loading />}>
-              <OrdersTableWidget /* orders={allEmulatedOrders} */ />
+              <OrdersTableWidget />
             </Suspense>
           </styledEl.SecondaryWrapper>
         )}

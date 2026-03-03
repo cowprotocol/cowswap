@@ -9,6 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders'
+import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 import { ordersTableParamsAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
@@ -31,7 +32,6 @@ import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
-import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
   const start = (pageNumber - 1) * pageSize
@@ -41,7 +41,7 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
-export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/): ReactNode {
+export function OrdersTableWidget(): ReactNode {
   const { i18n } = useLingui()
 
   const { searchTerm: searchTermFilter, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
@@ -77,7 +77,7 @@ export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/):
   }, [currentTabId])
   */
 
-  const pendingOrders = useMemo(() => {
+  const pendingOrdersInCurrentPage = useMemo(() => {
     const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
 
     if (!isTabWithPending || !filteredOrders || typeof currentPageNumber !== 'number') return undefined
@@ -93,16 +93,16 @@ export function OrdersTableWidget(/*{ orders: allOrders }: OrdersTableParams*/):
     })
   }, [currentTabId, filteredOrders, currentPageNumber])
 
-  const hasPendingOrders = !!pendingOrders?.length
+  const hasPendingOrdersInCurrentPage = !!pendingOrdersInCurrentPage?.length
 
   return (
     <>
-      {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
+      {hasPendingOrdersInCurrentPage && <UnfillableOrdersUpdater orders={pendingOrdersInCurrentPage} />}
 
       {/* <OrdersTableStateUpdater orders={ allOrders } /> */}
 
       <OrdersTableContainer>
-        {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
+        {hasPendingOrdersInCurrentPage && <MultipleCancellationMenu pendingOrders={pendingOrdersInCurrentPage} />}
 
         {/* Show filters only if there are orders */}
         {!!reduxOrders?.length && (

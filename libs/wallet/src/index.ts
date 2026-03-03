@@ -53,7 +53,7 @@ export * from './api/state'
 export {
   walletCapabilitiesAtom,
   walletCapabilitiesLoadableAtom,
-  widgetProviderMetaInfoAtom,
+  isBundlingSupportedAtom,
+  isBundlingSupportedLoadableAtom,
   type WalletCapabilities,
-  type WidgetProviderMetaInfoForCapabilities,
 } from './api/state/walletCapabilitiesAtom'
