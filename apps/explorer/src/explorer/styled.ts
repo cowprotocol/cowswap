@@ -36,14 +36,17 @@ export const GlobalStyle = createGlobalStyle`
     position: relative;
   }
 
-  body {
-    --scrollbarWidth: 0.6rem;
+  html body {
+    height: 100%;
+    -webkit-tap-highlight-color: transparent;
+    --scrollbarWidth: 0.5rem;
+
     &::-webkit-scrollbar {
       width: var(--scrollbarWidth);
       height: var(--scrollbarWidth);
     }
     &::-webkit-scrollbar-thumb {
-      background-color: ${Color.explorer_bgLighter};
+      background: hsla(0, 0%, 100%, 0.35);
       border-radius: 2rem;
     }
     &::-webkit-scrollbar-track {
