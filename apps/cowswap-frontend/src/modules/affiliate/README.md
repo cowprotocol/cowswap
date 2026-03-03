@@ -62,20 +62,11 @@ flowchart TB
 - This does not affect historical payouts
 - It can be bypassed by traders that do not use our frontend
 
-## 5.2) Default params + updates
+## 5.2) Updating the default params
 
 - Maintainers can change the program defaults by updating the CMS environment variables:
   1. Tweak params in `/workspaces/infrastructure/cms/index.ts`
   2. Run `pulumi up` in `/workspaces/infrastructure/cms` (after ssologin, pulumi stack select)
-
-- CMS env defaults:
-  - `AFFILIATE_REWARD_AMOUNT` = `20`
-  - `AFFILIATE_TRIGGER_VOLUME` = `250000`
-  - `AFFILIATE_TIME_CAP_DAYS` = `90`
-  - `AFFILIATE_VOLUME_CAP` = `0` (unlimited)
-  - `AFFILIATE_REVENUE_SPLIT_AFFILIATE_PCT` = `50`
-  - `AFFILIATE_REVENUE_SPLIT_TRADER_PCT` = `50`
-  - `AFFILIATE_REVENUE_SPLIT_DAO_PCT` = `0`
 
 ## 5.3) Special codes
 
