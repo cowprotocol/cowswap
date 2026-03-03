@@ -11,16 +11,15 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
 import type { TokensByAddress } from '@cowprotocol/tokens'
-import { walletInfoAtom } from '@cowprotocol/wallet'
 import { atom, useAtomValue } from 'jotai'
 import { loadable } from 'jotai/utils'
 import { atomFamily }from 'jotai-family'
 import { atomWithQuery } from 'jotai-tanstack-query'
-import { QueryClient } from '@tanstack/react-query'
 import { getTokensListFromOrders } from 'modules/orders'
 
 import { twapOrdersListAtom } from '../index'
 import { tokensByAddressAtom } from '../../../../../../libs/tokens/src/state/tokens/allTokensAtom'
+import { getRpcProvider } from '@cowprotocol/common-const'
 
 // TODO: Move atoms to common/state/tokenByAddressQueryAtoms.ts	 and entities/twap/state/twapOrdersTokensAtoms.ts
 
@@ -42,10 +41,12 @@ export const tokenQueryFamily = atomFamily((key: string) =>
   atomWithQuery(
     (get) => {
       const { chainId, address } = parseTokenKey(key)
-      const { provider } = get(walletInfoAtom)
+
       return {
         queryKey: ['twapOrderToken', chainId, address] as const,
         queryFn: async (): Promise<TokenWithLogo | null> => {
+          const provider = getRpcProvider(chainId)
+
           if (!provider) return null
 
           // TODO M-6 COW-573

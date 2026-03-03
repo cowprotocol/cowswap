@@ -29,7 +29,7 @@ export interface WalletInfo {
   chainId: SupportedChainId
   account?: Address
   active?: boolean
-  provider?: Web3Provider
+  // provider?: Web3Provider
   connector?: Connector
 }
 

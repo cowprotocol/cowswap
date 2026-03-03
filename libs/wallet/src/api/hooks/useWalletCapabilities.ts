@@ -13,10 +13,7 @@ import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 import { useIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
 import { useIsWalletConnect as legacyUseIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
 import { useWalletInfo } from '../hooks'
-
-export type WalletCapabilities = {
-  atomic?: { status: 'supported' | 'ready' | 'unsupported' }
-}
+import type { WalletCapabilities } from '../state/walletCapabilitiesAtom'
 
 const requestTimeout = ms`10s`
 

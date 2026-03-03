@@ -35,6 +35,7 @@ import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPerm
 import { OrderTabId } from './tabs/ordersTableTabs.constants'
 import { locationOrderTypeAtom } from 'common/state/routesState'
 import { emulatedTwapOrdersAtom } from 'modules/twap/hooks/useEmulatedTwapOrders'
+import { isBundlingSupportedAtom } from '../../../../../../libs/wallet/src/api/state/walletCapabilitiesAtom'
 
 export const ordersTableStateAtom = atom<OrdersTableState>({
   reduxOrders: [],
@@ -166,9 +167,7 @@ ordersTableStateAtom.onMount = () => {
         // Then allEmulatedOrders goes into the updater
         */
 
-        // TODO: To be implemented...
-        // const isBundlingSupported = useIsTxBundlingSupported()
-        const isBundlingSupported = true // useIsTxBundlingSupported()
+        const isBundlingSupported = get(isBundlingSupportedAtom)
 
         if (!isBundlingSupported) {
           reduxOrders = [];

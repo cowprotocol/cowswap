@@ -8,6 +8,9 @@ import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hoo
 import { ConnectionType } from '../../api/types'
 import { getConnectionIcon, getConnectionName } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
+import { atom, useAtomValue } from 'jotai'
+import { gnosisSafeInfoAtom, walletInfoAtom } from 'src/api/state'
+import { GnosisSafe } from '@web3-react/gnosis-safe'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -126,6 +129,35 @@ export function useIsSafeApp(): boolean {
   return window?.parent !== window
 }
 
+export const safeAppSdkAtom = atom(get => {
+  const { account, connector } = get(walletInfoAtom)
+
+  return !!account || !(connector instanceof GnosisSafe) || !connector.sdk
+    ? null
+    : connector.sdk;
+})
+
+export const isSafeAppAtom = atom(get => {
+  const isSafeWallet = useAtomValue(gnosisSafeInfoAtom)
+  const sdk = get(safeAppSdkAtom)
+
+  // If the wallet is not a Safe, or we don't have access to the SafeAppsSDK, we know is not a Safe App
+  if (!isSafeWallet || !sdk) {
+    return false
+  }
+
+  // Will only be a SafeApp if within an iframe
+  // Which means, window.parent is different than window
+  return window?.parent !== window
+})
+
+export const isSafeViaWcAtom = atom(get => {
+  const isSafeApp = get(isSafeAppAtom)
+  const isSafeWallet = useAtomValue(gnosisSafeInfoAtom)
+
+  return isSafeWallet && !isSafeApp
+})
+
 /**
  * Detects whether the currently connected wallet is a Safe wallet
  * regardless of the connection method (WalletConnect or inside Safe as an App)
@@ -139,6 +171,7 @@ export function useIsSafeWallet(): boolean {
  * but NOT loaded as a Safe App
  */
 export function useIsSafeViaWc(): boolean {
+  // TODO: Replace with isSafeViaWcAtom
   const isSafeApp = useIsSafeApp()
   const isSafeWallet = useIsSafeWallet()
 
