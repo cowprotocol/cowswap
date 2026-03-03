@@ -12,10 +12,10 @@ import { AffectedPermitOrderWithActions } from '../AffectedPermitOrderWithAction
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
 
 interface AffectedPermitOrdersTableProps {
-  orders: Order[]
+  ordersWithPermit: Order[]
 }
 
-export function AffectedPermitOrdersTable({ orders }: AffectedPermitOrdersTableProps): ReactNode {
+export function AffectedPermitOrdersTable({ ordersWithPermit }: AffectedPermitOrdersTableProps): ReactNode {
   const pendingOrdersPrices = usePendingOrdersPrices()
 
   useResetOrdersTableFilters({
@@ -26,9 +26,7 @@ export function AffectedPermitOrdersTable({ orders }: AffectedPermitOrdersTableP
     <>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
 
-      {/* <OrdersTableStateUpdater orders={orders} /> */}
-
-      {orders.map((order) => (
+      {ordersWithPermit.map((order) => (
         <styledEl.OrderWrapper key={order.id}>
           <AffectedPermitOrderWithActions order={order} />
         </styledEl.OrderWrapper>

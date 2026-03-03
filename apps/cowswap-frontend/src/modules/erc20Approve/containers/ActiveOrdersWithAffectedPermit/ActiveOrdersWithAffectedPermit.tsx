@@ -1,14 +1,12 @@
-import { ReactNode } from 'react'
+import { useAtomValue } from 'jotai'
+import { ReactNode, useMemo } from 'react'
 
 import { TokenSymbol } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
-import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
-
-import { AffectedPermitOrdersTable } from 'modules/ordersTable'
+import { AffectedPermitOrdersTable, ordersTableStateAtom } from 'modules/ordersTable'
 
 import { AccordionBanner } from 'common/pure/AccordionBanner'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
@@ -23,14 +21,17 @@ type ActiveOrdersWithAffectedPermitProps = {
 }
 
 export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode {
+  console.log('ActiveOrdersWithAffectedPermit render')
+
   const { t } = useLingui()
-  const { chainId, account } = useWalletInfo()
-  const pendingOrders = useOnlyPendingOrders(chainId, account)
+  const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
 
-  const ordersWithPermit = pendingOrders.filter((order) => {
-    return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)
-  })
+  const ordersWithPermit = useMemo(() => {
+    return pendingOrders.filter((order) => {
+      return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)
+    })
+  }, [pendingOrders, orderId, currency])
 
   if (!ordersWithPermit.length || !isPartialApproveSelectedByUser) return null
 
@@ -49,7 +50,7 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
   return (
     <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}>
       <styledEl.DropdownList>
-        <AffectedPermitOrdersTable orders={ordersWithPermit} />
+        <AffectedPermitOrdersTable ordersWithPermit={ordersWithPermit} />
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
         <Trans>

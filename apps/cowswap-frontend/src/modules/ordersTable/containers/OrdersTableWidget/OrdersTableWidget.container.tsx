@@ -99,8 +99,6 @@ export function OrdersTableWidget(): ReactNode {
     <>
       {hasPendingOrdersInCurrentPage && <UnfillableOrdersUpdater orders={pendingOrdersInCurrentPage} />}
 
-      {/* <OrdersTableStateUpdater orders={ allOrders } /> */}
-
       <OrdersTableContainer>
         {hasPendingOrdersInCurrentPage && <MultipleCancellationMenu pendingOrders={pendingOrdersInCurrentPage} />}
 

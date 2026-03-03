@@ -165,6 +165,8 @@ ordersTableStateAtom.onMount = () => {
         ordersTokensSet.add(mappedOrder.inputToken.address.toLowerCase())
       })
 
+      console.log('orderType =', orderType)
+
       if (orderType === TabOrderTypes.ADVANCED) {
         /*
         TWAP:

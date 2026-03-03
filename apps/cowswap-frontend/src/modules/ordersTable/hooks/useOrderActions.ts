@@ -1,8 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
 import { useCallback, useMemo } from 'react'
 
-import type { Order } from 'legacy/state/orders/actions'
-
 import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -31,9 +29,8 @@ function toggleOrderInCancellationList(state: CancellableOrder[], order: Cancell
   return [...state, order]
 }
 
-export function useOrderActions(ordersParam?: Order[]): OrderActions {
-  const { reduxOrders } = useAtomValue(ordersTableStateAtom)
-  const allOrders = ordersParam ?? reduxOrders
+export function useOrderActions(): OrderActions {
+  const { reduxOrders: allOrders } = useAtomValue(ordersTableStateAtom)
   const cancelOrder = useCancelOrder()
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
   const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
