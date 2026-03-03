@@ -5,8 +5,7 @@ import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useLingui } from '@lingui/react/macro'
-import { Trans } from '@lingui/react/macro'
+import { useLingui, Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
@@ -17,8 +16,10 @@ import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper, Transacti
 const DefaultSlippage = styled.span`
   display: inline-flex;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  text-decoration: strikethrough;
-  font-size: 0.8em;
+
+  button {
+    padding: 0 6px;
+  }
 
   a {
     text-decoration: underline;
