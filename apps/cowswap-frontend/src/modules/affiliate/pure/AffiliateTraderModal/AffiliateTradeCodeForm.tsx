@@ -26,7 +26,7 @@ import {
 import { type TraderInfoResponse } from '../../api/bffAffiliateApi.types'
 import { type TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
 import { RefCodeInput, type RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
-import { LabelContent } from '../shared'
+import { LabelContent, StatusText } from '../shared'
 
 const REFERRAL_CODE_HELP_TEXT = (
   <Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>
@@ -104,11 +104,11 @@ export function AffiliateTradeCodeForm({
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}
           adornmentPlacement="below"
-          adornmentLabel={error}
-          adornmentVariant={isLoading ? 'checking' : error ? 'error' : savedCode ? 'valid' : undefined}
+          adornmentVariant={isLoading ? 'checking' : savedCode ? 'valid' : undefined}
           required
           {...inputProps}
         />
+        {error && <StatusText $variant="error">{error}</StatusText>}
         <CodeLinkingStatusSection walletStatus={walletStatus} codeInfo={codeInfo} />
         {requiresPayoutConfirmation && (
           <PayoutConfirmation
