@@ -35,7 +35,7 @@ function getChainIcon(chainId: number): string | undefined {
   return CHAIN_INFO[chainId as SupportedChainId]?.logo?.light || undefined
 }
 
-function renderSolverIcon(solver: SolverInfo): React.ReactNode {
+function solverIconNode(solver: SolverInfo): React.ReactNode {
   if (solver.image) return <SolverLogo src={solver.image} alt={`${solver.displayName} logo`} />
   return <SolverLogoFallback>{solver.displayName.charAt(0).toUpperCase()}</SolverLogoFallback>
 }
@@ -124,7 +124,7 @@ export function filterSolvers(
   })
 }
 
-function renderNetworkChips(solver: SolverInfo): React.ReactNode {
+function networkChipsNode(solver: SolverInfo): React.ReactNode {
   return (
     <Networks>
       {solver.networks.map((network) => {
@@ -140,7 +140,7 @@ function renderNetworkChips(solver: SolverInfo): React.ReactNode {
   )
 }
 
-function renderEnvironmentTags(solver: SolverInfo): React.ReactNode {
+function environmentTagsNode(solver: SolverInfo): React.ReactNode {
   const environments = new Set<string>()
 
   solver.networks.forEach((network) => network.environments.forEach((environment) => environments.add(environment)))
@@ -156,27 +156,28 @@ function renderEnvironmentTags(solver: SolverInfo): React.ReactNode {
   )
 }
 
-function renderSummaryRow(
+function summaryRowNode(
   solver: SolverInfo,
   isExpanded: boolean,
   onToggle: (solverId: string) => void,
+  key: string,
 ): React.ReactNode {
   return (
-    <tr key={solver.solverId}>
+    <tr key={key}>
       <td className="solver">
         <SolverCell>
           <ExpandButton onClick={(): void => onToggle(solver.solverId)} aria-label="Toggle deployments">
             {isExpanded ? '▾' : '▸'}
           </ExpandButton>
-          {renderSolverIcon(solver)}
+          {solverIconNode(solver)}
           <SolverDetails>
             <span>{solver.displayName}</span>
             <SolverId>{solver.solverId}</SolverId>
           </SolverDetails>
         </SolverCell>
       </td>
-      <td className="networks">{renderNetworkChips(solver)}</td>
-      <td className="envs">{renderEnvironmentTags(solver)}</td>
+      <td className="networks">{networkChipsNode(solver)}</td>
+      <td className="envs">{environmentTagsNode(solver)}</td>
       <td className="website">
         {solver.website ? (
           <ExternalLink href={solver.website} target="_blank">
@@ -191,9 +192,9 @@ function renderSummaryRow(
   )
 }
 
-function renderDetailsRow(solver: SolverInfo, deployments: SolverDeployment[]): React.ReactNode {
+function detailsRowNode(solver: SolverInfo, deployments: SolverDeployment[], key: string): React.ReactNode {
   return (
-    <tr key={`${solver.solverId}-details`}>
+    <tr key={key}>
       <td colSpan={5}>
         <DeploymentsPanel>
           <DeploymentsPanelTitle>Solver and payout addresses by chain/environment</DeploymentsPanelTitle>
@@ -206,7 +207,7 @@ function renderDetailsRow(solver: SolverInfo, deployments: SolverDeployment[]): 
           </DeploymentsGridHeader>
           {deployments.map((deployment, index) => (
             <DeploymentsGridRow
-              key={`${solver.solverId}-${deployment.chainId}-${deployment.environment || 'na'}-${index}`}
+              key={`${solver.solverId}-${deployment.chainId}-${deployment.environment || 'na'}-${deployment.address || 'na'}-${deployment.payoutAddress || 'na'}-${deployment.active ? 'active' : 'inactive'}-${index}`}
             >
               <span>{deployment.chainName}</span>
               <span>{deployment.environment || '-'}</span>
@@ -259,9 +260,11 @@ export function buildBodyRows(
   return solvers.flatMap((solver) => {
     const isExpanded = !!expandedRows[solver.solverId]
     const deployments = filterDeployments(solver.deployments, networkFilter, environmentFilter)
-    const summary = renderSummaryRow(solver, isExpanded, onToggle)
+    const summary = summaryRowNode(solver, isExpanded, onToggle, solver.solverId)
 
     if (!isExpanded) return [summary]
-    return [summary, renderDetailsRow(solver, deployments)]
+    const details = detailsRowNode(solver, deployments, `${solver.solverId}-details`)
+
+    return [summary, details]
   })
 }
