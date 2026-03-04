@@ -2,18 +2,20 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokenAmount, Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactDOM from 'react-dom'
 
 import { useToggleAccountModal } from 'modules/account'
-import { NotificationBell, NotificationSidebar } from 'modules/notifications'
-import { useHasNotificationSubscription } from 'modules/notifications/hooks/useHasNotificationSubscription'
-import { useNotificationAlertDismissal } from 'modules/notifications/hooks/useNotificationAlertDismissal'
-import { useUnreadSidebarNotificationsCount } from 'modules/notifications/hooks/useUnreadSidebarNotificationsCount'
+import {
+  NotificationBell,
+  NotificationSidebar,
+  useHasNotificationSubscription,
+  useNotificationAlertDismissal,
+  useUnreadSidebarNotificationsCount,
+} from 'modules/notifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
