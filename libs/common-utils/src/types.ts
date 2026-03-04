@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
 
 // This is for Pixel tracking injected code
 declare global {

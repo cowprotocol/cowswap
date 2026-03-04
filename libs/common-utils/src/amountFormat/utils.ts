@@ -1,5 +1,5 @@
+import { CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
 import { Nullish } from '@cowprotocol/types'
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 

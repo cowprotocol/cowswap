@@ -1308,6 +1308,9 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -1320,9 +1323,6 @@ importers:
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       react:
         specifier: 19.1.2
         version: 19.1.2
@@ -1351,6 +1351,9 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -1387,9 +1390,6 @@ importers:
       '@ethersproject/contracts':
         specifier: 5.7.0
         version: 5.7.0
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1421,6 +1421,9 @@ importers:
 
   libs/common-const:
     dependencies:
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../common-entities
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
@@ -1433,9 +1436,6 @@ importers:
       '@lingui/core':
         specifier: ^5.4.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1449,6 +1449,12 @@ importers:
       '@types/ms.macro':
         specifier: ^2.0.0
         version: 2.0.3
+
+  libs/common-entities:
+    dependencies:
+      '@uniswap/sdk-core':
+        specifier: ^3.0.1
+        version: 3.2.6
 
   libs/common-hooks:
     dependencies:
@@ -1546,6 +1552,9 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../common-entities
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
@@ -1597,9 +1606,6 @@ importers:
       '@sentry/react':
         specifier: ^7.80.0
         version: 7.80.0(react@19.1.2)
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       bignumber.js:
         specifier: ^9.1.2
         version: 9.1.2
@@ -1897,6 +1903,9 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -1933,9 +1942,6 @@ importers:
       '@sentry/browser':
         specifier: ^7.80.0
         version: 7.80.0
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       '@uniswap/token-lists':
         specifier: ^1.0.0-beta.30
         version: 1.0.0-beta.33
@@ -1982,15 +1988,15 @@ importers:
 
   libs/types:
     dependencies:
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../common-entities
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@cowprotocol/sdk-bridging':
         specifier: 2.1.0
         version: 2.1.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       eventemitter3:
         specifier: ^4.0.0
         version: 4.0.7
@@ -2010,6 +2016,9 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -2043,9 +2052,6 @@ importers:
       '@reach/portal':
         specifier: ^0.18.0
         version: 0.18.0(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       bignumber.js:
         specifier: ^9.1.2
         version: 9.1.2
@@ -2113,6 +2119,9 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../common-entities
       '@cowprotocol/common-utils':
         specifier: workspace:*
         version: link:../common-utils
@@ -2179,9 +2188,6 @@ importers:
       '@trezor/connect-web':
         specifier: ^9.0.11
         version: 9.0.11(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10)
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       '@wagmi/connectors':
         specifier: ^7.0.2
         version: 7.1.5(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))(@metamask/sdk@0.31.4(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))(@wagmi/core@3.3.1(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.11.3(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)))(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(typescript@5.9.3)(viem@2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))

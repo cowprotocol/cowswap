@@ -2,11 +2,11 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Token } from '@cowprotocol/common-entities'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { getAddress } from '@ethersproject/address'
-import { Token } from '@uniswap/sdk-core'
 
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'

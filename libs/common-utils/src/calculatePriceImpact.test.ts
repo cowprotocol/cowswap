@@ -1,6 +1,6 @@
+import { CurrencyAmount, Percent, Token, WETH9 } from '@cowprotocol/common-entities'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { parseUnits } from '@ethersproject/units'
-import { CurrencyAmount, Percent, Token, WETH9 } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 

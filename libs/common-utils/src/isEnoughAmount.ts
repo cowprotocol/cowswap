@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export function isEnoughAmount(
   sellAmount: CurrencyAmount<Currency>,

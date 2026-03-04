@@ -1,6 +1,6 @@
+import { NativeCurrency, Token } from '@cowprotocol/common-entities'
 import { isAddress } from '@cowprotocol/common-utils'
 import { TokenInfo } from '@cowprotocol/types'
-import { NativeCurrency, Token } from '@uniswap/sdk-core'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

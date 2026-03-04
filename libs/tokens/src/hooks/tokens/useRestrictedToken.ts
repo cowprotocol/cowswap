@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { Token } from '@cowprotocol/common-entities'
 import { getTokenId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
-import { Token } from '@uniswap/sdk-core'
 
 import { RestrictedTokenListState, restrictedTokensAtom } from '../../state/restrictedTokens/restrictedTokensAtom'
 

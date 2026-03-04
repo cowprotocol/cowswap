@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
 
 export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
 
