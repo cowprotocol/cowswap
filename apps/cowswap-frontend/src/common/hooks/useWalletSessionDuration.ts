@@ -32,7 +32,7 @@ export function useWalletSessionDuration(): void {
   }, [walletName])
 
   useEffect(() => {
-    if (!account || !chainId) {
+    if (!account) {
       return
     }
 
