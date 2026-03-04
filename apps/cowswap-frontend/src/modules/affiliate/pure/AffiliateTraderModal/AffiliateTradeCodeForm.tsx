@@ -28,6 +28,10 @@ import { type TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
 import { RefCodeInput, type RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
 import { LabelContent } from '../shared'
 
+const REFERRAL_CODE_HELP_TEXT = (
+  <Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>
+)
+
 export interface AffiliateTradeCodeFormProps
   extends Omit<PayoutConfirmationProps, 'payoutWallet'>,
     Pick<RefCodeInputProps, 'value' | 'onChange'> {
@@ -41,11 +45,6 @@ export interface AffiliateTradeCodeFormProps
   onRemove(): void
   submitButtonLabel: string
   onSubmit(): void
-}
-
-function handleTradeCodeFormSubmit(event: FormEvent<HTMLFormElement>, onSubmit: () => void): void {
-  event.preventDefault()
-  onSubmit()
 }
 
 export function AffiliateTradeCodeForm({
@@ -66,7 +65,12 @@ export function AffiliateTradeCodeForm({
 }: AffiliateTradeCodeFormProps): ReactNode {
   const referralCodeInputId = useId()
   return (
-    <FormGroup onSubmit={(event) => handleTradeCodeFormSubmit(event, onSubmit)}>
+    <FormGroup
+      onSubmit={(event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        onSubmit()
+      }}
+    >
       <Body>
         <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
         <Title>
@@ -77,10 +81,7 @@ export function AffiliateTradeCodeForm({
           <Label htmlFor={referralCodeInputId}>
             <LabelContent>
               <Trans>Referral code</Trans>
-              <HelpTooltip
-                text={<Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>}
-                dimmed
-              />
+              <HelpTooltip text={REFERRAL_CODE_HELP_TEXT} dimmed />
             </LabelContent>
           </Label>
           <LabelAffordances>
