@@ -12,7 +12,7 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.AVALANCHE,
   SupportedChainId.POLYGON,
-  SupportedChainId.LENS,
+  // SupportedChainId.LENS,
   SupportedChainId.BNB,
   SupportedChainId.LINEA,
   // SupportedChainId.SEPOLIA,
