@@ -67,10 +67,12 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
 
   public toSignificant(
     significantDigits: number = 6,
-    format?: object,
+    format: object = { groupSeparator: '' },
     rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
-    return super.divide(this.decimalScale).toSignificant(significantDigits, format, rounding)
+    return super
+      .divide(this.decimalScale)
+      .toSignificant(significantDigits, { ...format, stripTrailingZeros: true }, rounding)
   }
 
   public toFixed(
@@ -87,7 +89,9 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
    * i.e. quotient / decimalScale with full `currency.decimals` precision.
    */
   public toExact(format: object = { groupSeparator: '' }): string {
-    return super.divide(this.decimalScale).toFixed(this.currency.decimals, format, Rounding.ROUND_DOWN)
+    return super
+      .divide(this.decimalScale)
+      .toFixed(this.currency.decimals, { ...format, stripTrailingZeros: true }, Rounding.ROUND_DOWN)
   }
 
   public get wrapped(): CurrencyAmount<Token> {
