@@ -38,7 +38,7 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
+const NETWORKS_WITHOUT_RESTRICTIONS: SupportedChainId[] = [SupportedChainId.SEPOLIA]
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
