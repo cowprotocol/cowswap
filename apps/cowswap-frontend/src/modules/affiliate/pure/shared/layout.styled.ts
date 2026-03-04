@@ -27,6 +27,7 @@ export const LabelRow = styled.div`
 
 export const Label = styled.label`
   font-size: 14px;
+  font-weight: 600;
   color: var(${UI.COLOR_TEXT});
 `
 

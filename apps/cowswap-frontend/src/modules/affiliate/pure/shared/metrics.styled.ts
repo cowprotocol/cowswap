@@ -101,5 +101,4 @@ export const MetricItem = styled.div`
 export const LabelContent = styled.span`
   display: inline-flex;
   align-items: center;
-  font-weight: 600;
 `
