@@ -18,10 +18,6 @@ import {
 } from './AffiliateMetrics.shared'
 import { Donut, DonutValue } from './Donut'
 
-import {
-  AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS,
-  AFFILIATE_REWARDS_UPDATE_LAG_HOURS,
-} from '../config/affiliateProgram.const'
 import { getApproxStatsUpdatedAt } from '../lib/affiliateProgramUtils'
 
 export interface MetricsCardItem {
@@ -48,14 +44,8 @@ export function MetricsCard({
   donutLabel,
   donutSubtitle,
 }: MetricsCardProps): ReactNode {
-  const approxUpdatedAt = useMemo(
-    () => getApproxStatsUpdatedAt(AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS, AFFILIATE_REWARDS_UPDATE_LAG_HOURS),
-    [],
-  )
-
+  const approxUpdatedAt = useMemo(() => getApproxStatsUpdatedAt(), [])
   const statsUpdatedTimeAgo = useTimeAgo(approxUpdatedAt, 60_000)
-  const statsUpdatedLabel = statsUpdatedTimeAgo ? ` ~ ${statsUpdatedTimeAgo}` : '-'
-  const statsUpdatedTitle = formatDateWithTimezone(approxUpdatedAt) ?? undefined
 
   return (
     <ColumnTwoCard showLoader={showLoader}>
@@ -89,7 +79,7 @@ export function MetricsCard({
         <LabelContent>
           <span>
             <Trans>Last updated</Trans>
-            <span title={statsUpdatedTitle}>{statsUpdatedLabel}</span>
+            <span title={formatDateWithTimezone(approxUpdatedAt)}> ~ {statsUpdatedTimeAgo}</span>
           </span>
           <HelpTooltip text={<Trans>Updates every 6 hours</Trans>} />
         </LabelContent>
