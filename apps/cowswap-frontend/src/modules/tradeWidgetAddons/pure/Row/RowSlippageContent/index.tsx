@@ -89,7 +89,7 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
         ) : (
           <>
             <LinkStyledButton onClick={setAutoSlippage}>
-              (<Trans>Recommended</Trans>: {smartSlippage})
+              (<Trans>Suggested</Trans>: {smartSlippage})
             </LinkStyledButton>
             <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
               <StyledInfoIcon size={16} />
