@@ -18,6 +18,7 @@ export { isSupportedPayoutsNetwork } from './lib/affiliateProgramUtils'
 
 export { AffiliateTermsFaqLinks, ColumnOneCard, ThreeColumnGrid, PageWrapper } from './pure/shared'
 export { AffiliateTraderIneligible } from './pure/AffiliateTrader/AffiliateTraderIneligible'
+export { AffiliateTraderLoading } from './pure/AffiliateTrader/AffiliateTraderLoading'
 export { AffiliateTraderUnsupportedNetwork } from './pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork'
 export { UnsupportedNetwork } from './pure/UnsupportedNetwork'
 
