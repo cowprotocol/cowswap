@@ -134,7 +134,7 @@ describe('Not Inverted Price', () => {
     test('-100% price difference (target price is Zero)', () => {
       const params: CalculatePriceDifferenceParams = {
         referencePrice: buildPrice('1', '1'),
-        targetPrice: FractionUtils.toPrice(ZERO_FRACTION, USDC_SEPOLIA, GNO_SEPOLIA), // zero
+        targetPrice: FractionUtils.toPrice(ZERO_FRACTION, USDC_SEPOLIA, GNO_SEPOLIA!), // zero
         isInverted: false,
       }
 
