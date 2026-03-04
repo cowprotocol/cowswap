@@ -8,7 +8,7 @@ import { calculatePriceDifference, CalculatePriceDifferenceParams } from './calc
 const GNO_SEPOLIA = GNO[SupportedChainId.SEPOLIA]
 
 function buildPrice(daiAmount: string, usdcAmount: string): Price<Currency, Currency> {
-  const quoteAmount = tryParseCurrencyAmount(daiAmount, GNO_SEPOLIA)
+  const quoteAmount = tryParseCurrencyAmount(daiAmount, GNO_SEPOLIA!)
   const baseAmount = tryParseCurrencyAmount(usdcAmount, USDC_SEPOLIA)
 
   return buildPriceFromCurrencyAmounts(baseAmount, quoteAmount)
