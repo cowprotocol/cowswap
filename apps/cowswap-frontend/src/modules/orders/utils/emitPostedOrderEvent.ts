@@ -1,5 +1,5 @@
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { NATIVE_CURRENCY_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EVM_NATIVE_CURRENCY_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEvents, OnPostedOrderPayload } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -55,7 +55,7 @@ function currencyToTokenInfo(currency: Currency): TokenInfo {
     getIsNativeToken(currency)
       ? {
           ...currency,
-          address: NATIVE_CURRENCY_ADDRESS,
+          address: EVM_NATIVE_CURRENCY_ADDRESS,
         }
       : currency
   ) as TokenInfo

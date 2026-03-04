@@ -12,7 +12,7 @@ import { getLogo } from './NetworksList.utils'
 
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
 
-const NEW_NETWORK_IDS = new Set([SupportedChainId.PLASMA, SupportedChainId.INK])
+const NEW_NETWORK_IDS: Set<SupportedChainId> = new Set([SupportedChainId.PLASMA, SupportedChainId.INK])
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
