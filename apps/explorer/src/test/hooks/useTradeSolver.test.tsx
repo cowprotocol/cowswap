@@ -4,7 +4,7 @@ import { useNetworkId } from 'state/network'
 import { getSolverCompetitionByTxHash, SolverCompetitionResponse } from 'api/operator'
 import { SolverInfo, fetchSolversInfo } from 'utils/fetchSolversInfo'
 
-import { useTradeSolver } from '../../hooks/useOrderSolver'
+import { useTradeSolver } from '../../hooks/useTradeSolver'
 
 jest.mock('state/network', () => ({
   useNetworkId: jest.fn(),

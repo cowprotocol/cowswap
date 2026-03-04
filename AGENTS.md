@@ -197,6 +197,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 ### Component authoring
 
 - **Render/helper antipattern:** Never declare components inside render bodies or rely on `render*`/`get*` helpers that return JSX. Hoist subcomponents to module scope, or convert them into proper components so every render cycle reuses the same identity.
+- **Hook file naming:** Keep one primary hook per `useX*.ts(x)` file and ensure the exported hook name matches the filename (`useTradeSolver` -> `useTradeSolver.ts`). Move additional hooks to separate files.
 - Export named function components and return `ReactNode`.
 - Pure components can use only the following hooks:
   - built-in hooks (e.g. `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef`)
