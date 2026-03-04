@@ -23,8 +23,6 @@ export type UseOrderSolverResult = {
   isLoading: boolean
 }
 
-const SOLVER_SUFFIX_REGEX = /-solve$/i
-
 export function useTradeSolver(txHash: string | undefined | null): UseOrderSolverResult {
   const networkId = useNetworkId()
   const [solver, setSolver] = useState<OrderSolverInfo | undefined>()
@@ -105,6 +103,8 @@ export function useOrderSolver(order: Order | null): UseOrderSolverResult {
 
   return useMemo(() => ({ solver, isLoading }), [solver, isLoading])
 }
+
+const SOLVER_SUFFIX_REGEX = /-solve$/i
 
 function normalizeSolverId(solverId: string): string {
   return solverId.trim().toLowerCase().replace(SOLVER_SUFFIX_REGEX, '')
