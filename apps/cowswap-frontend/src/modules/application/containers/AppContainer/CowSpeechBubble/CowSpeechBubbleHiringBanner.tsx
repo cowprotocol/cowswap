@@ -39,7 +39,7 @@ function CowSpeechBubbleHiringContent({ onClose }: CowSpeechBubbleHiringContentP
   const showCursor = hasDelayElapsed && !isTypingComplete
 
   return hasDelayElapsed ? (
-    <CowSpeechBubble padding="normal" onClose={onClose} closeButtonAriaLabel={t`Dismiss hiring message`}>
+    <CowSpeechBubble variant="hiring" onClose={onClose} closeButtonAriaLabel={t`Dismiss hiring message`}>
       <TypingLine role="status" aria-live="polite" aria-atomic="true">
         <span>{displayedText}</span>
         <Cursor $visible={showCursor} />
