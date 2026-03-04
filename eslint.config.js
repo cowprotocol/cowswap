@@ -6,6 +6,7 @@ const tseslint = require('@typescript-eslint/eslint-plugin')
 const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
+const perfectionist = require('eslint-plugin-perfectionist')
 const prettier = require('eslint-plugin-prettier')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
@@ -86,6 +87,28 @@ module.exports = [
     },
     rules: {
       'react-refresh/only-export-components': 'warn',
+    },
+  },
+  {
+    files: ['**/*.{jsx,tsx}'],
+    plugins: { perfectionist },
+    rules: {
+      'perfectionist/sort-modules': [
+        'error',
+        {
+          groups: [
+            ['export-interface', 'export-type'],
+            'export-enum',
+            'export-class',
+            'export-function',
+            'enum',
+            ['interface', 'type'],
+            'class',
+            'function',
+          ],
+          order: 'asc',
+        },
+      ],
     },
   },
 
