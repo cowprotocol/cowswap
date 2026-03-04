@@ -5,9 +5,8 @@ export interface FormatOptions {
 }
 
 /**
- * Applies a `{ groupSeparator, decimalSeparator }` format object to a decimal string.
- * When `stripTrailingZeros` is true, removes non-significant trailing zeros from the
- * fractional part (e.g. "0.00100000000" -> "0.001").
+ * Applies groupSeparator, decimalSeparator, and optional stripTrailingZeros
+ * to a decimal string.
  */
 export function applyFormat(value: string, format: FormatOptions): string {
   const groupSep = format.groupSeparator ?? ''

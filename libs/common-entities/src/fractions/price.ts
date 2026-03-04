@@ -62,7 +62,7 @@ export class Price<TBase extends Currency, TQuote extends Currency> extends Frac
    * @param currencyAmount the amount of base currency to quote against the price
    */
   public quote(currencyAmount: CurrencyAmount<TBase>): CurrencyAmount<TQuote> {
-    if (!this.quoteCurrency.equals(this.baseCurrency)) {
+    if (!currencyAmount.currency.equals(this.baseCurrency)) {
       throw new Error('Tokens are not the same')
     }
     const result = super.multiply(currencyAmount)

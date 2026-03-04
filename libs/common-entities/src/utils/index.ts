@@ -1,5 +1,6 @@
 export { applyFormat } from './applyFormat'
 export type { FormatOptions } from './applyFormat'
+export { countLeadingFracZeros } from './countLeadingFracZeros'
 export { divideToDecimalString } from './divideToDecimalString'
 export { roundToFixed } from './roundToFixed'
 export { roundToSignificant } from './roundToSignificant'

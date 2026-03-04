@@ -1,5 +1,6 @@
 import { BigintIsh, Rounding } from '../constants'
 import { applyFormat } from '../utils/applyFormat'
+import { countLeadingFracZeros } from '../utils/countLeadingFracZeros'
 import { divideToDecimalString } from '../utils/divideToDecimalString'
 import { roundToFixed } from '../utils/roundToFixed'
 import { roundToSignificant } from '../utils/roundToSignificant'
@@ -90,7 +91,8 @@ export class Fraction {
     if (!Number.isInteger(significantDigits)) throw new Error(`${significantDigits} is not an integer.`)
     if (significantDigits <= 0) throw new Error(`${significantDigits} is not positive.`)
 
-    const raw = divideToDecimalString(this.numerator, this.denominator, significantDigits + 1)
+    const extraDigits = countLeadingFracZeros(this.numerator, this.denominator) + significantDigits + 1
+    const raw = divideToDecimalString(this.numerator, this.denominator, extraDigits)
     const rounded = roundToSignificant(raw, significantDigits, rounding)
     return applyFormat(rounded, format)
   }

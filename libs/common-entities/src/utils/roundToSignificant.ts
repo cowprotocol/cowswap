@@ -27,7 +27,6 @@ function computeSigValue(
   negative: boolean,
   rounding: Rounding,
 ): string {
-  // Collect all significant digits (skip leading zeros in frac if int is 0)
   const allDigits = intPart === '0' ? fracPart : intPart + fracPart
   const leadingZeros = intPart === '0' ? (fracPart.match(/^0*/)?.[0].length ?? 0) : 0
   const firstSigIdx = leadingZeros
@@ -41,7 +40,6 @@ function computeSigValue(
 function reconstructFromInt(sign: string, intPart: string, sigValue: string, sigDigits: number): string {
   const intDigits = intPart.length
   if (sigDigits < intDigits) {
-    // All sig digits fall in the integer part - pad the rest with zeros
     return `${sign}${sigValue.padEnd(intDigits, '0')}`
   }
   const fracDigits = sigDigits - intDigits
@@ -51,7 +49,6 @@ function reconstructFromInt(sign: string, intPart: string, sigValue: string, sig
 }
 
 function reconstructFromFrac(sign: string, fracPart: string, sigValue: string, sigDigits: number): string {
-  // int part is 0 - preserve leading zeros before first significant digit
   const leadingZeros = fracPart.match(/^0*/)?.[0].length ?? 0
   const zeros = '0'.repeat(leadingZeros)
   return `${sign}0.${zeros}${sigValue.slice(0, sigDigits)}`

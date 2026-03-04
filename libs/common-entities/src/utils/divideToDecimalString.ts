@@ -1,7 +1,6 @@
 /**
  * Divides numerator/denominator and returns a decimal string with `extraDigits`
  * extra fractional digits beyond what will be needed, so callers can round.
- * Handles negative values by tracking sign separately.
  */
 export function divideToDecimalString(numerator: bigint, denominator: bigint, extraDigits: number): string {
   const negative = numerator < 0n !== denominator < 0n
