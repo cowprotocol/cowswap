@@ -5,7 +5,6 @@ import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone } from '@cowprotocol/common-utils'
 import { HelpTooltip } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { Donut } from './Donut.pure'
@@ -60,7 +59,6 @@ export function MetricsCard({
   const statsUpdatedTimeAgo = useTimeAgo(approxUpdatedAt, 60_000)
   const statsUpdatedLabel = statsUpdatedTimeAgo ? ` ~ ${statsUpdatedTimeAgo}` : '-'
   const statsUpdatedTitle = formatDateWithTimezone(approxUpdatedAt) ?? undefined
-  const rewardsUpdateTooltip = getAffiliateRewardsUpdateTooltip()
 
   return (
     <ColumnTwoCard showLoader={showLoader}>
@@ -94,13 +92,9 @@ export function MetricsCard({
             <Trans>Last updated</Trans>
             <span title={statsUpdatedTitle}>{statsUpdatedLabel}</span>
           </span>
-          <HelpTooltip text={rewardsUpdateTooltip} dimmed />
+          <HelpTooltip text={<Trans>Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours</Trans>} dimmed />
         </LabelContent>
       </BottomMetaRow>
     </ColumnTwoCard>
   )
-}
-
-function getAffiliateRewardsUpdateTooltip(): string {
-  return t`Updates every ${AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours`
 }
