@@ -112,10 +112,10 @@ export function AffiliatePartnerCodeForm({
               )}
             </StatusText>
           )}
+          <AffiliatePartnerCodeErrorMessage error={error} />
           <PrimaryAction onClick={onCreate} disabled={!canSubmit}>
             {submitting ? t`Signing...` : t`Save & lock code`}
           </PrimaryAction>
-          <AffiliatePartnerCodeErrorMessage error={error} />
         </Form>
       </BottomMetaRow>
     </>
