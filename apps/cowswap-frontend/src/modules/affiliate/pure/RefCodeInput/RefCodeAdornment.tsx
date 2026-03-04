@@ -17,25 +17,50 @@ interface RefCodeAdornmentProps {
   placement?: RefCodeAdornmentPlacement
   label?: string
 }
-
-export function RefCodeAdornment({ variant, placement = 'inline', label }: RefCodeAdornmentProps): ReactNode {
+export function RefCodeAdornment({ variant, placement = 'inline' }: RefCodeAdornmentProps): ReactNode {
   if (!variant) {
-    if (placement === 'below') {
-      return null
-    }
-
     return <RefCodeAdornmentPlaceholder aria-hidden="true" />
   }
 
-  const statusLabel = label ?? getDefaultAdornmentLabel(variant)
-  const showLabel = placement === 'below' || variant !== 'error'
-  const icon =
-    variant === 'error' ? AlertIcon : variant === 'pending' || variant === 'checking' ? PendingIcon : CheckIcon
+  if (variant === 'error') {
+    return (
+      <RefCodeAdornmentContainer variant="error" $placement={placement}>
+        <SVG src={AlertIcon} title={t`Error`} />
+      </RefCodeAdornmentContainer>
+    )
+  }
+
+  if (variant === 'checking') {
+    return (
+      <RefCodeAdornmentContainer variant="checking" $placement={placement}>
+        <SVG src={PendingIcon} title={t`Checking`} />
+        <span>{t`Checking`}</span>
+      </RefCodeAdornmentContainer>
+    )
+  }
+
+  if (variant === 'pending') {
+    return (
+      <RefCodeAdornmentContainer variant="pending" $placement={placement}>
+        <SVG src={PendingIcon} title={t`Pending`} />
+        <span>{t`Pending`}</span>
+      </RefCodeAdornmentContainer>
+    )
+  }
+
+  if (variant === 'available') {
+    return (
+      <RefCodeAdornmentContainer variant="available" $placement={placement}>
+        <SVG src={CheckIcon} title={t`Available`} />
+        <span>{t`Available`}</span>
+      </RefCodeAdornmentContainer>
+    )
+  }
 
   return (
-    <RefCodeAdornmentContainer variant={variant} isSpinning={variant === 'checking'} $placement={placement}>
-      <SVG src={icon} title={statusLabel} />
-      {showLabel && <span>{statusLabel}</span>}
+    <RefCodeAdornmentContainer variant="valid" $placement={placement}>
+      <SVG src={CheckIcon} title={t`Valid`} />
+      <span>{t`Valid`}</span>
     </RefCodeAdornmentContainer>
   )
 }
@@ -67,7 +92,6 @@ const spin = keyframes`
 
 const RefCodeAdornmentContainer = styled.div<{
   variant: RefCodeAdornmentVariant
-  isSpinning?: boolean
   $placement: RefCodeAdornmentPlacement
 }>`
   display: flex;
@@ -98,9 +122,8 @@ const RefCodeAdornmentContainer = styled.div<{
     fill: ${({ variant }) => (variant === 'error' ? `var(${UI.COLOR_DANGER_TEXT})` : 'currentColor')};
   }
 
-  ${({ variant, isSpinning }) =>
+  ${({ variant }) =>
     (variant === 'pending' || variant === 'checking') &&
-    isSpinning &&
     css`
       svg {
         animation: ${spin} 1.1s linear infinite;
@@ -121,11 +144,3 @@ const RefCodeAdornmentPlaceholder = styled.div`
   flex: 0 0 auto;
   visibility: hidden;
 `
-
-function getDefaultAdornmentLabel(variant: RefCodeAdornmentVariant): string {
-  if (variant === 'error') return t`Invalid code`
-  if (variant === 'checking') return t`Checking`
-  if (variant === 'pending') return t`Pending`
-  if (variant === 'available') return t`Available`
-  return t`Valid`
-}
