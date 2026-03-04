@@ -104,7 +104,7 @@ export function AffiliateTradeCodeForm({
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}
           adornmentPlacement="below"
-          adornmentVariant={isLoading ? 'checking' : savedCode ? 'valid' : undefined}
+          adornmentVariant={error ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
           required
           {...inputProps}
         />

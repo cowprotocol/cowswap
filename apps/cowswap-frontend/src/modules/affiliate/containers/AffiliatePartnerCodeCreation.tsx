@@ -49,7 +49,7 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
       availability={availability}
       canSubmit={canSubmit}
       submitting={submitting}
-      error={error}
+      error={availability === PartnerCodeAvailability.Unavailable ? AffiliatePartnerCodeCreateError.Unavailable : error}
       onCreate={onCreate}
       onGenerate={onGenerate}
     />
