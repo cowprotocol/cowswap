@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { isEnoughAmount, getWrappedToken, getIsNativeToken } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTokenAllowance } from './useTokenAllowance'
 

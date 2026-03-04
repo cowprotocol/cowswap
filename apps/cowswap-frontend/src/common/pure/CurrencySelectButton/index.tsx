@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { Currency } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenName } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

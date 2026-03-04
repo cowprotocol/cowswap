@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { ButtonSize, HoverTooltip } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useHasCachedPermit } from 'modules/permit'
 import { useGetConfirmButtonLabel, useIsCurrentTradeBridging } from 'modules/trade'

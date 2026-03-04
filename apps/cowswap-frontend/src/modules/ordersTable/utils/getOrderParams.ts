@@ -1,8 +1,8 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/common-entities'
 import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'

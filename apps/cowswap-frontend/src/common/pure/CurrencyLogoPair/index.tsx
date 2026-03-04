@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Currency } from '@cowprotocol/common-entities'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { Currency } from '@uniswap/sdk-core'
 
 import * as styledEl from './styled'
 

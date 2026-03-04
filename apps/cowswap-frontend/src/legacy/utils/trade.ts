@@ -1,4 +1,5 @@
 import { RADIX_DECIMAL } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import {
   formatSymbol,
   formatTokenAmount,
@@ -17,7 +18,6 @@ import {
 } from '@cowprotocol/cow-sdk'
 import type { Signer } from '@ethersproject/abstract-signer'
 import type { JsonRpcSigner } from '@ethersproject/providers'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'

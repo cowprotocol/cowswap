@@ -2,11 +2,11 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { Price, Token } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Price, Token } from '@uniswap/sdk-core'
 
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 

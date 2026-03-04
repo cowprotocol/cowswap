@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
-import type { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import type { Currency, CurrencyAmount, Token } from '@cowprotocol/common-entities'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

@@ -1,10 +1,10 @@
 import { USDC_LENS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { isZkSyncChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoW, GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import { ContractsOrder } from '@cowprotocol/sdk-contracts-ts'
 import { BigNumber } from '@ethersproject/bignumber'
 import type { MetaTransactionData } from '@safe-global/types-kit'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { toKeccak256 } from 'common/utils/toKeccak256'
 

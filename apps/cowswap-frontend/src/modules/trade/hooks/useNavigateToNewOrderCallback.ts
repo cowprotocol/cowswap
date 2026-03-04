@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 

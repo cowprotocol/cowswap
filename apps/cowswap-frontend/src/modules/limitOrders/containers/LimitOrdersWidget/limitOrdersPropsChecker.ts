@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { areFractionsEqual, genericPropsChecker, getAddress } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 

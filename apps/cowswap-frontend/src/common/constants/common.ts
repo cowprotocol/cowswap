@@ -1,5 +1,5 @@
+import { Percent } from '@cowprotocol/common-entities'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 

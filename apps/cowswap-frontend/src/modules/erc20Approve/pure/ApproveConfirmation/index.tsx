@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { ButtonPrimary, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 

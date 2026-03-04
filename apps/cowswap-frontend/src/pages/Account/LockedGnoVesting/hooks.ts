@@ -7,12 +7,12 @@ import {
   MERKLE_DROP_CONTRACT_ADDRESSES,
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/cowswap-abis'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'

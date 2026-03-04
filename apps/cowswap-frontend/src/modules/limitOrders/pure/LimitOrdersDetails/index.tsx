@@ -2,9 +2,9 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
+import { Currency, Price } from '@cowprotocol/common-entities'
 import { formatInputAmount } from '@cowprotocol/common-utils'
 import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
-import { Currency, Price } from '@uniswap/sdk-core'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
@@ -23,8 +23,7 @@ import { DividerHorizontal, RecipientRow } from 'modules/trade'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
-import { RateInfoParams } from 'common/pure/RateInfo'
-import { RateInfo } from 'common/pure/RateInfo'
+import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 
 import * as styledEl from './styled'
 

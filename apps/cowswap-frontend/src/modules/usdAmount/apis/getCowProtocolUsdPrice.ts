@@ -1,7 +1,7 @@
 import { USDC } from '@cowprotocol/common-const'
+import { Fraction, Token } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { getCowProtocolNativePrice } from './getCowProtocolNativePrice'
 

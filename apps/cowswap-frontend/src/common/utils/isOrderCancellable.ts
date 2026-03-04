@@ -1,4 +1,4 @@
-import { Token } from '@uniswap/sdk-core'
+import { Token } from '@cowprotocol/common-entities'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 

@@ -1,9 +1,17 @@
 import { FULL_PRICE_PRECISION } from '@cowprotocol/common-const'
+import {
+  BigintIsh,
+  Currency,
+  CurrencyAmount,
+  Fraction,
+  Percent,
+  Price,
+  Rounding,
+  Token,
+} from '@cowprotocol/common-entities'
 import { Nullish } from '@cowprotocol/types'
-import { BigintIsh, Currency, CurrencyAmount, Fraction, Percent, Price, Rounding, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
-import JSBI from 'jsbi'
 
 import { trimTrailingZeros } from './trimTrailingZeros'
 import { FractionLike } from './types'
@@ -61,7 +69,7 @@ export class FractionUtils {
   static round(value: FractionLike, rounding: Rounding = Rounding.ROUND_UP): Fraction {
     const { quotient, remainder } = FractionUtils.fractionLikeToFraction(value)
 
-    return new Fraction(JSBI.add(quotient, JSBI.BigInt(remainder.toFixed(0, undefined, rounding))), 1)
+    return new Fraction(quotient + BigInt(remainder.toFixed(0, undefined, rounding)), 1)
   }
 
   static gte(fraction: Fraction, value: Fraction | BigintIsh): boolean {
@@ -140,7 +148,7 @@ export class FractionUtils {
       return value
     }
 
-    const decimalsShift = JSBI.BigInt(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(Math.abs(decimalsA - decimalsB))))
+    const decimalsShift = 10n ** BigInt(Math.abs(decimalsA - decimalsB))
 
     return decimalsA < decimalsB ? value.multiply(decimalsShift) : value.divide(decimalsShift)
   }
@@ -155,14 +163,14 @@ export class FractionUtils {
     const decimalPlaces = bigNumber.decimalPlaces()
 
     if (!decimalPlaces) {
-      return new Fraction(JSBI.BigInt(n))
+      return new Fraction(BigInt(n))
     }
 
     const denominator = Math.pow(10, decimalPlaces)
 
     const numerator = bigNumber.times(denominator).decimalPlaces(0).toFixed()
 
-    return new Fraction(JSBI.BigInt(numerator), JSBI.BigInt(denominator))
+    return new Fraction(BigInt(numerator), BigInt(denominator))
   }
 
   /**
@@ -185,7 +193,7 @@ export class FractionUtils {
   }
 }
 
-const ZERO = JSBI.BigInt(0)
+const ZERO = 0n
 
 /**
  * Use GCD to reduce the fraction to the smallest possible
@@ -197,18 +205,18 @@ const ZERO = JSBI.BigInt(0)
 function reduce(fraction: Fraction): Fraction {
   let numerator = fraction.numerator
   let denominator = fraction.denominator
-  let rest: JSBI
+  let rest: bigint
 
-  if (JSBI.equal(denominator, ZERO)) {
-    return new Fraction(JSBI.BigInt(0), JSBI.BigInt(1))
+  if (denominator === ZERO) {
+    return new Fraction(0n, 1n)
   }
 
-  while (JSBI.notEqual(denominator, ZERO)) {
-    rest = JSBI.remainder(numerator, denominator)
+  while (denominator !== ZERO) {
+    rest = numerator % denominator
     numerator = denominator
     denominator = rest
   }
-  return new Fraction(JSBI.divide(fraction.numerator, numerator), JSBI.divide(fraction.denominator, numerator))
+  return new Fraction(fraction.numerator / numerator, fraction.denominator / numerator)
 }
 
 /**

@@ -1,9 +1,9 @@
 import { ReactNode, useMemo } from 'react'
 
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 

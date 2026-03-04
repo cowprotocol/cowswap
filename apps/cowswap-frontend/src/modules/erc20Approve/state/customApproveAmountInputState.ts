@@ -1,8 +1,8 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 interface CustomApproveAmountInputState {
   amount: CurrencyAmount<Currency> | null

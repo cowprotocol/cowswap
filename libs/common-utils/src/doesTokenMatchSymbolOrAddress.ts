@@ -1,5 +1,5 @@
+import { Token } from '@cowprotocol/common-entities'
 import { TokenInfo } from '@cowprotocol/types'
-import { Token } from '@uniswap/sdk-core'
 
 export const doesTokenMatchSymbolOrAddress = (token: Token | TokenInfo, symbolOrAddress?: string): boolean =>
   token.address.toLowerCase() === symbolOrAddress?.toLowerCase() ||

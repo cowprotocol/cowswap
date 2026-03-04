@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 

@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 

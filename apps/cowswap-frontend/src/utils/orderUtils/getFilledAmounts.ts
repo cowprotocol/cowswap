@@ -1,5 +1,5 @@
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { BigNumber } from 'bignumber.js'

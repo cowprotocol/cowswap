@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
+import { CurrencyAmount, Price } from '@cowprotocol/common-entities'
 import { useTryFindToken } from '@cowprotocol/tokens'
-import { CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { useTradeQuote } from 'modules/tradeQuote'
 

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useNativeTokenBalance } from './useNativeTokenBalance'
 

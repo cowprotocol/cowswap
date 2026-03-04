@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
+import { Currency, Token } from '@cowprotocol/common-entities'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 

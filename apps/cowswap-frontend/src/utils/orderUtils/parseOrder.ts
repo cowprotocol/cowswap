@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount, Price, Token } from '@cowprotocol/common-entities'
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import { msg } from '@lingui/core/macro'
 import BigNumber from 'bignumber.js'

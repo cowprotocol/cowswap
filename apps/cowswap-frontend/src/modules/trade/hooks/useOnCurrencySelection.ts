@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
+import { Currency } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 

@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import { Nullish } from 'types'
 

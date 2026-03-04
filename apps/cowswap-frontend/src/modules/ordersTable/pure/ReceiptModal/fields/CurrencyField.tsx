@@ -1,5 +1,5 @@
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 

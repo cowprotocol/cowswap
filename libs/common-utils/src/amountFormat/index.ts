@@ -5,8 +5,8 @@ import {
   PERCENTAGE_PRECISION,
   ZERO_FRACTION,
 } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount, Percent, Rounding } from '@cowprotocol/common-entities'
 import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 

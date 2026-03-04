@@ -1,5 +1,5 @@
 import { WETH_SEPOLIA } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 
 import styled from 'styled-components/macro'
 

@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
+import { Currency, Token } from '@cowprotocol/common-entities'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { areTokensEqual } from '@cowprotocol/cow-sdk'
 import { getCountryAsKey, RestrictedTokenInfo, useAnyRestrictedToken } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { useGeoStatus } from './useGeoStatus'
 import { useRwaConsentStatus } from './useRwaConsentStatus'

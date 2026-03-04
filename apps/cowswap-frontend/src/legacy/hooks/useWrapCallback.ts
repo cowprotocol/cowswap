@@ -1,5 +1,6 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { RADIX_HEX } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import {
   calculateGasMargin,
   formatTokenAmount,
@@ -13,7 +14,6 @@ import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 

@@ -1,4 +1,4 @@
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/common-entities'
 
 import { getCurrencyAddress } from './getCurrencyAddress'
 

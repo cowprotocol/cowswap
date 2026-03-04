@@ -1,6 +1,5 @@
-import { TokenSymbol } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/common-entities'
+import { TokenSymbol, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'

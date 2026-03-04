@@ -1,9 +1,9 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FiatAmount, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Repeat } from 'react-feather'

@@ -1,4 +1,4 @@
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/common-entities'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 

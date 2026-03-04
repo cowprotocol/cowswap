@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react'
 

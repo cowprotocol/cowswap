@@ -1,8 +1,8 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { NATIVE_CURRENCY_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEvents, OnPostedOrderPayload } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'

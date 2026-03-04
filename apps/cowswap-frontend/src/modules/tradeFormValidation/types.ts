@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { Command } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ApprovalState, ApproveRequiredReason } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'

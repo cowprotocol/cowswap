@@ -1,6 +1,6 @@
+import { Fraction, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { RateLimitError, UnknownCurrencyError } from '../apis/errors'
 import { getBffUsdPrice } from '../apis/getBffUsdPrice'

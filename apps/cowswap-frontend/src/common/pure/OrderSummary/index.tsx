@@ -1,14 +1,13 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { ChainInfo, OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { OrderSummaryTemplateProps } from './summaryTemplates'
-import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
+import { OrderSummaryTemplateProps, BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
 
 import { TradeAmounts } from '../../types'
 

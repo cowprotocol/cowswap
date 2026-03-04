@@ -3,6 +3,7 @@ import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'rea
 
 import { useNativeTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 import {
   accountsLoaders,
@@ -13,7 +14,6 @@ import {
   useConnectionType,
   useWalletDetails,
 } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 

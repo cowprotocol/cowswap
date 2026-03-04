@@ -1,4 +1,4 @@
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/common-entities'
 
 export { useFiatValuePriceImpact } from './useFiatValuePriceImpact'
 

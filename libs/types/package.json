@@ -10,9 +10,9 @@
     "access": "public"
   },
   "dependencies": {
+    "@cowprotocol/common-entities": "workspace:*",
     "@cowprotocol/cow-sdk": "7.3.8",
     "@cowprotocol/sdk-bridging": "2.0.0",
-    "@uniswap/sdk-core": "^3.0.1",
     "eventemitter3": "^4.0.0"
   },
   "devDependencies": {

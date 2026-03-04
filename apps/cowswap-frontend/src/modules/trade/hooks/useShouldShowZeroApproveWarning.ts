@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 

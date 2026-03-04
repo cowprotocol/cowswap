@@ -1,5 +1,5 @@
+import { CurrencyAmount, Percent, Token } from '@cowprotocol/common-entities'
 import { AddressZero } from '@ethersproject/constants'
-import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { calculateSlippageAmount } from './calculateSlippageAmount'
 

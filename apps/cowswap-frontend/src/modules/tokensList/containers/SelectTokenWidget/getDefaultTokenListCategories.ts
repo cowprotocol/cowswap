@@ -1,7 +1,7 @@
 import { LpToken } from '@cowprotocol/common-const'
+import { Currency } from '@cowprotocol/common-entities'
 import { LP_TOKEN_LIST_CATEGORIES, LP_TOKEN_LIST_COW_AMM_ONLY, TokenListCategory } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 

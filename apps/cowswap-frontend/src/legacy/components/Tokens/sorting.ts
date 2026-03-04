@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { Token } from '@cowprotocol/common-entities'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Token } from '@uniswap/sdk-core'
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 

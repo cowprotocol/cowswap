@@ -2,7 +2,7 @@
 import { useMemo } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
-import { type Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { type Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 

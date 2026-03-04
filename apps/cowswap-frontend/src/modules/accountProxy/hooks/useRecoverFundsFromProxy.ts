@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { delay } from '@cowprotocol/common-utils'
 import { CowShedContract, CowShedContractAbi } from '@cowprotocol/cowswap-abis'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
@@ -7,7 +8,6 @@ import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { formatBytes32String } from '@ethersproject/strings'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 

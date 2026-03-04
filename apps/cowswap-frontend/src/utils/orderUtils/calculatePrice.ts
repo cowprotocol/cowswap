@@ -1,4 +1,4 @@
-import { Price, Token } from '@uniswap/sdk-core'
+import { Price, Token } from '@cowprotocol/common-entities'
 
 import JSBI from 'jsbi'
 

@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
+import { Currency } from '@cowprotocol/common-entities'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { UI } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'

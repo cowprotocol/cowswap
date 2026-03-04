@@ -24,13 +24,14 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.8",
     "@cowprotocol/analytics": "workspace:*",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/common-entities": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
+    "@cowprotocol/cow-sdk": "7.3.8",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui-utils": "workspace:*",
     "@lingui/core": "^5.4.1",
@@ -38,7 +39,6 @@
     "@popperjs/core": "^2.4.4",
     "@reach/menu-button": "^0.18.0",
     "@reach/portal": "^0.18.0",
-    "@uniswap/sdk-core": "^3.0.1",
     "bignumber.js": "^9.1.2",
     "color2k": "^2.0.2",
     "jotai": "2.16.2",

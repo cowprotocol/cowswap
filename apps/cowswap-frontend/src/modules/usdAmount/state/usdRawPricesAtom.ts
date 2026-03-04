@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
+import { Fraction, Token } from '@cowprotocol/common-entities'
 import { deepEqual } from '@cowprotocol/common-utils'
-import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { UsdPriceStateKey } from '../types'
 import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'

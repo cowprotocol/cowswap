@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import React, { ReactNode } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { getOrderTypeReceiveAmounts, useIsEoaEthFlow } from 'modules/trade'
-import { ReceiveAmountInfo } from 'modules/trade'
+import { getOrderTypeReceiveAmounts, useIsEoaEthFlow, ReceiveAmountInfo } from 'modules/trade'
 
 import { FeeItem } from './FeeItem'
 import { NetworkFeeItem } from './NetworkFeeItem'

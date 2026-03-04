@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 

@@ -24,11 +24,12 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.8",
     "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/common-entities": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
+    "@cowprotocol/cow-sdk": "7.3.8",
     "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/multicall": "workspace:*",
     "@cowprotocol/tokens": "workspace:*",
@@ -37,7 +38,6 @@
     "@cowprotocol/wallet-provider": "workspace:*",
     "@ethersproject/bignumber": "5.7.0",
     "@ethersproject/contracts": "5.7.0",
-    "@uniswap/sdk-core": "^3.0.1",
     "ethers": "5.7.2",
     "jotai": "2.16.2",
     "ms.macro": "^2.0.0",

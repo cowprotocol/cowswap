@@ -94,7 +94,7 @@ export class Fraction {
     const extraDigits = countLeadingFracZeros(this.numerator, this.denominator) + significantDigits + 1
     const raw = divideToDecimalString(this.numerator, this.denominator, extraDigits)
     const rounded = roundToSignificant(raw, significantDigits, rounding)
-    return applyFormat(rounded, format)
+    return applyFormat(rounded, { stripTrailingZeros: true, ...format })
   }
 
   public toFixed(

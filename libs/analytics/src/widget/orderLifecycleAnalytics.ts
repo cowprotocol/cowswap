@@ -1,4 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { FractionUtils, normalizeRawAmount } from '@cowprotocol/common-utils'
 import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
@@ -12,7 +13,6 @@ import {
   OnExpiredOrderPayload,
   BaseOrderPayload,
 } from '@cowprotocol/events'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
 

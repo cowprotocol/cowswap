@@ -3,31 +3,8 @@ import { MAX_UINT256 } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from './currencyAmount'
 import { Percent } from './percent'
 
-import { Currency } from '../currency'
-import { NativeCurrency } from '../nativeCurrency'
+import { Ether } from '../ether'
 import { Token } from '../token'
-
-const WETH_ADDRESS_1 = '0xEEEEEEEEEEEEEEEEE'
-
-class EtherMock extends NativeCurrency {
-  private static _cache: Record<number, EtherMock> = {}
-
-  protected constructor(chainId: number) {
-    super(chainId, 18, 'ETH', 'Ether')
-  }
-
-  public static onChain(chainId: number): EtherMock {
-    return (EtherMock._cache[chainId] ??= new EtherMock(chainId))
-  }
-
-  public equals(other: Currency): boolean {
-    return other.isNative && other.chainId === this.chainId
-  }
-
-  public get wrapped(): Token {
-    return new Token(this.chainId, WETH_ADDRESS_1, 18, 'WETH', 'Wrapped Ether')
-  }
-}
 
 describe('CurrencyAmount', () => {
   const ADDRESS_ONE = '0x0000000000000000000000000000000000000001'
@@ -50,9 +27,9 @@ describe('CurrencyAmount', () => {
 
   describe('#ether', () => {
     it('produces ether amount', () => {
-      const amount = CurrencyAmount.fromRawAmount(EtherMock.onChain(1), 100)
+      const amount = CurrencyAmount.fromRawAmount(Ether.onChain(1), 100)
       expect(amount.quotient).toEqual(100n)
-      expect(amount.currency).toEqual(EtherMock.onChain(1))
+      expect(amount.currency).toEqual(Ether.onChain(1))
     })
   })
 

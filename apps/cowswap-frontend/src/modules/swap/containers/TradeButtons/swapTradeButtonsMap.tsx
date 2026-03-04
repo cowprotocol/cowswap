@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
 
+import { Currency, Token } from '@cowprotocol/common-entities'
 import { Command } from '@cowprotocol/types'
 import { ButtonError, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'

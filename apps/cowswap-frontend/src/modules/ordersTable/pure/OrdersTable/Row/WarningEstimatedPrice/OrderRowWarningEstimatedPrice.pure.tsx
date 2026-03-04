@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import { Token } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 

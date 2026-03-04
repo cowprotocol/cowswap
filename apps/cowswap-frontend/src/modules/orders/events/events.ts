@@ -1,3 +1,4 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import {
   CowEventListener,
   OnBridgingSuccessPayload,
@@ -7,7 +8,6 @@ import {
   OnPresignedOrderPayload,
   OnPostedOrderPayload as GenericOnPostedOrderPayload,
 } from '@cowprotocol/events'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export enum OrderStatusEvents {
   ON_POSTED_ORDER = 'ON_POSTED_ORDER',

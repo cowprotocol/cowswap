@@ -1,6 +1,6 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 

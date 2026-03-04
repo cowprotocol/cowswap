@@ -1,6 +1,6 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
+import { Fraction, Token } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import ms from 'ms.macro'

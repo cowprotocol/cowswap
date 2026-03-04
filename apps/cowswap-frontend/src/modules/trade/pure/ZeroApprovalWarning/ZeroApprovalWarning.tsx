@@ -1,4 +1,4 @@
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/common-entities'
 
 import { Trans } from '@lingui/react/macro'
 import { Link as ReactRouterLink } from 'react-router'

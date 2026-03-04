@@ -1,6 +1,7 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
@@ -8,7 +9,6 @@ import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'

@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
 
 import JSBI from 'jsbi'
 

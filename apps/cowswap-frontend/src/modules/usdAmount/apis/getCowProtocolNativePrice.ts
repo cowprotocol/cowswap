@@ -1,5 +1,5 @@
+import { Fraction, Token } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { getNativePrice } from 'api/cowProtocol'
 

@@ -1,6 +1,6 @@
+import { CurrencyAmount, Percent, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { parseUnits } from '@ethersproject/units'
-import { CurrencyAmount, Percent, Token, WETH9 } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 
@@ -16,7 +16,7 @@ function _calculateAbaPriceImpact(initialValue: string, finalValue: string) {
   return new Percent(numerator.toString(), denominator.toString())
 }
 
-const WETH_MAINNET = new Token(ChainId.MAINNET, WETH9[1].address, 18)
+const WETH_MAINNET = new Token(ChainId.MAINNET, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', 18)
 const DAI_MAINNET = new Token(ChainId.MAINNET, '0x6b175474e89094c44da98b954eedeac495271d0f', 18)
 
 describe('A > B > A Price Impact', () => {

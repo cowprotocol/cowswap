@@ -1,4 +1,4 @@
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/common-entities'
 
 export const PRICE_IMPACT_THRESHOLD = {
   low: new Percent(1, 100), // 1%

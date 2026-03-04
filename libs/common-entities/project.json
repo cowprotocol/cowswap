@@ -5,6 +5,18 @@
   "projectType": "library",
   "tags": ["scope:entities"],
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/common-entities",
+        "main": "libs/common-entities/src/index.ts",
+        "tsConfig": "libs/common-entities/tsconfig.lib.json",
+        "assets": ["libs/common-entities/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true,
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],

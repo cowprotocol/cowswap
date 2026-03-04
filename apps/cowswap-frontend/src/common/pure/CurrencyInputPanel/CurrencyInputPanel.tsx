@@ -2,10 +2,10 @@
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HoverTooltip, TokenAmount } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'

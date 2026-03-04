@@ -1,16 +1,15 @@
 import { ReactElement } from 'react'
 
+import { CurrencyAmount, Fraction, Token } from '@cowprotocol/common-entities'
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans as TransReact } from '@lingui/react'
-import { useLingui } from '@lingui/react/macro'
-import { Trans } from '@lingui/react/macro'
+import { useLingui, Trans } from '@lingui/react/macro'
 import { CloseIcon } from 'theme'
 
 import { OrderStatus } from 'legacy/state/orders/actions'

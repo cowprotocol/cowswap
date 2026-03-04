@@ -2,10 +2,10 @@ import { Atom, useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { Nullish } from 'types'

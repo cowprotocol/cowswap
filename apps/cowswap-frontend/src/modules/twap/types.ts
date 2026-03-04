@@ -1,5 +1,5 @@
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { SafeTransactionParams } from 'common/types'
 

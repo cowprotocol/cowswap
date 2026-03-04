@@ -1,8 +1,8 @@
 import { ReactElement, ReactNode } from 'react'
 
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, TokenAmount as LibTokenAmount, TokenAmountProps as LibTokenAmountProps } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { StatusColor, AmountWithTokenIcon } from './styled'
 

@@ -1,5 +1,5 @@
+import { Percent } from '@cowprotocol/common-entities'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 

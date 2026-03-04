@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Nullish } from 'types'

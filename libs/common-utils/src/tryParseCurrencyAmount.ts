@@ -1,7 +1,5 @@
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
-
-import JSBI from 'jsbi'
 
 /**
  * Parses a CurrencyAmount from the passed string.
@@ -27,7 +25,7 @@ export function tryParseCurrencyAmount<T extends Currency>(
     const fixedNumber = remainder ? quotient + '.' + remainder.slice(0, currency.decimals) : quotient
     const typedValueParsed = parseUnits(fixedNumber, currency.decimals).toString()
 
-    return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(typedValueParsed))
+    return CurrencyAmount.fromRawAmount(currency, BigInt(typedValueParsed))
     // TODO: Replace any with proper type definitions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

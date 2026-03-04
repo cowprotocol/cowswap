@@ -1,6 +1,6 @@
+import { Currency } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PermitHookData, PermitHookParams, PermitInfo } from '@cowprotocol/permit-utils'
-import { Currency } from '@uniswap/sdk-core'
 
 import { AppDataInfo, TypedAppDataHooks } from 'modules/appData'
 

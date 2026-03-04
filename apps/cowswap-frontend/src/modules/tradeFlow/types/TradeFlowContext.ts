@@ -1,9 +1,9 @@
+import type { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/cowswap-abis'
 import type { Command } from '@cowprotocol/types'
 import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
-import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { SigningSteps } from 'entities/trade'
 

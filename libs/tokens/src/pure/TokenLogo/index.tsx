@@ -7,11 +7,11 @@ import {
   LpToken,
   NATIVE_CURRENCY_ADDRESS,
   TokenWithLogo,
+  getChainInfo,
 } from '@cowprotocol/common-const'
-import { getChainInfo } from '@cowprotocol/common-const'
+import { Currency, NativeCurrency } from '@cowprotocol/common-entities'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
 import { Slash } from 'react-feather'
 
