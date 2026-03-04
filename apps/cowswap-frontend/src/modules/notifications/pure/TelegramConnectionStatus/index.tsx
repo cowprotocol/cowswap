@@ -4,15 +4,6 @@ import { Loader, UI } from '@cowprotocol/ui'
 
 import { Toggle } from 'legacy/components/Toggle'
 
-interface TelegramData {
-  auth_date: number
-  first_name: string
-  hash: string
-  id: number
-  photo_url: string
-  username: string
-}
-
 interface TelegramConnectionStatusProps {
   isLoading: boolean
   isSubscribed: boolean
