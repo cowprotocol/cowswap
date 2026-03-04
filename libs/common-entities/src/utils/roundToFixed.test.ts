@@ -34,8 +34,9 @@ describe('roundToFixed', () => {
       expect(roundToFixed('1.001', 2, Rounding.ROUND_DOWN)).toBe('1.00')
     })
 
-    it('rounds negative numbers toward zero', () => {
+    it('truncates negative numbers toward zero (not away)', () => {
       expect(roundToFixed('-1.999', 2, Rounding.ROUND_DOWN)).toBe('-1.99')
+      expect(roundToFixed('-1.001', 2, Rounding.ROUND_DOWN)).toBe('-1.00')
     })
   })
 
@@ -45,8 +46,9 @@ describe('roundToFixed', () => {
       expect(roundToFixed('1.000', 2, Rounding.ROUND_UP)).toBe('1.00')
     })
 
-    it('truncates toward zero for negative numbers', () => {
-      expect(roundToFixed('-1.999', 2, Rounding.ROUND_UP)).toBe('-1.99')
+    it('rounds away from zero for negative numbers', () => {
+      expect(roundToFixed('-1.999', 2, Rounding.ROUND_UP)).toBe('-2.00')
+      expect(roundToFixed('-1.001', 2, Rounding.ROUND_UP)).toBe('-1.01')
     })
   })
 
@@ -55,7 +57,7 @@ describe('roundToFixed', () => {
       expect(roundToFixed('-1.235', 2, Rounding.ROUND_HALF_UP)).toBe('-1.24')
     })
 
-    it('handles negative zero', () => {
+    it('truncates -0.001 toward zero', () => {
       expect(roundToFixed('-0.001', 2, Rounding.ROUND_DOWN)).toBe('-0.00')
     })
   })

@@ -20,5 +20,5 @@ export function divideToDecimalString(numerator: bigint, denominator: bigint, ex
   }
 
   const raw = `${intPart}.${frac}`
-  return negative && (intPart > 0n || rem > 0n) ? `-${raw}` : raw
+  return negative && numerator !== 0n ? `-${raw}` : raw
 }

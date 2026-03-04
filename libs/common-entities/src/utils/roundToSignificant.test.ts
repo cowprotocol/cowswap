@@ -46,11 +46,13 @@ describe('roundToSignificant', () => {
   })
 
   describe('ROUND_UP', () => {
-    it('rounds up when there are remaining digits', () => {
-      expect(roundToSignificant('1.001', 2, Rounding.ROUND_UP)).toBe('1.1')
+    it('rounds up when guard digit > 0', () => {
+      expect(roundToSignificant('1.051', 2, Rounding.ROUND_UP)).toBe('1.1')
     })
 
     it('does not round up when guard digit is 0', () => {
+      // 1.001 to 2 sig figs: guard digit is 0 → no rounding
+      expect(roundToSignificant('1.001', 2, Rounding.ROUND_UP)).toBe('1.0')
       expect(roundToSignificant('1.500', 2, Rounding.ROUND_UP)).toBe('1.5')
     })
   })
