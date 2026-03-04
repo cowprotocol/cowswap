@@ -2,7 +2,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const DonutRing = styled.svg`
+export const Ring = styled.svg`
   position: absolute;
   inset: 0;
   width: 100%;
@@ -33,7 +33,7 @@ export const DonutRing = styled.svg`
   }
 `
 
-export const DonutWrapper = styled.div<{ $value: number }>`
+export const Wrapper = styled.div<{ $value: number }>`
   --size: 139px;
   --thickness: 20px;
   --stroke-width: 14.4;
@@ -53,7 +53,7 @@ export const DonutWrapper = styled.div<{ $value: number }>`
   }
 `
 
-export const DonutContent = styled.div`
+export const Content = styled.div`
   position: relative;
   z-index: 1;
   font-size: 12px;
