@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isChainDeprecated, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -65,9 +65,12 @@ export function NetworkControl({ state, standaloneMode, availableChains }: Netwo
 
           if (!option) return null
 
+          const isDeprecated = isChainDeprecated(chainId)
+
           return (
             <MenuItem key={option.chainId} value={option.chainId}>
               {option.label}
+              {isDeprecated && ' (deprecated)'}
             </MenuItem>
           )
         })}

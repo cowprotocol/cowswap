@@ -8,9 +8,10 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { ProxyRecipient } from 'modules/accountProxy'
+import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
-import { RowSlippage } from 'modules/tradeWidgetAddons'
+import { QuoteIdTooltipContent, QuoteIdValue, QuoteVerificationBadge, RowSlippage } from 'modules/tradeWidgetAddons'
 
 import { QuoteSwapContext } from '../../../types'
 import { ProxyAccountBanner } from '../../ProxyAccountBanner'
@@ -111,11 +112,34 @@ function createMinReceiveContent(
   }
 }
 
+function createQuoteIdContent(quoteId: string, quoteVerified?: boolean, quoteExpiration?: string | null): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        {t`Quote ID`} <QuoteVerificationBadge isVerified={quoteVerified} />
+        <InfoTooltip content={<QuoteIdTooltipContent expiration={quoteExpiration} />} size={14} />
+      </>
+    ),
+    content: <QuoteIdValue quoteId={quoteId} />,
+  }
+}
+
+function createRewardsContent(): ContentItem {
+  return {
+    withTimelineDot: true,
+    content: <AffiliateTraderRewardsRow />,
+  }
+}
+
 export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDetailsContentProps): ReactNode {
   const {
     receiveAmountInfo,
     sellAmount,
     expectedReceive,
+    quoteId,
+    quoteVerified,
+    quoteExpiration,
     slippage,
     recipient,
     bridgeReceiverOverride,
@@ -125,11 +149,14 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
     isSlippageModified,
   } = context
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
   const contents = [
     createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
     !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
+    isRewardsRowEnabled && createRewardsContent(),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
+    quoteId ? createQuoteIdContent(quoteId, quoteVerified, quoteExpiration) : null,
   ]
 
   return (

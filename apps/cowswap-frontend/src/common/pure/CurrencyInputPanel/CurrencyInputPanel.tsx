@@ -35,7 +35,8 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   chainId: SupportedChainId | undefined
   areCurrenciesLoading: boolean
   bothCurrenciesSet: boolean
-  isChainIdUnsupported: boolean
+  isProviderNetworkUnsupported: boolean
+  isProviderNetworkDeprecated: boolean
   isBridging?: boolean
   disabled?: boolean
   inputDisabled?: boolean
@@ -85,7 +86,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
-    isChainIdUnsupported,
+    isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
     openTokenSelectWidget,
     onCurrencySelection,
     subsidyAndBalance = {
@@ -110,7 +112,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     receiveAmountInfo,
     isUsdValuesMode = false,
   } = currencyInfo
-  const disabled = !!props.disabled || isChainIdUnsupported
+  const disabled = !!props.disabled || isProviderNetworkUnsupported || isProviderNetworkDeprecated
 
   const { value: usdAmount } = useUsdAmount(amount)
   const { value: maxBalanceUsdAmount } = useUsdAmount(maxBalance)
@@ -144,17 +146,23 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode, currency?.decimals],
   )
 
-  const handleMaxInput = useCallback(() => {
-    if (!maxBalance) {
-      return
-    }
+  const handleMaxInput = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
 
-    const value = isUsdValuesMode ? maxBalanceUsdAmount : maxBalance
+      if (!maxBalance) {
+        return
+      }
 
-    if (value) {
-      onUserInputDispatch(value.toExact(), isUsdValuesMode ? maxBalance.toExact() : undefined)
-    }
-  }, [maxBalance, onUserInputDispatch, isUsdValuesMode, maxBalanceUsdAmount])
+      const value = isUsdValuesMode ? maxBalanceUsdAmount : maxBalance
+
+      if (value) {
+        onUserInputDispatch(value.toExact(), isUsdValuesMode ? maxBalance.toExact() : undefined)
+      }
+    },
+    [maxBalance, onUserInputDispatch, isUsdValuesMode, maxBalanceUsdAmount],
+  )
 
   useEffect(() => {
     // Compare the actual string values to preserve trailing decimals
@@ -184,8 +192,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     <styledEl.NumericalInput
       className="token-amount-input"
       prependSymbol={isUsdValuesMode ? '$' : ''}
-      value={isChainIdUnsupported ? '' : typedValue}
-      readOnly={inputDisabled}
+      value={isProviderNetworkUnsupported || isProviderNetworkDeprecated ? '' : typedValue}
+      readOnly={inputDisabled || disabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}
     />

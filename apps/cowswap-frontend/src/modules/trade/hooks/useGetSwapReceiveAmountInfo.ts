@@ -29,9 +29,10 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   const tradeQuote = useTradeQuote()
   const volumeFeeBps = useVolumeFee()?.volumeBps
   const orderKind = derivedTradeState?.orderKind
-  const slippage = derivedTradeState?.slippage
+  const derivedSlippage = derivedTradeState?.slippage
 
-  const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
+  const quoteResults = tradeQuote?.quote?.quoteResults
+  const quoteResponse = quoteResults?.quoteResponse
   const orderParams = quoteResponse?.quote
   const protocolFeeBps = useTradeQuoteProtocolFee()
 
@@ -40,17 +41,17 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   return useMemo(() => {
     // Avoid states mismatch
     if (orderKind !== orderParams?.kind) return null
-    if (!orderParams || !slippage || !inputCurrency || !outputCurrency) return null
+    if (!orderParams || !inputCurrency || !outputCurrency || !derivedSlippage) return null
 
     return {
       orderParams,
       inputCurrency,
       outputCurrency,
-      slippagePercent: slippage,
+      slippagePercent: derivedSlippage,
       partnerFeeBps: volumeFeeBps,
       protocolFeeBps,
     }
-  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, slippage, protocolFeeBps])
+  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, protocolFeeBps, derivedSlippage])
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {

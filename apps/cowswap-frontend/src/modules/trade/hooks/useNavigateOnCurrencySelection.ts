@@ -84,7 +84,13 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           : resolveCurrencyAddressOrSymbol(outputCurrency)
         : null
 
-      const targetInputCurrencyId = isInputField ? tokenSymbolOrAddress : inputCurrencyId
+      // When switching SELL chain, persist token address for non-native tokens.
+      // Symbols from imported/non-canonical lists may not resolve reliably from URL (e.g. A3A).
+      const targetInputCurrencyId = isInputField
+        ? targetChainMismatch && currency instanceof Token
+          ? currency.address
+          : tokenSymbolOrAddress
+        : inputCurrencyId
       const targetOutputCurrencyId = isInputField
         ? outputCurrencyId
         : targetChainMismatch && currency

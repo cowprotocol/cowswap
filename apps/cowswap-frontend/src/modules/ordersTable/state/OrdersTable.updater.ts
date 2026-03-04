@@ -1,19 +1,15 @@
-import { useAtomValue, useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai/index'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
-
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useNavigate } from 'common/hooks/useNavigate'
-import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
 import { ordersTableStateAtom } from './ordersTable.atoms'
 import { OrdersTableParams } from './ordersTable.types'
@@ -45,28 +41,20 @@ interface OrdersTableStateUpdaterProps extends OrdersTableParams {
 }
 
 // todo will fix in the next pr
-// eslint-disable-next-line max-lines-per-function
+
 export function OrdersTableStateUpdater({
   orders: allOrders,
   orderType,
   searchTerm = '',
   historyStatusFilter,
-  isTwapTable = false,
   displayOrdersOnlyForSafeApp = false,
   syncWithUrl = true,
 }: OrdersTableStateUpdaterProps): ReactNode {
   const { chainId } = useWalletInfo()
-  const { allowsOffchainSigning } = useWalletDetails()
   const navigate = useNavigate()
   const location = useLocation()
   const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
-  const pendingOrdersPrices = usePendingOrdersPrices()
   const setOrdersTableState = useSetAtom(ordersTableStateAtom)
-  const selectedOrders = useAtomValue(ordersToCancelAtom)
-  const getSpotPrice = useGetSpotPrice()
-  const isSafeViaWc = useIsSafeViaWc()
-  const injectedWidgetParams = useInjectedWidgetParams()
-  const pendingActivitiesCount = usePendingActivitiesCount()
 
   const ordersTokens = useMemo(() => getOrdersInputTokens(allOrders), [allOrders])
 
@@ -93,18 +81,10 @@ export function OrdersTableStateUpdater({
       orders,
       filteredOrders,
       displayOrdersOnlyForSafeApp,
-      isSafeViaWc,
       currentPageNumber,
-      pendingOrdersPrices,
       balancesAndAllowances,
       orderActions,
-      getSpotPrice,
-      allowsOffchainSigning,
       orderType,
-      injectedWidgetParams,
-      isTwapTable,
-      pendingActivitiesCount,
-      selectedOrders,
       hasHydratedOrders,
     })
   }, [
@@ -114,18 +94,10 @@ export function OrdersTableStateUpdater({
     filteredOrders,
     currentTabId,
     displayOrdersOnlyForSafeApp,
-    isSafeViaWc,
     currentPageNumber,
-    pendingOrdersPrices,
     balancesAndAllowances,
     orderActions,
-    getSpotPrice,
-    allowsOffchainSigning,
     orderType,
-    injectedWidgetParams,
-    isTwapTable,
-    pendingActivitiesCount,
-    selectedOrders,
     hasHydratedOrders,
   ])
 

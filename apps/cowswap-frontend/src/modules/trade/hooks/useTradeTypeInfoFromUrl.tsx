@@ -16,7 +16,7 @@ export function useTradeTypeInfoFromUrl(): TradeTypeInfo | null {
   return useMemo(() => {
     if (hooksMatch) return { tradeType: TradeType.SWAP, route: Routes.HOOKS }
     if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }
-    if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDER }
+    if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDERS }
     if (advancedOrdersMatch) return { tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS }
     if (yieldMatch) return { tradeType: TradeType.YIELD, route: Routes.YIELD }
 

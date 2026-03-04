@@ -27,6 +27,9 @@ export interface QuoteSwapContext {
 
   slippage: Percent
   recipient: string
+  quoteId?: string | null
+  quoteVerified?: boolean
+  quoteExpiration?: string | null
 
   isSlippageModified: boolean
 

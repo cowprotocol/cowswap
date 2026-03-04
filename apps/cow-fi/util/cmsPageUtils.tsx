@@ -37,13 +37,9 @@ export async function generateCmsPageMetadata(slug: string): Promise<Metadata> {
     throw new Error(`No title found for page with slug "${slug}" in CMS`)
   }
 
-  if (!description) {
-    throw new Error(`No meta description found for page with slug "${slug}" in CMS`)
-  }
-
   return getPageMetadata({
-    absoluteTitle: heading || description, // Use heading for title, fallback to description if heading is null
-    description: description,
+    absoluteTitle: heading || description,
+    description: description || heading || '',
   })
 }
 

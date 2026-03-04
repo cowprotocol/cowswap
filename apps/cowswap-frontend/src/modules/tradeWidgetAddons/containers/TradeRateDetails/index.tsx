@@ -2,6 +2,7 @@ import { useMemo, useState, useCallback, ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import {
   getTotalCosts,
@@ -23,12 +24,16 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { RowDeadline } from '../RowDeadline'
+import { RowQuoteId } from '../RowQuoteId'
 import { RowSlippage } from '../RowSlippage'
 
 interface TradeRateDetailsProps {
   deadline: number
   rateInfoParams: RateInfoParams
   isTradePriceUpdating: boolean
+  quoteId?: string | number | null
+  quoteVerified?: boolean | null
+  quoteExpiration?: string | null
   accordionContent?: ReactNode
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
@@ -37,6 +42,9 @@ export function TradeRateDetails({
   rateInfoParams,
   deadline,
   isTradePriceUpdating,
+  quoteId,
+  quoteVerified,
+  quoteExpiration,
   accordionContent,
   feeWrapper,
 }: TradeRateDetailsProps): ReactNode {
@@ -48,6 +56,7 @@ export function TradeRateDetails({
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const swapReceiveAmountInfo = useGetSwapReceiveAmountInfo()
   const shouldPayGas = useShouldPayGas()
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const { error: quoteError } = useTradeQuote()
 
@@ -61,7 +70,6 @@ export function TradeRateDetails({
 
   if (!receiveAmountInfo || !swapReceiveAmountInfo || quoteError) {
     if (!networkFeeAmount) return null
-
     return (
       <div style={{ padding: '0 10px' }}>
         <NetworkCostsRow
@@ -74,20 +82,14 @@ export function TradeRateDetails({
     )
   }
 
-  const totalCosts = getTotalCosts(
-    swapReceiveAmountInfo,
-    bridgeQuoteAmounts?.bridgeFeeAmounts?.amountInIntermediateCurrency,
-  )
-
   // Slippage row component - can be shown outside or inside accordion
-  const slippageRow = slippage ? (
+  const slippageRow = slippage && (
     <RowSlippage
       isTradePriceUpdating={isTradePriceUpdating}
       allowedSlippage={slippage}
       isSlippageModified={isSlippageModified}
     />
-  ) : null
-
+  )
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (
     <>
@@ -97,16 +99,19 @@ export function TradeRateDetails({
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
         showTotalRow
       />
-      {/* Always show slippage inside accordion */}
-      {slippageRow}
+      {slippageRow} {/* Always show slippage inside accordion */}
+      {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
       <RowDeadline deadline={deadline} />
+      <RowQuoteId quoteId={quoteId} isVerified={quoteVerified} expiration={quoteExpiration} />
     </>
   )
-
   return (
     <>
       <TradeTotalCostsDetails
-        totalCosts={totalCosts}
+        totalCosts={getTotalCosts(
+          swapReceiveAmountInfo,
+          bridgeQuoteAmounts?.bridgeFeeAmounts?.amountInIntermediateCurrency,
+        )}
         rateInfoParams={rateInfoParams}
         isFeeDetailsOpen={isFeeDetailsOpen}
         toggleAccordion={toggleAccordion}

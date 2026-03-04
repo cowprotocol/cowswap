@@ -3,6 +3,7 @@ import IMAGE_COW from 'assets/img/CowProtocol-logo.svg'
 import IMAGE_DISCORD from 'assets/img/discord.svg'
 import IMAGE_DOC from 'assets/img/doc.svg'
 import IMAGE_ANALYTICS from 'assets/img/pie.svg'
+import { PiMathOperationsFill } from 'react-icons/pi'
 
 import { MenuItemKind, MenuTreeItem } from './types'
 
@@ -67,6 +68,12 @@ export const MAIN_MENU: MenuTreeItem[] = [
       {
         sectionTitle: 'OTHER',
         links: [
+          {
+            title: 'Solvers',
+            url: Routes.SOLVERS,
+            iconComponent: PiMathOperationsFill,
+            noPrefix: true,
+          },
           {
             title: 'AppData',
             url: Routes.APPDATA,

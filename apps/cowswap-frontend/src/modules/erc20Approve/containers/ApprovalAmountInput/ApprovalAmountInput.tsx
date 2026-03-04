@@ -10,6 +10,8 @@ import { Field } from 'legacy/state/types'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
@@ -34,6 +36,9 @@ export function ApprovalAmountInput({
   onReset,
   amountToSwap,
 }: ApprovalAmountInputProps): ReactNode {
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
+
   const [updateCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
   const customAmountValueState = useCustomApproveAmountInputState()
 
@@ -89,7 +94,8 @@ export function ApprovalAmountInput({
         chainId={tokenWithLogo?.chainId}
         areCurrenciesLoading={false}
         bothCurrenciesSet={false}
-        isChainIdUnsupported={false}
+        isProviderNetworkUnsupported={isProviderNetworkUnsupported}
+        isProviderNetworkDeprecated={isProviderNetworkDeprecated}
         allowsOffchainSigning={false}
         currencyInfo={currencyInfo}
         isInvalid={customAmountValueState.isInvalid}

@@ -55,37 +55,38 @@ const USDC_MAINNET = USDC[SupportedChainId.MAINNET]
 const WETH_GNOSIS = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN]
 const USDC_GNOSIS = USDC[SupportedChainId.GNOSIS_CHAIN]
 
-describe('useNavigateOnCurrencySelection', () => {
+function setupDefaultMocks(mockNavigate: jest.Mock, mockAreThereTokensWithSameSymbol: jest.Mock): void {
+  mockedUseTradeNavigate.mockReturnValue(mockNavigate)
+  mockedUseAreThereTokensWithSameSymbol.mockReturnValue(mockAreThereTokensWithSameSymbol)
+
+  mockedUseWalletInfo.mockReturnValue({
+    chainId: SupportedChainId.MAINNET,
+  } as never)
+
+  mockedUseTradeState.mockReturnValue({
+    state: {
+      targetChainId: null,
+    },
+  } as never)
+
+  mockedUseDerivedTradeState.mockReturnValue({
+    inputCurrency: WETH_MAINNET,
+    outputCurrency: USDC_MAINNET,
+    orderKind: OrderKind.SELL,
+  } as never)
+
+  mockedUseBridgeSupportedNetworks.mockReturnValue({ data: ALL_SUPPORTED_CHAINS } as never)
+}
+
+describe('useNavigateOnCurrencySelection - basic', () => {
   let mockNavigate: jest.Mock
   let mockAreThereTokensWithSameSymbol: jest.Mock
 
   beforeEach(() => {
     jest.clearAllMocks()
-
     mockNavigate = jest.fn()
     mockAreThereTokensWithSameSymbol = jest.fn().mockReturnValue(false)
-
-    mockedUseTradeNavigate.mockReturnValue(mockNavigate)
-    mockedUseAreThereTokensWithSameSymbol.mockReturnValue(mockAreThereTokensWithSameSymbol)
-
-    // Default setup
-    mockedUseWalletInfo.mockReturnValue({
-      chainId: SupportedChainId.MAINNET,
-    } as never)
-
-    mockedUseTradeState.mockReturnValue({
-      state: {
-        targetChainId: null,
-      },
-    } as never)
-
-    mockedUseDerivedTradeState.mockReturnValue({
-      inputCurrency: WETH_MAINNET,
-      outputCurrency: USDC_MAINNET,
-      orderKind: OrderKind.SELL,
-    } as never)
-
-    mockedUseBridgeSupportedNetworks.mockReturnValue({ data: ALL_SUPPORTED_CHAINS } as never)
+    setupDefaultMocks(mockNavigate, mockAreThereTokensWithSameSymbol)
   })
 
   describe('Basic currency selection', () => {
@@ -237,12 +238,27 @@ describe('useNavigateOnCurrencySelection', () => {
       )
     })
   })
+})
+
+describe('useNavigateOnCurrencySelection - cross-chain', () => {
+  let mockNavigate: jest.Mock
+  let mockAreThereTokensWithSameSymbol: jest.Mock
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockNavigate = jest.fn()
+    mockAreThereTokensWithSameSymbol = jest.fn().mockReturnValue(false)
+    setupDefaultMocks(mockNavigate, mockAreThereTokensWithSameSymbol)
+  })
 
   describe('Chain switching scenarios', () => {
-    it('should switch chain and keep buy token when selecting input currency from different chain', () => {
+    it('should preserve buy token when selecting input currency from different chain and buy was on same chain as sell', () => {
+      // Default state: wallet on Mainnet, sell=WETH_MAINNET, buy=USDC_MAINNET (same-chain swap)
       const { result } = renderHook(() => useNavigateOnCurrencySelection())
 
-      // Select token from Gnosis Chain as input
+      // Select token from Gnosis Chain as input → sell chain changes
+      // Even though buy token (USDC_MAINNET) was on the same chain as the old sell (Mainnet),
+      // this is a valid bridge destination and should be preserved.
       act(() => {
         result.current(Field.INPUT, WETH_GNOSIS)
       })
@@ -250,10 +266,47 @@ describe('useNavigateOnCurrencySelection', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         SupportedChainId.GNOSIS_CHAIN,
         {
-          inputCurrencyId: WETH_GNOSIS.symbol,
+          inputCurrencyId: WETH_GNOSIS.address,
           outputCurrencyId: USDC_MAINNET.address,
         },
         { targetChainId: SupportedChainId.MAINNET },
+      )
+    })
+
+    it('should preserve buy token when switching sell chain and buy was already on a different chain (cross-chain)', () => {
+      // Setup: existing bridge trade - sell on Mainnet, buy on Gnosis
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: WETH_MAINNET,
+        outputCurrency: USDC_GNOSIS,
+        orderKind: OrderKind.SELL,
+      } as never)
+
+      const { result } = renderHook(() => useNavigateOnCurrencySelection())
+
+      const WETH_ARB = new TokenWithLogo(
+        undefined,
+        SupportedChainId.ARBITRUM_ONE,
+        '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+        18,
+        'WETH',
+        'Wrapped Ether',
+      )
+      mockAreThereTokensWithSameSymbol.mockReturnValue(true)
+
+      // Select token from Arbitrum as input → sell chain changes
+      // Buy token (USDC_GNOSIS) was already on a different chain than sell (Mainnet),
+      // so it's an intentional cross-chain setup and should be preserved
+      act(() => {
+        result.current(Field.INPUT, WETH_ARB)
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.ARBITRUM_ONE,
+        {
+          inputCurrencyId: WETH_ARB.address,
+          outputCurrencyId: USDC_GNOSIS.address,
+        },
+        { targetChainId: SupportedChainId.GNOSIS_CHAIN },
       )
     })
 

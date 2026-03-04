@@ -44,6 +44,7 @@ jobs:
       env_name: ${{ matrix.env_name }}
       # Pick app according to published tag
       app: ${{ startsWith(github.ref, 'refs/tags/explorer') && 'EXPLORER' || 'COWSWAP' }}
+      disable_nx_cache: true
 
   vercel-prod:
     # Deploys to Vercel prod environment
@@ -57,3 +58,4 @@ jobs:
     with:
       env_name: prod
       app: ${{ matrix.app }}
+      disable_nx_cache: true

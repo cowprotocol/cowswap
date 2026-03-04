@@ -14,7 +14,7 @@ interface TradeWarningsProps {
 
 export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: TradeWarningsProps): ReactNode {
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
+  const inputAmountWithSlippage = receiveAmountInfo?.amountsToSign.sellAmount
   const shouldZeroApprove = useShouldShowZeroApproveWarning(inputAmountWithSlippage)
 
   return (

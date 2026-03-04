@@ -74,7 +74,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm run install:ci --frozen-lockfile
 
       - name: Load generated files
         id: cache-generated-files
@@ -113,7 +113,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm run install:ci --frozen-lockfile
 
       - name: Load generated files
         id: cache-generated-files
@@ -148,14 +148,14 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm run install:ci --frozen-lockfile
 
       - name: Install Cypress binary
         working-directory: apps/cowswap-frontend-e2e
         run: npx cypress install
 
       - name: Start server in the background
-        run: pnpm run start &
+        run: pnpm run preview &
 
       # Actually run tests, building repo
       - name: Cypress run

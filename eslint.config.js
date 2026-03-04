@@ -175,6 +175,7 @@ module.exports = [
           argsIgnorePattern: '^_',
         },
       ],
+      'import/no-duplicates': 'warn',
       'import/order': [
         'error',
         {
@@ -212,6 +213,12 @@ module.exports = [
             caseInsensitive: true,
           },
           'newlines-between': 'always',
+        },
+      ],
+      'import/no-internal-modules': [
+        'warn',
+        {
+          forbid: ['modules/*/**'],
         },
       ],
       'no-restricted-globals': [

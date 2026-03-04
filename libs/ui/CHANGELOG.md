@@ -1,5 +1,113 @@
 # Changelog
 
+## [2.3.2](https://github.com/cowprotocol/cowswap/compare/ui-v2.3.1...ui-v2.3.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.3.2
+    * @cowprotocol/common-const bumped to 2.3.2
+    * @cowprotocol/common-hooks bumped to 2.3.2
+    * @cowprotocol/common-utils bumped to 2.3.2
+    * @cowprotocol/core bumped to 2.4.0
+    * @cowprotocol/types bumped to 3.3.2
+
+## [2.3.1](https://github.com/cowprotocol/cowswap/compare/ui-v2.3.0...ui-v2.3.1) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.3.1
+    * @cowprotocol/common-const bumped to 2.3.1
+    * @cowprotocol/common-hooks bumped to 2.3.1
+    * @cowprotocol/common-utils bumped to 2.3.1
+    * @cowprotocol/core bumped to 2.3.1
+    * @cowprotocol/types bumped to 3.3.1
+
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/ui-v2.2.2...ui-v2.3.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.3.0
+    * @cowprotocol/common-const bumped to 2.3.0
+    * @cowprotocol/common-hooks bumped to 2.3.0
+    * @cowprotocol/common-utils bumped to 2.3.0
+    * @cowprotocol/core bumped to 2.3.0
+    * @cowprotocol/types bumped to 3.3.0
+
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/ui-v2.2.1...ui-v2.2.2) (2026-02-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.2
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-hooks bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+    * @cowprotocol/core bumped to 2.2.2
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/ui-v2.2.0...ui-v2.2.1) (2026-02-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.1
+    * @cowprotocol/common-const bumped to 2.2.1
+    * @cowprotocol/common-hooks bumped to 2.2.1
+    * @cowprotocol/common-utils bumped to 2.2.1
+    * @cowprotocol/core bumped to 2.2.1
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/ui-v2.1.0...ui-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* add scroll to network selector when needed ([#6962](https://github.com/cowprotocol/cowswap/issues/6962)) ([9688722](https://github.com/cowprotocol/cowswap/commit/968872287030f604fc3ce5b6c11758a98f3334ed))
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### 🔧 Miscellaneous
+
+* Refactor incorrect use of components called as functions plus some other code smells ([#6940](https://github.com/cowprotocol/cowswap/issues/6940)) ([553c5f3](https://github.com/cowprotocol/cowswap/commit/553c5f3d557d5eecfeb317b3bdb1899f2b7c1275))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.0
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-hooks bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/core bumped to 2.2.0
+    * @cowprotocol/types bumped to 3.2.0
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/ui-v2.0.1...ui-v2.1.0) (2026-02-05)
 
 

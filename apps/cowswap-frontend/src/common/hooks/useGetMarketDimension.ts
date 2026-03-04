@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useMemo } from 'react'
 
-import { useTradeTypeInfo } from 'modules/trade'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { TradeType } from 'modules/trade/types'
+import { useTradeTypeInfo, TradeType, useDerivedTradeState } from 'modules/trade'
 
 const widgetTypeMap: Record<TradeType, string> = {
   [TradeType.SWAP]: 'SWAP',

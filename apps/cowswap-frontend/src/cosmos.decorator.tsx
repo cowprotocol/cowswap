@@ -21,6 +21,7 @@ import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
+import enMessages from './locales/en-US.po'
 import { ThemeConfigUpdater } from './theme/ThemeConfigUpdater'
 
 const DarkModeToggleButton = styled.button`
@@ -104,7 +105,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
         <HashRouter>
           <ThemeProvider>
             <ThemedGlobalStyle />
-            <LanguageProvider>
+            <LanguageProvider messages={enMessages}>
               <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
                 <Web3Provider>
                   <BlockNumberProvider>

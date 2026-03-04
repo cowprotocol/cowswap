@@ -7,8 +7,7 @@ import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
-import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
+import { parameterizeTradeRoute, TradeUrlParams } from 'modules/trade'
 import { SwapAmountDifference } from 'modules/twap/hooks/useSwapAmountDifference'
 
 import { Routes } from 'common/constants/routes'

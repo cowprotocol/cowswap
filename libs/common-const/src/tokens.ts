@@ -1,4 +1,4 @@
-import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, EvmChains, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
@@ -544,6 +544,16 @@ export const USDC_INK = new TokenWithLogo(
   'USDC',
 )
 
+export const USDCE_INK = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.INK,
+  // https://explorer.inkonchain.com/token/0xF1815bd50389c46847f0Bda824eC8da914045D14
+  '0xF1815bd50389c46847f0Bda824eC8da914045D14',
+  6,
+  'USDC.e',
+  'Stargate Bridged USDC',
+)
+
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(
@@ -556,7 +566,7 @@ export const USDC_OPTIMISM = new TokenWithLogo(
   'USD Coin',
 )
 
-export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithLogo> = {
+export const USDC: Record<EvmChains, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
@@ -743,7 +753,7 @@ const LINEA_STABLECOINS = [USDC_LINEA.address].map((t) => t.toLowerCase())
 
 const PLASMA_STABLECOINS = [USDT_PLASMA.address].map((t) => t.toLowerCase())
 
-const INK_STABLECOINS = [USDC_INK.address, USDT_INK.address].map((t) => t.toLowerCase())
+const INK_STABLECOINS = [USDC_INK.address, USDCE_INK.address, USDT_INK.address].map((t) => t.toLowerCase())
 
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 

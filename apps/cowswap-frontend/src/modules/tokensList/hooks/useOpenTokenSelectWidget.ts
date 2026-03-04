@@ -8,9 +8,8 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { useTradeTypeInfo } from 'modules/trade/hooks/useTradeTypeInfo'
+import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
-import { TradeType } from 'modules/trade/types'
 
 import { useCloseTokenSelectWidget } from './useCloseTokenSelectWidget'
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'

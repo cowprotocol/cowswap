@@ -10,9 +10,16 @@ import { TokenListItem } from '../TokenListItem'
 interface TokenListItemContainerProps {
   token: TokenWithLogo
   context: SelectTokenContext
+  disabled?: boolean
+  disabledReason?: string
 }
 
-export function TokenListItemContainer({ token, context }: TokenListItemContainerProps): ReactNode {
+export function TokenListItemContainer({
+  token,
+  context,
+  disabled,
+  disabledReason,
+}: TokenListItemContainerProps): ReactNode {
   const {
     unsupportedTokens,
     onTokenListItemClick,
@@ -43,6 +50,8 @@ export function TokenListItemContainer({ token, context }: TokenListItemContaine
       onSelectToken={handleSelectToken}
       isWalletConnected={isWalletConnected}
       tokenListTags={tokenListTags}
+      disabled={disabled}
+      disabledReason={disabledReason}
     />
   )
 }
