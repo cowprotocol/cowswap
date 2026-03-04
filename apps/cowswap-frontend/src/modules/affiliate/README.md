@@ -101,6 +101,7 @@ Audit:
 - Dune filters out ineligible traders
 - Low fee swaps do not count towards eligible volume (see `min_fee_bps` in the dune queries)
 - FE can fail to determine eligibility if this all-chain fetch fails or takes longer than 30s; in that case wallet eligibility is marked as unknown and the modal shows a warning message explaining rewards may not apply.
+- Trades from 3rd party integrators (e.g.: Safe App) are simply ignored (do not count towards eligibility; do not disqualify a trader)
 
 ## 8) Environments
 
