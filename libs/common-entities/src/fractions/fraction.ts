@@ -27,8 +27,8 @@ export class Fraction {
     return this.numerator / this.denominator
   }
 
-  remainder(numerator: bigint, denominator: bigint): bigint {
-    return numerator % denominator
+  public get remainder(): Fraction {
+    return new Fraction(this.numerator % this.denominator, this.denominator)
   }
 
   public invert(): Fraction {
