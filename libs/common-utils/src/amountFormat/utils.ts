@@ -1,19 +1,17 @@
 import { CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
 import { Nullish } from '@cowprotocol/types'
 
-import JSBI from 'jsbi'
-
 import { FractionUtils } from '../fractionUtils'
 import { FractionLike } from '../types'
 
 const TINIEST = new Fraction(1, 100_000_000)
 const TINY = new Fraction(1, 100_000)
-const ONE = JSBI.BigInt(1)
-const HUNDRED_K = JSBI.BigInt(100_000)
-const MILLION = JSBI.BigInt(1_000_000)
-const TEN_MILLION = JSBI.BigInt(10_000_000)
-const BILLION = JSBI.BigInt(1_000_000_000)
-const TRILLION = JSBI.BigInt(1_000_000_000_000)
+const ONE = 1n
+const HUNDRED_K = 100_000n
+const MILLION = 1_000_000n
+const TEN_MILLION = 10_000_000n
+const BILLION = 1_000_000_000n
+const TRILLION = 1_000_000_000_000n
 
 function getPrecisionForFraction(fraction: Fraction): number {
   if (FractionUtils.lte(fraction, TINIEST)) return 18

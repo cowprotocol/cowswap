@@ -8,8 +8,6 @@ import {
 import { Currency, CurrencyAmount, Percent, Rounding } from '@cowprotocol/common-entities'
 import { Nullish } from '@cowprotocol/types'
 
-import JSBI from 'jsbi'
-
 import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
 
 import { FractionUtils } from '../fractionUtils'
@@ -53,7 +51,7 @@ export function formatAmountWithPrecision(
   const reminderWithPrecision = remainder.toFixed(precision, undefined, Rounding.ROUND_HALF_UP)
 
   // If rounding up means we carry over to the next integer, add 1 to quotient
-  const adjustedQuotient = +reminderWithPrecision >= 1 ? JSBI.add(quotient, JSBI.BigInt(1)) : quotient
+  const adjustedQuotient = +reminderWithPrecision >= 1 ? quotient + 1n : quotient
 
   // Apply the language formatting for the amount
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
