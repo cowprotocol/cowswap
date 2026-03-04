@@ -3,7 +3,6 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 import { BigNumber } from 'bignumber.js'
-import JSBI from 'jsbi'
 
 import { ParsedOrder } from './parseOrder'
 
@@ -22,7 +21,7 @@ export function getFilledAmounts(order: ParsedOrder) {
   let mainToken: Token
   let mainAmount: CurrencyAmount<Token>
   let swappedToken: Token
-  let swappedAmount: JSBI | undefined
+  let swappedAmount: bigint | undefined
   let action: string
 
   const sellAmountCurrency = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())

@@ -3,7 +3,6 @@ import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import { msg } from '@lingui/core/macro'
 import BigNumber from 'bignumber.js'
-import JSBI from 'jsbi'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -18,8 +17,8 @@ import { isPartiallyFilled } from './isPartiallyFilled'
 import type { MessageDescriptor } from '@lingui/core'
 
 export interface ParsedOrderExecutionData {
-  executedBuyAmount: JSBI
-  executedSellAmount: JSBI
+  executedBuyAmount: bigint
+  executedSellAmount: bigint
   fullyFilled: boolean
   partiallyFilled: boolean
   filledAmount: BigNumber
@@ -76,12 +75,13 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const partiallyFilled = isPartiallyFilled(order)
   const filledPercentDisplay = filledPercentage.times(100).toString()
 
-  const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
-    ? new Price({
-        baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
-        quoteAmount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
-      })
-    : null
+  const executedPrice =
+    executedBuyAmount > 0n
+      ? new Price({
+          baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
+          quoteAmount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
+        })
+      : null
   const showCreationTxLink =
     (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
     order.orderCreationHash &&

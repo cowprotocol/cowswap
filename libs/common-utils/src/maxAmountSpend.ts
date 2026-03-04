@@ -1,10 +1,8 @@
 import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
-import JSBI from 'jsbi'
-
 import { getIsNativeToken } from './getIsNativeToken'
 
-const MIN_NATIVE_CURRENCY_FOR_GAS: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
+const MIN_NATIVE_CURRENCY_FOR_GAS = 10n ** 16n // .01 ETH
 
 /**
  * Given some token amount, return the max that can be spent of it
@@ -17,13 +15,13 @@ export function maxAmountSpend(
 ): CurrencyAmount<Currency> | undefined {
   if (!currencyAmount) return undefined
   if (getIsNativeToken(currencyAmount.currency) && !canUseAllNative) {
-    if (JSBI.greaterThan(currencyAmount.quotient, MIN_NATIVE_CURRENCY_FOR_GAS)) {
+    if (currencyAmount.quotient > MIN_NATIVE_CURRENCY_FOR_GAS) {
       return CurrencyAmount.fromRawAmount(
         currencyAmount.currency,
-        JSBI.subtract(currencyAmount.quotient, MIN_NATIVE_CURRENCY_FOR_GAS),
+        currencyAmount.quotient - MIN_NATIVE_CURRENCY_FOR_GAS,
       )
     } else {
-      return CurrencyAmount.fromRawAmount(currencyAmount.currency, JSBI.BigInt(0))
+      return CurrencyAmount.fromRawAmount(currencyAmount.currency, 0n)
     }
   }
   return currencyAmount

@@ -5,8 +5,6 @@ import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import JSBI from 'jsbi'
-
 import { useVCowData } from 'legacy/state/cowToken/hooks'
 
 /**
@@ -41,16 +39,16 @@ export function useCombinedBalance() {
   // }, [allocated, claimed])
 
   return useMemo(() => {
-    let tmpBalance = JSBI.BigInt(0)
+    let tmpBalance = 0n
 
     const isLoading = !!(account && (isVCowLoading /* || !lockedGnoBalance */ || !cowBalance))
 
     const cowToken = COW_TOKEN_TO_CHAIN[chainId]
 
     if (account) {
-      if (vCowBalance) tmpBalance = JSBI.add(tmpBalance, vCowBalance.quotient)
-      // if (lockedGnoBalance) tmpBalance = JSBI.add(tmpBalance, lockedGnoBalance)
-      if (cowBalance) tmpBalance = JSBI.add(tmpBalance, cowBalance.quotient)
+      if (vCowBalance) tmpBalance = tmpBalance + vCowBalance.quotient
+      // if (lockedGnoBalance) tmpBalance = tmpBalance + lockedGnoBalance
+      if (cowBalance) tmpBalance = tmpBalance + cowBalance.quotient
     }
 
     // TODO: check COW vs vCOW

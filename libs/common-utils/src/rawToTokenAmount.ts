@@ -1,5 +1,3 @@
-import JSBI from 'jsbi'
-
-export function rawToTokenAmount(value: number | JSBI, tokenDecimals: number): JSBI {
-  return JSBI.multiply(JSBI.BigInt(value), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(tokenDecimals)))
+export function rawToTokenAmount(value: number | bigint, tokenDecimals: number): bigint {
+  return BigInt(value) * 10n ** BigInt(tokenDecimals)
 }

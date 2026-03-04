@@ -2,8 +2,6 @@ import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-e
 import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { ContractsOrderKind as OrderKind } from '@cowprotocol/cow-sdk'
 
-import JSBI from 'jsbi'
-
 export interface ExecutionPriceParams {
   inputCurrencyAmount: CurrencyAmount<Currency> | null
   outputCurrencyAmount: CurrencyAmount<Currency> | null
@@ -35,9 +33,7 @@ export function convertAmountToCurrency(
   const decimalsDiffAmount = rawToTokenAmount(1, decimalsDiff)
 
   const fixedNumerator =
-    inputDecimals < outputDecimals
-      ? JSBI.multiply(numerator, decimalsDiffAmount)
-      : JSBI.divide(numerator, decimalsDiffAmount)
+    inputDecimals < outputDecimals ? numerator * decimalsDiffAmount : numerator / decimalsDiffAmount
 
   return CurrencyAmount.fromFractionalAmount(targetCurrency, fixedNumerator, denominator)
 }

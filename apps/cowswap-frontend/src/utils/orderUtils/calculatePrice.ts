@@ -1,14 +1,10 @@
 import { Price, Token } from '@cowprotocol/common-entities'
 
-import JSBI from 'jsbi'
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const isZero = (x: JSBI) => JSBI.equal(x, JSBI.BigInt(0))
+const isZero = (x: bigint): boolean => x === 0n
 
 interface CalculatePriceParams {
-  buyAmount: JSBI | undefined
-  sellAmount: JSBI | undefined
+  buyAmount: bigint | undefined
+  sellAmount: bigint | undefined
   inputToken: Token
   outputToken: Token
 }

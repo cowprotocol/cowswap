@@ -5,7 +5,6 @@ import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTwapOrderById } from 'entities/twap'
-import JSBI from 'jsbi'
 
 import { PendingOrdersPrices } from 'modules/orders'
 import { useTwapOrderByChildId } from 'modules/twap'
@@ -44,12 +43,12 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
   const { inputToken, outputToken, buyAmount, sellAmount } = order
   const { executedBuyAmount, executedSellAmount } = order.executionData
   // Sell and buy amounts
-  const sellAmountCurrency = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
-  const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
+  const sellAmountCurrency = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
+  const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount)
 
   const limitPrice = calculatePrice({
-    buyAmount: JSBI.BigInt(buyAmount.toString()),
-    sellAmount: JSBI.BigInt(sellAmount.toString()),
+    buyAmount: BigInt(buyAmount),
+    sellAmount: BigInt(sellAmount),
     inputToken,
     outputToken,
   })

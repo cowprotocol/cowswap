@@ -28,10 +28,10 @@ export class TokenWithLogo extends Token {
     decimals: number,
     symbol?: string,
     name?: string,
-    bypassChecksum?: boolean,
+    _bypassChecksum?: boolean,
     public tags: string[] = [],
   ) {
-    super(chainId, address, decimals, symbol, name, bypassChecksum)
+    super(chainId, address, decimals, symbol, name)
   }
 }
 

@@ -6,7 +6,6 @@ import { EnrichedOrder, getPartnerFeeBps, OrderKind, OrderStatus } from '@cowpro
 import { UiOrderType } from '@cowprotocol/types'
 
 import BigNumber from 'bignumber.js'
-import JSBI from 'jsbi'
 
 import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 
@@ -182,7 +181,7 @@ export function getOrderMarketPrice(
       order.inputToken,
       order.outputToken,
       // For sell orders, the market price has the fee subtracted from the sell amount
-      JSBI.subtract(JSBI.BigInt(remainingAmount), JSBI.BigInt(feeAmount)),
+      BigInt(remainingAmount) - BigInt(feeAmount),
       quotedAmount,
     )
   }
@@ -195,7 +194,7 @@ export function getOrderMarketPrice(
  * 5% to level out the fee amount changes
  */
 const EXECUTION_PRICE_FEE_COEFFICIENT = new Percent(5, 100)
-const FEE_AMOUNT_MULTIPLIER = 1_000
+const FEE_AMOUNT_MULTIPLIER = 1_000n
 
 /**
  * Calculates the estimated execution price based on order params, before the order is placed
@@ -400,14 +399,14 @@ export function getRemainderAmountsWithoutSurplus(order: GenericOrder): {
     return { sellAmount: sellRemainder, buyAmount: buyRemainder }
   }
 
-  const surplusAmount = JSBI.BigInt(`0x${surplusAmountBigNumber.decimalPlaces(0).toString(16)}`)
+  const surplusAmount = BigInt(`0x${surplusAmountBigNumber.decimalPlaces(0).toString(16)}`)
 
   if (isSellOrder(order.kind)) {
-    const buyAmount = JSBI.subtract(JSBI.BigInt(buyRemainder), surplusAmount).toString()
+    const buyAmount = (BigInt(buyRemainder) - surplusAmount).toString()
 
     return { sellAmount: sellRemainder, buyAmount }
   } else {
-    const sellAmount = JSBI.add(JSBI.BigInt(sellRemainder), surplusAmount).toString()
+    const sellAmount = (BigInt(sellRemainder) + surplusAmount).toString()
 
     return { sellAmount, buyAmount: buyRemainder }
   }
@@ -442,9 +441,9 @@ export function getRemainderAmount(kind: OrderKind, order: GenericOrder): string
     return fullAmount
   }
 
-  const executedAmount = JSBI.BigInt((isSellOrder(kind) ? executedSellAmount : executedBuyAmount) || 0)
+  const executedAmount = BigInt((isSellOrder(kind) ? executedSellAmount : executedBuyAmount) || 0)
 
-  return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
+  return (BigInt(fullAmount) - executedAmount).toString()
 }
 
 // TODO: Add proper return type annotation
@@ -477,7 +476,7 @@ function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
   outputToken: Token,
 ): Price<Token, Token> | undefined {
   // Use FEE_AMOUNT_MULTIPLIER times fee amount as the new sell amount
-  const newSellAmount = feeAmount.multiply(JSBI.BigInt(FEE_AMOUNT_MULTIPLIER))
+  const newSellAmount = feeAmount.multiply(FEE_AMOUNT_MULTIPLIER)
   // Only use this method if the new sell amount is smaller than the remaining sell amount
   if (remainingSellAmount.greaterThan(newSellAmount)) {
     // Quote the buy amount using the existing limit price

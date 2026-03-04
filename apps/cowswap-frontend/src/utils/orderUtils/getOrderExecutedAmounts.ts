@@ -1,5 +1,3 @@
-import JSBI from 'jsbi'
-
 import { Order } from 'legacy/state/orders/actions'
 
 /**
@@ -9,22 +7,22 @@ import { Order } from 'legacy/state/orders/actions'
  * @param order The order
  */
 export function getOrderExecutedAmounts(order: Order): {
-  executedBuyAmount: JSBI
-  executedSellAmount: JSBI
+  executedBuyAmount: bigint
+  executedSellAmount: bigint
 } {
   const { apiAdditionalInfo } = order
 
   if (!apiAdditionalInfo) {
     return {
-      executedBuyAmount: JSBI.BigInt(0),
-      executedSellAmount: JSBI.BigInt(0),
+      executedBuyAmount: 0n,
+      executedSellAmount: 0n,
     }
   }
 
   const { executedBuyAmount, executedSellAmountBeforeFees } = apiAdditionalInfo
 
   return {
-    executedBuyAmount: JSBI.BigInt(executedBuyAmount),
-    executedSellAmount: JSBI.BigInt(executedSellAmountBeforeFees),
+    executedBuyAmount: BigInt(executedBuyAmount),
+    executedSellAmount: BigInt(executedSellAmountBeforeFees),
   }
 }

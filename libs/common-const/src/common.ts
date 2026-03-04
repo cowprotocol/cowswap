@@ -8,11 +8,10 @@ import {
 } from '@cowprotocol/cow-sdk'
 
 import { msg } from '@lingui/core/macro'
-import JSBI from 'jsbi'
 import ms from 'ms.macro'
 
 export const ZERO_FRACTION = new Fraction(0)
-export const ZERO = JSBI.BigInt(0)
+export const ZERO = 0n
 
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
 export const MAX_SLIPPAGE_BPS = 5000 // 50%
