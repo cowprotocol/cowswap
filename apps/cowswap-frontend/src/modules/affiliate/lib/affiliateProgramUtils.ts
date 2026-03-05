@@ -13,6 +13,7 @@ import {
   AFFILIATE_PAYOUTS_CHAIN_ID,
   AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS,
   AFFILIATE_REWARDS_UPDATE_LAG_HOURS,
+  AFFILIATE_STATS_REFRESH_INTERVAL_MS,
   AFFILIATE_SUPPORTED_CHAIN_IDS,
   PROGRAM_DEFAULTS,
   REF_CODE_PATTERN,
@@ -238,7 +239,7 @@ export function getApproxStatsUpdatedAt(): Date {
 export function getApproxNextStatsUpdateAt(): Date {
   const intervalMs = AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS * 60 * 60 * 1000
 
-  return new Date(getApproxStatsUpdatedAt().getTime() + intervalMs)
+  return new Date(getApproxStatsUpdatedAt().getTime() + intervalMs + AFFILIATE_STATS_REFRESH_INTERVAL_MS)
 }
 
 export function generateSuggestedCode(): string {
