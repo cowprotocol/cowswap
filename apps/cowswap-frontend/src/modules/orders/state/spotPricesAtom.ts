@@ -1,8 +1,8 @@
 import { atom, useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
+import { Currency, Price } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Price } from '@uniswap/sdk-core'
 
 import { getCanonicalMarketChainKey } from 'common/utils/markets'
 

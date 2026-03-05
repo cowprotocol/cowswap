@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'

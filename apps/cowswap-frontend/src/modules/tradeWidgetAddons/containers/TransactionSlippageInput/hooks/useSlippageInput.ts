@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { Percent } from '@cowprotocol/common-entities'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { isValidIntegerFactory, percentToBps } from '@cowprotocol/common-utils'
-import { Percent } from '@uniswap/sdk-core'
 
 import {
   useDefaultTradeSlippage,

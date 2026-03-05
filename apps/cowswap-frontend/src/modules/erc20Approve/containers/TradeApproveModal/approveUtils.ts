@@ -1,11 +1,10 @@
-import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@cowprotocol/common-entities'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Nullish } from '@cowprotocol/types'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { getAddress } from '@ethersproject/address'
 import { id } from '@ethersproject/hash'
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { SetOptimisticAllowanceParams } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 

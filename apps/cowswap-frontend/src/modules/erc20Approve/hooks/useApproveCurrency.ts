@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { Nullish } from '@cowprotocol/types'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { GenerecTradeApproveResult, useTradeApproveCallback } from 'modules/erc20Approve'
 import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'

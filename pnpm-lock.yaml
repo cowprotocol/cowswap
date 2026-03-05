@@ -559,6 +559,9 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
+      '@cowprotocol/common-entities':
+        specifier: workspace:*
+        version: link:../../libs/common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../../libs/common-hooks
@@ -727,9 +730,6 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.2
         version: 3.13.12(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
       '@uniswap/token-lists':
         specifier: ^1.0.0-beta.30
         version: 1.0.0-beta.33

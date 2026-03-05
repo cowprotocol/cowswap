@@ -1,7 +1,7 @@
 import { V_COW } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount, UI } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { lighten, transparentize } from 'color2k'

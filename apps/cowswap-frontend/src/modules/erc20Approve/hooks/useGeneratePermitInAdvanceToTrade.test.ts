@@ -1,6 +1,6 @@
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react'
 

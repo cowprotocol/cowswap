@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
+import { Currency, Price } from '@cowprotocol/common-entities'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { Currency, Price } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'
 

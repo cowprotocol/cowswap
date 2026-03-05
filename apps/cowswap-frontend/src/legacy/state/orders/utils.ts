@@ -1,9 +1,9 @@
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO, ZERO_FRACTION } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount, Percent, Price, Token } from '@cowprotocol/common-entities'
 import { bpsToPercent, buildPriceFromCurrencyAmounts, getWrappedToken, isSellOrder } from '@cowprotocol/common-utils'
 import type { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { EnrichedOrder, getPartnerFeeBps, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'

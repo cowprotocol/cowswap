@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/common-entities'
 import type { OrderParameters } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 export interface BridgeFeeAmounts {
   amountInSellCurrency: bigint

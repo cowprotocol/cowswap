@@ -1,11 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
+import { Price } from '@cowprotocol/common-entities'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Price } from '@uniswap/sdk-core'
 
 import { DEFAULT_TRADE_DERIVED_STATE, useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade'
 

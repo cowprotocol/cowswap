@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import type { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 

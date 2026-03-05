@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Erc20 } from '@cowprotocol/cowswap-abis'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 

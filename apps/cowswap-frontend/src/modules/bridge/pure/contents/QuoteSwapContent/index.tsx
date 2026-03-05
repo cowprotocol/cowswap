@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
+import { Percent } from '@cowprotocol/common-entities'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

@@ -1,7 +1,7 @@
 import { ReactNode, useMemo, useState } from 'react'
 
+import { Percent } from '@cowprotocol/common-entities'
 import { PercentDisplay } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'

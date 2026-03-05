@@ -1,6 +1,6 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import type { Token } from '@cowprotocol/common-entities'
 import type { Command } from '@cowprotocol/types'
-import type { Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 

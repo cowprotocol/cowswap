@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { Currency } from '@cowprotocol/common-entities'
 import { getIsNativeToken, getIsWrapOrUnwrap, isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency } from '@uniswap/sdk-core'
 
 import { ExtendedTradeRawState, useSwitchTokensPlaces } from 'modules/trade'
 

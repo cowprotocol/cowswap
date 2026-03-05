@@ -2,8 +2,8 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR, { mutate } from 'swr'
 

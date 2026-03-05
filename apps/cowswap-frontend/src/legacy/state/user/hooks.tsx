@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 
 import { NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
+import { Currency } from '@cowprotocol/common-entities'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Currency } from '@uniswap/sdk-core'
 
 import { shallowEqual } from 'react-redux'
 

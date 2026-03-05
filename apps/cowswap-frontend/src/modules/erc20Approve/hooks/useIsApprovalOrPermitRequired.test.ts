@@ -1,12 +1,11 @@
+import { CurrencyAmount, Ether, Token } from '@cowprotocol/common-entities'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { PermitType } from '@cowprotocol/permit-utils'
-import { CurrencyAmount, Ether, Token } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react'
 
 import { usePermitInfo } from 'modules/permit'
-import { TradeType, useDerivedTradeState } from 'modules/trade'
-import { TradeDerivedState } from 'modules/trade'
+import { TradeType, useDerivedTradeState, TradeDerivedState } from 'modules/trade'
 
 import { useApproveState } from './useApproveState'
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'

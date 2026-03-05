@@ -2,8 +2,8 @@ import { atom, useAtom } from 'jotai'
 import { SetStateAction, useMemo } from 'react'
 
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfo, useGetReceiveAmountInfo } from 'modules/trade'
 

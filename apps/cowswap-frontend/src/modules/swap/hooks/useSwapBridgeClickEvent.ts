@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import {
   currencyAmountToExactString,
   currencyAmountToRawString,
@@ -8,7 +9,6 @@ import {
   normalizeTokenSymbol,
 } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useEstimatedBridgeBuyAmount, useIsCurrentTradeBridging } from 'modules/trade'

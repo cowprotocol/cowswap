@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'

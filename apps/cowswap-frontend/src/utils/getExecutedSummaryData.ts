@@ -1,6 +1,6 @@
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
 

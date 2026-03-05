@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
 import { AVG_APPROVE_COST_GWEI } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { parseUnits } from 'ethers/lib/utils'
 

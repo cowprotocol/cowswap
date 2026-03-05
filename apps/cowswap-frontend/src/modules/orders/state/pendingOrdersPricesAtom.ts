@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/common-entities'
 
 export interface PendingOrderPrices {
   marketPrice: Price<Currency, Currency>

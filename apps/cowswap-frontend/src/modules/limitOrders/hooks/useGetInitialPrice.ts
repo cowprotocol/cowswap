@@ -1,5 +1,5 @@
+import { Fraction } from '@cowprotocol/common-entities'
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
-import { Fraction } from '@uniswap/sdk-core'
 
 import { useAsyncMemo } from 'use-async-memo'
 

@@ -1,7 +1,7 @@
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/common-entities'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
 import { QuoteAmountsAndCosts } from '@cowprotocol/sdk-order-book'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfoParams } from './types'
 

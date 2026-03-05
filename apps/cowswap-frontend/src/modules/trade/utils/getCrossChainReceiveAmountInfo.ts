@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import { getReceiveAmountInfo } from './getReceiveAmountInfo'
 import { BridgeFeeAmounts, CrossChainReceiveAmountInfoParams } from './types'

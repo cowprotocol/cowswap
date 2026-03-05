@@ -8,6 +8,7 @@ import {
   MERKLE_DROP_CONTRACT_ADDRESSES,
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import {
   formatDateWithTimezone,
@@ -19,7 +20,6 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ButtonSize, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { bpsToPercent } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from 'modules/trade'
 import { useVolumeFee } from 'modules/volumeFee'

@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { Token } from '@uniswap/sdk-core'
+import { Token } from '@cowprotocol/common-entities'
 
 import { Nullish } from 'types'
 

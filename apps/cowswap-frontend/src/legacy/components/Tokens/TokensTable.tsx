@@ -3,10 +3,10 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
 import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

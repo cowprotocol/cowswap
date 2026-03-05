@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
+import { Currency } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'

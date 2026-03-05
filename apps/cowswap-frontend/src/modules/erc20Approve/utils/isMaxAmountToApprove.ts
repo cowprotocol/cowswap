@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import { MAX_APPROVE_AMOUNT } from '../constants'
 

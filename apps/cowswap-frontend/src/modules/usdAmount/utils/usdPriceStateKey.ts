@@ -1,4 +1,4 @@
-import { Token } from '@uniswap/sdk-core'
+import { Token } from '@cowprotocol/common-entities'
 
 import { UsdPriceStateKey } from '../types'
 

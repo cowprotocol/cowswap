@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ChangeApproveAmountModalPure } from './ChangeApproveAmountModalPure'
 import { UserApproveModalState } from './userApproveAmountModalAtom'

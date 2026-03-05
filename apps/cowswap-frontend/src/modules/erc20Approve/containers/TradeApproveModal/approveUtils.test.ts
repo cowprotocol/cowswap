@@ -1,8 +1,8 @@
+import { Token } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { id } from '@ethersproject/hash'
-import { Token } from '@uniswap/sdk-core'
 
 import { processApprovalTransaction } from './approveUtils'
 

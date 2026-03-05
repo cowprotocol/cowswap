@@ -2,12 +2,12 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import type SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useApproveCallback } from 'modules/erc20Approve'
 

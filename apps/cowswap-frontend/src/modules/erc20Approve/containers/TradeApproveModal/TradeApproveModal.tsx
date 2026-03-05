@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import { usePendingApprovalModal } from '../../hooks'
 import { useUpdateApproveProgressModalState } from '../../state'

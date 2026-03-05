@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

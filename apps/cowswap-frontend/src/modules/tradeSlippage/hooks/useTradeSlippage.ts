@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { Percent } from '@cowprotocol/common-entities'
 import { bpsToPercent } from '@cowprotocol/common-utils'
-import { Percent } from '@uniswap/sdk-core'
 
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 

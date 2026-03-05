@@ -1,6 +1,6 @@
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getWrappedToken, isEnoughAmount } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 

@@ -1,5 +1,5 @@
+import { Token } from '@cowprotocol/common-entities'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { Token } from '@uniswap/sdk-core'
 
 import { renderHook, waitFor } from '@testing-library/react'
 

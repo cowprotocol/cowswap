@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
+import { Percent } from '@cowprotocol/common-entities'
 import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
 import { useLingui, Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'

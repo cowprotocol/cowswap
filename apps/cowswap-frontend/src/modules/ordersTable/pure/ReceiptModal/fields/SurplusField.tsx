@@ -1,6 +1,6 @@
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

@@ -91,7 +91,7 @@
     "@sentry/types": "^7.80.0",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-virtual": "^3.0.2",
-    "@uniswap/sdk-core": "^3.0.1",
+    "@cowprotocol/common-entities": "workspace:*",
     "@uniswap/token-lists": "^1.0.0-beta.30",
     "@use-gesture/react": "^10.2.23",
     "@web3-react/core": "^8.2.3",

@@ -1,9 +1,9 @@
 import { ReactElement } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Currency } from '@cowprotocol/common-entities'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 

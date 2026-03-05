@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { AtomsAndUnits, CowWidgetEvents, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 

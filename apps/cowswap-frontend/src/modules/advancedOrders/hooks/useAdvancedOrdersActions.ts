@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/common-entities'
 
 import { Field } from 'legacy/state/types'
 

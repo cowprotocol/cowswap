@@ -1,8 +1,8 @@
 import { useCallback, useRef } from 'react'
 
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 

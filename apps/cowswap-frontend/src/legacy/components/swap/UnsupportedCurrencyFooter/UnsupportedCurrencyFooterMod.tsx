@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
+import { Currency } from '@cowprotocol/common-entities'
 import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenLogo, useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'

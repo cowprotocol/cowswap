@@ -1,7 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 

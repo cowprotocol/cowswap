@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { Currency } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink, InfoTooltip, TokenSymbol, UI } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'

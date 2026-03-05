@@ -1,6 +1,6 @@
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import invariant from 'tiny-invariant'
 import { Nullish } from 'types'

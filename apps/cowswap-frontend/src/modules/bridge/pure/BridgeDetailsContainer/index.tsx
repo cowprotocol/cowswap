@@ -1,7 +1,7 @@
 import { ReactNode, useState, KeyboardEvent } from 'react'
 
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 

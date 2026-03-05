@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
+import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTwapOrderById } from 'entities/twap'
 import JSBI from 'jsbi'

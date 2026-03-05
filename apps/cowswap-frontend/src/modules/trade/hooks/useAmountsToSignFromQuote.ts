@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/common-entities'
 import { currencyAmountToTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'

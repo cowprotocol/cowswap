@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'

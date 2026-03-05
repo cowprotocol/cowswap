@@ -2,7 +2,7 @@ import { createStore } from 'jotai/vanilla'
 import { ReactNode } from 'react'
 
 import { WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
 
 import { renderHook } from '@testing-library/react'
 import { JotaiTestProvider } from 'test-utils'

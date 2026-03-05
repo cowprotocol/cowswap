@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 

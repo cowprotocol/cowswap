@@ -1,4 +1,4 @@
-import { Fraction, Rounding } from '@uniswap/sdk-core'
+import { Fraction, Rounding } from '@cowprotocol/common-entities'
 
 import { t } from '@lingui/core/macro'
 

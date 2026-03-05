@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getIsWrapOrUnwrap, isFractionFalsy } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 

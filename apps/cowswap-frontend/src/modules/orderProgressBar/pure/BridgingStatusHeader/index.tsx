@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/common-entities'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'

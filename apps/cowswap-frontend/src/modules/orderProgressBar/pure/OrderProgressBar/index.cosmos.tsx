@@ -10,10 +10,10 @@ import {
   USDC_AVALANCHE,
   TokenWithLogo,
 } from '@cowprotocol/common-const'
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 

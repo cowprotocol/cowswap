@@ -1,6 +1,6 @@
 import { EffectCallback, useEffect, useMemo } from 'react'
 
-import { CurrencyAmount, NativeCurrency, Percent, Price, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, NativeCurrency, Percent, Price, Token } from '@cowprotocol/common-entities'
 
 export function useSafeDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {

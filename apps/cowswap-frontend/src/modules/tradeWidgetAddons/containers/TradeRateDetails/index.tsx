@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { useBridgeQuoteAmounts } from 'modules/bridge'

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
+import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { FiatAmount, InlineBanner, StatusColorVariant, TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'

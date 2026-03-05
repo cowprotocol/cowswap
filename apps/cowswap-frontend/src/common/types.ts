@@ -1,4 +1,4 @@
-import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import type { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 
 import type { Order } from 'legacy/state/orders/actions'
 

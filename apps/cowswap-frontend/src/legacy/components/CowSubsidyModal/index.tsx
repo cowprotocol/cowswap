@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { ExternalLink, Row } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
