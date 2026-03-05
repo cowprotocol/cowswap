@@ -90,7 +90,7 @@ module.exports = [
     },
   },
   {
-    files: ['**/*.{jsx,tsx}'],
+    files: ['**/*.{js,ts}', '**/*.{jsx,tsx}'],
     plugins: { perfectionist },
     rules: {
       'perfectionist/sort-modules': [
