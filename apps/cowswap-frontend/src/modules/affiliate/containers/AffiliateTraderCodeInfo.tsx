@@ -71,9 +71,11 @@ export function AffiliateTraderCodeInfo(): ReactNode {
                 <Trans>Linked since</Trans>
               </span>
               <MetricValue>
-                {stats && toValidDate(stats.rewards_end) ? (
+                {stats && toValidDate(stats.linked_since) ? (
                   <span title={formatDateWithTimezone(toValidDate(stats.linked_since))}>
                     {formatShortDate(stats.linked_since)}
+                  </span>
+                ) : (
                   </span>
                 ) : (
                   <HelpTooltip text={<Trans>This will update {approxNextUpdateTimeAgo}</Trans>} />
