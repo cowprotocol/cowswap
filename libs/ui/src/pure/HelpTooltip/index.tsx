@@ -10,13 +10,15 @@ import { HoverTooltip, HoverTooltipProps, renderTooltip } from '../Tooltip'
 
 const DefaultQuestionIcon = <SVG src={QuestionImage} />
 
-export const QuestionTooltipIconWrapper = styled.div`
+export const QuestionTooltipIconWrapper = styled.div<{ $size?: number; $dimmed?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  width: 16px;
-  height: 16px;
+  width: ${({ $size }) => `${$size ?? 16}px`};
+  min-width: ${({ $size }) => `${$size ?? 16}px`};
+  height: ${({ $size }) => `${$size ?? 16}px`};
+  flex-shrink: 0;
   border: none;
   outline: none;
   cursor: default;
@@ -24,9 +26,16 @@ export const QuestionTooltipIconWrapper = styled.div`
   background-color: transparent;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
+  opacity: ${({ $dimmed }) => ($dimmed ? 0.5 : 1)};
+
+  &:hover {
+    opacity: 1;
+  }
 
   > svg {
     color: inherit;
+    width: 100%;
+    height: 100%;
   }
 
   > svg > path {
@@ -34,8 +43,8 @@ export const QuestionTooltipIconWrapper = styled.div`
   }
 `
 
-const HelpTooltipContainer = styled.span`
-  margin-left: 4px;
+const HelpTooltipContainer = styled.span<{ $noMargin?: boolean }>`
+  margin-left: ${({ $noMargin }) => ($noMargin ? 0 : '4px')};
   display: flex;
   align-items: center;
   color: inherit;
@@ -45,18 +54,24 @@ const HelpTooltipContainer = styled.span`
 export interface HelpTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark' | 'children' | 'content'> {
   text: ReactNode
   Icon?: ReactElement
+  /** Icon size in px (default 16) */
+  size?: number
+  /** Start at 50% opacity, full on hover (default false) */
+  dimmed?: boolean
+  /** Remove the default 4px left margin (default false) */
+  noMargin?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HelpTooltip({ text, Icon, className, ...props }: HelpTooltipProps) {
+export function HelpTooltip({ text, Icon, className, size, dimmed, noMargin, ...props }: HelpTooltipProps): ReactNode {
   const tooltip = renderTooltip(text, props)
   const content = <div>{tooltip}</div>
 
   return (
-    <HelpTooltipContainer className={className}>
+    <HelpTooltipContainer className={className} $noMargin={noMargin}>
       <HoverTooltip {...props} content={content} wrapInContainer>
-        <QuestionTooltipIconWrapper>{Icon || DefaultQuestionIcon}</QuestionTooltipIconWrapper>
+        <QuestionTooltipIconWrapper $size={size} $dimmed={dimmed}>
+          {Icon || DefaultQuestionIcon}
+        </QuestionTooltipIconWrapper>
       </HoverTooltip>
     </HelpTooltipContainer>
   )

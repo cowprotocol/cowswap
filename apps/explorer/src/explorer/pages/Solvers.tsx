@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Helmet } from 'react-helmet'
 import { useLocation } from 'react-router'
@@ -27,17 +27,24 @@ import { APP_TITLE } from '../const'
 
 const SOLVERS_DUNE_EMBED_URL = 'https://dune.com/embeds/5931238/9574995?darkMode=true'
 const SOLVERS_CANONICAL_URL = 'https://explorer.cow.fi/solvers'
+const SOLVER_DEEPLINK_QUERY_PARAM = 'solver'
+
+function getSolverDeeplinkFromSearch(search: string): string | null {
+  const solver = new URLSearchParams(search).get(SOLVER_DEEPLINK_QUERY_PARAM)
+  return solver?.trim() || null
+}
 
 const Solvers = (): React.ReactNode => {
   const { solversInfo, isLoading, error } = useSolversInfo()
   const [isSnapshotExpanded, setIsSnapshotExpanded] = useState(true)
   const [shownCount, setShownCount] = useState(0)
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const [, firstPathSegment, secondPathSegment] = pathname.split('/')
   const isPrefixedSolversPath =
     firstPathSegment.length > 0 &&
     NETWORK_PREFIXES.split('|').includes(firstPathSegment) &&
     secondPathSegment === 'solvers'
+  const solverDeeplink = useMemo(() => getSolverDeeplinkFromSearch(search), [search])
 
   return (
     <Wrapper>
@@ -83,7 +90,11 @@ const Solvers = (): React.ReactNode => {
         ) : error ? (
           <ErrorRow>{error}</ErrorRow>
         ) : (
-          <SolversDirectoryTable solversInfo={solversInfo} onFilteredCountChange={setShownCount} />
+          <SolversDirectoryTable
+            solversInfo={solversInfo}
+            onFilteredCountChange={setShownCount}
+            solverDeeplink={solverDeeplink}
+          />
         )}
       </DirectorySection>
     </Wrapper>

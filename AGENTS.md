@@ -152,6 +152,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 - Use `.const.ts` suffixes for files that only define constants/configs (component/model/etc.) for readability.
 - Reuse chain/network lists from shared constants (`AFFILIATE_SUPPORTED_CHAIN_IDS`, etc.) rather than cloning arrays.
 - Lingui: import macros from `@lingui/core/macro` and drop unused imports immediately.
+- i18n placement: never place `t\`\`` or `t()` strings at module scope. Keep translations inside components/functions only, or you will hit `t\`\` and t() call should be inside function`.
 - UI components like `LinkStyledButton` come from `@cowprotocol/ui` (not `theme`).
 
 ---
@@ -197,6 +198,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 ### Component authoring
 
 - **Render/helper antipattern:** Never declare components inside render bodies or rely on `render*`/`get*` helpers that return JSX. Hoist subcomponents to module scope, or convert them into proper components so every render cycle reuses the same identity.
+- **Hook file naming:** Keep one primary hook per `useX*.ts(x)` file and ensure the exported hook name matches the filename (`useTradeSolver` -> `useTradeSolver.ts`). Move additional hooks to separate files.
 - Export named function components and return `ReactNode`.
 - Pure components can use only the following hooks:
   - built-in hooks (e.g. `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef`)

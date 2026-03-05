@@ -1,10 +1,11 @@
 import { useAtomValue } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import { FaviconAnimationController } from 'modules/application/utils/faviconAnimation/controller'
-import { ordersProgressBarStateAtom } from 'modules/orderProgressBar/state/atoms'
+import { ordersProgressBarStateAtom } from 'modules/orderProgressBar'
 
 import { getCurrentFrameSet, subscribeToPreferredThemeChanges } from 'common/favicon'
+
+import { FaviconAnimationController } from '../../utils/faviconAnimation/controller'
 
 export function FaviconAnimationUpdater(): null {
   const ordersProgressState = useAtomValue(ordersProgressBarStateAtom)

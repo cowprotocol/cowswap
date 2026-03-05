@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
@@ -6,8 +8,7 @@ import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
-import { Page, Content } from 'modules/application/pure/Page'
+import { PageTitle, Page, Content } from 'modules/application'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -46,15 +47,11 @@ const Wrapper = styled(Page)`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function openGame() {
+function openGame(): void {
   window?.open(GAME_URL, '_blank')?.focus()
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function MevSlicer() {
+export default function MevSlicer(): ReactNode {
   const { i18n } = useLingui()
 
   return (
