@@ -99,10 +99,10 @@ module.exports = [
           groups: [
             ['export-interface', 'export-type'],
             'export-enum',
+            ['interface', 'type'],
+            'enum',
             'export-class',
             'export-function',
-            'enum',
-            ['interface', 'type'],
             'class',
             'function',
           ],
