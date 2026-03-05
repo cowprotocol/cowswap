@@ -6,10 +6,13 @@ import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icon
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import Spinner from 'components/common/Spinner'
 import { SurplusComponent } from 'components/common/SurplusComponent'
+import { SolvedByBadge } from 'components/orders/DetailsTable/SolvedByBadge'
 import { TokenAmount } from 'components/token/TokenAmount'
 import ShimmerBar from 'explorer/components/common/ShimmerBar'
 import { useMultipleErc20 } from 'hooks/useErc20'
+import { useTradeSolver } from 'hooks/useTradeSolver'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { abbreviateString } from 'utils'
@@ -21,6 +24,14 @@ const StyledShimmerBar = styled(ShimmerBar)`
   min-height: 2rem;
   min-width: 10rem;
 `
+
+function TradeSolverCell({ txHash }: { txHash: string }): React.ReactNode {
+  const { solver, isLoading } = useTradeSolver(txHash)
+
+  if (isLoading) return <Spinner spin size="1x" />
+
+  return <SolvedByBadge solvedBy={solver} />
+}
 
 interface FillsTableRowProps {
   trade: Trade
@@ -88,6 +99,9 @@ export function FillsTableRow({ trade, isPriceInverted }: FillsTableRowProps): R
       <td>{surplus ? <SurplusComponent icon={faIcon} surplus={surplus} token={surplusToken} /> : '-'}</td>
       <td>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</td>
       <td>{executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}</td>
+      <td>
+        <TradeSolverCell txHash={txHash} />
+      </td>
     </tr>
   )
 }

@@ -37,7 +37,7 @@ export function useAffiliateTraderVerification(params: VerificationParams): UseA
       try {
         if (!formatRefCode(code)) {
           logAffiliate(safeShortenAddress(account), 'Code verification failed: invalid referral code format')
-          setError(t`This code is invalid. Try another.`)
+          setError(t`Only A-Z, 0-9, dashes, and underscores are allowed.`)
           return
         }
 

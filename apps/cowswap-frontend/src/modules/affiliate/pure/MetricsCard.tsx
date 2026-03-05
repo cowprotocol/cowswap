@@ -7,14 +7,14 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { Donut } from './Donut.pure'
 import {
   BottomMetaRow,
   CardTitle,
   ColumnTwoCard,
-  Donut,
-  DonutValue,
   LabelContent,
   MetricItem,
+  MetricValue,
   RewardsMetricsList,
   RewardsMetricsRow,
   TitleWithTooltip,
@@ -27,6 +27,7 @@ import {
 import { getApproxStatsUpdatedAt } from '../lib/affiliateProgramUtils'
 
 export interface MetricsCardItem {
+  id: string
   label: ReactNode
   value: string
 }
@@ -65,7 +66,7 @@ export function MetricsCard({
         {titleTooltip ? (
           <TitleWithTooltip>
             <span>{title}</span>
-            <HelpTooltip text={titleTooltip} />
+            <HelpTooltip text={titleTooltip} dimmed noMargin />
           </TitleWithTooltip>
         ) : (
           <span>{title}</span>
@@ -73,18 +74,16 @@ export function MetricsCard({
       </CardTitle>
       <RewardsMetricsRow>
         <RewardsMetricsList>
-          {items.map(({ label, value }, index) => (
-            <MetricItem key={`${index}-${value}`}>
+          {items.map(({ id, label, value }) => (
+            <MetricItem key={id}>
               <LabelContent>{label}</LabelContent>
-              <strong>{value}</strong>
+              <MetricValue>{value}</MetricValue>
             </MetricItem>
           ))}
         </RewardsMetricsList>
-        <Donut $value={donutValue}>
-          <DonutValue>
-            <span>{donutLabel}</span>
-            {donutSubtitle ? <small>{donutSubtitle}</small> : null}
-          </DonutValue>
+        <Donut value={donutValue}>
+          <span>{donutLabel}</span>
+          {donutSubtitle ? <small>{donutSubtitle}</small> : null}
         </Donut>
       </RewardsMetricsRow>
       <BottomMetaRow>
@@ -93,7 +92,7 @@ export function MetricsCard({
             <Trans>Last updated</Trans>
             <span title={statsUpdatedTitle}>{statsUpdatedLabel}</span>
           </span>
-          <HelpTooltip text={<Trans>Updates every 6 hours</Trans>} />
+          <HelpTooltip text={<Trans>Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours</Trans>} dimmed />
         </LabelContent>
       </BottomMetaRow>
     </ColumnTwoCard>

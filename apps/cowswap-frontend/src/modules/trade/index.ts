@@ -5,7 +5,11 @@ export * from './state/tradeTypeAtom'
 export * from './state/derivedTradeStateAtom'
 export * from './state/isWrapOrUnwrapAtom'
 export * from './state/isEoaEthFlowAtom'
-export { useAlternativeOrder, useHideAlternativeOrderModal } from './state/alternativeOrder/hooks'
+export {
+  useAlternativeOrder,
+  useHideAlternativeOrderModal,
+  useIsAlternativeOrderModalVisible,
+} from './state/alternativeOrder/hooks'
 export * from './utils/parameterizeTradeRoute'
 export * from './utils/parameterizeTradeSearch'
 export * from './utils/getCrossChainReceiveAmountInfo'
@@ -81,3 +85,4 @@ export * from './pure/ReviewOrderModalAmountRow'
 export * from './pure/ConfirmDetailsItem'
 export { CompatibilityIssuesWarning } from './pure/CompatibilityIssuesWarning'
 export * from './pure/Row/styled'
+export * from './pure/TradePageLayout'

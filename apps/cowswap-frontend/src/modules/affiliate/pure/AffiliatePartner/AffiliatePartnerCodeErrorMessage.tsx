@@ -5,7 +5,7 @@ import { t } from '@lingui/core/macro'
 import { AffiliatePartnerCodeCreateError } from '../../lib/affiliatePartnerCodeCreateError'
 import { StatusText } from '../shared'
 
-type AffiliatePartnerCodeErrorMessageProps = {
+interface AffiliatePartnerCodeErrorMessageProps {
   error?: AffiliatePartnerCodeCreateError
 }
 

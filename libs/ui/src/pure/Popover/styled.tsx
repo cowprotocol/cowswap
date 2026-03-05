@@ -5,7 +5,8 @@ import { UI } from '../../enum'
 import type { PopoverContainerProps } from './index'
 
 export const ReferenceElement = styled.div`
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
 `
 
 export const MobileBackdrop = styled.div<Pick<PopoverContainerProps, 'show'> & { maxHeight?: string }>`
