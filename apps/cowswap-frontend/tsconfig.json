@@ -8,16 +8,15 @@
     "moduleResolution": "bundler",
     "strict": true,
     "types": ["node", "vite/client"],
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "composite": true,
+    "declaration": true
   },
   "files": [],
   "include": [],
   "references": [
     {
       "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
     }
   ]
 }

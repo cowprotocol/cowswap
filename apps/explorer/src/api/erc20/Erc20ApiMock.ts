@@ -21,26 +21,6 @@ import {
 
 import { RECEIPT } from '../../test/data'
 
-interface Balances {
-  [userAddress: string]: { [tokenAddress: string]: BN }
-}
-
-interface Allowances {
-  [userAddress: string]: { [tokenAddress: string]: { [spenderAddress: string]: BN } }
-}
-
-interface Erc20Info {
-  name?: string
-  name32Bytes?: string
-  symbol?: string
-  symbol32Bytes?: string
-  decimals?: number
-}
-
-interface Tokens {
-  [tokenAddress: string]: Erc20Info
-}
-
 /**
  * Basic implementation of Wallet API
  */
@@ -50,7 +30,12 @@ export class Erc20ApiMock implements Erc20Api {
   private _totalSupply: BN
   private _tokens: Tokens
 
-  public constructor({ balances = {}, allowances = {}, totalSupply = ALLOWANCE_MAX_VALUE, tokens = {} } = {}) {
+  public constructor({
+    balances = {},
+    allowances = {},
+    totalSupply = ALLOWANCE_MAX_VALUE,
+    tokens = {},
+  }: Erc20ApiMockParams = {}) {
     this._balances = balances
     this._allowances = allowances
     this._totalSupply = totalSupply
@@ -294,6 +279,33 @@ export class Erc20ApiMock implements Erc20Api {
 
     return this._tokens[tokenAddress]
   }
+}
+
+interface Allowances {
+  [userAddress: string]: { [tokenAddress: string]: { [spenderAddress: string]: BN } }
+}
+
+interface Balances {
+  [userAddress: string]: { [tokenAddress: string]: BN }
+}
+
+interface Erc20ApiMockParams {
+  balances?: Balances
+  allowances?: Allowances
+  totalSupply?: BN
+  tokens?: Tokens
+}
+
+interface Erc20Info {
+  name?: string
+  name32Bytes?: string
+  symbol?: string
+  symbol32Bytes?: string
+  decimals?: number
+}
+
+interface Tokens {
+  [tokenAddress: string]: Erc20Info
 }
 
 export default Erc20ApiMock

@@ -15,5 +15,31 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    {
+      "path": "../../libs/widget-react/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/widget-lib/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/types/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/events/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/common-hooks/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/common-const/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/assets/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/analytics/tsconfig.lib.json"
+    }
+  ]
 }

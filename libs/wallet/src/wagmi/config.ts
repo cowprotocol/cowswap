@@ -17,7 +17,7 @@ import {
   polygon,
   sepolia,
 } from 'viem/chains'
-import { createConfig, Transport } from 'wagmi'
+import { Config, createConfig, Transport } from 'wagmi'
 
 const SUPPORTED_CHAIN_IDS = Object.values(SupportedChainId).filter((v) => typeof v === 'number')
 
@@ -36,7 +36,7 @@ const SUPPORTED_CHAINS: Record<SupportedChainId, Chain> = {
   [SupportedChainId.SEPOLIA]: sepolia,
 }
 
-export const config = createConfig({
+export const config: Config = createConfig({
   chains: SUPPORTED_CHAIN_IDS.map((chainId) => SUPPORTED_CHAINS[chainId]) as [Chain, ...Chain[]],
   transports: SUPPORTED_CHAIN_IDS.reduce(
     (acc, chainId) => {

@@ -4,7 +4,11 @@ import { USER_1, TOKEN_1, TOKEN_2, TOKEN_3, TOKEN_4, TOKEN_5, TOKEN_6, TOKEN_7, 
 
 import { ZERO, ALLOWANCE_MAX_VALUE } from '../../const'
 
-export default {
+interface BalancesFixture {
+  [userAddress: string]: { [tokenAddress: string]: BN | undefined }
+}
+
+const erc20Balances: BalancesFixture = {
   [USER_1]: {
     [TOKEN_1]: new BN('20567734622375610000'), // 20.56, WETH: decimals=18
     [TOKEN_2]: new BN('725683288'), // 725.68, USDT: decimals=6
@@ -25,3 +29,5 @@ export default {
     [TOKEN_7]: ALLOWANCE_MAX_VALUE,
   },
 }
+
+export default erc20Balances

@@ -5,9 +5,7 @@ export const CMS_BASE_URL =
 
 let cmsClient: ReturnType<typeof CmsClient> | undefined
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getCmsClient() {
+export function getCmsClient(): ReturnType<typeof CmsClient> {
   if (!cmsClient) {
     cmsClient = CmsClient({
       url: CMS_BASE_URL,

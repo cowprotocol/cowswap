@@ -1,3 +1,5 @@
+import { ComponentProps, ComponentType } from 'react'
+
 import { ButtonSecondary, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -9,7 +11,7 @@ export const Wrapper = styled.div`
   width: 100%;
 `
 
-export const LoaderContainer = styled(ButtonSecondary)`
+const StyledLoaderContainer = styled(ButtonSecondary)`
   display: flex;
   gap: 8px;
   align-items: center;
@@ -20,6 +22,8 @@ export const LoaderContainer = styled(ButtonSecondary)`
     background: var(--cow-color-lightBlue-opacity-90);
   }
 `
+
+export const LoaderContainer: ComponentType<ComponentProps<typeof ButtonSecondary>> = StyledLoaderContainer
 
 export const LoadingMessage = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};

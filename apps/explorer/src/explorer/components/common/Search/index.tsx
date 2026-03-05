@@ -7,7 +7,7 @@ import { useSearchSubmit } from '../../../../hooks/useSearchSubmit'
 
 // assets
 
-interface SearchProps extends React.HTMLAttributes<HTMLFormElement> {
+export interface SearchProps extends React.HTMLAttributes<HTMLFormElement> {
   searchString?: string
   submitSearchImmediatly?: boolean
 }

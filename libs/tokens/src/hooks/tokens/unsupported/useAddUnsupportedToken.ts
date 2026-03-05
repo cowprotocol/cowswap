@@ -1,9 +1,11 @@
 import { useSetAtom } from 'jotai'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { addUnsupportedTokenAtom } from '../../../state/tokens/unsupportedTokensAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAddUnsupportedToken() {
+export type AddUnsupportedToken = (chainId: SupportedChainId, tokenAddress: string) => void
+
+export function useAddUnsupportedToken(): AddUnsupportedToken {
   return useSetAtom(addUnsupportedTokenAtom)
 }

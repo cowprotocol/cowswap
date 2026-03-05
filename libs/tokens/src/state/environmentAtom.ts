@@ -1,7 +1,9 @@
-import { atom } from 'jotai'
+import { atom, SetStateAction, WritableAtom } from 'jotai'
 
 import { atomWithPartialUpdate, getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
+
+type EnvironmentAtom = WritableAtom<TokensModuleEnvironment, [SetStateAction<TokensModuleEnvironment>], void>
 
 interface TokensModuleEnvironment {
   chainId: SupportedChainId
@@ -12,8 +14,16 @@ interface TokensModuleEnvironment {
   selectedLists?: string[]
   bridgeNetworkInfo?: ChainInfo[]
 }
-export const { atom: environmentAtom, updateAtom: updateEnvironmentAtom } = atomWithPartialUpdate(
-  atom<TokensModuleEnvironment>({
-    chainId: getCurrentChainIdFromUrl(),
-  }),
-)
+type UpdateEnvironmentAtom = WritableAtom<null, [SetStateAction<Partial<TokensModuleEnvironment>>], void>
+
+const environmentStateAtom = atom<TokensModuleEnvironment>({
+  chainId: getCurrentChainIdFromUrl(),
+})
+
+const environmentStateWithPartialUpdate: {
+  atom: EnvironmentAtom
+  updateAtom: UpdateEnvironmentAtom
+} = atomWithPartialUpdate(environmentStateAtom)
+
+export const environmentAtom = environmentStateWithPartialUpdate.atom
+export const updateEnvironmentAtom = environmentStateWithPartialUpdate.updateAtom
