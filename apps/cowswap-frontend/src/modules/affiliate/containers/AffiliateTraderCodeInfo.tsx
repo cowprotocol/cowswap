@@ -76,8 +76,6 @@ export function AffiliateTraderCodeInfo(): ReactNode {
                     {formatShortDate(stats.linked_since)}
                   </span>
                 ) : (
-                  </span>
-                ) : (
                   <HelpTooltip text={<Trans>This will update {approxNextUpdateTimeAgo}</Trans>} />
                 )}
               </MetricValue>
