@@ -47,11 +47,15 @@ trades_with_referrer as (
     dune.cowprotocol.result_fac_trades.trader as trader,
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
+    dune.cowprotocol.result_fac_trades.swap_source as swap_source,
     dune.cowprotocol.result_fac_trades.protocol_fee_bps,
     dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
     (
       coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 1e9) < constants.min_fee_bps
-    ) as is_excluded_low_fee
+    ) as is_excluded_low_fee,
+    (
+      lower(coalesce(dune.cowprotocol.result_fac_trades.swap_source, '')) = 'integrations'
+    ) as is_excluded_integrators_source
   from dune.cowprotocol.result_fac_trades
   cross join params
   cross join constants
@@ -66,7 +70,7 @@ first_trade as (
 first_ref_trade as (
   select trader, min(block_time) as first_ref_trade_time
   from trades_with_referrer
-  where referrer_code is not null
+  where referrer_code is not null and not is_excluded_integrators_source
   group by 1
 ),
 bound_ref as (
@@ -101,6 +105,7 @@ eligible_trades as (
     first_trade.first_trade_time = first_ref_trade.first_ref_trade_time
     and trades_with_referrer.block_time <= bound_ref.bound_time + affiliate_program_data.time_cap_days * interval '1' day
     and not trades_with_referrer.is_excluded_low_fee
+    and not trades_with_referrer.is_excluded_integrators_source
 ),
 capped_trades as (
   select
