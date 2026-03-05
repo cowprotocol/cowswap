@@ -42,6 +42,7 @@ export const VERIFICATION_RETRY_DELAY_MS = 3_000
 // Timeout applied to referral service requests so UI fails fast on network issues
 export const AFFILIATE_API_TIMEOUT_MS = 10_000
 export const AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS = ms`5m`
+export const AFFILIATE_STATS_REFRESH_INTERVAL_MS = ms`10m`
 
 export const AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE = true
 
