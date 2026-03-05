@@ -135,6 +135,28 @@ describe('useOrderSolver', () => {
     expect(result.current.isLoading).toBe(false)
   })
 
+  it('returns no solver for unfilled orders and skips solver lookups', () => {
+    const { result } = renderHook(() =>
+      useOrderSolver(
+        createMockOrder({
+          txHash: undefined,
+          executedBuyAmount: ZERO,
+          executedSellAmount: ZERO,
+          filledAmount: ZERO,
+          filledPercentage: ZERO,
+          fullyFilled: false,
+          status: 'cancelled' as Order['status'],
+        }),
+      ),
+    )
+
+    expect(result.current.solver).toBeUndefined()
+    expect(result.current.isLoading).toBe(false)
+    expect(mockedGetOrderCompetitionStatus).not.toHaveBeenCalled()
+    expect(mockedGetSolverCompetitionByTxHash).not.toHaveBeenCalled()
+    expect(mockedFetchSolversInfo).not.toHaveBeenCalled()
+  })
+
   it('is loading while resolving solver', () => {
     mockedGetOrderCompetitionStatus.mockReturnValue(new Promise(() => {}))
     mockedFetchSolversInfo.mockReturnValue(new Promise(() => {}))
@@ -184,6 +206,22 @@ describe('useOrderSolver', () => {
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
     const order = createMockOrder({ txHash: undefined, executedBuyAmount: ZERO, executedSellAmount: ZERO })
+    const { result } = renderHook(() => useOrderSolver(order))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(mockedGetSolverCompetitionByTxHash).not.toHaveBeenCalled()
+    expect(result.current.solver).toBeUndefined()
+  })
+
+  it('ignores competition entries that have zero executed amounts', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce({
+      type: 'traded' as OrderCompetitionStatus['type'],
+      value: [{ solver: 'projectblanc', executedAmounts: { sell: '0', buy: '0' } }],
+    })
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+
+    const order = createMockOrder({ txHash: undefined })
     const { result } = renderHook(() => useOrderSolver(order))
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
