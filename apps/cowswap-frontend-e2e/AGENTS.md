@@ -1,6 +1,7 @@
 # cowswap-frontend-e2e AGENTS.md
 
-This file is additive. Follow the repo root `AGENTS.md` for full rules.
+Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
+This file: e2e app-specific commands and caveats.
 
 ## App commands
 - Run e2e: `pnpx nx run cowswap-frontend-e2e:e2e` (or `pnpm e2e` to run all e2e targets)

@@ -1,6 +1,7 @@
 # cowswap-frontend AGENTS.md
 
-This file is additive. Follow the repo root `AGENTS.md` for full rules.
+Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
+This file: cowswap-frontend-specific architecture and module overrides.
 
 ## App commands
 - Start dev server: `pnpm start` or `pnpm start:cowswap`

@@ -1,6 +1,7 @@
 # widget-configurator AGENTS.md
 
-This file is additive. Follow the repo root `AGENTS.md` for full rules.
+Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
+This file: widget-configurator app-specific commands only.
 
 ## App commands
 - Start dev server: `pnpm start:widget`
