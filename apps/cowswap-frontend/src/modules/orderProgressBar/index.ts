@@ -11,3 +11,6 @@ export { SurplusModalSetup } from './containers/SurplusModalSetup'
 export { OrderSubmittedContent } from './containers/OrderSubmittedContent'
 
 export * from './types'
+
+// State atoms
+export { ordersProgressBarStateAtom } from './state/atoms'

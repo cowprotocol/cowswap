@@ -1,6 +1,8 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components/macro'
+
+import type { CowSpeechBubbleVariant } from './CowSpeechBubble.types'
 
 const fadeUp = keyframes`
   0% {
@@ -13,6 +15,15 @@ const fadeUp = keyframes`
   }
 `
 
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`
+
 const blink = keyframes`
   0%, 49% {
     opacity: 1;
@@ -22,28 +33,67 @@ const blink = keyframes`
   }
 `
 
-export const Bubble = styled.div`
+export const BubbleRow = styled.div`
   position: absolute;
-  right: 48%;
   top: -55px;
-  padding: 16px 20px;
+  right: 48%;
+  pointer-events: none;
+  z-index: 2;
+
+  ${Media.upToLarge()} {
+    right: 49%;
+    top: -54px;
+  }
+
+  ${Media.upToMedium()} {
+    right: 46%;
+    top: -60px;
+  }
+
+  ${Media.upToSmall()} {
+    right: 45%;
+    top: -55px;
+  }
+
+  ${Media.upToExtraSmall()} {
+    right: 38%;
+  }
+
+  ${Media.upToTiny()} {
+    right: 35%;
+  }
+`
+
+export const Bubble = styled.div<{ $variant: CowSpeechBubbleVariant }>`
+  --notificationAnchorHeight: 104px;
+  position: relative;
+  padding: ${({ $variant }) => ($variant === 'notification' ? '16px' : '16px 20px')};
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
   border-radius: 18px 6px 18px 18px;
   box-shadow: 0 16px 36px -20px rgba(0, 0, 0, 0.45);
   max-width: 260px;
+  width: ${({ $variant }) => ($variant === 'notification' ? '260px' : 'auto')};
+  overflow: visible;
+  max-height: min(280px, 50vh);
   text-align: center;
   pointer-events: auto;
   z-index: 2;
   white-space: normal;
   opacity: 0;
-  animation: ${fadeUp} 0.45s ease-out forwards;
+  animation: ${({ $variant }) => ($variant === 'notification' ? fadeIn : fadeUp)} 0.45s ease-out forwards;
   will-change: opacity, transform;
+  ${({ $variant }) =>
+    $variant === 'notification' &&
+    css`
+      transform: translateY(calc(var(--notificationAnchorHeight) - 100%));
+    `}
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
     opacity: 1;
-    transform: none;
+    transform: ${({ $variant }) =>
+      $variant === 'notification' ? 'translateY(calc(var(--notificationAnchorHeight) - 100%))' : 'none'};
   }
 
   &::after {
@@ -57,8 +107,6 @@ export const Bubble = styled.div`
   }
 
   ${Media.upToLarge()} {
-    right: 49%;
-    top: -54px;
     max-width: 220px;
 
     &::after {
@@ -68,27 +116,33 @@ export const Bubble = styled.div`
     }
   }
 
-  ${Media.upToMedium()} {
-    right: 46%;
-    top: -60px;
-  }
-
   ${Media.upToSmall()} {
-    right: 41%;
-    top: -55px;
     padding: 12px 16px;
     max-width: 200px;
+    --notificationAnchorHeight: 92px;
   }
 `
 
-export const BubbleContent = styled.div`
+export const BubbleContent = styled.div<{ $variant: CowSpeechBubbleVariant }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
   font-size: 16px;
   font-weight: 600;
-  padding: 10px;
+  ${({ $variant }) =>
+    $variant === 'hiring'
+      ? css`
+          padding: 10px;
+        `
+      : css`
+          align-items: stretch;
+          max-height: min(226px, 45vh);
+          overflow-y: auto;
+          padding-right: 4px;
+          scrollbar-gutter: stable;
+          ${({ theme }) => theme.colorScrollbar};
+        `}
 
   ${Media.upToSmall()} {
     font-size: 14px;
@@ -137,30 +191,4 @@ export const JobsLink = styled.a<{ $visible: boolean }>`
 export const Arrow = styled.span`
   font-size: 14px;
   line-height: 1;
-`
-
-export const CloseButton = styled.button`
-  position: absolute;
-  top: 2px;
-  right: 8px;
-  border: none;
-  background: none;
-  color: var(${UI.COLOR_TEXT_OPACITY_50});
-  font-size: 18px;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
-
-  &:hover {
-    color: var(${UI.COLOR_TEXT});
-    transform: scale(1.1);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(${UI.COLOR_PAPER_DARKER});
-    outline-offset: 2px;
-  }
 `

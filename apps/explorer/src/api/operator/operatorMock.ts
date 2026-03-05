@@ -3,8 +3,12 @@ import {
   GetOrderParams,
   GetOrdersParams,
   GetAccountOrdersParams,
+  GetOrderCompetitionStatusParams,
+  GetSolverCompetitionByTxHashParams,
   GetTxOrdersParams,
   GetTradesParams,
+  OrderCompetitionStatus,
+  SolverCompetitionResponse,
   RawOrder,
   RawTrade,
 } from './types'
@@ -57,3 +61,14 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
 
   return [trade]
 }
+
+export const getOrderCompetitionStatus = async (
+  _params: GetOrderCompetitionStatusParams,
+): Promise<OrderCompetitionStatus | undefined> => ({
+  type: 'traded' as OrderCompetitionStatus['type'],
+  value: [{ solver: 'mock-solver', executedAmounts: { sell: '1', buy: '1' } }],
+})
+
+export const getSolverCompetitionByTxHash = async (
+  _params: GetSolverCompetitionByTxHashParams,
+): Promise<SolverCompetitionResponse | undefined> => undefined

@@ -67,7 +67,7 @@ export const MenuItem = styled.div<{ active: boolean }>`
 
 export const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 160px minmax(auto, 1140px);
+  grid-template-columns: 160px minmax(0, 1140px);
   grid-template-rows: max-content;
   margin: 0;
   width: 100%;
@@ -76,11 +76,18 @@ export const Wrapper = styled.div`
 
   ${Media.upToMedium()} {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
+    width: 100%;
+
+    > * {
+      width: 100%;
+      min-width: 0;
+    }
   }
 `
 
 export const AccountPageWrapper = styled.div`
+  min-width: 0;
   width: 100%;
   max-width: 100%;
   border: none;
