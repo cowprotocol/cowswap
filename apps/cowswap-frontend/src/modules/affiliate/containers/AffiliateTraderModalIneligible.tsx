@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { ReactNode, useCallback, useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
+import SAD_COW_FACE_ILLUSTRATION from '@cowprotocol/assets/cow-swap/sad-cow-face.svg'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -32,7 +32,7 @@ export function AffiliateTraderModalIneligible(): ReactNode {
   return (
     <>
       <Body>
-        <IneligibleImage src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+        <IneligibleImage src={SAD_COW_FACE_ILLUSTRATION} ariaHidden />
         <Title>
           <Trans>Your wallet is ineligible</Trans>
         </Title>
