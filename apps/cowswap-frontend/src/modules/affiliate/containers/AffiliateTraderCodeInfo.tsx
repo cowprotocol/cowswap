@@ -12,6 +12,7 @@ import SVG from 'react-inlinesvg'
 
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
+import { toValidDate } from '../lib/affiliateProgramUtils'
 import {
   CardTitle,
   HeroActions,
@@ -28,10 +29,6 @@ import {
 } from '../pure/shared'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
-
-function getDisplayDate(value: Date | number | string | undefined | null): string {
-  return formatShortDate(value) ?? '-'
-}
 
 export function AffiliateTraderCodeInfo(): ReactNode {
   const { account } = useWalletInfo()
@@ -69,13 +66,17 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <span>
                 <Trans>Linked since</Trans>
               </span>
-              <MetricValue>{isLinked && stats ? getDisplayDate(stats.linked_since) : '-'}</MetricValue>
+              <MetricValue>
+                {stats && toValidDate(stats.linked_since) ? formatShortDate(stats.linked_since) : '-'}
+              </MetricValue>
             </MetricItem>
             <MetricItem>
               <span>
                 <Trans>Rewards end</Trans>
               </span>
-              <MetricValue>{isLinked && stats ? getDisplayDate(stats.rewards_end) : '-'}</MetricValue>
+              <MetricValue>
+                {stats && toValidDate(stats.rewards_end) ? formatShortDate(stats.rewards_end) : '-'}
+              </MetricValue>
             </MetricItem>
           </LinkedMetaList>
           {!isLinked && (
