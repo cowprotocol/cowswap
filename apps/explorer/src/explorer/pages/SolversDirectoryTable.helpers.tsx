@@ -4,21 +4,6 @@ export const ALL_FILTER = 'all'
 export const ACTIVE_FILTER_ACTIVE = 'active'
 export const ACTIVE_FILTER_INACTIVE = 'inactive'
 
-function matchesSearch(solver: SolverInfo, query: string, deployments: SolverDeployment[]): boolean {
-  const normalizedQuery = query.trim().toLowerCase()
-  if (!normalizedQuery) return true
-
-  const searchableFields = [
-    solver.displayName,
-    solver.solverId,
-    solver.description || '',
-    solver.website || '',
-    deployments.map((deployment) => `${deployment.address || ''} ${deployment.payoutAddress || ''}`).join(' '),
-  ]
-
-  return searchableFields.join(' ').toLowerCase().includes(normalizedQuery)
-}
-
 export function filterDeployments(
   deployments: SolverDeployment[],
   networkFilter: string,
@@ -86,4 +71,19 @@ export function filterSolvers(
 
     return visibleDeployments.length > 0 && matchesSearch(solver, query, visibleDeployments)
   })
+}
+
+function matchesSearch(solver: SolverInfo, query: string, deployments: SolverDeployment[]): boolean {
+  const normalizedQuery = query.trim().toLowerCase()
+  if (!normalizedQuery) return true
+
+  const searchableFields = [
+    solver.displayName,
+    solver.solverId,
+    solver.description || '',
+    solver.website || '',
+    deployments.map((deployment) => `${deployment.address || ''} ${deployment.payoutAddress || ''}`).join(' '),
+  ]
+
+  return searchableFields.join(' ').toLowerCase().includes(normalizedQuery)
 }

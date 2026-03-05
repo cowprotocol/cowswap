@@ -37,7 +37,7 @@ export function SolverSummaryRow({
   const environments = mapSummaryEnvironments(deployments)
 
   return (
-    <tr className="solver-summary-row">
+    <tr className="solver-summary-row" data-solver-id={solver.solverId}>
       <td className="solver">
         <SolverCell>
           <ExpandButton

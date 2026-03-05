@@ -36,28 +36,36 @@ const SOLVERS_QUERY = [
   'pagination[pageSize]=200',
 ].join('&')
 
-let solversInfoCache: SolversInfo | undefined
+let solversInfoPromise: Promise<SolversInfo> | undefined
 
-export async function fetchSolversInfo(network?: number): Promise<SolversInfo> {
-  if (!solversInfoCache) {
-    const cmsClient = getCmsClient()
-    const { data, error, response } = await cmsClient.GET('/solvers', {
-      params: {
-        query: {},
-      },
-      querySerializer: serializeSolversQuery,
-    })
+async function fetchSolversInfoFromCms(): Promise<SolversInfo> {
+  const cmsClient = getCmsClient()
+  const { data, error, response } = await cmsClient.GET('/solvers', {
+    params: {
+      query: {},
+    },
+    querySerializer: serializeSolversQuery,
+  })
 
-    if (!response.ok || error) {
-      const details = formatCmsError(error) || response.statusText
-      throw new Error(`Failed to fetch solvers info: [${response.status}] ${details}`)
-    }
-
-    const body = data as CmsSolversResponse | undefined
-    solversInfoCache = mapCmsSolversToSolversInfo(body?.data || [])
+  if (!response.ok || error) {
+    const details = formatCmsError(error) || response.statusText
+    throw new Error(`Failed to fetch solvers info: [${response.status}] ${details}`)
   }
 
-  return filterSolversByNetwork(solversInfoCache, network)
+  const body = data as CmsSolversResponse | undefined
+  return mapCmsSolversToSolversInfo(body?.data || [])
+}
+
+export async function fetchSolversInfo(network?: number): Promise<SolversInfo> {
+  if (!solversInfoPromise) {
+    solversInfoPromise = fetchSolversInfoFromCms().catch((err) => {
+      solversInfoPromise = undefined
+      throw err
+    })
+  }
+
+  const allSolvers = await solversInfoPromise
+  return filterSolversByNetwork(allSolvers, network)
 }
 
 function serializeSolversQuery(_params: unknown): string {

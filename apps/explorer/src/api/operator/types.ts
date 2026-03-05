@@ -1,4 +1,10 @@
-import { EnrichedOrder, OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import {
+  CompetitionOrderStatus,
+  EnrichedOrder,
+  OrderKind,
+  SolverCompetitionResponse,
+  Trade as TradeMetaData,
+} from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
@@ -128,3 +134,15 @@ export type GetTradesParams = WithNetworkId & {
   offset?: number
   limit?: number
 }
+
+export type GetOrderCompetitionStatusParams = WithNetworkId & {
+  orderId: string
+}
+
+export type GetSolverCompetitionByTxHashParams = WithNetworkId & {
+  txHash: string
+}
+
+export type OrderCompetitionStatus = CompetitionOrderStatus
+
+export type { SolverCompetitionResponse }
