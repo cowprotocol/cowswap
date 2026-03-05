@@ -5,8 +5,8 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { Body, Title, Footer } from '../pure/AffiliateTraderModal/AffiliateTraderModal.shared'
 import { CodeLinkingSubtitle } from '../pure/AffiliateTraderModal/CodeLinkingSubtitle'
-import { Body, Footer, Title } from '../pure/AffiliateTraderModal/styles'
 
 export function AffiliateTraderModalUnsupported(): ReactNode {
   return (

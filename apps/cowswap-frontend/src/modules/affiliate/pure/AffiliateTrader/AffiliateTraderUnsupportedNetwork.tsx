@@ -6,7 +6,7 @@ import { AlertCircle } from 'react-feather'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
 import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from '../../config/affiliateProgram.const'
-import { UnsupportedNetworkCard, UnsupportedNetworkHeader, UnsupportedNetworkMessage } from '../shared'
+import { UnsupportedNetworkCard, UnsupportedNetworkHeader, UnsupportedNetworkMessage } from '../AffiliateCards.shared'
 
 export function AffiliateTraderUnsupportedNetwork(): ReactNode {
   return (

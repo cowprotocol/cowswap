@@ -7,8 +7,8 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
-import { IneligibleImage } from '../pure/shared'
+import { IneligibleImage } from '../pure/AffiliateCards.shared'
+import { Body, Subtitle, Title, Footer } from '../pure/AffiliateTraderModal/AffiliateTraderModal.shared'
 import { TraderIneligible } from '../pure/TraderIneligible'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 

@@ -7,18 +7,16 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { CardTitle, ColumnTwoCard } from './AffiliateCards.shared'
 import {
   BottomMetaRow,
-  CardTitle,
-  ColumnTwoCard,
-  Donut,
-  DonutValue,
   LabelContent,
   MetricItem,
-  RewardsMetricsList,
-  RewardsMetricsRow,
+  MetricsList,
+  MetricsRow,
   TitleWithTooltip,
-} from './shared'
+} from './AffiliateMetrics.shared'
+import { Donut, DonutValue } from './Donut'
 
 import {
   AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS,
@@ -71,22 +69,22 @@ export function MetricsCard({
           <span>{title}</span>
         )}
       </CardTitle>
-      <RewardsMetricsRow>
-        <RewardsMetricsList>
+      <MetricsRow>
+        <MetricsList>
           {items.map(({ label, value }, index) => (
             <MetricItem key={`${index}-${value}`}>
               <LabelContent>{label}</LabelContent>
               <strong>{value}</strong>
             </MetricItem>
           ))}
-        </RewardsMetricsList>
+        </MetricsList>
         <Donut $value={donutValue}>
           <DonutValue>
             <span>{donutLabel}</span>
             {donutSubtitle ? <small>{donutSubtitle}</small> : null}
           </DonutValue>
         </Donut>
-      </RewardsMetricsRow>
+      </MetricsRow>
       <BottomMetaRow>
         <LabelContent>
           <span>

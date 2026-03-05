@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { t } from '@lingui/core/macro'
 
 import { AffiliatePartnerCodeCreateError } from '../../lib/affiliatePartnerCodeCreateError'
-import { StatusText } from '../shared'
+import { StatusText } from '../AffiliateBadges.shared'
 
 type AffiliatePartnerCodeErrorMessageProps = {
   error?: AffiliatePartnerCodeCreateError

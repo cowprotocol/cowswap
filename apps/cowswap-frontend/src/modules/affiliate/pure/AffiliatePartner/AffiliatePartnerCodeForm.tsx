@@ -1,10 +1,11 @@
 import { KeyboardEvent, ReactNode, useCallback } from 'react'
 
-import { HelpTooltip } from '@cowprotocol/ui'
+import { HelpTooltip, ButtonPrimary, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { RotateCw } from 'react-feather'
+import styled from 'styled-components/macro'
 
 import { REF_CODE_MIN_LENGTH } from 'modules/affiliate'
 
@@ -12,21 +13,12 @@ import { AffiliatePartnerCodeErrorMessage } from './AffiliatePartnerCodeErrorMes
 
 import { PartnerCodeAvailability } from '../../hooks/useAffiliatePartnerCodeAvailability'
 import { AffiliatePartnerCodeCreateError } from '../../lib/affiliatePartnerCodeCreateError'
+import { StatusText } from '../AffiliateBadges.shared'
+import { CardTitle } from '../AffiliateCards.shared'
+import { Form, HelperText, Label, LabelActions, LabelRow } from '../AffiliateLayout.shared'
+import { BottomMetaRow, LabelContent } from '../AffiliateMetrics.shared'
 import { type RefCodeAdornmentVariant } from '../RefCodeInput/RefCodeAdornment'
 import { RefCodeInput, RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
-import {
-  BottomMetaRow,
-  CardTitle,
-  Form,
-  HelperText,
-  Label,
-  LabelActions,
-  LabelContent,
-  LabelRow,
-  MiniAction,
-  PrimaryAction,
-  StatusText,
-} from '../shared'
 
 type AffiliatePartnerCodeFormRefInputProps = Omit<RefCodeInputProps, 'disabled' | 'isLoading' | 'hasError'>
 
@@ -124,3 +116,31 @@ const ADORNMENT_VARIANT_MAP: Record<PartnerCodeAvailability, RefCodeAdornmentVar
   [PartnerCodeAvailability.Available]: 'available',
   [PartnerCodeAvailability.Unavailable]: 'error',
 }
+
+const MiniAction = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid var(${UI.COLOR_BORDER});
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: lowercase;
+
+  &:hover:not(:disabled) {
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+`
+
+const PrimaryAction = styled(ButtonPrimary)`
+  width: 100%;
+`

@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 
-import { StatusColorVariant } from '@cowprotocol/ui'
+import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-
-import { InlineAlert, StatusMessage } from './styles'
+import styled from 'styled-components/macro'
 
 import { type TraderInfoResponse } from '../../api/bffAffiliateApi.types'
 import { TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
@@ -54,3 +53,15 @@ export function CodeLinkingStatusSection(props: CodeLinkingStatusSectionProps): 
 
   return null
 }
+
+const StatusMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`
+
+const InlineAlert = styled(InlineBanner)`
+  border-radius: 9px;
+  padding: 12px 16px;
+  text-align: center;
+`

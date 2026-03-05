@@ -12,19 +12,17 @@ import SVG from 'react-inlinesvg'
 
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
+import { LinkedBadge, ValidStatusBadge } from '../pure/AffiliateBadges.shared'
 import {
-  CardTitle,
   HeroActions,
-  LinkedBadge,
+  ColumnOneCard,
+  CardTitle,
   LinkedCard,
   LinkedCodeRow,
   LinkedCodeText,
   LinkedMetaList,
-  MetricItem,
-  ColumnOneCard,
-  RewardsHeader,
-  ValidStatusBadge,
-} from '../pure/shared'
+} from '../pure/AffiliateCards.shared'
+import { MetricItem } from '../pure/AffiliateMetrics.shared'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
@@ -40,9 +38,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
     <ColumnOneCard showLoader={statsLoading || codeLoading}>
       {!info ? null : (
         <>
-          <RewardsHeader>
-            <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
-          </RewardsHeader>
+          <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
           <LinkedCard>
             <LinkedCodeRow>
               <LinkedCodeText>{savedCode}</LinkedCodeText>

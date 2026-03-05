@@ -14,7 +14,7 @@ import { AffiliateTraderModalUnsupported } from './AffiliateTraderModalUnsupport
 import { useAffiliateTraderRecoverySideEffect } from '../hooks/useAffiliateTraderRecoverySideEffect'
 import { useAffiliateTraderRefUrlSideEffect } from '../hooks/useAffiliateTraderRefUrlSideEffect'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
-import { ModalContainer } from '../pure/AffiliateTraderModal/styles'
+import { ModalContainer } from '../pure/AffiliateTraderModal/AffiliateTraderModal.shared'
 import { UnsupportedNetwork } from '../pure/UnsupportedNetwork'
 import { affiliateTraderModalAtom, toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 

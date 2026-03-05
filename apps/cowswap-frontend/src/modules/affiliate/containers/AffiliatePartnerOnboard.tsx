@@ -20,16 +20,9 @@ import {
   getPartnerRewardAmountLabel,
   isSupportedPayoutsNetwork,
 } from '../lib/affiliateProgramUtils'
+import { HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle } from '../pure/AffiliateCards.shared'
+import { AffiliateTermsFaqLinks, InlineNote } from '../pure/AffiliateLayout.shared'
 import { HowItWorks } from '../pure/HowItWorks'
-import {
-  AffiliateTermsFaqLinks,
-  HeroActions,
-  HeroCard,
-  HeroContent,
-  HeroSubtitle,
-  HeroTitle,
-  InlineNote,
-} from '../pure/shared'
 
 export function AffiliatePartnerOnboard(): ReactNode {
   const provider = useWalletProvider()

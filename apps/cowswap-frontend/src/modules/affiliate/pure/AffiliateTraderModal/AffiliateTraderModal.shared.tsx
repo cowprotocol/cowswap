@@ -80,3 +80,10 @@ export const Label = styled.label`
   font-weight: 600;
   color: var(${UI.COLOR_TEXT});
 `
+
+export const Footer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 10px 10px;
+`

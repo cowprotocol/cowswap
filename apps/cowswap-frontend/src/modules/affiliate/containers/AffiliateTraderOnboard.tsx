@@ -16,7 +16,8 @@ import {
   getDefaultTraderRewardAmount,
   getDefaultTriggerVolume,
 } from '../lib/affiliateProgramUtils'
-import { AffiliateTermsFaqLinks, HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle } from '../pure/shared'
+import { HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle } from '../pure/AffiliateCards.shared'
+import { AffiliateTermsFaqLinks } from '../pure/AffiliateLayout.shared'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
 export function AffiliateTraderOnboard(): ReactNode {
