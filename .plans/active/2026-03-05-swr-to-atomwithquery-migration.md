@@ -20,6 +20,16 @@ Migrate prioritized SWR call sites to Jotai `atomWithQuery` so data fetching fol
   - migration of all `libs/**` SWR call sites in the same PR train
   - behavior changes to UX/business logic
 
+## Enforcement Context
+
+- Enforcement is repo-wide: no new SWR usage is allowed anywhere under `apps/**` or `libs/**`.
+- Mechanism:
+  - `pnpm swr:check`
+  - `tools/scripts/swr-usage-guardrail.mjs`
+  - `tools/baselines/swr-usage-baseline.txt`
+- This plan prioritizes remediation in `apps/cowswap-frontend` first.
+- `libs/**` may temporarily keep baseline-listed legacy SWR usage, but must not introduce new SWR usage.
+
 ## Baseline Inventory
 
 Snapshot date: 2026-03-05
@@ -84,11 +94,11 @@ Snapshot date: 2026-03-05
 
 ## Exit Criteria
 
-- No new SWR call sites introduced in cowswap-frontend.
+- No new SWR call sites introduced repo-wide.
 - Majority of active-domain SWR hooks in cowswap-frontend replaced with `atomWithQuery`.
 - Remaining SWR usage documented as intentional legacy/deferred debt with owners.
 
 ## Follow-ups
 
-- Add baseline-backed guardrail script to fail only on new SWR additions.
+- Keep SWR baseline fresh when legacy entries are removed (`pnpm swr:baseline:update`).
 - Open a dedicated `libs/**` migration plan after phase 2 stabilization.

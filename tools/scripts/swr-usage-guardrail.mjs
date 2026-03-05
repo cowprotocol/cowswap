@@ -28,6 +28,10 @@ const EXCLUDED_FILE_PATTERNS = [
   '.spec.jsx',
   '.stories.tsx',
   '.stories.ts',
+  '.stories.js',
+  '.stories.jsx',
+  '.cosmos.js',
+  '.cosmos.jsx',
   '.cosmos.tsx',
 ]
 const SWR_USAGE_REGEX =

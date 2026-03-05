@@ -22,6 +22,7 @@ const REQUIRED_DOC_PATHS = [
   'docs/MODULE_CONVENTIONS.md',
   'docs/STATE_MANAGEMENT.md',
   'docs/QUALITY.md',
+  'docs/HARNESS_HARDENING.md',
 ]
 const REQUIRED_PLAN_PATHS = ['.plans/active', '.plans/completed', '.plans/debt']
 
@@ -149,8 +150,14 @@ function checkEnforcementWiring() {
 
   const packageJson = JSON.parse(readFile(packageJsonPath))
   const agentsCheckScript = packageJson.scripts?.['agents:check']
-  if (typeof agentsCheckScript !== 'string' || !agentsCheckScript.includes('tools/scripts/agents-check.mjs')) {
-    errors.push('package.json script "agents:check" must include "tools/scripts/agents-check.mjs"')
+  if (
+    typeof agentsCheckScript !== 'string' ||
+    !agentsCheckScript.includes('tools/scripts/agents-check.mjs') ||
+    !agentsCheckScript.includes('tools/scripts/swr-usage-guardrail.mjs')
+  ) {
+    errors.push(
+      'package.json script "agents:check" must include both "tools/scripts/agents-check.mjs" and "tools/scripts/swr-usage-guardrail.mjs"',
+    )
   }
 
   const swrCheckScript = packageJson.scripts?.['swr:check']
