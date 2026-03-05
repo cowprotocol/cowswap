@@ -2,24 +2,12 @@ import { useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@cowprotocol/common-entities'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import JSBI from 'jsbi'
 
 import { useVCowData } from 'legacy/state/cowToken/hooks'
-
-/**
- * Hook that returns COW balance
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useCowBalance() {
-  const { chainId } = useWalletInfo()
-  const cowToken = chainId ? COW_TOKEN_TO_CHAIN[chainId] : undefined
-
-  return useCurrencyAmountBalance(cowToken)
-}
 
 /**
  * Hook that returns combined vCOW + COW balance + vCow from locked GNO
@@ -58,4 +46,16 @@ export function useCombinedBalance() {
 
     return { balance, isLoading }
   }, [vCowBalance, /* lockedGnoBalance, */ cowBalance, chainId, account, isVCowLoading])
+}
+
+/**
+ * Hook that returns COW balance
+ */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function useCowBalance() {
+  const { chainId } = useWalletInfo()
+  const cowToken = chainId ? COW_TOKEN_TO_CHAIN[chainId] : undefined
+
+  return useCurrencyAmountBalance(cowToken)
 }

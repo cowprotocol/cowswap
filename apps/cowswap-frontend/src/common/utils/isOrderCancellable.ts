@@ -1,4 +1,4 @@
-import { Token } from '@cowprotocol/common-entities'
+import { Token } from '@cowprotocol/currency'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 

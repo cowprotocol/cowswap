@@ -1,5 +1,5 @@
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { Erc20 } from '@cowprotocol/cowswap-abis'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'

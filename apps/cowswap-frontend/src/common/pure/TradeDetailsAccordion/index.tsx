@@ -1,6 +1,6 @@
 import { ReactNode, useCallback } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -17,28 +17,6 @@ interface TradeDetailsAccordionProps {
   open: boolean
   onToggle: () => void
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
-}
-
-function DefaultFeeContent({
-  feeUsdTotalAmount,
-  feeTotalAmount,
-}: {
-  feeUsdTotalAmount: CurrencyAmount<Currency> | null
-  feeTotalAmount: CurrencyAmount<Currency> | null
-}): ReactNode {
-  if (feeUsdTotalAmount?.greaterThan(0)) {
-    return <FiatAmount amount={feeUsdTotalAmount} />
-  }
-
-  if (feeTotalAmount?.greaterThan(0)) {
-    return (
-      <>
-        <Trans>Fee</Trans> <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
-      </>
-    )
-  }
-
-  return <Trans>Free</Trans>
 }
 
 /**
@@ -81,4 +59,26 @@ export function TradeDetailsAccordion({
       <Details isVisible={open}>{children}</Details>
     </Wrapper>
   )
+}
+
+function DefaultFeeContent({
+  feeUsdTotalAmount,
+  feeTotalAmount,
+}: {
+  feeUsdTotalAmount: CurrencyAmount<Currency> | null
+  feeTotalAmount: CurrencyAmount<Currency> | null
+}): ReactNode {
+  if (feeUsdTotalAmount?.greaterThan(0)) {
+    return <FiatAmount amount={feeUsdTotalAmount} />
+  }
+
+  if (feeTotalAmount?.greaterThan(0)) {
+    return (
+      <>
+        <Trans>Fee</Trans> <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+      </>
+    )
+  }
+
+  return <Trans>Free</Trans>
 }

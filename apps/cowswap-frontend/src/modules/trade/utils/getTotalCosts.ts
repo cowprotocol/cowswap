@@ -1,5 +1,5 @@
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { getOrderTypeReceiveAmounts } from './getOrderTypeReceiveAmounts'
 

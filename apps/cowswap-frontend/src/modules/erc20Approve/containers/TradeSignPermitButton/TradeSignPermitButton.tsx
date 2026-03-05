@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonConfirmed, ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 
 import { HelpCircle } from 'react-feather'

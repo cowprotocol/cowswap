@@ -1,5 +1,5 @@
 import { LpToken } from '@cowprotocol/common-const'
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 import { LP_TOKEN_LIST_CATEGORIES, LP_TOKEN_LIST_COW_AMM_ONLY, TokenListCategory } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 

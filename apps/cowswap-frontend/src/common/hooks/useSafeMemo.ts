@@ -1,6 +1,6 @@
 import { EffectCallback, useEffect, useMemo } from 'react'
 
-import { CurrencyAmount, NativeCurrency, Percent, Price, Token } from '@cowprotocol/common-entities'
+import { CurrencyAmount, NativeCurrency, Percent, Price, Token } from '@cowprotocol/currency'
 
 export function useSafeDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
@@ -22,6 +22,11 @@ export function useSafeDeps(deps: unknown[]): unknown[] {
   })
 }
 
+export function useSafeEffect(memoCall: EffectCallback, deps: unknown[]): void {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(memoCall, useSafeDeps(deps))
+}
+
 /**
  * UseMemo effectively (by values) compare only primitive types and compare objects by links
  * To get the best performance we need process objects changes manually
@@ -33,9 +38,4 @@ export function useSafeMemo<T>(memoCall: () => T, deps: unknown[]): T {
 
 export function useSafeMemoObject<T extends { [key: string]: unknown }>(depsObj: T): typeof depsObj {
   return useSafeMemo<typeof depsObj>(() => depsObj, Object.values(depsObj))
-}
-
-export function useSafeEffect(memoCall: EffectCallback, deps: unknown[]): void {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(memoCall, useSafeDeps(deps))
 }

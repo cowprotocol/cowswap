@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { CurrencyAmount } from '@cowprotocol/common-entities'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { BridgeQuoteAmounts } from '@cowprotocol/types'
 
 import { useGetReceiveAmountInfo, useGetSwapReceiveAmountInfo } from 'modules/trade'

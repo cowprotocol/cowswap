@@ -10,9 +10,9 @@ import {
   V_COW,
   WRAPPED_NATIVE_CURRENCIES as WETH,
 } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'

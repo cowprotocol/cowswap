@@ -6,8 +6,8 @@ import {
   WETH_SEPOLIA,
   WXDAI,
 } from '@cowprotocol/common-const'
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'

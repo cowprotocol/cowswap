@@ -1,7 +1,7 @@
 import { GNO, USDC_SEPOLIA, ZERO_FRACTION } from '@cowprotocol/common-const'
-import { Currency, Price } from '@cowprotocol/common-entities'
 import { buildPriceFromCurrencyAmounts, FractionUtils, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Price } from '@cowprotocol/currency'
 
 import { calculatePriceDifference, CalculatePriceDifferenceParams } from './calculatePriceDifference'
 

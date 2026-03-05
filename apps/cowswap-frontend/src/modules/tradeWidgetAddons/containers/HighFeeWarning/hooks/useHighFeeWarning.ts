@@ -2,8 +2,8 @@ import { atom, useAtom } from 'jotai'
 import { SetStateAction, useMemo } from 'react'
 
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 import { ReceiveAmountInfo, useGetReceiveAmountInfo } from 'modules/trade'
 
@@ -90,6 +90,26 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
   )
 }
 
+function _computeFeeWarningAcceptedState({
+  feeWarningAccepted,
+  isHighFee,
+  isHighBridgeFee,
+}: {
+  feeWarningAccepted: boolean
+  isHighFee: boolean
+  isHighBridgeFee: boolean | undefined
+}): boolean {
+  if (feeWarningAccepted) return true
+  else {
+    // is the fee high? that's only when we care
+    if (isHighFee || isHighBridgeFee) {
+      return feeWarningAccepted
+    } else {
+      return true
+    }
+  }
+}
+
 function getBridgeFeePercentage(
   bridgeFee: ReceiveAmountInfo['costs']['bridgeFee'],
   targetAmount: CurrencyAmount<Currency>,
@@ -109,24 +129,4 @@ function getBridgeFeePercentage(
   }
 
   return bridgeFee.amountInDestinationCurrency.divide(targetAmount).multiply(100).asFraction
-}
-
-function _computeFeeWarningAcceptedState({
-  feeWarningAccepted,
-  isHighFee,
-  isHighBridgeFee,
-}: {
-  feeWarningAccepted: boolean
-  isHighFee: boolean
-  isHighBridgeFee: boolean | undefined
-}): boolean {
-  if (feeWarningAccepted) return true
-  else {
-    // is the fee high? that's only when we care
-    if (isHighFee || isHighBridgeFee) {
-      return feeWarningAccepted
-    } else {
-      return true
-    }
-  }
 }

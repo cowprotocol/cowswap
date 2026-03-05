@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { Token } from '@cowprotocol/common-entities'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Token } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'

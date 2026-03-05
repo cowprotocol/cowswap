@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 
 import { useUsdAmount } from 'modules/usdAmount'

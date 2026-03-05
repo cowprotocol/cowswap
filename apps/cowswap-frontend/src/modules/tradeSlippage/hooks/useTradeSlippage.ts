@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { Percent } from '@cowprotocol/common-entities'
 import { bpsToPercent } from '@cowprotocol/common-utils'
+import { Percent } from '@cowprotocol/currency'
 
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 
@@ -12,6 +12,16 @@ import {
   shouldUseAutoSlippageAtom,
   slippageConfigAtom,
 } from '../state/slippageValueAndTypeAtom'
+
+export function useDefaultTradeSlippage(): Percent {
+  return bpsToPercent(useAtomValue(slippageConfigAtom).defaultValue)
+}
+
+export function useTradeSlippage(): Percent {
+  const { value } = useTradeSlippageValueAndType()
+
+  return useMemo(() => bpsToPercent(value), [value])
+}
 
 export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
@@ -31,14 +41,4 @@ export function useTradeSlippageValueAndType(): { type: SlippageType; value: num
 
     return { type: 'default', value: defaultValue }
   }, [currentUserSlippage, defaultValue, smartSlippageFromQuote, shouldUseAutoSlippage, max])
-}
-
-export function useTradeSlippage(): Percent {
-  const { value } = useTradeSlippageValueAndType()
-
-  return useMemo(() => bpsToPercent(value), [value])
-}
-
-export function useDefaultTradeSlippage(): Percent {
-  return bpsToPercent(useAtomValue(slippageConfigAtom).defaultValue)
 }

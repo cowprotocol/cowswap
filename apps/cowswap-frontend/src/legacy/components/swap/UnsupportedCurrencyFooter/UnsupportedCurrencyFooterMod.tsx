@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Currency } from '@cowprotocol/common-entities'
 import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
+import { Currency } from '@cowprotocol/currency'
 import { TokenLogo, useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'

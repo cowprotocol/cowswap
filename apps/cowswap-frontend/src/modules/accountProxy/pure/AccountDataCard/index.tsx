@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { safeShortenAddress } from 'utils/address'
 

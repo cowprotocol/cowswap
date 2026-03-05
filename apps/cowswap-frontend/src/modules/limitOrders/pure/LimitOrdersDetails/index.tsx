@@ -2,8 +2,8 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
-import { Currency, Price } from '@cowprotocol/common-entities'
 import { formatInputAmount } from '@cowprotocol/common-utils'
+import { Currency, Price } from '@cowprotocol/currency'
 import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { i18n } from '@lingui/core'

@@ -1,6 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { Currency } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenName } from '@cowprotocol/ui'
 

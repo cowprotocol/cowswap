@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { CurrencyAmount } from '@cowprotocol/common-entities'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

@@ -1,5 +1,5 @@
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'

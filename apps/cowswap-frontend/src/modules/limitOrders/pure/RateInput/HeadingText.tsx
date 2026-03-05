@@ -1,4 +1,4 @@
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol, UI } from '@cowprotocol/ui'
 

@@ -2,9 +2,9 @@ import { MouseEventHandler, ReactNode, useCallback } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { getTokenId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 

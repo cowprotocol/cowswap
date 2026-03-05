@@ -1,4 +1,4 @@
-import { Price, Token } from '@cowprotocol/common-entities'
+import { Price, Token } from '@cowprotocol/currency'
 
 import JSBI from 'jsbi'
 

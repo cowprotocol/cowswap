@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
-import { Currency, Token } from '@cowprotocol/common-entities'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -25,21 +25,6 @@ export type CurrencySelectionCallback = (
   stateUpdateCallback?: Command,
   searchParams?: TradeSearchParams,
 ) => void
-
-function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
-  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-
-  return useCallback(
-    (currency: Currency | null): string | null => {
-      if (!currency) return null
-
-      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
-        ? (currency as Token).address
-        : currency.symbol || null
-    },
-    [areThereTokensWithSameSymbol],
-  )
-}
 
 /**
  * To avoid collisions of tokens with the same symbols we use a token address instead of token symbol
@@ -151,5 +136,20 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
     ],
+  )
+}
+
+function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
+  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
+
+  return useCallback(
+    (currency: Currency | null): string | null => {
+      if (!currency) return null
+
+      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
+        ? (currency as Token).address
+        : currency.symbol || null
+    },
+    [areThereTokensWithSameSymbol],
   )
 }

@@ -3,8 +3,8 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -39,11 +39,6 @@ import { TokensTableRow } from './TokensTableRow'
 
 const MAX_ITEMS = 20
 
-enum SORT_FIELD {
-  NAME = 'name',
-  BALANCE = 'balance',
-}
-
 type TokenTableParams = {
   tokensData: TokenWithLogo[] | undefined
   maxItems?: number
@@ -55,6 +50,11 @@ type TokenTableParams = {
   prevQuery: string
   debouncedQuery: string
   children?: ReactNode
+}
+
+enum SORT_FIELD {
+  NAME = 'name',
+  BALANCE = 'balance',
 }
 
 // TODO: Break down this large function into smaller functions

@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { Currency } from '@cowprotocol/common-entities'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import {
   getAddressKey,
@@ -9,6 +8,7 @@ import {
   mapSupportedNetworks,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'

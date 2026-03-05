@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { Percent } from '@cowprotocol/common-entities'
+import { Percent } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
 

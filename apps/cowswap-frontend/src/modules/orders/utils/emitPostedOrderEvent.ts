@@ -1,6 +1,6 @@
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { EVM_NATIVE_CURRENCY_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { CowWidgetEvents, OnPostedOrderPayload } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 

@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
-import { Token } from '@cowprotocol/common-entities'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 
 import { ONDO_TOKENS_LIST_SOURCE } from '../../const/tokensLists'
 import { listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'

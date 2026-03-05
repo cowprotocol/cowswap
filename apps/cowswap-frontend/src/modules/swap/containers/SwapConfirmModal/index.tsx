@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
-import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

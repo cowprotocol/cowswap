@@ -1,4 +1,4 @@
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
 export function getAreBridgeCurrencies(a: Nullish<Currency>, b: Nullish<Currency>): boolean {

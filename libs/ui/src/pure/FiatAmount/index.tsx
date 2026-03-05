@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
 import { LONG_PRECISION } from '@cowprotocol/common-const'
-import { Fraction } from '@cowprotocol/common-entities'
 import { formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { Fraction } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
 import styled from 'styled-components/macro'

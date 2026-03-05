@@ -1,9 +1,9 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useENS } from '@cowprotocol/ens'
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -71,142 +71,6 @@ const DEFAULT_ORDER_SUMMARY = {
   to: '',
   limitPrice: '',
   validTo: '',
-}
-
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
-export function GnosisSafeTxDetails(props: {
-  chainId: number
-  activityDerivedState: ActivityDerivedState
-}): ReactElement | null {
-  const { chainId, activityDerivedState } = props
-  const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled, isFailed } =
-    activityDerivedState
-  const gnosisSafeThreshold = gnosisSafeInfo?.threshold
-  const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
-  const isReplaced = enhancedTransaction?.replacementType === 'replaced'
-
-  if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction) {
-    return null
-  }
-
-  // The activity is executed Is tx mined or is the swap executed
-  const isExecutedActivity = isOrder
-    ? order?.fulfillmentTime !== undefined
-    : enhancedTransaction?.confirmedTime !== undefined
-
-  // Check if it's in a state where we don't need more signatures. We do this, because this state comes from CoW Swap API, which
-  // sometimes can be faster getting the state than Gnosis Safe API (that would give us the pending signatures). We use
-  // this check to infer that we don't need to sign anything anymore
-  const alreadySigned = isOrder ? status !== ActivityStatus.PRESIGNATURE_PENDING : status !== ActivityStatus.PENDING
-
-  const { confirmations, nonce, isExecuted } = safeTransaction
-
-  const numConfirmations = confirmations?.length ?? 0
-  const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
-  const isPendingSignatures = pendingSignaturesCount > 0
-
-  let signaturesMessage: ReactElement
-
-  if (isExecutedActivity) {
-    signaturesMessage = (
-      <span>
-        <Trans>Executed</Trans>
-      </span>
-    )
-  } else if (isCancelled) {
-    signaturesMessage = (
-      <span>
-        <Trans>Cancelled order</Trans>
-      </span>
-    )
-  } else if (isExpired) {
-    signaturesMessage = (
-      <span>
-        <Trans>Expired order</Trans>
-      </span>
-    )
-  } else if (isFailed) {
-    signaturesMessage = (
-      <span>
-        <Trans>Invalid order</Trans>
-      </span>
-    )
-  } else if (alreadySigned) {
-    signaturesMessage = (
-      <span>
-        <Trans>Enough signatures</Trans>
-      </span>
-    )
-  } else if (numConfirmations === 0) {
-    signaturesMessage = (
-      <>
-        <span>
-          <b>
-            <Trans>No signatures yet</Trans>
-          </b>
-        </span>
-        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {gnosisSafeThreshold} {gnosisSafeThreshold === 1 ? t`signature is` : t`signatures are`} {t`required`}
-        </TextAlert>
-      </>
-    )
-  } else if (numConfirmations >= gnosisSafeThreshold) {
-    signaturesMessage = isExecuted ? (
-      <span>
-        <b>
-          <Trans>Enough signatures</Trans>
-        </b>
-      </span>
-    ) : (
-      <>
-        {!isReplaced && (
-          <>
-            <span>
-              <Trans>
-                Enough signatures, <b>but not executed</b>
-              </Trans>
-            </span>
-            <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-              <Trans>Execute Safe transaction</Trans>
-            </TextAlert>
-          </>
-        )}
-      </>
-    )
-  } else {
-    signaturesMessage = (
-      <>
-        <span>
-          <Trans>
-            Signed:{' '}
-            <b>
-              {numConfirmations} out of {gnosisSafeThreshold} signers
-            </b>
-          </Trans>
-        </span>
-        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {pendingSignaturesCount} {pendingSignaturesCount === 1 ? t`more signature is` : t`more signatures are`}{' '}
-          {t`required`}
-        </TextAlert>
-      </>
-    )
-  }
-
-  return (
-    <TransactionInnerDetail>
-      <span>
-        <Trans>
-          Safe Nonce: <b>{nonce}</b>
-        </Trans>
-      </span>
-      {signaturesMessage}
-
-      {/* View in: Gnosis Safe */}
-      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} asButton />
-    </TransactionInnerDetail>
-  )
 }
 
 interface OrderSummaryType {
@@ -606,5 +470,141 @@ export function ActivityDetails(props: {
 
       <EthFlowStepper order={order} />
     </>
+  )
+}
+
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
+export function GnosisSafeTxDetails(props: {
+  chainId: number
+  activityDerivedState: ActivityDerivedState
+}): ReactElement | null {
+  const { chainId, activityDerivedState } = props
+  const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled, isFailed } =
+    activityDerivedState
+  const gnosisSafeThreshold = gnosisSafeInfo?.threshold
+  const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
+  const isReplaced = enhancedTransaction?.replacementType === 'replaced'
+
+  if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction) {
+    return null
+  }
+
+  // The activity is executed Is tx mined or is the swap executed
+  const isExecutedActivity = isOrder
+    ? order?.fulfillmentTime !== undefined
+    : enhancedTransaction?.confirmedTime !== undefined
+
+  // Check if it's in a state where we don't need more signatures. We do this, because this state comes from CoW Swap API, which
+  // sometimes can be faster getting the state than Gnosis Safe API (that would give us the pending signatures). We use
+  // this check to infer that we don't need to sign anything anymore
+  const alreadySigned = isOrder ? status !== ActivityStatus.PRESIGNATURE_PENDING : status !== ActivityStatus.PENDING
+
+  const { confirmations, nonce, isExecuted } = safeTransaction
+
+  const numConfirmations = confirmations?.length ?? 0
+  const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
+  const isPendingSignatures = pendingSignaturesCount > 0
+
+  let signaturesMessage: ReactElement
+
+  if (isExecutedActivity) {
+    signaturesMessage = (
+      <span>
+        <Trans>Executed</Trans>
+      </span>
+    )
+  } else if (isCancelled) {
+    signaturesMessage = (
+      <span>
+        <Trans>Cancelled order</Trans>
+      </span>
+    )
+  } else if (isExpired) {
+    signaturesMessage = (
+      <span>
+        <Trans>Expired order</Trans>
+      </span>
+    )
+  } else if (isFailed) {
+    signaturesMessage = (
+      <span>
+        <Trans>Invalid order</Trans>
+      </span>
+    )
+  } else if (alreadySigned) {
+    signaturesMessage = (
+      <span>
+        <Trans>Enough signatures</Trans>
+      </span>
+    )
+  } else if (numConfirmations === 0) {
+    signaturesMessage = (
+      <>
+        <span>
+          <b>
+            <Trans>No signatures yet</Trans>
+          </b>
+        </span>
+        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+          {gnosisSafeThreshold} {gnosisSafeThreshold === 1 ? t`signature is` : t`signatures are`} {t`required`}
+        </TextAlert>
+      </>
+    )
+  } else if (numConfirmations >= gnosisSafeThreshold) {
+    signaturesMessage = isExecuted ? (
+      <span>
+        <b>
+          <Trans>Enough signatures</Trans>
+        </b>
+      </span>
+    ) : (
+      <>
+        {!isReplaced && (
+          <>
+            <span>
+              <Trans>
+                Enough signatures, <b>but not executed</b>
+              </Trans>
+            </span>
+            <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+              <Trans>Execute Safe transaction</Trans>
+            </TextAlert>
+          </>
+        )}
+      </>
+    )
+  } else {
+    signaturesMessage = (
+      <>
+        <span>
+          <Trans>
+            Signed:{' '}
+            <b>
+              {numConfirmations} out of {gnosisSafeThreshold} signers
+            </b>
+          </Trans>
+        </span>
+        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+          {pendingSignaturesCount} {pendingSignaturesCount === 1 ? t`more signature is` : t`more signatures are`}{' '}
+          {t`required`}
+        </TextAlert>
+      </>
+    )
+  }
+
+  return (
+    <TransactionInnerDetail>
+      <span>
+        <Trans>
+          Safe Nonce: <b>{nonce}</b>
+        </Trans>
+      </span>
+      {signaturesMessage}
+
+      {/* View in: Gnosis Safe */}
+      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} asButton />
+    </TransactionInnerDetail>
   )
 }

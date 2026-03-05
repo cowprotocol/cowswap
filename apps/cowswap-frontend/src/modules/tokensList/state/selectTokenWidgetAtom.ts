@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
-import { Currency } from '@cowprotocol/common-entities'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { Currency } from '@cowprotocol/currency'
 import { ListState } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 

@@ -2,8 +2,8 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

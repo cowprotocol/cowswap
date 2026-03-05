@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
-import { Percent } from '@cowprotocol/common-entities'
+import { Percent } from '@cowprotocol/currency'
 import { UI } from '@cowprotocol/ui'
 
 import { useSelect, useValue } from 'react-cosmos/client'

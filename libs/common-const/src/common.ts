@@ -1,4 +1,3 @@
-import { Fraction, Percent } from '@cowprotocol/common-entities'
 import {
   BARN_ETH_FLOW_ADDRESSES,
   CowEnv,
@@ -6,6 +5,7 @@ import {
   mapSupportedNetworks,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
+import { Fraction, Percent } from '@cowprotocol/currency'
 
 import { msg } from '@lingui/core/macro'
 import JSBI from 'jsbi'

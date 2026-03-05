@@ -1,4 +1,4 @@
-import { Token } from '@cowprotocol/common-entities'
+import { Token } from '@cowprotocol/currency'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import { renderHook, waitFor } from '@testing-library/react'

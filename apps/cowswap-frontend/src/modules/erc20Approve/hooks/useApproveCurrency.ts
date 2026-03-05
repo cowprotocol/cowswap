@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 

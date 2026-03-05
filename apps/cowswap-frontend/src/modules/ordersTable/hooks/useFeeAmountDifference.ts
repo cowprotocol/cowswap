@@ -1,4 +1,4 @@
-import { Percent } from '@cowprotocol/common-entities'
+import { Percent } from '@cowprotocol/currency'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'

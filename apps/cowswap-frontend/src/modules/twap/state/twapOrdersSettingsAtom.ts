@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { Percent } from '@cowprotocol/common-entities'
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
+import { Percent } from '@cowprotocol/currency'
 
 import { Milliseconds } from 'types'
 

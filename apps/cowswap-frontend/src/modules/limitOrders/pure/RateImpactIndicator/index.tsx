@@ -1,4 +1,4 @@
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 import { TokenSymbol, HoverTooltip, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'

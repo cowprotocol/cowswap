@@ -1,5 +1,5 @@
-import { CurrencyAmount, Ether, Token } from '@cowprotocol/common-entities'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Ether, Token } from '@cowprotocol/currency'
 import { PermitType } from '@cowprotocol/permit-utils'
 
 import { renderHook } from '@testing-library/react'

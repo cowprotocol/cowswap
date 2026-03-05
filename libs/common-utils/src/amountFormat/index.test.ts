@@ -1,5 +1,5 @@
 import { USDC_GNOSIS_CHAIN, USDC_SEPOLIA, WETH_SEPOLIA } from '@cowprotocol/common-const'
-import { CurrencyAmount, Percent } from '@cowprotocol/common-entities'
+import { CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 

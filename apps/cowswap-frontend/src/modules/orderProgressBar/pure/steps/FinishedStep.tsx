@@ -4,9 +4,9 @@ import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
@@ -32,144 +32,6 @@ import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 
 const Lottie = lazy(() => import('lottie-react'))
-
-function TransactionStatus({ isDarkMode }: { isDarkMode: boolean }): ReactNode {
-  return (
-    <styledEl.TransactionStatus margin={'0 auto 24px'}>
-      {/* TODO: what fallback should be used here? */}
-      <Suspense fallback={null}>
-        <Lottie
-          animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
-          loop={false}
-          autoplay
-          style={{ width: '36px', height: '36px' }}
-        />
-      </Suspense>
-      <Trans>Transaction completed!</Trans>
-    </styledEl.TransactionStatus>
-  )
-}
-
-function SoldAmount({ order }: { order: Order }): ReactNode {
-  return (
-    <styledEl.SoldAmount>
-      <Trans>
-        You sold <TokenLogo token={order.inputToken} size={20} />
-      </Trans>
-      <b>
-        <TokenAmount
-          amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo?.executedSellAmount || 0)}
-          tokenSymbol={order.inputToken}
-        />
-      </b>
-    </styledEl.SoldAmount>
-  )
-}
-
-function ReceivedAmount({
-  order,
-  chainId,
-  isCustomRecipient,
-  receiver,
-  receiverEnsName,
-}: {
-  order: Order
-  chainId: SupportedChainId
-  isCustomRecipient?: boolean
-  receiver?: string | null
-  receiverEnsName?: string | null
-}): ReactNode {
-  return (
-    <styledEl.ReceivedAmount>
-      {!isCustomRecipient && i18n._(RECEIVED_LABEL)}
-      <TokenLogo token={order.outputToken} size={20} />
-      <b>
-        <TokenAmount
-          amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo?.executedBuyAmount || 0)}
-          tokenSymbol={order.outputToken}
-        />
-      </b>{' '}
-      {isCustomRecipient && receiver && (
-        <>
-          <Trans>was sent to</Trans>
-          <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
-            {receiverEnsName || shortenAddress(receiver)} ↗
-          </ExternalLink>
-        </>
-      )}
-    </styledEl.ReceivedAmount>
-  )
-}
-
-function ExtraAmount({
-  surplusAmount,
-  surplusFiatValue,
-  isCustomRecipient,
-  isSell,
-}: {
-  surplusAmount?: CurrencyAmount<Currency> | null
-  surplusFiatValue?: CurrencyAmount<Currency> | null
-  isCustomRecipient?: boolean
-  isSell?: boolean
-}): ReactNode {
-  return (
-    <styledEl.ExtraAmount>
-      {getSurplusText(isSell, isCustomRecipient)}
-      <i>
-        +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
-      </i>{' '}
-      {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
-    </styledEl.ExtraAmount>
-  )
-}
-
-function SolverRow({
-  solver,
-  index,
-  solvers,
-}: {
-  solver: SolverCompetition
-  index: number
-  solvers: SolverCompetition[]
-}): ReactNode {
-  return (
-    <styledEl.SolverTableRow isWinner={index === 0}>
-      {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
-      <styledEl.SolverTableCell>
-        <styledEl.SolverInfo>
-          <styledEl.SolverLogo>
-            <img
-              src={solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src}
-              alt={`${solver.solver} logo`}
-              width="24"
-              height="24"
-            />
-          </styledEl.SolverLogo>
-          <styledEl.SolverName>
-            {solver.displayName || solver.solver}
-            {solver.description && (
-              <span>
-                <InfoTooltip content={solver.description} />
-              </span>
-            )}
-          </styledEl.SolverName>
-        </styledEl.SolverInfo>
-      </styledEl.SolverTableCell>
-      <styledEl.SolverTableCell>
-        {index === 0 && (
-          <styledEl.WinningBadge>
-            <styledEl.TrophyIcon>
-              <PiTrophyFill />
-            </styledEl.TrophyIcon>
-            <span>
-              <Trans>Winning solver</Trans>
-            </span>
-          </styledEl.WinningBadge>
-        )}
-      </styledEl.SolverTableCell>
-    </styledEl.SolverTableRow>
-  )
-}
 
 interface FinishedStepProps {
   children: React.ReactNode
@@ -344,5 +206,143 @@ export function FinishedStep({
         </span>
       </styledEl.ShareButton>
     </styledEl.FinishedStepContainer>
+  )
+}
+
+function ExtraAmount({
+  surplusAmount,
+  surplusFiatValue,
+  isCustomRecipient,
+  isSell,
+}: {
+  surplusAmount?: CurrencyAmount<Currency> | null
+  surplusFiatValue?: CurrencyAmount<Currency> | null
+  isCustomRecipient?: boolean
+  isSell?: boolean
+}): ReactNode {
+  return (
+    <styledEl.ExtraAmount>
+      {getSurplusText(isSell, isCustomRecipient)}
+      <i>
+        +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+      </i>{' '}
+      {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
+    </styledEl.ExtraAmount>
+  )
+}
+
+function ReceivedAmount({
+  order,
+  chainId,
+  isCustomRecipient,
+  receiver,
+  receiverEnsName,
+}: {
+  order: Order
+  chainId: SupportedChainId
+  isCustomRecipient?: boolean
+  receiver?: string | null
+  receiverEnsName?: string | null
+}): ReactNode {
+  return (
+    <styledEl.ReceivedAmount>
+      {!isCustomRecipient && i18n._(RECEIVED_LABEL)}
+      <TokenLogo token={order.outputToken} size={20} />
+      <b>
+        <TokenAmount
+          amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo?.executedBuyAmount || 0)}
+          tokenSymbol={order.outputToken}
+        />
+      </b>{' '}
+      {isCustomRecipient && receiver && (
+        <>
+          <Trans>was sent to</Trans>
+          <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
+            {receiverEnsName || shortenAddress(receiver)} ↗
+          </ExternalLink>
+        </>
+      )}
+    </styledEl.ReceivedAmount>
+  )
+}
+
+function SoldAmount({ order }: { order: Order }): ReactNode {
+  return (
+    <styledEl.SoldAmount>
+      <Trans>
+        You sold <TokenLogo token={order.inputToken} size={20} />
+      </Trans>
+      <b>
+        <TokenAmount
+          amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo?.executedSellAmount || 0)}
+          tokenSymbol={order.inputToken}
+        />
+      </b>
+    </styledEl.SoldAmount>
+  )
+}
+
+function SolverRow({
+  solver,
+  index,
+  solvers,
+}: {
+  solver: SolverCompetition
+  index: number
+  solvers: SolverCompetition[]
+}): ReactNode {
+  return (
+    <styledEl.SolverTableRow isWinner={index === 0}>
+      {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
+      <styledEl.SolverTableCell>
+        <styledEl.SolverInfo>
+          <styledEl.SolverLogo>
+            <img
+              src={solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src}
+              alt={`${solver.solver} logo`}
+              width="24"
+              height="24"
+            />
+          </styledEl.SolverLogo>
+          <styledEl.SolverName>
+            {solver.displayName || solver.solver}
+            {solver.description && (
+              <span>
+                <InfoTooltip content={solver.description} />
+              </span>
+            )}
+          </styledEl.SolverName>
+        </styledEl.SolverInfo>
+      </styledEl.SolverTableCell>
+      <styledEl.SolverTableCell>
+        {index === 0 && (
+          <styledEl.WinningBadge>
+            <styledEl.TrophyIcon>
+              <PiTrophyFill />
+            </styledEl.TrophyIcon>
+            <span>
+              <Trans>Winning solver</Trans>
+            </span>
+          </styledEl.WinningBadge>
+        )}
+      </styledEl.SolverTableCell>
+    </styledEl.SolverTableRow>
+  )
+}
+
+function TransactionStatus({ isDarkMode }: { isDarkMode: boolean }): ReactNode {
+  return (
+    <styledEl.TransactionStatus margin={'0 auto 24px'}>
+      {/* TODO: what fallback should be used here? */}
+      <Suspense fallback={null}>
+        <Lottie
+          animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
+          loop={false}
+          autoplay
+          style={{ width: '36px', height: '36px' }}
+        />
+      </Suspense>
+      <Trans>Transaction completed!</Trans>
+    </styledEl.TransactionStatus>
   )
 }

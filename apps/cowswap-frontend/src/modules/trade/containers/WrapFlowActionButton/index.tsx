@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 
 import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 import { MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'

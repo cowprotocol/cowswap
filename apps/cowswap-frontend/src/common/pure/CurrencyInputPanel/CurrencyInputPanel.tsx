@@ -2,9 +2,9 @@
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -25,10 +25,6 @@ import * as styledEl from './styled'
 
 import { useConvertUsdToTokenValue } from '../../hooks/useConvertUsdToTokenValue'
 import { ReceiveAmount } from '../ReceiveAmount'
-
-interface BuiltItProps {
-  className: string
-}
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
@@ -63,6 +59,10 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   topLabel?: string
   topContent?: ReactNode
   customSelectTokenButton?: ReactNode
+}
+
+interface BuiltItProps {
+  className: string
 }
 
 // TODO: Break down this large function into smaller functions

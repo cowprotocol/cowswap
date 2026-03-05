@@ -1,10 +1,8 @@
-import { Currency } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { PermitHookData, PermitHookParams, PermitInfo } from '@cowprotocol/permit-utils'
 
 import { AppDataInfo, TypedAppDataHooks } from 'modules/appData'
-
-export type IsTokenPermittableResult = PermitInfo | undefined
 
 export type AddPermitTokenParams = {
   chainId: SupportedChainId
@@ -12,13 +10,20 @@ export type AddPermitTokenParams = {
   permitInfo: PermitInfo
 }
 
+export type CachedPermitData = {
+  hookData: PermitHookData
+  nonce: number | undefined
+}
+
+export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
+
 export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account' | 'amount'> & {
   customSpender?: string
   preSignCallback?: () => void
   postSignCallback?: () => void
 }
 
-export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
+export type GetPermitCacheParams = PermitCacheKeyParams
 
 export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo' | 'inputToken'> & {
   permitInfo: IsTokenPermittableResult
@@ -28,12 +33,9 @@ export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo' | '
   typedHooks?: TypedAppDataHooks
 }
 
-export type PermitCache = Record<string, string>
+export type IsTokenPermittableResult = PermitInfo | undefined
 
-export type CachedPermitData = {
-  hookData: PermitHookData
-  nonce: number | undefined
-}
+export type PermitCache = Record<string, string>
 
 export type PermitCacheKeyParams = {
   chainId: SupportedChainId
@@ -44,8 +46,6 @@ export type PermitCacheKeyParams = {
   amount?: bigint
 }
 
-export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
-
-export type GetPermitCacheParams = PermitCacheKeyParams
-
 export type PermitCompatibleTokens = Record<string, boolean>
+
+export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }

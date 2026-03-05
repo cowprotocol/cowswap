@@ -1,5 +1,5 @@
-import { Currency, CurrencyAmount, Percent } from '@cowprotocol/common-entities'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { TradeType } from './TradeType'
 

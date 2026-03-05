@@ -1,5 +1,5 @@
-import { Currency } from '@cowprotocol/common-entities'
 import { getAddress } from '@cowprotocol/common-utils'
+import { Currency } from '@cowprotocol/currency'
 
 import { useAreUnsupportedTokens } from './useAreUnsupportedTokens'
 

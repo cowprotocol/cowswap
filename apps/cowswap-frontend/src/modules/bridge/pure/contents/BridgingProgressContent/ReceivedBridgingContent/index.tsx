@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
 import { getChainInfo, RECEIVED_LABEL } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 
 import { t } from '@lingui/core/macro'

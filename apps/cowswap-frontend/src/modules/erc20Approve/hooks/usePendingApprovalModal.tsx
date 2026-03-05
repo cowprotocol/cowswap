@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 

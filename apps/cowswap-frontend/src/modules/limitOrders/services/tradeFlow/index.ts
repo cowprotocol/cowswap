@@ -1,6 +1,6 @@
-import { Percent } from '@cowprotocol/common-entities'
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
+import { Percent } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 

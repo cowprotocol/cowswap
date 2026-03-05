@@ -1,4 +1,4 @@
-import { Fraction } from '@cowprotocol/common-entities'
+import { Fraction } from '@cowprotocol/currency'
 
 export function isFractionFalsy(amount: Fraction | null | undefined): boolean {
   if (!amount) return true

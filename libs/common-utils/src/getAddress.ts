@@ -1,4 +1,4 @@
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 
 import { getIsNativeToken } from './getIsNativeToken'
 

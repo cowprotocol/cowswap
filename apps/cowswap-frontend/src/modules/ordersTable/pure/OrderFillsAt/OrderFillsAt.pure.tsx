@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import orderPresignaturePendingIcon from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
-import { Currency, Price } from '@cowprotocol/common-entities'
+import { Currency, Price } from '@cowprotocol/currency'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { HoverTooltip, TokenAmount, percentIsAlmostHundred } from '@cowprotocol/ui'
 

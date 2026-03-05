@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import { CurrencyAmount } from '@cowprotocol/common-entities'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount, UI, LinkStyledButton } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'

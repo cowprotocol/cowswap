@@ -562,9 +562,6 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../../libs/common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../../libs/common-hooks
@@ -583,6 +580,9 @@ importers:
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../../libs/abis
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../../libs/currency
       '@cowprotocol/ens':
         specifier: workspace:*
         version: link:../../libs/ens
@@ -1311,9 +1311,6 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -1323,6 +1320,9 @@ importers:
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../currency
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
@@ -1354,9 +1354,6 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -1372,6 +1369,9 @@ importers:
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../currency
       '@cowprotocol/multicall':
         specifier: workspace:*
         version: link:../multicall
@@ -1424,12 +1424,12 @@ importers:
 
   libs/common-const:
     dependencies:
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../common-entities
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../currency
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1452,12 +1452,6 @@ importers:
       '@types/ms.macro':
         specifier: ^2.0.0
         version: 2.0.3
-
-  libs/common-entities:
-    dependencies:
-      '@uniswap/sdk-core':
-        specifier: ^3.0.1
-        version: 3.2.6
 
   libs/common-hooks:
     dependencies:
@@ -1555,12 +1549,12 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../common-entities
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../currency
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1701,6 +1695,12 @@ importers:
       '@types/qs':
         specifier: ^6.9.7
         version: 6.9.7
+
+  libs/currency:
+    dependencies:
+      '@uniswap/sdk-core':
+        specifier: ^3.0.1
+        version: 3.2.6
 
   libs/ens:
     dependencies:
@@ -1906,9 +1906,6 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -1924,6 +1921,9 @@ importers:
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../currency
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1991,12 +1991,12 @@ importers:
 
   libs/types:
     dependencies:
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../common-entities
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../currency
       '@cowprotocol/sdk-bridging':
         specifier: 2.1.0
         version: 2.1.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
@@ -2019,9 +2019,6 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../common-entities
       '@cowprotocol/common-hooks':
         specifier: workspace:*
         version: link:../common-hooks
@@ -2034,6 +2031,9 @@ importers:
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../currency
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -2122,9 +2122,6 @@ importers:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
-      '@cowprotocol/common-entities':
-        specifier: workspace:*
-        version: link:../common-entities
       '@cowprotocol/common-utils':
         specifier: workspace:*
         version: link:../common-utils
@@ -2134,6 +2131,9 @@ importers:
       '@cowprotocol/cow-sdk':
         specifier: 7.4.1
         version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
+      '@cowprotocol/currency':
+        specifier: workspace:*
+        version: link:../currency
       '@cowprotocol/ens':
         specifier: workspace:*
         version: link:../ens

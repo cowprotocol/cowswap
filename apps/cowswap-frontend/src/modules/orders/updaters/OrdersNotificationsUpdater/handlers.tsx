@@ -1,8 +1,8 @@
 import { ReactElement } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import {
   OnBridgingSuccessPayload,
   OnCancelledOrderPayload,

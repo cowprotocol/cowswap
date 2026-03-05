@@ -1,4 +1,4 @@
-import { Token } from '@cowprotocol/common-entities'
+import { Token } from '@cowprotocol/currency'
 import { LpTokenProvider, TokenInfo } from '@cowprotocol/types'
 
 const emptyTokens = [] as string[]

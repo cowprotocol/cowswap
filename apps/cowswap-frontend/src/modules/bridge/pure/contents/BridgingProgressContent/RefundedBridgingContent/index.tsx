@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { NetworkLogo } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'

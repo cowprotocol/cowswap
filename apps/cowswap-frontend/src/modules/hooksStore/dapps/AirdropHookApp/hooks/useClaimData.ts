@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
-import { Fraction } from '@cowprotocol/common-entities'
 import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { Airdrop, AirdropAbi } from '@cowprotocol/cowswap-abis'
+import { Fraction } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { MessageDescriptor, i18n } from '@lingui/core'
@@ -14,14 +14,14 @@ import { useContract } from 'common/hooks/useContract'
 
 import { AirdropDataInfo, IAirdrop, IClaimData } from '../types'
 
-type IntervalsType = { [key: string]: string }
-
-type ChunkDataType = { [key: string]: AirdropDataInfo[] }
-
 export interface PreviewClaimableTokensParams {
   dataBaseUrl: string
   address: string
 }
+
+type ChunkDataType = { [key: string]: AirdropDataInfo[] }
+
+type IntervalsType = { [key: string]: string }
 
 export const AIRDROP_PREVIEW_ERRORS: Record<string, MessageDescriptor> = {
   NO_CLAIMABLE_TOKENS: msg`You are not eligible for this airdrop`,

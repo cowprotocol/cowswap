@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondary, HoverTooltip, Loader, TokenAmount, TokenAmountProps, UI } from '@cowprotocol/ui'
 
@@ -33,6 +33,11 @@ export interface OrderEstimatedExecutionPriceProps extends TokenAmountProps {
   percentageDifference?: Percent
   percentageFee?: Percent
   warningText?: string
+}
+
+type UnlikelyToExecuteWarningProps = {
+  feePercentage?: Percent
+  feeAmount?: CurrencyAmount<Currency>
 }
 
 // TODO: Break down this large function into smaller functions
@@ -219,11 +224,6 @@ export function OrderEstimatedExecutionPrice({
       )}
     </styledEl.OrderEstimatedExecutionPriceWrapper>
   )
-}
-
-type UnlikelyToExecuteWarningProps = {
-  feePercentage?: Percent
-  feeAmount?: CurrencyAmount<Currency>
 }
 
 // TODO: Add proper return type annotation

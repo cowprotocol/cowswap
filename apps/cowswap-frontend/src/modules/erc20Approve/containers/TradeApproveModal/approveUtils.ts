@@ -1,5 +1,5 @@
-import { Currency, Token } from '@cowprotocol/common-entities'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'

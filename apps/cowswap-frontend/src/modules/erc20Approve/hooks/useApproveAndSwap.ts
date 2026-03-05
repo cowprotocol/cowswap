@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 
 import { useLingui } from '@lingui/react/macro'

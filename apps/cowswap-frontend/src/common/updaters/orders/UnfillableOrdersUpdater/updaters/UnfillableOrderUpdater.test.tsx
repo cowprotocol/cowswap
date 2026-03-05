@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom, useSetAtom } from 'jotai'
 
-import { Token } from '@cowprotocol/common-entities'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 
 import { renderHook } from '@testing-library/react'
 import useSWR from 'swr'

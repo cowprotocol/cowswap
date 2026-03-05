@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 
 export interface ZeroApprovalState {
   isApproving: boolean

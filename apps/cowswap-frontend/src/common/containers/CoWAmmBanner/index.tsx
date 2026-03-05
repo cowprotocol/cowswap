@@ -2,9 +2,9 @@
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CurrencyAmount } from '@cowprotocol/common-entities'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { ClosableBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'

@@ -1,5 +1,5 @@
-import { NativeCurrency, Token } from '@cowprotocol/common-entities'
 import { isAddress } from '@cowprotocol/common-utils'
+import { NativeCurrency, Token } from '@cowprotocol/currency'
 import { TokenInfo } from '@cowprotocol/types'
 
 // TODO: Add proper return type annotation

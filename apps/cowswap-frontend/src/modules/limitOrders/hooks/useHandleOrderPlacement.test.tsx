@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { PropsWithChildren } from 'react'
 
 import { USDC_BASE, USDT_BASE } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@cowprotocol/common-entities'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
 
 import { act, renderHook, waitFor } from '@testing-library/react'

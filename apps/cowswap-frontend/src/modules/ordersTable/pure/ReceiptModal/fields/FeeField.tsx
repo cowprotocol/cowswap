@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { CurrencyAmount } from '@cowprotocol/common-entities'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'

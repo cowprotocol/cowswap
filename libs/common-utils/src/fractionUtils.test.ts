@@ -1,4 +1,4 @@
-import { Fraction } from '@cowprotocol/common-entities'
+import { Fraction } from '@cowprotocol/currency'
 
 import JSBI from 'jsbi'
 

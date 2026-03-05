@@ -29,7 +29,7 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/events": "workspace:*",
-    "@cowprotocol/common-entities": "workspace:*",
+    "@cowprotocol/currency": "workspace:*",
     "react": "19.1.2",
     "react-router": "7.5.2",
     "web-vitals": "^2.1.4"

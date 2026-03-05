@@ -1,4 +1,4 @@
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { ParsedOrder } from './parseOrder'
 

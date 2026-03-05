@@ -1,4 +1,4 @@
-import { Currency, Price, CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
+import { Currency, Price, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { TokenAmount, HoverTooltip, UI } from '@cowprotocol/ui'
 

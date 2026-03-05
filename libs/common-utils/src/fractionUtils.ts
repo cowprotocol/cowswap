@@ -1,14 +1,5 @@
 import { FULL_PRICE_PRECISION } from '@cowprotocol/common-const'
-import {
-  BigintIsh,
-  Currency,
-  CurrencyAmount,
-  Fraction,
-  Percent,
-  Price,
-  Rounding,
-  Token,
-} from '@cowprotocol/common-entities'
+import { BigintIsh, Currency, CurrencyAmount, Fraction, Percent, Price, Rounding, Token } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
 import { BigNumber } from 'bignumber.js'

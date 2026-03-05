@@ -1,7 +1,13 @@
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { SafeTransactionParams } from 'common/types'
+
+export interface ConditionalOrderParams {
+  staticInput: string
+  salt: string
+  handler: string
+}
 
 // Read more: https://github.com/rndlabs/composable-cow#data-structure
 export interface TWAPOrder {
@@ -13,6 +19,39 @@ export interface TWAPOrder {
   timeInterval: number
   span: number
   appData: string
+}
+
+export interface TwapOrderExecutionInfo {
+  executedSellAmount: string
+  executedBuyAmount: string
+  executedFeeAmount: string
+}
+
+export interface TwapOrderInfo {
+  id: string
+  orderStruct: TWAPOrderStruct
+  safeData: TwapOrdersSafeData
+}
+
+export interface TwapOrderItem {
+  order: TWAPOrderStruct
+  status: TwapOrderStatus
+  chainId: SupportedChainId
+  executedDate?: string
+  submissionDate: string
+  safeAddress: string
+  id: string
+  safeTxParams?: SafeTransactionParams
+  executionInfo: TwapOrdersExecution
+}
+
+export type TwapOrdersAuthResult = { [key: string]: boolean | undefined }
+
+export type TwapOrdersExecution = { info: TwapOrderExecutionInfo; confirmedPartsCount: number }
+
+export interface TwapOrdersSafeData {
+  conditionalOrderParams: ConditionalOrderParams
+  safeTxParams: SafeTransactionParams
 }
 
 export interface TWAPOrderStruct {
@@ -39,42 +78,3 @@ export enum TwapOrderStatus {
   Expired = 'Expired',
   Fulfilled = 'Fulfilled',
 }
-
-export interface TwapOrdersSafeData {
-  conditionalOrderParams: ConditionalOrderParams
-  safeTxParams: SafeTransactionParams
-}
-
-export interface TwapOrderExecutionInfo {
-  executedSellAmount: string
-  executedBuyAmount: string
-  executedFeeAmount: string
-}
-
-export type TwapOrdersExecution = { info: TwapOrderExecutionInfo; confirmedPartsCount: number }
-
-export interface TwapOrderItem {
-  order: TWAPOrderStruct
-  status: TwapOrderStatus
-  chainId: SupportedChainId
-  executedDate?: string
-  submissionDate: string
-  safeAddress: string
-  id: string
-  safeTxParams?: SafeTransactionParams
-  executionInfo: TwapOrdersExecution
-}
-
-export interface ConditionalOrderParams {
-  staticInput: string
-  salt: string
-  handler: string
-}
-
-export interface TwapOrderInfo {
-  id: string
-  orderStruct: TWAPOrderStruct
-  safeData: TwapOrdersSafeData
-}
-
-export type TwapOrdersAuthResult = { [key: string]: boolean | undefined }

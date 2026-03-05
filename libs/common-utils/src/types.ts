@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/currency'
 
 // This is for Pixel tracking injected code
 declare global {
@@ -23,11 +23,11 @@ declare global {
     uetq: any // Microsoft Ads
   }
 }
-export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
-
 export type ComposableCowInfo = {
   id?: string
   parentId?: string
   isVirtualPart?: boolean
   isTheLastPart?: boolean
 }
+
+export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>

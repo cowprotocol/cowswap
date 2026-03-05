@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, TokenSymbol } from '@cowprotocol/ui'

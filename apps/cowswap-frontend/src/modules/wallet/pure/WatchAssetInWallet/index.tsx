@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { Currency } from '@cowprotocol/common-entities'
 import { useTheme } from '@cowprotocol/common-hooks'
+import { Currency } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { UI, RowFixed, TokenSymbol } from '@cowprotocol/ui'
 

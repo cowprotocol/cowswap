@@ -1,5 +1,5 @@
 {
-  "name": "@cowprotocol/common-entities",
+  "name": "@cowprotocol/currency",
   "version": "1.0.0",
   "description": "CoW Swap re-exports of @uniswap/sdk-core entities",
   "type": "commonjs",

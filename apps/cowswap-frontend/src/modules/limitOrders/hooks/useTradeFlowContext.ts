@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 

@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Price } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 
 interface FormatLocaleNumberArgs {
   number: CurrencyAmount<Currency> | Price<Currency, Currency> | number

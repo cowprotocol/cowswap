@@ -1,7 +1,7 @@
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { Token } from '@cowprotocol/common-entities'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { getAddress } from '@ethersproject/address'
 

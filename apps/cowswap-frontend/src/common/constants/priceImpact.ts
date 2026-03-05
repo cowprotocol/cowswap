@@ -1,4 +1,4 @@
-import { Percent } from '@cowprotocol/common-entities'
+import { Percent } from '@cowprotocol/currency'
 
 export const PRICE_IMPACT_THRESHOLD = {
   low: new Percent(1, 100), // 1%

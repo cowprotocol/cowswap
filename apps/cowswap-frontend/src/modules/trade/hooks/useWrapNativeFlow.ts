@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
@@ -33,6 +33,20 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
   )
 }
 
+function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback | null {
+  const context = useWrapNativeContext(inputAmount)
+
+  return useMemo(() => {
+    if (!context) {
+      return null
+    }
+
+    return (params?: WrapUnwrapCallbackParams) => {
+      return wrapUnwrapCallback(context, params)
+    }
+  }, [context])
+}
+
 function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapContext | null {
   const { account } = useWalletInfo()
   const { contract: wethContract, chainId: wethChainId } = useWethContract()
@@ -60,18 +74,4 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
       },
     }
   }, [wethChainId, wethContract, amount, addTransaction, setWrapNativeState, account, analytics])
-}
-
-function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback | null {
-  const context = useWrapNativeContext(inputAmount)
-
-  return useMemo(() => {
-    if (!context) {
-      return null
-    }
-
-    return (params?: WrapUnwrapCallbackParams) => {
-      return wrapUnwrapCallback(context, params)
-    }
-  }, [context])
 }

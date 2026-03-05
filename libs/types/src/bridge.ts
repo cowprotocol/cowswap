@@ -1,7 +1,17 @@
-import type { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 
 import type { TokenInfo } from './common'
+
+export interface BridgeOrderData<T = BridgeQuoteAmounts> {
+  orderUid: string
+  quoteAmounts: T
+  creationTimestamp: number
+  statusResult?: BridgeStatusResult
+  recipient: string
+}
+
+export type BridgeOrderDataSerialized = BridgeOrderData<SerializedBridgeAmounts>
 
 export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
   swapSellAmount: Amount
@@ -16,18 +26,8 @@ export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
   }
 }
 
-export interface BridgeOrderData<T = BridgeQuoteAmounts> {
-  orderUid: string
-  quoteAmounts: T
-  creationTimestamp: number
-  statusResult?: BridgeStatusResult
-  recipient: string
-}
-
 export type SerializedAmount = {
   token: TokenInfo
   amount: string
 }
-
 export type SerializedBridgeAmounts = BridgeQuoteAmounts<SerializedAmount>
-export type BridgeOrderDataSerialized = BridgeOrderData<SerializedBridgeAmounts>

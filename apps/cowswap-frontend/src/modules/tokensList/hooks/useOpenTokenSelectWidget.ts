@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
-import { Currency } from '@cowprotocol/common-entities'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { Currency } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { renderHook } from '@testing-library/react'
 

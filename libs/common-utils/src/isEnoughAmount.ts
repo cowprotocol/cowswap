@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
 
 export function isEnoughAmount(

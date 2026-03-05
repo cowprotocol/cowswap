@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { shortenAddress } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, Loader, SelectDropdown, TokenAmount } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'

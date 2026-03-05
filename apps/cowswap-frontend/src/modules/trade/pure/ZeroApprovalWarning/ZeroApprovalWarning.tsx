@@ -1,4 +1,4 @@
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 
 import { Trans } from '@lingui/react/macro'
 import { Link as ReactRouterLink } from 'react-router'

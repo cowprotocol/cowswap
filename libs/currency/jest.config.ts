@@ -1,5 +1,5 @@
 export default {
-  displayName: 'common-entities',
+  displayName: 'currency',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
@@ -7,5 +7,5 @@ export default {
   },
   setupFilesAfterEnv: ['../../jest.setup.ts'],
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/libs/common-entities',
+  coverageDirectory: '../../coverage/libs/currency',
 }

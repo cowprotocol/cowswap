@@ -1,5 +1,5 @@
-import { Token } from '@cowprotocol/common-entities'
 import { OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'

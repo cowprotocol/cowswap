@@ -1,6 +1,4 @@
-import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
-
-export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
+import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/currency'
 
 export type ComposableCowInfo = {
   id?: string
@@ -8,6 +6,8 @@ export type ComposableCowInfo = {
   isVirtualPart?: boolean
   isTheLastPart?: boolean
 }
+
+export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
 
 export const BadgeTypes = {
   INFORMATION: 'information',

@@ -1,5 +1,5 @@
-import { Token, CurrencyAmount } from '@cowprotocol/common-entities'
 import { useTheme } from '@cowprotocol/common-hooks'
+import { Token, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount, Loader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

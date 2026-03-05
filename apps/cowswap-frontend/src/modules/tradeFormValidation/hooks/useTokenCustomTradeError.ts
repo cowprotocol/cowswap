@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Currency } from '@cowprotocol/common-entities'
+import { Currency } from '@cowprotocol/currency'
 import { useIsAnyOfTokensOndo } from '@cowprotocol/tokens'
 
 import { TradeQuoteState } from 'modules/tradeQuote'

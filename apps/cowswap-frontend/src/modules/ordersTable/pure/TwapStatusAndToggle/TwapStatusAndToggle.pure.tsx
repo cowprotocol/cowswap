@@ -1,6 +1,6 @@
 import React from 'react'
 
-import type { Token } from '@cowprotocol/common-entities'
+import type { Token } from '@cowprotocol/currency'
 
 import { Trans } from '@lingui/react/macro'
 

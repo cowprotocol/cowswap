@@ -1,8 +1,8 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { Token } from '@cowprotocol/common-entities'
 import { useTheme } from '@cowprotocol/common-hooks'
+import { Token } from '@cowprotocol/currency'
 import { useFavoriteTokens, useToggleFavoriteToken } from '@cowprotocol/tokens'
 import { ButtonStar, UI } from '@cowprotocol/ui'
 

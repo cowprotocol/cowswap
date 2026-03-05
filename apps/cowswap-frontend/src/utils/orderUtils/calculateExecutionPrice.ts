@@ -1,6 +1,6 @@
-import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
 import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { ContractsOrderKind as OrderKind } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/currency'
 
 import JSBI from 'jsbi'
 
@@ -10,36 +10,6 @@ export interface ExecutionPriceParams {
   feeAmount: CurrencyAmount<Currency> | null
   marketRate: Fraction | null
   orderKind: OrderKind
-}
-
-/**
- * Since tokens might have different decimals
- * For some cases we need to convert amount from one currency into another
- * For example, we have an amount to sell and price, and we want to get buying amount
- * 10 ETH (sell amount) * 2.5 = X USDC
- */
-export function convertAmountToCurrency(
-  amount: CurrencyAmount<Currency>,
-  targetCurrency: Currency,
-): CurrencyAmount<Currency> {
-  const { numerator, denominator } = amount
-
-  const inputDecimals = amount.currency.decimals
-  const outputDecimals = targetCurrency.decimals
-
-  if (inputDecimals === outputDecimals) {
-    return CurrencyAmount.fromFractionalAmount(targetCurrency, numerator, denominator)
-  }
-
-  const decimalsDiff = Math.abs(inputDecimals - outputDecimals)
-  const decimalsDiffAmount = rawToTokenAmount(1, decimalsDiff)
-
-  const fixedNumerator =
-    inputDecimals < outputDecimals
-      ? JSBI.multiply(numerator, decimalsDiffAmount)
-      : JSBI.divide(numerator, decimalsDiffAmount)
-
-  return CurrencyAmount.fromFractionalAmount(targetCurrency, fixedNumerator, denominator)
 }
 
 export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Currency, Currency> | null {
@@ -73,4 +43,34 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
   })
 
   return currentPrice.lessThan(marketPrice) ? marketPrice : currentPrice
+}
+
+/**
+ * Since tokens might have different decimals
+ * For some cases we need to convert amount from one currency into another
+ * For example, we have an amount to sell and price, and we want to get buying amount
+ * 10 ETH (sell amount) * 2.5 = X USDC
+ */
+export function convertAmountToCurrency(
+  amount: CurrencyAmount<Currency>,
+  targetCurrency: Currency,
+): CurrencyAmount<Currency> {
+  const { numerator, denominator } = amount
+
+  const inputDecimals = amount.currency.decimals
+  const outputDecimals = targetCurrency.decimals
+
+  if (inputDecimals === outputDecimals) {
+    return CurrencyAmount.fromFractionalAmount(targetCurrency, numerator, denominator)
+  }
+
+  const decimalsDiff = Math.abs(inputDecimals - outputDecimals)
+  const decimalsDiffAmount = rawToTokenAmount(1, decimalsDiff)
+
+  const fixedNumerator =
+    inputDecimals < outputDecimals
+      ? JSBI.multiply(numerator, decimalsDiffAmount)
+      : JSBI.divide(numerator, decimalsDiffAmount)
+
+  return CurrencyAmount.fromFractionalAmount(targetCurrency, fixedNumerator, denominator)
 }

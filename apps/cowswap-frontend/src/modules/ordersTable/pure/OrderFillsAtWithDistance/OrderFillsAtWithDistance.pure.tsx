@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Currency, Price } from '@cowprotocol/common-entities'
+import { Currency, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 
 import { Nullish } from 'types'

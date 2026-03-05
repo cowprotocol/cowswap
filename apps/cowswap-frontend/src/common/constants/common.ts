@@ -1,4 +1,4 @@
-import { Percent } from '@cowprotocol/common-entities'
+import { Percent } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'

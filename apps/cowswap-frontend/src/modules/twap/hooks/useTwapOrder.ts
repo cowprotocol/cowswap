@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'

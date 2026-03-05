@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
-import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 export interface LimitRateState {
   readonly isLoading: boolean

@@ -1,10 +1,10 @@
-import { Percent } from '@cowprotocol/common-entities'
+import { Percent } from '@cowprotocol/currency'
+
+export type DeadlineSettings = StoredSettings<number>
+
+export type Slippage = Percent | 'auto'
 
 type StoredSettings<T> = {
   regular?: T
   ethFlow?: T
 }
-
-export type Slippage = Percent | 'auto'
-
-export type DeadlineSettings = StoredSettings<number>

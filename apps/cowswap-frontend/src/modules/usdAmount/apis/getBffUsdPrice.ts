@@ -1,6 +1,6 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { Fraction, Token } from '@cowprotocol/common-entities'
 import { FractionUtils } from '@cowprotocol/common-utils'
+import { Fraction, Token } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
 import ms from 'ms.macro'
@@ -9,11 +9,11 @@ import { fetchWithRateLimit } from 'common/utils/fetch'
 
 import { UnknownCurrencyError } from './errors'
 
+type BffResponse = BffUsdPriceResponse | BffUsdErrorResponse
+type BffUsdErrorResponse = { message: string }
 type BffUsdPriceResponse = {
   price: number
 }
-type BffUsdErrorResponse = { message: string }
-type BffResponse = BffUsdPriceResponse | BffUsdErrorResponse
 
 const fetchRateLimited = fetchWithRateLimit({
   // Allow 5 requests per second

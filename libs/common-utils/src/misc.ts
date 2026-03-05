@@ -1,5 +1,5 @@
-import { Percent } from '@cowprotocol/common-entities'
 import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Percent } from '@cowprotocol/currency'
 
 import { isSellOrder } from './isSellOrder'
 
@@ -22,15 +22,6 @@ export const isTruthy = <T>(value: T | null | undefined | false): value is T => 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise((resolve) => setTimeout(resolve, ms, result))
 
-export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string): Promise<T> {
-  const failOnTimeout = delay(ms).then(() => {
-    const errorMessage = 'Timeout after ' + ms + ' ms'
-    throw new Error(context ? `${context}. ${errorMessage}` : errorMessage)
-  })
-
-  return Promise.race([promise, failOnTimeout])
-}
-
 // TODO: Add proper return type annotation
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
@@ -47,12 +38,6 @@ export function debounce<F extends (...args: any) => any>(func: F, wait = 200) {
   return debounced
 }
 
-export function isPromiseFulfilled<T>(
-  promiseResult: PromiseSettledResult<T>,
-): promiseResult is PromiseFulfilledResult<T> {
-  return promiseResult.status === 'fulfilled'
-}
-
 // To properly handle PromiseSettleResult which returns and object
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -61,6 +46,21 @@ export function getPromiseFulfilledValue<T, E = undefined>(
   nonFulfilledReturn: E,
 ) {
   return isPromiseFulfilled(promiseResult) ? promiseResult.value : nonFulfilledReturn
+}
+
+export function isPromiseFulfilled<T>(
+  promiseResult: PromiseSettledResult<T>,
+): promiseResult is PromiseFulfilledResult<T> {
+  return promiseResult.status === 'fulfilled'
+}
+
+export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string): Promise<T> {
+  const failOnTimeout = delay(ms).then(() => {
+    const errorMessage = 'Timeout after ' + ms + ' ms'
+    throw new Error(context ? `${context}. ${errorMessage}` : errorMessage)
+  })
+
+  return Promise.race([promise, failOnTimeout])
 }
 
 // TODO: Replace any with proper type definitions
@@ -74,14 +74,6 @@ export const registerOnWindow = (registerMapping: Record<string, any>) => {
   })
 }
 
-export function getChainIdValues(): ChainId[] {
-  const ChainIdList = Object.values(ChainId)
-
-  // cut in half as enums are always represented as key/value and then inverted
-  // https://stackoverflow.com/a/51536142
-  return ChainIdList.slice(ChainIdList.length / 2) as ChainId[]
-}
-
 export interface CanonicalMarketParams<T> {
   sellToken: T
   buyToken: T
@@ -90,6 +82,14 @@ export interface CanonicalMarketParams<T> {
 
 export interface TokensFromMarketParams<T> extends Market<T> {
   kind: OrderKind
+}
+
+/**
+ * Helper function that transforms Basis Points (BPS) into a percentage
+ * @param percent
+ */
+export function bpsToPercent(bps: number): Percent {
+  return new Percent(bps, 10000)
 }
 
 export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMarketParams<T>): Market<T> {
@@ -104,6 +104,26 @@ export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMa
       quoteToken: sellToken,
     }
   }
+}
+
+export function getChainIdValues(): ChainId[] {
+  const ChainIdList = Object.values(ChainId)
+
+  // cut in half as enums are always represented as key/value and then inverted
+  // https://stackoverflow.com/a/51536142
+  return ChainIdList.slice(ChainIdList.length / 2) as ChainId[]
+}
+
+/**
+ * Convenient method to get the error message from the error raised by a provider.
+ *
+ * Some providers return some description in the error.message, and some others the error message is itself a String
+ * with the error message
+ */
+export function getProviderErrorMessage(error: unknown): string | undefined {
+  if (typeof error === 'string') return error
+  if (error && typeof error === 'object' && 'message' in error) return error.message as string
+  return error?.toString()
 }
 
 export function getTokensFromMarket<T>({
@@ -139,18 +159,6 @@ export function hashCode(text: string): number {
   }
 
   return hash
-}
-
-/**
- * Convenient method to get the error message from the error raised by a provider.
- *
- * Some providers return some description in the error.message, and some others the error message is itself a String
- * with the error message
- */
-export function getProviderErrorMessage(error: unknown): string | undefined {
-  if (typeof error === 'string') return error
-  if (error && typeof error === 'object' && 'message' in error) return error.message as string
-  return error?.toString()
 }
 
 /**
@@ -192,12 +200,4 @@ export function isRejectRequestProviderError(error: any) {
  */
 export function percentToBps(percent: Percent): number {
   return Number(percent.multiply('100').toSignificant())
-}
-
-/**
- * Helper function that transforms Basis Points (BPS) into a percentage
- * @param percent
- */
-export function bpsToPercent(bps: number): Percent {
-  return new Percent(bps, 10000)
 }

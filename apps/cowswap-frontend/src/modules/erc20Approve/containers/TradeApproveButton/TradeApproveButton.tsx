@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 
 import { useHasCachedPermit } from 'modules/permit'

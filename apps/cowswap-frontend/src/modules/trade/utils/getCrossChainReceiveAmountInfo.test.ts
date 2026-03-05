@@ -1,6 +1,6 @@
 import { TokenWithLogo, USDC_BASE, USDT_BNB } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Percent } from '@cowprotocol/common-entities'
 import { OrderKind, type OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 import { BuyTokenDestination, SellTokenSource, SigningScheme } from '@cowprotocol/sdk-order-book'
 
 import { getCrossChainReceiveAmountInfo } from './getCrossChainReceiveAmountInfo'

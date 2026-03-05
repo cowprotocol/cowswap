@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { Token } from '@cowprotocol/common-entities'
+import { Token } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
@@ -18,6 +18,20 @@ export function balanceComparator(balanceA: BigNumber | undefined, balanceB: Big
     return 1
   }
   return 0
+}
+
+export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
+  const { values: balances } = useTokensBalances()
+
+  const comparator = useMemo(() => getTokenComparator(balances), [balances])
+
+  return useMemo(() => {
+    if (inverted) {
+      return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
+    } else {
+      return comparator
+    }
+  }, [inverted, comparator])
 }
 
 function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, tokenB: Token) => number {
@@ -51,18 +65,4 @@ function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, 
       return tokenA.symbol ? -1 : tokenB.symbol ? -1 : 0
     }
   }
-}
-
-export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
-  const { values: balances } = useTokensBalances()
-
-  const comparator = useMemo(() => getTokenComparator(balances), [balances])
-
-  return useMemo(() => {
-    if (inverted) {
-      return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
-    } else {
-      return comparator
-    }
-  }, [inverted, comparator])
 }

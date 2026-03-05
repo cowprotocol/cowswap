@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 
@@ -11,10 +11,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import * as styledEl from './styled'
 
 import { FiatValue } from '../FiatValue'
-
-interface BuiltItProps {
-  className: string
-}
 
 export interface CurrencyPreviewInfo {
   amount: Nullish<CurrencyAmount<Currency>>
@@ -28,6 +24,10 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   currencyInfo: CurrencyPreviewInfo
   isBridging?: boolean
   priceImpactParams?: PriceImpact
+}
+
+interface BuiltItProps {
+  className: string
 }
 
 export function CurrencyAmountPreview(props: CurrencyPreviewProps): ReactNode {

@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/currency'
 
 import JSBI from 'jsbi'
 

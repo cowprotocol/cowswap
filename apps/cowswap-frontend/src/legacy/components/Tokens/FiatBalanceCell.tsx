@@ -1,4 +1,4 @@
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { FiatAmount, HoverTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'

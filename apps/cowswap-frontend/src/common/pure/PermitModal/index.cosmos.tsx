@@ -1,5 +1,5 @@
 import { USDC_MAINNET, WBTC } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@cowprotocol/common-entities'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { Identicon } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'

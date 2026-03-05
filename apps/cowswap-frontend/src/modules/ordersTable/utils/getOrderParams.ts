@@ -1,7 +1,7 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
-import { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/common-entities'
 import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { RateInfoParams } from 'common/pure/RateInfo'

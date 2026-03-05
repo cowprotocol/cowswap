@@ -37,7 +37,7 @@
     "@cowprotocol/wallet-provider": "workspace:*",
     "@ethersproject/bignumber": "5.7.0",
     "@ethersproject/contracts": "5.7.0",
-    "@cowprotocol/common-entities": "workspace:*",
+    "@cowprotocol/currency": "workspace:*",
     "ethers": "5.7.2",
     "jotai": "2.16.2",
     "ms.macro": "^2.0.0",

@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, TokenWithLogo } from '@cowprotocol/common-const'
-import { Token } from '@cowprotocol/common-entities'
 import { useGasLimit } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { i18n } from '@lingui/core'

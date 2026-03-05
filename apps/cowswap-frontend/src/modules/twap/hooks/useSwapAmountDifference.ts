@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { Currency, CurrencyAmount, Percent } from '@cowprotocol/common-entities'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { useGetReceiveAmountInfo } from '../../trade'
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'

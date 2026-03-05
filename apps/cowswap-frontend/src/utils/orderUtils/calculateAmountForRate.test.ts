@@ -1,5 +1,5 @@
 import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
-import { CurrencyAmount, Fraction, Price } from '@cowprotocol/common-entities'
+import { CurrencyAmount, Fraction, Price } from '@cowprotocol/currency'
 
 import JSBI from 'jsbi'
 

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
 
@@ -66,6 +66,21 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
 }
 
+function getPermitRequirements(type?: PermitType): ApproveRequiredReason {
+  switch (type) {
+    case 'dai-like':
+      return ApproveRequiredReason.DaiLikePermitRequired
+    case 'eip-2612':
+      return ApproveRequiredReason.Eip2612PermitRequired
+    default:
+      return ApproveRequiredReason.NotRequired
+  }
+}
+
+function isApprovalRequired(approvalState: ApprovalState): boolean {
+  return approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
+}
+
 function isApproveSupportedByFlowOrWallet(
   inputCurrency: Nullish<Currency>,
   tradeType: Nullish<TradeType>,
@@ -83,21 +98,6 @@ function isErc20TokenAmountApproveRequired(amountToApprove: CurrencyAmount<Curre
   return !amountToApprove.equalTo('0')
 }
 
-function isApprovalRequired(approvalState: ApprovalState): boolean {
-  return approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
-}
-
 function isNewApproveFlowEnabled(tradeType?: Nullish<TradeType>): boolean {
   return tradeType === TradeType.SWAP
-}
-
-function getPermitRequirements(type?: PermitType): ApproveRequiredReason {
-  switch (type) {
-    case 'dai-like':
-      return ApproveRequiredReason.DaiLikePermitRequired
-    case 'eip-2612':
-      return ApproveRequiredReason.Eip2612PermitRequired
-    default:
-      return ApproveRequiredReason.NotRequired
-  }
 }

@@ -12,7 +12,7 @@
   "dependencies": {
     "@cowprotocol/cow-sdk": "7.4.1",
     "@cowprotocol/sdk-bridging": "2.1.0",
-    "@cowprotocol/common-entities": "workspace:*",
+    "@cowprotocol/currency": "workspace:*",
     "eventemitter3": "^4.0.0"
   },
   "devDependencies": {

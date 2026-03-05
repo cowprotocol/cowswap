@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import savingsIcon from '@cowprotocol/assets/cow-swap/savings.svg'
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
-import { Currency, Token } from '@cowprotocol/common-entities'
+import { Currency, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 

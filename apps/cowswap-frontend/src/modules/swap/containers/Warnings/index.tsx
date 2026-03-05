@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 

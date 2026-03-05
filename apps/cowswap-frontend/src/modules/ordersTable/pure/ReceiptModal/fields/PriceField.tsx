@@ -1,4 +1,4 @@
-import { Fraction } from '@cowprotocol/common-entities'
+import { Fraction } from '@cowprotocol/currency'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'

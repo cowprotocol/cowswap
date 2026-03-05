@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import EDIT from '@cowprotocol/assets/cow-swap/edit.svg'
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'

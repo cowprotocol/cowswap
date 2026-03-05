@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 import { parseUnits } from '@ethersproject/units'
 
 import JSBI from 'jsbi'

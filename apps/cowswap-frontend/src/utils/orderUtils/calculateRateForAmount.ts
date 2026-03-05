@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Price } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 
 export function calculateRateForAmount(
   isBuyAmountChange: boolean,

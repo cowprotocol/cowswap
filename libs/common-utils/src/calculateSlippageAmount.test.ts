@@ -1,4 +1,4 @@
-import { CurrencyAmount, Percent, Token } from '@cowprotocol/common-entities'
+import { CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 import { AddressZero } from '@ethersproject/constants'
 
 import { calculateSlippageAmount } from './calculateSlippageAmount'

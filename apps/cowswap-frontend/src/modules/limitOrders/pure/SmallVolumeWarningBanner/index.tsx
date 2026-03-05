@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Percent } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { InlineBanner, TokenAmount } from '@cowprotocol/ui'
 

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
 import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
-import { Fraction, Percent } from '@cowprotocol/common-entities'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
+import { Fraction, Percent } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
 

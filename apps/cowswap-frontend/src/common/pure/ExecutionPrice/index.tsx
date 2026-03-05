@@ -1,5 +1,5 @@
-import { Currency, Price } from '@cowprotocol/common-entities'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { Currency, Price } from '@cowprotocol/currency'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 
 import { useExecutionPriceFiat } from './hooks/useExecutionPriceFiat'

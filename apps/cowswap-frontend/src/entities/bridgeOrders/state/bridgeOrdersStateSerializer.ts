@@ -1,7 +1,7 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { PersistentStateByChainAccount, SerializedAmount, BridgeQuoteAmounts } from '@cowprotocol/types'
 
 export function bridgeOrdersStateSerializer<T, Q, R extends PersistentStateByChainAccount<Q[]>>(
@@ -30,23 +30,6 @@ export function bridgeOrdersStateSerializer<T, Q, R extends PersistentStateByCha
   }, {}) as R
 }
 
-export function serializeQuoteAmounts(amounts: BridgeQuoteAmounts): BridgeQuoteAmounts<SerializedAmount> {
-  return {
-    swapSellAmount: serializeAmount(amounts.swapSellAmount),
-    swapBuyAmount: serializeAmount(amounts.swapBuyAmount),
-    swapExpectedReceive: amounts.swapExpectedReceive ? serializeAmount(amounts.swapExpectedReceive) : null,
-    swapMinReceiveAmount: serializeAmount(amounts.swapMinReceiveAmount),
-    bridgeMinReceiveAmount: serializeAmount(amounts.bridgeMinReceiveAmount),
-    bridgeFee: serializeAmount(amounts.bridgeFee),
-    bridgeFeeAmounts: amounts.bridgeFeeAmounts
-      ? {
-          amountInDestinationCurrency: serializeAmount(amounts.bridgeFeeAmounts.amountInDestinationCurrency),
-          amountInIntermediateCurrency: serializeAmount(amounts.bridgeFeeAmounts.amountInIntermediateCurrency),
-        }
-      : undefined,
-  }
-}
-
 export function deserializeQuoteAmounts(amounts: BridgeQuoteAmounts<SerializedAmount>): BridgeQuoteAmounts {
   return {
     swapSellAmount: deserializeAmount(amounts.swapSellAmount),
@@ -64,6 +47,29 @@ export function deserializeQuoteAmounts(amounts: BridgeQuoteAmounts<SerializedAm
   }
 }
 
+export function serializeQuoteAmounts(amounts: BridgeQuoteAmounts): BridgeQuoteAmounts<SerializedAmount> {
+  return {
+    swapSellAmount: serializeAmount(amounts.swapSellAmount),
+    swapBuyAmount: serializeAmount(amounts.swapBuyAmount),
+    swapExpectedReceive: amounts.swapExpectedReceive ? serializeAmount(amounts.swapExpectedReceive) : null,
+    swapMinReceiveAmount: serializeAmount(amounts.swapMinReceiveAmount),
+    bridgeMinReceiveAmount: serializeAmount(amounts.bridgeMinReceiveAmount),
+    bridgeFee: serializeAmount(amounts.bridgeFee),
+    bridgeFeeAmounts: amounts.bridgeFeeAmounts
+      ? {
+          amountInDestinationCurrency: serializeAmount(amounts.bridgeFeeAmounts.amountInDestinationCurrency),
+          amountInIntermediateCurrency: serializeAmount(amounts.bridgeFeeAmounts.amountInIntermediateCurrency),
+        }
+      : undefined,
+  }
+}
+
+function deserializeAmount(amount: SerializedAmount): CurrencyAmount<Currency | TokenWithLogo> {
+  const token = TokenWithLogo.fromToken(amount.token, amount.token.logoURI)
+
+  return CurrencyAmount.fromRawAmount(token, amount.amount)
+}
+
 function serializeAmount(amount: CurrencyAmount<Currency | TokenWithLogo>): SerializedAmount {
   return {
     amount: amount.quotient.toString(),
@@ -76,10 +82,4 @@ function serializeAmount(amount: CurrencyAmount<Currency | TokenWithLogo>): Seri
       name: amount.currency.name || '',
     },
   }
-}
-
-function deserializeAmount(amount: SerializedAmount): CurrencyAmount<Currency | TokenWithLogo> {
-  const token = TokenWithLogo.fromToken(amount.token, amount.token.logoURI)
-
-  return CurrencyAmount.fromRawAmount(token, amount.amount)
 }

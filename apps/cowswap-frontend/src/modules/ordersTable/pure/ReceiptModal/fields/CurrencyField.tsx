@@ -1,4 +1,4 @@
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'

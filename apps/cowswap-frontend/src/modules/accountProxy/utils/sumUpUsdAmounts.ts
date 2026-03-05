@@ -1,6 +1,6 @@
 import { USDC } from '@cowprotocol/common-const'
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { TokenUsdAmounts } from '../types'
 

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Fraction } from '@cowprotocol/common-entities'
+import { Fraction } from '@cowprotocol/currency'
 
 import { Trans } from '@lingui/react/macro'
 

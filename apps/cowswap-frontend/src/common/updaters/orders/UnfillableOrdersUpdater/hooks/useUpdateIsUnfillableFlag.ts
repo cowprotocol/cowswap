@@ -2,8 +2,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { CurrencyAmount, Price } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Price } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'

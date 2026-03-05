@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { getReceiveAmountInfo } from './getReceiveAmountInfo'
 import { BridgeFeeAmounts, CrossChainReceiveAmountInfoParams } from './types'

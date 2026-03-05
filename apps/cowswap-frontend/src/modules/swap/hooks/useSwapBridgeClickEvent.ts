@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/common-entities'
 import {
   currencyAmountToExactString,
   currencyAmountToRawString,
@@ -8,6 +7,7 @@ import {
   getTokenLabel,
   normalizeTokenSymbol,
 } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeQuoteAmounts } from 'modules/bridge'
@@ -26,13 +26,6 @@ export interface SwapBridgeClickEventData {
 
 export interface SwapBridgeClickEventInput extends SwapBridgeClickEventData {
   action: SwapBridgeClickAction
-}
-
-function parseEventValue(value: string | undefined): number | undefined {
-  if (!value) return undefined
-
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : undefined
 }
 
 export function buildSwapBridgeClickEvent(input: SwapBridgeClickEventInput): string | undefined {
@@ -101,4 +94,11 @@ export function useSwapBridgeClickEventData(): SwapBridgeClickEventData {
     }),
     [account, isBridging, sellAmount, buyAmount],
   )
+}
+
+function parseEventValue(value: string | undefined): number | undefined {
+  if (!value) return undefined
+
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : undefined
 }

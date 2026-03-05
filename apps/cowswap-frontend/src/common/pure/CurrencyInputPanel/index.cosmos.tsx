@@ -1,6 +1,6 @@
 import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
-import { CurrencyAmount, Percent } from '@cowprotocol/common-entities'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { DemoContainer } from 'cosmos.decorator'
 import { useSelect, useValue } from 'react-cosmos/client'

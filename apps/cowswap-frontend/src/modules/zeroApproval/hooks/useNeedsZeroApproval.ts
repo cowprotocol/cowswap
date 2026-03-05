@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { CurrencyAmount, Token } from '@cowprotocol/common-entities'
 import { Erc20 } from '@cowprotocol/cowswap-abis'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

@@ -1,10 +1,12 @@
 import { atom } from 'jotai'
 
-import { Fraction, Token } from '@cowprotocol/common-entities'
 import { deepEqual } from '@cowprotocol/common-utils'
+import { Fraction, Token } from '@cowprotocol/currency'
 
 import { UsdPriceStateKey } from '../types'
 import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'
+
+export type UsdRawPrices = { [key: UsdPriceStateKey]: UsdRawPriceState }
 
 export interface UsdRawPriceState {
   updatedAt?: number
@@ -13,8 +15,6 @@ export interface UsdRawPriceState {
   currency: Token
   isLoading: boolean
 }
-
-export type UsdRawPrices = { [key: UsdPriceStateKey]: UsdRawPriceState }
 
 const usdPriceQueueSubscribersCountAtom = atom<{ [key: UsdPriceStateKey]: number }>({})
 
