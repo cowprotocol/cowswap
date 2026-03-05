@@ -28,7 +28,7 @@ import { CloseIcon } from 'theme'
 
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'

@@ -1,10 +1,8 @@
-import React, { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import cowNoConnectionIMG from '@cowprotocol/assets/cow-swap/cow-no-connection.png'
 import { DISCORD_LINK } from '@cowprotocol/common-const'
-import { ButtonPrimary, MEDIA_WIDTHS } from '@cowprotocol/ui'
-import { AutoRow } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
+import { AutoRow, ButtonPrimary, ExternalLink, MEDIA_WIDTHS } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -13,6 +11,7 @@ import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 
+// eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Title } from 'modules/application/pure/Page'
 
 /**
@@ -21,9 +20,7 @@ import { Title } from 'modules/application/pure/Page'
  */
 let cowNoConnectionIMGCache: string | null = null
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function preloadNoConnectionImg() {
+function preloadNoConnectionImg(): void {
   fetch(cowNoConnectionIMG)
     .then((res) => res.blob())
     .then((blob) => {
@@ -88,9 +85,7 @@ const AutoRowWithGap = styled(AutoRow)`
   gap: 16px;
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const ChunkLoadError = () => {
+export const ChunkLoadError = (): ReactNode => {
   const reloadPage = useCallback(() => {
     window.location.reload()
   }, [])

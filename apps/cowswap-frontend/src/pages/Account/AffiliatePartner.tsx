@@ -18,7 +18,7 @@ import {
   ThreeColumnGrid,
   PageWrapper,
 } from 'modules/affiliate'
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 
 export default function AffiliatePartner(): ReactNode {
   const { i18n } = useLingui()

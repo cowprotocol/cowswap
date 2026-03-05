@@ -53,6 +53,7 @@ export function FillsTable(props: FillsTableProps): ReactNode {
               <span>Execution price {invertButton}</span>
             </th>
             <th>Execution time</th>
+            <th>Solver</th>
           </tr>
         }
         body={tradeItems}
