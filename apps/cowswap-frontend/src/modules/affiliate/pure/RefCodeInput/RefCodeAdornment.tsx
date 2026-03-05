@@ -3,28 +3,27 @@ import { ReactNode } from 'react'
 import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import PendingIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 export type RefCodeAdornmentVariant = 'error' | 'pending' | 'checking' | 'valid' | 'available'
-type RefCodeAdornmentPlacement = 'inline' | 'below'
 
 interface RefCodeAdornmentProps {
   variant?: RefCodeAdornmentVariant
-  placement?: RefCodeAdornmentPlacement
-  label?: string
+  isAdornmentWrappable?: boolean
 }
-export function RefCodeAdornment({ variant, placement = 'inline' }: RefCodeAdornmentProps): ReactNode {
+
+export function RefCodeAdornment({ variant, isAdornmentWrappable = false }: RefCodeAdornmentProps): ReactNode {
   if (!variant) {
     return <RefCodeAdornmentPlaceholder aria-hidden="true" />
   }
 
   if (variant === 'error') {
     return (
-      <RefCodeAdornmentContainer variant="error" $placement={placement}>
+      <RefCodeAdornmentContainer variant="error" $isAdornmentWrappable={isAdornmentWrappable}>
         <SVG src={AlertIcon} title={t`Error`} />
       </RefCodeAdornmentContainer>
     )
@@ -32,7 +31,7 @@ export function RefCodeAdornment({ variant, placement = 'inline' }: RefCodeAdorn
 
   if (variant === 'checking') {
     return (
-      <RefCodeAdornmentContainer variant="checking" $placement={placement}>
+      <RefCodeAdornmentContainer variant="checking" $isAdornmentWrappable={isAdornmentWrappable}>
         <SVG src={PendingIcon} title={t`Checking`} />
         <span>{t`Checking`}</span>
       </RefCodeAdornmentContainer>
@@ -41,7 +40,7 @@ export function RefCodeAdornment({ variant, placement = 'inline' }: RefCodeAdorn
 
   if (variant === 'pending') {
     return (
-      <RefCodeAdornmentContainer variant="pending" $placement={placement}>
+      <RefCodeAdornmentContainer variant="pending" $isAdornmentWrappable={isAdornmentWrappable}>
         <SVG src={PendingIcon} title={t`Pending`} />
         <span>{t`Pending`}</span>
       </RefCodeAdornmentContainer>
@@ -50,7 +49,7 @@ export function RefCodeAdornment({ variant, placement = 'inline' }: RefCodeAdorn
 
   if (variant === 'available') {
     return (
-      <RefCodeAdornmentContainer variant="available" $placement={placement}>
+      <RefCodeAdornmentContainer variant="available" $isAdornmentWrappable={isAdornmentWrappable}>
         <SVG src={CheckIcon} title={t`Available`} />
         <span>{t`Available`}</span>
       </RefCodeAdornmentContainer>
@@ -58,7 +57,7 @@ export function RefCodeAdornment({ variant, placement = 'inline' }: RefCodeAdorn
   }
 
   return (
-    <RefCodeAdornmentContainer variant="valid" $placement={placement}>
+    <RefCodeAdornmentContainer variant="valid" $isAdornmentWrappable={isAdornmentWrappable}>
       <SVG src={CheckIcon} title={t`Valid`} />
       <span>{t`Valid`}</span>
     </RefCodeAdornmentContainer>
@@ -92,25 +91,39 @@ const spin = keyframes`
 
 const RefCodeAdornmentContainer = styled.div<{
   variant: RefCodeAdornmentVariant
-  $placement: RefCodeAdornmentPlacement
+  $isAdornmentWrappable: boolean
 }>`
   display: flex;
   align-items: center;
-  justify-content: ${({ $placement }) => ($placement === 'below' ? 'flex-start' : 'flex-end')};
+  justify-content: flex-end;
   gap: 6px;
-  min-width: ${({ $placement }) => ($placement === 'below' ? '0' : '92px')};
+  min-width: ${({ variant }) => (variant === 'error' ? '16px' : '92px')};
   flex: 0 0 auto;
   position: relative;
   z-index: 1;
   font-size: 14px;
   font-weight: 500;
   color: ${({ variant }) => ADORNMENT_COLOR_MAP[variant]};
-  background: ${({ $placement, variant }) => ($placement === 'below' ? ADORNMENT_BG_MAP[variant] : 'transparent')};
+  background: transparent;
   border: 0;
-  border-radius: ${({ $placement }) => ($placement === 'below' ? '0 0 9px 9px' : '0')};
-  padding: ${({ $placement }) => ($placement === 'below' ? '8px 12px' : '0')};
-  width: ${({ $placement }) => ($placement === 'below' ? '100%' : 'auto')};
-  min-height: ${({ $placement }) => ($placement === 'below' ? '40px' : 'auto')};
+  border-radius: 0;
+  padding: 0;
+  width: auto;
+  min-height: auto;
+
+  ${({ $isAdornmentWrappable, variant }) =>
+    $isAdornmentWrappable &&
+    css`
+      ${Media.upToExtraSmall()} {
+        justify-content: flex-start;
+        min-width: 0;
+        width: 100%;
+        min-height: 40px;
+        padding: 8px 12px;
+        border-radius: 0 0 9px 9px;
+        background: ${ADORNMENT_BG_MAP[variant]};
+      }
+    `}
 
   svg {
     width: 16px;
@@ -143,4 +156,8 @@ const RefCodeAdornmentPlaceholder = styled.div`
   height: 18px;
   flex: 0 0 auto;
   visibility: hidden;
+
+  ${Media.upToTiny()} {
+    display: none;
+  }
 `

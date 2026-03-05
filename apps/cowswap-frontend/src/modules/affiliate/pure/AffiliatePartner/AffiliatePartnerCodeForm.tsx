@@ -55,12 +55,12 @@ export function AffiliatePartnerCodeForm({
 
   const handleInputKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>): void => {
-      if (event.key !== 'Enter') return
+      if (event.key !== 'Enter' || !canSubmit) return
 
       event.preventDefault()
       onCreate()
     },
-    [onCreate],
+    [onCreate, canSubmit],
   )
 
   return (

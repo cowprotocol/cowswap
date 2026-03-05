@@ -35,10 +35,12 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
 
   const onCodeChange = useCallback((event: FormEvent<HTMLInputElement>): void => {
     setInputCode(event.currentTarget.value.trim().toUpperCase())
+    setError(undefined)
   }, [])
 
   const onGenerate = useCallback((): void => {
     setInputCode(generateSuggestedCode())
+    setError(undefined)
   }, [])
 
   return (

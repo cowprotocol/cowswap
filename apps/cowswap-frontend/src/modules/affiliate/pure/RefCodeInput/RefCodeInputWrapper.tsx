@@ -9,7 +9,7 @@ interface RefCodeInputWrapperProps extends PropsWithChildren {
   disabled: boolean
   isLoading: boolean
   compactSize?: boolean
-  belowAdornmentMode?: 'none' | 'auto' | 'always'
+  isAdornmentWrappable?: boolean
 }
 
 export function RefCodeInputWrapper({
@@ -17,7 +17,7 @@ export function RefCodeInputWrapper({
   disabled,
   isLoading,
   compactSize,
-  belowAdornmentMode = 'none',
+  isAdornmentWrappable = false,
   ...rest
 }: RefCodeInputWrapperProps): ReactNode {
   return (
@@ -26,7 +26,7 @@ export function RefCodeInputWrapper({
       $disabled={disabled}
       $isLoading={isLoading}
       $compactSize={compactSize}
-      $belowAdornmentMode={belowAdornmentMode}
+      $isAdornmentWrappable={isAdornmentWrappable}
       {...rest}
     />
   )
@@ -37,19 +37,21 @@ const InputWrapper = styled.div<{
   $disabled: boolean
   $isLoading: boolean
   $compactSize?: boolean
-  $belowAdornmentMode: 'none' | 'auto' | 'always'
+  $isAdornmentWrappable: boolean
 }>`
   display: flex;
   align-items: center;
   width: 100%;
   min-width: 0;
+  --ref-input-pad-y: ${({ $compactSize }) => ($compactSize ? '10px' : '12px')};
+  --ref-input-pad-x: ${({ $compactSize }) => ($compactSize ? '12px' : '14px')};
   gap: 12px;
   border: 1px solid ${({ $hasError }) => ($hasError ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_BORDER})`)};
   background: ${({ $hasError, $disabled }) =>
     $hasError ? `var(${UI.COLOR_DANGER_BG})` : $disabled ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ $hasError }) => ($hasError ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_TEXT})`)};
-  border-radius: ${({ $belowAdornmentMode }) => ($belowAdornmentMode === 'always' ? '9px 9px 0 0' : '9px')};
-  padding: ${({ $compactSize }) => ($compactSize ? '10px 12px' : '12px 14px')};
+  border-radius: 9px;
+  padding: var(--ref-input-pad-y) var(--ref-input-pad-x);
   transition: border 0.2s ease;
   min-height: ${({ $compactSize }) => ($compactSize ? '48px' : '58px')};
   position: relative;
@@ -78,11 +80,26 @@ const InputWrapper = styled.div<{
       }
     `}
 
-  ${({ $belowAdornmentMode }) =>
-    $belowAdornmentMode === 'auto' &&
+  ${({ $isAdornmentWrappable }) =>
+    $isAdornmentWrappable &&
     css`
-      ${Media.upToSmall()} {
-        border-radius: 9px 9px 0 0;
+      ${Media.upToExtraSmall()} {
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 12px;
+
+        input {
+          flex: 1 1 100%;
+          min-width: 0;
+          min-height: 32px;
+        }
+
+        > div {
+          flex: 1 1 100%;
+          min-width: 0;
+          margin: 0 calc(var(--ref-input-pad-x) * -1) calc(var(--ref-input-pad-y) * -1);
+          width: calc(100% + (var(--ref-input-pad-x) * 2));
+        }
       }
     `}
 `

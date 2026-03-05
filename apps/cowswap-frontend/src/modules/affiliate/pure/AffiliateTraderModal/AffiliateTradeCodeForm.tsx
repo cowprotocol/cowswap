@@ -103,7 +103,6 @@ export function AffiliateTradeCodeForm({
           hasError={!!error}
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}
-          adornmentPlacement="below"
           adornmentVariant={error ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
           required
           {...inputProps}
