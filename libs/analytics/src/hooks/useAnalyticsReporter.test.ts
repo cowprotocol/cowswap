@@ -22,8 +22,8 @@ describe('useAnalyticsReporter chain_switched helpers', () => {
     it('returns true when same wallet casing changes and chain changed', () => {
       expect(
         shouldEmitChainSwitchedEventForSameWallet({
-          account: '0x1111111111111111111111111111111111111111',
-          prevAccount: '0x1111111111111111111111111111111111111111'.toUpperCase(),
+          account: '0xabcdef0000000000000000000000000000000000',
+          prevAccount: '0xABCDEF0000000000000000000000000000000000',
           chainId: SupportedChainId.MAINNET,
           prevChainId: SupportedChainId.ARBITRUM_ONE,
         }),
