@@ -7,6 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import {
   AffiliateTraderCodeInfo,
+  AffiliateTraderLoading,
   AffiliateTraderNextPayout,
   AffiliateTraderOnboard,
   AffiliateTraderStats,
@@ -37,6 +38,8 @@ export default function AffiliateTrader(): ReactNode {
           <AffiliateTraderIneligible />
         ) : walletStatus === TraderWalletStatus.UNSUPPORTED ? (
           <AffiliateTraderUnsupportedNetwork />
+        ) : walletStatus === TraderWalletStatus.PENDING ? (
+          <AffiliateTraderLoading />
         ) : !savedCode || walletStatus === TraderWalletStatus.DISCONNECTED ? (
           <AffiliateTraderOnboard />
         ) : (

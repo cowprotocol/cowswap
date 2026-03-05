@@ -1,4 +1,5 @@
 export { AffiliateTermsFaqLinks } from './AffiliateTermsFaqLinks.pure'
+export { IneligibleImage } from './IneligibleImage.pure'
 
 export {
   PageWrapper,
@@ -56,7 +57,6 @@ export {
 
 export {
   IneligibleCard,
-  IneligibleImage,
   IneligibleTitle,
   IneligibleSubtitle,
   UnsupportedNetworkCard,
