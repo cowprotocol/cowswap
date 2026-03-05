@@ -1,7 +1,10 @@
 # Architecture
 
+Owner: frontend platform maintainers
+Status: Normative
 Last reviewed: 2026-03-05
 Source of truth scope: monorepo layout, dependency direction, and boundary enforcement.
+Visual reference: [`docs/architecture-overview.md`](./architecture-overview.md)
 
 ## Monorepo Map
 
