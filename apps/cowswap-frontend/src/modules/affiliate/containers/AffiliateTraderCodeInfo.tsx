@@ -12,6 +12,7 @@ import SVG from 'react-inlinesvg'
 
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
+import { toValidDate } from '../lib/affiliateProgramUtils'
 import {
   CardTitle,
   HeroActions,
@@ -21,6 +22,7 @@ import {
   LinkedCodeText,
   LinkedMetaList,
   MetricItem,
+  MetricValue,
   ColumnOneCard,
   RewardsHeader,
   ValidStatusBadge,
@@ -48,7 +50,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <LinkedCodeText>{savedCode}</LinkedCodeText>
               {isLinked ? (
                 <LinkedBadge>
-                  <SVG src={LockedIcon} width={12} height={10} />
+                  <SVG src={LockedIcon} width={16} height={16} />
                   <Trans>Linked</Trans>
                 </LinkedBadge>
               ) : (
@@ -64,13 +66,17 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <span>
                 <Trans>Linked since</Trans>
               </span>
-              <strong>{isLinked && stats ? formatShortDate(stats.linked_since) : '-'}</strong>
+              <MetricValue>
+                {stats && toValidDate(stats.linked_since) ? formatShortDate(stats.linked_since) : '-'}
+              </MetricValue>
             </MetricItem>
             <MetricItem>
               <span>
                 <Trans>Rewards end</Trans>
               </span>
-              <strong>{isLinked && stats ? formatShortDate(stats.rewards_end) : '-'}</strong>
+              <MetricValue>
+                {stats && toValidDate(stats.rewards_end) ? formatShortDate(stats.rewards_end) : '-'}
+              </MetricValue>
             </MetricItem>
           </LinkedMetaList>
           {!isLinked && (
