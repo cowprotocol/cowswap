@@ -6,7 +6,7 @@ import { percentToBps } from '@cowprotocol/common-utils'
 import { useLingui } from '@lingui/react/macro'
 
 import { AppDataUpdater } from 'modules/appData'
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 import {
   AlternativeLimitOrderUpdater,
   ExecutionPriceUpdater,
@@ -19,9 +19,8 @@ import {
   limitOrdersDerivedStateAtom,
   useLimitOrdersDerivedStateToFill,
 } from 'modules/limitOrders'
-import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
-import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
-import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
+import { useResetOrdersTableFilters, HistoryStatusFilter } from 'modules/ordersTable'
+import { useIsAlternativeOrderModalVisible } from 'modules/trade'
 
 import { HydrateAtom } from 'common/state/HydrateAtom'
 

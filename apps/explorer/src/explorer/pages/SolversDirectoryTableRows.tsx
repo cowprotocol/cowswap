@@ -19,64 +19,16 @@ import { DeploymentsSectionRows, EnvironmentTags, NetworkChips, SolverIcon } fro
 
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
 
+type SolverDetailsRowProps = {
+  solver: SolverInfo
+  deployments: SolverDeployment[]
+}
+
 type SolverSummaryRowProps = {
   solver: SolverInfo
   deployments: SolverDeployment[]
   isExpanded: boolean
   onToggle: (solverId: string) => void
-}
-
-export function SolverSummaryRow({
-  solver,
-  deployments,
-  isExpanded,
-  onToggle,
-}: SolverSummaryRowProps): React.ReactNode {
-  const toggleAriaLabel = `Toggle deployments for solver ${solver.displayName} (${solver.solverId})`
-  const networks = mapSummaryNetworks(deployments)
-  const environments = mapSummaryEnvironments(deployments)
-
-  return (
-    <tr className="solver-summary-row">
-      <td className="solver">
-        <SolverCell>
-          <ExpandButton
-            onClick={(): void => onToggle(solver.solverId)}
-            aria-expanded={isExpanded}
-            aria-label={toggleAriaLabel}
-          >
-            {isExpanded ? '▾' : '▸'}
-          </ExpandButton>
-          <SolverIcon solver={solver} />
-          <SolverDetails>
-            <span>{solver.displayName}</span>
-            <SolverId>{solver.solverId}</SolverId>
-          </SolverDetails>
-        </SolverCell>
-      </td>
-      <td className="networks">
-        <NetworkChips solverId={solver.solverId} networks={networks} />
-      </td>
-      <td className="envs">
-        <EnvironmentTags solverId={solver.solverId} environments={environments} />
-      </td>
-      <td className="website">
-        {solver.website ? (
-          <ExternalLink href={solver.website} target="_blank">
-            {formatWebsiteUrl(solver.website)} ↗
-          </ExternalLink>
-        ) : (
-          <Placeholder>-</Placeholder>
-        )}
-      </td>
-      <td className="description">{solver.description || <Placeholder>-</Placeholder>}</td>
-    </tr>
-  )
-}
-
-type SolverDetailsRowProps = {
-  solver: SolverInfo
-  deployments: SolverDeployment[]
 }
 
 export function SolverDetailsRow({ solver, deployments }: SolverDetailsRowProps): React.ReactNode {
@@ -111,6 +63,54 @@ export function SolverDetailsRow({ solver, deployments }: SolverDetailsRowProps)
           )}
         </DeploymentsPanel>
       </td>
+    </tr>
+  )
+}
+
+export function SolverSummaryRow({
+  solver,
+  deployments,
+  isExpanded,
+  onToggle,
+}: SolverSummaryRowProps): React.ReactNode {
+  const toggleAriaLabel = `Toggle deployments for solver ${solver.displayName} (${solver.solverId})`
+  const networks = mapSummaryNetworks(deployments)
+  const environments = mapSummaryEnvironments(deployments)
+
+  return (
+    <tr className="solver-summary-row" data-solver-id={solver.solverId}>
+      <td className="solver">
+        <SolverCell>
+          <ExpandButton
+            onClick={(): void => onToggle(solver.solverId)}
+            aria-expanded={isExpanded}
+            aria-label={toggleAriaLabel}
+          >
+            {isExpanded ? '▾' : '▸'}
+          </ExpandButton>
+          <SolverIcon solver={solver} />
+          <SolverDetails>
+            <span>{solver.displayName}</span>
+            <SolverId>{solver.solverId}</SolverId>
+          </SolverDetails>
+        </SolverCell>
+      </td>
+      <td className="networks">
+        <NetworkChips solverId={solver.solverId} networks={networks} />
+      </td>
+      <td className="envs">
+        <EnvironmentTags solverId={solver.solverId} environments={environments} />
+      </td>
+      <td className="website">
+        {solver.website ? (
+          <ExternalLink href={solver.website} target="_blank">
+            {formatWebsiteUrl(solver.website)} ↗
+          </ExternalLink>
+        ) : (
+          <Placeholder>-</Placeholder>
+        )}
+      </td>
+      <td className="description">{solver.description || <Placeholder>-</Placeholder>}</td>
     </tr>
   )
 }

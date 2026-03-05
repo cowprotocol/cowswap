@@ -13,3 +13,4 @@ export { useIsFallbackHandlerRequired } from './hooks/useFallbackHandlerVerifica
 export { SetupFallbackHandlerWarning } from './containers/SetupFallbackHandlerWarning'
 export * from './updaters/index'
 export * from './types'
+export { TwapFormState } from './pure/PrimaryActionButton/getTwapFormState'

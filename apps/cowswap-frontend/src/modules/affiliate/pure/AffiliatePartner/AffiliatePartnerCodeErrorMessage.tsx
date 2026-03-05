@@ -5,8 +5,14 @@ import { t } from '@lingui/core/macro'
 import { AffiliatePartnerCodeCreateError } from '../../lib/affiliatePartnerCodeCreateError'
 import { StatusText } from '../shared'
 
-type AffiliatePartnerCodeErrorMessageProps = {
+interface AffiliatePartnerCodeErrorMessageProps {
   error?: AffiliatePartnerCodeCreateError
+}
+
+export function AffiliatePartnerCodeErrorMessage({ error }: AffiliatePartnerCodeErrorMessageProps): ReactNode {
+  if (!error) return null
+
+  return <StatusText $variant="error">{mapErrorCodeToMessage(error)}</StatusText>
 }
 
 function mapErrorCodeToMessage(error: AffiliatePartnerCodeCreateError): string {
@@ -15,10 +21,4 @@ function mapErrorCodeToMessage(error: AffiliatePartnerCodeCreateError): string {
   if (error === AffiliatePartnerCodeCreateError.NetworkError)
     return t`Affiliate service is unreachable. Try again later.`
   return t`Unable to create affiliate code.`
-}
-
-export function AffiliatePartnerCodeErrorMessage({ error }: AffiliatePartnerCodeErrorMessageProps): ReactNode {
-  if (!error) return null
-
-  return <StatusText $variant="error">{mapErrorCodeToMessage(error)}</StatusText>
 }

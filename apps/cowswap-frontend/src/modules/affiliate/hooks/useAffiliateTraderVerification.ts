@@ -13,13 +13,13 @@ import { setAffiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCo
 import { ApiError } from '../utils/api-utils'
 import { logAffiliate } from '../utils/logger'
 
-interface VerificationParams {
-  setError(error?: string): void
-}
-
 export interface UseAffiliateTraderVerificationResult {
   isVerifying: boolean
   verifyCode(code: string, account: string): Promise<void>
+}
+
+interface VerificationParams {
+  setError(error?: string): void
 }
 
 export function useAffiliateTraderVerification(params: VerificationParams): UseAffiliateTraderVerificationResult {
@@ -37,7 +37,7 @@ export function useAffiliateTraderVerification(params: VerificationParams): UseA
       try {
         if (!formatRefCode(code)) {
           logAffiliate(safeShortenAddress(account), 'Code verification failed: invalid referral code format')
-          setError(t`This code is invalid. Try another.`)
+          setError(t`Only A-Z, 0-9, dashes, and underscores are allowed.`)
           return
         }
 

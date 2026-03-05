@@ -33,11 +33,12 @@ export function AffiliateTraderStats(): ReactNode {
       titleTooltip={t`This chart tracks eligible volume left to unlock the next reward.`}
       items={[
         {
+          id: 'left-to-next-reward',
           label: <Trans>Left to next {rewardAmountLabel}</Trans>,
           value: formatUsdCompact(stats?.left_to_next_rewards),
         },
-        { label: <Trans>Total earned</Trans>, value: formatUsdcCompact(stats?.total_earned) },
-        { label: <Trans>Received</Trans>, value: formatUsdcCompact(stats?.paid_out) },
+        { id: 'total-earned', label: <Trans>Total earned</Trans>, value: formatUsdcCompact(stats?.total_earned) },
+        { id: 'received', label: <Trans>Received</Trans>, value: formatUsdcCompact(stats?.paid_out) },
       ]}
       donutValue={getReferralTrafficPercent(info?.triggerVolume, progressToNextReward)}
       donutLabel={formatUsdCompact(progressToNextReward)}

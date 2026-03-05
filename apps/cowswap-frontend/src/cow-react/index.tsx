@@ -1,6 +1,5 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
-import { useHydrateAtoms } from 'jotai/react/utils'
 import { ReactNode, StrictMode } from 'react'
 import './sentry'
 
@@ -10,10 +9,11 @@ import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { queryClientAtom } from 'jotai-tanstack-query'
 import { Messages } from '@lingui/core'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { LanguageProvider } from 'i18n'
+import { useHydrateAtoms } from 'jotai/react/utils'
+import { queryClientAtom } from 'jotai-tanstack-query'
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import SvgCacheProvider from 'react-inlinesvg/provider'
@@ -25,9 +25,7 @@ import { ThemeProvider } from 'theme'
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { App } from 'modules/application/containers/App'
-import { Updaters } from 'modules/application/containers/App/Updaters'
-import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
+import { App, Updaters, WithLDProvider } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
@@ -102,23 +100,6 @@ export function Main({ localeMessages }: MainProps): ReactNode {
   )
 }
 
-function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-  const { standaloneMode } = useInjectedWidgetParams()
-
-  return (
-    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
-      <Web3Provider>{children}</Web3Provider>
-    </LegacyWeb3Provider>
-  )
-}
-
-function Toasts(): ReactNode {
-  const { disableToastMessages = false } = useInjectedWidgetParams()
-
-  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
-}
-
 async function initApp(): Promise<void> {
   const container = document.getElementById('root')
   if (container !== null) {
@@ -129,6 +110,23 @@ async function initApp(): Promise<void> {
   } else {
     console.error('Failed to find the root element')
   }
+}
+
+function Toasts(): ReactNode {
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
+}
+
+function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+  const { standaloneMode } = useInjectedWidgetParams()
+
+  return (
+    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
+      <Web3Provider>{children}</Web3Provider>
+    </LegacyWeb3Provider>
+  )
 }
 
 initApp()

@@ -28,7 +28,7 @@ import { CloseIcon } from 'theme'
 
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -82,6 +82,64 @@ const PAGE_VIEW_ITEMS: PageViewItem[] = Object.entries(PageView).map(([key, valu
   key: key as PageViewKeys,
   label: value.label,
 }))
+
+interface AccountTokensData {
+  formattedTokens: TokenWithLogo[]
+  favoriteTokens: TokenWithLogo[]
+  balances: TokenBalancesMap
+  allowances: AllowancesState
+  removeAllFavoriteTokens: () => void
+}
+
+interface ResetPageParams {
+  account: string | undefined
+  chainId: number | undefined
+  selectedView: PageViewKeys
+  setPage: Dispatch<SetStateAction<number>>
+}
+
+interface TokensOverviewHeaderProps {
+  isMenuOpen: boolean
+  selectedView: PageViewKeys
+  onToggleMenu: () => void
+  onSelectView: (view: PageViewKeys) => void
+  menuRef: RefObject<HTMLDivElement | null>
+  showResetFavorites: boolean
+  onResetFavorites: () => void
+  query: string
+  onSearchChange: ChangeEventHandler<HTMLInputElement>
+  onSearchClear: () => void
+  checkColor: string
+}
+
+interface TokensOverviewMenuItemsProps {
+  selectedView: PageViewKeys
+  onSelectView: (view: PageViewKeys) => void
+  checkColor: string
+}
+
+interface TokensTableContentProps {
+  provider: WalletProvider
+  darkMode: boolean
+  selectedView: PageViewKeys
+  formattedTokens: TokenWithLogo[]
+  favoriteTokens: TokenWithLogo[]
+  page: number
+  setPage: Dispatch<SetStateAction<number>>
+  query: string
+  prevQuery?: string
+  debouncedQuery?: string
+  balances: TokenBalancesMap
+  allowances: AllowancesState
+}
+
+interface UseTokenSearchResult {
+  query: string
+  debouncedQuery?: string
+  prevQuery?: string
+  handleSearch: ChangeEventHandler<HTMLInputElement>
+  clearSearch: () => void
+}
 
 export default function TokensOverview(): ReactNode {
   useScrollToTop()
@@ -153,20 +211,6 @@ export default function TokensOverview(): ReactNode {
   )
 }
 
-interface TokensOverviewHeaderProps {
-  isMenuOpen: boolean
-  selectedView: PageViewKeys
-  onToggleMenu: () => void
-  onSelectView: (view: PageViewKeys) => void
-  menuRef: RefObject<HTMLDivElement | null>
-  showResetFavorites: boolean
-  onResetFavorites: () => void
-  query: string
-  onSearchChange: ChangeEventHandler<HTMLInputElement>
-  onSearchClear: () => void
-  checkColor: string
-}
-
 function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
   const {
     isMenuOpen,
@@ -233,19 +277,25 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
   )
 }
 
-interface TokensTableContentProps {
-  provider: WalletProvider
-  darkMode: boolean
-  selectedView: PageViewKeys
-  formattedTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  page: number
-  setPage: Dispatch<SetStateAction<number>>
-  query: string
-  prevQuery?: string
-  debouncedQuery?: string
-  balances: TokenBalancesMap
-  allowances: AllowancesState
+function TokensOverviewMenuItems(props: TokensOverviewMenuItemsProps): ReactNode {
+  const { selectedView, onSelectView, checkColor } = props
+
+  const menuItems: ReactNode[] = []
+
+  const { i18n } = useLingui()
+
+  for (const { key, label } of PAGE_VIEW_ITEMS) {
+    const isActive = selectedView === key
+
+    menuItems.push(
+      <MenuItem key={key} active={isActive} onClick={() => onSelectView(key)}>
+        <span>{i18n._(label)}</span>
+        {isActive ? <Check size={20} color={checkColor} /> : null}
+      </MenuItem>,
+    )
+  }
+
+  return <>{menuItems}</>
 }
 
 function TokensTableContent(props: TokensTableContentProps): ReactNode {
@@ -290,124 +340,6 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
   )
 }
 
-interface TokensOverviewMenuItemsProps {
-  selectedView: PageViewKeys
-  onSelectView: (view: PageViewKeys) => void
-  checkColor: string
-}
-
-function TokensOverviewMenuItems(props: TokensOverviewMenuItemsProps): ReactNode {
-  const { selectedView, onSelectView, checkColor } = props
-
-  const menuItems: ReactNode[] = []
-
-  const { i18n } = useLingui()
-
-  for (const { key, label } of PAGE_VIEW_ITEMS) {
-    const isActive = selectedView === key
-
-    menuItems.push(
-      <MenuItem key={key} active={isActive} onClick={() => onSelectView(key)}>
-        <span>{i18n._(label)}</span>
-        {isActive ? <Check size={20} color={checkColor} /> : null}
-      </MenuItem>,
-    )
-  }
-
-  return <>{menuItems}</>
-}
-
-function useTokensView(): {
-  selectedView: PageViewKeys
-  isMenuOpen: boolean
-  toggleMenu: () => void
-  selectView: (view: PageViewKeys) => void
-  menuRef: RefObject<HTMLDivElement | null>
-} {
-  const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-  const menuRef = useRef<HTMLDivElement | null>(null)
-
-  const toggleMenu = useCallback(() => {
-    setIsMenuOpen((prev) => !prev)
-  }, [])
-
-  const selectView = useCallback((view: PageViewKeys) => {
-    setSelectedView(view)
-    setIsMenuOpen(false)
-  }, [])
-
-  useOnClickOutside([menuRef], isMenuOpen ? toggleMenu : undefined)
-
-  return { selectedView, isMenuOpen, toggleMenu, selectView, menuRef }
-}
-
-interface UseTokenSearchResult {
-  query: string
-  debouncedQuery?: string
-  prevQuery?: string
-  handleSearch: ChangeEventHandler<HTMLInputElement>
-  clearSearch: () => void
-}
-
-function useTokenSearch(page: number, setPage: Dispatch<SetStateAction<number>>): UseTokenSearchResult {
-  const [query, setQuery] = useState<string>('')
-  const debouncedQuery = useDebounce(query, 300)
-  const prevQuery = usePrevious(debouncedQuery) ?? undefined
-
-  const handleSearch = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (event) => {
-      const input = event.target.value.trim().toLowerCase()
-      const checksummedInput = isAddress(input)
-      setQuery(checksummedInput || input)
-      if (page !== 1) {
-        setPage(1)
-      }
-    },
-    [page, setPage],
-  )
-
-  const clearSearch = useCallback(() => {
-    setQuery('')
-  }, [])
-
-  return { query, debouncedQuery, prevQuery, handleSearch, clearSearch }
-}
-
-function useScrollToTop(): void {
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-}
-
-interface ResetPageParams {
-  account: string | undefined
-  chainId: number | undefined
-  selectedView: PageViewKeys
-  setPage: Dispatch<SetStateAction<number>>
-}
-
-function useResetPageOnContextChange(params: ResetPageParams): void {
-  const { account, chainId, selectedView, setPage } = params
-  const prevAccount = usePrevious(account)
-  const prevChainId = usePrevious(chainId)
-  const prevSelectedView = usePrevious(selectedView)
-
-  useEffect(() => {
-    if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
-      setPage(1)
-    }
-  }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView, setPage])
-}
-
-interface AccountTokensData {
-  formattedTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  balances: TokenBalancesMap
-  allowances: AllowancesState
-  removeAllFavoriteTokens: () => void
-}
-
 function useAccountTokensData(): AccountTokensData {
   const allTokens = useTokensByAddressMap()
   const favoriteTokens = useFavoriteTokens()
@@ -437,4 +369,72 @@ function useAccountTokensData(): AccountTokensData {
     allowances,
     removeAllFavoriteTokens,
   }
+}
+
+function useResetPageOnContextChange(params: ResetPageParams): void {
+  const { account, chainId, selectedView, setPage } = params
+  const prevAccount = usePrevious(account)
+  const prevChainId = usePrevious(chainId)
+  const prevSelectedView = usePrevious(selectedView)
+
+  useEffect(() => {
+    if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
+      setPage(1)
+    }
+  }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView, setPage])
+}
+
+function useScrollToTop(): void {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+}
+
+function useTokenSearch(page: number, setPage: Dispatch<SetStateAction<number>>): UseTokenSearchResult {
+  const [query, setQuery] = useState<string>('')
+  const debouncedQuery = useDebounce(query, 300)
+  const prevQuery = usePrevious(debouncedQuery) ?? undefined
+
+  const handleSearch = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      const input = event.target.value.trim().toLowerCase()
+      const checksummedInput = isAddress(input)
+      setQuery(checksummedInput || input)
+      if (page !== 1) {
+        setPage(1)
+      }
+    },
+    [page, setPage],
+  )
+
+  const clearSearch = useCallback(() => {
+    setQuery('')
+  }, [])
+
+  return { query, debouncedQuery, prevQuery, handleSearch, clearSearch }
+}
+
+function useTokensView(): {
+  selectedView: PageViewKeys
+  isMenuOpen: boolean
+  toggleMenu: () => void
+  selectView: (view: PageViewKeys) => void
+  menuRef: RefObject<HTMLDivElement | null>
+} {
+  const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const menuRef = useRef<HTMLDivElement | null>(null)
+
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen((prev) => !prev)
+  }, [])
+
+  const selectView = useCallback((view: PageViewKeys) => {
+    setSelectedView(view)
+    setIsMenuOpen(false)
+  }, [])
+
+  useOnClickOutside([menuRef], isMenuOpen ? toggleMenu : undefined)
+
+  return { selectedView, isMenuOpen, toggleMenu, selectView, menuRef }
 }

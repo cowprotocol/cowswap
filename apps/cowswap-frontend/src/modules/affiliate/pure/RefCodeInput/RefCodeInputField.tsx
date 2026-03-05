@@ -14,6 +14,7 @@ export interface RefCodeInputFieldProps extends InputHTMLAttributes<HTMLInputEle
 export function RefCodeInputField({ compactSize = false, ...rest }: RefCodeInputFieldProps): ReactNode {
   return (
     <StyledInputField
+      name="referral-code"
       placeholder={t`ENTER CODE`}
       minLength={REF_CODE_MIN_LENGTH}
       maxLength={REF_CODE_MAX_LENGTH}

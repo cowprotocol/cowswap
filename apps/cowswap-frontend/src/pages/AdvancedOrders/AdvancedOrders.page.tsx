@@ -14,14 +14,16 @@ import {
   SetupAdvancedOrderAmountsFromUrlUpdater,
   useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { OrdersTableWidget } from 'modules/ordersTable'
-import { useResetOrdersTableFilters } from 'modules/ordersTable/hooks/useResetOrdersTableFilters'
-import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
-import { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
-import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders'
+import {
+  OrdersTableWidget,
+  HistoryStatusFilter,
+  ordersTableStateAtom,
+  useResetOrdersTableFilters,
+} from 'modules/ordersTable'
+import * as styledEl from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -31,8 +33,8 @@ import {
   useMapTwapCurrencyInfo,
   useTwapFormState,
   useTwapSlippage,
+  TwapFormState,
 } from 'modules/twap'
-import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { HydrateAtom } from 'common/state/HydrateAtom'
 

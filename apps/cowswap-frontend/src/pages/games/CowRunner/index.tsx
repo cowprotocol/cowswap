@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
@@ -8,8 +8,7 @@ import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
-import { Page, Content } from 'modules/application/pure/Page'
+import { PageTitle, Page, Content } from 'modules/application'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
@@ -39,9 +38,7 @@ const Wrapper = styled(Page)`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function CowRunnerPage() {
+export default function CowRunnerPage(): ReactNode {
   const { i18n } = useLingui()
   const cowAnalytics = useCowAnalytics()
 

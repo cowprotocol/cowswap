@@ -15,11 +15,15 @@ trades as (
     lower(cast(dune.cowprotocol.result_fac_trades.trader as varchar)) as trader,
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
+    dune.cowprotocol.result_fac_trades.swap_source as swap_source,
     dune.cowprotocol.result_fac_trades.protocol_fee_bps,
     dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
     (
       coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 1e9) < constants.min_fee_bps
-    ) as is_excluded_low_fee
+    ) as is_excluded_low_fee,
+    (
+      lower(coalesce(dune.cowprotocol.result_fac_trades.swap_source, '')) = 'integrations'
+    ) as is_excluded_integrators_source
   from dune.cowprotocol.result_fac_trades
   cross join params
   cross join constants
@@ -34,7 +38,7 @@ first_trade as (
 first_ref_trade as (
   select trader, min(block_time) as first_ref_trade_time
   from trades
-  where referrer_code is not null
+  where referrer_code is not null and not is_excluded_integrators_source
   group by 1
 ),
 bound_ref as (
@@ -54,6 +58,7 @@ select
   trades.trader as trader_address,
   trades.usd_value,
   trades.referrer_code,
+  trades.swap_source,
   bound_ref.bound_code as bound_referrer_code,
   date_diff('day', first_ref_trade.first_ref_trade_time, trades.block_time) as days_since_bound,
   first_trade.first_trade_time,
@@ -62,7 +67,9 @@ select
   trades.block_time = first_ref_trade.first_ref_trade_time as is_first_ref_trade,
   first_trade.first_trade_time = first_ref_trade.first_ref_trade_time as is_trader_eligible,
   trades.is_excluded_low_fee,
+  trades.is_excluded_integrators_source,
   case
+    when trades.is_excluded_integrators_source then 'integrator_disqualified'
     when first_ref_trade.first_ref_trade_time is null then 'no_ref_trade'
     when first_trade.first_trade_time <> first_ref_trade.first_ref_trade_time then 'ref_after_first_trade'
     else 'eligible'
