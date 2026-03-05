@@ -15,11 +15,6 @@ export const IneligibleCard = styled(Card)<{ $maxWidth?: number }>`
   position: relative;
 `
 
-export const IneligibleImage = styled.img`
-  filter: ${({ theme }) =>
-    theme.darkMode ? 'grayscale(100%) opacity(0.5)' : 'grayscale(100%) brightness(0.86) contrast(1.08) opacity(0.78)'};
-`
-
 export const IneligibleTitle = styled.h3`
   margin: 0;
   font-size: 22px;
