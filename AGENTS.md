@@ -152,6 +152,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 - Use `.const.ts` suffixes for files that only define constants/configs (component/model/etc.) for readability.
 - Reuse chain/network lists from shared constants (`AFFILIATE_SUPPORTED_CHAIN_IDS`, etc.) rather than cloning arrays.
 - Lingui: import macros from `@lingui/core/macro` and drop unused imports immediately.
+- i18n placement: never place `t\`\`` or `t()` strings at module scope. Keep translations inside components/functions only, or you will hit `t\`\` and t() call should be inside function`.
 - UI components like `LinkStyledButton` come from `@cowprotocol/ui` (not `theme`).
 
 ---
