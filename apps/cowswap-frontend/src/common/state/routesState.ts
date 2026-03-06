@@ -15,7 +15,7 @@ export const locationAtom = atom<Location>({
 })
 
 locationAtom.onMount = (setAtom) => {
-  hashHistory.listen((event) => {
+  return hashHistory.listen((event) => {
     setAtom(event.location)
   })
 }
