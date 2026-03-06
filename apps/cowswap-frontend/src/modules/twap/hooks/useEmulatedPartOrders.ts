@@ -3,8 +3,7 @@ import { atom } from 'jotai'
 import { jotaiStore } from '@cowprotocol/core'
 import { TokensByAddress } from '@cowprotocol/tokens'
 
-import { twapOrdersAtom, TwapOrdersList } from 'entities/twap'
-import { twapOrdersTokensAtom } from 'entities/twap/state/twapOrdersTokensAtom'
+import { twapOrdersAtom, TwapOrdersList, twapOrdersTokensAtom } from 'entities/twap'
 import { observe } from 'jotai-effect'
 
 import { Order } from 'legacy/state/orders/actions'

@@ -6,8 +6,7 @@ import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { BridgeOrderData, Nullish } from '@cowprotocol/types'
 
 import { useBridgeOrderData, useCrossChainOrder } from 'entities/bridgeOrders'
-import { mapTwapOrderToStoreOrder, useTwapOrderById } from 'entities/twap'
-import { twapOrdersTokensAtom } from 'entities/twap/state/twapOrdersTokensAtom'
+import { mapTwapOrderToStoreOrder, useTwapOrderById, twapOrdersTokensAtom } from 'entities/twap'
 
 import { Order } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'

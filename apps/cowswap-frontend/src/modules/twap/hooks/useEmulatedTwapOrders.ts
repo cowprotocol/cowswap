@@ -2,8 +2,7 @@ import { atom } from 'jotai'
 
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { twapOrdersListAtom, mapTwapOrderToStoreOrder } from 'entities/twap'
-import { twapOrdersTokensAtom } from 'entities/twap/state/twapOrdersTokensAtom'
+import { twapOrdersListAtom, mapTwapOrderToStoreOrder, twapOrdersTokensAtom } from 'entities/twap'
 
 import { Order } from 'legacy/state/orders/actions'
 
