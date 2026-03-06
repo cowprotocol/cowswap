@@ -1,13 +1,3 @@
-/**
- * TWAP order tokens: read atoms and hook backed by atomWithQuery (jotai-tanstack-query).
- *
- * To use: add QueryClientProvider in app root with client={twapOrdersTokensQueryClient},
- * then use useTwapOrdersTokens() or twapOrdersTokensLoadableAtom as needed.
- *
- * Once adopted, switch useTwapOrdersTokens.ts to re-export from here and remove
- * updateUserTokensForTwapOrdersAsyncAtom.
- */
-
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
@@ -22,7 +12,7 @@ import { getTokensListFromOrders } from 'modules/orders'
 
 import { twapOrdersListAtom } from '../index'
 
-// TODO: Move atoms to common/state/tokenByAddressQueryAtoms.ts	 and entities/twap/state/twapOrdersTokensAtoms.ts
+// TODO: Move atoms to common/state/tokenByAddressQueryAtoms.ts:
 
 function parseTokenKey(key: string): { chainId: number; address: string } {
   const [chainIdStr, address] = key.split('::')
@@ -32,8 +22,6 @@ function parseTokenKey(key: string): { chainId: number; address: string } {
 function tokenKey(chainId: number, address: string): string {
   return `${chainId}::${address.toLowerCase()}`
 }
-
-const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
 
 // TODO: Maybe it's better to just create a module that stores the fetched tokens in memory.
 const tokenQueryFamily = atomFamily((key: string) =>
@@ -56,6 +44,10 @@ const tokenQueryFamily = atomFamily((key: string) =>
     }
   }),
 )
+
+// </end move>
+
+const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
 
 const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | null> => {
   // TODO: Why do we read chainId from libs/tokens/src/state/environmentAtom.ts in here?
