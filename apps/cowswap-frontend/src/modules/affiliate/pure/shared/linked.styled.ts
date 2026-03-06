@@ -12,23 +12,28 @@ export const LinkedCardGroup = styled.div`
   min-width: 0;
 `
 
-export const LinkedCard = styled.div`
+interface ExpiredStateProps {
+  $isExpired?: boolean
+}
+
+export const LinkedCard = styled.div<ExpiredStateProps>`
   border: 1px solid var(${UI.COLOR_INFO_BG});
   background: var(${UI.COLOR_PAPER});
   border-radius: 9px;
   overflow: hidden;
   width: 100%;
+  border-color: ${({ $isExpired }) => ($isExpired ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_INFO_BG})`)};
 `
 
-export const LinkedCodeRow = styled.div`
+export const LinkedCodeRow = styled.div<ExpiredStateProps>`
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   column-gap: 12px;
   min-width: 0;
   padding: 14px 10px;
-  background: var(${UI.COLOR_INFO_BG});
-  color: var(${UI.COLOR_INFO_TEXT});
+  background: ${({ $isExpired }) => ($isExpired ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_INFO_BG})`)};
+  color: ${({ $isExpired }) => ($isExpired ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_INFO_TEXT})`)};
 
   > :first-child {
     flex: 1 1 auto;
@@ -89,12 +94,16 @@ export const RewardsHeader = styled.div`
   gap: 6px;
 `
 
-export const ValidStatusBadge = styled(LinkedBadge)`
+export const ValidBadge = styled(LinkedBadge)`
   color: var(${UI.COLOR_SUCCESS});
 
   svg path {
     fill: var(${UI.COLOR_SUCCESS});
   }
+`
+
+export const ExpiredBadge = styled(LinkedBadge)`
+  color: var(${UI.COLOR_ALERT_TEXT});
 `
 
 export const LinkedCopy = styled.div`

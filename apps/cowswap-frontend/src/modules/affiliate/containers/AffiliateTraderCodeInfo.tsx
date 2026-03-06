@@ -3,7 +3,7 @@ import { ReactNode, useMemo } from 'react'
 
 import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
-import { useTimeAgo } from '@cowprotocol/common-hooks'
+import { useMachineTimeMs, useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -27,10 +27,13 @@ import {
   MetricValue,
   ColumnOneCard,
   RewardsHeader,
-  ValidStatusBadge,
+  ValidBadge,
+  ExpiredBadge,
 } from '../pure/shared'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
+
+const EXPIRATION_CHECK_INTERVAL_MS = ms`10m`
 
 const TIME_AGO_UPDATE_INTERVAL_MS = ms`1m`
 
@@ -45,26 +48,36 @@ export function AffiliateTraderCodeInfo(): ReactNode {
   const approxNextUpdateAt = useMemo(() => getApproxNextStatsUpdateAt(), [])
   const approxNextUpdateTimeAgo = useTimeAgo(approxNextUpdateAt, TIME_AGO_UPDATE_INTERVAL_MS)
 
+  const now = useMachineTimeMs(EXPIRATION_CHECK_INTERVAL_MS)
+  const rewardsEndTimestamp = toValidDate(stats?.rewards_end)?.getTime()
+  const isExpired = !!rewardsEndTimestamp && rewardsEndTimestamp < now
+
   return (
     <ColumnOneCard showLoader={statsLoading || codeLoading}>
       {!info ? null : (
         <>
           <RewardsHeader>
-            <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
+            <CardTitle>
+              {isLinked && !isExpired ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}
+            </CardTitle>
           </RewardsHeader>
-          <LinkedCard>
-            <LinkedCodeRow>
+          <LinkedCard $isExpired={isExpired}>
+            <LinkedCodeRow $isExpired={isExpired}>
               <LinkedCodeText>{savedCode}</LinkedCodeText>
-              {isLinked ? (
+              {isExpired ? (
+                <ExpiredBadge>
+                  <Trans>Expired</Trans>
+                </ExpiredBadge>
+              ) : isLinked ? (
                 <LinkedBadge>
                   <SVG src={LockedIcon} width={16} height={16} />
                   <Trans>Linked</Trans>
                 </LinkedBadge>
               ) : (
-                <ValidStatusBadge>
+                <ValidBadge>
                   <SVG src={CheckIcon} />
                   <Trans>Valid</Trans>
-                </ValidStatusBadge>
+                </ValidBadge>
               )}
             </LinkedCodeRow>
           </LinkedCard>
