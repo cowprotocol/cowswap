@@ -8,56 +8,53 @@
  * updateUserTokensForTwapOrdersAsyncAtom.
  */
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
-import type { TokensByAddress } from '@cowprotocol/tokens'
 import { atom, useAtomValue } from 'jotai'
 import { loadable } from 'jotai/utils'
-import { atomFamily }from 'jotai-family'
+
+import { TokenWithLogo, getRpcProvider } from '@cowprotocol/common-const'
+import { fetchTokenFromBlockchain, tokensByAddressAtom } from '@cowprotocol/tokens'
+import type { TokensByAddress } from '@cowprotocol/tokens'
+
+import { atomFamily } from 'jotai-family'
 import { atomWithQuery } from 'jotai-tanstack-query'
+
 import { getTokensListFromOrders } from 'modules/orders'
 
 import { twapOrdersListAtom } from '../index'
-import { tokensByAddressAtom } from '../../../../../../libs/tokens/src/state/tokens/allTokensAtom'
-import { getRpcProvider } from '@cowprotocol/common-const'
 
 // TODO: Move atoms to common/state/tokenByAddressQueryAtoms.ts	 and entities/twap/state/twapOrdersTokensAtoms.ts
-
-function tokenKey(chainId: number, address: string): string {
-  return `${chainId}::${address.toLowerCase()}`
-}
 
 function parseTokenKey(key: string): { chainId: number; address: string } {
   const [chainIdStr, address] = key.split('::')
   return { chainId: Number(chainIdStr), address: address ?? '' }
 }
 
-export const twapOrdersTokensAddressesAtom = atom((get) =>
-  getTokensListFromOrders(get(twapOrdersListAtom)),
-)
+function tokenKey(chainId: number, address: string): string {
+  return `${chainId}::${address.toLowerCase()}`
+}
+
+export const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
 
 // TODO: Maybe it's better to just create a module that stores the fetched tokens in memory.
 export const tokenQueryFamily = atomFamily((key: string) =>
-  atomWithQuery(
-    (get) => {
-      const { chainId, address } = parseTokenKey(key)
+  atomWithQuery(() => {
+    const { chainId, address } = parseTokenKey(key)
 
-      return {
-        queryKey: ['twapOrderToken', chainId, address] as const,
-        queryFn: async (): Promise<TokenWithLogo | null> => {
-          const provider = getRpcProvider(chainId)
+    return {
+      queryKey: ['twapOrderToken', chainId, address] as const,
+      queryFn: async (): Promise<TokenWithLogo | null> => {
+        const provider = getRpcProvider(chainId)
 
-          if (!provider) return null
+        if (!provider) return null
 
-          // TODO M-6 COW-573
-          // This flow will be reviewed and updated later, to include a wagmi alternative
-          const token = await fetchTokenFromBlockchain(address, chainId, provider)
+        // TODO M-6 COW-573
+        // This flow will be reviewed and updated later, to include a wagmi alternative
+        const token = await fetchTokenFromBlockchain(address, chainId, provider)
 
-          return TokenWithLogo.fromToken(token)
-        },
-      }
-    },
-  ),
+        return TokenWithLogo.fromToken(token)
+      },
+    }
+  }),
 )
 
 export const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | null> => {
@@ -69,7 +66,7 @@ export const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddre
   // all token-related logic to query atoms.
   const twapOrdersTokens: TokensByAddress = {}
 
-  let missingTokens = 0;
+  let missingTokens = 0
 
   for (const tokensAddresses of twapOrdersTokensAddresses) {
     const keyLower = tokensAddresses.toLowerCase()
@@ -77,7 +74,7 @@ export const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddre
     if (tokens[keyLower]) {
       twapOrdersTokens[keyLower] = tokens[keyLower]
     } else {
-      const tokenQueryAtom = tokenQueryFamily(tokenKey(chainId, keyLower));
+      const tokenQueryAtom = tokenQueryFamily(tokenKey(chainId, keyLower))
       const queryResult = get(tokenQueryAtom)
 
       if (queryResult.data) {
@@ -88,17 +85,17 @@ export const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddre
     }
   }
 
-  if (missingTokens > 0) return null;
+  if (missingTokens > 0) return null
 
-  const expectedAddresses = [...twapOrdersTokensAddresses].sort().join("::")
-  const loadedAddresses = Object.keys(twapOrdersTokens).sort().join("::")
+  const expectedAddresses = [...twapOrdersTokensAddresses.map((addr) => addr.toLowerCase())].sort().join('::')
+  const loadedAddresses = Object.keys(twapOrdersTokens).sort().join('::')
 
   if (expectedAddresses !== loadedAddresses) {
-    console.error('Tokens finished loading but addresses mismatch', expectedAddresses, loadedAddresses);
-    return null;
+    console.error('Tokens finished loading but addresses mismatch:', { expectedAddresses, loadedAddresses })
+    return null
   }
 
-  return twapOrdersTokens;
+  return twapOrdersTokens
 })
 
 export const twapOrdersTokensLoadableAtom = loadable(twapOrdersTokensAsyncAtom)

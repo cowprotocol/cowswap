@@ -10,6 +10,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
+import { useConnection } from 'wagmi'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
@@ -30,45 +31,54 @@ let longSafeInfoInterval: NodeJS.Timeout | null
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 
+interface WalletUpdaterProps {
+  standaloneMode?: boolean
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
+  const walletInfo = useWalletInfo()
+  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
+  const gnosisSafeInfo = useSafeInfo(walletInfo)
+
+  const setWalletInfo = useSetAtom(walletInfoAtom)
+  const setWalletDetails = useSetAtom(walletDetailsAtom)
+  const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
+
+  // Update wallet info
+  useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
+    setWalletInfo(walletInfo)
+  }, [walletInfo, setWalletInfo])
+
+  // Update wallet details
+  useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
+    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
+    setWalletDetails({
+      walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
+      ...walletDetails,
+    })
+  }, [walletDetails, setWalletDetails, gnosisSafeInfo])
+
+  // Update Gnosis Safe info
+  useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
+    setGnosisSafeInfo(gnosisSafeInfo)
+  }, [gnosisSafeInfo, setGnosisSafeInfo])
+
+  return null
+}
+
 function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
-}
-
-function useWalletInfo(): WalletInfo {
-  const { account, chainId, isActive: active, provider } = useWeb3React()
-  const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
-
-  return useMemo(
-    () => ({
-      chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
-      active,
-      account: account as Address,
-      provider,
-    }),
-    [chainId, active, account, provider, isChainIdUnsupported],
-  )
-}
-
-function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
-  const { ENSName: ensName } = useENSName(account ?? undefined)
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData(standaloneMode)
-  const isSafeApp = useIsSafeApp()
-
-  return useMemo(() => {
-    return {
-      isSmartContractWallet,
-      walletName,
-      icon,
-      ensName: ensName || undefined,
-      isSupportedWallet: checkIsSupportedWallet(walletName),
-
-      // TODO: For now, all SC wallets use pre-sign instead of offchain signing
-      // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
-      allowsOffchainSigning: !isSmartContractWallet,
-      isSafeApp,
-    }
-  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
@@ -149,48 +159,43 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   return safeInfo
 }
 
-interface WalletUpdaterProps {
-  standaloneMode?: boolean
+function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
+  const { ENSName: ensName } = useENSName(account ?? undefined)
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const { walletName, icon } = useWalletMetaData(standaloneMode)
+  const isSafeApp = useIsSafeApp()
+
+  return useMemo(() => {
+    return {
+      isSmartContractWallet,
+      walletName,
+      icon,
+      ensName: ensName || undefined,
+      isSupportedWallet: checkIsSupportedWallet(walletName),
+
+      // TODO: For now, all SC wallets use pre-sign instead of offchain signing
+      // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
+      allowsOffchainSigning: !isSmartContractWallet,
+      isSafeApp,
+    }
+  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
-  const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
-  const gnosisSafeInfo = useSafeInfo(walletInfo)
+function useWalletInfo(): WalletInfo {
+  const { account, chainId, isActive: active, provider, connector: legacyConnector } = useWeb3React()
+  const { connector } = useConnection()
+  const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
-  const setWalletInfo = useSetAtom(walletInfoAtom)
-  const setWalletDetails = useSetAtom(walletDetailsAtom)
-  const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
-
-  // Update wallet info
-  useEffect(() => {
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
-    setWalletInfo(walletInfo)
-  }, [walletInfo, setWalletInfo])
-
-  // Update wallet details
-  useEffect(() => {
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
-    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
-    setWalletDetails({
-      walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
-      ...walletDetails,
-    })
-  }, [walletDetails, setWalletDetails, gnosisSafeInfo])
-
-  // Update Gnosis Safe info
-  useEffect(() => {
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
-    setGnosisSafeInfo(gnosisSafeInfo)
-  }, [gnosisSafeInfo, setGnosisSafeInfo])
-
-  return null
+  return useMemo(
+    () =>
+      ({
+        chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
+        active,
+        account: account as Address,
+        provider,
+        legacyConnector,
+        connector,
+      }) satisfies WalletInfo,
+    [isChainIdUnsupported, chainId, active, account, provider, legacyConnector, connector],
+  )
 }

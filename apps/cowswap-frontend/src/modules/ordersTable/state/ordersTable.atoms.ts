@@ -179,8 +179,10 @@ ordersTableStateAtom.onMount = () => {
         */
 
         const isBundlingSupportedLoadable = get(isBundlingSupportedLoadableAtom)
-        const isBundlingSupported =
-          isBundlingSupportedLoadable.state === 'hasData' ? !!isBundlingSupportedLoadable.data : false
+        // const isBundlingSupported = isBundlingSupportedLoadable.state === 'hasData' ? !!isBundlingSupportedLoadable.data : false
+        const isBundlingSupported = true
+
+        console.log('isBundlingSupported =', isBundlingSupportedLoadable)
 
         if (!isBundlingSupported) {
           reduxOrders = []

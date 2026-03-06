@@ -1,6 +1,10 @@
+import { atom } from 'jotai'
 import { useMemo } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
+import { GnosisSafe } from '@web3-react/gnosis-safe'
+
+import { gnosisSafeInfoAtom, walletInfoAtom } from 'src/api/state'
 
 import { useSafeAppsSdk } from './useSafeAppsSdk'
 
@@ -8,9 +12,6 @@ import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hoo
 import { ConnectionType } from '../../api/types'
 import { getConnectionIcon, getConnectionName } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
-import { atom, useAtomValue } from 'jotai'
-import { gnosisSafeInfoAtom, walletInfoAtom } from 'src/api/state'
-import { GnosisSafe } from '@web3-react/gnosis-safe'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -31,35 +32,22 @@ export interface WalletMetaData {
   icon?: string
 }
 
-// TODO: Add proper return type annotation
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-function getWcWalletIcon(meta: any) {
-  return meta.icons?.length > 0 ? meta.icons[0] : undefined
-}
+/**
+ * Detects whether the currently connected wallet is a Safe App
+ * It'll be false if connected to Safe wallet via WalletConnect
+ */
+export function useIsSafeApp(): boolean {
+  const isSafeWallet = useIsSafeWallet()
+  const sdk = useSafeAppsSdk()
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
-  // fix for this https://github.com/gnosis/cowswap/issues/1929
-  const defaultOutput = { walletName: undefined, icon: undefined }
-
-  if (!provider) {
-    return defaultOutput
+  // If the wallet is not a Safe, or we don't have access to the SafeAppsSDK, we know is not a Safe App
+  if (!isSafeWallet || !sdk) {
+    return false
   }
 
-  const v1MetaData = provider?.connector?.peerMeta
-  const v2MetaData = provider?.signer?.session?.peer?.metadata
-  const meta = v1MetaData || v2MetaData
-
-  if (meta) {
-    return {
-      walletName: meta.name,
-      icon: getWcWalletIcon(meta),
-    }
-  }
-
-  return defaultOutput
+  // Will only be a SafeApp if within an iframe
+  // Which means, window.parent is different than window
+  return window?.parent !== window
 }
 
 // FIXME: I notice this function is not calculating always correctly the walletName. Out of scope of this PR to fix. "getConnnectionName" might help
@@ -111,34 +99,45 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
   }, [connectionType, provider, account, selectedEip6963Provider, standaloneMode])
 }
 
-/**
- * Detects whether the currently connected wallet is a Safe App
- * It'll be false if connected to Safe wallet via WalletConnect
- */
-export function useIsSafeApp(): boolean {
-  const isSafeWallet = useIsSafeWallet()
-  const sdk = useSafeAppsSdk()
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
+  // fix for this https://github.com/gnosis/cowswap/issues/1929
+  const defaultOutput = { walletName: undefined, icon: undefined }
 
-  // If the wallet is not a Safe, or we don't have access to the SafeAppsSDK, we know is not a Safe App
-  if (!isSafeWallet || !sdk) {
-    return false
+  if (!provider) {
+    return defaultOutput
   }
 
-  // Will only be a SafeApp if within an iframe
-  // Which means, window.parent is different than window
-  return window?.parent !== window
+  const v1MetaData = provider?.connector?.peerMeta
+  const v2MetaData = provider?.signer?.session?.peer?.metadata
+  const meta = v1MetaData || v2MetaData
+
+  if (meta) {
+    return {
+      walletName: meta.name,
+      icon: getWcWalletIcon(meta),
+    }
+  }
+
+  return defaultOutput
 }
 
-export const safeAppSdkAtom = atom(get => {
-  const { account, connector } = get(walletInfoAtom)
+// TODO: Add proper return type annotation
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
+function getWcWalletIcon(meta: any) {
+  return meta.icons?.length > 0 ? meta.icons[0] : undefined
+}
 
-  return !!account || !(connector instanceof GnosisSafe) || !connector.sdk
-    ? null
-    : connector.sdk;
+export const safeAppSdkAtom = atom((get) => {
+  const { account, legacyConnector } = get(walletInfoAtom)
+
+  return !account || !(legacyConnector instanceof GnosisSafe) || !legacyConnector.sdk ? null : legacyConnector.sdk
 })
 
-export const isSafeAppAtom = atom(get => {
-  const isSafeWallet = useAtomValue(gnosisSafeInfoAtom)
+export const isSafeAppAtom = atom((get) => {
+  const isSafeWallet = get(gnosisSafeInfoAtom)
   const sdk = get(safeAppSdkAtom)
 
   // If the wallet is not a Safe, or we don't have access to the SafeAppsSDK, we know is not a Safe App
@@ -151,20 +150,12 @@ export const isSafeAppAtom = atom(get => {
   return window?.parent !== window
 })
 
-export const isSafeViaWcAtom = atom(get => {
+export const isSafeViaWcAtom = atom((get) => {
   const isSafeApp = get(isSafeAppAtom)
-  const isSafeWallet = useAtomValue(gnosisSafeInfoAtom)
+  const isSafeWallet = get(gnosisSafeInfoAtom)
 
   return isSafeWallet && !isSafeApp
 })
-
-/**
- * Detects whether the currently connected wallet is a Safe wallet
- * regardless of the connection method (WalletConnect or inside Safe as an App)
- */
-export function useIsSafeWallet(): boolean {
-  return !!useGnosisSafeInfo()
-}
 
 /**
  * Detects whether the currently connected wallet is a Safe wallet
@@ -176,4 +167,12 @@ export function useIsSafeViaWc(): boolean {
   const isSafeWallet = useIsSafeWallet()
 
   return isSafeWallet && !isSafeApp
+}
+
+/**
+ * Detects whether the currently connected wallet is a Safe wallet
+ * regardless of the connection method (WalletConnect or inside Safe as an App)
+ */
+export function useIsSafeWallet(): boolean {
+  return !!useGnosisSafeInfo()
 }

@@ -1,15 +1,24 @@
-import { TokensByAddress } from '@cowprotocol/tokens'
 import { atom } from 'jotai'
+
+import { jotaiStore } from '@cowprotocol/core'
+import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { twapOrdersAtom, TwapOrdersList } from 'entities/twap'
 import { twapOrdersTokensAtom } from 'entities/twap/hooks/useTwapOrdersTokens'
+import { observe } from 'jotai-effect'
+
 import { Order } from 'legacy/state/orders/actions'
 
 import { TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
+/** Writable atom: when set (e.g. when next part-order expiry timeout fires), emulatedPartOrdersAtom re-runs. */
+export const partOrdersRefreshTriggerAtom = atom(0)
+
 export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
+  get(partOrdersRefreshTriggerAtom)
+
   const twapOrders = get(twapOrdersAtom)
   const twapParticleOrders = get(twapPartOrdersListAtom)
   const twapOrdersTokens = get(twapOrdersTokensAtom)
@@ -18,6 +27,54 @@ export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
 
   return emulatePartOrders(twapParticleOrders, twapOrders, twapOrdersTokens)
 })
+
+/** Next part-order expiry time in ms (min validTo among non-expired), or null. Used to schedule a single timeout. */
+export const nextPartOrderExpiryMsAtom = atom((get) => {
+  const orders = get(emulatedPartOrdersAtom)
+  const now = Date.now()
+
+  let minValidToMs = Infinity
+
+  for (const order of orders) {
+    const validToMs = order.validTo * 1000
+
+    if (validToMs > now) {
+      minValidToMs = Math.min(minValidToMs, validToMs)
+    }
+  }
+
+  return minValidToMs === Infinity ? null : minValidToMs
+})
+
+partOrdersRefreshTriggerAtom.onMount = () => {
+  let timeoutId = 0
+
+  const unobserve = observe((get, set) => {
+    const nextExpiryMs = get(nextPartOrderExpiryMsAtom)
+
+    clearTimeout(timeoutId)
+    timeoutId = 0
+
+    if (nextExpiryMs === null) {
+      return
+    }
+
+    const now = Date.now()
+
+    if (nextExpiryMs <= now) {
+      set(partOrdersRefreshTriggerAtom, now)
+    } else {
+      timeoutId = window.setTimeout(() => {
+        set(partOrdersRefreshTriggerAtom, Date.now())
+      }, nextExpiryMs - now)
+    }
+  }, jotaiStore)
+
+  return () => {
+    window.clearTimeout(timeoutId)
+    unobserve()
+  }
+}
 
 function emulatePartOrders(
   twapParticleOrders: TwapPartOrderItem[],
