@@ -15,18 +15,17 @@ import * as styledEl from './styled'
 
 import { useIsPartialApproveSelectedByUser } from '../../state'
 
-type ActiveOrdersWithAffectedPermitProps = {
+interface ActiveOrdersWithAffectedPermitProps {
   currency: Currency
   orderId?: string
 }
 
 export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode {
-  console.log('ActiveOrdersWithAffectedPermit render')
-
   const { t } = useLingui()
   const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
 
+  // TODO: Consider moving to atom:
   const ordersWithPermit = useMemo(() => {
     return pendingOrders.filter((order) => {
       return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)

@@ -30,6 +30,7 @@ const tokenQueryFamily = atomFamily((key: string) =>
 
     return {
       queryKey: ['twapOrderToken', chainId, address],
+      staleTime: Infinity,
       queryFn: async (): Promise<TokenWithLogo | null> => {
         const provider = getRpcProvider(chainId)
 
