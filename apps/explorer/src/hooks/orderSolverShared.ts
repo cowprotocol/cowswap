@@ -19,7 +19,6 @@ export type UseOrderSolverResult = {
 }
 
 const SOLVER_SUFFIX_REGEX = /-solve$/i
-
 export async function resolveSolver(
   networkId: number,
   orderUid: string,
@@ -40,7 +39,6 @@ export async function resolveSolver(
 
   return buildSolverInfo(winnerSolverName, solvers)
 }
-
 export async function resolveSolverByTxHash(networkId: number, txHash: string): Promise<OrderSolverInfo | undefined> {
   const [competition, solvers] = await Promise.all([
     getSolverCompetitionByTxHash({ networkId, txHash }),
@@ -52,6 +50,10 @@ export async function resolveSolverByTxHash(networkId: number, txHash: string): 
 
   return buildSolverInfo(winnerSolverName, solvers)
 }
+
+type CompetitionStatusEntry = NonNullable<OrderCompetitionStatus['value']>[number]
+
+type ExecutedAmounts = NonNullable<CompetitionStatusEntry['executedAmounts']>
 
 function buildSolverInfo(winnerSolverName: string, solvers: SolverInfo[]): OrderSolverInfo {
   const matchingSolver = matchSolverByName(winnerSolverName, solvers)
@@ -87,17 +89,13 @@ function getWinnerSolverName(winner: unknown): string | undefined {
   return typeof solver === 'string' ? solver : undefined
 }
 
-function hasNonZeroExecutedAmounts(executedAmounts: unknown): boolean {
-  if (!executedAmounts || typeof executedAmounts !== 'object') return false
+function hasNonZeroExecutedAmounts(executedAmounts: CompetitionStatusEntry['executedAmounts']): boolean {
+  if (!executedAmounts) return false
 
-  const amounts = executedAmounts as { buy?: unknown; sell?: unknown }
-  return isNonZeroAmount(amounts.buy) || isNonZeroAmount(amounts.sell)
+  return isNonZeroAmount(executedAmounts.buy) || isNonZeroAmount(executedAmounts.sell)
 }
 
-function isNonZeroAmount(value: unknown): boolean {
-  if (typeof value === 'number') return value > 0
-  if (typeof value !== 'string') return false
-
+function isNonZeroAmount(value: ExecutedAmounts['buy']): boolean {
   return /[1-9]/.test(value)
 }
 
