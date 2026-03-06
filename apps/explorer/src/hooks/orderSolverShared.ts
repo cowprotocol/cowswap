@@ -96,7 +96,11 @@ function hasNonZeroExecutedAmounts(executedAmounts: CompetitionStatusEntry['exec
 }
 
 function isNonZeroAmount(value: ExecutedAmounts['buy']): boolean {
-  return /[1-9]/.test(value)
+  try {
+    return BigInt(value) > 0n
+  } catch {
+    return false
+  }
 }
 
 function matchSolverByName(solverName: string, solvers: SolverInfo[]): SolverInfo | undefined {
