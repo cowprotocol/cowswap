@@ -17,7 +17,7 @@ import { RowBetween } from '../Row'
 export * from './ButtonMod'
 export * from './types'
 
-export const ButtonPrimary = styled(ButtonPrimaryMod)`
+export const ButtonPrimary: typeof ButtonPrimaryMod = styled(ButtonPrimaryMod)`
   // CSS overrides
   background: var(${UI.COLOR_PRIMARY});
   color: var(${UI.COLOR_BUTTON_TEXT});
@@ -53,7 +53,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 `
 
-export const ButtonLight = styled(ButtonPrimary)`
+export const ButtonLight: typeof ButtonPrimary = styled(ButtonPrimary)`
   color: ${({ theme }) => theme.text1};
   font-weight: 800;
   border: ${({ theme }) => `4px solid ${theme.black}`};
@@ -95,7 +95,7 @@ export const ButtonLight = styled(ButtonPrimary)`
   }
 `
 
-export const ButtonGray = styled(ButtonGrayMod)`
+export const ButtonGray: typeof ButtonGrayMod = styled(ButtonGrayMod)`
   box-shadow: none;
 
   &:hover,
@@ -104,7 +104,7 @@ export const ButtonGray = styled(ButtonGrayMod)`
   }
 `
 
-export const ButtonSecondary = styled(ButtonPrimary)`
+export const ButtonSecondary: typeof ButtonPrimary = styled(ButtonPrimary)`
   // CSS overrides
   min-height: 0;
   border: 0;
@@ -159,7 +159,7 @@ export const ButtonOutlined = styled.button<{ disabled?: boolean; margin?: strin
   }
 `
 
-export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
+export const ButtonConfirmedStyle: typeof ButtonConfirmedStyleMod = styled(ButtonConfirmedStyleMod)`
   // CSS overrides
   background-color: ${({ theme }) => theme.disabled};
   color: var(--cow-color-text1);
@@ -171,7 +171,7 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
   box-shadow: none;
 `
 
-export const ButtonErrorStyle = styled(ButtonPrimary)`
+export const ButtonErrorStyle: typeof ButtonPrimary = styled(ButtonPrimary)`
   // CSS overrides
   background: var(${UI.COLOR_DANGER});
   color: var(${UI.COLOR_PAPER});
@@ -213,10 +213,6 @@ const HoverIcon = styled.div`
   }
 `
 
-type ButtonCustomProps = ButtonProps & {
-  buttonSize?: ButtonSize
-}
-
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ButtonConfirmed({
@@ -233,16 +229,6 @@ export function ButtonConfirmed({
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonCustomProps) {
-  if (error) {
-    return <ButtonErrorStyle {...rest} />
-  } else {
-    return <ButtonPrimary {...rest} />
-  }
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonCustomProps) {
   return (
     <ButtonPrimary {...rest} disabled={disabled}>
@@ -252,6 +238,20 @@ export function ButtonDropdown({ disabled = false, children, ...rest }: { disabl
       </RowBetween>
     </ButtonPrimary>
   )
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonCustomProps) {
+  if (error) {
+    return <ButtonErrorStyle {...rest} />
+  } else {
+    return <ButtonPrimary {...rest} />
+  }
+}
+
+type ButtonCustomProps = ButtonProps & {
+  buttonSize?: ButtonSize
 }
 
 export const ButtonStar = ({

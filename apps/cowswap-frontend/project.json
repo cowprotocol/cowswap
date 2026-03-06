@@ -83,8 +83,10 @@
     },
     "typecheck": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["production", "^production"],
       "options": {
-        "command": "tsc --noEmit -p apps/cowswap-frontend/tsconfig.app.json"
+        "command": "tsc --noEmit -p apps/cowswap-frontend/tsconfig.typecheck.json"
       }
     },
     "serve-static": {

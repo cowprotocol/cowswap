@@ -25,7 +25,9 @@
         "name": "next"
       }
     ],
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "composite": true,
+    "declaration": true
   },
   "include": [
     "**/*.ts",
@@ -37,5 +39,46 @@
     "next-env.d.ts",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
+  "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
+  "references": [
+    {
+      "path": "../../libs/wallet-provider"
+    },
+    {
+      "path": "../../libs/wallet"
+    },
+    {
+      "path": "../../libs/ui-utils"
+    },
+    {
+      "path": "../../libs/types"
+    },
+    {
+      "path": "../../libs/events"
+    },
+    {
+      "path": "../../libs/core"
+    },
+    {
+      "path": "../../libs/common-utils"
+    },
+    {
+      "path": "../../libs/common-const"
+    },
+    {
+      "path": "../../libs/common-hooks"
+    },
+    {
+      "path": "../../libs/widget-react"
+    },
+    {
+      "path": "../../libs/assets"
+    },
+    {
+      "path": "../../libs/analytics"
+    },
+    {
+      "path": "../../libs/ui"
+    }
+  ]
 }

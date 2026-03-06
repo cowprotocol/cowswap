@@ -1,11 +1,15 @@
+import { ComponentProps, ComponentType } from 'react'
+
 import { Menu, MenuButton, MenuItems, MenuItem } from '@reach/menu-button'
 import styled, { css } from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
-export const ContextMenu = styled(Menu)``
+export const ContextMenu: ComponentType<ComponentProps<typeof Menu>> = styled(Menu)``
 
-export const ContextMenuButton = styled(MenuButton).attrs({ type: 'button' })`
+export const ContextMenuButton: ComponentType<ComponentProps<typeof MenuButton>> = styled(MenuButton).attrs({
+  type: 'button',
+})`
   background: none;
   border: none;
   outline: none;
@@ -85,7 +89,7 @@ export const ContextMenuTooltipButton = styled.div<{ disableHoverBackground?: bo
   }
 `
 
-export const ContextMenuItems = styled(MenuItems)`
+export const ContextMenuItems: ComponentType<ComponentProps<typeof MenuItems>> = styled(MenuItems)`
   background: var(${UI.COLOR_PAPER_DARKER});
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: 12px;
@@ -138,7 +142,9 @@ const BaseMenuItemStyles = css`
   }
 `
 
-export const ContextMenuItem = styled(MenuItem)<{ variant?: 'danger' }>`
+export const ContextMenuItem: ComponentType<ComponentProps<typeof MenuItem> & { variant?: 'danger' }> = styled(
+  MenuItem,
+)<{ variant?: 'danger' }>`
   ${BaseMenuItemStyles}
   border: none;
 

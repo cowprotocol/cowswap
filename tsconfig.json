@@ -1,0 +1,93 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    {
+      "path": "./libs/balances-and-allowances"
+    },
+    {
+      "path": "./libs/iframe-transport"
+    },
+    {
+      "path": "./libs/wallet-provider"
+    },
+    {
+      "path": "./libs/hook-dapp-lib"
+    },
+    {
+      "path": "./libs/common-const"
+    },
+    {
+      "path": "./libs/common-hooks"
+    },
+    {
+      "path": "./libs/common-utils"
+    },
+    {
+      "path": "./libs/permit-utils"
+    },
+    {
+      "path": "./libs/widget-react"
+    },
+    {
+      "path": "./libs/widget-lib"
+    },
+    {
+      "path": "./libs/analytics"
+    },
+    {
+      "path": "./libs/multicall"
+    },
+    {
+      "path": "./libs/snackbars"
+    },
+    {
+      "path": "./libs/ui-utils"
+    },
+    {
+      "path": "./libs/assets"
+    },
+    {
+      "path": "./libs/events"
+    },
+    {
+      "path": "./libs/tokens"
+    },
+    {
+      "path": "./libs/wallet"
+    },
+    {
+      "path": "./libs/types"
+    },
+    {
+      "path": "./libs/abis"
+    },
+    {
+      "path": "./libs/core"
+    },
+    {
+      "path": "./libs/ens"
+    },
+    {
+      "path": "./libs/ui"
+    },
+    {
+      "path": "./apps/cowswap-frontend-e2e"
+    },
+    {
+      "path": "./apps/widget-configurator"
+    },
+    {
+      "path": "./apps/cowswap-frontend"
+    },
+    {
+      "path": "./apps/sdk-tools"
+    },
+    {
+      "path": "./apps/explorer"
+    },
+    {
+      "path": "./apps/cow-fi"
+    }
+  ]
+}

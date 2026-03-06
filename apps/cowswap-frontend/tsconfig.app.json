@@ -5,7 +5,7 @@
     "types": ["node", "vite/client"],
     "allowJs": true,
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -38,5 +38,81 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": [
+    "package.json",
+    "LinguiJestProvider.tsx",
+    "src/**/*.json",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "references": [
+    {
+      "path": "../../libs/widget-lib/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/wallet-provider/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/wallet/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/ui-utils/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/types/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/tokens/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/snackbars/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/permit-utils/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/multicall/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/iframe-transport/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/hook-dapp-lib/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/events/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/ens/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/abis/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/core/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/common-utils/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/common-hooks/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/balances-and-allowances/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/assets/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/analytics/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/common-const/tsconfig.lib.json"
+    }
+  ]
 }

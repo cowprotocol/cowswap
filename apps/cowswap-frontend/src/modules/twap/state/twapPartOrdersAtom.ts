@@ -1,4 +1,4 @@
-import { atom } from 'jotai'
+import { atom, SetStateAction, WritableAtom } from 'jotai'
 
 import { deepEqual } from '@cowprotocol/common-utils'
 import { atomWithIdbStorage } from '@cowprotocol/core'
@@ -24,12 +24,18 @@ const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isC
 localStorage.removeItem('twap-part-orders-list:v1')
 
 export const twapPartOrdersAtom = atomWithIdbStorage<TwapPartOrders>('twap-part-orders-list:v1', {})
+type TwapPartOrdersStorageAtom = WritableAtom<
+  TwapPartOrders | Promise<TwapPartOrders>,
+  [SetStateAction<TwapPartOrders>],
+  Promise<void>
+>
+const twapPartOrdersStorageAtom = twapPartOrdersAtom as unknown as TwapPartOrdersStorageAtom
 
 /**
  * The only goal of this function is protection from isCreatedInOrderBook flag overriding
  */
 export const setPartOrdersAtom = atom(null, async (get, set, nextState: TwapPartOrders) => {
-  const currentState = await get(twapPartOrdersAtom)
+  const currentState = await get(twapPartOrdersStorageAtom)
 
   const newState = Object.keys(nextState).reduce<TwapPartOrders>((acc, parentId) => {
     const items = nextState[parentId]
@@ -55,13 +61,13 @@ export const setPartOrdersAtom = atom(null, async (get, set, nextState: TwapPart
     return acc
   }, {})
 
-  await set(twapPartOrdersAtom, newState)
+  await set(twapPartOrdersStorageAtom, newState)
 })
 
 export const updatePartOrdersAtom = atom(
   null,
   async (get, set, updates: { [orderId: string]: Partial<TwapPartOrderItem> }) => {
-    const currentState = await get(twapPartOrdersAtom)
+    const currentState = await get(twapPartOrdersStorageAtom)
 
     const newState = Object.keys(currentState).reduce<TwapPartOrders>((acc, parentId) => {
       acc[parentId] = currentState[parentId].map((item) => {
@@ -74,7 +80,7 @@ export const updatePartOrdersAtom = atom(
     }, {})
 
     if (!deepEqual(currentState, newState)) {
-      await set(twapPartOrdersAtom, newState)
+      await set(twapPartOrdersStorageAtom, newState)
     }
   },
 )

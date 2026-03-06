@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { blockedListSourcesAtom } from './blockedListSourcesAtom'
@@ -21,6 +22,16 @@ export interface TokensByAddress {
 
 export interface TokensBySymbol {
   [address: string]: TokenWithLogo[]
+}
+
+interface ActiveTokensState {
+  tokens: TokenWithLogo[]
+  chainId: SupportedChainId
+}
+
+interface TokensByAddressState {
+  tokens: TokensByAddress
+  chainId: SupportedChainId
 }
 
 interface TokensState {
@@ -88,7 +99,7 @@ export const activeTokensMapAtom = atom(async (get) => {
  * The list includes: native token, user added tokens, favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
-export const allActiveTokensAtom = atom(async (get) => {
+export const allActiveTokensAtom = atom<Promise<ActiveTokensState>>(async (get): Promise<ActiveTokensState> => {
   const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
@@ -142,7 +153,7 @@ export const inactiveTokensAtom = atom(async (get) => {
   return tokenMapToListWithLogo([tokensMap.inactiveTokens], chainId)
 })
 
-export const tokensByAddressAtom = atom(async (get) => {
+export const tokensByAddressAtom = atom<Promise<TokensByAddressState>>(async (get): Promise<TokensByAddressState> => {
   const activeTokens = await get(allActiveTokensAtom)
 
   const tokens = activeTokens.tokens.reduce<TokensByAddress>((acc, token) => {

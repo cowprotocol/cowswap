@@ -4,7 +4,11 @@ import { USER_1, TOKEN_1, CONTRACT, TOKEN_2, TOKEN_3, TOKEN_4, TOKEN_5, TOKEN_6,
 
 import { ZERO, ALLOWANCE_MAX_VALUE } from '../../const'
 
-export default {
+interface AllowancesFixture {
+  [userAddress: string]: { [tokenAddress: string]: { [spenderAddress: string]: BN } }
+}
+
+const erc20Allowances: AllowancesFixture = {
   [USER_1]: {
     [TOKEN_1]: {
       [CONTRACT]: ZERO, // 0, WETH: decimals=18
@@ -29,3 +33,5 @@ export default {
     },
   },
 }
+
+export default erc20Allowances

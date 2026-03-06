@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
     "types": ["node"]
   },
   "files": [
@@ -18,5 +19,31 @@
     "**/*.spec.jsx",
     "**/*.test.jsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+  "references": [
+    {
+      "path": "../ui-utils/tsconfig.lib.json"
+    },
+    {
+      "path": "../types/tsconfig.lib.json"
+    },
+    {
+      "path": "../core/tsconfig.lib.json"
+    },
+    {
+      "path": "../common-utils/tsconfig.lib.json"
+    },
+    {
+      "path": "../common-hooks/tsconfig.lib.json"
+    },
+    {
+      "path": "../common-const/tsconfig.lib.json"
+    },
+    {
+      "path": "../assets/tsconfig.lib.json"
+    },
+    {
+      "path": "../analytics/tsconfig.lib.json"
+    }
+  ]
 }
