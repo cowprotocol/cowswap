@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
@@ -6,7 +6,7 @@ import { HelpTooltip } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
-
+import { Dropdown } from '@cowprotocol/ui'
 import { getOrdersTableSettings } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
@@ -51,16 +51,16 @@ const DropdownButton = styled.button`
 
 const DropdownList = styled.div<{ isOpen: boolean }>`
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: var(${UI.COLOR_PAPER});
-  border: 1px solid var(${UI.COLOR_BORDER});
-  border-radius: 12px;
+  // position: absolute;
+  // top: calc(100% + 8px);
+  // right: 0;
+  //background: var(${UI.COLOR_PAPER});
+  //border: 1px solid var(${UI.COLOR_BORDER});
+  //border-radius: 12px;
   padding: 6px;
-  width: 180px;
-  z-index: 100;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 100%;
+  // z-index: 100;
+  // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `
 
 const DropdownItem = styled.div`
@@ -115,6 +115,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
   const { LEFT_ALIGNED } = getOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
+  const dropdownAnchorRef = useRef<HTMLButtonElement>(null)
   const {
     showRecipient,
     partialFillsEnabled,
@@ -236,17 +237,23 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
             <Trans>Limit Price Position</Trans> <HelpTooltip text={t`Choose where to display the limit price input.`} />
           </SettingsLabel>
           <DropdownContainer>
-            <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>
-            <DropdownList isOpen={isOpen}>
-              {Object.entries(POSITION_LABELS).map(([value, label]) => (
-                <DropdownItem
-                  key={value}
-                  onClick={handleSelect(value as LimitOrdersSettingsState['limitPricePosition'])}
-                >
-                  {label}
-                </DropdownItem>
-              ))}
-            </DropdownList>
+            <DropdownButton
+              ref={dropdownAnchorRef}
+              onClick={toggleDropdown}>
+              {POSITION_LABELS[limitPricePosition]}
+            </DropdownButton>
+            <Dropdown isOpen={isOpen} onDismiss={() => setIsOpen(false)} anchorRef={dropdownAnchorRef} containerId="dropdown-container">
+              <DropdownList isOpen={isOpen}>
+                {Object.entries(POSITION_LABELS).map(([value, label]) => (
+                  <DropdownItem
+                    key={value}
+                    onClick={handleSelect(value as LimitOrdersSettingsState['limitPricePosition'])}
+                  >
+                    {label}
+                  </DropdownItem>
+                ))}
+              </DropdownList>
+            </Dropdown>
           </DropdownContainer>
         </SettingsRow>
       </SettingsContainer>
