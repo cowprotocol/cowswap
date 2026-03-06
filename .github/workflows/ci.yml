@@ -21,6 +21,7 @@ env:
   REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
+  NX_DISABLE_REMOTE_CACHE: true
 
 jobs:
   setup:
