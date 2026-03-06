@@ -1,9 +1,6 @@
 import { Address } from '@cowprotocol/cow-sdk'
 
-import useSWR from 'swr'
-
-import { checkIfTraderHasPastTrades } from '../api/checkIfTraderHasPastTrades'
-import { AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS } from '../config/affiliateProgram.const'
+import { useAffiliateTraderPastOrders } from './useAffiliateTraderPastOrders'
 
 interface UseHasOrderbookTradesParams {
   account?: Address
@@ -22,16 +19,11 @@ interface UseHasOrderbookTradesResult {
 export function useHasOrderbookTrades(params: UseHasOrderbookTradesParams): UseHasOrderbookTradesResult {
   const { account, enabled } = params
 
-  return useSWR<boolean>(
-    enabled && !!account ? ['affiliate-eligibility', account] : null,
-    async () => (!account ? false : checkIfTraderHasPastTrades(account)),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS,
-      refreshInterval: AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS,
-      revalidateIfStale: true,
-      revalidateOnMount: true,
-    },
-  )
+  const { data, isLoading, error } = useAffiliateTraderPastOrders({ account, enabled })
+
+  return {
+    data: data?.hasPastTrades,
+    isLoading,
+    error,
+  }
 }

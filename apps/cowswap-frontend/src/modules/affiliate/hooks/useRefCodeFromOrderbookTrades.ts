@@ -1,9 +1,6 @@
 import { Address } from '@cowprotocol/cow-sdk'
 
-import useSWR from 'swr'
-
-import { findRefCodeInPastTrades } from '../api/findRefCodeInPastTrades'
-import { AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS } from '../config/affiliateProgram.const'
+import { useAffiliateTraderPastOrders } from './useAffiliateTraderPastOrders'
 
 interface UseRefCodeFromOrderbookTradesParams {
   account?: Address
@@ -21,9 +18,11 @@ export function useRefCodeFromOrderbookTrades(
 ): UseRefCodeFromOrderbookTradesResult {
   const { account, enabled } = params
 
-  return useSWR<string | undefined>(
-    enabled && !!account ? ['affiliate-refCode-orderbook', account] : null,
-    async () => (!account ? undefined : findRefCodeInPastTrades(account)),
-    { refreshInterval: AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS },
-  )
+  const { data, isLoading, error } = useAffiliateTraderPastOrders({ account, enabled })
+
+  return {
+    data: data?.refCode,
+    isLoading,
+    error,
+  }
 }
