@@ -1,6 +1,7 @@
 # explorer AGENTS.md
 
-This file is additive. Follow the repo root `AGENTS.md` for full rules.
+Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
+This file: explorer app-specific commands only.
 
 ## App commands
 - Start dev server: `pnpm start:explorer`

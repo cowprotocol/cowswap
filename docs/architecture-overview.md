@@ -1,5 +1,10 @@
 # CoW Swap Architecture
 
+Owner: frontend platform maintainers
+Status: Reference (visual)
+Last reviewed: 2026-03-05
+Normative rules: [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md)
+
 > This documentation is part of the broader https://github.com/cowprotocol/cowswap-diagrams
 
 Overall architecture of the project
