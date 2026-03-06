@@ -6,7 +6,6 @@ import { TokenInfo } from '@cowprotocol/types'
 import { blockedListSourcesAtom } from './blockedListSourcesAtom'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
-import { loadable } from 'jotai/utils'
 
 import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { TokensBySymbolState, TokensMap } from '../../types'

@@ -8,7 +8,8 @@ import { observe } from 'jotai-effect'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
+import { TwapPartOrderItem, twapPartOrdersListAtom } from './twapPartOrdersAtom'
+
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 

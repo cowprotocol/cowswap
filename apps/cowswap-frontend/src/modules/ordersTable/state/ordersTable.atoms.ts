@@ -27,8 +27,8 @@ import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
 
 import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/utils/getFilteredOrders'
 import { getOrdersTableList } from 'modules/ordersTable/utils/getOrdersTableList'
-import { emulatedPartOrdersAtom } from 'modules/twap/hooks/useEmulatedPartOrders'
-import { emulatedTwapOrdersAtom } from 'modules/twap/hooks/useEmulatedTwapOrders'
+import { emulatedPartOrdersAtom } from 'modules/twap/state/emulatedPartOrdersAtom'
+import { emulatedTwapOrdersAtom } from 'modules/twap/state/emulatedTwapOrdersAtom'
 
 import { TabOrderTypes, locationOrderTypeAtom, tabParamAtom, OrderTabId } from 'common/state/routesState'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
