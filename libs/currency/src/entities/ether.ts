@@ -1,7 +1,8 @@
+import { WETH9 } from '@uniswap/sdk-core'
+
 import { Currency } from './currency'
 import { NativeCurrency } from './nativeCurrency'
 import { Token } from './token'
-import { WETH9 } from './weth9'
 
 /**
  * Ether is the main usage of a 'native' currency, i.e. for Ethereum mainnet and all testnets
