@@ -1,3 +1,6 @@
+/// <reference path="../../types/toformat.d.ts" />
+/// <reference path="../../types/augmentations.d.ts" />
+
 import _Big from 'big.js'
 import _Decimal from 'decimal.js-light'
 import JSBI from 'jsbi'

@@ -12,4 +12,4 @@ export { Token } from './entities/token'
 export { Ether } from './entities/ether'
 
 // Not yet migrated — still from @uniswap/sdk-core
-export { MaxUint256, WETH9 } from '@uniswap/sdk-core'
+export { WETH9 } from '@uniswap/sdk-core'

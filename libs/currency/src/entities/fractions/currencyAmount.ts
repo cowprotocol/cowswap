@@ -1,4 +1,7 @@
-import { MaxUint256 } from '@uniswap/sdk-core'
+/// <reference path="../../types/toformat.d.ts" />
+/// <reference path="../../types/augmentations.d.ts" />
+
+import { MAX_UINT256 } from '@cowprotocol/cow-sdk'
 
 import _Big from 'big.js'
 import JSBI from 'jsbi'
@@ -11,6 +14,8 @@ import { Currency } from '../currency'
 import { Token } from '../token'
 
 const Big = toFormat(_Big)
+
+const MAX_UINT = JSBI.BigInt(MAX_UINT256.toString())
 
 export class CurrencyAmount<T extends Currency> extends Fraction {
   readonly currency: T
@@ -41,7 +46,7 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
 
   protected constructor(currency: T, numerator: BigintIsh, denominator?: BigintIsh) {
     super(numerator, denominator)
-    if (!JSBI.lessThanOrEqual(this.quotient, MaxUint256)) throw new Error('AMOUNT')
+    if (!JSBI.lessThanOrEqual(this.quotient, MAX_UINT)) throw new Error('AMOUNT')
     this.currency = currency
     this.decimalScale = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(currency.decimals))
   }
