@@ -18,7 +18,7 @@ export function useAffiliateTraderRecoverySideEffect(): void {
   const localCode = useRefCodeFromLocalTrades(account)
   const { data: pastTradesCheck } = useAffiliateTraderPastOrders({
     account,
-    enabled: !localCode,
+    enabled: !localCode && !isLinked,
   })
   const orderbookCode = pastTradesCheck?.refCode
 
