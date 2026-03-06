@@ -10,6 +10,12 @@ import { TypedAppDataHooks } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
+export interface SafeBundleFlowContext extends TradeFlowContext {
+  erc20Contract: Erc20
+  spender: string
+  sendBatchTransactions: SendBatchTxCallback
+}
+
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
   // validTo must be calculated just before signing of an order
@@ -25,12 +31,6 @@ export interface TradeFlowContext {
   generatePermitHook: GeneratePermitHook
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   quoteState: TradeQuoteState
-}
-
-export interface SafeBundleFlowContext extends TradeFlowContext {
-  erc20Contract: Erc20
-  spender: string
-  sendBatchTransactions: SendBatchTxCallback
 }
 
 export class PriceImpactDeclineError extends Error {}

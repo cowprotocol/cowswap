@@ -8,17 +8,17 @@ import { useHasOrderbookTrades } from './useHasOrderbookTrades'
 import { AFFILIATE_ELIGIBILITY_LOADING_WARNING_MS } from '../config/affiliateProgram.const'
 import { logAffiliate } from '../utils/logger'
 
+export interface TraderEligibilityState {
+  status: TraderEligibilityStatus
+  hasLoadingTimeout: boolean
+}
+
 export enum TraderEligibilityStatus {
   IDLE = 'idle',
   LOADING = 'loading',
   ERROR = 'error',
   HAS_PAST_TRADES = 'has-past-trades',
   NO_PAST_TRADES = 'no-past-trades',
-}
-
-export interface TraderEligibilityState {
-  status: TraderEligibilityStatus
-  hasLoadingTimeout: boolean
 }
 
 interface UseAffiliateTraderEligibilityParams {

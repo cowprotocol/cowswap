@@ -13,16 +13,43 @@ import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balanc
 import { useSetIsBffFailed } from '../state/isBffFailedAtom'
 import { isBffSupportedNetwork } from '../utils/isBffSupportedNetwork'
 
-type BalanceResponse = {
-  balances: Record<string, string> | null
-}
-
 export interface PersistBalancesFromBffParams {
   account?: string
   chainId: SupportedChainId
   balancesSwrConfig?: SWRConfiguration
   invalidateCacheTrigger?: number
   tokenAddresses: string[]
+}
+
+type BalanceResponse = {
+  balances: Record<string, string> | null
+}
+
+export async function getBffBalances(
+  address: string,
+  chainId: SupportedChainId,
+  skipCache = false,
+): Promise<Record<string, string> | null> {
+  const url = `${BFF_BASE_URL}/${chainId}/address/${address}/balances`
+  const queryParams = skipCache ? '?ignoreCache=true' : ''
+  const fullUrl = url + queryParams
+
+  try {
+    const res = await fetch(fullUrl)
+    const data: BalanceResponse = await res.json()
+
+    if (!res.ok) {
+      return Promise.reject(new Error(`BFF error: ${res.status} ${res.statusText}`))
+    }
+
+    if (!data.balances) {
+      return null
+    }
+
+    return data.balances
+  } catch (error) {
+    return Promise.reject(error)
+  }
 }
 
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
@@ -111,31 +138,4 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     chainId,
     targetAccount,
   ])
-}
-
-export async function getBffBalances(
-  address: string,
-  chainId: SupportedChainId,
-  skipCache = false,
-): Promise<Record<string, string> | null> {
-  const url = `${BFF_BASE_URL}/${chainId}/address/${address}/balances`
-  const queryParams = skipCache ? '?ignoreCache=true' : ''
-  const fullUrl = url + queryParams
-
-  try {
-    const res = await fetch(fullUrl)
-    const data: BalanceResponse = await res.json()
-
-    if (!res.ok) {
-      return Promise.reject(new Error(`BFF error: ${res.status} ${res.statusText}`))
-    }
-
-    if (!data.balances) {
-      return null
-    }
-
-    return data.balances
-  } catch (error) {
-    return Promise.reject(error)
-  }
 }

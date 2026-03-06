@@ -1,5 +1,10 @@
 import { SolverDeployment } from '../../utils/fetchSolversInfo'
 
+export type SummaryNetwork = {
+  chainId: number
+  chainName: string
+}
+
 export function formatWebsiteUrl(url: string): string {
   try {
     const { hostname } = new URL(url)
@@ -7,23 +12,6 @@ export function formatWebsiteUrl(url: string): string {
   } catch {
     return url
   }
-}
-
-export type SummaryNetwork = {
-  chainId: number
-  chainName: string
-}
-
-export function mapSummaryNetworks(deployments: SolverDeployment[]): SummaryNetwork[] {
-  const byChainId = new Map<number, string>()
-
-  deployments.forEach((deployment) => {
-    byChainId.set(deployment.chainId, deployment.chainName)
-  })
-
-  return [...byChainId.entries()]
-    .map(([chainId, chainName]) => ({ chainId, chainName }))
-    .sort((a, b) => a.chainName.localeCompare(b.chainName))
 }
 
 export function mapSummaryEnvironments(deployments: SolverDeployment[]): string[] {
@@ -36,4 +24,16 @@ export function mapSummaryEnvironments(deployments: SolverDeployment[]): string[
   })
 
   return [...environments].sort()
+}
+
+export function mapSummaryNetworks(deployments: SolverDeployment[]): SummaryNetwork[] {
+  const byChainId = new Map<number, string>()
+
+  deployments.forEach((deployment) => {
+    byChainId.set(deployment.chainId, deployment.chainName)
+  })
+
+  return [...byChainId.entries()]
+    .map(([chainId, chainName]) => ({ chainId, chainName }))
+    .sort((a, b) => a.chainName.localeCompare(b.chainName))
 }

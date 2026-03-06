@@ -4,13 +4,18 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { AppDataInfo, TypedAppDataHooks } from 'modules/appData'
 
-export type IsTokenPermittableResult = PermitInfo | undefined
-
 export type AddPermitTokenParams = {
   chainId: SupportedChainId
   tokenAddress: string
   permitInfo: PermitInfo
 }
+
+export type CachedPermitData = {
+  hookData: PermitHookData
+  nonce: number | undefined
+}
+
+export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
 
 export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account' | 'amount'> & {
   customSpender?: string
@@ -18,7 +23,7 @@ export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'pe
   postSignCallback?: () => void
 }
 
-export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
+export type GetPermitCacheParams = PermitCacheKeyParams
 
 export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo' | 'inputToken'> & {
   permitInfo: IsTokenPermittableResult
@@ -28,12 +33,9 @@ export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo' | '
   typedHooks?: TypedAppDataHooks
 }
 
-export type PermitCache = Record<string, string>
+export type IsTokenPermittableResult = PermitInfo | undefined
 
-export type CachedPermitData = {
-  hookData: PermitHookData
-  nonce: number | undefined
-}
+export type PermitCache = Record<string, string>
 
 export type PermitCacheKeyParams = {
   chainId: SupportedChainId
@@ -44,8 +46,6 @@ export type PermitCacheKeyParams = {
   amount?: bigint
 }
 
-export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
-
-export type GetPermitCacheParams = PermitCacheKeyParams
-
 export type PermitCompatibleTokens = Record<string, boolean>
+
+export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }

@@ -15,6 +15,19 @@ type Surplus = {
 }
 
 /**
+ * Calculates BUY surplus
+ *
+ * @returns Buy surplus
+ */
+export function getBuySurplus(order: Order): Surplus {
+  const { partiallyFillable } = order
+
+  const surplus = partiallyFillable ? _getPartialFillBuySurplus(order) : _getFillOrKillBuySurplus(order)
+
+  return surplus || ZERO_SURPLUS
+}
+
+/**
  * Calculates SELL surplus
  *
  * @returns Sell surplus
@@ -25,6 +38,28 @@ export function getSellSurplus(order: Order): Surplus {
   const surplus = partiallyFillable ? _getPartialFillSellSurplus(order) : _getFillOrKillSellSurplus(order)
 
   return surplus || ZERO_SURPLUS
+}
+
+function _getFillOrKillBuySurplus(order: Order): Surplus | null {
+  const { sellAmount, apiAdditionalInfo } = order
+
+  if (!apiAdditionalInfo) {
+    return null
+  }
+
+  const { executedSellAmountBeforeFees } = apiAdditionalInfo
+
+  const sellAmountBigNumber = new BigNumber(sellAmount)
+  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
+
+  // BUY order has the buy amount fixed, so it'll sell AT MOST `sellAmount`
+  // Surplus will come in the form of a "discount", selling less than `sellAmount`
+  // The difference between `sellAmount - executedSellAmount` is the surplus.
+  const amount = sellAmountBigNumber.minus(executedSellAmountBigNumber)
+
+  const percentage = amount.dividedBy(executedSellAmountBigNumber)
+
+  return { amount, percentage }
 }
 
 function _getFillOrKillSellSurplus(order: Order): Surplus | null {
@@ -45,6 +80,32 @@ function _getFillOrKillSellSurplus(order: Order): Surplus | null {
   const amount = difference.gt(ZERO_BIG_NUMBER) ? difference : ZERO_BIG_NUMBER
 
   const percentage = amount.dividedBy(executedBuyAmountBigNumber)
+
+  return { amount, percentage }
+}
+
+function _getPartialFillBuySurplus(order: Order): Surplus | null {
+  const { buyAmount, sellAmount, apiAdditionalInfo } = order
+
+  if (!apiAdditionalInfo) {
+    return null
+  }
+
+  const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
+
+  const sellAmountBigNumber = new BigNumber(sellAmount)
+  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
+  const buyAmountBigNumber = new BigNumber(buyAmount)
+  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+
+  // SELL is QUOTE
+  const price = sellAmountBigNumber.dividedBy(buyAmountBigNumber)
+
+  const maximumSellAmount = executedBuyAmountBigNumber.multipliedBy(price)
+
+  const amount = maximumSellAmount.minus(executedSellAmountBigNumber)
+
+  const percentage = amount.dividedBy(executedSellAmountBigNumber)
 
   return { amount, percentage }
 }
@@ -75,67 +136,6 @@ function _getPartialFillSellSurplus(order: Order): Surplus | null {
 
   // The percentage is based on the amount you would receive, if executed at limit price
   const percentage = amount.dividedBy(executedBuyAmountBigNumber)
-
-  return { amount, percentage }
-}
-
-/**
- * Calculates BUY surplus
- *
- * @returns Buy surplus
- */
-export function getBuySurplus(order: Order): Surplus {
-  const { partiallyFillable } = order
-
-  const surplus = partiallyFillable ? _getPartialFillBuySurplus(order) : _getFillOrKillBuySurplus(order)
-
-  return surplus || ZERO_SURPLUS
-}
-
-function _getFillOrKillBuySurplus(order: Order): Surplus | null {
-  const { sellAmount, apiAdditionalInfo } = order
-
-  if (!apiAdditionalInfo) {
-    return null
-  }
-
-  const { executedSellAmountBeforeFees } = apiAdditionalInfo
-
-  const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
-
-  // BUY order has the buy amount fixed, so it'll sell AT MOST `sellAmount`
-  // Surplus will come in the form of a "discount", selling less than `sellAmount`
-  // The difference between `sellAmount - executedSellAmount` is the surplus.
-  const amount = sellAmountBigNumber.minus(executedSellAmountBigNumber)
-
-  const percentage = amount.dividedBy(executedSellAmountBigNumber)
-
-  return { amount, percentage }
-}
-
-function _getPartialFillBuySurplus(order: Order): Surplus | null {
-  const { buyAmount, sellAmount, apiAdditionalInfo } = order
-
-  if (!apiAdditionalInfo) {
-    return null
-  }
-
-  const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
-
-  const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
-  const buyAmountBigNumber = new BigNumber(buyAmount)
-  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
-
-  // SELL is QUOTE
-  const price = sellAmountBigNumber.dividedBy(buyAmountBigNumber)
-
-  const maximumSellAmount = executedBuyAmountBigNumber.multipliedBy(price)
-
-  const amount = maximumSellAmount.minus(executedSellAmountBigNumber)
-
-  const percentage = amount.dividedBy(executedSellAmountBigNumber)
 
   return { amount, percentage }
 }

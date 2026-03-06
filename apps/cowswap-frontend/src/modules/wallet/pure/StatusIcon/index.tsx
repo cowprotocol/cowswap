@@ -1,6 +1,5 @@
 import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
-import { Identicon, ConnectionType, ConnectorType } from '@cowprotocol/wallet'
-import { CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
+import { Identicon, ConnectionType, ConnectorType, CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'

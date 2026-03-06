@@ -9,10 +9,6 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { ConfirmationModalProps } from '../pure/ConfirmationModal'
 
-type TriggerConfirmationParams = Pick<
-  ConfirmationModalProps,
-  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action' | 'skipInput'
->
 interface ConfirmationModalContext {
   onDismiss: Command
   activePromise?: Promise<boolean>
@@ -32,6 +28,10 @@ interface ConfirmationModalContext {
     skipInput,
   }: TriggerConfirmationParams) => Promise<void>
 }
+type TriggerConfirmationParams = Pick<
+  ConfirmationModalProps,
+  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action' | 'skipInput'
+>
 
 export const DEFAULT_CONFIRMATION_MODAL_CONTEXT: ConfirmationModalContext = {
   onDismiss: () => {},

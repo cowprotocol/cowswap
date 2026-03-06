@@ -1,13 +1,13 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
-export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
-
 export type ComposableCowInfo = {
   id?: string
   parentId?: string
   isVirtualPart?: boolean
   isTheLastPart?: boolean
 }
+
+export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
 
 export const BadgeTypes = {
   INFORMATION: 'information',

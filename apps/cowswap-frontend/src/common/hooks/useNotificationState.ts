@@ -44,6 +44,22 @@ const INITIAL_NOTIFICATION_STATE: NotificationState = {
 const notificationStateAtoms = new Map<string, Atom<NotificationState>>()
 const untrackedAtom = atom(() => INITIAL_NOTIFICATION_STATE)
 
+// TODO: replace any
+export function useNotificationState(key: string | undefined): [NotificationState, (state: NotificationState) => void] {
+  const [notificationState, setNotificationState] = useAtom(getNotificationStateAtom(key))
+
+  if (typeof key === 'string') {
+    return [notificationState, setNotificationState]
+  }
+
+  // A noop function to avoid breaking the hook when the key is undefined.
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const NOOP_READ = () => notificationState
+
+  return [notificationState, NOOP_READ]
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getNotificationStateAtom(key: string | undefined) {
@@ -61,20 +77,4 @@ function getNotificationStateAtom(key: string | undefined) {
 
     return atom
   }
-}
-
-// TODO: replace any
-export function useNotificationState(key: string | undefined): [NotificationState, (state: NotificationState) => void] {
-  const [notificationState, setNotificationState] = useAtom(getNotificationStateAtom(key))
-
-  if (typeof key === 'string') {
-    return [notificationState, setNotificationState]
-  }
-
-  // A noop function to avoid breaking the hook when the key is undefined.
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const NOOP_READ = () => notificationState
-
-  return [notificationState, NOOP_READ]
 }

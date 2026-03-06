@@ -8,14 +8,14 @@ import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimit
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
+export interface UpdateRateCallback {
+  (update: RateUpdateParams): void
+}
+
 type RateUpdateParams = Pick<
   LimitRateState,
   'isInitialPriceSet' | 'activeRate' | 'isTypedValue' | 'isRateFromUrl' | 'isAlternativeOrderRate'
 >
-
-export interface UpdateRateCallback {
-  (update: RateUpdateParams): void
-}
 
 export function useUpdateActiveRate(): UpdateRateCallback {
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersDerivedState()

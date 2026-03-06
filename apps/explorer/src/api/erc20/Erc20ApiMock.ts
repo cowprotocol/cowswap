@@ -21,12 +21,12 @@ import {
 
 import { RECEIPT } from '../../test/data'
 
-interface Balances {
-  [userAddress: string]: { [tokenAddress: string]: BN }
-}
-
 interface Allowances {
   [userAddress: string]: { [tokenAddress: string]: { [spenderAddress: string]: BN } }
+}
+
+interface Balances {
+  [userAddress: string]: { [tokenAddress: string]: BN }
 }
 
 interface Erc20Info {

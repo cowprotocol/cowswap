@@ -22,25 +22,6 @@ const requestTimeout = ms`10s`
 
 const EMPTY_SWR_RESPONSE = { data: undefined, isLoading: true }
 
-/**
- * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
- * to get the capabilities. It breaks the flow with perpetual requests.
- */
-function shouldCheckCapabilities(
-  isWalletConnect: boolean,
-  { data, isLoading }: ReturnType<typeof useWidgetProviderMetaInfo>,
-): boolean {
-  // When widget in the mobile device, wait till providerWcMetadata is loaded
-  // In order to detect if is connected to WalletConnect
-  if (isInjectedWidget() && isMobile && isLoading) {
-    return false
-  }
-
-  const isWalletConnectViaWidget = Boolean(data?.providerWcMetadata)
-
-  return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
-}
-
 export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
   const provider = useWalletProvider()
   const newIsWalletConnect = useIsWalletConnect()
@@ -102,4 +83,23 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
   }
 
   return swrResponse
+}
+
+/**
+ * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
+ * to get the capabilities. It breaks the flow with perpetual requests.
+ */
+function shouldCheckCapabilities(
+  isWalletConnect: boolean,
+  { data, isLoading }: ReturnType<typeof useWidgetProviderMetaInfo>,
+): boolean {
+  // When widget in the mobile device, wait till providerWcMetadata is loaded
+  // In order to detect if is connected to WalletConnect
+  if (isInjectedWidget() && isMobile && isLoading) {
+    return false
+  }
+
+  const isWalletConnectViaWidget = Boolean(data?.providerWcMetadata)
+
+  return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }

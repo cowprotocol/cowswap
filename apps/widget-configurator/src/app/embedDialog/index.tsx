@@ -74,15 +74,6 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function a11yProps(id: number) {
-  return {
-    id: `simple-tab-${id}`,
-    'aria-controls': `simple-tabpanel-${id}`,
-  }
-}
-
 export interface EmbedDialogProps {
   params: CowSwapWidgetProps['params']
   defaultPalette: ColorPalette
@@ -208,4 +199,13 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
       </Snackbar>
     </div>
   )
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function a11yProps(id: number) {
+  return {
+    id: `simple-tab-${id}`,
+    'aria-controls': `simple-tabpanel-${id}`,
+  }
 }

@@ -13,9 +13,9 @@ import { useConfig } from 'wagmi'
 
 import type { SWRConfiguration } from 'swr'
 
-type ITransactionData = Deferrable<TransactionRequest>
-
 type IHookGasCalculator = (transactionData: ITransactionData) => Promise<string>
+
+type ITransactionData = Deferrable<TransactionRequest>
 
 export function useWalletProvider(): Web3Provider | undefined {
   const { provider } = useWeb3React()

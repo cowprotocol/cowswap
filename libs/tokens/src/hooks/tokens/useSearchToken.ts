@@ -133,24 +133,22 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   ])
 }
 
-function useSearchTokensInLists(input: string | undefined): FromListsResult {
-  const activeTokens = useAtomValue(allActiveTokensAtom).tokens
-  const inactiveTokens = useAtomValue(inactiveTokensAtom)
+function useFetchTokenFromBlockchain(
+  input: string | undefined,
+  isTokenAlreadyFoundByAddress: boolean,
+): SWRResponse<TokenWithLogo | null> {
+  const { chainId } = useAtomValue(environmentAtom)
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
+  const provider = useWalletProvider()
 
-  const { data: inListsResult } = useSWR<FromListsResult>(
-    ['searchTokensInLists', input, activeTokens, inactiveTokens],
-    () => {
-      if (!input) return emptyFromListsResult
+  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', input], () => {
+    if (isTokenAlreadyFoundByAddress || !input || !provider || !isAddress(input)) {
+      return null
+    }
 
-      const filter = getTokenSearchFilter(input)
-      const tokensFromActiveLists = activeTokens.filter(filter)
-      const tokensFromInactiveLists = inactiveTokens.filter(filter)
-
-      return { tokensFromActiveLists, tokensFromInactiveLists }
-    },
-  )
-
-  return inListsResult || emptyFromListsResult
+    return fetchTokenFromBlockchain(input, chainId, provider).then(TokenWithLogo.fromToken)
+  })
 }
 
 // eslint-disable-next-line unused-imports/no-unused-vars
@@ -169,20 +167,22 @@ function useSearchTokensInApi(
   })
 }
 
-function useFetchTokenFromBlockchain(
-  input: string | undefined,
-  isTokenAlreadyFoundByAddress: boolean,
-): SWRResponse<TokenWithLogo | null> {
-  const { chainId } = useAtomValue(environmentAtom)
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+function useSearchTokensInLists(input: string | undefined): FromListsResult {
+  const activeTokens = useAtomValue(allActiveTokensAtom).tokens
+  const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
-  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', input], () => {
-    if (isTokenAlreadyFoundByAddress || !input || !provider || !isAddress(input)) {
-      return null
-    }
+  const { data: inListsResult } = useSWR<FromListsResult>(
+    ['searchTokensInLists', input, activeTokens, inactiveTokens],
+    () => {
+      if (!input) return emptyFromListsResult
 
-    return fetchTokenFromBlockchain(input, chainId, provider).then(TokenWithLogo.fromToken)
-  })
+      const filter = getTokenSearchFilter(input)
+      const tokensFromActiveLists = activeTokens.filter(filter)
+      const tokensFromInactiveLists = inactiveTokens.filter(filter)
+
+      return { tokensFromActiveLists, tokensFromInactiveLists }
+    },
+  )
+
+  return inListsResult || emptyFromListsResult
 }

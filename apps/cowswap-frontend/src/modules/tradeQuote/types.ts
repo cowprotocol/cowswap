@@ -1,5 +1,10 @@
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 
+export interface QuotePollingUpdateTimings {
+  now: number
+  ref: { current: number | null }
+}
+
 export interface TradeQuoteFetchParams {
   hasParamsChanged: boolean
   priceQuality: PriceQuality
@@ -10,9 +15,4 @@ export interface TradeQuotePollingParameters {
   isConfirmOpen: boolean
   isQuoteUpdatePossible: boolean
   useSuggestedSlippageApi: boolean
-}
-
-export interface QuotePollingUpdateTimings {
-  now: number
-  ref: { current: number | null }
 }

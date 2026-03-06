@@ -1,5 +1,4 @@
 /* eslint-disable complexity */
-/* eslint-disable @nx/enforce-module-boundaries */
 
 import { defaultAbiCoder } from '@ethersproject/abi'
 import type { BytesLike } from '@ethersproject/bytes'
@@ -9,49 +8,33 @@ import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getMulticallContract } from '../../../../../libs/multicall/src/utils/getMulticallContract'
 import { injected } from '../../support/ethereum'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
-function parseSendArgs(send: typeof injected.send, ...args: any[]) {
-  const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'
-  let callback: Function | undefined
-  let method: string | undefined
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let params: any[] | undefined
-  if (isCallbackForm) {
-    callback = args[1]
-    method = args[0].method
-    params = args[0].params
-  } else {
-    method = args[0]
-    params = args[1]
-  }
-
-  function getOriginalResult(): Promise<BytesLike> {
-    if (callback) {
-      return new Promise((resolve) => {
-        send({ method, params }, resolve)
-      })
-    }
-    return send(...args)
-  }
-
-  function returnResult(value: unknown): Promise<unknown> | void {
-    if (callback) {
-      callback(value)
-      return
-    }
-    return Promise.resolve(value)
-  }
-
-  return {
-    method,
-    params,
-    getOriginalResult,
-    returnResult,
-  }
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MockMiddleware = (...args: any[]) => Promise<unknown>
+
+export function handleNativeBalance(ethereum: typeof injected, owner: string, value: bigint): MockMiddleware {
+  return handleNativeBalanceCall(ethereum, owner, defaultAbiCoder.encode(['uint256'], [value]))
+}
+
+export function handleTokenAllowance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
+  return handleAddressEthCall(ethereum, tokenAddress, '0xdd62ed3e', defaultAbiCoder.encode(['uint256'], [value]))
+}
+
+export function handleTokenBalance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
+  return handleAddressEthCall(ethereum, tokenAddress, '0x70a08231', defaultAbiCoder.encode(['uint256'], [value]))
+}
+
+export function mockSendCall(ethereum: typeof injected, middlewares: MockMiddleware[]): void {
+  const send = ethereum.send.bind(ethereum)
+
+  cy.stub(ethereum, 'send').callsFake(async (...args) => {
+    for (const middleware of middlewares) {
+      const handledResult = await middleware(...args)
+      if (typeof handledResult === 'undefined') continue
+      return handledResult
+    }
+    return send(...args)
+  })
+}
 
 function handleAddressEthCall(
   ethereum: typeof injected,
@@ -101,14 +84,6 @@ function handleAddressEthCall(
   }
 }
 
-export function handleTokenBalance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
-  return handleAddressEthCall(ethereum, tokenAddress, '0x70a08231', defaultAbiCoder.encode(['uint256'], [value]))
-}
-
-export function handleTokenAllowance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
-  return handleAddressEthCall(ethereum, tokenAddress, '0xdd62ed3e', defaultAbiCoder.encode(['uint256'], [value]))
-}
-
 function handleNativeBalanceCall(ethereum: typeof injected, owner: string, returnData: string): MockMiddleware {
   const send = ethereum.send.bind(ethereum)
 
@@ -134,19 +109,43 @@ function handleNativeBalanceCall(ethereum: typeof injected, owner: string, retur
   }
 }
 
-export function handleNativeBalance(ethereum: typeof injected, owner: string, value: bigint): MockMiddleware {
-  return handleNativeBalanceCall(ethereum, owner, defaultAbiCoder.encode(['uint256'], [value]))
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
+function parseSendArgs(send: typeof injected.send, ...args: any[]) {
+  const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'
+  let callback: Function | undefined
+  let method: string | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let params: any[] | undefined
+  if (isCallbackForm) {
+    callback = args[1]
+    method = args[0].method
+    params = args[0].params
+  } else {
+    method = args[0]
+    params = args[1]
+  }
 
-export function mockSendCall(ethereum: typeof injected, middlewares: MockMiddleware[]): void {
-  const send = ethereum.send.bind(ethereum)
-
-  cy.stub(ethereum, 'send').callsFake(async (...args) => {
-    for (const middleware of middlewares) {
-      const handledResult = await middleware(...args)
-      if (typeof handledResult === 'undefined') continue
-      return handledResult
+  function getOriginalResult(): Promise<BytesLike> {
+    if (callback) {
+      return new Promise((resolve) => {
+        send({ method, params }, resolve)
+      })
     }
     return send(...args)
-  })
+  }
+
+  function returnResult(value: unknown): Promise<unknown> | void {
+    if (callback) {
+      callback(value)
+      return
+    }
+    return Promise.resolve(value)
+  }
+
+  return {
+    method,
+    params,
+    getOriginalResult,
+    returnResult,
+  }
 }

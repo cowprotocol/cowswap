@@ -11,40 +11,9 @@ import { useTokenList } from './useTokenList'
 
 import { erc20Api, web3 } from '../explorer/api'
 
-async function _fetchErc20FromNetwork(params: {
-  address: string
-  networkId: number
-  setError: (error: UiError) => void
-}): Promise<SingleErc20State> {
-  const { address, networkId, setError } = params
-
-  try {
-    return await retry(() => getErc20Info({ tokenAddress: address, networkId, web3, erc20Api }))
-  } catch (e) {
-    const msg = `Failed to fetch erc20 details for ${address} on network ${networkId}`
-    console.error(msg, e)
-    setError({ message: msg, type: 'error' })
-    // When failed, return null for given token
-    return null
-  }
-}
-
-type Return<E, V> = { isLoading: boolean; error?: E; value: V }
-
 export type UseMultipleErc20Params = { addresses: string[]; networkId?: Network }
 
-/**
- * Fetches multiple erc20 token details for given network and addresses
- * More efficient method to fetch many tokens at once, and avoid unnecessary re-renders
- *
- * Tries to get it from globalState.
- * If not found, tries to get it from the network.
- * Saves to globalState if found.
- *`value` is an object with the `address` as key and it's value is either `null` when not found or the erc20
- * Returns `isLoading` to indicate whether fetching the value
- * Returns `error` with the error messages, if any.
- */
-// TODO: Break down this large function into smaller functions
+type Return<E, V> = { isLoading: boolean; error?: E; value: V }
 
 export function useMultipleErc20(
   params: UseMultipleErc20Params,
@@ -149,4 +118,35 @@ export function useMultipleErc20(
     }),
     [isTokenListLoading, isLoading, errors, erc20s, fromTokenList, nativeState],
   )
+}
+
+/**
+ * Fetches multiple erc20 token details for given network and addresses
+ * More efficient method to fetch many tokens at once, and avoid unnecessary re-renders
+ *
+ * Tries to get it from globalState.
+ * If not found, tries to get it from the network.
+ * Saves to globalState if found.
+ *`value` is an object with the `address` as key and it's value is either `null` when not found or the erc20
+ * Returns `isLoading` to indicate whether fetching the value
+ * Returns `error` with the error messages, if any.
+ */
+// TODO: Break down this large function into smaller functions
+
+async function _fetchErc20FromNetwork(params: {
+  address: string
+  networkId: number
+  setError: (error: UiError) => void
+}): Promise<SingleErc20State> {
+  const { address, networkId, setError } = params
+
+  try {
+    return await retry(() => getErc20Info({ tokenAddress: address, networkId, web3, erc20Api }))
+  } catch (e) {
+    const msg = `Failed to fetch erc20 details for ${address} on network ${networkId}`
+    console.error(msg, e)
+    setError({ message: msg, type: 'error' })
+    // When failed, return null for given token
+    return null
+  }
 }

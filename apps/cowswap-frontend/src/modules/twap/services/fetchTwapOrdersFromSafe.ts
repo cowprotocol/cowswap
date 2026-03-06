@@ -85,6 +85,42 @@ function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string
   return `${SAFE_TRANSACTION_SERVICE_URL[chainId]}/v1/safes/${safeAddress}/all-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
 }
 
+function getSafeTransactionParams(result: SafeMultisigTransactionResponse): SafeTransactionParams {
+  const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } = result
+
+  return {
+    isExecuted,
+    submissionDate,
+    executionDate,
+    confirmationsRequired,
+    confirmations: confirmations?.length || 0,
+    safeTxHash,
+    nonce,
+  }
+}
+
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
+  return !!response.data && !!response.submissionDate
+}
+
+function parseConditionalOrderParams(
+  composableCowContract: ComposableCoW,
+  callData: string,
+): ConditionalOrderParams | null {
+  try {
+    const _result = composableCowContract.interface.decodeFunctionData('createWithContext', callData)
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { params } = _result as any as { params: ConditionalOrderParams }
+
+    return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
+  } catch {
+    return null
+  }
+}
+
 function parseSafeTransactionsResult(
   composableCowContract: ComposableCoW,
   results: AllTransactionsListResponse['results'],
@@ -111,40 +147,4 @@ function parseSafeTransactionsResult(
       }
     })
     .filter(isTruthy)
-}
-
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
-  return !!response.data && !!response.submissionDate
-}
-
-function parseConditionalOrderParams(
-  composableCowContract: ComposableCoW,
-  callData: string,
-): ConditionalOrderParams | null {
-  try {
-    const _result = composableCowContract.interface.decodeFunctionData('createWithContext', callData)
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { params } = _result as any as { params: ConditionalOrderParams }
-
-    return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
-  } catch {
-    return null
-  }
-}
-
-function getSafeTransactionParams(result: SafeMultisigTransactionResponse): SafeTransactionParams {
-  const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } = result
-
-  return {
-    isExecuted,
-    submissionDate,
-    executionDate,
-    confirmationsRequired,
-    confirmations: confirmations?.length || 0,
-    safeTxHash,
-    nonce,
-  }
 }

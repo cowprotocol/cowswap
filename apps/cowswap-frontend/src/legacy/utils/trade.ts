@@ -29,6 +29,11 @@ import { AppDataInfo } from 'modules/appData'
 import { getIsOrderBookTypedError } from 'api/cowProtocol'
 import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorError'
 
+export type MapUnsignedOrderToOrderParams = {
+  unsignedOrder: UnsignedOrder
+  additionalParams: UnsignedOrderAdditionalParams
+}
+
 export type PostOrderParams = {
   account: string
   chainId: ChainId
@@ -52,12 +57,25 @@ export type PostOrderParams = {
   isSafeWallet: boolean
 }
 
+export type SignOrderParams = {
+  quoteId: number | undefined
+  order: UnsignedOrder
+}
+
 export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'signer' | 'validTo'> & {
   orderId: string
   signature: string
   signingScheme: SigningScheme
   isOnChain?: boolean
   orderCreationHash?: string
+}
+
+type OrderCancellationParams = {
+  orderId: string
+  account: string
+  chainId: ChainId
+  signer: Signer
+  cancelPendingOrder: (params: ChangeOrderStatusParams) => void
 }
 
 export function getOrderSubmitSummary(
@@ -94,11 +112,6 @@ export function getOrderSubmitSummary(
 
     return `${base} ` + t`to` + ` ${toAddress}`
   }
-}
-
-export type SignOrderParams = {
-  quoteId: number | undefined
-  order: UnsignedOrder
 }
 
 export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
@@ -146,11 +159,6 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
       partiallyFillable,
     },
   }
-}
-
-export type MapUnsignedOrderToOrderParams = {
-  unsignedOrder: UnsignedOrder
-  additionalParams: UnsignedOrderAdditionalParams
 }
 
 export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: MapUnsignedOrderToOrderParams): Order {
@@ -203,24 +211,6 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
   }
 }
 
-function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | undefined): OrderStatus {
-  if (isOnChain) {
-    return OrderStatus.CREATING
-  } else if (!allowsOffchainSigning) {
-    return OrderStatus.PRESIGNATURE_PENDING
-  } else {
-    return OrderStatus.PENDING
-  }
-}
-
-type OrderCancellationParams = {
-  orderId: string
-  account: string
-  chainId: ChainId
-  signer: Signer
-  cancelPendingOrder: (params: ChangeOrderStatusParams) => void
-}
-
 export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
   const { orderId, chainId, signer, cancelPendingOrder } = params
 
@@ -251,5 +241,15 @@ export async function wrapErrorInOperatorError<T>(fn: () => Promise<T>): Promise
       throw new OperatorError(e.body as ApiErrorObject)
     }
     throw e
+  }
+}
+
+function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | undefined): OrderStatus {
+  if (isOnChain) {
+    return OrderStatus.CREATING
+  } else if (!allowsOffchainSigning) {
+    return OrderStatus.PRESIGNATURE_PENDING
+  } else {
+    return OrderStatus.PENDING
   }
 }

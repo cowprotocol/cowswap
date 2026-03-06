@@ -14,8 +14,7 @@ import { getConnectionName } from '../../api/utils/connection'
 import { WC_PROJECT_ID } from '../../constants'
 import { WalletConnectV2Connector } from '../connectors/WalletConnectV2Connector'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { ConnectionOptionProps } from '../types'
-import { Web3ReactConnection } from '../types'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 export const walletConnectV2Option = {
   color: '#4196FC',
@@ -24,29 +23,6 @@ export const walletConnectV2Option = {
 }
 
 const wc2Connections = new Map<SupportedChainId, Web3ReactConnection>()
-
-function createWalletConnectV2Connection(chainId: SupportedChainId): Web3ReactConnection {
-  const [connector, hooks] = initializeConnector<WalletConnectV2Connector>(
-    (actions) =>
-      new WalletConnectV2Connector({
-        actions,
-        onError,
-        options: {
-          projectId: WC_PROJECT_ID,
-          chains: [chainId],
-          optionalChains: ALL_SUPPORTED_CHAIN_IDS,
-          rpcMap: RPC_URLS,
-          showQrModal: true,
-        },
-      }),
-  )
-
-  return {
-    connector,
-    hooks,
-    type: ConnectionType.WALLET_CONNECT_V2,
-  }
-}
 
 export function getWalletConnectV2Connection(
   chainId: SupportedChainId = getCurrentChainIdFromUrl(),
@@ -76,4 +52,27 @@ export function WalletConnectV2Option({ selectedWallet, tryActivation }: Connect
       header={getConnectionName(ConnectionType.WALLET_CONNECT_V2)}
     />
   )
+}
+
+function createWalletConnectV2Connection(chainId: SupportedChainId): Web3ReactConnection {
+  const [connector, hooks] = initializeConnector<WalletConnectV2Connector>(
+    (actions) =>
+      new WalletConnectV2Connector({
+        actions,
+        onError,
+        options: {
+          projectId: WC_PROJECT_ID,
+          chains: [chainId],
+          optionalChains: ALL_SUPPORTED_CHAIN_IDS,
+          rpcMap: RPC_URLS,
+          showQrModal: true,
+        },
+      }),
+  )
+
+  return {
+    connector,
+    hooks,
+    type: ConnectionType.WALLET_CONNECT_V2,
+  }
 }

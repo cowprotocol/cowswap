@@ -32,6 +32,20 @@ const COW_SHED_ABI = [
 
 const IMPLEMENTATION_STORAGE_SLOT = slot('eip1967.proxy.implementation')
 
+interface CoWShedContract extends BaseContract {
+  callStatic: {
+    trustedExecutor(): Promise<string>
+  }
+}
+
+interface ProxyAndAccount {
+  chainId: SupportedChainId
+  proxyAddress: string
+  account: Address
+  isProxyDeployed: boolean
+  isProxySetupValid: boolean | null
+}
+
 /**
  * Returns the address of the implementation of an EIP-1967-compatible proxy
  * from its address.
@@ -47,20 +61,6 @@ export async function implementationAddress(provider: Web3Provider, proxy: strin
   const [implementation] = defaultAbiCoder.decode(['address'], storage)
 
   return implementation
-}
-
-interface CoWShedContract extends BaseContract {
-  callStatic: {
-    trustedExecutor(): Promise<string>
-  }
-}
-
-interface ProxyAndAccount {
-  chainId: SupportedChainId
-  proxyAddress: string
-  account: Address
-  isProxyDeployed: boolean
-  isProxySetupValid: boolean | null
 }
 
 const UNKNOW_COWSHED_REFRESH_INTERVAL = ms`3s`

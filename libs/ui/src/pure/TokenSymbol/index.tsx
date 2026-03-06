@@ -10,22 +10,11 @@ export type TokenSymbolProps = {
   className?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getAbbreviatedSymbol(props: Omit<TokenSymbolProps, 'className'>) {
-  const { token, length } = props
-  const { symbol, name } = token || {}
+export function formatTokenSymbol(props: Omit<TokenSymbolProps, 'className'>): string | null {
+  const abbreviatedSymbol = getAbbreviatedSymbol(props)
+  if (!abbreviatedSymbol) return null
 
-  if (!symbol && !name) return null
-
-  const fullSymbol = symbol || name
-  const abbreviateSymbol = formatSymbol(fullSymbol, length)
-  const title = fullSymbol === abbreviateSymbol ? undefined : fullSymbol
-
-  return {
-    abbreviateSymbol,
-    title,
-  }
+  return abbreviatedSymbol.abbreviateSymbol || null
 }
 
 // TODO: Add proper return type annotation
@@ -43,9 +32,20 @@ export function TokenSymbol(props: TokenSymbolProps) {
   )
 }
 
-export function formatTokenSymbol(props: Omit<TokenSymbolProps, 'className'>): string | null {
-  const abbreviatedSymbol = getAbbreviatedSymbol(props)
-  if (!abbreviatedSymbol) return null
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function getAbbreviatedSymbol(props: Omit<TokenSymbolProps, 'className'>) {
+  const { token, length } = props
+  const { symbol, name } = token || {}
 
-  return abbreviatedSymbol.abbreviateSymbol || null
+  if (!symbol && !name) return null
+
+  const fullSymbol = symbol || name
+  const abbreviateSymbol = formatSymbol(fullSymbol, length)
+  const title = fullSymbol === abbreviateSymbol ? undefined : fullSymbol
+
+  return {
+    abbreviateSymbol,
+    title,
+  }
 }

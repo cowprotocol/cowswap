@@ -1,6 +1,11 @@
 import { AnalyticsCategory, GtmEvent, toGtmEvent } from '@cowprotocol/analytics'
 
 /**
+ * CowSwap-specific GTM event type
+ */
+export type CowSwapGtmEvent = GtmEvent<CowSwapAnalyticsCategory>
+
+/**
  * CowSwap-specific analytics categories
  * Extends the base Category enum with CowSwap-specific values
  */
@@ -25,11 +30,6 @@ export enum CowSwapAnalyticsCategory {
   GAMES = 'Games',
   COW_FORTUNE = 'CoWFortune',
 }
-
-/**
- * CowSwap-specific GTM event type
- */
-export type CowSwapGtmEvent = GtmEvent<CowSwapAnalyticsCategory>
 
 /**
  * Helper function to create GTM events with CowSwap categories

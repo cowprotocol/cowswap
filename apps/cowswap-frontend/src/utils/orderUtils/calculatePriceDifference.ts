@@ -62,6 +62,16 @@ export function calculatePriceDifference({
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function assertSameMarket(price1: Price<Currency, Currency>, price2: Price<Currency, Currency>) {
+  // Assert I'm comparing apples with apples (prices should refer to market)
+  invariant(
+    price1.baseCurrency.equals(price2.baseCurrency) && price1.quoteCurrency.equals(price2.quoteCurrency),
+    'Prices are not from the same market',
+  )
+}
+
 function calculatePriceDifferenceAux({
   referencePrice,
   targetPrice,
@@ -85,14 +95,4 @@ function calculatePriceDifferenceAux({
   )
 
   return { percentage, amount: differenceInQuoteToken }
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function assertSameMarket(price1: Price<Currency, Currency>, price2: Price<Currency, Currency>) {
-  // Assert I'm comparing apples with apples (prices should refer to market)
-  invariant(
-    price1.baseCurrency.equals(price2.baseCurrency) && price1.quoteCurrency.equals(price2.quoteCurrency),
-    'Prices are not from the same market',
-  )
 }

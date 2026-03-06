@@ -7,7 +7,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
-export type CancellationType = 'offChain' | 'onChain'
 export type CancellationModalContext = {
   chainId: number | null
   orderId: string | null
@@ -19,6 +18,7 @@ export type CancellationModalContext = {
   triggerCancellation: ((type: CancellationType) => Promise<void>) | null
   defaultType: CancellationType
 }
+export type CancellationType = 'offChain' | 'onChain'
 
 const defaultCancellationModalContext: CancellationModalContext = {
   chainId: null,

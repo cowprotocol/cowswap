@@ -49,6 +49,8 @@ const AccountAffiliateTrader = lazy(
 )
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 
+type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
+
 function ExternalRedirect({ url }: { url: string }): null {
   useEffect(() => {
     window.location.replace(url)
@@ -56,8 +58,6 @@ function ExternalRedirect({ url }: { url: string }): null {
 
   return null
 }
-
-type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
 
 function LazyRoute({ route, element, key }: LazyRouteProps): ReactNode {
   return <Route key={key} path={route} element={<Suspense fallback={<Loading />}>{element}</Suspense>} />

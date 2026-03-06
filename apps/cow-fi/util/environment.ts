@@ -5,6 +5,23 @@ const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   production: '^cow.fi$',
 }
 
+export interface EnvironmentChecks {
+  isProd: boolean
+  isPr: boolean
+  isDev: boolean
+  isLocal: boolean
+}
+
+export function checkEnvironment(host: string, path: string): EnvironmentChecks {
+  return {
+    // Project environments
+    isLocal: getRegex('local').test(host),
+    isDev: getRegex('development').test(host),
+    isPr: getRegex('pr').test(host),
+    isProd: getRegex('production').test(host),
+  }
+}
+
 function getRegex(env: EnvironmentName) {
   let regex
   switch (env) {
@@ -23,23 +40,6 @@ function getRegex(env: EnvironmentName) {
   }
 
   return new RegExp(regex || DEFAULT_ENVIRONMENTS_REGEX[env], 'i')
-}
-
-export interface EnvironmentChecks {
-  isProd: boolean
-  isPr: boolean
-  isDev: boolean
-  isLocal: boolean
-}
-
-export function checkEnvironment(host: string, path: string): EnvironmentChecks {
-  return {
-    // Project environments
-    isLocal: getRegex('local').test(host),
-    isDev: getRegex('development').test(host),
-    isPr: getRegex('pr').test(host),
-    isProd: getRegex('production').test(host),
-  }
 }
 
 const { isLocal, isDev, isPr, isProd } = checkEnvironmentUsingWindow()

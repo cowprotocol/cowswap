@@ -161,6 +161,11 @@ export interface StatusIconProps {
   children: React.ReactNode
 }
 
+export interface StepProps {
+  status: StatusIconState
+  details: React.ReactNode
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function StatusIcon({ children, state, icon, label, crossOut = false, errorMessage }: StatusIconProps) {
@@ -178,9 +183,4 @@ export function StatusIcon({ children, state, icon, label, crossOut = false, err
       </Content>
     </>
   )
-}
-
-export interface StepProps {
-  status: StatusIconState
-  details: React.ReactNode
 }

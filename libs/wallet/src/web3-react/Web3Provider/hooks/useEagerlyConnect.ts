@@ -19,24 +19,6 @@ import { networkConnection } from '../../connection/network'
 import { gnosisSafeConnection } from '../../connection/safe'
 import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-async function connect(connector: Connector) {
-  const chainId = getCurrentChainIdFromUrl()
-
-  try {
-    if (connector.connectEagerly) {
-      await connector.connectEagerly(chainId)
-    } else {
-      await connector.activate(chainId)
-    }
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.debug(`web3-react eager connection error: ${error}`)
-  }
-}
-
 export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, standaloneMode?: boolean): void {
   const [tryConnectEip6963Provider, setTryConnectEip6963Provider] = useState(false)
   const eagerlyConnectInitRef = useRef(false)
@@ -142,4 +124,22 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, st
     beginEagerConnect,
     endEagerConnect,
   ])
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function connect(connector: Connector) {
+  const chainId = getCurrentChainIdFromUrl()
+
+  try {
+    if (connector.connectEagerly) {
+      await connector.connectEagerly(chainId)
+    } else {
+      await connector.activate(chainId)
+    }
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.debug(`web3-react eager connection error: ${error}`)
+  }
 }

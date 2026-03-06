@@ -23,6 +23,16 @@ interface ConnectWalletOptionsProps {
   children: (content: ReactNode, count: number) => ReactNode
 }
 
+interface InjectedOptionsProps {
+  multiInjectedProviders: EIP6963ProviderDetail[]
+
+  connectionProps: {
+    darkMode: boolean
+    tryActivation: TryActivation
+    selectedWallet: string | undefined
+  }
+}
+
 export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletOptionsProps): ReactNode {
   const selectedWallet = useSelectedWallet()
   const multiInjectedProviders = useMultiInjectedProviders()
@@ -75,16 +85,6 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
   ].filter(isTruthy)
 
   return children(<>{items}</>, items.length - 1)
-}
-
-interface InjectedOptionsProps {
-  multiInjectedProviders: EIP6963ProviderDetail[]
-
-  connectionProps: {
-    darkMode: boolean
-    tryActivation: TryActivation
-    selectedWallet: string | undefined
-  }
 }
 
 function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOptionsProps): ReactNode {

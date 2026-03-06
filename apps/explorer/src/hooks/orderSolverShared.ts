@@ -20,8 +20,46 @@ export type UseOrderSolverResult = {
 
 const SOLVER_SUFFIX_REGEX = /-solve$/i
 
-function normalizeSolverId(solverId: string): string {
-  return solverId.trim().toLowerCase().replace(SOLVER_SUFFIX_REGEX, '')
+export async function resolveSolver(
+  networkId: number,
+  orderUid: string,
+  txHash: string | undefined,
+): Promise<OrderSolverInfo | undefined> {
+  const [competitionStatus, solvers] = await Promise.all([
+    getOrderCompetitionStatus({ networkId, orderId: orderUid }),
+    fetchSolversInfo(networkId).catch(() => []),
+  ])
+
+  const winnerFromOrder = getWinnerSolver(competitionStatus?.value)
+
+  const winnerSolverName =
+    winnerFromOrder ||
+    (txHash ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash })) : undefined)
+
+  if (!winnerSolverName) return undefined
+
+  return buildSolverInfo(winnerSolverName, solvers)
+}
+
+export async function resolveSolverByTxHash(networkId: number, txHash: string): Promise<OrderSolverInfo | undefined> {
+  const [competition, solvers] = await Promise.all([
+    getSolverCompetitionByTxHash({ networkId, txHash }),
+    fetchSolversInfo(networkId).catch(() => []),
+  ])
+
+  const winnerSolverName = getWinnerSolverFromCompetition(competition)
+  if (!winnerSolverName) return undefined
+
+  return buildSolverInfo(winnerSolverName, solvers)
+}
+
+function buildSolverInfo(winnerSolverName: string, solvers: SolverInfo[]): OrderSolverInfo {
+  const matchingSolver = matchSolverByName(winnerSolverName, solvers)
+  return {
+    solverId: matchingSolver?.solverId || winnerSolverName,
+    displayName: matchingSolver?.displayName || winnerSolverName,
+    image: matchingSolver?.image,
+  }
 }
 
 function getWinnerSolver(value?: OrderCompetitionStatus['value']): string | undefined {
@@ -58,44 +96,6 @@ function matchSolverByName(solverName: string, solvers: SolverInfo[]): SolverInf
   })
 }
 
-function buildSolverInfo(winnerSolverName: string, solvers: SolverInfo[]): OrderSolverInfo {
-  const matchingSolver = matchSolverByName(winnerSolverName, solvers)
-  return {
-    solverId: matchingSolver?.solverId || winnerSolverName,
-    displayName: matchingSolver?.displayName || winnerSolverName,
-    image: matchingSolver?.image,
-  }
-}
-
-export async function resolveSolver(
-  networkId: number,
-  orderUid: string,
-  txHash: string | undefined,
-): Promise<OrderSolverInfo | undefined> {
-  const [competitionStatus, solvers] = await Promise.all([
-    getOrderCompetitionStatus({ networkId, orderId: orderUid }),
-    fetchSolversInfo(networkId).catch(() => []),
-  ])
-
-  const winnerFromOrder = getWinnerSolver(competitionStatus?.value)
-
-  const winnerSolverName =
-    winnerFromOrder ||
-    (txHash ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash })) : undefined)
-
-  if (!winnerSolverName) return undefined
-
-  return buildSolverInfo(winnerSolverName, solvers)
-}
-
-export async function resolveSolverByTxHash(networkId: number, txHash: string): Promise<OrderSolverInfo | undefined> {
-  const [competition, solvers] = await Promise.all([
-    getSolverCompetitionByTxHash({ networkId, txHash }),
-    fetchSolversInfo(networkId).catch(() => []),
-  ])
-
-  const winnerSolverName = getWinnerSolverFromCompetition(competition)
-  if (!winnerSolverName) return undefined
-
-  return buildSolverInfo(winnerSolverName, solvers)
+function normalizeSolverId(solverId: string): string {
+  return solverId.trim().toLowerCase().replace(SOLVER_SUFFIX_REGEX, '')
 }

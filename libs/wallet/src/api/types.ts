@@ -13,20 +13,10 @@ export const ConnectorType = {
 
 export type ConnectorType = (typeof ConnectorType)[keyof typeof ConnectorType]
 
-export enum ConnectionType {
-  NETWORK = 'NETWORK',
-  INJECTED = 'INJECTED',
-  WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
-  COINBASE_WALLET = 'COINBASE_WALLET',
-  METAMASK = 'METAMASK',
-  GNOSIS_SAFE = 'GNOSIS_SAFE',
-  TREZOR = 'TREZOR',
-}
-
-export interface WalletInfo {
-  chainId: SupportedChainId
-  account?: Address
-  active?: boolean
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
+  isReadOnly?: boolean
+  chainId: number
+  nonce: number
 }
 
 export interface WalletDetails {
@@ -44,10 +34,20 @@ export interface WalletDetails {
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
-  isReadOnly?: boolean
-  chainId: number
-  nonce: number
+export interface WalletInfo {
+  chainId: SupportedChainId
+  account?: Address
+  active?: boolean
+}
+
+export enum ConnectionType {
+  NETWORK = 'NETWORK',
+  INJECTED = 'INJECTED',
+  WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
+  COINBASE_WALLET = 'COINBASE_WALLET',
+  METAMASK = 'METAMASK',
+  GNOSIS_SAFE = 'GNOSIS_SAFE',
+  TREZOR = 'TREZOR',
 }
 
 export enum WalletType {

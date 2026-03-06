@@ -33,6 +33,30 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   return request
 }
 
+async function calculateGasLimit(
+  data: string,
+  from: string,
+  to: string,
+  provider: JsonRpcProvider,
+  isUserAccount: boolean,
+): Promise<string> {
+  try {
+    // Query the actual gas estimate
+    const actual = await provider.estimateGas({ data, from, to })
+
+    // Add 10% to actual value to account for minor differences with real account
+    // Do not add it if this is the real user's account
+    const gasLimit = !isUserAccount ? actual.add(actual.div(10)) : actual
+
+    // Pick the biggest between estimated and default
+    return gasLimit.gt(DEFAULT_PERMIT_GAS_LIMIT) ? gasLimit.toString() : DEFAULT_PERMIT_GAS_LIMIT
+  } catch (e) {
+    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
+
+    return DEFAULT_PERMIT_GAS_LIMIT
+  }
+}
+
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
   const { inputToken, spender, chainId, permitInfo, provider, account, eip2612Utils, nonce: preFetchedNonce } = params
 
@@ -100,30 +124,6 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
     callData,
     gasLimit,
     dappId: PERMIT_HOOK_DAPP_ID,
-  }
-}
-
-async function calculateGasLimit(
-  data: string,
-  from: string,
-  to: string,
-  provider: JsonRpcProvider,
-  isUserAccount: boolean,
-): Promise<string> {
-  try {
-    // Query the actual gas estimate
-    const actual = await provider.estimateGas({ data, from, to })
-
-    // Add 10% to actual value to account for minor differences with real account
-    // Do not add it if this is the real user's account
-    const gasLimit = !isUserAccount ? actual.add(actual.div(10)) : actual
-
-    // Pick the biggest between estimated and default
-    return gasLimit.gt(DEFAULT_PERMIT_GAS_LIMIT) ? gasLimit.toString() : DEFAULT_PERMIT_GAS_LIMIT
-  } catch (e) {
-    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
-
-    return DEFAULT_PERMIT_GAS_LIMIT
   }
 }
 

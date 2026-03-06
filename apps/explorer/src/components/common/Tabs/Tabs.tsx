@@ -12,13 +12,16 @@ import { Wrapper, TabList } from './styled'
 export { default as TabIcon } from 'components/common/Tabs/TabIcon'
 export { TabList } from './styled'
 
-type TabId = number
-export enum IndicatorTabSize {
-  small = 0.1,
-  big = 0.2,
+export interface Props {
+  readonly className?: string
+  readonly tabItems: TabItemInterface[]
+  readonly tabTheme: TabTheme
+  readonly selectedTab?: TabId
+  readonly extra?: TabBarExtraContent
+  readonly extraPosition?: 'top' | 'bottom' | 'both'
+  readonly updateSelectedTab?: (activeId: TabId) => void
 }
 export type TabBarExtraContent = React.ReactNode
-
 export interface TabItemInterface {
   readonly tab: React.ReactNode
   readonly content: React.ReactNode
@@ -39,15 +42,12 @@ export interface TabTheme {
   readonly letterSpacing: string
   readonly borderRadius: boolean
 }
-export interface Props {
-  readonly className?: string
-  readonly tabItems: TabItemInterface[]
-  readonly tabTheme: TabTheme
-  readonly selectedTab?: TabId
-  readonly extra?: TabBarExtraContent
-  readonly extraPosition?: 'top' | 'bottom' | 'both'
-  readonly updateSelectedTab?: (activeId: TabId) => void
+
+export enum IndicatorTabSize {
+  small = 0.1,
+  big = 0.2,
 }
+type TabId = number
 
 export const DEFAULT_TAB_THEME: TabTheme = {
   activeBg: 'transparent',

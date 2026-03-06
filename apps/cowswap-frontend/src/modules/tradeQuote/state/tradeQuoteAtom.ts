@@ -14,8 +14,6 @@ import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { TradeQuoteFetchParams } from '../types'
 import { getIsFastQuote } from '../utils/getIsFastQuote'
 
-type SellTokenAddress = string
-
 export interface TradeQuoteState {
   quote: QuoteAndPost | null
   isBridgeQuote: boolean | null
@@ -26,6 +24,8 @@ export interface TradeQuoteState {
   isLoading: boolean
   localQuoteTimestamp: number | null
 }
+
+type SellTokenAddress = string
 
 export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
   quote: null,

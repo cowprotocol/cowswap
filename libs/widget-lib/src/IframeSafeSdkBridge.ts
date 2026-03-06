@@ -1,3 +1,21 @@
+interface SafeMessage {
+  id: string
+}
+
+interface SafeMessageRequest extends SafeMessage {
+  method: string
+  params: unknown
+  env: {
+    sdkVersion: string
+  }
+}
+
+interface SafeMessageResponse extends SafeMessage {
+  id: string
+  success: boolean
+  version: string
+}
+
 export class IframeSafeSdkBridge {
   forwardSdkMessage: (event: MessageEvent<unknown>) => void
 
@@ -56,22 +74,4 @@ function isSafeMessageResponse(message: SafeMessage): message is SafeMessageResp
     'version' in message &&
     typeof message.version === 'string'
   )
-}
-
-interface SafeMessage {
-  id: string
-}
-
-interface SafeMessageRequest extends SafeMessage {
-  method: string
-  params: unknown
-  env: {
-    sdkVersion: string
-  }
-}
-
-interface SafeMessageResponse extends SafeMessage {
-  id: string
-  success: boolean
-  version: string
 }

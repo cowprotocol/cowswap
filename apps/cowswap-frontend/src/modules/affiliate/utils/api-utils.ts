@@ -5,25 +5,16 @@ export const JSON_HEADERS = {
   'Content-Type': 'application/json',
 }
 
-export type FetchJsonResponse<T> = {
-  response: Response
-  data?: T
-  text: string
-}
-
 export type ApiErrorPayload =
   | {
       message?: string
     }
   | undefined
 
-export class RetryableResponseError extends Error {
-  readonly rawApiError: { status: number }
-
-  constructor(status: number) {
-    super(`Retryable response (${status})`)
-    this.rawApiError = { status }
-  }
+export type FetchJsonResponse<T> = {
+  response: Response
+  data?: T
+  text: string
 }
 
 enum RetryableStatusCode {
@@ -34,6 +25,15 @@ enum RetryableStatusCode {
   BadGateway = 502,
   ServiceUnavailable = 503,
   GatewayTimeout = 504,
+}
+
+export class RetryableResponseError extends Error {
+  readonly rawApiError: { status: number }
+
+  constructor(status: number) {
+    super(`Retryable response (${status})`)
+    this.rawApiError = { status }
+  }
 }
 
 export const STATUS_CODES_TO_RETRY: ReadonlySet<number> = new Set(
@@ -47,21 +47,6 @@ export class ApiError extends Error {
     super(data?.message || text || `Referral service error (${status})`)
     this.status = status
   }
-}
-
-export async function parseJsonResponse<T>(response: Response): Promise<FetchJsonResponse<T>> {
-  const text = await response.text().catch(() => '')
-  let data: T | undefined
-
-  if (text) {
-    try {
-      data = JSON.parse(text) as T
-    } catch {
-      data = undefined
-    }
-  }
-
-  return { response, data, text }
 }
 
 export async function fetchWithTimeout(input: RequestInfo, init: RequestInit, timeoutMs?: number): Promise<Response> {
@@ -82,6 +67,21 @@ export async function fetchWithTimeout(input: RequestInfo, init: RequestInit, ti
   } finally {
     clearTimeout(timeoutId)
   }
+}
+
+export async function parseJsonResponse<T>(response: Response): Promise<FetchJsonResponse<T>> {
+  const text = await response.text().catch(() => '')
+  let data: T | undefined
+
+  if (text) {
+    try {
+      data = JSON.parse(text) as T
+    } catch {
+      data = undefined
+    }
+  }
+
+  return { response, data, text }
 }
 
 export function unwrapOk<T>(result: FetchJsonResponse<T>, missingMessage: string): T {

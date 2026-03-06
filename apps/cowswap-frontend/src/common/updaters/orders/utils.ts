@@ -10,6 +10,35 @@ import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCo
 import { UltimateOrderData } from '../../hooks/useUltimateOrder'
 import { TradeAmounts } from '../../types'
 
+type PopupData = {
+  status: OrderTransitionStatus
+  order: EnrichedOrder
+}
+
+export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
+  // Skip EthFlow creating orders
+  if (orderFromStore.status === OrderStatus.CREATING) {
+    return null
+  }
+
+  try {
+    const isComposableCowChildOrder = getIsComposableCowChildOrder(orderFromStore)
+    // For ComposableCow child orders always request PROD order-book
+    const order = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
+
+    if (!order) return null
+
+    const status = classifyOrder(order)
+
+    return { status, order }
+  } catch {
+    console.debug(
+      `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`,
+    )
+    return null
+  }
+}
+
 export function getUltimateOrderTradeAmounts({
   orderFromStore,
   bridgeOrderFromStore,
@@ -63,33 +92,4 @@ export function getUltimateOrderTradeAmounts({
 
 function stringToCurrency(amount: string, currency: Currency): CurrencyAmount<Currency> {
   return CurrencyAmount.fromRawAmount(currency, amount)
-}
-
-type PopupData = {
-  status: OrderTransitionStatus
-  order: EnrichedOrder
-}
-
-export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
-  // Skip EthFlow creating orders
-  if (orderFromStore.status === OrderStatus.CREATING) {
-    return null
-  }
-
-  try {
-    const isComposableCowChildOrder = getIsComposableCowChildOrder(orderFromStore)
-    // For ComposableCow child orders always request PROD order-book
-    const order = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
-
-    if (!order) return null
-
-    const status = classifyOrder(order)
-
-    return { status, order }
-  } catch {
-    console.debug(
-      `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`,
-    )
-    return null
-  }
 }

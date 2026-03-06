@@ -19,29 +19,13 @@ import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
-interface ButtonErrorConfig {
-  text: ReactNode
-  id?: string
-}
+type ButtonComponent = React.ComponentType<ButtonComponentProps>
 
 type ButtonComponentProps = TradeFormButtonContext & { isDisabled?: boolean }
 
-type ButtonComponent = React.ComponentType<ButtonComponentProps>
-
-function getDefaultQuoteError(): string {
-  return t`Error loading price. Try again later.`
-}
-
-function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
-  return {
-    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
-    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
-    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
-    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
-    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
-    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
-    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
-  }
+interface ButtonErrorConfig {
+  text: ReactNode
+  id?: string
 }
 
 function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
@@ -58,6 +42,22 @@ function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
     [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
     [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
     [BridgeQuoteErrors.SELL_AMOUNT_TOO_SMALL]: t`Sell amount too small to bridge`,
+  }
+}
+
+function getDefaultQuoteError(): string {
+  return t`Error loading price. Try again later.`
+}
+
+function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
+  return {
+    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
+    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
+    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
+    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
+    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
+    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
+    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
   }
 }
 

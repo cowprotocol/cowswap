@@ -10,23 +10,6 @@ import { Step1 } from './steps/Step1'
 import { Step2 } from './steps/Step2'
 import { Step3 } from './steps/Step3'
 
-export type TxState = {
-  /**
-   * undefined: there's no tx to track
-   * string: tx was created and can be tracked
-   */
-  hash?: string
-  /**
-   * undefined: not started/mining
-   * true: transaction failed
-   * false: transaction succeeded
-   */
-  failed?: boolean
-  cancelled?: boolean
-  spedUp?: boolean
-  replaced?: boolean
-}
-
 export interface EthFlowStepperProps {
   showProgressBar?: boolean
   nativeTokenSymbol: string
@@ -60,6 +43,23 @@ export interface EthFlowStepperProps {
    * To track cancellation tx
    */
   cancellation: TxState
+}
+
+export type TxState = {
+  /**
+   * undefined: there's no tx to track
+   * string: tx was created and can be tracked
+   */
+  hash?: string
+  /**
+   * undefined: not started/mining
+   * true: transaction failed
+   * false: transaction succeeded
+   */
+  failed?: boolean
+  cancelled?: boolean
+  spedUp?: boolean
+  replaced?: boolean
 }
 
 export const Wrapper = styled.div<{ showProgressBar?: boolean }>`

@@ -1,18 +1,18 @@
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
-export enum OrderTabId {
-  signing = 'signing',
-  open = 'open',
-  unfillable = 'unfillable',
-  history = 'history',
-}
-
 export interface OrderTab {
   id: OrderTabId
   title: MessageDescriptor
   count: number
   isActive?: boolean
+}
+
+export enum OrderTabId {
+  signing = 'signing',
+  open = 'open',
+  unfillable = 'unfillable',
+  history = 'history',
 }
 
 export const ORDERS_TABLE_TABS: OrderTab[] = [

@@ -11,13 +11,6 @@ const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   ens: '(:?^cowswap.eth|ipfs)',
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getRegex(env: EnvironmentName) {
-  const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env.toUpperCase()}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
-  return new RegExp(regex, 'i')
-}
-
 export interface EnvironmentChecks {
   isProd: boolean
   isEns: boolean
@@ -44,6 +37,13 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
     // The latest stable version pointing to the DEV api
     isBarn: getRegex('barn').test(host),
   }
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function getRegex(env: EnvironmentName) {
+  const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env.toUpperCase()}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
+  return new RegExp(regex, 'i')
 }
 
 // A hack to test against prod API

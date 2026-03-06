@@ -44,13 +44,13 @@ const Icon = ({ iconSize }: { iconSize?: number }) => (
   </StyledText>
 )
 
+export type CopyHelperProps = BaseProps & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps>
 interface BaseProps {
   toCopy: string
   color?: string
   iconSize?: number
   iconPosition?: 'left' | 'right'
 }
-export type CopyHelperProps = BaseProps & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps>
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

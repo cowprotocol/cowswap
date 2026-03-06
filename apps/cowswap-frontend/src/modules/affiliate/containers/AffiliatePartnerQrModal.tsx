@@ -17,8 +17,8 @@ import { getReferralLink } from '../lib/affiliateProgramUtils'
 const QR_SIZE_PX = 220
 const QR_LOGO_SIZE_PX = 64
 
-type QrColor = 'black' | 'white' | 'accent'
 type DownloadQrFileType = 'png' | 'webp'
+type QrColor = 'black' | 'white' | 'accent'
 
 const QR_COLORS: Record<QrColor, { fg: string; bg: string }> = {
   black: { fg: '#111111', bg: '#FFFFFF' },

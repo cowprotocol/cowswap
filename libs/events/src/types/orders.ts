@@ -7,6 +7,18 @@ export type BaseOrderPayload = {
   order: EnrichedOrder
 }
 
+export type OnBridgingSuccessPayload = Omit<CrossChainOrder, 'provider'>
+
+export type OnCancelledOrderPayload = BaseOrderPayload & {
+  transactionHash?: string
+}
+
+export type OnExpiredOrderPayload = BaseOrderPayload
+
+export type OnFulfilledOrderPayload = BaseOrderPayload & {
+  bridgeOrder?: BridgeOrderDataSerialized
+}
+
 export type OnPostedOrderPayload = {
   orderUid: string
   chainId: SupportedChainId
@@ -23,18 +35,6 @@ export type OnPostedOrderPayload = {
   isEthFlow?: boolean
 }
 
-export type OnFulfilledOrderPayload = BaseOrderPayload & {
-  bridgeOrder?: BridgeOrderDataSerialized
-}
-
-export type OnCancelledOrderPayload = BaseOrderPayload & {
-  transactionHash?: string
-}
-
-export type OnExpiredOrderPayload = BaseOrderPayload
-
 export type OnPresignedOrderPayload = BaseOrderPayload & {
   bridgeOrder?: BridgeOrderDataSerialized
 }
-
-export type OnBridgingSuccessPayload = Omit<CrossChainOrder, 'provider'>

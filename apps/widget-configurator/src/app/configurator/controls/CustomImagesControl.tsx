@@ -4,11 +4,11 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import TextField from '@mui/material/TextField'
 
-type CustomImages = CowSwapWidgetParams['images']
-
 export interface CustomImagesControlProps {
   state: [CustomImages, Dispatch<SetStateAction<CustomImages>>]
 }
+
+type CustomImages = CowSwapWidgetParams['images']
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

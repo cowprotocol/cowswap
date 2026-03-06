@@ -7,8 +7,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsCurrentTradeBridging, useTradePriceImpact, useTradeRouteContext } from 'modules/trade'
-import { HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
-import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
+import { HighFeeWarning, MetamaskTransactionWarning, SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import {
   useShouldCheckBridgingRecipient,

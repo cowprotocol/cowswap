@@ -12,6 +12,11 @@ import { PreparingBridgingContent } from '../contents/BridgingProgressContent/Pr
 import { SwapResultContent } from '../contents/SwapResultContent'
 import { bridgeStatusIcons, bridgeStatusTitlePrefixes, swapStatusIcons, swapStatusTitlePrefixes } from '../StopStatus'
 
+interface BridgeStepProps {
+  context: SwapAndBridgeContext
+  bridgeStatus: SwapAndBridgeStatus
+}
+
 interface QuoteDetailsProps {
   className?: string
   context: SwapAndBridgeContext
@@ -21,34 +26,16 @@ interface SwapStepProps {
   context: SwapAndBridgeContext
 }
 
-interface BridgeStepProps {
-  context: SwapAndBridgeContext
-  bridgeStatus: SwapAndBridgeStatus
-}
-
-function SwapStep({ context }: SwapStepProps): ReactNode {
-  const { i18n } = useLingui()
-  const { bridgeProvider, overview, swapResultContext } = context
-  const { sourceAmounts, sourceChainName } = overview
-  const swapStatus = SwapAndBridgeStatus.DONE
+export function ProgressDetails({ className, context }: QuoteDetailsProps): ReactNode {
+  const { bridgeProvider, bridgingStatus } = context
+  const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 
   return (
-    <BridgeDetailsContainer
-      isCollapsible
-      defaultExpanded
-      status={swapStatus}
-      statusIcon={swapStatusIcons[swapStatus]}
-      protocolIconShowOnly="first"
-      protocolIconSize={21}
-      titlePrefix={i18n._(swapStatusTitlePrefixes[swapStatus])}
-      protocolName={COW_PROTOCOL_NAME}
-      bridgeProvider={bridgeProvider}
-      chainName={sourceChainName}
-      sellAmount={sourceAmounts.sellAmount}
-      buyAmount={sourceAmounts.buyAmount}
-    >
-      <SwapResultContent context={swapResultContext} sellAmount={sourceAmounts.sellAmount} />
-    </BridgeDetailsContainer>
+    <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded providerInfo={bridgeProvider}>
+      <SwapStep context={context} />
+      <DividerHorizontal margin="8px 0 4px" />
+      <BridgeStep context={context} bridgeStatus={bridgeStatus} />
+    </CollapsibleBridgeRoute>
   )
 }
 
@@ -86,15 +73,28 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
   )
 }
 
-export function ProgressDetails({ className, context }: QuoteDetailsProps): ReactNode {
-  const { bridgeProvider, bridgingStatus } = context
-  const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
+function SwapStep({ context }: SwapStepProps): ReactNode {
+  const { i18n } = useLingui()
+  const { bridgeProvider, overview, swapResultContext } = context
+  const { sourceAmounts, sourceChainName } = overview
+  const swapStatus = SwapAndBridgeStatus.DONE
 
   return (
-    <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded providerInfo={bridgeProvider}>
-      <SwapStep context={context} />
-      <DividerHorizontal margin="8px 0 4px" />
-      <BridgeStep context={context} bridgeStatus={bridgeStatus} />
-    </CollapsibleBridgeRoute>
+    <BridgeDetailsContainer
+      isCollapsible
+      defaultExpanded
+      status={swapStatus}
+      statusIcon={swapStatusIcons[swapStatus]}
+      protocolIconShowOnly="first"
+      protocolIconSize={21}
+      titlePrefix={i18n._(swapStatusTitlePrefixes[swapStatus])}
+      protocolName={COW_PROTOCOL_NAME}
+      bridgeProvider={bridgeProvider}
+      chainName={sourceChainName}
+      sellAmount={sourceAmounts.sellAmount}
+      buyAmount={sourceAmounts.buyAmount}
+    >
+      <SwapResultContent context={swapResultContext} sellAmount={sourceAmounts.sellAmount} />
+    </BridgeDetailsContainer>
   )
 }

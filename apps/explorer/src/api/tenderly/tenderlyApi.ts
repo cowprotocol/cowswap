@@ -26,110 +26,6 @@ const API_BASE_URLs: Record<SupportedChainId, string | undefined> = mapSupported
   (_networkId: SupportedChainId): string => `${TENDERLY_API_URL}/${_networkId}`,
 )
 
-function _getApiBaseUrl(networkId: SupportedChainId): string {
-  const baseUrl = API_BASE_URLs[networkId]
-
-  if (!baseUrl) {
-    throw new Error('Unsupported Network. The tenderly API is not available or configured for chain id ' + networkId)
-  } else {
-    return baseUrl
-  }
-}
-
-function _get(networkId: SupportedChainId, url: string): Promise<Response> {
-  const baseUrl = _getApiBaseUrl(networkId)
-  return fetch(baseUrl + url)
-}
-
-function _fetchTrace(networkId: SupportedChainId, txHash: string): Promise<Trace> {
-  const queryString = `/trace/${txHash}`
-  console.log(`[tenderlyApi:fetchTrace] Fetching trace tx ${txHash} on network ${networkId}`)
-
-  return fetchQuery<Trace>({ get: () => _get(networkId, queryString) }, queryString)
-}
-
-function _fetchTradesAccounts(networkId: SupportedChainId, txHash: string): Promise<Contract[]> {
-  const queryString = `/tx/${txHash}/contracts`
-  console.log(`[tenderlyApi:fetchTradesAccounts] Fetching tx trades account on network ${networkId}`)
-
-  return fetchQuery<Array<Contract>>({ get: () => _get(networkId, queryString) }, queryString)
-}
-
-export async function getTransactionTrace(networkId: SupportedChainId, txHash: string): Promise<Trace> {
-  return _fetchTrace(networkId, txHash)
-}
-
-export async function getTransactionContracts(networkId: SupportedChainId, txHash: string): Promise<Contract[]> {
-  return _fetchTradesAccounts(networkId, txHash)
-}
-
-export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
-  const transfers: Array<Transfer> = []
-  const trades: Array<Trade> = []
-
-  try {
-    trace.logs?.forEach((log) => {
-      if (log.name === TypeOfTrace.TRANSFER) {
-        const from = log.inputs[IndexTransferInput.from].value
-        const to = log.inputs[IndexTransferInput.to].value
-        transfers.push({
-          token: log.raw.address,
-          from,
-          to,
-          value: log.inputs[IndexTransferInput.value].value,
-          isInternal: from === to,
-        })
-      } else if (log.name === TypeOfTrace.TRADE) {
-        const trade = {
-          owner: log.inputs[IndexTradeInput.owner].value,
-          sellToken: log.inputs[IndexTradeInput.sellToken].value,
-          buyToken: log.inputs[IndexTradeInput.buyToken].value,
-          sellAmount: log.inputs[IndexTradeInput.sellAmount].value,
-          buyAmount: log.inputs[IndexTradeInput.buyAmount].value,
-          feeAmount: log.inputs[IndexTradeInput.feeAmount].value,
-          orderUid: log.inputs[IndexTradeInput.orderUid].value,
-        }
-        if (trade.buyToken === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
-          //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
-          transfers.push({
-            token: NATIVE_TOKEN_ADDRESS_LOWERCASE,
-            from: log.raw.address,
-            to: trade.owner,
-            value: trade.buyAmount,
-            isInternal: log.raw.address === trade.owner,
-          })
-        } else if (trade.sellToken === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
-          //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
-          transfers.push({
-            token: NATIVE_TOKEN_ADDRESS_LOWERCASE,
-            from: trade.owner,
-            to: log.raw.address,
-            value: trade.sellAmount,
-            isInternal: log.raw.address === trade.owner,
-          })
-        }
-        trades.push(trade)
-      }
-    })
-  } catch (error) {
-    console.error(`Unable to analyze the JSON trace trades`, error)
-    throw new Error(`Failed to parse the JSON of tenderly trace API`)
-  }
-
-  return { transfers, trades }
-}
-
-export async function getTradesAccount(
-  networkId: SupportedChainId,
-  txHash: string,
-  trades: Array<Trade>,
-  transfers: Array<Transfer>,
-): Promise<Map<string, Account>> {
-  const contracts = await _fetchTradesAccounts(networkId, txHash)
-
-  return accountAddressesInvolved(contracts, trades, transfers)
-}
-
 /**
  * Allows to obtain a description of addresses involved
  * in a tx
@@ -190,16 +86,120 @@ export function accountAddressesInvolved(
   return result
 }
 
-function _contractName(name: string): string {
-  if (name === COW_PROTOCOL_CONTRACT_NAME) return APP_NAME
-
-  return name
-}
-
 export function getAliasFromAddress(address: string, isUnknown = false): string {
   const lowerCaseAddress = address.toLowerCase()
 
   if (SPECIAL_ADDRESSES[lowerCaseAddress]) return SPECIAL_ADDRESSES[lowerCaseAddress]
 
   return isUnknown ? abbreviateString(address, 6, 4) : ALIAS_TRADER_NAME
+}
+
+export async function getTradesAccount(
+  networkId: SupportedChainId,
+  txHash: string,
+  trades: Array<Trade>,
+  transfers: Array<Transfer>,
+): Promise<Map<string, Account>> {
+  const contracts = await _fetchTradesAccounts(networkId, txHash)
+
+  return accountAddressesInvolved(contracts, trades, transfers)
+}
+
+export async function getTransactionContracts(networkId: SupportedChainId, txHash: string): Promise<Contract[]> {
+  return _fetchTradesAccounts(networkId, txHash)
+}
+
+export async function getTransactionTrace(networkId: SupportedChainId, txHash: string): Promise<Trace> {
+  return _fetchTrace(networkId, txHash)
+}
+
+export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
+  const transfers: Array<Transfer> = []
+  const trades: Array<Trade> = []
+
+  try {
+    trace.logs?.forEach((log) => {
+      if (log.name === TypeOfTrace.TRANSFER) {
+        const from = log.inputs[IndexTransferInput.from].value
+        const to = log.inputs[IndexTransferInput.to].value
+        transfers.push({
+          token: log.raw.address,
+          from,
+          to,
+          value: log.inputs[IndexTransferInput.value].value,
+          isInternal: from === to,
+        })
+      } else if (log.name === TypeOfTrace.TRADE) {
+        const trade = {
+          owner: log.inputs[IndexTradeInput.owner].value,
+          sellToken: log.inputs[IndexTradeInput.sellToken].value,
+          buyToken: log.inputs[IndexTradeInput.buyToken].value,
+          sellAmount: log.inputs[IndexTradeInput.sellAmount].value,
+          buyAmount: log.inputs[IndexTradeInput.buyAmount].value,
+          feeAmount: log.inputs[IndexTradeInput.feeAmount].value,
+          orderUid: log.inputs[IndexTradeInput.orderUid].value,
+        }
+        if (trade.buyToken === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
+          //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
+          transfers.push({
+            token: NATIVE_TOKEN_ADDRESS_LOWERCASE,
+            from: log.raw.address,
+            to: trade.owner,
+            value: trade.buyAmount,
+            isInternal: log.raw.address === trade.owner,
+          })
+        } else if (trade.sellToken === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
+          //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
+          transfers.push({
+            token: NATIVE_TOKEN_ADDRESS_LOWERCASE,
+            from: trade.owner,
+            to: log.raw.address,
+            value: trade.sellAmount,
+            isInternal: log.raw.address === trade.owner,
+          })
+        }
+        trades.push(trade)
+      }
+    })
+  } catch (error) {
+    console.error(`Unable to analyze the JSON trace trades`, error)
+    throw new Error(`Failed to parse the JSON of tenderly trace API`)
+  }
+
+  return { transfers, trades }
+}
+
+function _contractName(name: string): string {
+  if (name === COW_PROTOCOL_CONTRACT_NAME) return APP_NAME
+
+  return name
+}
+
+function _fetchTrace(networkId: SupportedChainId, txHash: string): Promise<Trace> {
+  const queryString = `/trace/${txHash}`
+  console.log(`[tenderlyApi:fetchTrace] Fetching trace tx ${txHash} on network ${networkId}`)
+
+  return fetchQuery<Trace>({ get: () => _get(networkId, queryString) }, queryString)
+}
+
+function _fetchTradesAccounts(networkId: SupportedChainId, txHash: string): Promise<Contract[]> {
+  const queryString = `/tx/${txHash}/contracts`
+  console.log(`[tenderlyApi:fetchTradesAccounts] Fetching tx trades account on network ${networkId}`)
+
+  return fetchQuery<Array<Contract>>({ get: () => _get(networkId, queryString) }, queryString)
+}
+
+function _get(networkId: SupportedChainId, url: string): Promise<Response> {
+  const baseUrl = _getApiBaseUrl(networkId)
+  return fetch(baseUrl + url)
+}
+
+function _getApiBaseUrl(networkId: SupportedChainId): string {
+  const baseUrl = API_BASE_URLs[networkId]
+
+  if (!baseUrl) {
+    throw new Error('Unsupported Network. The tenderly API is not available or configured for chain id ' + networkId)
+  } else {
+    return baseUrl
+  }
 }

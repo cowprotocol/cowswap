@@ -17,20 +17,6 @@ import { usePriorityTokenAddresses } from 'modules/trade'
 
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
-function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
-  // Early exit for 100%, meaning should be enabled for everyone
-  if (percentage === 100) {
-    return true
-  }
-
-  // Falsy conditions
-  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) {
-    return false
-  }
-
-  return BigInt(account) % 100n < percentage
-}
-
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const sourceChainId = useSourceChainId().chainId
   const { account } = useWalletInfo()
@@ -96,4 +82,18 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
       />
     </>
   )
+}
+
+function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
+  // Early exit for 100%, meaning should be enabled for everyone
+  if (percentage === 100) {
+    return true
+  }
+
+  // Falsy conditions
+  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) {
+    return false
+  }
+
+  return BigInt(account) % 100n < percentage
 }

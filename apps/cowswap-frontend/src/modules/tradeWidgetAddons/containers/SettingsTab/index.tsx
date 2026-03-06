@@ -26,6 +26,11 @@ import * as styledEl from './styled'
 import { TransactionSettings } from '../../pure/TransactionSettings'
 import { settingsTabStateAtom } from '../../state/settingsTabState'
 
+interface SettingsTabControllerProps {
+  buttonRef: RefObject<HTMLButtonElement | null>
+  children: ReactElement
+}
+
 interface SettingsTabProps {
   className?: string
   recipientToggleState: StatefulValue<boolean>
@@ -176,11 +181,6 @@ export function SettingsTab({
       </SettingsTabController>
     </Menu>
   )
-}
-
-interface SettingsTabControllerProps {
-  buttonRef: RefObject<HTMLButtonElement | null>
-  children: ReactElement
 }
 
 /**

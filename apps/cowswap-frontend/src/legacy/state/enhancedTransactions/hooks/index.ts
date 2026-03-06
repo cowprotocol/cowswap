@@ -14,6 +14,34 @@ export * from './TransactionHooksMod'
 export type AddTransactionHookParams = Omit<AddTransactionParams, 'chainId' | 'from' | 'hashType' | 'nonce'> // The hook requires less params for convenience
 export type TransactionAdder = (params: AddTransactionHookParams) => void
 
+type EnhancedTransactionDetailsMap = {
+  [txHash: string]: EnhancedTransactionDetails
+}
+
+type TransactionFilter = (tx: EnhancedTransactionDetails) => boolean
+
+/**
+ * Return all transaction hashes
+ */
+export function useAllTransactionHashes(filter?: TransactionFilter): string[] {
+  const transactions = useAllTransactionsDetails(filter)
+
+  return useMemo(() => transactions.map((tx) => tx.hash), [transactions])
+}
+
+/**
+ * Return all transactions details
+ */
+export function useAllTransactionsDetails(filter?: TransactionFilter): EnhancedTransactionDetails[] {
+  const transactions = useAllTransactions()
+
+  return useMemo(() => {
+    const transactionsDetails = Object.keys(transactions).map((hash) => transactions[hash])
+
+    return filter ? transactionsDetails.filter(filter) : transactionsDetails
+  }, [transactions, filter])
+}
+
 /**
  * Return helpers to add a new pending transaction
  */
@@ -55,34 +83,6 @@ export function useTransactionAdder(): TransactionAdder {
     },
     [dispatch, chainId, account, isSafeWallet, provider],
   )
-}
-
-type TransactionFilter = (tx: EnhancedTransactionDetails) => boolean
-
-/**
- * Return all transactions details
- */
-export function useAllTransactionsDetails(filter?: TransactionFilter): EnhancedTransactionDetails[] {
-  const transactions = useAllTransactions()
-
-  return useMemo(() => {
-    const transactionsDetails = Object.keys(transactions).map((hash) => transactions[hash])
-
-    return filter ? transactionsDetails.filter(filter) : transactionsDetails
-  }, [transactions, filter])
-}
-
-/**
- * Return all transaction hashes
- */
-export function useAllTransactionHashes(filter?: TransactionFilter): string[] {
-  const transactions = useAllTransactionsDetails(filter)
-
-  return useMemo(() => transactions.map((tx) => tx.hash), [transactions])
-}
-
-type EnhancedTransactionDetailsMap = {
-  [txHash: string]: EnhancedTransactionDetails
 }
 
 export function useTransactionsByHash({ hashes }: { hashes: string[] }): EnhancedTransactionDetailsMap {

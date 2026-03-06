@@ -1,13 +1,13 @@
 import { createContext, ReactNode, useContext, Dispatch, SetStateAction } from 'react'
 
-export type PageBackgroundVariant = 'default' | 'nocows'
-
 export interface PageBackgroundContextValue {
   variant: PageBackgroundVariant
   setVariant: Dispatch<SetStateAction<PageBackgroundVariant>>
   scene: ReactNode | null
   setScene: Dispatch<SetStateAction<ReactNode | null>>
 }
+
+export type PageBackgroundVariant = 'default' | 'nocows'
 
 export const PageBackgroundContext = createContext<PageBackgroundContextValue | undefined>(undefined)
 PageBackgroundContext.displayName = 'PageBackgroundContext'

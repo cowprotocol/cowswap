@@ -1,40 +1,15 @@
-export interface JsonRpcRequest {
-  id?: number
-  method: string
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  params?: any[]
-}
-
-export interface JsonRpcRequestMessage {
-  jsonrpc: '2.0'
-  // Optional in the request.
-  id?: number
-  method: string
-  params: unknown[] | undefined
-}
-
 export interface BaseJsonRpcResponseMessage {
   // Required but null if not identified in request
   id: number
   jsonrpc: '2.0'
 }
 
-export interface JsonRpcSucessfulResponseMessage<TResult = unknown> extends BaseJsonRpcResponseMessage {
-  result: TResult
+export interface EIP6963ProviderInfo {
+  uuid: string
+  name: string
+  icon: string
+  rdns: string
 }
-
-export interface JsonRpcError<TData = unknown> {
-  code: number
-  message: string
-  data?: TData
-}
-
-export interface JsonRpcErrorResponseMessage<TErrorData = unknown> extends BaseJsonRpcResponseMessage {
-  error: JsonRpcError<TErrorData>
-}
-
-export type JsonRpcResponse = JsonRpcRequestMessage | JsonRpcErrorResponseMessage | JsonRpcSucessfulResponseMessage
 
 // https://eips.ethereum.org/EIPS/eip-1193
 export interface EthereumProvider {
@@ -53,7 +28,37 @@ export interface EthereumProvider {
   request<T>(params: JsonRpcRequest): Promise<T>
 }
 
-export type WindowListener = (event: MessageEvent<unknown>) => void
+export interface JsonRpcError<TData = unknown> {
+  code: number
+  message: string
+  data?: TData
+}
+
+export interface JsonRpcErrorResponseMessage<TErrorData = unknown> extends BaseJsonRpcResponseMessage {
+  error: JsonRpcError<TErrorData>
+}
+
+export interface JsonRpcRequest {
+  id?: number
+  method: string
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params?: any[]
+}
+
+export interface JsonRpcRequestMessage {
+  jsonrpc: '2.0'
+  // Optional in the request.
+  id?: number
+  method: string
+  params: unknown[] | undefined
+}
+
+export type JsonRpcResponse = JsonRpcRequestMessage | JsonRpcErrorResponseMessage | JsonRpcSucessfulResponseMessage
+
+export interface JsonRpcSucessfulResponseMessage<TResult = unknown> extends BaseJsonRpcResponseMessage {
+  result: TResult
+}
 
 export interface ProviderWcMetadata {
   name: string
@@ -67,9 +72,4 @@ export interface ProviderWcMetadata {
   }
 }
 
-export interface EIP6963ProviderInfo {
-  uuid: string
-  name: string
-  icon: string
-  rdns: string
-}
+export type WindowListener = (event: MessageEvent<unknown>) => void

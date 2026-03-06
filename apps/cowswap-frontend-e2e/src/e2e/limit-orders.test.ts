@@ -4,8 +4,12 @@ const CHAIN_ID = 11155111
 const SELL_TOKEN = 'WETH'
 const BUY_TOKEN = 'COW'
 
-function unlock(): void {
-  cy.get('#unlock-limit-orders-btn', { timeout: SMALL_TIMEOUT }).click()
+function getInputToken(): Cypress.Chainable {
+  return cy.get('#input-currency-input .token-amount-input').should('be.enabled')
+}
+
+function getOutputToken(): Cypress.Chainable {
+  return cy.get('#output-currency-input .token-amount-input').should('be.enabled')
 }
 
 function navigate(path = '', unlockLimitOrders = true): void {
@@ -16,12 +20,8 @@ function navigate(path = '', unlockLimitOrders = true): void {
   }
 }
 
-function getInputToken(): Cypress.Chainable {
-  return cy.get('#input-currency-input .token-amount-input').should('be.enabled')
-}
-
-function getOutputToken(): Cypress.Chainable {
-  return cy.get('#output-currency-input .token-amount-input').should('be.enabled')
+function unlock(): void {
+  cy.get('#unlock-limit-orders-btn', { timeout: SMALL_TIMEOUT }).click()
 }
 
 describe('Limit orders', () => {

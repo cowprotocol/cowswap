@@ -8,6 +8,26 @@ import { CmsPageComponent } from '@/components/CmsPageComponent'
 import { getPageMetadata } from '@/util/getPageMetadata'
 
 /**
+ * Creates a server component that renders CMS page content
+ * Throws error if page or content is missing (fails build)
+ */
+export async function createCmsPageComponent(slug: string): Promise<ReactNode> {
+  // Fetch content from CMS at build time + ISR revalidation
+  const page = await getPageBySlug(slug)
+
+  if (!page?.attributes) {
+    throw new Error(`Page with slug "${slug}" not found in CMS`)
+  }
+
+  if (!page.attributes.contentSections || page.attributes.contentSections.length === 0) {
+    throw new Error(`No content sections found for page with slug "${slug}"`)
+  }
+
+  // Pass the whole page data to the client component
+  return <CmsPageComponent page={page} />
+}
+
+/**
  * Extracts CMS slug from Next.js route segments
  * Converts route like /legal/cowswap-privacy-policy to slug 'cowswap-privacy-policy'
  */
@@ -41,24 +61,4 @@ export async function generateCmsPageMetadata(slug: string): Promise<Metadata> {
     absoluteTitle: heading || description,
     description: description || heading || '',
   })
-}
-
-/**
- * Creates a server component that renders CMS page content
- * Throws error if page or content is missing (fails build)
- */
-export async function createCmsPageComponent(slug: string): Promise<ReactNode> {
-  // Fetch content from CMS at build time + ISR revalidation
-  const page = await getPageBySlug(slug)
-
-  if (!page?.attributes) {
-    throw new Error(`Page with slug "${slug}" not found in CMS`)
-  }
-
-  if (!page.attributes.contentSections || page.attributes.contentSections.length === 0) {
-    throw new Error(`No content sections found for page with slug "${slug}"`)
-  }
-
-  // Pass the whole page data to the client component
-  return <CmsPageComponent page={page} />
 }

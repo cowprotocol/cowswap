@@ -13,14 +13,14 @@ export function useFallbackHandlerVerification(): ExtensibleFallbackVerification
   return account ? state[account.toLowerCase()] || state[account] || null : null
 }
 
-export function useIsFallbackHandlerRequired(): boolean {
-  const verification = useFallbackHandlerVerification()
-
-  return verification !== null && verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
-}
-
 export function useIsFallbackHandlerCompatible(): boolean {
   const verification = useFallbackHandlerVerification()
 
   return verification !== null && verification === ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
+}
+
+export function useIsFallbackHandlerRequired(): boolean {
+  const verification = useFallbackHandlerVerification()
+
+  return verification !== null && verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
 }

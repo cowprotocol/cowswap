@@ -44,6 +44,26 @@ export function useUsdPrice(currency: Nullish<Token>): UsdPriceState | null {
 }
 
 /**
+ * Subscribe to USD prices for multiple currencies and returns the USD prices state
+ */
+export function useUsdPrices(currencies: Token[]): Record<UsdPriceStateKey, UsdPriceState | null> {
+  useSubscribeUsdPrices(currencies)
+  const usdPrices = useAtomValue(usdTokenPricesAtom)
+
+  return useMemo(
+    () =>
+      currencies.reduce<Record<UsdPriceStateKey, UsdPriceState | null>>((acc, currency) => {
+        const key = getUsdPriceStateKey(currency)
+
+        acc[key] = usdPrices[key] || null
+
+        return acc
+      }, {}),
+    [currencies, usdPrices],
+  )
+}
+
+/**
  * Subscribe to USD prices for multiple currencies, returns void
  */
 function useSubscribeUsdPrices(currencies: Token[]): void {
@@ -72,24 +92,4 @@ function useSubscribeUsdPrices(currencies: Token[]): void {
       })
     }
   }, [currencies, addCurrencyToUsdPrice, removeCurrencyToUsdPrice])
-}
-
-/**
- * Subscribe to USD prices for multiple currencies and returns the USD prices state
- */
-export function useUsdPrices(currencies: Token[]): Record<UsdPriceStateKey, UsdPriceState | null> {
-  useSubscribeUsdPrices(currencies)
-  const usdPrices = useAtomValue(usdTokenPricesAtom)
-
-  return useMemo(
-    () =>
-      currencies.reduce<Record<UsdPriceStateKey, UsdPriceState | null>>((acc, currency) => {
-        const key = getUsdPriceStateKey(currency)
-
-        acc[key] = usdPrices[key] || null
-
-        return acc
-      }, {}),
-    [currencies, usdPrices],
-  )
 }

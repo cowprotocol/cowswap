@@ -7,11 +7,6 @@ export type ColorPalette = {
   [key in CowSwapWidgetPaletteColors]: string
 }
 
-export interface TokenListItem {
-  url: string
-  enabled: boolean
-}
-
 export interface ConfiguratorState {
   chainId?: SupportedChainId
   theme: PaletteMode
@@ -36,4 +31,9 @@ export interface ConfiguratorState {
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
   slippage?: SlippageConfig
+}
+
+export interface TokenListItem {
+  url: string
+  enabled: boolean
 }

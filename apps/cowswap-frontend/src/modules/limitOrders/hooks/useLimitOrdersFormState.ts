@@ -25,6 +25,30 @@ interface LimitOrdersFormParams {
   buyAmount: CurrencyAmount<Currency> | null
 }
 
+export function useLimitOrdersFormState(): LimitOrdersFormState | null {
+  const { quote } = useTradeQuote()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+  const { activeRate, isLoading } = useAtomValue(limitRateAtom)
+
+  const feeRawAmount = quote?.quoteResults.quoteResponse.quote.feeAmount
+  const feeAmount =
+    feeRawAmount && inputCurrencyAmount
+      ? CurrencyAmount.fromRawAmount(inputCurrencyAmount.currency, feeRawAmount)
+      : null
+
+  const params: LimitOrdersFormParams = {
+    activeRate,
+    feeAmount,
+    isRateLoading: isLoading,
+    sellAmount: inputCurrencyAmount,
+    buyAmount: outputCurrencyAmount,
+  }
+
+  return useSafeMemo(() => {
+    return getLimitOrdersFormState(params)
+  }, Object.values(params))
+}
+
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
 function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState | null {
@@ -50,28 +74,4 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   }
 
   return null
-}
-
-export function useLimitOrdersFormState(): LimitOrdersFormState | null {
-  const { quote } = useTradeQuote()
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
-  const { activeRate, isLoading } = useAtomValue(limitRateAtom)
-
-  const feeRawAmount = quote?.quoteResults.quoteResponse.quote.feeAmount
-  const feeAmount =
-    feeRawAmount && inputCurrencyAmount
-      ? CurrencyAmount.fromRawAmount(inputCurrencyAmount.currency, feeRawAmount)
-      : null
-
-  const params: LimitOrdersFormParams = {
-    activeRate,
-    feeAmount,
-    isRateLoading: isLoading,
-    sellAmount: inputCurrencyAmount,
-    buyAmount: outputCurrencyAmount,
-  }
-
-  return useSafeMemo(() => {
-    return getLimitOrdersFormState(params)
-  }, Object.values(params))
 }

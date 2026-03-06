@@ -9,11 +9,11 @@ import { fetchWithRateLimit } from 'common/utils/fetch'
 
 import { UnknownCurrencyError } from './errors'
 
+type BffResponse = BffUsdPriceResponse | BffUsdErrorResponse
+type BffUsdErrorResponse = { message: string }
 type BffUsdPriceResponse = {
   price: number
 }
-type BffUsdErrorResponse = { message: string }
-type BffResponse = BffUsdPriceResponse | BffUsdErrorResponse
 
 const fetchRateLimited = fetchWithRateLimit({
   // Allow 5 requests per second

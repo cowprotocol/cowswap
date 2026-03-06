@@ -25,14 +25,6 @@ const StyledShimmerBar = styled(ShimmerBar)`
   min-width: 10rem;
 `
 
-function TradeSolverCell({ txHash }: { txHash: string }): React.ReactNode {
-  const { solver, isLoading } = useTradeSolver(txHash)
-
-  if (isLoading) return <Spinner spin size="1x" />
-
-  return <SolvedByBadge solvedBy={solver} />
-}
-
 interface FillsTableRowProps {
   trade: Trade
   isPriceInverted: boolean
@@ -104,4 +96,12 @@ export function FillsTableRow({ trade, isPriceInverted }: FillsTableRowProps): R
       </td>
     </tr>
   )
+}
+
+function TradeSolverCell({ txHash }: { txHash: string }): React.ReactNode {
+  const { solver, isLoading } = useTradeSolver(txHash)
+
+  if (isLoading) return <Spinner spin size="1x" />
+
+  return <SolvedByBadge solvedBy={solver} />
 }

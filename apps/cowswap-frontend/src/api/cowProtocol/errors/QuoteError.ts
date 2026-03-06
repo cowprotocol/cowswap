@@ -33,44 +33,6 @@ export enum QuoteApiErrorDetails {
   UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
 }
 
-export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): QuoteApiErrorObject {
-  switch (error?.errorType) {
-    case ApiErrorCodes.NotFound:
-    case ApiErrorCodes.NoLiquidity:
-      return {
-        errorType: QuoteApiErrorCodes.InsufficientLiquidity,
-        description: QuoteApiErrorDetails.InsufficientLiquidity,
-      }
-
-    case ApiErrorCodes.SellAmountDoesNotCoverFee:
-      return {
-        errorType: QuoteApiErrorCodes.FeeExceedsFrom,
-        description: QuoteApiErrorDetails.FeeExceedsFrom,
-        data: error?.data,
-      }
-
-    case ApiErrorCodes.UnsupportedToken:
-      return {
-        errorType: QuoteApiErrorCodes.UnsupportedToken,
-        description: error.description,
-      }
-    case ApiErrorCodes.TransferEthToContract:
-      return {
-        errorType: QuoteApiErrorCodes.TransferEthToContract,
-        description: error.description,
-      }
-
-    case ApiErrorCodes.SameBuyAndSellToken:
-      return {
-        errorType: QuoteApiErrorCodes.SameBuyAndSellToken,
-        description: QuoteApiErrorDetails.SameBuyAndSellToken,
-      }
-
-    default:
-      return { errorType: QuoteApiErrorCodes.UNHANDLED_ERROR, description: QuoteApiErrorDetails.UNHANDLED_ERROR }
-  }
-}
-
 export class QuoteApiError extends Error {
   name = 'QuoteErrorObject'
   type: QuoteApiErrorCodes
@@ -134,4 +96,42 @@ export class QuoteApiError extends Error {
 
 export function isValidQuoteError(error: unknown): error is QuoteApiError {
   return error instanceof QuoteApiError
+}
+
+export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): QuoteApiErrorObject {
+  switch (error?.errorType) {
+    case ApiErrorCodes.NotFound:
+    case ApiErrorCodes.NoLiquidity:
+      return {
+        errorType: QuoteApiErrorCodes.InsufficientLiquidity,
+        description: QuoteApiErrorDetails.InsufficientLiquidity,
+      }
+
+    case ApiErrorCodes.SellAmountDoesNotCoverFee:
+      return {
+        errorType: QuoteApiErrorCodes.FeeExceedsFrom,
+        description: QuoteApiErrorDetails.FeeExceedsFrom,
+        data: error?.data,
+      }
+
+    case ApiErrorCodes.UnsupportedToken:
+      return {
+        errorType: QuoteApiErrorCodes.UnsupportedToken,
+        description: error.description,
+      }
+    case ApiErrorCodes.TransferEthToContract:
+      return {
+        errorType: QuoteApiErrorCodes.TransferEthToContract,
+        description: error.description,
+      }
+
+    case ApiErrorCodes.SameBuyAndSellToken:
+      return {
+        errorType: QuoteApiErrorCodes.SameBuyAndSellToken,
+        description: QuoteApiErrorDetails.SameBuyAndSellToken,
+      }
+
+    default:
+      return { errorType: QuoteApiErrorCodes.UNHANDLED_ERROR, description: QuoteApiErrorDetails.UNHANDLED_ERROR }
+  }
 }

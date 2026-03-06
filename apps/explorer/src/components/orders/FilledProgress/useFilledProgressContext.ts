@@ -8,6 +8,14 @@ import { safeTokenName } from '../../../utils'
 
 import type BigNumber from 'bignumber.js'
 
+export interface FilledProgressContext extends FilledProgressVariants {
+  touched: boolean
+  mainSymbol: string
+  swappedSymbol: string
+  formattedPercentage: string
+  surplus: { amount: BigNumber; percentage: BigNumber }
+}
+
 interface FilledProgressVariants {
   mainToken: Nullish<TokenErc20>
   mainAddress: string
@@ -19,14 +27,6 @@ interface FilledProgressVariants {
   filledAmountWithFee: BigNumber
   swappedAmountWithFee: BigNumber
   surplusToken: Nullish<TokenErc20>
-}
-
-export interface FilledProgressContext extends FilledProgressVariants {
-  touched: boolean
-  mainSymbol: string
-  swappedSymbol: string
-  formattedPercentage: string
-  surplus: { amount: BigNumber; percentage: BigNumber }
 }
 
 export function useFilledProgressContext(order: Order): FilledProgressContext {

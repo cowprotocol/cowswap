@@ -16,28 +16,6 @@ import { pollUntil } from 'common/utils/pollUntil'
 
 import { zeroApprovalState } from '../state/zeroApprovalState'
 
-async function waitForSafeTransactionExecution({
-  safeApiKit,
-  txHash,
-}: {
-  safeApiKit: SafeApiKit
-  txHash: string
-}): Promise<SafeMultisigTransactionResponse | null> {
-  return await pollUntil(
-    async () => {
-      try {
-        return await safeApiKit.getTransaction(txHash)
-      } catch {
-        return null
-      }
-    },
-    (transaction: SafeMultisigTransactionResponse | null) => {
-      return transaction ? !transaction.isExecuted : true
-    },
-    1000,
-  )
-}
-
 export function useZeroApprove(
   currency: Currency | undefined,
 ): () => Promise<Nullish<TransactionReceipt | SafeMultisigTransactionResponse>> {
@@ -66,4 +44,26 @@ export function useZeroApprove(
       setZeroApprovalState({ isApproving: false })
     }
   }, [amountToApprove, setZeroApprovalState, currency, approveCallback, safeApiKit, isSafeWallet, isWalletConnect])
+}
+
+async function waitForSafeTransactionExecution({
+  safeApiKit,
+  txHash,
+}: {
+  safeApiKit: SafeApiKit
+  txHash: string
+}): Promise<SafeMultisigTransactionResponse | null> {
+  return await pollUntil(
+    async () => {
+      try {
+        return await safeApiKit.getTransaction(txHash)
+      } catch {
+        return null
+      }
+    },
+    (transaction: SafeMultisigTransactionResponse | null) => {
+      return transaction ? !transaction.isExecuted : true
+    },
+    1000,
+  )
 }

@@ -6,13 +6,6 @@ import { TradeQuoteState } from '../state/tradeQuoteAtom'
 import { TradeQuoteFetchParams } from '../types'
 import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
-function isQuoteCached(quote: TradeQuoteState): boolean {
-  const hasCachedResponse = quote.quote
-  const hasCachedError = quote.error
-
-  return Boolean(hasCachedResponse || hasCachedError)
-}
-
 export interface QuoteUpdateContext {
   currentQuote: TradeQuoteState
   quoteParams: QuoteBridgeRequest | undefined
@@ -67,4 +60,11 @@ export function doQuotePolling({
   fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
 
   return true
+}
+
+function isQuoteCached(quote: TradeQuoteState): boolean {
+  const hasCachedResponse = quote.quote
+  const hasCachedError = quote.error
+
+  return Boolean(hasCachedResponse || hasCachedError)
 }

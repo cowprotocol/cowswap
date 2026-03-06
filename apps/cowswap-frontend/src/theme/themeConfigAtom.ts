@@ -4,6 +4,20 @@ import { load } from 'redux-localstorage-simple'
 
 import { getCowswapTheme } from './getCowswapTheme'
 
+function getInitialDarkModePreference(): boolean {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+    return false
+  }
+
+  const persistedPreference = readPersistedDarkMode()
+
+  if (persistedPreference !== null) {
+    return persistedPreference
+  }
+
+  return readSystemDarkMode()
+}
+
 function readPersistedDarkMode(): boolean | null {
   try {
     const persistedState = load({ states: ['user'], disableWarnings: true }) as {
@@ -37,20 +51,6 @@ function readSystemDarkMode(): boolean {
   } catch {
     return false
   }
-}
-
-function getInitialDarkModePreference(): boolean {
-  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-    return false
-  }
-
-  const persistedPreference = readPersistedDarkMode()
-
-  if (persistedPreference !== null) {
-    return persistedPreference
-  }
-
-  return readSystemDarkMode()
 }
 
 const initialDarkMode = getInitialDarkModePreference()

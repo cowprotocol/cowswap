@@ -146,16 +146,13 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
   )
 }
 
-function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
-  if (account.address && SPECIAL_ADDRESSES[account.address]) {
-    return TypeNodeOnTx.Special
-  } else if (account.alias === ALIAS_TRADER_NAME || account.owner) {
-    return TypeNodeOnTx.Trader
-  } else if (account.alias === PROTOCOL_NAME) {
-    return TypeNodeOnTx.CowProtocol
+function getInternalParentNode(groupNodes: Map<string, string>, transfer: Transfer): string | undefined {
+  for (const [key, value] of groupNodes) {
+    if (value === transfer.from) {
+      return key
+    }
   }
-
-  return TypeNodeOnTx.Dex
+  return undefined
 }
 
 function getKindEdge(transfer: Transfer & { kind?: OrderKind }): TypeEdgeOnTx {
@@ -170,23 +167,26 @@ function getKindEdge(transfer: Transfer & { kind?: OrderKind }): TypeEdgeOnTx {
   return TypeEdgeOnTx.buyEdge
 }
 
-function showTraderAddress(account: Account, address: string): Account {
-  const alias = account.alias === ALIAS_TRADER_NAME ? abbreviateString(address, 4, 4) : account.alias
-
-  return { ...account, alias }
-}
-
 function getNetworkParentNode(account: Account, networkName: string): string | undefined {
   return account.alias !== ALIAS_TRADER_NAME ? networkName : undefined
 }
 
-function getInternalParentNode(groupNodes: Map<string, string>, transfer: Transfer): string | undefined {
-  for (const [key, value] of groupNodes) {
-    if (value === transfer.from) {
-      return key
-    }
+function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
+  if (account.address && SPECIAL_ADDRESSES[account.address]) {
+    return TypeNodeOnTx.Special
+  } else if (account.alias === ALIAS_TRADER_NAME || account.owner) {
+    return TypeNodeOnTx.Trader
+  } else if (account.alias === PROTOCOL_NAME) {
+    return TypeNodeOnTx.CowProtocol
   }
-  return undefined
+
+  return TypeNodeOnTx.Dex
+}
+
+function showTraderAddress(account: Account, address: string): Account {
+  const alias = account.alias === ALIAS_TRADER_NAME ? abbreviateString(address, 4, 4) : account.alias
+
+  return { ...account, alias }
 }
 
 const ADDRESSES_TO_IGNORE = new Set()
@@ -239,49 +239,6 @@ export function getContractTrades(
     return { address, sellTransfers, buyTransfers }
   })
 }
-
-function mergeContractTrade(contractTrade: ContractTrade): ContractTrade {
-  const mergedSellTransfers: Transfer[] = []
-  const mergedBuyTransfers: Transfer[] = []
-  const token_balances: { [key: string]: bigint } = {}
-
-  contractTrade.sellTransfers.forEach((transfer) => {
-    token_balances[transfer.token] = token_balances[transfer.token]
-      ? token_balances[transfer.token] - BigInt(transfer.value)
-      : -BigInt(transfer.value)
-  })
-  contractTrade.buyTransfers.forEach((transfer) => {
-    token_balances[transfer.token] = token_balances[transfer.token]
-      ? token_balances[transfer.token] + BigInt(transfer.value)
-      : BigInt(transfer.value)
-  })
-
-  Object.entries(token_balances).forEach(([token, amount]) => {
-    if (amount < 0) {
-      mergedSellTransfers.push({
-        from: '', // field should not be used later on
-        to: contractTrade.address,
-        value: (-amount).toString(),
-        token: token,
-      })
-    } else if (amount > 0) {
-      mergedBuyTransfers.push({
-        from: contractTrade.address,
-        to: '',
-        value: amount.toString(),
-        token: token,
-      })
-    }
-  })
-
-  return { address: contractTrade.address, sellTransfers: mergedSellTransfers, buyTransfers: mergedBuyTransfers }
-}
-
-function isRoutingTrade(contractTrade: ContractTrade): boolean {
-  return contractTrade.sellTransfers.length === 0 && contractTrade.buyTransfers.length === 0
-}
-
-// TODO: Break down this large function into smaller functions
 
 export function getNotesAndEdges(
   userTrades: Trade[],
@@ -371,6 +328,49 @@ export function getTokenAddress(address: string, networkId: SupportedChainId): s
   return address.toLowerCase()
 }
 
+// TODO: Break down this large function into smaller functions
+
+function isRoutingTrade(contractTrade: ContractTrade): boolean {
+  return contractTrade.sellTransfers.length === 0 && contractTrade.buyTransfers.length === 0
+}
+
+function mergeContractTrade(contractTrade: ContractTrade): ContractTrade {
+  const mergedSellTransfers: Transfer[] = []
+  const mergedBuyTransfers: Transfer[] = []
+  const token_balances: { [key: string]: bigint } = {}
+
+  contractTrade.sellTransfers.forEach((transfer) => {
+    token_balances[transfer.token] = token_balances[transfer.token]
+      ? token_balances[transfer.token] - BigInt(transfer.value)
+      : -BigInt(transfer.value)
+  })
+  contractTrade.buyTransfers.forEach((transfer) => {
+    token_balances[transfer.token] = token_balances[transfer.token]
+      ? token_balances[transfer.token] + BigInt(transfer.value)
+      : BigInt(transfer.value)
+  })
+
+  Object.entries(token_balances).forEach(([token, amount]) => {
+    if (amount < 0) {
+      mergedSellTransfers.push({
+        from: '', // field should not be used later on
+        to: contractTrade.address,
+        value: (-amount).toString(),
+        token: token,
+      })
+    } else if (amount > 0) {
+      mergedBuyTransfers.push({
+        from: contractTrade.address,
+        to: '',
+        value: amount.toString(),
+        token: token,
+      })
+    }
+  })
+
+  return { address: contractTrade.address, sellTransfers: mergedSellTransfers, buyTransfers: mergedBuyTransfers }
+}
+
 export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
   txSettlement: Settlement,
   networkId: Network,
@@ -436,31 +436,6 @@ function getLabel(edge: TokenEdge, contractsMap: Record<string, string>): string
   return 'add transfer info'
 }
 
-function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): Record<string, string> {
-  const tooltip = {}
-
-  const fromToken = tokens[edge.from]
-  const toToken = tokens[edge.to]
-
-  if (edge.trade) {
-    tooltip['order-id'] = edge.trade.orderUid
-    tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.trade.sellAmount)
-    tooltip['bought'] = getTokenTooltipAmount(toToken, edge.trade.buyAmount)
-  } else if (edge.hyperNode) {
-    if (edge.fromTransfer) {
-      tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.fromTransfer?.value)
-    }
-    if (edge.toTransfer) {
-      tooltip['bought'] = getTokenTooltipAmount(toToken, edge.toTransfer?.value)
-    }
-  } else {
-    tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.fromTransfer?.value)
-    tooltip['bought'] = getTokenTooltipAmount(toToken, edge.toTransfer?.value)
-  }
-
-  return tooltip
-}
-
 function getNodeTooltip(
   node: TokenNode,
   edges: TokenEdge[],
@@ -515,4 +490,29 @@ function getTokenTooltipAmount(token: SingleErc20State, value: string | undefine
   const sign_char = sign && sign > 0 ? '' : '-'
 
   return `${sign_char}${amount} ${tokenSymbol}`
+}
+
+function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): Record<string, string> {
+  const tooltip = {}
+
+  const fromToken = tokens[edge.from]
+  const toToken = tokens[edge.to]
+
+  if (edge.trade) {
+    tooltip['order-id'] = edge.trade.orderUid
+    tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.trade.sellAmount)
+    tooltip['bought'] = getTokenTooltipAmount(toToken, edge.trade.buyAmount)
+  } else if (edge.hyperNode) {
+    if (edge.fromTransfer) {
+      tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.fromTransfer?.value)
+    }
+    if (edge.toTransfer) {
+      tooltip['bought'] = getTokenTooltipAmount(toToken, edge.toTransfer?.value)
+    }
+  } else {
+    tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.fromTransfer?.value)
+    tooltip['bought'] = getTokenTooltipAmount(toToken, edge.toTransfer?.value)
+  }
+
+  return tooltip
 }

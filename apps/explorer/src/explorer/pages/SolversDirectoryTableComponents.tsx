@@ -28,61 +28,6 @@ type ChainInfoEntry = {
 
 const CHAIN_INFO_BY_ID = CHAIN_INFO as Partial<Record<number, ChainInfoEntry>>
 
-function getChainIcon(chainId: number): string | undefined {
-  if (!Object.prototype.hasOwnProperty.call(CHAIN_INFO_BY_ID, chainId)) {
-    return undefined
-  }
-
-  return CHAIN_INFO_BY_ID[chainId]?.logo?.light || undefined
-}
-
-export function SolverIcon({ solver }: { solver: SolverInfo }): React.ReactNode {
-  if (solver.image) return <SolverLogo src={solver.image} alt={`${solver.displayName} logo`} />
-  return <SolverLogoFallback>{solver.displayName.charAt(0).toUpperCase()}</SolverLogoFallback>
-}
-
-export function NetworkChips({
-  solverId,
-  networks,
-}: {
-  solverId: string
-  networks: SummaryNetwork[]
-}): React.ReactNode {
-  return (
-    <Networks>
-      {networks.map((network) => {
-        const chainIcon = getChainIcon(network.chainId)
-        // Lens uses a black light logo, so we invert it to keep visibility on dark chips.
-        const isLensNetwork = network.chainName.toLowerCase() === 'lens'
-        return (
-          <NetworkChip key={`${solverId}-${network.chainId}`}>
-            {chainIcon && <NetworkIcon src={chainIcon} alt="" $invert={isLensNetwork} />}
-            {network.chainName}
-          </NetworkChip>
-        )
-      })}
-    </Networks>
-  )
-}
-
-export function EnvironmentTags({
-  solverId,
-  environments,
-}: {
-  solverId: string
-  environments: string[]
-}): React.ReactNode {
-  return (
-    <EnvTags>
-      {environments.map((environment) => (
-        <EnvTag key={`${solverId}-${environment}`} $environment={environment}>
-          {environment}
-        </EnvTag>
-      ))}
-    </EnvTags>
-  )
-}
-
 export function DeploymentsSectionRows({
   solver,
   deployments,
@@ -121,4 +66,59 @@ export function DeploymentsSectionRows({
       ))}
     </>
   )
+}
+
+export function EnvironmentTags({
+  solverId,
+  environments,
+}: {
+  solverId: string
+  environments: string[]
+}): React.ReactNode {
+  return (
+    <EnvTags>
+      {environments.map((environment) => (
+        <EnvTag key={`${solverId}-${environment}`} $environment={environment}>
+          {environment}
+        </EnvTag>
+      ))}
+    </EnvTags>
+  )
+}
+
+export function NetworkChips({
+  solverId,
+  networks,
+}: {
+  solverId: string
+  networks: SummaryNetwork[]
+}): React.ReactNode {
+  return (
+    <Networks>
+      {networks.map((network) => {
+        const chainIcon = getChainIcon(network.chainId)
+        // Lens uses a black light logo, so we invert it to keep visibility on dark chips.
+        const isLensNetwork = network.chainName.toLowerCase() === 'lens'
+        return (
+          <NetworkChip key={`${solverId}-${network.chainId}`}>
+            {chainIcon && <NetworkIcon src={chainIcon} alt="" $invert={isLensNetwork} />}
+            {network.chainName}
+          </NetworkChip>
+        )
+      })}
+    </Networks>
+  )
+}
+
+export function SolverIcon({ solver }: { solver: SolverInfo }): React.ReactNode {
+  if (solver.image) return <SolverLogo src={solver.image} alt={`${solver.displayName} logo`} />
+  return <SolverLogoFallback>{solver.displayName.charAt(0).toUpperCase()}</SolverLogoFallback>
+}
+
+function getChainIcon(chainId: number): string | undefined {
+  if (!Object.prototype.hasOwnProperty.call(CHAIN_INFO_BY_ID, chainId)) {
+    return undefined
+  }
+
+  return CHAIN_INFO_BY_ID[chainId]?.logo?.light || undefined
 }

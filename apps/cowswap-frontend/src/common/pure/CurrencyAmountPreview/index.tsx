@@ -12,10 +12,6 @@ import * as styledEl from './styled'
 
 import { FiatValue } from '../FiatValue'
 
-interface BuiltItProps {
-  className: string
-}
-
 export interface CurrencyPreviewInfo {
   amount: Nullish<CurrencyAmount<Currency>>
   fiatAmount: Nullish<CurrencyAmount<Currency>>
@@ -28,6 +24,10 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   currencyInfo: CurrencyPreviewInfo
   isBridging?: boolean
   priceImpactParams?: PriceImpact
+}
+
+interface BuiltItProps {
+  className: string
 }
 
 export function CurrencyAmountPreview(props: CurrencyPreviewProps): ReactNode {

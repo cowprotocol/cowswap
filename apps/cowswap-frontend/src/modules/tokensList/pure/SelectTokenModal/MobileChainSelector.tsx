@@ -19,16 +19,6 @@ import { makeBuildClickEvent } from '../ChainsSelector/analytics'
 
 const DISABLED_CHAIN_TOOLTIP_DURATION_MS = 2500
 
-interface MobileChainSelectorProps {
-  chainsState: ChainsToSelectState
-  label?: string
-  onSelectChain(chain: ChainInfo): void
-  onOpenPanel(): void
-  tradeType?: TradeType
-  field?: Field
-  counterChainId?: ChainInfo['id']
-}
-
 interface ChainChipListProps {
   chainsState: ChainsToSelectState
   orderedChains: ChainInfo[]
@@ -40,89 +30,24 @@ interface ChainChipListProps {
   isSwapMode: boolean
 }
 
-function ChainChipList({
-  chainsState,
-  orderedChains,
-  onSelectChain,
-  activeTooltipChainId,
-  onDisabledClick,
-  onHideTooltip,
-  buildClickEvent,
-  isSwapMode,
-}: ChainChipListProps): ReactNode {
-  return (
-    <>
-      {orderedChains.map((chain) => {
-        const isDisabled = chainsState.disabledChainIds?.has(chain.id) ?? false
-        const isLoading = chainsState.loadingChainIds?.has(chain.id) ?? false
-        const clickEvent =
-          isSwapMode && buildClickEvent && !isDisabled && !isLoading ? buildClickEvent(chain) : undefined
-
-        return (
-          <ChainChip
-            key={chain.id}
-            chain={chain}
-            isActive={chainsState.defaultChainId === chain.id}
-            onSelectChain={onSelectChain}
-            isDisabled={isDisabled}
-            isLoading={isLoading}
-            isTooltipVisible={activeTooltipChainId === chain.id}
-            onDisabledClick={onDisabledClick}
-            onHideTooltip={onHideTooltip}
-            clickEvent={clickEvent}
-          />
-        )
-      })}
-    </>
-  )
-}
-
 interface ChainSelectorLabelProps {
   label?: string
   activeChainLabel?: string
 }
 
-function ChainSelectorLabel({ label, activeChainLabel }: ChainSelectorLabelProps): ReactNode {
-  const { t } = useLingui()
-
-  if (!label) {
-    return null
-  }
-
-  return (
-    <styledEl.MobileSelectorLabel>
-      <span>{label}</span>
-      {activeChainLabel ? (
-        <styledEl.ActiveChainLabel aria-label={t`Selected network ${activeChainLabel}`}>
-          {activeChainLabel}
-        </styledEl.ActiveChainLabel>
-      ) : null}
-    </styledEl.MobileSelectorLabel>
-  )
+interface MobileChainSelectorProps {
+  chainsState: ChainsToSelectState
+  label?: string
+  onSelectChain(chain: ChainInfo): void
+  onOpenPanel(): void
+  tradeType?: TradeType
+  field?: Field
+  counterChainId?: ChainInfo['id']
 }
 
 interface MoreNetworksButtonProps {
   totalChains: number
   onOpenPanel(): void
-}
-
-function MoreNetworksButton({ totalChains, onOpenPanel }: MoreNetworksButtonProps): ReactNode {
-  const { t } = useLingui()
-
-  if (totalChains <= 0) {
-    return null
-  }
-
-  return (
-    <styledEl.FixedAllNetworks>
-      <styledEl.MoreChipButton onClick={onOpenPanel} aria-label={t`View all ${totalChains} networks`}>
-        <span>
-          <Trans>View all ({totalChains})</Trans>
-        </span>
-        <ChevronDown size={14} />
-      </styledEl.MoreChipButton>
-    </styledEl.FixedAllNetworks>
-  )
 }
 
 export function MobileChainSelector({
@@ -188,5 +113,80 @@ export function MobileChainSelector({
         <MoreNetworksButton totalChains={totalChains} onOpenPanel={onOpenPanel} />
       </styledEl.ScrollContainer>
     </styledEl.MobileSelectorRow>
+  )
+}
+
+function ChainChipList({
+  chainsState,
+  orderedChains,
+  onSelectChain,
+  activeTooltipChainId,
+  onDisabledClick,
+  onHideTooltip,
+  buildClickEvent,
+  isSwapMode,
+}: ChainChipListProps): ReactNode {
+  return (
+    <>
+      {orderedChains.map((chain) => {
+        const isDisabled = chainsState.disabledChainIds?.has(chain.id) ?? false
+        const isLoading = chainsState.loadingChainIds?.has(chain.id) ?? false
+        const clickEvent =
+          isSwapMode && buildClickEvent && !isDisabled && !isLoading ? buildClickEvent(chain) : undefined
+
+        return (
+          <ChainChip
+            key={chain.id}
+            chain={chain}
+            isActive={chainsState.defaultChainId === chain.id}
+            onSelectChain={onSelectChain}
+            isDisabled={isDisabled}
+            isLoading={isLoading}
+            isTooltipVisible={activeTooltipChainId === chain.id}
+            onDisabledClick={onDisabledClick}
+            onHideTooltip={onHideTooltip}
+            clickEvent={clickEvent}
+          />
+        )
+      })}
+    </>
+  )
+}
+
+function ChainSelectorLabel({ label, activeChainLabel }: ChainSelectorLabelProps): ReactNode {
+  const { t } = useLingui()
+
+  if (!label) {
+    return null
+  }
+
+  return (
+    <styledEl.MobileSelectorLabel>
+      <span>{label}</span>
+      {activeChainLabel ? (
+        <styledEl.ActiveChainLabel aria-label={t`Selected network ${activeChainLabel}`}>
+          {activeChainLabel}
+        </styledEl.ActiveChainLabel>
+      ) : null}
+    </styledEl.MobileSelectorLabel>
+  )
+}
+
+function MoreNetworksButton({ totalChains, onOpenPanel }: MoreNetworksButtonProps): ReactNode {
+  const { t } = useLingui()
+
+  if (totalChains <= 0) {
+    return null
+  }
+
+  return (
+    <styledEl.FixedAllNetworks>
+      <styledEl.MoreChipButton onClick={onOpenPanel} aria-label={t`View all ${totalChains} networks`}>
+        <span>
+          <Trans>View all ({totalChains})</Trans>
+        </span>
+        <ChevronDown size={14} />
+      </styledEl.MoreChipButton>
+    </styledEl.FixedAllNetworks>
   )
 }

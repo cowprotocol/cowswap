@@ -35,17 +35,17 @@ const backToDefaultDarkFrameModules = import.meta.glob<string>(
   },
 )
 
-function toSortedFrames(modules: Record<string, string>): string[] {
-  return Object.entries(modules)
-    .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
-    .map(([, source]) => source)
-}
-
 function filterModules(
   modules: Record<string, string>,
   predicate: (path: string, source: string) => boolean,
 ): Record<string, string> {
   return Object.fromEntries(Object.entries(modules).filter(([path, source]) => predicate(path, source)))
+}
+
+function toSortedFrames(modules: Record<string, string>): string[] {
+  return Object.entries(modules)
+    .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
+    .map(([, source]) => source)
 }
 
 const defaultBaseSource = defaultBaseSvg.trim()
@@ -118,39 +118,33 @@ const COMPLETED_HOLD_DURATION_MS = 5000
 const BACK_TO_DEFAULT_FRAME_DURATION_MS = 140
 const SOLVING_CROSSFADE_STEPS = 4
 
-function svgToDataUri(svg: string): string {
-  return `data:image/svg+xml,${encodeURIComponent(svg.trim())}`
-}
-
 type ParsedSvg = {
   attributes: string
   body: string
 }
 
-const DEFAULT_SVG_ATTRIBUTES = 'xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"'
-
-function parseSvg(svg: string): ParsedSvg | null {
-  const trimmed = svg.trim()
-  const openTagMatch = trimmed.match(/^<svg\b([^>]*)>/i)
-  const closeIndex = trimmed.lastIndexOf('</svg>')
-
-  if (!openTagMatch || closeIndex === -1) {
-    return null
-  }
-
-  const openingTag = openTagMatch[0]
-  const attributes = openTagMatch[1]?.trim() ?? ''
-  const body = trimmed.slice(openingTag.length, closeIndex).trim()
-
-  return {
-    attributes,
-    body,
-  }
+function svgToDataUri(svg: string): string {
+  return `data:image/svg+xml,${encodeURIComponent(svg.trim())}`
 }
 
-function formatOpacity(value: number): string {
-  const clamped = Math.min(1, Math.max(0, value))
-  return Number(clamped.toFixed(3)).toString()
+const DEFAULT_SVG_ATTRIBUTES = 'xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"'
+
+export type FaviconTheme = 'light' | 'dark'
+
+export type FrameSet = {
+  defaultFrame: string
+  solvingFrames: string[]
+  completedFrames: string[]
+  completedHoldFrame: string
+  backToDefaultFrames: string[]
+}
+
+type FrameSetSources = {
+  defaultSources: string[]
+  solvingSources: string[]
+  completedSources: string[]
+  backToDefaultSources: string[]
+  completedHoldSource?: string
 }
 
 function createCrossfadeSvg(from: ParsedSvg, to: ParsedSvg, progress: number, fallbackAttributes: string): string {
@@ -163,6 +157,36 @@ function createCrossfadeSvg(from: ParsedSvg, to: ParsedSvg, progress: number, fa
   const fadeInGroup = fadeInOpacity === '1' ? to.body : `<g opacity="${fadeInOpacity}">${to.body}</g>`
 
   return `<svg ${attributes}>${fadeOutGroup}${fadeInGroup}</svg>`
+}
+
+function createFrameSet({
+  defaultSources,
+  solvingSources,
+  completedSources,
+  backToDefaultSources,
+  completedHoldSource,
+}: FrameSetSources): FrameSet {
+  const defaultFrame = defaultSources[0] ? svgToDataUri(defaultSources[0]) : ''
+  const solvingFrames = solvingSources.length
+    ? createSmoothLoopFrames(solvingSources, SOLVING_CROSSFADE_STEPS)
+    : [defaultFrame].filter(Boolean)
+  const completedFrames = completedSources.map(svgToDataUri)
+  const completedHoldFrame = completedHoldSource
+    ? svgToDataUri(completedHoldSource)
+    : completedFrames.length
+      ? completedFrames[completedFrames.length - 1]
+      : defaultFrame
+  const backToDefaultFrames = backToDefaultSources.length
+    ? backToDefaultSources.map(svgToDataUri)
+    : [defaultFrame].filter(Boolean)
+
+  return {
+    defaultFrame,
+    solvingFrames,
+    completedFrames,
+    completedHoldFrame,
+    backToDefaultFrames,
+  }
 }
 
 function createSmoothLoopFrames(sources: string[], crossfadeSteps: number): string[] {
@@ -196,51 +220,27 @@ function createSmoothLoopFrames(sources: string[], crossfadeSteps: number): stri
   return frames
 }
 
-export type FaviconTheme = 'light' | 'dark'
-
-export type FrameSet = {
-  defaultFrame: string
-  solvingFrames: string[]
-  completedFrames: string[]
-  completedHoldFrame: string
-  backToDefaultFrames: string[]
+function formatOpacity(value: number): string {
+  const clamped = Math.min(1, Math.max(0, value))
+  return Number(clamped.toFixed(3)).toString()
 }
 
-type FrameSetSources = {
-  defaultSources: string[]
-  solvingSources: string[]
-  completedSources: string[]
-  backToDefaultSources: string[]
-  completedHoldSource?: string
-}
+function parseSvg(svg: string): ParsedSvg | null {
+  const trimmed = svg.trim()
+  const openTagMatch = trimmed.match(/^<svg\b([^>]*)>/i)
+  const closeIndex = trimmed.lastIndexOf('</svg>')
 
-function createFrameSet({
-  defaultSources,
-  solvingSources,
-  completedSources,
-  backToDefaultSources,
-  completedHoldSource,
-}: FrameSetSources): FrameSet {
-  const defaultFrame = defaultSources[0] ? svgToDataUri(defaultSources[0]) : ''
-  const solvingFrames = solvingSources.length
-    ? createSmoothLoopFrames(solvingSources, SOLVING_CROSSFADE_STEPS)
-    : [defaultFrame].filter(Boolean)
-  const completedFrames = completedSources.map(svgToDataUri)
-  const completedHoldFrame = completedHoldSource
-    ? svgToDataUri(completedHoldSource)
-    : completedFrames.length
-      ? completedFrames[completedFrames.length - 1]
-      : defaultFrame
-  const backToDefaultFrames = backToDefaultSources.length
-    ? backToDefaultSources.map(svgToDataUri)
-    : [defaultFrame].filter(Boolean)
+  if (!openTagMatch || closeIndex === -1) {
+    return null
+  }
+
+  const openingTag = openTagMatch[0]
+  const attributes = openTagMatch[1]?.trim() ?? ''
+  const body = trimmed.slice(openingTag.length, closeIndex).trim()
 
   return {
-    defaultFrame,
-    solvingFrames,
-    completedFrames,
-    completedHoldFrame,
-    backToDefaultFrames,
+    attributes,
+    body,
   }
 }
 
@@ -306,6 +306,29 @@ function notifyThemeChange(theme: FaviconTheme): void {
 
 let isThemeListenerInitialized = false
 
+export function getCurrentFrameSet(): FrameSet {
+  return currentFrameSet
+}
+
+export function getFrameSet(theme: FaviconTheme): FrameSet {
+  return frameSetsByTheme[theme]
+}
+
+export function getPreferredTheme(): FaviconTheme {
+  return currentTheme
+}
+
+export function subscribeToPreferredThemeChanges(
+  listener: (theme: FaviconTheme, frameSet: FrameSet) => void,
+): () => void {
+  themeChangeListeners.add(listener)
+  ensureThemeListener()
+
+  return () => {
+    themeChangeListeners.delete(listener)
+  }
+}
+
 function ensureThemeListener(): void {
   if (isThemeListenerInitialized) {
     return
@@ -332,29 +355,6 @@ function ensureThemeListener(): void {
     isThemeListenerInitialized = true
   } catch (error) {
     console.warn('[Favicon] Failed to register prefers-color-scheme listener', error)
-  }
-}
-
-export function getFrameSet(theme: FaviconTheme): FrameSet {
-  return frameSetsByTheme[theme]
-}
-
-export function getPreferredTheme(): FaviconTheme {
-  return currentTheme
-}
-
-export function getCurrentFrameSet(): FrameSet {
-  return currentFrameSet
-}
-
-export function subscribeToPreferredThemeChanges(
-  listener: (theme: FaviconTheme, frameSet: FrameSet) => void,
-): () => void {
-  themeChangeListeners.add(listener)
-  ensureThemeListener()
-
-  return () => {
-    themeChangeListeners.delete(listener)
   }
 }
 

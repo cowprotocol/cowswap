@@ -28,6 +28,29 @@ export const getJotaiIsolatedStorage = <T>() => {
   return storage
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function atomWithIdbStorage<Value>(key: string, initialValue: Value) {
+  const storage: AsyncStringStorage = {
+    async getItem(key: string): Promise<string | null> {
+      return localForageJotai.getItem(key).then((result) => result as string | null)
+    },
+    async setItem(key: string, newValue: string): Promise<void> {
+      await localForageJotai.setItem(key, newValue)
+    },
+    async removeItem(key: string): Promise<void> {
+      await localForageJotai.removeItem(key)
+    },
+  }
+
+  return atomWithStorage<Value>(
+    key,
+    initialValue,
+    createJSONStorage(() => storage),
+    { getOnInit: true },
+  )
+}
+
 /**
  * Creates a new jotai json storage which merges the existing local storage with given state
  *
@@ -54,27 +77,4 @@ export function getJotaiMergerStorage<T>() {
   }
 
   return { ...storage, getItem }
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function atomWithIdbStorage<Value>(key: string, initialValue: Value) {
-  const storage: AsyncStringStorage = {
-    async getItem(key: string): Promise<string | null> {
-      return localForageJotai.getItem(key).then((result) => result as string | null)
-    },
-    async setItem(key: string, newValue: string): Promise<void> {
-      await localForageJotai.setItem(key, newValue)
-    },
-    async removeItem(key: string): Promise<void> {
-      await localForageJotai.removeItem(key)
-    },
-  }
-
-  return atomWithStorage<Value>(
-    key,
-    initialValue,
-    createJSONStorage(() => storage),
-    { getOnInit: true },
-  )
 }

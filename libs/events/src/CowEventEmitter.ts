@@ -1,6 +1,8 @@
-type EventKey = string
-
-type EventMap<K extends EventKey> = Record<K, unknown>
+export interface CowEventEmitter<M extends EventMap<E>, E extends EventKey> {
+  on(listener: CowEventListener<M, E>): CowEventListener<M, E>
+  off(listener: CowEventListener<M, E>): CowEventListener<M, E>
+  emit<T extends E>(event: T, payload: M[T]): void
+}
 
 export type CowEventHandler<M extends EventMap<E>, E extends EventKey> = (payload: M[E]) => void
 
@@ -8,11 +10,9 @@ export type CowEventListener<M extends EventMap<E>, E extends EventKey> = E exte
   ? { event: E; handler: CowEventHandler<M, E> }
   : never
 
-export interface CowEventEmitter<M extends EventMap<E>, E extends EventKey> {
-  on(listener: CowEventListener<M, E>): CowEventListener<M, E>
-  off(listener: CowEventListener<M, E>): CowEventListener<M, E>
-  emit<T extends E>(event: T, payload: M[T]): void
-}
+type EventKey = string
+
+type EventMap<K extends EventKey> = Record<K, unknown>
 
 export class SimpleCowEventEmitter<M extends EventMap<E>, E extends EventKey> implements CowEventEmitter<M, E> {
   private subscriptions: {

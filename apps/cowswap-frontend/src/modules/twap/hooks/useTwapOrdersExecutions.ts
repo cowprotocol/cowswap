@@ -74,12 +74,6 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
   }, [allOrdersInfo, partSets, allDiscreteOrders])
 }
 
-function sumChildrenAmount(children: Order[], key: keyof EnrichedOrder): bigint {
-  return children.reduce((acc, order) => {
-    return acc + BigInt((order.apiAdditionalInfo?.[key] || '0') as string)
-  }, BigInt(0))
-}
-
 /**
  * There might be a case when a TWAP order consists of 3 orders (for example)
  * First two parts are expired (never been executed or event created in order-book)
@@ -130,4 +124,10 @@ function getConfirmedPartsCount(twapOrderInfo: TwapOrderInfo, discreteOrders: Or
   const lastOrderIndex = Math.ceil((lastOrderValidTo - startTime) / timeInterval)
 
   return Math.min(Math.max(lastOrderIndex, partsPassed), numOfParts)
+}
+
+function sumChildrenAmount(children: Order[], key: keyof EnrichedOrder): bigint {
+  return children.reduce((acc, order) => {
+    return acc + BigInt((order.apiAdditionalInfo?.[key] || '0') as string)
+  }, BigInt(0))
 }

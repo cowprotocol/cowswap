@@ -3,28 +3,6 @@ import { GnosisSafeInfo } from '@cowprotocol/wallet'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import type { Order } from 'legacy/state/orders/actions'
 
-export enum ActivityType {
-  ORDER = 'order',
-  TX = 'tx',
-}
-
-export enum ActivityStatus {
-  PENDING,
-  PRESIGNATURE_PENDING,
-  CONFIRMED,
-  EXPIRED,
-  CANCELLING,
-  CANCELLED,
-  CREATING,
-  FAILED,
-  LOADING,
-}
-
-export interface OrderCreationTxInfo {
-  orderCreationTx: EnhancedTransactionDetails
-  orderCreationLinkedTx?: EnhancedTransactionDetails
-}
-
 /**
  * Object derived from the activity state
  */
@@ -62,4 +40,26 @@ export interface ActivityDerivedState {
 
   // Eth-flow order related transactions
   orderCreationTxInfo?: OrderCreationTxInfo
+}
+
+export interface OrderCreationTxInfo {
+  orderCreationTx: EnhancedTransactionDetails
+  orderCreationLinkedTx?: EnhancedTransactionDetails
+}
+
+export enum ActivityStatus {
+  PENDING,
+  PRESIGNATURE_PENDING,
+  CONFIRMED,
+  EXPIRED,
+  CANCELLING,
+  CANCELLED,
+  CREATING,
+  FAILED,
+  LOADING,
+}
+
+export enum ActivityType {
+  ORDER = 'order',
+  TX = 'tx',
 }

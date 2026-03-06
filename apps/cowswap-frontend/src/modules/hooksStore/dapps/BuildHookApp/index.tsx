@@ -36,6 +36,13 @@ const FIELDS: ReadonlyArray<FormFieldParams> = [
   { name: 'callData', label: msg`Calldata`, type: 'textarea', rows: 8 },
 ]
 
+interface FormFieldProps {
+  params: FormFieldParams
+  value: string
+  error: string
+  onChange(value: { name: string; value: string }): void
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -103,13 +110,6 @@ export function BuildHookApp({ context }: HookDappProps) {
       </ButtonPrimary>
     </Wrapper>
   )
-}
-
-interface FormFieldProps {
-  params: FormFieldParams
-  value: string
-  error: string
-  onChange(value: { name: string; value: string }): void
 }
 
 // TODO: Add proper return type annotation

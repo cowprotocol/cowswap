@@ -1,5 +1,4 @@
-import { TokenAmount } from '@cowprotocol/ui'
-import { TokenSymbol } from '@cowprotocol/ui'
+import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'

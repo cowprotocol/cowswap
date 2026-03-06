@@ -2,12 +2,12 @@ import { useCallback, useMemo } from 'react'
 
 import type { useUpdateSelectTokenWidgetState } from '../../../hooks/useUpdateSelectTokenWidgetState'
 
-type UpdateSelectTokenWidgetFn = ReturnType<typeof useUpdateSelectTokenWidgetState>
-
 export interface PoolPageHandlers {
   openPoolPage(poolAddress: string): void
   closePoolPage(): void
 }
+
+type UpdateSelectTokenWidgetFn = ReturnType<typeof useUpdateSelectTokenWidgetState>
 
 export function usePoolPageHandlers(updateSelectTokenWidget: UpdateSelectTokenWidgetFn): PoolPageHandlers {
   const openPoolPage = useCallback(

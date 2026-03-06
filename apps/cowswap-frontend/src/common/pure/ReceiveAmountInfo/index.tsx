@@ -10,8 +10,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { getOrderTypeReceiveAmounts, useIsEoaEthFlow } from 'modules/trade'
-import { ReceiveAmountInfo } from 'modules/trade'
+import { getOrderTypeReceiveAmounts, useIsEoaEthFlow, ReceiveAmountInfo } from 'modules/trade'
 
 import { FeeItem } from './FeeItem'
 import { NetworkFeeItem } from './NetworkFeeItem'
@@ -21,10 +20,6 @@ export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo
   subsidyAndBalance: BalanceAndSubsidy
   allowsOffchainSigning: boolean
-}
-
-function hasValidFee(amount: CurrencyAmount<Currency> | undefined, bps: number | undefined): boolean {
-  return !!amount && !!bps && !amount.equalTo(0)
 }
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
@@ -90,4 +85,8 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
       )}
     </styledEl.Box>
   )
+}
+
+function hasValidFee(amount: CurrencyAmount<Currency> | undefined, bps: number | undefined): boolean {
+  return !!amount && !!bps && !amount.equalTo(0)
 }

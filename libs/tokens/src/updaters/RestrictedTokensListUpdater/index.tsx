@@ -24,58 +24,6 @@ interface TokenListResponse {
   tokens: TokenInfo[]
 }
 
-async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
-
-  try {
-    const response = await fetch(url, { signal: controller.signal })
-    return response
-  } finally {
-    clearTimeout(timeoutId)
-  }
-}
-
-async function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<TokenInfo[]> {
-  let lastError: Error | undefined
-
-  for (let attempt = 0; attempt < retries; attempt++) {
-    try {
-      const response = await fetchWithTimeout(url, FETCH_TIMEOUT_MS)
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch token list from ${url}: ${response.statusText}`)
-      }
-
-      const data: TokenListResponse = await response.json()
-
-      if (!data.tokens || !Array.isArray(data.tokens)) {
-        throw new Error(`Invalid token list response from ${url}: tokens is not an array`)
-      }
-
-      return data.tokens
-    } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error))
-
-      // Don't retry on validation errors
-      if (lastError.message.includes('tokens is not an array')) {
-        throw lastError
-      }
-
-      // Wait before retrying (except on last attempt)
-      if (attempt < retries - 1) {
-        await delay(RETRY_DELAY_MS * (attempt + 1))
-      }
-    }
-  }
-
-  throw lastError ?? new Error(`Failed to fetch token list from ${url} after ${retries} attempts`)
-}
-
 export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: RestrictedTokensListUpdaterProps): null {
   const { shouldFetch: shouldFetchTokens, saveToCache } = useRestrictedTokensCache()
   const setRestrictedLists = useSetAtom(restrictedListsAtom)
@@ -147,4 +95,56 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
   }, [isRwaGeoblockEnabled, shouldFetch, saveToCache, setRestrictedLists])
 
   return null
+}
+
+async function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<TokenInfo[]> {
+  let lastError: Error | undefined
+
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const response = await fetchWithTimeout(url, FETCH_TIMEOUT_MS)
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch token list from ${url}: ${response.statusText}`)
+      }
+
+      const data: TokenListResponse = await response.json()
+
+      if (!data.tokens || !Array.isArray(data.tokens)) {
+        throw new Error(`Invalid token list response from ${url}: tokens is not an array`)
+      }
+
+      return data.tokens
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error))
+
+      // Don't retry on validation errors
+      if (lastError.message.includes('tokens is not an array')) {
+        throw lastError
+      }
+
+      // Wait before retrying (except on last attempt)
+      if (attempt < retries - 1) {
+        await delay(RETRY_DELAY_MS * (attempt + 1))
+      }
+    }
+  }
+
+  throw lastError ?? new Error(`Failed to fetch token list from ${url} after ${retries} attempts`)
+}
+
+async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+  try {
+    const response = await fetch(url, { signal: controller.signal })
+    return response
+  } finally {
+    clearTimeout(timeoutId)
+  }
 }

@@ -2,8 +2,7 @@
 
 import { PropsWithChildren, ReactNode } from 'react'
 
-import { Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
-import { baseTheme } from '@cowprotocol/ui'
+import { Footer, GlobalCoWDAOStyles, Media, MenuBar, baseTheme } from '@cowprotocol/ui'
 
 import Link from 'next/link'
 import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'

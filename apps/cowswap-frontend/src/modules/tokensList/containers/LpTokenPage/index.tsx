@@ -20,10 +20,6 @@ import {
   Wrapper,
 } from './styled'
 
-function formatValue<T>(value: T | undefined, template: (v: T) => string, defaultValue?: string): string | undefined {
-  return value ? template(value) : defaultValue
-}
-
 interface LpTokenPageProps {
   poolAddress: string
 
@@ -126,4 +122,8 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
       </InfoTable>
     </Wrapper>
   )
+}
+
+function formatValue<T>(value: T | undefined, template: (v: T) => string, defaultValue?: string): string | undefined {
+  return value ? template(value) : defaultValue
 }

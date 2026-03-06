@@ -26,21 +26,6 @@ export type CurrencySelectionCallback = (
   searchParams?: TradeSearchParams,
 ) => void
 
-function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
-  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-
-  return useCallback(
-    (currency: Currency | null): string | null => {
-      if (!currency) return null
-
-      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
-        ? (currency as Token).address
-        : currency.symbol || null
-    },
-    [areThereTokensWithSameSymbol],
-  )
-}
-
 /**
  * To avoid collisions of tokens with the same symbols we use a token address instead of token symbol
  * if there are more than one token with the same symbol
@@ -151,5 +136,20 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
     ],
+  )
+}
+
+function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
+  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
+
+  return useCallback(
+    (currency: Currency | null): string | null => {
+      if (!currency) return null
+
+      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
+        ? (currency as Token).address
+        : currency.symbol || null
+    },
+    [areThereTokensWithSameSymbol],
   )
 }

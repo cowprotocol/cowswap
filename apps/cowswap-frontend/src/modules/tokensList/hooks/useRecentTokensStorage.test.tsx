@@ -2,8 +2,7 @@ import { createStore, Provider } from 'jotai'
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/cow-sdk'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { act, renderHook } from '@testing-library/react'
 
@@ -25,20 +24,19 @@ const ADDRESS_3 = '0x3333333333333333333333333333333333333333'
 
 const DEFAULT_DECIMALS = 18
 
-function createTestToken(chainId: number, address: string, symbol: string): TokenWithLogo {
-  return new TokenWithLogo(undefined, chainId, address, DEFAULT_DECIMALS, symbol, `${symbol} Token`, undefined, [])
-}
-
 function createStoredToken(chainId: number, address: string, symbol?: string): StoredRecentToken {
   return { chainId, address, decimals: DEFAULT_DECIMALS, symbol }
 }
 
-function setStoredTokens(tokens: StoredRecentTokensByChain): void {
-  localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
+function createStoreWithLocalStorage(): ReturnType<typeof createStore> {
+  const store = createStore()
+  // Initialize atom with current localStorage state
+  store.set(recentTokensStorageAtom, readStoredTokens(RECENT_TOKENS_LIMIT))
+  return store
 }
 
-function getTokenKey(chainId: number, address: string): string {
-  return getTokenId({ chainId, address })
+function createTestToken(chainId: number, address: string, symbol: string): TokenWithLogo {
+  return new TokenWithLogo(undefined, chainId, address, DEFAULT_DECIMALS, symbol, `${symbol} Token`, undefined, [])
 }
 
 function createTestWrapper(store: ReturnType<typeof createStore>) {
@@ -47,11 +45,12 @@ function createTestWrapper(store: ReturnType<typeof createStore>) {
   }
 }
 
-function createStoreWithLocalStorage(): ReturnType<typeof createStore> {
-  const store = createStore()
-  // Initialize atom with current localStorage state
-  store.set(recentTokensStorageAtom, readStoredTokens(RECENT_TOKENS_LIMIT))
-  return store
+function getTokenKey(chainId: number, address: string): string {
+  return getTokenId({ chainId, address })
+}
+
+function setStoredTokens(tokens: StoredRecentTokensByChain): void {
+  localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
 }
 
 describe('useRecentTokensStorage', () => {

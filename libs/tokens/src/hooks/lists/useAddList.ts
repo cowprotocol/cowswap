@@ -8,22 +8,6 @@ import { ListState } from '../../types'
 
 const TOKEN_LISTS_CONTENT_LIMIT = 5000
 
-function getTokenListsStateCount(states: ListState[]): number {
-  return states
-    .map((item) => (item ? item.list.tokens.length : 0))
-    .flat()
-    .reduce((acc, count) => acc + count, 0)
-}
-
-function getTokenListsLimitError(currentStateCount: number, updateCount: number): string {
-  return `
-Cannot add token list.
-Token lists content limit exceeded: ${TOKEN_LISTS_CONTENT_LIMIT}.
-Current tokens count: ${currentStateCount}.
-Tokens in update: ${updateCount}.
-  `
-}
-
 export function useAddList(onAddList: (source: string) => void): (state: ListState) => void {
   const { chainId } = useAtomValue(environmentAtom)
   const listsStatesByChain = useAtomValue(listsStatesByChainAtom)
@@ -47,4 +31,20 @@ export function useAddList(onAddList: (source: string) => void): (state: ListSta
     },
     [addList, listsStatesByChain, chainId, onAddList],
   )
+}
+
+function getTokenListsLimitError(currentStateCount: number, updateCount: number): string {
+  return `
+Cannot add token list.
+Token lists content limit exceeded: ${TOKEN_LISTS_CONTENT_LIMIT}.
+Current tokens count: ${currentStateCount}.
+Tokens in update: ${updateCount}.
+  `
+}
+
+function getTokenListsStateCount(states: ListState[]): number {
+  return states
+    .map((item) => (item ? item.list.tokens.length : 0))
+    .flat()
+    .reduce((acc, count) => acc + count, 0)
 }

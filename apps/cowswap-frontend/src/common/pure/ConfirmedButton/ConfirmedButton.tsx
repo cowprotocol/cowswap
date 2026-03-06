@@ -1,8 +1,7 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { ButtonError } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ButtonError, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -36,10 +35,6 @@ interface ConfirmedButtonProps {
   action: string
   confirmWord: string
   skipInput?: boolean
-}
-
-function isValidConfirm(value: string, confirmWord: string): boolean {
-  return typeof value === 'string' && value.toLowerCase().trim() === confirmWord
 }
 
 // TODO: Add proper return type annotation
@@ -92,4 +87,8 @@ export function ConfirmedButton({
       </ButtonError>
     </Container>
   )
+}
+
+function isValidConfirm(value: string, confirmWord: string): boolean {
+  return typeof value === 'string' && value.toLowerCase().trim() === confirmWord
 }

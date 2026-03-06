@@ -6,6 +6,12 @@ export interface BridgeFeeAmounts {
   amountInBuyCurrency: bigint
 }
 
+export interface CrossChainReceiveAmountInfoParams extends ReceiveAmountInfoParams {
+  intermediateCurrency: Currency
+  bridgeFeeAmounts: BridgeFeeAmounts
+  expectedToReceiveAmount: CurrencyAmount<Currency>
+}
+
 export interface ReceiveAmountInfoParams {
   orderParams: OrderParameters
   inputCurrency: Currency
@@ -13,10 +19,4 @@ export interface ReceiveAmountInfoParams {
   slippagePercent: Percent
   partnerFeeBps: number | undefined
   protocolFeeBps: number | undefined
-}
-
-export interface CrossChainReceiveAmountInfoParams extends ReceiveAmountInfoParams {
-  intermediateCurrency: Currency
-  bridgeFeeAmounts: BridgeFeeAmounts
-  expectedToReceiveAmount: CurrencyAmount<Currency>
 }

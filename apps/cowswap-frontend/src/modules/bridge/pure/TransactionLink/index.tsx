@@ -8,10 +8,6 @@ import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { TransactionLinkDisplay } from './TransactionLinkDisplay'
 
-function getChainTransactionLinkText(explorerTitle: string, isMobile: boolean): string {
-  return isMobile ? `${explorerTitle} ↗` : `View on ${explorerTitle} ↗`
-}
-
 interface TransactionLinkItemProps {
   link: string
   label: string
@@ -26,4 +22,8 @@ export function TransactionLinkItem({ link, label, chainId }: TransactionLinkIte
   const linkText = getChainTransactionLinkText(explorerTitle, isMobile)
 
   return <TransactionLinkDisplay link={link} label={label} linkText={linkText} />
+}
+
+function getChainTransactionLinkText(explorerTitle: string, isMobile: boolean): string {
+  return isMobile ? `${explorerTitle} ↗` : `View on ${explorerTitle} ↗`
 }

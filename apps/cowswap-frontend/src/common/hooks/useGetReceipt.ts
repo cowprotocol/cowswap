@@ -11,12 +11,12 @@ import { useLingui } from '@lingui/react/macro'
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {}
 
+export type GetReceipt = (hash: string) => RetryResult<TransactionReceipt>
+
 interface RetryResult<T> {
   promise: Promise<T>
   cancel: Command
 }
-
-export type GetReceipt = (hash: string) => RetryResult<TransactionReceipt>
 
 export function useGetReceipt(chainId: SupportedChainId): GetReceipt {
   // TODO M-6 COW-573

@@ -9,8 +9,8 @@ export interface TwapPartOrderCacheEntry {
   enrichedOrder: EnrichedOrder
 }
 
-export type TwapPartOrdersCacheByUid = Record<string, TwapPartOrderCacheEntry>
 export type TwapPartOrdersCache = Record<string, TwapPartOrdersCacheByUid>
+export type TwapPartOrdersCacheByUid = Record<string, TwapPartOrderCacheEntry>
 
 export interface UpdateTwapPartOrdersCachePayload {
   chainId: SupportedChainId

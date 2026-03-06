@@ -19,22 +19,6 @@ export function buildShareHref(target: ShareTarget, url: string, title: string):
   }
 }
 
-export function openShare(href: string): void {
-  const width = 600
-  const height = 650
-  const left = window.screenX + (window.outerWidth - width) / 2
-  const top = window.screenY + (window.outerHeight - height) / 2
-  const popup = window.open(
-    href,
-    'share',
-    `popup=yes,width=${width},height=${height},left=${left},top=${top},noopener,noreferrer`,
-  )
-
-  if (popup) {
-    popup.opener = null
-  }
-}
-
 export async function copyUrl(url: string): Promise<void> {
   try {
     await navigator.clipboard.writeText(url)
@@ -50,4 +34,20 @@ export async function copyUrl(url: string): Promise<void> {
   ta.select()
   document.execCommand('copy')
   document.body.removeChild(ta)
+}
+
+export function openShare(href: string): void {
+  const width = 600
+  const height = 650
+  const left = window.screenX + (window.outerWidth - width) / 2
+  const top = window.screenY + (window.outerHeight - height) / 2
+  const popup = window.open(
+    href,
+    'share',
+    `popup=yes,width=${width},height=${height},left=${left},top=${top},noopener,noreferrer`,
+  )
+
+  if (popup) {
+    popup.opener = null
+  }
 }

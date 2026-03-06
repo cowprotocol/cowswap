@@ -5,10 +5,6 @@ import { Article, Category, getArticles, getCategories } from '../../../../../se
 import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { ARTICLES_PER_PAGE } from '@/const/pagination'
 
-type Props = {
-  params: Promise<{ pageIndex?: string[] }>
-}
-
 export type ArticlesResponse = {
   data?: Article[]
   meta?: {
@@ -16,6 +12,10 @@ export type ArticlesResponse = {
       total?: number
     }
   }
+}
+
+type Props = {
+  params: Promise<{ pageIndex?: string[] }>
 }
 
 // Generate static params with conservative estimate

@@ -1,6 +1,5 @@
 import { Nullish } from '@cowprotocol/types'
-import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { TokenAmount, HoverTooltip, UI } from '@cowprotocol/ui'
 import { Currency, Price, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'

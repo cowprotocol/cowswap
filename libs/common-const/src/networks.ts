@@ -1,5 +1,4 @@
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { HttpsString } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId, HttpsString } from '@cowprotocol/cow-sdk'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 const INFURA_KEY = process.env['REACT_APP_INFURA_KEY'] || '2af29cd5ac554ae3b8d991afe1ba4b7d' // Default rate-limited infura key (should be overridden, not reliable to use)

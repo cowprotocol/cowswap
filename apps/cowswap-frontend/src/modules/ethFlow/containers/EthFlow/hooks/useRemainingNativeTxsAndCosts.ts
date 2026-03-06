@@ -53,6 +53,12 @@ export const _getAvailableTransactions = ({
   return txsAvailable.lessThan('1') ? null : txsAvailable.quotient.toString()
 }
 
+export type RemainingTxAndCostsParams = {
+  nativeBalance: CurrencyAmount<Currency> | undefined
+  nativeInput: CurrencyAmount<Currency> | undefined
+  native: Currency | undefined
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function _isLowBalanceCheck({
@@ -70,12 +76,6 @@ export function _isLowBalanceCheck({
   if (!nativeInput || !balance || nativeInput.add(txCost).greaterThan(balance)) return true
   // OK if: users_balance - (amt_input + 1_tx_cost) > low_balance_threshold
   return balance.subtract(nativeInput.add(txCost)).lessThan(threshold)
-}
-
-export type RemainingTxAndCostsParams = {
-  nativeBalance: CurrencyAmount<Currency> | undefined
-  nativeInput: CurrencyAmount<Currency> | undefined
-  native: Currency | undefined
 }
 
 // TODO: Add proper return type annotation

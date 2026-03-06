@@ -23,6 +23,96 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { CancelTxLink, ProgressLink, StatusLabel, StatusLabelBelow, StatusLabelWrapper } from './styled'
 import { determinePillColour } from './utils'
 
+export type StatusDetailsProps = {
+  chainId: number
+  activityDerivedState: ActivityDerivedState
+  showCancellationModal: Command | null
+  showProgressBar: Command | null
+}
+
+export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
+  const { chainId, activityDerivedState, showCancellationModal, showProgressBar } = props
+
+  const { isCancelling, isConfirmed, isCancelled, isReplaced, isLoading, order } = activityDerivedState
+
+  const cancellationHash = activityDerivedState.order?.cancellationHash
+  const isCancellable = order ? isOrderCancellable(order) : true
+
+  const safeAddress = _getSafeAddress(activityDerivedState)
+
+  const cancellationTxLink = _getCancellationTxLink(
+    chainId,
+    cancellationHash,
+    isCancelling,
+    isConfirmed,
+    isCancelled,
+    safeAddress,
+  )
+
+  const showCancelButton = showCancellationModal && isCancellable && !isCancelled
+  const showCancelTxLink = !!cancellationTxLink
+  const shouldShowStatusLabelBelow = showCancelButton || (showProgressBar && !isLoading) || showCancelTxLink
+
+  const handleProgressClick = (e: React.MouseEvent): void => {
+    e.preventDefault()
+    showProgressBar?.()
+  }
+
+  return (
+    <StatusLabelWrapper>
+      <StatusLabel color={determinePillColour(activityDerivedState)} {..._getStatusLabelProps(activityDerivedState)}>
+        {_getStatusIcon(activityDerivedState)}
+        {isReplaced ? t`Replaced` : _getStateLabel(activityDerivedState)}
+      </StatusLabel>
+
+      {shouldShowStatusLabelBelow && (
+        <StatusLabelBelow>
+          {showCancelButton && <CancelButton onClick={showCancellationModal} />}
+          {showProgressBar && !isLoading && (
+            <ProgressLink role="button" onClick={handleProgressClick}>
+              <Trans>Show progress</Trans>
+            </ProgressLink>
+          )}
+          {showCancelTxLink && (
+            <CancelTxLink href={cancellationTxLink} target="_blank" title={t`Cancellation transaction`}>
+              <Trans>View cancellation</Trans> ↗
+            </CancelTxLink>
+          )}
+        </StatusLabelBelow>
+      )}
+    </StatusLabelWrapper>
+  )
+}
+
+function _getCancellationTxLink(
+  chainId: number,
+  cancellationHash: string | undefined,
+  isCancelling: boolean,
+  isConfirmed: boolean,
+  isCancelled: boolean,
+  safeAddress: string | undefined,
+): string | null {
+  const hasCancellationHash = !!cancellationHash && !isCancelling && !isConfirmed && isCancelled
+
+  if (!hasCancellationHash) {
+    return null
+  }
+
+  return safeAddress
+    ? getSafeWebUrl(chainId, safeAddress, cancellationHash)
+    : getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)
+}
+
+function _getSafeAddress(activityDerivedState: ActivityDerivedState): string | undefined {
+  const { enhancedTransaction, order } = activityDerivedState
+
+  return (
+    enhancedTransaction?.safeTransaction?.safe ||
+    order?.presignGnosisSafeTx?.safe ||
+    activityDerivedState.gnosisSafeInfo?.address
+  )
+}
+
 function _getStateLabel(activityDerivedState: ActivityDerivedState): string {
   const activityStatusText: Record<ActivityState, string> = {
     [ActivityState.LOADING]: t`Loading...`,
@@ -98,35 +188,6 @@ function _getStatusIcon(activityDerivedState: ActivityDerivedState): ReactNode {
   return <SVG src={OrderOpenImage} description={t`Order Open`} />
 }
 
-function _getSafeAddress(activityDerivedState: ActivityDerivedState): string | undefined {
-  const { enhancedTransaction, order } = activityDerivedState
-
-  return (
-    enhancedTransaction?.safeTransaction?.safe ||
-    order?.presignGnosisSafeTx?.safe ||
-    activityDerivedState.gnosisSafeInfo?.address
-  )
-}
-
-function _getCancellationTxLink(
-  chainId: number,
-  cancellationHash: string | undefined,
-  isCancelling: boolean,
-  isConfirmed: boolean,
-  isCancelled: boolean,
-  safeAddress: string | undefined,
-): string | null {
-  const hasCancellationHash = !!cancellationHash && !isCancelling && !isConfirmed && isCancelled
-
-  if (!hasCancellationHash) {
-    return null
-  }
-
-  return safeAddress
-    ? getSafeWebUrl(chainId, safeAddress, cancellationHash)
-    : getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)
-}
-
 function _getStatusLabelProps(activityDerivedState: ActivityDerivedState): {
   isTransaction: boolean
   isPending: boolean
@@ -148,65 +209,4 @@ function _getStatusLabelProps(activityDerivedState: ActivityDerivedState): {
     isLoading: isLoading || false,
     title: isReplaced ? t`Transaction was cancelled or sped up` : '',
   }
-}
-
-export type StatusDetailsProps = {
-  chainId: number
-  activityDerivedState: ActivityDerivedState
-  showCancellationModal: Command | null
-  showProgressBar: Command | null
-}
-
-export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
-  const { chainId, activityDerivedState, showCancellationModal, showProgressBar } = props
-
-  const { isCancelling, isConfirmed, isCancelled, isReplaced, isLoading, order } = activityDerivedState
-
-  const cancellationHash = activityDerivedState.order?.cancellationHash
-  const isCancellable = order ? isOrderCancellable(order) : true
-
-  const safeAddress = _getSafeAddress(activityDerivedState)
-
-  const cancellationTxLink = _getCancellationTxLink(
-    chainId,
-    cancellationHash,
-    isCancelling,
-    isConfirmed,
-    isCancelled,
-    safeAddress,
-  )
-
-  const showCancelButton = showCancellationModal && isCancellable && !isCancelled
-  const showCancelTxLink = !!cancellationTxLink
-  const shouldShowStatusLabelBelow = showCancelButton || (showProgressBar && !isLoading) || showCancelTxLink
-
-  const handleProgressClick = (e: React.MouseEvent): void => {
-    e.preventDefault()
-    showProgressBar?.()
-  }
-
-  return (
-    <StatusLabelWrapper>
-      <StatusLabel color={determinePillColour(activityDerivedState)} {..._getStatusLabelProps(activityDerivedState)}>
-        {_getStatusIcon(activityDerivedState)}
-        {isReplaced ? t`Replaced` : _getStateLabel(activityDerivedState)}
-      </StatusLabel>
-
-      {shouldShowStatusLabelBelow && (
-        <StatusLabelBelow>
-          {showCancelButton && <CancelButton onClick={showCancellationModal} />}
-          {showProgressBar && !isLoading && (
-            <ProgressLink role="button" onClick={handleProgressClick}>
-              <Trans>Show progress</Trans>
-            </ProgressLink>
-          )}
-          {showCancelTxLink && (
-            <CancelTxLink href={cancellationTxLink} target="_blank" title={t`Cancellation transaction`}>
-              <Trans>View cancellation</Trans> ↗
-            </CancelTxLink>
-          )}
-        </StatusLabelBelow>
-      )}
-    </StatusLabelWrapper>
-  )
 }

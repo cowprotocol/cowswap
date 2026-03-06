@@ -22,6 +22,13 @@ interface QuoteIdValueProps {
   quoteId: string
 }
 
+interface RowQuoteIdProps {
+  quoteId: QuoteIdInput
+  isVerified?: boolean | null
+  expiration?: QuoteExpirationInput
+  styleProps?: RowStyleProps
+}
+
 export function QuoteIdValue({ quoteId }: QuoteIdValueProps): ReactNode {
   const { t } = useLingui()
   const [isCopied, setCopied] = useCopyClipboard(1500)
@@ -51,13 +58,6 @@ export function QuoteIdValue({ quoteId }: QuoteIdValueProps): ReactNode {
       </styledEl.CopyQuoteIdButton>
     </styledEl.QuoteIdValueWrapper>
   )
-}
-
-interface RowQuoteIdProps {
-  quoteId: QuoteIdInput
-  isVerified?: boolean | null
-  expiration?: QuoteExpirationInput
-  styleProps?: RowStyleProps
 }
 
 export function RowQuoteId({ quoteId, isVerified, expiration, styleProps }: RowQuoteIdProps): ReactNode {

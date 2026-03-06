@@ -49,11 +49,6 @@ const RESOLVER_ABI = [
   },
 ]
 
-// cache the resolver contracts since most of them are the public resolver
-function resolverContract(resolverAddress: string, provider: Provider): Contract {
-  return new Contract(resolverAddress, RESOLVER_ABI, provider)
-}
-
 /**
  * Fetches and decodes the result of an ENS contenthash lookup on mainnet to a URI
  * @param ensName to resolve
@@ -64,4 +59,9 @@ export async function resolveENSContentHash(ensName: string, provider: Provider)
   const hash = namehash(ensName)
   const resolverAddress = await ensRegistrarContract.resolver(hash)
   return resolverContract(resolverAddress, provider).contenthash(hash)
+}
+
+// cache the resolver contracts since most of them are the public resolver
+function resolverContract(resolverAddress: string, provider: Provider): Contract {
+  return new Contract(resolverAddress, RESOLVER_ABI, provider)
 }

@@ -10,17 +10,63 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { utmAtom } from './state'
 
-export function useUtm(): UtmParams | undefined {
-  return useAtomValue(utmAtom)
+export function useInitializeUtm(): void {
+  const navigate = useNavigate()
+  const { search, pathname, hash } = useLocation()
+  const hasProcessedUtm = useRef(false)
+  const setUtm = useSetAtom(utmAtom)
+
+  useLayoutEffect(() => {
+    logUtmDebug('useInitializeUtm effect running:', {
+      hasProcessedUtm: hasProcessedUtm.current,
+      search,
+      pathname,
+      hash,
+      windowLocationSearch: window.location.search,
+      windowLocationHref: window.location.href,
+    })
+
+    // Prevent multiple runs of UTM processing
+    if (hasProcessedUtm.current) {
+      logUtmDebug('Already processed UTM, skipping', {})
+      return undefined
+    }
+
+    const { utm, hasUtmParams, hasQueryParamsOutOfHashbang, searchParams } = extractUtmParams(search)
+
+    if (hasUtmParams) {
+      // Mark as processed to prevent re-runs
+      hasProcessedUtm.current = true
+      return processUtmParams(utm, setUtm, search, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+    }
+
+    logUtmDebug('No UTM params found, checking for cleanup', {})
+    // Check if we need to clean up any remaining UTM parameters
+    const newSearchParams = cleanUpUtmParams(searchParams)
+    const newSearch = newSearchParams.toString()
+
+    // Only navigate if there's actually a change needed
+    const currentSearch = searchParams.toString()
+    logUtmDebug('Cleanup check:', {
+      currentSearch,
+      newSearch,
+      needsCleanup: newSearch !== currentSearch,
+    })
+
+    if (newSearch !== currentSearch) {
+      logUtmDebug('Cleanup needed, processing...', {})
+      // Mark as processed to prevent re-runs
+      hasProcessedUtm.current = true
+      handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+    }
+
+    return undefined
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally empty - we only want this to run once on mount
 }
 
-/**
- * Debug logging for UTM processing
- */
-function logUtmDebug(message: string, data: Record<string, unknown>): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[UTM DEBUG] ${message}`, data)
-  }
+export function useUtm(): UtmParams | undefined {
+  return useAtomValue(utmAtom)
 }
 
 /**
@@ -145,6 +191,15 @@ function handleUrlNavigation(
 }
 
 /**
+ * Debug logging for UTM processing
+ */
+function logUtmDebug(message: string, data: Record<string, unknown>): void {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[UTM DEBUG] ${message}`, data)
+  }
+}
+
+/**
  * Process UTM parameters when found
  */
 function processUtmParams(
@@ -203,59 +258,4 @@ function processUtmParams(
     })
 
   return cleanup
-}
-
-export function useInitializeUtm(): void {
-  const navigate = useNavigate()
-  const { search, pathname, hash } = useLocation()
-  const hasProcessedUtm = useRef(false)
-  const setUtm = useSetAtom(utmAtom)
-
-  useLayoutEffect(() => {
-    logUtmDebug('useInitializeUtm effect running:', {
-      hasProcessedUtm: hasProcessedUtm.current,
-      search,
-      pathname,
-      hash,
-      windowLocationSearch: window.location.search,
-      windowLocationHref: window.location.href,
-    })
-
-    // Prevent multiple runs of UTM processing
-    if (hasProcessedUtm.current) {
-      logUtmDebug('Already processed UTM, skipping', {})
-      return undefined
-    }
-
-    const { utm, hasUtmParams, hasQueryParamsOutOfHashbang, searchParams } = extractUtmParams(search)
-
-    if (hasUtmParams) {
-      // Mark as processed to prevent re-runs
-      hasProcessedUtm.current = true
-      return processUtmParams(utm, setUtm, search, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
-    }
-
-    logUtmDebug('No UTM params found, checking for cleanup', {})
-    // Check if we need to clean up any remaining UTM parameters
-    const newSearchParams = cleanUpUtmParams(searchParams)
-    const newSearch = newSearchParams.toString()
-
-    // Only navigate if there's actually a change needed
-    const currentSearch = searchParams.toString()
-    logUtmDebug('Cleanup check:', {
-      currentSearch,
-      newSearch,
-      needsCleanup: newSearch !== currentSearch,
-    })
-
-    if (newSearch !== currentSearch) {
-      logUtmDebug('Cleanup needed, processing...', {})
-      // Mark as processed to prevent re-runs
-      hasProcessedUtm.current = true
-      handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
-    }
-
-    return undefined
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Intentionally empty - we only want this to run once on mount
 }

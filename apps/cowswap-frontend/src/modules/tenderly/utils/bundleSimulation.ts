@@ -17,10 +17,6 @@ export interface GetTransferTenderlySimulationInput {
   token: string
 }
 
-export type TokenBuyTransferInfo = {
-  sender: string
-  amount: string
-}[]
 export interface PostBundleSimulationParams {
   account: string
   chainId: SupportedChainId
@@ -32,6 +28,10 @@ export interface PostBundleSimulationParams {
   orderReceiver: string
   tokenBuyTransferInfo: TokenBuyTransferInfo
 }
+export type TokenBuyTransferInfo = {
+  sender: string
+  amount: string
+}[]
 
 export const completeBundleSimulation = async (params: PostBundleSimulationParams): Promise<SimulationData[]> => {
   const input = getBundleTenderlySimulationInput(params)
@@ -58,29 +58,6 @@ const simulateBundle = async (input: SimulationInput[], chainId: SupportedChainI
   }).then((res) => res.json())
 
   return response as SimulationData[]
-}
-
-export function getCoWHookTenderlySimulationInput(from: string, params: CowHook): SimulationInput {
-  return {
-    input: params.callData,
-    to: params.target,
-    from,
-  }
-}
-
-export function getTransferTenderlySimulationInput({
-  currencyAmount,
-  from,
-  receiver,
-  token,
-}: GetTransferTenderlySimulationInput): SimulationInput {
-  const callData = erc20Interface.encodeFunctionData('transfer', [receiver, currencyAmount])
-
-  return {
-    input: callData,
-    to: token,
-    from,
-  }
 }
 
 export function getBundleTenderlySimulationInput({
@@ -118,4 +95,27 @@ export function getBundleTenderlySimulationInput({
   )
 
   return [...preHooksSimulations, sellTokenTransfer, ...buyTokenTransfers, ...postHooksSimulations]
+}
+
+export function getCoWHookTenderlySimulationInput(from: string, params: CowHook): SimulationInput {
+  return {
+    input: params.callData,
+    to: params.target,
+    from,
+  }
+}
+
+export function getTransferTenderlySimulationInput({
+  currencyAmount,
+  from,
+  receiver,
+  token,
+}: GetTransferTenderlySimulationInput): SimulationInput {
+  const callData = erc20Interface.encodeFunctionData('transfer', [receiver, currencyAmount])
+
+  return {
+    input: callData,
+    to: token,
+    from,
+  }
 }

@@ -26,23 +26,6 @@ export const injectedOptionDark = {
   icon: InjectedImageDark,
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function InjectedOption({ darkMode, tryActivation, selectedWallet }: ConnectionOptionProps) {
-  const options = darkMode ? injectedOptionDark : injectedOption
-
-  const isActive = useIsActiveConnection(selectedWallet, injectedWalletConnection)
-
-  return (
-    <ConnectWalletOption
-      {...options}
-      isActive={isActive}
-      header={getConnectionName(ConnectionType.INJECTED)}
-      onClick={() => tryActivation(injectedWalletConnection.connector)}
-    />
-  )
-}
-
 interface Eip6963OptionProps {
   selectedWallet: string | undefined
   tryActivation: TryActivation
@@ -90,6 +73,23 @@ export function Eip6963Option({
       color="#E8831D"
       icon={info.icon}
       header={info.name}
+    />
+  )
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function InjectedOption({ darkMode, tryActivation, selectedWallet }: ConnectionOptionProps) {
+  const options = darkMode ? injectedOptionDark : injectedOption
+
+  const isActive = useIsActiveConnection(selectedWallet, injectedWalletConnection)
+
+  return (
+    <ConnectWalletOption
+      {...options}
+      isActive={isActive}
+      header={getConnectionName(ConnectionType.INJECTED)}
+      onClick={() => tryActivation(injectedWalletConnection.connector)}
     />
   )
 }

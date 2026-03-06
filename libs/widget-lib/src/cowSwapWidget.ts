@@ -121,37 +121,6 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 }
 
 /**
- * Update the provider for the iframeRpcProviderBridge.
- *
- * It will disconnect from the previous provider and connect to the new one.
- *
- * @param iframe iframe window
- * @param iframeRpcProviderBridge iframe RPC manager
- * @param newProvider new provider
- *
- * @returns the iframeRpcProviderBridge
- */
-function updateProvider(
-  iframe: Window,
-  iframeRpcProviderBridge: IframeRpcProviderBridge | null,
-  newProvider?: EthereumProvider,
-): IframeRpcProviderBridge {
-  // Disconnect from the previous provider bridge
-  if (iframeRpcProviderBridge) {
-    iframeRpcProviderBridge.disconnect()
-  }
-
-  const providerBridge = iframeRpcProviderBridge || new IframeRpcProviderBridge(iframe)
-
-  // Connect to the new provider
-  if (newProvider) {
-    providerBridge.onConnect(newProvider)
-  }
-
-  return providerBridge
-}
-
-/**
  * Creates an iframe element for the CoW Swap Widget based on provided parameters and settings.
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
@@ -168,52 +137,6 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   iframe.allow = 'clipboard-read; clipboard-write'
 
   return iframe
-}
-
-/**
- * Updates the CoW Swap Widget based on the new settings provided.
- * @param params - New params for the widget.
- * @param contentWindow - Window object of the widget's iframe.
- */
-function updateParams(
-  contentWindow: Window,
-  params: CowSwapWidgetParams,
-  provider: EthereumProvider | undefined,
-): void {
-  const hasProvider = !!provider
-
-  const pathname = buildWidgetPath(params)
-  const search = buildWidgetUrlQuery(params).toString()
-
-  // Omit theme from appParams
-  const { theme: _theme, ...appParams } = params
-
-  widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
-    urlParams: {
-      pathname,
-      search,
-    },
-    appParams,
-    hasProvider,
-  })
-}
-
-/**
- * Sends appCode to the contentWindow of the widget once the widget is activated.
- *
- * @param contentWindow - Window object of the widget's iframe.
- * @param appCode - A unique identifier for the app.
- */
-function sendAppCodeOnActivation(
-  contentWindow: Window,
-  appCode: string | undefined,
-): (payload: MessageEvent<unknown>) => void {
-  return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
-    // Update the appData
-    widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
-      metaData: appCode ? { appCode } : undefined,
-    })
-  })
 }
 
 /**
@@ -256,4 +179,81 @@ function listenToHeightChanges(
       iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
     }),
   ]
+}
+
+/**
+ * Sends appCode to the contentWindow of the widget once the widget is activated.
+ *
+ * @param contentWindow - Window object of the widget's iframe.
+ * @param appCode - A unique identifier for the app.
+ */
+function sendAppCodeOnActivation(
+  contentWindow: Window,
+  appCode: string | undefined,
+): (payload: MessageEvent<unknown>) => void {
+  return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
+    // Update the appData
+    widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
+      metaData: appCode ? { appCode } : undefined,
+    })
+  })
+}
+
+/**
+ * Updates the CoW Swap Widget based on the new settings provided.
+ * @param params - New params for the widget.
+ * @param contentWindow - Window object of the widget's iframe.
+ */
+function updateParams(
+  contentWindow: Window,
+  params: CowSwapWidgetParams,
+  provider: EthereumProvider | undefined,
+): void {
+  const hasProvider = !!provider
+
+  const pathname = buildWidgetPath(params)
+  const search = buildWidgetUrlQuery(params).toString()
+
+  // Omit theme from appParams
+  const { theme: _theme, ...appParams } = params
+
+  widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
+    urlParams: {
+      pathname,
+      search,
+    },
+    appParams,
+    hasProvider,
+  })
+}
+
+/**
+ * Update the provider for the iframeRpcProviderBridge.
+ *
+ * It will disconnect from the previous provider and connect to the new one.
+ *
+ * @param iframe iframe window
+ * @param iframeRpcProviderBridge iframe RPC manager
+ * @param newProvider new provider
+ *
+ * @returns the iframeRpcProviderBridge
+ */
+function updateProvider(
+  iframe: Window,
+  iframeRpcProviderBridge: IframeRpcProviderBridge | null,
+  newProvider?: EthereumProvider,
+): IframeRpcProviderBridge {
+  // Disconnect from the previous provider bridge
+  if (iframeRpcProviderBridge) {
+    iframeRpcProviderBridge.disconnect()
+  }
+
+  const providerBridge = iframeRpcProviderBridge || new IframeRpcProviderBridge(iframe)
+
+  // Connect to the new provider
+  if (newProvider) {
+    providerBridge.onConnect(newProvider)
+  }
+
+  return providerBridge
 }

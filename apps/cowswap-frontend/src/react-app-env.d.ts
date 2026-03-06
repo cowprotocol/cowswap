@@ -6,6 +6,10 @@ declare module '@metamask/jazzicon' {
   export default function (diameter: number, seed: number): HTMLElement
 }
 
+interface Console extends Node.Console {
+  force: Node.Console
+}
+
 interface TelegramData {
   auth_date: number
   first_name: string
@@ -48,10 +52,6 @@ interface Window {
       ): void
     }
   }
-}
-
-interface Console extends Node.Console {
-  force: Node.Console
 }
 
 declare module 'content-hash' {

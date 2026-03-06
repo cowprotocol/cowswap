@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/index'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { TokenInfo } from '@cowprotocol/types'

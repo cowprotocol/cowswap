@@ -1,6 +1,8 @@
-export interface UserConsent {
-  terms: string
-  acceptedDate: string
+export type RwaConsentCacheKey = `${string}-${string}`
+
+export interface RwaConsentKey {
+  wallet: string
+  ipfsHash: string
 }
 
 export interface RwaConsentRecord {
@@ -8,12 +10,10 @@ export interface RwaConsentRecord {
   acceptedAt: string
 }
 
-export interface RwaConsentKey {
-  wallet: string
-  ipfsHash: string
+export interface UserConsent {
+  terms: string
+  acceptedDate: string
 }
-
-export type RwaConsentCacheKey = `${string}-${string}`
 
 export function buildRwaConsentKey({ wallet, ipfsHash }: RwaConsentKey): RwaConsentCacheKey {
   return `${wallet.toLowerCase()}-${ipfsHash}`

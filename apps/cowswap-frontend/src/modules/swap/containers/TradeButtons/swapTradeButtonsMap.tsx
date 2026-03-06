@@ -18,6 +18,8 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
+type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
+
 interface SwapTradeButtonsContext {
   wrappedToken: Token
   inputCurrency: Currency | null
@@ -30,8 +32,6 @@ interface SwapTradeButtonsContext {
   isCurrentTradeBridging: boolean
   swapBridgeClickEvent?: string
 }
-
-type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
 
 export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => {

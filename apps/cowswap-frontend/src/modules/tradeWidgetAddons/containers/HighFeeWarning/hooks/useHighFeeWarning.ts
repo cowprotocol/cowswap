@@ -90,6 +90,26 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
   )
 }
 
+function _computeFeeWarningAcceptedState({
+  feeWarningAccepted,
+  isHighFee,
+  isHighBridgeFee,
+}: {
+  feeWarningAccepted: boolean
+  isHighFee: boolean
+  isHighBridgeFee: boolean | undefined
+}): boolean {
+  if (feeWarningAccepted) return true
+  else {
+    // is the fee high? that's only when we care
+    if (isHighFee || isHighBridgeFee) {
+      return feeWarningAccepted
+    } else {
+      return true
+    }
+  }
+}
+
 function getBridgeFeePercentage(
   bridgeFee: ReceiveAmountInfo['costs']['bridgeFee'],
   targetAmount: CurrencyAmount<Currency>,
@@ -109,24 +129,4 @@ function getBridgeFeePercentage(
   }
 
   return bridgeFee.amountInDestinationCurrency.divide(targetAmount).multiply(100).asFraction
-}
-
-function _computeFeeWarningAcceptedState({
-  feeWarningAccepted,
-  isHighFee,
-  isHighBridgeFee,
-}: {
-  feeWarningAccepted: boolean
-  isHighFee: boolean
-  isHighBridgeFee: boolean | undefined
-}): boolean {
-  if (feeWarningAccepted) return true
-  else {
-    // is the fee high? that's only when we care
-    if (isHighFee || isHighBridgeFee) {
-      return feeWarningAccepted
-    } else {
-      return true
-    }
-  }
 }

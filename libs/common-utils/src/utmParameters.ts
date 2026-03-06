@@ -16,6 +16,28 @@ export interface UtmParams {
 }
 
 /**
+ * Remove all utm_* parameters from URLSearchParams
+ *
+ * @param searchParams - URLSearchParams object to clean
+ * @returns new URLSearchParams with UTM parameters removed
+ */
+export function cleanUpUtmParams(searchParams: URLSearchParams): URLSearchParams {
+  // Create a copy to avoid mutating the original URLSearchParams
+  const cleanParams = new URLSearchParams(searchParams)
+
+  // Remove all utm_* parameters
+  const paramsToDelete: string[] = []
+  for (const [key] of cleanParams.entries()) {
+    if (key.startsWith('utm_')) {
+      paramsToDelete.push(key)
+    }
+  }
+
+  paramsToDelete.forEach((param) => cleanParams.delete(param))
+  return cleanParams
+}
+
+/**
  * Extract all UTM parameters from URL search params
  * Captures any parameter starting with 'utm_' for maximum flexibility
  *
@@ -49,28 +71,6 @@ export function hasUtmCodes(utm: UtmParams | undefined): boolean {
 
   // Check if any property starting with 'utm' has a value
   return Object.keys(utm).some((key) => key.startsWith('utm') && !!utm[key])
-}
-
-/**
- * Remove all utm_* parameters from URLSearchParams
- *
- * @param searchParams - URLSearchParams object to clean
- * @returns new URLSearchParams with UTM parameters removed
- */
-export function cleanUpUtmParams(searchParams: URLSearchParams): URLSearchParams {
-  // Create a copy to avoid mutating the original URLSearchParams
-  const cleanParams = new URLSearchParams(searchParams)
-
-  // Remove all utm_* parameters
-  const paramsToDelete: string[] = []
-  for (const [key] of cleanParams.entries()) {
-    if (key.startsWith('utm_')) {
-      paramsToDelete.push(key)
-    }
-  }
-
-  paramsToDelete.forEach((param) => cleanParams.delete(param))
-  return cleanParams
 }
 
 /**

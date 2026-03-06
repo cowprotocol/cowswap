@@ -15,90 +15,6 @@ import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
-function InitialStepWrapper(props: OrderProgressBarProps): ReactNode {
-  return (
-    <InitialStep isBridgingTrade={props.isBridgingTrade}>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </InitialStep>
-  )
-}
-
-function ExecutingStepWrapper(props: OrderProgressBarProps): ReactNode {
-  return (
-    <ExecutingStep isBridgingTrade={props.isBridgingTrade}>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </ExecutingStep>
-  )
-}
-
-function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
-  const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
-
-  return (
-    <FinishedStep
-      stepName={stepName}
-      surplusData={surplusData}
-      solvers={solvers}
-      order={order}
-      chainId={chainId}
-      receiverEnsName={receiverEnsName}
-      totalSolvers={totalSolvers}
-      debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
-    >
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </FinishedStep>
-  )
-}
-
-function SolvingStepWrapper(props: OrderProgressBarProps): ReactNode {
-  const { countdown, stepName, showCancellationModal, isBridgingTrade } = props
-  const isUnfillable = stepName === OrderProgressBarStepName.UNFILLABLE
-  const isDelayed = stepName === OrderProgressBarStepName.DELAYED
-  const isSubmissionFailed = stepName === OrderProgressBarStepName.SUBMISSION_FAILED
-  const isSolved = stepName === OrderProgressBarStepName.SOLVED
-  const calculatedCountdownValue = isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown
-
-  return (
-    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal} isBridgingTrade={isBridgingTrade}>
-      <RenderProgressTopSection
-        {...props}
-        countdown={calculatedCountdownValue}
-        debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
-      />
-    </SolvingStep>
-  )
-}
-
-function CancellingStepWrapper(props: OrderProgressBarProps): ReactNode {
-  return (
-    <CancellingStep>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </CancellingStep>
-  )
-}
-
-function CancelledStepWrapper(props: OrderProgressBarProps): ReactNode {
-  return (
-    <CancelledStep>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </CancelledStep>
-  )
-}
-
-function ExpiredStepWrapper(props: OrderProgressBarProps): ReactNode {
-  return (
-    <ExpiredStep navigateToNewOrder={props.navigateToNewOrder}>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
-    </ExpiredStep>
-  )
-}
-
-function BridgingStepWrapper(props: OrderProgressBarProps): ReactNode {
-  if (!props.stepName || !props.swapAndBridgeContext) return null
-
-  return <BridgingStep context={props.swapAndBridgeContext} surplusData={props.surplusData}></BridgingStep>
-}
-
 interface OrderProgressStepFactoryProps {
   step: OrderProgressBarStepName
   props: OrderProgressBarProps
@@ -123,4 +39,88 @@ export function OrderProgressStepFactory({ step, props }: OrderProgressStepFacto
   if (step === OrderProgressBarStepName.BRIDGING_FINISHED) return <BridgingStepWrapper {...props} />
   if (step === OrderProgressBarStepName.REFUND_COMPLETED) return <BridgingStepWrapper {...props} />
   return null
+}
+
+function BridgingStepWrapper(props: OrderProgressBarProps): ReactNode {
+  if (!props.stepName || !props.swapAndBridgeContext) return null
+
+  return <BridgingStep context={props.swapAndBridgeContext} surplusData={props.surplusData}></BridgingStep>
+}
+
+function CancelledStepWrapper(props: OrderProgressBarProps): ReactNode {
+  return (
+    <CancelledStep>
+      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    </CancelledStep>
+  )
+}
+
+function CancellingStepWrapper(props: OrderProgressBarProps): ReactNode {
+  return (
+    <CancellingStep>
+      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    </CancellingStep>
+  )
+}
+
+function ExecutingStepWrapper(props: OrderProgressBarProps): ReactNode {
+  return (
+    <ExecutingStep isBridgingTrade={props.isBridgingTrade}>
+      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    </ExecutingStep>
+  )
+}
+
+function ExpiredStepWrapper(props: OrderProgressBarProps): ReactNode {
+  return (
+    <ExpiredStep navigateToNewOrder={props.navigateToNewOrder}>
+      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    </ExpiredStep>
+  )
+}
+
+function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
+  const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
+
+  return (
+    <FinishedStep
+      stepName={stepName}
+      surplusData={surplusData}
+      solvers={solvers}
+      order={order}
+      chainId={chainId}
+      receiverEnsName={receiverEnsName}
+      totalSolvers={totalSolvers}
+      debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
+    >
+      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    </FinishedStep>
+  )
+}
+
+function InitialStepWrapper(props: OrderProgressBarProps): ReactNode {
+  return (
+    <InitialStep isBridgingTrade={props.isBridgingTrade}>
+      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    </InitialStep>
+  )
+}
+
+function SolvingStepWrapper(props: OrderProgressBarProps): ReactNode {
+  const { countdown, stepName, showCancellationModal, isBridgingTrade } = props
+  const isUnfillable = stepName === OrderProgressBarStepName.UNFILLABLE
+  const isDelayed = stepName === OrderProgressBarStepName.DELAYED
+  const isSubmissionFailed = stepName === OrderProgressBarStepName.SUBMISSION_FAILED
+  const isSolved = stepName === OrderProgressBarStepName.SOLVED
+  const calculatedCountdownValue = isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown
+
+  return (
+    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal} isBridgingTrade={isBridgingTrade}>
+      <RenderProgressTopSection
+        {...props}
+        countdown={calculatedCountdownValue}
+        debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
+      />
+    </SolvingStep>
+  )
 }

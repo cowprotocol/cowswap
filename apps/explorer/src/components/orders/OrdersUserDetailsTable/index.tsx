@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Color } from '@cowprotocol/ui'
-import { TruncatedText } from '@cowprotocol/ui'
+import { Color, TruncatedText } from '@cowprotocol/ui'
 
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'

@@ -23,8 +23,7 @@ import { DividerHorizontal, RecipientRow } from 'modules/trade'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
-import { RateInfoParams } from 'common/pure/RateInfo'
-import { RateInfo } from 'common/pure/RateInfo'
+import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 
 import * as styledEl from './styled'
 

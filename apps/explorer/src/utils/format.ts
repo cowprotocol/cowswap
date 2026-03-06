@@ -98,11 +98,6 @@ export const formatTimeInHours = (
 ${(+validTime / 60).toFixed(2).replace(leadingAndTrailingZeros, '').replace(trailingZerosAfterDot, '$1')}
 hours`
 
-export function parseBigNumber(value: string): BigNumber | null {
-  const bigNumber = new BigNumber(value)
-  return bigNumber.isNaN() ? null : bigNumber
-}
-
 /**
  * Formats percentage values with 2 decimals of precision.
  * Adds `%` at the end
@@ -131,6 +126,11 @@ export function formatPercentage(percentage: BigNumber): string {
       isLocaleAware: false, // force "." decimal symbol for any locale
     }) + '%'
   )
+}
+
+export function parseBigNumber(value: string): BigNumber | null {
+  const bigNumber = new BigNumber(value)
+  return bigNumber.isNaN() ? null : bigNumber
 }
 
 /**
@@ -178,57 +178,12 @@ export const amountToPrecisionDown = formatBigNumberToPrecisionAndRoundingFactor
  */
 export const amountToPrecisionUp = formatBigNumberToPrecisionAndRoundingFactory(BigNumber.ROUND_UP)
 
-export function formatPriceWithFloor(price: BigNumber): string {
-  const LOW_PRICE_FLOOR = new BigNumber('0.0001')
-  if (!price || price.isZero()) return 'N/A'
-
-  const displayPrice = amountToPrecisionDown(price, DEFAULT_DECIMALS).toString(10)
-  return price.gt(LOW_PRICE_FLOOR) ? displayPrice : '< ' + LOW_PRICE_FLOOR.toString(10)
-}
-
 export function capitalize(sentence: string): string {
   return sentence
     .split(' ')
     .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
     .join(' ')
 }
-
-export function getMinimumRepresentableValue(decimals?: number): string {
-  // Small limit === 1 token atom in relation to token units.
-  // E.g.: Token decimals: 5; 1 unit => 100000; 1 atom => 0.00001 === small limit
-  return decimals ? ONE_BIG_NUMBER.div(TEN_BIG_NUMBER.exponentiatedBy(decimals)).toString(10) : MINIMUM_ATOM_VALUE
-}
-
-/**
- * Wrapper around `formatSmart` that formats amount to max precision for given token.
- * Assumes `amount` to be in atom units. E.g:
- * amount: 10001
- * token.decimals: 4
- * return: 1.0001
- *
- * @param amount BigNumber integer amount
- * @param token Erc20 token
- */
-export function formatSmartMaxPrecision(amount: BigNumber, token?: TokenErc20 | null): string {
-  return formatSmart({
-    amount: amount.toString(10),
-    precision: token?.decimals || 0,
-    decimals: token?.decimals || 0,
-    smallLimit: getMinimumRepresentableValue(token?.decimals),
-  })
-}
-
-/**
- * Transforms a BigNumber order calculatedPrice (buy/sell) into a string
- * based on buyToken / sellToken (Erc20 both of them)
- * e.g:
- * return: 3,000.2 USDT per WETH
- *
- * @param calculatedPrice BigNumber integer amount
- * @param buyToken Erc20 token
- * @param sellToken Erc20 token
- * @param inverted Optional. Whether to invert the price (1/price).
- */
 
 export function formatCalculatedPriceToDisplay(
   calculatedPrice: BigNumber,
@@ -271,6 +226,45 @@ export function formatExecutedPriceToDisplay(
   return `${formattedPrice} ${baseSymbol}`
 }
 
+export function formatPriceWithFloor(price: BigNumber): string {
+  const LOW_PRICE_FLOOR = new BigNumber('0.0001')
+  if (!price || price.isZero()) return 'N/A'
+
+  const displayPrice = amountToPrecisionDown(price, DEFAULT_DECIMALS).toString(10)
+  return price.gt(LOW_PRICE_FLOOR) ? displayPrice : '< ' + LOW_PRICE_FLOOR.toString(10)
+}
+
+/**
+ * Transforms a BigNumber order calculatedPrice (buy/sell) into a string
+ * based on buyToken / sellToken (Erc20 both of them)
+ * e.g:
+ * return: 3,000.2 USDT per WETH
+ *
+ * @param calculatedPrice BigNumber integer amount
+ * @param buyToken Erc20 token
+ * @param sellToken Erc20 token
+ * @param inverted Optional. Whether to invert the price (1/price).
+ */
+
+/**
+ * Wrapper around `formatSmart` that formats amount to max precision for given token.
+ * Assumes `amount` to be in atom units. E.g:
+ * amount: 10001
+ * token.decimals: 4
+ * return: 1.0001
+ *
+ * @param amount BigNumber integer amount
+ * @param token Erc20 token
+ */
+export function formatSmartMaxPrecision(amount: BigNumber, token?: TokenErc20 | null): string {
+  return formatSmart({
+    amount: amount.toString(10),
+    precision: token?.decimals || 0,
+    decimals: token?.decimals || 0,
+    smallLimit: getMinimumRepresentableValue(token?.decimals),
+  })
+}
+
 /**
  * @param amount BigNumber integer amount
  * @param token Erc20 token
@@ -290,6 +284,12 @@ export function formattingAmountPrecision(
     decimals: typeFormatPrecision[typePrecision],
     smallLimit: getMinimumRepresentableValue(typeFormatPrecision[typePrecision]),
   })
+}
+
+export function getMinimumRepresentableValue(decimals?: number): string {
+  // Small limit === 1 token atom in relation to token units.
+  // E.g.: Token decimals: 5; 1 unit => 100000; 1 atom => 0.00001 === small limit
+  return decimals ? ONE_BIG_NUMBER.div(TEN_BIG_NUMBER.exponentiatedBy(decimals)).toString(10) : MINIMUM_ATOM_VALUE
 }
 
 // parse a name or symbol from a token response

@@ -73,6 +73,12 @@ const NetworkImageAddressMap: Record<Network, string> = {
   [Network.INK]: 'eth',
 }
 
+interface RetryOptions {
+  retriesLeft?: number
+  interval?: number
+  exponentialBackOff?: boolean
+}
+
 export function getImageAddress(address: string, network: Network): string {
   if (isNativeToken(address)) {
     // What is going on here?
@@ -83,38 +89,6 @@ export function getImageAddress(address: string, network: Network): string {
   }
   return address
 }
-
-export async function silentPromise<T>(promise: Promise<T>, customMessage?: string): Promise<T | undefined> {
-  try {
-    return await promise
-  } catch (e) {
-    logDebug(customMessage || 'Failed to fetch promise', e.message)
-    return
-  }
-}
-
-export function setStorageItem(key: string, data: unknown): void {
-  // localStorage API accepts only strings
-  const formattedData = JSON.stringify(data)
-  return localStorage.setItem(key, formattedData)
-}
-
-interface RetryOptions {
-  retriesLeft?: number
-  interval?: number
-  exponentialBackOff?: boolean
-}
-
-/**
- * Retry function with delay.
- *
- * Inspired by: https://gitlab.com/snippets/1775781
- *
- * @param fn Parameterless function to retry
- * @param retriesLeft How many retries. Defaults to 3
- * @param interval How long to wait between retries. Defaults to 1s
- * @param exponentialBackOff Whether to use exponential back off, doubling wait interval. Defaults to true
- */
 
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -138,20 +112,46 @@ export async function retry<T extends () => any>(fn: T, options?: RetryOptions):
   }
 }
 
+export function setStorageItem(key: string, data: unknown): void {
+  // localStorage API accepts only strings
+  const formattedData = JSON.stringify(data)
+  return localStorage.setItem(key, formattedData)
+}
+
+/**
+ * Retry function with delay.
+ *
+ * Inspired by: https://gitlab.com/snippets/1775781
+ *
+ * @param fn Parameterless function to retry
+ * @param retriesLeft How many retries. Defaults to 3
+ * @param interval How long to wait between retries. Defaults to 1s
+ * @param exponentialBackOff Whether to use exponential back off, doubling wait interval. Defaults to true
+ */
+
+export async function silentPromise<T>(promise: Promise<T>, customMessage?: string): Promise<T | undefined> {
+  try {
+    return await promise
+  } catch (e) {
+    logDebug(customMessage || 'Failed to fetch promise', e.message)
+    return
+  }
+}
+
 export const RequireContextMock = Object.assign(() => '', {
   keys: () => [],
   resolve: () => '',
   id: '',
 })
 
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined
-}
-
 export interface TimeoutParams<T> {
   time?: number
   result?: T
   timeoutErrorMsg?: string
+}
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined
 }
 
 export function timeout(params: TimeoutParams<undefined>): Promise<never> // never means function throws

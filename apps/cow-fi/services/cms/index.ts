@@ -9,9 +9,7 @@ import { toQueryParams } from 'util/queryParams'
 import { DEFAULT_PAGE_SIZE, clientAddons } from './config'
 import { querySerializer, getPopulateConfig } from './helpers'
 
-type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
-
 export type ArticleListResponse = {
   data: Article[]
   meta: {
@@ -24,13 +22,17 @@ export type ArticleListResponse = {
   }
 }
 
-export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
 export type Category = Schemas['CategoryListResponseDataItem']
+
+export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
+type Schemas = components['schemas']
 
 /**
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
  */
 export const client = getCmsClient()
+
+export type Page = Schemas['PageListResponseDataItem']
 
 /**
  * Returns all article slugs.
@@ -60,36 +62,6 @@ export async function getAllArticleSlugs(): Promise<string[]> {
 }
 
 /**
- * Get categories with images.
- *
- * @returns Categories with their associated images
- */
-export async function getCategories(): Promise<Category[]> {
-  try {
-    const { data, error, response } = await client.GET('/categories?populate=*', {
-      params: {
-        pagination: {
-          page: 0,
-          pageSize: DEFAULT_PAGE_SIZE,
-        },
-        sort: 'name:asc',
-      },
-      ...clientAddons,
-    })
-
-    if (error) {
-      console.error(`Error ${response.status} getting categories: ${response.url}`, error)
-      throw error
-    }
-
-    return data.data
-  } catch (err) {
-    console.error('An unexpected error occurred:', err)
-    throw err
-  }
-}
-
-/**
  * Returns all category slugs.
  *
  * @returns Slugs
@@ -98,6 +70,28 @@ export async function getAllCategorySlugs(): Promise<string[]> {
   const categories = await getCategories()
 
   return categories.map((category) => category.attributes!.slug!)
+}
+
+/**
+ * Get article by slug.
+ *
+ * @param slug Slug of the article
+ *
+ * @throws Error if slug is not found
+ * @throws Error if multiple articles are found with the same slug
+ *
+ * @returns Article with the given slug
+ */
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+  if (!slug) throw new Error('Article slug is required') // Fail fast - no silent failures per CMS architecture
+
+  try {
+    const result = await getBySlugAux(slug, '/articles')
+    return result
+  } catch (error) {
+    console.error(`Error getting article by slug ${slug}:`, error)
+    throw error
+  }
 }
 
 /**
@@ -135,6 +129,64 @@ export async function getArticles({
   }
 
   return { data: data.data, meta: data.meta }
+}
+
+/**
+ * Get categories with images.
+ *
+ * @returns Categories with their associated images
+ */
+export async function getCategories(): Promise<Category[]> {
+  try {
+    const { data, error, response } = await client.GET('/categories?populate=*', {
+      params: {
+        pagination: {
+          page: 0,
+          pageSize: DEFAULT_PAGE_SIZE,
+        },
+        sort: 'name:asc',
+      },
+      ...clientAddons,
+    })
+
+    if (error) {
+      console.error(`Error ${response.status} getting categories: ${response.url}`, error)
+      throw error
+    }
+
+    return data.data
+  } catch (err) {
+    console.error('An unexpected error occurred:', err)
+    throw err
+  }
+}
+
+/**
+ * Get category by slug.
+ *
+ * @param slug Slug of the category
+ *
+ * @throws Error if slug is not found
+ * @throws Error if multiple categories are found with the same slug
+ *
+ * @returns Category with the given slug
+ */
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  return getBySlugAux(slug, '/categories')
+}
+
+/**
+ * Get page by slug.
+ *
+ * @param slug Slug of the page
+ *
+ * @throws Error if slug is not found
+ * @throws Error if multiple pages are found with the same slug
+ *
+ * @returns Page with the given slug
+ */
+export async function getPageBySlug(slug: string): Promise<Page | null> {
+  return getBySlugAux(slug, '/pages')
 }
 
 /**
@@ -199,62 +251,9 @@ export async function searchArticles({
   }
 }
 
-/**
- * Get article by slug.
- *
- * @param slug Slug of the article
- *
- * @throws Error if slug is not found
- * @throws Error if multiple articles are found with the same slug
- *
- * @returns Article with the given slug
- */
-export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  if (!slug) throw new Error('Article slug is required') // Fail fast - no silent failures per CMS architecture
-
-  try {
-    const result = await getBySlugAux(slug, '/articles')
-    return result
-  } catch (error) {
-    console.error(`Error getting article by slug ${slug}:`, error)
-    throw error
-  }
-}
-
-/**
- * Get category by slug.
- *
- * @param slug Slug of the category
- *
- * @throws Error if slug is not found
- * @throws Error if multiple categories are found with the same slug
- *
- * @returns Category with the given slug
- */
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  return getBySlugAux(slug, '/categories')
-}
-
-export type Page = Schemas['PageListResponseDataItem']
-
-/**
- * Get page by slug.
- *
- * @param slug Slug of the page
- *
- * @throws Error if slug is not found
- * @throws Error if multiple pages are found with the same slug
- *
- * @returns Page with the given slug
- */
-export async function getPageBySlug(slug: string): Promise<Page | null> {
-  return getBySlugAux(slug, '/pages')
-}
-
 async function getBySlugAux(slug: string, endpoint: '/articles'): Promise<Article | null>
 async function getBySlugAux(slug: string, endpoint: '/categories'): Promise<Category | null>
 async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | null>
-
 async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
   if (!slug) throw new Error('Slug is required') // Fail fast - no silent failures per CMS architecture
 

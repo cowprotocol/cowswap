@@ -5,21 +5,6 @@ import EventEmitter from 'eventemitter3'
 
 export const ASYNC_CUSTOM_PROVIDER_EVENT = 'customProvider'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function initCustomProvider(self: AsyncConnector, connector: Connector, chainId: number) {
-  if (connector.provider && !connector.customProvider) {
-    self.customProvider = new Web3Provider(connector.provider, chainId)
-  }
-
-  self.events.emit(ASYNC_CUSTOM_PROVIDER_EVENT, self.customProvider)
-
-  // Update provider when network is changed on wallet side
-  connector.provider?.on('chainChanged', (chainIdHex: string) => {
-    initCustomProvider(self, connector, +chainIdHex)
-  })
-}
-
 /**
  * To avoid including external libs for wallet connection in the bundle
  * We load them in runtime by demand
@@ -64,4 +49,19 @@ export class AsyncConnector extends Connector {
       })
     })
   }
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function initCustomProvider(self: AsyncConnector, connector: Connector, chainId: number) {
+  if (connector.provider && !connector.customProvider) {
+    self.customProvider = new Web3Provider(connector.provider, chainId)
+  }
+
+  self.events.emit(ASYNC_CUSTOM_PROVIDER_EVENT, self.customProvider)
+
+  // Update provider when network is changed on wallet side
+  connector.provider?.on('chainChanged', (chainIdHex: string) => {
+    initCustomProvider(self, connector, +chainIdHex)
+  })
 }

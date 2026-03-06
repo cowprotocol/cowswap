@@ -2,11 +2,11 @@ import { atom } from 'jotai'
 
 import { alternativeOrderReadWriteAtomFactory } from 'modules/trade/state/alternativeOrder'
 
-export type PartiallyFillableOverrideType = boolean | undefined
 export type PartiallyFillableOverrideDispatcherType = [
   PartiallyFillableOverrideType,
   (update: PartiallyFillableOverrideType) => void,
 ]
+export type PartiallyFillableOverrideType = boolean | undefined
 
 const regularPartiallyFillableOverrideAtom = atom<PartiallyFillableOverrideType>(undefined)
 const alternativePartiallyFillableOverrideAtom = atom<PartiallyFillableOverrideType>(undefined)

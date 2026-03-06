@@ -32,5 +32,5 @@ export const cowSwapStore = configureStore({
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
 
-export type AppState = StateFromReducersMapObject<typeof reducers>
 export type AppDispatch = typeof cowSwapStore.dispatch
+export type AppState = StateFromReducersMapObject<typeof reducers>

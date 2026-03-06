@@ -28,6 +28,14 @@ export interface LabelTooltipItems {
   [key: string]: LabelTooltip
 }
 
+export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
+  const tooltips = useLabelsTooltips()
+  return {
+    sellAmount: tooltips.sellAmount,
+    buyAmount: tooltips.buyAmount,
+  }
+}
+
 export function useLabelsTooltips(): LabelTooltipItems {
   const { t } = useLingui()
 
@@ -96,13 +104,5 @@ export function useLabelsTooltips(): LabelTooltipItems {
       label: t`Start time`,
       tooltip: t`The order will start when it is validated and executed in your Safe.`,
     },
-  }
-}
-
-export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
-  const tooltips = useLabelsTooltips()
-  return {
-    sellAmount: tooltips.sellAmount,
-    buyAmount: tooltips.buyAmount,
   }
 }

@@ -16,12 +16,6 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
 
-// Specialized helper function for string properties to ensure we always return a string
-export function safeGetString<T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string {
-  const value = obj && obj[key] != null ? obj[key] : fallback
-  return String(value)
-}
-
 export type AnalyticsPayload = Record<string, unknown>
 
 type EnrichedOrderWithTokens = EnrichedOrder & {
@@ -29,26 +23,7 @@ type EnrichedOrderWithTokens = EnrichedOrder & {
   outputToken?: TokenInfo
 }
 
-export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undefined): {
-  inputToken?: TokenInfo
-  outputToken?: TokenInfo
-} {
-  const inputToken = order?.inputToken
-  const outputToken = order?.outputToken
-
-  return {
-    inputToken: inputToken?.address ? inputToken : undefined,
-    outputToken: outputToken?.address ? outputToken : undefined,
-  }
-}
-
-export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
-  return {
-    walletAddress: safeGetString(payload.order, 'owner'),
-    orderId: safeGetString(payload.order, 'uid'),
-    chainId: payload.chainId.toString(),
-  }
-}
+type RawAmount = string | number | bigint | null | undefined
 
 type Tokenish = {
   address?: string
@@ -57,81 +32,6 @@ type Tokenish = {
   logoURI?: string
   name?: string
   symbol?: string
-}
-
-function isValidDecimals(decimals: number | undefined): decimals is number {
-  return typeof decimals === 'number' && Number.isInteger(decimals) && decimals >= 0
-}
-
-function toTokenWithLogo(meta?: Tokenish): TokenWithLogo | null {
-  if (!meta?.address || !isValidDecimals(meta.decimals)) {
-    return null
-  }
-
-  try {
-    return TokenWithLogo.fromToken(
-      {
-        chainId: meta.chainId ?? 0,
-        address: meta.address,
-        decimals: meta.decimals,
-        symbol: meta.symbol || '',
-        name: meta.name || '',
-      },
-      meta.logoURI,
-    )
-  } catch {
-    return null
-  }
-}
-
-type RawAmount = string | number | bigint | null | undefined
-
-function formatTokenUnitsExact(meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined {
-  const normalizedRaw = normalizeRawAmount(rawAmount)
-  if (!normalizedRaw) {
-    return undefined
-  }
-
-  const currency = toTokenWithLogo(meta)
-  if (!currency) {
-    return undefined
-  }
-
-  try {
-    const amount = CurrencyAmount.fromRawAmount(currency, normalizedRaw)
-    // Use exact units for Safary; formatTokenAmount can add locale/suffix output.
-    const exact = FractionUtils.fractionLikeToExactString(amount)
-    return exact || undefined
-  } catch {
-    return undefined
-  }
-}
-
-function buildTokenFields(
-  payload: BaseOrderPayload,
-  meta: { inputToken?: TokenInfo; outputToken?: TokenInfo },
-): AnalyticsPayload {
-  const sellTokenAddress = safeGetString(payload.order, 'sellToken')
-  const buyTokenAddress = safeGetString(payload.order, 'buyToken')
-
-  const sellAmountAtoms = safeGetString(payload.order, 'sellAmount')
-  const buyAmountAtoms = safeGetString(payload.order, 'buyAmount')
-
-  const sellTokenDecimals: number | undefined = meta.inputToken?.decimals
-  const buyTokenDecimals: number | undefined = meta.outputToken?.decimals
-
-  return {
-    sellToken: sellTokenAddress,
-    buyToken: buyTokenAddress,
-    sellAmount: sellAmountAtoms,
-    buyAmount: buyAmountAtoms,
-    sellTokenSymbol: meta.inputToken?.symbol || '',
-    buyTokenSymbol: meta.outputToken?.symbol || '',
-    sellTokenDecimals,
-    buyTokenDecimals,
-    sellAmountUnits: formatTokenUnitsExact(meta.inputToken, sellAmountAtoms),
-    buyAmountUnits: formatTokenUnitsExact(meta.outputToken, buyAmountAtoms),
-  }
 }
 
 // Build analytics-friendly alias fields for currency/amounts.
@@ -156,6 +56,27 @@ export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): Analyti
   }
 }
 
+export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
+  return {
+    walletAddress: safeGetString(payload.order, 'owner'),
+    orderId: safeGetString(payload.order, 'uid'),
+    chainId: payload.chainId.toString(),
+  }
+}
+
+export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undefined): {
+  inputToken?: TokenInfo
+  outputToken?: TokenInfo
+} {
+  const inputToken = order?.inputToken
+  const outputToken = order?.outputToken
+
+  return {
+    inputToken: inputToken?.address ? inputToken : undefined,
+    outputToken: outputToken?.address ? outputToken : undefined,
+  }
+}
+
 export function getOrderPayload(payload: BaseOrderPayload): AnalyticsPayload {
   const meta = extractTokenMeta(payload.order)
   const base = buildBaseFields(payload)
@@ -177,35 +98,6 @@ export function mapExpiredOrder(p: OnExpiredOrderPayload): AnalyticsPayload {
   return {
     ...getOrderPayload(p),
     reason: 'expired',
-  }
-}
-
-export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
-  const tokenFields: AnalyticsPayload = {
-    sellToken: safeGetString(p.inputToken, 'address'),
-    buyToken: safeGetString(p.outputToken, 'address'),
-    sellAmount: p.inputAmount.toString(),
-    buyAmount: p.outputAmount.toString(),
-    sellTokenSymbol: safeGetString(p.inputToken, 'symbol'),
-    buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
-    sellTokenDecimals: p.inputToken?.decimals,
-    buyTokenDecimals: p.outputToken?.decimals,
-    sellAmountUnits: formatTokenUnitsExact(p.inputToken, p.inputAmount),
-    buyAmountUnits: formatTokenUnitsExact(p.outputToken, p.outputAmount),
-  }
-
-  return {
-    walletAddress: p.owner || '',
-    orderId: p.orderUid,
-    chainId: p.chainId.toString(),
-    ...tokenFields,
-    ...buildAnalyticsCurrencyAliases(tokenFields),
-    orderType: p.orderType,
-    partiallyFillable: p.partiallyFillable,
-    isEthFlow: Boolean(p.isEthFlow),
-    kind: p.kind,
-    receiver: p.receiver || '',
-    orderCreationHash: p.orderCreationHash || '',
   }
 }
 
@@ -245,6 +137,68 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
   }
 }
 
+export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
+  const tokenFields: AnalyticsPayload = {
+    sellToken: safeGetString(p.inputToken, 'address'),
+    buyToken: safeGetString(p.outputToken, 'address'),
+    sellAmount: p.inputAmount.toString(),
+    buyAmount: p.outputAmount.toString(),
+    sellTokenSymbol: safeGetString(p.inputToken, 'symbol'),
+    buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
+    sellTokenDecimals: p.inputToken?.decimals,
+    buyTokenDecimals: p.outputToken?.decimals,
+    sellAmountUnits: formatTokenUnitsExact(p.inputToken, p.inputAmount),
+    buyAmountUnits: formatTokenUnitsExact(p.outputToken, p.outputAmount),
+  }
+
+  return {
+    walletAddress: p.owner || '',
+    orderId: p.orderUid,
+    chainId: p.chainId.toString(),
+    ...tokenFields,
+    ...buildAnalyticsCurrencyAliases(tokenFields),
+    orderType: p.orderType,
+    partiallyFillable: p.partiallyFillable,
+    isEthFlow: Boolean(p.isEthFlow),
+    kind: p.kind,
+    receiver: p.receiver || '',
+    orderCreationHash: p.orderCreationHash || '',
+  }
+}
+
+// Specialized helper function for string properties to ensure we always return a string
+export function safeGetString<T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string {
+  const value = obj && obj[key] != null ? obj[key] : fallback
+  return String(value)
+}
+
+function buildTokenFields(
+  payload: BaseOrderPayload,
+  meta: { inputToken?: TokenInfo; outputToken?: TokenInfo },
+): AnalyticsPayload {
+  const sellTokenAddress = safeGetString(payload.order, 'sellToken')
+  const buyTokenAddress = safeGetString(payload.order, 'buyToken')
+
+  const sellAmountAtoms = safeGetString(payload.order, 'sellAmount')
+  const buyAmountAtoms = safeGetString(payload.order, 'buyAmount')
+
+  const sellTokenDecimals: number | undefined = meta.inputToken?.decimals
+  const buyTokenDecimals: number | undefined = meta.outputToken?.decimals
+
+  return {
+    sellToken: sellTokenAddress,
+    buyToken: buyTokenAddress,
+    sellAmount: sellAmountAtoms,
+    buyAmount: buyAmountAtoms,
+    sellTokenSymbol: meta.inputToken?.symbol || '',
+    buyTokenSymbol: meta.outputToken?.symbol || '',
+    sellTokenDecimals,
+    buyTokenDecimals,
+    sellAmountUnits: formatTokenUnitsExact(meta.inputToken, sellAmountAtoms),
+    buyAmountUnits: formatTokenUnitsExact(meta.outputToken, buyAmountAtoms),
+  }
+}
+
 function createAnalyticsHandler<K extends CowWidgetEvents>(
   analyticsEvent: string,
   mapper: (payload: CowWidgetEventPayloadMap[K]) => AnalyticsPayload,
@@ -257,6 +211,52 @@ function createAnalyticsHandler<K extends CowWidgetEvents>(
     }
 
     analytics.sendEvent(analyticsEvent, mapper(payload))
+  }
+}
+
+function formatTokenUnitsExact(meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined {
+  const normalizedRaw = normalizeRawAmount(rawAmount)
+  if (!normalizedRaw) {
+    return undefined
+  }
+
+  const currency = toTokenWithLogo(meta)
+  if (!currency) {
+    return undefined
+  }
+
+  try {
+    const amount = CurrencyAmount.fromRawAmount(currency, normalizedRaw)
+    // Use exact units for Safary; formatTokenAmount can add locale/suffix output.
+    const exact = FractionUtils.fractionLikeToExactString(amount)
+    return exact || undefined
+  } catch {
+    return undefined
+  }
+}
+
+function isValidDecimals(decimals: number | undefined): decimals is number {
+  return typeof decimals === 'number' && Number.isInteger(decimals) && decimals >= 0
+}
+
+function toTokenWithLogo(meta?: Tokenish): TokenWithLogo | null {
+  if (!meta?.address || !isValidDecimals(meta.decimals)) {
+    return null
+  }
+
+  try {
+    return TokenWithLogo.fromToken(
+      {
+        chainId: meta.chainId ?? 0,
+        address: meta.address,
+        decimals: meta.decimals,
+        symbol: meta.symbol || '',
+        name: meta.name || '',
+      },
+      meta.logoURI,
+    )
+  } catch {
+    return null
   }
 }
 

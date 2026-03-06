@@ -2,8 +2,6 @@ import { CowSwapTheme } from '../types'
 
 import type { FlattenSimpleInterpolation as StyledFlattenSimpleInterpolation } from 'styled-components/macro'
 
-type ColorValue = string
-
 export interface Colors {
   darkMode: boolean
   primary: ColorValue
@@ -98,6 +96,11 @@ export interface Colors {
   cowamm_light_green: ColorValue
 }
 
+// Export the theme interface for external use
+export interface CowProtocolTheme extends Colors, ThemeUtils {
+  mode: CowSwapTheme
+}
+
 export interface ThemeUtils {
   shimmer: StyledFlattenSimpleInterpolation
   colorScrollbar: StyledFlattenSimpleInterpolation
@@ -106,10 +109,7 @@ export interface ThemeUtils {
   flexRowNoWrap: StyledFlattenSimpleInterpolation
 }
 
-// Export the theme interface for external use
-export interface CowProtocolTheme extends Colors, ThemeUtils {
-  mode: CowSwapTheme
-}
+type ColorValue = string
 
 declare module 'styled-components' {
   export interface DefaultTheme extends CowProtocolTheme {

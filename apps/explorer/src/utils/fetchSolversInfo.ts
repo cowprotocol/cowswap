@@ -38,6 +38,18 @@ const SOLVERS_QUERY = [
 
 let solversInfoPromise: Promise<SolversInfo> | undefined
 
+export async function fetchSolversInfo(network?: number): Promise<SolversInfo> {
+  if (!solversInfoPromise) {
+    solversInfoPromise = fetchSolversInfoFromCms().catch((err) => {
+      solversInfoPromise = undefined
+      throw err
+    })
+  }
+
+  const allSolvers = await solversInfoPromise
+  return filterSolversByNetwork(allSolvers, network)
+}
+
 async function fetchSolversInfoFromCms(): Promise<SolversInfo> {
   const cmsClient = getCmsClient()
   const { data, error, response } = await cmsClient.GET('/solvers', {
@@ -56,20 +68,24 @@ async function fetchSolversInfoFromCms(): Promise<SolversInfo> {
   return mapCmsSolversToSolversInfo(body?.data || [])
 }
 
-export async function fetchSolversInfo(network?: number): Promise<SolversInfo> {
-  if (!solversInfoPromise) {
-    solversInfoPromise = fetchSolversInfoFromCms().catch((err) => {
-      solversInfoPromise = undefined
-      throw err
-    })
+function filterSolversByNetwork(allSolvers: SolversInfo, network?: number): SolversInfo {
+  if (network === undefined) {
+    return allSolvers
   }
-
-  const allSolvers = await solversInfoPromise
-  return filterSolversByNetwork(allSolvers, network)
-}
-
-function serializeSolversQuery(_params: unknown): string {
-  return SOLVERS_QUERY
+  return allSolvers
+    .map((solver) => {
+      const deployments = solver.deployments.filter((deployment) => deployment.chainId === network)
+      const networks = mapSolverNetworks(deployments)
+      if (!networks.length) {
+        return undefined
+      }
+      return {
+        ...solver,
+        deployments,
+        networks,
+      }
+    })
+    .filter(isDefined)
 }
 
 function formatCmsError(error: unknown): string {
@@ -89,11 +105,21 @@ function formatCmsError(error: unknown): string {
   }
 }
 
-function mapCmsSolversToSolversInfo(cmsSolvers: CmsEntity<CmsSolverAttributes>[]): SolversInfo {
-  return cmsSolvers
-    .map(mapCmsSolver)
-    .filter(isDefined)
-    .sort((a, b) => a.displayName.localeCompare(b.displayName))
+function getAddress(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
+  return attributes?.address || undefined
+}
+
+function getChainId(attributes?: CmsSolverNetworkAttributes | null): number | undefined {
+  return attributes?.network?.data?.attributes?.chainId || undefined
+}
+
+function getChainName(chainId: number, fallbackName?: string): string {
+  return CHAIN_INFO_BY_ID[chainId]?.label || fallbackName || `Chain ${chainId}`
+}
+
+function getChainNameFromCms(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
+  const network = attributes?.network?.data?.attributes
+  return network?.name || network?.label || network?.chainName || undefined
 }
 
 function getCmsOrigin(baseUrl: string): string {
@@ -104,6 +130,71 @@ function getCmsOrigin(baseUrl: string): string {
       return window.location.origin
     }
     return ''
+  }
+}
+
+function getEnvironmentName(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
+  return attributes?.environment?.data?.attributes?.name || undefined
+}
+
+function getPayoutAddress(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
+  return attributes?.payoutAddress || attributes?.payout_address || undefined
+}
+
+function hasRequiredSolverFields(attributes?: CmsSolverAttributes | null): attributes is CmsSolverWithRequiredFields {
+  return !!attributes?.solverId && !!attributes.displayName && attributes.active !== false
+}
+
+function isDefined<T>(value: T | undefined): value is T {
+  return value !== undefined
+}
+
+function isDeploymentActive(attributes?: CmsSolverNetworkAttributes | null): boolean {
+  return attributes?.active !== false
+}
+
+function mapCmsSolver(solver: CmsEntity<CmsSolverAttributes>): SolverInfo | undefined {
+  const attributes = solver.attributes
+  if (!hasRequiredSolverFields(attributes)) {
+    return undefined
+  }
+  const deployments = mapSolverDeployments(attributes.solver_networks?.data || [])
+  const networks = mapSolverNetworks(deployments)
+  if (!networks.length) {
+    return undefined
+  }
+  return {
+    solverId: attributes.solverId,
+    displayName: attributes.displayName,
+    description: attributes.description || undefined,
+    website: attributes.website || undefined,
+    image: normalizeCmsImageUrl(attributes.image?.data?.attributes?.url),
+    networks,
+    deployments,
+  }
+}
+
+function mapCmsSolversToSolversInfo(cmsSolvers: CmsEntity<CmsSolverAttributes>[]): SolversInfo {
+  return cmsSolvers
+    .map(mapCmsSolver)
+    .filter(isDefined)
+    .sort((a, b) => a.displayName.localeCompare(b.displayName))
+}
+
+function mapSolverDeployment(entry: CmsEntity<CmsSolverNetworkAttributes>): SolverDeployment | undefined {
+  const attributes = entry.attributes
+  const chainId = getChainId(attributes)
+  if (!chainId) {
+    return undefined
+  }
+  const chainNameFromCms = getChainNameFromCms(attributes)
+  return {
+    chainId,
+    chainName: getChainName(chainId, chainNameFromCms),
+    environment: getEnvironmentName(attributes),
+    address: getAddress(attributes),
+    payoutAddress: getPayoutAddress(attributes),
+    active: isDeploymentActive(attributes),
   }
 }
 
@@ -132,10 +223,6 @@ function mapSolverNetworks(deployments: SolverDeployment[]): SolverNetworkInfo[]
     .sort((a, b) => a.chainName.localeCompare(b.chainName))
 }
 
-function getChainName(chainId: number, fallbackName?: string): string {
-  return CHAIN_INFO_BY_ID[chainId]?.label || fallbackName || `Chain ${chainId}`
-}
-
 function normalizeCmsImageUrl(url?: string | null): string | undefined {
   if (!url) {
     return undefined
@@ -150,66 +237,8 @@ function normalizeCmsImageUrl(url?: string | null): string | undefined {
   return CMS_ORIGIN ? `${CMS_ORIGIN}/${url}` : `/${url}`
 }
 
-function filterSolversByNetwork(allSolvers: SolversInfo, network?: number): SolversInfo {
-  if (network === undefined) {
-    return allSolvers
-  }
-  return allSolvers
-    .map((solver) => {
-      const deployments = solver.deployments.filter((deployment) => deployment.chainId === network)
-      const networks = mapSolverNetworks(deployments)
-      if (!networks.length) {
-        return undefined
-      }
-      return {
-        ...solver,
-        deployments,
-        networks,
-      }
-    })
-    .filter(isDefined)
-}
-
-function mapCmsSolver(solver: CmsEntity<CmsSolverAttributes>): SolverInfo | undefined {
-  const attributes = solver.attributes
-  if (!hasRequiredSolverFields(attributes)) {
-    return undefined
-  }
-  const deployments = mapSolverDeployments(attributes.solver_networks?.data || [])
-  const networks = mapSolverNetworks(deployments)
-  if (!networks.length) {
-    return undefined
-  }
-  return {
-    solverId: attributes.solverId,
-    displayName: attributes.displayName,
-    description: attributes.description || undefined,
-    website: attributes.website || undefined,
-    image: normalizeCmsImageUrl(attributes.image?.data?.attributes?.url),
-    networks,
-    deployments,
-  }
-}
-
-function hasRequiredSolverFields(attributes?: CmsSolverAttributes | null): attributes is CmsSolverWithRequiredFields {
-  return !!attributes?.solverId && !!attributes.displayName && attributes.active !== false
-}
-
-function mapSolverDeployment(entry: CmsEntity<CmsSolverNetworkAttributes>): SolverDeployment | undefined {
-  const attributes = entry.attributes
-  const chainId = getChainId(attributes)
-  if (!chainId) {
-    return undefined
-  }
-  const chainNameFromCms = getChainNameFromCms(attributes)
-  return {
-    chainId,
-    chainName: getChainName(chainId, chainNameFromCms),
-    environment: getEnvironmentName(attributes),
-    address: getAddress(attributes),
-    payoutAddress: getPayoutAddress(attributes),
-    active: isDeploymentActive(attributes),
-  }
+function serializeSolversQuery(_params: unknown): string {
+  return SOLVERS_QUERY
 }
 
 function sortSolverDeployments(a: SolverDeployment, b: SolverDeployment): number {
@@ -218,33 +247,4 @@ function sortSolverDeployments(a: SolverDeployment, b: SolverDeployment): number
   const byEnvironment = (a.environment || '').localeCompare(b.environment || '')
   if (byEnvironment !== 0) return byEnvironment
   return (a.address || '').localeCompare(b.address || '')
-}
-
-function isDefined<T>(value: T | undefined): value is T {
-  return value !== undefined
-}
-
-function getChainId(attributes?: CmsSolverNetworkAttributes | null): number | undefined {
-  return attributes?.network?.data?.attributes?.chainId || undefined
-}
-
-function getChainNameFromCms(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
-  const network = attributes?.network?.data?.attributes
-  return network?.name || network?.label || network?.chainName || undefined
-}
-
-function getEnvironmentName(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
-  return attributes?.environment?.data?.attributes?.name || undefined
-}
-
-function getAddress(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
-  return attributes?.address || undefined
-}
-
-function getPayoutAddress(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
-  return attributes?.payoutAddress || attributes?.payout_address || undefined
-}
-
-function isDeploymentActive(attributes?: CmsSolverNetworkAttributes | null): boolean {
-  return attributes?.active !== false
 }

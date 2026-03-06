@@ -1,14 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 
-function isVisibilityStateSupported(): boolean {
-  return typeof document !== 'undefined' && 'visibilityState' in document
-}
-
-function isWindowVisible(): boolean {
-  if (typeof document === 'undefined') return false
-  return !isVisibilityStateSupported() || document.visibilityState !== 'hidden'
-}
-
 /**
  * Returns whether the window is currently visible to the user.
  */
@@ -29,4 +20,13 @@ export function useIsWindowVisible(): boolean {
   }, [listener])
 
   return focused
+}
+
+function isVisibilityStateSupported(): boolean {
+  return typeof document !== 'undefined' && 'visibilityState' in document
+}
+
+function isWindowVisible(): boolean {
+  if (typeof document === 'undefined') return false
+  return !isVisibilityStateSupported() || document.visibilityState !== 'hidden'
 }

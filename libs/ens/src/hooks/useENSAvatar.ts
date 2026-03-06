@@ -45,25 +45,14 @@ export function useENSAvatar(
   )
 }
 
-function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean } {
-  const { data: resolverAddress } = useENSResolver(node)
+function getIdHex(id: string | undefined): string | undefined {
+  try {
+    return id ? hexZeroPad(BigNumber.from(id).toHexString(), 32).substring(2) : id
+  } catch (e) {
+    console.log(`Couldn't get id hex from id: ${id}`, e)
 
-  const resolverContract = useENSResolverContract(
-    resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined,
-  )
-
-  const { data: avatar, isLoading } = useSWR(
-    node && resolverContract ? ['useAvatarFromNode', node, resolverContract] : null,
-    async ([, _node, contract]) => contract.callStatic.text(_node, 'avatar'),
-  )
-
-  return useMemo(
-    () => ({
-      avatar: avatar,
-      loading: isLoading,
-    }),
-    [avatar, isLoading],
-  )
+    return undefined
+  }
 }
 
 // TODO: Reduce function complexity by extracting logic
@@ -110,30 +99,39 @@ function useAvatarFromNFT(
   )
 }
 
-function useERC721Uri(
-  account: string | undefined,
-  contractAddress: string | undefined,
-  id: string | undefined,
-  enforceOwnership: boolean,
-): { uri?: string; loading: boolean } {
-  const contract = useERC721Contract(contractAddress)
+function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean } {
+  const { data: resolverAddress } = useENSResolver(node)
 
-  const { data, isLoading } = useSWR(
-    contract && id && account ? ['useERC721Uri', contract, id] : null,
-    async ([, _contract, _id]) => {
-      const [owner, uri] = await Promise.all([_contract.callStatic.ownerOf(_id), _contract.callStatic.tokenURI(_id)])
+  const resolverContract = useENSResolverContract(
+    resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined,
+  )
 
-      return { owner, uri }
-    },
+  const { data: avatar, isLoading } = useSWR(
+    node && resolverContract ? ['useAvatarFromNode', node, resolverContract] : null,
+    async ([, _node, contract]) => contract.callStatic.text(_node, 'avatar'),
   )
 
   return useMemo(
     () => ({
-      uri: !enforceOwnership || account === data?.owner ? data?.uri : undefined,
+      avatar: avatar,
       loading: isLoading,
     }),
-    [account, enforceOwnership, data, isLoading],
+    [avatar, isLoading],
   )
+}
+
+function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
+  const chainId = useWalletChainId()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
+  const provider = useWalletProvider()
+
+  const { data } = useSWR(
+    provider && chainId && address ? ['useERC1155Contract', provider, chainId, address] : null,
+    ([, _provider, , _address]) => getContract(_address, Erc1155Abi, _provider) as Erc1155,
+  )
+
+  return data
 }
 
 function useERC1155Uri(
@@ -184,26 +182,28 @@ function useERC721Contract(address: string | undefined): Erc721 | undefined {
   return data
 }
 
-function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
-  const chainId = useWalletChainId()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+function useERC721Uri(
+  account: string | undefined,
+  contractAddress: string | undefined,
+  id: string | undefined,
+  enforceOwnership: boolean,
+): { uri?: string; loading: boolean } {
+  const contract = useERC721Contract(contractAddress)
 
-  const { data } = useSWR(
-    provider && chainId && address ? ['useERC1155Contract', provider, chainId, address] : null,
-    ([, _provider, , _address]) => getContract(_address, Erc1155Abi, _provider) as Erc1155,
+  const { data, isLoading } = useSWR(
+    contract && id && account ? ['useERC721Uri', contract, id] : null,
+    async ([, _contract, _id]) => {
+      const [owner, uri] = await Promise.all([_contract.callStatic.ownerOf(_id), _contract.callStatic.tokenURI(_id)])
+
+      return { owner, uri }
+    },
   )
 
-  return data
-}
-
-function getIdHex(id: string | undefined): string | undefined {
-  try {
-    return id ? hexZeroPad(BigNumber.from(id).toHexString(), 32).substring(2) : id
-  } catch (e) {
-    console.log(`Couldn't get id hex from id: ${id}`, e)
-
-    return undefined
-  }
+  return useMemo(
+    () => ({
+      uri: !enforceOwnership || account === data?.owner ? data?.uri : undefined,
+      loading: isLoading,
+    }),
+    [account, enforceOwnership, data, isLoading],
+  )
 }

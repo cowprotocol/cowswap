@@ -9,6 +9,12 @@ import { UTCTimestamp } from 'lightweight-charts'
 import { Network, UiError } from 'types'
 import { getPercentageDifference, isNativeToken } from 'utils'
 
+type GetTokensResult = {
+  tokens: Token[]
+  error?: UiError
+  isLoading: boolean
+}
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useGetTokens(networkId: Network | undefined): GetTokensResult {
@@ -106,12 +112,6 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
   return useMemo(() => ({ tokens, error, isLoading }), [tokens, error, isLoading])
 }
 
-type GetTokensResult = {
-  tokens: Token[]
-  error?: UiError
-  isLoading: boolean
-}
-
 export const GET_TOKENS_QUERY = gql`
   query GetTokens($todayTimestamp: Int!, $yesterdayTimestamp: Int!, $lastWeekTimestamp: Int!) {
     tokenDailyTotals(
@@ -144,11 +144,39 @@ export const GET_TOKENS_QUERY = gql`
   }
 `
 
+export type SubgraphHistoricalDataResponse = {
+  tokenHourlyTotals: Array<TokenHourlyTotals>
+}
+export type Token = {
+  lastDayPricePercentageDifference?: number | null
+  lastWeekPricePercentageDifference?: number | null
+  lastDayUsdVolume?: number | null
+  timestamp?: number | null
+  lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }> | null
+} & TokenResponse &
+  TokenErc20
+
 export type TokenDailyTotalsResponse = {
   timestamp: number
   totalVolumeUsd: string
   token: TokenResponse
 }
+
+export type TokenData = {
+  timestamp: number
+  lastDayUsdVolume?: number
+  lastDayPricePercentageDifference?: number
+  lastWeekPricePercentageDifference?: number
+  lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }>
+}
+
+export type TokenHourlyTotals = {
+  token: { address: string }
+  timestamp: number
+  totalVolumeUsd: string
+  averagePrice: string
+}
+
 export type TokenResponse = {
   id: string
   name: string
@@ -159,26 +187,6 @@ export type TokenResponse = {
   totalVolumeUsd: string
   hourlyTotals: TokenHourlyTotals[]
 }
-
-export type TokenHourlyTotals = {
-  token: { address: string }
-  timestamp: number
-  totalVolumeUsd: string
-  averagePrice: string
-}
-
-export type SubgraphHistoricalDataResponse = {
-  tokenHourlyTotals: Array<TokenHourlyTotals>
-}
-
-export type Token = {
-  lastDayPricePercentageDifference?: number | null
-  lastWeekPricePercentageDifference?: number | null
-  lastDayUsdVolume?: number | null
-  timestamp?: number | null
-  lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }> | null
-} & TokenResponse &
-  TokenErc20
 
 function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenData }): Token[] {
   for (const address of Object.keys(prices)) {
@@ -195,22 +203,6 @@ function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenDa
   return tokens.sort((a, b) => (b.lastDayUsdVolume ?? -1) - (a.lastDayUsdVolume ?? -1))
 }
 
-export type TokenData = {
-  timestamp: number
-  lastDayUsdVolume?: number
-  lastDayPricePercentageDifference?: number
-  lastWeekPricePercentageDifference?: number
-  lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }>
-}
-
-function lastHoursTimestamp(n: number): string {
-  return (subHours(new Date(), n).getTime() / 1000).toFixed(0)
-}
-
-function lastDaysTimestamp(n: number): string {
-  return (subDays(new Date(), n).getTime() / 1000).toFixed(0)
-}
-
 function enhanceNativeToken(tokens: TokenResponse[], network: Network): TokenResponse[] {
   return tokens.map((token) => {
     if (!isNativeToken(token.address)) {
@@ -221,4 +213,12 @@ function enhanceNativeToken(tokens: TokenResponse[], network: Network): TokenRes
       ...NATIVE_TOKEN_PER_NETWORK[network],
     }
   })
+}
+
+function lastDaysTimestamp(n: number): string {
+  return (subDays(new Date(), n).getTime() / 1000).toFixed(0)
+}
+
+function lastHoursTimestamp(n: number): string {
+  return (subHours(new Date(), n).getTime() / 1000).toFixed(0)
 }

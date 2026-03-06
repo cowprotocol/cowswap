@@ -28,13 +28,6 @@ export interface SwapBridgeClickEventInput extends SwapBridgeClickEventData {
   action: SwapBridgeClickAction
 }
 
-function parseEventValue(value: string | undefined): number | undefined {
-  if (!value) return undefined
-
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : undefined
-}
-
 export function buildSwapBridgeClickEvent(input: SwapBridgeClickEventInput): string | undefined {
   const { action, account, isBridging, sellAmount, buyAmount } = input
 
@@ -101,4 +94,11 @@ export function useSwapBridgeClickEventData(): SwapBridgeClickEventData {
     }),
     [account, isBridging, sellAmount, buyAmount],
   )
+}
+
+function parseEventValue(value: string | undefined): number | undefined {
+  if (!value) return undefined
+
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : undefined
 }

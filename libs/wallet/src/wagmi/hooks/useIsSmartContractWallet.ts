@@ -8,13 +8,6 @@ import { useIsSafeWallet } from './useWalletMetadata'
 
 import { useWalletInfo } from '../../api/hooks'
 
-export function useIsSmartContractWallet(): boolean | undefined {
-  const accountType = useAccountType()
-  const isSafeWallet = useIsSafeWallet()
-
-  return isSafeWallet || accountType === AccountType.SMART_CONTRACT
-}
-
 export function useAccountType(): AccountType | undefined {
   const { chainId } = useConnection()
   const publicClient = usePublicClient({ chainId })
@@ -45,6 +38,13 @@ export function useAccountType(): AccountType | undefined {
   )
 
   return data
+}
+
+export function useIsSmartContractWallet(): boolean | undefined {
+  const accountType = useAccountType()
+  const isSafeWallet = useIsSafeWallet()
+
+  return isSafeWallet || accountType === AccountType.SMART_CONTRACT
 }
 
 // https://eips.ethereum.org/EIPS/eip-7702#abstract

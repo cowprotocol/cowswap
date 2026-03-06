@@ -12,6 +12,11 @@ import InternalExternalMenuLink from './InternalExternalLink'
 import { MenuTreeProps } from './MenuTree'
 import { DropDownItem, MenuItemKind } from './types'
 
+export interface DropdownProps {
+  menuItem: DropDownItem
+  context: Omit<MenuTreeProps, 'menuList' | 'isMobile'>
+}
+
 interface MenuProps {
   title: string
   children: React.ReactNode
@@ -39,11 +44,6 @@ export function MenuItemsPanel({ title, children }: MenuProps): React.ReactNode 
       {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
     </MenuFlyout>
   )
-}
-
-export interface DropdownProps {
-  menuItem: DropDownItem
-  context: Omit<MenuTreeProps, 'menuList' | 'isMobile'>
 }
 
 export const DropDown = ({ menuItem, context }: DropdownProps): React.ReactNode => {

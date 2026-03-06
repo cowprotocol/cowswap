@@ -24,6 +24,16 @@ const analytics = {
   gtmId: DEFAULT_GTM_ID,
 }
 
+// For testing purposes only
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function __resetGtmInstance() {
+  if (process.env.NODE_ENV === 'test') {
+    analytics.instance = null
+    analytics.gtmId = DEFAULT_GTM_ID
+  }
+}
+
 /**
  * Initialize GTM and return a CowAnalytics instance
  * This function ensures GTM is initialized only once and properly cached in both server and browser environments
@@ -93,15 +103,5 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
   } catch (error) {
     console.error('Failed to initialize GTM:', error)
     throw error
-  }
-}
-
-// For testing purposes only
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function __resetGtmInstance() {
-  if (process.env.NODE_ENV === 'test') {
-    analytics.instance = null
-    analytics.gtmId = DEFAULT_GTM_ID
   }
 }

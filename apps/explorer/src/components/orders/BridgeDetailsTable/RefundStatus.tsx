@@ -6,18 +6,18 @@ import { RefundStatusText, RefundAddressWrapper } from './styled'
 
 import { AddressLink } from '../../common/AddressLink'
 
-export enum RefundStatusEnum {
-  NOT_INITIATED = 'not_initiated',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-}
-
-export type RefundStatusType = RefundStatusEnum
-
 export interface RefundStatusProps {
   status: RefundStatusType
   refundWalletAddress?: string
   refundChainId?: number
+}
+
+export type RefundStatusType = RefundStatusEnum
+
+export enum RefundStatusEnum {
+  NOT_INITIATED = 'not_initiated',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
 }
 
 export function RefundStatus({ status, refundWalletAddress, refundChainId }: RefundStatusProps): React.ReactNode {

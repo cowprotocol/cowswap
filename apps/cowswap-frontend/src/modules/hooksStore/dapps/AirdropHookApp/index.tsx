@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
-import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, TokenWithLogo } from '@cowprotocol/common-const'
 import { useGasLimit } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'

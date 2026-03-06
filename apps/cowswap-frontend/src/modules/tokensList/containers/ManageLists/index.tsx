@@ -24,16 +24,16 @@ import { useConsentAwareToggleList } from '../../hooks/useConsentAwareToggleList
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
 import { ListItem } from '../../pure/ListItem'
 
-interface ListSearchState {
-  source: 'existing' | 'external'
-  loading: boolean
-  listToImport: ListState | null
-}
-
 export interface ManageListsProps {
   lists: ListState[]
   listSearchResponse: ListSearchResponse
   isListUrlValid?: boolean
+}
+
+interface ListSearchState {
+  source: 'existing' | 'external'
+  loading: boolean
+  listToImport: ListState | null
 }
 
 export function ManageLists(props: ManageListsProps): ReactNode {

@@ -7,9 +7,25 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
-export function truncateWithEllipsis(str: string, maxLength: number): string {
-  if (str.length <= maxLength) return str
-  return str.slice(0, maxLength - 3) + '...'
+export function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean | undefined): string {
+  if (isSell) {
+    return isCustomRecipient ? t`including an extra ` : t`and got an extra `
+  }
+  return t`and saved `
+}
+
+export function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order | undefined): string {
+  const surplusAmount = surplusData?.surplusAmount?.toSignificant() || '0'
+  const surplusToken = surplusData?.surplusAmount?.currency.symbol || t`Unknown token`
+  const orderKind = order?.kind || OrderKind.SELL
+
+  const twitterText = getTwitterText(surplusAmount, surplusToken, orderKind)
+  return `https://x.com/intent/tweet?text=${twitterText}`
+}
+
+export function getTwitterShareUrlForBenefit(benefit: string): string {
+  const twitterText = getTwitterTextForBenefit(benefit)
+  return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
 // TODO: Add proper return type annotation
@@ -22,27 +38,11 @@ export function getTwitterText(surplusAmount: string, surplusToken: string, orde
   )
 }
 
-export function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order | undefined): string {
-  const surplusAmount = surplusData?.surplusAmount?.toSignificant() || '0'
-  const surplusToken = surplusData?.surplusAmount?.currency.symbol || t`Unknown token`
-  const orderKind = order?.kind || OrderKind.SELL
-
-  const twitterText = getTwitterText(surplusAmount, surplusToken, orderKind)
-  return `https://x.com/intent/tweet?text=${twitterText}`
-}
-
 export function getTwitterTextForBenefit(benefit: string): string {
   return encodeURIComponent(t`Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`)
 }
 
-export function getTwitterShareUrlForBenefit(benefit: string): string {
-  const twitterText = getTwitterTextForBenefit(benefit)
-  return `https://x.com/intent/tweet?text=${twitterText}`
-}
-
-export function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean | undefined): string {
-  if (isSell) {
-    return isCustomRecipient ? t`including an extra ` : t`and got an extra `
-  }
-  return t`and saved `
+export function truncateWithEllipsis(str: string, maxLength: number): string {
+  if (str.length <= maxLength) return str
+  return str.slice(0, maxLength - 3) + '...'
 }

@@ -11,19 +11,6 @@ import { BalancesDiff } from 'modules/tenderly/types'
 
 const EMPTY_BALANCE_DIFF: BalancesDiff = {}
 
-export function usePreHookBalanceDiff(): BalancesDiff {
-  const { data } = useTenderlyBundleSimulation()
-
-  const { preHooks } = useHooks()
-
-  return useMemo(() => {
-    if (!data || !preHooks.length) return EMPTY_BALANCE_DIFF
-
-    const lastPreHook = preHooks[preHooks.length - 1]
-    return data[lastPreHook?.uuid]?.cumulativeBalancesDiff || EMPTY_BALANCE_DIFF
-  }, [data, preHooks])
-}
-
 // Returns all the ERC20 Balance Diff of the current hook to be passed to the iframe context
 export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string): BalancesDiff {
   const { account } = useWalletInfo()
@@ -85,6 +72,19 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
     if (isPreHook) return preHookBalanceDiff
     return postHookBalanceDiff
   }, [hookToEditBalanceDiff, hookToEditUid, isPreHook, postHookBalanceDiff, preHookBalanceDiff])
+}
+
+export function usePreHookBalanceDiff(): BalancesDiff {
+  const { data } = useTenderlyBundleSimulation()
+
+  const { preHooks } = useHooks()
+
+  return useMemo(() => {
+    if (!data || !preHooks.length) return EMPTY_BALANCE_DIFF
+
+    const lastPreHook = preHooks[preHooks.length - 1]
+    return data[lastPreHook?.uuid]?.cumulativeBalancesDiff || EMPTY_BALANCE_DIFF
+  }, [data, preHooks])
 }
 
 function mergeBalanceDiffs(first: BalancesDiff, second: BalancesDiff): BalancesDiff {

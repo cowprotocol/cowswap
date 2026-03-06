@@ -14,6 +14,11 @@ export interface TokenHolder {
   balance: string
 }
 
+interface CachedValue<T> {
+  value: T
+  timestamp: number
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function getTopTokenHolder({ tokenAddress, chainId }: GetTopTokenHoldersParams) {
@@ -22,11 +27,6 @@ export async function getTopTokenHolder({ tokenAddress, chainId }: GetTopTokenHo
   return (await fetch(`${BFF_BASE_URL}/${chainId}/tokens/${tokenAddress}/topHolders`, {
     method: 'GET',
   }).then((res) => res.json())) as TokenHolder[]
-}
-
-interface CachedValue<T> {
-  value: T
-  timestamp: number
 }
 
 const baseTopTokenHolderAtom = atomWithStorage<Record<string, CachedValue<TokenHolder[] | undefined>>>(

@@ -16,11 +16,6 @@ import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
 
 type NavigateToNewOrderCallback = (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
 
-function getCurrencyId(token: Token | undefined): string {
-  if (!token) return ''
-  return getIsNativeToken(token.chainId, token.address) ? token.symbol || token.address : token.address
-}
-
 export function useNavigateToNewOrderCallback(): NavigateToNewOrderCallback {
   const navigate = useNavigate()
 
@@ -54,4 +49,9 @@ export function useNavigateToNewOrderCallback(): NavigateToNewOrderCallback {
     },
     [navigate],
   )
+}
+
+function getCurrencyId(token: Token | undefined): string {
+  if (!token) return ''
+  return getIsNativeToken(token.chainId, token.address) ? token.symbol || token.address : token.address
 }

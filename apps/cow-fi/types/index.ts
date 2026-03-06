@@ -1,3 +1,8 @@
+export interface PaginationParam {
+  page?: number
+  pageSize?: number
+}
+
 export interface PlatformData {
   contractAddress: string
   decimalPlace: number
@@ -5,6 +10,13 @@ export interface PlatformData {
 
 export interface Platforms {
   [key: string]: PlatformData
+}
+
+export interface TokenDetails extends TokenInfo {
+  description: string
+  platforms: Platforms
+  allTimeHigh: string | null
+  allTimeLow: string | null
 }
 
 export interface TokenInfo {
@@ -19,16 +31,4 @@ export interface TokenInfo {
     large: string | null
   }
   marketCapRank: number | null
-}
-
-export interface TokenDetails extends TokenInfo {
-  description: string
-  platforms: Platforms
-  allTimeHigh: string | null
-  allTimeLow: string | null
-}
-
-export interface PaginationParam {
-  page?: number
-  pageSize?: number
 }

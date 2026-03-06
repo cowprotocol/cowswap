@@ -13,10 +13,13 @@ import { parseChainId } from '../../utils/parseChainId'
 import type { MetaMaskSDK as _MetaMaskSDK, MetaMaskSDKOptions as _MetaMaskSDKOptions } from '@metamask/sdk'
 
 /**
- * MetaMaskSDK options.
+ * @param options - Options to pass to `@metamask/sdk`
+ * @param onError - Handler to report errors thrown from eventListeners.
  */
-type MetaMaskSDKOptions = Pick<_MetaMaskSDKOptions, 'infuraAPIKey' | 'readonlyRPCMap'> & {
-  dappMetadata: Pick<_MetaMaskSDKOptions['dappMetadata'], 'name' | 'url' | 'iconUrl'>
+export interface MetaMaskSDKConstructorArgs {
+  actions: Actions
+  options?: MetaMaskSDKOptions
+  onError?: (error: Error) => void
 }
 
 /**
@@ -29,24 +32,10 @@ type MetaMaskProvider = Provider & {
 }
 
 /**
- * Error thrown when the MetaMaskSDK is not installed.
+ * MetaMaskSDK options.
  */
-export class NoMetaMaskSDKError extends Error {
-  public constructor() {
-    super('MetaMaskSDK not installed')
-    this.name = NoMetaMaskSDKError.name
-    Object.setPrototypeOf(this, NoMetaMaskSDKError.prototype)
-  }
-}
-
-/**
- * @param options - Options to pass to `@metamask/sdk`
- * @param onError - Handler to report errors thrown from eventListeners.
- */
-export interface MetaMaskSDKConstructorArgs {
-  actions: Actions
-  options?: MetaMaskSDKOptions
-  onError?: (error: Error) => void
+type MetaMaskSDKOptions = Pick<_MetaMaskSDKOptions, 'infuraAPIKey' | 'readonlyRPCMap'> & {
+  dappMetadata: Pick<_MetaMaskSDKOptions['dappMetadata'], 'name' | 'url' | 'iconUrl'>
 }
 
 /**
@@ -310,5 +299,16 @@ export class MetaMaskSDK extends Connector {
     localStorage.removeItem('.MMSDK_cached_chainId')
     localStorage.removeItem('.sdk-comm')
     localStorage.removeItem('.MetaMaskSDKLng')
+  }
+}
+
+/**
+ * Error thrown when the MetaMaskSDK is not installed.
+ */
+export class NoMetaMaskSDKError extends Error {
+  public constructor() {
+    super('MetaMaskSDK not installed')
+    this.name = NoMetaMaskSDKError.name
+    Object.setPrototypeOf(this, NoMetaMaskSDKError.prototype)
   }
 }

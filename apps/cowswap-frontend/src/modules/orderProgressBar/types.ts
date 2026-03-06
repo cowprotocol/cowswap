@@ -12,21 +12,6 @@ import { OrderProgressBarStepName } from './constants'
 
 export { OrderProgressBarStepName }
 
-export type OrderProgressBarState = {
-  countdown?: number | null
-  backendApiStatus?: CompetitionOrderStatus.type
-  previousBackendApiStatus?: CompetitionOrderStatus.type
-  solverCompetition?: CompetitionOrderStatus['value']
-  progressBarStepName?: OrderProgressBarStepName
-  previousStepName?: OrderProgressBarStepName
-  lastTimeChangedSteps?: number
-  cancellationTriggered?: true
-}
-
-export type OrdersProgressBarState = Record<string, OrderProgressBarState>
-
-export type OrdersProgressBarCountdown = Record<string, number | null>
-
 export type BridgingFlowStep =
   | OrderProgressBarStepName.BRIDGING_IN_PROGRESS
   | OrderProgressBarStepName.BRIDGING_FAILED
@@ -49,3 +34,18 @@ export type OrderProgressBarProps = {
   swapAndBridgeContext?: SwapAndBridgeContext
   isBridgingTrade: boolean
 }
+
+export type OrderProgressBarState = {
+  countdown?: number | null
+  backendApiStatus?: CompetitionOrderStatus.type
+  previousBackendApiStatus?: CompetitionOrderStatus.type
+  solverCompetition?: CompetitionOrderStatus['value']
+  progressBarStepName?: OrderProgressBarStepName
+  previousStepName?: OrderProgressBarStepName
+  lastTimeChangedSteps?: number
+  cancellationTriggered?: true
+}
+
+export type OrdersProgressBarCountdown = Record<string, number | null>
+
+export type OrdersProgressBarState = Record<string, OrderProgressBarState>

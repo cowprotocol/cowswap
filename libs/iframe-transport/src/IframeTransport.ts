@@ -4,6 +4,11 @@ import { WindowListener } from './types'
 // @ts-ignore
 type AbstractRecord = Record<unknown, unknown>
 
+interface EventData {
+  key: string
+  method: string
+}
+
 export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
   constructor(public readonly key: string) {}
 
@@ -54,11 +59,6 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
   stopListeningWindowListener(contentWindow: Window, callback: WindowListener): void {
     contentWindow.removeEventListener('message', callback)
   }
-}
-
-interface EventData {
-  key: string
-  method: string
 }
 
 function isEventData(obj: unknown): obj is EventData {

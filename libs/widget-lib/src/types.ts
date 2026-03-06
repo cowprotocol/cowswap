@@ -3,43 +3,12 @@ import { CowWidgetEventListeners, CowWidgetEventPayloadMap, CowWidgetEvents } fr
 
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
-
-export type PerNetworkConfig<T> = Partial<Record<SupportedChainId, T>>
-
-export type FlexibleConfig<T> =
-  | T
-  | PerNetworkConfig<T>
-  | PerTradeTypeConfig<T>
-  | PerTradeTypeConfig<PerNetworkConfig<T>>
-  | PerNetworkConfig<PerTradeTypeConfig<T>>
-
-export enum WidgetMethodsEmit {
-  ACTIVATE = 'ACTIVATE',
-  UPDATE_HEIGHT = 'UPDATE_HEIGHT',
-  SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
-  EMIT_COW_EVENT = 'EMIT_COW_EVENT',
-  PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
-  INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
-}
-
-export enum WidgetMethodsListen {
-  UPDATE_PARAMS = 'UPDATE_PARAMS',
-  UPDATE_APP_DATA = 'UPDATE_APP_DATA',
-  PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
-  PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
-}
+export type CowSwapTheme = 'dark' | 'light'
 
 export interface CowSwapWidgetProps {
   params: CowSwapWidgetParams
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
-}
-
-export interface JsonRpcRequest {
-  id: number
-  method: string
-  params: unknown[]
 }
 
 // https://eips.ethereum.org/EIPS/eip-1193
@@ -59,35 +28,19 @@ export interface EthereumProvider {
   request<T>(params: JsonRpcRequest): Promise<T>
 }
 
-export type CowSwapTheme = 'dark' | 'light'
-
-/**
- *Trade asset parameters, for example:
- * { asset: 'WBTC', amount: 12 }
- * or
- * { asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' } // USDC
- */
-interface TradeAsset {
-  /** The asset symbol or identifier. */
-  asset: string
-  /**
-   * The amount of the asset (optional).
-   * If specified, represents the quantity or value of the asset.
-   */
-  amount?: string
-}
+export type FlexibleConfig<T> =
+  | T
+  | PerNetworkConfig<T>
+  | PerTradeTypeConfig<T>
+  | PerTradeTypeConfig<PerNetworkConfig<T>>
+  | PerNetworkConfig<PerTradeTypeConfig<T>>
 
 export type ForcedOrderDeadline = FlexibleConfig<number>
 
-export enum TradeType {
-  SWAP = 'swap',
-  LIMIT = 'limit',
-  /**
-   * Currently it means only TWAP orders.
-   * But in the future it can be extended to support other order types.
-   */
-  ADVANCED = 'advanced',
-  YIELD = 'yield',
+export interface JsonRpcRequest {
+  id: number
+  method: string
+  params: unknown[]
 }
 
 /**
@@ -105,6 +58,10 @@ export interface PartnerFee {
   recipient: FlexibleConfig<string>
 }
 
+export type PerNetworkConfig<T> = Partial<Record<SupportedChainId, T>>
+
+export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
+
 /**
  * ERC-20 token information
  */
@@ -115,6 +72,49 @@ export type TokenInfo = {
   decimals: number
   symbol: string
   logoURI?: string
+}
+
+export enum TradeType {
+  SWAP = 'swap',
+  LIMIT = 'limit',
+  /**
+   * Currently it means only TWAP orders.
+   * But in the future it can be extended to support other order types.
+   */
+  ADVANCED = 'advanced',
+  YIELD = 'yield',
+}
+
+export enum WidgetMethodsEmit {
+  ACTIVATE = 'ACTIVATE',
+  UPDATE_HEIGHT = 'UPDATE_HEIGHT',
+  SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
+  EMIT_COW_EVENT = 'EMIT_COW_EVENT',
+  PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
+  INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
+}
+
+export enum WidgetMethodsListen {
+  UPDATE_PARAMS = 'UPDATE_PARAMS',
+  UPDATE_APP_DATA = 'UPDATE_APP_DATA',
+  PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
+  PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
+}
+
+/**
+ *Trade asset parameters, for example:
+ * { asset: 'WBTC', amount: 12 }
+ * or
+ * { asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' } // USDC
+ */
+interface TradeAsset {
+  /** The asset symbol or identifier. */
+  asset: string
+  /**
+   * The amount of the asset (optional).
+   * If specified, represents the quantity or value of the asset.
+   */
+  amount?: string
 }
 
 export const WIDGET_PALETTE_COLORS = [
@@ -129,30 +129,17 @@ export const WIDGET_PALETTE_COLORS = [
   'success',
 ] as const
 
-export type CowSwapWidgetPaletteColors = (typeof WIDGET_PALETTE_COLORS)[number]
+export interface BaseJsonRpcResponseMessage {
+  // Required but null if not identified in request
+  id: number
+  jsonrpc: '2.0'
+}
 
-export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: string }
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme'>
 
-export type CowSwapWidgetPalette = { baseTheme: CowSwapTheme } & CowSwapWidgetPaletteParams
-
-export interface CowSwapWidgetSounds {
-  /**
-   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
-   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-   */
-  postOrder?: string | null
-
-  /**
-   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
-   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-   */
-  orderExecuted?: string | null
-
-  /**
-   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
-   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-   */
-  orderError?: string | null
+export interface CowSwapWidgetContent {
+  feeLabel?: string
+  feeTooltipMarkdown?: string
 }
 
 export interface CowSwapWidgetImages {
@@ -163,21 +150,11 @@ export interface CowSwapWidgetImages {
   emptyOrders?: string | null
 }
 
-export interface CowSwapWidgetContent {
-  feeLabel?: string
-  feeTooltipMarkdown?: string
-}
+export type CowSwapWidgetPalette = { baseTheme: CowSwapTheme } & CowSwapWidgetPaletteParams
 
-export interface SlippageConfig {
-  /** Minimum slippage in basis points (e.g., 10 = 0.1%) */
-  min?: number
-  /** Maximum slippage in basis points (e.g., 5000 = 50%) - 5000 is max value for dApp */
-  max?: number
-  /** Default slippage value in basis points (e.g., 50 = 0.5%) - min <= defaultValue <= max */
-  defaultValue?: number
-}
+export type CowSwapWidgetPaletteColors = (typeof WIDGET_PALETTE_COLORS)[number]
 
-export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>
+export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: string }
 
 export interface CowSwapWidgetParams {
   /**
@@ -347,29 +324,87 @@ export interface CowSwapWidgetParams {
   slippage?: FlexibleSlippageConfig
 }
 
-// Define types for event payloads
-export interface WidgetMethodsEmitPayloadMap {
-  [WidgetMethodsEmit.ACTIVATE]: void
-  [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowWidgetEvents>
-  [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
-  [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
-  [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
-  [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload
+export interface CowSwapWidgetSounds {
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  postOrder?: string | null
+
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  orderExecuted?: string | null
+
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  orderError?: string | null
 }
 
-export interface WidgetMethodsListenPayloadMap {
-  [WidgetMethodsListen.UPDATE_APP_DATA]: UpdateAppDataPayload
-  [WidgetMethodsListen.UPDATE_PARAMS]: UpdateParamsPayload
-  [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload
-  [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
+export interface EmitCowEventPayload<T extends CowWidgetEvents> {
+  event: T
+  payload: CowWidgetEventPayloadMap[T]
 }
 
-export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethodsListenPayloadMap
+export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>
 
-export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
-export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
+export interface JsonRpcError<TData = unknown> {
+  code: number
+  message: string
+  data?: TData
+}
 
-export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme'>
+export interface JsonRpcErrorResponseMessage<TErrorData = unknown> extends BaseJsonRpcResponseMessage {
+  error: JsonRpcError<TErrorData>
+}
+export interface JsonRpcRequestMessage {
+  jsonrpc: '2.0'
+  // Optional in the request.
+  id?: number
+  method: string
+  params: unknown[]
+}
+
+export type JsonRpcResponse = JsonRpcRequestMessage | JsonRpcErrorResponseMessage | JsonRpcSucessfulResponseMessage
+
+export interface JsonRpcSucessfulResponseMessage<TResult = unknown> extends BaseJsonRpcResponseMessage {
+  result: TResult
+}
+
+export interface ProviderOnEventPayload {
+  event: string
+  params: unknown
+}
+
+export interface ProviderRpcRequestPayload {
+  rpcRequest: JsonRpcRequestMessage
+}
+
+export type ProviderRpcResponsePayload = {
+  rpcResponse: JsonRpcResponse
+}
+
+export interface SetWidgetFullHeightPayload {
+  isUpToSmall?: boolean
+}
+
+export interface SlippageConfig {
+  /** Minimum slippage in basis points (e.g., 10 = 0.1%) */
+  min?: number
+  /** Maximum slippage in basis points (e.g., 5000 = 50%) - 5000 is max value for dApp */
+  max?: number
+  /** Default slippage value in basis points (e.g., 50 = 0.5%) - min <= defaultValue <= max */
+  defaultValue?: number
+}
+
+export interface UpdateAppDataPayload {
+  metaData?: {
+    appCode: string
+  }
+}
 
 export interface UpdateParamsPayload {
   urlParams: {
@@ -381,78 +416,43 @@ export interface UpdateParamsPayload {
   hasProvider: boolean
 }
 
-export interface UpdateAppDataPayload {
-  metaData?: {
-    appCode: string
-  }
-}
-
 export interface UpdateWidgetHeightPayload {
   height?: number
 }
 
-export interface SetWidgetFullHeightPayload {
-  isUpToSmall?: boolean
-}
+export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethodsListenPayloadMap
 
-export interface EmitCowEventPayload<T extends CowWidgetEvents> {
-  event: T
-  payload: CowWidgetEventPayloadMap[T]
-}
+export type WidgetMethodHandler<T extends WidgetMethodsEmit> = (payload: WidgetMethodsEmitPayloadMap[T]) => void
 
 export type WidgetMethodsEmitListener<T extends WidgetMethodsEmit> = T extends WidgetMethodsEmit
   ? { event: T; handler: WidgetMethodHandler<T> }
   : never
 
-export type WidgetMethodHandler<T extends WidgetMethodsEmit> = (payload: WidgetMethodsEmitPayloadMap[T]) => void
-
-export interface ProviderRpcRequestPayload {
-  rpcRequest: JsonRpcRequestMessage
+// Define types for event payloads
+export interface WidgetMethodsEmitPayloadMap {
+  [WidgetMethodsEmit.ACTIVATE]: void
+  [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowWidgetEvents>
+  [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
+  [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
+  [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
+  [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload
 }
+
+export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
+
+export interface WidgetMethodsListenPayloadMap {
+  [WidgetMethodsListen.UPDATE_APP_DATA]: UpdateAppDataPayload
+  [WidgetMethodsListen.UPDATE_PARAMS]: UpdateParamsPayload
+  [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload
+  [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
+}
+
+export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
+
+export type WindowListener = (event: MessageEvent<unknown>) => void
 
 export interface WindowOpenPayload {
   href: string | URL
   target: string
   rel: string
 }
-
-export interface JsonRpcRequestMessage {
-  jsonrpc: '2.0'
-  // Optional in the request.
-  id?: number
-  method: string
-  params: unknown[]
-}
-
-export interface BaseJsonRpcResponseMessage {
-  // Required but null if not identified in request
-  id: number
-  jsonrpc: '2.0'
-}
-
-export interface JsonRpcSucessfulResponseMessage<TResult = unknown> extends BaseJsonRpcResponseMessage {
-  result: TResult
-}
-
-export interface JsonRpcError<TData = unknown> {
-  code: number
-  message: string
-  data?: TData
-}
-
-export interface JsonRpcErrorResponseMessage<TErrorData = unknown> extends BaseJsonRpcResponseMessage {
-  error: JsonRpcError<TErrorData>
-}
-
-export type ProviderRpcResponsePayload = {
-  rpcResponse: JsonRpcResponse
-}
-
-export type JsonRpcResponse = JsonRpcRequestMessage | JsonRpcErrorResponseMessage | JsonRpcSucessfulResponseMessage
-
-export interface ProviderOnEventPayload {
-  event: string
-  params: unknown
-}
-
-export type WindowListener = (event: MessageEvent<unknown>) => void

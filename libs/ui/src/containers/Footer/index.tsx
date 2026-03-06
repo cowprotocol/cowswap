@@ -36,11 +36,6 @@ import { UI } from '../../enum'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
-interface NavItemProps extends Omit<MenuItem, 'label' | 'badge'> {
-  label?: string
-  badge?: string
-}
-
 export interface FooterProps {
   description?: string
   navItems?: Array<NavItemProps>
@@ -50,6 +45,11 @@ export interface FooterProps {
   hasTouchFooter?: boolean
   maxWidth?: number
   host?: string
+}
+
+interface NavItemProps extends Omit<MenuItem, 'label' | 'badge'> {
+  label?: string
+  badge?: string
 }
 
 const SOCIAL_LINKS: { href: string; label: string; icon: string; external: boolean; utmContent: string }[] = [

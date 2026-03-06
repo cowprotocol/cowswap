@@ -34,13 +34,6 @@ import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBrea
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 
-enum ClaimStatus {
-  INITIAL,
-  ATTEMPTING,
-  SUBMITTED,
-  CONFIRMED,
-}
-
 interface Props {
   openModal: (message: string) => void
   closeModal: Command
@@ -48,6 +41,13 @@ interface Props {
   allocated: CurrencyAmount<Currency>
   claimed: CurrencyAmount<Currency>
   loading: boolean
+}
+
+enum ClaimStatus {
+  INITIAL,
+  ATTEMPTING,
+  SUBMITTED,
+  CONFIRMED,
 }
 
 // TODO: Break down this large function into smaller functions

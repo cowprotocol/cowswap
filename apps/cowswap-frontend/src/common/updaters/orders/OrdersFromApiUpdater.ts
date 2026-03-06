@@ -28,99 +28,6 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   unknown: undefined,
 }
 
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
-function _transformOrderBookOrderToStoreOrder(
-  order: EnrichedOrder,
-  chainId: ChainId,
-  allTokens: TokensByAddress,
-): Order | undefined {
-  const {
-    uid: id,
-    sellToken,
-    buyToken,
-    creationDate: creationTime,
-    receiver,
-    ethflowData: ethflowDataRaw,
-    owner,
-    onchainOrderData,
-  } = order
-  // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
-  const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = ethflowDataRaw
-
-  const isEthFlow = Boolean(ethflowData)
-
-  const inputToken = _getInputToken(isEthFlow, chainId, sellToken, allTokens)
-  const outputToken = getTokenFromMapping(buyToken, chainId, allTokens)
-
-  const apiStatus = classifyOrder(order)
-  const status = statusMapping[apiStatus]
-
-  if (!status) {
-    console.warn(`OrdersFromApiUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
-    return
-  }
-  if (!inputToken || !outputToken) {
-    console.warn(
-      `OrdersFromApiUpdater::Tokens not found for order ${id}: sellToken ${
-        !inputToken ? sellToken : 'found'
-      } - buyToken ${!outputToken ? buyToken : 'found'}`,
-    )
-    return
-  }
-
-  const storeOrder: Order = {
-    ...order,
-    // TODO: for some reason executedSellAmountBeforeFees is zero for limit-orders
-    sellAmountBeforeFee: order.class === OrderClass.LIMIT ? order.sellAmount : order.executedSellAmountBeforeFees,
-    inputToken,
-    outputToken,
-    id,
-    creationTime,
-    status,
-    receiver: receiver || '',
-    fullAppData: order.fullAppData,
-    apiAdditionalInfo: order,
-    isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
-    // EthFlow related
-    owner: onchainOrderData?.sender || owner,
-    validTo: ethflowData?.userValidTo || order.validTo,
-    isRefunded: ethflowData?.isRefunded, // TODO: this will be removed from the API
-    refundHash: ethflowData?.refundTxHash || undefined,
-    buyTokenBalance: order.buyTokenBalance,
-    sellTokenBalance: order.sellTokenBalance,
-  }
-
-  // EthFlow adjustments
-  // It can happen that EthFlow cancellation is identified in the app before the API is aware
-  // In that case
-  if (order.ethflowData && order.status === 'cancelled') {
-    storeOrder.status = OrderStatus.CANCELLED
-    storeOrder.isCancelling = false
-  }
-
-  return storeOrder
-}
-
-function _getInputToken(
-  isEthFlow: boolean,
-  chainId: ChainId,
-  sellToken: string,
-  allTokens: TokensByAddress,
-): ReturnType<typeof getTokenFromMapping> {
-  return isEthFlow ? NATIVE_CURRENCIES[chainId] : getTokenFromMapping(sellToken, chainId, allTokens)
-}
-
-function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId: ChainId): Order[] {
-  return orders.reduce<Order[]>((acc, order) => {
-    const storeOrder = _transformOrderBookOrderToStoreOrder(order, chainId, tokens)
-    if (storeOrder) {
-      acc.push(storeOrder)
-    }
-    return acc
-  }, [])
-}
-
 /**
  * Updater for orders
  *
@@ -197,4 +104,97 @@ export function OrdersFromApiUpdater(): null {
   }, [clearOrderStorage])
 
   return null
+}
+
+function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId: ChainId): Order[] {
+  return orders.reduce<Order[]>((acc, order) => {
+    const storeOrder = _transformOrderBookOrderToStoreOrder(order, chainId, tokens)
+    if (storeOrder) {
+      acc.push(storeOrder)
+    }
+    return acc
+  }, [])
+}
+
+function _getInputToken(
+  isEthFlow: boolean,
+  chainId: ChainId,
+  sellToken: string,
+  allTokens: TokensByAddress,
+): ReturnType<typeof getTokenFromMapping> {
+  return isEthFlow ? NATIVE_CURRENCIES[chainId] : getTokenFromMapping(sellToken, chainId, allTokens)
+}
+
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
+function _transformOrderBookOrderToStoreOrder(
+  order: EnrichedOrder,
+  chainId: ChainId,
+  allTokens: TokensByAddress,
+): Order | undefined {
+  const {
+    uid: id,
+    sellToken,
+    buyToken,
+    creationDate: creationTime,
+    receiver,
+    ethflowData: ethflowDataRaw,
+    owner,
+    onchainOrderData,
+  } = order
+  // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
+  const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = ethflowDataRaw
+
+  const isEthFlow = Boolean(ethflowData)
+
+  const inputToken = _getInputToken(isEthFlow, chainId, sellToken, allTokens)
+  const outputToken = getTokenFromMapping(buyToken, chainId, allTokens)
+
+  const apiStatus = classifyOrder(order)
+  const status = statusMapping[apiStatus]
+
+  if (!status) {
+    console.warn(`OrdersFromApiUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
+    return
+  }
+  if (!inputToken || !outputToken) {
+    console.warn(
+      `OrdersFromApiUpdater::Tokens not found for order ${id}: sellToken ${
+        !inputToken ? sellToken : 'found'
+      } - buyToken ${!outputToken ? buyToken : 'found'}`,
+    )
+    return
+  }
+
+  const storeOrder: Order = {
+    ...order,
+    // TODO: for some reason executedSellAmountBeforeFees is zero for limit-orders
+    sellAmountBeforeFee: order.class === OrderClass.LIMIT ? order.sellAmount : order.executedSellAmountBeforeFees,
+    inputToken,
+    outputToken,
+    id,
+    creationTime,
+    status,
+    receiver: receiver || '',
+    fullAppData: order.fullAppData,
+    apiAdditionalInfo: order,
+    isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
+    // EthFlow related
+    owner: onchainOrderData?.sender || owner,
+    validTo: ethflowData?.userValidTo || order.validTo,
+    isRefunded: ethflowData?.isRefunded, // TODO: this will be removed from the API
+    refundHash: ethflowData?.refundTxHash || undefined,
+    buyTokenBalance: order.buyTokenBalance,
+    sellTokenBalance: order.sellTokenBalance,
+  }
+
+  // EthFlow adjustments
+  // It can happen that EthFlow cancellation is identified in the app before the API is aware
+  // In that case
+  if (order.ethflowData && order.status === 'cancelled') {
+    storeOrder.status = OrderStatus.CANCELLED
+    storeOrder.isCancelling = false
+  }
+
+  return storeOrder
 }

@@ -30,13 +30,6 @@ const stepToStatusMap: Record<BridgingFlowStep, SwapAndBridgeStatus> = {
   refundCompleted: SwapAndBridgeStatus.REFUND_COMPLETE,
 }
 
-/**
- * Creates a TokenLogo element with consistent styling
- */
-function createTokenLogo(token: Currency, stepName: BridgingFlowStep): ReactNode {
-  return <styledEl.TokenLogo token={token} size={TOKEN_LOGO_SIZE} $step={stepName} $tokenSize={TOKEN_LOGO_SIZE} />
-}
-
 export interface BridgingStatusHeaderProps {
   sellToken: Currency
   buyToken: Currency
@@ -59,4 +52,11 @@ export function BridgingStatusHeader({ stepName, sellToken, buyToken }: Bridging
       <h3>{i18n._(titles[stepName])}</h3>
     </styledEl.Header>
   )
+}
+
+/**
+ * Creates a TokenLogo element with consistent styling
+ */
+function createTokenLogo(token: Currency, stepName: BridgingFlowStep): ReactNode {
+  return <styledEl.TokenLogo token={token} size={TOKEN_LOGO_SIZE} $step={stepName} $tokenSize={TOKEN_LOGO_SIZE} />
 }

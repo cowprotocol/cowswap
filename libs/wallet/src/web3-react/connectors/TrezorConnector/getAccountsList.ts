@@ -9,6 +9,13 @@ import type { TrezorConnect } from '@trezor/connect-web'
  * This file contains cherry-picked code from import { TrezorSubprovider } from '@0x/subproviders'
  */
 
+interface DerivedHDKeyInfo {
+  hdKey: HDNode
+  address: string
+  derivationPath: string
+  baseDerivationPath: string
+}
+
 export async function getAccountsList(trezorConnect: TrezorConnect, offset = 0, limit = 100): Promise<string[] | null> {
   const initialDerivedKeyInfo = await initialDerivedKeyInfoAsync(trezorConnect)
 
@@ -17,13 +24,6 @@ export async function getAccountsList(trezorConnect: TrezorConnect, offset = 0, 
   const derivedKeyInfos = calculateDerivedHDKeyInfos(initialDerivedKeyInfo, offset, limit)
 
   return derivedKeyInfos.map((k) => k.address)
-}
-
-interface DerivedHDKeyInfo {
-  hdKey: HDNode
-  address: string
-  derivationPath: string
-  baseDerivationPath: string
 }
 
 class DerivedHDKeyInfoIterator {
@@ -65,6 +65,29 @@ class DerivedHDKeyInfoIterator {
 
 const derivedKeyInfoCache = new Map<TrezorConnect, DerivedHDKeyInfo>()
 
+function addressOfHDKey(hdKey: HDNode): string {
+  const shouldSanitizePublicKey = true
+  const derivedPublicKey = hdKey.publicKey
+  const ethereumAddressUnprefixed = uint8ArrayToHex(publicToAddress(derivedPublicKey, shouldSanitizePublicKey))
+
+  return '0x' + ethereumAddressUnprefixed.toLowerCase()
+}
+
+function calculateDerivedHDKeyInfos(
+  parentDerivedKeyInfo: DerivedHDKeyInfo,
+  offset: number,
+  limit: number,
+): DerivedHDKeyInfo[] {
+  const derivedKeys: DerivedHDKeyInfo[] = []
+  const derivedKeyIterator = new DerivedHDKeyInfoIterator(parentDerivedKeyInfo, offset, limit)
+
+  for (const key of derivedKeyIterator) {
+    derivedKeys.push(key)
+  }
+
+  return derivedKeys
+}
+
 async function initialDerivedKeyInfoAsync(trezorConnect: TrezorConnect): Promise<DerivedHDKeyInfo | null> {
   if (derivedKeyInfoCache.has(trezorConnect)) {
     return derivedKeyInfoCache.get(trezorConnect) || null
@@ -94,31 +117,8 @@ async function initialDerivedKeyInfoAsync(trezorConnect: TrezorConnect): Promise
   return info
 }
 
-function calculateDerivedHDKeyInfos(
-  parentDerivedKeyInfo: DerivedHDKeyInfo,
-  offset: number,
-  limit: number,
-): DerivedHDKeyInfo[] {
-  const derivedKeys: DerivedHDKeyInfo[] = []
-  const derivedKeyIterator = new DerivedHDKeyInfoIterator(parentDerivedKeyInfo, offset, limit)
-
-  for (const key of derivedKeyIterator) {
-    derivedKeys.push(key)
-  }
-
-  return derivedKeys
-}
-
 function uint8ArrayToHex(uint8arr: Uint8Array): string {
   return Array.from(uint8arr)
     .map((x) => x.toString(16).padStart(2, '0'))
     .join('')
-}
-
-function addressOfHDKey(hdKey: HDNode): string {
-  const shouldSanitizePublicKey = true
-  const derivedPublicKey = hdKey.publicKey
-  const ethereumAddressUnprefixed = uint8ArrayToHex(publicToAddress(derivedPublicKey, shouldSanitizePublicKey))
-
-  return '0x' + ethereumAddressUnprefixed.toLowerCase()
 }

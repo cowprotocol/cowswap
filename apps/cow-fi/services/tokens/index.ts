@@ -19,6 +19,18 @@ const DESCRIPTIONS_DIR_PATH = path.join(process.cwd(), 'data', 'descriptions')
 
 /**
  *
+ * @param coingeckoId id of the token
+ *
+ * @returns token details for the given token id
+ */
+export async function getTokenDetails(coingeckoId: string): Promise<TokenDetails | undefined> {
+  const id = coingeckoId.toLowerCase()
+  const tokensRaw = await _getAllTokensData()
+  return tokensRaw.find(({ id: _id }) => _id === id) as TokenDetails | undefined
+}
+
+/**
+ *
  * @returns All token ids
  */
 export async function getTokensIds(): Promise<string[]> {
@@ -47,44 +59,6 @@ export async function getTokensInfo(): Promise<TokenInfo[]> {
   return sortedTokens
 }
 
-/**
- *
- * @param coingeckoId id of the token
- *
- * @returns token details for the given token id
- */
-export async function getTokenDetails(coingeckoId: string): Promise<TokenDetails | undefined> {
-  const id = coingeckoId.toLowerCase()
-  const tokensRaw = await _getAllTokensData()
-  return tokensRaw.find(({ id: _id }) => _id === id) as TokenDetails | undefined
-}
-
-function _getDescriptionFilePaths(): string[] {
-  return fs.readdirSync(DESCRIPTIONS_DIR_PATH, 'utf-8')
-}
-
-async function fetchWithBackoff(url: string) {
-  return backOff(
-    () => {
-      return fetch(url, {
-        next: { revalidate: DATA_CACHE_TIME_SECONDS },
-      }).then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error fetching list ${url}: Error ${res.status}, ${res.statusText}`)
-        }
-
-        return res.json()
-      })
-    },
-    {
-      retry: (e, attemptNum) => {
-        console.log(`Error fetching ${url}, attempt ${attemptNum}. Retrying soon...`, e)
-        return true
-      },
-    },
-  )
-}
-
 async function _getAllTokensData(): Promise<TokenDetails[]> {
   const tokenRawData = await fetchWithBackoff(TOKEN_LISTS_URL)
 
@@ -110,9 +84,31 @@ async function _getAllTokensData(): Promise<TokenDetails[]> {
   return tokens
 }
 
+function _getDescriptionFilePaths(): string[] {
+  return fs.readdirSync(DESCRIPTIONS_DIR_PATH, 'utf-8')
+}
+
 function _getTokenDescription(id: string): string {
   const filePath = path.join(DESCRIPTIONS_DIR_PATH, `${id}.md`)
   return fs.readFileSync(filePath, 'utf-8')
+}
+
+function _sortTokensInfoByMarketCap(a: TokenInfo, b: TokenInfo): number {
+  // Sort by market cap
+  if (a.marketCapRank === null) {
+    return 1 // always place nulls last
+  }
+  if (b.marketCapRank === null) {
+    return -1 // always place nulls last
+  }
+  return a.marketCapRank - b.marketCapRank // usual comparison
+}
+
+function _toPlatform(platform: any): PlatformData {
+  return {
+    contractAddress: platform.contract_address || '',
+    decimalPlace: platform.decimal_place || 18,
+  }
 }
 
 function _toTokenDetails(tokenRaw: any, description: string): TokenDetails {
@@ -158,20 +154,24 @@ function _toTokenInfo(token: TokenDetails): TokenInfo {
 
   return { id, name, symbol, image, marketCapRank, priceUsd, change24h, volume, marketCap }
 }
+async function fetchWithBackoff(url: string) {
+  return backOff(
+    () => {
+      return fetch(url, {
+        next: { revalidate: DATA_CACHE_TIME_SECONDS },
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error(`Error fetching list ${url}: Error ${res.status}, ${res.statusText}`)
+        }
 
-function _toPlatform(platform: any): PlatformData {
-  return {
-    contractAddress: platform.contract_address || '',
-    decimalPlace: platform.decimal_place || 18,
-  }
-}
-function _sortTokensInfoByMarketCap(a: TokenInfo, b: TokenInfo): number {
-  // Sort by market cap
-  if (a.marketCapRank === null) {
-    return 1 // always place nulls last
-  }
-  if (b.marketCapRank === null) {
-    return -1 // always place nulls last
-  }
-  return a.marketCapRank - b.marketCapRank // usual comparison
+        return res.json()
+      })
+    },
+    {
+      retry: (e, attemptNum) => {
+        console.log(`Error fetching ${url}, attempt ${attemptNum}. Retrying soon...`, e)
+        return true
+      },
+    },
+  )
 }

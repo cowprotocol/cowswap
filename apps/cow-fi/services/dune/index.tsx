@@ -5,6 +5,12 @@ import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 const DUNE_API_KEY = process.env.DUNE_API_KEY!
 assert(DUNE_API_KEY, 'DUNE_API_KEY environment var is required')
 
+interface GetFromDuneResult<T> {
+  metadata: MetadataQuery
+  // column_names: string[]
+  rows: T[]
+}
+
 // TODO: getFromDune will be moved in a future PR to the SDK
 interface MetadataQuery {
   executed_at: string
@@ -13,12 +19,6 @@ interface MetadataQuery {
   // query_version: number,
   // result_bytes: number
   // result_rows: number
-}
-
-interface GetFromDuneResult<T> {
-  metadata: MetadataQuery
-  // column_names: string[]
-  rows: T[]
 }
 
 export async function getFromDune<T>(queryId: number): Promise<GetFromDuneResult<T>> {

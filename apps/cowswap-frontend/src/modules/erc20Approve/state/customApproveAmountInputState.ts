@@ -20,6 +20,10 @@ const { atom: customApproveAmountAtom, updateAtom: updateCustomApproveAmountAtom
   atom<CustomApproveAmountInputState>(initialState),
 )
 
+export function useCustomApproveAmountInputState(): CustomApproveAmountInputState {
+  return useAtomValue(customApproveAmountAtom)
+}
+
 export function useUpdateOrResetCustomApproveAmountInputState(): [
   (val: Partial<CustomApproveAmountInputState>) => void,
   () => void,
@@ -27,8 +31,4 @@ export function useUpdateOrResetCustomApproveAmountInputState(): [
   const partialUpdate = useSetAtom(updateCustomApproveAmountAtom)
   const resetAtom: () => void = useCallback(() => partialUpdate(initialState), [partialUpdate])
   return [partialUpdate, resetAtom]
-}
-
-export function useCustomApproveAmountInputState(): CustomApproveAmountInputState {
-  return useAtomValue(customApproveAmountAtom)
 }

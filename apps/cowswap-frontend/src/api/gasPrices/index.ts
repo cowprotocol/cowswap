@@ -13,18 +13,18 @@ const fetchRateLimited = fetchWithRateLimit({
 // Values are returned as floats in gwei
 const ONE_GWEI = 1_000_000_000
 
-export type GasFeeEndpointResponse = {
-  lastUpdate: string
-  average: string | null
-  fast: string | null
-  slow: string | null
-}
-
 export interface EstimatedPrice {
   confidence: number
   price: number
   maxFeePerGas: number
   maxPriorityFeePerGas: number
+}
+
+export type GasFeeEndpointResponse = {
+  lastUpdate: string
+  average: string | null
+  fast: string | null
+  slow: string | null
 }
 
 type GasPrices = Omit<GasFeeEndpointResponse, 'lastUpdate'>

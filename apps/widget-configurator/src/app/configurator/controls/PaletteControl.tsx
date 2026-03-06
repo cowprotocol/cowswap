@@ -8,6 +8,11 @@ import { ColorPalette } from '../types'
 
 const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 
+interface ColorInputProps {
+  paletteManager: ColorPaletteManager
+  colorKey: keyof ColorPalette
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PaletteControl({ paletteManager }: { paletteManager: ColorPaletteManager }) {
@@ -39,11 +44,6 @@ export function PaletteControl({ paletteManager }: { paletteManager: ColorPalett
       <Button onClick={resetColorPalette}>Reset to Default</Button>
     </div>
   )
-}
-
-interface ColorInputProps {
-  paletteManager: ColorPaletteManager
-  colorKey: keyof ColorPalette
 }
 
 // TODO: Add proper return type annotation

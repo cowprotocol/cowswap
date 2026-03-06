@@ -29,8 +29,7 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
 }))
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { OrderKind, PriceQuality, SupportedChainId, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderError,
   BridgeProviderQuoteError,

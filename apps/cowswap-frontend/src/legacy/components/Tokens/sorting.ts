@@ -20,6 +20,20 @@ export function balanceComparator(balanceA: BigNumber | undefined, balanceB: Big
   return 0
 }
 
+export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
+  const { values: balances } = useTokensBalances()
+
+  const comparator = useMemo(() => getTokenComparator(balances), [balances])
+
+  return useMemo(() => {
+    if (inverted) {
+      return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
+    } else {
+      return comparator
+    }
+  }, [inverted, comparator])
+}
+
 function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, tokenB: Token) => number {
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
@@ -51,18 +65,4 @@ function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, 
       return tokenA.symbol ? -1 : tokenB.symbol ? -1 : 0
     }
   }
-}
-
-export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
-  const { values: balances } = useTokensBalances()
-
-  const comparator = useMemo(() => getTokenComparator(balances), [balances])
-
-  return useMemo(() => {
-    if (inverted) {
-      return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
-    } else {
-      return comparator
-    }
-  }, [inverted, comparator])
 }

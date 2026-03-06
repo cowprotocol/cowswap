@@ -7,8 +7,6 @@ import styled from 'styled-components/macro'
 
 import { useNotificationState } from 'common/hooks/useNotificationState'
 
-type Level = 'INFO' | 'WARNING' | 'DANGER'
-
 export interface BannerProps {
   children: React.ReactNode
   className?: string
@@ -17,6 +15,8 @@ export interface BannerProps {
   id?: string
   canClose?: boolean
 }
+
+type Level = 'INFO' | 'WARNING' | 'DANGER'
 
 const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
   width: 100%;

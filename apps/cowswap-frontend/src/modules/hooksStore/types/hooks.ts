@@ -13,21 +13,11 @@ import type { Signer } from '@ethersproject/abstract-signer'
 
 export type { CowHook, CowHookCreation, HookDappOrderParams }
 
-export interface HookDappInternal extends HookDappBase {
-  type: HookDappType.INTERNAL
-  component: (props: HookDappProps) => ReactNode
-}
+export type AddHook = CoWHookDappActions['addHook']
 
-export interface HookDappIframe extends HookDappBase {
-  type: HookDappType.IFRAME
-  url: string
-}
+export type EditHook = CoWHookDappActions['editHook']
 
 export type HookDapp = HookDappInternal | HookDappIframe
-
-export type AddHook = CoWHookDappActions['addHook']
-export type EditHook = CoWHookDappActions['editHook']
-export type RemoveHook = (uuid: string) => void
 
 export interface HookDappContext extends GenericHookDappContext {
   addHook: AddHook
@@ -36,8 +26,18 @@ export interface HookDappContext extends GenericHookDappContext {
   setBuyToken(tokenAddress: string): void
   signer?: Signer
 }
+export interface HookDappIframe extends HookDappBase {
+  type: HookDappType.IFRAME
+  url: string
+}
+export interface HookDappInternal extends HookDappBase {
+  type: HookDappType.INTERNAL
+  component: (props: HookDappProps) => ReactNode
+}
 
 export interface HookDappProps {
   dapp: HookDapp
   context: HookDappContext
 }
+
+export type RemoveHook = (uuid: string) => void

@@ -21,18 +21,6 @@ interface ShouldSwitchNetworkParams {
   walletChainId: SupportedChainId
 }
 
-function getNetworkToSwitch(params: ShouldSwitchNetworkParams): SupportedChainId | null {
-  const { field, tradeType, targetChainId, walletChainId } = params
-
-  const shouldSwitch =
-    field === Field.INPUT &&
-    (tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS) &&
-    isSupportedChainId(targetChainId) &&
-    targetChainId !== walletChainId
-
-  return shouldSwitch ? targetChainId : null
-}
-
 export function useTokenSelectionHandler(
   onSelectToken: TokenSelectionHandler | undefined,
   widgetState: ReturnType<typeof useSelectTokenWidgetState>,
@@ -69,4 +57,16 @@ export function useTokenSelectionHandler(
       onSelectNetwork,
     ],
   )
+}
+
+function getNetworkToSwitch(params: ShouldSwitchNetworkParams): SupportedChainId | null {
+  const { field, tradeType, targetChainId, walletChainId } = params
+
+  const shouldSwitch =
+    field === Field.INPUT &&
+    (tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS) &&
+    isSupportedChainId(targetChainId) &&
+    targetChainId !== walletChainId
+
+  return shouldSwitch ? targetChainId : null
 }

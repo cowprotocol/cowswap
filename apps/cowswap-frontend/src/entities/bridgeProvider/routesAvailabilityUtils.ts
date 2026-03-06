@@ -2,15 +2,15 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
+export interface RouteCheckResult {
+  chainId: number
+  isAvailable: boolean
+}
+
 export interface RoutesAvailabilityResult {
   unavailableChainIds: Set<number>
   loadingChainIds: Set<number>
   isLoading: boolean
-}
-
-export interface RouteCheckResult {
-  chainId: number
-  isAvailable: boolean
 }
 
 export const EMPTY_ROUTES_RESULT: RoutesAvailabilityResult = {
@@ -19,8 +19,11 @@ export const EMPTY_ROUTES_RESULT: RoutesAvailabilityResult = {
   isLoading: false,
 }
 
-export function filterDestinationChains(destinationChainIds: number[], sourceChainId: number | undefined): number[] {
-  return destinationChainIds.filter((id) => id !== sourceChainId)
+export interface BuildResultParams {
+  swrKey: RoutesAvailabilityKey | null
+  isLoading: boolean
+  data: RouteCheckResult[] | undefined
+  chainsToCheck: number[]
 }
 
 export type RoutesAvailabilityKey = [SupportedChainId, string, string, string]
@@ -30,6 +33,32 @@ export interface RoutesAvailabilityKeyParams {
   sourceChainId: SupportedChainId | undefined
   chainsToCheck: number[]
   providersKey: string
+}
+
+export function buildRoutesAvailabilityResult(params: BuildResultParams): RoutesAvailabilityResult {
+  const { swrKey, isLoading, data, chainsToCheck } = params
+
+  if (!swrKey) {
+    return EMPTY_ROUTES_RESULT
+  }
+
+  if (isLoading || !data) {
+    return {
+      unavailableChainIds: new Set(),
+      loadingChainIds: new Set(chainsToCheck),
+      isLoading: true,
+    }
+  }
+
+  const unavailableChainIds = new Set<number>(
+    data.filter((result) => !result.isAvailable).map((result) => result.chainId),
+  )
+
+  return {
+    unavailableChainIds,
+    loadingChainIds: new Set(),
+    isLoading: false,
+  }
 }
 
 export function createAvailabilitySwrKey(params: RoutesAvailabilityKeyParams): RoutesAvailabilityKey | null {
@@ -57,6 +86,10 @@ export async function fetchRoutesAvailability(key: RoutesAvailabilityKey): Promi
   return Promise.all(chainIds.map((buyChainId) => checkSingleRouteAvailability(sellChainId, buyChainId)))
 }
 
+export function filterDestinationChains(destinationChainIds: number[], sourceChainId: number | undefined): number[] {
+  return destinationChainIds.filter((id) => id !== sourceChainId)
+}
+
 async function checkSingleRouteAvailability(
   sellChainId: SupportedChainId,
   buyChainId: number,
@@ -70,38 +103,5 @@ async function checkSingleRouteAvailability(
     console.warn(`[routesAvailability] Failed to check route ${sellChainId} -> ${buyChainId}`, error)
 
     return { chainId: buyChainId, isAvailable: false }
-  }
-}
-
-export interface BuildResultParams {
-  swrKey: RoutesAvailabilityKey | null
-  isLoading: boolean
-  data: RouteCheckResult[] | undefined
-  chainsToCheck: number[]
-}
-
-export function buildRoutesAvailabilityResult(params: BuildResultParams): RoutesAvailabilityResult {
-  const { swrKey, isLoading, data, chainsToCheck } = params
-
-  if (!swrKey) {
-    return EMPTY_ROUTES_RESULT
-  }
-
-  if (isLoading || !data) {
-    return {
-      unavailableChainIds: new Set(),
-      loadingChainIds: new Set(chainsToCheck),
-      isLoading: true,
-    }
-  }
-
-  const unavailableChainIds = new Set<number>(
-    data.filter((result) => !result.isAvailable).map((result) => result.chainId),
-  )
-
-  return {
-    unavailableChainIds,
-    loadingChainIds: new Set(),
-    isLoading: false,
   }
 }

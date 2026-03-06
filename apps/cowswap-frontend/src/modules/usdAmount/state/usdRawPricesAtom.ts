@@ -6,6 +6,8 @@ import { Fraction, Token } from '@uniswap/sdk-core'
 import { UsdPriceStateKey } from '../types'
 import { getUsdPriceStateKey } from '../utils/usdPriceStateKey'
 
+export type UsdRawPrices = { [key: UsdPriceStateKey]: UsdRawPriceState }
+
 export interface UsdRawPriceState {
   updatedAt?: number
   // When we couldn't load the price for any reaason (http error, invalid value, etc.), we set it to null
@@ -13,8 +15,6 @@ export interface UsdRawPriceState {
   currency: Token
   isLoading: boolean
 }
-
-export type UsdRawPrices = { [key: UsdPriceStateKey]: UsdRawPriceState }
 
 const usdPriceQueueSubscribersCountAtom = atom<{ [key: UsdPriceStateKey]: number }>({})
 

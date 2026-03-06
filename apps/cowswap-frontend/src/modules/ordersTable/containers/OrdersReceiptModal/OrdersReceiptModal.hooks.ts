@@ -19,17 +19,6 @@ export function useCloseReceiptModal() {
   return useCallback(() => updateReceiptState({ order: null }), [updateReceiptState])
 }
 
-export function useSelectReceiptOrder(): (order: ParsedOrder) => void {
-  const updateReceiptState = useSetAtom(updateReceiptAtom)
-  return useCallback((order: ParsedOrder) => updateReceiptState({ order }), [updateReceiptState])
-}
-
-export function useSelectedOrder(): ParsedOrder | null {
-  const { order } = useAtomValue(receiptAtom)
-
-  return order
-}
-
 export function useGetAlternativeOrderModalContext(order: ParsedOrder | null): AlternativeOrderModalContext {
   const callback = useGetAlternativeOrderModalContextCallback()
 
@@ -45,6 +34,17 @@ export function useGetAlternativeOrderModalContextCallback(): (
     (order: ParsedOrder | null) => getAlternativeOrderModalContext(order, setAlternativeOrder),
     [setAlternativeOrder],
   )
+}
+
+export function useSelectedOrder(): ParsedOrder | null {
+  const { order } = useAtomValue(receiptAtom)
+
+  return order
+}
+
+export function useSelectReceiptOrder(): (order: ParsedOrder) => void {
+  const updateReceiptState = useSetAtom(updateReceiptAtom)
+  return useCallback((order: ParsedOrder) => updateReceiptState({ order }), [updateReceiptState])
 }
 
 function getAlternativeOrderModalContext(

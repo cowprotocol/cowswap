@@ -4,6 +4,13 @@ import { RoutesValues } from 'common/constants/routes'
 
 import { TradeUrlParams } from '../types/TradeRawState'
 
+export function addChainIdToRoute(route: RoutesValues, chainId: string | undefined): string {
+  return route
+    .replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '')
+    .replace('/:inputCurrencyId?', '')
+    .replace('/:outputCurrencyId?', '')
+}
+
 /**
  * When input currency is not set and user select output currency, we build a link like:
  * /limit/_/DAI
@@ -55,11 +62,4 @@ export function parameterizeTradeRoute(
   }
 
   return path
-}
-
-export function addChainIdToRoute(route: RoutesValues, chainId: string | undefined): string {
-  return route
-    .replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '')
-    .replace('/:inputCurrencyId?', '')
-    .replace('/:outputCurrencyId?', '')
 }

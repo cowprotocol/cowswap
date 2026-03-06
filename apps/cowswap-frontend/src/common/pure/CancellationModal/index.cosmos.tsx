@@ -32,6 +32,13 @@ const defaultProps: CancellationModalProps = {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function buildComponent(props?: Partial<CancellationModalProps['context']>) {
+  const p = { ...context, ...props }
+  return <Wrapper {...p} />
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Wrapper(props: CancellationModalProps['context']) {
   const [isOpen, setIsOpen] = useState(true)
   // TODO: Add proper return type annotation
@@ -48,13 +55,6 @@ function Wrapper(props: CancellationModalProps['context']) {
   }
 
   return <CancellationModal {...p} />
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function buildComponent(props?: Partial<CancellationModalProps['context']>) {
-  const p = { ...context, ...props }
-  return <Wrapper {...p} />
 }
 
 const Fixtures = {

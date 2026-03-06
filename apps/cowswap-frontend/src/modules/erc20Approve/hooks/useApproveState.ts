@@ -13,12 +13,6 @@ import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
 import { ApprovalState } from '../types'
 import { getApprovalState } from '../utils'
 
-function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
-  if (!amountToApprove) return undefined
-
-  return getWrappedToken(amountToApprove.currency)
-}
-
 export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): {
   state: ApprovalState
   currentAllowance: Nullish<bigint>
@@ -35,6 +29,12 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
   const state = useAuxApprovalState(approvalStateBase, currentAllowance)
 
   return useSafeMemo(() => ({ state, currentAllowance }), [state, currentAllowance])
+}
+
+function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
+  if (!amountToApprove) return undefined
+
+  return getWrappedToken(amountToApprove.currency)
 }
 
 /**

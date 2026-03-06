@@ -8,11 +8,27 @@ import SVG from 'react-inlinesvg'
 import { useAutoFitText } from '../../../hooks/useAutoFitText'
 import * as styledEl from '../styled'
 
+interface StarIconProps {
+  size: number
+  top?: number
+  bottom?: number
+  right: number
+  color?: UI
+}
+
 interface TextFitProps {
   children: ReactNode
   mode: 'single' | 'multi'
   minFontSize: number
   maxFontSize: number
+}
+
+export function StarIcon({ size, top, bottom, right, color }: StarIconProps): ReactNode {
+  return (
+    <styledEl.StarIcon {...{ size, top, bottom, right, color: color ? `var(${color})` : undefined }}>
+      <SVG src={ICON_STAR} />
+    </styledEl.StarIcon>
+  )
 }
 
 export function TextFit({ mode, children, minFontSize, maxFontSize }: TextFitProps): ReactNode {
@@ -35,21 +51,5 @@ export function TextFit({ mode, children, minFontSize, maxFontSize }: TextFitPro
     >
       {children}
     </div>
-  )
-}
-
-interface StarIconProps {
-  size: number
-  top?: number
-  bottom?: number
-  right: number
-  color?: UI
-}
-
-export function StarIcon({ size, top, bottom, right, color }: StarIconProps): ReactNode {
-  return (
-    <styledEl.StarIcon {...{ size, top, bottom, right, color: color ? `var(${color})` : undefined }}>
-      <SVG src={ICON_STAR} />
-    </styledEl.StarIcon>
   )
 }

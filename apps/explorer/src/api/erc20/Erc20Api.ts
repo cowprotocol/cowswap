@@ -10,51 +10,19 @@ import { AbiItem } from 'web3-utils'
 import erc20_bytes32Abi from 'abis/erc20_bytes32.json'
 import ERC20_DETAILS from 'api/erc20/erc20Details.json'
 
-export interface Erc20Props {
-  name: string
-  symbol: string
-  decimals: number
-}
-
-export interface Erc20Details {
-  [address: string]: Erc20Props
-}
-
-interface BaseParams {
-  tokenAddress: string
-  networkId: number
-}
-
-export type NameParams = BaseParams
-export type SymbolParams = BaseParams
-export type DecimalsParams = BaseParams
-export type TotalSupplyParams = BaseParams
-
-export interface BalanceOfParams extends BaseParams {
-  userAddress: string
-}
-
 export interface AllowanceParams extends BalanceOfParams {
   spenderAddress: string
-}
-
-interface WithTxOptionalParams {
-  txOptionalParams?: TxOptionalParams
 }
 
 export interface ApproveParams extends AllowanceParams, WithTxOptionalParams {
   amount: BN
 }
 
-export interface TransferParams extends BalanceOfParams, WithTxOptionalParams {
-  toAddress: string
-  amount: BN
+export interface BalanceOfParams extends BaseParams {
+  userAddress: string
 }
 
-export interface TransferFromParams extends TransferParams {
-  fromAddress: string
-}
-
+export type DecimalsParams = BaseParams
 /**
  * Interfaces the access to ERC20 token
  *
@@ -80,9 +48,41 @@ export interface Erc20Api {
 
   transferFrom(params: TransferFromParams): Promise<Receipt>
 }
-
 export interface Erc20ApiDependencies {
   web3: Web3
+}
+export interface Erc20Details {
+  [address: string]: Erc20Props
+}
+
+export interface Erc20Props {
+  name: string
+  symbol: string
+  decimals: number
+}
+
+export type NameParams = BaseParams
+
+export type SymbolParams = BaseParams
+
+export type TotalSupplyParams = BaseParams
+
+export interface TransferFromParams extends TransferParams {
+  fromAddress: string
+}
+
+export interface TransferParams extends BalanceOfParams, WithTxOptionalParams {
+  toAddress: string
+  amount: BN
+}
+
+interface BaseParams {
+  tokenAddress: string
+  networkId: number
+}
+
+interface WithTxOptionalParams {
+  txOptionalParams?: TxOptionalParams
 }
 
 /**

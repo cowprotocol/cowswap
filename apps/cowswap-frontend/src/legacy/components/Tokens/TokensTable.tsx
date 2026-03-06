@@ -39,11 +39,6 @@ import { TokensTableRow } from './TokensTableRow'
 
 const MAX_ITEMS = 20
 
-enum SORT_FIELD {
-  NAME = 'name',
-  BALANCE = 'balance',
-}
-
 type TokenTableParams = {
   tokensData: TokenWithLogo[] | undefined
   maxItems?: number
@@ -55,6 +50,11 @@ type TokenTableParams = {
   prevQuery: string
   debouncedQuery: string
   children?: ReactNode
+}
+
+enum SORT_FIELD {
+  NAME = 'name',
+  BALANCE = 'balance',
 }
 
 // TODO: Break down this large function into smaller functions

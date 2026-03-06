@@ -46,9 +46,12 @@ export const Routes = {
   TWITTER: '/twitter',
 } as const
 
-export type RoutesKeys = keyof typeof Routes
-export type RoutesValues = (typeof Routes)[RoutesKeys]
-
+export interface I18nIMenuItem extends Omit<IMenuItem, 'label' | 'fullLabel' | 'description' | 'badge'> {
+  label: MessageDescriptor
+  fullLabel?: MessageDescriptor
+  description: MessageDescriptor
+  badge?: MessageDescriptor
+}
 export interface IMenuItem {
   route: RoutesValues
   label: string
@@ -59,12 +62,9 @@ export interface IMenuItem {
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
-export interface I18nIMenuItem extends Omit<IMenuItem, 'label' | 'fullLabel' | 'description' | 'badge'> {
-  label: MessageDescriptor
-  fullLabel?: MessageDescriptor
-  description: MessageDescriptor
-  badge?: MessageDescriptor
-}
+export type RoutesKeys = keyof typeof Routes
+
+export type RoutesValues = (typeof Routes)[RoutesKeys]
 
 export const MENU_ITEMS: I18nIMenuItem[] = [
   {

@@ -35,6 +35,11 @@ export interface OrderEstimatedExecutionPriceProps extends TokenAmountProps {
   warningText?: string
 }
 
+type UnlikelyToExecuteWarningProps = {
+  feePercentage?: Percent
+  feeAmount?: CurrencyAmount<Currency>
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
@@ -219,11 +224,6 @@ export function OrderEstimatedExecutionPrice({
       )}
     </styledEl.OrderEstimatedExecutionPriceWrapper>
   )
-}
-
-type UnlikelyToExecuteWarningProps = {
-  feePercentage?: Percent
-  feeAmount?: CurrencyAmount<Currency>
 }
 
 // TODO: Add proper return type annotation

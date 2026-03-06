@@ -24,25 +24,6 @@ interface TradeAmountPreviewProps {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function TradeAmountPreview(props: TradeAmountPreviewProps) {
-  const { amount, usdAmount, label, tooltip, children } = props
-
-  return (
-    <styledEl.Part>
-      <styledEl.Label>
-        {label}
-        <HelpTooltip text={tooltip} />
-      </styledEl.Label>
-
-      <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />
-      <styledEl.Fiat amount={usdAmount} />
-      {children}
-    </styledEl.Part>
-  )
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AmountParts() {
   const {
     sellAmount: { label: sellLabel, tooltip: sellTooltip },
@@ -82,5 +63,24 @@ export function AmountParts() {
         usdAmount={outputPartAmountUsd}
       ></TradeAmountPreview>
     </styledEl.Wrapper>
+  )
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function TradeAmountPreview(props: TradeAmountPreviewProps) {
+  const { amount, usdAmount, label, tooltip, children } = props
+
+  return (
+    <styledEl.Part>
+      <styledEl.Label>
+        {label}
+        <HelpTooltip text={tooltip} />
+      </styledEl.Label>
+
+      <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />
+      <styledEl.Fiat amount={usdAmount} />
+      {children}
+    </styledEl.Part>
   )
 }

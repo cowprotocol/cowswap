@@ -14,16 +14,16 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { deadlineToView, getDeadlineRange } from '../utils'
 
-type TxSettingAction = 'Default' | 'Custom'
-
-enum DeadlineError {
-  InvalidInput = 'InvalidInput',
-}
-
 interface DeadlineAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TRADE
   action: `${TxSettingAction} Order Expiration Time`
   value: number
+}
+
+type TxSettingAction = 'Default' | 'Custom'
+
+enum DeadlineError {
+  InvalidInput = 'InvalidInput',
 }
 
 export function useCustomDeadline(deadlineState: StatefulValue<number>): {

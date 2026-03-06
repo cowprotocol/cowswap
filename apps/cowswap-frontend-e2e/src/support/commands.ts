@@ -103,18 +103,6 @@ function _clickOnToken(inputOrOutput: string) {
   cy.get(buttonSelector).click()
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
-  const tokenSelector = `#token-search-results div[data-address="${tokenAddress.toLowerCase()}"]`
-  const searchSelector = '#token-search-input'
-
-  cy.get(searchSelector, { timeout: 20_000 }).should('be.visible').clear().type(tokenAddress)
-  cy.get(tokenSelector, { timeout: 20_000 }).should('be.visible').click({ force: true })
-
-  cy.get(`#${inputOrOutput}-currency-input .token-amount-input`).should('be.visible')
-}
-
 function _responseHandlerFactory(body: string) {
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,6 +117,18 @@ function _responseHandlerFactory(body: string) {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
+  const tokenSelector = `#token-search-results div[data-address="${tokenAddress.toLowerCase()}"]`
+  const searchSelector = '#token-search-input'
+
+  cy.get(searchSelector, { timeout: 20_000 }).should('be.visible').clear().type(tokenAddress)
+  cy.get(tokenSelector, { timeout: 20_000 }).should('be.visible').click({ force: true })
+
+  cy.get(`#${inputOrOutput}-currency-input .token-amount-input`).should('be.visible')
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function clickInputToken() {
   _clickOnToken('input')
 }
@@ -137,28 +137,6 @@ function clickInputToken() {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function clickOutputToken() {
   _clickOnToken('output')
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function selectOutput(tokenAddress: string) {
-  clickOutputToken()
-  _selectTokenFromSelector(tokenAddress, 'output')
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function selectInput(tokenAddress: string) {
-  clickInputToken()
-  _selectTokenFromSelector(tokenAddress, 'input')
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function pickToken(symbol: string, role: string) {
-  cy.get(`#${role}-currency-input .open-currency-select-button`, { timeout: 20_000 }).should('be.enabled').click()
-  cy.get('#token-search-input').type(symbol)
-  cy.get('#currency-list').get('div').contains(symbol).click({ force: true })
 }
 
 // TODO: Add proper return type annotation
@@ -184,8 +162,26 @@ function enterOutputAmount(tokenAddress: string, amount: number | string, select
   cy.get('#input-currency-input .token-amount-output').type(amount.toString(), { force: true, delay: 400 })
 }
 
-function unlockCrossChainSwap(): Cypress.Chainable {
-  return cy.get('#unlock-cross-chain-swap-btn', { timeout: 20_000 }).should('be.visible').click()
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function pickToken(symbol: string, role: string) {
+  cy.get(`#${role}-currency-input .open-currency-select-button`, { timeout: 20_000 }).should('be.enabled').click()
+  cy.get('#token-search-input').type(symbol)
+  cy.get('#currency-list').get('div').contains(symbol).click({ force: true })
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function selectInput(tokenAddress: string) {
+  clickInputToken()
+  _selectTokenFromSelector(tokenAddress, 'input')
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function selectOutput(tokenAddress: string) {
+  clickOutputToken()
+  _selectTokenFromSelector(tokenAddress, 'output')
 }
 
 // TODO: Add proper return type annotation
@@ -204,6 +200,10 @@ function stubResponse({
   body?: any
 }) {
   cy.intercept({ method, url }, _responseHandlerFactory(body)).as(alias)
+}
+
+function unlockCrossChainSwap(): Cypress.Chainable {
+  return cy.get('#unlock-cross-chain-swap-btn', { timeout: 20_000 }).should('be.visible').click()
 }
 
 Cypress.Commands.add('swapClickInputToken', clickInputToken)

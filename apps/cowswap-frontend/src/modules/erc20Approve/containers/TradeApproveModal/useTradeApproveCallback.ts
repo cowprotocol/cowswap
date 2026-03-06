@@ -26,8 +26,6 @@ const DEFAULT_APPROVE_PARAMS: TradeApproveCallbackParams = {
   waitForTxConfirmation: false,
 }
 
-export type TradeApproveResult<R> = { txResponse: R; approvedAmount: bigint | undefined }
-
 export type GenerecTradeApproveResult = TradeApproveResult<TransactionResponse> | TradeApproveResult<TransactionReceipt>
 
 export interface TradeApproveCallback {
@@ -44,6 +42,24 @@ export interface TradeApproveCallback {
       waitForTxConfirmation: true
     },
   ): Promise<TradeApproveResult<TransactionReceipt> | undefined>
+}
+
+export type TradeApproveResult<R> = { txResponse: R; approvedAmount: bigint | undefined }
+
+interface ProcessTransactionConfirmationParams {
+  response: TransactionResponse
+  currency: Currency | undefined
+  account: string | undefined
+  spender: string | undefined
+  chainId: number | undefined
+  setOptimisticAllowance: (data: {
+    tokenAddress: string
+    owner: string
+    spender: string
+    amount: bigint
+    blockNumber: number
+    chainId: number
+  }) => void
 }
 
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
@@ -124,22 +140,6 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       handleApprovalError,
     ],
   ) as TradeApproveCallback
-}
-
-interface ProcessTransactionConfirmationParams {
-  response: TransactionResponse
-  currency: Currency | undefined
-  account: string | undefined
-  spender: string | undefined
-  chainId: number | undefined
-  setOptimisticAllowance: (data: {
-    tokenAddress: string
-    owner: string
-    spender: string
-    amount: bigint
-    blockNumber: number
-    chainId: number
-  }) => void
 }
 
 async function processTransactionConfirmation({

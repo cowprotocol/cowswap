@@ -12,11 +12,6 @@ import {
 
 const UPDATE_INTERVAL = ms`6h`
 
-function isTimeToUpdate(lastUpdateTime: number): boolean {
-  if (!lastUpdateTime) return true
-  return Date.now() - lastUpdateTime > UPDATE_INTERVAL
-}
-
 interface UseRestrictedTokensCacheResult {
   shouldFetch: boolean
   saveToCache: (state: RestrictedTokenListState) => void
@@ -58,4 +53,9 @@ export function useRestrictedTokensCache(): UseRestrictedTokensCacheResult {
     shouldFetch,
     saveToCache,
   }
+}
+
+function isTimeToUpdate(lastUpdateTime: number): boolean {
+  if (!lastUpdateTime) return true
+  return Date.now() - lastUpdateTime > UPDATE_INTERVAL
 }

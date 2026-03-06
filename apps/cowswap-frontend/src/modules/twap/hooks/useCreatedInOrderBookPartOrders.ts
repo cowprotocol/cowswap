@@ -21,6 +21,11 @@ import { TwapOrderItem } from '../types'
 import { fetchMissingPartOrders } from '../updaters/fetchMissingPartOrders'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
+export interface UseCreatedInOrderBookPartOrdersResult {
+  orders: Order[]
+  cacheEntries: TwapPartOrdersCacheByUid
+}
+
 interface TwapOrderInfo {
   item: TwapPartOrderItem
   parent: TwapOrderItem
@@ -30,11 +35,6 @@ interface TwapOrderInfo {
 interface UseCreatedInOrderBookPartOrdersParams {
   chainId: SupportedChainId | undefined
   owner: string | undefined
-}
-
-export interface UseCreatedInOrderBookPartOrdersResult {
-  orders: Order[]
-  cacheEntries: TwapPartOrdersCacheByUid
 }
 
 export function useCreatedInOrderBookPartOrders({
@@ -136,6 +136,19 @@ const EMPTY_RESULT: UseCreatedInOrderBookPartOrdersResult = {
   cacheEntries: EMPTY_CACHE,
 }
 
+function getCacheEntries(ordersInfo: TwapOrderInfo[]): TwapPartOrdersCacheByUid {
+  return ordersInfo.reduce<TwapPartOrdersCacheByUid>((acc, { item, parent, order }) => {
+    if (!TWAP_FINAL_STATUSES.includes(parent.status)) return acc
+
+    acc[item.uid] = {
+      twapOrderId: item.twapOrderId,
+      enrichedOrder: order,
+    }
+
+    return acc
+  }, {})
+}
+
 function getOrdersInfo(
   partOrderIds: string[],
   allOrdersByUid: Record<string, EnrichedOrder>,
@@ -153,17 +166,4 @@ function getOrdersInfo(
 
     return acc
   }, [])
-}
-
-function getCacheEntries(ordersInfo: TwapOrderInfo[]): TwapPartOrdersCacheByUid {
-  return ordersInfo.reduce<TwapPartOrdersCacheByUid>((acc, { item, parent, order }) => {
-    if (!TWAP_FINAL_STATUSES.includes(parent.status)) return acc
-
-    acc[item.uid] = {
-      twapOrderId: item.twapOrderId,
-      enrichedOrder: order,
-    }
-
-    return acc
-  }, {})
 }

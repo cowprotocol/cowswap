@@ -19,23 +19,6 @@ export interface ExecutionPriceTooltipProps {
   isOpenOrdersTab?: boolean
 }
 
-function formatFeeAmount({
-  marketRate,
-  feeAmount,
-  isInverted,
-  executionPrice,
-}: ExecutionPriceTooltipProps): CurrencyAmount<Currency> | null {
-  const currency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
-  const invertedFee = marketRate && feeAmount ? marketRate.multiply(feeAmount) : null
-
-  return !isInverted && invertedFee && currency && feeAmount
-    ? convertAmountToCurrency(
-        CurrencyAmount.fromFractionalAmount(feeAmount.currency, invertedFee.numerator, invertedFee.denominator),
-        currency,
-      )
-    : feeAmount
-}
-
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
@@ -94,4 +77,21 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
       </styledEl.FeeItem>
     </styledEl.FeeTooltipWrapper>
   )
+}
+
+function formatFeeAmount({
+  marketRate,
+  feeAmount,
+  isInverted,
+  executionPrice,
+}: ExecutionPriceTooltipProps): CurrencyAmount<Currency> | null {
+  const currency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
+  const invertedFee = marketRate && feeAmount ? marketRate.multiply(feeAmount) : null
+
+  return !isInverted && invertedFee && currency && feeAmount
+    ? convertAmountToCurrency(
+        CurrencyAmount.fromFractionalAmount(feeAmount.currency, invertedFee.numerator, invertedFee.denominator),
+        currency,
+      )
+    : feeAmount
 }

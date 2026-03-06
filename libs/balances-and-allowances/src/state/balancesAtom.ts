@@ -7,17 +7,17 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { Erc20MulticallState } from '../types'
 
-type Account = string
-type TokenAddress = string
-
-type BalancesCache = PersistentStateByChain<Record<Account, Record<TokenAddress, string>>>
-
 export interface BalancesState extends Erc20MulticallState {
   chainId: SupportedChainId | null
   fromCache: boolean
   hasFirstLoad: boolean
   error: string | null
 }
+type Account = string
+
+type BalancesCache = PersistentStateByChain<Record<Account, Record<TokenAddress, string>>>
+
+type TokenAddress = string
 
 export const DEFAULT_BALANCES_STATE: BalancesState = {
   isLoading: false,

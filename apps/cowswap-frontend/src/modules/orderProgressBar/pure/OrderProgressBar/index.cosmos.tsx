@@ -193,41 +193,25 @@ function SolvingFixture(): ReactNode {
 
 const ALL_STEP_NAMES = Object.values(OrderProgressBarStepName)
 
-function useStepTransitions(): {
-  stepIndex: number
-  direction: number
-  currentStepName: OrderProgressBarProps['stepName']
-} {
-  const [stepIndex, setStepIndex] = useState(0)
-  const [direction, setDirection] = useState(1)
+function AnimatedProgressFixture(): ReactNode {
+  const { stepIndex, direction, currentStepName } = useStepTransitions()
+  const countdown = useCountdownForSolving(currentStepName)
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setStepIndex((prevIndex) => {
-        const nextIndex = prevIndex + direction
-
-        if (nextIndex >= ALL_STEP_NAMES.length - 1) {
-          setDirection(-1)
-          return ALL_STEP_NAMES.length - 1
-        }
-
-        if (nextIndex <= 0) {
-          setDirection(1)
-          return 0
-        }
-
-        return nextIndex
-      })
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [direction])
-
-  return {
-    stepIndex,
-    direction,
-    currentStepName: ALL_STEP_NAMES[stepIndex],
-  }
+  return (
+    <Wrapper>
+      <div style={{ marginBottom: '16px', padding: '8px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}>
+        <strong>Current Step:</strong> {currentStepName} ({stepIndex + 1}/{ALL_STEP_NAMES.length})
+        <br />
+        <strong>Direction:</strong> {direction > 0 ? 'Forward' : 'Backward'}
+      </div>
+      <OrderProgressBar
+        {...defaultProps}
+        stepName={currentStepName}
+        countdown={countdown}
+        key={`${currentStepName}-${stepIndex}`}
+      />
+    </Wrapper>
+  )
 }
 
 function useCountdownForSolving(currentStepName: OrderProgressBarProps['stepName']): number {
@@ -269,25 +253,41 @@ function useCountdownForSolving(currentStepName: OrderProgressBarProps['stepName
   return countdown
 }
 
-function AnimatedProgressFixture(): ReactNode {
-  const { stepIndex, direction, currentStepName } = useStepTransitions()
-  const countdown = useCountdownForSolving(currentStepName)
+function useStepTransitions(): {
+  stepIndex: number
+  direction: number
+  currentStepName: OrderProgressBarProps['stepName']
+} {
+  const [stepIndex, setStepIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
 
-  return (
-    <Wrapper>
-      <div style={{ marginBottom: '16px', padding: '8px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}>
-        <strong>Current Step:</strong> {currentStepName} ({stepIndex + 1}/{ALL_STEP_NAMES.length})
-        <br />
-        <strong>Direction:</strong> {direction > 0 ? 'Forward' : 'Backward'}
-      </div>
-      <OrderProgressBar
-        {...defaultProps}
-        stepName={currentStepName}
-        countdown={countdown}
-        key={`${currentStepName}-${stepIndex}`}
-      />
-    </Wrapper>
-  )
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStepIndex((prevIndex) => {
+        const nextIndex = prevIndex + direction
+
+        if (nextIndex >= ALL_STEP_NAMES.length - 1) {
+          setDirection(-1)
+          return ALL_STEP_NAMES.length - 1
+        }
+
+        if (nextIndex <= 0) {
+          setDirection(1)
+          return 0
+        }
+
+        return nextIndex
+      })
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [direction])
+
+  return {
+    stepIndex,
+    direction,
+    currentStepName: ALL_STEP_NAMES[stepIndex],
+  }
 }
 
 const Fixtures = {

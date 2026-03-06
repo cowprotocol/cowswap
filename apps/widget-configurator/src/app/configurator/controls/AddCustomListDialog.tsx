@@ -34,6 +34,12 @@ type AddCustomListDialogProps = {
   onAddCustomTokens: (tokens: TokenInfo[]) => void
 }
 
+interface TabPanelProps {
+  children?: ReactNode
+  index: number
+  value: number
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
@@ -174,12 +180,6 @@ export function AddCustomListDialog({
       </DialogActions>
     </Dialog>
   )
-}
-
-interface TabPanelProps {
-  children?: ReactNode
-  index: number
-  value: number
 }
 
 // TODO: Add proper return type annotation

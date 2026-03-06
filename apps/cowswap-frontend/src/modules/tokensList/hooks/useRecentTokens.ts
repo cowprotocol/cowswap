@@ -12,17 +12,17 @@ import {
   RECENT_TOKENS_LIMIT,
 } from '../utils/recentTokensStorage'
 
+export interface RecentTokensState {
+  recentTokens: TokenWithLogo[]
+  addRecentToken(token: TokenWithLogo): void
+  clearRecentTokens(): void
+}
+
 interface UseRecentTokensParams {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
   activeChainId?: number
   maxItems?: number
-}
-
-export interface RecentTokensState {
-  recentTokens: TokenWithLogo[]
-  addRecentToken(token: TokenWithLogo): void
-  clearRecentTokens(): void
 }
 
 export function useRecentTokens({

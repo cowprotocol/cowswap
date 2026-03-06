@@ -8,6 +8,11 @@ import { HooksList, Wrapper } from './styled'
 
 import { useAppData } from '../../../hooks/useAppData'
 
+interface HooksInfoProps {
+  data: HookToDappMatch[]
+  title: string
+}
+
 interface OrderHooksDetailsProps {
   appData: string
   fullAppData: string | undefined
@@ -39,11 +44,6 @@ export function OrderHooksDetails({ appData, fullAppData, children }: OrderHooks
       <span>-</span>
     ),
   )
-}
-
-interface HooksInfoProps {
-  data: HookToDappMatch[]
-  title: string
 }
 
 // TODO: Add proper return type annotation

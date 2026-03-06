@@ -7,24 +7,9 @@ import { t } from '@lingui/core/macro'
 import { OrderStatus } from './actions'
 import { OrderObject, OrdersStateNetwork } from './reducer'
 
-type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
-
-interface SetOrderSummaryParams {
-  id: string
-  status?: OrderStatusExtended
-  summary?: string | ReactElement
-  descriptor?: string | null
-  orderType?: BlockExplorerLinkType
-}
-
 export enum OrderTxTypes {
   METATXN = 'metatxn',
   TXN = 'txn',
-}
-
-enum OrderIdType {
-  ID = 'id',
-  HASH = 'hash',
 }
 
 interface BasePopupContent {
@@ -37,32 +22,47 @@ type IdOrHash<K extends OrderIdType, T extends OrderTxTypes> = {
   [identifier in K]: T extends OrderTxTypes.METATXN ? OrderTxTypes.METATXN : OrderTxTypes.TXN
 }
 
+type MetaPopupContent = PopupContent<OrderTxTypes.METATXN>
+
+type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
+
 type PopupContent<T extends OrderTxTypes> = {
   [type in T]: IdOrHash<T extends OrderTxTypes.METATXN ? OrderIdType.ID : OrderIdType.HASH, T> & BasePopupContent
 }
 
-type MetaPopupContent = PopupContent<OrderTxTypes.METATXN>
+interface SetOrderSummaryParams {
+  id: string
+  status?: OrderStatusExtended
+  summary?: string | ReactElement
+  descriptor?: string | null
+  orderType?: BlockExplorerLinkType
+}
+
 type TxnPopupContent = PopupContent<OrderTxTypes.TXN>
+enum OrderIdType {
+  ID = 'id',
+  HASH = 'hash',
+}
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
-  // If there isn't summary, return generalized summary
-  if (!summary) {
-    return t`Order` + ' ' + `${formatOrderId(id)} ${descriptor || status || ''}`
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
+export function getOrderByIdFromState(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
+  if (!orders) {
+    return
   }
 
-  if (typeof summary === 'string') {
-    // If descriptor is specifically null, just return summary
-    if (descriptor === null) {
-      return summary
-    }
+  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, failed, scheduled } = orders
 
-    // Otherwise return summary with descriptor or status
-    return `${summary} ${descriptor || status || ''}`
-  }
-
-  return summary
+  return (
+    pending?.[id] ||
+    presignaturePending?.[id] ||
+    fulfilled?.[id] ||
+    expired?.[id] ||
+    cancelled?.[id] ||
+    creating?.[id] ||
+    scheduled?.[id] ||
+    failed?.[id]
+  )
 }
 
 // Metatxn popup
@@ -119,23 +119,23 @@ export function setPopupData(
   return { key, content }
 }
 
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
-export function getOrderByIdFromState(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
-  if (!orders) {
-    return
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
+  // If there isn't summary, return generalized summary
+  if (!summary) {
+    return t`Order` + ' ' + `${formatOrderId(id)} ${descriptor || status || ''}`
   }
 
-  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, failed, scheduled } = orders
+  if (typeof summary === 'string') {
+    // If descriptor is specifically null, just return summary
+    if (descriptor === null) {
+      return summary
+    }
 
-  return (
-    pending?.[id] ||
-    presignaturePending?.[id] ||
-    fulfilled?.[id] ||
-    expired?.[id] ||
-    cancelled?.[id] ||
-    creating?.[id] ||
-    scheduled?.[id] ||
-    failed?.[id]
-  )
+    // Otherwise return summary with descriptor or status
+    return `${summary} ${descriptor || status || ''}`
+  }
+
+  return summary
 }

@@ -15,12 +15,14 @@ import { OrderFillability, usePendingOrdersFillability } from 'modules/ordersTab
 
 import { ActivityStatus, ActivityType } from 'common/types/activity'
 
-/**
- * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
- * @param tx to check for recency
- */
-function isTransactionRecent(tx: EnhancedTransactionDetails): boolean {
-  return new Date().getTime() - tx.addedTime < 86_400_000
+export interface ActivityDescriptors {
+  id: string
+  activity: EnhancedTransactionDetails | Order
+  summary?: string
+  status: ActivityStatus
+  type: ActivityType
+  date: Date
+  fillability?: OrderFillability
 }
 
 export interface AddedOrder extends Order {
@@ -34,9 +36,93 @@ export type TransactionAndOrder =
       status: OrderStatus
     })
 
+type ActivitiesGroupedByDate = {
+  date: Date
+  activities: ActivityDescriptors[]
+}[]
+
+type UseActivityDescriptionParams = {
+  chainId?: ChainId
+  ids: string[]
+}
+
 enum TxReceiptStatus {
   PENDING,
   CONFIRMED,
+}
+
+export function createActivityDescriptor(
+  tx?: EnhancedTransactionDetails,
+  order?: Order,
+  orderFillability?: OrderFillability,
+): ActivityDescriptors | null {
+  if (!tx && !order) return null
+
+  if (order) {
+    return {
+      id: order.id,
+      activity: order,
+      status: getOrderActivityStatus(order),
+      type: ActivityType.ORDER,
+      date: new Date(order.creationTime),
+      fillability: orderFillability,
+    }
+  }
+
+  if (tx) {
+    return {
+      id: tx.hash,
+      activity: tx,
+      summary: tx.summary,
+      status: getTxActivityStatus(tx),
+      type: ActivityType.TX,
+      date: new Date(tx.addedTime),
+      fillability: orderFillability,
+    }
+  }
+
+  return null
+}
+
+/**
+ * Helper function that groups a list of activities by day
+ * To be used on the return of `useMultipleActivityDescriptors`
+ *
+ * @param activities
+ */
+export function groupActivitiesByDay(activities: ActivityDescriptors[]): ActivitiesGroupedByDate {
+  const mapByTimestamp: { [timestamp: number]: ActivityDescriptors[] } = {}
+
+  activities.forEach((activity) => {
+    const { date } = activity
+
+    const timestamp = getDateTimestamp(date)
+
+    mapByTimestamp[timestamp] = (mapByTimestamp[timestamp] || []).concat(activity)
+  })
+
+  return Object.keys(mapByTimestamp).map((strTimestamp) => {
+    // Keys are always string, convert back to number
+    const timestamp = Number(strTimestamp)
+    // For easier handling later, transform into a list of objects with nested lists
+    return { date: new Date(timestamp), activities: mapByTimestamp[timestamp] }
+  })
+}
+
+export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
+  const txs = useTransactionsByHash({ hashes: ids })
+  const orders = useOrdersById({ chainId, ids })
+  const pendingOrdersFillability = usePendingOrdersFillability()
+
+  return useMemo(() => {
+    return ids.reduce<ActivityDescriptors[]>((acc, id) => {
+      const activity = createActivityDescriptor(txs[id], orders?.[id], pendingOrdersFillability[id])
+      if (activity) {
+        acc.push(activity)
+      }
+      return acc
+    }, [])
+  }, [ids, orders, txs, pendingOrdersFillability])
 }
 
 /**
@@ -104,52 +190,38 @@ export function useRecentActivity(): TransactionAndOrder[] {
   )
 }
 
-export interface ActivityDescriptors {
-  id: string
-  activity: EnhancedTransactionDetails | Order
-  summary?: string
-  status: ActivityStatus
-  type: ActivityType
-  date: Date
-  fillability?: OrderFillability
-}
-
-type UseActivityDescriptionParams = {
+export function useSingleActivityDescriptor({
+  chainId,
+  id,
+}: {
   chainId?: ChainId
-  ids: string[]
+  id?: string
+}): ActivityDescriptors | null {
+  const allTransactions = useAllTransactions()
+  const order = useOrder({ id, chainId })
+
+  const tx = id ? allTransactions?.[id] : undefined
+
+  return useMemo(() => {
+    if (!chainId) return null
+    return createActivityDescriptor(tx, order)
+  }, [chainId, order, tx])
 }
 
-export function createActivityDescriptor(
-  tx?: EnhancedTransactionDetails,
-  order?: Order,
-  orderFillability?: OrderFillability,
-): ActivityDescriptors | null {
-  if (!tx && !order) return null
+/**
+ * `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
+ * We can only do so if the order is in a "pending" state.
+ * `isPending` is used for all orders when they are "OPEN".
+ * `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
+ * After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
+ * Thus, we add both here to tell if the order is being cancelled
+ */
+function getIsOrderCancelling(order: Order): boolean {
+  return (order.isCancelling || false) && [OrderStatus.CREATING, OrderStatus.PENDING].includes(order.status)
+}
 
-  if (order) {
-    return {
-      id: order.id,
-      activity: order,
-      status: getOrderActivityStatus(order),
-      type: ActivityType.ORDER,
-      date: new Date(order.creationTime),
-      fillability: orderFillability,
-    }
-  }
-
-  if (tx) {
-    return {
-      id: tx.hash,
-      activity: tx,
-      summary: tx.summary,
-      status: getTxActivityStatus(tx),
-      type: ActivityType.TX,
-      date: new Date(tx.addedTime),
-      fillability: orderFillability,
-    }
-  }
-
-  return null
+function getIsReceiptConfirmed(tx: EnhancedTransactionDetails): boolean {
+  return tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
 }
 
 function getOrderActivityStatus(order: Order): ActivityStatus {
@@ -178,18 +250,6 @@ function getOrderActivityStatus(order: Order): ActivityStatus {
   return ActivityStatus.EXPIRED
 }
 
-/**
- * `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
- * We can only do so if the order is in a "pending" state.
- * `isPending` is used for all orders when they are "OPEN".
- * `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
- * After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
- * Thus, we add both here to tell if the order is being cancelled
- */
-function getIsOrderCancelling(order: Order): boolean {
-  return (order.isCancelling || false) && [OrderStatus.CREATING, OrderStatus.PENDING].includes(order.status)
-}
-
 function getTxActivityStatus(tx: EnhancedTransactionDetails): ActivityStatus {
   const isReceiptConfirmed = getIsReceiptConfirmed(tx)
   const isCancelTx = tx.replacementType === 'cancel'
@@ -208,78 +268,18 @@ function getTxActivityStatus(tx: EnhancedTransactionDetails): ActivityStatus {
   return ActivityStatus.EXPIRED
 }
 
-function getIsReceiptConfirmed(tx: EnhancedTransactionDetails): boolean {
-  return tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
-}
-
-export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
-  const txs = useTransactionsByHash({ hashes: ids })
-  const orders = useOrdersById({ chainId, ids })
-  const pendingOrdersFillability = usePendingOrdersFillability()
-
-  return useMemo(() => {
-    return ids.reduce<ActivityDescriptors[]>((acc, id) => {
-      const activity = createActivityDescriptor(txs[id], orders?.[id], pendingOrdersFillability[id])
-      if (activity) {
-        acc.push(activity)
-      }
-      return acc
-    }, [])
-  }, [ids, orders, txs, pendingOrdersFillability])
-}
-
-export function useSingleActivityDescriptor({
-  chainId,
-  id,
-}: {
-  chainId?: ChainId
-  id?: string
-}): ActivityDescriptors | null {
-  const allTransactions = useAllTransactions()
-  const order = useOrder({ id, chainId })
-
-  const tx = id ? allTransactions?.[id] : undefined
-
-  return useMemo(() => {
-    if (!chainId) return null
-    return createActivityDescriptor(tx, order)
-  }, [chainId, order, tx])
-}
-
-type ActivitiesGroupedByDate = {
-  date: Date
-  activities: ActivityDescriptors[]
-}[]
-
-/**
- * Helper function that groups a list of activities by day
- * To be used on the return of `useMultipleActivityDescriptors`
- *
- * @param activities
- */
-export function groupActivitiesByDay(activities: ActivityDescriptors[]): ActivitiesGroupedByDate {
-  const mapByTimestamp: { [timestamp: number]: ActivityDescriptors[] } = {}
-
-  activities.forEach((activity) => {
-    const { date } = activity
-
-    const timestamp = getDateTimestamp(date)
-
-    mapByTimestamp[timestamp] = (mapByTimestamp[timestamp] || []).concat(activity)
-  })
-
-  return Object.keys(mapByTimestamp).map((strTimestamp) => {
-    // Keys are always string, convert back to number
-    const timestamp = Number(strTimestamp)
-    // For easier handling later, transform into a list of objects with nested lists
-    return { date: new Date(timestamp), activities: mapByTimestamp[timestamp] }
-  })
-}
-
 function isNotEthFlowTx(tx: EnhancedTransactionDetails): boolean {
   return !tx.ethFlow
 }
 
 function isNotOnChainCancellationTx(tx: EnhancedTransactionDetails): boolean {
   return !tx.onChainCancellation
+}
+
+/**
+ * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
+ * @param tx to check for recency
+ */
+function isTransactionRecent(tx: EnhancedTransactionDetails): boolean {
+  return new Date().getTime() - tx.addedTime < 86_400_000
 }

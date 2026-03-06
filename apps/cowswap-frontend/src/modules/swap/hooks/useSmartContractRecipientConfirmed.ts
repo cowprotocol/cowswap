@@ -9,6 +9,15 @@ import { useTradeQuote } from '../../tradeQuote'
 
 const smartContractRecipientConfirmedAtom = atom(false)
 
+export function useShouldCheckBridgingRecipient(): boolean {
+  const { outputCurrencyAmount } = useDerivedTradeState() || {}
+  const { isLoading } = useTradeQuote()
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const isSmartContractWallet = useIsSmartContractWallet()
+
+  return !!isSmartContractWallet && !!outputCurrencyAmount && isCurrentTradeBridging && !isLoading
+}
+
 export function useSmartContractRecipientConfirmed(): boolean {
   return useAtomValue(smartContractRecipientConfirmedAtom)
 }
@@ -22,13 +31,4 @@ export function useToggleSmartContractRecipientConfirmed(): (state: boolean) => 
     },
     [setState],
   )
-}
-
-export function useShouldCheckBridgingRecipient(): boolean {
-  const { outputCurrencyAmount } = useDerivedTradeState() || {}
-  const { isLoading } = useTradeQuote()
-  const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const isSmartContractWallet = useIsSmartContractWallet()
-
-  return !!isSmartContractWallet && !!outputCurrencyAmount && isCurrentTradeBridging && !isLoading
 }

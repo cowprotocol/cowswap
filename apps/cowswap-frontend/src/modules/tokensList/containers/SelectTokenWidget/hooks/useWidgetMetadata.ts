@@ -19,6 +19,20 @@ export interface WidgetMetadata {
   chainsPanelTitle: string
 }
 
+export function resolveModalTitle(field: Field, tradeType: TradeType | undefined): string {
+  const isSwapTrade = !tradeType || tradeType === TradeType.SWAP
+
+  if (field === Field.INPUT) {
+    return isSwapTrade ? t`Swap from` : t`Sell token`
+  }
+
+  if (field === Field.OUTPUT) {
+    return isSwapTrade ? t`Swap to` : t`Buy token`
+  }
+
+  return t`Select token`
+}
+
 export function useWidgetMetadata(
   field: Field,
   tradeType: TradeType | undefined,
@@ -38,18 +52,4 @@ export function useWidgetMetadata(
     () => ({ disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }),
     [disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle],
   )
-}
-
-export function resolveModalTitle(field: Field, tradeType: TradeType | undefined): string {
-  const isSwapTrade = !tradeType || tradeType === TradeType.SWAP
-
-  if (field === Field.INPUT) {
-    return isSwapTrade ? t`Swap from` : t`Sell token`
-  }
-
-  if (field === Field.OUTPUT) {
-    return isSwapTrade ? t`Swap to` : t`Buy token`
-  }
-
-  return t`Select token`
 }

@@ -24,6 +24,35 @@ export interface WalletMetaData {
   icon?: string
 }
 
+/**
+ * Detects whether the currently connected wallet is a Safe App
+ * It'll be false if connected to Safe wallet via WalletConnect
+ */
+export function useIsSafeApp(): boolean {
+  const { connected } = useSafeAppsSDK()
+
+  return connected
+}
+
+/**
+ * Detects whether the currently connected wallet is a Safe wallet
+ * but NOT loaded as a Safe App
+ */
+export function useIsSafeViaWc(): boolean {
+  const isSafeApp = useIsSafeApp()
+  const isSafeWallet = useIsSafeWallet()
+
+  return isSafeWallet && !isSafeApp
+}
+
+/**
+ * Detects whether the currently connected wallet is a Safe wallet
+ * regardless of the connection method (WalletConnect or inside Safe as an App)
+ */
+export function useIsSafeWallet(): boolean {
+  return !!useGnosisSafeInfo()
+}
+
 export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
   const { connector } = useConnection()
   const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
@@ -62,33 +91,4 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
     icon: connector.icon,
     walletName: connector.name,
   }
-}
-
-/**
- * Detects whether the currently connected wallet is a Safe App
- * It'll be false if connected to Safe wallet via WalletConnect
- */
-export function useIsSafeApp(): boolean {
-  const { connected } = useSafeAppsSDK()
-
-  return connected
-}
-
-/**
- * Detects whether the currently connected wallet is a Safe wallet
- * regardless of the connection method (WalletConnect or inside Safe as an App)
- */
-export function useIsSafeWallet(): boolean {
-  return !!useGnosisSafeInfo()
-}
-
-/**
- * Detects whether the currently connected wallet is a Safe wallet
- * but NOT loaded as a Safe App
- */
-export function useIsSafeViaWc(): boolean {
-  const isSafeApp = useIsSafeApp()
-  const isSafeWallet = useIsSafeWallet()
-
-  return isSafeWallet && !isSafeApp
 }

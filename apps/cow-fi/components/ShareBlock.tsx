@@ -74,6 +74,24 @@ interface ShareBlockProps {
   onShare?: () => void
 }
 
+interface ShareButtonsProps {
+  shareUrl: string
+  webShareSupported: boolean
+  copied: boolean
+  onShareTarget: (target: ShareTarget) => void
+  onCopy: () => void | Promise<void>
+  onWebShare: () => void | Promise<void>
+}
+
+interface ShareState {
+  shareUrl: string
+  webShareSupported: boolean
+  copied: boolean
+  handleShare: (target: ShareTarget) => void
+  handleCopy: () => Promise<void>
+  handleWebShare: () => Promise<void>
+}
+
 export function ShareBlock({ url, title, onShare }: ShareBlockProps): ReactNode {
   const { shareUrl, webShareSupported, copied, handleShare, handleCopy, handleWebShare } = useShareBlockState({
     url,
@@ -96,15 +114,6 @@ export function ShareBlock({ url, title, onShare }: ShareBlockProps): ReactNode 
       </ShareRow>
     </ShareBlockContainer>
   )
-}
-
-interface ShareButtonsProps {
-  shareUrl: string
-  webShareSupported: boolean
-  copied: boolean
-  onShareTarget: (target: ShareTarget) => void
-  onCopy: () => void | Promise<void>
-  onWebShare: () => void | Promise<void>
 }
 
 function ShareButtons({
@@ -163,15 +172,6 @@ function ShareButtons({
       })}
     </ShareGrid>
   )
-}
-
-interface ShareState {
-  shareUrl: string
-  webShareSupported: boolean
-  copied: boolean
-  handleShare: (target: ShareTarget) => void
-  handleCopy: () => Promise<void>
-  handleWebShare: () => Promise<void>
 }
 
 function useShareBlockState({ url, title, onShare }: ShareBlockProps): ShareState {

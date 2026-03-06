@@ -9,11 +9,6 @@ import { Wrapper } from './styled'
 
 import { useTokenList } from '../../../hooks/useTokenList'
 
-function _loadFallbackTokenImage(event: React.SyntheticEvent<HTMLImageElement>): void {
-  const image = event.currentTarget
-  image.src = unknownTokenImg
-}
-
 export interface Props {
   network: SupportedChainId
   symbol?: string
@@ -22,6 +17,11 @@ export interface Props {
   addressMainnet?: string
   faded?: boolean
   tokenLogo?: string
+}
+
+function _loadFallbackTokenImage(event: React.SyntheticEvent<HTMLImageElement>): void {
+  const image = event.currentTarget
+  image.src = unknownTokenImg
 }
 
 const tokensIconsRequire =

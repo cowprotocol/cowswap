@@ -87,12 +87,8 @@ export function quoteUsingSameParameters(
   return changes.length === 0
 }
 
-/**
- * Compares slippage values only if they are set in both current and next params
- *
- */
-function compareSlippage(currentSlippage: number | undefined, nextSlippage: number | undefined): boolean {
-  return !nextSlippage || !currentSlippage || currentSlippage === nextSlippage
+function areHooksEqual(hookA: CowHook | undefined, hookB: CowHook | undefined): boolean {
+  return hookA?.callData === hookB?.callData && hookA?.gasLimit === hookB?.gasLimit && hookA?.target === hookB?.target
 }
 
 /**
@@ -115,22 +111,11 @@ function compareAppDataWithoutQuoteData(
 }
 
 /**
- * If appData is set and is valid, remove `quote` metadata from it
+ * Compares slippage values only if they are set in both current and next params
+ *
  */
-function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
-  const { metadata: fullMetadata, ...rest } = appData
-  const { partnerFee, hooks, referrer, replacedOrder } = fullMetadata
-
-  const obj = {
-    ...rest,
-    metadata: {
-      partnerFee: partnerFee ?? undefined,
-      hooks: hooks ?? undefined,
-      referrer: referrer ?? undefined,
-      replacedOrder: replacedOrder ?? undefined,
-    },
-  }
-  return jsonStringify(obj)
+function compareSlippage(currentSlippage: number | undefined, nextSlippage: number | undefined): boolean {
+  return !nextSlippage || !currentSlippage || currentSlippage === nextSlippage
 }
 
 function removeBridgePostHook(
@@ -160,6 +145,21 @@ function removeBridgePostHook(
   return copy
 }
 
-function areHooksEqual(hookA: CowHook | undefined, hookB: CowHook | undefined): boolean {
-  return hookA?.callData === hookB?.callData && hookA?.gasLimit === hookB?.gasLimit && hookA?.target === hookB?.target
+/**
+ * If appData is set and is valid, remove `quote` metadata from it
+ */
+function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
+  const { metadata: fullMetadata, ...rest } = appData
+  const { partnerFee, hooks, referrer, replacedOrder } = fullMetadata
+
+  const obj = {
+    ...rest,
+    metadata: {
+      partnerFee: partnerFee ?? undefined,
+      hooks: hooks ?? undefined,
+      referrer: referrer ?? undefined,
+      replacedOrder: replacedOrder ?? undefined,
+    },
+  }
+  return jsonStringify(obj)
 }

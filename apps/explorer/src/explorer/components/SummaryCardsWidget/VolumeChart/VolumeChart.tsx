@@ -35,6 +35,14 @@ import { numberFormatter } from '../utils'
 
 const DEFAULT_CHART_HEIGHT = 214 // px
 
+export interface VolumeChartProps {
+  volumeData: VolumeDataResponse | undefined
+  height?: number
+  width?: number
+  period?: VolumePeriod
+  logicalTimeScaleRange?: LogicalRange | undefined
+}
+
 export interface VolumeDataResponse {
   data?: HistogramData[]
   currentVolume?: number
@@ -42,12 +50,15 @@ export interface VolumeDataResponse {
   isLoading: boolean
 }
 
-export interface VolumeChartProps {
-  volumeData: VolumeDataResponse | undefined
-  height?: number
-  width?: number
-  period?: VolumePeriod
-  logicalTimeScaleRange?: LogicalRange | undefined
+interface CrossHairCoordinates {
+  top: Coordinate
+  left: number
+}
+
+interface CrossHairData {
+  time: UTCTimestamp
+  value: BarPrice
+  coordinates: CrossHairCoordinates
 }
 
 export function PeriodButton({
@@ -61,10 +72,6 @@ export function PeriodButton({
       {isLoading && active ? <Spinner spin size="1x" /> : children}
     </WrapperPeriodButton>
   )
-}
-
-function _formatAmount(amount: string): string {
-  return formatSmart({ amount, precision: 0, decimals: 0 })
 }
 
 function _buildChart(chartContainer: HTMLDivElement, width: number | undefined, height: number): IChartApi {
@@ -118,15 +125,8 @@ function _buildChart(chartContainer: HTMLDivElement, width: number | undefined, 
   })
 }
 
-interface CrossHairCoordinates {
-  top: Coordinate
-  left: number
-}
-
-interface CrossHairData {
-  time: UTCTimestamp
-  value: BarPrice
-  coordinates: CrossHairCoordinates
+function _formatAmount(amount: string): string {
+  return formatSmart({ amount, precision: 0, decimals: 0 })
 }
 
 const PriceTooltip = ({

@@ -1,6 +1,4 @@
-import { TokenSymbol } from '@cowprotocol/ui'
-import { HoverTooltip } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { TokenSymbol, HoverTooltip, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'

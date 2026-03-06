@@ -111,14 +111,6 @@ async function deleteAllCaches() {
   })
 }
 
-function unregisterAllWorkers() {
-  return navigator.serviceWorker.getRegistrations().then(function (registrations) {
-    for (const registration of registrations) {
-      registration.unregister()
-    }
-  })
-}
-
 function unregister() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
@@ -129,6 +121,14 @@ function unregister() {
         console.error(error.message)
       })
   }
+}
+
+function unregisterAllWorkers() {
+  return navigator.serviceWorker.getRegistrations().then(function (registrations) {
+    for (const registration of registrations) {
+      registration.unregister()
+    }
+  })
 }
 
 ;(function () {

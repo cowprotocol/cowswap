@@ -34,9 +34,6 @@ export enum OrderProgressBarStepName {
 
 export const DEFAULT_STEP_NAME: OrderProgressBarStepName = OrderProgressBarStepName.INITIAL
 
-type StepConfig = { title: MessageDescriptor; description?: MessageDescriptor }
-type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
-
 /**
  * Visual states for progress bar steps UI presentation.
  * These are purely for styling and visual feedback, determining:
@@ -56,6 +53,9 @@ export enum StepStatus {
   FUTURE = 'future',
   DONE = 'done',
 }
+type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
+
+type StepConfig = { title: MessageDescriptor; description?: MessageDescriptor }
 
 export const STEPS: (StepConfig | BridgeStepConfig)[] = [
   {

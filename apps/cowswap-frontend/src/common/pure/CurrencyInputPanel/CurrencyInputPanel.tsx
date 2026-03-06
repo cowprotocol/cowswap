@@ -26,10 +26,6 @@ import * as styledEl from './styled'
 import { useConvertUsdToTokenValue } from '../../hooks/useConvertUsdToTokenValue'
 import { ReceiveAmount } from '../ReceiveAmount'
 
-interface BuiltItProps {
-  className: string
-}
-
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   chainId: SupportedChainId | undefined
@@ -63,6 +59,10 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   topLabel?: string
   topContent?: ReactNode
   customSelectTokenButton?: ReactNode
+}
+
+interface BuiltItProps {
+  className: string
 }
 
 // TODO: Break down this large function into smaller functions

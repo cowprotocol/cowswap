@@ -1,5 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai'
-import { useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { getRandomInt } from '@cowprotocol/common-utils'
@@ -8,13 +7,6 @@ import { CheckedFortunesList, checkedFortunesListAtom } from 'modules/fortune/st
 import { fortunesListAtom } from 'modules/fortune/state/fortunesListAtom'
 import { updateOpenFortuneAtom } from 'modules/fortune/state/fortuneStateAtom'
 import { FortuneItem } from 'modules/fortune/types'
-
-function getRandomFortuneFromList(items: FortuneItem[], checkedFortunes: CheckedFortunesList): FortuneItem | null {
-  const list = items.filter((item) => !checkedFortunes[item.id])
-  const index = getRandomInt(0, list.length - 1)
-
-  return list[index] || null
-}
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -37,4 +29,11 @@ export function useOpenRandomFortune() {
     setCheckedFortunes({ ...checkedFortunes, [fortune.id]: Date.now() })
     setOpenFortuneAtom(fortune)
   }, [fortunesList, checkedFortunes, setCheckedFortunes, setOpenFortuneAtom])
+}
+
+function getRandomFortuneFromList(items: FortuneItem[], checkedFortunes: CheckedFortunesList): FortuneItem | null {
+  const list = items.filter((item) => !checkedFortunes[item.id])
+  const index = getRandomInt(0, list.length - 1)
+
+  return list[index] || null
 }

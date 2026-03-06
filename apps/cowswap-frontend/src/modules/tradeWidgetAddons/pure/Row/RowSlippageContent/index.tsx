@@ -49,6 +49,13 @@ export interface RowSlippageContentProps {
   hideRecommendedSlippage?: boolean
 }
 
+type SlippageTextContentsProps = {
+  isEoaEthFlow: boolean
+  isDefaultSlippageApplied: boolean
+  slippageLabel?: React.ReactNode
+  isDynamicSlippageSet: boolean
+}
+
 export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
   const { t } = useLingui()
   const SUGGESTED_SLIPPAGE_TOOLTIP = t`This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution.`
@@ -129,13 +136,6 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
       </TextWrapper>
     </StyledRowBetween>
   )
-}
-
-type SlippageTextContentsProps = {
-  isEoaEthFlow: boolean
-  isDefaultSlippageApplied: boolean
-  slippageLabel?: React.ReactNode
-  isDynamicSlippageSet: boolean
 }
 
 function SlippageTextContents({

@@ -13,12 +13,16 @@ const hookDapps = Object.keys(hookDappsRegistry).reduce((acc, id) => {
 const EIP_2612_PERMIT_SELECTOR = '0xd505accf'
 const DAI_PERMIT_SELECTOR = '0x8fcbaf0c'
 
-// Before the hooks store the dappId wasn't included in the hook object
-type StrictCowHook = Omit<CowHook, 'dappId'> & { dappId?: string }
-
 export interface HookToDappMatch {
   dapp: HookDappBase | null
   hook: CowHook
+}
+
+// Before the hooks store the dappId wasn't included in the hook object
+type StrictCowHook = Omit<CowHook, 'dappId'> & { dappId?: string }
+
+export function doesHookHavePermit(hook: { callData: string }): boolean {
+  return hook.callData.startsWith(EIP_2612_PERMIT_SELECTOR) || hook.callData.startsWith(DAI_PERMIT_SELECTOR)
 }
 
 export function matchHooksToDapps(hooks: StrictCowHook[], dapps: HookDappBase[]): HookToDappMatch[] {
@@ -54,10 +58,6 @@ export function matchHooksToDapps(hooks: StrictCowHook[], dapps: HookDappBase[])
         }
       })
   )
-}
-
-export function doesHookHavePermit(hook: { callData: string }): boolean {
-  return hook.callData.startsWith(EIP_2612_PERMIT_SELECTOR) || hook.callData.startsWith(DAI_PERMIT_SELECTOR)
 }
 
 export function matchHooksToDappsRegistry(

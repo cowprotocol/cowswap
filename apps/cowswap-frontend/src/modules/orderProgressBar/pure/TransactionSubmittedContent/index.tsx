@@ -35,17 +35,6 @@ const activityStatusLabels: Partial<Record<ActivityStatus, MessageDescriptor>> =
   [ActivityStatus.FAILED]: msg`Failed`,
 }
 
-function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
-  if (!activityDerivedState) {
-    return ''
-  }
-
-  const prefix = activityDerivedState.isOrder ? t`Order` : t`Transaction`
-  const postfix = i18n._(activityStatusLabels[activityDerivedState.status] as MessageDescriptor) || t`Submitted`
-
-  return `${prefix} ${postfix}`
-}
-
 export interface TransactionSubmittedContentProps {
   onDismiss(): void
   hash: string | undefined
@@ -166,4 +155,15 @@ export function TransactionSubmittedContent({
       </styledEl.Section>
     </styledEl.Wrapper>
   )
+}
+
+function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
+  if (!activityDerivedState) {
+    return ''
+  }
+
+  const prefix = activityDerivedState.isOrder ? t`Order` : t`Transaction`
+  const postfix = i18n._(activityStatusLabels[activityDerivedState.status] as MessageDescriptor) || t`Submitted`
+
+  return `${prefix} ${postfix}`
 }

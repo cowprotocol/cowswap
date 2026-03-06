@@ -2,28 +2,6 @@ import { buildAppDataHooks } from './buildAppDataHooks'
 
 import { AppDataHooks, CowHook, TypedAppDataHooks, TypedCowHook } from '../types'
 
-export function cowHookToTypedCowHook(hook: CowHook, type: TypedCowHook['type']): TypedCowHook {
-  return { ...hook, type }
-}
-
-export function typedAppDataHooksToAppDataHooks(hooks: TypedAppDataHooks | undefined): AppDataHooks | undefined {
-  if (!hooks) {
-    return hooks
-  }
-
-  const { pre, post, ...rest } = hooks
-
-  return {
-    ...rest,
-    pre: pre ? pre?.map(typedCowHookToCowHook) : undefined,
-    post: post ? post?.map(typedCowHookToCowHook) : undefined,
-  }
-}
-
-function typedCowHookToCowHook({ type: _, ...rest }: TypedCowHook): CowHook {
-  return rest
-}
-
 export function addPermitHookToHooks(hooks: TypedAppDataHooks | undefined, permit: CowHook): AppDataHooks | undefined {
   if (!hooks) {
     return buildAppDataHooks({ preInteractionHooks: [permit] })
@@ -52,6 +30,10 @@ export function addPermitHookToHooks(hooks: TypedAppDataHooks | undefined, permi
   return typedAppDataHooksToAppDataHooks({ ...rest, pre: updatedPreHooks })
 }
 
+export function cowHookToTypedCowHook(hook: CowHook, type: TypedCowHook['type']): TypedCowHook {
+  return { ...hook, type }
+}
+
 export function removePermitHookFromHooks(hooks: TypedAppDataHooks | undefined): AppDataHooks | undefined {
   if (!hooks) {
     return hooks
@@ -62,4 +44,22 @@ export function removePermitHookFromHooks(hooks: TypedAppDataHooks | undefined):
   const filteredPre = pre?.filter((hook) => hook.type !== 'permit')
 
   return typedAppDataHooksToAppDataHooks({ ...rest, pre: filteredPre })
+}
+
+export function typedAppDataHooksToAppDataHooks(hooks: TypedAppDataHooks | undefined): AppDataHooks | undefined {
+  if (!hooks) {
+    return hooks
+  }
+
+  const { pre, post, ...rest } = hooks
+
+  return {
+    ...rest,
+    pre: pre ? pre?.map(typedCowHookToCowHook) : undefined,
+    post: post ? post?.map(typedCowHookToCowHook) : undefined,
+  }
+}
+
+function typedCowHookToCowHook({ type: _, ...rest }: TypedCowHook): CowHook {
+  return rest
 }

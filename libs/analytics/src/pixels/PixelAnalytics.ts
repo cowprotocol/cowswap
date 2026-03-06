@@ -1,14 +1,14 @@
-export enum PixelEvent {
-  INIT = 'init',
-  CONNECT_WALLET = 'connect_wallet',
-  POST_TRADE = 'post_trade',
+export interface Pixel<T> {
+  events: Record<PixelEvent, T>
+  send(event: PixelEvent): void
 }
 
 export type SendPixel = (event: PixelEvent) => void
 
-export interface Pixel<T> {
-  events: Record<PixelEvent, T>
-  send(event: PixelEvent): void
+export enum PixelEvent {
+  INIT = 'init',
+  CONNECT_WALLET = 'connect_wallet',
+  POST_TRADE = 'post_trade',
 }
 
 /**

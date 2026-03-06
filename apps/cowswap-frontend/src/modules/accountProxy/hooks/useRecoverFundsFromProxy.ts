@@ -21,15 +21,15 @@ const INFINITE_DEADLINE = 99999999999
 const DEFAULT_GAS_LIMIT = 600_000
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
-export enum RecoverSigningStep {
-  SIGN_RECOVER_FUNDS = 'SIGN_RECOVER_FUNDS',
-  SIGN_TRANSACTION = 'SIGN_TRANSACTION',
-}
-
 export interface RecoverFundsContext {
   callback: () => Promise<string | undefined>
   txSigningStep: RecoverSigningStep | null
   proxyAddress: string | undefined
+}
+
+export enum RecoverSigningStep {
+  SIGN_RECOVER_FUNDS = 'SIGN_RECOVER_FUNDS',
+  SIGN_TRANSACTION = 'SIGN_TRANSACTION',
 }
 
 export function useRecoverFundsFromProxy(

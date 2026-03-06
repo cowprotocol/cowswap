@@ -27,20 +27,14 @@ export function getAppData(): AppDataInfo {
   return appData
 }
 
-export function updateFullAppData(fullAppData: string | undefined): void {
-  if (fullAppData) {
-    appData = _fromFullAppData(fullAppData)
-  }
-}
-
 export function getFullAppDataByEnv(environmentName: EnvironmentName | undefined): string {
   return (environmentName && APP_DATA_PER_ENV[environmentName]) || DEFAULT_FULL_APP_DATA
 }
 
-function addEnvToDefaultAppData(env: EnvironmentName): string {
-  const appData: LatestAppDataDocVersion = { ...DEFAULT_FULL_APP_DATA_OBJ }
-  appData.environment = env
-  return JSON.stringify(appData)
+export function updateFullAppData(fullAppData: string | undefined): void {
+  if (fullAppData) {
+    appData = _fromFullAppData(fullAppData)
+  }
 }
 
 function _fromFullAppData(fullAppData: string): AppDataInfo {
@@ -49,4 +43,10 @@ function _fromFullAppData(fullAppData: string): AppDataInfo {
     fullAppData: fullAppData,
     appDataKeccak256: toKeccak256(fullAppData),
   }
+}
+
+function addEnvToDefaultAppData(env: EnvironmentName): string {
+  const appData: LatestAppDataDocVersion = { ...DEFAULT_FULL_APP_DATA_OBJ }
+  appData.environment = env
+  return JSON.stringify(appData)
 }

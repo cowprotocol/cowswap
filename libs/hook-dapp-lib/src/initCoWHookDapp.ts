@@ -3,13 +3,13 @@ import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { CoWHookDappEvents, hookDappIframeTransport } from './hookDappIframeTransport'
 import { CowHookCreation, CoWHookDappActions, CowHookDetails, HookDappContext, TokenData } from './types'
 
-interface CoWHookDappInit {
-  onContext(context: HookDappContext): void
-}
-
 export interface CoWHookDappHandler {
   actions: CoWHookDappActions
   provider: WidgetEthereumProvider
+}
+
+interface CoWHookDappInit {
+  onContext(context: HookDappContext): void
 }
 
 export function initCoWHookDapp({ onContext }: CoWHookDappInit): CoWHookDappHandler {

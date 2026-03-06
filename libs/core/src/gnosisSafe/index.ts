@@ -22,6 +22,50 @@ const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
 
+export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
+  const url = SAFE_TRANSACTION_SERVICE_URL[chainId as SupportedChainId]
+  if (!url) {
+    return null
+  }
+
+  const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
+
+  return new SafeApiKit({ txServiceUrl: url, chainId: BigInt(chainId) })
+}
+
+export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string): string {
+  const chainShortName = CHAIN_INFO[chainId].addressPrefix
+
+  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}`
+}
+
+export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
+  console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
+  try {
+    const client = await _getClientOrThrow(chainId)
+
+    return client.getSafeInfo(safeAddress)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+export async function getSafeTransaction(
+  chainId: number,
+  safeTxHash: string,
+): Promise<SafeMultisigTransactionResponse> {
+  console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
+  const client = await _getClientOrThrow(chainId)
+
+  return client.getTransaction(safeTxHash)
+}
+
+export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
+  const chainShortName = CHAIN_INFO[chainId].addressPrefix
+
+  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
+}
+
 async function _getClient(chainId: number): Promise<SafeApiKitType | null> {
   const cachedClient = SAFE_TRANSACTION_SERVICE_CACHE[chainId]
 
@@ -37,17 +81,6 @@ async function _getClient(chainId: number): Promise<SafeApiKitType | null> {
   return client
 }
 
-export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
-  const url = SAFE_TRANSACTION_SERVICE_URL[chainId as SupportedChainId]
-  if (!url) {
-    return null
-  }
-
-  const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
-
-  return new SafeApiKit({ txServiceUrl: url, chainId: BigInt(chainId) })
-}
-
 async function _getClientOrThrow(chainId: number): Promise<SafeApiKitType> {
   const client = await _getClient(chainId)
   if (!client) {
@@ -55,37 +88,4 @@ async function _getClientOrThrow(chainId: number): Promise<SafeApiKitType> {
   }
 
   return client
-}
-
-export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
-  const chainShortName = CHAIN_INFO[chainId].addressPrefix
-
-  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
-}
-
-export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string): string {
-  const chainShortName = CHAIN_INFO[chainId].addressPrefix
-
-  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}`
-}
-
-export async function getSafeTransaction(
-  chainId: number,
-  safeTxHash: string,
-): Promise<SafeMultisigTransactionResponse> {
-  console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
-  const client = await _getClientOrThrow(chainId)
-
-  return client.getTransaction(safeTxHash)
-}
-
-export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
-  console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
-  try {
-    const client = await _getClientOrThrow(chainId)
-
-    return client.getSafeInfo(safeAddress)
-  } catch (error) {
-    return Promise.reject(error)
-  }
 }

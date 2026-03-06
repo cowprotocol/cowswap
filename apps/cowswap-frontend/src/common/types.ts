@@ -4,8 +4,6 @@ import type { Order } from 'legacy/state/orders/actions'
 
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-export type GenericOrder = Order | ParsedOrder
-
 /**
  * https://github.com/rndlabs/composable-cow/blob/main/src/ComposableCoW.sol
  * Information about ComposableCoW conditional orders
@@ -19,6 +17,8 @@ export type ComposableCowInfo = {
   isVirtualPart?: boolean
   isTheLastPart?: boolean
 }
+
+export type GenericOrder = Order | ParsedOrder
 
 export type SafeTransactionParams = {
   submissionDate: string

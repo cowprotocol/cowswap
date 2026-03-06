@@ -1,5 +1,4 @@
-import { MetadataApi } from '@cowprotocol/cow-sdk'
-import { OrderBookApi } from '@cowprotocol/cow-sdk'
+import { MetadataApi, OrderBookApi } from '@cowprotocol/cow-sdk'
 import { SubgraphApi } from '@cowprotocol/sdk-subgraph'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS

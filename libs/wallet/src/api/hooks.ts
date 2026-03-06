@@ -25,26 +25,6 @@ import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALL
 import { useConnectionType } from '../web3-react/hooks/useConnectionType'
 import { useIsSafeApp, useIsSafeViaWc } from '../web3-react/hooks/useWalletMetadata'
 
-export function useWalletInfo(): WalletInfo {
-  return useAtomValue(walletInfoAtom)
-}
-
-export function useWalletDetails(): WalletDetails {
-  return useAtomValue(walletDetailsAtom)
-}
-
-export function useWalletDisplayedAddress(): string {
-  return useAtomValue(walletDisplayedAddress)
-}
-
-export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
-  return useAtomValue(gnosisSafeInfoAtom)
-}
-
-export function useIsEagerConnectInProgress(): boolean {
-  return useAtomValue(isEagerConnectInProgressAtom)
-}
-
 export function useBeginEagerConnect(): () => void {
   const set = useSetAtom(eagerConnectPendingOpsAtom)
   return useCallback(() => set((prev) => prev + 1), [set])
@@ -53,6 +33,79 @@ export function useBeginEagerConnect(): () => void {
 export function useEndEagerConnect(): () => void {
   const set = useSetAtom(eagerConnectPendingOpsAtom)
   return useCallback(() => set((prev) => (prev > 0 ? prev - 1 : 0)), [set])
+}
+
+export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
+  return useAtomValue(gnosisSafeInfoAtom)
+}
+
+export function useIsAssetWatchingSupported(): boolean {
+  const { connector } = useConnection()
+  const connectionType = useConnectionType()
+  const info = useSelectedEip6963ProviderInfo()
+
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isInjectedConnection = connector?.type === ConnectorType.INJECTED
+  }
+
+  if (!info || !isInjectedConnection) return false
+
+  // TODO: check other wallets and extend the array
+  return WATCH_ASSET_SUPPORED_WALLETS.includes(info.info.rdns)
+}
+
+export function useIsBraveWallet(): boolean {
+  const { connector } = useConnection()
+  const connectionType = useConnectionType()
+  const info = useSelectedEip6963ProviderInfo()
+
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isInjectedConnection = connector?.type === ConnectorType.INJECTED
+  }
+
+  if (!info || !isInjectedConnection) return false
+
+  return BRAVE_WALLET_RDNS === info.info.rdns
+}
+
+export function useIsEagerConnectInProgress(): boolean {
+  return useAtomValue(isEagerConnectInProgressAtom)
+}
+
+export function useIsMetamaskBrowserExtensionWallet(): boolean {
+  const { connector } = useConnection()
+  const connectionType = useConnectionType()
+  const info = useSelectedEip6963ProviderInfo()
+
+  let isMetamaskConnection = connectionType === ConnectionType.METAMASK
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
+    isInjectedConnection = connector?.type === ConnectorType.INJECTED
+  }
+
+  if (isMetamaskConnection) return true
+
+  if (!info || !isInjectedConnection) return false
+
+  return METAMASK_RDNS === info.info.rdns
+}
+
+export function useIsRabbyWallet(): boolean {
+  const { connector } = useConnection()
+  const connectionType = useConnectionType()
+  const info = useSelectedEip6963ProviderInfo()
+
+  let isInjectedConnection = connectionType === ConnectionType.INJECTED
+  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+    isInjectedConnection = connector?.type === ConnectorType.INJECTED
+  }
+
+  if (!info || !isInjectedConnection) return false
+
+  return RABBY_RDNS === info.info.rdns
 }
 
 export function useIsTxBundlingSupported(): boolean | null {
@@ -76,8 +129,8 @@ export function useMultiInjectedProviders() {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSetEip6963Provider() {
-  return useSetAtom(selectedEip6963ProviderRdnsAtom)
+export function useSelectedEip6963ProviderInfo() {
+  return useAtomValue(selectedEip6963ProviderAtom)
 }
 
 // TODO: Add proper return type annotation
@@ -88,71 +141,18 @@ export function useSelectedEip6963ProviderRdns() {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSelectedEip6963ProviderInfo() {
-  return useAtomValue(selectedEip6963ProviderAtom)
+export function useSetEip6963Provider() {
+  return useSetAtom(selectedEip6963ProviderRdnsAtom)
 }
 
-export function useIsAssetWatchingSupported(): boolean {
-  const { connector } = useConnection()
-  const connectionType = useConnectionType()
-  const info = useSelectedEip6963ProviderInfo()
-
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
-
-  if (!info || !isInjectedConnection) return false
-
-  // TODO: check other wallets and extend the array
-  return WATCH_ASSET_SUPPORED_WALLETS.includes(info.info.rdns)
+export function useWalletDetails(): WalletDetails {
+  return useAtomValue(walletDetailsAtom)
 }
 
-export function useIsRabbyWallet(): boolean {
-  const { connector } = useConnection()
-  const connectionType = useConnectionType()
-  const info = useSelectedEip6963ProviderInfo()
-
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
-
-  if (!info || !isInjectedConnection) return false
-
-  return RABBY_RDNS === info.info.rdns
+export function useWalletDisplayedAddress(): string {
+  return useAtomValue(walletDisplayedAddress)
 }
 
-export function useIsBraveWallet(): boolean {
-  const { connector } = useConnection()
-  const connectionType = useConnectionType()
-  const info = useSelectedEip6963ProviderInfo()
-
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
-
-  if (!info || !isInjectedConnection) return false
-
-  return BRAVE_WALLET_RDNS === info.info.rdns
-}
-
-export function useIsMetamaskBrowserExtensionWallet(): boolean {
-  const { connector } = useConnection()
-  const connectionType = useConnectionType()
-  const info = useSelectedEip6963ProviderInfo()
-
-  let isMetamaskConnection = connectionType === ConnectionType.METAMASK
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
-
-  if (isMetamaskConnection) return true
-
-  if (!info || !isInjectedConnection) return false
-
-  return METAMASK_RDNS === info.info.rdns
+export function useWalletInfo(): WalletInfo {
+  return useAtomValue(walletInfoAtom)
 }

@@ -15,31 +15,16 @@ export * from './web3-react/hooks/useConnectionType'
 
 export * from './web3-react/hooks/useDisconnectWallet'
 
-export function useAccountType(): AccountType | undefined {
-  const newUseAccountType = newUseIsSmartContract.useAccountType()
-  const legacyUseAccountType = legacyUseIsSmartContractWallet.useAccountType()
-  return LAUNCH_DARKLY_VIEM_MIGRATION ? newUseAccountType : legacyUseAccountType
-}
-export function useIsSmartContractWallet(): boolean | undefined {
-  const newIsSmartContractWallet = newUseIsSmartContract.useIsSmartContractWallet()
-  const legacyIsSmartContractWallet = legacyUseIsSmartContractWallet.useIsSmartContractWallet()
-  return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsSmartContractWallet : legacyIsSmartContractWallet
-}
-
 export function getIsWalletConnect(connector: LegacyConnector): boolean {
   const newIsWalletConnect = newUseIsWalletConnect.getIsWalletConnect(connector)
   const legacyIsWalletConnect = legacyUseIsWalletConnect.getIsWalletConnect(connector)
   return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsWalletConnect : legacyIsWalletConnect
 }
-export function useIsWalletConnect(): boolean {
-  const newIsWalletConnect = newUseIsWalletConnect.useIsWalletConnect()
-  const legacyIsWalletConnect = legacyUseIsWalletConnect.useIsWalletConnect()
-  return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsWalletConnect : legacyIsWalletConnect
+export function useAccountType(): AccountType | undefined {
+  const newUseAccountType = newUseIsSmartContract.useAccountType()
+  const legacyUseAccountType = legacyUseIsSmartContractWallet.useAccountType()
+  return LAUNCH_DARKLY_VIEM_MIGRATION ? newUseAccountType : legacyUseAccountType
 }
-
-export * from './web3-react/hooks/useSafeAppsSdk'
-
-export * from './web3-react/hooks/useSwitchNetwork'
 
 export function useIsSafeApp(): boolean {
   const newIsSafeApp = newUseWalletMetadata.useIsSafeApp()
@@ -51,10 +36,25 @@ export function useIsSafeViaWc(): boolean {
   const legacyIsSafeViaWc = legacyUseWalletMetadata.useIsSafeViaWc()
   return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsSafeViaWc : legacyIsSafeViaWc
 }
+
+export * from './web3-react/hooks/useSafeAppsSdk'
+
+export * from './web3-react/hooks/useSwitchNetwork'
+
 export function useIsSafeWallet(): boolean {
   const newIsSafeWallet = newUseWalletMetadata.useIsSafeWallet()
   const legacyIsSafeWallet = legacyUseWalletMetadata.useIsSafeWallet()
   return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsSafeWallet : legacyIsSafeWallet
+}
+export function useIsSmartContractWallet(): boolean | undefined {
+  const newIsSmartContractWallet = newUseIsSmartContract.useIsSmartContractWallet()
+  const legacyIsSmartContractWallet = legacyUseIsSmartContractWallet.useIsSmartContractWallet()
+  return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsSmartContractWallet : legacyIsSmartContractWallet
+}
+export function useIsWalletConnect(): boolean {
+  const newIsWalletConnect = newUseIsWalletConnect.useIsWalletConnect()
+  const legacyIsWalletConnect = legacyUseIsWalletConnect.useIsWalletConnect()
+  return LAUNCH_DARKLY_VIEM_MIGRATION ? newIsWalletConnect : legacyIsWalletConnect
 }
 export function useWalletMetaData(standaloneMode?: boolean): newUseWalletMetadata.WalletMetaData {
   const newWalletMetadata = newUseWalletMetadata.useWalletMetaData(standaloneMode)

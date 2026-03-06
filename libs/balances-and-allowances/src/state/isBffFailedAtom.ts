@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { atom, useAtomValue } from 'jotai/index'
+import { useSetAtom, atom, useAtomValue } from 'jotai'
 
 export const isBffFailedAtom = atom(false)
 

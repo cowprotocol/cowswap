@@ -25,10 +25,6 @@ const EVENT_DELAY_MS = 1000
  *  - changed eth_accounts to eth_requestAccounts because new version of the SDK requires this method to be called first of all
  */
 
-function parseChainId(chainId: string | number): number {
-  return typeof chainId === 'number' ? chainId : Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
-}
-
 /**
  * @param options - Options to pass to `@coinbase/wallet-sdk`.
  * @param onError - Handler to report errors thrown from eventListeners.
@@ -262,4 +258,8 @@ export class CoinbaseWallet extends Connector {
         return true
       })
   }
+}
+
+function parseChainId(chainId: string | number): number {
+  return typeof chainId === 'number' ? chainId : Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 }

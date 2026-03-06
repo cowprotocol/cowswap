@@ -9,61 +9,6 @@ import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function watchTxChanges(_pendingHashes: string[], _chainId: number, _dispatch: Dispatch) {
-  return
-  // for (const hash of pendingHashes) {
-  // try {
-  //   const blocknativeSdk = null
-  //
-  //   if (!blocknativeSdk) {
-  //     console.error('[CancelReplaceTxUpdater][watchTxChanges] No blocknative sdk for chainId', chainId)
-  //     return
-  //   }
-  //
-  //   const { emitter } = blocknativeSdk.transaction(hash)
-  //   console.info('[CancelReplaceTxUpdater][watchTxChanges]', { chainId, hash })
-  //   const currentHash = hash
-  //
-  //   emitter.on('txSpeedUp', (e) => {
-  //     console.info('[CancelReplaceTxUpdater][watchTxChanges][txSpeedUp event]', { ...e })
-  //     if ('replaceHash' in e && typeof e.replaceHash === 'string') {
-  //       dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'speedup' }))
-  //     }
-  //   })
-  //
-  //   emitter.on('txCancel', (e) => {
-  //     console.info('[CancelReplaceTxUpdater][watchTxChanges][txCancel event]', { ...e })
-  //     if ('replaceHash' in e && typeof e.replaceHash === 'string') {
-  //       dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'cancel' }))
-  //     }
-  //   })
-  // } catch (error: any) {
-  //   console.error('[CancelReplaceTxUpdater][watchTxChanges] Failed to watch tx', { hash }, error)
-  // }
-  // }
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function unwatchTxChanges(_pendingHashes: string[], _chainId: number) {
-  return
-  // const blocknativeSdk = null
-  //
-  // if (!blocknativeSdk) {
-  //   return
-  // }
-  //
-  // for (const hash of pendingHashes) {
-  //   try {
-  //     blocknativeSdk.unsubscribe(hash)
-  //   } catch {
-  //     console.error('[CancelReplaceTxUpdater][unwatchTxChanges] Failed to unsubscribe', { hash })
-  //   }
-  // }
-}
-
 /**
  * Updater to watch the mempoll and detect when a tx has been cancelled/replaced
  *
@@ -100,4 +45,59 @@ export function CancelReplaceTxUpdater(): null {
   }, [chainId, provider, pendingHashes, dispatch])
 
   return null
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function unwatchTxChanges(_pendingHashes: string[], _chainId: number) {
+  return
+  // const blocknativeSdk = null
+  //
+  // if (!blocknativeSdk) {
+  //   return
+  // }
+  //
+  // for (const hash of pendingHashes) {
+  //   try {
+  //     blocknativeSdk.unsubscribe(hash)
+  //   } catch {
+  //     console.error('[CancelReplaceTxUpdater][unwatchTxChanges] Failed to unsubscribe', { hash })
+  //   }
+  // }
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function watchTxChanges(_pendingHashes: string[], _chainId: number, _dispatch: Dispatch) {
+  return
+  // for (const hash of pendingHashes) {
+  // try {
+  //   const blocknativeSdk = null
+  //
+  //   if (!blocknativeSdk) {
+  //     console.error('[CancelReplaceTxUpdater][watchTxChanges] No blocknative sdk for chainId', chainId)
+  //     return
+  //   }
+  //
+  //   const { emitter } = blocknativeSdk.transaction(hash)
+  //   console.info('[CancelReplaceTxUpdater][watchTxChanges]', { chainId, hash })
+  //   const currentHash = hash
+  //
+  //   emitter.on('txSpeedUp', (e) => {
+  //     console.info('[CancelReplaceTxUpdater][watchTxChanges][txSpeedUp event]', { ...e })
+  //     if ('replaceHash' in e && typeof e.replaceHash === 'string') {
+  //       dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'speedup' }))
+  //     }
+  //   })
+  //
+  //   emitter.on('txCancel', (e) => {
+  //     console.info('[CancelReplaceTxUpdater][watchTxChanges][txCancel event]', { ...e })
+  //     if ('replaceHash' in e && typeof e.replaceHash === 'string') {
+  //       dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'cancel' }))
+  //     }
+  //   })
+  // } catch (error: any) {
+  //   console.error('[CancelReplaceTxUpdater][watchTxChanges] Failed to watch tx', { hash }, error)
+  // }
+  // }
 }

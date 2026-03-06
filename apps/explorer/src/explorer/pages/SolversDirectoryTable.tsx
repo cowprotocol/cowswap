@@ -15,10 +15,6 @@ interface SolversDirectoryTableProps {
 
 const SOLVER_SUFFIX_REGEX = /-solve$/i
 
-function normalizeSolverIdentifier(value: string): string {
-  return value.trim().toLowerCase().replace(SOLVER_SUFFIX_REGEX, '')
-}
-
 function findMatchingSolverId(solversInfo: SolverInfo[], solverDeeplink?: string | null): string | null {
   if (!solverDeeplink) return null
 
@@ -32,6 +28,10 @@ function findMatchingSolverId(solversInfo: SolverInfo[], solverDeeplink?: string
   })
 
   return matchingSolver?.solverId || null
+}
+
+function normalizeSolverIdentifier(value: string): string {
+  return value.trim().toLowerCase().replace(SOLVER_SUFFIX_REGEX, '')
 }
 
 const SOLVERS_TABLE_HEADER = (

@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
-import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
+import { UI, RowFixed, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'

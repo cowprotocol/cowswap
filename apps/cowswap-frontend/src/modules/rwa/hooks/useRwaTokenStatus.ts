@@ -12,17 +12,6 @@ import { useRwaConsentStatus } from './useRwaConsentStatus'
 
 import { RwaConsentKey } from '../types/rwaConsent'
 
-export enum RwaTokenStatus {
-  /** No RWA restrictions - proceed normally */
-  Allowed = 'Allowed',
-  /** User's country is in the blocked list - cannot trade */
-  Restricted = 'Restricted',
-  /** Country unknown/loading and consent not yet given - show consent modal */
-  RequiredConsent = 'RequiredConsent',
-  /** Country unknown/loading but consent already given - can proceed */
-  ConsentIsSigned = 'ConsentIsSigned',
-}
-
 export interface RwaTokenInfo {
   token: Token
   blockedCountries: Set<string>
@@ -39,12 +28,15 @@ export interface UseRwaTokenStatusParams {
   outputCurrency: Nullish<Currency>
 }
 
-function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToken: Token): RwaTokenInfo {
-  return {
-    token: originalToken,
-    blockedCountries: new Set(restrictedInfo.restrictedCountries),
-    consentHash: restrictedInfo.consentHash,
-  }
+export enum RwaTokenStatus {
+  /** No RWA restrictions - proceed normally */
+  Allowed = 'Allowed',
+  /** User's country is in the blocked list - cannot trade */
+  Restricted = 'Restricted',
+  /** Country unknown/loading and consent not yet given - show consent modal */
+  RequiredConsent = 'RequiredConsent',
+  /** Country unknown/loading but consent already given - can proceed */
+  ConsentIsSigned = 'ConsentIsSigned',
 }
 
 export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaTokenStatusParams): RwaTokenStatusResult {
@@ -109,4 +101,12 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
   }, [isRwaGeoblockEnabled, rwaTokenInfo, geoStatus.country, consentStatus])
 
   return useMemo(() => ({ status, rwaTokenInfo }), [status, rwaTokenInfo])
+}
+
+function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToken: Token): RwaTokenInfo {
+  return {
+    token: originalToken,
+    blockedCountries: new Set(restrictedInfo.restrictedCountries),
+    consentHash: restrictedInfo.consentHash,
+  }
 }
