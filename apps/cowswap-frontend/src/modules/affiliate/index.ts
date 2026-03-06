@@ -4,6 +4,7 @@ export { AffiliatePartnerNextPayout } from './containers/AffiliatePartnerNextPay
 export { AffiliatePartnerOnboard } from './containers/AffiliatePartnerOnboard'
 export { AffiliatePartnerStats } from './containers/AffiliatePartnerStats'
 export { AffiliateTraderCodeInfo } from './containers/AffiliateTraderCodeInfo'
+export { AffiliateTraderExpiryBanner } from './containers/AffiliateTraderExpiryBanner'
 export { AffiliateTraderModal } from './containers/AffiliateTraderModal'
 export { AffiliateTraderNextPayout } from './containers/AffiliateTraderNextPayout'
 export { AffiliateTraderOnboard } from './containers/AffiliateTraderOnboard'
