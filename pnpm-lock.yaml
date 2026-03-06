@@ -1698,9 +1698,28 @@ importers:
 
   libs/currency:
     dependencies:
+      '@cowprotocol/cow-sdk':
+        specifier: 7.4.1
+        version: 7.4.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
       '@uniswap/sdk-core':
         specifier: ^3.0.1
         version: 3.2.6
+      big.js:
+        specifier: 5.2.2
+        version: 5.2.2
+      decimal.js-light:
+        specifier: 2.5.1
+        version: 2.5.1
+      jsbi:
+        specifier: ^3.1.4
+        version: 3.2.5
+      toformat:
+        specifier: 2.0.0
+        version: 2.0.0
+    devDependencies:
+      '@types/big.js':
+        specifier: 6.2.2
+        version: 6.2.2
 
   libs/ens:
     dependencies:
@@ -6679,6 +6698,9 @@ packages:
 
   '@types/base16@1.0.5':
     resolution: {integrity: sha512-OzOWrTluG9cwqidEzC/Q6FAmIPcnZfm8BFRlIx0+UIUqnuAmi5OS88O0RpT3Yz6qdmqObvUhasrbNsCofE4W9A==}
+
+  '@types/big.js@6.2.2':
+    resolution: {integrity: sha512-e2cOW9YlVzFY2iScnGBBkplKsrn2CsObHQ2Hiw4V1sSyiGbgWL8IyqE3zFi1Pt5o1pdAtYkDAIsF3KKUPjdzaA==}
 
   '@types/bn.js@5.1.1':
     resolution: {integrity: sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g==}
@@ -22908,6 +22930,8 @@ snapshots:
       '@babel/types': 7.28.5
 
   '@types/base16@1.0.5': {}
+
+  '@types/big.js@6.2.2': {}
 
   '@types/bn.js@5.1.1':
     dependencies:
