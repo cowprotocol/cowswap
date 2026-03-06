@@ -2,9 +2,10 @@ import { atom } from 'jotai'
 
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
+import { OrderTabId, tabParamAtom } from 'common/state/routesState'
+
 import { ordersTableStateAtom } from '../ordersTable.atoms'
-import { tabParamAtom } from '../params/ordersTableParams.atoms'
-import { OrderTabId, ORDERS_TABLE_TABS } from '../tabs/ordersTableTabs.constants'
+import { ORDERS_TABLE_TABS } from '../tabs/ordersTableTabs.constants'
 
 export const ordersTableTabsAtom = atom((get) => {
   const { account } = get(walletInfoAtom)
@@ -20,17 +21,17 @@ export const ordersTableTabsAtom = atom((get) => {
 
   return ORDERS_TABLE_TABS.filter((tab) => {
     // Always show OPEN and HISTORY tabs
-    if (tab.id === OrderTabId.open || tab.id === OrderTabId.history) {
+    if (tab.id === OrderTabId.OPEN || tab.id === OrderTabId.HISTORY) {
       return true
     }
 
     // Only include the unfillable tab if there are unfillable orders
-    if (tab.id === OrderTabId.unfillable) {
+    if (tab.id === OrderTabId.UNFILLABLE) {
       return ordersList[tab.id].length > 0
     }
 
     // Only include the signing tab if there are signing orders
-    if (tab.id === OrderTabId.signing) {
+    if (tab.id === OrderTabId.SIGNING) {
       return ordersList[tab.id].length > 0
     }
 

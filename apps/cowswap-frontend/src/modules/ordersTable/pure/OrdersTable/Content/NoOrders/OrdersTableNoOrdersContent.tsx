@@ -8,12 +8,12 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useLoadMoreOrders } from 'modules/orders'
-import { TabOrderTypes } from 'modules/ordersTable/state/ordersTable.types'
+
+import { TabOrderTypes, OrderTabId } from 'common/state/routesState'
 
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
 
 import { useNoOrdersAnimation } from '../../../../hooks/useNoOrdersAnimation'
-import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
 import { HistoryStatusFilter } from '../../../../utils/getFilteredOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 

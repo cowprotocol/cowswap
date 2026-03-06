@@ -10,8 +10,8 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders'
 import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
-import { ordersTableParamsAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
+import { OrderTabId, ordersTableParamsAtom } from 'common/state/routesState'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -27,7 +27,7 @@ import {
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { ORDERS_TABLE_PAGE_SIZE } from '../../state/tabs/ordersTableTabs.constants'
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
@@ -39,7 +39,7 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
   return orders.slice(start, end)
 }
 
-const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
+const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.OPEN, OrderTabId.UNFILLABLE] as const
 
 export function OrdersTableWidget(): ReactNode {
   const { i18n } = useLingui()
@@ -73,7 +73,7 @@ export function OrdersTableWidget(): ReactNode {
   /*
   useEffect(() => {
     // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
-    if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
+    if (currentTabId !== OrderTabId.HISTORY) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
   }, [currentTabId])
   */
 
@@ -106,7 +106,7 @@ export function OrdersTableWidget(): ReactNode {
         {!!reduxOrders?.length && (
           <>
             {/* Show onlyFilled select only in history tab */}
-            {currentTabId === OrderTabId.history && (
+            {currentTabId === OrderTabId.HISTORY && (
               <SelectContainer>
                 <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
                   <option value="filled">{i18n._('Filled orders')}</option>

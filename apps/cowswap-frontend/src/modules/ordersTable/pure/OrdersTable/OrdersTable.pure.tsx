@@ -5,8 +5,9 @@ import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
 import { usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
-import { pageParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
 
+import { ordersToCancelMapAtom } from 'common/state/ordersToCancel.atom'
+import { TabOrderTypes, pageParamAtom, OrderTabId, locationOrderTypeAtom } from 'common/state/routesState'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
@@ -18,11 +19,8 @@ import { OrdersTableRow } from './Row/OrdersTableRow.pure'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
-import { TabOrderTypes } from '../../state/ordersTable.types'
-import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { ORDERS_TABLE_PAGE_SIZE } from '../../state/tabs/ordersTableTabs.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
-import { ordersToCancelMapAtom } from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
-import { locationOrderTypeAtom } from 'common/state/routesState'
 
 export interface OrdersTableProps {
   currentTab: OrderTabId
@@ -35,7 +33,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
 
-  const orderType = useAtomValue(locationOrderTypeAtom);
+  const orderType = useAtomValue(locationOrderTypeAtom)
   const currentPageNumber = useAtomValue(pageParamAtom)
 
   const { filteredOrders, balancesAndAllowances } = useOrdersTableState() || {}
@@ -69,7 +67,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const tableHeaders = TABLE_HEADERS
 
   const visibleHeaders = useMemo(() => {
-    const isHistoryTab = currentTab === OrderTabId.history
+    const isHistoryTab = currentTab === OrderTabId.HISTORY
     return tableHeaders.filter((header) => {
       // If showInHistory is not defined, show the header in all tabs
       if (header.showInHistory === undefined) return true
@@ -118,7 +116,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
         />
       )}
 
-      {currentTab === OrderTabId.open && currentPageNumber === lastPageNumber && orderType === TabOrderTypes.LIMIT && (
+      {currentTab === OrderTabId.OPEN && currentPageNumber === lastPageNumber && orderType === TabOrderTypes.LIMIT && (
         <LoadMoreOrdersSection totalOpenOrders={totalFilteredOrders} />
       )}
     </>

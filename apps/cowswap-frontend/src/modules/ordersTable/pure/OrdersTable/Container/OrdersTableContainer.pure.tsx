@@ -4,17 +4,16 @@ import { PropsWithChildren, ReactNode } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
-import { tabParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
+import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { OrderTabId, tabParamAtom } from 'common/state/routesState'
 
 import * as styledEl from './OrdersTableContainer.styled'
 
 import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDisplayProtocolFeeBanner'
-import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
-import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode {
   const { account } = useWalletInfo()
@@ -32,7 +31,7 @@ export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode
             <styledEl.TabsContainer>
               <OrdersTabs />
               {children && (
-                <styledEl.RightContainer $isHistoryTab={currentTabId === OrderTabId.history /* || OrderTabId.open */}>
+                <styledEl.RightContainer $isHistoryTab={currentTabId === OrderTabId.HISTORY /* || OrderTabId.OPEN */}>
                   {children}
                 </styledEl.RightContainer>
               )}

@@ -30,13 +30,11 @@ import { getOrdersTableList } from 'modules/ordersTable/utils/getOrdersTableList
 import { emulatedPartOrdersAtom } from 'modules/twap/hooks/useEmulatedPartOrders'
 import { emulatedTwapOrdersAtom } from 'modules/twap/hooks/useEmulatedTwapOrders'
 
-import { locationOrderTypeAtom } from 'common/state/routesState'
+import { TabOrderTypes, locationOrderTypeAtom, tabParamAtom, OrderTabId } from 'common/state/routesState'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { OrdersTableState, OrdersTableFilters, TabOrderTypes } from './ordersTable.types'
-import { tabParamAtom } from './params/ordersTableParams.atoms'
+import { OrdersTableState, OrdersTableFilters } from './ordersTable.types'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
-import { OrderTabId } from './tabs/ordersTableTabs.constants'
 
 export const ordersTableStateAtom = atom<OrdersTableState>({
   reduxOrders: [],
@@ -61,7 +59,7 @@ export const DEFAULT_ORDERS_TABLE_FILTERS = {
   // orderType: TabOrderTypes.LIMIT,
   // currentPageNumber: 1, // TODO: Init from URL...
   // tabs: [],
-  // currentTabId: OrderTabId.open, // TODO: Init from URL...
+  // currentTabId: OrderTabId.OPEN, // TODO: Init from URL...
   searchTerm: '',
   historyStatusFilter: HistoryStatusFilter.FILLED,
 } as const satisfies OrdersTableFilters
@@ -134,7 +132,7 @@ ordersTableStateAtom.onMount = () => {
       const filteredOrders = useFilteredOrders(orders, {
         searchTerm,
         // The status filter select is only visible in the story tab:
-        historyStatusFilter: currentTabId === OrderTabId.history ? historyStatusFilter : HistoryStatusFilter.ALL,
+        historyStatusFilter: currentTabId === OrderTabId.HISTORY ? historyStatusFilter : HistoryStatusFilter.ALL,
       })
       const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
       const tabs = useTabs(ordersList, currentTabId)
@@ -270,7 +268,7 @@ ordersTableStateAtom.onMount = () => {
       const filteredOrders = getFilteredOrders(orders, {
         searchTerm,
         // The status filter select is only visible in the story tab:
-        historyStatusFilter: currentTabId === OrderTabId.history ? historyStatusFilter : HistoryStatusFilter.ALL,
+        historyStatusFilter: currentTabId === OrderTabId.HISTORY ? historyStatusFilter : HistoryStatusFilter.ALL,
       })
 
       console.log(`5. filteredOrders (${currentTabId}) =`, filteredOrders)

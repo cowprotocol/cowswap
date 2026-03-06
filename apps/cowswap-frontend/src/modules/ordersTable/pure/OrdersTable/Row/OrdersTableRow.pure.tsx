@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import React, { ReactNode } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -5,17 +6,17 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 
+import { ordersToCancelMapAtom } from 'common/state/ordersToCancel.atom'
+import { OrderTabId } from 'common/state/routesState'
+
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 
 import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../state/ordersTable.types'
 import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/usePendingOrderPermitValidity'
-import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
-import { useAtomValue } from 'jotai'
-import { ordersToCancelMapAtom } from 'common/hooks/useMultipleOrdersCancellation/ordersToCancel.atom'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
@@ -54,7 +55,7 @@ export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowP
       <OrderRow
         isRowSelectable={isRowSelectable}
         isRowSelected={!!ordersToCancelMap[order.id]}
-        isHistoryTab={currentTab === OrderTabId.history}
+        isHistoryTab={currentTab === OrderTabId.HISTORY}
         order={order}
         spotPrice={spotPrice}
         prices={pendingOrdersPrices[order.id]}
@@ -75,7 +76,7 @@ export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowP
         balancesAndAllowances={balancesAndAllowances}
         isRowSelectable={isRowSelectable}
         isRowSelected={!!ordersToCancelMap[item.parent.id]}
-        isHistoryTab={currentTab === OrderTabId.history}
+        isHistoryTab={currentTab === OrderTabId.HISTORY}
         spotPrice={spotPrice}
         prices={pendingOrdersPrices[item.parent.id]}
         isRateInverted={false}

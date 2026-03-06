@@ -9,40 +9,10 @@ import type { Order } from 'legacy/state/orders/actions'
 import type { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 
 import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
+import type { OrderTabId } from 'common/state/routesState'
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import type { OrderTabId } from './tabs/ordersTableTabs.constants'
-
-export interface OrdersTablePageParams {
-  tabId: OrderTabId
-  pageNumber: number
-}
-
-export enum TabOrderTypes {
-  SWAP = 'swap',
-  LIMIT = 'limit',
-  ADVANCED = 'advanced',
-}
-
-export interface OrderTableGroup {
-  parent: ParsedOrder
-  children: ParsedOrder[]
-}
-
-export type OrderTableItem = OrderTableGroup | ParsedOrder
-
 export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
-
-export interface TabParams {
-  id: OrderTabId
-  title: MessageDescriptor
-  count: number
-  isActive?: boolean
-}
-
-export interface OrdersTableParams {
-  orders: Order[]
-}
 
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
@@ -51,18 +21,6 @@ export interface OrderActions {
   toggleOrderForCancellation(order: ParsedOrder): void
   toggleOrdersForCancellation(orders: ParsedOrder[]): void
   approveOrderToken(token: Token): void
-}
-
-// TODO: Add TS Doc about what each of them is:
-export interface OrdersTableState {
-  reduxOrders: Order[]
-  pendingOrders: Order[]
-  ordersList: OrdersTableList
-  orders: OrderTableItem[]
-  filteredOrders: OrderTableItem[]
-  hasHydratedOrders: boolean
-  balancesAndAllowances: BalancesAndAllowances
-  // orderActions: OrderActions
 }
 
 export interface OrdersTableFilters {
@@ -83,3 +41,38 @@ export interface OrdersTableFilters {
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>
+
+export interface OrdersTablePageParams {
+  tabId: OrderTabId
+  pageNumber: number
+}
+
+export interface OrdersTableParams {
+  orders: Order[]
+}
+
+// TODO: Add TS Doc about what each of them is:
+export interface OrdersTableState {
+  reduxOrders: Order[]
+  pendingOrders: Order[]
+  ordersList: OrdersTableList
+  orders: OrderTableItem[]
+  filteredOrders: OrderTableItem[]
+  hasHydratedOrders: boolean
+  balancesAndAllowances: BalancesAndAllowances
+  // orderActions: OrderActions
+}
+
+export interface OrderTableGroup {
+  parent: ParsedOrder
+  children: ParsedOrder[]
+}
+
+export type OrderTableItem = OrderTableGroup | ParsedOrder
+
+export interface TabParams {
+  id: OrderTabId
+  title: MessageDescriptor
+  count: number
+  isActive?: boolean
+}

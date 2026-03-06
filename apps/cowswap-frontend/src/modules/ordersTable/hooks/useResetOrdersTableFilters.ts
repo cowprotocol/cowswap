@@ -1,8 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { ordersTableFiltersAtom } from '../state/ordersTable.atoms'
-import { DEFAULT_ORDERS_TABLE_FILTERS } from '../state/ordersTable.atoms'
+import { ordersTableFiltersAtom, DEFAULT_ORDERS_TABLE_FILTERS } from '../state/ordersTable.atoms'
 import { OrdersTableFilters } from '../state/ordersTable.types'
 
 export interface UseResetOrdersTableFiltersProps extends Partial<OrdersTableFilters> {
@@ -15,7 +14,7 @@ export function useResetOrdersTableFilters({
   // syncWithUrl = true,
   ...ordersTableFilters
 }: UseResetOrdersTableFiltersProps): void {
-  console.trace("useResetOrdersTableFilters");
+  console.trace('useResetOrdersTableFilters')
 
   const setOrdersTableFilters = useSetAtom(ordersTableFiltersAtom)
 
@@ -32,7 +31,7 @@ export function useResetOrdersTableFilters({
 
   useEffect(() => {
     // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
-    if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
+    if (currentTabId !== OrderTabId.HISTORY) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
   }, [currentTabId])
   */
 

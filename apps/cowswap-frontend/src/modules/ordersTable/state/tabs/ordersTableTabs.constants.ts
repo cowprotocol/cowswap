@@ -1,12 +1,7 @@
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
-export enum OrderTabId {
-  signing = 'signing',
-  open = 'open',
-  unfillable = 'unfillable',
-  history = 'history',
-}
+import { OrderTabId } from 'common/state/routesState'
 
 export interface OrderTab {
   id: OrderTabId
@@ -17,22 +12,22 @@ export interface OrderTab {
 
 export const ORDERS_TABLE_TABS: OrderTab[] = [
   {
-    id: OrderTabId.signing,
+    id: OrderTabId.SIGNING,
     title: msg`Signing`,
     count: 0,
   },
   {
-    id: OrderTabId.open,
+    id: OrderTabId.OPEN,
     title: msg`Open`,
     count: 0,
   },
   {
-    id: OrderTabId.unfillable,
+    id: OrderTabId.UNFILLABLE,
     title: msg`Unfillable`,
     count: 0,
   },
   {
-    id: OrderTabId.history,
+    id: OrderTabId.HISTORY,
     title: msg`Orders history`,
     count: 0,
   },

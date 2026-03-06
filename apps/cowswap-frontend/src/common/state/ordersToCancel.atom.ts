@@ -5,21 +5,24 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { observe } from 'jotai-effect'
 
-import { tabParamAtom } from 'modules/ordersTable/state/params/ordersTableParams.atoms'
-
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
+
+import { tabParamAtom } from './routesState'
 
 export const ordersToCancelAtom = atom<CancellableOrder[]>([])
 
 export const ordersToCancelMapAtom = atom((get) => {
   const ordersToCancel = get(ordersToCancelAtom)
 
-  return ordersToCancel.reduce((acc, orderToCancel) => {
-    acc[orderToCancel.id] = true
+  return ordersToCancel.reduce(
+    (acc, orderToCancel) => {
+      acc[orderToCancel.id] = true
 
-    return acc
-  }, {} as Record<string, true>)
+      return acc
+    },
+    {} as Record<string, true>,
+  )
 })
 
 export const updateOrdersToCancelAtom = atom(null, (get, set, nextState: CancellableOrder[]) => {
@@ -36,8 +39,8 @@ export const removeOrdersToCancelAtom = atom(null, (get, set, ordersUids: string
   })
 })
 
-// Reset ordersLimitAtom every time the network or the wallet address change, and make sure we are only observing
-// walletKeyAtom if we are also observing ordersLimitAtom.
+// Reset ordersToCancelAtom every time the network, wallet address or orders table tab change (only while/when
+// ordersToCancelAtom is being observed):
 
 const resetOrdersToCancelKeyAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
@@ -47,15 +50,8 @@ const resetOrdersToCancelKeyAtom = atom((get) => {
 })
 
 ordersToCancelAtom.onMount = () => {
-  // TODO: This might not be needed at all:
-  let prevResetOrdersToCancelKey = ''
-
   return observe((get, set) => {
-    const resetOrdersToCancelKey = get(resetOrdersToCancelKeyAtom)
-
-    if (prevResetOrdersToCancelKey !== resetOrdersToCancelKey) {
-      prevResetOrdersToCancelKey = resetOrdersToCancelKey
-      set(ordersToCancelAtom, [])
-    }
+    get(resetOrdersToCancelKeyAtom)
+    set(ordersToCancelAtom, [])
   }, jotaiStore)
 }
