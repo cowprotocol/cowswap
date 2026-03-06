@@ -5,7 +5,11 @@ import { getOrders } from 'api/cowProtocol'
 
 import { checkIfTraderHasPastTrades } from './checkIfTraderHasPastTrades'
 
-import { AFFILIATE_SUPPORTED_CHAIN_IDS, PAST_ORDERS_SCAN_LIMIT } from '../config/affiliateProgram.const'
+import {
+  AFFILIATE_SUPPORTED_CHAIN_IDS,
+  PAST_ORDERS_SCAN_LIMIT,
+  TRADE_ENVS_TO_CHECK,
+} from '../config/affiliateProgram.const'
 
 jest.mock('api/cowProtocol', () => ({
   getOrders: jest.fn(),
@@ -22,6 +26,14 @@ function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
     status: OrderStatus.OPEN,
     ...overrides,
   } as EnrichedOrder
+}
+
+function buildFullAppData(appCode: string, refCode?: string): string {
+  return JSON.stringify({
+    appCode,
+    metadata: refCode ? { referrer: { code: refCode } } : {},
+    version: '1.0.0',
+  })
 }
 
 describe('checkIfTraderHasPastTrades', () => {
@@ -96,11 +108,7 @@ describe('checkIfTraderHasPastTrades', () => {
     // arrange
     getOrdersMock.mockResolvedValue([
       buildOrder({
-        fullAppData: JSON.stringify({
-          appCode: DEFAULT_APP_CODE,
-          metadata: { referrer: { code: 'abcde' } },
-          version: '1.0.0',
-        }),
+        fullAppData: buildFullAppData(DEFAULT_APP_CODE, 'abcde'),
       }),
     ])
 
@@ -109,6 +117,30 @@ describe('checkIfTraderHasPastTrades', () => {
 
     // assert
     expect(result).toEqual({ hasPastTrades: true, refCode: 'ABCDE' })
+  })
+
+  it('returns ref code from first valid CoW order when multiple executed CoW orders exist', async () => {
+    // arrange
+    getOrdersMock.mockResolvedValue([
+      buildOrder({
+        status: OrderStatus.FULFILLED,
+        executedBuyAmount: '1',
+        executedSellAmountBeforeFees: '1',
+        fullAppData: buildFullAppData(DEFAULT_APP_CODE, 'FIRST'),
+      }),
+      buildOrder({
+        status: OrderStatus.FULFILLED,
+        executedBuyAmount: '1',
+        executedSellAmountBeforeFees: '1',
+        fullAppData: buildFullAppData(DEFAULT_APP_CODE, 'SECOND'),
+      }),
+    ])
+
+    // act
+    const result = await checkIfTraderHasPastTrades(OWNER)
+
+    // assert
+    expect(result).toEqual({ hasPastTrades: true, refCode: 'FIRST' })
   })
 
   it('ignores integrator and invalid ref codes while scanning relevant orders', async () => {
@@ -178,9 +210,20 @@ describe('checkIfTraderHasPastTrades', () => {
     await checkIfTraderHasPastTrades(OWNER)
 
     // assert
-    expect(getOrdersMock).toHaveBeenCalledWith(
-      { owner: OWNER, limit: PAST_ORDERS_SCAN_LIMIT },
-      expect.objectContaining({ env: 'prod' }),
-    )
+    const expectedCallsCount = AFFILIATE_SUPPORTED_CHAIN_IDS.length * TRADE_ENVS_TO_CHECK.length
+    expect(getOrdersMock).toHaveBeenCalledTimes(expectedCallsCount)
+
+    const contexts = getOrdersMock.mock.calls.map(([, context]) => context)
+    const envs = [...new Set(contexts.map((context) => context.env))].sort()
+    const expectedEnvs = [...TRADE_ENVS_TO_CHECK].sort()
+
+    expect(envs).toEqual(expectedEnvs)
+    contexts.forEach((context) => {
+      expect(context).toEqual(expect.objectContaining({ chainId: expect.any(Number), env: expect.any(String) }))
+    })
+
+    getOrdersMock.mock.calls.forEach(([params]) => {
+      expect(params).toEqual(expect.objectContaining({ owner: OWNER, limit: PAST_ORDERS_SCAN_LIMIT }))
+    })
   })
 })

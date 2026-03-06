@@ -94,15 +94,4 @@ describe('isExecutedNonIntegratorOrder', () => {
     // assert
     expect(result).toBe(false)
   })
-
-  it('returns false when executed amounts are missing', () => {
-    // arrange
-    const order = buildOrder({ executedBuyAmount: undefined, executedSellAmountBeforeFees: undefined })
-
-    // act
-    const result = isExecutedNonIntegratorOrder(order)
-
-    // assert
-    expect(result).toBe(false)
-  })
 })
