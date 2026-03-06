@@ -26,13 +26,15 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
         return chainBlock
       })
     },
-    [activeChainId, setChainBlock],
+    [activeChainId],
   )
+
+  const handleBlock = useCallback((block: { number: bigint }) => onBlock(Number(block.number)), [onBlock])
 
   useWatchBlocks({
     chainId: activeChainId,
     enabled: Boolean(activeChainId) && windowVisible,
-    onBlock: (block) => onBlock(Number(block.number)),
+    onBlock: handleBlock,
   })
 
   useEffect(() => {
