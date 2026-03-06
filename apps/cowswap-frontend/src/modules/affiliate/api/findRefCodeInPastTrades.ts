@@ -1,13 +1,19 @@
-import { Address, CowEnv } from '@cowprotocol/cow-sdk'
+import { Address } from '@cowprotocol/cow-sdk'
 
 import { getOrders } from 'api/cowProtocol'
 import { safeShortenAddress } from 'utils/address'
 
-import { AFFILIATE_SUPPORTED_CHAIN_IDS } from '../config/affiliateProgram.const'
-import { extractFullAppDataFromOrder, getRefCodeFromAppData } from '../lib/affiliateProgramUtils'
+import {
+  AFFILIATE_SUPPORTED_CHAIN_IDS,
+  PAST_ORDERS_SCAN_LIMIT,
+  TRADE_ENVS_TO_CHECK,
+} from '../config/affiliateProgram.const'
+import {
+  extractFullAppDataFromOrder,
+  getRefCodeFromAppData,
+  isExecutedNonIntegratorOrder,
+} from '../lib/affiliateProgramUtils'
 import { logAffiliate } from '../utils/logger'
-
-const TRADE_ENVS_TO_CHECK: CowEnv[] = ['prod', 'staging']
 
 export async function findRefCodeInPastTrades(owner: Address): Promise<string | undefined> {
   logAffiliate(safeShortenAddress(owner), 'Calling cow api for each supported chain/env to recover ref code')
@@ -16,8 +22,10 @@ export async function findRefCodeInPastTrades(owner: Address): Promise<string | 
     AFFILIATE_SUPPORTED_CHAIN_IDS.flatMap((chainId) =>
       TRADE_ENVS_TO_CHECK.map(async (env) => {
         try {
-          const orders = await getOrders({ owner, limit: 1 }, { chainId, env })
-          return orders.map((trade) => getRefCodeFromAppData(extractFullAppDataFromOrder(trade)))
+          const orders = await getOrders({ owner, limit: PAST_ORDERS_SCAN_LIMIT }, { chainId, env })
+          return orders
+            .filter(isExecutedNonIntegratorOrder)
+            .map((order) => getRefCodeFromAppData(extractFullAppDataFromOrder(order)))
         } catch (error) {
           logAffiliate(safeShortenAddress(owner), 'Failed to fetch trades for ref code recovery', error, {
             chainId,

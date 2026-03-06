@@ -1,5 +1,6 @@
+import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
-import { Address, areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
 import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
@@ -135,6 +136,20 @@ export function extractFullAppDataFromResponse(response: AppDataResponse | strin
 
 export function extractFullAppDataFromOrder(order: AppDataOrder): string | undefined {
   return extractFullAppDataFromResponse(order) || extractFullAppDataFromResponse(order.apiAdditionalInfo)
+}
+
+export function isExecutedNonIntegratorOrder(order: EnrichedOrder): boolean {
+  const { status } = order
+
+  if (status === OrderStatus.CANCELLED || status === OrderStatus.EXPIRED) return false
+  if (order.executedBuyAmount === '0' && order.executedSellAmountBeforeFees === '0') return false
+
+  const fullAppData = extractFullAppDataFromOrder(order)
+  const appCode = decodeAppData(fullAppData)?.appCode
+
+  if (typeof appCode !== 'string') return false
+
+  return appCode === DEFAULT_APP_CODE || appCode === SAFE_APP_CODE
 }
 
 type LocalTradeOrder = AppDataOrder & {
