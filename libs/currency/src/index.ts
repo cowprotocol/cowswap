@@ -9,5 +9,7 @@ export { Price } from './entities/fractions/price'
 export { NativeCurrency } from './entities/nativeCurrency'
 export { Token } from './entities/token'
 
+export { Ether } from './entities/ether'
+
 // Not yet migrated — still from @uniswap/sdk-core
-export { Ether, MaxUint256, WETH9 } from '@uniswap/sdk-core'
+export { MaxUint256, WETH9 } from '@uniswap/sdk-core'

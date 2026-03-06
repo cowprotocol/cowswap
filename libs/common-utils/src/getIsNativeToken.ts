@@ -11,7 +11,8 @@ export function getIsNativeToken(currency: Currency): currency is NativeCurrency
 export function getIsNativeToken(currency: TokenWithLogo): boolean
 export function getIsNativeToken(chainId: SupportedChainId, tokenId: string): boolean
 export function getIsNativeToken(chainIdOrTokenParams: SupportedChainId | Currency, _tokenId?: string): boolean {
-  if (chainIdOrTokenParams instanceof NativeCurrency) return chainIdOrTokenParams.isNative
+  if (typeof chainIdOrTokenParams === 'object' && 'isNative' in chainIdOrTokenParams && chainIdOrTokenParams.isNative)
+    return true
 
   if (typeof chainIdOrTokenParams === 'number') {
     const nativeToken = NATIVE_CURRENCIES[chainIdOrTokenParams as SupportedChainId]
