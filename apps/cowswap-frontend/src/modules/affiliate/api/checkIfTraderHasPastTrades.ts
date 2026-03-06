@@ -28,7 +28,7 @@ export interface PastTradesCheckResult {
 export async function checkIfTraderHasPastTrades(owner: Address): Promise<PastTradesCheckResult> {
   logAffiliate(safeShortenAddress(owner), 'Calling cow api for each supported chain/env to check for executed trades')
 
-  const tradesByChainAndEnv = await Promise.all(
+  const ordersByChainAndEnv = await Promise.all(
     AFFILIATE_SUPPORTED_CHAIN_IDS.flatMap((chainId) =>
       TRADE_ENVS_TO_CHECK.map(async (env) => {
         try {
@@ -46,8 +46,8 @@ export async function checkIfTraderHasPastTrades(owner: Address): Promise<PastTr
     ),
   )
 
-  const hasPastTrades = tradesByChainAndEnv.some((orders) => orders.length > 0)
-  const refCode = tradesByChainAndEnv
+  const hasPastTrades = ordersByChainAndEnv.some((orders) => orders.length > 0)
+  const refCode = ordersByChainAndEnv
     .flat()
     .map((order) => getRefCodeFromAppData(extractFullAppDataFromOrder(order)))
     .find((code) => !!code)

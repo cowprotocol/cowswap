@@ -10,6 +10,11 @@ interface UseAffiliateTraderPastOrdersParams {
   enabled: boolean
 }
 
+const EMPTY_RESULT: PastTradesCheckResult = {
+  hasPastTrades: false,
+  refCode: undefined,
+}
+
 export function useAffiliateTraderPastOrders(
   params: UseAffiliateTraderPastOrdersParams,
 ): SWRResponse<PastTradesCheckResult, Error> {
@@ -17,13 +22,7 @@ export function useAffiliateTraderPastOrders(
 
   return useSWR<PastTradesCheckResult>(
     enabled && !!account ? ['affiliate-orderbook-trades-check', account] : null,
-    async () =>
-      !account
-        ? {
-            hasPastTrades: false,
-            refCode: undefined,
-          }
-        : checkIfTraderHasPastTrades(account),
+    async () => (!account ? EMPTY_RESULT : checkIfTraderHasPastTrades(account)),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

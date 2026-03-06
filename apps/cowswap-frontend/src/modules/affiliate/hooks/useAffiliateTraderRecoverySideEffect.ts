@@ -5,8 +5,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { safeShortenAddress } from 'utils/address'
 
+import { useAffiliateTraderPastOrders } from './useAffiliateTraderPastOrders'
 import { useRefCodeFromLocalTrades } from './useRefCodeFromLocalTrades'
-import { useRefCodeFromOrderbookTrades } from './useRefCodeFromOrderbookTrades'
 
 import { affiliateTraderSavedCodeAtom, setAffiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 import { logAffiliate } from '../utils/logger'
@@ -16,10 +16,11 @@ export function useAffiliateTraderRecoverySideEffect(): void {
   const { isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
   const setSavedCode = useSetAtom(setAffiliateTraderSavedCodeAtom)
   const localCode = useRefCodeFromLocalTrades(account)
-  const { data: orderbookCode } = useRefCodeFromOrderbookTrades({
+  const { data: pastTradesCheck } = useAffiliateTraderPastOrders({
     account,
     enabled: !localCode,
   })
+  const orderbookCode = pastTradesCheck?.refCode
 
   useEffect(() => {
     if (!account || isLinked) {

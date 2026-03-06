@@ -18,6 +18,14 @@ jest.mock('api/cowProtocol', () => ({
 const getOrdersMock = getOrders as jest.MockedFunction<typeof getOrders>
 const OWNER = '0x1111111111111111111111111111111111111111'
 
+function buildFullAppData(appCode: string, refCode?: string): string {
+  return JSON.stringify({
+    appCode,
+    metadata: refCode ? { referrer: { code: refCode } } : {},
+    version: '1.0.0',
+  })
+}
+
 function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
   return {
     fullAppData: JSON.stringify({ appCode: DEFAULT_APP_CODE, metadata: {}, version: '1.0.0' }),
@@ -26,14 +34,6 @@ function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
     status: OrderStatus.OPEN,
     ...overrides,
   } as EnrichedOrder
-}
-
-function buildFullAppData(appCode: string, refCode?: string): string {
-  return JSON.stringify({
-    appCode,
-    metadata: refCode ? { referrer: { code: refCode } } : {},
-    version: '1.0.0',
-  })
 }
 
 describe('checkIfTraderHasPastTrades', () => {
