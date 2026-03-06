@@ -12,6 +12,8 @@ interface TokensModuleEnvironment {
   selectedLists?: string[]
   bridgeNetworkInfo?: ChainInfo[]
 }
+
+// TODO: Why do we have this? Read it directly from URL => atom
 export const { atom: environmentAtom, updateAtom: updateEnvironmentAtom } = atomWithPartialUpdate(
   atom<TokensModuleEnvironment>({
     chainId: getCurrentChainIdFromUrl(),

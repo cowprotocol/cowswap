@@ -8,7 +8,7 @@
  * updateUserTokensForTwapOrdersAsyncAtom.
  */
 
-import { atom, useAtomValue } from 'jotai'
+import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
 import { TokenWithLogo, getRpcProvider } from '@cowprotocol/common-const'
@@ -33,15 +33,15 @@ function tokenKey(chainId: number, address: string): string {
   return `${chainId}::${address.toLowerCase()}`
 }
 
-export const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
+const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
 
 // TODO: Maybe it's better to just create a module that stores the fetched tokens in memory.
-export const tokenQueryFamily = atomFamily((key: string) =>
+const tokenQueryFamily = atomFamily((key: string) =>
   atomWithQuery(() => {
     const { chainId, address } = parseTokenKey(key)
 
     return {
-      queryKey: ['twapOrderToken', chainId, address] as const,
+      queryKey: ['twapOrderToken', chainId, address],
       queryFn: async (): Promise<TokenWithLogo | null> => {
         const provider = getRpcProvider(chainId)
 
@@ -57,7 +57,8 @@ export const tokenQueryFamily = atomFamily((key: string) =>
   }),
 )
 
-export const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | null> => {
+const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | null> => {
+  // TODO: Why do we read chainId from libs/tokens/src/state/environmentAtom.ts in here?
   const { tokens, chainId } = await get(tokensByAddressAtom)
   const twapOrdersTokensAddresses = get(twapOrdersTokensAddressesAtom)
 
@@ -98,18 +99,9 @@ export const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddre
   return twapOrdersTokens
 })
 
-export const twapOrdersTokensLoadableAtom = loadable(twapOrdersTokensAsyncAtom)
+const twapOrdersTokensLoadableAtom = loadable(twapOrdersTokensAsyncAtom)
 
 export const twapOrdersTokensAtom = atom((get): TokensByAddress | null => {
   const loadableState = get(twapOrdersTokensLoadableAtom)
   return loadableState.state === 'hasData' ? loadableState.data : null
 })
-
-/**
- * Returns the map of tokens for TWAP orders (known tokens + fetched via atomWithQuery).
- * Same signature as the original useTwapOrdersTokens: TokensByAddress | undefined.
- */
-export function useTwapOrdersTokens(): TokensByAddress | null {
-  const loadableState = useAtomValue(twapOrdersTokensLoadableAtom)
-  return loadableState.state === 'hasData' ? loadableState.data : null
-}

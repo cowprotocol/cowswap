@@ -1,11 +1,11 @@
-import { TokensByAddress } from '@cowprotocol/tokens'
-import { walletInfoAtom } from '@cowprotocol/wallet'
 import { atom } from 'jotai'
 
+import { walletInfoAtom } from '@cowprotocol/wallet'
+
 import { twapOrdersListAtom, mapTwapOrderToStoreOrder } from 'entities/twap'
+import { twapOrdersTokensAtom } from 'entities/twap/state/twapOrdersTokensAtom'
 
 import { Order } from 'legacy/state/orders/actions'
-import { twapOrdersTokensAtom } from 'entities/twap/hooks/useTwapOrdersTokens'
 
 /**
  * Returns a list of emulated twap orders
