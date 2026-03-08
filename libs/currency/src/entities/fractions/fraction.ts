@@ -1,15 +1,9 @@
-/// <reference path="../../types/toformat.d.ts" />
-/// <reference path="../../types/augmentations.d.ts" />
-
-import _Big from 'big.js'
-import _Decimal from 'decimal.js-light'
+import Big from 'big.js'
+import Decimal from 'decimal.js-light'
 import JSBI from 'jsbi'
-import toFormat from 'toformat'
 
+import { applyFormat, FormatOptions, stripTrailingZeros } from '../../utils/applyFormat'
 import { BigintIsh, Rounding } from '../constants'
-
-const Decimal = toFormat(_Decimal)
-const Big = toFormat(_Big)
 
 const toSignificantRounding = {
   [Rounding.ROUND_DOWN]: Decimal.ROUND_DOWN,
@@ -125,7 +119,7 @@ export class Fraction {
 
   toSignificant(
     significantDigits: number,
-    format: object = { groupSeparator: '' },
+    format: FormatOptions = { groupSeparator: '' },
     rounding: Rounding = Rounding.ROUND_HALF_UP,
   ): string {
     if (!Number.isInteger(significantDigits)) throw new Error(`${significantDigits} is not an integer.`)
@@ -135,12 +129,12 @@ export class Fraction {
     const quotient = new Decimal(this.numerator.toString())
       .div(this.denominator.toString())
       .toSignificantDigits(significantDigits)
-    return quotient.toFormat(quotient.decimalPlaces(), format)
+    return applyFormat(stripTrailingZeros(quotient.toFixed(quotient.decimalPlaces())), format)
   }
 
   toFixed(
     decimalPlaces: number,
-    format: object = { groupSeparator: '' },
+    format: FormatOptions = { groupSeparator: '' },
     rounding: Rounding = Rounding.ROUND_HALF_UP,
   ): string {
     if (!Number.isInteger(decimalPlaces)) throw new Error(`${decimalPlaces} is not an integer.`)
@@ -148,7 +142,10 @@ export class Fraction {
 
     Big.DP = decimalPlaces
     Big.RM = toFixedRounding[rounding]
-    return new Big(this.numerator.toString()).div(this.denominator.toString()).toFormat(decimalPlaces, format)
+    return applyFormat(
+      new Big(this.numerator.toString()).div(this.denominator.toString()).toFixed(decimalPlaces),
+      format,
+    )
   }
 
   /**
