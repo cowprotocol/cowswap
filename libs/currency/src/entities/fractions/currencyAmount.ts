@@ -1,19 +1,14 @@
-/// <reference path="../../types/toformat.d.ts" />
-/// <reference path="../../types/augmentations.d.ts" />
-
 import { MAX_UINT256 } from '@cowprotocol/cow-sdk'
 
-import _Big from 'big.js'
+import Big from 'big.js'
 import JSBI from 'jsbi'
-import toFormat from 'toformat'
 
 import { Fraction } from './fraction'
 
+import { applyFormat, FormatOptions, stripTrailingZeros } from '../../utils/applyFormat'
 import { BigintIsh, Rounding } from '../constants'
 import { Currency } from '../currency'
 import { Token } from '../token'
-
-const Big = toFormat(_Big)
 
 const MAX_UINT = JSBI.BigInt(MAX_UINT256.toString())
 
@@ -75,7 +70,7 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
 
   override toSignificant(
     significantDigits: number = 6,
-    format?: object,
+    format?: FormatOptions,
     rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
     return super.divide(this.decimalScale).toSignificant(significantDigits, format, rounding)
@@ -83,16 +78,19 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
 
   override toFixed(
     decimalPlaces: number = this.currency.decimals,
-    format?: object,
+    format?: FormatOptions,
     rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
     if (decimalPlaces > this.currency.decimals) throw new Error('DECIMALS')
     return super.divide(this.decimalScale).toFixed(decimalPlaces, format, rounding)
   }
 
-  toExact(format: object = { groupSeparator: '' }): string {
+  toExact(format: FormatOptions = { groupSeparator: '' }): string {
     Big.DP = this.currency.decimals
-    return new Big(this.quotient.toString()).div(this.decimalScale.toString()).toFormat(format)
+    return applyFormat(
+      stripTrailingZeros(new Big(this.quotient.toString()).div(this.decimalScale.toString()).toFixed(Big.DP)),
+      format,
+    )
   }
 
   get wrapped(): CurrencyAmount<Token> {

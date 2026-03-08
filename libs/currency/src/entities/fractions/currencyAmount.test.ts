@@ -114,5 +114,11 @@ describe('CurrencyAmount', () => {
       const amount = CurrencyAmount.fromRawAmount(token, 123e13)
       expect(amount.toExact()).toEqual('0.00123')
     })
+    it('does not use scientific notation for very small amounts', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      // 25000 / 10^18 = 2.5e-14 — must be full decimal, not scientific notation
+      const amount = CurrencyAmount.fromRawAmount(token, 25000)
+      expect(amount.toExact()).toEqual('0.000000000000025')
+    })
   })
 })

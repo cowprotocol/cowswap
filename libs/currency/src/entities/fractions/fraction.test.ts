@@ -212,6 +212,15 @@ describe('Fraction', () => {
         expect(() => new Fraction(1, 2).toFixed(-1)).toThrow('-1 is negative.')
       })
     })
+
+    describe('scientific notation', () => {
+      it('does not use scientific notation for very small values', () => {
+        // 1 / 10^18 = 1e-18
+        expect(new Fraction(1, 10 ** 18).toFixed(18)).toBe('0.000000000000000001')
+        // 25000 / 10^18 = 2.5e-14
+        expect(new Fraction(25000, 10 ** 18).toFixed(15)).toBe('0.000000000000025')
+      })
+    })
   })
 
   describe('#toSignificant', () => {
@@ -287,6 +296,15 @@ describe('Fraction', () => {
 
       it('throws for negative significant digits', () => {
         expect(() => new Fraction(1, 2).toSignificant(-1)).toThrow('-1 is not positive.')
+      })
+    })
+
+    describe('scientific notation', () => {
+      it('does not use scientific notation for very small values', () => {
+        // 1 / 10^18 = 1e-18
+        expect(new Fraction(1, 10 ** 18).toSignificant(1)).toBe('0.000000000000000001')
+        // 25000 / 10^18 = 2.5e-14
+        expect(new Fraction(25000, 10 ** 18).toSignificant(2)).toBe('0.000000000000025')
       })
     })
   })
