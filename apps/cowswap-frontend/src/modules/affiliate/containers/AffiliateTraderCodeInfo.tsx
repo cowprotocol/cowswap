@@ -9,6 +9,7 @@ import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
+import ms from 'ms.macro'
 import SVG from 'react-inlinesvg'
 
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
@@ -31,6 +32,8 @@ import {
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
+const TIME_AGO_UPDATE_INTERVAL_MS = ms`1m`
+
 export function AffiliateTraderCodeInfo(): ReactNode {
   const { account } = useWalletInfo()
   const { savedCode, isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
@@ -40,7 +43,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
   const { data: info, isLoading: codeLoading } = useAffiliateTraderInfo(savedCode)
 
   const approxNextUpdateAt = useMemo(() => getApproxNextStatsUpdateAt(), [])
-  const approxNextUpdateTimeAgo = useTimeAgo(approxNextUpdateAt, 60_000)
+  const approxNextUpdateTimeAgo = useTimeAgo(approxNextUpdateAt, TIME_AGO_UPDATE_INTERVAL_MS)
 
   return (
     <ColumnOneCard showLoader={statsLoading || codeLoading}>

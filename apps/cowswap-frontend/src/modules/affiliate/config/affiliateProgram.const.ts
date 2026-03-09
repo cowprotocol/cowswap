@@ -33,6 +33,8 @@ export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 export const AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS = 6
 export const AFFILIATE_REWARDS_UPDATE_LAG_HOURS = 1
+export const AFFILIATE_REWARDS_UPDATE_INTERVAL_MS = ms`6h`
+export const AFFILIATE_REWARDS_UPDATE_LAG_MS = ms`1h`
 export const AFFILIATE_PAYOUTS_CHAIN_ID = SupportedChainId.MAINNET
 
 export const VERIFICATION_DEBOUNCE_MS = 350
