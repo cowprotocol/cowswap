@@ -1,45 +1,66 @@
-import Big, { RoundingMode } from 'big.js'
-
 import { stripTrailingZeros } from './applyFormat'
+import { toFixed } from './toFixed'
+
+import { Rounding } from '../entities/constants'
 
 /**
  * Divides numerator by denominator and returns a string rounded to the given
- * number of significant digits, using the given big.js rounding mode.
+ * number of significant digits, using the given rounding mode.
  * Never returns scientific notation.
  */
 export function toSignificant(
   numerator: string,
   denominator: string,
   significantDigits: number,
-  roundingMode: RoundingMode,
+  rounding: Rounding,
 ): string {
-  const prevDP = Big.DP
-  const prevRM = Big.RM
+  let num = BigInt(numerator)
+  let den = BigInt(denominator)
 
-  // Set both DP and RM before division so intermediate value has enough
-  // precision and the correct rounding mode propagates through toFixed.
-  Big.DP = significantDigits + 20
-  Big.RM = roundingMode
+  if (num === 0n) return '0'
 
-  const value = new Big(numerator).div(denominator)
+  // Determine sign and work with absolute values
+  const negative = num < 0n !== den < 0n
+  if (num < 0n) num = -num
+  if (den < 0n) den = -den
 
-  // Number of decimal places needed to express `significantDigits` sig figs:
-  // e.g. 0.666 (e=-1) with 4 sig figs → dp = 4-1-(-1) = 4
-  //      1234.5 (e=3) with 5 sig figs → dp = 5-1-3 = 1
-  //      12345 (e=4) with 3 sig figs → dp = 3-1-4 = -2 (integer rounding)
-  const logicalDp = significantDigits - 1 - value.e
+  // Number of decimal places needed to express significantDigits sig figs
+  const e = findExponent(num, den)
+  const logicalDp = significantDigits - 1 - e
 
   let result: string
   if (logicalDp >= 0) {
-    result = stripTrailingZeros(value.toFixed(logicalDp))
+    result = stripTrailingZeros(toFixed(num.toString(), den.toString(), logicalDp, rounding))
   } else {
-    // Round to nearest 10^shift (e.g. nearest 100 for shift=2)
+    // Round at integer level (e.g. 12345 → 12300 for 3 sig figs)
     const shift = -logicalDp
-    const scaled = value.div(new Big(10).pow(shift))
-    result = scaled.toFixed(0) + '0'.repeat(shift)
+    const scaledDen = den * 10n ** BigInt(shift)
+    const quotient = calculateQuotient(num, scaledDen, rounding)
+    result = quotient.toString() + '0'.repeat(shift)
   }
 
-  Big.DP = prevDP
-  Big.RM = prevRM
-  return result
+  return negative ? '-' + result : result
+}
+
+function calculateQuotient(numerator: bigint, scaledDen: bigint, rounding: Rounding): bigint {
+  const quotient = numerator / scaledDen
+  const rem = numerator % scaledDen
+  const isRoundingUp = rounding === Rounding.ROUND_UP || rounding === Rounding.ROUND_HALF_UP
+  if (isRoundingUp && rem > 0n) {
+    return quotient + 1n
+  } else if (isRoundingUp && rem * 2n >= scaledDen) {
+    return quotient + 1n
+  }
+
+  return quotient
+}
+
+// Returns floor(log10(num/den)), assuming num and den are positive.
+function findExponent(num: bigint, den: bigint): number {
+  if (num >= den) return (num / den).toString().length - 1
+  // num < den → e < 0; find smallest k such that num * 10^k >= den
+  const lenDiff = den.toString().length - num.toString().length
+  let k = lenDiff
+  while (num * 10n ** BigInt(k) < den) k++
+  return -k
 }

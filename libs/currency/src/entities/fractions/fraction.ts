@@ -1,16 +1,9 @@
-import Big, { RoundingMode } from 'big.js'
 import JSBI from 'jsbi'
 
 import { applyFormat, FormatOptions } from '../../utils/applyFormat'
+import { toFixed as divToFixed } from '../../utils/toFixed'
 import { toSignificant } from '../../utils/toSignificant'
 import { BigintIsh, Rounding } from '../constants'
-
-// big.js rounding modes: 0 = round down, 1 = round half up, 3 = round up
-const toFixedRounding: Record<Rounding, RoundingMode> = {
-  [Rounding.ROUND_DOWN]: 0,
-  [Rounding.ROUND_HALF_UP]: 1,
-  [Rounding.ROUND_UP]: 3,
-}
 
 export class Fraction {
   readonly numerator: JSBI
@@ -120,12 +113,7 @@ export class Fraction {
     if (!(significantDigits > 0)) throw new Error(`${significantDigits} is not positive.`)
 
     return applyFormat(
-      toSignificant(
-        this.numerator.toString(),
-        this.denominator.toString(),
-        significantDigits,
-        toFixedRounding[rounding],
-      ),
+      toSignificant(this.numerator.toString(), this.denominator.toString(), significantDigits, rounding),
       format,
     )
   }
@@ -138,10 +126,8 @@ export class Fraction {
     if (!Number.isInteger(decimalPlaces)) throw new Error(`${decimalPlaces} is not an integer.`)
     if (!(decimalPlaces >= 0)) throw new Error(`${decimalPlaces} is negative.`)
 
-    Big.DP = decimalPlaces
-    Big.RM = toFixedRounding[rounding]
     return applyFormat(
-      new Big(this.numerator.toString()).div(this.denominator.toString()).toFixed(decimalPlaces),
+      divToFixed(this.numerator.toString(), this.denominator.toString(), decimalPlaces, rounding),
       format,
     )
   }

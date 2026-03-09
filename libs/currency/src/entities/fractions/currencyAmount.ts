@@ -1,11 +1,11 @@
 import { MAX_UINT256 } from '@cowprotocol/cow-sdk'
 
-import Big from 'big.js'
 import JSBI from 'jsbi'
 
 import { Fraction } from './fraction'
 
 import { applyFormat, FormatOptions, stripTrailingZeros } from '../../utils/applyFormat'
+import { toFixed as divToFixed } from '../../utils/toFixed'
 import { BigintIsh, Rounding } from '../constants'
 import { Currency } from '../currency'
 import { Token } from '../token'
@@ -86,9 +86,10 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
   }
 
   toExact(format: FormatOptions = { groupSeparator: '' }): string {
-    Big.DP = this.currency.decimals
     return applyFormat(
-      stripTrailingZeros(new Big(this.quotient.toString()).div(this.decimalScale.toString()).toFixed(Big.DP)),
+      stripTrailingZeros(
+        divToFixed(this.quotient.toString(), this.decimalScale.toString(), this.currency.decimals, Rounding.ROUND_DOWN),
+      ),
       format,
     )
   }

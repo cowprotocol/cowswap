@@ -4,7 +4,7 @@ export interface FormatOptions {
 }
 
 /**
- * Applies number formatting to a numeric string that uses '.' as the decimal separator.
+ * applies number formatting to a numeric string that uses '.' as the decimal separator.
  */
 export function applyFormat(value: string, format: FormatOptions = {}): string {
   const { groupSeparator = '', decimalSeparator = '.' } = format
