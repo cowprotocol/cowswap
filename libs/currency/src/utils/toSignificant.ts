@@ -9,33 +9,33 @@ import { Rounding } from '../entities/constants'
  * Never returns scientific notation.
  */
 export function toSignificant(
-  numerator: string,
-  denominator: string,
+  numeratorStr: string,
+  denominatorStr: string,
   significantDigits: number,
   rounding: Rounding,
 ): string {
-  let num = BigInt(numerator)
-  let den = BigInt(denominator)
+  let numerator = BigInt(numeratorStr)
+  let denominator = BigInt(denominatorStr)
 
-  if (num === 0n) return '0'
+  if (numerator === 0n) return '0'
 
   // Determine sign and work with absolute values
-  const negative = num < 0n !== den < 0n
-  if (num < 0n) num = -num
-  if (den < 0n) den = -den
+  const negative = numerator < 0n !== denominator < 0n
+  if (numerator < 0n) numerator = -numerator
+  if (denominator < 0n) denominator = -denominator
 
-  // Number of decimal places needed to express significantDigits sig figs
-  const e = findExponent(num, den)
-  const logicalDp = significantDigits - 1 - e
+  // number of decimal places needed to express significantDigits sig figs
+  const exponent = findExponent(numerator, denominator)
+  const logicalDp = significantDigits - 1 - exponent
 
   let result: string
   if (logicalDp >= 0) {
-    result = stripTrailingZeros(toFixed(num.toString(), den.toString(), logicalDp, rounding))
+    result = stripTrailingZeros(toFixed(numerator.toString(), denominator.toString(), logicalDp, rounding))
   } else {
-    // Round at integer level (e.g. 12345 → 12300 for 3 sig figs)
+    // round at integer level (e.g. 12345 → 12300 for 3 sig figs)
     const shift = -logicalDp
-    const scaledDen = den * 10n ** BigInt(shift)
-    const quotient = calculateQuotient(num, scaledDen, rounding)
+    const scaledDen = denominator * 10n ** BigInt(shift)
+    const quotient = calculateQuotient(numerator, scaledDen, rounding)
     result = quotient.toString() + '0'.repeat(shift)
   }
 
@@ -55,12 +55,12 @@ function calculateQuotient(numerator: bigint, scaledDen: bigint, rounding: Round
   return quotient
 }
 
-// Returns floor(log10(num/den)), assuming num and den are positive.
-function findExponent(num: bigint, den: bigint): number {
-  if (num >= den) return (num / den).toString().length - 1
+// returns floor(log10(num/den)), assuming numerator and denominator are positive.
+function findExponent(numerator: bigint, denominator: bigint): number {
+  if (numerator >= denominator) return (numerator / denominator).toString().length - 1
   // num < den → e < 0; find smallest k such that num * 10^k >= den
-  const lenDiff = den.toString().length - num.toString().length
+  const lenDiff = denominator.toString().length - numerator.toString().length
   let k = lenDiff
-  while (num * 10n ** BigInt(k) < den) k++
+  while (numerator * 10n ** BigInt(k) < denominator) k++
   return -k
 }

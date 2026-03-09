@@ -112,10 +112,13 @@ export class Fraction {
     if (!Number.isInteger(significantDigits)) throw new Error(`${significantDigits} is not an integer.`)
     if (!(significantDigits > 0)) throw new Error(`${significantDigits} is not positive.`)
 
-    return applyFormat(
-      toSignificant(this.numerator.toString(), this.denominator.toString(), significantDigits, rounding),
-      format,
+    const significant = toSignificant(
+      this.numerator.toString(),
+      this.denominator.toString(),
+      significantDigits,
+      rounding,
     )
+    return applyFormat(significant, format)
   }
 
   toFixed(
