@@ -1,18 +1,12 @@
-import Big from 'big.js'
-import Decimal from 'decimal.js-light'
+import Big, { RoundingMode } from 'big.js'
 import JSBI from 'jsbi'
 
-import { applyFormat, FormatOptions, stripTrailingZeros } from '../../utils/applyFormat'
+import { applyFormat, FormatOptions } from '../../utils/applyFormat'
+import { toSignificant } from '../../utils/toSignificant'
 import { BigintIsh, Rounding } from '../constants'
 
-const toSignificantRounding = {
-  [Rounding.ROUND_DOWN]: Decimal.ROUND_DOWN,
-  [Rounding.ROUND_HALF_UP]: Decimal.ROUND_HALF_UP,
-  [Rounding.ROUND_UP]: Decimal.ROUND_UP,
-}
-
 // big.js rounding modes: 0 = round down, 1 = round half up, 3 = round up
-const toFixedRounding = {
+const toFixedRounding: Record<Rounding, RoundingMode> = {
   [Rounding.ROUND_DOWN]: 0,
   [Rounding.ROUND_HALF_UP]: 1,
   [Rounding.ROUND_UP]: 3,
@@ -125,11 +119,15 @@ export class Fraction {
     if (!Number.isInteger(significantDigits)) throw new Error(`${significantDigits} is not an integer.`)
     if (!(significantDigits > 0)) throw new Error(`${significantDigits} is not positive.`)
 
-    Decimal.set({ precision: significantDigits + 1, rounding: toSignificantRounding[rounding] })
-    const quotient = new Decimal(this.numerator.toString())
-      .div(this.denominator.toString())
-      .toSignificantDigits(significantDigits)
-    return applyFormat(stripTrailingZeros(quotient.toFixed(quotient.decimalPlaces())), format)
+    return applyFormat(
+      toSignificant(
+        this.numerator.toString(),
+        this.denominator.toString(),
+        significantDigits,
+        toFixedRounding[rounding],
+      ),
+      format,
+    )
   }
 
   toFixed(

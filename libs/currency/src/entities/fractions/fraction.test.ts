@@ -307,5 +307,24 @@ describe('Fraction', () => {
         expect(new Fraction(25000, 10 ** 18).toSignificant(2)).toBe('0.000000000000025')
       })
     })
+
+    describe('negative fractions', () => {
+      it('handles negative numerator', () => {
+        expect(new Fraction(-1, 3).toSignificant(4)).toBe('-0.3333')
+        expect(new Fraction(-2, 3).toSignificant(4, undefined, Rounding.ROUND_DOWN)).toBe('-0.6666')
+        expect(new Fraction(-2, 3).toSignificant(4, undefined, Rounding.ROUND_UP)).toBe('-0.6667')
+      })
+
+      it('handles negative denominator', () => {
+        expect(new Fraction(1, -3).toSignificant(4)).toBe('-0.3333')
+      })
+    })
+
+    describe('zero', () => {
+      it('returns "0" for zero numerator', () => {
+        expect(new Fraction(0, 1).toSignificant(5)).toBe('0')
+        expect(new Fraction(0, 100).toSignificant(1)).toBe('0')
+      })
+    })
   })
 })
