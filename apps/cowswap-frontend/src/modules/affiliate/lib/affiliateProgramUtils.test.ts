@@ -15,8 +15,6 @@ function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
   return {
     status: OrderStatus.OPEN,
     fullAppData: buildFullAppData(DEFAULT_APP_CODE),
-    executedBuyAmount: '1',
-    executedSellAmountBeforeFees: '0',
     ...overrides,
   } as EnrichedOrder
 }
@@ -76,17 +74,6 @@ describe('isExecutedNonIntegratorOrder', () => {
   it('returns false for expired orders', () => {
     // arrange
     const order = buildOrder({ status: OrderStatus.EXPIRED })
-
-    // act
-    const result = isExecutedNonIntegratorOrder(order)
-
-    // assert
-    expect(result).toBe(false)
-  })
-
-  it('returns false for zero-executed orders', () => {
-    // arrange
-    const order = buildOrder({ executedBuyAmount: '0', executedSellAmountBeforeFees: '0' })
 
     // act
     const result = isExecutedNonIntegratorOrder(order)

@@ -29,8 +29,6 @@ function buildFullAppData(appCode: string, refCode?: string): string {
 function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
   return {
     fullAppData: JSON.stringify({ appCode: DEFAULT_APP_CODE, metadata: {}, version: '1.0.0' }),
-    executedBuyAmount: '1',
-    executedSellAmountBeforeFees: '0',
     status: OrderStatus.OPEN,
     ...overrides,
   } as EnrichedOrder
@@ -81,20 +79,6 @@ describe('checkIfTraderHasPastTrades', () => {
     getOrdersMock.mockResolvedValue([
       buildOrder({ status: OrderStatus.CANCELLED }),
       buildOrder({ status: OrderStatus.EXPIRED }),
-    ])
-
-    // act
-    const result = await checkIfTraderHasPastTrades(OWNER)
-
-    // assert
-    expect(result).toEqual({ hasPastTrades: false, refCode: undefined })
-  })
-
-  it('returns false when all orders have zero execution', async () => {
-    // arrange
-    getOrdersMock.mockResolvedValue([
-      buildOrder({ executedBuyAmount: '0', executedSellAmountBeforeFees: '0' }),
-      buildOrder({ executedBuyAmount: '0', executedSellAmountBeforeFees: '0' }),
     ])
 
     // act

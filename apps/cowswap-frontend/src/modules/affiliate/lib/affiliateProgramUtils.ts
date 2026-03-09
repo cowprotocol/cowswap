@@ -5,6 +5,7 @@ import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
+import { SerializedOrder } from 'legacy/state/orders/actions'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
 import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer'
 
@@ -138,11 +139,10 @@ export function extractFullAppDataFromOrder(order: AppDataOrder): string | undef
   return extractFullAppDataFromResponse(order) || extractFullAppDataFromResponse(order.apiAdditionalInfo)
 }
 
-export function isExecutedNonIntegratorOrder(order: EnrichedOrder): boolean {
+export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOrder): boolean {
   const { status } = order
 
   if (status === OrderStatus.CANCELLED || status === OrderStatus.EXPIRED) return false
-  if (order.executedBuyAmount === '0' && order.executedSellAmountBeforeFees === '0') return false
 
   const fullAppData = extractFullAppDataFromOrder(order)
   const appCode = decodeAppData(fullAppData)?.appCode
@@ -152,16 +152,12 @@ export function isExecutedNonIntegratorOrder(order: EnrichedOrder): boolean {
   return appCode === DEFAULT_APP_CODE || appCode === SAFE_APP_CODE
 }
 
-type LocalTradeOrder = AppDataOrder & {
-  owner?: Address
-}
-
-export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): LocalTradeOrder[] {
+export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): SerializedOrder[] {
   if (!account || !ordersState) {
     return []
   }
 
-  const result: LocalTradeOrder[] = []
+  const result: SerializedOrder[] = []
 
   for (const [networkId, networkState] of Object.entries(ordersState)) {
     const fullState = { ...getDefaultNetworkState(Number(networkId)), ...(networkState || {}) }
