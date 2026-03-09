@@ -28,17 +28,47 @@ type ChainInfoEntry = {
 
 const CHAIN_INFO_BY_ID = CHAIN_INFO as Partial<Record<number, ChainInfoEntry>>
 
-function getChainIcon(chainId: number): string | undefined {
-  if (!Object.prototype.hasOwnProperty.call(CHAIN_INFO_BY_ID, chainId)) {
-    return undefined
-  }
-
-  return CHAIN_INFO_BY_ID[chainId]?.logo?.light || undefined
+export function DeploymentsSectionRows({ deployments }: { deployments: SolverDeployment[] }): React.ReactNode {
+  return (
+    <>
+      <DeploymentsGridHeader>
+        <span>Chain</span>
+        <span>Env</span>
+        <span>Solver address</span>
+      </DeploymentsGridHeader>
+      {deployments.map((deployment, index) => (
+        <DeploymentsGridRow
+          key={`${deployment.chainId}-${deployment.environment || 'na'}-${deployment.address || 'na'}-${index}`}
+        >
+          <span>{deployment.chainName}</span>
+          <span>{deployment.environment || '-'}</span>
+          {deployment.address ? (
+            <AddressLink address={deployment.address} chainId={deployment.chainId} showIcon showNetworkName={false} />
+          ) : (
+            <Mono>-</Mono>
+          )}
+        </DeploymentsGridRow>
+      ))}
+    </>
+  )
 }
 
-export function SolverIcon({ solver }: { solver: SolverInfo }): React.ReactNode {
-  if (solver.image) return <SolverLogo src={solver.image} alt={`${solver.displayName} logo`} />
-  return <SolverLogoFallback>{solver.displayName.charAt(0).toUpperCase()}</SolverLogoFallback>
+export function EnvironmentTags({
+  solverId,
+  environments,
+}: {
+  solverId: string
+  environments: string[]
+}): React.ReactNode {
+  return (
+    <EnvTags>
+      {environments.map((environment) => (
+        <EnvTag key={`${solverId}-${environment}`} $environment={environment}>
+          {environment}
+        </EnvTag>
+      ))}
+    </EnvTags>
+  )
 }
 
 export function NetworkChips({
@@ -65,60 +95,15 @@ export function NetworkChips({
   )
 }
 
-export function EnvironmentTags({
-  solverId,
-  environments,
-}: {
-  solverId: string
-  environments: string[]
-}): React.ReactNode {
-  return (
-    <EnvTags>
-      {environments.map((environment) => (
-        <EnvTag key={`${solverId}-${environment}`} $environment={environment}>
-          {environment}
-        </EnvTag>
-      ))}
-    </EnvTags>
-  )
+export function SolverIcon({ solver }: { solver: SolverInfo }): React.ReactNode {
+  if (solver.image) return <SolverLogo src={solver.image} alt={`${solver.displayName} logo`} />
+  return <SolverLogoFallback>{solver.displayName.charAt(0).toUpperCase()}</SolverLogoFallback>
 }
 
-export function DeploymentsSectionRows({
-  solver,
-  deployments,
-}: {
-  solver: SolverInfo
-  deployments: SolverDeployment[]
-}): React.ReactNode {
-  return (
-    <>
-      <DeploymentsGridHeader>
-        <span>Chain</span>
-        <span>Env</span>
-        <span>Solver address</span>
-        <span>Payout address</span>
-      </DeploymentsGridHeader>
-      {deployments.map((deployment, index) => (
-        <DeploymentsGridRow key={`${solver.solverId}-${deployment.chainId}-${deployment.environment || 'na'}-${index}`}>
-          <span>{deployment.chainName}</span>
-          <span>{deployment.environment || '-'}</span>
-          {deployment.address ? (
-            <AddressLink address={deployment.address} chainId={deployment.chainId} showIcon showNetworkName={false} />
-          ) : (
-            <Mono>-</Mono>
-          )}
-          {deployment.payoutAddress ? (
-            <AddressLink
-              address={deployment.payoutAddress}
-              chainId={deployment.chainId}
-              showIcon
-              showNetworkName={false}
-            />
-          ) : (
-            <Mono>-</Mono>
-          )}
-        </DeploymentsGridRow>
-      ))}
-    </>
-  )
+function getChainIcon(chainId: number): string | undefined {
+  if (!Object.prototype.hasOwnProperty.call(CHAIN_INFO_BY_ID, chainId)) {
+    return undefined
+  }
+
+  return CHAIN_INFO_BY_ID[chainId]?.logo?.light || undefined
 }

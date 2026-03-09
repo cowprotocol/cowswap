@@ -4,8 +4,8 @@ import styled from 'styled-components/macro'
 
 import { SimpleTable } from '../../components/common/SimpleTable'
 
-const DEPLOYMENTS_GRID_TEMPLATE_COLUMNS = '12rem 8rem 1fr 1fr'
-const DEPLOYMENTS_GRID_MIN_WIDTH = '72rem'
+const DEPLOYMENTS_GRID_TEMPLATE_COLUMNS = '12rem 8rem minmax(0, 1fr)'
+const DEPLOYMENTS_GRID_MIN_WIDTH = '48rem'
 
 type EnvTagPalette = {
   color: string
@@ -93,7 +93,7 @@ export const Select = styled.select`
 `
 
 export const Table = styled(SimpleTable)`
-  min-width: 98rem;
+  min-width: 76rem;
 
   tbody tr.solver-summary-row td {
     transition: background-color 0.14s ease;
@@ -116,17 +116,8 @@ export const Table = styled(SimpleTable)`
     min-width: 16rem;
   }
 
-  td.website {
-    min-width: 11rem;
-  }
-
-  td.description {
-    min-width: 18rem;
-    white-space: normal;
-  }
-
   ${Media.upToMedium()} {
-    min-width: 92rem;
+    min-width: 72rem;
   }
 `
 
@@ -302,8 +293,7 @@ export const DeploymentsGridRow = styled.div`
     background: ${Color.explorer_bg2};
   }
 
-  > :nth-child(3),
-  > :nth-child(4) {
+  > :nth-child(3) {
     min-width: 22rem;
   }
 `
