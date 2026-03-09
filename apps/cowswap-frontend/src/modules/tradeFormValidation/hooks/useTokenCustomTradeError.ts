@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useIsAnyOfTokensOndo } from '@cowprotocol/tokens'
+import { useIsAnyOfTokensRWA } from '@cowprotocol/tokens'
 import { Currency } from '@uniswap/sdk-core'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
@@ -15,16 +15,16 @@ export function useTokenCustomTradeError(
   const isWeekendDay = isWeekend()
   const inputToken = isWeekendDay && inputCurrency?.isToken ? inputCurrency : undefined
   const outputToken = isWeekendDay && outputCurrent?.isToken ? outputCurrent : undefined
-  const ondoToken = useIsAnyOfTokensOndo(inputToken, outputToken)
+  const rwaToken = useIsAnyOfTokensRWA(inputToken, outputToken)
 
   return useMemo(() => {
     if (!isWeekendDay) return undefined
-    if (!ondoToken) return undefined
+    if (!rwaToken) return undefined
     if (!isValidQuoteError(error)) return undefined
     if (error.type !== QuoteApiErrorCodes.InsufficientLiquidity) return undefined
 
-    return `${ondoToken.symbol} not tradable until Sunday 23:59 UTC`
-  }, [isWeekendDay, error, ondoToken])
+    return `${rwaToken.symbol} not tradable until Sunday 23:59 UTC`
+  }, [isWeekendDay, error, rwaToken])
 }
 
 function isWeekend(): boolean {
