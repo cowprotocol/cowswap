@@ -12,7 +12,6 @@ import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 import SVG from 'react-inlinesvg'
 
-import { AFFILIATE_STATS_REFRESH_INTERVAL_MS } from '../config/affiliateProgram.const'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
 import { getApproxNextStatsUpdateAt, toValidDate } from '../lib/affiliateProgramUtils'
@@ -47,7 +46,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
   const approxNextUpdateAt = useMemo(() => getApproxNextStatsUpdateAt(), [])
   const approxNextUpdateTimeAgo = useTimeAgo(approxNextUpdateAt, TIME_AGO_UPDATE_INTERVAL_MS)
 
-  const now = useMachineTimeMs(AFFILIATE_STATS_REFRESH_INTERVAL_MS)
+  const now = useMachineTimeMs(TIME_AGO_UPDATE_INTERVAL_MS)
   const rewardsEndTimestamp = toValidDate(stats?.rewards_end)?.getTime()
   const isExpired = !!rewardsEndTimestamp && rewardsEndTimestamp < now
 
