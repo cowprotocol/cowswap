@@ -3,20 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { safe, injected } from '@wagmi/connectors'
 import { Chain, http } from 'viem'
-import {
-  arbitrum,
-  avalanche,
-  base,
-  bsc,
-  gnosis,
-  ink,
-  lens,
-  linea,
-  mainnet,
-  plasma,
-  polygon,
-  sepolia,
-} from 'viem/chains'
+import { arbitrum, avalanche, base, bsc, gnosis, ink, linea, mainnet, plasma, polygon, sepolia } from 'viem/chains'
 import { createConfig, Transport } from 'wagmi'
 
 const SUPPORTED_CHAIN_IDS = Object.values(SupportedChainId).filter((v) => typeof v === 'number')
@@ -26,7 +13,6 @@ const SUPPORTED_CHAINS: Record<SupportedChainId, Chain> = {
   [SupportedChainId.BNB]: bsc,
   [SupportedChainId.GNOSIS_CHAIN]: gnosis,
   [SupportedChainId.POLYGON]: polygon,
-  [SupportedChainId.LENS]: lens,
   [SupportedChainId.BASE]: base,
   [SupportedChainId.PLASMA]: plasma,
   [SupportedChainId.ARBITRUM_ONE]: arbitrum,

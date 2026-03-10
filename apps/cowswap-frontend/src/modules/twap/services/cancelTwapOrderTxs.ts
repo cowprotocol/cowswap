@@ -1,5 +1,5 @@
 import { USDC_LENS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { isZkSyncChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isZkSyncChain, ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoW, GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { ContractsOrder } from '@cowprotocol/sdk-contracts-ts'
@@ -47,7 +47,11 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
 // TODO: we might need a custom method for estimating gas on Linea
 export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<BigNumber> {
   if (isZkSyncChain(context.chainId)) {
-    // Lens is a zkSync chain, so we need to use a different estimation method
+    if (zkSyncChainId === SupportedChainId.MAINNET) {
+      console.warn('estimateCancelTwapOrderTxs: zkSyncChainId is MAINNET. Please, make sure we use a zkSync chain ID.')
+    }
+
+    // We need to use a different estimation method for zkSync chains (like we did for Lens).
     // See the function estimateZkSyncCancelTwapOrderTxs for details
     return estimateZkSyncCancelTwapOrderTxs(context)
   }
@@ -100,8 +104,11 @@ const FAKE_OWNER = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
 
 const START_TIME = Math.floor(Date.now() / 1000)
 
+const zkSyncChainId: SupportedChainId =
+  ALL_SUPPORTED_CHAIN_IDS.find((id) => isZkSyncChain(id)) || SupportedChainId.MAINNET
+
 const FAKE_TWAP_ORDER: TWAPOrder = {
-  sellAmount: CurrencyAmount.fromRawAmount(WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS], 100_000_000_000),
+  sellAmount: CurrencyAmount.fromRawAmount(WRAPPED_NATIVE_CURRENCIES[zkSyncChainId], 100_000_000_000),
   buyAmount: CurrencyAmount.fromRawAmount(USDC_LENS, 200_000_000_000),
   receiver: FAKE_OWNER,
   numOfParts: 2,
