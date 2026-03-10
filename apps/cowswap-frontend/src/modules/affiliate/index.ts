@@ -12,6 +12,7 @@ export { AffiliateTraderRewardsRow } from './containers/AffiliateTraderRewardsRo
 export { AffiliateTraderStats } from './containers/AffiliateTraderStats'
 
 export { useAffiliatePartnerInfo } from './hooks/useAffiliatePartnerInfo'
+export { useIsRefCodeExpired } from './hooks/useIsRefCodeExpired'
 export { useAffiliateTraderWallet, TraderWalletStatus } from './hooks/useAffiliateTraderWallet'
 export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
 

@@ -8,7 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 
-import { AFFILIATE_STATS_REFRESH_INTERVAL_MS } from '../config/affiliateProgram.const'
+import { AFFILIATE_EXPIRY_CHECK_INTERVAL_MS } from '../config/affiliateProgram.const'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
 import { toValidDate } from '../lib/affiliateProgramUtils'
 
@@ -19,8 +19,8 @@ export function AffiliateTraderExpiryBanner(): ReactNode {
   const { data: stats, isLoading } = useAffiliateTraderStats(account)
 
   const rewardsEnd = toValidDate(stats?.rewards_end)
-  const now = useMachineTimeMs(AFFILIATE_STATS_REFRESH_INTERVAL_MS)
-  const timeAgo = useTimeAgo(rewardsEnd ?? undefined, AFFILIATE_STATS_REFRESH_INTERVAL_MS)
+  const now = useMachineTimeMs(AFFILIATE_EXPIRY_CHECK_INTERVAL_MS)
+  const timeAgo = useTimeAgo(rewardsEnd ?? undefined, AFFILIATE_EXPIRY_CHECK_INTERVAL_MS)
 
   if (isLoading || !rewardsEnd) {
     return null
