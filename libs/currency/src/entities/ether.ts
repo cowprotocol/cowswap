@@ -1,4 +1,4 @@
-import { WETH9 } from '@uniswap/sdk-core'
+import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/cow-sdk'
 
 import { Currency } from './currency'
 import { NativeCurrency } from './nativeCurrency'
@@ -13,9 +13,15 @@ export class Ether extends NativeCurrency {
   }
 
   override get wrapped(): Token {
-    const weth9 = WETH9[this.chainId]
-    if (!weth9) throw new Error('WRAPPED')
-    return weth9
+    const wrappedNative = WRAPPED_NATIVE_CURRENCIES[this.chainId]
+    if (!wrappedNative) throw new Error('WRAPPED')
+    return new Token(
+      this.chainId,
+      wrappedNative.address,
+      wrappedNative.decimals,
+      wrappedNative.symbol,
+      wrappedNative.name,
+    )
   }
 
   private static _etherCache: { [chainId: number]: Ether } = {}

@@ -1,4 +1,4 @@
-import { MaxUint256 } from '@uniswap/sdk-core'
+import { MAX_UINT256 } from '@cowprotocol/cow-sdk'
 
 import JSBI from 'jsbi'
 
@@ -7,6 +7,8 @@ import { Percent } from './percent'
 
 import { Ether } from '../ether'
 import { Token } from '../token'
+
+const MaxUint256 = JSBI.BigInt(MAX_UINT256.toString())
 
 describe('CurrencyAmount', () => {
   const ADDRESS_ONE = '0x0000000000000000000000000000000000000001'

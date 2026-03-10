@@ -12,7 +12,6 @@
   "dependencies": {
     "@cowprotocol/cow-sdk": "7.4.1",
     "@uniswap/sdk-core": "^3.0.1",
-    "decimal.js-light": "2.5.1",
     "jsbi": "^3.1.4"
   }
 }
