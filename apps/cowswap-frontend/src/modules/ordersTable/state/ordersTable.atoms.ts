@@ -259,9 +259,13 @@ ordersTableStateAtom.onMount = () => {
       console.log('3. ordersList =', ordersList)
 
       const { searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
+
+      // TODO: Instead, create allowedTabParamAtom with logic in useCurrentTab(). Or simply add the property to ordersTableStateAtom...
       const currentTabId = get(tabParamAtom)
 
       const orders = ordersList[currentTabId]
+
+      // TODO: Check here if currentTab Id has orders or if a different tab should be shown. Return the right data regardless of currentTabId. Redirect will happen shortly.
 
       console.log(`4. orders (${currentTabId}) =`, orders)
 
