@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -33,6 +33,7 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
         chainId,
         signer,
         isBarnBackendEnv ? 'staging' : 'prod',
+        COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
       )
 
       if (!signature) throw new Error(t`Signature is undefined!`)

@@ -1,5 +1,6 @@
 import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   formatSymbol,
   formatTokenAmount,
   getCurrencyAddress,
@@ -220,6 +221,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
     chainId,
     signer,
     isBarnBackendEnv ? 'staging' : 'prod',
+    COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   )
 
   if (!signature) throw new Error(t`Signature is undefined!`)
