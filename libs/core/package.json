@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.4.2-pr-807-bee13581.0",
+    "@cowprotocol/cow-sdk": "8.0.0-pr-807-62e38c42.0",
     "@cowprotocol/cms": "https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz",
     "@cowprotocol/common-const": "workspace:*",
     "@ethersproject/providers": "5.7.0",
