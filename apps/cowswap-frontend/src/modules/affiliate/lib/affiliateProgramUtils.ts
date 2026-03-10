@@ -11,6 +11,9 @@ import { decodeAppData } from 'modules/appData'
 
 import {
   AFFILIATE_PAYOUTS_CHAIN_ID,
+  AFFILIATE_REWARDS_UPDATE_INTERVAL_MS,
+  AFFILIATE_REWARDS_UPDATE_LAG_MS,
+  AFFILIATE_STATS_REFRESH_INTERVAL_MS,
   AFFILIATE_SUPPORTED_CHAIN_IDS,
   PROGRAM_DEFAULTS,
   REF_CODE_PATTERN,
@@ -225,12 +228,20 @@ export function getReferralTrafficPercent(triggerVolume?: number, progressToNext
   return Math.min(100, Math.round((progressToNextReward / triggerVolume) * 100))
 }
 
-export function getApproxStatsUpdatedAt(updateIntervalHours: number, updateLagHours: number): Date {
-  const intervalMs = updateIntervalHours * 60 * 60 * 1000
-  const lagMs = updateLagHours * 60 * 60 * 1000
+export function getApproxStatsUpdatedAt(): Date {
   const currentTimeMs = Date.now()
 
-  return new Date(Math.floor((currentTimeMs - lagMs) / intervalMs) * intervalMs + lagMs)
+  return new Date(
+    Math.floor((currentTimeMs - AFFILIATE_REWARDS_UPDATE_LAG_MS) / AFFILIATE_REWARDS_UPDATE_INTERVAL_MS) *
+      AFFILIATE_REWARDS_UPDATE_INTERVAL_MS +
+      AFFILIATE_REWARDS_UPDATE_LAG_MS,
+  )
+}
+
+export function getApproxNextStatsUpdateAt(): Date {
+  return new Date(
+    getApproxStatsUpdatedAt().getTime() + AFFILIATE_REWARDS_UPDATE_INTERVAL_MS + AFFILIATE_STATS_REFRESH_INTERVAL_MS,
+  )
 }
 
 export function generateSuggestedCode(): string {
