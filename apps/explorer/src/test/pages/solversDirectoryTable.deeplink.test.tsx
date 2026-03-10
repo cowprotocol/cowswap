@@ -38,6 +38,22 @@ const SOLVERS_INFO: SolversInfo = [
       },
     ],
   },
+  {
+    solverId: 'gamma',
+    displayName: 'Gamma Solver',
+    description: 'Gamma description',
+    website: 'https://gamma.example',
+    image: undefined,
+    networks: [{ chainId: 1, chainName: 'Ethereum', environments: ['staging'] }],
+    deployments: [
+      {
+        chainId: 1,
+        chainName: 'Ethereum',
+        environment: 'staging',
+        active: false,
+      },
+    ],
+  },
 ]
 
 describe('SolversDirectoryTable deeplink', () => {
@@ -63,7 +79,9 @@ describe('SolversDirectoryTable deeplink', () => {
     })
 
     expect(scrollIntoViewMock).toHaveBeenCalled()
-    expect(screen.getByText('Solver and payout addresses by chain/environment')).not.toBeNull()
+    expect(screen.getByText('Solver addresses by chain/environment')).not.toBeNull()
+    expect(screen.getAllByText('Active')).toHaveLength(2)
+    expect(screen.queryByText('Payout address')).toBeNull()
   })
 
   it('matches deeplink by normalized identifier', async () => {
@@ -76,5 +94,22 @@ describe('SolversDirectoryTable deeplink', () => {
     await waitFor(() => {
       expect(toggleButton.getAttribute('aria-expanded')).toBe('true')
     })
+  })
+
+  it('shows inactive deeplinked solvers by widening the status filter', async () => {
+    render(<SolversDirectoryTable solversInfo={SOLVERS_INFO} solverDeeplink="gamma" />)
+
+    expect(screen.getByDisplayValue('All statuses')).not.toBeNull()
+
+    const toggleButton = screen.getByRole('button', {
+      name: 'Toggle deployments for solver Gamma Solver (gamma)',
+    })
+
+    await waitFor(() => {
+      expect(toggleButton.getAttribute('aria-expanded')).toBe('true')
+    })
+
+    expect(screen.getByText('Gamma Solver')).not.toBeNull()
+    expect(screen.getByRole('heading', { name: 'Inactive' })).not.toBeNull()
   })
 })
