@@ -25,6 +25,12 @@ const StyledShimmerBar = styled(ShimmerBar)`
   min-width: 10rem;
 `
 
+interface FillsTableRowProps {
+  trade: Trade
+  isPriceInverted: boolean
+  showSolverDetails: boolean
+}
+
 export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: FillsTableRowProps): React.ReactNode {
   const network = useNetworkId() ?? undefined
   const {
@@ -93,12 +99,6 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
       )}
     </tr>
   )
-}
-
-interface FillsTableRowProps {
-  trade: Trade
-  isPriceInverted: boolean
-  showSolverDetails: boolean
 }
 
 function TradeSolverCell({ txHash }: { txHash: string }): React.ReactNode {
