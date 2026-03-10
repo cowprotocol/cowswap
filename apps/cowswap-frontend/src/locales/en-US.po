@@ -1219,6 +1219,10 @@ msgstr "Orders history"
 #~ msgid "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
 #~ msgstr "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
 
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderExpiryBanner.tsx
+msgid "Your referral code expires {timeAgo}. Trade now to maximize your rewards."
+msgstr "Your referral code expires {timeAgo}. Trade now to maximize your rewards."
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days."
 msgstr "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days."
@@ -2889,6 +2893,7 @@ msgid "<0/><1/>Trades are protected from MEV, so your slippage can't be exploite
 msgstr "<0/><1/>Trades are protected from MEV, so your slippage can't be exploited!"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Expired"
@@ -6251,6 +6256,10 @@ msgstr "{solversLength} out of {totalSolvers} solvers"
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
 msgid "My Rewards"
 msgstr "My Rewards"
+
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderExpiryBanner.tsx
+msgid "Your referral code expired on {rewardsEndLabel}."
+msgstr "Your referral code expired on {rewardsEndLabel}."
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Something went wrong"
