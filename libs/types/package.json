@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/types",
-  "version": "3.3.2",
+  "version": "3.4.0",
   "description": "CoW Swap types",
   "type": "commonjs",
   "main": "./src/index.ts",
@@ -12,7 +12,7 @@
   "dependencies": {
     "@cowprotocol/cow-sdk": "7.4.1",
     "@cowprotocol/sdk-bridging": "2.1.0",
-    "@uniswap/sdk-core": "^3.0.1",
+    "@cowprotocol/currency": "workspace:*",
     "eventemitter3": "^4.0.0"
   },
   "devDependencies": {

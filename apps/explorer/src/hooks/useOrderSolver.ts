@@ -14,9 +14,10 @@ export function useOrderSolver(order: Order | null): UseOrderSolverResult {
   // Tracks which orderUid:txHash combo we finished resolving
   const [doneFor, setDoneFor] = useState<string | null>(null)
 
+  const hasExecution = hasOrderExecution(order)
   const orderUid = order?.uid
   const txHash = order?.txHash
-  const currentKey = orderUid && networkId ? `${networkId}:${orderUid}:${txHash || ''}` : null
+  const currentKey = hasExecution && orderUid && networkId ? `${networkId}:${orderUid}:${txHash || ''}` : null
 
   useEffect(() => {
     if (!networkId || !orderUid || !currentKey) {
@@ -49,4 +50,10 @@ export function useOrderSolver(order: Order | null): UseOrderSolverResult {
   const isLoading = !!currentKey && !!networkId && doneFor !== currentKey
 
   return useMemo(() => ({ solver, isLoading }), [solver, isLoading])
+}
+
+function hasOrderExecution(order: Order | null): boolean {
+  if (!order) return false
+
+  return !order.executedBuyAmount.isZero() || !order.executedSellAmount.isZero()
 }

@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { useGetReceiveAmountInfo } from '../../trade'
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
