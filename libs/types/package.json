@@ -10,8 +10,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.4.1",
-    "@cowprotocol/sdk-bridging": "2.1.0",
+    "@cowprotocol/cow-sdk": "7.4.2-pr-807-bee13581.0",
+    "@cowprotocol/sdk-bridging": "2.1.1-pr-807-bee13581.0",
     "@cowprotocol/currency": "workspace:*",
     "eventemitter3": "^4.0.0"
   }
