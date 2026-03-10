@@ -13,27 +13,26 @@ import { FillsTableRow } from './FillsTableRow'
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { FilledProgress } from '../FilledProgress'
 
-type FillsTableProps = SimpleTableProps & {
-  trades: Trade[] | undefined
-  order: Order | null
-  tableState: TableState
-  isPriceInverted: boolean
-  invertPrice: Command
-}
-
 export function FillsTable(props: FillsTableProps): ReactNode {
-  const { trades, order, isPriceInverted, invertPrice } = props
+  const { trades, order, isPriceInverted, invertPrice, showSolverDetails } = props
 
   const invertButton = useMemo(() => <Icon icon={faExchangeAlt} onClick={invertPrice} />, [invertPrice])
 
   const tradeItems = !trades?.length ? (
     <tr className="row-empty">
-      <td className="row-td-empty">
+      <td className="row-td-empty" colSpan={showSolverDetails ? 7 : 6}>
         No results found. <br /> Please try another search.
       </td>
     </tr>
   ) : (
-    trades.map((item) => <FillsTableRow key={item.txHash} trade={item} isPriceInverted={isPriceInverted} />)
+    trades.map((item) => (
+      <FillsTableRow
+        key={item.txHash}
+        trade={item}
+        isPriceInverted={isPriceInverted}
+        showSolverDetails={showSolverDetails}
+      />
+    ))
   )
 
   return (
@@ -53,11 +52,20 @@ export function FillsTable(props: FillsTableProps): ReactNode {
               <span>Execution price {invertButton}</span>
             </th>
             <th>Execution time</th>
-            <th>Solver</th>
+            {showSolverDetails && <th>Solver</th>}
           </tr>
         }
         body={tradeItems}
       />
     </>
   )
+}
+
+type FillsTableProps = SimpleTableProps & {
+  trades: Trade[] | undefined
+  order: Order | null
+  tableState: TableState
+  isPriceInverted: boolean
+  invertPrice: Command
+  showSolverDetails: boolean
 }
