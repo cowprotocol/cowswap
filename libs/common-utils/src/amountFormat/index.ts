@@ -5,8 +5,8 @@ import {
   PERCENTAGE_PRECISION,
   ZERO_FRACTION,
 } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount, Percent, Rounding } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
@@ -16,18 +16,6 @@ import { FractionUtils } from '../fractionUtils'
 import { maxAmountSpend } from '../maxAmountSpend'
 import { trimTrailingZeros } from '../trimTrailingZeros'
 import { FractionLike } from '../types'
-
-export function formatFiatAmount(amount: Nullish<FractionLike>): string {
-  return formatAmountWithPrecision(amount, FIAT_PRECISION)
-}
-
-export function formatTokenAmount(amount: Nullish<FractionLike>): string {
-  return formatAmountWithPrecision(amount, getPrecisionForAmount(amount))
-}
-
-export function formatPercent(percent: Nullish<Percent>): string {
-  return percent ? trimTrailingZeros(percent.toFixed(PERCENTAGE_PRECISION)) : ''
-}
 
 export function formatAmountWithPrecision(
   amount: Nullish<FractionLike>,
@@ -76,6 +64,10 @@ export function formatAmountWithPrecision(
   return nonZeroAmountIsRoundedToZero ? lessThanPrecisionSymbol(precision) : result
 }
 
+export function formatFiatAmount(amount: Nullish<FractionLike>): string {
+  return formatAmountWithPrecision(amount, FIAT_PRECISION)
+}
+
 export function formatInputAmount(
   amount: Nullish<FractionLike>,
   balance: Nullish<CurrencyAmount<Currency>> = null,
@@ -94,4 +86,12 @@ export function formatInputAmount(
   const result = amount.toFixed(precision, undefined, Rounding.ROUND_HALF_UP)
 
   return trimTrailingZeros(+result === 0 ? amount.toSignificant(AMOUNT_PRECISION) : result)
+}
+
+export function formatPercent(percent: Nullish<Percent>): string {
+  return percent ? trimTrailingZeros(percent.toFixed(PERCENTAGE_PRECISION)) : ''
+}
+
+export function formatTokenAmount(amount: Nullish<FractionLike>): string {
+  return formatAmountWithPrecision(amount, getPrecisionForAmount(amount))
 }

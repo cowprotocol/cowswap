@@ -82,7 +82,7 @@ const SOLVERS_INFO: SolversInfo = [
   },
 ]
 
-describe('filterSolvers active filter', () => {
+describe('SolversDirectoryTable helpers', () => {
   it('returns all matching solvers when status filter is All', () => {
     const result = filterSolvers(SOLVERS_INFO, '', ALL_FILTER, ALL_FILTER, ALL_FILTER)
 
@@ -107,13 +107,13 @@ describe('filterSolvers active filter', () => {
     expect(result).toEqual([])
   })
 
-  it('does not match addresses from deployments hidden by active filter', () => {
+  it('does not match addresses from inactive deployments', () => {
     const result = filterSolvers(SOLVERS_INFO, '0xalpha2', ALL_FILTER, ALL_FILTER, ACTIVE_FILTER_ACTIVE)
 
     expect(result).toEqual([])
   })
 
-  it('matches addresses from deployments visible under current filters', () => {
+  it('matches addresses from active deployments', () => {
     const result = filterSolvers(SOLVERS_INFO, '0xalpha1', ALL_FILTER, ALL_FILTER, ACTIVE_FILTER_ACTIVE)
 
     expect(result.map((solver) => solver.solverId)).toEqual(['alpha'])

@@ -55,10 +55,7 @@ const Solvers = (): React.ReactNode => {
       </Helmet>
       <StyledSearch />
       <h1>Solvers</h1>
-      <Subtitle>
-        Discover solver teams, supported networks, environments, and deployment addresses. Expand any solver row for
-        per-network payout details.
-      </Subtitle>
+      <Subtitle>Discover solver teams, supported networks, environments, and deployment addresses.</Subtitle>
       <Section>
         <SnapshotAccordion $expanded={isSnapshotExpanded}>
           <SectionHeader $expanded={isSnapshotExpanded} onClick={(): void => setIsSnapshotExpanded((state) => !state)}>

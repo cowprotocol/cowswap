@@ -1,10 +1,8 @@
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 
-export interface OrderTypeReceiveAmounts {
-  amountBeforeFees: CurrencyAmount<Currency>
-  amountAfterSlippage: CurrencyAmount<Currency>
-  amountAfterFees: CurrencyAmount<Currency>
-  networkFeeAmount: CurrencyAmount<Currency>
+export interface BridgeFeeAmounts {
+  amountInIntermediateCurrency: CurrencyAmount<Currency>
+  amountInDestinationCurrency: CurrencyAmount<Currency>
 }
 
 export interface Currencies {
@@ -12,9 +10,11 @@ export interface Currencies {
   buyAmount: CurrencyAmount<Currency>
 }
 
-export interface BridgeFeeAmounts {
-  amountInIntermediateCurrency: CurrencyAmount<Currency>
-  amountInDestinationCurrency: CurrencyAmount<Currency>
+export interface OrderTypeReceiveAmounts {
+  amountBeforeFees: CurrencyAmount<Currency>
+  amountAfterSlippage: CurrencyAmount<Currency>
+  amountAfterFees: CurrencyAmount<Currency>
+  networkFeeAmount: CurrencyAmount<Currency>
 }
 
 export interface ReceiveAmountInfo {
