@@ -42,7 +42,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isAffiliateProgramEnabled } = useFeatureFlags()
+  const { isAffiliateProgramEnabled, isSolversEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
@@ -90,9 +90,9 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
           }
         }),
       },
-      ...NAV_ITEMS(chainId, isAffiliateProgramEnabled),
+      ...NAV_ITEMS(chainId, !!isAffiliateProgramEnabled, !!isSolversEnabled),
     ]
-  }, [t, menuItems, chainId, getTradeUrlParams, isAffiliateProgramEnabled])
+  }, [t, menuItems, chainId, getTradeUrlParams, isAffiliateProgramEnabled, isSolversEnabled])
 
   if (isInjectedWidgetMode) return null
 
