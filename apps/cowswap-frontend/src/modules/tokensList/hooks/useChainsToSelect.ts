@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useAvailableChains, useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ADDITIONAL_TARGET_CHAINS_MAP, ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
@@ -47,12 +47,17 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     }, [] as ChainInfo[])
   }, [availableChains])
 
+  const additionalTargetChains = useMemo(() => Object.values(ADDITIONAL_TARGET_CHAINS_MAP), [])
+
   // When selecting the BUY token, the bridge "source chain" is the SELL token's chain (oppositeToken),
   // not necessarily the wallet network. This keeps chain availability accurate when wallet network != trade network.
   const sourceChainId =
     field === Field.OUTPUT && oppositeToken?.chainId ? (oppositeToken.chainId as SupportedChainId) : chainId
 
-  const destinationChainIds = useMemo(() => supportedChains.map((c) => c.id), [supportedChains])
+  const destinationChainIds = useMemo(
+    () => [...supportedChains, ...additionalTargetChains].map((c) => c.id),
+    [supportedChains, additionalTargetChains],
+  )
   const isBuyField = field === Field.OUTPUT
   const routesAvailability = useRoutesAvailability(
     isBuyField && isBridgingEnabled ? sourceChainId : undefined,
@@ -74,13 +79,13 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       }
     }
 
-    // BUY token selection - include disabled chains info
+    // BUY token selection - include disabled chains info, plus non-EVM bridge targets (e.g. Solana)
     return createOutputChainsState({
       selectedTargetChainId,
       chainId: sourceChainId,
       currentChainInfo: mapChainInfo(sourceChainId, chainInfo),
       bridgeSupportedNetworks,
-      supportedChains,
+      supportedChains: [...supportedChains, ...additionalTargetChains],
       isLoading,
       routesAvailability,
     })
@@ -91,6 +96,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     sourceChainId,
     bridgeSupportedNetworks,
     supportedChains,
+    additionalTargetChains,
     isLoading,
     isBridgingEnabled,
     isAdvancedTradeType,
