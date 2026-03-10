@@ -1,4 +1,4 @@
-import { USDC_LENS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { USDC_MAINNET, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { isZkSyncChain, ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoW, GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount } from '@cowprotocol/currency'
@@ -109,7 +109,7 @@ const zkSyncChainId: SupportedChainId =
 
 const FAKE_TWAP_ORDER: TWAPOrder = {
   sellAmount: CurrencyAmount.fromRawAmount(WRAPPED_NATIVE_CURRENCIES[zkSyncChainId], 100_000_000_000),
-  buyAmount: CurrencyAmount.fromRawAmount(USDC_LENS, 200_000_000_000),
+  buyAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, 200_000_000_000),
   receiver: FAKE_OWNER,
   numOfParts: 2,
   startTime: START_TIME,
