@@ -8,8 +8,3 @@ export { Percent } from './entities/fractions/percent'
 export { Price } from './entities/fractions/price'
 export { NativeCurrency } from './entities/nativeCurrency'
 export { Token } from './entities/token'
-
-export { Ether } from './entities/ether'
-
-// Not yet migrated — still from @uniswap/sdk-core
-export { WETH9 } from '@uniswap/sdk-core'

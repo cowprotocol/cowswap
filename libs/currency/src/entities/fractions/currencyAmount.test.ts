@@ -1,12 +1,28 @@
-import { MAX_UINT256 } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAINS_MAP, MAX_UINT256, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import JSBI from 'jsbi'
 
 import { CurrencyAmount } from './currencyAmount'
 import { Percent } from './percent'
 
-import { Ether } from '../ether'
+import { Currency } from '../currency'
+import { NativeCurrency } from '../nativeCurrency'
 import { Token } from '../token'
+
+class TestNativeCurrency extends NativeCurrency {
+  constructor(chainId: number) {
+    const { decimals, symbol, name } = ALL_SUPPORTED_CHAINS_MAP[chainId as SupportedChainId].nativeCurrency
+    super(chainId, decimals, symbol, name)
+  }
+  override get wrapped(): Token {
+    throw new Error('not implemented')
+  }
+  override equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+}
+
+const mockNativeToken = new TestNativeCurrency(SupportedChainId.MAINNET)
 
 const MaxUint256 = JSBI.BigInt(MAX_UINT256.toString())
 
@@ -29,11 +45,11 @@ describe('CurrencyAmount', () => {
     })
   })
 
-  describe('#ether', () => {
-    it('produces ether amount', () => {
-      const amount = CurrencyAmount.fromRawAmount(Ether.onChain(1), 100)
+  describe('#native', () => {
+    it('produces native currency amount', () => {
+      const amount = CurrencyAmount.fromRawAmount(mockNativeToken, 100)
       expect(amount.quotient).toEqual(JSBI.BigInt(100))
-      expect(amount.currency).toEqual(Ether.onChain(1))
+      expect(amount.currency).toEqual(mockNativeToken)
     })
   })
 
