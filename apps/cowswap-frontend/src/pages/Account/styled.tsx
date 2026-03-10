@@ -15,7 +15,7 @@ export const Container = styled.div`
 `
 
 export const ExtLink = styled(ExternalLink)`
-  color: var(${UI.COLOR_TEXT});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   &:hover,
   &:focus {
@@ -84,7 +84,6 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   flex: 1;
-  min-height: 192px;
   margin: 0;
   background: var(${UI.COLOR_PAPER});
   box-shadow: none;
@@ -94,12 +93,20 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   border: none;
   align-items: flex-end;
 
+  > * {
+    transition: opacity 200ms ease-out;
+  }
+
   ${({ showLoader, theme }) =>
     showLoader &&
     css`
       position: relative;
       overflow: hidden;
+      > * {
+        opacity: 0;
+      }
       &::after {
+        z-index: 2;
         position: absolute;
         top: 0;
         right: 0;
@@ -117,8 +124,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   }
 
   ${ButtonPrimary} {
-    height: 52px;
-    gap: 10px;
+    gap: 8px;
 
     > svg {
       height: 100%;
@@ -149,7 +155,6 @@ export const BannerCard = styled.div<{ rowOnMobile?: boolean }>`
   flex-flow: row;
   align-items: center;
   justify-content: flex-start;
-  min-height: 192px;
   border-radius: 16px;
   background: var(${UI.COLOR_PAPER});
   border: none;

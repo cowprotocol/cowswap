@@ -15,7 +15,7 @@ export interface SwapAmountDifference {
 
 export function useSwapAmountDifference(): SwapAmountDifference | null {
   const fullAmountQuote = useAtomValue(fullAmountQuoteAtom)
-  const outputPartAmount = useGetReceiveAmountInfo()?.afterSlippage.buyAmount
+  const outputPartAmount = useGetReceiveAmountInfo()?.amountsToSign.buyAmount
   const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
 
   return useMemo(() => {

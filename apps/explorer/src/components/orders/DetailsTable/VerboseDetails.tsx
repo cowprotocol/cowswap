@@ -6,28 +6,27 @@ import { faFill } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { DetailsTableTooltips } from './detailsTableTooltips'
-import { LinkButton, Wrapper } from './styled'
+import { SolvedByBadge } from './SolvedByBadge'
+import { LinkButton, TextLink, Wrapper } from './styled'
 
 import { Order } from '../../../api/operator'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 import { DecodeAppData } from '../../AppData/DecodeAppData'
 import { DetailRow } from '../../common/DetailRow'
+import Spinner from '../../common/Spinner'
 import { FilledProgress } from '../FilledProgress'
 import { GasFeeDisplay } from '../GasFeeDisplay'
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
 import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
 
-interface VerboseDetailsProps {
-  order: Order
-  isPriceInverted: boolean
-  invertPrice: Command
-  showFillsButton: boolean | undefined
-  viewFills: Command
-}
-
+// eslint-disable-next-line max-lines-per-function
 export function VerboseDetails({
   order,
+  showSolverDetails,
+  solvedBy,
+  isSolvedByLoading,
   invertPrice,
   isPriceInverted,
   showFillsButton,
@@ -87,6 +86,19 @@ export function VerboseDetails({
       <DetailRow label="Costs & Fees" tooltipText={DetailsTableTooltips.fees}>
         <GasFeeDisplay order={order} />
       </DetailRow>
+      {showSolverDetails && (
+        <DetailRow label="Solved by" tooltipText={DetailsTableTooltips.solvedBy}>
+          {showFillsButton ? (
+            <TextLink onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
+              View all solvers
+            </TextLink>
+          ) : isSolvedByLoading ? (
+            <Spinner spin size="1x" />
+          ) : (
+            <SolvedByBadge solvedBy={solvedBy} />
+          )}
+        </DetailRow>
+      )}
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => (
           <DetailRow label="Hooks" tooltipText={DetailsTableTooltips.hooks}>
@@ -99,4 +111,15 @@ export function VerboseDetails({
       </DetailRow>
     </>
   )
+}
+
+interface VerboseDetailsProps {
+  order: Order
+  showSolverDetails: boolean
+  solvedBy?: OrderSolverInfo
+  isSolvedByLoading?: boolean
+  isPriceInverted: boolean
+  invertPrice: Command
+  showFillsButton: boolean | undefined
+  viewFills: Command
 }

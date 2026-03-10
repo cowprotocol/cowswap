@@ -15,6 +15,7 @@ export type FillsTableWithDataProps = {
   order: Order | null
   isPriceInverted: boolean
   invertPrice: Command
+  showSolverDetails: boolean
 }
 
 export const FillsTableWithData: React.FC<FillsTableWithDataProps> = ({
@@ -22,6 +23,7 @@ export const FillsTableWithData: React.FC<FillsTableWithDataProps> = ({
   order,
   isPriceInverted,
   invertPrice,
+  showSolverDetails,
 }) => {
   const { data: trades, tableState } = useContext(FillsTableContext)
   const isFirstRender = useFirstRender()
@@ -35,6 +37,7 @@ export const FillsTableWithData: React.FC<FillsTableWithDataProps> = ({
       tableState={tableState}
       isPriceInverted={isPriceInverted}
       invertPrice={invertPrice}
+      showSolverDetails={showSolverDetails}
     />
   )
 }

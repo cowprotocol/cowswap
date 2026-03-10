@@ -4,7 +4,7 @@ import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
 
 export function useHasTradeEnoughAllowance(): boolean | undefined {
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const amount = receiveAmountInfo?.afterSlippage.sellAmount
+  const amount = receiveAmountInfo?.amountsToSign.sellAmount
 
   return useEnoughAllowance(amount)
 }

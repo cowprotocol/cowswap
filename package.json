@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.30.3",
   "config": {
     "enabledApps": "cowswap-frontend cowswap-frontend-e2e abis ui ui-utils widget-lib widget-react"
   },
@@ -32,6 +32,7 @@
     "nx": "npx nx run",
     "ipfs": "nx run cowswap-frontend:ipfs",
     "i18n": "nx run-many -t i18n",
+    "i18n:extract": "nx run-many -t i18n:extract",
     "preview": "nx run cowswap-frontend:preview",
     "test": "pnpm run test:all",
     "test:all": "nx run-many -t test",
@@ -149,6 +150,7 @@
     "eslint-plugin-jest": "^29.0.1",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-lingui": "^0.10.1",
+    "eslint-plugin-perfectionist": "^5.6.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.0",
