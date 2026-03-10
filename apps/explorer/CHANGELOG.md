@@ -1,5 +1,41 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/explorer-v3.3.2...explorer-v3.4.0) (2026-03-10)
+
+
+### ✨ Features
+
+* enhance order details with solver information ([#7039](https://github.com/cowprotocol/cowswap/issues/7039)) ([5a97a9e](https://github.com/cowprotocol/cowswap/commit/5a97a9e06395cec61d2fb70a62631516fbb62f49))
+* enhance order solver functionality with new resolver methods and execution checks ([#7109](https://github.com/cowprotocol/cowswap/issues/7109)) ([8ce34f1](https://github.com/cowprotocol/cowswap/commit/8ce34f1f38ac13b609c2f8aaae12ffa7338d22d1))
+* **explorer:** add solvers page and integrate solvers info fetching ([#7037](https://github.com/cowprotocol/cowswap/issues/7037)) ([2d14185](https://github.com/cowprotocol/cowswap/commit/2d14185ce7e0742713afbd935729d652ee31b83c))
+* implement solver details feature across order components ([#7120](https://github.com/cowprotocol/cowswap/issues/7120)) ([8377cc7](https://github.com/cowprotocol/cowswap/commit/8377cc73272eda87c59e3dfa4049886df97b45c6))
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* **explorer:** improve scrollbar visibility at narrow width ([#7093](https://github.com/cowprotocol/cowswap/issues/7093)) ([6095de4](https://github.com/cowprotocol/cowswap/commit/6095de48fcd92bf51fe0f4ff154ec20d8fb375ae))
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.4.0
+    * @cowprotocol/common-const bumped to 2.4.0
+    * @cowprotocol/common-hooks bumped to 2.4.0
+    * @cowprotocol/common-utils bumped to 2.4.0
+    * @cowprotocol/core bumped to 2.5.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.7
+    * @cowprotocol/types bumped to 3.4.0
+    * @cowprotocol/ui bumped to 2.4.0
+
 ## [3.3.2](https://github.com/cowprotocol/cowswap/compare/explorer-v3.3.1...explorer-v3.3.2) (2026-02-25)
 
 

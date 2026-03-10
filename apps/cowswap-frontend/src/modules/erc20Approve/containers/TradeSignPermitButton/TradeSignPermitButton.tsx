@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonConfirmed, ButtonSize, HoverTooltip } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { HelpCircle } from 'react-feather'
 

@@ -15,6 +15,7 @@ import { TableState } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { OrderSolverInfo, useOrderSolver } from 'hooks/useOrderSolver'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
+import { useSolversFeatureFlag } from 'hooks/useSolversFeatureFlag'
 import { useLocation } from 'react-router'
 import { knownBridgeProviders } from 'sdk/cowSdk'
 import { useNetworkId } from 'state/network'
@@ -75,6 +76,7 @@ const tabItems = (
   isPriceInverted: boolean,
   invertPrice: Command,
   hasMultipleTrades: boolean,
+  showSolverDetails: boolean,
   solvedBy?: OrderSolverInfo,
   isSolvedByLoading?: boolean,
 ): TabItemInterface[] => {
@@ -102,6 +104,7 @@ const tabItems = (
       >
         <VerboseDetails
           order={order}
+          showSolverDetails={showSolverDetails}
           solvedBy={solvedBy}
           isSolvedByLoading={isSolvedByLoading}
           showFillsButton={showFills}
@@ -134,7 +137,13 @@ const tabItems = (
     return [overviewTab]
   }
 
-  const fillsTab = getFillsTab(filledPercentage, { order, areTokensLoaded, isPriceInverted, invertPrice })
+  const fillsTab = getFillsTab(filledPercentage, {
+    order,
+    areTokensLoaded,
+    isPriceInverted,
+    invertPrice,
+    showSolverDetails,
+  })
 
   return [overviewTab, fillsTab]
 }
@@ -149,6 +158,10 @@ function getOrderWithTxHash(order: Order | null, trades: Trade[], hasMultipleTra
     return { ...order, txHash: trades[0].txHash || undefined, executionDate: trades[0].executionTime || undefined }
   }
   return order
+}
+
+function hasMultipleTradesForOrder(trades: Trade[], tableState: TableState): boolean {
+  return trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1) || !!tableState.hasNextPage
 }
 
 // TODO: Break down this large function into smaller functions
@@ -167,6 +180,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
     handlePreviousPage,
   } = props
   const chainId = useNetworkId()
+  const showSolverDetails = useSolversFeatureFlag()
   const tab = useQueryViewParams()
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
 
@@ -176,11 +190,12 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const [redirectTo, setRedirectTo] = useState(false)
   const updateQueryString = useUpdateQueryString()
   const crossChainOrderResponse = useCrossChainOrder(order?.uid)
-  const hasMultipleTrades =
-    trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1) || !!tableState.hasNextPage
+  const hasMultipleTrades = hasMultipleTradesForOrder(trades, tableState)
   const isMultiFill = order?.partiallyFillable && !order.txHash && hasMultipleTrades
   const orderWithTxHash = getOrderWithTxHash(order, trades, hasMultipleTrades)
-  const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(isMultiFill ? null : orderWithTxHash)
+  const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(
+    showSolverDetails && !isMultiFill ? orderWithTxHash : null,
+  )
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>
@@ -258,6 +273,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
             isPriceInverted,
             invertPrice,
             hasMultipleTrades,
+            showSolverDetails,
             solvedBy,
             isSolvedByLoading,
           )}

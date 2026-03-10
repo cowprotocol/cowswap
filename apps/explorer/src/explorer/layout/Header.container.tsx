@@ -4,14 +4,17 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useBodyScrollbarLocker, useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
+import { getMainMenu } from '../../components/common/MenuDropdown/mainMenu'
 import { MenuTree } from '../../components/common/MenuDropdown/MenuTree'
 import { Header as GenericHeader } from '../../components/layout/GenericLayout/Header'
 import { NetworkSelector } from '../../components/NetworkSelector/NetworkSelector.container'
+import { useSolversFeatureFlag } from '../../hooks/useSolversFeatureFlag'
 import { useNetworkId } from '../../state/network'
 import { FlexWrap } from '../pages/styled'
 
 export const Header: React.FC = () => {
   const isMobile = useMediaQuery(Media.upToSmall(false))
+  const isSolversEnabled = useSolversFeatureFlag()
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useBodyScrollbarLocker(isMobileMenuOpen && isMobile)
@@ -26,6 +29,7 @@ export const Header: React.FC = () => {
   }
 
   const prefixNetwork = CHAIN_INFO[networkId].urlAlias
+  const menuList = getMainMenu(isSolversEnabled)
 
   return (
     <GenericHeader
@@ -38,6 +42,7 @@ export const Header: React.FC = () => {
           isMobile={isMobile}
           isMobileMenuOpen={isMobileMenuOpen}
           handleMobileMenuOnClick={handleMobileMenuOnClick}
+          menuList={menuList}
         />
       </FlexWrap>
     </GenericHeader>

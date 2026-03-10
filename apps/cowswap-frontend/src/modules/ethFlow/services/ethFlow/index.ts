@@ -1,8 +1,8 @@
 import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
 import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
 import { OrderClass, SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
+import { Percent } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
-import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { SigningSteps } from 'entities/trade'

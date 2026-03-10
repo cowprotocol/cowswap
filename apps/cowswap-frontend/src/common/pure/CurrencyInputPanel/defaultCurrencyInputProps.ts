@@ -1,6 +1,6 @@
 import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { inputCurrencyInfoMock } from 'mocks/tradeStateMock'
 
