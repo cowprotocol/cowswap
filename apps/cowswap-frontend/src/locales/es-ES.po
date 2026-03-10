@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-03-04 13:00\n"
+"PO-Revision-Date: 2026-03-10 09:16\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -729,7 +729,7 @@ msgstr "Recibí un excedente en"
 msgid "Created on"
 msgstr ""
 
-#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs"
 msgstr "Ver trabajos"
 
@@ -781,7 +781,7 @@ msgstr "El token COW no está disponible en esta red"
 msgid "CoW AMM only"
 msgstr "Sólo CoW AMM"
 
-#: apps/cowswap-frontend/src/modules/affiliate/pure/shared.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/shared/AffiliateTermsFaqLinks.pure.tsx
 msgid "Terms"
 msgstr ""
 
@@ -948,8 +948,8 @@ msgid "Loading operation"
 msgstr "Cargando operación"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
-msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days.<2/><3/>"
-msgstr ""
+#~ msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days.<2/><3/>"
+#~ msgstr "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days.<2/><3/>"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "CoW Runner"
@@ -1069,8 +1069,8 @@ msgid "Switch Network"
 msgstr "Cambiar red"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/RefCodeInput/RefCodeAdornment.tsx
-msgid "Invalid code"
-msgstr ""
+#~ msgid "Invalid code"
+#~ msgstr "Invalid code"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTabs/OrdersTabs.pure.tsx
@@ -1216,11 +1216,15 @@ msgstr "Hist. de órdenes"
 #~ msgid "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
 #~ msgstr "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
 
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
+msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>."
 msgstr "Debe dar permiso a los contratos inteligentes del Protocolo CoW para usar su <0/>."
 
-#: apps/cowswap-frontend/src/modules/affiliate/pure/shared.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/shared/AffiliateTermsFaqLinks.pure.tsx
 msgid "How it works"
 msgstr ""
 
@@ -1728,6 +1732,10 @@ msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
 "Start swapping on swap.cow.fi"
 msgstr "¡Hola, acabo de {actionWord} un {surplus} extra en @CoWSwap! 🐮💸\n\n"
 "Empieza a intercambiar en swap.cow.fi"
+
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
+msgid "See Terms"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Connect Wallet"
@@ -2463,7 +2471,7 @@ msgstr "Mostrar progreso"
 #~ msgid "Please connect your wallet to one of our supported networks: {supportedNetworks}."
 #~ msgstr "Please connect your wallet to one of our supported networks: {supportedNetworks}."
 
-#: apps/cowswap-frontend/src/modules/application/containers/App/utils/cowSpeechBubbleTyping.ts
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "Mooo, we're hiring!"
 msgstr "¡Mooo, estamos contratando!"
 
@@ -2718,7 +2726,7 @@ msgstr "Reclamar investido"
 msgid "Transaction Settings"
 msgstr "Ajustes de la transacción"
 
-#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "Dismiss hiring message"
 msgstr "Descartar mensaje de contratación"
 
@@ -3041,6 +3049,11 @@ msgstr "Los pozos de liquidez en CoW AMM crecen más rápido que en otros AMM, p
 msgid "TWAP"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
+msgid "Will be updated {approxNextUpdateTimeAgo}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHistory.tsx
 #~ msgid "Rewards activity"
 #~ msgstr "Rewards activity"
@@ -3111,8 +3124,8 @@ msgstr "en cadena"
 #~ msgstr "Across Protocol - Transfer Assets Between Layer 2s and Mainnet"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
-msgid "Updates every 6 hours"
-msgstr ""
+#~ msgid "Updates every 6 hours"
+#~ msgstr "Updates every 6 hours"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Tokens overview"
@@ -3553,7 +3566,6 @@ msgid "Technical details:"
 msgstr "Detalles técnicos:"
 
 #: apps/cowswap-frontend/src/modules/affiliate/hooks/useAffiliateTraderVerification.ts
-#: apps/cowswap-frontend/src/modules/affiliate/hooks/useAffiliateTraderVerification.ts
 msgid "This code is invalid. Try another."
 msgstr ""
 
@@ -3693,6 +3705,7 @@ msgstr "ambos {joinedSupportedTypes}"
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/modules/affiliate/pure/RefCodeInput/RefCodeAdornment.tsx
 msgid "Error"
 msgstr ""
 
@@ -4550,7 +4563,7 @@ msgstr "Buscar red"
 msgid "CowSwap no connection"
 msgstr "Cowswap sin conexión"
 
-#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs (opens in a new tab)"
 msgstr "Ver trabajos (se abre en una pestaña nueva)"
 
@@ -5063,6 +5076,10 @@ msgstr "Tu excedente total"
 #: apps/cowswap-frontend/src/modules/trade/const/common.ts
 msgid "Desktop: Left-Aligned Orders Table"
 msgstr "Escritorio: Tabla de pedidos alineados a la izquierda"
+
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleNotificationBanner.tsx
+msgid "Dismiss notification"
+msgstr ""
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Withdraw rewards from your Gnosis validators."
@@ -5791,6 +5808,10 @@ msgstr "como máximo "
 msgid "Sandwich icon"
 msgstr "Icono de Sandwich"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
+msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Network compatibility error"
 msgstr "Error de compatibilidad de red"
@@ -6348,6 +6369,7 @@ msgstr "Los swaps de cadena media están aquí"
 msgid "Fee discount"
 msgstr "Tarifa de descuento"
 
+#: apps/cowswap-frontend/src/modules/affiliate/hooks/useAffiliateTraderVerification.ts
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Only A-Z, 0-9, dashes, and underscores are allowed."
 msgstr ""
@@ -7569,6 +7591,7 @@ msgstr "No se pudo cambiar de redes desde la interfaz de intercambio de CoW. Par
 #~ msgid "out of"
 #~ msgstr "out of"
 
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleNotificationBanner.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/BottomBanners/BottomBanners.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/ZeroApprovalWarning/ZeroApprovalWarning.tsx
