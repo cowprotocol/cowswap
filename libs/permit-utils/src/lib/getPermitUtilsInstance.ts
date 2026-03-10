@@ -1,4 +1,4 @@
-import { type Address, createWalletClient, custom, type EIP1193Provider, type PublicClient } from 'viem'
+import { type Address, createWalletClient, custom, http, type EIP1193Provider, type PublicClient } from 'viem'
 
 import { PERMIT_ACCOUNT } from '../const'
 import { PermitProviderConnector } from '../utils/PermitProviderConnector'
@@ -35,10 +35,14 @@ export async function getPermitUtilsInstance({
     return providerCache
   }
 
+  // For account-agnostic permit hooks (no real account), use HTTP transport to avoid
+  // triggering wallet connection popups. Only use window.ethereum when we have a real account.
+  const transport = account && window.ethereum ? custom(window.ethereum as unknown as EIP1193Provider) : http()
+
   const walletClient = createWalletClient({
     account: account || PERMIT_ACCOUNT,
     chain: publicClient.chain,
-    transport: custom(window.ethereum! as unknown as EIP1193Provider),
+    transport,
   })
 
   const web3ProviderConnector = new PermitProviderConnector(publicClient, walletClient)

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useCallback } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -12,9 +11,9 @@ import { Trans } from '@lingui/react/macro'
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { useSetWalletConnectionError } from 'modules/wallet/hooks/useSetWalletConnectionError'
+import { useLegacySetChainIdToUrl } from 'common/hooks/useLegacySetChainIdToUrl'
 
-import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
+import { useSetWalletConnectionError } from '../../wallet/hooks/useSetWalletConnectionError'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const addSnackbar = useAddSnackbar()
@@ -25,11 +24,12 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
 
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
-      try {
-        setWalletConnectionError(undefined)
-        await switchNetwork(targetChain)
+      setWalletConnectionError(undefined)
+      // Update URL first so it stays in sync (and connect flow uses it); then switch wallet if connected
+      setChainIdToUrl(targetChain)
 
-        setChainIdToUrl(targetChain)
+      try {
+        await switchNetwork(targetChain)
         // TODO: Replace any with proper type definitions
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {

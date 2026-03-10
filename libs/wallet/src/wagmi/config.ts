@@ -18,7 +18,17 @@ import {
   polygon,
   sepolia,
 } from 'viem/chains'
-import { Transport } from 'wagmi'
+import { createStorage, Transport } from 'wagmi'
+
+// Create a no-op storage to prevent wagmi from persisting connection state
+// This prevents auto-reconnection on page reload
+const noopStorage = createStorage({
+  storage: {
+    getItem: () => null,
+    setItem: () => {},
+    removeItem: () => {},
+  },
+})
 
 // TODO change
 const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
@@ -60,6 +70,8 @@ export const wagmiAdapter = new WagmiAdapter({
     {} as Record<SupportedChainId, Transport>,
   ),
   projectId,
+  // Disable storage to prevent auto-reconnection
+  storage: noopStorage,
 })
 
 const appKit = createAppKit({
@@ -67,6 +79,7 @@ const appKit = createAppKit({
   allowUnsupportedChain: false,
   defaultNetwork: networks[0],
   enableEIP6963: true,
+  enableReconnect: false,
   enableWalletGuide: false,
   featuredWalletIds: [
     'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // metamask

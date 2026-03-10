@@ -1,16 +1,12 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { parseChainIdFromUrlSegment } from '@cowprotocol/common-utils'
+
 import { useLocation, useParams } from 'react-router'
 
 import { tradeStateFromUrlAtom } from '../../state/tradeStateFromUrlAtom'
 import { TradeRawState } from '../../types/TradeRawState'
-
-const getChainId = (chainId: string | undefined | null): number | null => {
-  if (!chainId) return null
-  if (/^\d+$/.test(chainId)) return Number(chainId)
-  return null
-}
 
 /**
  * Updater to fetch trade state from URL params and query, and store it on jotai state
@@ -32,12 +28,12 @@ export function useSetupTradeStateFromUrl(): null {
     const { chainId, inputCurrencyId, outputCurrencyId } = JSON.parse(stringifiedParams)
 
     return {
-      chainId: getChainId(chainId),
+      chainId: parseChainIdFromUrlSegment(chainId),
       inputCurrencyId: inputCurrencyId ?? null,
       outputCurrencyId: outputCurrencyId ?? null,
       recipient,
       recipientAddress,
-      targetChainId: getChainId(targetChainId),
+      targetChainId: parseChainIdFromUrlSegment(targetChainId),
     }
   }, [location.search, stringifiedParams])
 

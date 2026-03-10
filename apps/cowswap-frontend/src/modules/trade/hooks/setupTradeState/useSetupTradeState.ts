@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
-import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -16,7 +16,6 @@ import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawStat
 import { TradeType } from '../../types/TradeType'
 import { useTradeState } from '../useTradeState'
 
-const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 const EMPTY_TOKEN_ID = '_'
 
 // TODO: Break down this large function into smaller functions
@@ -25,6 +24,7 @@ export function useSetupTradeState(): void {
   useSetupTradeStateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
+  const prevAccount = usePrevious(account)
 
   const isWindowVisible = useIsWindowVisible()
   const prevIsWindowVisible = usePrevious(isWindowVisible)
@@ -39,10 +39,18 @@ export function useSetupTradeState(): void {
   // Since the network chaning process takes some time, we have to remember the state from URL
   const rememberedUrlStateRef = useRef<TradeRawState | null>(null)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
+  // Avoid requesting the same chain switch repeatedly while the wallet is still switching (prevents UI glitching)
+  const pendingSwitchToChainIdRef = useRef<number | null>(null)
+  const providerChainIdRef = useRef(providerChainId)
+  const urlChainIdRef = useRef<number | null>(null)
 
   const isWalletConnected = !!account
-  const urlChainId = tradeStateFromUrl?.chainId
+  const urlChainId = tradeStateFromUrl?.chainId ?? null
+  const prevUrlChainId = usePrevious(urlChainId)
   const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
+
+  providerChainIdRef.current = providerChainId
+  urlChainIdRef.current = urlChainId
 
   const currentChainId = !urlChainId ? prevProviderChainId || providerChainId || SupportedChainId.MAINNET : urlChainId
 
@@ -86,29 +94,42 @@ export function useSetupTradeState(): void {
     [tradeNavigate, switchNetworkInWallet],
   )
 
-  const onProviderNetworkChanges = useCallback(() => {
-    const rememberedUrlState = rememberedUrlStateRef.current
+  const onProviderNetworkChanges = useCallback(
+    (resolvedProviderChainId?: number) => {
+      const chainId = resolvedProviderChainId ?? providerChainId
+      const rememberedUrlState = rememberedUrlStateRef.current
 
-    if (rememberedUrlState) {
-      rememberedUrlStateRef.current = null
+      if (rememberedUrlState) {
+        rememberedUrlStateRef.current = null
 
-      navigateAndSwitchNetwork(rememberedUrlState.chainId, rememberedUrlState, prevProviderChainId)
-    } else {
-      // When app loaded with connected wallet
-      if (isFirstLoad && isWalletConnected) {
-        setIsFirstLoad(false)
-
-        // If the app was open without specifying the chainId in the URL, then we should NOT switch to the chainId from the provider
-        if (urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
-          switchNetworkInWallet(urlChainId, providerChainId)
-        }
+        navigateAndSwitchNetwork(rememberedUrlState.chainId, rememberedUrlState, prevProviderChainId)
+        return
       }
 
-      navigateAndSwitchNetwork(providerChainId, getDefaultTradeRawState(providerChainId), null)
-    }
-    // Triggering only when chainId was changed in the provider
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerChainId, prevProviderChainId])
+      // Only on first connect: if URL has a chain, switch the wallet to it and do not navigate (so we stay on e.g. Arbitrum instead of jumping to mainnet).
+      // After that, when the user changes chain in the wallet or in the app, we allow it by navigating to the provider's chain.
+      const justConnected = !!account && !prevAccount
+      if (justConnected && urlChainId && urlChainId !== chainId) {
+        if (isFirstLoad) setIsFirstLoad(false)
+        switchNetworkInWallet(urlChainId, chainId)
+        return
+      }
+
+      // User changed network in wallet, or URL has no chain: navigate to provider's chain.
+      if (!chainId) return
+      navigateAndSwitchNetwork(chainId, getDefaultTradeRawState(chainId), null)
+    },
+    [
+      providerChainId,
+      prevProviderChainId,
+      urlChainId,
+      account,
+      prevAccount,
+      isFirstLoad,
+      navigateAndSwitchNetwork,
+      switchNetworkInWallet,
+    ],
+  )
 
   /**
    * On URL parameter changes
@@ -207,36 +228,37 @@ export function useSetupTradeState(): void {
   }, [tradeStateFromUrl, isAlternativeModalVisible, isLimitOrderTrade])
 
   /**
-   * On:
-   *  - chainId in URL changes
-   *  - provider changes
-   *
-   * Note: useEagerlyConnect() changes connectors several times at the beginning
-   *
-   * 1. When chainId in URL is changed, then set it to the provider
-   * 2. If provider's chainId is the same with chainId in URL, then do nothing
-   * 3. When the URL state is remembered, then set it's chainId to the provider
+   * On URL chain change (user selected a different chain in the app): switch the wallet to the new URL chain.
+   * We do NOT switch the wallet when only the provider changed (user switched in wallet) – the other effect will navigate to the provider's chain.
    */
+  // eslint-disable-next-line complexity
   useEffect(() => {
-    // When wallet provider is loaded and chainId matches to the URL chainId
     const isProviderChainIdMatchesUrl = providerChainId === urlChainId
 
     if (isProviderChainIdMatchesUrl) {
       setIsFirstLoad(false)
+      pendingSwitchToChainIdRef.current = null
     }
 
-    // Skip network switching when chainId in URL is not changed
-    const isUrlChainIdChanged = Boolean(urlChainId && urlChainId !== prevTradeStateFromUrl?.chainId)
-
-    if (!providerChainId || providerChainId === currentChainId || !isUrlChainIdChanged) return
+    // Switch when: (1) URL chain changed (user chose a chain in the app), or (2) user just connected and URL has a chain (stay on that chain)
+    const urlChainChanged = urlChainId !== prevUrlChainId
+    const justConnected = !!account && !prevAccount
+    const shouldSyncWalletToUrl =
+      (urlChainChanged || justConnected) && urlChainId && providerChainId && providerChainId !== urlChainId
+    if (!shouldSyncWalletToUrl) return
 
     const targetChainId = urlChainId ?? rememberedUrlStateRef.current?.chainId ?? currentChainId
+    if (pendingSwitchToChainIdRef.current === targetChainId) return
+
+    pendingSwitchToChainIdRef.current = targetChainId
     switchNetworkInWallet(targetChainId, providerChainId)
 
-    console.debug('[TRADE STATE]', 'Set chainId to provider', { providerChainId, urlChainId })
-    // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
+    console.debug('[TRADE STATE]', 'Set chainId to provider (URL changed or just connected)', {
+      providerChainId,
+      urlChainId,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlChainId])
+  }, [urlChainId, prevUrlChainId, providerChainId, account, prevAccount])
 
   /**
    * On chainId in provider changes
@@ -245,7 +267,11 @@ export function useSetupTradeState(): void {
    * 2. If the URL state was remembered, then put it into URL
    * 3. If it's the first load and wallet is connected, then switch network in the wallet to the chainId from URL
    * 4. Otherwise, navigate to the new chainId with default tokens
+   *
+   * Debounced so we only react after the chain has settled (avoids glitching when wallet/provider flickers during switch).
    */
+  const PROVIDER_CHANGE_DEBOUNCE_MS = 350
+
   useEffect(() => {
     // When we came back to the tab and there is a new chainId in provider
     const providerChangedNetworkWhenWindowInactive =
@@ -265,12 +291,24 @@ export function useSetupTradeState(): void {
 
     if (shouldSkip) return
 
-    onProviderNetworkChanges()
+    const timeoutId = window.setTimeout(() => {
+      const settledChainId = providerChainIdRef.current
+      // Still waiting for wallet to switch to URL chain (e.g. user just connected and we requested switch) – don't navigate yet
+      if (
+        pendingSwitchToChainIdRef.current !== null &&
+        pendingSwitchToChainIdRef.current === urlChainIdRef.current &&
+        settledChainId !== urlChainIdRef.current
+      ) {
+        return
+      }
+      onProviderNetworkChanges(settledChainId)
+      console.debug('[TRADE STATE]', 'Provider changed chainId (settled)', {
+        providerChainId: settledChainId,
+        urlChanges: rememberedUrlStateRef.current,
+      })
+    }, PROVIDER_CHANGE_DEBOUNCE_MS)
 
-    console.debug('[TRADE STATE]', 'Provider changed chainId', {
-      providerChainId,
-      urlChanges: rememberedUrlStateRef.current,
-    })
+    return () => window.clearTimeout(timeoutId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWindowVisible, onProviderNetworkChanges])
 
