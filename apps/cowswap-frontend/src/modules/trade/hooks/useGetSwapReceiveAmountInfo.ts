@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
+import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
-import { Currency } from '@uniswap/sdk-core'
 
 import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useVolumeFee } from 'modules/volumeFee'

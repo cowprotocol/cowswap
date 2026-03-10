@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useUpdatePartialApproveAmountModalState } from '../../state'
 import { ChangeApproveAmountModal } from '../ChangeApproveAmountModal'

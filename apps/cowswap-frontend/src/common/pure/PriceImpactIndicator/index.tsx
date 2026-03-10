@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
 import { formatPercent } from '@cowprotocol/common-utils'
+import { Percent } from '@cowprotocol/currency'
 import { Loader, HoverTooltip } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
@@ -21,16 +21,6 @@ const LoaderStyled = styled(Loader)`
 const PriceImpactWrapper = styled.span<{ priceImpact$: Percent; isBridging$: boolean }>`
   color: ${({ theme, priceImpact$, isBridging$ }) => getPriceImpactColor(theme, priceImpact$, isBridging$)};
 `
-
-function getPriceImpactColor(theme: DefaultTheme, priceImpact: Percent, isBridging: boolean): string {
-  const lowThreshold = (isBridging ? BRIDGE_PRICE_IMPACT_THRESHOLD : PRICE_IMPACT_THRESHOLD).low
-
-  if (priceImpact.greaterThan(lowThreshold)) return theme.danger
-
-  if (priceImpact.lessThan(0)) return theme.success
-
-  return theme.text
-}
 
 export interface PriceImpactIndicatorProps {
   isBridging?: boolean
@@ -60,4 +50,14 @@ export function PriceImpactIndicator({ priceImpactParams, isBridging = false }: 
       {priceImpactLoading && <LoaderStyled size="14px" />}
     </span>
   )
+}
+
+function getPriceImpactColor(theme: DefaultTheme, priceImpact: Percent, isBridging: boolean): string {
+  const lowThreshold = (isBridging ? BRIDGE_PRICE_IMPACT_THRESHOLD : PRICE_IMPACT_THRESHOLD).low
+
+  if (priceImpact.greaterThan(lowThreshold)) return theme.danger
+
+  if (priceImpact.lessThan(0)) return theme.success
+
+  return theme.text
 }

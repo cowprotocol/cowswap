@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { ReactElement, ReactNode } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
@@ -20,25 +20,6 @@ interface TradeAmountPreviewProps {
   label: ReactElement
   tooltip: ReactNode
   children?: ReactNode
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function TradeAmountPreview(props: TradeAmountPreviewProps) {
-  const { amount, usdAmount, label, tooltip, children } = props
-
-  return (
-    <styledEl.Part>
-      <styledEl.Label>
-        {label}
-        <HelpTooltip text={tooltip} />
-      </styledEl.Label>
-
-      <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />
-      <styledEl.Fiat amount={usdAmount} />
-      {children}
-    </styledEl.Part>
-  )
 }
 
 // TODO: Add proper return type annotation
@@ -82,5 +63,24 @@ export function AmountParts() {
         usdAmount={outputPartAmountUsd}
       ></TradeAmountPreview>
     </styledEl.Wrapper>
+  )
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function TradeAmountPreview(props: TradeAmountPreviewProps) {
+  const { amount, usdAmount, label, tooltip, children } = props
+
+  return (
+    <styledEl.Part>
+      <styledEl.Label>
+        {label}
+        <HelpTooltip text={tooltip} />
+      </styledEl.Label>
+
+      <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />
+      <styledEl.Fiat amount={usdAmount} />
+      {children}
+    </styledEl.Part>
   )
 }

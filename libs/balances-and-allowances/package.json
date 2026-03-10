@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/balances-and-allowances",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -37,7 +37,7 @@
     "@cowprotocol/wallet-provider": "workspace:*",
     "@ethersproject/bignumber": "5.7.0",
     "@ethersproject/contracts": "5.7.0",
-    "@uniswap/sdk-core": "^3.0.1",
+    "@cowprotocol/currency": "workspace:*",
     "ethers": "5.7.2",
     "jotai": "2.16.2",
     "ms.macro": "^2.0.0",

@@ -3,10 +3,10 @@ import { MouseEventHandler, ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { areAddressesEqual, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, HoverTooltip, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
@@ -41,31 +41,20 @@ export interface TokenListItemProps {
   disabledReason?: string
 }
 
-function getClassName(isTokenSelected: boolean, disabled: boolean, className = ''): string {
-  const selectedClass = isTokenSelected ? 'token-item-selected' : ''
-  const disabledClass = disabled ? 'token-item-disabled' : ''
-  return `${className} ${selectedClass} ${disabledClass}`.trim()
-}
-
 interface DisabledProps {
   'aria-disabled'?: true
   tabIndex?: -1
-}
-
-function getDisabledProps(disabled: boolean): DisabledProps {
-  if (!disabled) return {}
-  return { 'aria-disabled': true, tabIndex: -1 }
-}
-
-function checkIsTokenSelected(token: TokenWithLogo, selectedToken: Nullish<Currency>): boolean {
-  if (!selectedToken) return false
-  return areAddressesEqual(token.address, getCurrencyAddress(selectedToken)) && token.chainId === selectedToken.chainId
 }
 
 interface DisabledTooltipProps {
   children: ReactNode
   disabled: boolean
   disabledReason?: string
+}
+
+function checkIsTokenSelected(token: TokenWithLogo, selectedToken: Nullish<Currency>): boolean {
+  if (!selectedToken) return false
+  return areAddressesEqual(token.address, getCurrencyAddress(selectedToken)) && token.chainId === selectedToken.chainId
 }
 
 function DisabledTooltip({ children, disabled, disabledReason }: DisabledTooltipProps): ReactNode {
@@ -77,7 +66,25 @@ function DisabledTooltip({ children, disabled, disabledReason }: DisabledTooltip
   )
 }
 
+function getClassName(isTokenSelected: boolean, disabled: boolean, className = ''): string {
+  const selectedClass = isTokenSelected ? 'token-item-selected' : ''
+  const disabledClass = disabled ? 'token-item-disabled' : ''
+  return `${className} ${selectedClass} ${disabledClass}`.trim()
+}
+
+function getDisabledProps(disabled: boolean): DisabledProps {
+  if (!disabled) return {}
+  return { 'aria-disabled': true, tabIndex: -1 }
+}
+
 const EMPTY_TAGS = {}
+
+interface TokenBalanceColumnProps {
+  shouldShow: boolean
+  shouldFormat: boolean
+  balanceAmount?: CurrencyAmount<Currency>
+  usdAmount?: CurrencyAmount<Currency> | null
+}
 
 export function TokenListItem(props: TokenListItemProps): ReactNode {
   const {
@@ -153,13 +160,6 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
       </styledEl.TokenItem>
     </DisabledTooltip>
   )
-}
-
-interface TokenBalanceColumnProps {
-  shouldShow: boolean
-  shouldFormat: boolean
-  balanceAmount?: CurrencyAmount<Currency>
-  usdAmount?: CurrencyAmount<Currency> | null
 }
 
 function TokenBalanceColumn({

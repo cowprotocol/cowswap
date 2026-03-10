@@ -26,7 +26,7 @@ export function SolversDirectoryTableBody({
   if (!filteredSolvers.length) {
     return (
       <tr>
-        <td colSpan={5}>
+        <td colSpan={3}>
           <Placeholder>No solvers match your current filters.</Placeholder>
         </td>
       </tr>
@@ -53,6 +53,6 @@ export function SolversDirectoryTableBody({
       return [summary]
     }
 
-    return [summary, <SolverDetailsRow key={`${solver.solverId}-details`} solver={solver} deployments={deployments} />]
+    return [summary, <SolverDetailsRow key={`${solver.solverId}-details`} deployments={deployments} />]
   })
 }
