@@ -32,7 +32,7 @@ export const PageWrapper = styled.div<{
       hideOrdersTable ? '"primary"' : secondaryOnLeft ? '"secondary primary"' : '"primary secondary"'};
   }
 
-  > div:last-child {
+  > .trade-orders-table {
     display: ${({ isUnlocked }) => (!isUnlocked ? 'none' : '')};
   }
 `
