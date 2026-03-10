@@ -1,17 +1,20 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
-import { formatShortDate } from '@cowprotocol/common-utils'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { useTimeAgo } from '@cowprotocol/common-hooks'
+import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
+import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
+import ms from 'ms.macro'
 import SVG from 'react-inlinesvg'
 
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
+import { getApproxNextStatsUpdateAt, toValidDate } from '../lib/affiliateProgramUtils'
 import {
   CardTitle,
   HeroActions,
@@ -21,12 +24,15 @@ import {
   LinkedCodeText,
   LinkedMetaList,
   MetricItem,
+  MetricValue,
   ColumnOneCard,
   RewardsHeader,
   ValidStatusBadge,
 } from '../pure/shared'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
+
+const TIME_AGO_UPDATE_INTERVAL_MS = ms`1m`
 
 export function AffiliateTraderCodeInfo(): ReactNode {
   const { account } = useWalletInfo()
@@ -35,6 +41,9 @@ export function AffiliateTraderCodeInfo(): ReactNode {
 
   const { data: stats, isLoading: statsLoading } = useAffiliateTraderStats(account)
   const { data: info, isLoading: codeLoading } = useAffiliateTraderInfo(savedCode)
+
+  const approxNextUpdateAt = useMemo(() => getApproxNextStatsUpdateAt(), [])
+  const approxNextUpdateTimeAgo = useTimeAgo(approxNextUpdateAt, TIME_AGO_UPDATE_INTERVAL_MS)
 
   return (
     <ColumnOneCard showLoader={statsLoading || codeLoading}>
@@ -48,7 +57,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <LinkedCodeText>{savedCode}</LinkedCodeText>
               {isLinked ? (
                 <LinkedBadge>
-                  <SVG src={LockedIcon} width={12} height={10} />
+                  <SVG src={LockedIcon} width={16} height={16} />
                   <Trans>Linked</Trans>
                 </LinkedBadge>
               ) : (
@@ -64,13 +73,33 @@ export function AffiliateTraderCodeInfo(): ReactNode {
               <span>
                 <Trans>Linked since</Trans>
               </span>
-              <strong>{isLinked && stats ? formatShortDate(stats.linked_since) : '-'}</strong>
+              <MetricValue>
+                {stats && toValidDate(stats.linked_since) ? (
+                  <span title={formatDateWithTimezone(toValidDate(stats.linked_since))}>
+                    {formatShortDate(stats.linked_since)}
+                  </span>
+                ) : isLinked ? (
+                  <HelpTooltip text={<Trans>Will be updated {approxNextUpdateTimeAgo}</Trans>} />
+                ) : (
+                  '-'
+                )}
+              </MetricValue>
             </MetricItem>
             <MetricItem>
               <span>
                 <Trans>Rewards end</Trans>
               </span>
-              <strong>{isLinked && stats ? formatShortDate(stats.rewards_end) : '-'}</strong>
+              <MetricValue>
+                {stats && toValidDate(stats.rewards_end) ? (
+                  <span title={formatDateWithTimezone(toValidDate(stats.rewards_end))}>
+                    {formatShortDate(stats.rewards_end)}
+                  </span>
+                ) : isLinked ? (
+                  <HelpTooltip text={<Trans>Will be updated {approxNextUpdateTimeAgo}</Trans>} />
+                ) : (
+                  '-'
+                )}
+              </MetricValue>
             </MetricItem>
           </LinkedMetaList>
           {!isLinked && (

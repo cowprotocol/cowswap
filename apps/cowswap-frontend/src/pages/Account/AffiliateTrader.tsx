@@ -7,6 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import {
   AffiliateTraderCodeInfo,
+  AffiliateTraderLoading,
   AffiliateTraderNextPayout,
   AffiliateTraderOnboard,
   AffiliateTraderStats,
@@ -19,7 +20,7 @@ import {
   UnsupportedNetwork,
   affiliateTraderSavedCodeAtom,
 } from 'modules/affiliate'
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 
 export default function AffiliateTrader(): ReactNode {
   const { i18n } = useLingui()
@@ -37,6 +38,8 @@ export default function AffiliateTrader(): ReactNode {
           <AffiliateTraderIneligible />
         ) : walletStatus === TraderWalletStatus.UNSUPPORTED ? (
           <AffiliateTraderUnsupportedNetwork />
+        ) : walletStatus === TraderWalletStatus.PENDING ? (
+          <AffiliateTraderLoading />
         ) : !savedCode || walletStatus === TraderWalletStatus.DISCONNECTED ? (
           <AffiliateTraderOnboard />
         ) : (

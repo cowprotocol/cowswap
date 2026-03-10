@@ -1,4 +1,4 @@
-import { KeyboardEvent, ReactNode, useCallback } from 'react'
+import { KeyboardEvent, ReactNode, useCallback, useId } from 'react'
 
 import { HelpTooltip } from '@cowprotocol/ui'
 
@@ -28,8 +28,6 @@ import {
   StatusText,
 } from '../shared'
 
-type AffiliatePartnerCodeFormRefInputProps = Omit<RefCodeInputProps, 'disabled' | 'isLoading' | 'hasError'>
-
 interface AffiliatePartnerCodeFormProps extends AffiliatePartnerCodeFormRefInputProps {
   availability: PartnerCodeAvailability
   showInvalidFormat: boolean
@@ -39,6 +37,8 @@ interface AffiliatePartnerCodeFormProps extends AffiliatePartnerCodeFormRefInput
   onGenerate: () => void
   onCreate: () => void
 }
+
+type AffiliatePartnerCodeFormRefInputProps = Omit<RefCodeInputProps, 'disabled' | 'isLoading' | 'hasError'>
 
 export function AffiliatePartnerCodeForm({
   availability,
@@ -51,15 +51,16 @@ export function AffiliatePartnerCodeForm({
   ...rest
 }: AffiliatePartnerCodeFormProps): ReactNode {
   const hasError = showInvalidFormat || error === AffiliatePartnerCodeCreateError.Unavailable
+  const referralCodeInputId = useId()
 
   const handleInputKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>): void => {
-      if (event.key !== 'Enter') return
+      if (event.key !== 'Enter' || !canSubmit) return
 
       event.preventDefault()
       onCreate()
     },
-    [onCreate],
+    [onCreate, canSubmit],
   )
 
   return (
@@ -76,10 +77,13 @@ export function AffiliatePartnerCodeForm({
       <BottomMetaRow>
         <Form>
           <LabelRow>
-            <Label>
+            <Label htmlFor={referralCodeInputId}>
               <LabelContent>
                 <Trans>Referral code</Trans>
-                <HelpTooltip text={t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`} />
+                <HelpTooltip
+                  text={t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`}
+                  dimmed
+                />
               </LabelContent>
             </Label>
             <LabelActions>
@@ -90,11 +94,11 @@ export function AffiliatePartnerCodeForm({
             </LabelActions>
           </LabelRow>
           <RefCodeInput
+            id={referralCodeInputId}
             isLoading={submitting}
             hasError={hasError}
             disabled={submitting}
             adornmentVariant={ADORNMENT_VARIANT_MAP[availability]}
-            compactSize
             onKeyDown={handleInputKeyDown}
             {...rest}
           />
@@ -108,10 +112,10 @@ export function AffiliatePartnerCodeForm({
               )}
             </StatusText>
           )}
+          <AffiliatePartnerCodeErrorMessage error={error} />
           <PrimaryAction onClick={onCreate} disabled={!canSubmit}>
             {submitting ? t`Signing...` : t`Save & lock code`}
           </PrimaryAction>
-          <AffiliatePartnerCodeErrorMessage error={error} />
         </Form>
       </BottomMetaRow>
     </>

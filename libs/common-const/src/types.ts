@@ -1,5 +1,5 @@
+import { Token } from '@cowprotocol/currency'
 import { LpTokenProvider, TokenInfo } from '@cowprotocol/types'
-import { Token } from '@uniswap/sdk-core'
 
 const emptyTokens = [] as string[]
 

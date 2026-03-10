@@ -1,12 +1,13 @@
+import { ReactNode } from 'react'
+
 import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
-import { ButtonPrimary, Media } from '@cowprotocol/ui'
-import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink as ExternalLinkTheme, Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
+import { Page, Title, Content, GdocsListStyle } from 'modules/application'
 
 const ExternalLink = styled(ExternalLinkTheme)``
 
@@ -81,9 +82,7 @@ const Container = styled.div`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function AnySwapAffectedUsers() {
+export default function AnySwapAffectedUsers(): ReactNode {
   return (
     <Wrapper>
       <Title>

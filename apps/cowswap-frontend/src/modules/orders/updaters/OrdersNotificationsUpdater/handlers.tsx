@@ -2,6 +2,7 @@ import { ReactElement } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import {
   OnBridgingSuccessPayload,
   OnCancelledOrderPayload,
@@ -11,7 +12,6 @@ import {
   ToastMessageType,
 } from '@cowprotocol/events'
 import { IconType } from '@cowprotocol/snackbars'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 

@@ -3,7 +3,7 @@ import { isBarnBackendEnv, MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
 import type { ContractsOrder as Order } from '@cowprotocol/cow-sdk'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
 
@@ -16,23 +16,6 @@ import { EthFlowOrderExistsCallback } from '../../../hooks/useCheckEthFlowOrderE
 export interface UniqueOrderIdResult {
   orderId: string
   orderParams: PostOrderParams // most cases, will be the same as the ones in the parameter, but it might be modified to make the order unique
-}
-
-function adjustAmounts(params: PostOrderParams): PostOrderParams {
-  const nativeCurrency = params.feeAmount?.currency
-  const buyCurrency = params.outputAmount?.currency
-
-  if (!nativeCurrency || !buyCurrency) {
-    throw new Error(t`Missing currency for Eth Flow Fee`) // Not a realistic case, just to make TS happy
-  }
-
-  // On fee=0, fee is, well, 0. Thus, we cannot shift amounts around and remain with the exact same price.
-  // Also, we don't want to touch the sell amount.
-  // If we move it down, the price might become "too good", if we move it up, the user might not have enough funds!
-  // Thus, we make the buy amount a tad bit worse by 1 wei.
-  // We can only hope this doesn't happen for an order buying 0 a decimals token 🤞
-  const oneBuyWei = CurrencyAmount.fromRawAmount(buyCurrency, 1)
-  return { ...params, outputAmount: params.outputAmount?.subtract(oneBuyWei) }
 }
 
 export async function calculateUniqueOrderId(
@@ -77,4 +60,21 @@ export async function calculateUniqueOrderId(
     orderId,
     orderParams,
   }
+}
+
+function adjustAmounts(params: PostOrderParams): PostOrderParams {
+  const nativeCurrency = params.feeAmount?.currency
+  const buyCurrency = params.outputAmount?.currency
+
+  if (!nativeCurrency || !buyCurrency) {
+    throw new Error(t`Missing currency for Eth Flow Fee`) // Not a realistic case, just to make TS happy
+  }
+
+  // On fee=0, fee is, well, 0. Thus, we cannot shift amounts around and remain with the exact same price.
+  // Also, we don't want to touch the sell amount.
+  // If we move it down, the price might become "too good", if we move it up, the user might not have enough funds!
+  // Thus, we make the buy amount a tad bit worse by 1 wei.
+  // We can only hope this doesn't happen for an order buying 0 a decimals token 🤞
+  const oneBuyWei = CurrencyAmount.fromRawAmount(buyCurrency, 1)
+  return { ...params, outputAmount: params.outputAmount?.subtract(oneBuyWei) }
 }

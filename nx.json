@@ -1,5 +1,4 @@
 {
-  "nxCloudId": "6971b4db5c787e19f475dfc3",
   "packageManager": "pnpm",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "affected": {
@@ -8,6 +7,7 @@
   "release": {
     "projectsRelationship": "independent",
     "projects": [
+      "libs/common-entities",
       "libs/events",
       "libs/types",
       "libs/permit-utils",

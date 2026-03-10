@@ -7,8 +7,7 @@ import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { Outlet, useLocation } from 'react-router'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
-import { Content, Title } from 'modules/application/pure/Page'
+import { Content, PageTitle, Title } from 'modules/application'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 

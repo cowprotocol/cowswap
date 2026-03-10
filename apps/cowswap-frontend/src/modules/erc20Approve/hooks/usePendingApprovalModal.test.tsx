@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode } from 'react'
 
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { act, renderHook } from '@testing-library/react'
 

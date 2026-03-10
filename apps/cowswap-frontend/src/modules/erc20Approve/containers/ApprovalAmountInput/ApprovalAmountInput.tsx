@@ -2,7 +2,7 @@ import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 

@@ -5,17 +5,21 @@ params as (
     lower('{{payout_type}}') as payout_type
 ),
 affiliate_base as (
-  select * from "query_6560325()" -- prod affiliates
+  select affiliate_address, next_payout
+  from "query_6560325()" -- prod affiliates
   where not (select is_staging_env from params)
   union all
-  select * from "query_6648689()" -- staging affiliates
+  select affiliate_address, next_payout
+  from "query_6648689()" -- staging affiliates
   where (select is_staging_env from params)
 ),
 trader_base as (
-  select * from "query_6560853()" -- prod traders
+  select trader_address, next_payout
+  from "query_6560853()" -- prod traders
   where not (select is_staging_env from params)
   union all
-  select * from "query_6648679()" -- staging traders
+  select trader_address, next_payout
+  from "query_6648679()" -- staging traders
   where (select is_staging_env from params)
 ),
 base as (

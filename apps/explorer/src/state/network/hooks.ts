@@ -4,7 +4,8 @@ import { Network } from 'types'
 import { ExplorerAppState } from '../../explorer/state'
 
 export function useNetworkId(): Network | null {
-  const [{ networkId }] = useGlobalState<ExplorerAppState>()
+  const [state] = useGlobalState<ExplorerAppState | null>()
+  const networkId = state?.networkId ?? null
 
   return networkId ? +networkId : networkId
 }

@@ -1,8 +1,8 @@
 import { SigningScheme } from '@cowprotocol/cow-sdk'
+import { Percent } from '@cowprotocol/currency'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/types-kit'
-import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
