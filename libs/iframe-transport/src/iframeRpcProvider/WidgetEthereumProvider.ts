@@ -31,15 +31,15 @@ interface ProviderConnectInfo {
   readonly chainId: string
 }
 
+interface ProviderMessage {
+  type: string
+  data: unknown
+}
+
 interface ProviderRpcError extends Error {
   message: string
   code: number
   data?: unknown
-}
-
-interface ProviderMessage {
-  type: string
-  data: unknown
 }
 
 // TODO: Replace any with proper type definitions
@@ -50,6 +50,39 @@ type RpcCallback = (error: any, response: any) => void
 const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 
 const JSON_RPC_VERSION = '2.0'
+
+/**
+ * Export the type information about the different events that are emitted.
+ */
+export interface IFrameEthereumProviderEvents {
+  on(event: 'message', handler: (message: ProviderMessage) => void): this
+
+  on(event: 'connect', handler: (connectInfo: ProviderConnectInfo) => void): this
+
+  on(event: 'disconnect', handler: (error: ProviderRpcError) => void): this
+
+  on(event: 'close', handler: (code: number, reason: string) => void): this
+
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  on(event: 'notification', handler: (result: any) => void): this
+
+  on(event: 'chainChanged', handler: (chainId: string) => void): this
+
+  on(event: 'networkChanged', handler: (networkId: string) => void): this
+
+  on(event: 'accountsChanged', handler: (accounts: string[]) => void): this
+}
+
+export type IFrameEthereumProviderEventTypes =
+  | 'message'
+  | 'connect'
+  | 'disconnect'
+  | 'chainChanged'
+  | 'close' // Deprecated, use 'disconnect' instead
+  | 'notification'
+  | 'networkChanged' // Deprecated, use 'chainChanged' instead
+  | 'accountsChanged'
 
 /**
  * Options for constructing the iframe ethereum provider.
@@ -78,47 +111,6 @@ interface PromiseCompleter<T, D> {
 
   // An error with executing the request was encountered.
   reject(error: Error): void
-}
-
-/**
- * We return a random number between the 0 and the maximum safe integer so that we always generate a unique identifier,
- * across all communication channels.
- */
-function getUniqueId(): number {
-  return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
-}
-
-export type IFrameEthereumProviderEventTypes =
-  | 'message'
-  | 'connect'
-  | 'disconnect'
-  | 'chainChanged'
-  | 'close' // Deprecated, use 'disconnect' instead
-  | 'notification'
-  | 'networkChanged' // Deprecated, use 'chainChanged' instead
-  | 'accountsChanged'
-
-/**
- * Export the type information about the different events that are emitted.
- */
-export interface IFrameEthereumProviderEvents {
-  on(event: 'message', handler: (message: ProviderMessage) => void): this
-
-  on(event: 'connect', handler: (connectInfo: ProviderConnectInfo) => void): this
-
-  on(event: 'disconnect', handler: (error: ProviderRpcError) => void): this
-
-  on(event: 'close', handler: (code: number, reason: string) => void): this
-
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  on(event: 'notification', handler: (result: any) => void): this
-
-  on(event: 'chainChanged', handler: (chainId: string) => void): this
-
-  on(event: 'networkChanged', handler: (networkId: string) => void): this
-
-  on(event: 'accountsChanged', handler: (accounts: string[]) => void): this
 }
 
 /**
@@ -316,16 +308,14 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
    */
   public async sendAsync(
     payload: JsonRpcRequest,
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callback: (error: string | null, result: { method: string; params?: any[]; result: any } | any) => void,
+    callback: (error: string | null, result: { method: string; params?: unknown[]; result: unknown } | unknown) => void,
   ): Promise<void> {
     try {
       const result = await this.execute(payload.method, payload.params)
 
       callback(null, result)
     } catch (error) {
-      callback(error, null)
+      callback(stringifyError(error), null)
     }
   }
 
@@ -485,5 +475,28 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private emitMessage(message: ProviderMessage) {
     this.emit('message', message)
+  }
+}
+
+/**
+ * We return a random number between the 0 and the maximum safe integer so that we always generate a unique identifier,
+ * across all communication channels.
+ */
+function getUniqueId(): number {
+  return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+}
+
+function stringifyError(error: unknown): string | null {
+  if (!error) return null
+  if (typeof error === 'string') return error
+  if (error instanceof Error) return error.message
+  if ((error as Error).message) return (error as Error).message
+
+  try {
+    return JSON.stringify(error)
+  } catch {
+    const errorMessage = 'Unknown WidgetEthereumProvider error'
+    console.error(errorMessage, error)
+    return errorMessage
   }
 }
