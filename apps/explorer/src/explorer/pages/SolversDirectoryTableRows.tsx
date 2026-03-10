@@ -1,8 +1,5 @@
 import React from 'react'
 
-import { ExternalLink } from '@cowprotocol/ui'
-
-import { Placeholder } from './Solvers.styles'
 import {
   DeploymentsEmpty,
   DeploymentsPanel,
@@ -14,16 +11,45 @@ import {
   SolverDetails,
   SolverId,
 } from './SolversDirectoryTable.styles'
-import { formatWebsiteUrl, mapSummaryEnvironments, mapSummaryNetworks } from './SolversDirectoryTable.utils'
+import { mapSummaryEnvironments, mapSummaryNetworks } from './SolversDirectoryTable.utils'
 import { DeploymentsSectionRows, EnvironmentTags, NetworkChips, SolverIcon } from './SolversDirectoryTableComponents'
 
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
 
-type SolverSummaryRowProps = {
-  solver: SolverInfo
-  deployments: SolverDeployment[]
-  isExpanded: boolean
-  onToggle: (solverId: string) => void
+export function SolverDetailsRow({ deployments }: SolverDetailsRowProps): React.ReactNode {
+  const activeDeployments = deployments.filter((deployment) => deployment.active)
+  const inactiveDeployments = deployments.filter((deployment) => !deployment.active)
+  const hasActiveDeployments = activeDeployments.length > 0
+  const hasInactiveDeployments = inactiveDeployments.length > 0
+  const hasAnyDeployments = hasActiveDeployments || hasInactiveDeployments
+
+  return (
+    <tr className="solver-details-row">
+      <td colSpan={3}>
+        <DeploymentsPanel>
+          <DeploymentsPanelTitle>Solver addresses by chain/environment</DeploymentsPanelTitle>
+          {hasAnyDeployments ? (
+            <>
+              {hasActiveDeployments && (
+                <DeploymentsSection>
+                  <DeploymentsSectionTitle>Active</DeploymentsSectionTitle>
+                  <DeploymentsSectionRows deployments={activeDeployments} />
+                </DeploymentsSection>
+              )}
+              {hasInactiveDeployments && (
+                <DeploymentsSection $muted>
+                  <DeploymentsSectionTitle $muted>Inactive</DeploymentsSectionTitle>
+                  <DeploymentsSectionRows deployments={inactiveDeployments} />
+                </DeploymentsSection>
+              )}
+            </>
+          ) : (
+            <DeploymentsEmpty>No deployments match the current filters.</DeploymentsEmpty>
+          )}
+        </DeploymentsPanel>
+      </td>
+    </tr>
+  )
 }
 
 export function SolverSummaryRow({
@@ -60,57 +86,17 @@ export function SolverSummaryRow({
       <td className="envs">
         <EnvironmentTags solverId={solver.solverId} environments={environments} />
       </td>
-      <td className="website">
-        {solver.website ? (
-          <ExternalLink href={solver.website} target="_blank">
-            {formatWebsiteUrl(solver.website)} ↗
-          </ExternalLink>
-        ) : (
-          <Placeholder>-</Placeholder>
-        )}
-      </td>
-      <td className="description">{solver.description || <Placeholder>-</Placeholder>}</td>
     </tr>
   )
 }
 
 type SolverDetailsRowProps = {
-  solver: SolverInfo
   deployments: SolverDeployment[]
 }
 
-export function SolverDetailsRow({ solver, deployments }: SolverDetailsRowProps): React.ReactNode {
-  const activeDeployments = deployments.filter((deployment) => deployment.active)
-  const inactiveDeployments = deployments.filter((deployment) => !deployment.active)
-  const hasActiveDeployments = activeDeployments.length > 0
-  const hasInactiveDeployments = inactiveDeployments.length > 0
-  const hasAnyDeployments = hasActiveDeployments || hasInactiveDeployments
-
-  return (
-    <tr className="solver-details-row">
-      <td colSpan={5}>
-        <DeploymentsPanel>
-          <DeploymentsPanelTitle>Solver and payout addresses by chain/environment</DeploymentsPanelTitle>
-          {hasAnyDeployments ? (
-            <>
-              {hasActiveDeployments && (
-                <DeploymentsSection>
-                  <DeploymentsSectionTitle>Active</DeploymentsSectionTitle>
-                  <DeploymentsSectionRows solver={solver} deployments={activeDeployments} />
-                </DeploymentsSection>
-              )}
-              {hasInactiveDeployments && (
-                <DeploymentsSection $muted>
-                  <DeploymentsSectionTitle $muted>Inactive</DeploymentsSectionTitle>
-                  <DeploymentsSectionRows solver={solver} deployments={inactiveDeployments} />
-                </DeploymentsSection>
-              )}
-            </>
-          ) : (
-            <DeploymentsEmpty>No deployments match the current filters.</DeploymentsEmpty>
-          )}
-        </DeploymentsPanel>
-      </td>
-    </tr>
-  )
+type SolverSummaryRowProps = {
+  solver: SolverInfo
+  deployments: SolverDeployment[]
+  isExpanded: boolean
+  onToggle: (solverId: string) => void
 }

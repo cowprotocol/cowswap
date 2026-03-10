@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/events-v3.3.2...events-v3.4.0) (2026-03-10)
+
+
+### ✨ Features
+
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.4.0
+
 ## [3.3.2](https://github.com/cowprotocol/cowswap/compare/events-v3.3.1...events-v3.3.2) (2026-02-25)
 
 

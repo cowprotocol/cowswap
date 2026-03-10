@@ -5,19 +5,6 @@ import { FiX } from 'react-icons/fi'
 import { ACTIVE_FILTER_ACTIVE, ACTIVE_FILTER_INACTIVE, ALL_FILTER } from './SolversDirectoryTable.helpers'
 import { ClearInputButton, Controls, Input, SearchInputWrapper, Select } from './SolversDirectoryTable.styles'
 
-interface FiltersBarProps {
-  searchQuery: string
-  networkFilter: string
-  environmentFilter: string
-  activeFilter: string
-  networkOptions: [number, string][]
-  environmentOptions: string[]
-  setSearchQuery: (value: string) => void
-  setNetworkFilter: (value: string) => void
-  setEnvironmentFilter: (value: string) => void
-  setActiveFilter: (value: string) => void
-}
-
 export function SolversDirectoryTableFilters(props: FiltersBarProps): React.ReactNode {
   const {
     searchQuery,
@@ -38,7 +25,7 @@ export function SolversDirectoryTableFilters(props: FiltersBarProps): React.Reac
         <Input
           value={searchQuery}
           onChange={(event): void => setSearchQuery(event.target.value)}
-          placeholder="Search solver, backend ID, description, address, payout..."
+          placeholder="Search solver, backend ID, address..."
         />
         {searchQuery && (
           <ClearInputButton type="button" onClick={(): void => setSearchQuery('')} aria-label="Clear search">
@@ -69,4 +56,17 @@ export function SolversDirectoryTableFilters(props: FiltersBarProps): React.Reac
       </Select>
     </Controls>
   )
+}
+
+interface FiltersBarProps {
+  searchQuery: string
+  networkFilter: string
+  environmentFilter: string
+  activeFilter: string
+  networkOptions: [number, string][]
+  environmentOptions: string[]
+  setSearchQuery: (value: string) => void
+  setNetworkFilter: (value: string) => void
+  setEnvironmentFilter: (value: string) => void
+  setActiveFilter: (value: string) => void
 }
