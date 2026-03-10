@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

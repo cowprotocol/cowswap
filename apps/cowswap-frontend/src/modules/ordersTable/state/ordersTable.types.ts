@@ -1,6 +1,6 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import type { Token } from '@cowprotocol/currency'
 import type { Command } from '@cowprotocol/types'
-import type { Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 
@@ -36,7 +36,7 @@ export interface OrdersTableFilters {
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
 
-  // Other:
+  // Other:W
   // displayOrdersOnlyForSafeApp: boolean
 }
 

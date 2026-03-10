@@ -2,10 +2,10 @@ import { useCallback, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
+import { Token } from '@cowprotocol/currency'
 import { fetchTokenFromBlockchain, TokensByAddress, useAddUserToken, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Token } from '@uniswap/sdk-core'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 

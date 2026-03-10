@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, useMemo } from 'react'
 
+import { Currency } from '@cowprotocol/currency'
 import { TokenSymbol } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 

@@ -1,5 +1,5 @@
 import { areFractionsEqual, genericPropsChecker, getAddress } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -56,6 +56,10 @@ function checkCurrencyInfo(a: CurrencyInfo, b: CurrencyInfo): boolean {
   )
 }
 
+function checkPriceImpact(a: PriceImpact, b: PriceImpact): boolean {
+  return a.loading === b.loading && areFractionsEqual(a.priceImpact, b.priceImpact)
+}
+
 function checkRateInfoParams(a: RateInfoParams, b: RateInfoParams): boolean {
   return (
     a.chainId === b.chainId &&
@@ -64,8 +68,4 @@ function checkRateInfoParams(a: RateInfoParams, b: RateInfoParams): boolean {
     areFractionsEqual(a.activeRateFiatAmount, b.activeRateFiatAmount) &&
     areFractionsEqual(a.invertedActiveRateFiatAmount, b.invertedActiveRateFiatAmount)
   )
-}
-
-function checkPriceImpact(a: PriceImpact, b: PriceImpact): boolean {
-  return a.loading === b.loading && areFractionsEqual(a.priceImpact, b.priceImpact)
 }
