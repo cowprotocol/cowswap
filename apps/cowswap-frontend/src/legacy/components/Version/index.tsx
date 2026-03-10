@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react'
+import { useAtomValue } from 'jotai'
+import { ReactNode, useRef, useState } from 'react'
 
 import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
 import ICON_X from '@cowprotocol/assets/images/x.svg'
@@ -14,6 +15,7 @@ import {
 import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { atomWithQuery } from 'jotai-tanstack-query'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -22,40 +24,30 @@ import { orderBookApi } from '../../../cowSdk'
 
 const contractsTsVersion = CONTRACTS_PKG_VERSION
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const _getContractsUrls = (chainId: ChainId, contractAddressMap: typeof COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS) => {
+const _getContractsUrls = (
+  chainId: ChainId,
+  contractAddressMap: typeof COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+): string => {
   const contractAddress = contractAddressMap[chainId]
   return contractAddress ? getEtherscanLink(chainId, 'address', contractAddress) : '-'
 }
-
-const orderbookApiVersion = await orderBookApi.getVersion()
 
 type VersionInfo = {
   version: string
   href: (_chainId: ChainId) => string
 }
 
-const VERSIONS: Record<string, VersionInfo> = {
-  Web: {
-    version: 'v' + pkg.version,
-    href: () => CODE_LINK,
+const orderbookApiVersionQueryAtom = atomWithQuery(() => ({
+  queryKey: ['orderbookApiVersion'],
+  queryFn: async (): Promise<string> => {
+    try {
+      return await orderBookApi.getVersion()
+    } catch (error) {
+      console.error('Failed to fetch OrderBook API version', error)
+      return 'unknown'
+    }
   },
-  'Vault Relayer': {
-    version: 'v' + contractsTsVersion,
-    href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS),
-  },
-  'Settlement Contract': {
-    version: 'v' + contractsTsVersion,
-    href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS),
-  },
-  'Orderbook API': {
-    version: `${isBarnBackendEnv ? 'barn' : 'prod'}:` + orderbookApiVersion,
-    href: () => 'https://github.com/cowprotocol/services/releases',
-  },
-}
-
-const versionsList = Object.keys(VERSIONS)
+}))
 
 const Dropdown = styled.div`
   position: relative;
@@ -163,13 +155,33 @@ const CloseButton = styled.span`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const Version = ({ className }: { className?: string }) => {
+export const Version = ({ className }: { className?: string }): ReactNode => {
   const { chainId } = useWalletInfo()
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  const orderbookApiVersion = useAtomValue(orderbookApiVersionQueryAtom)?.data || 'unknown'
+
+  const VERSIONS: Record<string, VersionInfo> = {
+    Web: {
+      version: 'v' + pkg.version,
+      href: () => CODE_LINK,
+    },
+    'Vault Relayer': {
+      version: 'v' + contractsTsVersion,
+      href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS),
+    },
+    'Settlement Contract': {
+      version: 'v' + contractsTsVersion,
+      href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS),
+    },
+    'Orderbook API': {
+      version: `${isBarnBackendEnv ? 'barn' : 'prod'}:` + orderbookApiVersion,
+      href: () => 'https://github.com/cowprotocol/services/releases',
+    },
+  }
+
+  const versionsList = Object.keys(VERSIONS)
   const webVersion = VERSIONS['Web'].version
 
   useOnClickOutside([dropdownRef], () => setShowDropdown(false))
