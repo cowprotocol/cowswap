@@ -36,6 +36,8 @@ export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 export const AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS = 6
 export const AFFILIATE_REWARDS_UPDATE_LAG_HOURS = 1
+export const AFFILIATE_REWARDS_UPDATE_INTERVAL_MS = ms`6h`
+export const AFFILIATE_REWARDS_UPDATE_LAG_MS = ms`1h`
 export const AFFILIATE_PAYOUTS_CHAIN_ID = SupportedChainId.MAINNET
 
 export const VERIFICATION_DEBOUNCE_MS = 350
@@ -45,6 +47,7 @@ export const VERIFICATION_RETRY_DELAY_MS = 3_000
 // Timeout applied to referral service requests so UI fails fast on network issues
 export const AFFILIATE_API_TIMEOUT_MS = 10_000
 export const AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS = ms`5m`
+export const AFFILIATE_STATS_REFRESH_INTERVAL_MS = ms`10m`
 
 export const AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE = true
 
