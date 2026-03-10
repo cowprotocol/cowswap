@@ -71,7 +71,7 @@ function LegacyAccountProxyRedirect({ target }: { target: RoutesValues }): React
 
   const parsedChainId = Number(chainId)
 
-  if (!chainId || Number.isNaN(parsedChainId)) {
+  if (typeof chainId !== 'string' || Number.isNaN(parsedChainId)) {
     return <Navigate to={RoutesEnum.ACCOUNT} replace />
   }
 
