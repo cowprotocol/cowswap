@@ -15,8 +15,8 @@ describe('Price', () => {
     it('array format works', () => {
       const price = new Price(t0, t1, 1, 54321)
       expect(price.toSignificant(5)).toEqual('54321')
-      expect(price.baseCurrency.equals(t0))
-      expect(price.quoteCurrency.equals(t1))
+      expect(price.baseCurrency.equals(t0)).toBe(true)
+      expect(price.quoteCurrency.equals(t1)).toBe(true)
     })
     it('object format works', () => {
       const price = new Price({
@@ -24,8 +24,8 @@ describe('Price', () => {
         quoteAmount: CurrencyAmount.fromRawAmount(t1, 54321),
       })
       expect(price.toSignificant(5)).toEqual('54321')
-      expect(price.baseCurrency.equals(t0))
-      expect(price.quoteCurrency.equals(t1))
+      expect(price.baseCurrency.equals(t0)).toBe(true)
+      expect(price.quoteCurrency.equals(t1)).toBe(true)
     })
   })
 
