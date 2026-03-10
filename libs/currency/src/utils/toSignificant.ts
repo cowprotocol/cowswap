@@ -3,6 +3,16 @@ import { toFixed } from './toFixed'
 
 import { Rounding } from '../entities/constants'
 
+// returns floor(log10(num/den)), assuming numerator and denominator are positive.
+export function findExponent(numerator: bigint, denominator: bigint): number {
+  if (numerator >= denominator) return (numerator / denominator).toString().length - 1
+  // num < den → e < 0; find smallest k such that num * 10^k >= den
+  const lenDiff = denominator.toString().length - numerator.toString().length
+  let k = lenDiff
+  while (numerator * 10n ** BigInt(k) < denominator) k++
+  return -k
+}
+
 /**
  * Divides numerator by denominator and returns a string rounded to the given
  * number of significant digits, using the given rounding mode.
@@ -45,22 +55,11 @@ export function toSignificant(
 function calculateQuotient(numerator: bigint, scaledDen: bigint, rounding: Rounding): bigint {
   const quotient = numerator / scaledDen
   const rem = numerator % scaledDen
-  const isRoundingUp = rounding === Rounding.ROUND_UP || rounding === Rounding.ROUND_HALF_UP
-  if (isRoundingUp && rem > 0n) {
-    return quotient + 1n
-  } else if (isRoundingUp && rem * 2n >= scaledDen) {
+  if (rounding === Rounding.ROUND_UP && rem > 0n) {
     return quotient + 1n
   }
-
+  if (rounding === Rounding.ROUND_HALF_UP && rem * 2n >= scaledDen) {
+    return quotient + 1n
+  }
   return quotient
-}
-
-// returns floor(log10(num/den)), assuming numerator and denominator are positive.
-function findExponent(numerator: bigint, denominator: bigint): number {
-  if (numerator >= denominator) return (numerator / denominator).toString().length - 1
-  // num < den → e < 0; find smallest k such that num * 10^k >= den
-  const lenDiff = denominator.toString().length - numerator.toString().length
-  let k = lenDiff
-  while (numerator * 10n ** BigInt(k) < denominator) k++
-  return -k
 }
