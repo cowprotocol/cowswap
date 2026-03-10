@@ -103,6 +103,13 @@ Audit:
 - FE can fail to determine eligibility if this all-chain fetch fails or takes longer than 30s; in that case wallet eligibility is marked as unknown and the modal shows a warning message explaining rewards may not apply.
 - Trades from 3rd party integrators (e.g.: Safe App) are simply ignored (do not count towards eligibility; do not disqualify a trader)
 
+## 7.1) Edge cases
+
+- Binding is fixed to the first non-integrator trade with a `referrer_code`.
+- Trades with a different code after binding are ignored for rewards.
+- Integrator trades are ignored both before and after binding: they do not bind code, do not affect new-trader eligibility, and do not add eligible volume.
+- New-trader rule is strict on non-integrator trades: if first non-integrator trade has no code, later coded trades are ineligible.
+
 ## 8) Environments
 
 Staging:

@@ -1,6 +1,6 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { isProdLike } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 
@@ -18,6 +18,9 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
   // SupportedChainId.SEPOLIA,
   SupportedChainId.PLASMA,
 ] as const
+
+export const TRADE_ENVS_TO_CHECK: CowEnv[] = ['prod', 'staging']
+export const PAST_ORDERS_SCAN_LIMIT = 10
 
 export const AFFILIATE_TRADER_SAVED_CODES_STORAGE_KEY = 'cowswap:affiliateTraderSavedCodes:v0'
 export const AFFILIATE_TRADER_PAYOUT_CONFIRMATIONS_STORAGE_KEY = 'cowswap:affiliateTraderPayoutConfirmations:v0'
