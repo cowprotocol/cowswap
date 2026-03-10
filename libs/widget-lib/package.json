@@ -10,7 +10,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.4.1",
+    "@cowprotocol/cow-sdk": "8.0.0",
     "@cowprotocol/events": "workspace:*",
     "@cowprotocol/iframe-transport": "workspace:*"
   }
