@@ -169,18 +169,6 @@
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
     }
   ],
-  "232": [
-    {
-      "priority": 1,
-      "enabledByDefault": true,
-      "source": "https://files.cow.fi/tokens/CowSwap.json"
-    },
-    {
-      "priority": 2,
-      "source": "https://files.cow.fi/token-lists/CoinGecko.232.json",
-      "enabledByDefault": true
-    }
-  ],
   "59144": [
     {
       "priority": 1,
