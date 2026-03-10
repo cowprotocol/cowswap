@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Media, TokenAmount, UI } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 

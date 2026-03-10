@@ -1,5 +1,5 @@
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
-import { Fraction, Percent } from '@uniswap/sdk-core'
+import { Fraction, Percent } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

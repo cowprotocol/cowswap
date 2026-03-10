@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
+import { Percent } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
 import { useLingui, Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -47,6 +47,13 @@ export interface RowSlippageContentProps {
   isSmartSlippageApplied: boolean
   isSmartSlippageLoading: boolean
   hideRecommendedSlippage?: boolean
+}
+
+type SlippageTextContentsProps = {
+  isEoaEthFlow: boolean
+  isDefaultSlippageApplied: boolean
+  slippageLabel?: React.ReactNode
+  isDynamicSlippageSet: boolean
 }
 
 export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
@@ -129,13 +136,6 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
       </TextWrapper>
     </StyledRowBetween>
   )
-}
-
-type SlippageTextContentsProps = {
-  isEoaEthFlow: boolean
-  isDefaultSlippageApplied: boolean
-  slippageLabel?: React.ReactNode
-  isDynamicSlippageSet: boolean
 }
 
 function SlippageTextContents({

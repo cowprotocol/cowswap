@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
 
+import { Currency, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { ButtonError, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -18,6 +18,8 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
+type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
+
 interface SwapTradeButtonsContext {
   wrappedToken: Token
   inputCurrency: Currency | null
@@ -30,8 +32,6 @@ interface SwapTradeButtonsContext {
   isCurrentTradeBridging: boolean
   swapBridgeClickEvent?: string
 }
-
-type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
 
 export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => {
