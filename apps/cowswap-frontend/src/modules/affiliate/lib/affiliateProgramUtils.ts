@@ -1,9 +1,11 @@
+import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
-import { Address, areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
 import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
+import { SerializedOrder } from 'legacy/state/orders/actions'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
 import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer'
 
@@ -140,16 +142,25 @@ export function extractFullAppDataFromOrder(order: AppDataOrder): string | undef
   return extractFullAppDataFromResponse(order) || extractFullAppDataFromResponse(order.apiAdditionalInfo)
 }
 
-type LocalTradeOrder = AppDataOrder & {
-  owner?: Address
+export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOrder): boolean {
+  const { status } = order
+
+  if (status === OrderStatus.CANCELLED || status === OrderStatus.EXPIRED) return false
+
+  const fullAppData = extractFullAppDataFromOrder(order)
+  const appCode = decodeAppData(fullAppData)?.appCode
+
+  if (typeof appCode !== 'string') return false
+
+  return appCode === DEFAULT_APP_CODE || appCode === SAFE_APP_CODE
 }
 
-export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): LocalTradeOrder[] {
+export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): SerializedOrder[] {
   if (!account || !ordersState) {
     return []
   }
 
-  const result: LocalTradeOrder[] = []
+  const result: SerializedOrder[] = []
 
   for (const [networkId, networkState] of Object.entries(ordersState)) {
     const fullState = { ...getDefaultNetworkState(Number(networkId)), ...(networkState || {}) }
