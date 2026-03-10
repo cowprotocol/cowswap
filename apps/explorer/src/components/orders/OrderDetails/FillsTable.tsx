@@ -13,6 +13,15 @@ import { FillsTableRow } from './FillsTableRow'
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { FilledProgress } from '../FilledProgress'
 
+type FillsTableProps = SimpleTableProps & {
+  trades: Trade[] | undefined
+  order: Order | null
+  tableState: TableState
+  isPriceInverted: boolean
+  invertPrice: Command
+  showSolverDetails: boolean
+}
+
 export function FillsTable(props: FillsTableProps): ReactNode {
   const { trades, order, isPriceInverted, invertPrice, showSolverDetails } = props
 
@@ -59,13 +68,4 @@ export function FillsTable(props: FillsTableProps): ReactNode {
       />
     </>
   )
-}
-
-type FillsTableProps = SimpleTableProps & {
-  trades: Trade[] | undefined
-  order: Order | null
-  tableState: TableState
-  isPriceInverted: boolean
-  invertPrice: Command
-  showSolverDetails: boolean
 }
