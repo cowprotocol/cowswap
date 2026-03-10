@@ -50,14 +50,14 @@ const Wrapper = styled.div<{
   }
 `
 
-const Heading = styled.h2<{ modalMode: boolean }>`
+const Heading = styled.h2<{ skipLeftPadding: boolean }>`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   width: 100%;
   height: auto;
   margin: 0;
-  padding: ${({ modalMode }) => (modalMode ? '16px 20px 3px' : '16px 20px 3px 40px')};
+  padding: ${({ skipLeftPadding }) => (skipLeftPadding ? '16px 20px 3px' : '16px 20px 3px 40px')};
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
   ${Media.upToSmall()} {
@@ -180,7 +180,7 @@ export function NewModal({
       <ModalInner>
         {!modalMode && showBackButton && <BackButtonStyled onClick={onDismissCallback} />}
         {title && (
-          <Heading modalMode={!!modalMode}>
+          <Heading skipLeftPadding={!!modalMode || !showBackButton}>
             {title}{' '}
             {modalMode && (
               <IconX onClick={onDismissCallback}>
