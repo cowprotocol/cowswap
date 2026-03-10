@@ -19,6 +19,8 @@ export type UseOrderSolverResult = {
 }
 
 const SOLVER_SUFFIX_REGEX = /-solve$/i
+type CompetitionStatusEntry = NonNullable<OrderCompetitionStatus['value']>[number]
+type ExecutedAmounts = NonNullable<CompetitionStatusEntry['executedAmounts']>
 
 export async function resolveSolver(
   networkId: number,
@@ -65,7 +67,7 @@ function buildSolverInfo(winnerSolverName: string, solvers: SolverInfo[]): Order
 function getWinnerSolver(value?: OrderCompetitionStatus['value']): string | undefined {
   if (!value?.length) return undefined
 
-  const executedSolvers = value.filter((solver) => !!solver.executedAmounts)
+  const executedSolvers = value.filter((solver) => hasNonZeroExecutedAmounts(solver.executedAmounts))
   const winner = executedSolvers[executedSolvers.length - 1]
 
   return winner?.solver
@@ -85,6 +87,20 @@ function getWinnerSolverName(winner: unknown): string | undefined {
 
   const solver = winner.solver
   return typeof solver === 'string' ? solver : undefined
+}
+
+function hasNonZeroExecutedAmounts(executedAmounts: CompetitionStatusEntry['executedAmounts']): boolean {
+  if (!executedAmounts) return false
+
+  return isNonZeroAmount(executedAmounts.buy) || isNonZeroAmount(executedAmounts.sell)
+}
+
+function isNonZeroAmount(value: ExecutedAmounts['buy']): boolean {
+  try {
+    return BigInt(value) > 0n
+  } catch {
+    return false
+  }
 }
 
 function matchSolverByName(solverName: string, solvers: SolverInfo[]): SolverInfo | undefined {

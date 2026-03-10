@@ -1,8 +1,5 @@
 import React from 'react'
 
-import { ExternalLink } from '@cowprotocol/ui'
-
-import { Placeholder } from './Solvers.styles'
 import {
   DeploymentsEmpty,
   DeploymentsPanel,
@@ -14,13 +11,12 @@ import {
   SolverDetails,
   SolverId,
 } from './SolversDirectoryTable.styles'
-import { formatWebsiteUrl, mapSummaryEnvironments, mapSummaryNetworks } from './SolversDirectoryTable.utils'
+import { mapSummaryEnvironments, mapSummaryNetworks } from './SolversDirectoryTable.utils'
 import { DeploymentsSectionRows, EnvironmentTags, NetworkChips, SolverIcon } from './SolversDirectoryTableComponents'
 
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
 
 type SolverDetailsRowProps = {
-  solver: SolverInfo
   deployments: SolverDeployment[]
 }
 
@@ -31,7 +27,7 @@ type SolverSummaryRowProps = {
   onToggle: (solverId: string) => void
 }
 
-export function SolverDetailsRow({ solver, deployments }: SolverDetailsRowProps): React.ReactNode {
+export function SolverDetailsRow({ deployments }: SolverDetailsRowProps): React.ReactNode {
   const activeDeployments = deployments.filter((deployment) => deployment.active)
   const inactiveDeployments = deployments.filter((deployment) => !deployment.active)
   const hasActiveDeployments = activeDeployments.length > 0
@@ -40,21 +36,21 @@ export function SolverDetailsRow({ solver, deployments }: SolverDetailsRowProps)
 
   return (
     <tr className="solver-details-row">
-      <td colSpan={5}>
+      <td colSpan={3}>
         <DeploymentsPanel>
-          <DeploymentsPanelTitle>Solver and payout addresses by chain/environment</DeploymentsPanelTitle>
+          <DeploymentsPanelTitle>Solver addresses by chain/environment</DeploymentsPanelTitle>
           {hasAnyDeployments ? (
             <>
               {hasActiveDeployments && (
                 <DeploymentsSection>
                   <DeploymentsSectionTitle>Active</DeploymentsSectionTitle>
-                  <DeploymentsSectionRows solver={solver} deployments={activeDeployments} />
+                  <DeploymentsSectionRows deployments={activeDeployments} />
                 </DeploymentsSection>
               )}
               {hasInactiveDeployments && (
                 <DeploymentsSection $muted>
                   <DeploymentsSectionTitle $muted>Inactive</DeploymentsSectionTitle>
-                  <DeploymentsSectionRows solver={solver} deployments={inactiveDeployments} />
+                  <DeploymentsSectionRows deployments={inactiveDeployments} />
                 </DeploymentsSection>
               )}
             </>
@@ -101,16 +97,6 @@ export function SolverSummaryRow({
       <td className="envs">
         <EnvironmentTags solverId={solver.solverId} environments={environments} />
       </td>
-      <td className="website">
-        {solver.website ? (
-          <ExternalLink href={solver.website} target="_blank">
-            {formatWebsiteUrl(solver.website)} ↗
-          </ExternalLink>
-        ) : (
-          <Placeholder>-</Placeholder>
-        )}
-      </td>
-      <td className="description">{solver.description || <Placeholder>-</Placeholder>}</td>
     </tr>
   )
 }

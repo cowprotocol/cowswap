@@ -80,9 +80,7 @@ function matchesSearch(solver: SolverInfo, query: string, deployments: SolverDep
   const searchableFields = [
     solver.displayName,
     solver.solverId,
-    solver.description || '',
-    solver.website || '',
-    deployments.map((deployment) => `${deployment.address || ''} ${deployment.payoutAddress || ''}`).join(' '),
+    deployments.map((deployment) => deployment.address || '').join(' '),
   ]
 
   return searchableFields.join(' ').toLowerCase().includes(normalizedQuery)

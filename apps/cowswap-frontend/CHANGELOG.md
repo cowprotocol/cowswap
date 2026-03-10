@@ -1,5 +1,62 @@
 # Changelog
 
+## [2.6.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.5.0...cowswap-v2.6.0) (2026-03-10)
+
+
+### ✨ Features
+
+* add speech bubble notifications ([#7066](https://github.com/cowprotocol/cowswap/issues/7066)) ([e3af630](https://github.com/cowprotocol/cowswap/commit/e3af630db0e0e6a27f4661ecc77c21071721b3a7))
+* affiliate program ([#6793](https://github.com/cowprotocol/cowswap/issues/6793)) ([7b93702](https://github.com/cowprotocol/cowswap/commit/7b937020ad4209ece2d3d38972e8aaf722e0dbcf))
+* **explorer:** add solvers page and integrate solvers info fetching ([#7037](https://github.com/cowprotocol/cowswap/issues/7037)) ([2d14185](https://github.com/cowprotocol/cowswap/commit/2d14185ce7e0742713afbd935729d652ee31b83c))
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* **affiliate:** ref code recovery ([#7099](https://github.com/cowprotocol/cowswap/issues/7099)) ([4d89c00](https://github.com/cowprotocol/cowswap/commit/4d89c00a377bb51502c9c0ac44d6d8a41acdea65))
+* empty space on the bridge confirm modal ([#7097](https://github.com/cowprotocol/cowswap/issues/7097)) ([376db96](https://github.com/cowprotocol/cowswap/commit/376db96e530be2949316ba288cae53fdd3804cc8))
+* Fix Hooks token and network selection ([#7086](https://github.com/cowprotocol/cowswap/issues/7086)) ([1dd236f](https://github.com/cowprotocol/cowswap/commit/1dd236fb1029aecb017c7442f86e9a59ae61a5bb))
+* **notifications:** fix Telegram authentication checks ([#7090](https://github.com/cowprotocol/cowswap/issues/7090)) ([4b30bc1](https://github.com/cowprotocol/cowswap/commit/4b30bc141fafd0f41ba9a6e68b6ff946e737c6a7))
+* recommended slippage styling ([#7096](https://github.com/cowprotocol/cowswap/issues/7096)) ([c85226b](https://github.com/cowprotocol/cowswap/commit/c85226b02d247ca721777fc8c859552f4e7712d3))
+* return back missing spaces ([#7091](https://github.com/cowprotocol/cowswap/issues/7091)) ([a7ecc31](https://github.com/cowprotocol/cowswap/commit/a7ecc313bbfd41b1da6f2f8bc3e85a6a0c453daa))
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### ♻️ Refactoring
+
+* affiliate account page styles ([#7082](https://github.com/cowprotocol/cowswap/issues/7082)) ([2732641](https://github.com/cowprotocol/cowswap/commit/2732641790dc053dc874b75d636c1428727b8cf1))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.4.0
+    * @cowprotocol/assets bumped to 2.1.0
+    * @cowprotocol/balances-and-allowances bumped to 2.4.0
+    * @cowprotocol/common-const bumped to 2.4.0
+    * @cowprotocol/common-hooks bumped to 2.4.0
+    * @cowprotocol/common-utils bumped to 2.4.0
+    * @cowprotocol/core bumped to 2.5.0
+    * @cowprotocol/ens bumped to 2.4.0
+    * @cowprotocol/events bumped to 3.4.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.7
+    * @cowprotocol/iframe-transport bumped to 2.0.7
+    * @cowprotocol/multicall bumped to 2.4.0
+    * @cowprotocol/permit-utils bumped to 2.4.0
+    * @cowprotocol/snackbars bumped to 2.0.9
+    * @cowprotocol/tokens bumped to 2.5.0
+    * @cowprotocol/types bumped to 3.4.0
+    * @cowprotocol/ui bumped to 2.4.0
+    * @cowprotocol/wallet bumped to 2.4.0
+    * @cowprotocol/wallet-provider bumped to 2.1.7
+    * @cowprotocol/widget-lib bumped to 1.3.0
+
 ## [2.5.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.4.0...cowswap-v2.5.0) (2026-02-25)
 
 

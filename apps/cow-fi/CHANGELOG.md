@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.5...cow-fi-v2.2.0) (2026-03-10)
+
+
+### ✨ Features
+
+* **explorer:** add solvers page and integrate solvers info fetching ([#7037](https://github.com/cowprotocol/cowswap/issues/7037)) ([2d14185](https://github.com/cowprotocol/cowswap/commit/2d14185ce7e0742713afbd935729d652ee31b83c))
+
+
+### 🐛 Bug Fixes
+
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.4.0
+    * @cowprotocol/assets bumped to 2.1.0
+    * @cowprotocol/common-const bumped to 2.4.0
+    * @cowprotocol/common-hooks bumped to 2.4.0
+    * @cowprotocol/common-utils bumped to 2.4.0
+    * @cowprotocol/core bumped to 2.5.0
+    * @cowprotocol/events bumped to 3.4.0
+    * @cowprotocol/types bumped to 3.4.0
+    * @cowprotocol/ui bumped to 2.4.0
+    * @cowprotocol/wallet bumped to 2.4.0
+    * @cowprotocol/wallet-provider bumped to 2.1.7
+    * @cowprotocol/widget-react bumped to 1.0.9
+
 ## [2.1.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.4...cow-fi-v2.1.5) (2026-02-25)
 
 

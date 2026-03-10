@@ -23,6 +23,7 @@ import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
 
 interface VerboseDetailsProps {
   order: Order
+  showSolverDetails: boolean
   solvedBy?: OrderSolverInfo
   isSolvedByLoading?: boolean
   isPriceInverted: boolean
@@ -34,6 +35,7 @@ interface VerboseDetailsProps {
 // eslint-disable-next-line max-lines-per-function
 export function VerboseDetails({
   order,
+  showSolverDetails,
   solvedBy,
   isSolvedByLoading,
   invertPrice,
@@ -95,17 +97,19 @@ export function VerboseDetails({
       <DetailRow label="Costs & Fees" tooltipText={DetailsTableTooltips.fees}>
         <GasFeeDisplay order={order} />
       </DetailRow>
-      <DetailRow label="Solved by" tooltipText={DetailsTableTooltips.solvedBy}>
-        {showFillsButton ? (
-          <TextLink onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
-            View all solvers
-          </TextLink>
-        ) : isSolvedByLoading ? (
-          <Spinner spin size="1x" />
-        ) : (
-          <SolvedByBadge solvedBy={solvedBy} />
-        )}
-      </DetailRow>
+      {showSolverDetails && (
+        <DetailRow label="Solved by" tooltipText={DetailsTableTooltips.solvedBy}>
+          {showFillsButton ? (
+            <TextLink onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
+              View all solvers
+            </TextLink>
+          ) : isSolvedByLoading ? (
+            <Spinner spin size="1x" />
+          ) : (
+            <SolvedByBadge solvedBy={solvedBy} />
+          )}
+        </DetailRow>
+      )}
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => (
           <DetailRow label="Hooks" tooltipText={DetailsTableTooltips.hooks}>

@@ -28,9 +28,10 @@ const StyledShimmerBar = styled(ShimmerBar)`
 interface FillsTableRowProps {
   trade: Trade
   isPriceInverted: boolean
+  showSolverDetails: boolean
 }
 
-export function FillsTableRow({ trade, isPriceInverted }: FillsTableRowProps): React.ReactNode {
+export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: FillsTableRowProps): React.ReactNode {
   const network = useNetworkId() ?? undefined
   const {
     txHash,
@@ -91,9 +92,11 @@ export function FillsTableRow({ trade, isPriceInverted }: FillsTableRowProps): R
       <td>{surplus ? <SurplusComponent icon={faIcon} surplus={surplus} token={surplusToken} /> : '-'}</td>
       <td>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</td>
       <td>{executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}</td>
-      <td>
-        <TradeSolverCell txHash={txHash} />
-      </td>
+      {showSolverDetails && (
+        <td>
+          <TradeSolverCell txHash={txHash} />
+        </td>
+      )}
     </tr>
   )
 }
