@@ -50,6 +50,14 @@ const MOCK_SOLVERS: SolverInfo[] = [
   },
 ]
 
+const CROSS_NETWORK_SOLVER: SolverInfo = {
+  solverId: 'ExtQuasimodo',
+  displayName: 'ExtQuasimodo',
+  image: 'https://example.com/extquasimodo.svg',
+  networks: [],
+  deployments: [],
+}
+
 function createMockOrder(overrides: Partial<Order> = {}): Order {
   return {
     uid: 'order-abc-123',
@@ -280,6 +288,23 @@ describe('useOrderSolver', () => {
       displayName: 'Copper Solver',
       image: undefined,
     })
+  })
+
+  it('matches solver metadata from the global list even when the current network has no CMS deployment', async () => {
+    mockedUseNetworkId.mockReturnValue(42161)
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('extquasimodo-solve'))
+    mockedFetchSolversInfo.mockResolvedValueOnce([CROSS_NETWORK_SOLVER])
+
+    const { result } = renderHook(() => useOrderSolver(createMockOrder()))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toEqual({
+      solverId: 'ExtQuasimodo',
+      displayName: 'ExtQuasimodo',
+      image: 'https://example.com/extquasimodo.svg',
+    })
+    expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
   })
 
   it('returns raw solver name when no CMS match is found', async () => {

@@ -24,9 +24,11 @@ export async function resolveSolver(
   orderUid: string,
   txHash: string | undefined,
 ): Promise<OrderSolverInfo | undefined> {
+  // Solver branding is global metadata. Do not scope this by network, because CMS network mappings can lag
+  // behind the competition winner data and would hide valid logos/display names on order and fill views.
   const [competitionStatus, solvers] = await Promise.all([
     getOrderCompetitionStatus({ networkId, orderId: orderUid }),
-    fetchSolversInfo(networkId).catch(() => []),
+    fetchSolversInfo().catch(() => []),
   ])
 
   const winnerFromOrder = getWinnerSolver(competitionStatus?.value)
@@ -42,7 +44,7 @@ export async function resolveSolver(
 export async function resolveSolverByTxHash(networkId: number, txHash: string): Promise<OrderSolverInfo | undefined> {
   const [competition, solvers] = await Promise.all([
     getSolverCompetitionByTxHash({ networkId, txHash }),
-    fetchSolversInfo(networkId).catch(() => []),
+    fetchSolversInfo().catch(() => []),
   ])
 
   const winnerSolverName = getWinnerSolverFromCompetition(competition)
