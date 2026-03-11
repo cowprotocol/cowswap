@@ -1,4 +1,4 @@
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@cowprotocol/currency'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
@@ -83,7 +83,7 @@ function getShouldSkipPriceSource(
 
   if (platforms && !platforms[chainId]) return true
 
-  if (unknownCurrenciesForChain[currency.address.toLowerCase()]) return true
+  if (unknownCurrenciesForChain[getAddressKey(currency.address)]) return true
 
   return !!rateLimitTimestamp && Date.now() - rateLimitTimestamp < timeout
 }
@@ -103,12 +103,12 @@ function handleErrorFactory(
       // Mark currency as unknown
       const chainId = currency.chainId as SupportedChainId
       const unknownCurrenciesForChain = unknownCurrenciesMap[chainId]
-      const addressToLowercase = currency.address.toLowerCase()
+      const addressKey = getAddressKey(currency.address)
 
       if (unknownCurrenciesForChain === undefined) {
-        unknownCurrenciesMap[chainId] = { [addressToLowercase]: true }
+        unknownCurrenciesMap[chainId] = { [addressKey]: true }
       } else {
-        unknownCurrenciesForChain[addressToLowercase] = true
+        unknownCurrenciesForChain[addressKey] = true
       }
     } else {
     }

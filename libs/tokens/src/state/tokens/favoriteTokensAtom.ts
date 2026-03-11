@@ -3,7 +3,7 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { TokenWithLogo, USDC_GNOSIS_CHAIN, USDCe_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_FAVORITE_TOKENS } from '../../const/defaultFavoriteTokens'
 import { TokensMap } from '../../types'
@@ -37,7 +37,7 @@ export const toggleFavoriteTokenAtom = atom(null, (get, set, token: TokenWithLog
   const { chainId } = get(environmentAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
   const state = { ...favoriteTokensState[chainId] }
-  const tokenKey = token.address.toLowerCase()
+  const tokenKey = getAddressKey(token.address)
 
   if (state[tokenKey]) {
     delete state[tokenKey]
@@ -60,7 +60,7 @@ function migrateFavoriteTokensAtom(oldStorageKey: string, newStorageKey: string)
     }
 
     const state = JSON.parse(favoriteV1Raw) as FavoriteTokens
-    const USDC_address = USDC_GNOSIS_CHAIN.address.toLowerCase()
+    const USDC_address = getAddressKey(USDC_GNOSIS_CHAIN.address)
 
     // Replace USDC with USDC.e on Gnosis chain
     state[SupportedChainId.GNOSIS_CHAIN] = Object.keys(state[SupportedChainId.GNOSIS_CHAIN]).reduce<TokensMap>(

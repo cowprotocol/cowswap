@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { blockedListSourcesAtom } from './blockedListSourcesAtom'
@@ -53,7 +54,7 @@ const tokensStateAtom = atom(async (get) => {
           const lpTokenProvider = list.lpTokenProvider
           list.list.tokens.forEach((token) => {
             const tokenInfo = parseTokenInfo(chainId, token)
-            const tokenAddressKey = tokenInfo?.address.toLowerCase()
+            const tokenAddressKey = tokenInfo ? getAddressKey(tokenInfo.address) : undefined
 
             if (!tokenInfo || !tokenAddressKey) return
 
@@ -128,7 +129,7 @@ export const allActiveTokensAtom = atom(async (get) => {
         lowerCaseTokensMap(userAddedTokens[chainId] || {}),
         tokensMap.activeTokens,
       ])
-      .concat(nativeToken ? [{ [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo }] : []),
+      .concat(nativeToken ? [{ [getAddressKey(nativeToken.address)]: nativeToken as TokenInfo }] : []),
     chainId,
   )
 
@@ -146,7 +147,7 @@ export const tokensByAddressAtom = atom(async (get) => {
   const activeTokens = await get(allActiveTokensAtom)
 
   const tokens = activeTokens.tokens.reduce<TokensByAddress>((acc, token) => {
-    acc[token.address.toLowerCase()] = token
+    acc[getAddressKey(token.address)] = token
     return acc
   }, {})
 

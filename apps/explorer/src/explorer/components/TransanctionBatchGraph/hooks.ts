@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useWindowSize } from '@cowprotocol/common-hooks'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, StylesheetCSS } from 'cytoscape'
 
@@ -220,18 +221,10 @@ const DEFAULT_VIEW_NAME = ViewType[DEFAULT_VIEW_TYPE]
 
 const VISUALIZATION_PARAM_NAME = 'vis'
 
-function useQueryViewParams(): string {
-  const query = useQuery()
-  return query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME
+type UseVisualizationReturn = {
+  visualization: ViewType
+  onChangeVisualization: (vis: ViewType) => void
 }
-
-function useUpdateVisQuery(): (vis: string) => void {
-  const updateQueryString = useUpdateQueryString()
-
-  return useCallback((vis: string) => updateQueryString(VISUALIZATION_PARAM_NAME, vis), [updateQueryString])
-}
-
-// TODO: Break down this large function into smaller functions
 
 export function useTxBatchData(
   networkId: Network | undefined,
@@ -255,8 +248,8 @@ export function useTxBatchData(
   const orderTokens = useMemo(
     () =>
       orders?.reduce((acc, order) => {
-        if (order.sellToken) acc[order.sellToken.address.toLowerCase()] = order.sellToken
-        if (order.buyToken) acc[order.buyToken.address.toLowerCase()] = order.buyToken
+        if (order.sellToken) acc[getAddressKey(order.sellToken.address)] = order.sellToken
+        if (order.buyToken) acc[getAddressKey(order.buyToken.address)] = order.buyToken
 
         return acc
       }, {}) || {},
@@ -306,10 +299,7 @@ export function useTxBatchData(
   )
 }
 
-type UseVisualizationReturn = {
-  visualization: ViewType
-  onChangeVisualization: (vis: ViewType) => void
-}
+// TODO: Break down this large function into smaller functions
 
 export function useVisualization(): UseVisualizationReturn {
   const visualization = useQueryViewParams()
@@ -327,4 +317,15 @@ export function useVisualization(): UseVisualizationReturn {
   }, [updateVisQuery, visualizationViewSelected])
 
   return { visualization: visualizationViewSelected, onChangeVisualization }
+}
+
+function useQueryViewParams(): string {
+  const query = useQuery()
+  return query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME
+}
+
+function useUpdateVisQuery(): (vis: string) => void {
+  const updateQueryString = useUpdateQueryString()
+
+  return useCallback((vis: string) => updateQueryString(VISUALIZATION_PARAM_NAME, vis), [updateQueryString])
 }

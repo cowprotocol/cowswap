@@ -3,7 +3,7 @@ import { MouseEventHandler, ReactNode, useCallback } from 'react'
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { getTokenId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
@@ -76,11 +76,11 @@ export function LpTokenLists({
   const getItemView = useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line complexity
+
     (lpTokens: LpToken[], item: VirtualItem) => {
       const token = lpTokens[item.index]
 
-      const tokenAddressLower = token.address.toLowerCase()
+      const tokenAddressLower = getAddressKey(token.address)
       const balance = balances ? balances[tokenAddressLower] : undefined
       const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
       const info = poolsInfo?.[tokenAddressLower]?.info

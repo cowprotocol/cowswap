@@ -21,6 +21,7 @@ import {
   USDC_AVALANCHE,
   USDC_BASE,
   USDC_BNB,
+  USDC_INK,
   USDC_LINEA,
   USDC_MAINNET,
   USDC_POLYGON,
@@ -31,6 +32,7 @@ import {
   USDT_AVALANCHE,
   USDT_BASE,
   USDT_BNB,
+  USDT_INK,
   USDT_LINEA,
   USDT_PLASMA,
   USDT_POLYGON,
@@ -40,10 +42,8 @@ import {
   WETH_GNOSIS_CHAIN,
   WETH_PLASMA,
   WRAPPED_NATIVE_CURRENCIES,
-  USDT_INK,
-  USDC_INK,
 } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../types'
 
@@ -52,7 +52,7 @@ const tokensListToMap = (list: (TokenWithLogo | null)[]): TokensMap =>
     if (!token) {
       return acc
     }
-    acc[token.address.toLowerCase()] = {
+    acc[getAddressKey(token.address)] = {
       chainId: token.chainId,
       address: token.address,
       name: token.name || '',

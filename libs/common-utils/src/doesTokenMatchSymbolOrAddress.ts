@@ -1,6 +1,7 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { TokenInfo } from '@cowprotocol/types'
 
 export const doesTokenMatchSymbolOrAddress = (token: Token | TokenInfo, symbolOrAddress?: string): boolean =>
-  token.address.toLowerCase() === symbolOrAddress?.toLowerCase() ||
+  getAddressKey(token.address) === symbolOrAddress?.toLowerCase() ||
   token.symbol?.toLowerCase() === symbolOrAddress?.toLowerCase()

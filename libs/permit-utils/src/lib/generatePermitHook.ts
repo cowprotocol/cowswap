@@ -1,3 +1,4 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
@@ -31,6 +32,30 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   REQUESTS_CACHE[permitKey] = request
 
   return request
+}
+
+async function calculateGasLimit(
+  data: string,
+  from: string,
+  to: string,
+  provider: JsonRpcProvider,
+  isUserAccount: boolean,
+): Promise<string> {
+  try {
+    // Query the actual gas estimate
+    const actual = await provider.estimateGas({ data, from, to })
+
+    // Add 10% to actual value to account for minor differences with real account
+    // Do not add it if this is the real user's account
+    const gasLimit = !isUserAccount ? actual.add(actual.div(10)) : actual
+
+    // Pick the biggest between estimated and default
+    return gasLimit.gt(DEFAULT_PERMIT_GAS_LIMIT) ? gasLimit.toString() : DEFAULT_PERMIT_GAS_LIMIT
+  } catch (e) {
+    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
+
+    return DEFAULT_PERMIT_GAS_LIMIT
+  }
 }
 
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
@@ -103,31 +128,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   }
 }
 
-async function calculateGasLimit(
-  data: string,
-  from: string,
-  to: string,
-  provider: JsonRpcProvider,
-  isUserAccount: boolean,
-): Promise<string> {
-  try {
-    // Query the actual gas estimate
-    const actual = await provider.estimateGas({ data, from, to })
-
-    // Add 10% to actual value to account for minor differences with real account
-    // Do not add it if this is the real user's account
-    const gasLimit = !isUserAccount ? actual.add(actual.div(10)) : actual
-
-    // Pick the biggest between estimated and default
-    return gasLimit.gt(DEFAULT_PERMIT_GAS_LIMIT) ? gasLimit.toString() : DEFAULT_PERMIT_GAS_LIMIT
-  } catch (e) {
-    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
-
-    return DEFAULT_PERMIT_GAS_LIMIT
-  }
-}
-
 function getCacheKey(params: PermitHookParams): string {
   const { inputToken, chainId, account, amount } = params
-  return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}${amount ? `-${amount.toString()}` : ''}`
+  return `${getAddressKey(inputToken.address)}-${chainId}${account ? `-${account.toLowerCase()}` : ''}${amount ? `-${amount.toString()}` : ''}`
 }

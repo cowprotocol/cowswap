@@ -3,7 +3,7 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, getAddressKey } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { getAddress } from '@ethersproject/address'
@@ -36,7 +36,7 @@ export const addUserTokenAtom = atom(null, (get, set, tokens: TokenWithLogo[]) =
       ...tokens.reduce<{ [key: string]: Token }>((acc, token) => {
         if (token.chainId === chainId) {
           // Only add token if its chainId matches the current chainId
-          acc[token.address.toLowerCase()] = token
+          acc[getAddressKey(token.address)] = token
         }
         return acc
       }, {}),
@@ -66,7 +66,7 @@ export const removeUserTokensAtom = atom(null, (get, set, tokens: string[]) => {
 })
 
 export const removeUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
-  set(removeUserTokensAtom, [token.address.toLowerCase()])
+  set(removeUserTokensAtom, [getAddressKey(token.address)])
 })
 
 export const resetUserTokensAtom = atom(null, (get, set) => {

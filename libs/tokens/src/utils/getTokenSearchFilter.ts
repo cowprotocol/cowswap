@@ -1,4 +1,5 @@
 import { isAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { NativeCurrency, Token } from '@cowprotocol/currency'
 import { TokenInfo } from '@cowprotocol/types'
 
@@ -14,7 +15,7 @@ export function getTokenSearchFilter<T extends Token | TokenInfo>(
 
   if (searchingAddress) {
     const address = searchingAddress.toLowerCase()
-    return (t: T | NativeCurrency) => 'address' in t && address === t.address.toLowerCase()
+    return (t: T | NativeCurrency) => 'address' in t && areAddressesEqual(address, t.address)
   }
 
   const queryParts = query

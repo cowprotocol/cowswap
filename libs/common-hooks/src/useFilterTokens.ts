@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 export function useFilterTokens(tokens: TokenWithLogo[], query: string): TokenWithLogo[] {
   return useMemo(() => {
@@ -21,7 +22,7 @@ export function useFilterTokens(tokens: TokenWithLogo[], query: string): TokenWi
     return tokens.filter((token: TokenWithLogo) => {
       if (searchAddress) {
         // first search by address if its address
-        return 'address' in token && searchAddress.toLowerCase() === token.address.toLowerCase()
+        return 'address' in token && areAddressesEqual(searchAddress, token.address)
       } else {
         // else search by symbol or name
         return [token.name?.toLowerCase(), token.symbol?.toLowerCase()].some((tokenPart: string | undefined) =>

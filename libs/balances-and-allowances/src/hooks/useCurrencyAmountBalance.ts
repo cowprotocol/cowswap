@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { useTokensBalances } from './useTokensBalances'
@@ -13,7 +14,7 @@ export function useCurrencyAmountBalance(
   return useMemo(() => {
     if (!token) return undefined
 
-    const balance = balances[token.address.toLowerCase()]
+    const balance = balances[getAddressKey(token.address)]
 
     if (!balance) return undefined
 

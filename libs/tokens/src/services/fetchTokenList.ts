@@ -6,7 +6,7 @@ import {
   resolveENSContentHash,
   uriToHttp,
 } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { TokenList } from '@uniswap/token-lists'
 
@@ -21,22 +21,6 @@ const MAINNET_PROVIDER = new JsonRpcProvider(RPC_URLS[SupportedChainId.MAINNET])
 export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
   const isEnsSource = parseENSAddress(list.source)
   return isEnsSource ? fetchTokenListByEnsName(list) : fetchTokenListByUrl(list)
-}
-
-async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
-  return _fetchTokenList(list.source, [list.source]).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
-}
-
-async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
-  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_PROVIDER)
-  const translatedUri = contenthashToUri(contentHashUri)
-  const urls = uriToHttp(translatedUri)
-
-  return _fetchTokenList(list.source, urls).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
 }
 
 async function _fetchTokenList(source: string, urls: string[]): Promise<ListState> {
@@ -78,12 +62,26 @@ async function _fetchTokenList(source: string, urls: string[]): Promise<ListStat
       console.debug(message, e)
 
       if (isLast) throw new Error(message)
-
-      continue
     }
   }
 
   throw new Error('Unrecognized list URL protocol.')
+}
+
+async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
+  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_PROVIDER)
+  const translatedUri = contenthashToUri(contentHashUri)
+  const urls = uriToHttp(translatedUri)
+
+  return _fetchTokenList(list.source, urls).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
+}
+
+async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
+  return _fetchTokenList(list.source, [list.source]).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
 }
 
 function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): ListState {
@@ -98,7 +96,7 @@ function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): L
 async function sanitizeList(list: TokenList): Promise<TokenList> {
   // Remove tokens from the list that don't have valid addresses
   const tokens = list.tokens.reduce<TokenList['tokens']>((acc, token) => {
-    const checksummed = isAddress(token.address.toLowerCase())
+    const checksummed = isAddress(getAddressKey(token.address))
     if (!checksummed) return acc
     acc.push({ ...token, address: checksummed })
     return acc

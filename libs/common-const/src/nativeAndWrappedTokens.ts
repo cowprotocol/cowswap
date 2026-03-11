@@ -21,12 +21,6 @@ export const WETH_MAINNET = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
 export const WXDAI = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN]
 export const WETH_SEPOLIA = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SEPOLIA]
 
-function getTokenWithLogoFromWrappedNativeCurrency(chainId: SupportedChainId): TokenWithLogo {
-  const wrapped = WRAPPED_NATIVE_CURRENCIES_SDK[chainId]
-
-  return new TokenWithLogo(wrapped.logoUrl, chainId, wrapped.address, wrapped.decimals, wrapped.symbol, wrapped.name)
-}
-
 function getTokenWithLogoFromNativeCurrency(chainId: SupportedChainId): TokenWithLogo {
   const nativeCurrency = ALL_SUPPORTED_CHAINS_MAP[chainId].nativeCurrency
 
@@ -38,4 +32,10 @@ function getTokenWithLogoFromNativeCurrency(chainId: SupportedChainId): TokenWit
     nativeCurrency.symbol,
     nativeCurrency.name,
   )
+}
+
+function getTokenWithLogoFromWrappedNativeCurrency(chainId: SupportedChainId): TokenWithLogo {
+  const wrapped = WRAPPED_NATIVE_CURRENCIES_SDK[chainId]
+
+  return new TokenWithLogo(wrapped.logoUrl, chainId, wrapped.address, wrapped.decimals, wrapped.symbol, wrapped.name)
 }

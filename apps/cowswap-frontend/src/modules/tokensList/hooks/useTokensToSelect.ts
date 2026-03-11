@@ -71,7 +71,7 @@ export function useTokensToSelect(): TokensToSelectContext {
       areTokensFromBridge && bridgeSupportedTokensMap === null
         ? EMPTY_TOKENS
         : bridgeSupportedTokensMap
-          ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[token.address.toLowerCase()])
+          ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[getAddressKey(token.address)])
           : favoriteTokens
 
     return {

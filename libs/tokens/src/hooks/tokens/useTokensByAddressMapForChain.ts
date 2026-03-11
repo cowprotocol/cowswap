@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { listsStatesByChainAtom } from '../../state/tokenLists/tokenListsStateAtom'
@@ -37,7 +37,7 @@ export function useTokensByAddressMapForChain(chainId: SupportedChainId | undefi
       for (const token of listState.list.tokens) {
         if (token.chainId !== chainId) continue
 
-        const addressKey = token.address.toLowerCase()
+        const addressKey = getAddressKey(token.address)
 
         if (tokensByAddress[addressKey] || NATIVE_CURRENCY_ADDRESS.toLowerCase() === addressKey) continue
 

@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai/index'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
@@ -24,23 +25,11 @@ import { useOrdersHydrationState } from '../hooks/useOrdersHydrationState'
 import { useOrdersTableList } from '../hooks/useOrdersTableList'
 import { buildOrdersTableUrl } from '../utils/url/buildOrdersTableUrl'
 
-function getOrdersInputTokens(allOrders: Order[]): string[] {
-  const setOfTokens = allOrders.reduce((acc, order) => {
-    acc.add(order.inputToken.address.toLowerCase())
-
-    return acc
-  }, new Set<string>())
-
-  return Array.from(setOfTokens)
-}
-
 interface OrdersTableStateUpdaterProps extends OrdersTableParams {
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   syncWithUrl?: boolean
 }
-
-// todo will fix in the next pr
 
 export function OrdersTableStateUpdater({
   orders: allOrders,
@@ -122,4 +111,16 @@ export function OrdersTableStateUpdater({
   }, [currentTabId, updateOrdersToCancel])
 
   return null
+}
+
+// todo will fix in the next pr
+
+function getOrdersInputTokens(allOrders: Order[]): string[] {
+  const setOfTokens = allOrders.reduce((acc, order) => {
+    acc.add(getAddressKey(order.inputToken.address))
+
+    return acc
+  }, new Set<string>())
+
+  return Array.from(setOfTokens)
 }
