@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTwapOrdersTokens } from 'entities/twap'
 
@@ -10,13 +10,16 @@ import { useOrders } from 'legacy/state/orders/hooks'
 
 import { useEmulatedPartOrders } from './useEmulatedPartOrders'
 import { useEmulatedTwapOrders } from './useEmulatedTwapOrders'
+import { useIsTwapEoaPrototypeEnabled } from './useIsTwapEoaPrototypeEnabled'
 
 export function useAllEmulatedOrders(): Order[] {
   const { chainId, account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
   const twapOrdersTokens = useTwapOrdersTokens()
   const emulatedTwapOrders = useEmulatedTwapOrders(twapOrdersTokens)
   const emulatedPartOrders = useEmulatedPartOrders(twapOrdersTokens)
   const isBundlingSupported = useIsTxBundlingSupported()
+  const isTwapEoaPrototypeEnabled = useIsTwapEoaPrototypeEnabled()
 
   const twapOrders = useOrders(chainId, account, UiOrderType.TWAP)
 
@@ -25,8 +28,15 @@ export function useAllEmulatedOrders(): Order[] {
   }, [twapOrders])
 
   return useMemo(() => {
-    if (!isBundlingSupported) return []
+    if (!isBundlingSupported && !(isTwapEoaPrototypeEnabled && !isSafeWallet)) return []
 
     return emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)
-  }, [emulatedTwapOrders, emulatedPartOrders, discreteTwapOrders, isBundlingSupported])
+  }, [
+    discreteTwapOrders,
+    emulatedPartOrders,
+    emulatedTwapOrders,
+    isBundlingSupported,
+    isSafeWallet,
+    isTwapEoaPrototypeEnabled,
+  ])
 }

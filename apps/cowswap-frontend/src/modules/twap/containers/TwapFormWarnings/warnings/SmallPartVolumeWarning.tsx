@@ -1,18 +1,37 @@
+import { ReactNode } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount, InlineBanner } from '@cowprotocol/ui'
+import { TokenAmount, InlineBanner, LinkStyledButton, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import styled from 'styled-components/macro'
 
 import { MINIMUM_PART_SELL_AMOUNT_FIAT } from '../../../const'
 
 export type SmallPartVolumeWarningBannerProps = {
   chainId: SupportedChainId
+  maxPartsValue?: number
+  onUseMaxParts?(): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SmallPartVolumeWarning({ chainId }: SmallPartVolumeWarningBannerProps) {
+const UseMaxPartsLink = styled(LinkStyledButton)`
+  color: var(${UI.COLOR_TEXT});
+  text-decoration: underline;
+
+  :hover,
+  :focus,
+  :active {
+    text-decoration: underline;
+  }
+`
+
+export function SmallPartVolumeWarning({
+  chainId,
+  maxPartsValue,
+  onUseMaxParts,
+}: SmallPartVolumeWarningBannerProps): ReactNode {
   const amount = MINIMUM_PART_SELL_AMOUNT_FIAT[chainId]
+  const hasMaxPartsAction = Boolean(onUseMaxParts && maxPartsValue)
 
   return (
     <InlineBanner>
@@ -28,6 +47,13 @@ export function SmallPartVolumeWarning({ chainId }: SmallPartVolumeWarningBanner
           . Decrease the number of parts or increase the total sell amount.
         </Trans>
       </p>
+      {hasMaxPartsAction && (
+        <p>
+          <UseMaxPartsLink onClick={onUseMaxParts}>
+            <Trans>Set to maximum parts ({maxPartsValue})</Trans>
+          </UseMaxPartsLink>
+        </p>
+      )}
     </InlineBanner>
   )
 }

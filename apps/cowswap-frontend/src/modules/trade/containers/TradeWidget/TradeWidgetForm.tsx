@@ -91,6 +91,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     priceImpact,
     recipient,
     hideTradeWarnings,
+    noImpactWarningAcceptLabel,
     enableSmartSlippage,
     displayTokenName = false,
     displayChainName = isCurrentTradeBridging,
@@ -324,6 +325,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                       <TradeWarnings
                         enableSmartSlippage={enableSmartSlippage}
                         isTradePriceUpdating={isTradePriceUpdating}
+                        noImpactWarningAcceptLabel={noImpactWarningAcceptLabel}
                       />
                     ),
                   )

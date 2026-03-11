@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -31,12 +31,13 @@ const NoImpactWarningMessage = (
 export interface NoImpactWarningProps {
   withoutAccepting?: boolean
   className?: string
+  acceptLabel?: ReactNode
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NoImpactWarning(props: NoImpactWarningProps) {
-  const { withoutAccepting, className } = props
+  const { withoutAccepting, className, acceptLabel } = props
 
   const [isAccepted, setIsAccepted] = useAtom(noImpactWarningAcceptedAtom)
 
@@ -67,6 +68,7 @@ export function NoImpactWarning(props: NoImpactWarningProps) {
       className={className}
       withoutAccepting={withoutAccepting}
       isAccepted={isAccepted}
+      acceptLabel={acceptLabel}
       tooltipContent={NoImpactWarningMessage}
       acceptCallback={acceptCallback}
       text={

@@ -6,6 +6,9 @@ import { TwapOrderItem, TwapOrderStatus } from '../types'
 export function emulatePartAsOrder(item: TwapPartOrderItem, parent: TwapOrderItem): EnrichedOrder {
   const creationDate = new Date((item.order.validTo - parent.order.t) * 1000)
   const isCancelling = parent.status === TwapOrderStatus.Cancelling
+  const isConfirmedPart = item.index < parent.executionInfo.confirmedPartsCount
+  const executedSellAmount = isConfirmedPart ? item.order.sellAmount : '0'
+  const executedBuyAmount = isConfirmedPart ? item.order.buyAmount : '0'
 
   return {
     ...item.order,
@@ -14,14 +17,14 @@ export function emulatePartAsOrder(item: TwapPartOrderItem, parent: TwapOrderIte
     status: getOrderStatus(parent),
     owner: parent.safeAddress.toLowerCase(),
     uid: item.uid,
-    signingScheme: SigningScheme.EIP1271,
+    signingScheme: parent.isPrototype ? SigningScheme.EIP712 : SigningScheme.EIP1271,
     signature: '',
     appData: parent.order.appData,
     totalFee: '0',
     feeAmount: '0',
-    executedSellAmount: '0',
-    executedSellAmountBeforeFees: '0',
-    executedBuyAmount: '0',
+    executedSellAmount,
+    executedSellAmountBeforeFees: executedSellAmount,
+    executedBuyAmount,
     executedFeeAmount: '0',
     invalidated: isCancelling,
   }

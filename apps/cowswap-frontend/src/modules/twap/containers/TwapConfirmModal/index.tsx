@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
+import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -8,22 +9,24 @@ import { Trans } from '@lingui/react/macro'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import {
+  DividerHorizontal,
   TradeConfirmation,
+  TradeBasicConfirmDetails,
   TradeConfirmModal,
   useCommonTradeConfirmContext,
   useTradeConfirmActions,
   useTradePriceImpact,
 } from 'modules/trade'
-import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
-import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
+import { TWAP_EOA_HOW_IT_WORKS_LINK } from '../../const'
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useIsTwapEoaPrototypeEnabled } from '../../hooks/useIsTwapEoaPrototypeEnabled'
 import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountInfo'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapOrder } from '../../hooks/useTwapOrder'
@@ -76,6 +79,8 @@ const getConfirmModalConfig = (): {
 export function TwapConfirmModal() {
   const confirmModalConfig = getConfirmModalConfig()
   const { account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
+  const isTwapEoaPrototypeEnabled = useIsTwapEoaPrototypeEnabled()
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
   const { allowsOffchainSigning } = useWalletDetails()
   const commonTradeConfirmContext = useCommonTradeConfirmContext()
@@ -122,6 +127,7 @@ export function TwapConfirmModal() {
 
   const partDuration = timeInterval
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
+  const isEoaPrototypeMode = isTwapEoaPrototypeEnabled && !isSafeWallet
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
@@ -171,6 +177,17 @@ export function TwapConfirmModal() {
               partDuration={partDuration}
               totalDuration={totalDuration}
             />
+            {isEoaPrototypeMode && (
+              <InlineBanner bannerType={StatusColorVariant.Warning}>
+                <Trans>
+                  Prototype mode: order placement is simulated locally. In a real EOA TWAP, sell funds would remain
+                  reserved until the order fills, expires, or you cancel it.
+                </Trans>{' '}
+                <ExternalLink href={TWAP_EOA_HOW_IT_WORKS_LINK}>
+                  <Trans>How it works</Trans> ↗
+                </ExternalLink>
+              </InlineBanner>
+            )}
             {warnings}
             <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
           </>

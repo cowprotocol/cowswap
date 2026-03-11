@@ -10,6 +10,8 @@ import ms from 'ms.macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { resolveDisplayTwapOrder } from '../utils/resolveDisplayTwapOrder'
+
 const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
 /**
@@ -38,7 +40,8 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
         return acc
       }
 
-      const storeOrder = mapTwapOrderToStoreOrder(order, tokensByAddress)
+      const resolvedOrder = resolveDisplayTwapOrder(order)
+      const storeOrder = mapTwapOrderToStoreOrder(resolvedOrder, tokensByAddress)
 
       if (storeOrder) acc.push(storeOrder)
 

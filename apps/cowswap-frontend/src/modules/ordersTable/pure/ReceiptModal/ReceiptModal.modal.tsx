@@ -9,14 +9,13 @@ import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans as TransReact } from '@lingui/react'
-import { useLingui } from '@lingui/react/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { CloseIcon } from 'theme'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
 
-import { TwapOrderItem } from 'modules/twap'
+import { TwapOrderItem, TWAP_EOA_HOW_IT_WORKS_LINK } from 'modules/twap'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
@@ -69,6 +68,7 @@ const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
   NETWORK_COSTS: msg`CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price.`,
   CREATED: msg`Your order was created on this date & time. It will remain open until it expires or is filled.`,
   RECEIVER: msg`The account address which will/did receive the bought amount.`,
+  OWNER: msg`The wallet or smart contract that owns this order.`,
   EXPIRY: msg`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
   TOTAL_FEE: msg`This fee helps pay for maintenance & improvements to the trade experience`,
 }
@@ -140,6 +140,8 @@ export function ReceiptModal({
   const inputLabel = isSell ? t`You sell` : t`You sell at most`
   const outputLabel = isSell ? t`You receive at least` : t`You receive exactly`
   const safeTxParams = twapOrder?.safeTxParams
+  const isPrototypeTwap = !!twapOrder?.isPrototype
+  const isEoaTwap = !!twapOrder && !safeTxParams
 
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
   const twapOrderN = twapOrder?.order.n
@@ -175,6 +177,27 @@ export function ReceiptModal({
             </InlineBanner>
           </styledEl.InfoBannerWrapper>
         )}
+        {isPrototypeTwap && (
+          <styledEl.InfoBannerWrapper>
+            <InlineBanner bannerType={StatusColorVariant.Info}>
+              <p>
+                <Trans>Prototype order stored locally for UI simulation only.</Trans>
+              </p>
+            </InlineBanner>
+          </styledEl.InfoBannerWrapper>
+        )}
+        {isEoaTwap && (
+          <styledEl.InfoBannerWrapper>
+            <InlineBanner bannerType={StatusColorVariant.Warning}>
+              <p>
+                <Trans>EOA TWAP funds remain reserved until the order fills, expires, or you cancel it.</Trans>{' '}
+                <ExternalLink href={TWAP_EOA_HOW_IT_WORKS_LINK}>
+                  <Trans>How it works</Trans> ↗
+                </ExternalLink>
+              </p>
+            </InlineBanner>
+          </styledEl.InfoBannerWrapper>
+        )}
 
         <styledEl.Body>
           <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
@@ -204,6 +227,17 @@ export function ReceiptModal({
                   )}
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                     {receiverEnsName || shortenAddress(order.receiver)} ↗
+                  </ExternalLink>
+                </div>
+              </styledEl.Field>
+            )}
+
+            {order.owner && (
+              <styledEl.Field>
+                <FieldLabel label={t`Owner`} tooltip={i18n._(TOOLTIPS_MSG.OWNER)} />
+                <div>
+                  <ExternalLink href={getExplorerLink(chainId, order.owner, ExplorerDataType.ADDRESS)}>
+                    {shortenAddress(order.owner)} ↗
                   </ExternalLink>
                 </div>
               </styledEl.Field>

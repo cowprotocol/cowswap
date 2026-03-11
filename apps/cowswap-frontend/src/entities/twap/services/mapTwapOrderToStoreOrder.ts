@@ -28,6 +28,7 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
     id: enrichedOrder.uid,
     composableCowInfo: {
       id: order.id,
+      isPrototype: order.isPrototype,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
     inputToken,

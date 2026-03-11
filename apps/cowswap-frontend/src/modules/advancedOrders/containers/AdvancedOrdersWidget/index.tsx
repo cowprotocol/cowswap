@@ -150,6 +150,7 @@ export function AdvancedOrdersWidget({
     isTradePriceUpdating,
     priceImpact,
     disablePriceImpact,
+    noImpactWarningAcceptLabel: i18n._(msg`Proceed anyway`),
     disableSuggestedSlippageApi: true,
   }
 

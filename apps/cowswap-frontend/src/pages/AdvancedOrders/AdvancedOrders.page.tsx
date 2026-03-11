@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -25,8 +26,10 @@ import {
   TwapConfirmModal,
   TwapFormWidget,
   TwapUpdaters,
+  TwapPrototypePanel,
   useAllEmulatedOrders,
   useIsFallbackHandlerRequired,
+  useIsTwapEoaPrototypeEnabled,
   useMapTwapCurrencyInfo,
   useTwapFormState,
   useTwapSlippage,
@@ -48,7 +51,10 @@ export function AdvancedOrdersPage(): ReactNode {
   const twapFormValidation = useTwapFormState()
   const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
+  const isSafeWallet = useIsSafeWallet()
+  const isTwapEoaPrototypeEnabled = useIsTwapEoaPrototypeEnabled()
   const { hideOrdersTable } = useInjectedWidgetParams()
+  const isTwapEoaPrototypeMode = isTwapEoaPrototypeEnabled && !isSafeWallet
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
@@ -67,6 +73,7 @@ export function AdvancedOrdersPage(): ReactNode {
         hideOrdersTable={hideOrdersTable}
       >
         <styledEl.PrimaryWrapper>
+          <TwapPrototypePanel />
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
           <AdvancedOrdersWidget
             updaters={<TwapUpdaters />}
@@ -87,7 +94,7 @@ export function AdvancedOrdersPage(): ReactNode {
           <styledEl.SecondaryWrapper>
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
-                displayOrdersOnlyForSafeApp
+                displayOrdersOnlyForSafeApp={!isTwapEoaPrototypeMode}
                 orderType={TabOrderTypes.ADVANCED}
                 orders={allEmulatedOrders}
               />

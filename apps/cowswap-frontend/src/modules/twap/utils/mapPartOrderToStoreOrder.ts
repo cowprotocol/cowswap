@@ -31,6 +31,7 @@ export function mapPartOrderToStoreOrder(
       isVirtualPart,
       isTheLastPart: getIsLastPartOrder(item, parent),
       parentId: parent.id,
+      isPrototype: item.isPrototype || parent.isPrototype,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
     inputToken,

@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
+import { Percent } from '@uniswap/sdk-core'
 
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
@@ -20,6 +21,7 @@ import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarn
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useMaxTwapPartsShortcut } from '../../hooks/useMaxTwapPartsShortcut'
 import { useSwapAmountDifference } from '../../hooks/useSwapAmountDifference'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
@@ -31,6 +33,24 @@ import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnou
 interface TwapFormWarningsProps {
   localFormValidation: TwapFormState | null
   isConfirmationModal?: boolean
+}
+
+interface TwapWarningsRendererParams {
+  localFormValidation: TwapFormState | null
+  primaryFormValidation: TradeFormValidation | null
+  isSafeViaWc: boolean
+  chainId: ReturnType<typeof useWalletInfo>['chainId']
+  account: ReturnType<typeof useWalletInfo>['account']
+  isFallbackHandlerSetupAccepted: boolean
+  toggleFallbackHandlerSetupFlag(isFallbackHandlerSetupAccepted: boolean): void
+  showFallbackHandlerWarning: boolean
+  showTradeFormWarnings: boolean
+  deadline: number
+  slippage: Percent
+  swapPriceDifferenceWarning: ReactNode
+  maxValidParts: number
+  canUseMaxPartsShortcut: boolean
+  useMaxPartsShortcut(): void
 }
 
 export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps): ReactNode {
@@ -57,6 +77,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   const showTradeFormWarnings = !isConfirmationModal && canTrade
   const showFallbackHandlerWarning = showTradeFormWarnings && isFallbackHandlerRequired
+  const { maxValidParts, canUseMaxPartsShortcut, useMaxPartsShortcut } = useMaxTwapPartsShortcut(isConfirmationModal)
 
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
@@ -69,48 +90,91 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     />
   ) : null
 
+  return getTwapWarningContent({
+    localFormValidation,
+    primaryFormValidation,
+    isSafeViaWc,
+    chainId,
+    account,
+    isFallbackHandlerSetupAccepted,
+    toggleFallbackHandlerSetupFlag,
+    showFallbackHandlerWarning,
+    showTradeFormWarnings,
+    deadline,
+    slippage,
+    swapPriceDifferenceWarning,
+    maxValidParts,
+    canUseMaxPartsShortcut,
+    useMaxPartsShortcut,
+  })
+}
+
+function getTwapWarningContent(params: TwapWarningsRendererParams): ReactNode {
+  const {
+    localFormValidation,
+    primaryFormValidation,
+    isSafeViaWc,
+    chainId,
+    account,
+    isFallbackHandlerSetupAccepted,
+    toggleFallbackHandlerSetupFlag,
+    showFallbackHandlerWarning,
+    showTradeFormWarnings,
+    deadline,
+    slippage,
+    swapPriceDifferenceWarning,
+    maxValidParts,
+    canUseMaxPartsShortcut,
+    useMaxPartsShortcut,
+  } = params
+
+  if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
+    return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} chainId={chainId} account={account} />
+  }
+
+  if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
+    return <SellNativeWarningBanner />
+  }
+
+  if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
+    return (
+      <SmallPartVolumeWarning
+        chainId={chainId}
+        maxPartsValue={canUseMaxPartsShortcut ? maxValidParts : undefined}
+        onUseMaxParts={canUseMaxPartsShortcut ? useMaxPartsShortcut : undefined}
+      />
+    )
+  }
+
+  if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
+    return (
+      <SmallPartTimeWarning
+        maxPartsValue={canUseMaxPartsShortcut ? maxValidParts : undefined}
+        onUseMaxParts={canUseMaxPartsShortcut ? useMaxPartsShortcut : undefined}
+      />
+    )
+  }
+
+  if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_LONG) {
+    return <BigPartTimeWarning />
+  }
+
+  if (showFallbackHandlerWarning) {
+    return (
+      <>
+        {isFallbackHandlerSetupAccepted && swapPriceDifferenceWarning}
+        <FallbackHandlerWarning
+          isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
+          toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
+        />
+      </>
+    )
+  }
+
   return (
     <>
-      {(() => {
-        if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
-          return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} chainId={chainId} account={account} />
-        }
-
-        if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
-          return <SellNativeWarningBanner />
-        }
-
-        if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
-          return <SmallPartVolumeWarning chainId={chainId} />
-        }
-
-        if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
-          return <SmallPartTimeWarning />
-        }
-
-        if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_LONG) {
-          return <BigPartTimeWarning />
-        }
-
-        if (showFallbackHandlerWarning) {
-          return (
-            <>
-              {isFallbackHandlerSetupAccepted && swapPriceDifferenceWarning}
-              <FallbackHandlerWarning
-                isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
-                toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
-              />
-            </>
-          )
-        }
-
-        return (
-          <>
-            {showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) && <SmallPriceProtectionWarning />}
-            {swapPriceDifferenceWarning}
-          </>
-        )
-      })()}
+      {showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) && <SmallPriceProtectionWarning />}
+      {swapPriceDifferenceWarning}
     </>
   )
 }
