@@ -7,6 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import {
   AffiliateTraderCodeInfo,
+  AffiliateTraderExpiryBanner,
   AffiliateTraderLoading,
   AffiliateTraderNextPayout,
   AffiliateTraderOnboard,
@@ -44,6 +45,7 @@ export default function AffiliateTrader(): ReactNode {
           <AffiliateTraderOnboard />
         ) : (
           <>
+            <AffiliateTraderExpiryBanner />
             <ThreeColumnGrid>
               <AffiliateTraderCodeInfo />
               <AffiliateTraderStats />

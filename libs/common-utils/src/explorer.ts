@@ -23,7 +23,6 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
     [ChainId.SEPOLIA]: `${baseUrl}/sepolia`,
     [ChainId.POLYGON]: `${baseUrl}/pol`,
     [ChainId.AVALANCHE]: `${baseUrl}/avax`,
-    [ChainId.LENS]: `${baseUrl}/lens`,
     [ChainId.BNB]: `${baseUrl}/bnb`,
     [ChainId.LINEA]: `${baseUrl}/linea`,
     [ChainId.PLASMA]: `${baseUrl}/plasma`,
@@ -32,6 +31,12 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
 }
 
 const EXPLORER_BASE_URL: Record<ChainId, string> = _getExplorerUrlByEnvironment()
+
+export function getExplorerAddressLink(chainId: ChainId, address: string): string {
+  const baseUrl = getExplorerBaseUrl(chainId)
+
+  return baseUrl + `/address/${address}`
+}
 
 export function getExplorerBaseUrl(chainId: ChainId): string {
   const baseUrl = EXPLORER_BASE_URL[chainId]
@@ -47,10 +52,4 @@ export function getExplorerOrderLink(chainId: ChainId, orderId: UID): string {
   const baseUrl = getExplorerBaseUrl(chainId)
 
   return baseUrl + `/orders/${orderId}`
-}
-
-export function getExplorerAddressLink(chainId: ChainId, address: string): string {
-  const baseUrl = getExplorerBaseUrl(chainId)
-
-  return baseUrl + `/address/${address}`
 }

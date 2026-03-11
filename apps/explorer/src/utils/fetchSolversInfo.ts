@@ -28,8 +28,6 @@ const SOLVERS_QUERY = [
   'populate[image][fields][0]=url',
   'populate[solver_networks][fields][0]=active',
   'populate[solver_networks][fields][1]=address',
-  'populate[solver_networks][fields][2]=payoutAddress',
-  'populate[solver_networks][fields][3]=payout_address',
   'populate[solver_networks][populate][network][fields][0]=chainId',
   'populate[solver_networks][populate][network][fields][1]=name',
   'populate[solver_networks][populate][environment][fields][0]=name',
@@ -137,10 +135,6 @@ function getEnvironmentName(attributes?: CmsSolverNetworkAttributes | null): str
   return attributes?.environment?.data?.attributes?.name || undefined
 }
 
-function getPayoutAddress(attributes?: CmsSolverNetworkAttributes | null): string | undefined {
-  return attributes?.payoutAddress || attributes?.payout_address || undefined
-}
-
 function hasRequiredSolverFields(attributes?: CmsSolverAttributes | null): attributes is CmsSolverWithRequiredFields {
   return !!attributes?.solverId && !!attributes.displayName && attributes.active !== false
 }
@@ -193,7 +187,6 @@ function mapSolverDeployment(entry: CmsEntity<CmsSolverNetworkAttributes>): Solv
     chainName: getChainName(chainId, chainNameFromCms),
     environment: getEnvironmentName(attributes),
     address: getAddress(attributes),
-    payoutAddress: getPayoutAddress(attributes),
     active: isDeploymentActive(attributes),
   }
 }

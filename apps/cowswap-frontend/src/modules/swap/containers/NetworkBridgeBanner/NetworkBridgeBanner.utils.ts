@@ -3,7 +3,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 // TODO: remove once network is supported for cross-chain swaps:
 
 const SHOULD_SHOW_ALERT_CHAIN_IDS = [
-  SupportedChainId.LENS,
   SupportedChainId.LINEA,
   SupportedChainId.PLASMA,
   SupportedChainId.INK,

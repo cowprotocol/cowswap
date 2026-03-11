@@ -13,8 +13,12 @@ import { decodeAppData } from 'modules/appData'
 
 import {
   AFFILIATE_PAYOUTS_CHAIN_ID,
+  AFFILIATE_REWARDS_UPDATE_INTERVAL_MS,
+  AFFILIATE_REWARDS_UPDATE_LAG_MS,
+  AFFILIATE_STATS_REFRESH_INTERVAL_MS,
   AFFILIATE_SUPPORTED_CHAIN_IDS,
   PROGRAM_DEFAULTS,
+  REF_CODE_PATTERN,
 } from '../config/affiliateProgram.const'
 
 const EMPTY_VALUE_LABEL = '-'
@@ -96,6 +100,61 @@ export function formatCompactNumber(value?: number): string {
     locale: i18n.locale,
     options: { notation: 'compact', maximumFractionDigits: 2 },
   })
+}
+
+export function formatRefCode(value?: string | null): string | undefined {
+  if (!value) return undefined
+  const normalized = value.trim().toUpperCase()
+  return REF_CODE_PATTERN.test(normalized) ? normalized : undefined
+}
+
+export function formatUsdcCompact(value?: number): string {
+  const formatted = formatCompactNumber(value)
+  return formatted === EMPTY_VALUE_LABEL ? EMPTY_VALUE_LABEL : `${formatted} USDC`
+}
+
+export function formatUsdCompact(value?: number): string {
+  const formatted = formatCompactNumber(value)
+  return formatted === EMPTY_VALUE_LABEL ? EMPTY_VALUE_LABEL : `$${formatted}`
+}
+
+export function generateSuggestedCode(): string {
+  const suffix = randomDigits(6)
+  return `COW-${suffix}`
+}
+
+export function getAppDataHash(order: AppDataOrder): string | undefined {
+  const appData = readStringField(order, 'appData')
+
+  if (!appData || appData.trim().startsWith('{')) {
+    return undefined
+  }
+
+  return appData
+}
+
+export function getApproxNextStatsUpdateAt(): Date {
+  return new Date(
+    getApproxStatsUpdatedAt().getTime() + AFFILIATE_REWARDS_UPDATE_INTERVAL_MS + AFFILIATE_STATS_REFRESH_INTERVAL_MS,
+  )
+}
+
+export function getApproxStatsUpdatedAt(): Date {
+  const currentTimeMs = Date.now()
+
+  return new Date(
+    Math.floor((currentTimeMs - AFFILIATE_REWARDS_UPDATE_LAG_MS) / AFFILIATE_REWARDS_UPDATE_INTERVAL_MS) *
+      AFFILIATE_REWARDS_UPDATE_INTERVAL_MS +
+      AFFILIATE_REWARDS_UPDATE_LAG_MS,
+  )
+}
+
+export function getDefaultTraderRewardAmount(): number {
+  return (PROGRAM_DEFAULTS.AFFILIATE_REWARD_AMOUNT * PROGRAM_DEFAULTS.AFFILIATE_REVENUE_SPLIT_TRADER_PCT) / 100
+}
+
+export function getDefaultTriggerVolume(): number {
+  return PROGRAM_DEFAULTS.AFFILIATE_TRIGGER_VOLUME
 }
 
 export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): SerializedOrder[] {
@@ -196,6 +255,10 @@ export function toValidDate(value: string | undefined): Date | null {
 
 function isRecord(value: unknown): value is JsonRecord {
   return typeof value === 'object' && value !== null
+}
+
+function randomDigits(length: number): string {
+  return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
 }
 
 function readStringField(value: AppDataResponse | undefined, key: keyof AppDataResponse): string | undefined {

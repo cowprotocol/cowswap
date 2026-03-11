@@ -11,34 +11,55 @@ export const PAGE_MAX_WIDTH = 1760
 export const THEME_MODE = 'light'
 export const PRODUCT_VARIANT = ProductVariant.CowDao
 
-export const NAV_ITEMS: MenuItem[] = [
-  {
-    label: 'About',
-    children: [
-      {
-        label: 'Stats',
-        href: 'https://dune.com/cowprotocol/cowswap',
-        external: true,
-      },
-      {
-        label: 'Governance',
-        href: 'https://docs.cow.fi/governance',
-        external: true,
-      },
-      {
-        label: 'Grants',
-        href: 'https://grants.cow.fi/',
-        external: true,
-      },
-      {
-        label: 'Bug Bounty',
-        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
-        external: true,
-      },
-      { label: 'Careers', href: '/careers' },
-    ],
-  },
-  {
+const ABOUT_NAV_ITEM: MenuItem = {
+  label: 'About',
+  children: [
+    {
+      label: 'Stats',
+      href: 'https://dune.com/cowprotocol/cowswap',
+      external: true,
+    },
+    {
+      label: 'Governance',
+      href: 'https://docs.cow.fi/governance',
+      external: true,
+    },
+    {
+      label: 'Grants',
+      href: 'https://grants.cow.fi/',
+      external: true,
+    },
+    {
+      label: 'Bug Bounty',
+      href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
+      external: true,
+    },
+    { label: 'Careers', href: '/careers' },
+  ],
+}
+
+const LEARN_NAV_ITEM: MenuItem = {
+  label: 'Learn',
+  children: [
+    {
+      href: '/learn',
+      label: 'Knowledge Base',
+    },
+    {
+      href: 'https://docs.cow.fi/',
+      label: 'Docs',
+      external: true,
+      utmContent: 'menubar-nav-item-docs',
+    },
+  ],
+}
+
+export function getNavItems(isSolversEnabled: boolean): MenuItem[] {
+  return [ABOUT_NAV_ITEM, getProductsNavItem(isSolversEnabled), LEARN_NAV_ITEM]
+}
+
+function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
+  return {
     label: 'Products',
     children: [
       {
@@ -70,32 +91,21 @@ export const NAV_ITEMS: MenuItem[] = [
             external: true,
             utmContent: 'menubar-nav-item-cow-explorer',
           },
-          {
-            label: 'Solvers',
-            href: 'https://explorer.cow.fi/solvers',
-            external: true,
-            utmContent: 'menubar-nav-item-solvers',
-          },
+          ...(isSolversEnabled
+            ? [
+                {
+                  label: 'Solvers',
+                  href: 'https://explorer.cow.fi/solvers',
+                  external: true,
+                  utmContent: 'menubar-nav-item-solvers',
+                },
+              ]
+            : []),
         ],
       },
     ],
-  },
-  {
-    label: 'Learn',
-    children: [
-      {
-        href: '/learn',
-        label: 'Knowledge Base',
-      },
-      {
-        href: 'https://docs.cow.fi/',
-        label: 'Docs',
-        external: true,
-        utmContent: 'menubar-nav-item-docs',
-      },
-    ],
-  },
-]
+  }
+}
 
 export const NAV_ADDITIONAL_BUTTONS = [
   {
