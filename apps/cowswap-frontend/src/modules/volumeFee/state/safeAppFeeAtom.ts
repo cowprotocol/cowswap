@@ -11,10 +11,9 @@ import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { VolumeFee } from '../types'
 
-const SAFE_FEE_RECIPIENT_PER_NETWORK: Record<SupportedChainId, string> = {
-  ...mapAddressToSupportedNetworks('0x8025BAcF968aa82BDfE51B513123b55BFb0060D3'),
-  [SupportedChainId.LENS]: '0x5259A6036AA43714d210D3522EA5529Aeb0b287b',
-}
+const SAFE_FEE_RECIPIENT_PER_NETWORK: Record<SupportedChainId, string> = mapAddressToSupportedNetworks(
+  '0x8025BAcF968aa82BDfE51B513123b55BFb0060D3',
+)
 
 const FEE_TIERS = {
   TIER_1: 100_000, // 0 - 100k
