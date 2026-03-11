@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
 
 export const RECENT_TOKENS_LIMIT = 4
 // Storage schema: { [chainId: number]: StoredRecentToken[] } serialized under this key.
@@ -174,7 +174,7 @@ function sanitizeStoredToken(token: unknown): StoredRecentToken | null {
 
   return {
     chainId,
-    address: address.toLowerCase(),
+    address: getAddressKey(address),
     decimals,
     symbol: typeof symbol === 'string' ? symbol : undefined,
     name: typeof name === 'string' ? name : undefined,
@@ -208,7 +208,7 @@ function sanitizeStoredTokensMap(record: Record<string, unknown>, limit: number)
 function toStoredToken(token: TokenWithLogo): StoredRecentToken {
   return {
     chainId: token.chainId,
-    address: token.address.toLowerCase(),
+    address: getAddressKey(token.address),
     decimals: token.decimals,
     symbol: token.symbol,
     name: token.name,
