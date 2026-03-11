@@ -8,7 +8,6 @@ import {
   HttpsString,
   ink,
   isEvmChainInfo,
-  lens,
   linea,
   mainnet,
   plasma,
@@ -111,12 +110,6 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'gc',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN],
   },
-  [SupportedChainId.LENS]: {
-    ...mapChainInfoToBaseChainInfo(lens),
-    name: 'lens',
-    urlAlias: 'lens',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LENS],
-  },
   [SupportedChainId.LINEA]: {
     ...mapChainInfoToBaseChainInfo(linea),
     name: 'linea',
@@ -158,7 +151,6 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.PLASMA, // TODO: decide where to place Plasma
   SupportedChainId.INK, // TODO: decide where to place Ink
   SupportedChainId.GNOSIS_CHAIN,
-  SupportedChainId.LENS,
   SupportedChainId.SEPOLIA,
 ]
 
