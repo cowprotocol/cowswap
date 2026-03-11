@@ -63,7 +63,7 @@ export function shortenAddress(address: string, chars = 4): string {
     return getShortAddress(parsed)
   }
 
-  if (isBtcAddress(address) || isSolanaAddress(address)) {
+  if (isCaseSensitiveAddress(address)) {
     return getShortAddress(address, chars)
   }
 
@@ -72,6 +72,10 @@ export function shortenAddress(address: string, chars = 4): string {
 
 function getShortAddress(address: string, chars = 4): string {
   return `${address.substring(0, chars + 2)}...${address.substring(address.length - chars)}`
+}
+
+function isCaseSensitiveAddress(address: string): boolean {
+  return isBtcAddress(address) || isSolanaAddress(address)
 }
 
 const COW_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
