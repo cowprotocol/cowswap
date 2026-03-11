@@ -1,5 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isBtcAddress, isEvmAddress, isSolanaAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
@@ -15,32 +15,8 @@ import { getExplorerOrderLink } from './explorer'
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
-// returns the checksummed address if the address is valid, otherwise returns false
-export function isAddress(value: string | undefined | null): string | false {
-  try {
-    return getAddress(value as never)
-  } catch {
-    return false
-  }
-}
-
-// shorten the checksummed version of the input address to have 0x + 4 characters at start and end
-export function shortenAddress(address: string, chars = 4): string {
-  const parsed = isAddress(address)
-  if (!parsed) {
-    throw Error(`Invalid 'address' parameter '${address}'.`)
-  }
-  return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
-}
-
-// account is not optional
-export function getSigner(provider: JsonRpcProvider, account: string): JsonRpcSigner {
-  return provider.getSigner(account).connectUnchecked()
-}
-
-// account is optional
-export function getProviderOrSigner(provider: JsonRpcProvider, account?: string): JsonRpcProvider | JsonRpcSigner {
-  return account ? getSigner(provider, account) : provider
+export function escapeRegExp(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
 // account is optional
@@ -57,8 +33,45 @@ export function getContract(
   return new Contract(address, ABI, getProviderOrSigner(provider, account))
 }
 
-export function escapeRegExp(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+// account is optional
+export function getProviderOrSigner(provider: JsonRpcProvider, account?: string): JsonRpcProvider | JsonRpcSigner {
+  return account ? getSigner(provider, account) : provider
+}
+
+// account is not optional
+export function getSigner(provider: JsonRpcProvider, account: string): JsonRpcSigner {
+  return provider.getSigner(account).connectUnchecked()
+}
+
+// returns the checksummed address if the address is valid, otherwise returns false
+export function isAddress(value: string | undefined | null): string | false {
+  try {
+    return getAddress(value as never)
+  } catch {
+    return false
+  }
+}
+
+// shorten the checksummed version of the input address to have 0x + 4 characters at start and end
+export function shortenAddress(address: string, chars = 4): string {
+  const isEvm = isEvmAddress(address)
+  if (isEvm) {
+    const parsed = isAddress(address)
+    if (!parsed) {
+      throw Error(`Invalid 'address' parameter '${address}'.`)
+    }
+    return getShortAddress(parsed)
+  }
+
+  if (isBtcAddress(address) || isSolanaAddress(address)) {
+    return getShortAddress(address, chars)
+  }
+
+  throw Error(`Invalid 'address' parameter '${address}'.`)
+}
+
+function getShortAddress(address: string, chars = 4): string {
+  return `${address.substring(0, chars + 2)}...${address.substring(address.length - chars)}`
 }
 
 const COW_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
@@ -72,6 +85,51 @@ export type BlockExplorerLinkType =
   | 'composable-order'
   | 'event'
   | 'contract'
+
+export function formatOrderId(orderId: string): string {
+  const has0x = orderId.match('0x')
+
+  // 0x is at index 0 of orderId, shorten. Else return id as is
+  return has0x?.index === 0 ? shortenOrderId(orderId) : orderId
+}
+
+// Get the right block explorer URL by chainId
+export function getBlockExplorerUrl(
+  chainId: SupportedChainId,
+  type: BlockExplorerLinkType,
+  data: string,
+  base?: string,
+): string {
+  return getEtherscanUrl(chainId, data, type, base)
+}
+
+export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
+  if (isCowOrder(type, data)) {
+    // Explorer for CoW orders:
+    //    If a transaction has the size of the CoW orderId, then it's a meta-tx
+    return getExplorerOrderLink(chainId, data)
+  } else {
+    return getEtherscanUrl(chainId, data, type)
+  }
+}
+
+export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
+  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
+
+  return isCowOrder(type, data) ? t`View on Explorer` : t`View on` + ` ${explorerTitle}`
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
+  if (!data) return false
+
+  return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
+}
+
+export function shortenOrderId(orderId: string): string {
+  return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
+}
 
 // eslint-disable-next-line complexity
 function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
@@ -97,49 +155,4 @@ function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExp
     default:
       return `${basePath}/address/${data}`
   }
-}
-
-// Get the right block explorer URL by chainId
-export function getBlockExplorerUrl(
-  chainId: SupportedChainId,
-  type: BlockExplorerLinkType,
-  data: string,
-  base?: string,
-): string {
-  return getEtherscanUrl(chainId, data, type, base)
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
-  if (!data) return false
-
-  return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
-}
-
-export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
-  if (isCowOrder(type, data)) {
-    // Explorer for CoW orders:
-    //    If a transaction has the size of the CoW orderId, then it's a meta-tx
-    return getExplorerOrderLink(chainId, data)
-  } else {
-    return getEtherscanUrl(chainId, data, type)
-  }
-}
-
-export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
-  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
-
-  return isCowOrder(type, data) ? t`View on Explorer` : t`View on` + ` ${explorerTitle}`
-}
-
-export function shortenOrderId(orderId: string): string {
-  return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
-}
-
-export function formatOrderId(orderId: string): string {
-  const has0x = orderId.match('0x')
-
-  // 0x is at index 0 of orderId, shorten. Else return id as is
-  return has0x?.index === 0 ? shortenOrderId(orderId) : orderId
 }
