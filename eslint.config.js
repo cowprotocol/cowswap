@@ -116,7 +116,8 @@ module.exports = [
   {
     files: ['**/*.tsx'],
     rules: {
-      complexity: ['error', 15],
+      complexity: ['error', 20],
+      'max-lines-per-function': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
     },
   },
   {
