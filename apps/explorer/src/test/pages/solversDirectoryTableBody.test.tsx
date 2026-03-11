@@ -20,7 +20,6 @@ const SOLVERS_INFO: SolversInfo = [
         chainName: 'Ethereum',
         environment: 'prod',
         address: '0xalpha1',
-        payoutAddress: '0xpayalpha1',
         active: true,
       },
       {
@@ -28,7 +27,6 @@ const SOLVERS_INFO: SolversInfo = [
         chainName: 'Gnosis',
         environment: 'barn',
         address: '0xalpha2',
-        payoutAddress: '0xpayalpha2',
         active: false,
       },
     ],

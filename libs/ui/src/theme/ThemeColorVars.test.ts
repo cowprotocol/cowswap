@@ -107,7 +107,7 @@ describe('Chain Accent Colors', () => {
       // chainId from being set in overrides, but this test documents the runtime behavior.
       const mainnetColors = getChainAccentColors(SupportedChainId.MAINNET)
 
-      // Even though MAINNET and LENS have overrides, chainId should match the Record key
+      // Even though MAINNET has overrides, chainId should match the Record key
       expect(mainnetColors.chainId).toBe(SupportedChainId.MAINNET)
 
       // Verify this holds for all chains with overrides

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.10](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.9...widget-react-v1.0.10) (2026-03-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.0
+    * @cowprotocol/types bumped to 4.0.0
+    * @cowprotocol/widget-lib bumped to 2.0.0
+
 ## [1.0.9](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.8...widget-react-v1.0.9) (2026-03-10)
 
 

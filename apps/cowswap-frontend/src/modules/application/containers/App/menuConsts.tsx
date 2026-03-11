@@ -18,7 +18,13 @@ export const PRODUCT_VARIANT = ProductVariant.CowSwap
 
 type UntranslatedMenuItem = {
   label: MessageDescriptor
-  children: Array<{ href: string; label: MessageDescriptor; badge?: MessageDescriptor; badgeType?: BadgeType }>
+  children: Array<{
+    href: string
+    label: MessageDescriptor
+    badge?: MessageDescriptor
+    badgeType?: BadgeType
+    external?: boolean
+  }>
 }
 
 const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean): UntranslatedMenuItem => ({
@@ -97,7 +103,7 @@ const LEARN_ITEM_SUBMENU = {
   ],
 }
 
-const MORE_ITEM = {
+const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
   label: msg`More`,
   children: [
     {
@@ -115,11 +121,15 @@ const MORE_ITEM = {
       label: msg`Careers`,
       external: true,
     },
-    {
-      href: getSolversExplorerUrl(),
-      label: msg`Solvers`,
-      external: true,
-    },
+    ...(isSolversEnabled
+      ? [
+          {
+            href: getSolversExplorerUrl(),
+            label: msg`Solvers`,
+            external: true,
+          },
+        ]
+      : []),
     {
       href: Routes.PLAY_COWRUNNER,
       label: msg`CoW Runner`,
@@ -131,9 +141,13 @@ const MORE_ITEM = {
       // icon: IMG_ICON_COW_SLICER,
     },
   ],
-}
+})
 
-export const NAV_ITEMS = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean): MenuItem[] => {
+export const NAV_ITEMS = (
+  chainId: SupportedChainId,
+  isAffiliateProgramEnabled: boolean,
+  isSolversEnabled: boolean,
+): MenuItem[] => {
   const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId, isAffiliateProgramEnabled)
   const accountItem: MenuItem = {
     label: i18n._(_ACCOUNT_ITEM.label),
@@ -164,9 +178,10 @@ export const NAV_ITEMS = (chainId: SupportedChainId, isAffiliateProgramEnabled: 
     ],
   }
 
+  const moreItemConfig = MORE_ITEM(isSolversEnabled)
   const moreItem: MenuItem = {
-    label: i18n._(MORE_ITEM.label),
-    children: MORE_ITEM.children.map(({ href, label, external }) => ({
+    label: i18n._(moreItemConfig.label),
+    children: moreItemConfig.children.map(({ href, label, external }) => ({
       href,
       label: i18n._(label),
       external,

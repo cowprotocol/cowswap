@@ -113,7 +113,7 @@ function createChainAccent({
  * - Chain names and CSS variables are generated automatically from CHAIN_INFO
  *
  * CUSTOMIZATION:
- * - Override colors in CHAIN_ACCENT_OVERRIDES if CHAIN_INFO color differs from design (e.g., MAINNET, LENS)
+ * - Override colors in CHAIN_ACCENT_OVERRIDES if CHAIN_INFO color differs from design (e.g., MAINNET)
  */
 
 // Color overrides for chains where CHAIN_INFO color differs from original design

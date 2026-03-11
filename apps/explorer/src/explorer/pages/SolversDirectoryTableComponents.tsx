@@ -82,11 +82,10 @@ export function NetworkChips({
     <Networks>
       {networks.map((network) => {
         const chainIcon = getChainIcon(network.chainId)
-        // Lens uses a black light logo, so we invert it to keep visibility on dark chips.
-        const isLensNetwork = network.chainName.toLowerCase() === 'lens'
+
         return (
           <NetworkChip key={`${solverId}-${network.chainId}`}>
-            {chainIcon && <NetworkIcon src={chainIcon} alt="" $invert={isLensNetwork} />}
+            {chainIcon && <NetworkIcon src={chainIcon} alt="" />}
             {network.chainName}
           </NetworkChip>
         )

@@ -31,8 +31,6 @@ export type CmsSolverAttributes = {
 export type CmsSolverNetworkAttributes = {
   active?: boolean | null
   address?: string | null
-  payoutAddress?: string | null
-  payout_address?: string | null
   network?: { data?: CmsEntity<CmsNetworkAttributes> | null } | null
   environment?: { data?: CmsEntity<CmsEnvironmentAttributes> | null } | null
 }
@@ -51,7 +49,6 @@ export type SolverDeployment = {
   chainName: string
   environment?: string
   address?: string
-  payoutAddress?: string
   active: boolean
 }
 
