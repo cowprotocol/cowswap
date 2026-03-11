@@ -1,5 +1,34 @@
 # Changelog
 
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.2.0...cow-fi-v2.3.0) (2026-03-11)
+
+
+### ✨ Features
+
+* implement dynamic navigation items based on solvers feature flag ([#7126](https://github.com/cowprotocol/cowswap/issues/7126)) ([eba8bf9](https://github.com/cowprotocol/cowswap/commit/eba8bf938c07d70d0cea76cec6628fc5bd9c25f9))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.0
+    * @cowprotocol/common-const bumped to 3.0.0
+    * @cowprotocol/common-hooks bumped to 3.0.0
+    * @cowprotocol/common-utils bumped to 3.0.0
+    * @cowprotocol/core bumped to 3.0.0
+    * @cowprotocol/events bumped to 4.0.0
+    * @cowprotocol/types bumped to 4.0.0
+    * @cowprotocol/ui bumped to 3.0.0
+    * @cowprotocol/wallet bumped to 3.0.0
+    * @cowprotocol/wallet-provider bumped to 2.1.8
+    * @cowprotocol/widget-react bumped to 1.0.10
+
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.5...cow-fi-v2.2.0) (2026-03-10)
 
 

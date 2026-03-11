@@ -1,5 +1,52 @@
 # Changelog
 
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.6.0...cowswap-v3.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* implement dynamic navigation items based on solvers feature flag ([#7126](https://github.com/cowprotocol/cowswap/issues/7126)) ([eba8bf9](https://github.com/cowprotocol/cowswap/commit/eba8bf938c07d70d0cea76cec6628fc5bd9c25f9))
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🐛 Bug Fixes
+
+* **swap-n-bridge:** winning solver order ([#7125](https://github.com/cowprotocol/cowswap/issues/7125)) ([8b03b06](https://github.com/cowprotocol/cowswap/commit/8b03b06d61e018b8a04b69b58a285e0efb86939a))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.0
+    * @cowprotocol/balances-and-allowances bumped to 3.0.0
+    * @cowprotocol/common-const bumped to 3.0.0
+    * @cowprotocol/common-hooks bumped to 3.0.0
+    * @cowprotocol/common-utils bumped to 3.0.0
+    * @cowprotocol/core bumped to 3.0.0
+    * @cowprotocol/ens bumped to 3.0.0
+    * @cowprotocol/events bumped to 4.0.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.8
+    * @cowprotocol/iframe-transport bumped to 2.0.8
+    * @cowprotocol/multicall bumped to 3.0.0
+    * @cowprotocol/permit-utils bumped to 3.0.0
+    * @cowprotocol/snackbars bumped to 2.0.10
+    * @cowprotocol/tokens bumped to 3.0.0
+    * @cowprotocol/types bumped to 4.0.0
+    * @cowprotocol/ui bumped to 3.0.0
+    * @cowprotocol/wallet bumped to 3.0.0
+    * @cowprotocol/wallet-provider bumped to 2.1.8
+    * @cowprotocol/widget-lib bumped to 2.0.0
+
 ## [2.6.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.5.0...cowswap-v2.6.0) (2026-03-10)
 
 
