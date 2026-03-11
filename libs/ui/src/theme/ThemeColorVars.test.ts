@@ -19,15 +19,6 @@ describe('Chain Accent Colors', () => {
       expect(colors?.darkColor).toBe('#627EEA')
     })
 
-    it('should return accent colors for LENS with darkColor override', () => {
-      const colors = getChainAccentColors(SupportedChainId.LENS)
-
-      expect(colors).toBeDefined()
-      expect(colors?.chainId).toBe(SupportedChainId.LENS)
-      expect(colors?.lightColor).toBe('#5A5A5A') // Override applied
-      expect(colors?.darkColor).toBe('#D7D7D7') // Dark color override applied
-    })
-
     it('should return accent colors for BNB using CHAIN_INFO color', () => {
       const colors = getChainAccentColors(SupportedChainId.BNB)
 
@@ -102,16 +93,6 @@ describe('Chain Accent Colors', () => {
       expect(sdkColor).toBe('#62688F') // Verify SDK color is different
     })
 
-    it('should apply LENS color and darkColor overrides', () => {
-      const colors = getChainAccentColors(SupportedChainId.LENS)
-      const sdkColor = CHAIN_INFO[SupportedChainId.LENS].color
-
-      expect(colors?.lightColor).toBe('#5A5A5A')
-      expect(colors?.darkColor).toBe('#D7D7D7')
-      expect(colors?.lightColor).not.toBe(sdkColor) // Should differ from SDK
-      expect(sdkColor).toBe('#FFFFFF') // Verify SDK color is different
-    })
-
     it('should use CHAIN_INFO color for chains without overrides', () => {
       const colors = getChainAccentColors(SupportedChainId.BASE)
       const sdkColor = CHAIN_INFO[SupportedChainId.BASE].color
@@ -125,11 +106,9 @@ describe('Chain Accent Colors', () => {
       // not from override objects. The type system (ChainAccentOverride) prevents
       // chainId from being set in overrides, but this test documents the runtime behavior.
       const mainnetColors = getChainAccentColors(SupportedChainId.MAINNET)
-      const lensColors = getChainAccentColors(SupportedChainId.LENS)
 
-      // Even though MAINNET and LENS have overrides, chainId should match the Record key
+      // Even though MAINNET has overrides, chainId should match the Record key
       expect(mainnetColors.chainId).toBe(SupportedChainId.MAINNET)
-      expect(lensColors.chainId).toBe(SupportedChainId.LENS)
 
       // Verify this holds for all chains with overrides
       Object.entries(CHAIN_ACCENT_CONFIG).forEach(([key, config]) => {

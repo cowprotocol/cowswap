@@ -32,6 +32,14 @@ const MOCK_SOLVERS: SolverInfo[] = [
   },
 ]
 
+const CROSS_NETWORK_SOLVER: SolverInfo = {
+  solverId: 'ExtQuasimodo',
+  displayName: 'ExtQuasimodo',
+  image: 'https://example.com/extquasimodo.svg',
+  networks: [],
+  deployments: [],
+}
+
 function mockSolverCompetitionResponse(solverName: string): SolverCompetitionResponse {
   return {
     auctionId: 1,
@@ -76,6 +84,24 @@ describe('useTradeSolver', () => {
       displayName: 'Project Blanc',
       image: 'https://example.com/blanc.png',
     })
+    expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
+  })
+
+  it('matches solver metadata from the global list even when the current network has no CMS deployment', async () => {
+    mockedUseNetworkId.mockReturnValue(42161)
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('extquasimodo-solve'))
+    mockedFetchSolversInfo.mockResolvedValueOnce([CROSS_NETWORK_SOLVER])
+
+    const { result } = renderHook(() => useTradeSolver('0xextquasimodo'))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toEqual({
+      solverId: 'ExtQuasimodo',
+      displayName: 'ExtQuasimodo',
+      image: 'https://example.com/extquasimodo.svg',
+    })
+    expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
   })
 
   it('returns undefined solver when no winner in competition', async () => {

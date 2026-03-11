@@ -1,5 +1,29 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.3.0...widget-lib-v2.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.0
+    * @cowprotocol/iframe-transport bumped to 2.0.8
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.2.2...widget-lib-v1.3.0) (2026-03-10)
 
 

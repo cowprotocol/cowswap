@@ -16,7 +16,6 @@ const DEFAULT_LISTS_STATE = {
   [SupportedChainId.SEPOLIA]: {},
   [SupportedChainId.POLYGON]: {},
   [SupportedChainId.AVALANCHE]: {},
-  [SupportedChainId.LENS]: {},
   [SupportedChainId.BNB]: {},
   [SupportedChainId.LINEA]: {},
   [SupportedChainId.PLASMA]: {},
