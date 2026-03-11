@@ -14,6 +14,7 @@ import SVG from 'react-inlinesvg'
 
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
+import { useIsRefCodeExpired } from '../hooks/useIsRefCodeExpired'
 import { getApproxNextStatsUpdateAt, toValidDate } from '../lib/affiliateProgramUtils'
 import {
   CardTitle,
@@ -27,7 +28,8 @@ import {
   MetricValue,
   ColumnOneCard,
   RewardsHeader,
-  ValidStatusBadge,
+  ValidBadge,
+  ExpiredBadge,
 } from '../pure/shared'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
@@ -41,6 +43,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
 
   const { data: stats, isLoading: statsLoading } = useAffiliateTraderStats(account)
   const { data: info, isLoading: codeLoading } = useAffiliateTraderInfo(savedCode)
+  const isExpired = useIsRefCodeExpired()
 
   const approxNextUpdateAt = useMemo(() => getApproxNextStatsUpdateAt(), [])
   const approxNextUpdateTimeAgo = useTimeAgo(approxNextUpdateAt, TIME_AGO_UPDATE_INTERVAL_MS)
@@ -50,21 +53,27 @@ export function AffiliateTraderCodeInfo(): ReactNode {
       {!info ? null : (
         <>
           <RewardsHeader>
-            <CardTitle>{isLinked ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}</CardTitle>
+            <CardTitle>
+              {isLinked && !isExpired ? <Trans>Active referral code</Trans> : <Trans>Referral code</Trans>}
+            </CardTitle>
           </RewardsHeader>
-          <LinkedCard>
-            <LinkedCodeRow>
+          <LinkedCard $isExpired={isExpired}>
+            <LinkedCodeRow $isExpired={isExpired}>
               <LinkedCodeText>{savedCode}</LinkedCodeText>
-              {isLinked ? (
+              {isExpired ? (
+                <ExpiredBadge>
+                  <Trans>Expired</Trans>
+                </ExpiredBadge>
+              ) : isLinked ? (
                 <LinkedBadge>
                   <SVG src={LockedIcon} width={16} height={16} />
                   <Trans>Linked</Trans>
                 </LinkedBadge>
               ) : (
-                <ValidStatusBadge>
+                <ValidBadge>
                   <SVG src={CheckIcon} />
                   <Trans>Valid</Trans>
-                </ValidStatusBadge>
+                </ValidBadge>
               )}
             </LinkedCodeRow>
           </LinkedCard>

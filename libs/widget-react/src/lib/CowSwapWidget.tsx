@@ -24,8 +24,10 @@ export function CowSwapWidget(props: CowSwapWidgetProps): ReactNode {
     try {
       console.log(`[WIDGET] ${action}`)
       actionThatMightFail()
-    } catch (error) {
+    } catch (_error) {
       const errorMessage = `Error ${action.toLowerCase()}`
+      const error = _error instanceof Error ? _error : new Error('Unknown CowSwapWidget error', { cause: _error })
+
       console.error(`[WIDGET] ${errorMessage}`, error)
       setError({ message: errorMessage, error })
     }
