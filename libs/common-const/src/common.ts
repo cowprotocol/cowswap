@@ -51,8 +51,18 @@ export const PAGE_TITLES = {
   MY_REWARDS: msg`Rewards hub - My Rewards`,
 }
 
+export const STAGING_MIGRATED_CONTRACT_NETWORKS = [SupportedChainId.MAINNET]
+
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
-  return env === 'prod' ? ETH_FLOW_ADDRESSES[chainId] : BARN_ETH_FLOW_ADDRESSES[chainId]
+  if (env === 'prod') {
+    return ETH_FLOW_ADDRESSES[chainId]
+  }
+
+  if (STAGING_MIGRATED_CONTRACT_NETWORKS.includes(chainId)) {
+    return BARN_ETH_FLOW_ADDRESSES[chainId]
+  }
+
+  return ETH_FLOW_ADDRESSES[chainId]
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {

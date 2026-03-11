@@ -1,10 +1,12 @@
+import { STAGING_MIGRATED_CONTRACT_NETWORKS } from '@cowprotocol/common-const'
 import {
   AddressPerChain,
+  BARN_ETH_FLOW_ADDRESSES,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_STAGING,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS as COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING,
-  SupportedChainId,
+  ETH_FLOW_ADDRESSES,
 } from '@cowprotocol/cow-sdk'
 
 import { isBarnBackendEnv } from './environments'
@@ -14,7 +16,10 @@ import { isBarnBackendEnv } from './environments'
 export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS: AddressPerChain = isBarnBackendEnv
   ? ({
       ...COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
-      [SupportedChainId.MAINNET]: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_STAGING[SupportedChainId.MAINNET],
+      ...STAGING_MIGRATED_CONTRACT_NETWORKS.reduce((acc, chainId) => {
+        acc[chainId] = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_STAGING[chainId] as `0x${string}`
+        return acc
+      }, {} as AddressPerChain),
     } as AddressPerChain)
   : (COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD as AddressPerChain)
 
@@ -23,6 +28,21 @@ export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS: AddressPerChain = isBarnB
 export const COW_PROTOCOL_VAULT_RELAYER_ADDRESS: AddressPerChain = isBarnBackendEnv
   ? ({
       ...COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
-      [SupportedChainId.MAINNET]: COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING[SupportedChainId.MAINNET],
+      ...STAGING_MIGRATED_CONTRACT_NETWORKS.reduce((acc, chainId) => {
+        acc[chainId] = COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING[chainId] as `0x${string}`
+        return acc
+      }, {} as AddressPerChain),
     } as AddressPerChain)
   : (COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD as AddressPerChain)
+
+// When in barn backend env, use the staging vault relayer for MAINNET only; prod for all other chains.
+// TODO: the condition should be removed once all backend services migrated to the new contracts
+export const COW_PROTOCOL_ETH_FLOW_ADDRESS: AddressPerChain = isBarnBackendEnv
+  ? ({
+      ...ETH_FLOW_ADDRESSES,
+      ...STAGING_MIGRATED_CONTRACT_NETWORKS.reduce((acc, chainId) => {
+        acc[chainId] = BARN_ETH_FLOW_ADDRESSES[chainId] as `0x${string}`
+        return acc
+      }, {} as AddressPerChain),
+    } as AddressPerChain)
+  : (ETH_FLOW_ADDRESSES as AddressPerChain)
