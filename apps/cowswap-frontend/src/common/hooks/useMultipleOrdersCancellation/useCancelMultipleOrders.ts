@@ -28,13 +28,10 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
       }
 
       const orderUids = ordersToCancel.map((order) => order.id)
-      const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellations(
-        orderUids,
-        chainId,
-        signer,
-        isBarnBackendEnv ? 'staging' : 'prod',
-        COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
-      )
+      const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellations(orderUids, chainId, signer, {
+        env: isBarnBackendEnv ? 'staging' : 'prod',
+        settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+      })
 
       if (!signature) throw new Error(t`Signature is undefined!`)
 

@@ -3,11 +3,10 @@ import { OrderSigningUtils, SupportedChainId, ContractsOrder as Order } from '@c
 
 export async function computeOrderUid(chainId: SupportedChainId, owner: string, order: Order): Promise<string> {
   const { computeOrderUid: _computeOrderUid } = await import('@cowprotocol/cow-sdk')
-  const domain = await OrderSigningUtils.getDomain(
-    chainId,
-    isBarnBackendEnv ? 'staging' : 'prod',
-    COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
-  )
+  const domain = await OrderSigningUtils.getDomain(chainId, {
+    env: isBarnBackendEnv ? 'staging' : 'prod',
+    settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  })
 
   return _computeOrderUid(domain, order, owner)
 }

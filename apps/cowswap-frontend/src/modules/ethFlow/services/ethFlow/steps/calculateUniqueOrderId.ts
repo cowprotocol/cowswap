@@ -33,11 +33,10 @@ export async function calculateUniqueOrderId(
   const { order } = getSignOrderParams(orderParams)
 
   const { hashOrder, packOrderUidParams } = await import('@cowprotocol/cow-sdk')
-  const domain = await OrderSigningUtils.getDomain(
-    chainId,
-    isBarnBackendEnv ? 'staging' : 'prod',
-    COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
-  )
+  const domain = await OrderSigningUtils.getDomain(chainId, {
+    env: isBarnBackendEnv ? 'staging' : 'prod',
+    settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  })
   // Different validTo when signing because EthFlow contract expects it to be max for all orders
   const orderDigest = hashOrder(domain, {
     ...order,

@@ -216,13 +216,10 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
 export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
   const { orderId, chainId, signer, cancelPendingOrder } = params
 
-  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(
-    orderId,
-    chainId,
-    signer,
-    isBarnBackendEnv ? 'staging' : 'prod',
-    COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
-  )
+  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer, {
+    env: isBarnBackendEnv ? 'staging' : 'prod',
+    settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  })
 
   if (!signature) throw new Error(t`Signature is undefined!`)
 
