@@ -83,6 +83,7 @@ jobs:
           REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
           NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
           REACT_APP_NEAR_API_KEY: ${{ secrets.REACT_APP_NEAR_API_KEY }}
+          NX_DISABLE_REMOTE_CACHE: true
 
       - name: Deploy Project Artifacts to Vercel
         run: >
