@@ -115,7 +115,7 @@ function isStaleQuote(lastQuoteParams: QuoteBridgeRequest | null, quoteParams: Q
 
   // Typically, amount will be the param that changes most often, so we check that first. Otherwise, we check all the other ones:
   return (
-    lastQuoteParams?.amount !== quoteParams.amount ||
+    lastQuoteParams.amount !== quoteParams.amount ||
     Object.entries(lastQuoteParams).some(([key, value]) => value !== quoteParams[key as keyof QuoteBridgeRequest])
   )
 }
