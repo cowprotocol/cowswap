@@ -229,10 +229,26 @@ jobs:
     steps:
       - name: Notify Failure
         run: |
-          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ CI failed on $REF_NAME. Check the build at $SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID\"}" "$SLACK_WEBHOOK_URL"
+          failed_jobs=()
+          [ "$TEST_RESULT" = "failure" ] && failed_jobs+=("Test")
+          [ "$LINT_RESULT" = "failure" ] && failed_jobs+=("Lint")
+          [ "$TYPECHECK_RESULT" = "failure" ] && failed_jobs+=("Typecheck")
+          [ "$INTEGRATION_TESTS_RESULT" = "failure" ] && failed_jobs+=("Cypress")
+
+          if [ ${#failed_jobs[@]} -eq 0 ]; then
+            failure_summary="CI"
+          else
+            failure_summary=$(IFS=', '; echo "${failed_jobs[*]}")
+          fi
+
+          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ ${failure_summary} failed on \`$REF_NAME\`. <$SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID|See run $RUN_ID on GH>.\"}" "$SLACK_WEBHOOK_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REF_NAME: ${{ github.ref_name }}
           SERVER_URL: ${{ github.server_url }}
           REPOSITORY: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          TEST_RESULT: ${{ needs.test.result }}
+          LINT_RESULT: ${{ needs.lint.result }}
+          TYPECHECK_RESULT: ${{ needs.typecheck.result }}
+          INTEGRATION_TESTS_RESULT: ${{ needs.integration-tests.result }}
