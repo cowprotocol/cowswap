@@ -8,6 +8,9 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
 import { useAutoAddOrderToSurplusQueue } from 'entities/surplusModal'
 
+import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { Order } from 'legacy/state/orders/actions'
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -49,11 +52,14 @@ export function CancelledOrdersUpdater(): null {
   const cancelled = useCancelledOrders({ chainId })
   const addOrderToSurplusQueue = useAutoAddOrderToSurplusQueue()
   const getSerializedBridgeOrder = useGetSerializedBridgeOrder()
+  const allTransactions = useAllTransactions()
 
   // Ref, so we don't rerun useEffect
   const cancelledRef = useRef(cancelled)
+  const allTransactionsRef = useRef(allTransactions)
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
   cancelledRef.current = cancelled
+  allTransactionsRef.current = allTransactions
 
   const fulfillOrdersBatch = useFulfillOrdersBatch()
 
@@ -71,19 +77,15 @@ export function CancelledOrdersUpdater(): null {
 
         // Filter orders:
         // - Owned by the current connected account
-        // - Created in the last 5 min, no further
-        // - Not an order already cancelled on-chain
-        const pending = cancelledRef.current.filter(
-          ({ owner, creationTime: creationTimeString, status, cancellationHash }) => {
-            const creationTime = new Date(creationTimeString).getTime()
+        // - Cancelled recently enough that the backend may still settle to fulfilled
+        const pending = cancelledRef.current.filter((order) => {
+          const lastRelevantUpdateTime = getLastRelevantUpdateTime(order, allTransactionsRef.current)
 
-            return (
-              owner.toLowerCase() === lowerCaseAccount &&
-              now - creationTime < CANCELLED_ORDERS_PENDING_TIME &&
-              !(cancellationHash && status === 'cancelled')
-            )
-          },
-        )
+          return (
+            order.owner.toLowerCase() === lowerCaseAccount &&
+            now - lastRelevantUpdateTime < CANCELLED_ORDERS_PENDING_TIME
+          )
+        })
 
         if (pending.length === 0) {
           return
@@ -143,4 +145,71 @@ export function CancelledOrdersUpdater(): null {
   }, [account, chainId, isSafeWallet, updateOrders])
 
   return null
+}
+
+function getConnectedTransactionHashes(
+  initialHash: string,
+  allTransactions: ReturnType<typeof useAllTransactions>,
+): string[] {
+  const reverseLinkedTransactionHashes = Object.entries(allTransactions).reduce<Record<string, string[]>>(
+    (acc, [hash, transaction]) => {
+      const linkedTransactionHash = transaction.linkedTransactionHash
+
+      if (!linkedTransactionHash) {
+        return acc
+      }
+
+      acc[linkedTransactionHash] = [...(acc[linkedTransactionHash] || []), hash]
+
+      return acc
+    },
+    {},
+  )
+  const visited = new Set<string>()
+  const queue = [initialHash]
+
+  while (queue.length > 0) {
+    const hash = queue.shift()
+
+    if (!hash || visited.has(hash)) {
+      continue
+    }
+
+    visited.add(hash)
+
+    const transaction = allTransactions[hash]
+
+    const replacementHashes = reverseLinkedTransactionHashes[hash]
+
+    if (replacementHashes) {
+      queue.push(...replacementHashes)
+    }
+
+    if (transaction?.linkedTransactionHash) {
+      queue.push(transaction.linkedTransactionHash)
+    }
+  }
+
+  return [...visited]
+}
+
+function getLastRelevantUpdateTime(
+  order: Pick<Order, 'creationTime' | 'cancellationHash'>,
+  allTransactions: ReturnType<typeof useAllTransactions>,
+): number {
+  if (!order.cancellationHash) {
+    return new Date(order.creationTime).getTime()
+  }
+
+  const txTimestamps = getConnectedTransactionHashes(order.cancellationHash, allTransactions).map((hash) => {
+    const transaction = allTransactions[hash]
+
+    return getTransactionTimestamp(transaction)
+  })
+
+  return Math.max(new Date(order.creationTime).getTime(), ...txTimestamps)
+}
+
+function getTransactionTimestamp(transaction: EnhancedTransactionDetails | undefined): number {
+  return transaction?.confirmedTime ?? transaction?.addedTime ?? 0
 }
