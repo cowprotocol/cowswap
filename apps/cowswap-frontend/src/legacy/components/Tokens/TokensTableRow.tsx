@@ -4,8 +4,8 @@ import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, MaxUint256, Token } from '@cowprotocol/currency'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, MAX_UINT256 } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { Loader, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
@@ -89,7 +89,7 @@ export const TokensTableRow = ({
   const vaultRelayer = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
   const isNativeToken = getIsNativeToken(tokenData)
 
-  const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])
+  const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MAX_UINT256.toString()), [tokenData])
 
   const tokenAddress = tokenData.address.toLowerCase()
 
