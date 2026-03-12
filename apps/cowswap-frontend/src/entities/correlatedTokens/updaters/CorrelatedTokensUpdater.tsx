@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 
 import { components } from '@cowprotocol/cms'
 import { getCmsClient } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 import qs from 'qs'
@@ -84,7 +84,7 @@ export function CorrelatedTokensUpdater(): null {
           // It's possible checksummed token addresses were manually added
           const tokens = item.attributes.tokens as CorrelatedTokens
           const lowerCasedTokens = Object.keys(tokens).reduce<CorrelatedTokens>((acc, address) => {
-            acc[address.toLowerCase()] = tokens[address]
+            acc[getAddressKey(address)] = tokens[address]
             return acc
           }, {})
 
