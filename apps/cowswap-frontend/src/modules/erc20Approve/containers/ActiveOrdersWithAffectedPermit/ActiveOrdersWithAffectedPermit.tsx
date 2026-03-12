@@ -1,14 +1,12 @@
-import { ReactNode } from 'react'
+import { useAtomValue } from 'jotai'
+import { ReactNode, useMemo } from 'react'
 
 import { Currency } from '@cowprotocol/currency'
 import { TokenSymbol } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
-import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
-
-import { AffectedPermitOrdersTable } from 'modules/ordersTable'
+import { AffectedPermitOrdersTable, ordersTableStateAtom } from 'modules/ordersTable'
 
 import { AccordionBanner } from 'common/pure/AccordionBanner'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
@@ -17,20 +15,22 @@ import * as styledEl from './styled'
 
 import { useIsPartialApproveSelectedByUser } from '../../state'
 
-type ActiveOrdersWithAffectedPermitProps = {
+interface ActiveOrdersWithAffectedPermitProps {
   currency: Currency
   orderId?: string
 }
 
 export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode {
   const { t } = useLingui()
-  const { chainId, account } = useWalletInfo()
-  const pendingOrders = useOnlyPendingOrders(chainId, account)
+  const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
 
-  const ordersWithPermit = pendingOrders.filter((order) => {
-    return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)
-  })
+  // TODO: Consider moving to atom:
+  const ordersWithPermit = useMemo(() => {
+    return pendingOrders.filter((order) => {
+      return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)
+    })
+  }, [pendingOrders, orderId, currency])
 
   if (!ordersWithPermit.length || !isPartialApproveSelectedByUser) return null
 
@@ -49,7 +49,7 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
   return (
     <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}>
       <styledEl.DropdownList>
-        <AffectedPermitOrdersTable orders={ordersWithPermit} />
+        <AffectedPermitOrdersTable ordersWithPermit={ordersWithPermit} />
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
         <Trans>

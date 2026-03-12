@@ -6,24 +6,38 @@ import { MessageDescriptor } from '@lingui/core'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
-import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
+import type { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 
-import type { OrderTabId } from './tabs/ordersTableTabs.constants'
+import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
+import type { OrderTabId } from 'common/state/routesState'
+import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
 
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
   getAlternativeOrderModalContext: (order: ParsedOrder) => AlternativeOrderModalContext
-
   selectReceiptOrder(order: ParsedOrder): void
-
   toggleOrderForCancellation(order: ParsedOrder): void
-
   toggleOrdersForCancellation(orders: ParsedOrder[]): void
-
   approveOrderToken(token: Token): void
+}
+
+export interface OrdersTableFilters {
+  // Page:
+  // orderType: TabOrderTypes
+  // currentPageNumber: number
+
+  // Tab:
+  // tabs: TabParams[]
+  // currentTabId: OrderTabId
+
+  // Query:
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
+
+  // Other:W
+  // displayOrdersOnlyForSafeApp: boolean
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>
@@ -35,21 +49,18 @@ export interface OrdersTablePageParams {
 
 export interface OrdersTableParams {
   orders: Order[]
-  orderType: TabOrderTypes
-  displayOrdersOnlyForSafeApp?: boolean
 }
 
+// TODO: Add TS Doc about what each of them is:
 export interface OrdersTableState {
-  currentTabId: OrderTabId
-  displayOrdersOnlyForSafeApp: boolean
-  orderType: TabOrderTypes
-  tabs: TabParams[]
+  reduxOrders: Order[]
+  pendingOrders: Order[]
+  ordersList: OrdersTableList
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]
   hasHydratedOrders: boolean
   balancesAndAllowances: BalancesAndAllowances
-  orderActions: OrderActions
-  currentPageNumber: number
+  // orderActions: OrderActions
 }
 
 export interface OrderTableGroup {
@@ -64,9 +75,4 @@ export interface TabParams {
   title: MessageDescriptor
   count: number
   isActive?: boolean
-}
-
-export enum TabOrderTypes {
-  LIMIT = 'limit',
-  ADVANCED = 'advanced',
 }

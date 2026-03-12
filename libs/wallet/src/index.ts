@@ -50,4 +50,10 @@ export { MetaMaskSdkOption } from './web3-react/connection/metaMaskSdk'
 // State
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
-export * from './api/state'
+export {
+  walletCapabilitiesAtom,
+  walletCapabilitiesLoadableAtom,
+  isBundlingSupportedAtom,
+  isBundlingSupportedLoadableAtom,
+  type WalletCapabilities,
+} from './api/state/walletCapabilitiesAtom'

@@ -8,6 +8,7 @@ import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTable
 import { buildOrdersTableUrl } from '../../utils/url/buildOrdersTableUrl'
 import { parseOrdersTableUrl } from '../../utils/url/parseOrdersTableUrl'
 
+// TODO: Move to atoms:
 // Reset page params if they are invalid
 export function useValidatePageUrlParams(
   ordersLength: number,

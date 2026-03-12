@@ -16,7 +16,7 @@ import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
@@ -26,24 +26,10 @@ import OperatorError from 'api/cowProtocol/errors/OperatorError'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
+import { OrderTabId } from 'common/state/routesState'
 import { TradeAmounts } from 'common/types'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
-
-function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {
-  const analytics = useCowAnalytics()
-
-  return useCallback(
-    (wasPlaced: boolean) => {
-      analytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TRADE,
-        action: 'alternative_modal_completion',
-        label: wasPlaced ? 'placed' : 'not-placed',
-      })
-    },
-    [analytics],
-  )
-}
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
@@ -162,7 +148,7 @@ export function useHandleOrderPlacement(
         // TODO: Clear filters if the new order is not visible before navigating.
 
         // Navigate to open orders
-        navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.signing : OrderTabId.open)
+        navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
@@ -197,4 +183,19 @@ function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {
     inputAmount: tradeContext.postOrderParams.inputAmount,
     outputAmount: tradeContext.postOrderParams.outputAmount,
   }
+}
+
+function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {
+  const analytics = useCowAnalytics()
+
+  return useCallback(
+    (wasPlaced: boolean) => {
+      analytics.sendEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'alternative_modal_completion',
+        label: wasPlaced ? 'placed' : 'not-placed',
+      })
+    },
+    [analytics],
+  )
 }

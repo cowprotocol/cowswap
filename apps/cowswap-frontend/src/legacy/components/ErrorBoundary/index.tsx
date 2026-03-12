@@ -59,18 +59,22 @@ const HeaderWrapper = styled.div`
   }
 `
 
-async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
-  if (!('serviceWorker' in navigator)) {
-    throw new Error('Service Worker is not available')
-  }
-  const ready = await navigator.serviceWorker.ready
-  // the return type of update is incorrectly typed as Promise<void>. See
-  // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update
-  return (await ready.update()) as unknown as Promise<ServiceWorkerRegistration>
-}
-
 interface ErrorBoundaryProps extends PropsWithChildren {
   onError?: (error: Error, errorInfo: ErrorInfo) => void
+}
+
+// HOC to inject analytics into error boundary
+export default function ErrorBoundary(props: PropsWithChildren): React.ReactNode {
+  const cowAnalytics = useCowAnalytics()
+
+  const handleError = useCallback(
+    (error: Error, errorInfo: ErrorInfo): void => {
+      cowAnalytics.sendError(error, errorInfo.toString())
+    },
+    [cowAnalytics],
+  )
+
+  return <ErrorBoundaryComponent {...props} onError={handleError} />
 }
 
 class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -115,7 +119,6 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
           document.body.classList.remove('noScroll')
           const { error: localError } = this.state
           const error = localError || sentryError
-
           const isChunkLoadError =
             error?.name === 'ChunkLoadError' || error?.message.includes('Failed to fetch dynamically imported module')
 
@@ -144,16 +147,12 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
   }
 }
 
-// HOC to inject analytics into error boundary
-export default function ErrorBoundary(props: PropsWithChildren): React.ReactNode {
-  const cowAnalytics = useCowAnalytics()
-
-  const handleError = useCallback(
-    (error: Error, errorInfo: ErrorInfo): void => {
-      cowAnalytics.sendError(error, errorInfo.toString())
-    },
-    [cowAnalytics],
-  )
-
-  return <ErrorBoundaryComponent {...props} onError={handleError} />
+async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
+  if (!('serviceWorker' in navigator)) {
+    throw new Error('Service Worker is not available')
+  }
+  const ready = await navigator.serviceWorker.ready
+  // the return type of update is incorrectly typed as Promise<void>. See
+  // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update
+  return (await ready.update()) as unknown as Promise<ServiceWorkerRegistration>
 }

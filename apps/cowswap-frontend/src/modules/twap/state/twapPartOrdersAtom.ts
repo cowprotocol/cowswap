@@ -3,6 +3,7 @@ import { atom } from 'jotai'
 import { deepEqual } from '@cowprotocol/common-utils'
 import { atomWithIdbStorage } from '@cowprotocol/core'
 import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 
 export interface TwapPartOrderItem {
   uid: string
@@ -24,6 +25,22 @@ const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isC
 localStorage.removeItem('twap-part-orders-list:v1')
 
 export const twapPartOrdersAtom = atomWithIdbStorage<TwapPartOrders>('twap-part-orders-list:v1', {})
+
+const EMPTY_PART_ITEMS: TwapPartOrderItem[] = []
+
+export const twapPartOrdersListAtom = atom<TwapPartOrderItem[]>((get) => {
+  const { account, chainId } = get(walletInfoAtom)
+
+  if (!account || !chainId) return EMPTY_PART_ITEMS
+
+  const twapPartOrders = get(twapPartOrdersAtom)
+
+  const accountLowerCase = account.toLowerCase()
+
+  const orders = Object.values(twapPartOrders)
+
+  return orders.flat().filter((order) => order.safeAddress === accountLowerCase && order.chainId === chainId)
+})
 
 /**
  * The only goal of this function is protection from isCreatedInOrderBook flag overriding

@@ -69,7 +69,6 @@ beforeEach(() => {
   __resetGtmInstance()
 })
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import '../../jest.setup'
 import { i18n } from '@lingui/core'
 

@@ -40,6 +40,7 @@
     "@cowprotocol/currency": "workspace:*",
     "ethers": "5.7.2",
     "jotai": "2.16.2",
+    "jotai-family": "^1.0.1",
     "ms.macro": "^2.0.0",
     "react": "19.1.2",
     "swr": "^2.3.3"

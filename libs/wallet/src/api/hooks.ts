@@ -55,6 +55,7 @@ export function useEndEagerConnect(): () => void {
   return useCallback(() => set((prev) => (prev > 0 ? prev - 1 : 0)), [set])
 }
 
+// TODO: Replace with isBundlingSupportedAtom
 export function useIsTxBundlingSupported(): boolean | null {
   // TODO this will be fixed in M-3 COW-569
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()

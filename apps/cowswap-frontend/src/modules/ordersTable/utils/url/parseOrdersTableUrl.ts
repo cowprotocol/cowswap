@@ -1,5 +1,7 @@
+import { OrderTabId } from 'common/state/routesState'
+
 import { OrdersTablePageParams } from '../../state/ordersTable.types'
-import { ORDERS_TABLE_PAGE_KEY, ORDERS_TABLE_TAB_KEY, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { ORDERS_TABLE_PAGE_KEY, ORDERS_TABLE_TAB_KEY } from '../../state/tabs/ordersTableTabs.constants'
 
 export function parseOrdersTableUrl(search: string): Partial<OrdersTablePageParams> {
   const params = new URLSearchParams(search)

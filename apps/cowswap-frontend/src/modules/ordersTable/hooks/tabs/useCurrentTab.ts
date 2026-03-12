@@ -4,8 +4,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
 
+import { OrderTabId } from 'common/state/routesState'
+
 import { OrdersTableList } from '../../state/ordersTable.types'
-import { OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { parseOrdersTableUrl } from '../../utils/url/parseOrdersTableUrl'
 
 interface CurrentTabState {
@@ -14,10 +15,11 @@ interface CurrentTabState {
 }
 
 const DEFAULT_STATE: CurrentTabState = {
-  currentTabId: OrderTabId.open,
+  currentTabId: OrderTabId.OPEN,
   currentPageNumber: 1,
 }
 
+// TODO: Move into atoms:
 export function useCurrentTab(ordersList: OrdersTableList): CurrentTabState {
   const { account } = useWalletInfo()
   const location = useLocation()
@@ -32,17 +34,17 @@ export function useCurrentTab(ordersList: OrdersTableList): CurrentTabState {
     // If we're on a tab that becomes empty (signing or unfillable),
     // default to the open orders tab
     if (
-      (params.tabId === OrderTabId.signing && !ordersList.signing.length) ||
-      (params.tabId === OrderTabId.unfillable && !ordersList.unfillable.length)
+      (params.tabId === OrderTabId.SIGNING && !ordersList.signing.length) ||
+      (params.tabId === OrderTabId.UNFILLABLE && !ordersList.unfillable.length)
     ) {
       return {
-        currentTabId: OrderTabId.open,
+        currentTabId: OrderTabId.OPEN,
         currentPageNumber: params.pageNumber || 1,
       }
     }
 
     return {
-      currentTabId: params.tabId || OrderTabId.open,
+      currentTabId: params.tabId || OrderTabId.OPEN,
       currentPageNumber: params.pageNumber || 1,
     }
   }, [location.search, ordersList.signing.length, ordersList.unfillable.length, account])

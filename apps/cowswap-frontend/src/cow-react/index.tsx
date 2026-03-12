@@ -10,12 +10,15 @@ import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
 
 import { Messages } from '@lingui/core'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { LanguageProvider } from 'i18n'
+import { useHydrateAtoms } from 'jotai/react/utils'
+import { queryClientAtom } from 'jotai-tanstack-query'
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import SvgCacheProvider from 'react-inlinesvg/provider'
 import { Provider } from 'react-redux'
-import { HashRouter } from 'react-router'
+import { unstable_HistoryRouter as HistoryRouter } from 'react-router'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { ThemeProvider } from 'theme'
 
@@ -28,11 +31,25 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
+import { hashHistory } from '../common/constants/routes'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
 const cowAnalytics = initGtm()
 const helmetContext = {}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+})
+
+function HydrateQueryClient({ children }: { children: ReactNode }): ReactNode {
+  useHydrateAtoms([[queryClientAtom, queryClient]])
+  return children
+}
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -52,48 +69,35 @@ export function Main({ localeMessages }: MainProps): ReactNode {
       <SvgCacheProvider>
         <HelmetProvider context={helmetContext}>
           <Provider store={cowSwapStore}>
-            <AtomProvider store={jotaiStore}>
-              <ThemeProvider>
-                <HashRouter>
-                  <LanguageProvider messages={localeMessages}>
-                    <WithLDProvider>
-                      <Web3ProviderInstance>
-                        <BlockNumberProvider>
-                          <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                            <WalletUnsupportedNetworkBanner />
-                            <Updaters />
-                            <Toasts />
-                            <App />
-                          </CowAnalyticsProvider>
-                        </BlockNumberProvider>
-                      </Web3ProviderInstance>
-                    </WithLDProvider>
-                  </LanguageProvider>
-                </HashRouter>
-              </ThemeProvider>
-            </AtomProvider>
+            <QueryClientProvider client={queryClient}>
+              <AtomProvider store={jotaiStore}>
+                <HydrateQueryClient>
+                  <ThemeProvider>
+                    <HistoryRouter history={hashHistory}>
+                      <LanguageProvider messages={localeMessages}>
+                        <WithLDProvider>
+                          <Web3ProviderInstance>
+                            <BlockNumberProvider>
+                              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                                <WalletUnsupportedNetworkBanner />
+                                <Updaters />
+                                <Toasts />
+                                <App />
+                              </CowAnalyticsProvider>
+                            </BlockNumberProvider>
+                          </Web3ProviderInstance>
+                        </WithLDProvider>
+                      </LanguageProvider>
+                    </HistoryRouter>
+                  </ThemeProvider>
+                </HydrateQueryClient>
+              </AtomProvider>
+            </QueryClientProvider>
           </Provider>
         </HelmetProvider>
       </SvgCacheProvider>
     </StrictMode>
   )
-}
-
-function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-  const { standaloneMode } = useInjectedWidgetParams()
-
-  return (
-    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
-      <Web3Provider>{children}</Web3Provider>
-    </LegacyWeb3Provider>
-  )
-}
-
-function Toasts(): ReactNode {
-  const { disableToastMessages = false } = useInjectedWidgetParams()
-
-  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
 }
 
 async function initApp(): Promise<void> {
@@ -106,6 +110,23 @@ async function initApp(): Promise<void> {
   } else {
     console.error('Failed to find the root element')
   }
+}
+
+function Toasts(): ReactNode {
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
+}
+
+function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+  const { standaloneMode } = useInjectedWidgetParams()
+
+  return (
+    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
+      <Web3Provider>{children}</Web3Provider>
+    </LegacyWeb3Provider>
+  )
 }
 
 initApp()
