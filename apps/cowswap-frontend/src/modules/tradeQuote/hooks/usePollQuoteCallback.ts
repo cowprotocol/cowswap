@@ -40,8 +40,6 @@ export function usePollQuoteCallback(
   // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
-  const updatingStartTimestamp = useRef<null | number>(null)
-
   return useCallback(
     // eslint-disable-next-line complexity
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
@@ -57,19 +55,12 @@ export function usePollQuoteCallback(
       }
 
       const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> => {
-        const now = Date.now()
-        updatingStartTimestamp.current = now
-
         return fetchAndProcessQuote(
           fetchParams,
           quoteParams,
           quotePollingParams,
           appData,
           tradeQuoteManager,
-          {
-            now,
-            ref: updatingStartTimestamp,
-          },
           getCorrelatedTokensByChainId,
         )
       }

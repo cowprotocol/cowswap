@@ -11,8 +11,3 @@ export interface TradeQuotePollingParameters {
   isQuoteUpdatePossible: boolean
   useSuggestedSlippageApi: boolean
 }
-
-export interface QuotePollingUpdateTimings {
-  now: number
-  ref: { current: number | null }
-}
