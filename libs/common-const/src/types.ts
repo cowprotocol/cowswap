@@ -16,7 +16,6 @@ export class TokenWithLogo extends Token {
       token.decimals,
       token.symbol,
       token.name,
-      undefined, // bypassChecksum parameter
       ('tags' in token && token.tags) || [],
     )
   }
@@ -28,10 +27,9 @@ export class TokenWithLogo extends Token {
     decimals: number,
     symbol?: string,
     name?: string,
-    bypassChecksum?: boolean,
     public tags: string[] = [],
   ) {
-    super(chainId, address, decimals, symbol, name, bypassChecksum)
+    super(chainId, address, decimals, symbol, name)
   }
 }
 
@@ -45,7 +43,6 @@ export class LpToken extends TokenWithLogo {
       token.decimals,
       token.symbol,
       token.name,
-      undefined,
       ('tags' in token && token.tags) || [],
     )
   }
@@ -58,9 +55,8 @@ export class LpToken extends TokenWithLogo {
     decimals: number,
     symbol?: string,
     name?: string,
-    bypassChecksum?: boolean,
     override tags: string[] = [],
   ) {
-    super(undefined, chainId, address, decimals, symbol, name, bypassChecksum)
+    super(undefined, chainId, address, decimals, symbol, name)
   }
 }
