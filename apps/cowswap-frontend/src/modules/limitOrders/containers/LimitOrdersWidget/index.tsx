@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
+import React, { ReactElement, useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -20,6 +20,7 @@ import {
   useIsWrapOrUnwrap,
   useTradeConfirmState,
   useTradePriceImpact,
+  useTradeState,
 } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'

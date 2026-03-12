@@ -17,7 +17,7 @@ export interface QuoteUpdateContext {
   currentQuote: TradeQuoteState
   quoteParams: QuoteBridgeRequest | undefined
   appData: AppDataInfo['doc'] | undefined
-  fetchQuote(fetchParams: TradeQuoteFetchParams): Promise<void>
+  fetchQuote(fetchParams: Omit<TradeQuoteFetchParams, 'fetchStartTimestamp'>): Promise<void>
   hasParamsChanged: boolean
   forceUpdate: boolean
   isBrowserOnline: boolean
@@ -58,13 +58,12 @@ export function doQuotePolling({
   }
 
   const isBridging = !!quoteParams && quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
-  const fetchStartTimestamp = Date.now()
 
   // Don't fetch fast quote in confirm screen and in bridging mode
   if (fastQuote && !isConfirmOpen && !isBridging) {
-    fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
+    fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST })
   }
-  fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
+  fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL })
 
   return true
 }

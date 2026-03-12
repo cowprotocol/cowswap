@@ -27,8 +27,10 @@ const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
 
+export type FetchParams = Omit<TradeQuoteFetchParams, 'fetchStartTimestamp'>
+
 export async function fetchAndProcessQuote(
-  fetchParams: TradeQuoteFetchParams,
+  fetchParams: FetchParams,
   quoteParams: QuoteBridgeRequest,
   { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
@@ -53,6 +55,12 @@ export async function fetchAndProcessQuote(
     // allowIntermediateEqSellToken: true
   }
 
+  const fetchStartTimestamp = Date.now()
+  const tradeQuoteFetchParams: TradeQuoteFetchParams = {
+    ...fetchParams,
+    fetchStartTimestamp,
+  }
+
   const processQuoteError = (error: Error): void => {
     // Skip state update when another quote already started
     if (timings.ref.current && timings.now !== timings.ref.current) return
@@ -62,7 +70,7 @@ export async function fetchAndProcessQuote(
     console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
 
     if (parsedError instanceof QuoteApiError) {
-      tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
+      tradeQuoteManager.onError(parsedError, chainId, quoteParams, tradeQuoteFetchParams)
     } else {
       tradeQuoteManager.onError(
         new QuoteApiError({
@@ -71,17 +79,17 @@ export async function fetchAndProcessQuote(
         }),
         chainId,
         quoteParams,
-        fetchParams,
+        tradeQuoteFetchParams,
       )
     }
   }
 
-  tradeQuoteManager.setLoading(hasParamsChanged)
+  tradeQuoteManager.setLoading(hasParamsChanged, quoteParams)
 
   if (isBridge) {
-    await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError, timings)
+    await fetchBridgingQuote(tradeQuoteFetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError, timings)
   } else {
-    await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
+    await fetchSwapQuote(tradeQuoteFetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   }
 }
 
@@ -108,7 +116,7 @@ async function fetchSwapQuote(
 
     const quoteAndPost = data as QuoteAndPost
 
-    tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams)
+    tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
   } catch (error) {
     processQuoteError(error)
   }
@@ -135,7 +143,7 @@ async function fetchBridgingQuote(
           const { swap, bridge, postSwapOrderFromQuote } = result.quote
           const quoteAndPost = { quoteResults: swap, postSwapOrderFromQuote: postSwapOrderFromQuote }
 
-          tradeQuoteManager.onResponse(quoteAndPost, bridge, fetchParams)
+          tradeQuoteManager.onResponse(quoteAndPost, bridge, fetchParams, quoteParams)
         }
       },
     },

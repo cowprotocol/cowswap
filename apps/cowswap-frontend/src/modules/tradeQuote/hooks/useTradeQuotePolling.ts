@@ -37,7 +37,13 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const quoteParamsState = useQuoteParams(amountStr, partiallyFillable)
   const { quoteParams, inputCurrency } = quoteParamsState || {}
 
-  const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
+  const currentAmountRef = useRef<string | null>(null)
+  currentAmountRef.current = amountStr ?? null
+
+  const tradeQuoteManager = useTradeQuoteManager(
+    inputCurrency && getCurrencyAddress(inputCurrency),
+    currentAmountRef,
+  )
 
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
@@ -45,7 +51,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
-  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState)
+  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState, currentAmountRef)
   const pollQuoteRef = useRef(pollQuote)
   // eslint-disable-next-line react-hooks/refs
   pollQuoteRef.current = pollQuote
@@ -60,6 +66,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
     if (!tradeQuoteManager) return
 
     if (!isWindowVisible || !document.hasFocus() || !amountStr) {
+      console.log("Calling reset (useTradeQuotePolling) but fetchQuote / fetchAndProcessQuote will still be called...");
+
       tradeQuoteManager.reset()
       setTradeQuotePolling(0)
     }
@@ -75,6 +83,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
      */
     if (isConfirmOpen) return
 
+    console.log("Calling pollQuote 1, quoteParams =", quoteParams, currentAmountRef.current)
+
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
@@ -85,6 +95,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
    */
   useLayoutEffect(() => {
     if (tradeQuotePolling !== 0) return
+
+    console.log("Calling pollQuote 2, tradeQuotePolling =", tradeQuotePolling, "tradeQuotePolling !== 0 =", tradeQuotePolling !== 0, currentAmountRef.current)
 
     pollQuoteRef.current(false, true)
   }, [tradeQuotePolling])

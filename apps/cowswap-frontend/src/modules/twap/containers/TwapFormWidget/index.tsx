@@ -151,13 +151,6 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
     }
   }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification, cowAnalytics])
 
-  // Reset output amount when quote params are changed
-  useLayoutEffect(() => {
-    if (tradeQuote.hasParamsChanged) {
-      updateState?.({ outputCurrencyAmount: null })
-    }
-  }, [tradeQuote.hasParamsChanged, updateState])
-
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState
 
