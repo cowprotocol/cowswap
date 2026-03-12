@@ -62,8 +62,6 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
     if (isConfirmOpen || !tradeQuoteManager) return
 
     if (!isWindowVisible || !document.hasFocus() || !amountStr) {
-      console.log('Calling reset (useTradeQuotePolling) but fetchQuote / fetchAndProcessQuote will still be called...')
-
       tradeQuoteManager.reset()
       setTradeQuotePolling(0)
     }

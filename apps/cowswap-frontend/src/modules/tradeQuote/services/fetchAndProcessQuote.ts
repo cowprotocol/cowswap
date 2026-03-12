@@ -1,6 +1,5 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
-import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SwapAdvancedSettings, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
   CrossChainQuoteAndPost,
@@ -27,10 +26,8 @@ const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
 
-export type FetchParams = Omit<TradeQuoteFetchParams, 'fetchStartTimestamp'>
-
 export async function fetchAndProcessQuote(
-  fetchParams: FetchParams,
+  fetchParams: TradeQuoteFetchParams,
   quoteParams: QuoteBridgeRequest,
   { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
@@ -55,12 +52,6 @@ export async function fetchAndProcessQuote(
     // allowIntermediateEqSellToken: true
   }
 
-  const fetchStartTimestamp = Date.now()
-  const tradeQuoteFetchParams: TradeQuoteFetchParams = {
-    ...fetchParams,
-    fetchStartTimestamp,
-  }
-
   const processQuoteError = (error: Error): void => {
     // Skip state update when another quote already started
     if (timings.ref.current && timings.now !== timings.ref.current) return
@@ -70,7 +61,7 @@ export async function fetchAndProcessQuote(
     console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
 
     if (parsedError instanceof QuoteApiError) {
-      tradeQuoteManager.onError(parsedError, chainId, quoteParams, tradeQuoteFetchParams)
+      tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
     } else {
       tradeQuoteManager.onError(
         new QuoteApiError({
@@ -79,7 +70,7 @@ export async function fetchAndProcessQuote(
         }),
         chainId,
         quoteParams,
-        tradeQuoteFetchParams,
+        fetchParams,
       )
     }
   }
@@ -87,38 +78,9 @@ export async function fetchAndProcessQuote(
   tradeQuoteManager.setLoading(hasParamsChanged, quoteParams)
 
   if (isBridge) {
-    await fetchBridgingQuote(tradeQuoteFetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError, timings)
+    await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError, timings)
   } else {
-    await fetchSwapQuote(tradeQuoteFetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
-  }
-}
-
-async function fetchSwapQuote(
-  fetchParams: TradeQuoteFetchParams,
-  quoteParams: QuoteBridgeRequest,
-  advancedSettings: SwapAdvancedSettings,
-  tradeQuoteManager: TradeQuoteManager,
-  processQuoteError: (error: Error) => void,
-): Promise<void> {
-  const { priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
-
-  const request = isOptimalQuote
-    ? getOptimalQuote(quoteParams, advancedSettings)
-    : getFastQuote(quoteParams, advancedSettings)
-
-  try {
-    const { cancelled, data } = await request
-
-    if (cancelled) {
-      return
-    }
-
-    const quoteAndPost = data as QuoteAndPost
-
-    tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
-  } catch (error) {
-    processQuoteError(error)
+    await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   }
 }
 
@@ -176,6 +138,35 @@ async function fetchBridgingQuote(
     console.error('[fetchAndProcessQuote]:: unexpected bridge error', error)
     const unexpectedError = error instanceof Error ? error : new Error(String(error))
     processQuoteError(unexpectedError)
+  }
+}
+
+async function fetchSwapQuote(
+  fetchParams: TradeQuoteFetchParams,
+  quoteParams: QuoteBridgeRequest,
+  advancedSettings: SwapAdvancedSettings,
+  tradeQuoteManager: TradeQuoteManager,
+  processQuoteError: (error: Error) => void,
+): Promise<void> {
+  const { priceQuality } = fetchParams
+  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+
+  const request = isOptimalQuote
+    ? getOptimalQuote(quoteParams, advancedSettings)
+    : getFastQuote(quoteParams, advancedSettings)
+
+  try {
+    const { cancelled, data } = await request
+
+    if (cancelled) {
+      return
+    }
+
+    const quoteAndPost = data as QuoteAndPost
+
+    tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
+  } catch (error) {
+    processQuoteError(error)
   }
 }
 
