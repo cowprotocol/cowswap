@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   generatePermitHook,
   getPermitUtilsInstance,
@@ -10,14 +10,69 @@ import {
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { maxUint256 } from 'viem'
 import { usePublicClient, useConfig } from 'wagmi'
-
-import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
 import { staticPermitCacheAtom, storePermitCacheAtom, userPermitCacheAtom } from '../state/permitCacheAtom'
 import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
+
+type PermitDeps = {
+  config: ReturnType<typeof useConfig>
+  publicClient: ReturnType<typeof usePublicClient>
+  chainId: number
+  getCachedPermit: ReturnType<typeof useGetCachedPermit>
+  storePermit: ReturnType<typeof useSetAtom<typeof storePermitCacheAtom>>
+}
+
+async function runPermitRequest(
+  params: GeneratePermitHookParams,
+  amount: bigint,
+  config: PermitDeps['config'],
+  publicClient: PermitDeps['publicClient'],
+  chainId: number,
+  getCachedPermit: PermitDeps['getCachedPermit'],
+  storePermit: PermitDeps['storePermit'],
+): Promise<PermitHookData | undefined> {
+  if (!publicClient || !isSupportedPermitInfo(params.permitInfo)) return undefined
+
+  const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient })
+  const spender = params.customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId as SupportedChainId]
+  const nonce = params.account ? await eip2612Utils.getTokenNonce(params.inputToken.address, params.account) : undefined
+  const permitParams = {
+    chainId,
+    tokenAddress: params.inputToken.address,
+    account: params.account,
+    nonce,
+    amount,
+  }
+
+  const cachedPermit = await getCachedPermit(params.inputToken.address, amount, spender)
+  if (cachedPermit) return cachedPermit
+
+  try {
+    params.preSignCallback?.()
+    const hookData = await generatePermitHook({
+      account: params.account,
+      amount,
+      chainId,
+      config,
+      eip2612Utils,
+      inputToken: params.inputToken,
+      nonce,
+      permitInfo: params.permitInfo,
+      spender,
+    })
+    if (hookData) {
+      params.postSignCallback?.()
+      storePermit({ ...permitParams, hookData, spender })
+    }
+    return hookData
+  } catch {
+    return undefined
+  }
+}
 
 /**
  * Hook that returns callback to generate permit hook data
@@ -29,69 +84,20 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
 
-  // Warming up stored atoms
-  //
-  // For some reason, atoms start always in the default state (`{}`) on load,
-  // even if localStorage contains data, wiping previously saved data.
-  // Here we force an individual read of each atom, which does populate them properly
   useAtomValue(staticPermitCacheAtom)
   useAtomValue(userPermitCacheAtom)
 
   return useCallback(
-    async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
-      const {
-        inputToken,
-        account,
-        permitInfo,
-        customSpender,
-        amount: maybeAmount,
-        preSignCallback,
-        postSignCallback,
-      } = params
-
-      const amount = maybeAmount ?? MAX_APPROVE_AMOUNT
-
-      if (!publicClient || !isSupportedPermitInfo(permitInfo)) {
-        return
-      }
-
-      const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient })
-      const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
-
-      // Always get the nonce for the real account, to know whether the cache should be invalidated
-      // Static account should never need to pre-check the nonce as it'll never change once cached
-      const nonce = account ? await eip2612Utils.getTokenNonce(inputToken.address, account) : undefined
-
-      const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce, amount }
-
-      const cachedPermit = await getCachedPermit(inputToken.address, amount, spender)
-
-      if (cachedPermit) {
-        return cachedPermit
-      }
-
-      let hookData: PermitHookData | undefined
-      try {
-        preSignCallback?.()
-        hookData = await generatePermitHook({
-          account,
-          amount,
-          chainId,
-          config,
-          eip2612Utils,
-          inputToken,
-          nonce,
-          permitInfo,
-          spender,
-        })
-      } finally {
-        postSignCallback?.()
-      }
-
-      hookData && storePermit({ ...permitParams, hookData, spender })
-
-      return hookData
-    },
+    (params: GeneratePermitHookParams) =>
+      runPermitRequest(
+        params,
+        params.amount ?? maxUint256,
+        config,
+        publicClient,
+        chainId,
+        getCachedPermit,
+        storePermit,
+      ),
     [config, publicClient, chainId, getCachedPermit, storePermit],
   )
 }
