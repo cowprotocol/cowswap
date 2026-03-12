@@ -29,7 +29,7 @@ export default function AffiliatePartner(): ReactNode {
     <PageWrapper>
       <PageTitle title={i18n._(PAGE_TITLES.AFFILIATE)} />
 
-      {!account || (!isSupportedPayoutsNetwork(chainId) && !partnerInfo) ? (
+      {!account || (!isSupportedPayoutsNetwork(chainId) && !partnerInfo && !codeLoading) ? (
         <AffiliatePartnerOnboard />
       ) : (
         <>
