@@ -14,8 +14,12 @@ import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
-import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
-import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import {
+  TradeFlowAnalyticsContext,
+  useTradeConfirmActions,
+  useTradeFlowAnalytics,
+  useTradePriceImpact,
+} from 'modules/trade'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'

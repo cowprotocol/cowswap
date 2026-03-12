@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
@@ -106,26 +105,12 @@ const StatusContent = styled.div`
   }
 `
 
-const StatusContainer = styled.div`
+const StatusContainer = styled.div<{ widthAuto?: boolean }>`
   display: flex;
   align-items: center;
+  flex-flow: row nowrap;
   gap: 8px;
-  width: 100%;
-`
-
-const PrototypeBadge = styled.div`
-  align-items: center;
-  background: var(${UI.COLOR_INFO_BG});
-  border-radius: 12px;
-  color: var(${UI.COLOR_INFO_TEXT});
-  display: inline-flex;
-  flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 600;
-  height: 24px;
-  justify-content: center;
-  padding: 0 8px;
-  text-transform: uppercase;
+  width: ${({ widthAuto }) => (widthAuto ? 'auto' : '100%')};
 `
 
 type OrderStatusBoxProps = {
@@ -140,7 +125,6 @@ type OrderStatusBoxProps = {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick, WarningTooltip }: OrderStatusBoxProps) {
   const { title, color, background } = getOrderStatusTitleAndColor(order)
-  const isPrototype = !!order.composableCowInfo?.isPrototype
 
   const content = (
     <StatusContent>
@@ -153,7 +137,7 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick, Warning
   )
 
   return (
-    <StatusContainer>
+    <StatusContainer widthAuto={widthAuto}>
       <Wrapper
         color={color}
         background={background}
@@ -166,7 +150,6 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick, Warning
       >
         {content}
       </Wrapper>
-      {isPrototype && <PrototypeBadge>{t`Prototype`}</PrototypeBadge>}
     </StatusContainer>
   )
 }

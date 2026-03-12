@@ -1,7 +1,12 @@
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { ContextMenuTooltip, ContextMenuItemButton, ContextMenuExternalLink } from '@cowprotocol/ui'
+import {
+  ContextMenuTooltip,
+  ContextMenuItemButton,
+  ContextMenuExternalLink,
+  ContextMenuItemText,
+} from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -14,6 +19,7 @@ export interface OrderContextMenuProps {
   activityUrl: string | undefined
   showCancellationModal: Command | null
   alternativeOrderModalContext?: AlternativeOrderModalContext
+  isPrototype?: boolean
 }
 
 export function OrderContextMenu({
@@ -21,12 +27,14 @@ export function OrderContextMenu({
   activityUrl,
   showCancellationModal,
   alternativeOrderModalContext,
+  isPrototype,
 }: OrderContextMenuProps): ReactNode {
   return (
     <ContextMenuTooltip
       disableHoverBackground
       content={
         <>
+          {isPrototype && <ContextMenuItemText>{t`Prototype order (local only)`}</ContextMenuItemText>}
           <ContextMenuItemButton onClick={openReceipt}>
             <FileText size={16} />
             <span>

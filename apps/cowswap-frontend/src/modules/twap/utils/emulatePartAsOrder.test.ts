@@ -1,3 +1,6 @@
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { BuyTokenDestination, SellTokenSource } from '@cowprotocol/sdk-order-book'
+
 import { emulatePartAsOrder } from './emulatePartAsOrder'
 
 import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
@@ -48,10 +51,10 @@ const partOrder: TwapPartOrderItem = {
     validTo: Math.floor(Date.now() / 1000) + 300,
     appData: '0x00',
     feeAmount: '0',
-    kind: 'sell',
+    kind: OrderKind.SELL,
     partiallyFillable: false,
-    sellTokenBalance: 'erc20',
-    buyTokenBalance: 'erc20',
+    sellTokenBalance: SellTokenSource.ERC20,
+    buyTokenBalance: BuyTokenDestination.ERC20,
   },
 }
 

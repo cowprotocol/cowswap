@@ -30,6 +30,19 @@ export const PENDING_STATES = [
 export const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
 export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING, OrderStatus.SCHEDULED]
 
+export interface AddOrUpdateOrdersParams {
+  chainId: ChainId
+  orders: SerializedOrder[]
+  isSafeWallet: boolean
+}
+
+export interface AddPendingOrderParams {
+  id: UID
+  chainId: ChainId
+  order: SerializedOrder
+  isSafeWallet: boolean
+}
+
 // Abstract type for the order used in the Dapp. It's composed out of 3 types of props:
 //  - Information present in the order creation type used in the API to post new orders
 //  - Additional information available in the API
@@ -91,6 +104,25 @@ export interface BaseOrder extends OrderCreation {
   composableCowInfo?: ComposableCowInfo
 }
 
+export interface BatchOrdersUpdateParams {
+  ids: UID[]
+  chainId: ChainId
+  isSafeWallet: boolean
+}
+
+export type CancelOrdersBatchParams = BatchOrdersUpdateParams
+export type ChangeOrderStatusParams = { id: UID; chainId: ChainId }
+export type DeleteOrdersParams = Pick<BatchOrdersUpdateParams, 'ids' | 'chainId'>
+export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
+
+export interface FulfillOrdersBatchParams {
+  orders: EnrichedOrder[]
+  chainId: ChainId
+  isSafeWallet: boolean
+}
+
+export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
+
 /**
  * Order as used by the Dapp
  */
@@ -101,6 +133,16 @@ export interface Order extends BaseOrder {
   bridgeOutputAmount?: CurrencyAmount<Currency>
 }
 
+export interface OrderFulfillmentData {
+  id: UID
+  fulfillmentTime: string
+  transactionHash: string
+  summary?: string
+  order: EnrichedOrder
+}
+
+export type PresignedOrdersParams = BatchOrdersUpdateParams
+
 /**
  * Order used for persisting it in the state.
  * The only difference with Order is that all it's fields are serializable
@@ -110,31 +152,13 @@ export interface SerializedOrder extends BaseOrder {
   outputToken: SerializedToken // for dapp use only, readable by user
 }
 
-export interface AddPendingOrderParams {
+export type SetIsOrderRefundedBatch = { chainId: ChainId; items: RefundItem[] }
+export type SetIsOrderUnfillableParams = {
   id: UID
   chainId: ChainId
-  order: SerializedOrder
-  isSafeWallet: boolean
+  isUnfillable: boolean
 }
-
-export type ChangeOrderStatusParams = { id: UID; chainId: ChainId }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
-
-export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
-
-export interface OrderFulfillmentData {
-  id: UID
-  fulfillmentTime: string
-  transactionHash: string
-  summary?: string
-  order: EnrichedOrder
-}
-
-export interface AddOrUpdateOrdersParams {
-  chainId: ChainId
-  orders: SerializedOrder[]
-  isSafeWallet: boolean
-}
 
 export interface UpdateOrderParams {
   chainId: ChainId
@@ -142,32 +166,16 @@ export interface UpdateOrderParams {
   isSafeWallet: boolean
 }
 
-export interface FulfillOrdersBatchParams {
-  orders: EnrichedOrder[]
-  chainId: ChainId
-  isSafeWallet: boolean
-}
-
-export interface BatchOrdersUpdateParams {
-  ids: UID[]
-  chainId: ChainId
-  isSafeWallet: boolean
-}
-
-export type PresignedOrdersParams = BatchOrdersUpdateParams
-
 export interface UpdatePresignGnosisSafeTxParams {
   orderId: UID
   chainId: ChainId
   safeTransaction: SafeMultisigTransactionResponse
 }
 
-export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
-export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
-export type CancelOrdersBatchParams = BatchOrdersUpdateParams
-export type DeleteOrdersParams = Pick<BatchOrdersUpdateParams, 'ids' | 'chainId'>
+type RefundItem = { id: UID; refundHash: string }
 
 export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/addOrUpdateOrders')
+export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
 
 export const updateOrder = createAction<UpdateOrderParams>('order/updateOrder')
 
@@ -199,14 +207,5 @@ export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheck
 
 export const clearOrdersStorage = createAction('order/clearOrdersStorage')
 
-export type SetIsOrderUnfillableParams = {
-  id: UID
-  chainId: ChainId
-  isUnfillable: boolean
-}
-
 export const setIsOrderUnfillable = createAction<SetIsOrderUnfillableParams>('order/setIsOrderUnfillable')
-
-type RefundItem = { id: UID; refundHash: string }
-export type SetIsOrderRefundedBatch = { chainId: ChainId; items: RefundItem[] }
 export const setIsOrderRefundedBatch = createAction<SetIsOrderRefundedBatch>('order/setIsOrderRefundedBatch')

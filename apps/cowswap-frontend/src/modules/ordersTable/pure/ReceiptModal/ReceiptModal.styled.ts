@@ -1,5 +1,4 @@
-import { AutoRow, Media } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { AutoRow, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -68,6 +67,17 @@ export const FieldsWrapper = styled.div`
 
 export const InfoBannerWrapper = styled.div`
   margin: 12px;
+
+  &:last-of-type {
+    margin: 12px 12px 0;
+  }
+`
+
+export const InfoBannerText = styled.p`
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.4;
 `
 
 export const Field = styled.div`

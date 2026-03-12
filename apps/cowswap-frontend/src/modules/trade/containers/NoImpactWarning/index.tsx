@@ -5,14 +5,14 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
-import { TradeWarning } from 'modules/trade/pure/TradeWarning'
-import { TradeWarningType } from 'modules/trade/pure/TradeWarning/constants'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { noImpactWarningAcceptedAtom } from './useIsNoImpactWarningAccepted'
 
 import { useTradePriceImpact } from '../../hooks/useTradePriceImpact'
+import { TradeWarning } from '../../pure/TradeWarning'
+import { TradeWarningType } from '../../pure/TradeWarning/constants'
 
 const NoImpactWarningMessage = (
   <div>

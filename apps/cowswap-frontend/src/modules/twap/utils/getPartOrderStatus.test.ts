@@ -39,11 +39,11 @@ const expiredPartOrder = {
   executedSellAmountBeforeFees: '0',
   validTo: Math.floor(Date.now() / 1000) - 60 * 60,
   invalidated: false,
-  status: OrderStatus.OPEN,
+  status: OrderStatus.PENDING,
   kind: OrderKind.SELL,
   signingScheme: SigningScheme.EIP1271,
   creationDate: new Date('2026-03-09T10:05:00.000Z').toISOString(),
-} as EnrichedOrder
+} as unknown as EnrichedOrder
 
 describe('getPartOrderStatus()', () => {
   it('keeps cancelling parent parts non-final even when the part is time-expired', () => {

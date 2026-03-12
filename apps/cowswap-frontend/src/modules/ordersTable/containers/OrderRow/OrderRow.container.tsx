@@ -375,6 +375,7 @@ export function OrderRow({
       <styledEl.CellElement>
         <OrderContextMenu
           activityUrl={activityUrl}
+          isPrototype={!!order.composableCowInfo?.isPrototype}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
           alternativeOrderModalContext={alternativeOrderModalContext}

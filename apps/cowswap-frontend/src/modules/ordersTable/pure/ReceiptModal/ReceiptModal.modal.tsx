@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
@@ -15,7 +15,7 @@ import { CloseIcon } from 'theme'
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
 
-import { TwapOrderItem, TWAP_EOA_HOW_IT_WORKS_LINK } from 'modules/twap'
+import { TwapOrderItem, TwapOrderStatus, TWAP_EOA_HOW_IT_WORKS_LINK } from 'modules/twap'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
@@ -69,6 +69,10 @@ const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
   CREATED: msg`Your order was created on this date & time. It will remain open until it expires or is filled.`,
   RECEIVER: msg`The account address which will/did receive the bought amount.`,
   OWNER: msg`The wallet or smart contract that owns this order.`,
+  OWNER_SAFE: msg`The Safe that owns this order.`,
+  OWNER_WALLET: msg`The wallet that owns this order.`,
+  OWNER_SMART_CONTRACT: msg`The smart contract that owns this order.`,
+  TWAP_PARTS: msg`The total number of parts in this TWAP order split.`,
   EXPIRY: msg`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
   TOTAL_FEE: msg`This fee helps pay for maintenance & improvements to the trade experience`,
 }
@@ -101,6 +105,7 @@ const TOOLTIPS_JSX: Record<string, ReactElement> = {
 }
 
 const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
+const EOA_TWAP_ACTIVE_STATUSES = new Set([TwapOrderStatus.Pending, TwapOrderStatus.Cancelling])
 
 // TODO: add cosmos fixture for this component
 // TODO: Break down this large function into smaller functions
@@ -142,6 +147,8 @@ export function ReceiptModal({
   const safeTxParams = twapOrder?.safeTxParams
   const isPrototypeTwap = !!twapOrder?.isPrototype
   const isEoaTwap = !!twapOrder && !safeTxParams
+  const showEoaTwapFundsNotice = !!twapOrder && isEoaTwap && EOA_TWAP_ACTIVE_STATUSES.has(twapOrder.status)
+  const ownerTooltip = i18n._(getOwnerTooltipMessage(order, !!safeTxParams))
 
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
   const twapOrderN = twapOrder?.order.n
@@ -164,37 +171,12 @@ export function ReceiptModal({
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
 
-        {twapOrder && (
-          <styledEl.InfoBannerWrapper>
-            <InlineBanner bannerType={StatusColorVariant.Info}>
-              <p>
-                {isTwapPartOrder ? (
-                  <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
-                ) : (
-                  <Trans>TWAP order split into {twapOrderN} parts</Trans>
-                )}
-              </p>
-            </InlineBanner>
-          </styledEl.InfoBannerWrapper>
-        )}
         {isPrototypeTwap && (
           <styledEl.InfoBannerWrapper>
-            <InlineBanner bannerType={StatusColorVariant.Info}>
-              <p>
+            <InlineBanner bannerType={StatusColorVariant.Info} orientation={BannerOrientation.Horizontal} noWrapContent>
+              <styledEl.InfoBannerText>
                 <Trans>Prototype order stored locally for UI simulation only.</Trans>
-              </p>
-            </InlineBanner>
-          </styledEl.InfoBannerWrapper>
-        )}
-        {isEoaTwap && (
-          <styledEl.InfoBannerWrapper>
-            <InlineBanner bannerType={StatusColorVariant.Warning}>
-              <p>
-                <Trans>EOA TWAP funds remain reserved until the order fills, expires, or you cancel it.</Trans>{' '}
-                <ExternalLink href={TWAP_EOA_HOW_IT_WORKS_LINK}>
-                  <Trans>How it works</Trans> ↗
-                </ExternalLink>
-              </p>
+              </styledEl.InfoBannerText>
             </InlineBanner>
           </styledEl.InfoBannerWrapper>
         )}
@@ -218,6 +200,15 @@ export function ReceiptModal({
               <StatusField order={order} />
             </styledEl.Field>
 
+            {twapOrderN && (
+              <styledEl.Field>
+                <FieldLabel label={t`TWAP parts`} tooltip={i18n._(TOOLTIPS_MSG.TWAP_PARTS)} />
+                <div>
+                  <span>{getTwapPartsValue({ isTwapPartOrder, twapOrderN })}</span>
+                </div>
+              </styledEl.Field>
+            )}
+
             {order.receiver && (
               <styledEl.Field>
                 <FieldLabel label={t`Recipient`} tooltip={i18n._(TOOLTIPS_MSG.RECEIVER)} />
@@ -234,7 +225,7 @@ export function ReceiptModal({
 
             {order.owner && (
               <styledEl.Field>
-                <FieldLabel label={t`Owner`} tooltip={i18n._(TOOLTIPS_MSG.OWNER)} />
+                <FieldLabel label={t`Owner`} tooltip={ownerTooltip} />
                 <div>
                   <ExternalLink href={getExplorerLink(chainId, order.owner, ExplorerDataType.ADDRESS)}>
                     {shortenAddress(order.owner)} ↗
@@ -343,7 +334,52 @@ export function ReceiptModal({
             )}
           </styledEl.FieldsWrapper>
         </styledEl.Body>
+        {showEoaTwapFundsNotice && (
+          <styledEl.InfoBannerWrapper>
+            <InlineBanner bannerType={StatusColorVariant.Info} orientation={BannerOrientation.Horizontal} noWrapContent>
+              <styledEl.InfoBannerText>
+                <Trans>
+                  Your funds stay reserved while this TWAP order is active. They become available again when the order
+                  fills, expires, or you cancel it.
+                </Trans>{' '}
+                <ExternalLink href={TWAP_EOA_HOW_IT_WORKS_LINK}>
+                  <Trans>How it works</Trans> ↗
+                </ExternalLink>
+              </styledEl.InfoBannerText>
+            </InlineBanner>
+          </styledEl.InfoBannerWrapper>
+        )}
       </styledEl.Wrapper>
     </CowModal>
   )
+}
+
+function getOwnerTooltipMessage(order: ParsedOrder, hasSafeTxParams: boolean): MessageDescriptor {
+  if (hasSafeTxParams) {
+    return TOOLTIPS_MSG.OWNER_SAFE
+  }
+
+  if (order.signingScheme === SigningScheme.EIP712) {
+    return TOOLTIPS_MSG.OWNER_WALLET
+  }
+
+  if (order.signingScheme === SigningScheme.EIP1271) {
+    return TOOLTIPS_MSG.OWNER_SMART_CONTRACT
+  }
+
+  return TOOLTIPS_MSG.OWNER
+}
+
+function getTwapPartsValue({
+  isTwapPartOrder,
+  twapOrderN,
+}: {
+  isTwapPartOrder: boolean
+  twapOrderN: number
+}): ReactElement | string {
+  if (isTwapPartOrder) {
+    return <Trans>Part of {twapOrderN} parts</Trans>
+  }
+
+  return <Trans>{twapOrderN} parts</Trans>
 }

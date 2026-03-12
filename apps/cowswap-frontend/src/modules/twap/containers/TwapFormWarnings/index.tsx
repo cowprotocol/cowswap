@@ -1,12 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
-import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeViaWc, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
-import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { TradeFormValidation } from 'modules/tradeFormValidation/types'
+import { useTradeRouteContext } from 'modules/trade'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
@@ -39,6 +38,7 @@ interface TwapWarningsRendererParams {
   localFormValidation: TwapFormState | null
   primaryFormValidation: TradeFormValidation | null
   isSafeViaWc: boolean
+  isSmartContractWallet: boolean | undefined
   chainId: ReturnType<typeof useWalletInfo>['chainId']
   account: ReturnType<typeof useWalletInfo>['account']
   isFallbackHandlerSetupAccepted: boolean
@@ -62,6 +62,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const primaryFormValidation = useGetTradeFormValidation()
 
   const { chainId, account } = useWalletInfo()
+  const isSmartContractWallet = useIsSmartContractWallet()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
@@ -94,6 +95,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     localFormValidation,
     primaryFormValidation,
     isSafeViaWc,
+    isSmartContractWallet,
     chainId,
     account,
     isFallbackHandlerSetupAccepted,
@@ -114,6 +116,7 @@ function getTwapWarningContent(params: TwapWarningsRendererParams): ReactNode {
     localFormValidation,
     primaryFormValidation,
     isSafeViaWc,
+    isSmartContractWallet,
     chainId,
     account,
     isFallbackHandlerSetupAccepted,
@@ -129,7 +132,14 @@ function getTwapWarningContent(params: TwapWarningsRendererParams): ReactNode {
   } = params
 
   if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
-    return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} chainId={chainId} account={account} />
+    return (
+      <UnsupportedWalletWarning
+        isSafeViaWc={isSafeViaWc}
+        isSmartContractWallet={isSmartContractWallet}
+        chainId={chainId}
+        account={account}
+      />
+    )
   }
 
   if (primaryFormValidation === TradeFormValidation.SellNativeToken) {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -22,6 +22,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
+import * as styledEl from './TwapConfirmModal.styled'
 
 import { TWAP_EOA_HOW_IT_WORKS_LINK } from '../../const'
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
@@ -178,14 +179,20 @@ export function TwapConfirmModal() {
               totalDuration={totalDuration}
             />
             {isEoaPrototypeMode && (
-              <InlineBanner bannerType={StatusColorVariant.Warning}>
-                <Trans>
-                  Prototype mode: order placement is simulated locally. In a real EOA TWAP, sell funds would remain
-                  reserved until the order fills, expires, or you cancel it.
-                </Trans>{' '}
-                <ExternalLink href={TWAP_EOA_HOW_IT_WORKS_LINK}>
-                  <Trans>How it works</Trans> ↗
-                </ExternalLink>
+              <InlineBanner
+                bannerType={StatusColorVariant.Info}
+                orientation={BannerOrientation.Horizontal}
+                noWrapContent
+              >
+                <styledEl.InfoBannerText>
+                  <Trans>
+                    Your funds stay reserved while this TWAP order is active. They become available again when the order
+                    fills, expires, or you cancel it.
+                  </Trans>{' '}
+                  <ExternalLink href={TWAP_EOA_HOW_IT_WORKS_LINK}>
+                    <Trans>How it works</Trans> ↗
+                  </ExternalLink>
+                </styledEl.InfoBannerText>
               </InlineBanner>
             )}
             {warnings}
