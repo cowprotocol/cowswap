@@ -6,7 +6,7 @@ import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
-import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { useAutoAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
@@ -47,7 +47,7 @@ export function CancelledOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
 
   const cancelled = useCancelledOrders({ chainId })
-  const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
+  const addOrderToSurplusQueue = useAutoAddOrderToSurplusQueue()
   const getSerializedBridgeOrder = useGetSerializedBridgeOrder()
 
   // Ref, so we don't rerun useEffect

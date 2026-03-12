@@ -2,7 +2,11 @@ import { ReactNode, useCallback, useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from 'entities/surplusModal'
+import {
+  useMarkSurplusOrderAutoShown,
+  useOrderIdForSurplusModal,
+  useRemoveOrderFromSurplusQueue,
+} from 'entities/surplusModal'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
@@ -15,6 +19,7 @@ import { TransactionSubmittedContent } from '../../pure/TransactionSubmittedCont
 
 export function SurplusModalSetup(): ReactNode {
   const orderId = useOrderIdForSurplusModal()
+  const markOrderAutoShown = useMarkSurplusOrderAutoShown()
   const removeOrderId = useRemoveOrderFromSurplusQueue()
 
   const { chainId } = useWalletInfo()
@@ -37,6 +42,12 @@ export function SurplusModalSetup(): ReactNode {
     (!isConfirmationModalOpen || (!!transactionHash && transactionHash !== orderId)) &&
     // Open when the progress bar is active
     isProgressBarSetup
+
+  useEffect(() => {
+    if (orderId && isOpen) {
+      markOrderAutoShown(orderId)
+    }
+  }, [orderId, isOpen, markOrderAutoShown])
 
   useEffect(() => {
     // If we should NOT show the screen, remove the orderId from the queue
