@@ -3188,7 +3188,7 @@ packages:
     resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
 
   '@cowprotocol/cms@0.11.0':
-    resolution: {integrity: sha512-QpvqGf3RyZHD9eF12ISbb33uByYVGlCq49KNUNr8bxuMl9qhdZU50s/VOEA5X6FsXWFePXA2Zp71SUuMsEbXFg==}
+    resolution: {integrity: sha512-QpvqGf3RyZHD9eF12ISbb33uByYVGlCq49KNUNr8bxuMl9qhdZU50s/VOEA5X6FsXWFePXA2Zp71SUuMsEbXFg==, tarball: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz}
 
   '@cowprotocol/cow-runner-game@0.2.9':
     resolution: {integrity: sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==}
