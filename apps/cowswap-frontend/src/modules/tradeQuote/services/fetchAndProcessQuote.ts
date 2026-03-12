@@ -22,9 +22,6 @@ import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
-
-// TODO: With the new lastQuoteParamsRef checks in useTradQuoteManager, we can probably get rid of onlyResolvesLast, but we might want to do some additional
-// checks in useTradQuoteManager's' onResponse/onError to make sure fetchParams.fetchStartTimestamp > lastFetchParams.fetchStartTimestamp
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
