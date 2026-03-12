@@ -111,6 +111,8 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
 }
 
 function isStaleQuote(lastQuoteParams: QuoteBridgeRequest | null, quoteParams: QuoteBridgeRequest): boolean {
+  if (!lastQuoteParams) return false
+
   // Typically, amount will be the param that changes most often, so we check that first. Otherwise, we check all the other ones:
   return (
     lastQuoteParams?.amount !== quoteParams.amount ||
