@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
-import { useMemo, useRef, type MutableRefObject } from 'react'
-import { getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
-import { OrderKind, OrderParameters, PriceQuality, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useMemo, useRef } from 'react'
+
+import { PriceQuality, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeQuoteResults, QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -11,49 +11,6 @@ import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenErr
 import { TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { SellTokenAddress } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
-import { useVolumeFee } from 'modules/volumeFee'
-
-function requestedAmountToString(value: string | bigint | undefined): string {
-  if (value === undefined || value === null) return ''
-  return typeof value === 'string' ? value : String(value)
-}
-
-function isStaleQuote(
-  currentAmountRef: MutableRefObject<string | null>,
-  quote: QuoteAndPost,
-  partnerFeeBps: number,
-): boolean {
-  const quoteAmountsAndCosts = getQuoteAmountsAndCosts({
-    orderParams: quote.quoteResults.quoteResponse?.quote,
-    slippagePercentBps: Number(quote?.quoteResults?.suggestedSlippageBps ?? 0),
-    partnerFeeBps,
-    protocolFeeBps: Number(quote?.quoteResults?.quoteResponse?.protocolFeeBps ?? 0),
-  });
-
-  const requestedAmount = requestedAmountToString(
-    quote.quoteResults.quoteResponse?.quote?.kind === OrderKind.SELL
-      ? quoteAmountsAndCosts.beforeAllFees.sellAmount
-      : quoteAmountsAndCosts.beforeAllFees.buyAmount,
-  )
-
-  const inputAmount = currentAmountRef.current
-  const isStale = inputAmount === null || inputAmount === '' || inputAmount !== requestedAmount;
-
-  return isStale
-}
-
-function isStaleQuoteWithParams(
-  lastQuoteParamsRef: MutableRefObject<QuoteBridgeRequest | null>,
-  quoteParams: QuoteBridgeRequest,
-) {
-  console.log(lastQuoteParamsRef.current);
-
-  return lastQuoteParamsRef.current?.amount !== quoteParams.amount ||
-    lastQuoteParamsRef.current?.sellTokenChainId !== quoteParams.sellTokenChainId ||
-    lastQuoteParamsRef.current?.sellTokenAddress !== quoteParams.sellTokenAddress ||
-    lastQuoteParamsRef.current?.buyTokenChainId !== quoteParams.buyTokenChainId ||
-    lastQuoteParamsRef.current?.buyTokenAddress !== quoteParams.buyTokenAddress
-}
 
 export interface TradeQuoteManager {
   setLoading(hasParamsChanged: boolean, quoteParams: QuoteBridgeRequest): void
@@ -67,96 +24,96 @@ export interface TradeQuoteManager {
     fetchParams: TradeQuoteFetchParams,
   ): void
 
-  onResponse(data: QuoteAndPost, bridgeQuote: BridgeQuoteResults | null, fetchParams: TradeQuoteFetchParams, quoteParams: QuoteBridgeRequest): void
+  onResponse(
+    data: QuoteAndPost,
+    bridgeQuote: BridgeQuoteResults | null,
+    fetchParams: TradeQuoteFetchParams,
+    quoteParams: QuoteBridgeRequest,
+  ): void
 }
 
-export function useTradeQuoteManager(
-  sellTokenAddress: SellTokenAddress | undefined,
-  currentAmountRef: MutableRefObject<string | null>,
-): TradeQuoteManager | null {
+export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefined): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
-
-  const partnerFeeBps = useVolumeFee()?.volumeBps
-
   const lastQuoteParamsRef = useRef<QuoteBridgeRequest | null>(null)
 
-  return useMemo(
-    () =>
-      sellTokenAddress
-        ? {
-            setLoading(hasParamsChanged: boolean, quoteParams: QuoteBridgeRequest) {
-              console.log("SET LOADING", quoteParams);
+  return useMemo((): TradeQuoteManager | null => {
+    if (!sellTokenAddress) return null
 
-              lastQuoteParamsRef.current = quoteParams
+    const setLoading = (hasParamsChanged: boolean, quoteParams: QuoteBridgeRequest): void => {
+      lastQuoteParamsRef.current = quoteParams
 
-              update(sellTokenAddress, {
-                isLoading: true,
-                hasParamsChanged,
-              })
-            },
-            reset() {
-              console.log("RESET");
+      update(sellTokenAddress, {
+        isLoading: true,
+        hasParamsChanged,
+      })
+    }
 
-              lastQuoteParamsRef.current = null
+    const reset = (): void => {
+      lastQuoteParamsRef.current = null
+      update(sellTokenAddress, { quote: null, isLoading: false })
+    }
 
-              update(sellTokenAddress, { quote: null, isLoading: false })
-            },
-            onError(
-              error: TradeQuoteState['error'],
-              chainId: SupportedChainId,
-              quoteParams: QuoteBridgeRequest,
-              fetchParams: TradeQuoteFetchParams,
-            ) {
-              // if (isStaleQuote(currentAmountRef, orderQuote)) return
+    const onError = (
+      error: TradeQuoteState['error'],
+      chainId: SupportedChainId,
+      quoteParams: QuoteBridgeRequest,
+      fetchParams: TradeQuoteFetchParams,
+    ): void => {
+      if (isStaleQuote(lastQuoteParamsRef.current, quoteParams)) {
+        reset()
+        return
+      }
 
-              update(sellTokenAddress, {
-                error,
-                fetchParams,
-                isLoading: false,
-                hasParamsChanged: false,
-                isBridgeQuote: quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId,
-              })
+      update(sellTokenAddress, {
+        error,
+        fetchParams,
+        isLoading: false,
+        hasParamsChanged: false,
+        isBridgeQuote: quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId,
+      })
 
-              if (error instanceof QuoteApiError && error.type === QuoteApiErrorCodes.UnsupportedToken) {
-                processUnsupportedTokenError(error, chainId, quoteParams)
-              }
-            },
-            onResponse(
-              quote: QuoteAndPost,
-              bridgeQuote: BridgeQuoteResults | null,
-              fetchParams: TradeQuoteFetchParams,
-              quoteParams: QuoteBridgeRequest,
-            ) {
-              if (isStaleQuoteWithParams(lastQuoteParamsRef, quoteParams)) {
-                console.log("DISCARDED BY LIGHT CHECK")
-                lastQuoteParamsRef.current = null
-                update(sellTokenAddress, { quote: null, isLoading: false })
+      if (error instanceof QuoteApiError && error.type === QuoteApiErrorCodes.UnsupportedToken) {
+        processUnsupportedTokenError(error, chainId, quoteParams)
+      }
+    }
 
-                return
-              }
+    const onResponse = (
+      quote: QuoteAndPost,
+      bridgeQuote: BridgeQuoteResults | null,
+      fetchParams: TradeQuoteFetchParams,
+      quoteParams: QuoteBridgeRequest,
+    ): void => {
+      if (isStaleQuote(lastQuoteParamsRef.current, quoteParams)) {
+        reset()
+        return
+      }
 
-              if (isStaleQuote(currentAmountRef, quote, partnerFeeBps ?? 0)) {
-                console.log("DISCARDED BY AMOUNTS CHECK")
-                lastQuoteParamsRef.current = null
-                update(sellTokenAddress, { quote: null, isLoading: false })
+      const isOptimalQuote = fetchParams.priceQuality === PriceQuality.OPTIMAL
 
-                return
-              }
+      update(sellTokenAddress, {
+        quote,
+        bridgeQuote,
+        ...(isOptimalQuote ? { isLoading: false } : null),
+        error: null,
+        hasParamsChanged: false,
+        fetchParams,
+      })
+    }
 
-              const isOptimalQuote = fetchParams.priceQuality === PriceQuality.OPTIMAL
+    return {
+      setLoading,
+      reset,
+      onError,
+      onResponse,
+    }
+  }, [update, processUnsupportedTokenError, sellTokenAddress])
+}
 
-              update(sellTokenAddress, {
-                quote,
-                bridgeQuote,
-                ...(isOptimalQuote ? { isLoading: false } : null),
-                error: null,
-                hasParamsChanged: false,
-                fetchParams,
-              })
-            },
-          }
-        : null,
-    [update, processUnsupportedTokenError, sellTokenAddress, partnerFeeBps, currentAmountRef],
+function isStaleQuote(lastQuoteParams: QuoteBridgeRequest | null, quoteParams: QuoteBridgeRequest): boolean {
+  // Typically, amount will be the param that changes most often, so we check that first. Otherwise, we check all the other ones:
+  return (
+    lastQuoteParams?.amount !== quoteParams.amount ||
+    Object.entries(lastQuoteParams).some(([key, value]) => value !== quoteParams[key as keyof QuoteBridgeRequest])
   )
 }

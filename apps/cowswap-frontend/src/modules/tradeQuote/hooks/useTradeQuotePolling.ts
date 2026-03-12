@@ -23,7 +23,6 @@ const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
 export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
-
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -38,12 +37,10 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const { quoteParams, inputCurrency } = quoteParamsState || {}
 
   const currentAmountRef = useRef<string | null>(null)
+  // eslint-disable-next-line react-hooks/refs
   currentAmountRef.current = amountStr ?? null
 
-  const tradeQuoteManager = useTradeQuoteManager(
-    inputCurrency && getCurrencyAddress(inputCurrency),
-    currentAmountRef,
-  )
+  const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
 
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
@@ -62,11 +59,10 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   useLayoutEffect(() => {
     // Do not reset the quote if the confirm modal is open
     // Because we already have a quote and don't want to reset it
-    if (isConfirmOpen) return
-    if (!tradeQuoteManager) return
+    if (isConfirmOpen || !tradeQuoteManager) return
 
     if (!isWindowVisible || !document.hasFocus() || !amountStr) {
-      console.log("Calling reset (useTradeQuotePolling) but fetchQuote / fetchAndProcessQuote will still be called...");
+      console.log('Calling reset (useTradeQuotePolling) but fetchQuote / fetchAndProcessQuote will still be called...')
 
       tradeQuoteManager.reset()
       setTradeQuotePolling(0)
@@ -83,8 +79,6 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
      */
     if (isConfirmOpen) return
 
-    console.log("Calling pollQuote 1, quoteParams =", quoteParams, currentAmountRef.current)
-
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
@@ -96,8 +90,6 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   useLayoutEffect(() => {
     if (tradeQuotePolling !== 0) return
 
-    console.log("Calling pollQuote 2, tradeQuotePolling =", tradeQuotePolling, "tradeQuotePolling !== 0 =", tradeQuotePolling !== 0, currentAmountRef.current)
-
     pollQuoteRef.current(false, true)
   }, [tradeQuotePolling])
 
@@ -105,11 +97,9 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
    * Reset counter and update quote each time when confirmation modal is closed
    */
   useLayoutEffect(() => {
-    if (prevIsConfirmOpen === isConfirmOpen) return
+    if (prevIsConfirmOpen === isConfirmOpen || isConfirmOpen) return
 
-    if (!isConfirmOpen) {
-      setTradeQuotePolling(0)
-    }
+    setTradeQuotePolling(0)
   }, [setTradeQuotePolling, prevIsConfirmOpen, isConfirmOpen])
 
   /**

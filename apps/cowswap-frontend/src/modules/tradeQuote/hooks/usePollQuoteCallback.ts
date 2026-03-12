@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useCallback, type MutableRefObject, useRef } from 'react'
+import { useCallback, RefObject, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -19,7 +19,7 @@ import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 export function usePollQuoteCallback(
   quotePollingParams: TradeQuotePollingParameters,
   quoteParamsState: QuoteParams | undefined,
-  currentAmountRef: MutableRefObject<string | null>,
+  currentAmountRef: RefObject<string | null>,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const getCorrelatedTokensByChainId = useGetCorrelatedTokensByChainId()
@@ -31,10 +31,7 @@ export function usePollQuoteCallback(
   const { quoteParams, appData, inputCurrency, hasSmartSlippage } = quoteParamsState || {}
   const hasSmartSlippagePrev = usePrevious(hasSmartSlippage)
 
-  const tradeQuoteManager = useTradeQuoteManager(
-    inputCurrency && getCurrencyAddress(inputCurrency),
-    currentAmountRef,
-  )
+  const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
 
   const isWindowVisible = useIsWindowVisible()
@@ -46,32 +43,18 @@ export function usePollQuoteCallback(
   const updatingStartTimestamp = useRef<null | number>(null)
 
   return useCallback(
+    // eslint-disable-next-line complexity
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
       const { isQuoteUpdatePossible, isConfirmOpen } = quotePollingParams
 
       if (!isQuoteUpdatePossible || !tradeQuoteManager || !quoteParams || getIsUnsupportedTokens(quoteParams)) {
-        console.log("Return false (usePollQuoteCallback)");
         return false
       }
 
-      if (quoteParams.amount.toString() === '0') {
-        console.log("Calling reset (usePollQuoteCallback) but fetchQuote / fetchAndProcessQuote will still be called...");
-
+      if (quoteParams.amount.toString() === '0' || quoteParams.amount.toString() !== currentAmountRef.current) {
         tradeQuoteManager.reset()
         return false
       }
-
-      if (quoteParams.amount.toString() !== currentAmountRef.current) {
-        console.info("Calling reset (usePollQuoteCallback) because the amount has changed...");
-
-        tradeQuoteManager.reset()
-        return false
-      }
-
-      console.log("Checking what to use to discard the request:", {
-        quoteParamsAmount: quoteParams.amount.toString(),
-        currentAmountRef: currentAmountRef.current,
-      })
 
       const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> => {
         const now = Date.now()
@@ -127,6 +110,7 @@ export function usePollQuoteCallback(
       getCorrelatedTokensByChainId,
       hasSmartSlippage,
       hasSmartSlippagePrev,
+      currentAmountRef,
     ],
   )
 }
