@@ -104,7 +104,7 @@ describe('useApproveAndSwap', () => {
       })
     })
 
-    it('should not call onApproveConfirm if permit signing fails', async () => {
+    it('falls back to approval flow if permit signing fails', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(false)
 
@@ -124,7 +124,7 @@ describe('useApproveAndSwap', () => {
       await waitFor(() => {
         expect(mockGeneratePermitToTrade).toHaveBeenCalled()
         expect(mockOnApproveConfirm).not.toHaveBeenCalled()
-        expect(mockHandleApprove).not.toHaveBeenCalled()
+        expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
       })
     })
 
