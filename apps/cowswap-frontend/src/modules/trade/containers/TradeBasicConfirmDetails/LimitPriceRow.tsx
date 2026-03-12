@@ -1,6 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'

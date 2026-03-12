@@ -5,15 +5,15 @@ import {
   bnb,
   ChainInfo,
   gnosisChain,
-  lens,
+  HttpsString,
+  ink,
+  isEvmChainInfo,
   linea,
   mainnet,
   plasma,
   polygon,
   sepolia,
-  ink,
   SupportedChainId,
-  HttpsString,
 } from '@cowprotocol/cow-sdk'
 
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
@@ -28,7 +28,7 @@ export interface BaseChainInfo {
   readonly name: string
   readonly addressPrefix: string
   readonly label: string
-  readonly eip155Label: string
+  readonly eip155Label?: string
   readonly urlAlias: string
   readonly helpCenterUrl?: string
   readonly explorerTitle: string
@@ -42,17 +42,8 @@ function mapChainInfoToBaseChainInfo(
   chainInfo: ChainInfo,
 ): Pick<
   BaseChainInfo,
-  | 'docs'
-  | 'bridge'
-  | 'explorer'
-  | 'infoLink'
-  | 'logo'
-  | 'addressPrefix'
-  | 'label'
-  | 'explorerTitle'
-  | 'color'
-  | 'eip155Label'
-> {
+  'docs' | 'bridge' | 'explorer' | 'infoLink' | 'logo' | 'addressPrefix' | 'label' | 'explorerTitle' | 'color'
+> & { eip155Label?: string } {
   return {
     docs: chainInfo.docs.url,
     bridge: chainInfo.bridges?.[0]?.url,
@@ -66,7 +57,7 @@ function mapChainInfoToBaseChainInfo(
     label: chainInfo.label,
     explorerTitle: chainInfo.blockExplorer.name,
     color: chainInfo.color,
-    eip155Label: chainInfo.eip155Label,
+    eip155Label: isEvmChainInfo(chainInfo) ? chainInfo.eip155Label : undefined,
   }
 }
 
@@ -119,12 +110,6 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'gc',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN],
   },
-  [SupportedChainId.LENS]: {
-    ...mapChainInfoToBaseChainInfo(lens),
-    name: 'lens',
-    urlAlias: 'lens',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LENS],
-  },
   [SupportedChainId.LINEA]: {
     ...mapChainInfoToBaseChainInfo(linea),
     name: 'linea',
@@ -166,7 +151,6 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.PLASMA, // TODO: decide where to place Plasma
   SupportedChainId.INK, // TODO: decide where to place Ink
   SupportedChainId.GNOSIS_CHAIN,
-  SupportedChainId.LENS,
   SupportedChainId.SEPOLIA,
 ]
 

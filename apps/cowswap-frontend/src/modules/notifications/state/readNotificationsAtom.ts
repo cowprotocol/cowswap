@@ -16,3 +16,11 @@ export const markNotificationsAsReadAtom = atom(null, (get, set, ids: number[]) 
 
   set(readNotificationsAtom, state)
 })
+
+export const markNotificationsAsReadCloneArrayAtom = atom(null, (get, set, ids: number[]) => {
+  const state = new Set(get(readNotificationsAtom))
+
+  ids.forEach((id) => state.add(id))
+
+  set(readNotificationsAtom, [...state])
+})

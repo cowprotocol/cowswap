@@ -1,7 +1,7 @@
 import { memo } from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
 
 import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

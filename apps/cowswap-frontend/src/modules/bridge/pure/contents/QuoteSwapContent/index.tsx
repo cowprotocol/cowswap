@@ -1,30 +1,77 @@
 import { ReactNode } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
+import { Percent } from '@cowprotocol/currency'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { ProxyRecipient } from 'modules/accountProxy'
+import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
-import { RowSlippage } from 'modules/tradeWidgetAddons'
+import { QuoteIdTooltipContent, QuoteIdValue, QuoteVerificationBadge, RowSlippage } from 'modules/tradeWidgetAddons'
 
 import { QuoteSwapContext } from '../../../types'
 import { ProxyAccountBanner } from '../../ProxyAccountBanner'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
+
+interface ContentItem {
+  withTimelineDot?: boolean
+  label?: ReactNode
+  content: ReactNode
+}
 
 interface QuoteDetailsContentProps {
   context: QuoteSwapContext
   hideRecommendedSlippage?: boolean
 }
 
-interface ContentItem {
-  withTimelineDot?: boolean
-  label?: ReactNode
-  content: ReactNode
+export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDetailsContentProps): ReactNode {
+  const {
+    receiveAmountInfo,
+    sellAmount,
+    expectedReceive,
+    quoteId,
+    quoteVerified,
+    quoteExpiration,
+    slippage,
+    recipient,
+    bridgeReceiverOverride,
+    minReceiveAmount,
+    minReceiveUsdValue,
+    expectedReceiveUsdValue,
+    isSlippageModified,
+  } = context
+  const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
+  const contents = [
+    createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
+    createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
+    !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
+    isRewardsRowEnabled && createRewardsContent(),
+    createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
+    quoteId ? createQuoteIdContent(quoteId, quoteVerified, quoteExpiration) : null,
+  ]
+
+  return (
+    <>
+      <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />
+      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }, index) => (
+        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
+          {content}
+        </ConfirmDetailsItem>
+      ))}
+      {!isBridgeQuoteRecipient && (
+        <ProxyAccountBanner
+          recipient={recipient}
+          bridgeReceiverOverride={bridgeReceiverOverride}
+          chainId={sellAmount.currency.chainId}
+        />
+      )}
+    </>
+  )
 }
 
 function createExpectedReceiveContent(
@@ -53,44 +100,6 @@ function createExpectedReceiveContent(
   }
 }
 
-function createSlippageContent(
-  slippage: Percent,
-  hideRecommendedSlippage: boolean,
-  isSlippageModified: boolean,
-): ContentItem {
-  const slippageLabel = <>{t`Max. swap slippage`} </>
-  const slippagePercentDisplay = (
-    <RowSlippage
-      slippageLabel={slippageLabel}
-      allowedSlippage={slippage}
-      isSlippageModified={isSlippageModified}
-      hideRecommendedSlippage={hideRecommendedSlippage}
-      isTradePriceUpdating={false}
-    />
-  )
-
-  return {
-    withTimelineDot: true,
-    content: slippagePercentDisplay,
-  }
-}
-
-function createRecipientContent(
-  recipient: QuoteSwapContext['recipient'],
-  bridgeReceiverOverride: QuoteSwapContext['bridgeReceiverOverride'],
-  chainId: number,
-): ContentItem {
-  return {
-    withTimelineDot: true,
-    label: (
-      <>
-        {t`Recipient`} <InfoTooltip content={t`The address that will receive the tokens.`} size={14} />
-      </>
-    ),
-    content: <ProxyRecipient recipient={recipient} bridgeReceiverOverride={bridgeReceiverOverride} chainId={chainId} />,
-  }
-}
-
 function createMinReceiveContent(
   minReceiveAmount: QuoteSwapContext['minReceiveAmount'],
   minReceiveUsdValue: QuoteSwapContext['minReceiveUsdValue'],
@@ -111,42 +120,60 @@ function createMinReceiveContent(
   }
 }
 
-export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDetailsContentProps): ReactNode {
-  const {
-    receiveAmountInfo,
-    sellAmount,
-    expectedReceive,
-    slippage,
-    recipient,
-    bridgeReceiverOverride,
-    minReceiveAmount,
-    minReceiveUsdValue,
-    expectedReceiveUsdValue,
-    isSlippageModified,
-  } = context
-  const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
-  const contents = [
-    createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
-    createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
-    !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
-    createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
-  ]
+function createQuoteIdContent(quoteId: string, quoteVerified?: boolean, quoteExpiration?: string | null): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        {t`Quote ID`} <QuoteVerificationBadge isVerified={quoteVerified} />
+        <InfoTooltip content={<QuoteIdTooltipContent expiration={quoteExpiration} />} size={14} />
+      </>
+    ),
+    content: <QuoteIdValue quoteId={quoteId} />,
+  }
+}
 
-  return (
-    <>
-      <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />
-      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }, index) => (
-        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
-          {content}
-        </ConfirmDetailsItem>
-      ))}
-      {!isBridgeQuoteRecipient && (
-        <ProxyAccountBanner
-          recipient={recipient}
-          bridgeReceiverOverride={bridgeReceiverOverride}
-          chainId={sellAmount.currency.chainId}
-        />
-      )}
-    </>
+function createRecipientContent(
+  recipient: QuoteSwapContext['recipient'],
+  bridgeReceiverOverride: QuoteSwapContext['bridgeReceiverOverride'],
+  chainId: number,
+): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        {t`Recipient`} <InfoTooltip content={t`The address that will receive the tokens.`} size={14} />
+      </>
+    ),
+    content: <ProxyRecipient recipient={recipient} bridgeReceiverOverride={bridgeReceiverOverride} chainId={chainId} />,
+  }
+}
+
+function createRewardsContent(): ContentItem {
+  return {
+    withTimelineDot: true,
+    content: <AffiliateTraderRewardsRow />,
+  }
+}
+
+function createSlippageContent(
+  slippage: Percent,
+  hideRecommendedSlippage: boolean,
+  isSlippageModified: boolean,
+): ContentItem {
+  const slippageLabel = <>{t`Max. swap slippage`} </>
+  const slippagePercentDisplay = (
+    <RowSlippage
+      slippageLabel={slippageLabel}
+      allowedSlippage={slippage}
+      isSlippageModified={isSlippageModified}
+      hideRecommendedSlippage={hideRecommendedSlippage}
+      isTradePriceUpdating={false}
+    />
   )
+
+  return {
+    withTimelineDot: true,
+    content: slippagePercentDisplay,
+  }
 }

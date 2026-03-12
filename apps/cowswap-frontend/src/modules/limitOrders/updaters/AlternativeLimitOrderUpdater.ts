@@ -3,26 +3,22 @@ import { useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { FractionUtils } from '@cowprotocol/common-utils'
+import { Price } from '@cowprotocol/currency'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Price } from '@uniswap/sdk-core'
 
-import {
-  limitOrdersDerivedStateAtom,
-  LimitOrdersSettingsState,
-  updateLimitOrdersSettingsAtom,
-} from 'modules/limitOrders'
-import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
-import { LIMIT_ORDERS_DEADLINES } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
-import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
+import { DEFAULT_TRADE_DERIVED_STATE, useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade'
 
 import { GenericOrder } from 'common/types'
 
-import { DEFAULT_TRADE_DERIVED_STATE } from '../../trade'
 import { useLimitOrdersDerivedState } from '../hooks/useLimitOrdersDerivedState'
+import { useUpdateLimitOrdersRawState } from '../hooks/useLimitOrdersRawState'
 import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
+import { LIMIT_ORDERS_DEADLINES } from '../pure/DeadlineSelector/deadlines'
+import { limitOrdersDerivedStateAtom } from '../state/limitOrdersRawStateAtom'
+import { LimitOrdersSettingsState, updateLimitOrdersSettingsAtom } from '../state/limitOrdersSettingsAtom'
 import { updateLimitRateAtom } from '../state/limitRateAtom'
+import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
 
 export function AlternativeLimitOrderUpdater(): null {
   // Update raw state and related settings once on load
@@ -33,6 +29,118 @@ export function AlternativeLimitOrderUpdater(): null {
 
   // Hide modal if chainId or account changes
   useResetAlternativeOnChainOrAccountChange()
+
+  return null
+}
+
+/**
+ * Get order duration in milliseconds
+ * @param order
+ */
+function getDuration(order: GenericOrder): number {
+  const [creationTime, expirationTime] = getOrderTimes(order)
+  const duration = expirationTime.getTime() - creationTime.getTime()
+  return Math.round(duration)
+}
+
+/**
+ * Get pre-defined deadline matching given duration, if any
+ */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function getMatchingDeadline(duration: number) {
+  // Match duration with approximate time
+  return LIMIT_ORDERS_DEADLINES.find(({ value }) => {
+    const ratio = value / duration
+    // If the ratio is +/-10% off of 1, consider it a match
+    return ratio > 0.9 && ratio < 1.1
+  })
+}
+
+/**
+ * Get order creation and expiration times, as Date objs
+ */
+function getOrderTimes(order: GenericOrder): [Date, Date] {
+  if ('validTo' in order) {
+    // Order instance, creationTime is a ISO string, validTo is a UNIX timestamp
+    return [new Date(order.creationTime), new Date(+order.validTo * 1000)]
+  }
+  // ParsedOrder instance, both are Date objects
+  return [order.creationTime, order.expirationTime]
+}
+
+/**
+ * Get setting state based on existing order
+ *
+ * Will set:
+ *  - `showCustomRecipient`
+ *  - `partialFillsEnabled`
+ *  - either `deadlineMilliseconds` or `customDeadlineTimestamp`
+ */
+function getSettingsState(order: GenericOrder, hasCustomRecipient: boolean): Partial<LimitOrdersSettingsState> {
+  const state: Partial<LimitOrdersSettingsState> = {
+    showRecipient: hasCustomRecipient,
+    partialFillsEnabled: order.partiallyFillable,
+  }
+
+  const duration = getDuration(order)
+  const deadline = getMatchingDeadline(duration)
+
+  if (deadline) {
+    return { ...state, deadlineMilliseconds: deadline.value }
+  }
+
+  const customDeadlineTimestamp = Math.round((Date.now() + duration) / 1000)
+
+  return { ...state, customDeadlineTimestamp }
+}
+
+function useResetAlternativeOnChainOrAccountChange(): null {
+  const { chainId, account } = useWalletInfo()
+  const prevChainId = usePrevious(chainId)
+  const prevAccount = usePrevious(account)
+  const hideAlternativeOrderModal = useHideAlternativeOrderModal()
+
+  useEffect(() => {
+    if ((prevChainId && chainId !== prevChainId) || (prevAccount && prevAccount !== account)) {
+      hideAlternativeOrderModal()
+    }
+  }, [chainId, account, prevChainId, prevAccount, hideAlternativeOrderModal])
+
+  return null
+}
+
+function useSetAlternativeRate(): null {
+  const updateRate = useUpdateActiveRate()
+  const updateLimitRateState = useSetAtom(updateLimitRateAtom)
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+
+  const [hasSetRate, setHasSetRate] = useState(false)
+
+  useEffect(() => {
+    // Reset state when both currencies are null to prevent stale rates
+    if (!inputCurrencyAmount && !outputCurrencyAmount) {
+      setHasSetRate(false)
+    }
+  }, [inputCurrencyAmount, outputCurrencyAmount])
+
+  useEffect(() => {
+    // Update rate when rate has not been set yet
+    if (!hasSetRate && inputCurrencyAmount && outputCurrencyAmount) {
+      setHasSetRate(true)
+
+      // Clear existing market rate
+      updateLimitRateState({ marketRate: null })
+
+      // Set new active rate
+      // The rate expects a raw fraction which is NOT a Price instace
+      const activeRate = FractionUtils.fromPrice(
+        new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount }),
+      )
+
+      updateRate({ activeRate, isTypedValue: false, isRateFromUrl: false, isAlternativeOrderRate: true })
+    }
+  }, [inputCurrencyAmount, hasSetRate, outputCurrencyAmount, updateRate, updateLimitRateState])
 
   return null
 }
@@ -89,116 +197,4 @@ function useUpdateAlternativeRawState(): null {
   }, [recipient, recipientAddress])
 
   return null
-}
-
-function useSetAlternativeRate(): null {
-  const updateRate = useUpdateActiveRate()
-  const updateLimitRateState = useSetAtom(updateLimitRateAtom)
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
-
-  const [hasSetRate, setHasSetRate] = useState(false)
-
-  useEffect(() => {
-    // Reset state when both currencies are null to prevent stale rates
-    if (!inputCurrencyAmount && !outputCurrencyAmount) {
-      setHasSetRate(false)
-    }
-  }, [inputCurrencyAmount, outputCurrencyAmount])
-
-  useEffect(() => {
-    // Update rate when rate has not been set yet
-    if (!hasSetRate && inputCurrencyAmount && outputCurrencyAmount) {
-      setHasSetRate(true)
-
-      // Clear existing market rate
-      updateLimitRateState({ marketRate: null })
-
-      // Set new active rate
-      // The rate expects a raw fraction which is NOT a Price instace
-      const activeRate = FractionUtils.fromPrice(
-        new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount }),
-      )
-
-      updateRate({ activeRate, isTypedValue: false, isRateFromUrl: false, isAlternativeOrderRate: true })
-    }
-  }, [inputCurrencyAmount, hasSetRate, outputCurrencyAmount, updateRate, updateLimitRateState])
-
-  return null
-}
-
-function useResetAlternativeOnChainOrAccountChange(): null {
-  const { chainId, account } = useWalletInfo()
-  const prevChainId = usePrevious(chainId)
-  const prevAccount = usePrevious(account)
-  const hideAlternativeOrderModal = useHideAlternativeOrderModal()
-
-  useEffect(() => {
-    if ((prevChainId && chainId !== prevChainId) || (prevAccount && prevAccount !== account)) {
-      hideAlternativeOrderModal()
-    }
-  }, [chainId, account, prevChainId, prevAccount, hideAlternativeOrderModal])
-
-  return null
-}
-
-/**
- * Get order creation and expiration times, as Date objs
- */
-function getOrderTimes(order: GenericOrder): [Date, Date] {
-  if ('validTo' in order) {
-    // Order instance, creationTime is a ISO string, validTo is a UNIX timestamp
-    return [new Date(order.creationTime), new Date(+order.validTo * 1000)]
-  }
-  // ParsedOrder instance, both are Date objects
-  return [order.creationTime, order.expirationTime]
-}
-
-/**
- * Get order duration in milliseconds
- * @param order
- */
-function getDuration(order: GenericOrder): number {
-  const [creationTime, expirationTime] = getOrderTimes(order)
-  const duration = expirationTime.getTime() - creationTime.getTime()
-  return Math.round(duration)
-}
-
-/**
- * Get pre-defined deadline matching given duration, if any
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getMatchingDeadline(duration: number) {
-  // Match duration with approximate time
-  return LIMIT_ORDERS_DEADLINES.find(({ value }) => {
-    const ratio = value / duration
-    // If the ratio is +/-10% off of 1, consider it a match
-    return ratio > 0.9 && ratio < 1.1
-  })
-}
-
-/**
- * Get setting state based on existing order
- *
- * Will set:
- *  - `showCustomRecipient`
- *  - `partialFillsEnabled`
- *  - either `deadlineMilliseconds` or `customDeadlineTimestamp`
- */
-function getSettingsState(order: GenericOrder, hasCustomRecipient: boolean): Partial<LimitOrdersSettingsState> {
-  const state: Partial<LimitOrdersSettingsState> = {
-    showRecipient: hasCustomRecipient,
-    partialFillsEnabled: order.partiallyFillable,
-  }
-
-  const duration = getDuration(order)
-  const deadline = getMatchingDeadline(duration)
-
-  if (deadline) {
-    return { ...state, deadlineMilliseconds: deadline.value }
-  }
-
-  const customDeadlineTimestamp = Math.round((Date.now() + duration) / 1000)
-
-  return { ...state, customDeadlineTimestamp }
 }

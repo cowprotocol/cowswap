@@ -2,16 +2,20 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  getAddressKey,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  mapSupportedNetworks,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade/types/TradeType'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 

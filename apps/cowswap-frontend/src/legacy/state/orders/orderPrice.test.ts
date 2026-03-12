@@ -1,6 +1,6 @@
 import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
-import { Price } from '@uniswap/sdk-core'
+import { Price } from '@cowprotocol/currency'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'

@@ -5,16 +5,17 @@ import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
-import { Currency, Price } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { RateInfo } from 'common/pure/RateInfo'
@@ -101,12 +102,13 @@ export function OrderRow({
   }, [spotPrice, feeAmount, order])
   const isSafeWallet = useIsSafeWallet()
 
+  const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const showCancellationModal = useMemo(() => {
     return orderActions.getShowCancellationModal(order)
   }, [orderActions, order])
   const alternativeOrderModalContext = useMemo(
-    () => orderActions.getAlternativeOrderModalContext(order),
-    [order, orderActions],
+    () => (isChainIdDeprecated ? undefined : orderActions.getAlternativeOrderModalContext(order)),
+    [order, orderActions, isChainIdDeprecated],
   )
 
   const withAllowanceWarning = hasEnoughAllowance === false

@@ -2,21 +2,20 @@ import { ReactElement } from 'react'
 
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans as TransReact } from '@lingui/react'
-import { useLingui } from '@lingui/react/macro'
-import { Trans } from '@lingui/react/macro'
+import { useLingui, Trans } from '@lingui/react/macro'
 import { CloseIcon } from 'theme'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
 
-import { TwapOrderItem } from 'modules/twap/types'
+import { TwapOrderItem } from 'modules/twap'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
@@ -57,7 +56,7 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
-  alternativeOrderModalContext: AlternativeOrderModalContext
+  alternativeOrderModalContext?: AlternativeOrderModalContext
 }
 
 const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {

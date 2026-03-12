@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
@@ -28,6 +29,7 @@ function getRestrictedFlowResult(): CustomFlowResult<TokenSelectorView.ImportTok
  * Handles consent modal and restriction data for RWA tokens.
  */
 export function useImportTokenConsentFlow(): ViewFlowConfig<TokenSelectorView.ImportToken> | null {
+  const { account } = useWalletInfo()
   const { tokenToImport, rwaStatus, rwaTokenInfo } = useImportTokenRwaCheck()
   const { importWithConsent } = useImportTokenWithConsent({ consentHash: rwaTokenInfo?.consentHash })
 
@@ -39,7 +41,9 @@ export function useImportTokenConsentFlow(): ViewFlowConfig<TokenSelectorView.Im
         return getRestrictedFlowResult()
       }
 
-      if (rwaStatus === 'requires-consent' && rwaTokenInfo) {
+      // Don't show consent modal to non-connected users - they can import the token
+      // and consent will be checked when they connect wallet and try to trade
+      if (rwaStatus === 'requires-consent' && rwaTokenInfo && account) {
         const displayToken = TokenWithLogo.fromToken(tokenToImport)
         return {
           content: (
@@ -55,7 +59,7 @@ export function useImportTokenConsentFlow(): ViewFlowConfig<TokenSelectorView.Im
 
       return null
     },
-    [tokenToImport, rwaStatus, rwaTokenInfo, importWithConsent],
+    [tokenToImport, rwaStatus, rwaTokenInfo, account, importWithConsent],
   )
 
   return useMemo(() => {

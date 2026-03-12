@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import CowError from '@cowprotocol/assets/cow-swap/CowError.png'
 import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
@@ -12,6 +12,7 @@ import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 
+// eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Title } from 'modules/application/pure/Page'
 
 const FlexContainer = styled.div`
@@ -64,9 +65,7 @@ function truncate(value?: string): string | undefined {
   return value ? value.slice(0, 1000) : undefined
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
+export const ErrorWithStackTrace = ({ error }: { error: Error }): ReactNode => {
   const encodedBody = encodeURIComponent(issueBody(error))
 
   return (

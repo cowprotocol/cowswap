@@ -6,6 +6,7 @@ const tseslint = require('@typescript-eslint/eslint-plugin')
 const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
+const perfectionist = require('eslint-plugin-perfectionist')
 const prettier = require('eslint-plugin-prettier')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
@@ -88,12 +89,35 @@ module.exports = [
       'react-refresh/only-export-components': 'warn',
     },
   },
+  {
+    files: ['**/*.{js,ts}', '**/*.{jsx,tsx}'],
+    plugins: { perfectionist },
+    rules: {
+      'perfectionist/sort-modules': [
+        'warn',
+        {
+          groups: [
+            ['export-interface', 'export-type'],
+            'export-enum',
+            ['interface', 'type'],
+            'enum',
+            'export-class',
+            'export-function',
+            'class',
+            'function',
+          ],
+          order: 'asc',
+        },
+      ],
+    },
+  },
 
   // React components get higher complexity limit due to ternary operators
   {
     files: ['**/*.tsx'],
     rules: {
-      complexity: ['error', 15],
+      complexity: ['error', 20],
+      'max-lines-per-function': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
     },
   },
   {
@@ -175,6 +199,7 @@ module.exports = [
           argsIgnorePattern: '^_',
         },
       ],
+      'import/no-duplicates': 'warn',
       'import/order': [
         'error',
         {
@@ -212,6 +237,12 @@ module.exports = [
             caseInsensitive: true,
           },
           'newlines-between': 'always',
+        },
+      ],
+      'import/no-internal-modules': [
+        'warn',
+        {
+          forbid: ['modules/*/**'],
         },
       ],
       'no-restricted-globals': [

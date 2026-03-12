@@ -1,12 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
+import { Percent } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
-import { useLingui } from '@lingui/react/macro'
-import { Trans } from '@lingui/react/macro'
+import { useLingui, Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
@@ -17,8 +16,10 @@ import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper, Transacti
 const DefaultSlippage = styled.span`
   display: inline-flex;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  text-decoration: strikethrough;
-  font-size: 0.8em;
+
+  button {
+    padding: 0 6px;
+  }
 
   a {
     text-decoration: underline;
@@ -46,6 +47,13 @@ export interface RowSlippageContentProps {
   isSmartSlippageApplied: boolean
   isSmartSlippageLoading: boolean
   hideRecommendedSlippage?: boolean
+}
+
+type SlippageTextContentsProps = {
+  isEoaEthFlow: boolean
+  isDefaultSlippageApplied: boolean
+  slippageLabel?: React.ReactNode
+  isDynamicSlippageSet: boolean
 }
 
 export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
@@ -88,7 +96,7 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
         ) : (
           <>
             <LinkStyledButton onClick={setAutoSlippage}>
-              (<Trans>Recommended</Trans>: {smartSlippage})
+              (<Trans>Suggested</Trans>: {smartSlippage})
             </LinkStyledButton>
             <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
               <StyledInfoIcon size={16} />
@@ -128,13 +136,6 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
       </TextWrapper>
     </StyledRowBetween>
   )
-}
-
-type SlippageTextContentsProps = {
-  isEoaEthFlow: boolean
-  isDefaultSlippageApplied: boolean
-  slippageLabel?: React.ReactNode
-  isDynamicSlippageSet: boolean
 }
 
 function SlippageTextContents({

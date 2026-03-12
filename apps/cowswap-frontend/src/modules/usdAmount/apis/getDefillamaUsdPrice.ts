@@ -1,6 +1,6 @@
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Fraction, Token } from '@uniswap/sdk-core'
+import { Fraction, Token } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
 
@@ -24,7 +24,6 @@ export const DEFILLAMA_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.POLYGON]: 'polygon',
   [SupportedChainId.AVALANCHE]: 'avalanche',
-  [SupportedChainId.LENS]: 'lens',
   [SupportedChainId.BNB]: 'bsc', // BNB Chain is called BSC in Defillama
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',

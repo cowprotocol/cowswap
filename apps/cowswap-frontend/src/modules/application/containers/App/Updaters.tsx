@@ -18,10 +18,9 @@ import { CorrelatedTokensUpdater } from 'entities/correlatedTokens'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
-import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
-import { BalancesDevtools } from 'modules/balancesAndAllowances/updaters/BalancesDevtools'
+import { BalancesDevtools, CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
-import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
+import { BalancesCombinedUpdater } from 'modules/combinedBalances'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
@@ -35,7 +34,7 @@ import { GeoDataUpdater } from 'modules/rwa'
 import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
-import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
+import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield'
 
 import { SurplusInvalidationListenerUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
@@ -51,16 +50,19 @@ import {
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { LastTimePriceUpdateResetUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
+import { ProviderNetworkSupportedUpdater } from 'common/updaters/ProviderNetworkSupportedUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
+import { WalletSessionDurationUpdater } from 'common/updaters/WalletSessionDurationUpdater'
 import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 
 import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
+
   const { standaloneMode } = useInjectedWidgetParams()
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
@@ -93,6 +95,7 @@ export function Updaters(): ReactNode {
       <OrdersFromApiUpdater />
       <GasUpdater />
       <SentryUpdater />
+      <WalletSessionDurationUpdater />
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
@@ -107,6 +110,7 @@ export function Updaters(): ReactNode {
       <SurplusInvalidationListenerUpdater />
       <BridgingEnabledUpdater />
       <FaviconAnimationUpdater />
+      <ProviderNetworkSupportedUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}

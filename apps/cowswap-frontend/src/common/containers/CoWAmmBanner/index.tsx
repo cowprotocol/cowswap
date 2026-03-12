@@ -4,17 +4,16 @@ import { useCallback } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { ClosableBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { useTradeNavigate } from 'modules/trade'
-import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
+import { useTradeNavigate, getDefaultTradeRawState } from 'modules/trade'
 import { useYieldRawState } from 'modules/yield/hooks/useYieldRawState'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 

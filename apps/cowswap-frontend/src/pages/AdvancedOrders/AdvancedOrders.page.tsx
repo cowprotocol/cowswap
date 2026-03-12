@@ -10,15 +10,16 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   advancedOrdersAtom,
+  advancedOrdersDerivedStateAtom,
   AdvancedOrdersWidget,
-  FillAdvancedOrdersDerivedStateUpdater,
   SetupAdvancedOrderAmountsFromUrlUpdater,
+  useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
-import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import * as styledEl from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -29,8 +30,10 @@ import {
   useMapTwapCurrencyInfo,
   useTwapFormState,
   useTwapSlippage,
+  TwapFormState,
 } from 'modules/twap'
-import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
+
+import { HydrateAtom } from 'common/state/HydrateAtom'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -51,10 +54,11 @@ export function AdvancedOrdersPage(): ReactNode {
   const advancedWidgetParams = { disablePriceImpact }
   const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
+  const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
+
   return (
-    <>
+    <HydrateAtom atom={advancedOrdersDerivedStateAtom} state={advancedOrdersDerivedStateToFill}>
       <PageTitle title={i18n._(PAGE_TITLES.ADVANCED)} />
-      <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper
         isUnlocked={isUnlocked}
@@ -80,7 +84,7 @@ export function AdvancedOrdersPage(): ReactNode {
         </styledEl.PrimaryWrapper>
 
         {!hideOrdersTable && (
-          <styledEl.SecondaryWrapper>
+          <styledEl.SecondaryWrapper className="trade-orders-table">
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
                 displayOrdersOnlyForSafeApp
@@ -91,6 +95,6 @@ export function AdvancedOrdersPage(): ReactNode {
           </styledEl.SecondaryWrapper>
         )}
       </styledEl.PageWrapper>
-    </>
+    </HydrateAtom>
   )
 }
