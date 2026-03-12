@@ -61,7 +61,6 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       fetchParams: TradeQuoteFetchParams,
     ): void => {
       if (isStaleQuote(lastQuoteParamsRef.current, quoteParams)) {
-        reset()
         return
       }
 
@@ -85,7 +84,6 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       quoteParams: QuoteBridgeRequest,
     ): void => {
       if (isStaleQuote(lastQuoteParamsRef.current, quoteParams)) {
-        reset()
         return
       }
 
@@ -111,7 +109,9 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
 }
 
 function isStaleQuote(lastQuoteParams: QuoteBridgeRequest | null, quoteParams: QuoteBridgeRequest): boolean {
-  if (!lastQuoteParams) return false
+  // lastQuoteParams is set from setLoading, so onError/onResponse should always find a matching value there. If they
+  // don't, then that's because reset was called, so we ignore all quotes until setLoading re-sets lastQuoteParams.
+  if (!lastQuoteParams) return true
 
   // Typically, amount will be the param that changes most often, so we check that first. Otherwise, we check all the other ones:
   return (
