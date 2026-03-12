@@ -71,7 +71,6 @@ export function hydrateStoredToken(entry: StoredRecentToken, canonical?: TokenWi
       entry.decimals,
       entry.symbol,
       entry.name,
-      undefined,
       entry.tags ?? [],
     )
   } catch {
