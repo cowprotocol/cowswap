@@ -186,8 +186,8 @@ export function TwapConfirmModal() {
               >
                 <styledEl.InfoBannerText>
                   <Trans>
-                    Your funds stay reserved while this TWAP order is active. They become available again when the order
-                    fills, expires, or you cancel it.
+                    Funds for this TWAP will be held in your TWAP proxy account while the order is active. Withdrawing
+                    them will make the order unfillable.
                   </Trans>{' '}
                   <ExternalLink href={TWAP_EOA_HOW_IT_WORKS_LINK}>
                     <Trans>How it works</Trans> ↗

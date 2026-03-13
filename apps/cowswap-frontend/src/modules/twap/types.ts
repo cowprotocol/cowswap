@@ -45,6 +45,7 @@ export interface TwapOrderItem {
   executionInfo: TwapOrdersExecution
   isPrototype?: boolean
   prototypeSimulation?: TwapPrototypeSimulation
+  prototypeProxyFundsClaimedAt?: string
 }
 
 export type TwapOrdersAuthResult = { [key: string]: boolean | undefined }

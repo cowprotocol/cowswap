@@ -1,4 +1,4 @@
-import { AutoRow, Media, UI } from '@cowprotocol/ui'
+import { AutoRow, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -78,6 +78,16 @@ export const InfoBannerText = styled.p`
   flex: 1;
   min-width: 0;
   line-height: 1.4;
+`
+
+export const BannerLink = styled(LinkStyledButton)`
+  color: var(${UI.COLOR_TEXT});
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
 `
 
 export const Field = styled.div`

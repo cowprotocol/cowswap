@@ -14,6 +14,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders'
+import { useOpenTwapPrototypeProxyPage } from 'modules/twap'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -101,6 +102,7 @@ export function OrderRow({
     return spotPrice && feeAmount && getEstimatedExecutionPrice(order, spotPrice, feeAmount.quotient.toString())
   }, [spotPrice, feeAmount, order])
   const isSafeWallet = useIsSafeWallet()
+  const openTwapPrototypeProxyPage = useOpenTwapPrototypeProxyPage()
 
   const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const showCancellationModal = useMemo(() => {
@@ -128,6 +130,9 @@ export function OrderRow({
     TIME_AGO_UPDATE_INTERVAL,
   )
   const activityUrl = chainId ? getActivityUrl(chainId, order) : undefined
+  const openProxyAccount = useMemo(() => {
+    return order.composableCowInfo?.isPrototype ? openTwapPrototypeProxyPage : null
+  }, [openTwapPrototypeProxyPage, order.composableCowInfo?.isPrototype])
 
   const isInvertedState = useState(() => {
     // On mount, apply smart quote selection
@@ -376,6 +381,7 @@ export function OrderRow({
         <OrderContextMenu
           activityUrl={activityUrl}
           isPrototype={!!order.composableCowInfo?.isPrototype}
+          openProxyAccount={openProxyAccount}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
           alternativeOrderModalContext={alternativeOrderModalContext}

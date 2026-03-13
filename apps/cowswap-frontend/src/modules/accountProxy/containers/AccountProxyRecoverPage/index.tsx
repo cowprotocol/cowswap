@@ -8,6 +8,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonSize, CenteredDots, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -15,6 +16,10 @@ import { useParams } from 'react-router'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
+import { addChainIdToRoute } from 'modules/trade'
+import { useTwapPrototypeProxy } from 'modules/twap'
+
+import { Routes } from 'common/constants/routes'
 import { useNavigateBack } from 'common/hooks/useNavigate'
 
 import {
@@ -26,25 +31,75 @@ import {
   Wrapper,
 } from './styled'
 
-import { useAccountProxies } from '../../hooks/useAccountProxies'
+import { AccountProxyKind, useAccountProxies } from '../../hooks/useAccountProxies'
 import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
 import { RecoverSigningStep, useRecoverFundsFromProxy } from '../../hooks/useRecoverFundsFromProxy'
 import { useTokenBalanceAndUsdValue } from '../../hooks/useTokenBalanceAndUsdValue'
 import { processRecoverTransaction } from '../../services/processRecoverTransaction'
+import { PrototypeAccountProxyRecoverPage } from '../PrototypeAccountProxyRecoverPage/PrototypeAccountProxyRecoverPage.container'
+
+interface StandardAccountProxyRecoverPageProps {
+  proxyAddress?: string
+  tokenAddress?: string
+}
+
+interface StandardRecoverButtonProps {
+  txInProgress: boolean
+  txSigningStep: RecoverSigningStep | null
+  balance: CurrencyAmount<Currency> | null | undefined
+  onRecover(): void
+}
 
 export function AccountProxyRecoverPage(): ReactNode {
   const { chainId } = useWalletInfo()
   const { proxyAddress, tokenAddress } = useParams()
-  const [txInProgress, setTxInProgress] = useState(false)
+  const proxies = useAccountProxies()
+  const selectedProxy = proxies?.find((proxy) => areAddressesEqual(proxy.account, proxyAddress))
 
+  const { activeTokens, claimableTokens, currentTokens, withdrawToken } = useTwapPrototypeProxy()
+  const prototypeClaimableToken = claimableTokens.find((item) => areAddressesEqual(item.token.address, tokenAddress))
+  const prototypeActiveToken = activeTokens.find((item) => areAddressesEqual(item.token.address, tokenAddress))
+  const prototypeCurrentToken = currentTokens.find((item) => areAddressesEqual(item.token.address, tokenAddress))
+  const prototypeActiveOrderCount = prototypeCurrentToken?.activeOrderIds.length || 0
+  const prototypeOrdersLink = addChainIdToRoute(Routes.ADVANCED_ORDERS, chainId?.toString())
+
+  const navigateBack = useNavigateBack()
+  const onPrototypeRecover = useCallback(() => {
+    if (!tokenAddress || !prototypeCurrentToken) return
+
+    withdrawToken(tokenAddress)
+    navigateBack()
+  }, [navigateBack, prototypeCurrentToken, tokenAddress, withdrawToken])
+
+  if (selectedProxy?.kind === AccountProxyKind.TwapPrototype) {
+    return (
+      <PrototypeAccountProxyRecoverPage
+        activeOrderCount={prototypeActiveOrderCount}
+        amount={(prototypeCurrentToken || prototypeClaimableToken || prototypeActiveToken)?.amount || undefined}
+        canWithdraw={!!prototypeCurrentToken}
+        ordersLink={prototypeOrdersLink}
+        onRecover={onPrototypeRecover}
+        onGoBack={navigateBack}
+      />
+    )
+  }
+
+  return <StandardAccountProxyRecoverPage proxyAddress={proxyAddress} tokenAddress={tokenAddress} />
+}
+
+function StandardAccountProxyRecoverPage({
+  proxyAddress,
+  tokenAddress,
+}: StandardAccountProxyRecoverPageProps): ReactNode {
+  const { chainId } = useWalletInfo()
+  const [txInProgress, setTxInProgress] = useState(false)
   const navigateBack = useNavigateBack()
   const { balance, usdValue } = useTokenBalanceAndUsdValue(tokenAddress)
   const destroyedRef = useComponentDestroyedRef()
+  const updateTokenBalance = useUpdateTokenBalance()
 
   const proxies = useAccountProxies()
-  const updateTokenBalance = useUpdateTokenBalance()
-  const proxyVersion = proxies?.find((p) => areAddressesEqual(p.account, proxyAddress))?.version
-
+  const proxyVersion = proxies?.find((proxy) => areAddressesEqual(proxy.account, proxyAddress))?.version
   const recoverFundsContext = useRecoverFundsFromProxy(
     proxyAddress,
     proxyVersion,
@@ -66,16 +121,14 @@ export function AccountProxyRecoverPage(): ReactNode {
       processRecoverTransaction(
         txHash,
         destroyedRef,
-        // When tx is finished (successfully or not)
         () => setTxInProgress(false),
-        // When tx is successfully mined
         () => {
           navigateBack()
           tokenAddress && updateTokenBalance(tokenAddress, BigNumber.from(0))
         },
       )
     })
-  }, [recoverCallback, navigateBack, updateTokenBalance, tokenAddress, destroyedRef])
+  }, [recoverCallback, destroyedRef, navigateBack, tokenAddress, updateTokenBalance])
 
   return (
     <Wrapper>
@@ -104,21 +157,37 @@ export function AccountProxyRecoverPage(): ReactNode {
         </div>
       </TokenWrapper>
 
-      <ButtonPrimaryStyled
-        disabled={isFractionFalsy(balance) || !!txSigningStep || txInProgress}
-        buttonSize={ButtonSize.BIG}
-        onClick={onRecover}
-      >
-        {txInProgress && <Loader />}
-        {txSigningStep && !txInProgress && (
-          <>
-            {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && t`1/2 Confirm funds recovering`}
-            {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && t`2/2 Sign transaction`}
-            <CenteredDots smaller />
-          </>
-        )}
-        {!txSigningStep && !txInProgress && t`Recover funds`}
-      </ButtonPrimaryStyled>
+      <StandardRecoverButton
+        balance={balance}
+        txInProgress={txInProgress}
+        txSigningStep={txSigningStep}
+        onRecover={onRecover}
+      />
     </Wrapper>
+  )
+}
+
+function StandardRecoverButton({
+  balance,
+  txInProgress,
+  txSigningStep,
+  onRecover,
+}: StandardRecoverButtonProps): ReactNode {
+  return (
+    <ButtonPrimaryStyled
+      disabled={isFractionFalsy(balance) || !!txSigningStep || txInProgress}
+      buttonSize={ButtonSize.BIG}
+      onClick={onRecover}
+    >
+      {txInProgress && <Loader />}
+      {txSigningStep && !txInProgress && (
+        <>
+          {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && t`1/2 Confirm funds recovering`}
+          {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && t`2/2 Sign transaction`}
+          <CenteredDots smaller />
+        </>
+      )}
+      {!txSigningStep && !txInProgress && t`Recover funds`}
+    </ButtonPrimaryStyled>
   )
 }

@@ -18,7 +18,9 @@ import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/canc
 import { processTwapCancellation } from '../services/processTwapCancellation'
 import { setTwapOrderStatusAtom, updateTwapOrderAtom } from '../state/twapOrdersListAtom'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
+import { queueTwapPrototypeCancellationNoticeAtom } from '../state/twapPrototypeProxyUiAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
+import { getRemainingSellAmountRaw } from '../utils/buildPrototypeProxyState'
 import { resolveDisplayTwapOrder } from '../utils/resolveDisplayTwapOrder'
 
 export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Promise<OnChainCancellation> {
@@ -26,6 +28,7 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const updateTwapOrder = useSetAtom(updateTwapOrderAtom)
+  const queueCancellationNotice = useSetAtom(queueTwapPrototypeCancellationNoticeAtom)
   const sendBatchTransactions = useSendBatchTransactions()
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
@@ -36,7 +39,7 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
       const twapOrder = twapOrders[twapOrderId]
 
       if (twapOrder?.isPrototype) {
-        return getPrototypeCancellation(twapOrderId, order, twapOrder, updateTwapOrder)
+        return getPrototypeCancellation(twapOrderId, order, twapOrder, updateTwapOrder, queueCancellationNotice)
       }
 
       if (!composableCowContract || !settlementContract) {
@@ -86,6 +89,7 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
       sendBatchTransactions,
       setTwapOrderStatus,
       updateTwapOrder,
+      queueCancellationNotice,
     ],
   )
 }
@@ -95,6 +99,7 @@ function getPrototypeCancellation(
   order: Order,
   twapOrder: TwapOrderItem,
   updateTwapOrder: (payload: { orderId: string; updates: Partial<TwapOrderItem> }) => void,
+  queueCancellationNotice: (orderIds: string[]) => void,
 ): OnChainCancellation {
   const resolvedOrder = resolveDisplayTwapOrder(twapOrder)
 
@@ -112,6 +117,10 @@ function getPrototypeCancellation(
       await new Promise((resolve) => setTimeout(resolve, 800))
 
       updateTwapOrder({ orderId: twapOrderId, updates: { ...updates, status: TwapOrderStatus.Cancelled } })
+
+      if (getRemainingSellAmountRaw(resolvedOrder) > 0n) {
+        queueCancellationNotice([twapOrderId])
+      }
     },
   }
 }

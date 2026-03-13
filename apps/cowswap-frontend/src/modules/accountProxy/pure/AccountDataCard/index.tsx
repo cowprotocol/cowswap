@@ -20,6 +20,7 @@ interface AccountDataCardProps {
   padding?: number
   margin?: string
   minHeight?: number | string
+  valueLabel?: ReactNode
 }
 
 export function AccountDataCard({
@@ -34,6 +35,7 @@ export function AccountDataCard({
   padding,
   margin,
   minHeight,
+  valueLabel,
 }: AccountDataCardProps): ReactNode {
   return (
     <BaseAccountCard
@@ -46,7 +48,13 @@ export function AccountDataCard({
       showWatermark={showWatermark}
       ariaLabel={`Account ${safeShortenAddress(account)} overview`}
     >
-      <DefaultAccountContent account={account} chainId={chainId} totalUsdAmount={totalUsdAmount} loading={loading} />
+      <DefaultAccountContent
+        account={account}
+        chainId={chainId}
+        totalUsdAmount={totalUsdAmount}
+        loading={loading}
+        valueLabel={valueLabel}
+      />
     </BaseAccountCard>
   )
 }

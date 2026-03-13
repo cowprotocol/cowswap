@@ -2,7 +2,12 @@ import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { TwapOrderItem, TwapOrderStatus } from 'modules/twap'
+import {
+  getPrototypeProxyOrderFundsState,
+  getRemainingSellAmountRaw,
+  TwapOrderItem,
+  TwapOrderStatus,
+} from 'modules/twap'
 
 import { emulateTwapAsOrder } from './emulateTwapAsOrder'
 
@@ -20,6 +25,9 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
   const status = statusesMap[order.status]
   const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
   const outputToken = tokensByAddress[enrichedOrder.buyToken.toLowerCase()]
+  const prototypeFundsState = order.isPrototype
+    ? getPrototypeProxyOrderFundsState(order, getRemainingSellAmountRaw(order))
+    : undefined
 
   if (!inputToken || !outputToken) return null
 
@@ -29,6 +37,7 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
     composableCowInfo: {
       id: order.id,
       isPrototype: order.isPrototype,
+      prototypeFundsState,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
     inputToken,

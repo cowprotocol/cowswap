@@ -1,4 +1,4 @@
-import { ButtonPrimary, TokenAmount, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, LinkStyledButton, TokenAmount, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -53,4 +53,23 @@ export const TokenLogoWrapper = styled.div`
 export const TokenAmountStyled = styled(TokenAmount)`
   font-size: 28px;
   font-weight: 500;
+`
+
+export const HelperText = styled.div`
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  text-align: left;
+`
+
+export const ErrorText = styled.div`
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+`
+
+export const BannerLink = styled(LinkStyledButton)`
+  color: var(${UI.COLOR_TEXT});
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
 `

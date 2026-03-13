@@ -1,9 +1,11 @@
 export * from './containers/TwapFormWidget'
 export * from './containers/TwapConfirmModal'
 export * from './containers/TwapPrototypePanel'
+export * from './containers/TwapPrototypeProxy'
 export * from './hooks/useAllEmulatedOrders'
 export * from './hooks/useTwapOrderByChildId'
 export * from './hooks/useEmulatedTwapOrders'
+export * from './hooks/useOpenTwapPrototypeProxyPage'
 export * from './state/twapOrdersListAtom'
 export * from './hooks/useSetPartOrderCancelling'
 export * from './hooks/useCancelTwapOrder'
@@ -12,6 +14,13 @@ export * from './hooks/useScaledReceiveAmountInfo'
 export * from './hooks/useTwapFormState'
 export * from './hooks/useTwapSlippage'
 export * from './hooks/useIsTwapEoaPrototypeEnabled'
+export * from './hooks/useTwapPrototypeProxy'
+export {
+  getPrototypeProxyAddress,
+  getPrototypeProxyOrderFundsState,
+  getRemainingSellAmountRaw,
+} from './utils/buildPrototypeProxyState'
+export type { PrototypeProxyCurrentTokenSummary, PrototypeProxyTokenSummary } from './utils/buildPrototypeProxyState'
 export { useIsFallbackHandlerRequired } from './hooks/useFallbackHandlerVerification'
 export { SetupFallbackHandlerWarning } from './containers/SetupFallbackHandlerWarning'
 export * from './updaters/index'

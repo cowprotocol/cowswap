@@ -27,6 +27,8 @@ import {
   TwapFormWidget,
   TwapUpdaters,
   TwapPrototypePanel,
+  TwapPrototypeProxyBanner,
+  TwapPrototypeProxyModals,
   useAllEmulatedOrders,
   useIsFallbackHandlerRequired,
   useIsTwapEoaPrototypeEnabled,
@@ -72,6 +74,7 @@ export function AdvancedOrdersPage(): ReactNode {
         secondaryOnLeft={ordersTableOnLeft}
         hideOrdersTable={hideOrdersTable}
       >
+        <TwapPrototypeProxyModals />
         <styledEl.PrimaryWrapper>
           <TwapPrototypePanel />
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
@@ -92,6 +95,7 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper>
+            {isTwapEoaPrototypeMode && <TwapPrototypeProxyBanner />}
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
                 displayOrdersOnlyForSafeApp={!isTwapEoaPrototypeMode}

@@ -10,7 +10,7 @@ import {
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { Edit, FileText, MoreVertical, Repeat, Trash2 } from 'react-feather'
+import { Edit, FileText, MoreVertical, Pocket, Repeat, Trash2 } from 'react-feather'
 
 import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 
@@ -19,6 +19,7 @@ export interface OrderContextMenuProps {
   activityUrl: string | undefined
   showCancellationModal: Command | null
   alternativeOrderModalContext?: AlternativeOrderModalContext
+  openProxyAccount?: Command | null
   isPrototype?: boolean
 }
 
@@ -27,6 +28,7 @@ export function OrderContextMenu({
   activityUrl,
   showCancellationModal,
   alternativeOrderModalContext,
+  openProxyAccount,
   isPrototype,
 }: OrderContextMenuProps): ReactNode {
   return (
@@ -41,6 +43,14 @@ export function OrderContextMenu({
               <Trans>Order receipt</Trans>
             </span>
           </ContextMenuItemButton>
+          {openProxyAccount && (
+            <ContextMenuItemButton onClick={openProxyAccount}>
+              <Pocket size={16} />
+              <span>
+                <Trans>View TWAP proxy account</Trans>
+              </span>
+            </ContextMenuItemButton>
+          )}
           {activityUrl && <ContextMenuExternalLink href={activityUrl} label={t`View on explorer`} />}
           {alternativeOrderModalContext && (
             <ContextMenuItemButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
