@@ -1,8 +1,13 @@
 import { useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { useAvailableChains, useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  useAvailableChains,
+  useAvailableTargetChains,
+  useFeatureFlags,
+  useIsBridgingEnabled,
+} from '@cowprotocol/common-hooks'
+import { AdditionalTargetChainId, ChainInfo, isAdditionalTargetChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
@@ -36,23 +41,45 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
   const isBridgingEnabled = useIsBridgingEnabled() // Reads from Jotai atom
   const availableChains = useAvailableChains()
+  const availableTargetChains = useAvailableTargetChains()
   const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
   const shouldHideNetworkSelector = useShouldHideNetworkSelector()
+  const { isBtcBridgeEnabled, isSolBridgeEnabled } = useFeatureFlags()
+
+  const additionalChains = useMemo(() => {
+    const supportedBridgesChains = new Set<AdditionalTargetChainId>()
+    if (isBtcBridgeEnabled) supportedBridgesChains.add(AdditionalTargetChainId.BITCOIN)
+    if (isSolBridgeEnabled) supportedBridgesChains.add(AdditionalTargetChainId.SOLANA)
+    return supportedBridgesChains
+  }, [isBtcBridgeEnabled, isSolBridgeEnabled])
 
   const supportedChains = useMemo(() => {
     return availableChains.reduce((acc, id) => {
       const info = CHAIN_INFO[id]
+
       if (info) acc.push(mapChainInfo(id, info))
       return acc
     }, [] as ChainInfo[])
   }, [availableChains])
+
+  const supportedTargetChains = useMemo(() => {
+    return availableTargetChains.reduce((acc, id) => {
+      const info = CHAIN_INFO[id]
+      if (isAdditionalTargetChain(id) && !additionalChains.has(id)) {
+        return acc
+      }
+
+      if (info) acc.push(mapChainInfo(id, info))
+      return acc
+    }, [] as ChainInfo[])
+  }, [availableTargetChains, additionalChains])
 
   // When selecting the BUY token, the bridge "source chain" is the SELL token's chain (oppositeToken),
   // not necessarily the wallet network. This keeps chain availability accurate when wallet network != trade network.
   const sourceChainId =
     field === Field.OUTPUT && oppositeToken?.chainId ? (oppositeToken.chainId as SupportedChainId) : chainId
 
-  const destinationChainIds = useMemo(() => supportedChains.map((c) => c.id), [supportedChains])
+  const destinationChainIds = useMemo(() => supportedTargetChains.map((c) => c.id), [supportedTargetChains])
   const isBuyField = field === Field.OUTPUT
   const routesAvailability = useRoutesAvailability(
     isBuyField && isBridgingEnabled ? sourceChainId : undefined,
@@ -75,12 +102,13 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     }
 
     // BUY token selection - include disabled chains info
+
     return createOutputChainsState({
       selectedTargetChainId,
       chainId: sourceChainId,
       currentChainInfo: mapChainInfo(sourceChainId, chainInfo),
       bridgeSupportedNetworks,
-      supportedChains,
+      supportedChains: supportedTargetChains,
       isLoading,
       routesAvailability,
     })
@@ -91,6 +119,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     sourceChainId,
     bridgeSupportedNetworks,
     supportedChains,
+    supportedTargetChains,
     isLoading,
     isBridgingEnabled,
     isAdvancedTradeType,

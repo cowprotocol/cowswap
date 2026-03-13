@@ -3,6 +3,7 @@ import {
   arbitrumOne,
   avalanche,
   base,
+  bitcoin,
   bnb,
   ChainInfo,
   gnosisChain,
@@ -145,7 +146,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.SOLANA],
   },
   [AdditionalTargetChainId.BITCOIN]: {
-    ...mapChainInfoToBaseChainInfo(solana),
+    ...mapChainInfoToBaseChainInfo(bitcoin),
     name: 'bitcoin',
     urlAlias: 'bitcoin',
     nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.BITCOIN],
@@ -176,8 +177,28 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.SEPOLIA,
 ]
 
+/**
+ * Sorted array of chain IDs in order of relevance.
+ * TODO: Sort by TVL? Reference: https://defillama.com/chain/gnosis
+ */
+export const SORTED_DST_CHAIN_IDS: TargetChainId[] = [
+  SupportedChainId.MAINNET,
+  SupportedChainId.BNB,
+  SupportedChainId.BASE,
+  SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.POLYGON,
+  SupportedChainId.AVALANCHE,
+  SupportedChainId.LINEA, // TODO: decide where to place Linea
+  SupportedChainId.PLASMA, // TODO: decide where to place Plasma
+  SupportedChainId.INK, // TODO: decide where to place Ink
+  SupportedChainId.GNOSIS_CHAIN,
+  AdditionalTargetChainId.SOLANA,
+  AdditionalTargetChainId.BITCOIN,
+  SupportedChainId.SEPOLIA,
+]
+
 export const CHAIN_INFO_ARRAY: BaseChainInfo[] = SORTED_CHAIN_IDS.map((id) => CHAIN_INFO[id])
 
-export function getChainInfo(chainId: SupportedChainId): BaseChainInfo {
+export function getChainInfo(chainId: TargetChainId): BaseChainInfo {
   return CHAIN_INFO[chainId]
 }
