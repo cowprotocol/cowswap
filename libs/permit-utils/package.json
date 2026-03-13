@@ -9,7 +9,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.0",
+    "@cowprotocol/cow-sdk": "8.0.0-pr-822-c889d632.0",
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@ethersproject/abi": "5.7.0",
