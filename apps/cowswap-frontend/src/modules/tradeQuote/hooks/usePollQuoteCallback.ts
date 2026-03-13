@@ -43,7 +43,7 @@ export function usePollQuoteCallback(
 
   return useCallback(
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
-      const { isQuoteUpdatePossible, isConfirmOpen } = quotePollingParams
+      const { isQuoteUpdatePossible, isConfirmOpen, hasPendingTrade } = quotePollingParams
 
       if (!isQuoteUpdatePossible || !tradeQuoteManager || !quoteParams || getIsUnsupportedTokens(quoteParams)) {
         return false
@@ -88,6 +88,7 @@ export function usePollQuoteCallback(
         forceUpdate: smartSlippageModeChanged || forceUpdate,
         isBrowserOnline: isOnlineRef.current && isWindowVisible,
         isConfirmOpen,
+        hasPendingTrade,
         fastQuote,
         hasSmartSlippage,
       }

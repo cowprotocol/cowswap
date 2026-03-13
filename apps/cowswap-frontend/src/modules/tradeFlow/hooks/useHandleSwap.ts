@@ -1,14 +1,13 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 
-import { useLingui } from '@lingui/react/macro'
+import { Percent } from '@uniswap/sdk-core'
+
 import { useConfig } from 'wagmi'
 
 import { Field } from 'legacy/state/types'
 
 import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
-import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
-import { logTradeFlow } from 'modules/trade/utils/logger'
-import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeWidgetActions, logTradeFlow, useTradeFlowAnalytics, useTradePriceImpact } from 'modules/trade'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
@@ -19,7 +18,69 @@ import { useTradeFlowType } from './useTradeFlowType'
 
 import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundleFlow'
 import { swapFlow } from '../services/swapFlow'
+import { acquireSwapFlowLock, releaseSwapFlowLock } from '../state/swapFlowLock'
 import { FlowType, SafeBundleFlowContext, TradeFlowContext } from '../types/TradeFlowContext'
+
+type ConfirmPriceImpactFn = (priceImpact: Percent | undefined) => Promise<boolean>
+
+async function runFlowByType(
+  tradeFlowType: FlowType,
+  tradeFlowContext: TradeFlowContext,
+  deps: {
+    ethFlowContext: ReturnType<typeof useEthFlowContext>
+    safeBundleFlowContext: SafeBundleFlowContext | null
+    priceImpactParams: ReturnType<typeof useTradePriceImpact>
+    confirmPriceImpactWithoutFee: ConfirmPriceImpactFn
+    analytics: ReturnType<typeof useTradeFlowAnalytics>
+    config: ReturnType<typeof useConfig>
+  },
+): Promise<boolean> {
+  if (tradeFlowType === FlowType.EOA_ETH_FLOW) {
+    if (!deps.ethFlowContext) throw new Error('Eth flow context is not ready')
+    logTradeFlow('ETH FLOW', 'Start eth flow')
+    const result = await ethFlow({
+      tradeContext: tradeFlowContext,
+      ethFlowContext: deps.ethFlowContext,
+      priceImpactParams: deps.priceImpactParams,
+      confirmPriceImpactWithoutFee: deps.confirmPriceImpactWithoutFee,
+      analytics: deps.analytics,
+    })
+    return result === true
+  }
+  if (tradeFlowType === FlowType.SAFE_BUNDLE_APPROVAL) {
+    if (!deps.safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
+    logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
+    const result = await safeBundleApprovalFlow({
+      tradeContext: tradeFlowContext,
+      safeBundleContext: deps.safeBundleFlowContext,
+      priceImpactParams: deps.priceImpactParams,
+      confirmPriceImpactWithoutFee: deps.confirmPriceImpactWithoutFee,
+      analytics: deps.analytics,
+      config: deps.config,
+    })
+    return result === true
+  }
+  if (tradeFlowType === FlowType.SAFE_BUNDLE_ETH) {
+    if (!deps.safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
+    logTradeFlow('SAFE BUNDLE ETH FLOW', 'Start safe bundle eth flow')
+    const result = await safeBundleEthFlow(
+      tradeFlowContext,
+      deps.safeBundleFlowContext,
+      deps.priceImpactParams,
+      deps.confirmPriceImpactWithoutFee,
+      deps.analytics,
+    )
+    return result === true
+  }
+  logTradeFlow('SWAP FLOW', 'Start swap flow')
+  const result = await swapFlow(
+    tradeFlowContext,
+    deps.priceImpactParams,
+    deps.confirmPriceImpactWithoutFee,
+    deps.analytics,
+  )
+  return result === true
+}
 
 function useTradeFlow(params: TradeFlowParams): {
   tradeFlowType: FlowType
@@ -47,7 +108,6 @@ export function useHandleSwap(
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const analytics = useTradeFlowAnalytics()
-  const { t } = useLingui()
 
   const contextIsReady =
     Boolean(
@@ -56,57 +116,31 @@ export function useHandleSwap(
         : tradeFlowContext,
     ) && !!tradeFlowContext
 
+  const flowInProgressRef = useRef(false)
+
   const callback = useCallback(async () => {
     if (!tradeFlowContext) return
+    if (flowInProgressRef.current) return
+    if (!acquireSwapFlowLock()) return
+    flowInProgressRef.current = true
 
-    const result = await (() => {
-      if (tradeFlowType === FlowType.EOA_ETH_FLOW) {
-        if (!ethFlowContext) throw new Error(t`Eth flow context is not ready`)
+    try {
+      const result = await runFlowByType(tradeFlowType, tradeFlowContext, {
+        ethFlowContext,
+        safeBundleFlowContext,
+        priceImpactParams,
+        confirmPriceImpactWithoutFee,
+        analytics,
+        config,
+      })
 
-        logTradeFlow('ETH FLOW', 'Start eth flow')
-        return ethFlow({
-          tradeContext: tradeFlowContext,
-          ethFlowContext,
-          priceImpactParams,
-          confirmPriceImpactWithoutFee,
-          analytics,
-        })
+      if (result === true) {
+        onChangeRecipient(null)
+        onUserInput(Field.INPUT, '')
       }
-
-      if (tradeFlowType === FlowType.SAFE_BUNDLE_APPROVAL) {
-        if (!safeBundleFlowContext) throw new Error(t`Safe bundle flow context is not ready`)
-
-        logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
-        return safeBundleApprovalFlow({
-          tradeContext: tradeFlowContext,
-          safeBundleContext: safeBundleFlowContext,
-          priceImpactParams,
-          confirmPriceImpactWithoutFee,
-          analytics,
-          config,
-        })
-      }
-      if (tradeFlowType === FlowType.SAFE_BUNDLE_ETH) {
-        if (!safeBundleFlowContext) throw new Error(t`Safe bundle flow context is not ready`)
-
-        logTradeFlow('SAFE BUNDLE ETH FLOW', 'Start safe bundle eth flow')
-        return safeBundleEthFlow(
-          tradeFlowContext,
-          safeBundleFlowContext,
-          priceImpactParams,
-          confirmPriceImpactWithoutFee,
-          analytics,
-        )
-      }
-
-      logTradeFlow('SWAP FLOW', 'Start swap flow')
-      return swapFlow(tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee, analytics)
-    })()
-
-    // Clean up form fields after successful swap
-    if (result === true) {
-      onChangeRecipient(null)
-      onUserInput(Field.INPUT, '')
+    } finally {
+      flowInProgressRef.current = false
+      releaseSwapFlowLock()
     }
   }, [
     config,
@@ -116,7 +150,6 @@ export function useHandleSwap(
     confirmPriceImpactWithoutFee,
     analytics,
     ethFlowContext,
-    t,
     safeBundleFlowContext,
     onChangeRecipient,
     onUserInput,

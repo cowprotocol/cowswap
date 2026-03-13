@@ -55,9 +55,18 @@ const customRender = (ui: ReactElement) => render(ui, { wrapper: WithProviders }
 export * from '@testing-library/react'
 export { customRender as render }
 
-export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: Location }): ReactNode {
+/** Partial location for tests; matches what MemoryRouter's initialEntries accepts. */
+export type MockRouterLocation = string | { pathname: string; search?: string; hash?: string }
+
+export function WithMockedWeb3({
+  children,
+  location,
+}: {
+  children?: ReactNode
+  location?: MockRouterLocation
+}): ReactNode {
   return (
-    <MemoryRouter initialEntries={location ? [location] : undefined}>
+    <MemoryRouter initialEntries={location !== undefined ? [location] : undefined}>
       <Provider store={cowSwapStore}>
         <Web3Provider>{children}</Web3Provider>
       </Provider>

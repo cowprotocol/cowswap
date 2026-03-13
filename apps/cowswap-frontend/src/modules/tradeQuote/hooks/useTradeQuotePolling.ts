@@ -66,19 +66,14 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
 
   /**
-   * Fetch the quote instantly once the quote params are changed
+   * Fetch the quote instantly once the quote params are changed.
+   * For bridge, doQuotePolling only fetches when confirm is open; we let it decide.
    */
   useLayoutEffect(() => {
-    /**
-     * Quote params are not supposed to be changed once confirm screen is open
-     * So, we should not refetch quote
-     */
-    if (isConfirmOpen) return
-
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
+  }, [isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL

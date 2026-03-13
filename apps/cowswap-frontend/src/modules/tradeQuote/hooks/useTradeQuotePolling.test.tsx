@@ -101,6 +101,7 @@ describe('useTradeQuotePolling()', () => {
             isConfirmOpen: false,
             isQuoteUpdatePossible: true,
             useSuggestedSlippageApi: false,
+            hasPendingTrade: false,
           })
         },
         { wrapper: Wrapper(mocks) },
@@ -132,6 +133,7 @@ describe('useTradeQuotePolling()', () => {
             isConfirmOpen: false,
             isQuoteUpdatePossible: true,
             useSuggestedSlippageApi: false,
+            hasPendingTrade: false,
           }),
         { wrapper: Wrapper(mocks) },
       )

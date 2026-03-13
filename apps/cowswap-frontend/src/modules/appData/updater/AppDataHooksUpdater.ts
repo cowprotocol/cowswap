@@ -18,8 +18,8 @@ import { cowHookToTypedCowHook } from '../utils/typedHooks'
 
 type OrderInteractionHooks = cowAppDataLatestScheme.OrderInteractionHooks
 
-function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
-  const hookData = useAccountAgnosticPermitHookData()
+function useAgnosticPermitDataIfUserHasNoAllowance(enablePreGeneration = false): Nullish<PermitHookData> {
+  const hookData = useAccountAgnosticPermitHookData(enablePreGeneration)
 
   // Remove permitData if the user has enough allowance for the current trade
   const hasTradeEnoughAllowance = useHasTradeEnoughAllowance()
