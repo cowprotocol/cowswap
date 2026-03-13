@@ -118,7 +118,7 @@ export function AffiliateTradeCodeForm({
         )}
       </Body>
       <Footer>
-        <ButtonPrimary disabled={isLoading} type="submit">
+        <ButtonPrimary disabled={isLoading || (requiresPayoutConfirmation && !payoutConfirmed)} type="submit">
           {submitButtonLabel}
         </ButtonPrimary>
       </Footer>

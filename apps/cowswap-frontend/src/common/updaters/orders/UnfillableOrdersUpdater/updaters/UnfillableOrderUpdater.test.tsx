@@ -4,7 +4,7 @@ import { useAtom, useSetAtom } from 'jotai'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
+import { Token } from '@cowprotocol/currency'
 
 import { renderHook } from '@testing-library/react'
 import useSWR from 'swr'

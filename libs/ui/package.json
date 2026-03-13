@@ -38,7 +38,7 @@
     "@popperjs/core": "^2.4.4",
     "@reach/menu-button": "^0.18.0",
     "@reach/portal": "^0.18.0",
-    "@uniswap/sdk-core": "^3.0.1",
+    "@cowprotocol/currency": "workspace:*",
     "bignumber.js": "^9.1.2",
     "color2k": "^2.0.2",
     "jotai": "2.16.2",

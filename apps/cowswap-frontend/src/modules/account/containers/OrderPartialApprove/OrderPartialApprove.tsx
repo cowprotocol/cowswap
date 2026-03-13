@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonSize } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import {
   ActiveOrdersWithAffectedPermit,

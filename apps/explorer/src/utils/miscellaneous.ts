@@ -72,6 +72,12 @@ const NetworkImageAddressMap: Record<Network, string> = {
   [Network.INK]: 'eth',
 }
 
+interface RetryOptions {
+  retriesLeft?: number
+  interval?: number
+  exponentialBackOff?: boolean
+}
+
 export function getImageAddress(address: string, network: Network): string {
   if (isNativeToken(address)) {
     // What is going on here?
@@ -111,15 +117,6 @@ export function setStorageItem(key: string, data: unknown): void {
   return localStorage.setItem(key, formattedData)
 }
 
-export async function silentPromise<T>(promise: Promise<T>, customMessage?: string): Promise<T | undefined> {
-  try {
-    return await promise
-  } catch (e) {
-    logDebug(customMessage || 'Failed to fetch promise', e.message)
-    return
-  }
-}
-
 /**
  * Retry function with delay.
  *
@@ -131,10 +128,13 @@ export async function silentPromise<T>(promise: Promise<T>, customMessage?: stri
  * @param exponentialBackOff Whether to use exponential back off, doubling wait interval. Defaults to true
  */
 
-interface RetryOptions {
-  retriesLeft?: number
-  interval?: number
-  exponentialBackOff?: boolean
+export async function silentPromise<T>(promise: Promise<T>, customMessage?: string): Promise<T | undefined> {
+  try {
+    return await promise
+  } catch (e) {
+    logDebug(customMessage || 'Failed to fetch promise', e.message)
+    return
+  }
 }
 
 export const RequireContextMock = Object.assign(() => '', {

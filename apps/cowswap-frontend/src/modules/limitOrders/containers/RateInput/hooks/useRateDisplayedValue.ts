@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { formatInputAmount, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
 
 import { useUsdAmount } from 'modules/usdAmount'
 

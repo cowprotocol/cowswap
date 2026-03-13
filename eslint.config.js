@@ -94,15 +94,15 @@ module.exports = [
     plugins: { perfectionist },
     rules: {
       'perfectionist/sort-modules': [
-        'off',
+        'warn',
         {
           groups: [
             ['export-interface', 'export-type'],
             'export-enum',
+            ['interface', 'type'],
+            'enum',
             'export-class',
             'export-function',
-            'enum',
-            ['interface', 'type'],
             'class',
             'function',
           ],
@@ -116,7 +116,8 @@ module.exports = [
   {
     files: ['**/*.tsx'],
     rules: {
-      complexity: ['error', 15],
+      complexity: ['error', 20],
+      'max-lines-per-function': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
     },
   },
   {

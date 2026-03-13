@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Currency, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
