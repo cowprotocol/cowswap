@@ -24,11 +24,9 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { NotificationAlertPopover } from './NotificationAlertPopover'
 import { BalanceText, Wrapper } from './styled'
 
-function createNotificationClickEventData(event: string): string {
-  return toCowSwapGtmEvent({
-    category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-    action: event,
-  })
+interface AccountElementProps {
+  standaloneMode?: boolean
+  className?: string
 }
 
 interface NotificationSidebarPortalProps {
@@ -36,25 +34,6 @@ interface NotificationSidebarPortalProps {
   isSidebarOpen: boolean
   onClose: () => void
   initialSettingsOpen: boolean
-}
-
-function NotificationSidebarPortal({
-  portalTarget,
-  isSidebarOpen,
-  onClose,
-  initialSettingsOpen,
-}: NotificationSidebarPortalProps): ReactNode {
-  if (!portalTarget) return null
-
-  return ReactDOM.createPortal(
-    <NotificationSidebar isOpen={isSidebarOpen} onClose={onClose} initialSettingsOpen={initialSettingsOpen} />,
-    portalTarget,
-  )
-}
-
-interface AccountElementProps {
-  standaloneMode?: boolean
-  className?: string
 }
 
 export function AccountElement({ className, standaloneMode }: AccountElementProps): ReactNode {
@@ -132,5 +111,26 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
         initialSettingsOpen={shouldOpenSettings}
       />
     </>
+  )
+}
+
+function createNotificationClickEventData(event: string): string {
+  return toCowSwapGtmEvent({
+    category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+    action: event,
+  })
+}
+
+function NotificationSidebarPortal({
+  portalTarget,
+  isSidebarOpen,
+  onClose,
+  initialSettingsOpen,
+}: NotificationSidebarPortalProps): ReactNode {
+  if (!portalTarget) return null
+
+  return ReactDOM.createPortal(
+    <NotificationSidebar isOpen={isSidebarOpen} onClose={onClose} initialSettingsOpen={initialSettingsOpen} />,
+    portalTarget,
   )
 }
