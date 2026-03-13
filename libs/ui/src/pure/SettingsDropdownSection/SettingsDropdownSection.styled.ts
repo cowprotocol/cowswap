@@ -22,15 +22,3 @@ export const Title = styled.h4`
   color: inherit;
   margin: 0;
 `
-
-/*
-
-
-  font-weight: 600;
-  font-size: 15px;
-  color: inherit;
-  width: 100%;
-  text-align: left;
-  margin: 0;
-
-*/

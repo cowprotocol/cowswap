@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai'
-import { ReactElement, ReactNode, RefObject, useCallback, useEffect, useRef } from 'react'
+import { ReactNode, useCallback, useRef } from 'react'
 
 import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -8,24 +7,19 @@ import { SettingsBox, SettingsDropdownSection } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { Menu, useMenuButtonContext } from '@reach/menu-button'
+import { Menu } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
 
 import { SettingsIcon } from 'modules/trade/pure/Settings'
+import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container'
+import { TransactionSlippageInput } from 'modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import * as styledEl from './SettingsDropdown.styled'
-
-import { TransactionSettings } from '../../pure/TransactionSettings/TransactionSettings.container'
-import { settingsTabStateAtom } from '../../state/settingsTabState'
-
-interface SettingsTabControllerProps {
-  buttonRef: RefObject<HTMLButtonElement | null>
-  children: ReactElement
-}
+import { SettingsTabController } from './SettingsTabController.container'
 
 interface SettingsTabProps {
   className?: string
@@ -34,9 +28,6 @@ interface SettingsTabProps {
   deadlineState: StatefulValue<number>
   enablePartialApprovalState?: StatefulValue<boolean> | [null, null]
 }
-
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 
 export function SettingsDropdown({
   className,
@@ -91,7 +82,8 @@ export function SettingsDropdown({
           </styledEl.StyledMenuButton>
           <styledEl.MenuFlyout portal={false}>
             <SettingsDropdownSection title={t`Swap Settings`}>
-              <TransactionSettings deadlineState={deadlineState} />
+              <TransactionSlippageInput />
+              <DeadlineTransactionSettings deadlineState={deadlineState} />
             </SettingsDropdownSection>
 
             <SettingsDropdownSection title={t`Swap Interface`}>
@@ -145,33 +137,4 @@ export function SettingsDropdown({
       </SettingsTabController>
     </Menu>
   )
-}
-
-/**
- * https://stackoverflow.com/questions/70596487/how-to-programmatically-expand-react-reach-ui-reach-menu-button-menu
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function SettingsTabController({ buttonRef, children }: SettingsTabControllerProps) {
-  const [settingsTabState, setSettingsTabState] = useAtom(settingsTabStateAtom)
-  const { isExpanded } = useMenuButtonContext()
-
-  const toggleMenu = useCallback(() => {
-    buttonRef.current?.dispatchEvent(new Event('mousedown', { bubbles: true }))
-  }, [buttonRef])
-
-  useEffect(() => {
-    if (settingsTabState.open) {
-      toggleMenu()
-    }
-  }, [settingsTabState.open, toggleMenu])
-
-  useEffect(() => {
-    if (settingsTabState.open && !isExpanded) {
-      toggleMenu()
-      setSettingsTabState({ open: false })
-    }
-  }, [settingsTabState.open, isExpanded, toggleMenu, setSettingsTabState])
-
-  return children
 }

@@ -19,7 +19,6 @@ export interface SettingsProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function
 export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsProps): ReactNode {
   const { i18n } = useLingui()
