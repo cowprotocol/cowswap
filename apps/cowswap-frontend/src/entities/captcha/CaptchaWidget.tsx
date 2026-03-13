@@ -1,15 +1,16 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
+import { orderBookApi } from 'cowSdk'
 
-import { TURNSTILE_SITE_KEY } from './const'
+import { TURNSTILE_SITE_KEY, TURNSTILE_TOKEN_HEADER_NAME } from './const'
 import { logCaptcha } from './logger'
-import { setupRequestInterceptor } from './setupRequestInterceptor'
 import { turnstileTokenAtom } from './state/turnstileTokenAtom'
 
 export function CaptchaWidget(): ReactNode {
   const setToken = useSetAtom(turnstileTokenAtom)
+  const token = useAtomValue(turnstileTokenAtom)
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
 
   useEffect(() => {
@@ -17,8 +18,17 @@ export function CaptchaWidget(): ReactNode {
       logCaptcha('Missing env TURNSTILE_SITE_KEY, captcha widget disabled')
       return
     }
-    setupRequestInterceptor()
-  }, [])
+
+    const headers = { ...(orderBookApi.context.requestHeaders ?? {}) }
+
+    if (token) {
+      headers[TURNSTILE_TOKEN_HEADER_NAME] = token
+    } else {
+      delete headers[TURNSTILE_TOKEN_HEADER_NAME]
+    }
+
+    orderBookApi.context.requestHeaders = Object.keys(headers).length ? headers : undefined
+  }, [token])
 
   if (!TURNSTILE_SITE_KEY) return null
 
