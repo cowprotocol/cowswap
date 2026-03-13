@@ -1,8 +1,6 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import { Loader, UI } from '@cowprotocol/ui'
-
-import { Toggle } from 'legacy/components/Toggle'
+import { Loader, UI, Toggle } from '@cowprotocol/ui'
 
 interface TelegramConnectionStatusProps {
   isLoading: boolean
@@ -49,13 +47,14 @@ export function TelegramConnectionStatus({
     return <Loader size="33px" stroke={`var(${UI.COLOR_TEXT_OPACITY_50})`} />
   }
 
-  const isToggleActive = !needsAuthorization && isSubscribed
+  const checked = !needsAuthorization && isSubscribed
 
   return (
     <div>
       <Toggle
+        root="label"
         id="toggle-telegram-notifications"
-        isActive={isToggleActive}
+        checked={checked}
         toggle={handleToggle}
         inactiveBgColor={`var(${UI.COLOR_PAPER})`}
       />

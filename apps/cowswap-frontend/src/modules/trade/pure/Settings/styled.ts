@@ -4,11 +4,9 @@ import { MenuButton, MenuList } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
 export const SettingsContainer = styled.div`
-  --padding: 10px;
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding: var(--padding);
   border-radius: 12px;
   box-shadow: var(${UI.BOX_SHADOW_2});
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
@@ -21,38 +19,7 @@ export const SettingsContainer = styled.div`
   top: 48px;
   z-index: 100;
   min-width: 330px;
-  max-width: calc(100% - var(--padding) * 2);
-`
-
-export const SettingsTitle = styled.h3`
-  font-weight: 600;
-  font-size: 15px;
-  color: inherit;
-  width: 100%;
-  text-align: left;
-  margin: 0;
-`
-
-export const SettingsBoxWrapper = styled.div<{ disabled: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  gap: 10px;
-  color: inherit;
-  opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
-  pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
-
-  :last-child {
-    margin-bottom: 0;
-  }
-`
-
-export const SettingsBoxTitle = styled.div`
-  display: flex;
-  align-items: center;
-  font-weight: 400;
-  color: inherit;
-  font-size: 14px;
+  max-width: calc(100% - var(--padding, 16px) * 2);
 `
 
 export const SettingsButton = styled(MenuButton)`

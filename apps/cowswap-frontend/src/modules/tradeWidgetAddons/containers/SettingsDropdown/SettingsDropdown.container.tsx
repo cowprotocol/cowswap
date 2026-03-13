@@ -4,16 +4,12 @@ import { ReactElement, ReactNode, RefObject, useCallback, useEffect, useRef } fr
 import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
-import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
+import { SettingsBox, SettingsDropdownSection } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Menu, useMenuButtonContext } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
-import { Text } from 'rebass'
-import { ThemedText } from 'theme'
-
-import { AutoColumn } from 'legacy/components/Column'
-import { Toggle } from 'legacy/components/Toggle'
 
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
@@ -41,7 +37,7 @@ interface SettingsTabProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function
+
 export function SettingsDropdown({
   className,
   recipientToggleState,
@@ -94,90 +90,56 @@ export function SettingsDropdown({
             <SettingsIcon />
           </styledEl.StyledMenuButton>
           <styledEl.MenuFlyout portal={false}>
-            <AutoColumn gap="md" style={{ padding: '1rem' }}>
-              <Text fontWeight={600} fontSize={14}>
-                <Trans>Transaction Settings</Trans>
-              </Text>
-
+            <SettingsDropdownSection title={t`Swap Settings`}>
               <TransactionSettings deadlineState={deadlineState} />
+            </SettingsDropdownSection>
 
-              <Text fontWeight={600} fontSize={14}>
-                <Trans>Interface Settings</Trans>
-              </Text>
+            <SettingsDropdownSection title={t`Swap Interface`}>
+              <SettingsBox
+                id="toggle-recipient-mode-button"
+                title={t`Custom Recipient`}
+                tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
+                checked={recipientToggleVisible}
+                toggle={toggleRecipientVisibility}
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
+                  action: 'Toggle Recipient Address',
+                  label: recipientToggleVisible ? 'Enabled' : 'Disabled',
+                })}
+              />
 
-              <RowBetween gap={'4px'}>
-                <RowFixed>
-                  <ThemedText.Black fontWeight={400} fontSize={14}>
-                    <Trans>Custom Recipient</Trans>
-                  </ThemedText.Black>
-                  <HelpTooltip
-                    text={
-                      <Trans>
-                        Allows you to choose a destination address for the swap other than the connected one.
-                      </Trans>
-                    }
-                  />
-                </RowFixed>
-                <Toggle
-                  id="toggle-recipient-mode-button"
-                  isActive={recipientToggleVisible}
-                  toggle={toggleRecipientVisibility}
+              {enablePartialApproval !== null ? (
+                <SettingsBox
+                  id="enable-partial-approvals-button"
+                  title={t`Enable partial approvals`}
+                  tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
+                  checked={enablePartialApproval}
+                  toggle={toggleEnablePartialApproval}
+                />
+              ) : null}
+
+              {!isInjectedWidget() && hooksEnabled !== null ? (
+                <SettingsBox
+                  id="toggle-hooks-mode-button"
+                  title={t`Enable Hooks`}
+                  tooltip={
+                    <Trans>
+                      <b>
+                        <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
+                      </b>{' '}
+                      Add DeFI interactions before and after your trade.
+                    </Trans>
+                  }
+                  checked={hooksEnabled}
+                  toggle={toggleHooksEnabled}
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
-                    action: 'Toggle Recipient Address',
-                    label: recipientToggleVisible ? 'Enabled' : 'Disabled',
+                    category: CowSwapAnalyticsCategory.HOOKS,
+                    action: 'Toggle Hooks Enabled',
+                    label: hooksEnabled ? 'Enabled' : 'Disabled',
                   })}
                 />
-              </RowBetween>
-
-              {enablePartialApproval !== null && (
-                <RowBetween>
-                  <RowFixed>
-                    <ThemedText.Black fontWeight={400} fontSize={14}>
-                      <Trans>Enable partial approvals</Trans>
-                    </ThemedText.Black>
-                    <HelpTooltip
-                      text={<Trans>Allows you to set partial token approvals instead of full approvals.</Trans>}
-                    />
-                  </RowFixed>
-                  <Toggle
-                    id="enable-partial-approvals-button"
-                    isActive={enablePartialApproval}
-                    toggle={toggleEnablePartialApproval}
-                  />
-                </RowBetween>
-              )}
-
-              {!isInjectedWidget() && hooksEnabled !== null && (
-                <RowBetween>
-                  <RowFixed>
-                    <ThemedText.Black fontWeight={400} fontSize={14}>
-                      <Trans>Enable Hooks</Trans>
-                    </ThemedText.Black>
-                    <HelpTooltip
-                      text={
-                        <Trans>
-                          <b>
-                            <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
-                          </b>{' '}
-                          Add DeFI interactions before and after your trade.
-                        </Trans>
-                      }
-                    />
-                  </RowFixed>
-                  <Toggle
-                    id="toggle-hooks-mode-button"
-                    isActive={hooksEnabled}
-                    toggle={toggleHooksEnabled}
-                    data-click-event={toCowSwapGtmEvent({
-                      category: CowSwapAnalyticsCategory.HOOKS,
-                      action: 'Toggle Hooks Enabled',
-                      label: hooksEnabled ? 'Enabled' : 'Disabled',
-                    })}
-                  />
-                </RowBetween>
-              )}
-            </AutoColumn>
+              ) : null}
+            </SettingsDropdownSection>
           </styledEl.MenuFlyout>
         </styledEl.StyledMenu>
       </SettingsTabController>

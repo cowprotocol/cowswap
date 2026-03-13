@@ -12,7 +12,7 @@ import {
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Settings, Trash2 } from 'react-feather'
 
-import { Toggle } from 'legacy/components/Toggle'
+import { Toggle } from 'legacy/components/Toggle/Toggle.pure'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
