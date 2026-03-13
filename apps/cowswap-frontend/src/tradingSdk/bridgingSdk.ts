@@ -15,7 +15,7 @@ const bungeeApiBase = getBungeeApiBase()
 
 export const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
-    includeBridges: ['across', 'cctp', 'gnosis-native-bridge'],
+    includeBridges: ['across', 'cctp-v2', 'gnosis-native-bridge'],
     apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
     manualApiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee-manual` : undefined,
     affiliate: bungeeApiBase ? bungeeAffiliateCode : undefined,
