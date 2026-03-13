@@ -34,6 +34,8 @@ export interface OrderFillsAtProps {
   isChild?: boolean
   isUnfillable: boolean
   isInverted: boolean
+  isPrototypeTwapBalanceIssue?: boolean
+  prototypeTwapBalanceIssueScope?: 'parent' | 'child'
   withWarning: boolean
   estimatedPriceWarning: ReactNode | undefined
   childOrders?: ParsedOrder[]
@@ -65,6 +67,8 @@ export function OrderFillsAt({
   prices,
   spotPrice,
   warningText,
+  isPrototypeTwapBalanceIssue,
+  prototypeTwapBalanceIssueScope,
   withWarning,
   onApprove,
 }: OrderFillsAtProps) {
@@ -199,6 +203,8 @@ export function OrderFillsAt({
             amountFee={feeAmount}
             canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
             isUnfillable={withWarning}
+            isPrototypeTwapBalanceIssue={isPrototypeTwapBalanceIssue}
+            prototypeTwapBalanceIssueScope={prototypeTwapBalanceIssueScope}
             warningText={warningText}
             onApprove={onApprove}
           />

@@ -94,20 +94,18 @@ export function getPrototypeProxyOrderFundsState(
   }
 
   if (order.prototypeProxyFundsClaimedAt) {
-    return order.status === TwapOrderStatus.Pending || order.status === TwapOrderStatus.Cancelling
-      ? 'withdrawn'
-      : 'claimed'
+    return isPrototypeActiveStatus(order.status) ? 'withdrawn' : 'claimed'
   }
 
-  if (order.status === TwapOrderStatus.Pending || order.status === TwapOrderStatus.Cancelling) {
+  if (isPrototypeActiveStatus(order.status)) {
     return 'active'
   }
 
-  if (order.status !== TwapOrderStatus.Cancelled && order.status !== TwapOrderStatus.Expired) {
-    return 'none'
+  if (order.status === TwapOrderStatus.Expired) {
+    return 'claimable'
   }
 
-  return 'claimable'
+  return isPrototypeClaimableCancelledOrder(order) ? 'claimable' : 'none'
 }
 
 export function getRemainingSellAmount(order: TwapOrderItem, token: TokenWithLogo): CurrencyAmount<TokenWithLogo> {
@@ -195,4 +193,12 @@ function buildTokenSummaries(
 
     return a.amount.greaterThan(b.amount) ? -1 : 1
   })
+}
+
+function isPrototypeActiveStatus(status: TwapOrderStatus): boolean {
+  return status === TwapOrderStatus.Pending || status === TwapOrderStatus.Cancelling
+}
+
+function isPrototypeClaimableCancelledOrder(order: TwapOrderItem): boolean {
+  return order.status === TwapOrderStatus.Cancelled && BigInt(order.executionInfo.info.executedSellAmount) > 0n
 }

@@ -68,6 +68,12 @@ export function TwapStatusAndToggle({
               hasEnoughBalance={!childWithBalanceWarning}
               hasEnoughAllowance={!childWithAllowanceWarning}
               inputTokenSymbol={warningChild.order.inputToken.symbol || ''}
+              isPrototypeTwapBalanceIssue={
+                !!childWithBalanceWarning &&
+                !!warningChild.order.composableCowInfo?.isPrototype &&
+                warningChild.order.composableCowInfo?.prototypeFundsState === 'withdrawn'
+              }
+              prototypeTwapBalanceIssueScope={childWithBalanceWarning ? 'parent' : undefined}
               isOrderScheduled={warningChild.order.status === OrderStatus.SCHEDULED}
               onApprove={() => approveOrderToken(warningChild.order.inputToken)}
             />

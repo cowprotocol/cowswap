@@ -1,14 +1,27 @@
 import { ReactNode } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
-import { BannerOrientation, ButtonSecondary, ButtonSize, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
+import {
+  BannerOrientation,
+  ButtonSecondary,
+  ButtonSize,
+  CenteredDots,
+  InlineBanner,
+  Loader,
+  StatusColorVariant,
+} from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { Link } from 'react-router'
 
+import { RecoverSigningStep } from '../../hooks/useRecoverFundsFromProxy'
 import * as styledEl from '../AccountProxyRecoverPage/styled'
+
+interface ActiveOrdersBannerProps {
+  activeOrderCount: number
+  ordersLink: string
+}
 
 interface PrototypeAccountProxyRecoverPageProps {
   activeOrderCount: number
@@ -17,6 +30,8 @@ interface PrototypeAccountProxyRecoverPageProps {
   ordersLink: string
   onRecover(): void
   onGoBack(): void
+  txInProgress: boolean
+  txSigningStep: RecoverSigningStep | null
 }
 
 export function PrototypeAccountProxyRecoverPage({
@@ -26,30 +41,12 @@ export function PrototypeAccountProxyRecoverPage({
   ordersLink,
   onRecover,
   onGoBack,
+  txInProgress,
+  txSigningStep,
 }: PrototypeAccountProxyRecoverPageProps): ReactNode {
   return (
     <styledEl.Wrapper>
-      {activeOrderCount > 0 ? (
-        <InlineBanner bannerType={StatusColorVariant.Alert} orientation={BannerOrientation.Horizontal}>
-          {activeOrderCount === 1 ? (
-            <>
-              <Trans>Currently </Trans>
-              <styledEl.BannerLink as={Link} to={ordersLink}>
-                <Trans>1 TWAP order</Trans>
-              </styledEl.BannerLink>
-              <Trans> depends on these funds. Withdrawing them will make that order unfillable.</Trans>
-            </>
-          ) : (
-            <>
-              <Trans>Currently </Trans>
-              <styledEl.BannerLink as={Link} to={ordersLink}>
-                <Trans>{activeOrderCount} TWAP orders</Trans>
-              </styledEl.BannerLink>
-              <Trans> depend on these funds. Withdrawing them will make those orders unfillable.</Trans>
-            </>
-          )}
-        </InlineBanner>
-      ) : null}
+      {activeOrderCount > 0 ? <ActiveOrdersBanner activeOrderCount={activeOrderCount} ordersLink={ordersLink} /> : null}
       <styledEl.TokenWrapper>
         <span>
           <Trans>TWAP proxy balance</Trans>
@@ -72,8 +69,20 @@ export function PrototypeAccountProxyRecoverPage({
       </styledEl.TokenWrapper>
 
       {canWithdraw ? (
-        <styledEl.ButtonPrimaryStyled buttonSize={ButtonSize.BIG} onClick={onRecover}>
-          {t`Withdraw funds`}
+        <styledEl.ButtonPrimaryStyled
+          buttonSize={ButtonSize.BIG}
+          disabled={!amount || !!txSigningStep || txInProgress}
+          onClick={onRecover}
+        >
+          {txInProgress && <Loader />}
+          {txSigningStep && !txInProgress && (
+            <>
+              {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && t`1/2 Confirm withdrawal`}
+              {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && t`2/2 Sign transaction`}
+              <CenteredDots smaller />
+            </>
+          )}
+          {!txSigningStep && !txInProgress && t`Withdraw funds`}
         </styledEl.ButtonPrimaryStyled>
       ) : (
         <ButtonSecondary buttonSize={ButtonSize.BIG} onClick={onGoBack}>
@@ -81,5 +90,29 @@ export function PrototypeAccountProxyRecoverPage({
         </ButtonSecondary>
       )}
     </styledEl.Wrapper>
+  )
+}
+
+function ActiveOrdersBanner({ activeOrderCount, ordersLink }: ActiveOrdersBannerProps): ReactNode {
+  return (
+    <InlineBanner bannerType={StatusColorVariant.Alert} orientation={BannerOrientation.Horizontal} noWrapContent>
+      {activeOrderCount === 1 ? (
+        <styledEl.BannerText>
+          <Trans>Currently </Trans>
+          <styledEl.BannerLink to={ordersLink}>
+            <Trans>1 TWAP order</Trans>
+          </styledEl.BannerLink>
+          <Trans> depends on these funds. Withdrawing them will make that order unfillable.</Trans>
+        </styledEl.BannerText>
+      ) : (
+        <styledEl.BannerText>
+          <Trans>Currently </Trans>
+          <styledEl.BannerLink to={ordersLink}>
+            <Trans>{activeOrderCount} TWAP orders</Trans>
+          </styledEl.BannerLink>
+          <Trans> depend on these funds. Withdrawing them will make those orders unfillable.</Trans>
+        </styledEl.BannerText>
+      )}
+    </InlineBanner>
   )
 }

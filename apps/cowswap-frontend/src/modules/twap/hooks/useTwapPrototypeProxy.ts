@@ -7,7 +7,10 @@ import { twapOrdersAtom, twapOrdersListAtom, useTwapOrdersTokens } from 'entitie
 
 import {
   dismissTwapPrototypeCancellationNoticeAtom,
+  dismissTwapPrototypeRecoverNoticeAtom,
+  queueTwapPrototypeRecoverNoticeAtom,
   twapPrototypeCancellationNoticeAtom,
+  twapPrototypeRecoverNoticeAtom,
 } from '../state/twapPrototypeProxyUiAtom'
 import { TwapOrderItem } from '../types'
 import {
@@ -32,12 +35,15 @@ interface UseTwapPrototypeProxy {
   withdrawnOrders: PrototypeProxyOrderEntry[]
   withdrawnActiveOrders: PrototypeProxyOrderEntry[]
   noticeOrderIds: string[]
+  recoverNoticeActiveOrderCount: number
   hasAnyProxyFunds: boolean
   hasActiveFunds: boolean
   hasClaimableFunds: boolean
   hasWithdrawnFunds: boolean
   hasWithdrawnActiveFunds: boolean
   dismissCancellationNotice(): void
+  dismissRecoverNotice(): void
+  queueRecoverNotice(activeOrderCount: number): void
   withdrawToken(tokenAddress: string): void
   withdrawClaimableToken(tokenAddress: string): void
   withdrawAllClaimableFunds(): void
@@ -50,10 +56,8 @@ export function useTwapPrototypeProxy(): UseTwapPrototypeProxy {
   const { account, chainId } = useWalletInfo()
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
   const tokensByAddress = useTwapOrdersTokens()
-  const cancellationNoticeState = useAtomValue(twapPrototypeCancellationNoticeAtom)
   const setTwapOrders = useSetAtom(twapOrdersAtom)
-  const dismissCancellationNotice = useSetAtom(dismissTwapPrototypeCancellationNoticeAtom)
-
+  const prototypeNotices = useTwapPrototypeNotices()
   const accountLowerCase = account?.toLowerCase()
   const { activeOrders, claimableOrders, proxyAddress, proxyState, withdrawnActiveOrders, withdrawnOrders } =
     usePrototypeProxyDerivedData({
@@ -62,40 +66,13 @@ export function useTwapPrototypeProxy(): UseTwapPrototypeProxy {
       chainId,
       tokensByAddress,
     })
-  const markOrdersAsWithdrawn = useCallback(
-    (entries: PrototypeProxyOrderEntry[], tokenAddress?: string) => {
-      setTwapOrders((currentOrders) =>
-        markPrototypeOrdersAsWithdrawn({
-          currentOrders,
-          accountLowerCase,
-          chainId,
-          entries,
-          now: new Date().toISOString(),
-          tokenAddress,
-        }),
-      )
-    },
-    [accountLowerCase, chainId, setTwapOrders],
-  )
-  const withdrawClaimableToken = useCallback(
-    (tokenAddress: string) => markOrdersAsWithdrawn(claimableOrders, tokenAddress),
-    [claimableOrders, markOrdersAsWithdrawn],
-  )
-  const withdrawToken = useCallback(
-    (tokenAddress: string) => markOrdersAsWithdrawn([...claimableOrders, ...activeOrders], tokenAddress),
-    [activeOrders, claimableOrders, markOrdersAsWithdrawn],
-  )
-  const withdrawAllClaimableFunds = useCallback(
-    () => markOrdersAsWithdrawn(claimableOrders),
-    [claimableOrders, markOrdersAsWithdrawn],
-  )
-  const withdrawAllFunds = useCallback(
-    () => markOrdersAsWithdrawn([...claimableOrders, ...activeOrders]),
-    [activeOrders, claimableOrders, markOrdersAsWithdrawn],
-  )
-  const resetWithdrawnFunds = useCallback(() => {
-    setTwapOrders((currentOrders) => resetClaimedPrototypeOrders(currentOrders, accountLowerCase, chainId))
-  }, [accountLowerCase, chainId, setTwapOrders])
+  const withdrawActions = usePrototypeWithdrawActions({
+    activeOrders,
+    accountLowerCase,
+    chainId,
+    claimableOrders,
+    setTwapOrders,
+  })
   const getOrderFundsState = useCallback(
     (orderId: string) => proxyState.orders.find((order) => order.order.id === orderId)?.state || null,
     [proxyState.orders],
@@ -111,18 +88,17 @@ export function useTwapPrototypeProxy(): UseTwapPrototypeProxy {
     claimableOrders,
     withdrawnOrders,
     withdrawnActiveOrders,
-    noticeOrderIds: cancellationNoticeState.orderIds,
+    noticeOrderIds: prototypeNotices.noticeOrderIds,
+    recoverNoticeActiveOrderCount: prototypeNotices.recoverNoticeActiveOrderCount,
     hasAnyProxyFunds: proxyState.orders.length > 0,
     hasActiveFunds: proxyState.activeTokens.length > 0,
     hasClaimableFunds: proxyState.claimableTokens.length > 0,
     hasWithdrawnFunds: proxyState.withdrawnTokens.length > 0,
     hasWithdrawnActiveFunds: withdrawnActiveOrders.length > 0,
-    dismissCancellationNotice,
-    withdrawToken,
-    withdrawClaimableToken,
-    withdrawAllClaimableFunds,
-    withdrawAllFunds,
-    resetWithdrawnFunds,
+    dismissCancellationNotice: prototypeNotices.dismissCancellationNotice,
+    dismissRecoverNotice: prototypeNotices.dismissRecoverNotice,
+    queueRecoverNotice: prototypeNotices.queueRecoverNotice,
+    ...withdrawActions,
     getOrderFundsState,
   }
 }
@@ -266,4 +242,88 @@ function usePrototypeProxyDerivedData({
     }),
     [proxyAddress, proxyState],
   )
+}
+
+function usePrototypeWithdrawActions({
+  activeOrders,
+  accountLowerCase,
+  chainId,
+  claimableOrders,
+  setTwapOrders,
+}: {
+  activeOrders: PrototypeProxyOrderEntry[]
+  accountLowerCase: string | undefined
+  chainId: number | undefined
+  claimableOrders: PrototypeProxyOrderEntry[]
+  setTwapOrders: (update: (currentOrders: Record<string, TwapOrderItem>) => Record<string, TwapOrderItem>) => void
+}): Pick<
+  UseTwapPrototypeProxy,
+  'withdrawToken' | 'withdrawClaimableToken' | 'withdrawAllClaimableFunds' | 'withdrawAllFunds' | 'resetWithdrawnFunds'
+> {
+  const markOrdersAsWithdrawn = useCallback(
+    (entries: PrototypeProxyOrderEntry[], tokenAddress?: string) => {
+      setTwapOrders((currentOrders) =>
+        markPrototypeOrdersAsWithdrawn({
+          currentOrders,
+          accountLowerCase,
+          chainId,
+          entries,
+          now: new Date().toISOString(),
+          tokenAddress,
+        }),
+      )
+    },
+    [accountLowerCase, chainId, setTwapOrders],
+  )
+  const withdrawClaimableToken = useCallback(
+    (tokenAddress: string) => markOrdersAsWithdrawn(claimableOrders, tokenAddress),
+    [claimableOrders, markOrdersAsWithdrawn],
+  )
+  const withdrawToken = useCallback(
+    (tokenAddress: string) => markOrdersAsWithdrawn([...claimableOrders, ...activeOrders], tokenAddress),
+    [activeOrders, claimableOrders, markOrdersAsWithdrawn],
+  )
+  const withdrawAllClaimableFunds = useCallback(
+    () => markOrdersAsWithdrawn(claimableOrders),
+    [claimableOrders, markOrdersAsWithdrawn],
+  )
+  const withdrawAllFunds = useCallback(
+    () => markOrdersAsWithdrawn([...claimableOrders, ...activeOrders]),
+    [activeOrders, claimableOrders, markOrdersAsWithdrawn],
+  )
+  const resetWithdrawnFunds = useCallback(
+    () => setTwapOrders((currentOrders) => resetClaimedPrototypeOrders(currentOrders, accountLowerCase, chainId)),
+    [accountLowerCase, chainId, setTwapOrders],
+  )
+
+  return {
+    withdrawToken,
+    withdrawClaimableToken,
+    withdrawAllClaimableFunds,
+    withdrawAllFunds,
+    resetWithdrawnFunds,
+  }
+}
+
+function useTwapPrototypeNotices(): Pick<
+  UseTwapPrototypeProxy,
+  | 'noticeOrderIds'
+  | 'recoverNoticeActiveOrderCount'
+  | 'dismissCancellationNotice'
+  | 'dismissRecoverNotice'
+  | 'queueRecoverNotice'
+> {
+  const cancellationNoticeState = useAtomValue(twapPrototypeCancellationNoticeAtom)
+  const recoverNoticeState = useAtomValue(twapPrototypeRecoverNoticeAtom)
+  const dismissCancellationNotice = useSetAtom(dismissTwapPrototypeCancellationNoticeAtom)
+  const dismissRecoverNotice = useSetAtom(dismissTwapPrototypeRecoverNoticeAtom)
+  const queueRecoverNotice = useSetAtom(queueTwapPrototypeRecoverNoticeAtom)
+
+  return {
+    noticeOrderIds: cancellationNoticeState.orderIds,
+    recoverNoticeActiveOrderCount: recoverNoticeState.activeOrderCount,
+    dismissCancellationNotice,
+    dismissRecoverNotice,
+    queueRecoverNotice,
+  }
 }

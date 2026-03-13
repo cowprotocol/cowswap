@@ -156,6 +156,12 @@ export function OrderRow({
   const isUnfillable = !percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
+  const isPrototypeTwapBalanceIssue =
+    hasEnoughBalance === false &&
+    !!order.composableCowInfo?.isPrototype &&
+    order.composableCowInfo?.prototypeFundsState === 'withdrawn'
+  const prototypeTwapBalanceIssueScope =
+    isPrototypeTwapBalanceIssue && isTwapTable ? (isChild ? 'child' : 'parent') : undefined
 
   // NOTE: Don't internationalize this, the text is being used as a flag...
   const warningText =
@@ -190,6 +196,8 @@ export function OrderRow({
       isInverted={isInverted}
       isSafeWallet={isSafeWallet}
       isTwapTable={isTwapTable}
+      isPrototypeTwapBalanceIssue={isPrototypeTwapBalanceIssue}
+      prototypeTwapBalanceIssueScope={prototypeTwapBalanceIssueScope}
       isUnfillable={isUnfillable}
       onApprove={onApprove}
       order={order}
@@ -358,6 +366,8 @@ export function OrderRow({
                   hasEnoughBalance={hasEnoughBalance ?? false}
                   hasEnoughAllowance={hasEnoughAllowance ?? false}
                   inputTokenSymbol={inputTokenSymbol}
+                  isPrototypeTwapBalanceIssue={isPrototypeTwapBalanceIssue}
+                  prototypeTwapBalanceIssueScope={prototypeTwapBalanceIssueScope}
                   isOrderScheduled={isOrderScheduled}
                   onApprove={() => orderActions.approveOrderToken(order.inputToken)}
                 />

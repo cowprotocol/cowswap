@@ -20,7 +20,6 @@ import { setTwapOrderStatusAtom, updateTwapOrderAtom } from '../state/twapOrders
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { queueTwapPrototypeCancellationNoticeAtom } from '../state/twapPrototypeProxyUiAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
-import { getRemainingSellAmountRaw } from '../utils/buildPrototypeProxyState'
 import { resolveDisplayTwapOrder } from '../utils/resolveDisplayTwapOrder'
 
 export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Promise<OnChainCancellation> {
@@ -117,10 +116,7 @@ function getPrototypeCancellation(
       await new Promise((resolve) => setTimeout(resolve, 800))
 
       updateTwapOrder({ orderId: twapOrderId, updates: { ...updates, status: TwapOrderStatus.Cancelled } })
-
-      if (getRemainingSellAmountRaw(resolvedOrder) > 0n) {
-        queueCancellationNotice([twapOrderId])
-      }
+      queueCancellationNotice([twapOrderId])
     },
   }
 }

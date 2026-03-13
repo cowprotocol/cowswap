@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { USDC } from '@cowprotocol/common-const'
 import { SupportedChainId, getTokenId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -79,7 +80,9 @@ function buildSummaryGroup(
 
   const hasTokens = summaries.length > 0
   const hasLoadingPrices = Object.values(tokenUsdAmounts).some(({ isLoading }) => isLoading)
-  const usdAmount = hasTokens ? sumUpUsdAmounts(chainId, tokenUsdAmounts) : null
+  const usdAmount = hasTokens
+    ? sumUpUsdAmounts(chainId, tokenUsdAmounts)
+    : CurrencyAmount.fromRawAmount(USDC[chainId] as Token, 0)
   const orderCount = getOrderCount(summaries)
 
   return {

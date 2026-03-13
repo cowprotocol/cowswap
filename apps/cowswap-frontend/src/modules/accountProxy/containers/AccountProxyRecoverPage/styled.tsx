@@ -1,5 +1,6 @@
-import { ButtonPrimary, LinkStyledButton, TokenAmount, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, TokenAmount, UI } from '@cowprotocol/ui'
 
+import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
@@ -64,12 +65,22 @@ export const ErrorText = styled.div`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
-export const BannerLink = styled(LinkStyledButton)`
-  color: var(${UI.COLOR_TEXT});
+export const BannerText = styled.span`
+  && {
+    width: auto;
+    display: inline;
+    line-height: 1.4;
+    gap: 0;
+  }
+`
+
+export const BannerLink = styled(Link)`
+  display: inline;
+  color: var(${UI.COLOR_TEXT}) !important;
   text-decoration: underline;
   text-underline-offset: 2px;
 
   &:hover {
-    color: var(${UI.COLOR_TEXT});
+    color: var(${UI.COLOR_TEXT}) !important;
   }
 `

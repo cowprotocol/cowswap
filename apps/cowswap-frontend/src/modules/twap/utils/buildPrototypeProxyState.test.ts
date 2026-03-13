@@ -1,4 +1,6 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
+import { TokensByAddress } from '@cowprotocol/tokens'
 import { Token } from '@uniswap/sdk-core'
 
 import {
@@ -52,6 +54,18 @@ function buildOrder(
   }
 }
 
+function buildTokensByAddress(...tokens: Token[]): TokensByAddress {
+  return tokens.reduce<TokensByAddress>((acc, token) => {
+    acc[getAddressKey(token.address)] = buildTokenWithLogo(token)
+
+    return acc
+  }, {})
+}
+
+function buildTokenWithLogo(token: Token): TokenWithLogo {
+  return Object.assign(token, { logoURI: '', tags: [] })
+}
+
 describe('buildPrototypeProxyState()', () => {
   beforeEach(() => {
     jest.useFakeTimers().setSystemTime(new Date('2026-03-11T10:02:00.000Z'))
@@ -68,10 +82,10 @@ describe('buildPrototypeProxyState()', () => {
       prototypeProxyFundsClaimedAt: '2026-03-11T11:00:00.000Z',
     })
 
-    const state = buildPrototypeProxyState([activeOrder, claimableOrder, claimedOrder], {
-      [getAddressKey(SELL_TOKEN.address)]: SELL_TOKEN,
-      [getAddressKey(BUY_TOKEN.address)]: BUY_TOKEN,
-    })
+    const state = buildPrototypeProxyState(
+      [activeOrder, claimableOrder, claimedOrder],
+      buildTokensByAddress(SELL_TOKEN, BUY_TOKEN),
+    )
 
     expect(state.activeTokens).toHaveLength(1)
     expect(state.activeTokens[0].orderIds).toEqual([activeOrder.id])
@@ -97,10 +111,7 @@ describe('buildPrototypeProxyState()', () => {
       prototypeProxyFundsClaimedAt: '2026-03-11T11:00:00.000Z',
     })
 
-    const state = buildPrototypeProxyState([withdrawnActiveOrder], {
-      [getAddressKey(SELL_TOKEN.address)]: SELL_TOKEN,
-      [getAddressKey(BUY_TOKEN.address)]: BUY_TOKEN,
-    })
+    const state = buildPrototypeProxyState([withdrawnActiveOrder], buildTokensByAddress(SELL_TOKEN, BUY_TOKEN))
 
     expect(getPrototypeProxyOrderFundsState(withdrawnActiveOrder, 3000000000000000000n)).toBe('withdrawn')
     expect(state.currentTokens).toEqual([])
@@ -115,7 +126,20 @@ describe('buildPrototypeProxyState()', () => {
 
     expect(getRemainingSellAmountRaw(fulfilledOrder)).toBe(0n)
     expect(getPrototypeProxyOrderFundsState(fulfilledOrder, 0n)).toBe('none')
-    expect(buildPrototypeProxyState([fulfilledOrder], { [getAddressKey(SELL_TOKEN.address)]: SELL_TOKEN })).toEqual({
+    expect(buildPrototypeProxyState([fulfilledOrder], buildTokensByAddress(SELL_TOKEN))).toEqual({
+      orders: [],
+      currentTokens: [],
+      activeTokens: [],
+      claimableTokens: [],
+      withdrawnTokens: [],
+    })
+  })
+
+  it('treats fully cancelled orders as auto-refunded instead of claimable', () => {
+    const cancelledOrder = buildOrder(TwapOrderStatus.Cancelled, '0')
+
+    expect(getPrototypeProxyOrderFundsState(cancelledOrder, 4000000000000000000n)).toBe('none')
+    expect(buildPrototypeProxyState([cancelledOrder], buildTokensByAddress(SELL_TOKEN, BUY_TOKEN))).toEqual({
       orders: [],
       currentTokens: [],
       activeTokens: [],

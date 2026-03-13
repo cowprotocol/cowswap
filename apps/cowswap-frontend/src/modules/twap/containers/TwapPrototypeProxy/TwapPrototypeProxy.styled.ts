@@ -27,6 +27,13 @@ export const ModalDescription = styled.p`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
+export const SummaryCard = styled.div`
+  padding: 12px;
+  border-radius: 6px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+  line-height: 1.6;
+`
+
 export const Section = styled.section`
   display: flex;
   flex-direction: column;
@@ -127,11 +134,21 @@ export const InlineActions = styled.div`
 `
 
 export const BannerLink = styled(LinkStyledButton)`
+  display: inline;
   color: var(${UI.COLOR_TEXT});
   text-decoration: underline;
   text-underline-offset: 2px;
 
   &:hover {
     color: var(${UI.COLOR_TEXT});
+  }
+`
+
+export const BannerText = styled.span`
+  && {
+    width: auto;
+    display: inline;
+    line-height: 1.4;
+    gap: 0;
   }
 `

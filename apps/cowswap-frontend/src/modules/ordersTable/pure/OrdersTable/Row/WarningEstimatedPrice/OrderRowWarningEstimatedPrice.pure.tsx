@@ -49,6 +49,12 @@ export function OrderRowWarningEstimatedPrice(props: OrderRowWarningEstimatedPri
             ? t`Insufficient balance`
             : t`Unfillable`
       }
+      isPrototypeTwapBalanceIssue={
+        warningChildWithParams.params.hasEnoughBalance === false &&
+        !!warningChildWithParams.order.composableCowInfo?.isPrototype &&
+        warningChildWithParams.order.composableCowInfo?.prototypeFundsState === 'withdrawn'
+      }
+      prototypeTwapBalanceIssueScope={warningChildWithParams.params.hasEnoughBalance === false ? 'parent' : undefined}
       onApprove={
         warningChildWithParams.params.hasEnoughAllowance === false
           ? () => approveOrderToken(warningChildWithParams.order.inputToken)

@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useUpdateTokenBalance } from '@cowprotocol/balances-and-allowances'
 import { useComponentDestroyedRef } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
+import { delay, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonSize, CenteredDots, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
@@ -53,10 +53,13 @@ interface StandardRecoverButtonProps {
 export function AccountProxyRecoverPage(): ReactNode {
   const { chainId } = useWalletInfo()
   const { proxyAddress, tokenAddress } = useParams()
+  const [prototypeTxInProgress, setPrototypeTxInProgress] = useState(false)
+  const [prototypeTxSigningStep, setPrototypeTxSigningStep] = useState<RecoverSigningStep | null>(null)
   const proxies = useAccountProxies()
   const selectedProxy = proxies?.find((proxy) => areAddressesEqual(proxy.account, proxyAddress))
 
-  const { activeTokens, claimableTokens, currentTokens, withdrawToken } = useTwapPrototypeProxy()
+  const destroyedRef = useComponentDestroyedRef()
+  const { activeTokens, claimableTokens, currentTokens, queueRecoverNotice, withdrawToken } = useTwapPrototypeProxy()
   const prototypeClaimableToken = claimableTokens.find((item) => areAddressesEqual(item.token.address, tokenAddress))
   const prototypeActiveToken = activeTokens.find((item) => areAddressesEqual(item.token.address, tokenAddress))
   const prototypeCurrentToken = currentTokens.find((item) => areAddressesEqual(item.token.address, tokenAddress))
@@ -64,12 +67,42 @@ export function AccountProxyRecoverPage(): ReactNode {
   const prototypeOrdersLink = addChainIdToRoute(Routes.ADVANCED_ORDERS, chainId?.toString())
 
   const navigateBack = useNavigateBack()
-  const onPrototypeRecover = useCallback(() => {
+  const onPrototypeRecover = useCallback(async () => {
     if (!tokenAddress || !prototypeCurrentToken) return
 
+    setPrototypeTxSigningStep(RecoverSigningStep.SIGN_RECOVER_FUNDS)
+    await delay(500)
+
+    if (destroyedRef.current) return
+
+    setPrototypeTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
+    await delay(500)
+
+    if (destroyedRef.current) return
+
+    setPrototypeTxSigningStep(null)
+    setPrototypeTxInProgress(true)
+    await delay(800)
+
+    if (destroyedRef.current) return
+
     withdrawToken(tokenAddress)
+
+    if (prototypeActiveOrderCount > 0) {
+      queueRecoverNotice(prototypeActiveOrderCount)
+    }
+
+    setPrototypeTxInProgress(false)
     navigateBack()
-  }, [navigateBack, prototypeCurrentToken, tokenAddress, withdrawToken])
+  }, [
+    destroyedRef,
+    navigateBack,
+    prototypeActiveOrderCount,
+    prototypeCurrentToken,
+    queueRecoverNotice,
+    tokenAddress,
+    withdrawToken,
+  ])
 
   if (selectedProxy?.kind === AccountProxyKind.TwapPrototype) {
     return (
@@ -80,6 +113,8 @@ export function AccountProxyRecoverPage(): ReactNode {
         ordersLink={prototypeOrdersLink}
         onRecover={onPrototypeRecover}
         onGoBack={navigateBack}
+        txInProgress={prototypeTxInProgress}
+        txSigningStep={prototypeTxSigningStep}
       />
     )
   }
@@ -95,8 +130,8 @@ function StandardAccountProxyRecoverPage({
   const [txInProgress, setTxInProgress] = useState(false)
   const navigateBack = useNavigateBack()
   const { balance, usdValue } = useTokenBalanceAndUsdValue(tokenAddress)
-  const destroyedRef = useComponentDestroyedRef()
   const updateTokenBalance = useUpdateTokenBalance()
+  const destroyedRef = useComponentDestroyedRef()
 
   const proxies = useAccountProxies()
   const proxyVersion = proxies?.find((proxy) => areAddressesEqual(proxy.account, proxyAddress))?.version

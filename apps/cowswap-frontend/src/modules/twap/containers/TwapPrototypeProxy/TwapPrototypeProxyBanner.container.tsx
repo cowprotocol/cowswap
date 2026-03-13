@@ -20,11 +20,13 @@ export function TwapPrototypeProxyBanner(): ReactNode {
   if (hasActiveFunds) {
     return (
       <styledEl.BannerWrapper>
-        <InlineBanner bannerType={StatusColorVariant.Info} orientation={BannerOrientation.Horizontal}>
-          <Trans>Funds for your TWAP orders are held in your </Trans>
-          <styledEl.BannerLink onClick={openProxyPage}>
-            <Trans>TWAP proxy account</Trans>
-          </styledEl.BannerLink>
+        <InlineBanner bannerType={StatusColorVariant.Info} orientation={BannerOrientation.Horizontal} noWrapContent>
+          <styledEl.BannerText>
+            <Trans>Funds for your TWAP orders are held in your </Trans>
+            <styledEl.BannerLink onClick={openProxyPage}>
+              <Trans>TWAP proxy account</Trans>
+            </styledEl.BannerLink>
+          </styledEl.BannerText>
         </InlineBanner>
       </styledEl.BannerWrapper>
     )
