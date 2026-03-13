@@ -69,7 +69,7 @@ describe('CorrelatedTokensUpdater', () => {
       {
         attributes: {
           network: { data: { attributes: { chainId: SupportedChainId.MAINNET } } },
-          tokens: { '0xABC123': 'TOKEN1' },
+          tokens: { '0xdac17f958d2ee523a2206206994597c13d831ec7': 'TOKEN1' },
         },
       },
     ]
@@ -83,7 +83,9 @@ describe('CorrelatedTokensUpdater', () => {
 
     await waitFor(() => store.get(correlatedTokensAtom)![SupportedChainId.MAINNET]!.length > 0)
 
-    expect(store.get(correlatedTokensAtom)[SupportedChainId.MAINNET]).toEqual([{ '0xabc123': 'TOKEN1' }])
+    expect(store.get(correlatedTokensAtom)[SupportedChainId.MAINNET]).toEqual([
+      { '0xdac17f958d2ee523a2206206994597c13d831ec7': 'TOKEN1' },
+    ])
     expect(localStorage.getItem(UPDATE_TIME_KEY)).not.toBeNull()
   })
 
@@ -92,7 +94,10 @@ describe('CorrelatedTokensUpdater', () => {
       {
         attributes: {
           network: { data: { attributes: { chainId: SupportedChainId.MAINNET } } },
-          tokens: { '0xUpperCASE': 'TOKEN1', '0xANOTHER': 'TOKEN2' },
+          tokens: {
+            '0x0a83d81169ca7a0ce285a8bf5a5648a0029fd7bb': 'TOKEN1',
+            '0x97aBeAdA0DfBcC038be515Fff43d92fF758268b3': 'TOKEN2',
+          },
         },
       },
     ]
@@ -107,8 +112,8 @@ describe('CorrelatedTokensUpdater', () => {
     await waitFor(() => store.get(correlatedTokensAtom)![SupportedChainId.MAINNET]!.length > 0)
 
     expect(store.get(correlatedTokensAtom)![SupportedChainId.MAINNET]![0]).toEqual({
-      '0xuppercase': 'TOKEN1',
-      '0xanother': 'TOKEN2',
+      '0x0a83d81169ca7a0ce285a8bf5a5648a0029fd7bb': 'TOKEN1',
+      '0x97abeada0dfbcc038be515fff43d92ff758268b3': 'TOKEN2',
     })
   })
 

@@ -67,7 +67,7 @@ export function CorrelatedTokensUpdater(): null {
 
         const state = items.reduce(
           (acc, item) => {
-            const chainId = item.attributes.network.data.attributes.chainId
+            const chainId = item.attributes?.network?.data?.attributes?.chainId
 
             if (!chainId || !item.attributes?.tokens || !isSupportedChainId(chainId)) {
               return acc
