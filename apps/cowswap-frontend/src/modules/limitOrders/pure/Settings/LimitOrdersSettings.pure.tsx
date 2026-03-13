@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import { HelpTooltip, SettingsDropdownSection, SettingsBox } from '@cowprotocol/ui'
+import { HelpTooltip, SettingsDropdownSection, SettingsBox, SimpleStyledText } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -69,16 +69,12 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
     onStateChanged({ ...state, ordersTableOnLeft: newValue })
   }, [analytics, onStateChanged, state, ordersTableOnLeft])
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const toggleDropdown = (e: React.MouseEvent) => {
+  const toggleDropdown = (e: React.MouseEvent): void => {
     e.stopPropagation()
     setIsOpen(!isOpen)
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleContainerClick = (e: React.MouseEvent) => {
+  const handleContainerClick = (e: React.MouseEvent): void => {
     e.stopPropagation()
   }
 
@@ -103,13 +99,23 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
             title={t`Enable Partial Executions`}
             tooltip={
               <Trans>
-                Allow you to chose whether your limit orders will be <i>Partially fillable</i> or <i>Fill or kill</i>.
-                <br />
-                <br />
-                <i>Fill or kill</i> orders will either be filled fully or not at all.
-                <br />
-                <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill the
-                full amount.
+                <SimpleStyledText>
+                  <p>
+                    Allow you to choose whether your limit orders will be <i>Partially fillable</i> or{' '}
+                    <i>Fill or kill</i>.
+                  </p>
+                  <p>
+                    <ul>
+                      <li>
+                        <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill
+                        the full amount.
+                      </li>
+                      <li>
+                        <i>Fill or kill</i> orders will either be filled fully or not at all.
+                      </li>
+                    </ul>
+                  </p>
+                </SimpleStyledText>
               </Trans>
             }
             checked={partialFillsEnabled}
