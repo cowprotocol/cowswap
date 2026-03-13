@@ -59,6 +59,24 @@ const markSurplusOrderAutoShownAtom = atom(null, (get, set, orderId: string) => 
   })
 })
 
+const markSurplusOrderDisplayedAtom = atom(null, (get, set, orderId: string) => {
+  const state = get(surplusModalAtom)
+
+  if (
+    state.autoShownOrderIds.includes(orderId) &&
+    !state.orderIds.includes(orderId) &&
+    !state.autoQueuedOrderIds.includes(orderId)
+  ) {
+    return
+  }
+
+  set(surplusModalAtom, {
+    orderIds: state.orderIds.filter((id) => id !== orderId),
+    autoQueuedOrderIds: state.autoQueuedOrderIds.filter((id) => id !== orderId),
+    autoShownOrderIds: appendOrderId(state.autoShownOrderIds, orderId),
+  })
+})
+
 export const removeSurplusOrderAtom = atom(null, (get, set, orderId: string) => {
   const state = get(surplusModalAtom)
   const orderIds = state.orderIds.filter((id) => id !== orderId)
@@ -91,6 +109,10 @@ export function useAutoAddOrderToSurplusQueue(): (orderId: string) => void {
 
 export function useMarkSurplusOrderAutoShown(): (orderId: string) => void {
   return useSetAtom(markSurplusOrderAutoShownAtom)
+}
+
+export function useMarkSurplusOrderDisplayed(): (orderId: string) => void {
+  return useSetAtom(markSurplusOrderDisplayedAtom)
 }
 
 export function useOrderIdForSurplusModal(): string | undefined {

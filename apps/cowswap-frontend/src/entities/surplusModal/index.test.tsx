@@ -7,6 +7,7 @@ import {
   useAddOrderToSurplusQueue,
   useAutoAddOrderToSurplusQueue,
   useMarkSurplusOrderAutoShown,
+  useMarkSurplusOrderDisplayed,
   useOrderIdForSurplusModal,
   useRemoveOrderFromSurplusQueue,
   useSurplusQueueOrderIds,
@@ -118,6 +119,51 @@ describe('surplus modal queue', () => {
     expect(result.current.currentOrderId).toBeUndefined()
 
     act(() => {
+      result.current.autoAddOrder('order-1')
+    })
+
+    expect(result.current.queueOrderIds).toEqual(['order-1'])
+    expect(result.current.currentOrderId).toBe('order-1')
+  })
+
+  it('prevents future auto-enqueue when the order was already shown outside the queue', () => {
+    const { result } = renderHook(
+      () => ({
+        queueOrderIds: useSurplusQueueOrderIds(),
+        currentOrderId: useOrderIdForSurplusModal(),
+        autoAddOrder: useAutoAddOrderToSurplusQueue(),
+        markOrderDisplayed: useMarkSurplusOrderDisplayed(),
+      }),
+      { wrapper: TestProvider },
+    )
+
+    act(() => {
+      result.current.autoAddOrder('order-1')
+      result.current.markOrderDisplayed('order-1')
+      result.current.autoAddOrder('order-1')
+    })
+
+    expect(result.current.queueOrderIds).toEqual([])
+    expect(result.current.currentOrderId).toBeUndefined()
+  })
+
+  it('keeps manual opens from blocking a later auto-enqueue', () => {
+    const { result } = renderHook(
+      () => ({
+        queueOrderIds: useSurplusQueueOrderIds(),
+        currentOrderId: useOrderIdForSurplusModal(),
+        addOrder: useAddOrderToSurplusQueue(),
+        autoAddOrder: useAutoAddOrderToSurplusQueue(),
+        markAutoShown: useMarkSurplusOrderAutoShown(),
+        removeOrder: useRemoveOrderFromSurplusQueue(),
+      }),
+      { wrapper: TestProvider },
+    )
+
+    act(() => {
+      result.current.addOrder('order-1')
+      result.current.markAutoShown('order-1')
+      result.current.removeOrder('order-1')
       result.current.autoAddOrder('order-1')
     })
 
