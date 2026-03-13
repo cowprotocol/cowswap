@@ -52,7 +52,6 @@ export function TelegramConnectionStatus({
   return (
     <div>
       <Toggle
-        root="label"
         id="toggle-telegram-notifications"
         checked={checked}
         toggle={handleToggle}

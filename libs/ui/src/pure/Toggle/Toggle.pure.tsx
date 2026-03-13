@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 import * as styledEl from './Toggle.styled'
 
 export interface ToggleProps {
-  root: 'label' | 'span'
+  root?: 'label' | 'span'
   id?: string
   checked: boolean
   toggle: Command
@@ -16,7 +16,7 @@ export interface ToggleProps {
 }
 
 export function Toggle({
-  root: Root,
+  root: Root = 'label',
   id,
   checked,
   toggle,
