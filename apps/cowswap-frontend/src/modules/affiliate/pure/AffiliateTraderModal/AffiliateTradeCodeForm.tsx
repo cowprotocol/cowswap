@@ -104,7 +104,7 @@ export function AffiliateTradeCodeForm({
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}
           adornmentVariant={error ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
-          required
+          required={!!account}
           {...inputProps}
         />
         {error && <StatusText $variant="error">{error}</StatusText>}
