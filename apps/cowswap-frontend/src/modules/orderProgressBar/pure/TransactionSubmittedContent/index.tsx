@@ -11,7 +11,7 @@ import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
 import { GnosisSafeTxDetails } from 'modules/account'
 import { EthFlowStepper } from 'modules/ethFlow'
@@ -21,6 +21,7 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import { CancelButton } from 'common/pure/CancelButton'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
+import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'
 
 import * as styledEl from './styled'
 
@@ -62,7 +63,7 @@ export function TransactionSubmittedContent({
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
   const isBridgeOrder = !!order && getIsBridgeOrder(order)
-  const isSwapFilled = order?.status === OrderStatus.FULFILLED
+  const isSwapFilled = !!order && isOrderFilled(order)
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
   const showProgressBar = !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && isProgressBarSetup
@@ -71,6 +72,7 @@ export function TransactionSubmittedContent({
     activityDerivedState?.status === ActivityStatus.CONFIRMED ||
     activityDerivedState?.status === ActivityStatus.EXPIRED ||
     cancellationFailed
+  const shouldShowEthFlowStepper = !isFinished && !isSwapFilled
 
   return (
     <styledEl.Wrapper>
@@ -109,7 +111,7 @@ export function TransactionSubmittedContent({
         <>
           {!isProgressBarSetup && <styledEl.Title>{getTitleStatus(activityDerivedState)}</styledEl.Title>}
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
-          {!isFinished && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
+          {shouldShowEthFlowStepper && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
             <OrderProgressBar
               {...orderProgressBarProps}
