@@ -19,6 +19,7 @@ import { BigPartTimeWarning } from './warnings/BigPartTimeWarning'
 import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
+import { DEFAULT_NUM_OF_PARTS } from '../../const'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useMaxTwapPartsShortcut } from '../../hooks/useMaxTwapPartsShortcut'
 import { useSwapAmountDifference } from '../../hooks/useSwapAmountDifference'
@@ -45,6 +46,7 @@ interface TwapWarningsRendererParams {
   toggleFallbackHandlerSetupFlag(isFallbackHandlerSetupAccepted: boolean): void
   showFallbackHandlerWarning: boolean
   showTradeFormWarnings: boolean
+  isAtMinimumParts: boolean
   deadline: number
   slippage: Percent
   swapPriceDifferenceWarning: ReactNode
@@ -54,7 +56,8 @@ interface TwapWarningsRendererParams {
 }
 
 export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps): ReactNode {
-  const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
+  const { isFallbackHandlerSetupAccepted, numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
+  const isAtMinimumParts = numberOfPartsValue === DEFAULT_NUM_OF_PARTS
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
@@ -102,6 +105,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     toggleFallbackHandlerSetupFlag,
     showFallbackHandlerWarning,
     showTradeFormWarnings,
+    isAtMinimumParts,
     deadline,
     slippage,
     swapPriceDifferenceWarning,
@@ -123,6 +127,7 @@ function getTwapWarningContent(params: TwapWarningsRendererParams): ReactNode {
     toggleFallbackHandlerSetupFlag,
     showFallbackHandlerWarning,
     showTradeFormWarnings,
+    isAtMinimumParts,
     deadline,
     slippage,
     swapPriceDifferenceWarning,
@@ -150,6 +155,7 @@ function getTwapWarningContent(params: TwapWarningsRendererParams): ReactNode {
     return (
       <SmallPartVolumeWarning
         chainId={chainId}
+        isAtMinimumParts={isAtMinimumParts}
         maxPartsValue={canUseMaxPartsShortcut ? maxValidParts : undefined}
         onUseMaxParts={canUseMaxPartsShortcut ? useMaxPartsShortcut : undefined}
       />

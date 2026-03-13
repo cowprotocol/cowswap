@@ -10,6 +10,7 @@ import { MINIMUM_PART_SELL_AMOUNT_FIAT } from '../../../const'
 
 export type SmallPartVolumeWarningBannerProps = {
   chainId: SupportedChainId
+  isAtMinimumParts?: boolean
   maxPartsValue?: number
   onUseMaxParts?(): void
 }
@@ -27,6 +28,7 @@ const UseMaxPartsLink = styled(LinkStyledButton)`
 
 export function SmallPartVolumeWarning({
   chainId,
+  isAtMinimumParts,
   maxPartsValue,
   onUseMaxParts,
 }: SmallPartVolumeWarningBannerProps): ReactNode {
@@ -39,13 +41,23 @@ export function SmallPartVolumeWarning({
         <Trans>Minimum sell size</Trans>
       </strong>
       <p>
-        <Trans>
-          The sell amount per part of your TWAP order should be at least{' '}
-          <b>
-            $<TokenAmount amount={amount} hideTokenSymbol />
-          </b>
-          . Decrease the number of parts or increase the total sell amount.
-        </Trans>
+        {isAtMinimumParts ? (
+          <Trans>
+            The sell amount per part of your TWAP order should be at least{' '}
+            <b>
+              $<TokenAmount amount={amount} hideTokenSymbol />
+            </b>
+            . Increase the total sell amount. TWAP orders require at least 2 parts.
+          </Trans>
+        ) : (
+          <Trans>
+            The sell amount per part of your TWAP order should be at least{' '}
+            <b>
+              $<TokenAmount amount={amount} hideTokenSymbol />
+            </b>
+            . Decrease the number of parts or increase the total sell amount.
+          </Trans>
+        )}
       </p>
       {hasMaxPartsAction && (
         <p>

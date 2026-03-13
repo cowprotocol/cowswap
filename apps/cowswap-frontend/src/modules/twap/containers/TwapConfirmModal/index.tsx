@@ -186,8 +186,7 @@ export function TwapConfirmModal() {
               >
                 <styledEl.InfoBannerText>
                   <Trans>
-                    Funds for this TWAP will be held in your TWAP proxy account while the order is active. Withdrawing
-                    them will make the order unfillable.
+                    Funds for this TWAP will be reserved and held in your TWAP proxy account while the order is active.
                   </Trans>{' '}
                   <ExternalLink href={TWAP_EOA_HOW_IT_WORKS_LINK}>
                     <Trans>How it works</Trans> ↗
