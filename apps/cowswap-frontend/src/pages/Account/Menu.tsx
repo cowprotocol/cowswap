@@ -43,7 +43,7 @@ export function AccountMenu(): ReactNode {
       <ul>
         {ACCOUNT_MENU_LINKS(chainId, isAffiliateProgramEnabled).map(({ title, url }) => (
           <li key={url}>
-            <NavLink end to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
+            <NavLink end={url === '/account'} to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
               {extractTextFromStringOrI18nDescriptor(title)}
             </NavLink>
           </li>
