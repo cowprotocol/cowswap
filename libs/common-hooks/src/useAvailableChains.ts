@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { getAvailableChains } from '@cowprotocol/common-utils'
+import { getAvailableSourceChains } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useFeatureFlags } from './useFeatureFlags'
@@ -26,7 +26,7 @@ export function useAvailableChains(): SupportedChainId[] {
         chainsToSkip.push(SupportedChainId.INK)
       }
 
-      return getAvailableChains(chainsToSkip)
+      return getAvailableSourceChains(chainsToSkip)
     },
     [isInkEnabled],
   )
