@@ -7,12 +7,11 @@ import {
   ContextMenuExternalLink,
   ContextMenuItemButton,
   ContextMenuItemText,
+  Toggle,
 } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Settings, Trash2 } from 'react-feather'
-
-import { Toggle } from 'legacy/components/Toggle/Toggle.pure'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -97,7 +96,7 @@ export function ListItem(props: TokenListItemProps): ReactNode {
       </TokenListDetails>
       <div>
         <Toggle
-          isActive={isActive}
+          checked={isActive}
           toggle={toggle}
           data-click-event={toCowSwapGtmEvent({
             category: CowSwapAnalyticsCategory.LIST,
