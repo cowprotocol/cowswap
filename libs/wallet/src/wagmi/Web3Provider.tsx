@@ -1,9 +1,9 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
 import { SafeProvider, useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useConnect, useConnection, useConnectors, WagmiProvider } from 'wagmi'
+import { useConnect, useConnection, useConnectors, useReconnect, WagmiProvider } from 'wagmi'
 
 import { wagmiAdapter } from './config'
 
@@ -13,11 +13,25 @@ interface Web3ProviderProps {
   children: ReactNode
 }
 
+function ReconnectOnMount(): null {
+  const { mutate: reconnect } = useReconnect()
+  const didReconnect = useRef(false)
+
+  useEffect(() => {
+    if (didReconnect.current) return
+    didReconnect.current = true
+    reconnect()
+  }, [reconnect])
+
+  return null
+}
+
 export function Web3Provider({ children }: Web3ProviderProps): React.ReactNode {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <SafeProvider>
+          <ReconnectOnMount />
           <SafeConnectionHandler>{children}</SafeConnectionHandler>
         </SafeProvider>
       </QueryClientProvider>
