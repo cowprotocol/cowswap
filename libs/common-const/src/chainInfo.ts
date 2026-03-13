@@ -1,4 +1,5 @@
 import {
+  AdditionalTargetChainId,
   arbitrumOne,
   avalanche,
   base,
@@ -10,10 +11,13 @@ import {
   isEvmChainInfo,
   linea,
   mainnet,
+  optimism,
   plasma,
   polygon,
   sepolia,
+  solana,
   SupportedChainId,
+  TargetChainId,
 } from '@cowprotocol/cow-sdk'
 
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
@@ -36,7 +40,7 @@ export interface BaseChainInfo {
   readonly nativeCurrency: TokenWithLogo
 }
 
-export type ChainInfoMap = Record<SupportedChainId, BaseChainInfo>
+export type ChainInfoMap = Record<TargetChainId, BaseChainInfo>
 
 function mapChainInfoToBaseChainInfo(
   chainInfo: ChainInfo,
@@ -133,6 +137,24 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: 'sepolia',
     urlAlias: 'sepolia',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
+  },
+  [AdditionalTargetChainId.SOLANA]: {
+    ...mapChainInfoToBaseChainInfo(solana),
+    name: 'solana',
+    urlAlias: 'solana',
+    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.SOLANA],
+  },
+  [AdditionalTargetChainId.BITCOIN]: {
+    ...mapChainInfoToBaseChainInfo(solana),
+    name: 'bitcoin',
+    urlAlias: 'bitcoin',
+    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.BITCOIN],
+  },
+  [AdditionalTargetChainId.OPTIMISM]: {
+    ...mapChainInfoToBaseChainInfo(optimism),
+    name: 'optimism',
+    urlAlias: 'opt',
+    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.BITCOIN],
   },
 }
 
