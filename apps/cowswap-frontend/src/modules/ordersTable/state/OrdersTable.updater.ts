@@ -113,8 +113,6 @@ export function OrdersTableStateUpdater({
   return null
 }
 
-// todo will fix in the next pr
-
 function getOrdersInputTokens(allOrders: Order[]): string[] {
   const setOfTokens = allOrders.reduce((acc, order) => {
     acc.add(getAddressKey(order.inputToken.address))

@@ -1,8 +1,9 @@
 import { useSetAtom } from 'jotai'
 
 import { components } from '@cowprotocol/cms'
+import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { getCmsClient } from '@cowprotocol/core'
-import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 import qs from 'qs'
@@ -40,8 +41,6 @@ export function CorrelatedTokensUpdater(): null {
         return
       }
 
-      let items: CorrelatedTokenItem[] | null = null
-
       try {
         const { data, error } = await cmsClient.GET(method, {
           params: {
@@ -58,43 +57,41 @@ export function CorrelatedTokensUpdater(): null {
           querySerializer,
         })
 
-        items = data.data as CorrelatedTokenItem[]
-
         if (error) {
           localStorage.removeItem(UPDATE_TIME_KEY)
           console.error('Failed to fetch correlated tokens', error)
           return undefined
         }
+
+        const items = data.data as CorrelatedTokenItem[]
+
+        const state = items.reduce(
+          (acc, item) => {
+            const chainId = item.attributes?.network?.data?.attributes?.chainId
+
+            if (!chainId || !item.attributes?.tokens || !isSupportedChainId(chainId)) {
+              return acc
+            }
+
+            // It's possible checksummed token addresses were manually added
+            const tokens = item.attributes.tokens as CorrelatedTokens
+            const lowerCasedTokens = Object.keys(tokens).reduce<CorrelatedTokens>((acc, address) => {
+              acc[getAddressKey(address)] = tokens[address]
+              return acc
+            }, {})
+
+            acc[chainId].push(lowerCasedTokens)
+            return acc
+          },
+          mapSupportedNetworks<CorrelatedTokens[]>(() => []),
+        )
+
+        localStorage.setItem(UPDATE_TIME_KEY, Date.now().toString())
+        setCorrelatedTokens(state)
       } catch (e) {
         localStorage.removeItem(UPDATE_TIME_KEY)
         console.error('Failed to fetch correlated tokens', e)
       }
-
-      if (!items) return
-
-      localStorage.setItem(UPDATE_TIME_KEY, Date.now().toString())
-
-      const state = items.reduce(
-        (acc, item) => {
-          if (!item.attributes?.network?.data?.attributes?.chainId || !item.attributes?.tokens) {
-            return acc
-          }
-          const chainId = item.attributes.network.data.attributes.chainId as SupportedChainId
-
-          // It's possible checksummed token addresses were manually added
-          const tokens = item.attributes.tokens as CorrelatedTokens
-          const lowerCasedTokens = Object.keys(tokens).reduce<CorrelatedTokens>((acc, address) => {
-            acc[getAddressKey(address)] = tokens[address]
-            return acc
-          }, {})
-
-          acc[chainId].push(lowerCasedTokens)
-          return acc
-        },
-        mapSupportedNetworks<CorrelatedTokens[]>(() => []),
-      )
-
-      setCorrelatedTokens(state)
     },
     SWR_CONFIG,
   )
