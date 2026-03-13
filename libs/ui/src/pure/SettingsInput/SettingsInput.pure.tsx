@@ -45,6 +45,7 @@ export function SettingsInput({
           onChange={onChange}
           onBlur={onBlur}
           disabled={disabled}
+          autoComplete="off"
         />
 
         {unit && <styledEl.Unit>{unit}</styledEl.Unit>}
