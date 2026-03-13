@@ -21,10 +21,15 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import * as styledEl from './styled'
+import * as styledEl from './SettingsDropdown.styled'
 
-import { TransactionSettings } from '../../pure/TransactionSettings'
+import { TransactionSettings } from '../../pure/TransactionSettings/TransactionSettings.container'
 import { settingsTabStateAtom } from '../../state/settingsTabState'
+
+interface SettingsTabControllerProps {
+  buttonRef: RefObject<HTMLButtonElement | null>
+  children: ReactElement
+}
 
 interface SettingsTabProps {
   className?: string
@@ -37,7 +42,7 @@ interface SettingsTabProps {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function
-export function SettingsTab({
+export function SettingsDropdown({
   className,
   recipientToggleState,
   hooksEnabledState,
@@ -93,7 +98,9 @@ export function SettingsTab({
               <Text fontWeight={600} fontSize={14}>
                 <Trans>Transaction Settings</Trans>
               </Text>
+
               <TransactionSettings deadlineState={deadlineState} />
+
               <Text fontWeight={600} fontSize={14}>
                 <Trans>Interface Settings</Trans>
               </Text>
@@ -176,11 +183,6 @@ export function SettingsTab({
       </SettingsTabController>
     </Menu>
   )
-}
-
-interface SettingsTabControllerProps {
-  buttonRef: RefObject<HTMLButtonElement | null>
-  children: ReactElement
 }
 
 /**

@@ -4,10 +4,9 @@ import { StatefulValue } from '@cowprotocol/types'
 
 import { AutoColumn } from 'legacy/components/Column'
 
-import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons'
-import { TransactionSlippageInput } from 'modules/tradeWidgetAddons'
+import { DeadlineTransactionSettings, TransactionSlippageInput } from 'modules/tradeWidgetAddons'
 
-import * as styledEl from './styled'
+import * as styledEl from './TransactionSettings.styled'
 
 interface TransactionSettingsProps {
   deadlineState: StatefulValue<number>
