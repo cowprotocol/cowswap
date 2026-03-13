@@ -58,7 +58,11 @@ export function usePermitInfo(
   // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
-  const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
+  const lowerCaseAddress = token
+    ? getWrappedToken(token).address
+      ? getAddressKey(getWrappedToken(token).address!)
+      : undefined
+    : undefined
   const isNative = !!token && getIsNativeToken(token)
 
   // Avoid building permit info in the first place if order type is not supported

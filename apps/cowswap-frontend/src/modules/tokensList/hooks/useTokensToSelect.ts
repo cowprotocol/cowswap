@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useAllActiveTokens, useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -58,7 +59,7 @@ export function useTokensToSelect(): TokensToSelectContext {
     if (!tokens) return null // still loading
 
     return tokens.reduce<Record<string, boolean>>((acc, val) => {
-      acc[val.address.toLowerCase()] = true
+      acc[getAddressKey(val.address)] = true
       return acc
     }, {})
   }, [result])
@@ -70,7 +71,7 @@ export function useTokensToSelect(): TokensToSelectContext {
       areTokensFromBridge && bridgeSupportedTokensMap === null
         ? EMPTY_TOKENS
         : bridgeSupportedTokensMap
-          ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[token.address.toLowerCase()])
+          ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[getAddressKey(token.address)])
           : favoriteTokens
 
     return {

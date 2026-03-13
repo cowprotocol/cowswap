@@ -1,6 +1,6 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
@@ -47,7 +47,7 @@ export function useBridgeSupportedTokens(
           }
 
           // Fallback to token list logo if bridge doesn't provide one
-          const listToken = tokensByAddress[token.address.toLowerCase()]
+          const listToken = tokensByAddress[getAddressKey(token.address)]
           const logoUrl = listToken?.logoURI || token.logoUrl
 
           acc.push(
