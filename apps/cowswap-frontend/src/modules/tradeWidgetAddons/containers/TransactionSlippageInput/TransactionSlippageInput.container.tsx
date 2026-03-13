@@ -58,7 +58,7 @@ export function TransactionSlippageInput(): JSX.Element {
     footerSlot = (
       <SettingsFeedback
         variant="info"
-        message="Dynamic"
+        message={t`Dynamic`}
         tooltip={t`CoW Swap has dynamically selected this slippage amount to account for current gas prices and trade size. Changes may result in slower execution.`}
       />
     )
