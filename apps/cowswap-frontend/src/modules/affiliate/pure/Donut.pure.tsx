@@ -7,17 +7,50 @@ export interface DonutProps {
   children: ReactNode
 }
 
+const SVG_SIZE = 100
+const STROKE_WIDTH = 14.4
+const RADIUS = SVG_SIZE / 2 - STROKE_WIDTH / 2
+const CENTER_RADIUS = SVG_SIZE / 2 - STROKE_WIDTH
+const ROUND_CAP_CLOSURE_PERCENT = (STROKE_WIDTH / (2 * Math.PI * RADIUS)) * 100
+const MAX_VISIBLE_PROGRESS = 100 - Math.ceil(ROUND_CAP_CLOSURE_PERCENT)
+
 export function Donut({ value, children }: DonutProps): ReactNode {
-  const hasProgress = value > 0
+  const normalizedValue = Math.min(Math.max(value, 0), 100)
+  const renderedValue = getRenderedValue(normalizedValue)
+  const isComplete = normalizedValue === 100
+  const hasProgress = renderedValue > 0
 
   return (
-    <styledEl.Wrapper $value={value}>
-      <styledEl.Ring viewBox="0 0 100 100" aria-hidden="true">
-        <circle className="donut-track" cx="50" cy="50" r="var(--radius)" pathLength="100" />
-        {hasProgress ? <circle className="donut-progress" cx="50" cy="50" r="var(--radius)" pathLength="100" /> : null}
-        <circle className="donut-center" cx="50" cy="50" r="calc(50 - var(--stroke-width))" />
+    <styledEl.Wrapper>
+      <styledEl.Ring viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`} aria-hidden="true">
+        <circle className="donut-track" cx="50" cy="50" r={RADIUS} strokeWidth={STROKE_WIDTH} pathLength="100" />
+        {hasProgress && isComplete ? (
+          <circle className="donut-progress" cx="50" cy="50" r={RADIUS} strokeWidth={STROKE_WIDTH} />
+        ) : null}
+        {hasProgress && !isComplete ? (
+          <circle
+            className="donut-progress"
+            cx="50"
+            cy="50"
+            r={RADIUS}
+            strokeWidth={STROKE_WIDTH}
+            strokeDasharray="100"
+            strokeDashoffset={100 - renderedValue}
+            pathLength="100"
+          />
+        ) : null}
+        <circle className="donut-center" cx="50" cy="50" r={CENTER_RADIUS} />
       </styledEl.Ring>
       <styledEl.Content>{children}</styledEl.Content>
     </styledEl.Wrapper>
   )
+}
+
+function getRenderedValue(value: number): number {
+  if (value <= 0) {
+    return 0
+  }
+
+  // Preserve a visible gap near 100% when using round line caps.
+  return Math.min(value, MAX_VISIBLE_PROGRESS)
 }
