@@ -8,9 +8,10 @@ export interface DonutProps {
 }
 
 const SVG_SIZE = 100
+const SVG_CENTER = SVG_SIZE / 2
 const STROKE_WIDTH = 14.4
-const RADIUS = SVG_SIZE / 2 - STROKE_WIDTH / 2
-const CENTER_RADIUS = SVG_SIZE / 2 - STROKE_WIDTH
+const RADIUS = SVG_CENTER - STROKE_WIDTH / 2
+const CENTER_RADIUS = SVG_CENTER - STROKE_WIDTH
 const ROUND_CAP_CLOSURE_PERCENT = (STROKE_WIDTH / (2 * Math.PI * RADIUS)) * 100
 const MAX_VISIBLE_PROGRESS = 100 - Math.ceil(ROUND_CAP_CLOSURE_PERCENT)
 const LAST_INCOMPLETE_PROGRESS = 99
@@ -25,15 +26,22 @@ export function Donut({ value, children }: DonutProps): ReactNode {
   return (
     <styledEl.Wrapper>
       <styledEl.Ring viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`} aria-hidden="true">
-        <circle className="donut-track" cx="50" cy="50" r={RADIUS} strokeWidth={STROKE_WIDTH} pathLength="100" />
+        <circle
+          className="donut-track"
+          cx={SVG_CENTER}
+          cy={SVG_CENTER}
+          r={RADIUS}
+          strokeWidth={STROKE_WIDTH}
+          pathLength="100"
+        />
         {hasProgress && isComplete ? (
-          <circle className="donut-progress" cx="50" cy="50" r={RADIUS} strokeWidth={STROKE_WIDTH} />
+          <circle className="donut-progress" cx={SVG_CENTER} cy={SVG_CENTER} r={RADIUS} strokeWidth={STROKE_WIDTH} />
         ) : null}
         {hasProgress && !isComplete ? (
           <circle
             className="donut-progress"
-            cx="50"
-            cy="50"
+            cx={SVG_CENTER}
+            cy={SVG_CENTER}
             r={RADIUS}
             strokeWidth={STROKE_WIDTH}
             strokeDasharray="100"
@@ -41,7 +49,7 @@ export function Donut({ value, children }: DonutProps): ReactNode {
             pathLength="100"
           />
         ) : null}
-        <circle className="donut-center" cx="50" cy="50" r={CENTER_RADIUS} />
+        <circle className="donut-center" cx={SVG_CENTER} cy={SVG_CENTER} r={CENTER_RADIUS} />
       </styledEl.Ring>
       <styledEl.Content>{children}</styledEl.Content>
     </styledEl.Wrapper>

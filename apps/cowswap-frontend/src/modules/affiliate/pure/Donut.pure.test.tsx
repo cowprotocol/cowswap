@@ -42,6 +42,16 @@ describe('Donut', () => {
     expect(container.querySelector('.donut-progress')).toBeNull()
   })
 
+  it('treats negative values like zero progress', () => {
+    const { container } = render(
+      <Donut value={-10}>
+        <span>$0</span>
+      </Donut>,
+    )
+
+    expect(container.querySelector('.donut-progress')).toBeNull()
+  })
+
   it('keeps near-complete values distinct while preserving a visible gap', () => {
     const { container: container94 } = render(
       <Donut value={94}>
@@ -75,6 +85,19 @@ describe('Donut', () => {
   it('renders a true full ring at 100 without the dashed gap', () => {
     const { container } = render(
       <Donut value={100}>
+        <span>$10</span>
+      </Donut>,
+    )
+
+    const progressCircle = getRequiredCircle(container, '.donut-progress')
+
+    expect(progressCircle.getAttribute('stroke-dasharray')).toBeNull()
+    expect(progressCircle.getAttribute('stroke-dashoffset')).toBeNull()
+  })
+
+  it('treats values above 100 like a true full ring', () => {
+    const { container } = render(
+      <Donut value={150}>
         <span>$10</span>
       </Donut>,
     )
