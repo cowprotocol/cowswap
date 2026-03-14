@@ -10,6 +10,7 @@ import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
 
 import { Messages } from '@lingui/core'
+import { CaptchaWidget } from 'entities/captcha'
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
@@ -60,6 +61,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                       <Web3ProviderInstance>
                         <BlockNumberProvider>
                           <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                            <CaptchaWidget />
                             <WalletUnsupportedNetworkBanner />
                             <Updaters />
                             <Toasts />
