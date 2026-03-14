@@ -42,16 +42,34 @@ describe('Donut', () => {
     expect(container.querySelector('.donut-progress')).toBeNull()
   })
 
-  it('keeps a visible gap for near-complete values with round caps', () => {
-    const { container } = render(
+  it('keeps near-complete values distinct while preserving a visible gap', () => {
+    const { container: container94 } = render(
+      <Donut value={94}>
+        <span>$9</span>
+      </Donut>,
+    )
+    const { container: container95 } = render(
+      <Donut value={95}>
+        <span>$9</span>
+      </Donut>,
+    )
+    const { container: container99 } = render(
       <Donut value={99}>
         <span>$9</span>
       </Donut>,
     )
 
-    const progressCircle = getRequiredCircle(container, '.donut-progress')
+    const progress94 = getRequiredCircle(container94, '.donut-progress')
+    const progress95 = getRequiredCircle(container95, '.donut-progress')
+    const progress99 = getRequiredCircle(container99, '.donut-progress')
 
-    expect(Number(progressCircle.getAttribute('stroke-dashoffset'))).toBe(6)
+    expect(Number(progress94.getAttribute('stroke-dashoffset'))).toBeGreaterThan(
+      Number(progress95.getAttribute('stroke-dashoffset')),
+    )
+    expect(Number(progress95.getAttribute('stroke-dashoffset'))).toBeGreaterThan(
+      Number(progress99.getAttribute('stroke-dashoffset')),
+    )
+    expect(Number(progress99.getAttribute('stroke-dashoffset'))).toBe(6)
   })
 
   it('renders a true full ring at 100 without the dashed gap', () => {

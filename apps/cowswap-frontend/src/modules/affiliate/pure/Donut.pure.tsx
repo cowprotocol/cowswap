@@ -13,6 +13,8 @@ const RADIUS = SVG_SIZE / 2 - STROKE_WIDTH / 2
 const CENTER_RADIUS = SVG_SIZE / 2 - STROKE_WIDTH
 const ROUND_CAP_CLOSURE_PERCENT = (STROKE_WIDTH / (2 * Math.PI * RADIUS)) * 100
 const MAX_VISIBLE_PROGRESS = 100 - Math.ceil(ROUND_CAP_CLOSURE_PERCENT)
+const LAST_INCOMPLETE_PROGRESS = 99
+const TAIL_COMPRESSION_START = MAX_VISIBLE_PROGRESS - 4
 
 export function Donut({ value, children }: DonutProps): ReactNode {
   const normalizedValue = Math.min(Math.max(value, 0), 100)
@@ -51,6 +53,13 @@ function getRenderedValue(value: number): number {
     return 0
   }
 
-  // Preserve a visible gap near 100% when using round line caps.
-  return Math.min(value, MAX_VISIBLE_PROGRESS)
+  if (value <= TAIL_COMPRESSION_START) {
+    return value
+  }
+
+  const boundedValue = Math.min(value, LAST_INCOMPLETE_PROGRESS)
+  const tailProgress = (boundedValue - TAIL_COMPRESSION_START) / (LAST_INCOMPLETE_PROGRESS - TAIL_COMPRESSION_START)
+
+  // Preserve a visible gap near 100% when using round line caps while keeping tail values distinct.
+  return TAIL_COMPRESSION_START + tailProgress * (MAX_VISIBLE_PROGRESS - TAIL_COMPRESSION_START)
 }
