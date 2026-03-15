@@ -11,6 +11,7 @@ import { HoverTooltip, HoverTooltipProps, renderTooltip } from '../Tooltip'
 const DefaultQuestionIcon = <SVG src={QuestionImage} />
 
 export const QuestionTooltipIconWrapper = styled.div<{ $size?: number; $dimmed?: boolean }>`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
