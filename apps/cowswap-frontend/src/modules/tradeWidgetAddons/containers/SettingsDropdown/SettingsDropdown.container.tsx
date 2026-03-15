@@ -119,7 +119,7 @@ export function SettingsDropdown({
                       <b>
                         <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
                       </b>{' '}
-                      Add DeFI interactions before and after your trade.
+                      Add DeFi interactions before and after your trade.
                     </Trans>
                   }
                   checked={hooksEnabled}
