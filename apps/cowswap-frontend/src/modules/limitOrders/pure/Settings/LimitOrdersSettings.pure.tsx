@@ -101,20 +101,18 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
               <Trans>
                 <SimpleStyledText>
                   <p>
-                    Allow you to choose whether your limit orders will be <i>Partially fillable</i> or{' '}
+                    Allows you to choose whether your limit orders will be <i>Partially fillable</i> or{' '}
                     <i>Fill or kill</i>.
                   </p>
-                  <p>
-                    <ul>
-                      <li>
-                        <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill
-                        the full amount.
-                      </li>
-                      <li>
-                        <i>Fill or kill</i> orders will either be filled fully or not at all.
-                      </li>
-                    </ul>
-                  </p>
+                  <ul>
+                    <li>
+                      <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill
+                      the full amount.
+                    </li>
+                    <li>
+                      <i>Fill or kill</i> orders will either be filled fully or not at all.
+                    </li>
+                  </ul>
                 </SimpleStyledText>
               </Trans>
             }
