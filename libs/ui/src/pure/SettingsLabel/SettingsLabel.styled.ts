@@ -4,6 +4,7 @@ import { HelpTooltip } from '../HelpTooltip'
 
 export const SettingsLabelTitle = styled.div`
   position: relative;
+  flex: 1;
   z-index: 1;
   font-weight: 400;
   color: inherit;
