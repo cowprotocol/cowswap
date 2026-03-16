@@ -1,7 +1,6 @@
 'use client'
 
 export { loadingOpacityMixin, LoadingRows, LoadingRowSmall } from './pure/Loader/styled'
-
 export * from './colors'
 export * from './consts'
 export * from './containers/CowSwapSafeAppLink'
@@ -43,6 +42,7 @@ export * from './pure/SettingsBox/SettingsBox.pure'
 export * from './pure/SettingsDropdownSection/SettingsDropdownSection.pure'
 export * from './pure/SettingsFeedback/SettingsFeedback.pure'
 export * from './pure/SettingsInput/SettingsInput.pure'
+export * from './pure/SettingsLabel/SettingsLabel.pure'
 export * from './pure/SimpleStyledText/SimpleStyledText.styled'
 export * from './pure/Toggle/Toggle.pure'
 export * from './pure/TokenAmount'

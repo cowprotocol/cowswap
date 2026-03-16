@@ -84,9 +84,3 @@ export const SettingsRow = styled.div`
   color: inherit;
   font-size: 14px;
 `
-
-export const SettingsLabel = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-`

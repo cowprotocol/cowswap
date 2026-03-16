@@ -24,13 +24,3 @@ export const SettingsBoxWrapper = styled.label`
     pointer-events: none;
   }
 `
-
-export const SettingsBoxTitle = styled.div`
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  font-weight: 400;
-  color: inherit;
-  font-size: 14px;
-`

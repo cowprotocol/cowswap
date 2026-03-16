@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import * as styledEl from './SettingsInputWrapper.styled'
 
-import { HelpTooltip } from '../HelpTooltip'
+import { SettingsLabel } from '../SettingsLabel/SettingsLabel.pure'
 
 export interface SettingsInputWrapperProps {
   id: string
@@ -21,10 +21,7 @@ export function SettingsInputWrapper({
 }: SettingsInputWrapperProps): ReactNode {
   return (
     <styledEl.WrapperLabel htmlFor={id}>
-      <styledEl.Header>
-        <styledEl.LabelText>{label}</styledEl.LabelText>
-        {tooltip && <HelpTooltip text={tooltip} />}
-      </styledEl.Header>
+      <SettingsLabel title={label} tooltip={tooltip} />
       <styledEl.Body>{children}</styledEl.Body>
       {footerSlot ? <styledEl.Footer>{footerSlot}</styledEl.Footer> : null}
     </styledEl.WrapperLabel>

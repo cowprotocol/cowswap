@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import { HelpTooltip, SettingsDropdownSection, SettingsBox, SimpleStyledText } from '@cowprotocol/ui'
+import { SettingsDropdownSection, SettingsBox, SimpleStyledText, SettingsLabel } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -145,10 +145,10 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
           />
 
           <styledEl.SettingsRow>
-            <styledEl.SettingsLabel>
-              <Trans>Limit Price Position</Trans>{' '}
-              <HelpTooltip text={t`Choose where to display the limit price input.`} />
-            </styledEl.SettingsLabel>
+            <SettingsLabel
+              title={t`Limit Price Position`}
+              tooltip={t`Choose where to display the limit price input.`}
+            />
             <styledEl.DropdownContainer>
               <styledEl.DropdownButton onClick={toggleDropdown}>
                 {POSITION_LABELS[limitPricePosition]}
