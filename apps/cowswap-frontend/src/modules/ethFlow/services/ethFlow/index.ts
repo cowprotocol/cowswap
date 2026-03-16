@@ -1,6 +1,6 @@
 import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
 import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
-import { OrderClass, SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, OrderClass, SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -81,10 +81,10 @@ export async function ethFlow({
     }
 
     // Last check before signing the order of the actual eth flow contract address (sending ETH to the wrong contract could lead to loss of funds)
-    const actualContractAddress = contract.address.toLowerCase()
-    const expectedContractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId).toLowerCase()
+    const actualContractAddress = contract.address
+    const expectedContractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId)
 
-    if (actualContractAddress !== expectedContractAddress) {
+    if (!areAddressesEqual(actualContractAddress, expectedContractAddress)) {
       throw new Error(
         t`EthFlow contract (${actualContractAddress}) address don't match the expected address for chain ${chainId} (${expectedContractAddress}). Please refresh the page and try again.`,
       )

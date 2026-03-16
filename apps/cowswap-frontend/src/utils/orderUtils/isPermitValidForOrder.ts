@@ -1,5 +1,5 @@
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
-import { SupportedChainId, areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20__factory, type Erc20Interface } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 import { Interface } from '@ethersproject/abi'
@@ -15,30 +15,27 @@ export interface PermitValidationResult {
   amount: BigNumber | null
 }
 
-function validateEip2612Permit(
+export function isPermitDecodedCalldataValid(
   callData: string,
-  spenderAddress: string,
+  chainId: SupportedChainId,
   ownerAddress: string,
-): PermitValidationResult | null {
-  try {
-    const decoded = erc20Interface.decodeFunctionData('permit', callData)
+  spenderAddress?: string,
+): PermitValidationResult {
+  const defaultSpenderAddress = getAddressKey(spenderAddress || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId])
+  const normalizedOwnerAddress = getAddressKey(ownerAddress)
 
-    if (
-      decoded &&
-      areAddressesEqual(decoded.spender, spenderAddress) &&
-      areAddressesEqual(decoded.owner, ownerAddress) &&
-      (decoded.deadline as BigNumber)?.toNumber() > Date.now() / 1000
-    ) {
-      return {
-        isValid: true,
-        amount: decoded.value as BigNumber,
-      }
-    }
-  } catch {
-    // Ignore errors
+  if (callData.startsWith(oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR)) {
+    const result = validateEip2612Permit(callData, defaultSpenderAddress, normalizedOwnerAddress)
+    if (result) return result
+  } else if (callData.startsWith(oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR)) {
+    const result = validateDaiPermit(callData, defaultSpenderAddress, normalizedOwnerAddress)
+    if (result) return result
   }
 
-  return null
+  return {
+    isValid: false,
+    amount: null,
+  }
 }
 
 function validateDaiPermit(
@@ -68,25 +65,28 @@ function validateDaiPermit(
   return null
 }
 
-export function isPermitDecodedCalldataValid(
+function validateEip2612Permit(
   callData: string,
-  chainId: SupportedChainId,
+  spenderAddress: string,
   ownerAddress: string,
-  spenderAddress?: string,
-): PermitValidationResult {
-  const defaultSpenderAddress = (spenderAddress || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]).toLowerCase()
-  const normalizedOwnerAddress = ownerAddress.toLowerCase()
+): PermitValidationResult | null {
+  try {
+    const decoded = erc20Interface.decodeFunctionData('permit', callData)
 
-  if (callData.startsWith(oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR)) {
-    const result = validateEip2612Permit(callData, defaultSpenderAddress, normalizedOwnerAddress)
-    if (result) return result
-  } else if (callData.startsWith(oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR)) {
-    const result = validateDaiPermit(callData, defaultSpenderAddress, normalizedOwnerAddress)
-    if (result) return result
+    if (
+      decoded &&
+      areAddressesEqual(decoded.spender, spenderAddress) &&
+      areAddressesEqual(decoded.owner, ownerAddress) &&
+      (decoded.deadline as BigNumber)?.toNumber() > Date.now() / 1000
+    ) {
+      return {
+        isValid: true,
+        amount: decoded.value as BigNumber,
+      }
+    }
+  } catch {
+    // Ignore errors
   }
 
-  return {
-    isValid: false,
-    amount: null,
-  }
+  return null
 }
