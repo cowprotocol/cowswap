@@ -7,6 +7,8 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
 
+import { formatRefCode } from 'modules/affiliate/lib/affiliateProgramUtils'
+
 import { CodeLinkingStatusSection } from './CodeLinkingStatusSection'
 import { CodeLinkingSubtitle } from './CodeLinkingSubtitle'
 import { PayoutConfirmation, type PayoutConfirmationProps } from './PayoutConfirmation'
@@ -64,11 +66,14 @@ export function AffiliateTradeCodeForm({
   ...inputProps
 }: AffiliateTradeCodeFormProps): ReactNode {
   const referralCodeInputId = useId()
+  const canSubmit =
+    !isLoading && (!requiresPayoutConfirmation || payoutConfirmed) && !!formatRefCode(String(inputProps.value))
+
   return (
     <FormGroup
       onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        onSubmit()
+        if (canSubmit) onSubmit()
       }}
     >
       <Body>
@@ -104,7 +109,6 @@ export function AffiliateTradeCodeForm({
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}
           adornmentVariant={error ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
-          required={!!account}
           {...inputProps}
         />
         {error && <StatusText $variant="error">{error}</StatusText>}
@@ -118,7 +122,7 @@ export function AffiliateTradeCodeForm({
         )}
       </Body>
       <Footer>
-        <ButtonPrimary disabled={isLoading || (requiresPayoutConfirmation && !payoutConfirmed)} type="submit">
+        <ButtonPrimary disabled={!canSubmit} type="submit">
           {submitButtonLabel}
         </ButtonPrimary>
       </Footer>
