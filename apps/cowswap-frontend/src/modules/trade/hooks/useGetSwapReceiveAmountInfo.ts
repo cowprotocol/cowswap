@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
@@ -58,8 +59,12 @@ function useQuoteCurrencies(): ReceiveAmountCurrencies {
   const tradeQuote = useTradeQuote()
   const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
 
-  const inputCurrency = useTokenByAddress(quoteResponse?.quote?.sellToken.toLowerCase())
-  const outputCurrency = useTokenByAddress(quoteResponse?.quote?.buyToken.toLowerCase())
+  const inputCurrency = useTokenByAddress(
+    quoteResponse?.quote?.sellToken ? getAddressKey(quoteResponse.quote.sellToken) : undefined,
+  )
+  const outputCurrency = useTokenByAddress(
+    quoteResponse?.quote?.buyToken ? getAddressKey(quoteResponse.quote.buyToken) : undefined,
+  )
 
   return { inputCurrency, outputCurrency }
 }
