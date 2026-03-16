@@ -85,10 +85,22 @@ function pinNonSdkPackagesToNpmjs() {
       if (!deps) continue
 
       for (const depName of Object.keys(deps)) {
-        if (!depName.startsWith('@cowprotocol/')) continue
-        if (isSdkPackage(depName)) continue
-        if (deps[depName].startsWith('workspace:')) continue
-        if (deps[depName].startsWith('https://')) continue
+        if (!depName.startsWith('@cowprotocol/')) {
+          console.log(`[install-sdk-preview.js] skipping ${depName} since it doesn't start with @cowprotocol/`)
+          continue
+        }
+        if (isSdkPackage(depName)) {
+          console.log(`[install-sdk-preview.js] skipping ${depName} since it's an SDK package`)
+          continue
+        }
+        if (deps[depName].startsWith('workspace:')) {
+          console.log(`[install-sdk-preview.js] skipping ${depName} since it's a workspace dependency`)
+          continue
+        }
+        if (deps[depName].startsWith('https://')) {
+          console.log(`[install-sdk-preview.js] skipping ${depName} since it already has a tarball URL`)
+          continue
+        }
 
         const tarballUrl = getNpmjsTarballUrl(depName, deps[depName])
         console.log(`[install-sdk-preview.js] pinning ${depName}@${deps[depName]} -> ${tarballUrl}`)
