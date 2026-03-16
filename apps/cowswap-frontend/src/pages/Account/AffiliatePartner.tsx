@@ -18,23 +18,26 @@ import {
   ThreeColumnGrid,
   PageWrapper,
 } from 'modules/affiliate'
+import { isSupportedTradingNetwork } from 'modules/affiliate/lib/affiliateProgramUtils'
 import { PageTitle } from 'modules/application'
 
 export default function AffiliatePartner(): ReactNode {
   const { i18n } = useLingui()
   const { account, chainId } = useWalletInfo()
-  const { data: partnerInfo, isLoading: codeLoading } = useAffiliatePartnerInfo(account)
+  const { data: partnerInfo, isLoading: infoLoading } = useAffiliatePartnerInfo(account)
 
   return (
     <PageWrapper>
       <PageTitle title={i18n._(PAGE_TITLES.AFFILIATE)} />
 
-      {!account || (!isSupportedPayoutsNetwork(chainId) && !partnerInfo && !codeLoading) ? (
+      {!account ||
+      (!isSupportedPayoutsNetwork(chainId) && !partnerInfo && !infoLoading) ||
+      !isSupportedTradingNetwork(chainId) ? (
         <AffiliatePartnerOnboard />
       ) : (
         <>
           <ThreeColumnGrid>
-            <ColumnOneCard showLoader={codeLoading}>
+            <ColumnOneCard showLoader={infoLoading}>
               {partnerInfo?.code ? <AffiliatePartnerCodeInfo /> : <AffiliatePartnerCodeCreation />}
             </ColumnOneCard>
             <AffiliatePartnerStats />
