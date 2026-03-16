@@ -23,6 +23,7 @@ export const Wrapper = styled.div<{ $bgColor?: string; $inactiveBgColor?: string
   --thumb-active: ${({ $bgColor }) => $bgColor || `var(${UI.COLOR_PRIMARY})`};
 
   position: relative;
+  display: block;
   background: var(--track-inactive);
   border-radius: var(--height);
   cursor: pointer;
