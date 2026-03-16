@@ -31,7 +31,7 @@ export function useCloseModal(_modal: ApplicationModal): Command {
 export function useToggleWalletModal(): Command {
   const { open } = useAppKit()
 
-  return () => open()
+  return open
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced

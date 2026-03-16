@@ -24,6 +24,12 @@ export function useTransactionAdder(): TransactionAdder {
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
   const isSafeWallet = useIsSafeWallet()
+  const allTxs = useAllTransactions()
+
+  const maxPendingNonce = useMemo(() => {
+    const nonces = Object.values(allTxs).map((tx) => tx.nonce)
+    return nonces.length > 0 ? Math.max(...nonces) : -1
+  }, [allTxs])
 
   return useCallback(
     async (addTransactionParams: AddTransactionHookParams) => {
@@ -36,7 +42,10 @@ export function useTransactionAdder(): TransactionAdder {
       }
 
       try {
-        const nonce = await getTransactionCount(config, { address: account })
+        // Use 'pending' so the next tx gets the next nonce when multiple txs are sent in quick succession (e.g. wrap then unwrap).
+        // Also account for our own pending txs in case the node hasn't seen them yet.
+        const chainNonce = await getTransactionCount(config, { address: account, blockTag: 'pending' })
+        const nonce = Math.max(chainNonce, maxPendingNonce + 1)
 
         dispatch(
           addTransaction({
@@ -51,7 +60,7 @@ export function useTransactionAdder(): TransactionAdder {
         console.error('Cannot add a transaction', e)
       }
     },
-    [dispatch, chainId, account, isSafeWallet, config],
+    [dispatch, chainId, account, isSafeWallet, config, maxPendingNonce],
   )
 }
 

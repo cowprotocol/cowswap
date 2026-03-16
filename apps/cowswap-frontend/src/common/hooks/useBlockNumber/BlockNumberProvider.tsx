@@ -3,24 +3,23 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
-import { useWatchBlocks } from 'wagmi'
+import { useWatchBlockNumber } from 'wagmi'
 
 import { BlockNumberContext } from './context'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BlockNumberProvider({ children }: { children: ReactNode }) {
+export function BlockNumberProvider({ children }: { children: ReactNode }): ReactNode {
   const windowVisible = useIsWindowVisible()
   const activeChainId = useWalletChainId()
 
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({ chainId: activeChainId })
 
-  const onBlock = useCallback(
-    (block: number) => {
+  const onBlockNumber = useCallback(
+    (blockNumber: bigint) => {
+      const num = Number(blockNumber)
       setChainBlock((chainBlock) => {
         if (chainBlock.chainId === activeChainId) {
-          if (!chainBlock.block || chainBlock.block < block) {
-            return { chainId: activeChainId, block }
+          if (!chainBlock.block || chainBlock.block < num) {
+            return { chainId: activeChainId, block: num }
           }
         }
         return chainBlock
@@ -29,12 +28,10 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
     [activeChainId],
   )
 
-  const handleBlock = useCallback((block: { number: bigint }) => onBlock(Number(block.number)), [onBlock])
-
-  useWatchBlocks({
+  useWatchBlockNumber({
     chainId: activeChainId,
     enabled: Boolean(activeChainId) && windowVisible,
-    onBlock: handleBlock,
+    onBlockNumber,
   })
 
   useEffect(() => {

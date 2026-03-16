@@ -16,10 +16,12 @@ export interface PersistBalancesAndAllowancesParams {
   setLoadingState?: boolean
 
   onBalancesLoaded?(loaded: boolean): void
+
+  query?: { refetchInterval?: number | false; refetchOnMount?: boolean }
 }
 
 export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowancesParams): void {
-  const { account, chainId, tokenAddresses, setLoadingState, onBalancesLoaded } = params
+  const { account, chainId, tokenAddresses, setLoadingState, onBalancesLoaded, query: queryOptions } = params
 
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
@@ -36,6 +38,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
       functionName: 'balanceOf',
       args: [account],
     })),
+    query: queryOptions,
   })
 
   // Set balances loading state

@@ -44,6 +44,11 @@ export function LpBalancesAndAllowancesUpdater({
     setAreLpBalancesLoaded(false)
   }, [account, setAreLpBalancesLoaded])
 
+  const queryOptions = useMemo(() => {
+    if (!enablePolling) return undefined
+    return { refetchInterval: 32_000, refetchOnMount: false }
+  }, [enablePolling])
+
   return (
     <>
       <BalancesRpcCallUpdater
@@ -52,6 +57,7 @@ export function LpBalancesAndAllowancesUpdater({
         account={isUpdaterPaused ? undefined : account}
         setLoadingState={false}
         onBalancesLoaded={setAreLpBalancesLoaded}
+        query={queryOptions}
       />
     </>
   )
