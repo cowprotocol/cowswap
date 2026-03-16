@@ -24,6 +24,8 @@ export function useSlippageWarningParams(
   const isEoaEthFlow = useIsEoaEthFlow()
   const { min, max, defaultValue } = useSlippageConfig()
 
+  // TODO: Remember last smartSlippage while new one loads...
+
   /**
    * When smartSlippage, then take smartSlippage - 20%
    * Otherwise, take a CONST (eth/regular flow) or at least defaultValue

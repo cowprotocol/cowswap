@@ -14,6 +14,8 @@ export const AutoButton = styled(FancyButton)<{ active: boolean }>`
   border-radius: 12px; // 16px from parent - 4px for margin
   min-width: 0;
   padding: 0 8px;
+  font-size: 14px;
+  font-weight: 400;
 
   :hover {
     cursor: pointer;

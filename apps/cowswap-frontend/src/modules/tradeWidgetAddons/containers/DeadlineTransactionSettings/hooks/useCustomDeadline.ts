@@ -26,12 +26,20 @@ interface DeadlineAnalyticsEvent {
   value: number
 }
 
+export interface DeadlineRangeParams {
+  minMinutes: number
+  maxMinutes: number
+  isEoaEthFlow: boolean
+  isSmartContractWallet: boolean
+}
+
 export function useCustomDeadline(deadlineState: StatefulValue<number>): {
   isDisabled: boolean
   onBlur: () => void
   error: DeadlineError | false
   viewValue: string
   parseCustomDeadline: (value: string) => void
+  deadlineRangeParams: DeadlineRangeParams
 } {
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
@@ -105,11 +113,22 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
 
   const viewValue = deadlineToView(deadlineInput, deadline)
 
+  const deadlineRangeParams: DeadlineRangeParams = useMemo(
+    () => ({
+      minMinutes: minDeadline / 60,
+      maxMinutes: maxDeadline / 60,
+      isEoaEthFlow,
+      isSmartContractWallet: !!isSmartContractWallet,
+    }),
+    [minDeadline, maxDeadline, isEoaEthFlow, isSmartContractWallet],
+  )
+
   return {
     isDisabled: isDeadlineDisabled,
     onBlur,
     error: deadlineError,
     viewValue,
     parseCustomDeadline,
+    deadlineRangeParams,
   }
 }
