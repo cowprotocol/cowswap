@@ -47,7 +47,7 @@ export const QuestionTooltipIconWrapper = styled.div<{ $size?: number; $dimmed?:
 const HelpTooltipContainer = styled.span<{ $noMargin?: boolean }>`
   margin-left: ${({ $noMargin }) => ($noMargin ? 0 : '4px')};
   display: flex;
-  align-items: center;
+  align-items: baseline;
   color: inherit;
   pointer-events: auto;
 `
