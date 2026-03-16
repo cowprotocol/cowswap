@@ -52,6 +52,11 @@ export function AffiliatePartnerStats(): ReactNode {
           value: formatUsdCompact(stats?.total_volume),
         },
         {
+          id: 'total-referrals',
+          label: <Trans>Total referrals</Trans>,
+          value: formatCompactNumber(stats?.total_traders),
+        },
+        {
           id: 'active-referrals',
           label: <Trans>Active referrals</Trans>,
           value: formatCompactNumber(stats?.active_traders),
