@@ -12,7 +12,7 @@ import { NavLink } from 'react-router'
 
 import { SideMenu } from 'legacy/components/SideMenu'
 
-import { getProxyAccountUrl } from 'modules/accountProxy/utils/getProxyAccountUrl'
+import { getProxyAccountUrl } from 'modules/accountProxy'
 
 interface MenuItem {
   title: string | MessageDescriptor
