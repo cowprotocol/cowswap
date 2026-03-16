@@ -222,7 +222,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode && <AccountElement standaloneMode />}
+          {isInjectedWidgetMode && standaloneMode && <AccountElement />}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
