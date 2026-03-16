@@ -10,6 +10,8 @@ export const SettingsLabelTitle = styled.div`
   color: inherit;
   font-size: 14px;
   text-wrap: balance;
+  display: flex;
+  align-items: center;
 `
 
 export const SettingsLabelHelpTooltip = styled(HelpTooltip)`
