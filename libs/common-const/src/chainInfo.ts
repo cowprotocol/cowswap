@@ -155,7 +155,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     ...mapChainInfoToBaseChainInfo(optimism),
     name: 'optimism',
     urlAlias: 'opt',
-    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.BITCOIN],
+    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.OPTIMISM],
   },
 }
 
