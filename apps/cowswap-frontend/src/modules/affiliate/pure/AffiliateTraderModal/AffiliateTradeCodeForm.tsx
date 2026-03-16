@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type FormEvent, type ReactNode, useId } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
@@ -6,6 +6,8 @@ import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
+
+import { formatRefCode } from 'modules/affiliate/lib/affiliateProgramUtils'
 
 import { CodeLinkingStatusSection } from './CodeLinkingStatusSection'
 import { CodeLinkingSubtitle } from './CodeLinkingSubtitle'
@@ -27,6 +29,10 @@ import { type TraderInfoResponse } from '../../api/bffAffiliateApi.types'
 import { type TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
 import { RefCodeInput, type RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
 import { LabelContent, StatusText } from '../shared'
+
+const REFERRAL_CODE_HELP_TEXT = (
+  <Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>
+)
 
 export interface AffiliateTradeCodeFormProps
   extends Omit<PayoutConfirmationProps, 'payoutWallet'>,
@@ -59,11 +65,15 @@ export function AffiliateTradeCodeForm({
   onSubmit,
   ...inputProps
 }: AffiliateTradeCodeFormProps): ReactNode {
+  const referralCodeInputId = useId()
+  const canSubmit =
+    !isLoading && (!requiresPayoutConfirmation || payoutConfirmed) && !!formatRefCode(String(inputProps.value))
+
   return (
     <FormGroup
-      onSubmit={(event) => {
+      onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        onSubmit()
+        if (canSubmit) onSubmit()
       }}
     >
       <Body>
@@ -73,12 +83,10 @@ export function AffiliateTradeCodeForm({
         </Title>
         <CodeLinkingSubtitle codeInfo={codeInfo} />
         <LabelRow>
-          <Label>
+          <Label htmlFor={referralCodeInputId}>
             <LabelContent>
               <Trans>Referral code</Trans>
-              <HelpTooltip
-                text={<Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>}
-              />
+              <HelpTooltip text={REFERRAL_CODE_HELP_TEXT} dimmed />
             </LabelContent>
           </Label>
           <LabelAffordances>
@@ -96,11 +104,11 @@ export function AffiliateTradeCodeForm({
           </LabelAffordances>
         </LabelRow>
         <RefCodeInput
+          id={referralCodeInputId}
           hasError={!!error}
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}
-          adornmentVariant={isLoading ? 'checking' : error ? 'error' : savedCode ? 'valid' : undefined}
-          required
+          adornmentVariant={error ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
           {...inputProps}
         />
         {error && <StatusText $variant="error">{error}</StatusText>}
@@ -114,7 +122,7 @@ export function AffiliateTradeCodeForm({
         )}
       </Body>
       <Footer>
-        <ButtonPrimary disabled={isLoading} type="submit">
+        <ButtonPrimary disabled={!canSubmit} type="submit">
           {submitButtonLabel}
         </ButtonPrimary>
       </Footer>

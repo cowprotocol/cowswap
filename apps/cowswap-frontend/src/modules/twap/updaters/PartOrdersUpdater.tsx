@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { twapOrdersListAtom } from 'entities/twap'
@@ -16,10 +17,10 @@ export function PartOrdersUpdater(): null {
   useEffect(() => {
     if (!chainId || !account) return
 
-    const accountLowerCase = account.toLowerCase()
+    const accountKey = getAddressKey(account)
 
     const ordersParts$ = twapOrders.map((twapOrder) => {
-      return generateTwapOrderParts(twapOrder, accountLowerCase, chainId)
+      return generateTwapOrderParts(twapOrder, accountKey, chainId)
     })
 
     Promise.all(ordersParts$).then((ordersParts) => {

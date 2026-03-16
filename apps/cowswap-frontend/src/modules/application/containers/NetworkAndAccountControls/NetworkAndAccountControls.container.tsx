@@ -3,8 +3,9 @@ import { ReactNode } from 'react'
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 
-import { NetworkSelector } from 'modules/application/containers/NetworkSelector/NetworkSelector.container'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
+import { NetworkSelector } from '../NetworkSelector/NetworkSelector.container'
 
 export function NetworkAndAccountControls(): ReactNode {
   const { hideNetworkSelector } = useInjectedWidgetParams()

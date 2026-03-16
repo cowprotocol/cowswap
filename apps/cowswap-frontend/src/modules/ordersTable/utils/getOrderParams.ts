@@ -1,7 +1,8 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { isEnoughAmount } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
@@ -43,8 +44,8 @@ export function getOrderParams(
   }
 
   const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address.toLowerCase()]
-  const allowance = allowances?.[order.inputToken.address.toLowerCase()]
+  const balance = balances[getAddressKey(order.inputToken.address)]
+  const allowance = allowances?.[getAddressKey(order.inputToken.address)]
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
     partiallyFillable: order.partiallyFillable,
@@ -65,8 +66,8 @@ export function getOrderParams(
 }
 
 function _hasEnoughBalanceAndAllowance(params: {
-  balance: bigint | undefined
-  allowance: bigint | undefined
+  balance: BigNumber | undefined
+  allowance: BigNumber | undefined
   partiallyFillable: boolean
   sellAmount: CurrencyAmount<Token>
 }): {
@@ -82,9 +83,9 @@ function _hasEnoughBalanceAndAllowance(params: {
   return { hasEnoughBalance, hasEnoughAllowance }
 }
 
-function getBiggerAmount(a: bigint | undefined, b: bigint | undefined): bigint | undefined {
+function getBiggerAmount(a: BigNumber | undefined, b: BigNumber | undefined): BigNumber | undefined {
   if (!a) return b
   if (!b) return a
 
-  return a > b ? a : b
+  return a.gt(b) ? a : b
 }

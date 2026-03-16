@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { useConfig } from 'wagmi'
 import { readContract } from 'wagmi/actions'
@@ -36,7 +37,7 @@ export function useCheckEthFlowOrderExists(): EthFlowOrderExistsCallback {
             args: [orderDigest as Hex],
           })
 
-          return owner.toLowerCase() !== ZERO_ADDRESS
+          return !areAddressesEqual(owner, ZERO_ADDRESS)
         } catch (e) {
           console.error('Eth-flow order existing check error: ', e)
 

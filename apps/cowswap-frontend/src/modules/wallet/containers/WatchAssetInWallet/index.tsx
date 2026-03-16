@@ -3,12 +3,11 @@ import { ReactElement, useCallback, useState } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Currency } from '@cowprotocol/currency'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wallet'
-import { Currency } from '@uniswap/sdk-core'
-
-import { useWatchAsset } from 'wagmi'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -30,7 +29,9 @@ export type WatchAssetInWalletProps = {
 export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const { currency, shortLabel, className, fallback } = props
   const { icon, walletName } = useWalletDetails()
-  const { mutateAsync: watchAsset } = useWatchAsset()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
+  const provider = useWalletProvider()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isAssetWatchingSupported = useIsAssetWatchingSupported()
@@ -42,17 +43,18 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const logoURL = getTokenLogoUrls(token as TokenWithLogo)[0]
 
   const addToken = useCallback(() => {
-    if (!token?.symbol) return
+    if (!token?.symbol || !provider?.provider?.request) return
 
-    watchAsset({
-      type: 'ERC20',
-      options: {
-        address: token.address,
-        symbol: token.symbol,
-        decimals: token.decimals,
-        image: logoURL,
-      },
-    })
+    provider
+      .send('wallet_watchAsset', {
+        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+        options: {
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: logoURL,
+        },
+      } as never)
       .then(() => {
         // Track success event
         cowAnalytics.sendEvent({
@@ -72,7 +74,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
         })
         setSuccess(false)
       })
-  }, [watchAsset, logoURL, token, cowAnalytics])
+  }, [provider, logoURL, token, cowAnalytics])
 
   if (
     !currency ||

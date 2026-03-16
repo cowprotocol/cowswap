@@ -2,10 +2,9 @@ import { MouseEventHandler, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
+import { Token } from '@cowprotocol/currency'
 import { useFavoriteTokens, useToggleFavoriteToken } from '@cowprotocol/tokens'
-import { ButtonStar } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
-import { Token } from '@uniswap/sdk-core'
+import { ButtonStar, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

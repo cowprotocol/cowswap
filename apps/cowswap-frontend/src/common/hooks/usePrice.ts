@@ -1,5 +1,5 @@
 import { buildPriceFromCurrencyAmounts } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

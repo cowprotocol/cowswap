@@ -4,13 +4,18 @@ import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { COW_TOKEN_TO_CHAIN, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
-import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
+import {
+  COW_TOKEN_TO_CHAIN,
+  COW_CONTRACT_ADDRESS,
+  V_COW,
+  WRAPPED_NATIVE_CURRENCIES as WETH,
+} from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -55,6 +60,9 @@ const BLOCKS_TO_WAIT = 2
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export default function Profile() {
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
+  const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
@@ -94,7 +102,7 @@ export default function Profile() {
   )
 
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || isLockedGnoLoading
+    let output = isVCowLoading || isLockedGnoLoading || !provider
 
     // remove loader after 5 sec in any case
     setTimeout(() => {
@@ -102,7 +110,7 @@ export default function Profile() {
     }, 5000)
 
     return output
-  }, [isLockedGnoLoading, isVCowLoading])
+  }, [isLockedGnoLoading, isVCowLoading, provider])
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()

@@ -1,7 +1,7 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 import { QuoteAmountsAndCosts } from '@cowprotocol/sdk-order-book'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfoParams } from './types'
 
@@ -72,19 +72,6 @@ function calculateNetworkFee(
   }
 }
 
-function mapSellBuyAmounts(
-  amounts: { sellAmount: bigint; buyAmount: bigint },
-  currencies: Currencies,
-): {
-  sellAmount: CurrencyAmount<Currency>
-  buyAmount: CurrencyAmount<Currency>
-} {
-  return {
-    sellAmount: CurrencyAmount.fromRawAmount(currencies.inputCurrency, amounts.sellAmount.toString()),
-    buyAmount: CurrencyAmount.fromRawAmount(currencies.outputCurrency, amounts.buyAmount.toString()),
-  }
-}
-
 function mapFeeAmounts(
   isSell: boolean,
   data: {
@@ -102,5 +89,18 @@ function mapFeeAmounts(
       data.amount.toString(),
     ),
     bps: data.bps,
+  }
+}
+
+function mapSellBuyAmounts(
+  amounts: { sellAmount: bigint; buyAmount: bigint },
+  currencies: Currencies,
+): {
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
+} {
+  return {
+    sellAmount: CurrencyAmount.fromRawAmount(currencies.inputCurrency, amounts.sellAmount.toString()),
+    buyAmount: CurrencyAmount.fromRawAmount(currencies.outputCurrency, amounts.buyAmount.toString()),
   }
 }

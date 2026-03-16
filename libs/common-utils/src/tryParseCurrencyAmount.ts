@@ -1,7 +1,7 @@
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
+import { parseUnits } from '@ethersproject/units'
 
 import JSBI from 'jsbi'
-import { parseUnits } from 'viem'
 
 /**
  * Parses a CurrencyAmount from the passed string.

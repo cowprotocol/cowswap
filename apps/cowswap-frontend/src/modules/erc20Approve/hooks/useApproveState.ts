@@ -2,8 +2,9 @@ import { useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
@@ -13,19 +14,13 @@ import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
 import { ApprovalState } from '../types'
 import { getApprovalState } from '../utils'
 
-function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
-  if (!amountToApprove) return undefined
-
-  return getWrappedToken(amountToApprove.currency)
-}
-
 export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): {
   state: ApprovalState
   currentAllowance: Nullish<bigint>
 } {
   const token = getCurrencyToApprove(amountToApprove)
-  const tokenAddress = token?.address?.toLowerCase()
-  const currentAllowance = useTokenAllowance(token)
+  const tokenAddress = token?.address ? getAddressKey(token.address) : undefined
+  const currentAllowance = useTokenAllowance(token).data
   const pendingApproval = useHasPendingApproval(tokenAddress)
 
   const approvalStateBase = useSafeMemo(() => {
@@ -35,6 +30,12 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
   const state = useAuxApprovalState(approvalStateBase, currentAllowance)
 
   return useSafeMemo(() => ({ state, currentAllowance }), [state, currentAllowance])
+}
+
+function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
+  if (!amountToApprove) return undefined
+
+  return getWrappedToken(amountToApprove.currency)
 }
 
 /**

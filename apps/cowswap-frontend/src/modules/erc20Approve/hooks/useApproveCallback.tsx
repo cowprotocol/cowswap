@@ -1,38 +1,32 @@
 import { useCallback } from 'react'
 
-import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
+import { Erc20 } from '@cowprotocol/cowswap-abis'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { BigNumber } from '@ethersproject/bignumber'
+import { TransactionResponse } from '@ethersproject/providers'
 
 import { useLingui } from '@lingui/react/macro'
-import { encodeFunctionData, erc20Abi, TransactionReceipt, toHex } from 'viem'
-import { Config, useConfig } from 'wagmi'
-import { estimateGas, writeContract, waitForTransactionReceipt } from 'wagmi/actions'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { useTokenContract } from 'common/hooks/useContract'
 
-export async function estimateApprove({
-  tokenAddress,
-  spender,
-  amountToApprove,
-  config,
-}: {
-  tokenAddress: string
-  spender: string
-  amountToApprove: bigint
-  config: Config
-}): Promise<{
-  approveAmount: bigint
-  gasLimit: bigint
+export async function estimateApprove(
+  tokenContract: Erc20,
+  spender: string,
+  amountToApprove: bigint,
+): Promise<{
+  approveAmount: BigNumber | string
+  gasLimit: BigNumber
 }> {
+  const approveAmount = amountToApprove.toString()
+
   try {
     return {
-      approveAmount: amountToApprove,
-      gasLimit: await estimateGas(config, {
-        to: tokenAddress,
-        data: encodeFunctionData({ abi: erc20Abi, functionName: 'approve', args: [spender, amountToApprove] }),
-      }),
+      approveAmount,
+      gasLimit: await tokenContract.estimateGas.approve(spender, approveAmount),
     }
   } catch (error) {
     console.error(
@@ -42,7 +36,7 @@ export async function estimateApprove({
     )
 
     return {
-      approveAmount: amountToApprove,
+      approveAmount,
       gasLimit: GAS_LIMIT_DEFAULT,
     }
   }
@@ -51,9 +45,9 @@ export async function estimateApprove({
 export function useApproveCallback(
   currency: Currency | undefined,
   spender?: string,
-): (amountToApprove: CurrencyAmount<Currency> | bigint, summary?: string) => Promise<TransactionReceipt | undefined> {
-  const config = useConfig()
+): (amountToApprove: CurrencyAmount<Currency> | bigint, summary?: string) => Promise<TransactionResponse | undefined> {
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
+  const { contract: tokenContract, chainId: tokenChainId } = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
   const { t } = useLingui()
 
@@ -63,28 +57,27 @@ export function useApproveCallback(
       const tokenSymbol = token?.symbol
 
       const summary = amountToApprove > 0n ? t`Approve ${tokenSymbol}` : t`Revoke ${tokenSymbol} approval`
-      const amountToApproveStr = toHex(amountToApprove)
+      const amountToApproveStr = '0x' + amountToApprove.toString(16)
 
-      if (!token || !spender) {
-        console.error('Wrong input for approve: ', { token, amountToApproveStr, spender })
+      if (!tokenChainId || !token || !tokenContract || !spender) {
+        console.error('Wrong input for approve: ', { tokenChainId, token, tokenContract, amountToApproveStr, spender })
         return
       }
 
-      const estimation = await estimateApprove({ tokenAddress: token.address, spender, amountToApprove, config })
-      const txHash = await writeContract(config, {
-        abi: erc20Abi,
-        address: token.address,
-        functionName: 'approve',
-        args: [spender, estimation.approveAmount],
-        gas: estimation.gasLimit,
-      })
-      addTransaction({
-        hash: txHash,
-        summary,
-        approval: { tokenAddress: token.address, spender, amount: amountToApproveStr },
-      })
-      return waitForTransactionReceipt(config, { hash: txHash })
+      const estimation = await estimateApprove(tokenContract, spender, amountToApprove)
+      return tokenContract
+        .approve(spender, estimation.approveAmount, {
+          gasLimit: calculateGasMargin(estimation.gasLimit),
+        })
+        .then((response: TransactionResponse) => {
+          addTransaction({
+            hash: response.hash,
+            summary,
+            approval: { tokenAddress: token.address, spender, amount: amountToApproveStr },
+          })
+          return response
+        })
     },
-    [config, token, t, spender, addTransaction],
+    [token, t, tokenChainId, tokenContract, spender, addTransaction],
   )
 }

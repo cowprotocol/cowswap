@@ -1,7 +1,8 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Token } from '@uniswap/sdk-core'
+import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 
 import { renderHook, waitFor } from '@testing-library/react'
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
@@ -14,8 +15,6 @@ import { useTradeApproveCallback } from './useTradeApproveCallback'
 import { LinguiWrapper } from '../../../../../LinguiJestProvider'
 import { useApproveCallback } from '../../hooks'
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
-
-import type { TransactionReceipt } from 'viem'
 
 jest.mock('@cowprotocol/analytics', () => ({
   useCowAnalytics: jest.fn(),
@@ -76,12 +75,43 @@ describe('useTradeApproveCallback', () => {
   const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // Valid address
   const mockChainId = 1
 
-  const createMockTransactionResponse = (status: 'success' | 'reverted'): TransactionReceipt =>
-    ({
-      transactionHash: '0x15de6602b39be44ce9e6b57245deb4ee64ad28286c0f9f8094a6af2016e30591',
+  const createMockTransactionReceipt = (status: number): TransactionReceipt => {
+    return {
+      to: mockSpenderAddress,
       from: '0xfrom1234567890123456789012345678901234567890',
+      contractAddress: mockToken.address,
+      transactionIndex: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      gasUsed: { toString: () => '21000' } as any,
+      logsBloom: '0x',
+      blockHash: '0xblockhash',
+      transactionHash: '0xtxhash',
+      logs: [],
+      blockNumber: 123456,
+      confirmations: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cumulativeGasUsed: { toString: () => '21000' } as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      effectiveGasPrice: { toString: () => '1000000000' } as any,
+      byzantium: true,
+      type: 2,
       status,
-      gasUsed: 21000n,
+    }
+  }
+
+  const createMockTransactionResponse = (status: number): TransactionResponse =>
+    ({
+      hash: '0x15de6602b39be44ce9e6b57245deb4ee64ad28286c0f9f8094a6af2016e30591',
+      confirmations: 0,
+      from: '0xfrom1234567890123456789012345678901234567890',
+      wait: jest.fn().mockResolvedValue(createMockTransactionReceipt(status)),
+      nonce: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      gasLimit: { toString: () => '21000' } as any,
+      data: '0x',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      value: { toString: () => '0' } as any,
+      chainId: 1,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any
 
@@ -101,14 +131,14 @@ describe('useTradeApproveCallback', () => {
 
   describe('successful approval flow', () => {
     it('should extract and set optimistic allowance from transaction logs', async () => {
-      const mockTxResponse = createMockTransactionResponse('success')
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue({
         tokenAddress: mockToken.address.toLowerCase(),
         owner: mockAccount,
         spender: mockSpenderAddress,
         amount: mockAmount,
-        blockNumber: 123456n,
+        blockNumber: 123456,
         chainId: mockChainId,
       })
 
@@ -123,22 +153,22 @@ describe('useTradeApproveCallback', () => {
           owner: mockAccount,
           spender: mockSpenderAddress,
           amount: mockAmount,
-          blockNumber: 123456n,
+          blockNumber: 123456,
           chainId: mockChainId,
         })
       })
     })
 
     it('should use actual approved amount from logs when user changes amount in wallet', async () => {
-      const userChangedAmount = 5000000000000000000n // User changed to 5 tokens instead of 1
-      const mockTxResponse = createMockTransactionResponse('success')
+      const userChangedAmount = BigInt('5000000000000000000') // User changed to 5 tokens instead of 1
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue({
         tokenAddress: mockToken.address.toLowerCase(),
         owner: mockAccount,
         spender: mockSpenderAddress,
         amount: userChangedAmount,
-        blockNumber: 123456n,
+        blockNumber: 123456,
         chainId: mockChainId,
       })
 
@@ -153,14 +183,14 @@ describe('useTradeApproveCallback', () => {
           owner: mockAccount,
           spender: mockSpenderAddress,
           amount: userChangedAmount, // Should use the actual amount from logs, not mockAmount
-          blockNumber: 123456n,
+          blockNumber: 123456,
           chainId: mockChainId,
         })
       })
     })
 
     it('should not set optimistic allowance when logs are missing', async () => {
-      const mockTxResponse = createMockTransactionResponse('success')
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null) // No approval data found
 
@@ -182,7 +212,7 @@ describe('useTradeApproveCallback', () => {
     })
 
     it('should successfully approve tokens and track analytics', async () => {
-      const mockTxResponse = createMockTransactionResponse('success')
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
@@ -217,7 +247,7 @@ describe('useTradeApproveCallback', () => {
     })
 
     it('should return transaction receipt on successful approval', async () => {
-      const mockTxResponse = createMockTransactionResponse('success')
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
@@ -234,13 +264,29 @@ describe('useTradeApproveCallback', () => {
         })
       })
     })
+
+    it('should wait for transaction to be mined', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      const mockWait = jest.fn().mockResolvedValue(createMockTransactionReceipt(1))
+      mockTxResponse.wait = mockWait
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
+
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
+
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
+
+      await waitFor(() => {
+        expect(mockWait).toHaveBeenCalled()
+      })
+    })
   })
 
   describe('failed approval flow', () => {
-    it('should handle transaction failure (status !== "success")', async () => {
-      const mockTxResponse = createMockTransactionResponse('reverted')
+    it('should handle transaction failure (status !== 1)', async () => {
+      const mockTxResponse = createMockTransactionResponse(0)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
-      // processApprovalTransaction will throw an error for status !== 'success'
+      // processApprovalTransaction will throw an error for status !== 1
       mockProcessApprovalTransaction.mockImplementation(() => {
         throw new Error('Approval transaction failed')
       })
@@ -330,7 +376,7 @@ describe('useTradeApproveCallback', () => {
 
   describe('useModals parameter', () => {
     it('should show modal when useModals is true (default)', async () => {
-      const mockTxResponse = createMockTransactionResponse('success')
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
@@ -348,7 +394,7 @@ describe('useTradeApproveCallback', () => {
     })
 
     it('should not show modal when useModals is false', async () => {
-      const mockTxResponse = createMockTransactionResponse('success')
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
@@ -363,7 +409,7 @@ describe('useTradeApproveCallback', () => {
     })
 
     it('should still cleanup state even when useModals is false', async () => {
-      const mockTxResponse = createMockTransactionResponse('success')
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
@@ -384,7 +430,7 @@ describe('useTradeApproveCallback', () => {
 
   describe('state cleanup', () => {
     it('should always reset state in finally block', async () => {
-      const mockTxResponse = createMockTransactionResponse('success')
+      const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
@@ -420,9 +466,9 @@ describe('useTradeApproveCallback', () => {
     })
 
     it('should reset state even when transaction fails', async () => {
-      const mockTxResponse = createMockTransactionResponse('reverted')
+      const mockTxResponse = createMockTransactionResponse(0)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
-      // processApprovalTransaction will throw an error for status !== 'success'
+      // processApprovalTransaction will throw an error for status !== 1
       mockProcessApprovalTransaction.mockImplementation(() => {
         throw new Error('Approval transaction failed')
       })

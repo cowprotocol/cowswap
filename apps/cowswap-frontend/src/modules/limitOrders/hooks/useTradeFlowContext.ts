@@ -1,11 +1,11 @@
 import { useAtomValue } from 'jotai'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useDispatch } from 'react-redux'
-import { useConfig } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 
@@ -18,7 +18,7 @@ import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'module
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useGP2SettlementContractData } from 'common/hooks/useContract'
+import { useGP2SettlementContract } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -27,12 +27,14 @@ import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFlowContext(): TradeFlowContext | null {
-  const config = useConfig()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
+  const provider = useWalletProvider()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
   const isSafeWallet = useIsSafeWallet()
-  const settlementContract = useGP2SettlementContractData()
+  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
   const quoteState = useTradeQuote()
@@ -55,10 +57,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
 
   const partiallyFillable = settingsState.partialFillsEnabled
 
-  const settlementChainId = settlementContract.chainId
-
   // TODO: Reduce function complexity by extracting logic
-
+  // eslint-disable-next-line complexity
   return useSafeMemo(() => {
     if (
       !account ||
@@ -66,6 +66,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       !state.outputCurrencyAmount ||
       !state.inputCurrency ||
       !state.outputCurrency ||
+      !provider ||
       !settlementContract ||
       !isQuoteReady ||
       !appData
@@ -79,7 +80,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       settlementContract,
       allowsOffchainSigning,
       dispatch,
-      config,
+      signer: provider.getUncheckedSigner(),
       rateImpact,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
@@ -112,6 +113,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     state.inputCurrency,
     state.outputCurrency,
     state.orderKind,
+    provider,
     settlementContract,
     isQuoteReady,
     appData,

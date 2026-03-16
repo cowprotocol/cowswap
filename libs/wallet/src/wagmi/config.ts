@@ -1,43 +1,10 @@
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { createAppKit } from '@reown/appkit/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { safe, injected } from '@wagmi/connectors'
 import { Chain, http } from 'viem'
-import {
-  arbitrum,
-  avalanche,
-  base,
-  bsc,
-  gnosis,
-  ink,
-  lens,
-  linea,
-  mainnet,
-  plasma,
-  polygon,
-  sepolia,
-} from 'viem/chains'
-import { createStorage, Transport } from 'wagmi'
-
-const WAGMI_STORAGE_KEY = 'cowswap-wallet'
-
-const storage =
-  typeof window !== 'undefined'
-    ? createStorage({
-        storage: window.localStorage,
-        key: WAGMI_STORAGE_KEY,
-      })
-    : createStorage({
-        storage: {
-          getItem: () => null,
-          setItem: () => {},
-          removeItem: () => {},
-        },
-      })
-
-// TODO change
-const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
+import { arbitrum, avalanche, base, bsc, gnosis, ink, linea, mainnet, plasma, polygon, sepolia } from 'viem/chains'
+import { createConfig, Transport } from 'wagmi'
 
 const SUPPORTED_CHAIN_IDS = Object.values(SupportedChainId).filter((v) => typeof v === 'number')
 
@@ -46,7 +13,6 @@ const SUPPORTED_CHAINS: Record<SupportedChainId, Chain> = {
   [SupportedChainId.BNB]: bsc,
   [SupportedChainId.GNOSIS_CHAIN]: gnosis,
   [SupportedChainId.POLYGON]: polygon,
-  [SupportedChainId.LENS]: lens,
   [SupportedChainId.BASE]: base,
   [SupportedChainId.PLASMA]: plasma,
   [SupportedChainId.ARBITRUM_ONE]: arbitrum,
@@ -56,18 +22,8 @@ const SUPPORTED_CHAINS: Record<SupportedChainId, Chain> = {
   [SupportedChainId.SEPOLIA]: sepolia,
 }
 
-const metadata = {
-  name: 'CoW Swap',
-  description:
-    'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
-  url: 'https://swap.cow.fi',
-  icons: ['https://swap.cow.fi/favicon-light-mode.png'],
-}
-
-const networks = Object.values(SUPPORTED_CHAINS) as [Chain, ...Chain[]]
-
-export const wagmiAdapter = new WagmiAdapter({
-  networks,
+export const config = createConfig({
+  chains: SUPPORTED_CHAIN_IDS.map((chainId) => SUPPORTED_CHAINS[chainId]) as [Chain, ...Chain[]],
   transports: SUPPORTED_CHAIN_IDS.reduce(
     (acc, chainId) => {
       acc[chainId] = http(RPC_URLS[chainId])
@@ -75,32 +31,5 @@ export const wagmiAdapter = new WagmiAdapter({
     },
     {} as Record<SupportedChainId, Transport>,
   ),
-  projectId,
-  storage,
-})
-
-const appKit = createAppKit({
-  adapters: [wagmiAdapter],
-  allowUnsupportedChain: false,
-  defaultNetwork: networks[0],
-  enableEIP6963: true,
-  enableReconnect: true,
-  enableWalletGuide: false,
-  featuredWalletIds: [
-    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // metamask
-    '18388be9ac2d02726dbac9777c96efaac06d744b2f6d580fccdd4127a6d01fd1', // rabby
-    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // coinbase
-  ],
-  features: {
-    analytics: false,
-    email: false,
-    socials: false,
-  },
-  metadata,
-  networks,
-  projectId,
-  termsConditionsUrl: 'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi',
-})
-appKit.updateFeatures({
-  connectorTypeOrder: ['recent', 'injected', 'featured', 'custom', 'external', 'recommended', 'walletConnect'],
+  connectors: [safe(), injected()],
 })

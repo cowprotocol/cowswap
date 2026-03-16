@@ -23,7 +23,6 @@ const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
 export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
-
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -37,6 +36,10 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const quoteParamsState = useQuoteParams(amountStr, partiallyFillable)
   const { quoteParams, inputCurrency } = quoteParamsState || {}
 
+  const currentAmountRef = useRef<string | null>(null)
+  // eslint-disable-next-line react-hooks/refs
+  currentAmountRef.current = amountStr ?? null
+
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
 
   const isWindowVisible = useIsWindowVisible()
@@ -45,7 +48,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
-  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState)
+  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState, currentAmountRef)
   const pollQuoteRef = useRef(pollQuote)
   // eslint-disable-next-line react-hooks/refs
   pollQuoteRef.current = pollQuote
@@ -56,8 +59,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   useLayoutEffect(() => {
     // Do not reset the quote if the confirm modal is open
     // Because we already have a quote and don't want to reset it
-    if (isConfirmOpen) return
-    if (!tradeQuoteManager) return
+    if (isConfirmOpen || !tradeQuoteManager) return
 
     if (!isWindowVisible || !document.hasFocus() || !amountStr) {
       tradeQuoteManager.reset()
@@ -88,11 +90,9 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
    * Reset counter and update quote each time when confirmation modal is closed
    */
   useLayoutEffect(() => {
-    if (prevIsConfirmOpen === isConfirmOpen) return
+    if (prevIsConfirmOpen === isConfirmOpen || isConfirmOpen) return
 
-    if (!isConfirmOpen) {
-      setTradeQuotePolling(0)
-    }
+    setTradeQuotePolling(0)
   }, [setTradeQuotePolling, prevIsConfirmOpen, isConfirmOpen])
 
   /**

@@ -1,5 +1,5 @@
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { HttpsString } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId, HttpsString } from '@cowprotocol/cow-sdk'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 const INFURA_KEY = process.env['REACT_APP_INFURA_KEY'] || '2af29cd5ac554ae3b8d991afe1ba4b7d' // Default rate-limited infura key (should be overridden, not reliable to use)
 
@@ -8,7 +8,6 @@ const RPC_URL_ENVS: Record<SupportedChainId, HttpsString | undefined> = {
   [SupportedChainId.BNB]: (process.env['REACT_APP_NETWORK_URL_56'] as HttpsString) || undefined,
   [SupportedChainId.GNOSIS_CHAIN]: (process.env['REACT_APP_NETWORK_URL_100'] as HttpsString) || undefined,
   [SupportedChainId.POLYGON]: (process.env['REACT_APP_NETWORK_URL_137'] as HttpsString) || undefined,
-  [SupportedChainId.LENS]: (process.env['REACT_APP_NETWORK_URL_232'] as HttpsString) || undefined,
   [SupportedChainId.BASE]: (process.env['REACT_APP_NETWORK_URL_8453'] as HttpsString) || undefined,
   [SupportedChainId.PLASMA]: (process.env['REACT_APP_NETWORK_URL_9745'] as HttpsString) || undefined,
   [SupportedChainId.ARBITRUM_ONE]: (process.env['REACT_APP_NETWORK_URL_42161'] as HttpsString) || undefined,
@@ -23,7 +22,6 @@ const DEFAULT_RPC_URL: Record<SupportedChainId, { url: HttpsString; usesInfura: 
   [SupportedChainId.BNB]: { url: `https://bsc-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.GNOSIS_CHAIN]: { url: `https://rpc.gnosis.gateway.fm`, usesInfura: false },
   [SupportedChainId.POLYGON]: { url: `https://polygon-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
-  [SupportedChainId.LENS]: { url: `https://rpc.lens.xyz`, usesInfura: false },
   [SupportedChainId.BASE]: { url: `https://base-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.PLASMA]: { url: `https://rpc.plasma.to`, usesInfura: false },
   [SupportedChainId.ARBITRUM_ONE]: { url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
@@ -52,4 +50,22 @@ function getRpcUrl(chainId: SupportedChainId): HttpsString {
   }
 
   return defaultRpc.url
+}
+
+const rpcProviderCache: Record<number, JsonRpcProvider> = {}
+
+export function getRpcProvider(chainId: SupportedChainId): JsonRpcProvider
+export function getRpcProvider(chainId: number): JsonRpcProvider | null {
+  if (!rpcProviderCache[chainId]) {
+    const url = RPC_URLS[chainId as SupportedChainId]
+    if (!url) return null
+
+    const provider = new JsonRpcProvider(url, chainId)
+
+    rpcProviderCache[chainId] = provider
+
+    return provider
+  }
+
+  return rpcProviderCache[chainId]
 }

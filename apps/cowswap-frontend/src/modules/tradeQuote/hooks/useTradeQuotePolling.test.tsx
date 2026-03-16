@@ -2,8 +2,8 @@ import { ReactNode } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { renderHook, waitFor } from '@testing-library/react'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'

@@ -4,10 +4,9 @@ import { atomWithStorage } from 'jotai/utils'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { Token } from '@uniswap/sdk-core'
-
-import { getAddress } from 'viem'
+import { getAddress } from '@ethersproject/address'
 
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'

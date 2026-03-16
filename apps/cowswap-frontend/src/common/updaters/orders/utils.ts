@@ -1,5 +1,5 @@
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -9,6 +9,35 @@ import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCo
 
 import { UltimateOrderData } from '../../hooks/useUltimateOrder'
 import { TradeAmounts } from '../../types'
+
+type PopupData = {
+  status: OrderTransitionStatus
+  order: EnrichedOrder
+}
+
+export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
+  // Skip EthFlow creating orders
+  if (orderFromStore.status === OrderStatus.CREATING) {
+    return null
+  }
+
+  try {
+    const isComposableCowChildOrder = getIsComposableCowChildOrder(orderFromStore)
+    // For ComposableCow child orders always request PROD order-book
+    const order = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
+
+    if (!order) return null
+
+    const status = classifyOrder(order)
+
+    return { status, order }
+  } catch {
+    console.debug(
+      `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`,
+    )
+    return null
+  }
+}
 
 export function getUltimateOrderTradeAmounts({
   orderFromStore,
@@ -63,33 +92,4 @@ export function getUltimateOrderTradeAmounts({
 
 function stringToCurrency(amount: string, currency: Currency): CurrencyAmount<Currency> {
   return CurrencyAmount.fromRawAmount(currency, amount)
-}
-
-type PopupData = {
-  status: OrderTransitionStatus
-  order: EnrichedOrder
-}
-
-export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
-  // Skip EthFlow creating orders
-  if (orderFromStore.status === OrderStatus.CREATING) {
-    return null
-  }
-
-  try {
-    const isComposableCowChildOrder = getIsComposableCowChildOrder(orderFromStore)
-    // For ComposableCow child orders always request PROD order-book
-    const order = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
-
-    if (!order) return null
-
-    const status = classifyOrder(order)
-
-    return { status, order }
-  } catch {
-    console.debug(
-      `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`,
-    )
-    return null
-  }
 }

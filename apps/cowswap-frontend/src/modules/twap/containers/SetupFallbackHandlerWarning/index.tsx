@@ -1,9 +1,9 @@
-import { atom, useAtom } from 'jotai'
-import { useSetAtom } from 'jotai'
+import { atom, useAtom, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { ButtonPrimary, InlineBanner, Loader, BannerOrientation, UI, StatusColorVariant } from '@cowprotocol/ui'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { BannerOrientation, ButtonPrimary, InlineBanner, Loader, StatusColorVariant, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
@@ -99,7 +99,7 @@ export function SetupFallbackHandlerWarning() {
 
     return verifyExtensibleFallback(extensibleFallbackContext)
       .then((result) => {
-        updateFallbackHandlerVerification({ [account.toLowerCase()]: result })
+        updateFallbackHandlerVerification({ [getAddressKey(account)]: result })
       })
       .finally(() => {
         setFbHandlerCheckInProgress(false)

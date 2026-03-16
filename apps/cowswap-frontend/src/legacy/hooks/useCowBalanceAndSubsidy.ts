@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { COW_SUBSIDY_DATA } from 'legacy/components/CowSubsidyModal/constants'
 import { getDiscountFromBalance } from 'legacy/components/CowSubsidyModal/utils'

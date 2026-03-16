@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { EthereumProvider } from '@cowprotocol/iframe-transport'
+import { Currency } from '@cowprotocol/currency'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWidgetProviderMetaInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Currency } from '@uniswap/sdk-core'
+import { ExternalProvider } from '@ethersproject/providers'
 
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -66,12 +66,13 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
  * Fetch the Metamask version using the method defined in https://docs.metamask.io/wallet/reference/json-rpc-methods/web3_clientversion
  * Returns null if the version could not be fetched
  */
-async function getMetamaskVersion(provider: EthereumProvider): Promise<string | null> {
-  if (!provider) return null
+async function getMetamaskVersion(provider: ExternalProvider): Promise<string | null> {
+  if (!provider.request) return null
 
   try {
     return await provider.request({
       method: 'web3_clientVersion',
+      params: [],
     })
   } catch (error) {
     console.error('Failed to get Metamask version:', error)
@@ -121,17 +122,19 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
 
   const isMetamask = isMetamaskBrowserExtension || isWidgetMetamaskBrowserExtension
 
+  // TODO M-2 COW-568
+  // Wallet connection (and warnings) through wagmi will be handled in a future task
   const provider = useWalletProvider()
 
   useEffect(() => {
-    if (!isMetamask || !provider) {
+    if (!isMetamask || !provider?.provider) {
       setIsAffected(false)
       return
     }
 
     // Here we know we are connected to a form of Metamask
     // Fetch the version
-    getMetamaskVersion(provider as EthereumProvider).then((version) => {
+    getMetamaskVersion(provider.provider).then((version) => {
       if (!version) {
         // No version found, assume the wallet is affected
         setIsAffected(undefined)

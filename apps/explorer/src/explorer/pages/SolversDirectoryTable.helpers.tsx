@@ -4,21 +4,6 @@ export const ALL_FILTER = 'all'
 export const ACTIVE_FILTER_ACTIVE = 'active'
 export const ACTIVE_FILTER_INACTIVE = 'inactive'
 
-function matchesSearch(solver: SolverInfo, query: string, deployments: SolverDeployment[]): boolean {
-  const normalizedQuery = query.trim().toLowerCase()
-  if (!normalizedQuery) return true
-
-  const searchableFields = [
-    solver.displayName,
-    solver.solverId,
-    solver.description || '',
-    solver.website || '',
-    deployments.map((deployment) => `${deployment.address || ''} ${deployment.payoutAddress || ''}`).join(' '),
-  ]
-
-  return searchableFields.join(' ').toLowerCase().includes(normalizedQuery)
-}
-
 export function filterDeployments(
   deployments: SolverDeployment[],
   networkFilter: string,
@@ -47,16 +32,19 @@ export function filterDeploymentsByActiveStatus(
   return deployments
 }
 
-export function getNetworkOptions(solversInfo: SolverInfo[]): [number, string][] {
-  const entries = new Map<number, string>()
+export function filterSolvers(
+  solversInfo: SolverInfo[],
+  query: string,
+  networkFilter: string,
+  environmentFilter: string,
+  activeFilter: string,
+): SolverInfo[] {
+  return solversInfo.filter((solver) => {
+    const scopedDeployments = filterDeployments(solver.deployments, networkFilter, environmentFilter)
+    const visibleDeployments = filterDeploymentsByActiveStatus(scopedDeployments, activeFilter)
 
-  solversInfo.forEach((solver) => {
-    solver.deployments.forEach((deployment) => {
-      entries.set(deployment.chainId, deployment.chainName)
-    })
+    return visibleDeployments.length > 0 && matchesSearch(solver, query, visibleDeployments)
   })
-
-  return [...entries.entries()].sort((a, b) => a[1].localeCompare(b[1]))
 }
 
 export function getEnvironmentOptions(solversInfo: SolverInfo[]): string[] {
@@ -73,17 +61,27 @@ export function getEnvironmentOptions(solversInfo: SolverInfo[]): string[] {
   return [...environments].sort()
 }
 
-export function filterSolvers(
-  solversInfo: SolverInfo[],
-  query: string,
-  networkFilter: string,
-  environmentFilter: string,
-  activeFilter: string,
-): SolverInfo[] {
-  return solversInfo.filter((solver) => {
-    const scopedDeployments = filterDeployments(solver.deployments, networkFilter, environmentFilter)
-    const visibleDeployments = filterDeploymentsByActiveStatus(scopedDeployments, activeFilter)
+export function getNetworkOptions(solversInfo: SolverInfo[]): [number, string][] {
+  const entries = new Map<number, string>()
 
-    return visibleDeployments.length > 0 && matchesSearch(solver, query, visibleDeployments)
+  solversInfo.forEach((solver) => {
+    solver.deployments.forEach((deployment) => {
+      entries.set(deployment.chainId, deployment.chainName)
+    })
   })
+
+  return [...entries.entries()].sort((a, b) => a[1].localeCompare(b[1]))
+}
+
+function matchesSearch(solver: SolverInfo, query: string, deployments: SolverDeployment[]): boolean {
+  const normalizedQuery = query.trim().toLowerCase()
+  if (!normalizedQuery) return true
+
+  const searchableFields = [
+    solver.displayName,
+    solver.solverId,
+    deployments.map((deployment) => deployment.address || '').join(' '),
+  ]
+
+  return searchableFields.join(' ').toLowerCase().includes(normalizedQuery)
 }

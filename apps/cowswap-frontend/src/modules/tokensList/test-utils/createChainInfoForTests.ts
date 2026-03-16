@@ -1,4 +1,10 @@
-import { ALL_SUPPORTED_CHAINS_MAP, ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  ALL_SUPPORTED_CHAINS_MAP,
+  ChainInfo,
+  EvmChainInfo,
+  isEvmChainInfo,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 
 export function createChainInfoForTests(baseChainId: SupportedChainId, overrides?: Partial<ChainInfo>): ChainInfo {
   const base = ALL_SUPPORTED_CHAINS_MAP[baseChainId]
@@ -13,18 +19,26 @@ export function createChainInfoForTests(baseChainId: SupportedChainId, overrides
 function buildChainInfo(base: ChainInfo, overrides: Partial<ChainInfo> | undefined): ChainInfo {
   const chainId = resolveChainId(base, overrides)
 
-  return {
+  const common = {
     ...base,
     ...overrides,
     id: chainId,
-    contracts: resolveContracts(base, overrides),
-    bridges: resolveBridges(base, overrides),
-    rpcUrls: resolveRpcUrls(base, overrides),
     logo: resolveLogo(base, overrides),
     docs: resolveDocs(base, overrides),
     website: resolveWebsite(base, overrides),
     blockExplorer: resolveBlockExplorer(base, overrides),
     nativeCurrency: resolveNativeCurrency(base, overrides, chainId),
+  }
+
+  if (!isEvmChainInfo(base)) {
+    return common
+  }
+
+  return {
+    ...common,
+    contracts: resolveContracts(base, overrides),
+    bridges: resolveBridges(base, overrides),
+    rpcUrls: resolveRpcUrls(base, overrides),
   }
 }
 
@@ -32,7 +46,7 @@ function resolveChainId(base: ChainInfo, overrides: Partial<ChainInfo> | undefin
   return overrides?.id ?? base.id
 }
 
-function resolveContracts(base: ChainInfo, overrides: Partial<ChainInfo> | undefined): ChainInfo['contracts'] {
+function resolveContracts(base: EvmChainInfo, overrides: Partial<EvmChainInfo> | undefined): EvmChainInfo['contracts'] {
   const merged = overrides?.contracts
 
   return merged ? { ...base.contracts, ...merged } : { ...base.contracts }
@@ -44,7 +58,7 @@ function resolveBridges(base: ChainInfo, overrides: Partial<ChainInfo> | undefin
   return bridges?.map(cloneBridge)
 }
 
-function resolveRpcUrls(base: ChainInfo, overrides: Partial<ChainInfo> | undefined): ChainInfo['rpcUrls'] {
+function resolveRpcUrls(base: EvmChainInfo, overrides: Partial<EvmChainInfo> | undefined): EvmChainInfo['rpcUrls'] {
   return cloneRpcUrls(overrides?.rpcUrls ?? base.rpcUrls)
 }
 
@@ -76,11 +90,13 @@ function resolveNativeCurrency(
   }
 }
 
-function cloneBridge(bridge: NonNullable<ChainInfo['bridges']>[number]): NonNullable<ChainInfo['bridges']>[number] {
+function cloneBridge(
+  bridge: NonNullable<EvmChainInfo['bridges']>[number],
+): NonNullable<EvmChainInfo['bridges']>[number] {
   return { ...bridge }
 }
 
-function cloneRpcUrls(rpcUrls: ChainInfo['rpcUrls']): ChainInfo['rpcUrls'] {
+function cloneRpcUrls(rpcUrls: EvmChainInfo['rpcUrls']): EvmChainInfo['rpcUrls'] {
   return Object.entries(rpcUrls).reduce(
     (acc, [key, value]) => {
       acc[key] = {
@@ -90,7 +106,7 @@ function cloneRpcUrls(rpcUrls: ChainInfo['rpcUrls']): ChainInfo['rpcUrls'] {
 
       return acc
     },
-    {} as ChainInfo['rpcUrls'],
+    {} as EvmChainInfo['rpcUrls'],
   )
 }
 

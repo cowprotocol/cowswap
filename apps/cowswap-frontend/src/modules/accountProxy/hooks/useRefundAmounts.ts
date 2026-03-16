@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { getTokenId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { toHex } from 'viem'
 

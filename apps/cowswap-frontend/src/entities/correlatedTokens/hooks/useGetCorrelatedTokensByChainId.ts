@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { correlatedTokensAtom } from '../state/correlatedTokensAtom'
 
@@ -17,7 +17,7 @@ export function useGetCorrelatedTokensByChainId(): (chainId: SupportedChainId) =
       return [
         ...new Set(
           tokens.flatMap((token) => {
-            return Object.keys(token).map((address) => address.toLowerCase())
+            return Object.keys(token).map((address) => getAddressKey(address))
           }),
         ).values(),
       ]

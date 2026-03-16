@@ -21,9 +21,7 @@ import { ThemeProvider } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 
-import { App } from 'modules/application/containers/App'
-import { Updaters } from 'modules/application/containers/App/Updaters'
-import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
+import { App, Updaters, WithLDProvider } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { loadActiveLocaleMessages } from 'lib/localeMessages'

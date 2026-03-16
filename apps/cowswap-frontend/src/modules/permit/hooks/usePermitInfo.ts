@@ -2,14 +2,18 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  getAddressKey,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  mapSupportedNetworks,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency } from '@uniswap/sdk-core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Nullish } from 'types'
-import { useConfig, usePublicClient } from 'wagmi'
 
 import { TradeType } from 'modules/trade/types/TradeType'
 
@@ -29,7 +33,7 @@ const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 
-export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, bigint> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
+export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
 
 /**
  * Check whether the token is permittable, and returns the permit info for it
@@ -49,11 +53,16 @@ export function usePermitInfo(
   tradeType: Nullish<TradeType>,
   customSpender?: string,
 ): IsTokenPermittableResult {
-  const config = useConfig()
   const { chainId } = useWalletInfo()
-  const publicClient = usePublicClient()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
+  const provider = useWalletProvider()
 
-  const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
+  const lowerCaseAddress = token
+    ? getWrappedToken(token).address
+      ? getAddressKey(getWrappedToken(token).address!)
+      : undefined
+    : undefined
   const isNative = !!token && getIsNativeToken(token)
 
   // Avoid building permit info in the first place if order type is not supported
@@ -74,7 +83,7 @@ export function usePermitInfo(
       !chainId ||
       !isPermitEnabled ||
       !lowerCaseAddress ||
-      !publicClient ||
+      !provider ||
       permitInfo !== undefined ||
       isNative ||
       // Do not try to load when pre-generated info is loading
@@ -87,32 +96,29 @@ export function usePermitInfo(
 
     const minGasLimit = PERMIT_GAS_LIMIT_MIN[chainId]
 
-    getTokenPermitInfo({ chainId, config, minGasLimit, publicClient, spender, tokenAddress: lowerCaseAddress }).then(
-      (result) => {
-        if ('error' in result) {
-          // When error, we don't know. Log and don't cache.
-          console.debug(
-            `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`,
-          )
-        } else {
-          // TODO: there is a Single Responsibility Principle breach here. This hook should not be responsible for caching.
-          // TODO: better to create a separate updater for caching.
-          // Otherwise, we know it is permittable or not. Cache it.
-          addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
-        }
-      },
-    )
+    getTokenPermitInfo({ spender, tokenAddress: lowerCaseAddress, chainId, provider, minGasLimit }).then((result) => {
+      if ('error' in result) {
+        // When error, we don't know. Log and don't cache.
+        console.debug(
+          `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`,
+        )
+      } else {
+        // TODO: there is a Single Responsibility Principle breach here. This hook should not be responsible for caching.
+        // TODO: better to create a separate updater for caching.
+        // Otherwise, we know it is permittable or not. Cache it.
+        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
+      }
+    })
   }, [
     addPermitInfo,
     chainId,
-    config,
     isNative,
-    lowerCaseAddress,
     isPermitEnabled,
+    lowerCaseAddress,
     permitInfo,
     preGeneratedInfo,
     preGeneratedIsLoading,
-    publicClient,
+    provider,
     spender,
   ])
 

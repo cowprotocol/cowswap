@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { getIsNativeToken } from './getIsNativeToken'
 import { getWrappedToken } from './getWrappedToken'
