@@ -7,7 +7,7 @@ import {
 } from '@cowprotocol/balances-and-allowances'
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wallet'
 
@@ -111,7 +111,6 @@ ordersTableStateAtom.onMount = () => {
 
     if (reduxOrdersStateInCurrentChain && account) {
       const orderType = get(locationOrderTypeAtom)
-      const accountLowerCase = account.toLowerCase()
 
       const uiOrderType: UiOrderType = {
         [TabOrderTypes.SWAP]: UiOrderType.LIMIT, // TODO: Is this correct (for AffectedPermitOrdersTable / SwapPage)?
@@ -149,7 +148,7 @@ ordersTableStateAtom.onMount = () => {
       _concatOrdersState(reduxOrdersStateInCurrentChain, ORDER_LIST_KEYS).forEach((order) => {
         if (!order) return
 
-        const doesBelongToAccount = order.order.owner.toLowerCase() === accountLowerCase
+        const doesBelongToAccount = areAddressesEqual(order.order.owner, account)
         const orderType = getUiOrderType(order.order)
         const doesMatchClass = orderType === uiOrderType
 
@@ -160,7 +159,7 @@ ordersTableStateAtom.onMount = () => {
         if (!mappedOrder || mappedOrder.isHidden) return
 
         reduxOrders.push(mappedOrder)
-        ordersTokensSet.add(mappedOrder.inputToken.address.toLowerCase())
+        ordersTokensSet.add(getAddressKey(mappedOrder.inputToken.address))
       })
 
       console.log('orderType =', orderType)

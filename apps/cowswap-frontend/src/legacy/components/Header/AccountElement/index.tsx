@@ -1,9 +1,6 @@
 import { ReactNode, useCallback, useRef, useState } from 'react'
 
-import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
-import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { useMediaQuery, useFeatureFlags } from '@cowprotocol/common-hooks'
-import { TokenAmount, Media } from '@cowprotocol/ui'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactDOM from 'react-dom'
@@ -19,16 +16,12 @@ import {
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { NotificationAlertPopover } from './NotificationAlertPopover'
-import { BalanceText, Wrapper } from './styled'
+import { Wrapper } from './styled'
 
-function createNotificationClickEventData(event: string): string {
-  return toCowSwapGtmEvent({
-    category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-    action: event,
-  })
+interface AccountElementProps {
+  className?: string
 }
 
 interface NotificationSidebarPortalProps {
@@ -38,31 +31,9 @@ interface NotificationSidebarPortalProps {
   initialSettingsOpen: boolean
 }
 
-function NotificationSidebarPortal({
-  portalTarget,
-  isSidebarOpen,
-  onClose,
-  initialSettingsOpen,
-}: NotificationSidebarPortalProps): ReactNode {
-  if (!portalTarget) return null
-
-  return ReactDOM.createPortal(
-    <NotificationSidebar isOpen={isSidebarOpen} onClose={onClose} initialSettingsOpen={initialSettingsOpen} />,
-    portalTarget,
-  )
-}
-
-interface AccountElementProps {
-  standaloneMode?: boolean
-  className?: string
-}
-
-export function AccountElement({ className, standaloneMode }: AccountElementProps): ReactNode {
-  const { account, chainId } = useWalletInfo()
-  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-  const userEthBalance = useNativeCurrencyAmount(chainId, account)
+export function AccountElement({ className }: AccountElementProps): ReactNode {
+  const { account } = useWalletInfo()
   const toggleAccountModal = useToggleAccountModal()
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const unreadNotificationsCount = useUnreadSidebarNotificationsCount()
   const { isDismissed, dismiss } = useNotificationAlertDismissal()
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
@@ -72,13 +43,8 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const [shouldOpenSettings, setShouldOpenSettings] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  const nativeTokenSymbol = NATIVE_CURRENCIES[chainId].symbol
-
   const shouldShowPopover =
     areTelegramNotificationsEnabled && !!account && !isDismissed && !hasSubscription && !isLoading
-
-  const shouldRenderBalance =
-    standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge
 
   const handleEnableAlerts = (): void => {
     setShouldOpenSettings(areTelegramNotificationsEnabled)
@@ -98,11 +64,6 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   return (
     <>
       <Wrapper className={className} active={!!account} ref={wrapperRef}>
-        {shouldRenderBalance && (
-          <BalanceText>
-            <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
-          </BalanceText>
-        )}
         <Web3Status onClick={() => account && toggleAccountModal()} />
         {account && (
           <NotificationAlertPopover
@@ -132,5 +93,26 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
         initialSettingsOpen={shouldOpenSettings}
       />
     </>
+  )
+}
+
+function createNotificationClickEventData(event: string): string {
+  return toCowSwapGtmEvent({
+    category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+    action: event,
+  })
+}
+
+function NotificationSidebarPortal({
+  portalTarget,
+  isSidebarOpen,
+  onClose,
+  initialSettingsOpen,
+}: NotificationSidebarPortalProps): ReactNode {
+  if (!portalTarget) return null
+
+  return ReactDOM.createPortal(
+    <NotificationSidebar isOpen={isSidebarOpen} onClose={onClose} initialSettingsOpen={initialSettingsOpen} />,
+    portalTarget,
   )
 }

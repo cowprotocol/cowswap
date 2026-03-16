@@ -1,3 +1,5 @@
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'
@@ -8,66 +10,9 @@ import { getParsedOrderFromTableItem } from './orderTableGroupUtils'
 
 import { OrderTableItem } from '../state/ordersTable.types'
 
-function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {
-  if (status === HistoryStatusFilter.FILLED) return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
-
-  if (status === HistoryStatusFilter.CANCELLED)
-    return (
-      parsedOrder.status === OrderStatus.CANCELLED && !(isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder))
-    )
-
-  if (status === HistoryStatusFilter.EXPIRED)
-    return parsedOrder.status === OrderStatus.EXPIRED && !(isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder))
-
-  return true
-}
-
-function filterBySymbolExact(parsedOrder: ParsedOrder, searchTermLower: string): boolean {
-  const inputToken = parsedOrder.inputToken
-  const outputToken = parsedOrder.outputToken
-
-  return [inputToken.symbol, outputToken.symbol].some((symbol) => {
-    return symbol?.toLowerCase() === searchTermLower
-  })
-}
-
-function filterBySymbolPartial(parsedOrder: ParsedOrder, searchTermLower: string): boolean {
-  const inputToken = parsedOrder.inputToken
-  const outputToken = parsedOrder.outputToken
-
-  // Check for partial symbol matches (case-insensitive)
-  return [inputToken.symbol, outputToken.symbol].some((symbol) => {
-    return symbol?.toLowerCase().includes(searchTermLower)
-  })
-}
-
-function filterByAddress(parsedOrder: ParsedOrder, searchTermLower: string): boolean {
-  const inputToken = parsedOrder.inputToken
-  const outputToken = parsedOrder.outputToken
-
-  // If not a symbol match, check for address matches
-  // Clean up the search term but preserve '0x' prefix if present
-  const hasPrefix = searchTermLower.startsWith('0x')
-
-  // For exact address matches (40 or 42 chars), do strict comparison
-  if (searchTermLower.length === 40 || searchTermLower.length === 42) {
-    const searchTermNormalized = hasPrefix ? searchTermLower : `0x${searchTermLower}`
-    return [inputToken.address, outputToken.address].some(
-      (address) => address.toLowerCase() === searchTermNormalized.toLowerCase(),
-    )
-  }
-
-  // For partial address matches
-  const searchWithoutPrefix = hasPrefix ? searchTermLower.slice(2) : searchTermLower
-  if (searchWithoutPrefix.length >= 2) {
-    // Only search if we have at least 2 characters
-    return [inputToken.address, outputToken.address].some((address) => {
-      const addressWithoutPrefix = address.slice(2).toLowerCase()
-      return addressWithoutPrefix.includes(searchWithoutPrefix.toLowerCase())
-    })
-  }
-
-  return false
+export interface UseFilteredOrdersFilters {
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
 }
 
 export enum HistoryStatusFilter {
@@ -115,5 +60,65 @@ export function getFilteredOrders(
     if (symbolMatch) return true
 
     return filterByAddress(parsedOrder, searchTermLower)
+  })
+}
+
+function filterByAddress(parsedOrder: ParsedOrder, searchTermLower: string): boolean {
+  const inputToken = parsedOrder.inputToken
+  const outputToken = parsedOrder.outputToken
+
+  // If not a symbol match, check for address matches
+  // Clean up the search term but preserve '0x' prefix if present
+  const hasPrefix = searchTermLower.startsWith('0x')
+
+  // For exact address matches (40 or 42 chars), do strict comparison
+  if (searchTermLower.length === 40 || searchTermLower.length === 42) {
+    const searchTermNormalized = hasPrefix ? searchTermLower : `0x${searchTermLower}`
+    return [inputToken.address, outputToken.address].some((address) => areAddressesEqual(address, searchTermNormalized))
+  }
+
+  // For partial address matches
+  const searchWithoutPrefix = hasPrefix ? searchTermLower.slice(2) : searchTermLower
+  if (searchWithoutPrefix.length >= 2) {
+    // Only search if we have at least 2 characters
+    return [inputToken.address, outputToken.address].some((address) => {
+      const addressWithoutPrefix = address.slice(2).toLowerCase()
+      return addressWithoutPrefix.includes(searchWithoutPrefix.toLowerCase())
+    })
+  }
+
+  return false
+}
+
+function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {
+  if (status === HistoryStatusFilter.FILLED) return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
+
+  if (status === HistoryStatusFilter.CANCELLED)
+    return (
+      parsedOrder.status === OrderStatus.CANCELLED && !(isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder))
+    )
+
+  if (status === HistoryStatusFilter.EXPIRED)
+    return parsedOrder.status === OrderStatus.EXPIRED && !(isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder))
+
+  return true
+}
+
+function filterBySymbolExact(parsedOrder: ParsedOrder, searchTermLower: string): boolean {
+  const inputToken = parsedOrder.inputToken
+  const outputToken = parsedOrder.outputToken
+
+  return [inputToken.symbol, outputToken.symbol].some((symbol) => {
+    return symbol?.toLowerCase() === searchTermLower
+  })
+}
+
+function filterBySymbolPartial(parsedOrder: ParsedOrder, searchTermLower: string): boolean {
+  const inputToken = parsedOrder.inputToken
+  const outputToken = parsedOrder.outputToken
+
+  // Check for partial symbol matches (case-insensitive)
+  return [inputToken.symbol, outputToken.symbol].some((symbol) => {
+    return symbol?.toLowerCase().includes(searchTermLower)
   })
 }

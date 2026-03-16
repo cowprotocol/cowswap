@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
@@ -18,7 +19,7 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
   currentAllowance: Nullish<bigint>
 } {
   const token = getCurrencyToApprove(amountToApprove)
-  const tokenAddress = token?.address?.toLowerCase()
+  const tokenAddress = token?.address ? getAddressKey(token.address) : undefined
   const currentAllowance = useTokenAllowance(token).data
   const pendingApproval = useHasPendingApproval(tokenAddress)
 

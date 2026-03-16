@@ -15,6 +15,7 @@ import { AllowancesState, useTokenAllowances, useTokensBalances } from '@cowprot
 import { LpToken, PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -352,7 +353,7 @@ function useAccountTokensData(): AccountTokensData {
   const tokenAddresses = useMemo(() => {
     return Object.values(allTokens).reduce<string[]>((acc, token) => {
       if (token && !(token instanceof LpToken)) {
-        acc.push(token.address.toLowerCase())
+        acc.push(getAddressKey(token.address))
       }
       return acc
     }, [])
