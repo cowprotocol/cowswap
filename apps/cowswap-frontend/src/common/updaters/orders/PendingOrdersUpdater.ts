@@ -352,6 +352,7 @@ async function _updateOrders({
   allTransactions,
   markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
+  // TODO: Should this be done in ordersTable atom?
   // Only check pending orders of current connected account
   const pending = orders.filter(({ owner }) => areAddressesEqual(owner, account))
 
