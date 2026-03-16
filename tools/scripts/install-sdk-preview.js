@@ -98,7 +98,9 @@ function pinNonSdkPackagesToNpmjs() {
           continue
         }
         if (deps[depName].startsWith('https://')) {
-          console.log(`[install-sdk-preview.js] skipping ${depName} since it already has a tarball URL`)
+          console.log(
+            `[install-sdk-preview.js] skipping ${depName} since it already has a tarball URL: ${deps[depName]}`,
+          )
           continue
         }
 
