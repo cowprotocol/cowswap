@@ -88,7 +88,6 @@ export function TransactionSlippageInput(): JSX.Element {
       unit="%"
       onChange={(e) => parseSlippageInput(e.target.value)}
       onBlur={onSlippageInputBlur}
-      // disabled={isDisabled}
       error={!!slippageError}
       leftSlot={autoButton}
       footerSlot={footerSlot}
