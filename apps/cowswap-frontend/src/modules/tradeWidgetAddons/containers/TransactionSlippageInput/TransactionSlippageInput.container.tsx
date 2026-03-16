@@ -41,7 +41,7 @@ export function TransactionSlippageInput(): JSX.Element {
 
   const autoButton = (
     <styledEl.AutoButton onClick={setAutoSlippage} active={!isSlippageModified}>
-      <Trans>Auto</Trans>
+      <Trans>Dynamic</Trans>
       {!isSlippageModified && isQuoteLoading ? <Loader size="16px" /> : null}
     </styledEl.AutoButton>
   )
@@ -54,22 +54,14 @@ export function TransactionSlippageInput(): JSX.Element {
   // slippage = Auto, the Auto button does show a Loader anyway.
   let footerSlot: ReactNode | null = null
 
-  if (isSmartSlippageApplied) {
-    footerSlot = (
-      <SettingsFeedback
-        variant="info"
-        message={t`Dynamic`}
-        tooltip={t`CoW Swap has dynamically selected this slippage amount to account for current gas prices and trade size. Changes may result in slower execution.`}
-      />
-    )
-  } else if (slippageWarningParams) {
-    let message: string = t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%`
+  if (!isSmartSlippageApplied && slippageWarningParams) {
+    let message: string = t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%.`
 
     if (!slippageError) {
       if (slippageWarningParams.tooLow) {
-        message = t`Your transaction may expire`
+        message = t`With low slippage, your transaction may expire.`
       } else if (slippageWarningParams.tooHigh) {
-        message = t`High slippage amount selected`
+        message = t`With high slippage, you may not get the best price.`
       }
     }
 
@@ -77,7 +69,7 @@ export function TransactionSlippageInput(): JSX.Element {
       <SettingsFeedback
         variant={slippageError ? 'error' : 'warning'}
         message={message}
-        tooltip={t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%`}
+        tooltip={t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%.`}
       />
     )
   }
@@ -89,7 +81,7 @@ export function TransactionSlippageInput(): JSX.Element {
       tooltip={
         isEoaEthFlow
           ? getNativeSlippageTooltip([nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
-          : getNonNativeSlippageTooltip({ isDynamic: isSmartSlippageApplied, isSettingsModal: true })
+          : getNonNativeSlippageTooltip({ isDynamic: isSmartSlippageApplied, isSettingsModal: true, slippageWarningParams })
       }
       placeholder={placeholderSlippage.toFixed(2)}
       value={slippageViewValue}
