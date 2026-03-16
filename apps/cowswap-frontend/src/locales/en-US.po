@@ -1875,6 +1875,10 @@ msgstr "All Hooks ({allHooksCount})"
 msgid "Approving <0/> <1><2/></1> for trading"
 msgstr "Approving <0/> <1><2/></1> for trading"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
+msgid "This wallet has already traded on CoW Swap."
+msgstr "This wallet has already traded on CoW Swap."
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
 #~ msgstr "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
@@ -2742,8 +2746,8 @@ msgid "Dismiss hiring message"
 msgstr "Dismiss hiring message"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
-#~ msgid "Referral rewards are for new wallets only."
-#~ msgstr "Referral rewards are for new wallets only."
+msgid "Referral rewards are for new wallets only."
+msgstr "Referral rewards are for new wallets only."
 
 #: apps/cowswap-frontend/src/common/pure/Modal/index.tsx
 msgid "dialog content"
@@ -7282,8 +7286,8 @@ msgid "Exec. price"
 msgstr "Exec. price"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
-msgid "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
-msgstr "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
+#~ msgid "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
+#~ msgstr "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "You sold <0/>"
