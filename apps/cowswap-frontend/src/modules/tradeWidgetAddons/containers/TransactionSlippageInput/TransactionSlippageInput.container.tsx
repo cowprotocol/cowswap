@@ -7,8 +7,8 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { useIsEoaEthFlow } from 'modules/trade'
-import { useSmartSlippageFromQuote, useTradeQuote } from 'modules/tradeQuote'
-import { useIsSlippageModified, useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
+import { useTradeQuote } from 'modules/tradeQuote'
+import { useIsSlippageModified, useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -20,15 +20,10 @@ import * as styledEl from './TransactionSlippageInput.styled'
 export function TransactionSlippageInput(): JSX.Element {
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-
   const { isLoading: isQuoteLoading } = useTradeQuote()
-  const swapSlippage = useTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippageFromQuote = useSmartSlippageFromQuote()
-
   const isSlippageModified = useIsSlippageModified()
-
-  const slippageWarningParams = useSlippageWarningParams(swapSlippage, smartSlippageFromQuote, isSlippageModified)
+  const slippageWarningParams = useSlippageWarningParams(isSlippageModified)
 
   const {
     slippageError,
@@ -81,7 +76,11 @@ export function TransactionSlippageInput(): JSX.Element {
       tooltip={
         isEoaEthFlow
           ? getNativeSlippageTooltip([nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
-          : getNonNativeSlippageTooltip({ isDynamic: isSmartSlippageApplied, isSettingsModal: true, slippageWarningParams })
+          : getNonNativeSlippageTooltip({
+              isDynamic: isSmartSlippageApplied,
+              isSettingsModal: true,
+              slippageWarningParams,
+            })
       }
       placeholder={placeholderSlippage.toFixed(2)}
       value={slippageViewValue}

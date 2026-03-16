@@ -9,22 +9,19 @@ import {
 import { Percent } from '@cowprotocol/currency'
 
 import { useIsEoaEthFlow } from 'modules/trade'
-import { slippageBpsToPercent, useSlippageConfig } from 'modules/tradeSlippage'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
+import { slippageBpsToPercent, useSlippageConfig, useTradeSlippage } from 'modules/tradeSlippage'
 
 import { SlippageWarningParams } from './types'
 
 const SMART_SLIPPAGE_THRESHOLD = 20 // 20%
 const PERCENT_DENOMINATOR = 10_000
 
-export function useSlippageWarningParams(
-  swapSlippage: Percent,
-  smartSlippage: number | null,
-  isSlippageModified: boolean,
-): SlippageWarningParams | null {
+export function useSlippageWarningParams(isSlippageModified: boolean): SlippageWarningParams | null {
+  const swapSlippage = useTradeSlippage()
+  const smartSlippage = useSmartSlippageFromQuote()
   const isEoaEthFlow = useIsEoaEthFlow()
   const { min, max, defaultValue } = useSlippageConfig()
-
-  // TODO: Remember last smartSlippage while new one loads...
 
   /**
    * When smartSlippage, then take smartSlippage - 20%
