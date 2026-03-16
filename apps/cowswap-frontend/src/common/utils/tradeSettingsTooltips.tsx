@@ -69,7 +69,7 @@ export function getNativeSlippageTooltip(symbols: (string | undefined)[] | undef
 interface GetNonNativeSlippageTooltipParams {
   isDynamic?: boolean
   isSettingsModal?: boolean
-  slippageWarningParams?: {
+  slippageWarningParams?: null | {
     tooLow?: boolean
     tooHigh?: boolean
   }
