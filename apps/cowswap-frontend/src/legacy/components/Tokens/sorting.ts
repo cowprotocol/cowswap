@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -42,8 +43,8 @@ function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, 
     // 1 = b is first
 
     // sort by balances
-    const balanceA = balances[tokenA.address.toLowerCase()]
-    const balanceB = balances[tokenB.address.toLowerCase()]
+    const balanceA = balances[getAddressKey(tokenA.address)]
+    const balanceB = balances[getAddressKey(tokenB.address)]
 
     const balanceComp = balanceComparator(balanceA, balanceB)
     if (balanceComp !== 0) return balanceComp

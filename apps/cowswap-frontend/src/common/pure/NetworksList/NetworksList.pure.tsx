@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 import { Badge, BadgeTypes } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -12,13 +12,13 @@ import { getLogo } from './NetworksList.utils'
 
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
 
-const NEW_NETWORK_IDS: Set<SupportedChainId> = new Set([SupportedChainId.PLASMA, SupportedChainId.INK])
+const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([SupportedChainId.PLASMA, SupportedChainId.INK])
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
   isDarkMode: boolean
-  availableChains: SupportedChainId[]
-  onSelectChain(targetChainId: SupportedChainId): void
+  availableChains: TargetChainId[]
+  onSelectChain(targetChainId: TargetChainId): void
 }
 
 export function NetworksList({
@@ -31,7 +31,7 @@ export function NetworksList({
 
   return (
     <>
-      {availableChains.map((targetChainId: SupportedChainId) => {
+      {availableChains.map((targetChainId: TargetChainId) => {
         const info = getChainInfo(targetChainId)
         const { label, logo } = info
 

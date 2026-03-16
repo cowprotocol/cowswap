@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
@@ -75,19 +76,21 @@ function useSubscribeUsdPrices(currencies: Token[]): void {
     const seenCurrencies = new Set<string>()
 
     currencies.forEach((currency) => {
-      if (seenCurrencies.has(currency?.address?.toLowerCase())) {
+      const currencyKey = currency?.address ? getAddressKey(currency.address) : undefined
+      if (!currencyKey || seenCurrencies.has(currencyKey)) {
         return
       }
 
       addCurrencyToUsdPrice(currency)
-      seenCurrencies.add(currency?.address?.toLowerCase())
+      seenCurrencies.add(currencyKey)
     })
 
     return () => {
       currencies.forEach((currency) => {
-        if (seenCurrencies.has(currency?.address?.toLowerCase())) {
+        const currencyKey = currency?.address ? getAddressKey(currency.address) : undefined
+        if (currencyKey && seenCurrencies.has(currencyKey)) {
           removeCurrencyToUsdPrice(currency)
-          seenCurrencies.delete(currency?.address?.toLowerCase())
+          seenCurrencies.delete(currencyKey)
         }
       })
     }

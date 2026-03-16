@@ -2,7 +2,7 @@ import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, HoverTooltip, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
@@ -128,7 +128,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     <DisabledTooltip disabled={disabled} disabledReason={disabledReason}>
       <styledEl.TokenItem
         ref={visibilityRef}
-        data-address={token.address.toLowerCase()}
+        data-address={getAddressKey(token.address)}
         data-token-symbol={token.symbol || ''}
         data-token-name={token.name || ''}
         data-element-type="token-selection"
