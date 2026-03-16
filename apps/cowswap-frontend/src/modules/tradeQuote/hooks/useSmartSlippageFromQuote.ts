@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 import { MAX_SLIPPAGE_BPS, MINIMUM_ETH_FLOW_SLIPPAGE_BPS } from '@cowprotocol/common-const'
-import { clampValue } from '@cowprotocol/common-utils'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 
@@ -12,18 +11,20 @@ import { getIsFastQuote } from '../utils/getIsFastQuote'
 export const useSmartSlippageFromQuote = (): number | null => {
   const tradeQuote = useTradeQuote()
   const isEthFlow = useIsEoaEthFlow()
-  const lastSlippageRef = useRef<number | null>(null)
+  const lastValidSlippageRef = useRef<number | null>(null)
+  const rawSlippage = tradeQuote?.quote?.quoteResults.suggestedSlippageBps ?? null
 
-  const slippage = getIsFastQuote(tradeQuote.fetchParams)
-    ? // eslint-disable-next-line react-hooks/refs
-      lastSlippageRef.current
-    : (tradeQuote?.quote?.quoteResults.suggestedSlippageBps ?? lastSlippageRef.current)
+  if (tradeQuote.error) return null
 
-  useEffect(() => {
-    lastSlippageRef.current = slippage
-  }, [slippage])
+  // eslint-disable-next-line react-hooks/refs
+  if (typeof rawSlippage !== 'number' || getIsFastQuote(tradeQuote.fetchParams)) return lastValidSlippageRef.current
 
-  if (tradeQuote.error || typeof slippage !== 'number') return null
+  const bottomCap = isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : 0
 
-  return clampValue(slippage, isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : 0, MAX_SLIPPAGE_BPS)
+  if (rawSlippage < bottomCap || rawSlippage > MAX_SLIPPAGE_BPS) return null
+
+  // eslint-disable-next-line react-hooks/refs
+  lastValidSlippageRef.current = rawSlippage
+
+  return rawSlippage
 }
