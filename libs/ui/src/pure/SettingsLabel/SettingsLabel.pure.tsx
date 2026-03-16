@@ -14,7 +14,7 @@ export function SettingsLabel({ title, tooltip }: SettingsLabelProps): ReactNode
     <styledEl.SettingsLabelTitle>
       {title}
       {NBSP}
-      <styledEl.SettingsLabelHelpTooltip text={tooltip} noMargin />
+      <styledEl.SettingsLabelHelpTooltip text={tooltip} noMargin dimmed />
     </styledEl.SettingsLabelTitle>
   )
 }
