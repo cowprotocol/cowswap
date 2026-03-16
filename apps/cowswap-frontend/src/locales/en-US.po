@@ -7137,10 +7137,6 @@ msgstr "Longer limit orders - place orders for up to a year."
 msgid "User rejected signing the cancellation"
 msgstr "User rejected signing the cancellation"
 
-#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
-msgid "Total referrals"
-msgstr "Total referrals"
-
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
 msgstr "Loading {accountProxyLabel}"
