@@ -1,5 +1,109 @@
 # Changelog
 
+## [1.0.10](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.9...widget-react-v1.0.10) (2026-03-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.0
+    * @cowprotocol/types bumped to 4.0.0
+    * @cowprotocol/widget-lib bumped to 2.0.0
+
+## [1.0.9](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.8...widget-react-v1.0.9) (2026-03-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.4.0
+    * @cowprotocol/types bumped to 3.4.0
+    * @cowprotocol/widget-lib bumped to 1.3.0
+
+## [1.0.8](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.7...widget-react-v1.0.8) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.3.2
+    * @cowprotocol/types bumped to 3.3.2
+    * @cowprotocol/widget-lib bumped to 1.2.2
+
+## [1.0.7](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.6...widget-react-v1.0.7) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+* release 23-02 ([bab3bf6](https://github.com/cowprotocol/cowswap/commit/bab3bf640c5b0eacc7ead017ea68ab1eb1687aab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.3.1
+    * @cowprotocol/types bumped to 3.3.1
+    * @cowprotocol/widget-lib bumped to 1.2.1
+
+## [1.0.6](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.5...widget-react-v1.0.6) (2026-02-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.3.0
+    * @cowprotocol/types bumped to 3.3.0
+    * @cowprotocol/widget-lib bumped to 1.2.0
+
+## [1.0.5](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.4...widget-react-v1.0.5) (2026-02-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.2.0
+    * @cowprotocol/types bumped to 3.2.0
+    * @cowprotocol/widget-lib bumped to 1.1.2
+
+## [1.0.4](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.3...widget-react-v1.0.4) (2026-02-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 1.1.1
+
+## [1.0.3](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.2...widget-react-v1.0.3) (2026-02-09)
+
+
+### 🐛 Bug Fixes
+
+* clean up widget-react lib code ([#6982](https://github.com/cowprotocol/cowswap/issues/6982)) ([2283aba](https://github.com/cowprotocol/cowswap/commit/2283aba8ea22ba219d7ddd8059478a524e50915e))
+
+## [1.0.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.1...widget-react-v1.0.2) (2026-02-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.1.0
+    * @cowprotocol/types bumped to 3.1.0
+    * @cowprotocol/widget-lib bumped to 1.1.0
+
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.0...widget-react-v1.0.1) (2026-02-02)
 
 

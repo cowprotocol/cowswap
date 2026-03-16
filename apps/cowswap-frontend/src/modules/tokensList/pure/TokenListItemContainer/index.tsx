@@ -1,7 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenAddressKey } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { SelectTokenContext } from '../../types'
@@ -10,9 +10,16 @@ import { TokenListItem } from '../TokenListItem'
 interface TokenListItemContainerProps {
   token: TokenWithLogo
   context: SelectTokenContext
+  disabled?: boolean
+  disabledReason?: string
 }
 
-export function TokenListItemContainer({ token, context }: TokenListItemContainerProps): ReactNode {
+export function TokenListItemContainer({
+  token,
+  context,
+  disabled,
+  disabledReason,
+}: TokenListItemContainerProps): ReactNode {
   const {
     unsupportedTokens,
     onTokenListItemClick,
@@ -24,7 +31,7 @@ export function TokenListItemContainer({ token, context }: TokenListItemContaine
 
   const { onSelectToken, selectedToken } = useSelectTokenWidgetState()
 
-  const addressKey = getTokenAddressKey(token.address)
+  const addressKey = getAddressKey(token.address)
   const handleSelectToken = useCallback(
     (tokenToSelect: TokenWithLogo) => {
       onTokenListItemClick?.(tokenToSelect)
@@ -43,6 +50,8 @@ export function TokenListItemContainer({ token, context }: TokenListItemContaine
       onSelectToken={handleSelectToken}
       isWalletConnected={isWalletConnected}
       tokenListTags={tokenListTags}
+      disabled={disabled}
+      disabledReason={disabledReason}
     />
   )
 }

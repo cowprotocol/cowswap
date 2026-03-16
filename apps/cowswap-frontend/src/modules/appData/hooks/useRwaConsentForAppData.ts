@@ -11,7 +11,7 @@ import {
   RwaConsentKey,
   UserConsent,
 } from 'modules/rwa'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useDerivedTradeState } from 'modules/trade'
 
 export interface UserConsentsMetadata {
   userConsents: UserConsent[]

@@ -3,20 +3,20 @@
 This file applies to the whole monorepo. If a closer AGENTS.md exists under an app or package, follow it first and also follow this root file unless it explicitly says it fully replaces it.
 
 ## Setup commands (monorepo)
-- Install deps: `yarn install`
-- Generate i18n: `yarn i18n`
+- Install deps: `pnpm install`
+- Generate i18n: `pnpm i18n`
 - Start apps:
-  - `yarn start` (cowswap-frontend)
-  - `yarn start:cowswap`
-  - `yarn start:explorer`
-  - `yarn start:widget`
-  - `yarn start:cowfi`
-  - `yarn start:sdk-tools`
-  - `yarn start:omnibridge-hook`
-  - `yarn start:cosmos` (cowswap-frontend Cosmos)
-  - `yarn start:cosmos:explorer` (explorer Cosmos)
-- Lint and test: `yarn lint`, `yarn test`
-- Per-project Nx targets: `yarn nx run <project>:<target>` (targets include serve, build, lint, test, e2e)
+  - `pnpm start` (cowswap-frontend)
+  - `pnpm start:cowswap`
+  - `pnpm start:explorer`
+  - `pnpm start:widget`
+  - `pnpm start:cowfi`
+  - `pnpm start:sdk-tools`
+  - `pnpm start:omnibridge-hook`
+  - `pnpm start:cosmos` (cowswap-frontend Cosmos)
+  - `pnpm start:cosmos:explorer` (explorer Cosmos)
+- Lint and test: `pnpm lint`, `pnpm test`
+- Per-project Nx targets: `pnpx nx run <project>:<target>` (targets include serve, build, lint, test, e2e)
 
 ## Repo layout
 - apps/ - applications
@@ -70,7 +70,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 ## PR Workflow & Release Process
 
-- **Development commands:** Never run `yarn lint --fix`; use `yarn lint` only. Follow the command catalogue documented in the repository README and `package.json` scripts.
+- **Development commands:** Never run `pnpm lint --fix`; use `pnpm lint` only. Follow the command catalogue documented in the repository README and `package.json` scripts.
 - **Pull request requirements:**
 
   | Rule          | Requirement                                    |
@@ -84,6 +84,55 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
   | Merge         | Squash-merge to develop                        |
 
 - **Release automation:** Confirm release-please/deployment status before raising manual hotfix/retry PRs. Close duplicates once automation succeeds.
+
+### Branch-scoped AGENTS enforcement (AI task protocol)
+
+- Use this protocol when asked to "apply/fix AGENTS.md rules in this branch."
+- **Mandatory context loading:**
+  - Read root `AGENTS.md`.
+  - Read the nearest additive `AGENTS.md` for each touched file (especially `apps/cowswap-frontend/AGENTS.md` when applicable).
+- **Scope constraints:**
+  - Default to changing only files already touched in the current branch versus `develop`.
+  - Allow minimal additional files only when required for correctness (type safety, imports/exports, runtime behavior, or tests).
+  - Every additional file must be explicitly listed in the final report with a one-line justification.
+  - Keep diff surface minimal.
+  - Do not edit unrelated files.
+- **Required process:**
+  1. Compute touched files with:
+     ```bash
+     git diff --name-only $(git merge-base HEAD develop)..HEAD
+     ```
+  2. Audit only those files for AGENTS.md violations.
+  3. Fix violations directly.
+  4. Keep architecture/import boundaries correct (prefer module barrel imports; avoid forbidden/internal patterns).
+  5. Follow TypeScript/React rules (no `any`, no non-null assertions, no unstable nested components, explicit safe typing).
+  6. Follow frontend module hygiene:
+     - `index.tsx` should be entry/export only when possible.
+     - Put component logic in `*.container.tsx`.
+     - Put styles in `*.styled.ts`.
+     - Import styles as:
+       ```ts
+       import * as styledEl from './X.styled'
+       ```
+  7. Reuse existing utilities/hooks instead of creating new ones.
+  8. Run verification:
+     - File-level eslint for changed files.
+     - Targeted tests for affected area.
+     - Do not run `pnpm lint --fix`.
+- **Command toolkit (recommended):**
+  - Compute touched files:
+    ```bash
+    git diff --name-only $(git merge-base HEAD develop)..HEAD
+    ```
+  - Collect lintable touched files (`.ts/.tsx/.js/.jsx`) and lint only those.
+  - Run targeted tests nearest to the changed feature/module (project target or test path scoped command).
+  - If a command is skipped, report why (for example, missing target or environment limitation).
+- **Response format for this task:**
+  1. Findings first (severity ordered), each with `file:line`.
+  2. Exact fixes made, with file references.
+  3. Additional files changed beyond touched set (if any), each with justification.
+  4. Commands run and pass/fail result.
+  5. Residual risks/testing gaps (if any).
 
 ---
 
@@ -103,6 +152,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 - Use `.const.ts` suffixes for files that only define constants/configs (component/model/etc.) for readability.
 - Reuse chain/network lists from shared constants (`AFFILIATE_SUPPORTED_CHAIN_IDS`, etc.) rather than cloning arrays.
 - Lingui: import macros from `@lingui/core/macro` and drop unused imports immediately.
+- i18n placement: never place `t\`\`` or `t()` strings at module scope. Keep translations inside components/functions only, or you will hit `t\`\` and t() call should be inside function`.
 - UI components like `LinkStyledButton` come from `@cowprotocol/ui` (not `theme`).
 
 ---
@@ -148,6 +198,7 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 ### Component authoring
 
 - **Render/helper antipattern:** Never declare components inside render bodies or rely on `render*`/`get*` helpers that return JSX. Hoist subcomponents to module scope, or convert them into proper components so every render cycle reuses the same identity.
+- **Hook file naming:** Keep one primary hook per `useX*.ts(x)` file and ensure the exported hook name matches the filename (`useTradeSolver` -> `useTradeSolver.ts`). Move additional hooks to separate files.
 - Export named function components and return `ReactNode`.
 - Pure components can use only the following hooks:
   - built-in hooks (e.g. `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef`)
@@ -337,9 +388,9 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 
 - **Post-implementation command (if available):**
   ```bash
-  yarn lint && yarn typecheck
+  pnpm lint && pnpm typecheck
   ```
-  If a project provides a typecheck target instead of a script, run `yarn nx run <project>:typecheck`.
+  If a project provides a typecheck target instead of a script, run `pnpx nx run <project>:typecheck`.
 
 ### AI assistant contract
 

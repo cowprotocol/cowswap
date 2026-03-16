@@ -1,6 +1,6 @@
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR, { SWRResponse } from 'swr'
 

@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
-import { Currency } from '@uniswap/sdk-core'
 
 import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useVolumeFee } from 'modules/volumeFee'
@@ -29,9 +30,10 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   const tradeQuote = useTradeQuote()
   const volumeFeeBps = useVolumeFee()?.volumeBps
   const orderKind = derivedTradeState?.orderKind
-  const slippage = derivedTradeState?.slippage
+  const derivedSlippage = derivedTradeState?.slippage
 
-  const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
+  const quoteResults = tradeQuote?.quote?.quoteResults
+  const quoteResponse = quoteResults?.quoteResponse
   const orderParams = quoteResponse?.quote
   const protocolFeeBps = useTradeQuoteProtocolFee()
 
@@ -40,25 +42,29 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   return useMemo(() => {
     // Avoid states mismatch
     if (orderKind !== orderParams?.kind) return null
-    if (!orderParams || !slippage || !inputCurrency || !outputCurrency) return null
+    if (!orderParams || !inputCurrency || !outputCurrency || !derivedSlippage) return null
 
     return {
       orderParams,
       inputCurrency,
       outputCurrency,
-      slippagePercent: slippage,
+      slippagePercent: derivedSlippage,
       partnerFeeBps: volumeFeeBps,
       protocolFeeBps,
     }
-  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, slippage, protocolFeeBps])
+  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, protocolFeeBps, derivedSlippage])
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
   const tradeQuote = useTradeQuote()
   const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
 
-  const inputCurrency = useTokenByAddress(quoteResponse?.quote?.sellToken.toLowerCase())
-  const outputCurrency = useTokenByAddress(quoteResponse?.quote?.buyToken.toLowerCase())
+  const inputCurrency = useTokenByAddress(
+    quoteResponse?.quote?.sellToken ? getAddressKey(quoteResponse.quote.sellToken) : undefined,
+  )
+  const outputCurrency = useTokenByAddress(
+    quoteResponse?.quote?.buyToken ? getAddressKey(quoteResponse.quote.buyToken) : undefined,
+  )
 
   return { inputCurrency, outputCurrency }
 }

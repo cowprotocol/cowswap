@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
-import { areAddressesEqual } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'

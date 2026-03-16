@@ -6,7 +6,7 @@ import { t } from '@lingui/core/macro'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade'
 
 import { ChainPanel } from '../../../../pure/ChainPanel'
 import { ChainsToSelectState } from '../../../../types'

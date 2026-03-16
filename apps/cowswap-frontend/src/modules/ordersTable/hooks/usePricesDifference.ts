@@ -1,11 +1,11 @@
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
 
-import { OrderRowProps } from '../containers/OrderRow'
+import { OrderRowProps } from '../containers/OrderRow/OrderRow.container'
 
 /**
  * Helper hook to prepare the parameters to calculate price difference

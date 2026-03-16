@@ -1,5 +1,5 @@
 import { getAddress } from '@cowprotocol/common-utils'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
 
 import { useAreUnsupportedTokens } from './useAreUnsupportedTokens'
 

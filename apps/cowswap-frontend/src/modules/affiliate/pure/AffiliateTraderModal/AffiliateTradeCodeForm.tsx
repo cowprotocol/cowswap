@@ -1,0 +1,127 @@
+import { type FormEvent, type ReactNode, useId } from 'react'
+
+import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
+import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
+
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+import { Edit2 } from 'react-feather'
+
+import { CodeLinkingStatusSection } from './CodeLinkingStatusSection'
+import { CodeLinkingSubtitle } from './CodeLinkingSubtitle'
+import { PayoutConfirmation, type PayoutConfirmationProps } from './PayoutConfirmation'
+import {
+  Body,
+  Footer,
+  FormActionButton,
+  FormActionDanger,
+  FormActions,
+  FormGroup,
+  Label,
+  LabelAffordances,
+  LabelRow,
+  Title,
+} from './styles'
+
+import { type TraderInfoResponse } from '../../api/bffAffiliateApi.types'
+import { type TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
+import { RefCodeInput, type RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
+import { LabelContent, StatusText } from '../shared'
+
+const REFERRAL_CODE_HELP_TEXT = (
+  <Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>
+)
+
+export interface AffiliateTradeCodeFormProps
+  extends Omit<PayoutConfirmationProps, 'payoutWallet'>,
+    Pick<RefCodeInputProps, 'value' | 'onChange'> {
+  walletStatus: TraderWalletStatus
+  requiresPayoutConfirmation: boolean
+  codeInfo?: TraderInfoResponse | null
+  savedCode?: string
+  isLoading: boolean
+  error?: string
+  onEdit(): void
+  onRemove(): void
+  submitButtonLabel: string
+  onSubmit(): void
+}
+
+export function AffiliateTradeCodeForm({
+  walletStatus,
+  account,
+  requiresPayoutConfirmation,
+  codeInfo,
+  payoutConfirmed,
+  onTogglePayoutConfirmed,
+  savedCode,
+  isLoading,
+  error,
+  onEdit,
+  onRemove,
+  submitButtonLabel,
+  onSubmit,
+  ...inputProps
+}: AffiliateTradeCodeFormProps): ReactNode {
+  const referralCodeInputId = useId()
+  return (
+    <FormGroup
+      onSubmit={(event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        onSubmit()
+      }}
+    >
+      <Body>
+        <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+        <Title>
+          <Trans>Earn while you trade</Trans>
+        </Title>
+        <CodeLinkingSubtitle codeInfo={codeInfo} />
+        <LabelRow>
+          <Label htmlFor={referralCodeInputId}>
+            <LabelContent>
+              <Trans>Referral code</Trans>
+              <HelpTooltip text={REFERRAL_CODE_HELP_TEXT} dimmed />
+            </LabelContent>
+          </Label>
+          <LabelAffordances>
+            {!!savedCode && (
+              <FormActions>
+                <FormActionDanger type="button" onClick={onRemove}>
+                  <Trans>Remove</Trans>
+                </FormActionDanger>
+                <FormActionButton type="button" onClick={onEdit} aria-label={t`Edit code`}>
+                  <Edit2 size={14} />
+                  <Trans>Edit</Trans>
+                </FormActionButton>
+              </FormActions>
+            )}
+          </LabelAffordances>
+        </LabelRow>
+        <RefCodeInput
+          id={referralCodeInputId}
+          hasError={!!error}
+          disabled={isLoading || !!savedCode}
+          isLoading={isLoading}
+          adornmentVariant={error ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
+          required
+          {...inputProps}
+        />
+        {error && <StatusText $variant="error">{error}</StatusText>}
+        <CodeLinkingStatusSection walletStatus={walletStatus} codeInfo={codeInfo} />
+        {requiresPayoutConfirmation && (
+          <PayoutConfirmation
+            account={account}
+            payoutConfirmed={payoutConfirmed}
+            onTogglePayoutConfirmed={onTogglePayoutConfirmed}
+          />
+        )}
+      </Body>
+      <Footer>
+        <ButtonPrimary disabled={isLoading || (requiresPayoutConfirmation && !payoutConfirmed)} type="submit">
+          {submitButtonLabel}
+        </ButtonPrimary>
+      </Footer>
+    </FormGroup>
+  )
+}

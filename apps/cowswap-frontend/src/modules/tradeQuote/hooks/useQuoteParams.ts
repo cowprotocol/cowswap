@@ -3,20 +3,20 @@ import { useEffect, useRef } from 'react'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Currency } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
-import { useIsWrapOrUnwrap } from 'modules/trade'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useIsWrapOrUnwrap, useDerivedTradeState } from 'modules/trade'
 import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -42,6 +42,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
@@ -66,7 +67,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
-    if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
+    if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
     if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
 
     const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
@@ -114,7 +115,11 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
-      swapSlippageBps: userSlippageBps ?? smartSlippageBpsRef.current,
+      /**
+       * Specify only the user entered slippage
+       * Because if it's not specified, SDK will suggest a slippage, so no need to pass it in quote request
+       */
+      ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
     }
 
     return {
@@ -135,6 +140,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     account,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
     userSlippageBps,
   ])
 

@@ -1,12 +1,12 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { areAddressesEqual, getCurrencyAddress, getTokenId } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, getAddressKey, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenListTags } from '@cowprotocol/tokens'
-import { FiatAmount, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, HoverTooltip, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
@@ -37,13 +37,54 @@ export interface TokenListItemProps {
   tokenListTags?: TokenListTags
   children?: ReactNode
   className?: string
+  disabled?: boolean
+  disabledReason?: string
 }
 
-function getClassName(isTokenSelected: boolean, className = ''): string {
-  return `${className} ${isTokenSelected ? 'token-item-selected' : ''}`
+interface DisabledProps {
+  'aria-disabled'?: true
+  tabIndex?: -1
+}
+
+interface DisabledTooltipProps {
+  children: ReactNode
+  disabled: boolean
+  disabledReason?: string
+}
+
+function checkIsTokenSelected(token: TokenWithLogo, selectedToken: Nullish<Currency>): boolean {
+  if (!selectedToken) return false
+  return areAddressesEqual(token.address, getCurrencyAddress(selectedToken)) && token.chainId === selectedToken.chainId
+}
+
+function DisabledTooltip({ children, disabled, disabledReason }: DisabledTooltipProps): ReactNode {
+  if (!disabled || !disabledReason) return children
+  return (
+    <HoverTooltip wrapInContainer placement="top" content={disabledReason}>
+      {children}
+    </HoverTooltip>
+  )
+}
+
+function getClassName(isTokenSelected: boolean, disabled: boolean, className = ''): string {
+  const selectedClass = isTokenSelected ? 'token-item-selected' : ''
+  const disabledClass = disabled ? 'token-item-disabled' : ''
+  return `${className} ${selectedClass} ${disabledClass}`.trim()
+}
+
+function getDisabledProps(disabled: boolean): DisabledProps {
+  if (!disabled) return {}
+  return { 'aria-disabled': true, tabIndex: -1 }
 }
 
 const EMPTY_TAGS = {}
+
+interface TokenBalanceColumnProps {
+  shouldShow: boolean
+  shouldFormat: boolean
+  balanceAmount?: CurrencyAmount<Currency>
+  usdAmount?: CurrencyAmount<Currency> | null
+}
 
 export function TokenListItem(props: TokenListItemProps): ReactNode {
   const {
@@ -58,77 +99,67 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     tokenListTags = EMPTY_TAGS,
     children,
     className,
+    disabled = false,
+    disabledReason,
   } = props
 
-  const tokenKey = getTokenId(token)
-  // Defer heavyweight UI (tooltips, formatted numbers) until the row is about to enter the viewport.
   const { ref: visibilityRef, isVisible: hasIntersected } = useDeferredVisibility<HTMLDivElement>({
-    resetKey: tokenKey,
+    resetKey: getTokenId(token),
     rootMargin: '200px',
   })
 
-  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
-    if (isTokenSelected) {
-      e.preventDefault()
-      e.stopPropagation()
-    } else {
-      onSelectToken?.(token)
-    }
-  }
-
-  const isTokenSelected = Boolean(
-    selectedToken &&
-      areAddressesEqual(token.address, getCurrencyAddress(selectedToken)) &&
-      token.chainId === selectedToken.chainId,
-  )
-
+  const isTokenSelected = checkIsTokenSelected(token, selectedToken)
   const isSupportedChain = token.chainId in SupportedChainId
   const shouldShowBalances = isWalletConnected && isSupportedChain
-  // Formatting balances (BigNumber -> CurrencyAmount -> Fiat) is expensive; delay until the row is visible.
   const shouldFormatBalances = shouldShowBalances && hasIntersected
   const balanceAmount =
     shouldFormatBalances && balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
-  return (
-    <styledEl.TokenItem
-      ref={visibilityRef}
-      data-address={token.address.toLowerCase()}
-      data-token-symbol={token.symbol || ''}
-      data-token-name={token.name || ''}
-      data-element-type="token-selection"
-      onClick={handleClick}
-      className={getClassName(isTokenSelected, className)}
-    >
-      <TokenInfo
-        token={token}
-        showAddress={hasIntersected}
-        tags={
-          hasIntersected ? (
-            <TokenTags
-              isUnsupported={isUnsupported}
-              isPermitCompatible={isPermitCompatible}
-              tags={token.tags}
-              tokenListTags={tokenListTags}
-            />
-          ) : null
-        }
-      />
-      <TokenBalanceColumn
-        shouldShow={shouldShowBalances}
-        shouldFormat={shouldFormatBalances}
-        balanceAmount={balanceAmount}
-        usdAmount={usdAmount}
-      />
-      {children}
-    </styledEl.TokenItem>
-  )
-}
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
+    if (isTokenSelected || disabled) {
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+    onSelectToken?.(token)
+  }
 
-interface TokenBalanceColumnProps {
-  shouldShow: boolean
-  shouldFormat: boolean
-  balanceAmount?: CurrencyAmount<Currency>
-  usdAmount?: CurrencyAmount<Currency> | null
+  return (
+    <DisabledTooltip disabled={disabled} disabledReason={disabledReason}>
+      <styledEl.TokenItem
+        ref={visibilityRef}
+        data-address={getAddressKey(token.address)}
+        data-token-symbol={token.symbol || ''}
+        data-token-name={token.name || ''}
+        data-element-type="token-selection"
+        onClick={handleClick}
+        className={getClassName(isTokenSelected, disabled, className)}
+        {...getDisabledProps(disabled)}
+      >
+        <TokenInfo
+          token={token}
+          showAddress={hasIntersected}
+          tags={
+            hasIntersected ? (
+              <TokenTags
+                isUnsupported={isUnsupported}
+                isPermitCompatible={isPermitCompatible}
+                tags={token.tags}
+                tokenListTags={tokenListTags}
+              />
+            ) : null
+          }
+        />
+        <TokenBalanceColumn
+          shouldShow={shouldShowBalances}
+          shouldFormat={shouldFormatBalances}
+          balanceAmount={balanceAmount}
+          usdAmount={usdAmount}
+        />
+        {children}
+      </styledEl.TokenItem>
+    </DisabledTooltip>
+  )
 }
 
 function TokenBalanceColumn({

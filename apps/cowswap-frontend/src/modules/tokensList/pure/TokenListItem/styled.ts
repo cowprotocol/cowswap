@@ -47,6 +47,15 @@ export const TokenItem = styled.div`
   &.token-item-selected:hover {
     background: none;
   }
+
+  &.token-item-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.token-item-disabled:hover {
+    background: none;
+  }
 `
 
 export const TokenBalance = styled.span`

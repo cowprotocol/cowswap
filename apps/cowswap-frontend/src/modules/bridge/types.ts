@@ -1,40 +1,22 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 import { BridgeProviderInfo, BridgeStatusResult } from '@cowprotocol/sdk-bridging'
-import type { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import type { ReceiveAmountInfo } from 'modules/trade'
 
 import type { SolverCompetition } from 'common/types/soverCompetition'
 
-/**
- * Possible statuses for bridge/swap stops
- */
-export enum SwapAndBridgeStatus {
-  DEFAULT = 'default',
-  DONE = 'done',
-  PENDING = 'pending',
-  FAILED = 'failed',
-  REFUND_COMPLETE = 'refund_complete',
-}
+export interface BridgingProgressContext {
+  account: string
+  sourceChainId: SupportedChainId
+  destinationChainId: number
 
-export interface QuoteSwapContext {
-  chainName: string
-  receiveAmountInfo: ReceiveAmountInfo
+  isFailed?: boolean
+  isRefunded?: boolean
 
-  sellAmount: CurrencyAmount<Currency>
-  buyAmount: CurrencyAmount<Currency>
-
-  slippage: Percent
-  recipient: string
-
-  isSlippageModified: boolean
-
-  bridgeReceiverOverride: string | null
-  expectedReceive: CurrencyAmount<Currency> | null
-  minReceiveAmount: CurrencyAmount<Currency>
-  minReceiveUsdValue: CurrencyAmount<Token> | null
-  expectedReceiveUsdValue: CurrencyAmount<Token> | null
+  receivedAmount?: CurrencyAmount<Currency>
+  receivedAmountUsd?: CurrencyAmount<Token> | null
 }
 
 export interface QuoteBridgeContext {
@@ -55,6 +37,39 @@ export interface QuoteBridgeContext {
   expectedToReceiveUsd: CurrencyAmount<Token> | null
 }
 
+export interface QuoteSwapContext {
+  chainName: string
+  receiveAmountInfo: ReceiveAmountInfo
+
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
+
+  slippage: Percent
+  recipient: string
+  quoteId?: string | null
+  quoteVerified?: boolean
+  quoteExpiration?: string | null
+
+  isSlippageModified: boolean
+
+  bridgeReceiverOverride: string | null
+  expectedReceive: CurrencyAmount<Currency> | null
+  minReceiveAmount: CurrencyAmount<Currency>
+  minReceiveUsdValue: CurrencyAmount<Token> | null
+  expectedReceiveUsdValue: CurrencyAmount<Token> | null
+}
+
+export interface SwapAndBridgeContext {
+  bridgingStatus: SwapAndBridgeStatus
+  bridgeProvider: BridgeProviderInfo
+  swapResultContext: SwapResultContext
+  overview: SwapAndBridgeOverview
+  quoteBridgeContext?: QuoteBridgeContext
+  bridgingProgressContext?: BridgingProgressContext
+  statusResult?: BridgeStatusResult
+  explorerUrl?: string
+}
+
 export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
   sourceChainName: string
   targetChainName: string
@@ -72,18 +87,6 @@ export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
   }
 }
 
-export interface BridgingProgressContext {
-  account: string
-  sourceChainId: SupportedChainId
-  destinationChainId: number
-
-  isFailed?: boolean
-  isRefunded?: boolean
-
-  receivedAmount?: CurrencyAmount<Currency>
-  receivedAmountUsd?: CurrencyAmount<Token> | null
-}
-
 export interface SwapResultContext {
   winningSolver?: SolverCompetition
   receivedAmount: CurrencyAmount<TokenWithLogo>
@@ -93,13 +96,13 @@ export interface SwapResultContext {
   intermediateToken: TokenWithLogo
 }
 
-export interface SwapAndBridgeContext {
-  bridgingStatus: SwapAndBridgeStatus
-  bridgeProvider: BridgeProviderInfo
-  swapResultContext: SwapResultContext
-  overview: SwapAndBridgeOverview
-  quoteBridgeContext?: QuoteBridgeContext
-  bridgingProgressContext?: BridgingProgressContext
-  statusResult?: BridgeStatusResult
-  explorerUrl?: string
+/**
+ * Possible statuses for bridge/swap stops
+ */
+export enum SwapAndBridgeStatus {
+  DEFAULT = 'default',
+  DONE = 'done',
+  PENDING = 'pending',
+  FAILED = 'failed',
+  REFUND_COMPLETE = 'refund_complete',
 }

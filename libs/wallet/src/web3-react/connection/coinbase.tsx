@@ -1,15 +1,14 @@
-import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
-import { RPC_URLS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ReactNode } from 'react'
+
 import { initializeConnector } from '@web3-react/core'
 
-import { AsyncConnector } from './asyncConnector'
 import { onError } from './onError'
 
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
+import { CoinbaseWallet } from '../connectors/Coinbase/coinbase.connector'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
@@ -19,25 +18,12 @@ const coinbaseInjectedOption = {
   id: 'coinbase-wallet',
 }
 
-const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<AsyncConnector>(
+const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
   (actions) =>
-    new AsyncConnector(
-      () =>
-        import('@web3-react/coinbase-wallet').then(
-          (m) =>
-            new m.CoinbaseWallet({
-              actions,
-              options: {
-                url: RPC_URLS[SupportedChainId.MAINNET],
-                appName: 'CoW Swap',
-                appLogoUrl: CowImage,
-              },
-              onError,
-            }),
-        ),
+    new CoinbaseWallet({
       actions,
       onError,
-    ),
+    }),
 )
 
 export const coinbaseWalletConnection: Web3ReactConnection = {
@@ -46,9 +32,7 @@ export const coinbaseWalletConnection: Web3ReactConnection = {
   type: ConnectionType.COINBASE_WALLET,
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CoinbaseWalletOption({ tryActivation, selectedWallet }: ConnectionOptionProps) {
+export function CoinbaseWalletOption({ tryActivation, selectedWallet }: ConnectionOptionProps): ReactNode {
   const isActive = useIsActiveConnection(selectedWallet, coinbaseWalletConnection)
 
   return (

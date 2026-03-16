@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { currencyAmountToTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
@@ -23,28 +23,26 @@ export interface AmountsToSign {
  */
 export function useAmountsToSignFromQuote(): AmountsToSign | null {
   const { isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, tradeType } = useDerivedTradeState() || {}
-  const { isSell, afterSlippage } = useGetReceiveAmountInfo() || {}
+  const { isSell, amountsToSign } = useGetReceiveAmountInfo() || {}
   const isSafeBundleEth = useIsSafeEthFlow()
 
   return useMemo(() => {
-    const sellAmountAfterSlippage = isQuoteBasedOrder ? afterSlippage?.sellAmount : inputCurrencyAmount
-    const minimumReceiveBuyAmount = isQuoteBasedOrder ? afterSlippage?.buyAmount : outputCurrencyAmount
+    if (!amountsToSign || !inputCurrencyAmount || !outputCurrencyAmount) return null
 
-    if (!sellAmountAfterSlippage || !minimumReceiveBuyAmount) return null
+    const sellAmountToSign = isQuoteBasedOrder ? amountsToSign.sellAmount : inputCurrencyAmount
+    const buyAmountToSign = isQuoteBasedOrder ? amountsToSign.buyAmount : outputCurrencyAmount
 
     // Add 1% threshold for buy orders to level out price/gas fluctuations
-    const maximumSendSellAmount = isSell
-      ? sellAmountAfterSlippage
-      : sellAmountForBuyOrder(sellAmountAfterSlippage, tradeType)
+    const maximumSendSellAmount = isSell ? sellAmountToSign : sellAmountForBuyOrder(sellAmountToSign, tradeType)
 
     return {
       // Safe ETH bundling uses ETH wrapping, so we should consider WETH as approving token
       maximumSendSellAmount: isSafeBundleEth
         ? currencyAmountToTokenAmount(maximumSendSellAmount)
         : maximumSendSellAmount,
-      minimumReceiveBuyAmount,
+      minimumReceiveBuyAmount: buyAmountToSign,
     }
-  }, [isSell, isSafeBundleEth, isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, afterSlippage, tradeType])
+  }, [isSell, isSafeBundleEth, isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, amountsToSign, tradeType])
 }
 
 function sellAmountForBuyOrder(

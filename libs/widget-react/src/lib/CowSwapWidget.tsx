@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import type { CowWidgetEventListeners } from '@cowprotocol/events'
 import type { Command } from '@cowprotocol/types'
@@ -10,10 +10,7 @@ import {
   createCowSwapWidget,
 } from '@cowprotocol/widget-lib'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CowSwapWidget(props: CowSwapWidgetProps) {
+export function CowSwapWidget(props: CowSwapWidgetProps): ReactNode {
   const { params, provider, listeners } = props
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
@@ -27,8 +24,10 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     try {
       console.log(`[WIDGET] ${action}`)
       actionThatMightFail()
-    } catch (error) {
+    } catch (_error) {
       const errorMessage = `Error ${action.toLowerCase()}`
+      const error = _error instanceof Error ? _error : new Error('Unknown CowSwapWidget error', { cause: _error })
+
       console.error(`[WIDGET] ${errorMessage}`, error)
       setError({ message: errorMessage, error })
     }

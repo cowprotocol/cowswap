@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
-import { areAddressesEqual, isAddress } from '@cowprotocol/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'

@@ -16,10 +16,10 @@ import {
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ButtonSize, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -34,13 +34,6 @@ import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBrea
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 
-enum ClaimStatus {
-  INITIAL,
-  ATTEMPTING,
-  SUBMITTED,
-  CONFIRMED,
-}
-
 interface Props {
   openModal: (message: string) => void
   closeModal: Command
@@ -50,6 +43,13 @@ interface Props {
   loading: boolean
 }
 
+enum ClaimStatus {
+  INITIAL,
+  ATTEMPTING,
+  SUBMITTED,
+  CONFIRMED,
+}
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
@@ -57,10 +57,11 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const unvested = allocated.subtract(vested)
   const previousAccount = usePrevious(account)
+  const claimableAmount = vested.subtract(claimed)
 
   const canClaim =
     !loading &&
-    unvested.greaterThan(0) &&
+    claimableAmount.greaterThan(0) &&
     status === ClaimStatus.INITIAL &&
     MERKLE_DROP_CONTRACT_ADDRESSES[chainId] &&
     TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId]
@@ -206,7 +207,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
               </HoverTooltip>
             </i>
             <b>
-              <TokenAmount amount={vested.subtract(claimed)} defaultValue="0" />
+              <TokenAmount amount={claimableAmount} defaultValue="0" />
             </b>
           </BalanceDisplay>
           {status === ClaimStatus.CONFIRMED ? (

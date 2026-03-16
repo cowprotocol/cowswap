@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
@@ -32,7 +32,7 @@ export function FavoriteTokenItem({ token, selectTokenContext }: FavoriteTokenIt
 
   return (
     <styledEl.TokenButton
-      data-address={token.address.toLowerCase()}
+      data-address={getAddressKey(token.address)}
       data-token-symbol={token.symbol || ''}
       data-token-name={token.name || ''}
       data-element-type="token-selection"

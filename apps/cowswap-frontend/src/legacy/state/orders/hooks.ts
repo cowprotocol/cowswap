@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { areAddressesEqual, isTruthy } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isTruthy } from '@cowprotocol/common-utils'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -53,52 +53,52 @@ type OrderID = string
 const EMPTY_ORDERS_ARRAY = [] as Order[]
 const EMPTY_ORDERS_MAP = {} as PartialOrdersMap
 
+export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
+
+export type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersParams) => void
+
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
 }
-
 export interface AddUnserialisedPendingOrderParams extends GetRemoveOrderParams {
   order: Order
   isSafeWallet: boolean
 }
 
-interface GetRemoveOrderParams {
-  id: OrderID
-  chainId: SupportedChainId
-}
+export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
+export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
+export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
+
+export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
+
+export type InvalidateOrdersBatchCallback = (params: InvalidateOrdersBatchParams) => void
+export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
+export type SetIsOrderRefundedBatchCallback = (params: SetIsOrderRefundedBatch) => void
+
+export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
+export type SetOrderCancellationHashCallback = (setOrderCancellationHashParams: SetOrderCancellationHashParams) => void
+export type UpdatePresignGnosisSafeTxCallback = (
+  updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams,
+) => void
+type CancelOrderParams = GetRemoveOrderParams
+type CancelOrdersBatchParams = UpdateOrdersBatchParams
+type ExpireOrdersBatchParams = UpdateOrdersBatchParams
 type GetOrdersByIdParams = {
   ids: OrderID[]
   chainId?: SupportedChainId
 }
-
 type GetOrdersParams = Partial<Pick<GetRemoveOrderParams, 'chainId'>>
-type CancelOrderParams = GetRemoveOrderParams
+interface GetRemoveOrderParams {
+  id: OrderID
+  chainId: SupportedChainId
+}
+type PresignOrdersParams = UpdateOrdersBatchParams
 type SetOrderCancellationHashParams = CancelOrderParams & { hash: string }
-
 interface UpdateOrdersBatchParams {
   ids: OrderID[]
   chainId: SupportedChainId
   isSafeWallet: boolean
 }
-
-type ExpireOrdersBatchParams = UpdateOrdersBatchParams
-type CancelOrdersBatchParams = UpdateOrdersBatchParams
-type PresignOrdersParams = UpdateOrdersBatchParams
-
-export type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersParams) => void
-export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
-export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
-export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
-export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
-export type SetOrderCancellationHashCallback = (setOrderCancellationHashParams: SetOrderCancellationHashParams) => void
-export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
-export type InvalidateOrdersBatchCallback = (params: InvalidateOrdersBatchParams) => void
-export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
-export type UpdatePresignGnosisSafeTxCallback = (
-  updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams,
-) => void
-export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
-export type SetIsOrderRefundedBatchCallback = (params: SetIsOrderRefundedBatch) => void
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -160,15 +160,13 @@ export const useOrders = (
   uiOrderType: UiOrderType,
 ): Order[] => {
   const state = useOrdersStateNetwork(chainId)
-  const accountLowerCase = account?.toLowerCase()
-
   return useMemo(() => {
     if (!state) return EMPTY_ORDERS_ARRAY
 
     return _concatOrdersState(state, ORDER_LIST_KEYS).reduce<Order[]>((acc, order) => {
       if (!order) return acc
 
-      const doesBelongToAccount = order.order.owner.toLowerCase() === accountLowerCase
+      const doesBelongToAccount = areAddressesEqual(order.order.owner, account)
       const orderType = getUiOrderType(order.order)
       const doesMatchClass = orderType === uiOrderType
 
@@ -182,7 +180,7 @@ export const useOrders = (
 
       return acc
     }, [])
-  }, [state, accountLowerCase, uiOrderType])
+  }, [state, account, uiOrderType])
 }
 
 export const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
@@ -244,7 +242,7 @@ export const useCombinedPendingOrders = ({
       const allPending = Object.values({ ...pending, ...presignaturePending, ...creating })
 
       return allPending.map(deserializeOrder).filter((order) => {
-        return order?.owner.toLowerCase() === account.toLowerCase()
+        return areAddressesEqual(order?.owner, account)
       }) as Order[]
     },
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData: EMPTY_ORDERS_ARRAY },

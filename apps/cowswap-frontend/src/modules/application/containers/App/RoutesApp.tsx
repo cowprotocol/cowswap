@@ -9,6 +9,7 @@ import {
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
 } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { Navigate, Route, Routes } from 'react-router'
 
@@ -25,10 +26,10 @@ import {
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
-import AdvancedOrdersPage from 'pages/AdvancedOrders'
+import { AdvancedOrdersPage } from 'pages/AdvancedOrders/AdvancedOrders.page'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
-import LimitOrderPage from 'pages/LimitOrders'
+import { LimitOrdersPage } from 'pages/LimitOrders/LimitOrders.page'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
 
@@ -42,7 +43,11 @@ const LegalExternal = <ExternalRedirect url={COWDAO_LEGAL_LINK} />
 
 // Account
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
-const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
+const AccountAffiliatePartner = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/Account/AffiliatePartner'))
+const AccountAffiliateTrader = lazy(
+  () => import(/* webpackChunkName: "affiliate_trader" */ 'pages/Account/AffiliateTrader'),
+)
+const AccountNotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 
 function ExternalRedirect({ url }: { url: string }): null {
   useEffect(() => {
@@ -77,12 +82,20 @@ const lazyRoutes: LazyRouteProps[] = [
 ]
 
 export function RoutesApp(): ReactNode {
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
+
   return (
     <Routes>
       {/*Account*/}
       <Route path={RoutesEnum.ACCOUNT} element={<Account />}>
         <Route path={RoutesEnum.ACCOUNT} element={<AccountOverview />} />
         <Route path={RoutesEnum.ACCOUNT_TOKENS} element={<AccountTokensOverview />} />
+        {isAffiliateProgramEnabled && (
+          <Route path={RoutesEnum.ACCOUNT_AFFILIATE_PARTNER} element={<AccountAffiliatePartner />} />
+        )}
+        {isAffiliateProgramEnabled && (
+          <Route path={RoutesEnum.ACCOUNT_AFFILIATE_TRADER} element={<AccountAffiliateTrader />} />
+        )}
         <Route path="*" element={<AccountNotFound />} />
       </Route>
 
@@ -97,7 +110,7 @@ export function RoutesApp(): ReactNode {
 
       {/*Swap*/}
       <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
-      <Route path={RoutesEnum.LIMIT_ORDER} element={<LimitOrderPage />} />
+      <Route path={RoutesEnum.LIMIT_ORDERS} element={<LimitOrdersPage />} />
       <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />

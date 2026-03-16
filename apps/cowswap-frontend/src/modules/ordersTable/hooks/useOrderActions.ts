@@ -8,12 +8,13 @@ import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMu
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { useOrdersTableTokenApprove } from './useOrdersTableTokenApprove'
+
 import {
   useGetAlternativeOrderModalContextCallback,
   useSelectReceiptOrder,
-} from '../containers/OrdersReceiptModal/hooks'
-import { useOrdersTableTokenApprove } from '../containers/OrdersTableWidget/hooks/useOrdersTableTokenApprove'
-import { OrderActions } from '../types'
+} from '../containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
+import { OrderActions } from '../state/ordersTable.types'
 
 function toggleOrderInCancellationList(state: CancellableOrder[], order: CancellableOrder): CancellableOrder[] {
   const isOrderIncluded = state.find((item) => item.id === order.id)

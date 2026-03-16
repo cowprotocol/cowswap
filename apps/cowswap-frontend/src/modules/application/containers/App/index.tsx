@@ -9,7 +9,7 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 
 import { RoutesApp } from './RoutesApp'
 
-import { AppContainer } from '../AppContainer'
+import { AppContainer } from '../AppContainer/AppContainer.container'
 
 export function App(): ReactNode {
   return (

@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 
 import Close from '@cowprotocol/assets/images/x.svg?react'
+import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
 import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -145,7 +146,11 @@ export function OrdersPanel() {
 
   useCloseAccountModalOnNavigate()
 
-  if (!active || !isOpen || !account) {
+  const displayOrdersPanel = !!(active && isOpen && account)
+
+  useBodyScrollbarLocker(displayOrdersPanel)
+
+  if (!displayOrdersPanel) {
     return null
   }
 

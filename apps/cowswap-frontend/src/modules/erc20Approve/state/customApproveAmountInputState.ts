@@ -2,7 +2,7 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 interface CustomApproveAmountInputState {
   amount: CurrencyAmount<Currency> | null
@@ -20,6 +20,10 @@ const { atom: customApproveAmountAtom, updateAtom: updateCustomApproveAmountAtom
   atom<CustomApproveAmountInputState>(initialState),
 )
 
+export function useCustomApproveAmountInputState(): CustomApproveAmountInputState {
+  return useAtomValue(customApproveAmountAtom)
+}
+
 export function useUpdateOrResetCustomApproveAmountInputState(): [
   (val: Partial<CustomApproveAmountInputState>) => void,
   () => void,
@@ -27,8 +31,4 @@ export function useUpdateOrResetCustomApproveAmountInputState(): [
   const partialUpdate = useSetAtom(updateCustomApproveAmountAtom)
   const resetAtom: () => void = useCallback(() => partialUpdate(initialState), [partialUpdate])
   return [partialUpdate, resetAtom]
-}
-
-export function useCustomApproveAmountInputState(): CustomApproveAmountInputState {
-  return useAtomValue(customApproveAmountAtom)
 }

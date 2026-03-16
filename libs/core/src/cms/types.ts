@@ -36,3 +36,18 @@ export type RestrictedTokenList = {
 }
 
 export type RestrictedTokenLists = RestrictedTokenList[]
+
+export type NotificationLocation = 'default' | 'speechBubble'
+
+export const NOTIFICATION_LOCATION_DEFAULT: NotificationLocation = 'default'
+
+export interface NotificationModel {
+  id: number
+  account: string
+  title: string
+  description: string
+  createdAt: string
+  url: string | null
+  thumbnail: string | null
+  location?: NotificationLocation | null
+}

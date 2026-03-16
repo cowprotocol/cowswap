@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Link, LinkProps } from 'react-router'
-import { usePathPrefix } from 'state/network'
+import { useNavigationPathPrefix } from 'state/network'
 
 interface LinkWithPrefixProps extends LinkProps {
   onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
@@ -10,7 +10,7 @@ interface LinkWithPrefixProps extends LinkProps {
 
 export function LinkWithPrefixNetwork(props: LinkWithPrefixProps): React.ReactNode {
   const { to, children, onClickOptional, noPrefix, ...otherParams } = props
-  const prefix = usePathPrefix()
+  const prefix = useNavigationPathPrefix()
   const _to = prefix && !noPrefix ? `/${prefix}${to}` : to
 
   return (

@@ -10,6 +10,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenContext } from './useSelectTokenContext'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useTokensToSelect } from './useTokensToSelect'
@@ -27,6 +28,9 @@ export interface TokenListContext {
   areTokensLoading: boolean
   areTokensFromBridge: boolean
 
+  // Bridge support map (null when loading, populated when bridge tokens are fetched)
+  bridgeSupportedTokensMap: Record<string, boolean> | null
+
   // UI config
   hideFavoriteTokensTooltip: boolean
   selectedTargetChainId: number | undefined
@@ -42,11 +46,13 @@ export interface TokenListContext {
 export function useTokenListContext(): TokenListContext {
   const { chainId: walletChainId } = useWalletInfo()
   const widgetState = useSelectTokenWidgetState()
+  const chainsToSelect = useChainsToSelect()
   const tokensState = useTokensToSelect()
   const standalone = widgetState.standalone ?? false
+  const selectedTargetChainId = chainsToSelect?.defaultChainId ?? widgetState.selectedTargetChainId
 
   // Active chain for recent tokens
-  const activeChainId = widgetState.selectedTargetChainId ?? walletChainId
+  const activeChainId = selectedTargetChainId ?? walletChainId
 
   // Recent tokens section
   const { recentTokens, handleTokenListItemClick, clearRecentTokens } = useRecentTokenSection(
@@ -71,8 +77,9 @@ export function useTokenListContext(): TokenListContext {
       recentTokens,
       areTokensLoading: tokensState.isLoading,
       areTokensFromBridge: tokensState.areTokensFromBridge,
+      bridgeSupportedTokensMap: tokensState.bridgeSupportedTokensMap,
       hideFavoriteTokensTooltip: isInjectedWidget(),
-      selectedTargetChainId: widgetState.selectedTargetChainId,
+      selectedTargetChainId,
       onClearRecentTokens: clearRecentTokens,
       onTokenListItemClick: handleTokenListItemClick,
       selectTokenContext,
@@ -81,9 +88,10 @@ export function useTokenListContext(): TokenListContext {
       tokensState.tokens,
       tokensState.isLoading,
       tokensState.areTokensFromBridge,
+      tokensState.bridgeSupportedTokensMap,
       favoriteTokens,
       recentTokens,
-      widgetState.selectedTargetChainId,
+      selectedTargetChainId,
       clearRecentTokens,
       handleTokenListItemClick,
       selectTokenContext,

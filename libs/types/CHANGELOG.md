@@ -1,5 +1,78 @@
 # Changelog
 
+## [4.0.0](https://github.com/cowprotocol/cowswap/compare/types-v3.4.0...types-v4.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/types-v3.3.2...types-v3.4.0) (2026-03-10)
+
+
+### ✨ Features
+
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/types-v3.3.1...types-v3.3.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/types-v3.3.0...types-v3.3.1) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/types-v3.2.0...types-v3.3.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/types-v3.1.0...types-v3.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/types-v3.0.1...types-v3.1.0) (2026-02-05)
+
+
+### ✨ Features
+
+* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
+
+
+### 🔧 Miscellaneous
+
+* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
+
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/types-v3.0.0...types-v3.0.1) (2026-02-02)
 
 

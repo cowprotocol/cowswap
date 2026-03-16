@@ -1,9 +1,9 @@
-export interface NotificationModel {
+// Telegram data shape used across hooks
+export interface TelegramData {
+  auth_date: number
+  first_name: string
+  hash: string
   id: number
-  account: string
-  title: string
-  description: string
-  createdAt: string
-  url: string | null
-  thumbnail: string | null
+  photo_url: string
+  username: string
 }

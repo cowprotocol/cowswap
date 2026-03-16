@@ -18,13 +18,14 @@ export function BridgingEnabledUpdater(): null {
   const isSafeApp = useIsSafeApp()
   const { disableCrossChainSwap = false } = useInjectedWidgetParams()
 
-  const isSwapPage = tradeTypeInfo?.route === Routes.SWAP
+  const isSwapOrHooksPage = tradeTypeInfo?.route === Routes.SWAP || tradeTypeInfo?.route === Routes.HOOKS
   const widgetInSafeApp = isSafeApp && isInjectedWidget()
   const shouldEnableInWidgetSafe = isBridgingInSafeWidgetEnabled ? true : !widgetInSafeApp
 
   const hasBridgeProviders = useHasBridgeProviders()
 
-  const shouldEnableBridging = isSwapPage && !disableCrossChainSwap && shouldEnableInWidgetSafe && hasBridgeProviders
+  const shouldEnableBridging =
+    isSwapOrHooksPage && !disableCrossChainSwap && shouldEnableInWidgetSafe && hasBridgeProviders
 
   useEffect(() => {
     setIsBridgingEnabled(shouldEnableBridging)

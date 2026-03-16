@@ -5,7 +5,7 @@ import {
   mapSupportedNetworks,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
-import { Fraction, Percent } from '@uniswap/sdk-core'
+import { Fraction, Percent } from '@cowprotocol/currency'
 
 import { msg } from '@lingui/core/macro'
 import JSBI from 'jsbi'
@@ -47,6 +47,8 @@ export const PAGE_TITLES = {
   COW_RUNNER: msg`CoW Runner`,
   MEV_SLICER: msg`Mev Slicer`,
   HOOKS: msg`Hooks`,
+  AFFILIATE: msg`Rewards hub - Affiliate`,
+  MY_REWARDS: msg`Rewards hub - My Rewards`,
 }
 
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
@@ -69,14 +71,13 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
   [SupportedChainId.AVALANCHE]: null,
-  [SupportedChainId.LENS]: null,
   [SupportedChainId.BNB]: '0x5bfdaa3f7c28b9994b56135403bf1acea02595b0',
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
   [SupportedChainId.INK]: null,
 }
 
-// Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized
+// Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized)
 export const RECEIVED_LABEL_EXPLORER = 'Received'
 export const ACCOUNT_PROXY_LABEL_EXPLORER = 'Account Proxy'
 
@@ -128,7 +129,6 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'https://polygon.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.AVALANCHE]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.AVALANCHE}`,
-  [SupportedChainId.LENS]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LENS}`,
   [SupportedChainId.BNB]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.BNB}`,
   [SupportedChainId.LINEA]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LINEA}`,
   [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
@@ -142,7 +142,6 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.POLYGON]: null,
   [SupportedChainId.AVALANCHE]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
-  [SupportedChainId.LENS]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.BNB]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.LINEA]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.PLASMA]: null,

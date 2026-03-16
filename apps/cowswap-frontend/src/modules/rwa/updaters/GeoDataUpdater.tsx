@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { areAddressesEqual } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { refetchGeoDataAtom } from '../state/geoDataAtom'

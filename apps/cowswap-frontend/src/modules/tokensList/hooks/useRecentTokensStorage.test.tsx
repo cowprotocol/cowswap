@@ -2,7 +2,7 @@ import { createStore, Provider } from 'jotai'
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { act, renderHook } from '@testing-library/react'

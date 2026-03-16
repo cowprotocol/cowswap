@@ -67,7 +67,7 @@ describe('usePathPrefix', () => {
 })
 
 describe('usePathSuffix', () => {
-  it('should return paht suffix', () => {
+  it('should return path suffix', () => {
     const networkPrefix = '/gc'
     const pathSuffix = '/address/123'
     const mockLocation = networkPrefix + pathSuffix

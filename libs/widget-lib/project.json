@@ -5,10 +5,15 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/widget-lib"
+        "outputPath": "dist/libs/widget-lib",
+        "main": "libs/widget-lib/src/index.ts",
+        "tsConfig": "libs/widget-lib/tsconfig.lib.json",
+        "assets": ["libs/widget-lib/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true,
+        "buildableProjectDepsInPackageJsonType": "dependencies"
       }
     },
     "serve": {
@@ -19,10 +24,6 @@
         "port": 3012
       },
       "configurations": {}
-    },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs widget-lib {args.tag} {args.otp}",
-      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",

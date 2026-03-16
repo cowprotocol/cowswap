@@ -2,15 +2,20 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  getAddressKey,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  mapSupportedNetworks,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { TradeType } from 'modules/trade/types'
+import { TradeType } from 'modules/trade/types/TradeType'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
@@ -53,7 +58,11 @@ export function usePermitInfo(
   // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
 
-  const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
+  const lowerCaseAddress = token
+    ? getWrappedToken(token).address
+      ? getAddressKey(getWrappedToken(token).address!)
+      : undefined
+    : undefined
   const isNative = !!token && getIsNativeToken(token)
 
   // Avoid building permit info in the first place if order type is not supported
@@ -135,6 +144,6 @@ function usePermitInfoState(chainId: SupportedChainId, tokenAddress: string | un
   return useMemo(() => {
     if (!tokenAddress) return undefined
 
-    return permitableTokens[chainId]?.[tokenAddress.toLowerCase()]
+    return permitableTokens[chainId]?.[getAddressKey(tokenAddress)]
   }, [chainId, permitableTokens, tokenAddress])
 }

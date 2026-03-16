@@ -3,10 +3,10 @@ import { useCallback } from 'react'
 import { LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
@@ -25,21 +25,6 @@ export type CurrencySelectionCallback = (
   stateUpdateCallback?: Command,
   searchParams?: TradeSearchParams,
 ) => void
-
-function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
-  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-
-  return useCallback(
-    (currency: Currency | null): string | null => {
-      if (!currency) return null
-
-      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
-        ? (currency as Token).address
-        : currency.symbol || null
-    },
-    [areThereTokensWithSameSymbol],
-  )
-}
 
 /**
  * To avoid collisions of tokens with the same symbols we use a token address instead of token symbol
@@ -84,7 +69,13 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           : resolveCurrencyAddressOrSymbol(outputCurrency)
         : null
 
-      const targetInputCurrencyId = isInputField ? tokenSymbolOrAddress : inputCurrencyId
+      // When switching SELL chain, persist token address for non-native tokens.
+      // Symbols from imported/non-canonical lists may not resolve reliably from URL (e.g. A3A).
+      const targetInputCurrencyId = isInputField
+        ? targetChainMismatch && currency instanceof Token
+          ? currency.address
+          : tokenSymbolOrAddress
+        : inputCurrencyId
       const targetOutputCurrencyId = isInputField
         ? outputCurrencyId
         : targetChainMismatch && currency
@@ -145,5 +136,20 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
     ],
+  )
+}
+
+function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
+  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
+
+  return useCallback(
+    (currency: Currency | null): string | null => {
+      if (!currency) return null
+
+      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
+        ? (currency as Token).address
+        : currency.symbol || null
+    },
+    [areThereTokensWithSameSymbol],
   )
 }

@@ -1,4 +1,4 @@
-import React, { ErrorInfo, PropsWithChildren } from 'react'
+import React, { useCallback, ErrorInfo, PropsWithChildren } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -11,6 +11,7 @@ import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
 
+// eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Page } from 'modules/application/pure/Page'
 
 import { Routes } from 'common/constants/routes'
@@ -147,9 +148,12 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
 export default function ErrorBoundary(props: PropsWithChildren): React.ReactNode {
   const cowAnalytics = useCowAnalytics()
 
-  const handleError = (error: Error, errorInfo: ErrorInfo): void => {
-    cowAnalytics.sendError(error, errorInfo.toString())
-  }
+  const handleError = useCallback(
+    (error: Error, errorInfo: ErrorInfo): void => {
+      cowAnalytics.sendError(error, errorInfo.toString())
+    },
+    [cowAnalytics],
+  )
 
   return <ErrorBoundaryComponent {...props} onError={handleError} />
 }

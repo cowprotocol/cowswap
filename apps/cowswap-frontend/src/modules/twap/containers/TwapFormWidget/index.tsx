@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
@@ -7,14 +7,14 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
-import { useGetReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -55,16 +55,15 @@ interface TwapFormWidget {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
+// eslint-disable-next-line max-lines-per-function
+export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { updateState } = useTradeState()
-  const tradeQuote = useTradeQuote()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
   const verification = useFallbackHandlerVerification()
@@ -77,13 +76,14 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
+  const hideQuoteAmount = useShouldHideQuoteAmounts()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
 
-  const limitPriceAfterSlippage = usePrice(
-    receiveAmountInfo?.afterSlippage.sellAmount,
-    receiveAmountInfo?.afterSlippage.buyAmount,
+  const executionPrice = usePrice(
+    receiveAmountInfo?.amountsToSign.sellAmount,
+    receiveAmountInfo?.amountsToSign.buyAmount,
   )
 
   const widgetDeadline = useInjectedWidgetDeadline(TradeType.ADVANCED)
@@ -149,13 +149,6 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
     }
   }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification, cowAnalytics])
 
-  // Reset output amount when quote params are changed
-  useLayoutEffect(() => {
-    if (tradeQuote.hasParamsChanged) {
-      updateState?.({ outputCurrencyAmount: null })
-    }
-  }, [tradeQuote.hasParamsChanged, updateState])
-
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState
 
@@ -173,9 +166,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
 
   return (
     <>
-      {!isWrapOrUnwrap && (
-        <styledEl.Row>
-          <styledEl.RateInfoWrapper>
+      {!isWrapOrUnwrap && !hideQuoteAmount && (
+        <>
+          <styledEl.FooterBox>
             <RateInfo
               label={tooltips.price.label}
               rateInfoParams={rateInfoParams}
@@ -183,8 +176,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
               fontSize={13}
               rightAlign
             />
-          </styledEl.RateInfoWrapper>
-        </styledEl.Row>
+            {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+          </styledEl.FooterBox>
+        </>
       )}
       <TradeNumberInput
         value={+twapOrderSlippage.toFixed(2)}
@@ -199,9 +193,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
         upDownArrowsLeftAlign={true}
         prefixComponent={
           <em>
-            {limitPriceAfterSlippage ? (
+            {executionPrice && !hideQuoteAmount ? (
               <styledEl.ExecutionPriceStyled
-                executionPrice={limitPriceAfterSlippage}
+                executionPrice={executionPrice}
                 isInverted={isInverted}
                 hideFiat
                 hideSeparator
