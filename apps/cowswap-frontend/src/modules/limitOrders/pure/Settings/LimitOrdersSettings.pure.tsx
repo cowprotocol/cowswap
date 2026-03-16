@@ -5,8 +5,7 @@ import { SettingsDropdownSection, SettingsBox, SimpleStyledText, SettingsLabel }
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 
-import { getOrdersTableSettings } from 'modules/trade/const/common'
-import { SettingsContainer } from 'modules/trade/pure/Settings'
+import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
 
