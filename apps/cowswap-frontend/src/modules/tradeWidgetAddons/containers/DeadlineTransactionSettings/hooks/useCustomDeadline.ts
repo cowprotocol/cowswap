@@ -33,6 +33,7 @@ export interface DeadlineRangeParams {
   isSmartContractWallet: boolean
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function useCustomDeadline(deadlineState: StatefulValue<number>): {
   isDisabled: boolean
   onBlur: () => void
