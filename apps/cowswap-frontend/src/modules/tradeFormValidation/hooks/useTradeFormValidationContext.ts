@@ -41,8 +41,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
-  const isInputCurrencyXstock = useIsXstockToken(
-    inputCurrency && getIsNativeToken(inputCurrency) ? null : inputCurrency,
+  const isOutputCurrencyXstock = useIsXstockToken(
+    outputCurrency && getIsNativeToken(outputCurrency) ? null : outputCurrency,
   )
 
   const isBundlingSupported = useIsTxBundlingSupported()
@@ -98,7 +98,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isRestrictedForCountry,
       isBalancesLoading: !hasFirstLoad || isBalancesLoading,
       balancesError,
-      isInputCurrencyXstock,
+      isOutputCurrencyXstock,
     }
   }, [
     hasFirstLoad,
@@ -125,7 +125,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     toBeImported,
     tradeQuote,
     balancesError,
-    isInputCurrencyXstock,
+    isOutputCurrencyXstock,
   ])
 }
 

@@ -30,7 +30,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestrictedForCountry,
     isBalancesLoading,
     isBundlingSupported,
-    isInputCurrencyXstock,
+    isOutputCurrencyXstock,
   } = context
 
   const {
@@ -39,7 +39,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     inputCurrencyAmount,
     outputCurrencyAmount,
     inputCurrencyBalance,
-    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
     recipient,
     orderKind,
   } = derivedTradeState
@@ -57,9 +57,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
-  const inputAmountUsd = inputCurrencyFiatAmount ? +inputCurrencyFiatAmount.toExact() : null
+  const outputAmountUsd = outputCurrencyFiatAmount ? +outputCurrencyFiatAmount.toExact() : null
   const isXstockSellBelowLimit = Boolean(
-    isInputCurrencyXstock && inputAmountUsd && inputAmountUsd < XSTOCK_MIN_TRADE_SIZE_USD,
+    isOutputCurrencyXstock && outputAmountUsd && outputAmountUsd < XSTOCK_MIN_TRADE_SIZE_USD,
   )
 
   const validations: TradeFormValidation[] = []
