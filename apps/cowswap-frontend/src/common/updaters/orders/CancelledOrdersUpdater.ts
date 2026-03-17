@@ -57,6 +57,7 @@ export function CancelledOrdersUpdater(): null {
   // Ref, so we don't rerun useEffect
   const cancelledRef = useRef(cancelled)
   const allTransactionsRef = useRef(allTransactions)
+  const handledRecoveredOrderIdsRef = useRef<Set<string>>(new Set())
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
   cancelledRef.current = cancelled
   allTransactionsRef.current = allTransactions
@@ -78,6 +79,10 @@ export function CancelledOrdersUpdater(): null {
         // - Owned by the current connected account
         // - Cancelled recently enough that the backend may still settle to fulfilled
         const pending = cancelledRef.current.filter((order) => {
+          if (handledRecoveredOrderIdsRef.current.has(order.id)) {
+            return false
+          }
+
           const lastRelevantUpdateTime = getLastRelevantUpdateTime(order, allTransactionsRef.current)
 
           return areAddressesEqual(order.owner, account) && now - lastRelevantUpdateTime < CANCELLED_ORDERS_PENDING_TIME
@@ -108,6 +113,10 @@ export function CancelledOrdersUpdater(): null {
 
         // Bach state update fulfilled orders, if any
         if (fulfilled.length) {
+          fulfilled.forEach((order) => {
+            handledRecoveredOrderIdsRef.current.add(order.uid)
+          })
+
           fulfillOrdersBatch({
             orders: fulfilled,
             chainId,
@@ -134,6 +143,8 @@ export function CancelledOrdersUpdater(): null {
     if (!chainId || !account) {
       return
     }
+
+    handledRecoveredOrderIdsRef.current.clear()
 
     const interval = setInterval(() => updateOrders(chainId, account, isSafeWallet), MARKET_OPERATOR_API_POLL_INTERVAL)
 

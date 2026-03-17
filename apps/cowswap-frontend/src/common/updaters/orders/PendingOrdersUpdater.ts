@@ -86,6 +86,7 @@ interface UpdateOrdersParams {
   getSafeTxInfo: GetSafeTxInfo
   safeNonce: number | undefined
   allTransactions: ReturnType<typeof useAllTransactions>
+  handledFinalOrderIds: Set<string>
   markPollComplete?: (chainId: ChainId) => void
 }
 
@@ -101,6 +102,7 @@ export function PendingOrdersUpdater(): null {
   const dispatch = useDispatch<AppDispatch>()
 
   const pending = useCombinedPendingOrders({ chainId, account })
+  const handledFinalOrderIdsRef = useRef<Set<string>>(new Set())
   // TODO: Implement using SWR or retry/cancellable promises
   const isUpdatingMarket = useRef(false)
   const isUpdatingLimit = useRef(false)
@@ -138,6 +140,20 @@ export function PendingOrdersUpdater(): null {
   const getSafeTxInfo = useGetSafeTxInfo()
   const getSerializedBridgeOrder = useGetSerializedBridgeOrder()
   const getSerializedBridgeOrderRef = useRef(getSerializedBridgeOrder)
+
+  useEffect(() => {
+    const activePendingIds = new Set(pending.map(({ id }) => id))
+
+    handledFinalOrderIdsRef.current.forEach((id) => {
+      if (!activePendingIds.has(id)) {
+        handledFinalOrderIdsRef.current.delete(id)
+      }
+    })
+  }, [pending])
+
+  useEffect(() => {
+    handledFinalOrderIdsRef.current.clear()
+  }, [account, chainId])
 
   useEffect(() => {
     getSerializedBridgeOrderRef.current = getSerializedBridgeOrder
@@ -205,6 +221,7 @@ export function PendingOrdersUpdater(): null {
           getSafeTxInfo,
           safeNonce,
           allTransactions,
+          handledFinalOrderIds: handledFinalOrderIdsRef.current,
           markPollComplete: shouldMarkCompletion ? markPollComplete : undefined,
         }).finally(() => {
           isUpdating.current = false
@@ -345,10 +362,13 @@ async function _updateOrders({
   getSafeTxInfo,
   safeNonce,
   allTransactions,
+  handledFinalOrderIds,
   markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
-  const pending = orders.filter(({ owner }) => areAddressesEqual(owner, account))
+  const pending = orders.filter(({ owner, id }) => {
+    return areAddressesEqual(owner, account) && !handledFinalOrderIds.has(id)
+  })
 
   // Exit early when there are no pending orders
   if (!pending.length) {
@@ -380,6 +400,10 @@ async function _updateOrders({
   handlePresignedOrders({ presigned, orders, getSerializedBridgeOrder, chainId, account, isSafeWallet, presignOrders })
 
   if (expired.length > 0) {
+    expired.forEach((order) => {
+      handledFinalOrderIds.add(order.uid)
+    })
+
     expireOrdersBatch({
       ids: expired.map(({ uid }) => uid),
       chainId,
@@ -392,6 +416,10 @@ async function _updateOrders({
   }
 
   if (cancelled.length > 0) {
+    cancelled.forEach((order) => {
+      handledFinalOrderIds.add(order.uid)
+    })
+
     cancelOrdersBatch({
       ids: cancelled.map(({ uid }) => uid),
       chainId,
@@ -407,6 +435,10 @@ async function _updateOrders({
   }
 
   if (fulfilled.length > 0) {
+    fulfilled.forEach((order) => {
+      handledFinalOrderIds.add(order.uid)
+    })
+
     // update redux state
     fulfillOrdersBatch({
       orders: fulfilled,

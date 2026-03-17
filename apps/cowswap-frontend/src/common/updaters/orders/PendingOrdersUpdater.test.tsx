@@ -1,8 +1,8 @@
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderClass } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
-import { render, waitFor } from '@testing-library/react'
+import { act, render, waitFor } from '@testing-library/react'
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
 import { useAutoAddOrderToSurplusQueue } from 'entities/surplusModal'
 import { useDispatch } from 'react-redux'
@@ -210,5 +210,30 @@ describe('PendingOrdersUpdater', () => {
 
     unmount()
     setIntervalSpy.mockRestore()
+  })
+
+  it('does not reprocess the same cancelled pending order on every poll when the pending list is stale', async () => {
+    const pendingOrder = createPendingOrder('swap-1', UiOrderType.SWAP)
+    const cancelOrdersBatch = jest.fn()
+
+    useCombinedPendingOrdersMock.mockReturnValue([pendingOrder])
+    useCancelOrdersBatchMock.mockReturnValue(cancelOrdersBatch)
+    fetchAndClassifyOrderMock.mockResolvedValue({
+      status: 'cancelled',
+      order: { uid: 'swap-1' } as EnrichedOrder,
+    })
+
+    render(<PendingOrdersUpdater />)
+
+    await waitFor(() => {
+      expect(cancelOrdersBatch).toHaveBeenCalledTimes(1)
+    })
+
+    await act(async () => {
+      jest.advanceTimersByTime(MARKET_OPERATOR_API_POLL_INTERVAL * 2)
+    })
+
+    expect(fetchAndClassifyOrderMock).toHaveBeenCalledTimes(1)
+    expect(cancelOrdersBatch).toHaveBeenCalledTimes(1)
   })
 })

@@ -148,6 +148,34 @@ describe('CancelledOrdersUpdater', () => {
     expect(addOrderToSurplusQueue).toHaveBeenCalledWith('order-1')
   })
 
+  it('does not reprocess the same recovered order on every poll when the cancelled list is stale', async () => {
+    const fulfillOrdersBatch = jest.fn()
+    const fulfilledOrder = { uid: 'order-1' } as EnrichedOrder
+
+    useFulfillOrdersBatchMock.mockReturnValue(fulfillOrdersBatch)
+    fetchAndClassifyOrderMock.mockResolvedValue({
+      status: 'fulfilled',
+      order: fulfilledOrder,
+    })
+
+    render(<CancelledOrdersUpdater />)
+
+    await act(async () => {
+      jest.advanceTimersByTime(MARKET_OPERATOR_API_POLL_INTERVAL)
+    })
+
+    await waitFor(() => {
+      expect(fulfillOrdersBatch).toHaveBeenCalledTimes(1)
+    })
+
+    await act(async () => {
+      jest.advanceTimersByTime(MARKET_OPERATOR_API_POLL_INTERVAL * 2)
+    })
+
+    expect(fetchAndClassifyOrderMock).toHaveBeenCalledTimes(1)
+    expect(fulfillOrdersBatch).toHaveBeenCalledTimes(1)
+  })
+
   it('follows linked replacement hashes when deriving cancellation recency', async () => {
     useAllTransactionsMock.mockReturnValue({
       '0xcancel': createTransaction('0xcancel', {
