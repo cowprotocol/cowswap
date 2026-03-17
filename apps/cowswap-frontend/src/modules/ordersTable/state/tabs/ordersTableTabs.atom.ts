@@ -2,6 +2,8 @@ import { atom } from 'jotai'
 
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
+import { isProviderNetworkUnsupportedAtom } from 'entities/common/isProviderNetworkUnsupported.atom'
+
 import { OrderTabId, tabParamAtom } from 'common/state/routesState'
 
 import { ordersTableStateAtom } from '../ordersTable.atoms'
@@ -9,8 +11,7 @@ import { ORDERS_TABLE_TABS } from '../tabs/ordersTableTabs.constants'
 
 export const ordersTableTabsAtom = atom((get) => {
   const { account } = get(walletInfoAtom)
-  // const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
-  const isProviderNetworkUnsupported = false
+  const isProviderNetworkUnsupported = get(isProviderNetworkUnsupportedAtom)
 
   if (!account || isProviderNetworkUnsupported) {
     return []
