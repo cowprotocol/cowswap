@@ -259,6 +259,7 @@ jobs:
           [ "$TEST_RESULT" = "failure" ] && failed_jobs+=("Test")
           [ "$LINT_RESULT" = "failure" ] && failed_jobs+=("Lint")
           [ "$TYPECHECK_RESULT" = "failure" ] && failed_jobs+=("Typecheck")
+          [ "$AGENT_HARNESS_RESULT" = "failure" ] && failed_jobs+=("Agent Harness")
           [ "$INTEGRATION_TESTS_RESULT" = "failure" ] && failed_jobs+=("Cypress")
 
           if [ ${#failed_jobs[@]} -eq 0 ]; then
@@ -277,4 +278,5 @@ jobs:
           TEST_RESULT: ${{ needs.test.result }}
           LINT_RESULT: ${{ needs.lint.result }}
           TYPECHECK_RESULT: ${{ needs.typecheck.result }}
+          AGENT_HARNESS_RESULT: ${{ needs.agent-harness.result }}
           INTEGRATION_TESTS_RESULT: ${{ needs.integration-tests.result }}
