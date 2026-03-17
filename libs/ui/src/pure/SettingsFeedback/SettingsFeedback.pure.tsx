@@ -26,7 +26,7 @@ export function SettingsFeedback({ variant, message, tooltip }: SettingsFeedback
 
   return (
     <styledEl.FeedbackWrapper $variant={variant}>
-      {tooltip && <HelpTooltip Icon={icon} text={tooltip} />}
+      {tooltip ? <HelpTooltip Icon={icon} text={tooltip} noMargin /> : icon}
       {message}
     </styledEl.FeedbackWrapper>
   )

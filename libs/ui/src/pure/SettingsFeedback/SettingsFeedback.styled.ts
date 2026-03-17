@@ -18,4 +18,10 @@ export const FeedbackWrapper = styled.div<{ $variant: SettingsFeedbackVariant }>
   color: var(${({ $variant }) => SETTINGS_FEEDBACK_VARIANT_COLORS[$variant]});
   font-size: 13px;
   margin: 0;
+
+  & svg {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+  }
 `

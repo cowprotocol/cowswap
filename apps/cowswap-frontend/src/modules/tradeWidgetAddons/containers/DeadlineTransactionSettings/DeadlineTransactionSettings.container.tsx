@@ -23,11 +23,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const deadlineRangeMessage = t`Minimum ${deadlineRangeParams.minMinutes} min, maximum ${deadlineRangeParams.maxMinutes} min.`
 
   const footerSlot = error ? (
-    <SettingsFeedback
-      variant={error ? 'error' : 'info'}
-      message={deadlineRangeMessage}
-      tooltip={deadlineRangeMessage}
-    />
+    <SettingsFeedback variant={error ? 'error' : 'info'} message={deadlineRangeMessage} />
   ) : null
 
   return (

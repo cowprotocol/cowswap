@@ -50,7 +50,9 @@ export function TransactionSlippageInput(): JSX.Element {
   let footerSlot: ReactNode | null = null
 
   if (!isSmartSlippageApplied && slippageWarningParams) {
-    let message: string = t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%.`
+    let message: string | null = slippageError
+      ? t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%.`
+      : null
 
     if (!slippageError) {
       if (slippageWarningParams.tooLow) {
@@ -60,13 +62,17 @@ export function TransactionSlippageInput(): JSX.Element {
       }
     }
 
-    footerSlot = (
+    footerSlot = message ? (
       <SettingsFeedback
         variant={slippageError ? 'error' : 'warning'}
         message={message}
-        tooltip={t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%.`}
+        tooltip={
+          slippageError
+            ? null
+            : t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%.`
+        }
       />
-    )
+    ) : null
   }
 
   return (
