@@ -2,6 +2,8 @@ import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { GtmEvent } from '../types'
 
+export type ChainSwitchGuardInput = { [K in keyof ChainSwitchPayload]: ChainSwitchPayload[K] | null | undefined }
+
 export interface ChainSwitchPayload {
   account: string
   prevAccount: string
@@ -9,10 +11,20 @@ export interface ChainSwitchPayload {
   prevChainId: SupportedChainId
 }
 
-export type ChainSwitchGuardInput = { [K in keyof ChainSwitchPayload]: ChainSwitchPayload[K] | null | undefined }
-
 export function getChainContextValue(chainId: SupportedChainId | undefined): string | undefined {
   return chainId?.toString()
+}
+
+export function getChainSwitchedEvent(
+  previousChainId: SupportedChainId,
+  newChainId: SupportedChainId,
+): GtmEvent<'Wallet'> {
+  return {
+    category: 'Wallet',
+    action: 'chain_switched',
+    previousChainId: previousChainId.toString(),
+    newChainId: newChainId.toString(),
+  }
 }
 
 /**
@@ -31,16 +43,4 @@ export function shouldEmitChainSwitchedEventForSameWallet(input: ChainSwitchGuar
   }
 
   return chainId !== prevChainId
-}
-
-export function getChainSwitchedEvent(
-  previousChainId: SupportedChainId,
-  newChainId: SupportedChainId,
-): GtmEvent<'Wallet'> {
-  return {
-    category: 'Wallet',
-    action: 'chain_switched',
-    previousChainId: previousChainId.toString(),
-    newChainId: newChainId.toString(),
-  }
 }

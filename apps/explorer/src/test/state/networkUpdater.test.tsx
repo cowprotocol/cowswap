@@ -48,16 +48,6 @@ const NetworkUpdaterHarness: React.FC = () => (
   </>
 )
 
-function renderHarness(pathname: string, networkId: number | null): void {
-  const Wrapped = withGlobalContext(NetworkUpdaterHarness, createInitialState(networkId), rootReducer)
-
-  render(
-    <MemoryRouter initialEntries={[pathname]}>
-      <Wrapped />
-    </MemoryRouter>,
-  )
-}
-
 function NavigateOnMount({ to, state }: { to: string; state?: Record<string, unknown> }): React.ReactNode {
   const navigate = useNavigate()
 
@@ -66,6 +56,16 @@ function NavigateOnMount({ to, state }: { to: string; state?: Record<string, unk
   }, [navigate, state, to])
 
   return null
+}
+
+function renderHarness(pathname: string, networkId: number | null): void {
+  const Wrapped = withGlobalContext(NetworkUpdaterHarness, createInitialState(networkId), rootReducer)
+
+  render(
+    <MemoryRouter initialEntries={[pathname]}>
+      <Wrapped />
+    </MemoryRouter>,
+  )
 }
 
 function renderHarnessWithNavigation(

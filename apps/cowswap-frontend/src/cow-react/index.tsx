@@ -79,23 +79,6 @@ export function Main({ localeMessages }: MainProps): ReactNode {
   )
 }
 
-function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-  const { standaloneMode } = useInjectedWidgetParams()
-
-  return (
-    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
-      <Web3Provider>{children}</Web3Provider>
-    </LegacyWeb3Provider>
-  )
-}
-
-function Toasts(): ReactNode {
-  const { disableToastMessages = false } = useInjectedWidgetParams()
-
-  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
-}
-
 async function initApp(): Promise<void> {
   const container = document.getElementById('root')
   if (container !== null) {
@@ -106,6 +89,23 @@ async function initApp(): Promise<void> {
   } else {
     console.error('Failed to find the root element')
   }
+}
+
+function Toasts(): ReactNode {
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
+}
+
+function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+  const { standaloneMode } = useInjectedWidgetParams()
+
+  return (
+    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
+      <Web3Provider>{children}</Web3Provider>
+    </LegacyWeb3Provider>
+  )
 }
 
 initApp()
