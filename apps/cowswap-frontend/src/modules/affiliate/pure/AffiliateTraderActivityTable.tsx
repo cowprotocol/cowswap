@@ -8,6 +8,7 @@ import styled from 'styled-components/macro'
 import { Card } from 'pages/Account/styled'
 
 import { AffiliateTraderActivityTableRow } from './AffiliateTraderActivityTableRow'
+import { CardTitle } from './shared'
 
 import { OrderWithChainId } from '../api/fetchTraderActivity'
 
@@ -22,6 +23,9 @@ export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTable
 
   return (
     <TableCard showLoader={showLoader}>
+      <CardTitle>
+        <Trans>Rewards activity</Trans>
+      </CardTitle>
       {orders.length === 0 ? (
         <EmptyText>
           <Trans>Your rewards activity will show here.</Trans>
