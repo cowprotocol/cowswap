@@ -1,9 +1,11 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
-import { formatLocaleNumber } from '@cowprotocol/common-utils'
+import { formatLocaleNumber, formatTokenAmount } from '@cowprotocol/common-utils'
 import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
+import BigNumber from 'bignumber.js'
 
 import { SerializedOrder } from 'legacy/state/orders/actions'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
@@ -11,12 +13,14 @@ import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer
 
 import { decodeAppData } from 'modules/appData'
 
+import { OrderWithChainId } from '../api/fetchTraderActivity'
 import {
   AFFILIATE_PAYOUTS_CHAIN_ID,
   AFFILIATE_REWARDS_UPDATE_INTERVAL_MS,
   AFFILIATE_REWARDS_UPDATE_LAG_MS,
   AFFILIATE_STATS_REFRESH_INTERVAL_MS,
   AFFILIATE_SUPPORTED_CHAIN_IDS,
+  MIN_FEE_BPS,
   PROGRAM_DEFAULTS,
   REF_CODE_PATTERN,
 } from '../config/affiliateProgram.const'
@@ -92,6 +96,11 @@ export function extractFullAppDataFromResponse(response: AppDataResponse | strin
   return undefined
 }
 
+export function formatAmount(rawAmount?: string, token?: Token | null): string {
+  if (!rawAmount || !token) return ''
+  return formatTokenAmount(CurrencyAmount.fromRawAmount(token, rawAmount))
+}
+
 export function formatCompactNumber(value?: number): string {
   if (typeof value !== 'number') return EMPTY_VALUE_LABEL
 
@@ -155,6 +164,32 @@ export function getDefaultTraderRewardAmount(): number {
 
 export function getDefaultTriggerVolume(): number {
   return PROGRAM_DEFAULTS.AFFILIATE_TRIGGER_VOLUME
+}
+
+export function getIneligibilityReason(order: OrderWithChainId, savedCode: string | undefined): string | undefined {
+  const refCode = getRefCodeFromAppData(extractFullAppDataFromOrder(order))
+
+  if (!refCode) return 'Referrer code missing.'
+  if (formatRefCode(refCode) !== formatRefCode(savedCode)) return `Referrer code mismatch: ${refCode}.`
+
+  try {
+    const { executedFeeToken, sellToken } = order
+
+    if (executedFeeToken !== sellToken) return 'Fee token mismatch.'
+
+    const sellAmount = new BigNumber(order.executedSellAmount)
+    const feeAmount = new BigNumber(order.executedFee || '0')
+
+    const feeBps = feeAmount.multipliedBy(10_000).dividedBy(sellAmount)
+
+    if (feeBps.lt(MIN_FEE_BPS)) {
+      return `Fee below minimum threshold (${MIN_FEE_BPS} bps).`
+    }
+  } catch {
+    return 'Fee data unavailable for eligibility check.'
+  }
+
+  return undefined
 }
 
 export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): SerializedOrder[] {
@@ -226,7 +261,15 @@ export function getReferralTrafficPercent(triggerVolume?: number, progressToNext
 export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOrder): boolean {
   const { status } = order
 
-  if (status === OrderStatus.CANCELLED || status === OrderStatus.EXPIRED) return false
+  const ignorableStatus =
+    status === OrderStatus.CANCELLED || status === OrderStatus.EXPIRED || status === OrderStatus.PRESIGNATURE_PENDING
+
+  if (ignorableStatus && !order.partiallyFillable) return false
+
+  const executedBuy = (order as EnrichedOrder).executedBuyAmount !== '0'
+  const executedSell = (order as EnrichedOrder).executedSellAmount !== '0'
+
+  if (!executedBuy && !executedSell) return false
 
   const fullAppData = extractFullAppDataFromOrder(order)
   const appCode = decodeAppData(fullAppData)?.appCode
@@ -251,6 +294,15 @@ export function toValidDate(value: string | undefined): Date | null {
 
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+export function toValidTimestamp(value: string | undefined): number {
+  if (!value) {
+    return 0
+  }
+
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime()
 }
 
 function isRecord(value: unknown): value is JsonRecord {
