@@ -69,14 +69,6 @@ export function OrdersTableWidget(): ReactNode {
   const currentPageNumber = ordersTableParams.page
   const pendingOrdersPrices = usePendingOrdersPrices()
 
-  // TODO: Make sure this is accounted for:
-  /*
-  useEffect(() => {
-    // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
-    if (currentTabId !== OrderTabId.HISTORY) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
-  }, [currentTabId])
-  */
-
   const pendingOrdersInCurrentPage = useMemo(() => {
     const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
 

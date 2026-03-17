@@ -27,15 +27,6 @@ export function useResetOrdersTableFilters({
   }, [])
 
   /*
-  // TODO: This was in OrdersTableWidget.container.tsx. Make sure the logic is preserved somewhere:
-
-  useEffect(() => {
-    // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
-    if (currentTabId !== OrderTabId.HISTORY) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
-  }, [currentTabId])
-  */
-
-  /*
   // TODO: Only possible after orders load...
 
   const navigate = useNavigate()
