@@ -142,16 +142,6 @@ export function PendingOrdersUpdater(): null {
   const getSerializedBridgeOrderRef = useRef(getSerializedBridgeOrder)
 
   useEffect(() => {
-    const activePendingIds = new Set(pending.map(({ id }) => id))
-
-    handledFinalOrderIdsRef.current.forEach((id) => {
-      if (!activePendingIds.has(id)) {
-        handledFinalOrderIdsRef.current.delete(id)
-      }
-    })
-  }, [pending])
-
-  useEffect(() => {
     handledFinalOrderIdsRef.current.clear()
   }, [account, chainId])
 

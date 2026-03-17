@@ -236,4 +236,36 @@ describe('PendingOrdersUpdater', () => {
     expect(fetchAndClassifyOrderMock).toHaveBeenCalledTimes(1)
     expect(cancelOrdersBatch).toHaveBeenCalledTimes(1)
   })
+
+  it('does not reprocess the same terminal order if it briefly disappears from pending state and later reappears', async () => {
+    const pendingOrder = createPendingOrder('swap-1', UiOrderType.SWAP)
+    const cancelOrdersBatch = jest.fn()
+    let pendingOrders: TestOrder[] = [pendingOrder]
+
+    useCombinedPendingOrdersMock.mockImplementation(() => pendingOrders)
+    useCancelOrdersBatchMock.mockReturnValue(cancelOrdersBatch)
+    fetchAndClassifyOrderMock.mockResolvedValue({
+      status: 'cancelled',
+      order: { uid: 'swap-1' } as EnrichedOrder,
+    })
+
+    const { rerender } = render(<PendingOrdersUpdater />)
+
+    await waitFor(() => {
+      expect(cancelOrdersBatch).toHaveBeenCalledTimes(1)
+    })
+
+    pendingOrders = []
+    rerender(<PendingOrdersUpdater />)
+
+    pendingOrders = [pendingOrder]
+    rerender(<PendingOrdersUpdater />)
+
+    await act(async () => {
+      jest.advanceTimersByTime(MARKET_OPERATOR_API_POLL_INTERVAL)
+    })
+
+    expect(fetchAndClassifyOrderMock).toHaveBeenCalledTimes(1)
+    expect(cancelOrdersBatch).toHaveBeenCalledTimes(1)
+  })
 })
