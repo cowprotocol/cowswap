@@ -1,6 +1,7 @@
 import { type ReactNode, useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { ButtonIcon, ButtonLabel } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -29,12 +30,12 @@ export function AffiliateTraderHeaderButton(): ReactNode {
 
   return (
     <styledEl.Button type="button" onClick={handleClick} aria-label={t`Refer`}>
-      <styledEl.Icon aria-hidden="true">
+      <ButtonIcon aria-hidden="true">
         <RiUserAddLine size={18} />
-      </styledEl.Icon>
-      <styledEl.Label>
+      </ButtonIcon>
+      <ButtonLabel $hideOnMobile>
         <Trans>Refer</Trans>
-      </styledEl.Label>
+      </ButtonLabel>
     </styledEl.Button>
   )
 }
