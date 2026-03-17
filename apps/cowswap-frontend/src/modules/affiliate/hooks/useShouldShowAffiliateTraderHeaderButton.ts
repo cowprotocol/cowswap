@@ -1,8 +1,8 @@
-import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 export function useShouldShowAffiliateTraderHeaderButton(): boolean {
   const { isAffiliateProgramEnabled } = useFeatureFlags()
-  const theme = useTheme()
 
-  return isAffiliateProgramEnabled && !theme.isWidget
+  return isAffiliateProgramEnabled && !isInjectedWidget()
 }

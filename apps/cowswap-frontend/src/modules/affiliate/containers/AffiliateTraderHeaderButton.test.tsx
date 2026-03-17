@@ -1,5 +1,6 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
@@ -28,7 +29,15 @@ jest.mock('@cowprotocol/common-hooks', () => {
   return {
     ...actualModule,
     useFeatureFlags: jest.fn(),
-    useTheme: jest.fn(),
+  }
+})
+
+jest.mock('@cowprotocol/common-utils', () => {
+  const actualModule = jest.requireActual('@cowprotocol/common-utils')
+
+  return {
+    ...actualModule,
+    isInjectedWidget: jest.fn(),
   }
 })
 
@@ -40,7 +49,7 @@ jest.mock('common/hooks/useNavigate', () => {
 
 const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
-const useThemeMock = useTheme as jest.MockedFunction<typeof useTheme>
+const isInjectedWidgetMock = isInjectedWidget as jest.MockedFunction<typeof isInjectedWidget>
 const useNavigateMock = useNavigate as jest.MockedFunction<typeof useNavigate>
 
 i18n.load('en-US', {})
@@ -69,9 +78,7 @@ describe('AffiliateTraderHeaderButton', () => {
     useFeatureFlagsMock.mockReturnValue({
       isAffiliateProgramEnabled: true,
     } as ReturnType<typeof useFeatureFlags>)
-    useThemeMock.mockReturnValue({
-      isWidget: false,
-    } as ReturnType<typeof useTheme>)
+    isInjectedWidgetMock.mockReturnValue(false)
     useNavigateMock.mockReturnValue(navigate)
   })
 
@@ -92,9 +99,7 @@ describe('AffiliateTraderHeaderButton', () => {
   })
 
   it('does not render in widget mode', () => {
-    useThemeMock.mockReturnValue({
-      isWidget: true,
-    } as ReturnType<typeof useTheme>)
+    isInjectedWidgetMock.mockReturnValue(true)
 
     renderComponent()
 
