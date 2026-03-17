@@ -1,5 +1,6 @@
 export * from './useAsyncEffect'
 export * from './useAvailableChains'
+export * from './useAvailableTargetChains'
 export * from './useBodyScrollbarLocker'
 export * from './useComponentDestroyedRef'
 export * from './useCopyClipboard'
