@@ -1,9 +1,9 @@
 import { ReactNode, useContext, useMemo } from 'react'
 
+import { Currency } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { AutoRow, ButtonConfirmed, ButtonSize, HoverTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'

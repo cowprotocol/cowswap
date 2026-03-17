@@ -1,12 +1,3 @@
-interface TelegramData {
-  auth_date: number
-  first_name: string
-  hash: string
-  id: number
-  photo_url: string
-  username: string
-}
-
 const AUTH_GET_URL = 'https://oauth.telegram.org/auth/get'
 
 /**

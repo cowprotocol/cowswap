@@ -46,4 +46,11 @@ describe('SolversDirectoryTableFilters', () => {
 
     expect(screen.queryByRole('button', { name: 'Clear search' })).toBeNull()
   })
+
+  it('renders status select', () => {
+    renderFilters()
+
+    expect(screen.getAllByRole('combobox')).toHaveLength(3)
+    expect(screen.getByText('All statuses')).not.toBeNull()
+  })
 })

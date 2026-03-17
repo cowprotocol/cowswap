@@ -62,20 +62,11 @@ flowchart TB
 - This does not affect historical payouts
 - It can be bypassed by traders that do not use our frontend
 
-## 5.2) Default params + updates
+## 5.2) Updating the default params
 
 - Maintainers can change the program defaults by updating the CMS environment variables:
   1. Tweak params in `/workspaces/infrastructure/cms/index.ts`
   2. Run `pulumi up` in `/workspaces/infrastructure/cms` (after ssologin, pulumi stack select)
-
-- CMS env defaults:
-  - `AFFILIATE_REWARD_AMOUNT` = `20`
-  - `AFFILIATE_TRIGGER_VOLUME` = `250000`
-  - `AFFILIATE_TIME_CAP_DAYS` = `90`
-  - `AFFILIATE_VOLUME_CAP` = `0` (unlimited)
-  - `AFFILIATE_REVENUE_SPLIT_AFFILIATE_PCT` = `50`
-  - `AFFILIATE_REVENUE_SPLIT_TRADER_PCT` = `50`
-  - `AFFILIATE_REVENUE_SPLIT_DAO_PCT` = `0`
 
 ## 5.3) Special codes
 
@@ -110,6 +101,14 @@ Audit:
 - Dune filters out ineligible traders
 - Low fee swaps do not count towards eligible volume (see `min_fee_bps` in the dune queries)
 - FE can fail to determine eligibility if this all-chain fetch fails or takes longer than 30s; in that case wallet eligibility is marked as unknown and the modal shows a warning message explaining rewards may not apply.
+- Trades from 3rd party integrators (e.g.: Safe App) are simply ignored (do not count towards eligibility; do not disqualify a trader)
+
+## 7.1) Edge cases
+
+- Binding is fixed to the first non-integrator trade with a `referrer_code`.
+- Trades with a different code after binding are ignored for rewards.
+- Integrator trades are ignored both before and after binding: they do not bind code, do not affect new-trader eligibility, and do not add eligible volume.
+- New-trader rule is strict on non-integrator trades: if first non-integrator trade has no code, later coded trades are ineligible.
 
 ## 8) Environments
 

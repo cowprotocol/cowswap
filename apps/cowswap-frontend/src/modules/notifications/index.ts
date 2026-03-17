@@ -1,2 +1,6 @@
 export { NotificationSidebar } from './containers/NotificationSidebar'
 export { NotificationBell } from './containers/NotificationBell'
+export { useSpeechBubbleNotification } from './hooks/useSpeechBubbleNotification'
+export { useHasNotificationSubscription } from './hooks/useHasNotificationSubscription'
+export { useNotificationAlertDismissal } from './hooks/useNotificationAlertDismissal'
+export { useUnreadSidebarNotificationsCount } from './hooks/useUnreadSidebarNotificationsCount'

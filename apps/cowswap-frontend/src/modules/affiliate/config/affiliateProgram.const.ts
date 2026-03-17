@@ -1,6 +1,6 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { isProdLike } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 
@@ -12,12 +12,14 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.AVALANCHE,
   SupportedChainId.POLYGON,
-  SupportedChainId.LENS,
   SupportedChainId.BNB,
   SupportedChainId.LINEA,
   // SupportedChainId.SEPOLIA,
   SupportedChainId.PLASMA,
 ] as const
+
+export const TRADE_ENVS_TO_CHECK: CowEnv[] = ['prod', 'staging']
+export const PAST_ORDERS_SCAN_LIMIT = 10
 
 export const AFFILIATE_TRADER_SAVED_CODES_STORAGE_KEY = 'cowswap:affiliateTraderSavedCodes:v0'
 export const AFFILIATE_TRADER_PAYOUT_CONFIRMATIONS_STORAGE_KEY = 'cowswap:affiliateTraderPayoutConfirmations:v0'
@@ -33,6 +35,8 @@ export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 export const AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS = 6
 export const AFFILIATE_REWARDS_UPDATE_LAG_HOURS = 1
+export const AFFILIATE_REWARDS_UPDATE_INTERVAL_MS = ms`6h`
+export const AFFILIATE_REWARDS_UPDATE_LAG_MS = ms`1h`
 export const AFFILIATE_PAYOUTS_CHAIN_ID = SupportedChainId.MAINNET
 
 export const VERIFICATION_DEBOUNCE_MS = 350
@@ -42,6 +46,8 @@ export const VERIFICATION_RETRY_DELAY_MS = 3_000
 // Timeout applied to referral service requests so UI fails fast on network issues
 export const AFFILIATE_API_TIMEOUT_MS = 10_000
 export const AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS = ms`5m`
+export const AFFILIATE_STATS_REFRESH_INTERVAL_MS = ms`10m`
+export const AFFILIATE_EXPIRY_CHECK_INTERVAL_MS = ms`1m`
 
 export const AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE = true
 

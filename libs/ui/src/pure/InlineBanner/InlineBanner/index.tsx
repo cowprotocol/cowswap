@@ -24,6 +24,7 @@ export function InlineBanner({
   backDropBlur,
   fontSize,
   noBackground,
+  paperBackground,
   breakWord,
   customContent,
 }: InlineBannerProps): ReactNode {
@@ -60,6 +61,7 @@ export function InlineBanner({
       backDropBlur={backDropBlur}
       fontSize={fontSize}
       noBackground={noBackground}
+      paperBackground={paperBackground}
       breakWord={breakWord}
     >
       {customContent ? (
@@ -76,4 +78,5 @@ export function InlineBanner({
   )
 }
 
-export * from '../shared/types'
+export type { CollapsibleInlineBannerProps, InlineBannerProps } from '../shared/types'
+export { BannerOrientation } from '../shared/types'

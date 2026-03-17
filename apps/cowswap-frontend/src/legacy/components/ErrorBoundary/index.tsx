@@ -11,6 +11,7 @@ import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
 
+// eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Page } from 'modules/application/pure/Page'
 
 import { Routes } from 'common/constants/routes'

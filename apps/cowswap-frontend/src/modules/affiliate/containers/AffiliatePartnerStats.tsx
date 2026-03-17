@@ -32,22 +32,32 @@ export function AffiliatePartnerStats(): ReactNode {
       titleTooltip={t`This chart tracks eligible volume left to unlock the next reward.`}
       items={[
         {
+          id: 'volume-left-to-next-reward',
           label: <Trans>Volume left to next {rewardAmountLabel}</Trans>,
           value: formatUsdCompact(stats?.left_to_next_reward),
         },
         {
+          id: 'total-earned',
           label: <Trans>Total earned</Trans>,
           value: formatUsdcCompact(stats?.total_earned),
         },
         {
+          id: 'received',
           label: <Trans>Received</Trans>,
           value: formatUsdcCompact(stats?.paid_out),
         },
         {
+          id: 'volume-referred',
           label: <Trans>Volume referred</Trans>,
           value: formatUsdCompact(stats?.total_volume),
         },
         {
+          id: 'total-referrals',
+          label: <Trans>Total referrals</Trans>,
+          value: formatCompactNumber(stats?.total_traders),
+        },
+        {
+          id: 'active-referrals',
           label: <Trans>Active referrals</Trans>,
           value: formatCompactNumber(stats?.active_traders),
         },

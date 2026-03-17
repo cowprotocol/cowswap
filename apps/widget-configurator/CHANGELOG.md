@@ -1,5 +1,65 @@
 # Changelog
 
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v2.3.0...widget-configurator-v3.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.0
+    * @cowprotocol/common-const bumped to 3.0.0
+    * @cowprotocol/common-hooks bumped to 3.0.0
+    * @cowprotocol/events bumped to 4.0.0
+    * @cowprotocol/types bumped to 4.0.0
+    * @cowprotocol/widget-lib bumped to 2.0.0
+    * @cowprotocol/widget-react bumped to 1.0.10
+
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v2.2.2...widget-configurator-v2.3.0) (2026-03-10)
+
+
+### ✨ Features
+
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.4.0
+    * @cowprotocol/assets bumped to 2.1.0
+    * @cowprotocol/common-const bumped to 2.4.0
+    * @cowprotocol/common-hooks bumped to 2.4.0
+    * @cowprotocol/events bumped to 3.4.0
+    * @cowprotocol/types bumped to 3.4.0
+    * @cowprotocol/widget-lib bumped to 1.3.0
+    * @cowprotocol/widget-react bumped to 1.0.9
+
 ## [2.2.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v2.2.1...widget-configurator-v2.2.2) (2026-02-25)
 
 

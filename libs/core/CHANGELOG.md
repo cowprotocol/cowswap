@@ -1,5 +1,53 @@
 # Changelog
 
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/core-v2.5.0...core-v3.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.0
+
+## [2.5.0](https://github.com/cowprotocol/cowswap/compare/core-v2.4.0...core-v2.5.0) (2026-03-10)
+
+
+### ✨ Features
+
+* add speech bubble notifications ([#7066](https://github.com/cowprotocol/cowswap/issues/7066)) ([e3af630](https://github.com/cowprotocol/cowswap/commit/e3af630db0e0e6a27f4661ecc77c21071721b3a7))
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.4.0
+
 ## [2.4.0](https://github.com/cowprotocol/cowswap/compare/core-v2.3.1...core-v2.4.0) (2026-02-25)
 
 

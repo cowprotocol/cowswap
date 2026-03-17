@@ -5,7 +5,7 @@ import IMAGE_DOC from 'assets/img/doc.svg'
 import IMAGE_ANALYTICS from 'assets/img/pie.svg'
 import { PiMathOperationsFill } from 'react-icons/pi'
 
-import { MenuItemKind, MenuTreeItem } from './types'
+import { MenuItemKind, MenuLink, MenuTreeItem } from './types'
 
 import {
   DOCS_LINK,
@@ -16,71 +16,81 @@ import {
   Routes,
 } from '../../../explorer/const'
 
-export const MAIN_MENU: MenuTreeItem[] = [
-  {
-    title: 'Home',
-    url: Routes.HOME,
-  },
-  {
-    kind: MenuItemKind.DROP_DOWN,
-    title: 'More',
-    items: [
-      {
-        sectionTitle: 'OVERVIEW',
-        links: [
-          {
-            title: 'CoW Swap',
-            url: COWSWAP_LINK,
-            kind: MenuItemKind.EXTERNAL_LINK,
-            iconSVG: IMAGE_COW,
-          },
-          {
-            title: 'CoW Protocol',
-            url: PROTOCOL_LINK,
-            kind: MenuItemKind.EXTERNAL_LINK,
-            iconSVG: IMAGE_COW,
-          },
-          {
-            title: 'Documentation',
-            url: DOCS_LINK,
-            kind: MenuItemKind.EXTERNAL_LINK,
-            iconSVG: IMAGE_DOC,
-          },
-          {
-            title: 'Analytics',
-            url: DUNE_DASHBOARD_LINK,
-            kind: MenuItemKind.EXTERNAL_LINK,
-            iconSVG: IMAGE_ANALYTICS,
-          },
-        ],
-      },
-      {
-        sectionTitle: 'COMMUNITY',
-        links: [
-          {
-            title: 'Discord',
-            url: DISCORD_LINK,
-            iconSVG: IMAGE_DISCORD, // If icon is a <SVG> inline component
-            kind: MenuItemKind.EXTERNAL_LINK,
-          },
-        ],
-      },
-      {
-        sectionTitle: 'OTHER',
-        links: [
+export function getMainMenu(isSolversEnabled = true): MenuTreeItem[] {
+  const otherLinks: MenuLink[] = [
+    ...(isSolversEnabled
+      ? [
           {
             title: 'Solvers',
             url: Routes.SOLVERS,
             iconComponent: PiMathOperationsFill,
             noPrefix: true,
-          },
-          {
-            title: 'AppData',
-            url: Routes.APPDATA,
-            iconSVG: IMAGE_APPDATA,
-          },
-        ],
-      },
-    ],
-  },
-]
+          } satisfies MenuLink,
+        ]
+      : []),
+    {
+      title: 'AppData',
+      url: Routes.APPDATA,
+      iconSVG: IMAGE_APPDATA,
+    },
+  ]
+
+  return [
+    {
+      title: 'Home',
+      url: Routes.HOME,
+    },
+    {
+      kind: MenuItemKind.DROP_DOWN,
+      title: 'More',
+      items: [
+        {
+          sectionTitle: 'OVERVIEW',
+          links: [
+            {
+              title: 'CoW Swap',
+              url: COWSWAP_LINK,
+              kind: MenuItemKind.EXTERNAL_LINK,
+              iconSVG: IMAGE_COW,
+            },
+            {
+              title: 'CoW Protocol',
+              url: PROTOCOL_LINK,
+              kind: MenuItemKind.EXTERNAL_LINK,
+              iconSVG: IMAGE_COW,
+            },
+            {
+              title: 'Documentation',
+              url: DOCS_LINK,
+              kind: MenuItemKind.EXTERNAL_LINK,
+              iconSVG: IMAGE_DOC,
+            },
+            {
+              title: 'Analytics',
+              url: DUNE_DASHBOARD_LINK,
+              kind: MenuItemKind.EXTERNAL_LINK,
+              iconSVG: IMAGE_ANALYTICS,
+            },
+          ],
+        },
+        {
+          sectionTitle: 'COMMUNITY',
+          links: [
+            {
+              title: 'Discord',
+              url: DISCORD_LINK,
+              iconSVG: IMAGE_DISCORD, // If icon is a <SVG> inline component
+              kind: MenuItemKind.EXTERNAL_LINK,
+            },
+          ],
+        },
+        {
+          sectionTitle: 'OTHER',
+          links: otherLinks,
+        },
+      ],
+    },
+  ]
+}
+
+export const MAIN_MENU = getMainMenu()

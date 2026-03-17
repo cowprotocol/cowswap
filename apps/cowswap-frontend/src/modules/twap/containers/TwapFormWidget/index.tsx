@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
@@ -15,7 +15,6 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -65,7 +64,6 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { updateState } = useTradeState()
-  const tradeQuote = useTradeQuote()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
   const verification = useFallbackHandlerVerification()
@@ -150,13 +148,6 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
       }
     }
   }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification, cowAnalytics])
-
-  // Reset output amount when quote params are changed
-  useLayoutEffect(() => {
-    if (tradeQuote.hasParamsChanged) {
-      updateState?.({ outputCurrencyAmount: null })
-    }
-  }, [tradeQuote.hasParamsChanged, updateState])
 
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState

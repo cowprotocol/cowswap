@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/types",
-  "version": "3.3.2",
+  "version": "4.0.0",
   "description": "CoW Swap types",
   "type": "commonjs",
   "main": "./src/index.ts",
@@ -10,12 +10,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.3.8",
-    "@cowprotocol/sdk-bridging": "2.0.0",
-    "@uniswap/sdk-core": "^3.0.1",
+    "@cowprotocol/cow-sdk": "8.0.0",
+    "@cowprotocol/sdk-bridging": "3.0.0",
+    "@cowprotocol/currency": "workspace:*",
     "eventemitter3": "^4.0.0"
-  },
-  "devDependencies": {
-    "@web3-react/types": "^8.2.3"
   }
 }

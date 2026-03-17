@@ -37,18 +37,18 @@ import {
 } from '../state/atoms'
 import { OrderProgressBarProps, OrderProgressBarState } from '../types'
 
-type UseOrderProgressBarPropsParams = {
-  activityDerivedState: ActivityDerivedState | null
-  chainId: SupportedChainId
-  isBridgingTrade: boolean
-}
-
 export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
   showCancellationModal: Command | null
   solverCompetition?: SolverCompetition[]
   totalSolvers: number
   swapAndBridgeContext?: SwapAndBridgeContext
+}
+
+type UseOrderProgressBarPropsParams = {
+  activityDerivedState: ActivityDerivedState | null
+  chainId: SupportedChainId
+  isBridgingTrade: boolean
 }
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
@@ -109,6 +109,30 @@ export function useOrderProgressBarProps(
   return useMemo(() => ({ props, activityDerivedState }), [props, activityDerivedState])
 }
 
+/**
+ * Returns whether to pool backend's /status endpoint for given order
+ *
+ * @param order
+ * @param apiSolverCompetition
+ * @param disableProgressBar
+ */
+function getDoNotQueryStatusEndpoint(
+  order: Order | undefined,
+  apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
+  disableProgressBar: boolean,
+): boolean {
+  return (
+    !!(
+      (
+        order && // when the order exists
+        getIsFinalizedOrder(order) && // and it's already in a final state
+        (order.status !== OrderStatus.FULFILLED || // when in a state other than fulfilled (cancelled, expired)
+          apiSolverCompetition)
+      ) // or the solver competition data is present
+    ) || disableProgressBar // or the progress bar is completely disabled
+  )
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
@@ -155,11 +179,31 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
-  const winnerSolver = useMemo(
-    () => (apiSolverCompetition?.[0] ? mergeSolverData(apiSolverCompetition[0], solversInfo) : undefined),
-    [apiSolverCompetition, solversInfo],
+  const solverCompetition = useMemo(() => {
+    const solversMap = apiSolverCompetition?.reduce(
+      (acc, entry) => {
+        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
+        if (!entry || !entry.solver || !entry.executedAmounts) {
+          return acc
+        }
+        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
+        acc[entry.solver] = mergeSolverData(entry, solversInfo)
+        return acc
+      },
+      {} as Record<string, SolverCompetition>,
+    )
+
+    return (
+      Object.values(solversMap || {})
+        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
+        .reverse()
+    )
+  }, [apiSolverCompetition, solversInfo])
+  const { swapAndBridgeContext } = useSwapAndBridgeContext(
+    chainId,
+    isBridgingTrade ? order : undefined,
+    solverCompetition?.[0],
   )
-  const { swapAndBridgeContext } = useSwapAndBridgeContext(chainId, isBridgingTrade ? order : undefined, winnerSolver)
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
 
   // Local updaters of the respective atom
@@ -188,27 +232,6 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     isUnfillable || isCancelled || isCancelling || isExpired,
   )
 
-  const solverCompetition = useMemo(() => {
-    const solversMap = apiSolverCompetition?.reduce(
-      (acc, entry) => {
-        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
-        if (!entry || !entry.solver || !entry.executedAmounts) {
-          return acc
-        }
-        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
-        acc[entry.solver] = mergeSolverData(entry, solversInfo)
-        return acc
-      },
-      {} as Record<string, SolverCompetition>,
-    )
-
-    return (
-      Object.values(solversMap || {})
-        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
-        .reverse()
-    )
-  }, [apiSolverCompetition, solversInfo])
-
   return useMemo(() => {
     if (disableProgressBar) {
       return undefined
@@ -233,176 +256,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   ])
 }
 
-/**
- * Returns whether to pool backend's /status endpoint for given order
- *
- * @param order
- * @param apiSolverCompetition
- * @param disableProgressBar
- */
-function getDoNotQueryStatusEndpoint(
-  order: Order | undefined,
-  apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
-  disableProgressBar: boolean,
-): boolean {
-  return (
-    !!(
-      (
-        order && // when the order exists
-        getIsFinalizedOrder(order) && // and it's already in a final state
-        (order.status !== OrderStatus.FULFILLED || // when in a state other than fulfilled (cancelled, expired)
-          apiSolverCompetition)
-      ) // or the solver competition data is present
-    ) || disableProgressBar // or the progress bar is completely disabled
-  )
-}
-
 const DEFAULT_STATE = {}
-
-function useGetExecutingOrderState(orderId?: string): OrderProgressBarState {
-  const fullState = useAtomValue(ordersProgressBarStateAtom)
-  const singleState = orderId ? fullState[orderId] : undefined
-
-  return useMemo(() => singleState || DEFAULT_STATE, [singleState])
-}
-
-function useSetExecutingOrderCountdownCallback(): (orderId: string, value: number | null) => void {
-  const setAtom = useSetAtom(updateOrderProgressBarCountdown)
-
-  return useCallback((orderId: string, value: number | null) => setAtom({ orderId, value }), [setAtom])
-}
-
-function useSetExecutingOrderProgressBarStepNameCallback(): (orderId: string, value: OrderProgressBarStepName) => void {
-  const setValue = useSetAtom(updateOrderProgressBarStepName)
-
-  return useCallback(
-    (orderId: string, value: OrderProgressBarStepName) => {
-      setValue({ orderId, value })
-    },
-    [setValue],
-  )
-}
-
-// local updaters
-
-function useCountdownStartUpdater(
-  orderId: string | undefined,
-  countdown: OrderProgressBarState['countdown'],
-  backendApiStatus: OrderProgressBarState['backendApiStatus'],
-  shouldDisableCountdown: boolean,
-): void {
-  const setCountdown = useSetExecutingOrderCountdownCallback()
-
-  useEffect(() => {
-    if (!orderId) {
-      return
-    }
-
-    if (shouldDisableCountdown) {
-      // Loose `!= null` on purpose: both null and undefined should reset the countdown, but 0 must stay; strict `!== null` would let undefined slip through
-      if (countdown != null) {
-        setCountdown(orderId, null)
-      }
-      return
-    }
-
-    // Start countdown immediately when backend becomes active to reflect real protocol timing
-    // The solver competition genuinely starts when backend is active, regardless of UI delays
-    if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
-      setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
-    } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown != null) {
-      // Every time backend status is not `active` and countdown is set, reset the countdown
-      setCountdown(orderId, null)
-    }
-  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown])
-}
-
-function useCancellingOrderUpdater(orderId: string | undefined, isCancelling: boolean): void {
-  const setCancellationTriggered = useSetAtom(setOrderProgressBarCancellationTriggered)
-
-  useEffect(() => {
-    if (!orderId || !isCancelling) {
-      return
-    }
-
-    setCancellationTriggered(orderId)
-  }, [orderId, isCancelling, setCancellationTriggered])
-}
-
-// TODO: Break down this large function into smaller functions
-function useProgressBarStepNameUpdater(
-  orderId: string | undefined,
-  isUnfillable: boolean,
-  isCancelled: boolean,
-  isExpired: boolean,
-  isCancelling: boolean,
-  cancellationTriggered: undefined | true,
-  isConfirmed: boolean,
-  countdown: OrderProgressBarState['countdown'],
-  backendApiStatus: OrderProgressBarState['backendApiStatus'],
-  previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
-  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
-  previousStepName: OrderProgressBarState['previousStepName'],
-  bridgingStatus: SwapAndBridgeStatus | undefined,
-  isBridgingTrade: boolean,
-): void {
-  const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
-
-  const stepName = getProgressBarStepName(
-    isUnfillable,
-    isCancelled,
-    isExpired,
-    isCancelling,
-    cancellationTriggered,
-    isConfirmed,
-    countdown,
-    backendApiStatus,
-    previousBackendApiStatus,
-    previousStepName,
-    bridgingStatus,
-    isBridgingTrade,
-  )
-
-  // Update state with new step name
-  useEffect(() => {
-    if (!orderId) {
-      return
-    }
-
-    const ensuredOrderId = orderId
-
-    function updateStepName(name: OrderProgressBarStepName): void {
-      setProgressBarStepName(ensuredOrderId, name || DEFAULT_STEP_NAME)
-    }
-
-    let timer: NodeJS.Timeout | undefined
-
-    const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
-
-    if (
-      lastTimeChangedSteps === undefined ||
-      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === OrderProgressBarStepName.FINISHED ||
-      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
-      stepName === OrderProgressBarStepName.CANCELLED ||
-      stepName === OrderProgressBarStepName.EXPIRED
-    ) {
-      updateStepName(stepName)
-
-      // schedule update for temporary steps
-      if (stepName === OrderProgressBarStepName.SUBMISSION_FAILED) {
-        timer = setTimeout(() => updateStepName(OrderProgressBarStepName.SOLVING), MINIMUM_STEP_DISPLAY_TIME)
-      }
-    } else {
-      // Delay if it was updated less than MINIMUM_STEP_DISPLAY_TIME ago
-      timer = setTimeout(() => updateStepName(stepName), MINIMUM_STEP_DISPLAY_TIME - timeSinceLastChange)
-    }
-
-    return () => {
-      if (timer) clearTimeout(timer)
-    }
-  }, [orderId, stepName, lastTimeChangedSteps, setProgressBarStepName])
-}
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
@@ -496,6 +350,151 @@ export function getProgressBarStepName(
   return OrderProgressBarStepName.INITIAL
 }
 
+function useCancellingOrderUpdater(orderId: string | undefined, isCancelling: boolean): void {
+  const setCancellationTriggered = useSetAtom(setOrderProgressBarCancellationTriggered)
+
+  useEffect(() => {
+    if (!orderId || !isCancelling) {
+      return
+    }
+
+    setCancellationTriggered(orderId)
+  }, [orderId, isCancelling, setCancellationTriggered])
+}
+
+function useCountdownStartUpdater(
+  orderId: string | undefined,
+  countdown: OrderProgressBarState['countdown'],
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  shouldDisableCountdown: boolean,
+): void {
+  const setCountdown = useSetExecutingOrderCountdownCallback()
+
+  useEffect(() => {
+    if (!orderId) {
+      return
+    }
+
+    if (shouldDisableCountdown) {
+      // Loose `!= null` on purpose: both null and undefined should reset the countdown, but 0 must stay; strict `!== null` would let undefined slip through
+      if (countdown != null) {
+        setCountdown(orderId, null)
+      }
+      return
+    }
+
+    // Start countdown immediately when backend becomes active to reflect real protocol timing
+    // The solver competition genuinely starts when backend is active, regardless of UI delays
+    if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
+      setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
+    } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown != null) {
+      // Every time backend status is not `active` and countdown is set, reset the countdown
+      setCountdown(orderId, null)
+    }
+  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown])
+}
+
+// local updaters
+
+function useGetExecutingOrderState(orderId?: string): OrderProgressBarState {
+  const fullState = useAtomValue(ordersProgressBarStateAtom)
+  const singleState = orderId ? fullState[orderId] : undefined
+
+  return useMemo(() => singleState || DEFAULT_STATE, [singleState])
+}
+
+// TODO: Break down this large function into smaller functions
+function useProgressBarStepNameUpdater(
+  orderId: string | undefined,
+  isUnfillable: boolean,
+  isCancelled: boolean,
+  isExpired: boolean,
+  isCancelling: boolean,
+  cancellationTriggered: undefined | true,
+  isConfirmed: boolean,
+  countdown: OrderProgressBarState['countdown'],
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
+  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
+  previousStepName: OrderProgressBarState['previousStepName'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
+  isBridgingTrade: boolean,
+): void {
+  const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
+
+  const stepName = getProgressBarStepName(
+    isUnfillable,
+    isCancelled,
+    isExpired,
+    isCancelling,
+    cancellationTriggered,
+    isConfirmed,
+    countdown,
+    backendApiStatus,
+    previousBackendApiStatus,
+    previousStepName,
+    bridgingStatus,
+    isBridgingTrade,
+  )
+
+  // Update state with new step name
+  useEffect(() => {
+    if (!orderId) {
+      return
+    }
+
+    const ensuredOrderId = orderId
+
+    function updateStepName(name: OrderProgressBarStepName): void {
+      setProgressBarStepName(ensuredOrderId, name || DEFAULT_STEP_NAME)
+    }
+
+    let timer: NodeJS.Timeout | undefined
+
+    const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
+
+    if (
+      lastTimeChangedSteps === undefined ||
+      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+      stepName === OrderProgressBarStepName.FINISHED ||
+      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
+      stepName === OrderProgressBarStepName.CANCELLED ||
+      stepName === OrderProgressBarStepName.EXPIRED
+    ) {
+      updateStepName(stepName)
+
+      // schedule update for temporary steps
+      if (stepName === OrderProgressBarStepName.SUBMISSION_FAILED) {
+        timer = setTimeout(() => updateStepName(OrderProgressBarStepName.SOLVING), MINIMUM_STEP_DISPLAY_TIME)
+      }
+    } else {
+      // Delay if it was updated less than MINIMUM_STEP_DISPLAY_TIME ago
+      timer = setTimeout(() => updateStepName(stepName), MINIMUM_STEP_DISPLAY_TIME - timeSinceLastChange)
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer)
+    }
+  }, [orderId, stepName, lastTimeChangedSteps, setProgressBarStepName])
+}
+
+function useSetExecutingOrderCountdownCallback(): (orderId: string, value: number | null) => void {
+  const setAtom = useSetAtom(updateOrderProgressBarCountdown)
+
+  return useCallback((orderId: string, value: number | null) => setAtom({ orderId, value }), [setAtom])
+}
+
+function useSetExecutingOrderProgressBarStepNameCallback(): (orderId: string, value: OrderProgressBarStepName) => void {
+  const setValue = useSetAtom(updateOrderProgressBarStepName)
+
+  return useCallback(
+    (orderId: string, value: OrderProgressBarStepName) => {
+      setValue({ orderId, value })
+    },
+    [setValue],
+  )
+}
+
 const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type, OrderProgressBarStepName> = {
   [CompetitionOrderStatus.type.SCHEDULED]: OrderProgressBarStepName.INITIAL,
   [CompetitionOrderStatus.type.OPEN]: OrderProgressBarStepName.INITIAL,
@@ -542,18 +541,6 @@ const POOLING_SWR_OPTIONS = {
   refreshInterval: ms`1s`,
 }
 
-function usePendingOrderStatus(
-  chainId: SupportedChainId,
-  orderId: string | undefined,
-  doNotQuery?: boolean,
-): CompetitionOrderStatus | undefined {
-  return useSWR(
-    chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
-    async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
-    doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS,
-  ).data
-}
-
 /**
  * Merges solverCompetition data returned by the orderbook /status endpoint with
  * solver info fetched from CMS
@@ -571,4 +558,16 @@ function mergeSolverData(
   const solverInfo = solversInfo[solverId.toLowerCase()]
 
   return { ...solverCompetition, ...solverInfo, solverId, solver: solverId }
+}
+
+function usePendingOrderStatus(
+  chainId: SupportedChainId,
+  orderId: string | undefined,
+  doNotQuery?: boolean,
+): CompetitionOrderStatus | undefined {
+  return useSWR(
+    chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
+    async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
+    doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS,
+  ).data
 }

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { AtomsAndUnits, CowWidgetEvents, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
@@ -42,6 +42,27 @@ export function useNotifyWidgetTrade() {
   }, [state, amountsToSign])
 }
 
+function currencyAmountToAtomsAndUnits(currency: CurrencyAmount<Currency> | null): AtomsAndUnits | undefined {
+  if (!currency) return undefined
+
+  return {
+    atoms: BigInt(currency.quotient.toString()),
+    units: currency.toExact(),
+  }
+}
+
+function currencyToTokenInfo(currency: Currency | null): TokenInfo | undefined {
+  if (!currency) return undefined
+
+  return {
+    address: getCurrencyAddress(currency),
+    chainId: currency.chainId,
+    name: currency.name || '',
+    decimals: currency.decimals,
+    symbol: currency.symbol || '',
+  }
+}
+
 function getTradeParamsEventPayload(
   tradeType: TradeType,
   state: TradeDerivedState,
@@ -61,26 +82,5 @@ function getTradeParamsEventPayload(
     minimumReceiveBuyAmount: currencyAmountToAtomsAndUnits(minimumReceiveBuyAmount),
     recipient: state.recipient || undefined,
     orderKind: state.orderKind,
-  }
-}
-
-function currencyToTokenInfo(currency: Currency | null): TokenInfo | undefined {
-  if (!currency) return undefined
-
-  return {
-    address: getCurrencyAddress(currency),
-    chainId: currency.chainId,
-    name: currency.name || '',
-    decimals: currency.decimals,
-    symbol: currency.symbol || '',
-  }
-}
-
-function currencyAmountToAtomsAndUnits(currency: CurrencyAmount<Currency> | null): AtomsAndUnits | undefined {
-  if (!currency) return undefined
-
-  return {
-    atoms: BigInt(currency.quotient.toString()),
-    units: currency.toExact(),
   }
 }

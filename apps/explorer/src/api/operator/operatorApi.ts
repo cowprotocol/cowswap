@@ -1,9 +1,46 @@
 import { orderBookSDK } from 'cowSdk'
 
 import { backoffOpts } from './operator.constants'
-import { GetOrderParams, GetTxOrdersParams, RawOrder, RawTrade, GetTradesParams } from './types'
+import {
+  GetOrderParams,
+  GetTxOrdersParams,
+  RawOrder,
+  RawTrade,
+  GetTradesParams,
+  GetOrderCompetitionStatusParams,
+  GetSolverCompetitionByTxHashParams,
+  OrderCompetitionStatus,
+  SolverCompetitionResponse,
+} from './types'
 
 export { getAccountOrders } from './accountOrderUtils'
+
+/** Thrown when a competition endpoint returns an empty value so Promise.any can fallback to the other env. */
+class EmptyCompetitionResultError extends Error {
+  override readonly name = 'EmptyCompetitionResultError'
+}
+
+function ensureOrderCompetitionStatus(
+  status: OrderCompetitionStatus | undefined,
+  contextLabel: string,
+): OrderCompetitionStatus {
+  if (status == null) {
+    throw new EmptyCompetitionResultError(`${contextLabel}: empty order competition status`)
+  }
+
+  return status
+}
+
+function ensureSolverCompetition(
+  competition: SolverCompetitionResponse | undefined,
+  contextLabel: string,
+): SolverCompetitionResponse {
+  if (!competition?.solutions?.length) {
+    throw new EmptyCompetitionResultError(`${contextLabel}: empty solver competition`)
+  }
+
+  return competition
+}
 
 /**
  * Gets a single order by id.
@@ -115,4 +152,74 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const trades = await Promise.all([tradesPromise, tradesPromiseBarn])
 
   return [...trades[0], ...trades[1]]
+}
+
+/**
+ * Gets order competition status from prod and staging (barn).
+ *
+ * Uses `Promise.any`, so the first fulfilled response wins.
+ * Returns `undefined` if neither environment has status data.
+ */
+export async function getOrderCompetitionStatus(
+  params: GetOrderCompetitionStatusParams,
+): Promise<OrderCompetitionStatus | undefined> {
+  const { networkId, orderId } = params
+  const context = { chainId: networkId, backoffOpts }
+
+  const statusPromise = orderBookSDK
+    .getOrderCompetitionStatus(orderId, context)
+    .then((result) => ensureOrderCompetitionStatus(result, 'PROD'))
+    .catch((error) => {
+      if (!(error instanceof EmptyCompetitionResultError)) {
+        console.error('[getOrderCompetitionStatus] Error getting PROD order status', orderId, networkId, error)
+      }
+      throw error
+    })
+
+  const statusPromiseBarn = orderBookSDK
+    .getOrderCompetitionStatus(orderId, { ...context, env: 'staging' })
+    .then((result) => ensureOrderCompetitionStatus(result, 'BARN'))
+    .catch((error) => {
+      if (!(error instanceof EmptyCompetitionResultError)) {
+        console.error('[getOrderCompetitionStatus] Error getting BARN order status', orderId, networkId, error)
+      }
+      throw error
+    })
+
+  return Promise.any([statusPromise, statusPromiseBarn]).catch(() => undefined)
+}
+
+/**
+ * Gets solver competition data by transaction hash from prod and staging (barn).
+ *
+ * Uses `Promise.any`, so the first fulfilled response wins.
+ * Returns `undefined` if neither environment has competition data.
+ */
+export async function getSolverCompetitionByTxHash(
+  params: GetSolverCompetitionByTxHashParams,
+): Promise<SolverCompetitionResponse | undefined> {
+  const { networkId, txHash } = params
+  const context = { chainId: networkId, backoffOpts }
+
+  const prodPromise = orderBookSDK
+    .getSolverCompetition(txHash, context)
+    .then((result) => ensureSolverCompetition(result, 'PROD'))
+    .catch((error) => {
+      if (!(error instanceof EmptyCompetitionResultError)) {
+        console.error('[getSolverCompetitionByTxHash] Error getting PROD competition', txHash, networkId, error)
+      }
+      throw error
+    })
+
+  const barnPromise = orderBookSDK
+    .getSolverCompetition(txHash, { ...context, env: 'staging' })
+    .then((result) => ensureSolverCompetition(result, 'BARN'))
+    .catch((error) => {
+      if (!(error instanceof EmptyCompetitionResultError)) {
+        console.error('[getSolverCompetitionByTxHash] Error getting BARN competition', txHash, networkId, error)
+      }
+      throw error
+    })
+
+  return Promise.any([prodPromise, barnPromise]).catch(() => undefined)
 }

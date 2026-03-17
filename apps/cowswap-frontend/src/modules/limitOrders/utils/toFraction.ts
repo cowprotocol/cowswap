@@ -1,4 +1,4 @@
-import { Fraction } from '@uniswap/sdk-core'
+import { Fraction } from '@cowprotocol/currency'
 
 import F from 'fraction.js'
 

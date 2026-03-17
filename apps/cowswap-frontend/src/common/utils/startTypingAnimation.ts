@@ -1,8 +1,5 @@
-import type { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
-import { msg } from '@lingui/core/macro'
-
-export const TYPING_MESSAGE = msg`Mooo, we're hiring!`
 const TYPING_INTERVAL_MS = 140
 
 interface StartTypingParams {
