@@ -30,9 +30,9 @@ function getButtonStatusStyles(status?: StatusColorVariant): ReturnType<typeof c
     background: var(${colorEnums.bg});
     color: var(${colorEnums.text});
 
-    &:focus,
-    &:hover,
-    &:active {
+    &:not(:disabled):focus,
+    &:not(:disabled):hover,
+    &:not(:disabled):active {
       background: var(${colorEnums.text});
       color: var(${UI.COLOR_PAPER});
     }
