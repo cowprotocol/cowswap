@@ -54,6 +54,28 @@ function useWalletInfo(): WalletInfo {
   )
 }
 
+function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
+  const { ENSName: ensName } = useENSName(account ?? undefined)
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const { walletName, icon } = useWalletMetaData(standaloneMode)
+  const isSafeApp = useIsSafeApp()
+
+  return useMemo(() => {
+    return {
+      isSmartContractWallet,
+      walletName,
+      icon,
+      ensName: ensName || undefined,
+      isSupportedWallet: checkIsSupportedWallet(walletName),
+
+      // TODO: For now, all SC wallets use pre-sign instead of offchain signing
+      // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
+      allowsOffchainSigning: !isSmartContractWallet,
+      isSafeApp,
+    }
+  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
+}
+
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
@@ -130,28 +152,6 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   }, [chainId, account, safeAppsSdk])
 
   return safeInfo
-}
-
-function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
-  const { ENSName: ensName } = useENSName(account ?? undefined)
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData(standaloneMode)
-  const isSafeApp = useIsSafeApp()
-
-  return useMemo(() => {
-    return {
-      isSmartContractWallet,
-      walletName,
-      icon,
-      ensName: ensName || undefined,
-      isSupportedWallet: checkIsSupportedWallet(walletName),
-
-      // TODO: For now, all SC wallets use pre-sign instead of offchain signing
-      // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
-      allowsOffchainSigning: !isSmartContractWallet,
-      isSafeApp,
-    }
-  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
 interface WalletUpdaterProps {
