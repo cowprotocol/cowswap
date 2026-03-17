@@ -62,17 +62,7 @@ export function TransactionSlippageInput(): JSX.Element {
       }
     }
 
-    footerSlot = message ? (
-      <SettingsFeedback
-        variant={slippageError ? 'error' : 'warning'}
-        message={message}
-        tooltip={
-          slippageError
-            ? null
-            : t`Enter slippage percentage between ${slippageWarningParams.min}% and ${slippageWarningParams.max}%.`
-        }
-      />
-    ) : null
+    footerSlot = message ? <SettingsFeedback variant={slippageError ? 'error' : 'warning'} message={message} /> : null
   }
 
   return (

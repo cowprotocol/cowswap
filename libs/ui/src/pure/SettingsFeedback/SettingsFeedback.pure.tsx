@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode } from 'react'
 
-import { HelpCircle, CheckCircle, AlertCircle, XCircle } from 'react-feather'
+import { HelpCircle, CheckCircle, AlertTriangle, XOctagon } from 'react-feather'
 
 import * as styledEl from './SettingsFeedback.styled'
 
@@ -10,8 +10,8 @@ export type SettingsFeedbackVariant = 'error' | 'warning' | 'success' | 'info'
 
 const SETTINGS_FEEDBACK_VARIANT_ICONS = {
   success: <CheckCircle size={16} />,
-  warning: <AlertCircle size={16} />,
-  error: <XCircle size={16} />,
+  warning: <AlertTriangle size={16} />,
+  error: <XOctagon size={16} />,
   info: <HelpCircle size={16} />,
 } as const satisfies Record<SettingsFeedbackVariant, ReactNode>
 

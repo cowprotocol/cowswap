@@ -66,13 +66,19 @@ export function getNativeSlippageTooltip(symbols: (string | undefined)[] | undef
   )
 }
 
-interface GetNonNativeSlippageTooltipParams {
+export interface SlippageWarningParams {
+  tooHigh: boolean
+  tooLow: boolean
+  min: number
+  max: number
+  lowSlippageBound: number
+  highSlippageBound: number
+}
+
+export interface GetNonNativeSlippageTooltipParams {
   isDynamic?: boolean
   isSettingsModal?: boolean
-  slippageWarningParams?: null | {
-    tooLow?: boolean
-    tooHigh?: boolean
-  }
+  slippageWarningParams?: null | SlippageWarningParams
 }
 
 export function getNonNativeSlippageTooltip({
@@ -81,6 +87,8 @@ export function getNonNativeSlippageTooltip({
   slippageWarningParams,
 }: GetNonNativeSlippageTooltipParams = {}): ReactNode {
   if (isDynamic) {
+    const amountRange = slippageWarningParams ? ` (${slippageWarningParams?.min} - ${slippageWarningParams?.max}%)` : ''
+
     return (
       <SimpleStyledText>
         <p>
@@ -94,7 +102,8 @@ export function getNonNativeSlippageTooltip({
           <>
             <p>
               <Trans>
-                To override this, enter your desired slippage amount, but this may result in slower execution.
+                To override this, enter your desired slippage amount{amountRange}, but this may result in slower
+                execution.
               </Trans>
             </p>
             <p>
@@ -110,17 +119,39 @@ export function getNonNativeSlippageTooltip({
     )
   }
 
-  let manualSlippageMessage = <Trans>Manual slippage set.</Trans>
+  let manualSlippageDescription: ReactNode | null = null
 
-  if (slippageWarningParams?.tooLow) {
-    manualSlippageMessage = <Trans>With low slippage, your transaction may expire.</Trans>
-  } else if (slippageWarningParams?.tooHigh) {
-    manualSlippageMessage = <Trans>With high slippage, you may not get the best price.</Trans>
+  if (slippageWarningParams) {
+    manualSlippageDescription = (
+      <ul>
+        <li>
+          <Trans>
+            {slippageWarningParams.min.toFixed(2)} - {(slippageWarningParams.lowSlippageBound - 0.01).toFixed(2)}%: Low
+            slippage. Your transaction may expire.
+          </Trans>
+        </li>
+        <li>
+          <Trans>
+            {slippageWarningParams.lowSlippageBound.toFixed(2)} - {slippageWarningParams.highSlippageBound.toFixed(2)}%:
+            Recommended slippage tolerance.
+          </Trans>
+        </li>
+        <li>
+          <Trans>
+            {(slippageWarningParams.highSlippageBound + 0.01).toFixed(2)} - {slippageWarningParams.max.toFixed(2)}%:
+            High slippage. You may not get the best price.
+          </Trans>
+        </li>
+      </ul>
+    )
   }
 
   return (
     <SimpleStyledText>
-      <p>{manualSlippageMessage}</p>
+      <p>
+        <Trans>Custom slippage amount set{slippageWarningParams ? ':' : '.'}</Trans>
+      </p>
+      {manualSlippageDescription}
       {isSettingsModal ? (
         <>
           <p>

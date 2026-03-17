@@ -12,7 +12,7 @@ import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 import { slippageBpsToPercent, useSlippageConfig, useTradeSlippage } from 'modules/tradeSlippage'
 
-import { SlippageWarningParams } from './types'
+import { SlippageWarningParams } from 'common/utils/tradeSettingsTooltips'
 
 const SMART_SLIPPAGE_THRESHOLD = 20 // 20%
 const PERCENT_DENOMINATOR = 10_000
@@ -56,6 +56,8 @@ export function useSlippageWarningParams(isSlippageModified: boolean): SlippageW
       tooLow,
       min: slippageBpsToPercent(min),
       max: slippageBpsToPercent(max),
+      lowSlippageBound: slippageBpsToPercent(lowSlippageBound),
+      highSlippageBound: slippageBpsToPercent(highSlippageBound),
     }
   }, [isSlippageModified, smartSlippage, swapSlippage, lowSlippageBound, highSlippageBound, min, max])
 }
