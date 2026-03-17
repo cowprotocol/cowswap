@@ -4638,6 +4638,10 @@ msgstr "CoW Swap has dynamically selected this slippage tolerance, accounting fo
 msgid "Search network"
 msgstr "Search network"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
+msgid "Updates daily at 02:00 UTC"
+msgstr "Updates daily at 02:00 UTC"
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
 msgstr "CowSwap no connection"
@@ -5911,8 +5915,8 @@ msgid "Sandwich icon"
 msgstr "Sandwich icon"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
-msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
-msgstr "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
+#~ msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
+#~ msgstr "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Network compatibility error"

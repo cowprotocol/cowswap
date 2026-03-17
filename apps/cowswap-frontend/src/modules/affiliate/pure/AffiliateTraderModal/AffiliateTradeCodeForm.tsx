@@ -67,7 +67,8 @@ export function AffiliateTradeCodeForm({
 }: AffiliateTradeCodeFormProps): ReactNode {
   const referralCodeInputId = useId()
   const canSubmit =
-    !isLoading && (!requiresPayoutConfirmation || payoutConfirmed) && !!formatRefCode(String(inputProps.value))
+    !account ||
+    (!isLoading && (!requiresPayoutConfirmation || payoutConfirmed) && !!formatRefCode(String(inputProps.value)))
 
   return (
     <FormGroup
