@@ -1,8 +1,11 @@
-# Harness Hardening Roadmap
+---
+author: agents
+status: active roadmap
+last_reviewed: 2026-03-05
+source_of_truth_scope: next steps to move from partial checks to fully enforced contributor harnesses
+---
 
-Last reviewed: 2026-03-05
-Owner: frontend platform maintainers
-Status: active roadmap
+# Harness Hardening Roadmap
 
 Purpose: track the next steps to move from "documented guidance + partial checks" to "fully enforced, measurable, and continuously maintained" contributor harnesses.
 

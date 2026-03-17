@@ -1,7 +1,13 @@
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+source_of_truth_scope: cowswap-frontend-specific architecture and module overrides
+---
+
 # cowswap-frontend AGENTS.md
 
 Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
-This file: cowswap-frontend-specific architecture and module overrides.
 
 ## App commands
 - Start dev server: `pnpm start` or `pnpm start:cowswap`

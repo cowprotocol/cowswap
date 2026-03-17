@@ -23,6 +23,7 @@ const REQUIRED_DOC_PATHS = [
   'docs/STATE_MANAGEMENT.md',
   'docs/QUALITY.md',
   'docs/HARNESS_HARDENING.md',
+  'docs/architecture-overview.md',
 ]
 const REQUIRED_PLAN_PATHS = ['.plans/active', '.plans/completed', '.plans/debt']
 
@@ -34,6 +35,32 @@ function assertExists(relPath, description = relPath) {
   const fullPath = path.join(repoRoot, relPath)
   if (!fs.existsSync(fullPath)) {
     errors.push(`Missing ${description}: ${relPath}`)
+  }
+}
+
+function extractFrontmatter(markdown) {
+  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+  if (!match) return null
+  const fields = {}
+  for (const line of match[1].split(/\r?\n/)) {
+    const idx = line.indexOf(':')
+    if (idx > 0) {
+      fields[line.slice(0, idx).trim()] = line.slice(idx + 1).trim()
+    }
+  }
+  return fields
+}
+
+function checkFrontmatter(relPath, content, requiredFields) {
+  const fm = extractFrontmatter(content)
+  if (!fm) {
+    errors.push(`${relPath} must have YAML frontmatter (---\\n...\\n---)`)
+    return
+  }
+  for (const field of requiredFields) {
+    if (!fm[field]) {
+      errors.push(`${relPath} frontmatter missing required field: ${field}`)
+    }
   }
 }
 
@@ -67,6 +94,8 @@ function checkRootAgents() {
       `Root AGENTS.md too large (${lineCount} lines). Keep <= ${ROOT_MAX_LINES} lines to preserve TOC behavior.`,
     )
   }
+
+  checkFrontmatter('AGENTS.md', content, ['author', 'status', 'last_reviewed', 'source_of_truth_scope'])
 
   for (const heading of REQUIRED_ROOT_HEADINGS) {
     if (!content.includes(heading)) {
@@ -104,6 +133,8 @@ function checkAppAgents() {
     const absPath = path.join(repoRoot, relativePath)
     const content = readFile(absPath)
 
+    checkFrontmatter(relativePath, content, ['author', 'status', 'last_reviewed'])
+
     if (!content.includes('Root rules: [`../../AGENTS.md`](../../AGENTS.md)')) {
       errors.push(
         `${relativePath} must include explicit root reference: Root rules: [\`../../AGENTS.md\`](../../AGENTS.md)`,
@@ -129,12 +160,17 @@ function checkDocsAndPlans() {
     assertExists(relPath, 'required plans directory')
   }
 
+  for (const relPath of REQUIRED_DOC_PATHS) {
+    const absPath = path.join(repoRoot, relPath)
+    if (fs.existsSync(absPath)) {
+      const content = readFile(absPath)
+      checkFrontmatter(relPath, content, ['author', 'status', 'last_reviewed', 'source_of_truth_scope'])
+    }
+  }
+
   const qualityPath = path.join(repoRoot, 'docs/QUALITY.md')
   if (fs.existsSync(qualityPath)) {
     const quality = readFile(qualityPath)
-    if (!/Last reviewed:\s*\d{4}-\d{2}-\d{2}/.test(quality)) {
-      errors.push('docs/QUALITY.md must include "Last reviewed: YYYY-MM-DD"')
-    }
     if (!quality.includes('| Domain/Layer | Grade | Notes |')) {
       errors.push('docs/QUALITY.md must include the quality table header')
     }

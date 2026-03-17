@@ -1,7 +1,11 @@
-# State Management
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+source_of_truth_scope: Jotai usage, query patterns, persistence, and migration conventions
+---
 
-Last reviewed: 2026-03-05
-Source of truth scope: Jotai usage, query patterns, persistence, and migration conventions.
+# State Management
 
 ## Defaults
 

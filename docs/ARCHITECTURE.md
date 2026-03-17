@@ -1,10 +1,12 @@
-# Architecture
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+source_of_truth_scope: monorepo layout, dependency direction, and boundary enforcement
+visual_reference: docs/architecture-overview.md
+---
 
-Owner: frontend platform maintainers
-Status: Normative
-Last reviewed: 2026-03-05
-Source of truth scope: monorepo layout, dependency direction, and boundary enforcement.
-Visual reference: [`docs/architecture-overview.md`](./architecture-overview.md)
+# Architecture
 
 ## Monorepo Map
 

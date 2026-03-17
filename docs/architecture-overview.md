@@ -1,9 +1,12 @@
-# CoW Swap Architecture
+---
+author: human
+status: reference
+last_reviewed: 2026-03-05
+source_of_truth_scope: visual architecture diagram and module map
+normative_rules: docs/ARCHITECTURE.md
+---
 
-Owner: frontend platform maintainers
-Status: Reference (visual)
-Last reviewed: 2026-03-05
-Normative rules: [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md)
+# CoW Swap Architecture
 
 > This documentation is part of the broader https://github.com/cowprotocol/cowswap-diagrams
 

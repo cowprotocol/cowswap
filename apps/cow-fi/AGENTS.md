@@ -1,3 +1,9 @@
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+---
+
 # cow-fi AGENTS.md
 
 Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).

@@ -1,7 +1,11 @@
-# Module Conventions
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+source_of_truth_scope: naming, file structure, exports/imports, and React module hygiene
+---
 
-Last reviewed: 2026-03-05
-Source of truth scope: naming, file structure, exports/imports, and React module hygiene.
+# Module Conventions
 
 ## Naming and File Shape
 

@@ -1,8 +1,11 @@
-# Quality Ledger
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+source_of_truth_scope: lightweight quality/freshness signal for autonomous contributors
+---
 
-Last reviewed: 2026-03-05
-Review owner: frontend platform + area maintainers
-Purpose: lightweight quality/freshness signal for autonomous contributors.
+# Quality Ledger
 
 ## Grade Scale
 
@@ -16,7 +19,7 @@ Purpose: lightweight quality/freshness signal for autonomous contributors.
 | Domain/Layer | Grade | Notes |
 | --- | --- | --- |
 | cowswap-frontend `swap` | B | Healthy core flow; continue reducing deep cross-module imports. |
-| cowswap-frontend `limitOrders` | B | Stable behavior; keep atom/query migration pressure. |
+| cowswap-frontend `limitOrders` | B | Stable behavior; data fetching pattern under evaluation. |
 | cowswap-frontend `common` | C | Guard against domain logic leakage from modules. |
 | cowswap-frontend `trade` | B | Orchestrator role is useful but import direction should be reviewed regularly. |
 | cow-fi app | B | Lint/type strictness still partially downgraded in eslint config. |

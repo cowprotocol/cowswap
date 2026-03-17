@@ -1,11 +1,15 @@
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+source_of_truth_scope: root coordination contract for AI and human contributors
+review_cadence: weekly during active frontend work, otherwise bi-weekly
+---
+
 # CoW Protocol Agent Harness (Root AGENTS.md)
 
 This file is the root coordination contract for AI and human contributors in this monorepo.
 Keep this file compact and route detailed guidance to docs.
-
-Owner: Frontend platform maintainers
-Last reviewed: 2026-03-05
-Review cadence: weekly during active frontend work, otherwise bi-weekly
 
 ## Scope
 
