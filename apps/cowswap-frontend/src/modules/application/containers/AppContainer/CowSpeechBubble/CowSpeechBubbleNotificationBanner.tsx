@@ -42,16 +42,6 @@ const NotificationLink = styled.a`
   }
 `
 
-function isInternal(href: string): boolean {
-  if (href.startsWith('/')) return true
-
-  try {
-    return new URL(href).hostname === window.location.hostname
-  } catch {
-    return false
-  }
-}
-
 export interface CowSpeechBubbleNotificationBannerProps {
   currentNotification: NotificationModel | null
   onClose: () => void
@@ -94,4 +84,14 @@ export function CowSpeechBubbleNotificationBanner({
       </NotificationText>
     </CowSpeechBubble>
   )
+}
+
+function isInternal(href: string): boolean {
+  if (href.startsWith('/')) return true
+
+  try {
+    return new URL(href).hostname === window.location.hostname
+  } catch {
+    return false
+  }
 }

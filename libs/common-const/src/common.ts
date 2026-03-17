@@ -51,8 +51,23 @@ export const PAGE_TITLES = {
   MY_REWARDS: msg`Rewards hub - My Rewards`,
 }
 
+/**
+ * Should be fully replaced with BARN_ETH_FLOW_ADDRESSES once backend migrated all the networks
+ */
+export const OLD_BARN_ETH_FLOW_ADDRESS = '0x04501b9b1d52e67f6862d157e00d13419d2d6e95'
+
+export const STAGING_MIGRATED_CONTRACT_NETWORKS = [SupportedChainId.MAINNET]
+
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
-  return env === 'prod' ? ETH_FLOW_ADDRESSES[chainId] : BARN_ETH_FLOW_ADDRESSES[chainId]
+  if (env === 'prod') {
+    return ETH_FLOW_ADDRESSES[chainId]
+  }
+
+  if (STAGING_MIGRATED_CONTRACT_NETWORKS.includes(chainId)) {
+    return BARN_ETH_FLOW_ADDRESSES[chainId]
+  }
+
+  return OLD_BARN_ETH_FLOW_ADDRESS
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {

@@ -13,13 +13,13 @@ import { setAffiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCo
 import { ApiError } from '../utils/api-utils'
 import { logAffiliate } from '../utils/logger'
 
-interface VerificationParams {
-  setError(error?: string): void
-}
-
 export interface UseAffiliateTraderVerificationResult {
   isVerifying: boolean
   verifyCode(code: string, account: string): Promise<void>
+}
+
+interface VerificationParams {
+  setError(error?: string): void
 }
 
 export function useAffiliateTraderVerification(params: VerificationParams): UseAffiliateTraderVerificationResult {

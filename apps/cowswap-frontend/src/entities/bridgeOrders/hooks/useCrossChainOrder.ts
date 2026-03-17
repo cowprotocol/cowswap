@@ -1,3 +1,4 @@
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CrossChainOrder, BridgeStatus } from '@cowprotocol/sdk-bridging'
 
@@ -38,6 +39,7 @@ export function useCrossChainOrder(
       return bridgingSdk.getOrder({
         chainId,
         orderId: orderUid,
+        settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
       })
     },
     swrOptions,
