@@ -76,7 +76,6 @@ export interface OrdersTableState {
   /**
    * True once orders have been loaded for the current chain/account/route.
    * Used to distinguish loading from empty state.
-   * TODO: Currently not used.
    * */
   hasHydratedOrders: boolean
 

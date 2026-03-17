@@ -27,7 +27,6 @@ export function OrdersTableContent({
 }: OrdersTableContentProps): ReactNode {
   const orderType = useAtomValue(locationOrderTypeAtom)
   const { orders, filteredOrders, hasHydratedOrders } = useAtomValue(ordersTableStateAtom)
-  const isHydrated = !!hasHydratedOrders
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { account } = useWalletInfo()
 
@@ -45,7 +44,7 @@ export function OrdersTableContent({
       currentTab={currentTab}
       searchTerm={searchTerm}
       historyStatusFilter={historyStatusFilter}
-      hasHydratedOrders={isHydrated}
+      hasHydratedOrders={hasHydratedOrders}
       hasOrders={!!orders?.length}
     />
   ) : (

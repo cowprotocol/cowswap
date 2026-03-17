@@ -22,6 +22,7 @@ import {
   setIsOrderUnfillable as createSetIsOrderUnfillableAction,
   SetIsOrderUnfillableParams,
 } from 'legacy/state/orders/actions'
+import { ContractDeploymentBlocks } from 'legacy/state/orders/consts'
 import { _concatOrdersState } from 'legacy/state/orders/hooks'
 import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork, getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
@@ -272,8 +273,10 @@ ordersTableStateAtom.onMount = () => {
 
       console.log(`5. filteredOrders (${currentTabId}) =`, filteredOrders)
 
-      // const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
-      const hasHydratedOrders = Array.isArray(orders)
+      const { lastCheckedBlock } = reduxOrdersStateInCurrentChain
+      const defaultBlock = ContractDeploymentBlocks[chainId] ?? 0
+      const hasHydratedOrders =
+        reduxOrders.length > 0 || (typeof lastCheckedBlock === 'number' && lastCheckedBlock !== defaultBlock)
 
       set(ordersTableStateAtom, {
         reduxOrders,
