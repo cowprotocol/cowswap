@@ -93,8 +93,9 @@ module.exports = [
     files: ['**/*.{js,ts}', '**/*.{jsx,tsx}'],
     plugins: { perfectionist },
     rules: {
+      // TODO: Turn this back on after the Viem migration, and only after running eslint:fix in the whole project.
       'perfectionist/sort-modules': [
-        'warn',
+        'off',
         {
           groups: [
             ['export-interface', 'export-type'],
@@ -150,6 +151,12 @@ module.exports = [
         'error',
         {
           paths: [
+            {
+              name: '@cowprotocol/cow-sdk',
+              importNames: ['COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS', 'COW_PROTOCOL_VAULT_RELAYER_ADDRESS'],
+              message:
+                "Please import COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS and COW_PROTOCOL_VAULT_RELAYER_ADDRESS from '@cowprotocol/common-utils', which provides environment-aware versions of these constants.",
+            },
             {
               name: 'ethers',
               message: "Please import from '@ethersproject/module' directly to support tree-shaking.",
@@ -321,6 +328,14 @@ module.exports = [
           patterns: ['modules/*'],
         },
       ],
+    },
+  },
+
+  // cowProtocolContracts.ts is the only file allowed to import these directly from @cowprotocol/cow-sdk
+  {
+    files: ['libs/common-utils/src/cowProtocolContracts.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': 'off',
     },
   },
 

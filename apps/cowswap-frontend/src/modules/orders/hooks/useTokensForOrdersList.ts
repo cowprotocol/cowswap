@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { fetchTokenFromBlockchain, TokensByAddress, useAddUserToken, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -41,10 +42,10 @@ export function useTokensForOrdersList(): (tokensToFetch: string[], signal?: Abo
       const tokens = allTokensRef.current
 
       const tokensToFetch = _tokensToFetch.reduce<string[]>((acc, token) => {
-        const tokenLowercase = token.toLowerCase()
+        const tokenKey = getAddressKey(token)
 
-        if (!getTokenFromMapping(tokenLowercase, chainId, tokens)) {
-          acc.push(tokenLowercase)
+        if (!getTokenFromMapping(tokenKey, chainId, tokens)) {
+          acc.push(tokenKey)
         }
         return acc
       }, [])
@@ -85,9 +86,9 @@ async function _fetchTokens(
   return settledPromises.reduce<TokensByAddress>((acc, promiseResult) => {
     if (promiseResult.status === 'fulfilled' && promiseResult.value) {
       const { chainId, address, decimals, symbol, name } = promiseResult.value
-      const addressLowercase = address.toLowerCase()
+      const addressKey = getAddressKey(address)
 
-      acc[addressLowercase] = new TokenWithLogo(undefined, chainId, addressLowercase, decimals, symbol, name)
+      acc[addressKey] = new TokenWithLogo(undefined, chainId, addressKey, decimals, symbol, name)
     }
     return acc
   }, {})

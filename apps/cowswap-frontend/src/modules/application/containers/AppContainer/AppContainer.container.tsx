@@ -35,10 +35,26 @@ import { NetworkAndAccountControls } from '../NetworkAndAccountControls/NetworkA
 // Initialize static analytics instance
 const pixel = initPixelAnalytics()
 
-type CustomThemeKey = ReturnType<typeof useCustomTheme>
-
 interface AppContainerProps {
   children: ReactNode | ReactNode[]
+}
+
+interface CowSpeechBubbleVisibilityParams {
+  isInjectedWidgetMode: boolean
+  pageScene: ReactNode | null
+  pageBackgroundVariant: PageBackgroundVariant
+  customTheme: CustomThemeKey
+  isChristmasTheme: boolean
+}
+
+type CustomThemeKey = ReturnType<typeof useCustomTheme>
+
+interface FooterSectionProps {
+  show: boolean
+  showCowSpeechBubble: boolean
+  currentNotification: NotificationModel | null
+  onDismissNotification: () => void
+  pageScene: ReactNode | null
 }
 
 export function AppContainer({ children }: AppContainerProps): ReactNode {
@@ -129,38 +145,6 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   )
 }
 
-interface CowSpeechBubbleVisibilityParams {
-  isInjectedWidgetMode: boolean
-  pageScene: ReactNode | null
-  pageBackgroundVariant: PageBackgroundVariant
-  customTheme: CustomThemeKey
-  isChristmasTheme: boolean
-}
-
-function shouldDisplayCowSpeechBubble({
-  isInjectedWidgetMode,
-  pageScene,
-  pageBackgroundVariant,
-  customTheme,
-  isChristmasTheme,
-}: CowSpeechBubbleVisibilityParams): boolean {
-  return (
-    !isInjectedWidgetMode &&
-    !pageScene &&
-    pageBackgroundVariant !== 'nocows' &&
-    customTheme !== 'darkHalloween' &&
-    !isChristmasTheme
-  )
-}
-
-interface FooterSectionProps {
-  show: boolean
-  showCowSpeechBubble: boolean
-  currentNotification: NotificationModel | null
-  onDismissNotification: () => void
-  pageScene: ReactNode | null
-}
-
 function FooterSection({
   show,
   showCowSpeechBubble,
@@ -186,5 +170,21 @@ function FooterSection({
       {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
       <Footer productVariant={PRODUCT_VARIANT} additionalFooterContent={ADDITIONAL_FOOTER_CONTENT} hasTouchFooter />
     </styledEl.FooterSlot>
+  )
+}
+
+function shouldDisplayCowSpeechBubble({
+  isInjectedWidgetMode,
+  pageScene,
+  pageBackgroundVariant,
+  customTheme,
+  isChristmasTheme,
+}: CowSpeechBubbleVisibilityParams): boolean {
+  return (
+    !isInjectedWidgetMode &&
+    !pageScene &&
+    pageBackgroundVariant !== 'nocows' &&
+    customTheme !== 'darkHalloween' &&
+    !isChristmasTheme
   )
 }
