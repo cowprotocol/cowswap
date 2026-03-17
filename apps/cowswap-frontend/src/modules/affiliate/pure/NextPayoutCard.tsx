@@ -37,7 +37,7 @@ export function NextPayoutCard({ payout, showLoader }: NextPayoutCardProps): Rea
       </PayoutValue>
       <BottomMetaRow>
         <InlineNote>
-          <Trans>Paid weekly on Fridays via airdrop</Trans>
+          <Trans>Paid weekly up to Fridays via airdrop</Trans>
         </InlineNote>
       </BottomMetaRow>
     </ColumnThreeCard>
