@@ -11,11 +11,13 @@ import {
   AffiliateTraderLoading,
   AffiliateTraderNextPayout,
   AffiliateTraderOnboard,
+  AffiliateTraderActivityTable,
   AffiliateTraderStats,
   TraderWalletStatus,
   getAffiliateTraderPageState,
   useAffiliateStateViewAnalytics,
   useAffiliateTraderWallet,
+  useTraderActivity,
   AffiliateTraderIneligible,
   AffiliateTraderUnsupportedNetwork,
   ThreeColumnGrid,
@@ -50,6 +52,7 @@ export default function AffiliateTrader(): ReactNode {
   // but not eligible for rewards (e.g. Sepolia). When the chain is globally
   // unsupported, the app-level banner already covers it.
   const showAffiliateBanner = walletStatus === TraderWalletStatus.UNSUPPORTED && !isProviderNetworkUnsupported
+  const { data: activityOrders, isLoading: activityLoading } = useTraderActivity()
 
   return (
     <>
@@ -73,6 +76,11 @@ export default function AffiliateTrader(): ReactNode {
               <AffiliateTraderStats />
               <AffiliateTraderNextPayout />
             </ThreeColumnGrid>
+            <AffiliateTraderActivityTable
+              orders={activityOrders || []}
+              savedCode={savedCode}
+              showLoader={activityLoading}
+            />
           </>
         )}
       </PageWrapper>
