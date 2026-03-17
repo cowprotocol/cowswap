@@ -4,14 +4,10 @@ import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 import { Category, GtmEvent } from '../types'
 
-interface DataLayerEvent extends Record<string, unknown> {
-  event: string
-}
-
 type DataLayer = DataLayerEvent[]
 
-function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
+interface DataLayerEvent extends Record<string, unknown> {
+  event: string
 }
 
 function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unknown> {
@@ -30,6 +26,10 @@ function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unk
   } = event as GtmEvent<Category> & Record<string, unknown>
 
   return sanitizeRecord(rest)
+}
+
+function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
 }
 
 declare global {
