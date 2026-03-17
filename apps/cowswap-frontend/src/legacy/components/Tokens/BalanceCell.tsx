@@ -1,8 +1,7 @@
 import { useTheme } from '@cowprotocol/common-hooks'
-import { TokenAmount } from '@cowprotocol/ui'
-import { Loader } from '@cowprotocol/ui'
+import { Token, CurrencyAmount } from '@cowprotocol/currency'
+import { TokenAmount, Loader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { BalanceValue } from './styled'
 

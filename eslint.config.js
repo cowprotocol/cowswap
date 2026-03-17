@@ -93,16 +93,17 @@ module.exports = [
     files: ['**/*.{js,ts}', '**/*.{jsx,tsx}'],
     plugins: { perfectionist },
     rules: {
+      // TODO: Turn this back on after the Viem migration, and only after running eslint:fix in the whole project.
       'perfectionist/sort-modules': [
         'off',
         {
           groups: [
             ['export-interface', 'export-type'],
             'export-enum',
+            ['interface', 'type'],
+            'enum',
             'export-class',
             'export-function',
-            'enum',
-            ['interface', 'type'],
             'class',
             'function',
           ],
@@ -116,7 +117,8 @@ module.exports = [
   {
     files: ['**/*.tsx'],
     rules: {
-      complexity: ['error', 15],
+      complexity: ['error', 20],
+      'max-lines-per-function': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
     },
   },
   {

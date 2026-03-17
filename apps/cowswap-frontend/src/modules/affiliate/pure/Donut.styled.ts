@@ -9,22 +9,16 @@ export const Ring = styled.svg`
   height: 100%;
   transform: rotate(-90deg);
   z-index: 0;
-  --radius: calc(50 - var(--stroke-width) / 2);
-
-  circle {
-    fill: none;
-    stroke-width: var(--stroke-width);
-  }
 
   .donut-track {
+    fill: none;
     stroke: var(${UI.COLOR_TEXT_OPACITY_10});
   }
 
   .donut-progress {
+    fill: none;
     stroke: var(${UI.COLOR_INFO});
     stroke-linecap: round;
-    stroke-dasharray: 100;
-    stroke-dashoffset: calc(100 - var(--value));
   }
 
   .donut-center {
@@ -33,11 +27,8 @@ export const Ring = styled.svg`
   }
 `
 
-export const Wrapper = styled.div<{ $value: number }>`
+export const Wrapper = styled.div`
   --size: 139px;
-  --thickness: 20px;
-  --stroke-width: 14.4;
-  --value: ${({ $value }) => $value};
   width: var(--size);
   height: var(--size);
   border-radius: 50%;

@@ -6,7 +6,7 @@ import {
   LOW_SLIPPAGE_BPS,
   MINIMUM_ETH_FLOW_SLIPPAGE_BPS,
 } from '@cowprotocol/common-const'
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/currency'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 import { slippageBpsToPercent, useSlippageConfig } from 'modules/tradeSlippage'

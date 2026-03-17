@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 import { Writeable } from 'types'
 

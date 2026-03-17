@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@cowprotocol/currency'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'

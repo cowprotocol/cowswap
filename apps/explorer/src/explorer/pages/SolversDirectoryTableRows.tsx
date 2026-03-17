@@ -16,6 +16,17 @@ import { DeploymentsSectionRows, EnvironmentTags, NetworkChips, SolverIcon } fro
 
 import { SolverDeployment, SolverInfo } from '../../utils/fetchSolversInfo'
 
+type SolverDetailsRowProps = {
+  deployments: SolverDeployment[]
+}
+
+type SolverSummaryRowProps = {
+  solver: SolverInfo
+  deployments: SolverDeployment[]
+  isExpanded: boolean
+  onToggle: (solverId: string) => void
+}
+
 export function SolverDetailsRow({ deployments }: SolverDetailsRowProps): React.ReactNode {
   const activeDeployments = deployments.filter((deployment) => deployment.active)
   const inactiveDeployments = deployments.filter((deployment) => !deployment.active)
@@ -88,15 +99,4 @@ export function SolverSummaryRow({
       </td>
     </tr>
   )
-}
-
-type SolverDetailsRowProps = {
-  deployments: SolverDeployment[]
-}
-
-type SolverSummaryRowProps = {
-  solver: SolverInfo
-  deployments: SolverDeployment[]
-  isExpanded: boolean
-  onToggle: (solverId: string) => void
 }
