@@ -42,7 +42,8 @@ export function Step3({
   const isCreating = state === SmartOrderStatus.CREATING
   const isFilled = state === SmartOrderStatus.FILLED
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing) && !isFilled
-  const isRefunded = refundFailed === false || cancellationFailed === false
+  const isCancelled = cancellationFailed === false
+  const isRefunded = refundFailed === false
   const orderIsNotCreated = !!(creationFailed || creationCancelled || creationReplaced) && !isFilled
 
   const isRefunding = !!refundHash && refundFailed === undefined
@@ -114,19 +115,16 @@ export function Step3({
     nativeTokenSymbol,
   ])
 
-  const wontReceiveToken = !isFilled && (isExpired || isOrderRejected || isRefunding || isCanceling || isRefunded)
+  const wontReceiveToken =
+    !isFilled && (isExpired || isOrderRejected || isRefunding || isCanceling || isCancelled || isRefunded)
   const isSuccess = stepState === 'success'
 
   let refundLink: ReactNode | undefined
 
-  if (cancellationHash && refundFailed !== false && !isFilled) {
-    refundLink = (
-      <ExplorerLinkStyled
-        type="transaction"
-        label={isCanceling ? t`Initiating ${nativeTokenSymbol} Refund...` : t`View transaction`}
-        id={cancellationHash}
-      />
-    )
+  if (cancellationHash && cancellationFailed === false && isRefunded && !refundHash && !isFilled) {
+    refundLink = <ExplorerLinkStyled type="transaction" label={t`View transaction`} id={cancellationHash} />
+  } else if (cancellationHash && refundFailed !== false && !isFilled) {
+    refundLink = <ExplorerLinkStyled type="transaction" label={t`View transaction`} id={cancellationHash} />
   } else if ((refundHash && !(expiredBeforeCreate || cancellationHash)) || (refundHash && isRefunded)) {
     refundLink = (
       <ExplorerLinkStyled

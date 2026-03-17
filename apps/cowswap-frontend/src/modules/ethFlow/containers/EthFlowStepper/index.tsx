@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { formatSymbol, getIsNativeToken } from '@cowprotocol/common-utils'
+import { OrderStatus as ApiOrderStatus } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
 
@@ -49,6 +50,7 @@ export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
   const rejectedReason = creationTxFailed ? t`Transaction failed` : undefined
 
   const refundHash = order.refundHash || order.apiAdditionalInfo?.ethflowData?.refundTxHash || undefined
+  const isRefundConfirmed = isCancellationConfirmed(order) || order.isRefunded === true || !!refundHash
 
   const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
@@ -64,7 +66,7 @@ export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
     creation,
     refund: {
       hash: refundHash,
-      failed: !refundHash,
+      failed: isRefundConfirmed ? false : undefined,
     },
     cancellation: {
       hash: cancellationHash,
@@ -78,10 +80,19 @@ export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
 const ORDER_INDEXED_STATUSES: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.EXPIRED, OrderStatus.CANCELLED]
 
 function didCancellationFail(order: Order, tx: EnhancedTransactionDetails | undefined): boolean | undefined {
-  if (order.status === OrderStatus.CANCELLED) {
+  if (order.status === OrderStatus.FULFILLED || isOrderFilled(order)) {
+    return undefined
+  }
+
+  if (isCancellationConfirmed(order)) {
     return false
   }
-  return didTxFail(tx)
+
+  if (tx?.receipt?.status === 0) {
+    return true
+  }
+
+  return undefined
 }
 
 function didTxFail(tx: EnhancedTransactionDetails | undefined): boolean | undefined {
@@ -108,6 +119,10 @@ function getCreationTxState(order: Order, allTxs: { [txHash: string]: EnhancedTr
       replaced: creationLinkedTx?.replacementType === 'replaced',
     },
   }
+}
+
+function isCancellationConfirmed(order: Order): boolean {
+  return order.apiAdditionalInfo?.status === ApiOrderStatus.CANCELLED
 }
 
 function isEthFlowOrderExpired(order: Order | undefined): boolean {
