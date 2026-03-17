@@ -12,6 +12,8 @@ import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 import SVG from 'react-inlinesvg'
 
+import CopyHelper from 'legacy/components/Copy'
+
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
 import { useIsRefCodeExpired } from '../hooks/useIsRefCodeExpired'
@@ -23,6 +25,7 @@ import {
   LinkedCard,
   LinkedCodeRow,
   LinkedCodeText,
+  LinkedCopy,
   LinkedMetaList,
   MetricItem,
   MetricValue,
@@ -50,7 +53,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
 
   return (
     <ColumnOneCard showLoader={statsLoading || codeLoading}>
-      {!info ? null : (
+      {!info || !savedCode ? null : (
         <>
           <RewardsHeader>
             <CardTitle>
@@ -59,7 +62,10 @@ export function AffiliateTraderCodeInfo(): ReactNode {
           </RewardsHeader>
           <LinkedCard $isExpired={isExpired}>
             <LinkedCodeRow $isExpired={isExpired}>
-              <LinkedCodeText>{savedCode}</LinkedCodeText>
+              <LinkedCopy>
+                <CopyHelper toCopy={savedCode} iconSize={16} hideCopiedLabel />
+                <LinkedCodeText>{savedCode}</LinkedCodeText>
+              </LinkedCopy>
               {isExpired ? (
                 <ExpiredBadge>
                   <Trans>Expired</Trans>
