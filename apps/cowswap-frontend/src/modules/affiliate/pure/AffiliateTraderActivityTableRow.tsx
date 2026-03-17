@@ -48,7 +48,7 @@ export function AffiliateTraderActivityTableRow({ order, savedCode }: AffiliateT
   const tokensByAddress = useTokensByAddressMapForChain(chainId)
   const sellToken = getTokenFromMapping(sellTokenAddress, chainId, tokensByAddress)
   const buyToken = getTokenFromMapping(buyTokenAddress, chainId, tokensByAddress)
-  const feeToken = getTokenFromMapping(executedFeeToken ?? '', chainId, tokensByAddress)
+  const feeToken = executedFeeToken ? getTokenFromMapping(executedFeeToken, chainId, tokensByAddress) : null
 
   return (
     <tr>
