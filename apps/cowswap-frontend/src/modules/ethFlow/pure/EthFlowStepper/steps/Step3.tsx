@@ -121,9 +121,17 @@ export function Step3({
 
   let refundLink: ReactNode | undefined
 
-  if (cancellationHash && cancellationFailed === false && isRefunded && !refundHash && !isFilled) {
-    refundLink = <ExplorerLinkStyled type="transaction" label={t`View transaction`} id={cancellationHash} />
-  } else if (cancellationHash && refundFailed !== false && !isFilled) {
+  const showConfirmedCancellationLink = !!(
+    cancellationHash &&
+    !isFilled &&
+    cancellationFailed === false &&
+    isRefunded &&
+    !refundHash
+  )
+  const showPendingCancellationLink = !!(cancellationHash && !isFilled && refundFailed !== false)
+  const showCancellationLink = showConfirmedCancellationLink || showPendingCancellationLink
+
+  if (showCancellationLink) {
     refundLink = <ExplorerLinkStyled type="transaction" label={t`View transaction`} id={cancellationHash} />
   } else if ((refundHash && !(expiredBeforeCreate || cancellationHash)) || (refundHash && isRefunded)) {
     refundLink = (

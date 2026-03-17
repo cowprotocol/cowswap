@@ -50,7 +50,9 @@ export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
   const rejectedReason = creationTxFailed ? t`Transaction failed` : undefined
 
   const refundHash = order.refundHash || order.apiAdditionalInfo?.ethflowData?.refundTxHash || undefined
-  const isRefundConfirmed = isCancellationConfirmed(order) || order.isRefunded === true || !!refundHash
+  // A backend-confirmed EthFlow cancellation implies the ETH should already be on the
+  // refund path, even when no explicit refund tx or flag is present yet.
+  const shouldTreatAsRefunded = isCancellationConfirmed(order) || order.isRefunded === true || !!refundHash
 
   const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
@@ -66,7 +68,7 @@ export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
     creation,
     refund: {
       hash: refundHash,
-      failed: isRefundConfirmed ? false : undefined,
+      failed: shouldTreatAsRefunded ? false : undefined,
     },
     cancellation: {
       hash: cancellationHash,
@@ -121,6 +123,8 @@ function getCreationTxState(order: Order, allTxs: { [txHash: string]: EnhancedTr
   }
 }
 
+// Uses the backend API status directly instead of classifyOrder(), because the
+// buffered classifier intentionally waits before exposing cancelled state.
 function isCancellationConfirmed(order: Order): boolean {
   return order.apiAdditionalInfo?.status === ApiOrderStatus.CANCELLED
 }
