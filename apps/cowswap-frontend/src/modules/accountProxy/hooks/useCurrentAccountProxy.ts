@@ -41,7 +41,7 @@ const IMPLEMENTATION_STORAGE_SLOT = slot('eip1967.proxy.implementation')
  */
 export async function implementationAddress(config: Config, proxy: string): Promise<string> {
   const storage = await getStorageAt(config, {
-    address: proxy,
+    address: proxy as `0x${string}`,
     slot: IMPLEMENTATION_STORAGE_SLOT,
   })
 
@@ -88,7 +88,7 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefine
       if (!cowShedHooks) return
 
       const proxyAddress = cowShedHooks.proxyOf(account)
-      const proxyCode = await getBytecode(config, { address: proxyAddress })
+      const proxyCode = await getBytecode(config, { address: proxyAddress as `0x${string}` })
       const isProxyDeployed = !!proxyCode && proxyCode !== '0x'
 
       const isProxySetupValid = isProxyDeployed
@@ -148,7 +148,7 @@ async function getIsProxySetupValid(
   try {
     const trustedExecutor = await readContract(config, {
       abi: COW_SHED_ABI,
-      address: proxyAddress,
+      address: proxyAddress as `0x${string}`,
       functionName: 'trustedExecutor',
     })
 

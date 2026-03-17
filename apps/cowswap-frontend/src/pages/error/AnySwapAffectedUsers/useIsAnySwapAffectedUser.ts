@@ -24,9 +24,9 @@ export function useIsAnySwapAffectedUser(): boolean {
   const { data } = useReadContracts({
     contracts: AFFECTED_TOKENS.map((address) => ({
       abi: erc20Abi,
-      address,
+      address: address as `0x${string}`,
       functionName: 'allowance',
-      args: [account, ANYSWAP_V4_CONTRACT],
+      args: [account as `0x${string}`, ANYSWAP_V4_CONTRACT as `0x${string}`],
     })),
   })
 
@@ -38,8 +38,10 @@ export function useIsAnySwapAffectedUser(): boolean {
 
     // Check if any of the tokens has allowance in the router contract
     return data.some((tokenData) => {
-      const allowance = tokenData.result
-      return allowance ? BigInt(allowance) > 0n : false
+      const allowance = tokenData.result as unknown
+      return allowance !== undefined && allowance !== null
+        ? BigInt(allowance as string | number | bigint | boolean) > 0n
+        : false
     })
   }, [chainId, data])
 }

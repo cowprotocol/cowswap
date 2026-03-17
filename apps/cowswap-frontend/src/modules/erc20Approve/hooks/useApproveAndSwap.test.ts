@@ -1,5 +1,4 @@
 import { Token } from '@cowprotocol/currency'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import { renderHook, waitFor } from '@testing-library/react'
 
@@ -12,6 +11,8 @@ import { useTokenSupportsPermit } from '../../permit'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { TradeApproveResult } from '../containers'
 import { useIsPartialApproveSelectedByUser, useUpdateApproveProgressModalState } from '../state'
+
+import type { ApprovalTxReceipt } from '../containers/TradeApproveModal/approveUtils'
 
 jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
@@ -45,27 +46,12 @@ describe('useApproveAndSwap', () => {
   const mockGeneratePermitToTrade = jest.fn()
   const mockUpdateTradeApproveState = jest.fn()
 
-  const createMockTransactionReceipt = (): TransactionReceipt => {
+  const createMockTransactionReceipt = (): ApprovalTxReceipt => {
     return {
-      to: '0x9008D19f58AAbD9eD0D60971565AA8510560ab41',
-      from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-      contractAddress: mockToken.address,
-      transactionIndex: 1,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      gasUsed: { toString: () => '21000' } as any,
-      logsBloom: '0x',
-      blockHash: '0xblockhash',
-      transactionHash: '0xtxhash',
+      status: 'success',
+      blockNumber: 123456n,
+      transactionHash: '0xtxhash' as `0x${string}`,
       logs: [],
-      blockNumber: 123456,
-      confirmations: 1,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cumulativeGasUsed: { toString: () => '21000' } as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      effectiveGasPrice: { toString: () => '1000000000' } as any,
-      byzantium: true,
-      type: 2,
-      status: 1,
     }
   }
 
@@ -154,7 +140,7 @@ describe('useApproveAndSwap', () => {
     it('should skip permit flow when ignorePermit is true', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('2000000000000000000'),
       }
@@ -184,7 +170,7 @@ describe('useApproveAndSwap', () => {
   describe('approval flow with TradeApproveResult', () => {
     it('should approve and call confirmSwap when approved amount is sufficient', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('2000000000000000000'), // More than required
       }
@@ -211,7 +197,7 @@ describe('useApproveAndSwap', () => {
 
     it('should approve and call confirmSwap when approved amount equals required amount', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount, // Exactly what's required
       }
@@ -238,7 +224,7 @@ describe('useApproveAndSwap', () => {
 
     it('should set error state when approved amount is insufficient', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('500000000000000000'), // Less than required
       }
@@ -266,7 +252,7 @@ describe('useApproveAndSwap', () => {
 
     it('should set error state when approved amount is undefined', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: undefined,
       }
@@ -295,7 +281,7 @@ describe('useApproveAndSwap', () => {
     it('should use partial approve amount when user has enabled it', async () => {
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount,
       }
@@ -368,7 +354,7 @@ describe('useApproveAndSwap', () => {
 
     it('should not call confirmSwap when confirmSwap callback is not provided', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount,
       }

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/currency'
 
 import { useConfig } from 'wagmi'
 

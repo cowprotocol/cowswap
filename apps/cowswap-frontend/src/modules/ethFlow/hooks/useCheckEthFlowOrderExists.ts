@@ -32,7 +32,7 @@ export function useCheckEthFlowOrderExists(): EthFlowOrderExistsCallback {
         try {
           const [owner] = await readContract(config, {
             abi: ethFlowContract.abi,
-            address: ethFlowContract.address,
+            address: ethFlowContract.address as `0x${string}`,
             functionName: 'orders',
             args: [orderDigest as Hex],
           })

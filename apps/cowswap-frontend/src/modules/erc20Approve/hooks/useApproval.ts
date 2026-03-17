@@ -27,6 +27,6 @@ export function useApprovalStateForSpender(
   const { state: approvalState } = useApproveState(amountToApprove)
 
   return useMemo(() => {
-    return { approvalState, currentAllowance }
-  }, [currentAllowance, approvalState])
+    return { approvalState, currentAllowance: currentAllowance?.data }
+  }, [currentAllowance?.data, approvalState])
 }

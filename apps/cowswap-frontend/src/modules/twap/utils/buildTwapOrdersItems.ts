@@ -23,7 +23,7 @@ export function buildTwapOrdersItems(
       chainId,
       safeAddress,
       safeData,
-      id,
+      id as `0x${string}`,
       ordersAuthResult[id],
       twapOrderExecutions[id] ?? DEFAULT_TWAP_EXECUTION,
     )
@@ -43,7 +43,7 @@ function getTwapOrderItem(
   const { isExecuted, submissionDate, executionDate: _executionDate } = safeTxParams
 
   const executionDate = _executionDate ? new Date(_executionDate) : null
-  const order = parseTwapOrderStruct(conditionalOrderParams.staticInput)
+  const order = parseTwapOrderStruct(conditionalOrderParams.staticInput as `0x${string}`)
   const status = getTwapOrderStatus(order, isExecuted, executionDate, authorized, executionInfo)
 
   return {

@@ -15,7 +15,7 @@ export async function checkPermitNonceAndAmount(
   permitInfo: PermitInfo,
 ): Promise<boolean | undefined> {
   try {
-    const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient, account })
+    const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient, account: account as `0x${string}` })
     const sellTokenAddress = order.inputToken.address
 
     const { permitNonce, permitAmount, permitType } = extractPermitData(permitCallData)

@@ -24,7 +24,12 @@ export function createTwapOrderTxs(
     data: encodeFunctionData({
       abi: composableCowContract.abi,
       functionName: 'createWithContext',
-      args: [paramsStruct, currentBlockFactoryAddress, '0x', true],
+      args: [
+        paramsStruct as { handler: `0x${string}`; salt: `0x${string}`; staticInput: `0x${string}` },
+        (currentBlockFactoryAddress ?? undefined) as `0x${string}`,
+        '0x',
+        true,
+      ],
     }),
     value: '0',
     operation: 0,
@@ -36,7 +41,11 @@ export function createTwapOrderTxs(
 
   const approveTx = {
     to: sellTokenAddress,
-    data: encodeFunctionData({ abi: erc20Abi, functionName: 'approve', args: [spender, sellAmountAtoms] }),
+    data: encodeFunctionData({
+      abi: erc20Abi,
+      functionName: 'approve',
+      args: [spender as `0x${string}`, sellAmountAtoms],
+    }),
     value: '0',
     operation: 0,
   }
@@ -47,7 +56,7 @@ export function createTwapOrderTxs(
 
   const zeroApproveTx = {
     to: sellAmount.currency.address,
-    data: encodeFunctionData({ abi: erc20Abi, functionName: 'approve', args: [spender, 0n] }),
+    data: encodeFunctionData({ abi: erc20Abi, functionName: 'approve', args: [spender as `0x${string}`, 0n] }),
     value: '0',
     operation: 0,
   }

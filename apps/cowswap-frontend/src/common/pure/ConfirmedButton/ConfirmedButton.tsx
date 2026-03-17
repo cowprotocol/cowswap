@@ -1,8 +1,7 @@
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { ButtonError } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ButtonError, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'

@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { UI } from '@cowprotocol/ui'
-import { HelpTooltip } from '@cowprotocol/ui'
+import { UI, HelpTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'

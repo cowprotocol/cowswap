@@ -1,8 +1,7 @@
 import { ReactNode } from 'react'
 
 import TELEGRAM_ICON from '@cowprotocol/assets/images/icon-telegram.svg'
-import { RowBetween, RowFixed, HoverTooltip } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { RowBetween, RowFixed, HoverTooltip, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

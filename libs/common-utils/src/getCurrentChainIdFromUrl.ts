@@ -1,5 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+/** Lens Network chain ID; not in SDK SupportedChainId enum but used for URL slug "lens". */
+const LENS_CHAIN_ID = 197
+
 /**
  * Maps chain names/slugs (used in URL path or query) to SupportedChainId.
  * Use this for resolving URL segments to chain IDs so we never compare by name.
@@ -18,7 +21,7 @@ export const CHAIN_NAME_OR_SLUG_TO_ID: Record<string, SupportedChainId> = {
   bsc: SupportedChainId.BNB,
   linea: SupportedChainId.LINEA,
   avalanche: SupportedChainId.AVALANCHE,
-  lens: SupportedChainId.LENS,
+  lens: LENS_CHAIN_ID as SupportedChainId,
   plasma: SupportedChainId.PLASMA,
   ink: SupportedChainId.INK,
 }

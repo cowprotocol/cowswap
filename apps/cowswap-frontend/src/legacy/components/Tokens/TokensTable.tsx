@@ -7,7 +7,6 @@ import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -44,7 +43,7 @@ type TokenTableParams = {
   tokensData: TokenWithLogo[] | undefined
   maxItems?: number
   balances?: BalancesState['values']
-  allowances: Record<string, BigNumber | undefined> | undefined
+  allowances: Record<string, bigint | undefined> | undefined
   page: number
   setPage: (page: number) => void
   query: string
@@ -228,12 +227,10 @@ export function TokenTable({
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {
               const balanceRaw = balances && balances[getAddressKey(data.address)]
-              const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, balanceRaw.toHexString()) : undefined
+              const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, balanceRaw.toString()) : undefined
 
               const allowancesRaw = allowances && allowances[getAddressKey(data.address)]
-              const allowance = allowancesRaw
-                ? CurrencyAmount.fromRawAmount(data, allowancesRaw.toHexString())
-                : undefined
+              const allowance = allowancesRaw ? CurrencyAmount.fromRawAmount(data, allowancesRaw.toString()) : undefined
 
               if (data) {
                 return (

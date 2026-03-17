@@ -109,7 +109,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         return tx
       })
       .then((tx) => {
-        const success = tx.status === 'success'
+        const success = !!tx?.hash
         setStatus(success ? ClaimStatus.CONFIRMED : ClaimStatus.INITIAL)
 
         setTimeout(() => {

@@ -19,7 +19,7 @@ export async function getEip712Domain(tokenAddress: Address, chainId: number, co
     chainId: domainChainId.toString(),
     verifyingContract,
     salt,
-    extensions: extensions.map((e) => e.toString()),
+    extensions: extensions.map((e: unknown) => String(e)),
   }
 
   return processDomain(eip5267Domain, chainId, tokenAddress)

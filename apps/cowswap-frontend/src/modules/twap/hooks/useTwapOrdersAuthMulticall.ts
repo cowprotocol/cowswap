@@ -26,7 +26,7 @@ export function useTwapOrdersAuthMulticall(
   const { data, isLoading } = useReadContracts({
     contracts: (input || []).map((args) => ({
       abi: composableCowContract.abi,
-      address: composableCowContract.address,
+      address: composableCowContract.address as `0x${string}`,
       functionName: 'singleOrders' as const,
       args,
     })),
@@ -39,7 +39,7 @@ export function useTwapOrdersAuthMulticall(
     if (isLoading || !data || data.length !== pendingTwapOrderIds.length) return null
 
     return pendingTwapOrderIds.reduce((acc, id, index) => {
-      acc[id] = data[index]?.result
+      acc[id] = data[index]?.result as boolean | undefined
       return acc
     }, {} as TwapOrdersAuthResult)
   }, [pendingTwapOrderIds, data, isLoading])

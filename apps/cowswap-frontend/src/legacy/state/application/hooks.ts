@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -28,10 +28,21 @@ export function useCloseModal(_modal: ApplicationModal): Command {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
+const WALLET_MODAL_OPEN_THROTTLE_MS = 1200
+
+/** Opens AppKit wallet connection modal. Throttled so double-invocation (e.g. Strict Mode or duplicate handlers) only opens once and avoids two "Review permissions" dialogs in MetaMask. */
 export function useToggleWalletModal(): Command {
   const { open } = useAppKit()
+  const lastOpenTimeRef = useRef(0)
 
-  return open
+  return useCallback(() => {
+    const now = Date.now()
+    if (now - lastOpenTimeRef.current < WALLET_MODAL_OPEN_THROTTLE_MS) {
+      return
+    }
+    lastOpenTimeRef.current = now
+    open()
+  }, [open])
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced

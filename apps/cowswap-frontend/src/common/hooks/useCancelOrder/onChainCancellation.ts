@@ -39,20 +39,20 @@ export async function getEthFlowCancellation({
 }): Promise<OnChainCancellation> {
   const cancelOrderParams = [
     {
-      buyToken: order.buyToken,
-      receiver: order.receiver || order.owner,
+      buyToken: order.buyToken as `0x${string}`,
+      receiver: (order.receiver || order.owner) as `0x${string}`,
       sellAmount: BigInt(order.sellAmount),
       buyAmount: BigInt(order.buyAmount),
       appData: order.appData.toString() as Hex,
       feeAmount: BigInt(order.feeAmount),
       validTo: order.validTo,
       partiallyFillable: false,
-      quoteId: 0n, // value doesn't matter, set to 0 for reducing gas costs
+      quoteId: 0n,
     },
   ] as const
 
   const estimatedGas = await estimateGas(config, {
-    to: ethFlowContract.address,
+    to: ethFlowContract.address as `0x${string}`,
     data: encodeFunctionData({
       abi: ethFlowContract.abi,
       functionName: 'invalidateOrder',
@@ -72,7 +72,7 @@ export async function getEthFlowCancellation({
     sendTransaction: (processCancelledOrder) => {
       return writeContract(config, {
         abi: ethFlowContract.abi,
-        address: ethFlowContract.address,
+        address: ethFlowContract.address as `0x${string}`,
         functionName: 'invalidateOrder',
         args: cancelOrderParams,
         gas: calculateGasMargin(estimatedGas),
@@ -100,7 +100,7 @@ export async function getOnChainCancellation({
   const cancelOrderParams = [order.id as Hex] as const
 
   const estimatedGas = await estimateGas(config, {
-    to: settlementContract.address,
+    to: settlementContract.address as `0x${string}`,
     data: encodeFunctionData({
       abi: settlementContract.abi,
       functionName: 'invalidateOrder',
@@ -120,7 +120,7 @@ export async function getOnChainCancellation({
     sendTransaction: (processCancelledOrder) => {
       return writeContract(config, {
         abi: settlementContract.abi,
-        address: settlementContract.address,
+        address: settlementContract.address as `0x${string}`,
         functionName: 'invalidateOrder',
         args: cancelOrderParams,
         gas: calculateGasMargin(estimatedGas),

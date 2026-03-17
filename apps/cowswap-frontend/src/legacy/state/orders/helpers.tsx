@@ -120,7 +120,6 @@ export function setPopupData(
 }
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
 export function getOrderByIdFromState(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
   if (!orders) {
     return

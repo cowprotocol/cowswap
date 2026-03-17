@@ -15,6 +15,6 @@ export function useEnoughAllowance(amount: CurrencyAmount<Currency> | undefined)
       return true
     }
 
-    return amount && isEnoughAmount(amount, allowance)
-  }, [amount, allowance])
+    return amount && isEnoughAmount(amount, allowance?.data)
+  }, [amount, allowance?.data])
 }

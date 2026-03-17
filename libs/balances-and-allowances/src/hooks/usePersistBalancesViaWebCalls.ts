@@ -33,7 +33,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
   } = useReadContracts({
     contracts: tokenAddresses.map((address) => ({
       abi: erc20Abi,
-      address,
+      address: address as `0x${string}`,
       chainId,
       functionName: 'balanceOf',
       args: [account],
@@ -66,7 +66,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
       if (getIsNativeToken(chainId, address)) return acc
 
-      acc[address.toLowerCase()] = BigInt(balances[index]?.result || 0)
+      acc[address.toLowerCase()] = BigInt(Number(balances[index]?.result ?? 0))
       return acc
     }, {})
 

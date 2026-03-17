@@ -12,11 +12,15 @@ export function buildTwapOrderParamsStruct(chainId: SupportedChainId, order: TWA
   const { partSellAmount, minPartLimit, t0, n, t, span, ...rest } = twapOrderToStruct(order)
 
   return {
-    handler: TWAP_HANDLER_ADDRESS[chainId],
+    handler: TWAP_HANDLER_ADDRESS[chainId] as `0x${string}`,
     salt: padHex(toHex(Date.now()), { size: 32 }),
     staticInput: encodeAbiParameters(TWAP_ORDER_STRUCT, [
       {
         ...rest,
+        sellToken: rest.sellToken as `0x${string}`,
+        buyToken: rest.buyToken as `0x${string}`,
+        receiver: rest.receiver as `0x${string}`,
+        appData: rest.appData as `0x${string}`,
         partSellAmount: BigInt(partSellAmount),
         minPartLimit: BigInt(minPartLimit),
         t0: BigInt(t0),

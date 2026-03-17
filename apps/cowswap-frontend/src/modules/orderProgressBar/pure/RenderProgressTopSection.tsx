@@ -10,8 +10,7 @@ import { ProgressTopSection } from './ProgressTopSection'
 import { OrderIntent } from './steps/OrderIntent'
 import * as styledEl from './styled'
 
-import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
-import { OrderProgressBarStepName } from '../constants'
+import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES, OrderProgressBarStepName } from '../constants'
 import { useProgressBarLayout } from '../hooks/useProgressBarLayout'
 import { OrderProgressBarProps } from '../types'
 

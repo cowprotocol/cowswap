@@ -8,7 +8,6 @@ import { UiOrderType } from '@cowprotocol/types'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -23,6 +22,7 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
+import { deduplicatedSendTransaction } from '../../utils/deduplicatedSendTransaction'
 
 import type { Hex } from 'viem'
 
@@ -62,6 +62,7 @@ export async function swapFlow(
   const {
     orderParams,
     context,
+    config,
     permitInfo,
     generatePermitHook,
     permitAmountToSign,
@@ -87,7 +88,7 @@ export async function swapFlow(
     orderParams.appData = await handlePermit({
       appData,
       typedHooks,
-      account,
+      account: account as `0x${string}`,
       inputToken: inputCurrency,
       permitInfo,
       amount: permitAmountToSign,
@@ -173,8 +174,8 @@ export async function swapFlow(
       logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
       const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
-      presignTxHash = await sendTransaction(orderParams.config, {
-        to: presignTx.to,
+      presignTxHash = await deduplicatedSendTransaction(config, {
+        to: presignTx.to as `0x${string}`,
         value: BigInt(presignTx.value),
         data: presignTx.data as Hex,
       }).catch((error) => {

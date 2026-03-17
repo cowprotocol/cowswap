@@ -6,6 +6,7 @@ export * from './constants'
 
 // Hooks
 export * from './api/hooks'
+export { useOpenWalletConnectionModal } from './api/hooks/useOpenWalletConnectionModal'
 export { useWalletCapabilities } from './api/hooks/useWalletCapabilities'
 export { useWidgetProviderMetaInfo } from './api/hooks/useWidgetProviderMetaInfo'
 export { useSendBatchTransactions } from './api/hooks/useSendBatchTransactions'
@@ -25,11 +26,13 @@ export * from './wagmi/updaters/HwAccountIndexUpdater'
 // Components
 export * from './api/container/Identicon'
 export * from './api/pure/JazzIcon'
+export { AccountIndexSelect, type AccountIndexSelectProps } from './web3-react/pure/AccountIndexSelect'
 
 // Utils
 export * from './api/utils/connection'
 
-// Connectors
+// Connectors and providers
+export { WalletProvider } from './api/container/WalletProvider'
 export { Web3Provider } from './wagmi/Web3Provider'
 
 // State

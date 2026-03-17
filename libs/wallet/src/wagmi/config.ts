@@ -1,35 +1,58 @@
-import { RPC_URLS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { createAppKit } from '@reown/appkit/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { safe } from '@wagmi/connectors'
+import { createStorage } from 'wagmi'
 
-import { safe, injected } from '@wagmi/connectors'
-import { Chain, http } from 'viem'
-import { arbitrum, avalanche, base, bsc, gnosis, ink, linea, mainnet, plasma, polygon, sepolia } from 'viem/chains'
-import { createConfig, Transport } from 'wagmi'
+import { throttledInjected } from './connectors/throttledInjected'
 
-const SUPPORTED_CHAIN_IDS = Object.values(SupportedChainId).filter((v) => typeof v === 'number')
+import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
-const SUPPORTED_CHAINS: Record<SupportedChainId, Chain> = {
-  [SupportedChainId.MAINNET]: mainnet,
-  [SupportedChainId.BNB]: bsc,
-  [SupportedChainId.GNOSIS_CHAIN]: gnosis,
-  [SupportedChainId.POLYGON]: polygon,
-  [SupportedChainId.BASE]: base,
-  [SupportedChainId.PLASMA]: plasma,
-  [SupportedChainId.ARBITRUM_ONE]: arbitrum,
-  [SupportedChainId.AVALANCHE]: avalanche,
-  [SupportedChainId.LINEA]: linea,
-  [SupportedChainId.INK]: ink,
-  [SupportedChainId.SEPOLIA]: sepolia,
+const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
+
+const WAGMI_STORAGE_KEY = 'cowswap-wallet'
+
+export const REOWN_USE_NOOP_STORAGE = false
+const storage =
+  typeof window !== 'undefined'
+    ? createStorage({
+        storage: window.localStorage,
+        key: WAGMI_STORAGE_KEY,
+      })
+    : createStorage({
+        storage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+      })
+
+const metadata = {
+  name: 'CoW Swap',
+  description:
+    'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
+  url: 'https://swap.cow.fi',
+  icons: ['https://swap.cow.fi/favicon-light-mode.png'],
 }
 
-export const config = createConfig({
-  chains: SUPPORTED_CHAIN_IDS.map((chainId) => SUPPORTED_CHAINS[chainId]) as [Chain, ...Chain[]],
-  transports: SUPPORTED_CHAIN_IDS.reduce(
-    (acc, chainId) => {
-      acc[chainId] = http(RPC_URLS[chainId])
-      return acc
-    },
-    {} as Record<SupportedChainId, Transport>,
-  ),
-  connectors: [safe(), injected()],
+export const wagmiAdapter = new WagmiAdapter({
+  connectors: [safe(), throttledInjected()],
+  networks: SUPPORTED_REOWN_NETWORKS,
+  projectId,
+  storage,
+})
+
+export const reownAppKit = createAppKit({
+  adapters: [wagmiAdapter],
+  allowUnsupportedChain: false,
+  defaultNetwork: SUPPORTED_REOWN_NETWORKS[0],
+  enableEIP6963: true,
+  enableReconnect: true,
+  enableWalletGuide: false,
+  featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
+  features: {
+    analytics: false,
+    email: false,
+    socials: false,
+  },
+  metadata,
+  networks: SUPPORTED_REOWN_NETWORKS,
+  projectId,
+  termsConditionsUrl:
+    'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
 })

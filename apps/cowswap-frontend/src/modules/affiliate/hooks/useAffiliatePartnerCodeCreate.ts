@@ -43,13 +43,13 @@ export function useAffiliatePartnerCodeCreate({
       const typedData = buildPartnerTypedData({
         walletAddress: account,
         code,
-        chainId: BigInt(AFFILIATE_PAYOUTS_CHAIN_ID),
+        chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
       })
       const signedMessage = await walletClient.signTypedData({
         account: walletClient.account?.address,
         domain: typedData.domain,
         types: typedData.types,
-        primaryType: typedData.code,
+        primaryType: 'AffiliateCode',
         message: typedData.message,
       })
 

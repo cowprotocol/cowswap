@@ -29,7 +29,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
       })
 
     const permitData = await generatePermit({
-      inputToken: { name: token.name || '', address: token.address },
+      inputToken: { name: token.name || '', address: token.address as `0x${string}` },
       account,
       permitInfo,
       amount: BigInt(amountToApprove.quotient.toString()),

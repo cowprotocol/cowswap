@@ -6,10 +6,10 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
+import { useWalletClient } from 'wagmi'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap, useDerivedTradeState } from 'modules/trade'
@@ -36,9 +36,7 @@ export interface QuoteParams {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const { data: walletClient } = useWalletClient()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -68,7 +66,9 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
-    if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
+    if (!inputCurrency || !outputCurrency || !orderKind) return
+    // When connected, we need a wallet client for the signer; when disconnected, use bridge quote signer stub
+    if (account && !walletClient) return
 
     const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
 
@@ -87,11 +87,10 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     }
 
     /**
-     * BridgingSDK validates route, and they need a wallet for that, so we should provide a hardcoded wallet
-     * Whe real one is not connected
-     * See `SocketVerifier.callStatic.validateRotueId` in BridgingSDK
+     * BridgingSDK validates route and expects a signer. With wagmi we use WalletClient when connected;
+     * when disconnected we use a stub (see getBridgeQuoteSigner).
      */
-    const signer = account ? provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
+    const signer = account ? walletClient : getBridgeQuoteSigner(inputCurrency.chainId)
     const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
 
     const quoteParams: QuoteBridgeRequest = {
@@ -129,7 +128,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
     }
   }, [
-    provider,
+    walletClient,
     inputCurrency,
     outputCurrency,
     amount,

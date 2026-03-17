@@ -38,11 +38,11 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
       }
 
       if (getIsTheLastTwapPart(order.composableCowInfo)) {
-        return cancelTwapOrder(order.composableCowInfo!.parentId!, order)
+        return cancelTwapOrder(order.composableCowInfo!.parentId! as `0x${string}`, order)
       }
 
       if (getIsComposableCowParentOrder(order)) {
-        return cancelTwapOrder(order.composableCowInfo!.id!, order)
+        return cancelTwapOrder(order.composableCowInfo!.id! as `0x${string}`, order)
       }
 
       const isEthFlowOrder = getIsNativeToken(order.inputToken)

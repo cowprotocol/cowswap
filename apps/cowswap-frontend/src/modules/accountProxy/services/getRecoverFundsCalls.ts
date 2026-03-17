@@ -44,7 +44,10 @@ export function getRecoverFundsCalls({
           target: selectedTokenAddress,
           callData: fnCalldata(
             'approve(address,uint256)',
-            encodeAbiParameters([{ type: 'address' }, { type: 'uint256' }], [proxyAddress, tokenBalanceBigInt]),
+            encodeAbiParameters(
+              [{ type: 'address' }, { type: 'uint256' }],
+              [proxyAddress as `0x${string}`, tokenBalanceBigInt],
+            ),
           ),
           value: 0n,
           isDelegateCall: false,
@@ -56,7 +59,7 @@ export function getRecoverFundsCalls({
             'transferFrom(address,address,uint256)',
             encodeAbiParameters(
               [{ type: 'address' }, { type: 'address' }, { type: 'uint256' }],
-              [proxyAddress, account, tokenBalanceBigInt],
+              [proxyAddress as `0x${string}`, account as `0x${string}`, tokenBalanceBigInt],
             ),
           ),
           value: 0n,

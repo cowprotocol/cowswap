@@ -13,7 +13,7 @@ export async function extensibleFallbackSetupTxs(context: ExtensibleFallbackCont
 
   const domainSeparator = await readContract(config, {
     abi: settlementContract.abi,
-    address: settlementContract.address,
+    address: settlementContract.address as `0x${string}`,
     functionName: 'domainSeparator',
   })
 
@@ -25,7 +25,7 @@ export async function extensibleFallbackSetupTxs(context: ExtensibleFallbackCont
     data: encodeFunctionData({
       abi: SignatureVerifierMuxerAbi,
       functionName: 'setFallbackHandler',
-      args: [extensibleHandlerAddress],
+      args: [extensibleHandlerAddress as `0x${string}`],
     }),
     value: '0',
     operation: 0,
@@ -36,7 +36,7 @@ export async function extensibleFallbackSetupTxs(context: ExtensibleFallbackCont
     data: encodeFunctionData({
       abi: SignatureVerifierMuxerAbi,
       functionName: 'setDomainVerifier',
-      args: [domainSeparator, composableCowContractAddress],
+      args: [domainSeparator, composableCowContractAddress as `0x${string}`],
     }),
     value: '0',
     operation: 0,

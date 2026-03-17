@@ -1,5 +1,4 @@
-import { atom, useAtomValue } from 'jotai'
-import { useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 export type OrdersToDisplayModal = {
   orderIds: string[]

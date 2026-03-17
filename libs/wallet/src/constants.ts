@@ -1,3 +1,6 @@
+/** SessionStorage key: set on user disconnect so InjectedBrowserAutoConnect does not reopen the wallet (e.g. Rabby). */
+export const USER_DISCONNECTED_SESSION_KEY = 'cowswap:userDisconnected:v0'
+
 export const WC_DISABLED_TEXT =
   'Wallet-connect based wallet is already in use. Please disconnect it to connect to this wallet.'
 

@@ -35,9 +35,10 @@ const tradeContext: TradeFlowContext = {
   getCachedPermit: () => Promise.resolve(undefined),
   postOrderParams: {
     class: OrderClass.LIMIT,
-    account: '0x000',
+    account: '0x000' as `0x${string}`,
     chainId: 1,
     kind: OrderKind.SELL,
+    signer: undefined as unknown as import('viem').WalletClient,
     inputAmount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
     outputAmount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
     sellAmountBeforeFee: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),

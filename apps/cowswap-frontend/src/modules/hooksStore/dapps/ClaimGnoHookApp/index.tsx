@@ -39,7 +39,11 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
       return null
     }
 
-    return encodeFunctionData({ abi: SBCDepositContractAbi, functionName: 'claimWithdrawal', args: [account] })
+    return encodeFunctionData({
+      abi: SBCDepositContractAbi,
+      functionName: 'claimWithdrawal',
+      args: [account as `0x${string}`],
+    })
   }, [account])
 
   useEffect(() => {
@@ -116,7 +120,7 @@ function fetchClaimableAmount({ config, account }: { config: Config; account: st
     abi: SBCDepositContractAbi,
     address: SBC_DEPOSIT_CONTRACT_ADDRESS,
     functionName: 'withdrawableAmount',
-    args: [account],
+    args: [account as `0x${string}`],
   })
 }
 
@@ -126,7 +130,7 @@ function fetchGasPrice({ config, account }: { config: Config; account: string })
     data: encodeFunctionData({
       abi: SBCDepositContractAbi,
       functionName: 'claimWithdrawal',
-      args: [account],
+      args: [account as `0x${string}`],
     }),
   })
 }

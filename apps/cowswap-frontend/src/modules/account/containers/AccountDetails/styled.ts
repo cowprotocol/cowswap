@@ -1,6 +1,4 @@
-import { ButtonSecondary, Media } from '@cowprotocol/ui'
-import { ExternalLink, StyledLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ButtonSecondary, Media, ExternalLink, StyledLink, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

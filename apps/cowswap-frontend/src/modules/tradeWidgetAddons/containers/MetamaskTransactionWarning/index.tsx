@@ -6,8 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWidgetProviderMetaInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { ExternalProvider } from '@ethersproject/providers'
+import { useWalletProvider, type WalletProviderLike } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -66,14 +65,14 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
  * Fetch the Metamask version using the method defined in https://docs.metamask.io/wallet/reference/json-rpc-methods/web3_clientversion
  * Returns null if the version could not be fetched
  */
-async function getMetamaskVersion(provider: ExternalProvider): Promise<string | null> {
+async function getMetamaskVersion(provider: NonNullable<WalletProviderLike['provider']>): Promise<string | null> {
   if (!provider.request) return null
 
   try {
-    return await provider.request({
+    return (await provider.request({
       method: 'web3_clientVersion',
       params: [],
-    })
+    })) as string | null
   } catch (error) {
     console.error('Failed to get Metamask version:', error)
     return null
@@ -124,7 +123,7 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
 
   // TODO M-2 COW-568
   // Wallet connection (and warnings) through wagmi will be handled in a future task
-  const provider = useWalletProvider()
+  const provider = useWalletProvider() as WalletProviderLike | undefined
 
   useEffect(() => {
     if (!isMetamask || !provider?.provider) {

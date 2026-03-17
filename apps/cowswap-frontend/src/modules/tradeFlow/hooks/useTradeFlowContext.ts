@@ -5,7 +5,7 @@ import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/w
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
-import { useConfig } from 'wagmi'
+import { useConfig, useWalletClient } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -40,6 +40,7 @@ export interface TradeFlowParams {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const config = useConfig()
+  const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
@@ -89,6 +90,39 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
 
   const settlementChainId = settlementContract.chainId
 
+  type MemoDeps = [
+    typeof account,
+    typeof allowsOffchainSigning,
+    typeof appData,
+    typeof tradeQuote,
+    typeof tradeQuote.quote,
+    typeof buyToken,
+    typeof settlementChainId,
+    typeof closeModals,
+    typeof dispatch,
+    typeof enoughAllowance,
+    typeof generatePermitHook,
+    typeof permitAmountToSign,
+    typeof inputAmount,
+    typeof networkFee,
+    typeof outputAmount,
+    typeof permitInfo,
+    typeof recipient,
+    typeof recipientAddress,
+    typeof sellAmountBeforeFee,
+    typeof sellToken,
+    typeof settlementContract,
+    typeof tradeConfirmActions,
+    typeof typedHooks,
+    typeof validTo,
+    typeof orderKind,
+    typeof uiOrderType,
+    typeof bridgeQuoteAmounts,
+    typeof addBridgeOrder,
+    typeof setSigningStep,
+    typeof walletClient,
+    typeof config,
+  ]
   return (
     useSWR(
       inputAmount &&
@@ -104,8 +138,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         orderKind &&
         settlementContract &&
         uiOrderType &&
-        validTo > 0
-        ? [
+        validTo > 0 &&
+        walletClient
+        ? ([
             account,
             allowsOffchainSigning,
             appData,
@@ -135,41 +170,47 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             bridgeQuoteAmounts,
             addBridgeOrder,
             setSigningStep,
-          ]
+            walletClient,
+            config,
+          ] as MemoDeps)
         : null,
       // TODO: Break down this large function into smaller functions
-      // eslint-disable-next-line max-lines-per-function
-      ([
-        account,
-        allowsOffchainSigning,
-        appData,
-        tradeQuoteState,
-        tradeQuote,
-        buyToken,
-        chainId,
-        closeModals,
-        dispatch,
-        enoughAllowance,
-        generatePermitHook,
-        permitAmountToSign,
-        inputAmount,
-        networkFee,
-        outputAmount,
-        permitInfo,
-        recipient,
-        recipientAddress,
-        sellAmountBeforeFee,
-        sellToken,
-        settlementContract,
-        tradeConfirmActions,
-        typedHooks,
-        validTo,
-        orderKind,
-        uiOrderType,
-        bridgeQuoteAmounts,
-        addBridgeOrder,
-        setSigningStep,
-      ]) => {
+      // eslint-disable-next-line max-lines-per-function, complexity
+      (deps: MemoDeps) => {
+        const [
+          account,
+          allowsOffchainSigning,
+          appData,
+          tradeQuoteState,
+          tradeQuote,
+          buyToken,
+          chainId,
+          closeModals,
+          dispatch,
+          enoughAllowance,
+          generatePermitHook,
+          permitAmountToSign,
+          inputAmount,
+          networkFee,
+          outputAmount,
+          permitInfo,
+          recipient,
+          recipientAddress,
+          sellAmountBeforeFee,
+          sellToken,
+          settlementContract,
+          tradeConfirmActions,
+          typedHooks,
+          validTo,
+          orderKind,
+          uiOrderType,
+          bridgeQuoteAmounts,
+          addBridgeOrder,
+          setSigningStep,
+          walletClient,
+          config,
+        ] = deps
+        void settlementContract // in deps for memo stability
         return {
           tradeQuoteState,
           tradeQuote,
@@ -197,25 +238,24 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             recipientAddress,
             marketLabel: [inputAmount?.currency.symbol, outputAmount?.currency.symbol].join(','),
             orderType: uiOrderType,
-            isBridgeOrder: inputAmount.currency.chainId !== outputAmount.currency.chainId,
+            isBridgeOrder: inputAmount?.currency.chainId !== outputAmount?.currency.chainId,
           },
-          contract: settlementContract,
           permitInfo: !enoughAllowance ? permitInfo : undefined,
           generatePermitHook,
           permitAmountToSign,
           typedHooks,
           orderParams: {
-            account,
+            account: account as `0x${string}`,
             chainId,
-            config,
+            signer: walletClient,
             kind: orderKind,
             inputAmount,
             outputAmount,
             bridgeOutputAmount,
             sellAmountBeforeFee,
             feeAmount: networkFee,
-            sellToken: sellToken as TokenWithLogo,
-            buyToken: buyToken as TokenWithLogo,
+            sellToken: sellToken as unknown as TokenWithLogo,
+            buyToken: buyToken as unknown as TokenWithLogo,
             validTo,
             recipient: recipientAddress || recipient || account,
             recipientAddressOrName: recipient || null,
@@ -223,9 +263,10 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             appData,
             class: OrderClass.MARKET,
             partiallyFillable: isHooksTradeType,
-            quoteId: tradeQuote.quoteResults.quoteResponse.id,
+            quoteId: tradeQuote?.quoteResults?.quoteResponse?.id ?? '',
             isSafeWallet,
           },
+          config,
         }
       },
     ).data || null

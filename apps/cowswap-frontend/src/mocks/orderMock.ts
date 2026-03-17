@@ -34,7 +34,7 @@ export const getOrderMock = (chainId: SupportedChainId): Order => {
     isUnfillable: false,
     fulfillmentTime: '',
     fulfilledTransactionHash: '',
-    sellAmountBeforeFee: 10000,
+    sellAmountBeforeFee: 10000n,
     signature: '0xsss',
     signingScheme: SigningScheme.EIP712,
   }

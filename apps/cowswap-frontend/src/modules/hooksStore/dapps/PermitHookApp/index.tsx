@@ -37,8 +37,11 @@ export function PermitHookApp({ context }: HookDappProps) {
   const onButtonClick = useCallback(async () => {
     if (!permitInfo) return
     const hook = await generatePermitHook({
-      inputToken: { address: token?.address || '', name: token?.name || '' },
-      account: context.account,
+      inputToken: {
+        address: (token?.address || '') as `0x${string}`,
+        name: token?.name || '',
+      },
+      account: context.account as `0x${string}` | undefined,
       permitInfo,
       customSpender: spenderAddress,
     })

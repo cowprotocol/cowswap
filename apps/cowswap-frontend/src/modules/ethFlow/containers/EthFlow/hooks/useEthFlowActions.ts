@@ -70,7 +70,12 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
         ? amountToApprove || MAX_APPROVE_AMOUNT
         : MAX_APPROVE_AMOUNT
       return sendTransaction('approve', () => {
-        return callbacks.approve(unitsToApprove).then((res) => res?.txResponse.transactionHash)
+        return callbacks.approve(unitsToApprove).then((res): string | undefined => {
+          const tx = res?.txResponse
+          return (tx && 'transactionHash' in tx ? tx.transactionHash : (tx as { hash?: string })?.hash) as
+            | string
+            | undefined
+        })
       })
     }
 
@@ -78,7 +83,10 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
       return sendTransaction('wrap', () => {
         if (!callbacks.wrap) return Promise.resolve(undefined)
 
-        return callbacks.wrap({ useModals }).then((res) => res || undefined)
+        return callbacks.wrap({ useModals }).then((res) => {
+          if (res == null) return undefined
+          return typeof res === 'object' && 'hash' in res ? res.hash : res
+        })
       })
     }
 

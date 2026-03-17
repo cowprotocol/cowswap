@@ -1,5 +1,4 @@
-import { Identicon, ConnectionType } from '@cowprotocol/wallet'
-import { CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
+import { Identicon, ConnectionType, CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'

@@ -18,7 +18,7 @@ export function Identicon({ account: customAccount, size = 16 }: IdenticonProps)
   const [fetchable, setFetchable] = useState(true)
   const { account: chainAccount } = useWalletInfo()
   const account = customAccount || chainAccount
-  const { avatar } = useENSAvatar(account)
+  const { avatar } = useENSAvatar(account as `0x${string}` | undefined)
 
   const handleError = (): void => {
     setFetchable(false)

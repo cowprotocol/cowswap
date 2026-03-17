@@ -76,7 +76,7 @@ export function getTransferTenderlySimulationInput({
   const callData = encodeFunctionData({
     abi: Erc20Abi,
     functionName: 'transfer',
-    args: [receiver, BigInt(currencyAmount)],
+    args: [receiver as `0x${string}`, BigInt(currencyAmount)],
   })
 
   return {

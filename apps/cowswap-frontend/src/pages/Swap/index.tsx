@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
 import { PAGE_TITLES, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
@@ -11,6 +10,7 @@ import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFi
 import { parameterizeTradeRoute, getDefaultTradeRawState } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
+import { useEffectiveChainId } from 'common/hooks/useEffectiveChainId'
 import { HydrateAtom } from 'common/state/HydrateAtom'
 
 export function SwapPage(): ReactNode {
@@ -33,10 +33,8 @@ export function SwapPage(): ReactNode {
 }
 
 function SwapPageRedirect(): ReactNode {
-  const { chainId } = useWalletInfo()
+  const chainId = useEffectiveChainId()
   const location = useLocation()
-
-  if (!chainId) return null
 
   const defaultState = getDefaultTradeRawState(chainId)
   const searchParams = new URLSearchParams(location.search)

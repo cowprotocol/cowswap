@@ -24,11 +24,15 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
   return useCallback(
     async (txs: MetaTransactionData[]) => {
       if (isAtomicBatchSupported && account && chainId) {
-        const calls = txs.map(({ to, value, data }) => ({ to, value: BigInt(value), data: data as Hex }))
+        const calls = txs.map(({ to, value, data }) => ({
+          to: to as Hex,
+          value: BigInt(value),
+          data: (data ?? '0x') as Hex,
+        }))
 
         return sendCalls(config, {
           account,
-          calls,
+          calls: calls as Parameters<typeof sendCalls>[1]['calls'],
           chainId,
         }).then((res) => res.id)
       }

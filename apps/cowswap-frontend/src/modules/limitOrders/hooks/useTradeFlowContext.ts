@@ -3,9 +3,9 @@ import { useAtomValue } from 'jotai'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useDispatch } from 'react-redux'
+import { useConfig, useWalletClient } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 
@@ -18,7 +18,7 @@ import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'module
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -27,14 +27,14 @@ import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFlowContext(): TradeFlowContext | null {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const config = useConfig()
+  const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
   const isSafeWallet = useIsSafeWallet()
-  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const settlementContract = useGP2SettlementContractData()
+  const settlementChainId = settlementContract.chainId
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
   const quoteState = useTradeQuote()
@@ -66,8 +66,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       !state.outputCurrencyAmount ||
       !state.inputCurrency ||
       !state.outputCurrency ||
-      !provider ||
-      !settlementContract ||
+      !walletClient ||
+      !settlementContract?.address ||
       !isQuoteReady ||
       !appData
     ) {
@@ -80,7 +80,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       settlementContract,
       allowsOffchainSigning,
       dispatch,
-      signer: provider.getUncheckedSigner(),
+      config,
       rateImpact,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
@@ -89,8 +89,9 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       postOrderParams: {
         class: OrderClass.LIMIT,
         kind: state.orderKind,
-        account,
+        account: account as `0x${string}`,
         chainId: settlementChainId,
+        signer: walletClient,
         sellToken,
         buyToken,
         recipient,
@@ -113,7 +114,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     state.inputCurrency,
     state.outputCurrency,
     state.orderKind,
-    provider,
+    walletClient,
+    config,
     settlementContract,
     isQuoteReady,
     appData,

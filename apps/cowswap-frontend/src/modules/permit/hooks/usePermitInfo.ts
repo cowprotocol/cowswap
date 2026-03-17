@@ -11,9 +11,9 @@ import {
 import { Currency } from '@cowprotocol/currency'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Nullish } from 'types'
+import { useConfig, usePublicClient } from 'wagmi'
 
 import { TradeType } from 'modules/trade/types/TradeType'
 
@@ -33,7 +33,7 @@ const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 
-export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
+export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, bigint> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
 
 /**
  * Check whether the token is permittable, and returns the permit info for it
@@ -54,9 +54,8 @@ export function usePermitInfo(
   customSpender?: string,
 ): IsTokenPermittableResult {
   const { chainId } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const config = useConfig()
+  const publicClient = usePublicClient()
 
   const lowerCaseAddress = token
     ? getWrappedToken(token).address
@@ -83,7 +82,8 @@ export function usePermitInfo(
       !chainId ||
       !isPermitEnabled ||
       !lowerCaseAddress ||
-      !provider ||
+      !config ||
+      !publicClient ||
       permitInfo !== undefined ||
       isNative ||
       // Do not try to load when pre-generated info is loading
@@ -96,7 +96,14 @@ export function usePermitInfo(
 
     const minGasLimit = PERMIT_GAS_LIMIT_MIN[chainId]
 
-    getTokenPermitInfo({ spender, tokenAddress: lowerCaseAddress, chainId, provider, minGasLimit }).then((result) => {
+    getTokenPermitInfo({
+      spender,
+      tokenAddress: lowerCaseAddress as `0x${string}`,
+      chainId,
+      config,
+      publicClient,
+      minGasLimit,
+    }).then((result) => {
       if ('error' in result) {
         // When error, we don't know. Log and don't cache.
         console.debug(
@@ -112,13 +119,14 @@ export function usePermitInfo(
   }, [
     addPermitInfo,
     chainId,
+    config,
+    publicClient,
     isNative,
     isPermitEnabled,
     lowerCaseAddress,
     permitInfo,
     preGeneratedInfo,
     preGeneratedIsLoading,
-    provider,
     spender,
   ])
 

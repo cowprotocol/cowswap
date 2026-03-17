@@ -1,15 +1,15 @@
 import { useCallback, useState } from 'react'
 
 import { delay } from '@cowprotocol/common-utils'
-import { CowShedContract, CowShedContractAbi } from '@cowprotocol/cowswap-abis'
+import { CowShedContractAbi } from '@cowprotocol/cowswap-abis'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { formatBytes32String } from '@ethersproject/strings'
 
 import ms from 'ms.macro'
+import { stringToHex } from 'viem'
 
 import { useContract } from 'common/hooks/useContract'
 
@@ -49,7 +49,7 @@ export function useRecoverFundsFromProxy(
 
   const factoryAddress = cowShedHooks?.getFactoryAddress()
 
-  const { contract: cowShedContract } = useContract<CowShedContract>(factoryAddress, CowShedContractAbi)
+  const { contract: cowShedContract } = useContract(factoryAddress, CowShedContractAbi, true)
 
   const callback = useCallback(async () => {
     if (
@@ -76,7 +76,8 @@ export function useRecoverFundsFromProxy(
         proxyAddress,
       })
 
-      const nonce = formatBytes32String(Date.now().toString())
+      const hex = stringToHex(Date.now().toString()).slice(2)
+      const nonce = ('0x' + (hex + '0'.repeat(64)).slice(0, 64)) as `0x${string}`
       // This field is supposed to be used with orders, but here we just do a transaction
       const validTo = INFINITE_DEADLINE
 
@@ -85,14 +86,17 @@ export function useRecoverFundsFromProxy(
         nonce,
         BigInt(validTo),
         ContractsSigningScheme.EIP712, // TODO: support other signing types
-        provider.getSigner(),
+        (provider as { getSigner(): unknown }).getSigner(),
       )
 
       setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
 
       await delay(DELAY_BETWEEN_SIGNATURES)
 
-      const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
+      const contract = cowShedContract as {
+        executeHooks(...args: unknown[]): Promise<{ hash: string }>
+      }
+      const transaction = await contract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
         gasLimit: DEFAULT_GAS_LIMIT,
       })
 

@@ -45,7 +45,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: [/@1inch/, /@cowprotocol/, /@ethersproject/],
+      external: [/@1inch/, /@cowprotocol/],
     },
   },
 })

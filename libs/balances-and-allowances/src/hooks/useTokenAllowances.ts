@@ -20,7 +20,7 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   const { data: allowances, isLoading } = useReadContracts({
     contracts: tokenAddresses.map((address) => ({
       abi: erc20Abi,
-      address,
+      address: address as `0x${string}`,
       chainId,
       functionName: 'allowance',
       args: [account, spender],
@@ -31,7 +31,7 @@ export function useTokenAllowances(tokenAddresses: string[]): {
     if (!allowances?.length) return
 
     return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
-      acc[address.toLowerCase()] = BigInt(allowances[index].result || 0)
+      acc[address.toLowerCase()] = BigInt(Number(allowances[index].result ?? 0))
       return acc
     }, {})
   }, [tokenAddresses, allowances])

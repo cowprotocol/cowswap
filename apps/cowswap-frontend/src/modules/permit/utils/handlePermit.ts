@@ -30,7 +30,10 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
     // permitInfo will only be set if there's NOT enough allowance
 
     const permitData = await generatePermitHook({
-      inputToken: { address: inputToken.address, name: inputToken.name },
+      inputToken: {
+        address: inputToken.address as `0x${string}`,
+        name: inputToken.name,
+      },
       account,
       permitInfo,
       amount,
