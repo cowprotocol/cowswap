@@ -52,7 +52,7 @@ function fetchWidgetProviderMetaInfo(chainId: SupportedChainId): Promise<Provide
  * Async atom that fetches wallet capabilities (EIP-5792) via wagmi/viem.
  * Returns capabilities for the current account and chain, or undefined when disconnected or on error.
  */
-// eslint-disable-next-line complexity
+
 export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | undefined> => {
   const { account, chainId, legacyConnector, connector, provider } = get(walletInfoAtom)
 
@@ -90,33 +90,19 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
               return
             }
 
-            const chainIdHex = '0x' + (+chainId).toString(16)
+            const chainIdHex = `0x${chainId.toString(16)}`
 
             // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
             resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
           .catch((error) => {
+            console.error('getCapabilities promise error:', error)
             reject(error)
           })
       },
     )
 
-    if (!result) throw new Error('No result from wallet_getCapabilities')
-
-    const chainIdHex = `0x${chainId.toString(16)}`
-    const byChain = result as Record<string, WalletCapabilities> | WalletCapabilities
-
-    if (typeof (byChain as Record<string, WalletCapabilities>)[chainIdHex] !== 'undefined') {
-      return (byChain as Record<string, WalletCapabilities>)[chainIdHex]
-    }
-
-    if (typeof (byChain as Record<string, WalletCapabilities>).atomic !== 'undefined') {
-      return byChain as WalletCapabilities
-    }
-
-    const firstKey = Object.keys(byChain as Record<string, WalletCapabilities>)[0]
-
-    return firstKey ? (byChain as Record<string, WalletCapabilities>)[firstKey] : undefined
+    return result
   } catch (error) {
     console.error('Failed to fetch wallet capabilities:', error)
     return undefined
