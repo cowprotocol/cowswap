@@ -1,9 +1,11 @@
 import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   formatSymbol,
   formatTokenAmount,
   getCurrencyAddress,
   isAddress,
+  isBarnBackendEnv,
   isSellOrder,
   shortenAddress,
 } from '@cowprotocol/common-utils'
@@ -214,7 +216,10 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
 export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
   const { orderId, chainId, signer, cancelPendingOrder } = params
 
-  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer)
+  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer, {
+    env: isBarnBackendEnv ? 'staging' : 'prod',
+    settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  })
 
   if (!signature) throw new Error(t`Signature is undefined!`)
 
