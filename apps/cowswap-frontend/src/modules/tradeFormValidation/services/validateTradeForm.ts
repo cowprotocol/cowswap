@@ -58,7 +58,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
   const inputAmountUsd = inputCurrencyFiatAmount ? +inputCurrencyFiatAmount.toExact() : null
-  const isXstockSellBelowLimt = Boolean(
+  const isXstockSellBelowLimit = Boolean(
     isInputCurrencyXstock && inputAmountUsd && inputAmountUsd < XSTOCK_MIN_TRADE_SIZE_USD,
   )
 
@@ -115,7 +115,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.InputAmountNotSet)
   }
 
-  if (isXstockSellBelowLimt) {
+  if (isXstockSellBelowLimit) {
     validations.push(TradeFormValidation.XstockMinimumTradeSize)
   }
 
