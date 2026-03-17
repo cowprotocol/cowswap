@@ -1,6 +1,12 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import { SettingsDropdownSection, SettingsBox, SimpleStyledText, SettingsLabel } from '@cowprotocol/ui'
+import {
+  SettingsDropdownSection,
+  SettingsBox,
+  SimpleStyledText,
+  SettingsLabel,
+  SettingsBoxGroup,
+} from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -87,44 +93,46 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
     <div onClick={handleContainerClick}>
       <SettingsContainer>
         <SettingsDropdownSection title={t`Limit Settings`}>
-          <SettingsBox
-            title={t`Custom Recipient`}
-            tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
-            checked={showRecipient}
-            toggle={handleRecipientToggle}
-          />
+          <SettingsBoxGroup>
+            <SettingsBox
+              title={t`Custom Recipient`}
+              tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
+              checked={showRecipient}
+              toggle={handleRecipientToggle}
+            />
 
-          <SettingsBox
-            title={t`Enable Partial Executions`}
-            tooltip={
-              <Trans>
-                <SimpleStyledText>
-                  <p>
-                    Allows you to choose whether your limit orders will be <i>Partially fillable</i> or{' '}
-                    <i>Fill or kill</i>.
-                  </p>
-                  <ul>
-                    <li>
-                      <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill
-                      the full amount.
-                    </li>
-                    <li>
-                      <i>Fill or kill</i> orders will either be filled fully or not at all.
-                    </li>
-                  </ul>
-                </SimpleStyledText>
-              </Trans>
-            }
-            checked={partialFillsEnabled}
-            toggle={handlePartialFillsToggle}
-          />
+            <SettingsBox
+              title={t`Enable Partial Executions`}
+              tooltip={
+                <Trans>
+                  <SimpleStyledText>
+                    <p>
+                      Allows you to choose whether your limit orders will be <i>Partially fillable</i> or{' '}
+                      <i>Fill or kill</i>.
+                    </p>
+                    <ul>
+                      <li>
+                        <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill
+                        the full amount.
+                      </li>
+                      <li>
+                        <i>Fill or kill</i> orders will either be filled fully or not at all.
+                      </li>
+                    </ul>
+                  </SimpleStyledText>
+                </Trans>
+              }
+              checked={partialFillsEnabled}
+              toggle={handlePartialFillsToggle}
+            />
 
-          <SettingsBox
-            title={t`Lock Limit Price`}
-            tooltip={t`When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes.`}
-            checked={limitPriceLocked}
-            toggle={handleLimitPriceLockedToggle}
-          />
+            <SettingsBox
+              title={t`Lock Limit Price`}
+              tooltip={t`When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes.`}
+              checked={limitPriceLocked}
+              toggle={handleLimitPriceLockedToggle}
+            />
+          </SettingsBoxGroup>
         </SettingsDropdownSection>
 
         <SettingsDropdownSection title={t`Limit Interface`}>

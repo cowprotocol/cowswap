@@ -12,7 +12,7 @@ export const SettingsBoxWrapper = styled.label`
   &::before {
     content: '';
     position: absolute;
-    inset: calc(-0.5 * var(--padding)) calc(-1 * var(--padding));
+    inset: calc(-0.5 * var(--toggleGap, var(--padding))) calc(-1 * var(--padding));
 
     // For debugging:
     // background: rgba(255, 0, 0, 0.25);

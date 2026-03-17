@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useRef } from 'react'
 import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
-import { SettingsBox, SettingsDropdownSection } from '@cowprotocol/ui'
+import { SettingsBox, SettingsBoxGroup, SettingsDropdownSection } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -29,6 +29,7 @@ interface SettingsTabProps {
   enablePartialApprovalState?: StatefulValue<boolean> | [null, null]
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function SettingsDropdown({
   className,
   recipientToggleState,
@@ -87,50 +88,52 @@ export function SettingsDropdown({
             </SettingsDropdownSection>
 
             <SettingsDropdownSection title={t`Swap Interface`}>
-              <SettingsBox
-                id="toggle-recipient-mode-button"
-                title={t`Custom Recipient`}
-                tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
-                checked={recipientToggleVisible}
-                toggle={toggleRecipientVisibility}
-                data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
-                  action: 'Toggle Recipient Address',
-                  label: recipientToggleVisible ? 'Enabled' : 'Disabled',
-                })}
-              />
-
-              {enablePartialApproval !== null ? (
+              <SettingsBoxGroup>
                 <SettingsBox
-                  id="enable-partial-approvals-button"
-                  title={t`Enable partial approvals`}
-                  tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
-                  checked={enablePartialApproval}
-                  toggle={toggleEnablePartialApproval}
-                />
-              ) : null}
-
-              {!isInjectedWidget() && hooksEnabled !== null ? (
-                <SettingsBox
-                  id="toggle-hooks-mode-button"
-                  title={t`Enable Hooks`}
-                  tooltip={
-                    <Trans>
-                      <b>
-                        <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
-                      </b>{' '}
-                      Add DeFi interactions before and after your trade.
-                    </Trans>
-                  }
-                  checked={hooksEnabled}
-                  toggle={toggleHooksEnabled}
+                  id="toggle-recipient-mode-button"
+                  title={t`Custom Recipient`}
+                  tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
+                  checked={recipientToggleVisible}
+                  toggle={toggleRecipientVisibility}
                   data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapAnalyticsCategory.HOOKS,
-                    action: 'Toggle Hooks Enabled',
-                    label: hooksEnabled ? 'Enabled' : 'Disabled',
+                    category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
+                    action: 'Toggle Recipient Address',
+                    label: recipientToggleVisible ? 'Enabled' : 'Disabled',
                   })}
                 />
-              ) : null}
+
+                {enablePartialApproval !== null ? (
+                  <SettingsBox
+                    id="enable-partial-approvals-button"
+                    title={t`Enable partial approvals`}
+                    tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
+                    checked={enablePartialApproval}
+                    toggle={toggleEnablePartialApproval}
+                  />
+                ) : null}
+
+                {!isInjectedWidget() && hooksEnabled !== null ? (
+                  <SettingsBox
+                    id="toggle-hooks-mode-button"
+                    title={t`Enable Hooks`}
+                    tooltip={
+                      <Trans>
+                        <b>
+                          <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
+                        </b>{' '}
+                        Add DeFi interactions before and after your trade.
+                      </Trans>
+                    }
+                    checked={hooksEnabled}
+                    toggle={toggleHooksEnabled}
+                    data-click-event={toCowSwapGtmEvent({
+                      category: CowSwapAnalyticsCategory.HOOKS,
+                      action: 'Toggle Hooks Enabled',
+                      label: hooksEnabled ? 'Enabled' : 'Disabled',
+                    })}
+                  />
+                ) : null}
+              </SettingsBoxGroup>
             </SettingsDropdownSection>
           </styledEl.MenuFlyout>
         </styledEl.StyledMenu>

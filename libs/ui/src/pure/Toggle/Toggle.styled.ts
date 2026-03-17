@@ -13,8 +13,19 @@ export const Input = styled.input`
 `
 
 export const Wrapper = styled.div<{ $bgColor?: string; $inactiveBgColor?: string }>`
-  --height: 24px;
+  /*
+    touch devices: visually larger
+    mouse: visually smaller
+
+    Hit areas are the same if wrapped in a label.
+  */
+
+  --height: 32px;
   --offset: 4px;
+
+  @media (pointer: fine) {
+    --height: 24px;
+  }
 
   --track-inactive: ${({ $inactiveBgColor }) => $inactiveBgColor || `var(${UI.COLOR_PAPER_DARKER})`};
   --track-active: var(${UI.COLOR_PRIMARY_OPACITY_25});
