@@ -12,13 +12,6 @@ import { TelegramData } from '../types'
 
 const EMPTY_SUBSCRIPTION_RESPONSE = Promise.resolve({ data: false as const })
 
-interface TgSubscriptionContext {
-  isTgSubscribed: boolean
-  isCmsCallInProgress: boolean
-  toggleSubscription(): Promise<void>
-  subscribeWithData(data: TelegramData): Promise<void>
-}
-
 type SubscriptionApiCaller = (method: string, data: TelegramData) => Promise<{ data: boolean }> | undefined
 
 interface SubscriptionCheckEffectsParams {
@@ -34,6 +27,13 @@ interface SubscriptionCheckParams {
   errorMessage: string
   tgData: TelegramData
   onSuccess: (isSubscribed: boolean) => void
+}
+
+interface TgSubscriptionContext {
+  isTgSubscribed: boolean
+  isCmsCallInProgress: boolean
+  toggleSubscription(): Promise<void>
+  subscribeWithData(data: TelegramData): Promise<void>
 }
 
 export function useTgSubscription(account: string | undefined, authorization: TgAuthorization): TgSubscriptionContext {
@@ -115,6 +115,35 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
   )
 }
 
+function checkSubscriptionStatus({
+  callSubscriptionApi,
+  errorMessage,
+  tgData,
+  onSuccess,
+}: SubscriptionCheckParams): void {
+  const subscriptionPromise = callSubscriptionApi('/check-tg-subscription', tgData)
+  if (!subscriptionPromise) return
+
+  subscriptionPromise
+    .then(({ data: result }: { data: boolean }) => {
+      onSuccess(result)
+    })
+    .catch((error: unknown) => {
+      console.error(errorMessage, error)
+    })
+}
+
+function useResetSubscriptionOnAccountChange(
+  account: string | undefined,
+  setTgSubscribed: (value: boolean) => void,
+): void {
+  useEffect(() => {
+    if (!account) {
+      setTgSubscribed(false)
+    }
+  }, [account, setTgSubscribed])
+}
+
 function useSubscriptionApiCaller(
   account: string | undefined,
   setIsCmsCallInProgress: (state: boolean) => void,
@@ -129,17 +158,6 @@ function useSubscriptionApiCaller(
     },
     [account, setIsCmsCallInProgress],
   )
-}
-
-function useResetSubscriptionOnAccountChange(
-  account: string | undefined,
-  setTgSubscribed: (value: boolean) => void,
-): void {
-  useEffect(() => {
-    if (!account) {
-      setTgSubscribed(false)
-    }
-  }, [account, setTgSubscribed])
 }
 
 function useSubscriptionCheckEffects({
@@ -165,22 +183,4 @@ function useSubscriptionCheckEffects({
       onSuccess: setTgSubscribed,
     })
   }, [account, tgData?.username, callSubscriptionApi, setTgSubscribed, skipNextCheckRef])
-}
-
-function checkSubscriptionStatus({
-  callSubscriptionApi,
-  errorMessage,
-  tgData,
-  onSuccess,
-}: SubscriptionCheckParams): void {
-  const subscriptionPromise = callSubscriptionApi('/check-tg-subscription', tgData)
-  if (!subscriptionPromise) return
-
-  subscriptionPromise
-    .then(({ data: result }: { data: boolean }) => {
-      onSuccess(result)
-    })
-    .catch((error: unknown) => {
-      console.error(errorMessage, error)
-    })
 }

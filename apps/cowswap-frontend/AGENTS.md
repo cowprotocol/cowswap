@@ -71,4 +71,4 @@ This file: cowswap-frontend-specific architecture and module overrides.
 ## State management notes
 - Prefer managing side effects with `jotai-effect` rather than updaters.
 - Use `atom.onMount` to subscribe to external sources when needed.
-- Prefer `jotai/query` (`atomWithQuery`) over `useSWR`.
+- Both SWR and `jotai/query` (`atomWithQuery`) are acceptable for data fetching; the team is evaluating migration.

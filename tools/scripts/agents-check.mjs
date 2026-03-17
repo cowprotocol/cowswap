@@ -152,23 +152,10 @@ function checkEnforcementWiring() {
   const agentsCheckScript = packageJson.scripts?.['agents:check']
   if (
     typeof agentsCheckScript !== 'string' ||
-    !agentsCheckScript.includes('tools/scripts/agents-check.mjs') ||
-    !agentsCheckScript.includes('tools/scripts/swr-usage-guardrail.mjs')
+    !agentsCheckScript.includes('tools/scripts/agents-check.mjs')
   ) {
     errors.push(
-      'package.json script "agents:check" must include both "tools/scripts/agents-check.mjs" and "tools/scripts/swr-usage-guardrail.mjs"',
-    )
-  }
-
-  const swrCheckScript = packageJson.scripts?.['swr:check']
-  if (swrCheckScript !== 'node tools/scripts/swr-usage-guardrail.mjs') {
-    errors.push('package.json script "swr:check" must equal "node tools/scripts/swr-usage-guardrail.mjs"')
-  }
-
-  const swrUpdateScript = packageJson.scripts?.['swr:baseline:update']
-  if (swrUpdateScript !== 'node tools/scripts/swr-usage-guardrail.mjs --update') {
-    errors.push(
-      'package.json script "swr:baseline:update" must equal "node tools/scripts/swr-usage-guardrail.mjs --update"',
+      'package.json script "agents:check" must include "tools/scripts/agents-check.mjs"',
     )
   }
 

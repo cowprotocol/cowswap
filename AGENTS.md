@@ -32,7 +32,7 @@ Normative language:
 - `MUST` preserve module boundaries and import direction constraints already enforced by lint.
 - `MUST` prefer existing shared utilities/hooks over creating near-duplicates.
 - `MUST` run targeted verification (lint/tests/typecheck) for the touched area.
-- `MUST` use Jotai `atomWithQuery` for new data fetching; migrate touched SWR flows unless blocked.
+- Both SWR and Jotai `atomWithQuery` are acceptable for data fetching. The team is evaluating migration; no forced migration yet.
 - Avoid introducing new `common/** -> modules/**` imports; treat existing cases as legacy debt and track cleanup in `docs/QUALITY.md`.
 
 ## Command Baseline
@@ -42,7 +42,7 @@ Normative language:
 - Start: `pnpm start`, `pnpm start:cowswap`, `pnpm start:explorer`, `pnpm start:widget`, `pnpm start:cowfi`
 - Lint/test/typecheck: `pnpm lint`, `pnpm test`, `pnpm typecheck`
 - Project target: `pnpx nx run <project>:<target>`
-- Harness checks: `pnpm agents:check`, `pnpm swr:check`
+- Harness checks: `pnpm agents:check`
 
 ## Where To Look
 

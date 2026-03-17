@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Address } from '@cowprotocol/cow-sdk'
 
@@ -8,7 +8,7 @@ import { AppState } from 'legacy/state'
 import { OrdersState } from 'legacy/state/orders/reducer'
 
 import { safeShortenAddress } from '../../../utils/address'
-import { getLocalTrades } from '../lib/affiliateProgramUtils'
+import { getLocalTrades, isExecutedNonIntegratorOrder } from '../lib/affiliateProgramUtils'
 import { logAffiliate } from '../utils/logger'
 
 /**
@@ -18,14 +18,22 @@ export function useHasLocalTrades(account: Address | undefined): boolean {
   const ordersState = useSelector<AppState, OrdersState | undefined>((state) => state.orders)
 
   const hasPastTrades = useMemo(() => {
-    return getLocalTrades(account, ordersState).length > 0
-  }, [account, ordersState])
+    if (!account || !ordersState) return false
 
-  useEffect(() => {
-    if (account && hasPastTrades) {
-      logAffiliate(safeShortenAddress(account), 'Found past trades in local orders')
+    const orders = getLocalTrades(account, ordersState).filter(isExecutedNonIntegratorOrder)
+
+    if (orders.length > 0) {
+      logAffiliate(
+        safeShortenAddress(account),
+        `Found ${orders.length} trades in local state. Latest order IDs: ${orders
+          .slice(0, 3)
+          .map((order) => order.id)
+          .join(', ')}`,
+      )
     }
-  }, [account, hasPastTrades])
+
+    return orders.length > 0
+  }, [account, ordersState])
 
   return hasPastTrades
 }

@@ -38,7 +38,7 @@ export function SolversDirectoryTableFilters(props: FiltersBarProps): React.Reac
         <Input
           value={searchQuery}
           onChange={(event): void => setSearchQuery(event.target.value)}
-          placeholder="Search solver, backend ID, description, address, payout..."
+          placeholder="Search solver, backend ID, address..."
         />
         {searchQuery && (
           <ClearInputButton type="button" onClick={(): void => setSearchQuery('')} aria-label="Clear search">

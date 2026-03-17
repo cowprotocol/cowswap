@@ -4,14 +4,18 @@ import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { COW_TOKEN_TO_CHAIN, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
-import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
+import {
+  COW_TOKEN_TO_CHAIN,
+  COW_CONTRACT_ADDRESS,
+  V_COW,
+  WRAPPED_NATIVE_CURRENCIES as WETH,
+} from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

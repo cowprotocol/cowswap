@@ -2,9 +2,12 @@ import { ReactNode } from 'react'
 
 import { StatusColorVariant } from '../../../theme/statusColors'
 
-export enum BannerOrientation {
-  Horizontal = 'horizontal',
-  Vertical = 'vertical',
+export interface CollapsibleInlineBannerProps extends Omit<InlineBannerProps, 'children'> {
+  collapsedContent: ReactNode
+  expandedContent: ReactNode
+  defaultExpanded?: boolean
+  isCollapsible?: boolean
+  onToggle?: (isExpanded: boolean) => void
 }
 
 export interface InlineBannerProps {
@@ -25,14 +28,12 @@ export interface InlineBannerProps {
   backDropBlur?: boolean
   fontSize?: number
   noBackground?: boolean
+  paperBackground?: boolean
   breakWord?: boolean
   customContent?: ReactNode
 }
 
-export interface CollapsibleInlineBannerProps extends Omit<InlineBannerProps, 'children'> {
-  collapsedContent: ReactNode
-  expandedContent: ReactNode
-  defaultExpanded?: boolean
-  isCollapsible?: boolean
-  onToggle?: (isExpanded: boolean) => void
+export enum BannerOrientation {
+  Horizontal = 'horizontal',
+  Vertical = 'vertical',
 }

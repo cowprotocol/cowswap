@@ -1,4 +1,4 @@
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/currency'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'

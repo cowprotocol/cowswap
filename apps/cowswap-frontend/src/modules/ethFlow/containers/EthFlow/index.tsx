@@ -3,9 +3,9 @@ import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'

@@ -12,7 +12,6 @@ Implemented:
 
 - Root AGENTS is compact and acts as a TOC.
 - `pnpm agents:check` validates AGENTS/doc harness integrity.
-- `pnpm swr:check` blocks new SWR usage via a committed legacy baseline.
 - CI job `agent-harness` enforces these checks on PRs/pushes.
 
 Still pending:
@@ -63,7 +62,7 @@ Goal: measure agent/code-change quality with repeatable tasks and score trends.
 
 1. Add `tools/harness/scenarios/` with 10-20 scoped tasks:
    - boundary fix
-   - SWR migration slice
+   - data fetching pattern slice
    - typed bugfix
    - small refactor with tests
 2. Add `tools/harness/run.mjs`:

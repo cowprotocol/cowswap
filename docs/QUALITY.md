@@ -25,7 +25,7 @@ Purpose: lightweight quality/freshness signal for autonomous contributors.
 ## Known Cross-Cutting Gaps
 
 - Some architectural boundaries are still documented more strongly than they are lint-enforced.
-- SWR-to-`atomWithQuery` migration remains incomplete.
+- Data fetching pattern (SWR vs `atomWithQuery`) migration is under evaluation.
 - Domain grading should be refreshed continuously with targeted evidence.
 - Hardening roadmap and milestones live in `docs/HARNESS_HARDENING.md`.
 

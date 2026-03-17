@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getTokenId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
 
 export const RECENT_TOKENS_LIMIT = 4
 // Storage schema: { [chainId: number]: StoredRecentToken[] } serialized under this key.
@@ -18,6 +18,32 @@ export interface StoredRecentToken {
 
 export type StoredRecentTokensByChain = Record<number, StoredRecentToken[]>
 
+export function buildFavoriteTokenKeys(tokens: TokenWithLogo[]): Set<string> {
+  const set = new Set<string>()
+
+  for (const token of tokens) {
+    set.add(getTokenId(token))
+  }
+
+  return set
+}
+
+export function buildNextStoredTokens(
+  prev: StoredRecentTokensByChain,
+  token: TokenWithLogo,
+  maxItems: number,
+): StoredRecentTokensByChain {
+  const chainId = token.chainId
+  const normalized = toStoredToken(token)
+  const chainEntries = prev[chainId] ?? []
+  const updatedChain = insertToken(chainEntries, normalized, maxItems)
+
+  return {
+    ...prev,
+    [chainId]: updatedChain,
+  }
+}
+
 export function buildTokensByKey(tokens: TokenWithLogo[]): Map<string, TokenWithLogo> {
   const map = new Map<string, TokenWithLogo>()
 
@@ -28,14 +54,8 @@ export function buildTokensByKey(tokens: TokenWithLogo[]): Map<string, TokenWith
   return map
 }
 
-export function buildFavoriteTokenKeys(tokens: TokenWithLogo[]): Set<string> {
-  const set = new Set<string>()
-
-  for (const token of tokens) {
-    set.add(getTokenId(token))
-  }
-
-  return set
+export function getStoredTokenKey(token: StoredRecentToken): string {
+  return getTokenId(token)
 }
 
 export function hydrateStoredToken(entry: StoredRecentToken, canonical?: TokenWithLogo): TokenWithLogo | null {
@@ -51,7 +71,6 @@ export function hydrateStoredToken(entry: StoredRecentToken, canonical?: TokenWi
       entry.decimals,
       entry.symbol,
       entry.name,
-      undefined,
       entry.tags ?? [],
     )
   } catch {
@@ -59,8 +78,33 @@ export function hydrateStoredToken(entry: StoredRecentToken, canonical?: TokenWi
   }
 }
 
-export function getStoredTokenKey(token: StoredRecentToken): string {
-  return getTokenId(token)
+export function persistRecentTokenSelection(
+  token: TokenWithLogo,
+  favoriteTokens: TokenWithLogo[],
+  maxItems = RECENT_TOKENS_LIMIT,
+): void {
+  const favoriteKeys = buildFavoriteTokenKeys(favoriteTokens)
+
+  if (favoriteKeys.has(getTokenId(token))) {
+    return
+  }
+
+  const current = readStoredTokens(maxItems)
+  const next = buildNextStoredTokens(current, token, maxItems)
+
+  persistStoredTokens(next)
+}
+
+export function persistStoredTokens(tokens: StoredRecentTokensByChain): void {
+  if (!canUseLocalStorage()) {
+    return
+  }
+
+  try {
+    window.localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
+  } catch {
+    // Best effort persistence
+  }
 }
 
 export function readStoredTokens(limit: number): StoredRecentTokensByChain {
@@ -91,71 +135,15 @@ export function readStoredTokens(limit: number): StoredRecentTokensByChain {
   }
 }
 
-export function persistStoredTokens(tokens: StoredRecentTokensByChain): void {
-  if (!canUseLocalStorage()) {
-    return
-  }
-
-  try {
-    window.localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
-  } catch {
-    // Best effort persistence
-  }
+function canUseLocalStorage(): boolean {
+  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 }
 
-export function buildNextStoredTokens(
-  prev: StoredRecentTokensByChain,
-  token: TokenWithLogo,
-  maxItems: number,
-): StoredRecentTokensByChain {
-  const chainId = token.chainId
-  const normalized = toStoredToken(token)
-  const chainEntries = prev[chainId] ?? []
-  const updatedChain = insertToken(chainEntries, normalized, maxItems)
+function insertToken(tokens: StoredRecentToken[], token: StoredRecentToken, limit: number): StoredRecentToken[] {
+  const key = getTokenId(token)
+  const withoutToken = tokens.filter((entry) => getTokenId(entry) !== key)
 
-  return {
-    ...prev,
-    [chainId]: updatedChain,
-  }
-}
-
-export function persistRecentTokenSelection(
-  token: TokenWithLogo,
-  favoriteTokens: TokenWithLogo[],
-  maxItems = RECENT_TOKENS_LIMIT,
-): void {
-  const favoriteKeys = buildFavoriteTokenKeys(favoriteTokens)
-
-  if (favoriteKeys.has(getTokenId(token))) {
-    return
-  }
-
-  const current = readStoredTokens(maxItems)
-  const next = buildNextStoredTokens(current, token, maxItems)
-
-  persistStoredTokens(next)
-}
-
-function sanitizeStoredTokensMap(record: Record<string, unknown>, limit: number): StoredRecentTokensByChain {
-  const entries: StoredRecentTokensByChain = {}
-
-  for (const [chainKey, tokens] of Object.entries(record)) {
-    const chainId = Number(chainKey)
-
-    if (Number.isNaN(chainId) || !Array.isArray(tokens)) {
-      continue
-    }
-
-    const sanitized = tokens
-      .map<StoredRecentToken | null>((token) => sanitizeStoredToken(token))
-      .filter((token): token is StoredRecentToken => Boolean(token))
-
-    if (sanitized.length) {
-      entries[chainId] = sanitized.slice(0, limit)
-    }
-  }
-
-  return entries
+  return [token, ...withoutToken].slice(0, limit)
 }
 
 function migrateLegacyStoredTokens(entries: unknown[], limit: number): StoredRecentTokensByChain {
@@ -186,7 +174,7 @@ function sanitizeStoredToken(token: unknown): StoredRecentToken | null {
 
   return {
     chainId,
-    address: address.toLowerCase(),
+    address: getAddressKey(address),
     decimals,
     symbol: typeof symbol === 'string' ? symbol : undefined,
     name: typeof name === 'string' ? name : undefined,
@@ -195,25 +183,36 @@ function sanitizeStoredToken(token: unknown): StoredRecentToken | null {
   }
 }
 
-function insertToken(tokens: StoredRecentToken[], token: StoredRecentToken, limit: number): StoredRecentToken[] {
-  const key = getTokenId(token)
-  const withoutToken = tokens.filter((entry) => getTokenId(entry) !== key)
+function sanitizeStoredTokensMap(record: Record<string, unknown>, limit: number): StoredRecentTokensByChain {
+  const entries: StoredRecentTokensByChain = {}
 
-  return [token, ...withoutToken].slice(0, limit)
+  for (const [chainKey, tokens] of Object.entries(record)) {
+    const chainId = Number(chainKey)
+
+    if (Number.isNaN(chainId) || !Array.isArray(tokens)) {
+      continue
+    }
+
+    const sanitized = tokens
+      .map<StoredRecentToken | null>((token) => sanitizeStoredToken(token))
+      .filter((token): token is StoredRecentToken => Boolean(token))
+
+    if (sanitized.length) {
+      entries[chainId] = sanitized.slice(0, limit)
+    }
+  }
+
+  return entries
 }
 
 function toStoredToken(token: TokenWithLogo): StoredRecentToken {
   return {
     chainId: token.chainId,
-    address: token.address.toLowerCase(),
+    address: getAddressKey(token.address),
     decimals: token.decimals,
     symbol: token.symbol,
     name: token.name,
     logoURI: token.logoURI,
     tags: token.tags,
   }
-}
-
-function canUseLocalStorage(): boolean {
-  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 }

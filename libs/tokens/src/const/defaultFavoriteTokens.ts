@@ -21,7 +21,6 @@ import {
   USDC_AVALANCHE,
   USDC_BASE,
   USDC_BNB,
-  USDC_LENS,
   USDC_LINEA,
   USDC_MAINNET,
   USDC_POLYGON,
@@ -116,7 +115,6 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDT_AVALANCHE,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
   ]),
-  [SupportedChainId.LENS]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS], USDC_LENS]), // TODO: Add Lens tokens when available
   [SupportedChainId.BNB]: tokensListToMap([
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.BNB],
     USDC_BNB,

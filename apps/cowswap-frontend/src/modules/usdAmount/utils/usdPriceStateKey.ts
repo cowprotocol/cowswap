@@ -1,7 +1,8 @@
-import { Token } from '@uniswap/sdk-core'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 
 import { UsdPriceStateKey } from '../types'
 
 export function getUsdPriceStateKey(token: Token): UsdPriceStateKey {
-  return `${token.address.toLowerCase()}|${token.chainId}`
+  return `${getAddressKey(token.address)}|${token.chainId}`
 }

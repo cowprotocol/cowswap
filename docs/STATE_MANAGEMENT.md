@@ -11,16 +11,12 @@ Source of truth scope: Jotai usage, query patterns, persistence, and migration c
 
 ## Remote Data Fetching
 
-- SWR is deprecated for new work.
-- New fetching must use Jotai `atomWithQuery` from `jotai/query`.
-- When touching a SWR-backed flow, migrate it unless there is a documented blocker.
-- Guardrail: `pnpm swr:check` blocks new SWR usage using a committed legacy baseline.
-
-Legacy SWR fallback rules (only when migration is blocked):
-
-- SWR keys must include every response-defining parameter.
-- Memoize key parameter objects.
-- Use no-refresh options when revalidation causes UX flicker.
+- Both SWR and Jotai `atomWithQuery` (from `jotai/query`) are acceptable for data fetching.
+- The team is evaluating a phased migration from SWR to `atomWithQuery`; no forced migration yet.
+- When using SWR:
+  - SWR keys must include every response-defining parameter.
+  - Memoize key parameter objects.
+  - Use no-refresh options when revalidation causes UX flicker.
 
 ## Persistence
 
