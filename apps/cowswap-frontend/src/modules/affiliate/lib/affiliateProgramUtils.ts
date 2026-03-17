@@ -1,13 +1,11 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
-import { formatLocaleNumber, formatTokenAmount } from '@cowprotocol/common-utils'
-import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { formatLocaleNumber } from '@cowprotocol/common-utils'
+import { Address, areAddressesEqual, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
-import BigNumber from 'bignumber.js'
 
-import { SerializedOrder } from 'legacy/state/orders/actions'
+import { OrderStatus, SerializedOrder } from 'legacy/state/orders/actions'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
 import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer'
 
@@ -98,11 +96,6 @@ export function extractFullAppDataFromResponse(response: AppDataResponse | strin
   return undefined
 }
 
-export function formatAmount(rawAmount?: string, token?: Token | null): string {
-  if (!rawAmount || !token) return ''
-  return formatTokenAmount(CurrencyAmount.fromRawAmount(token, rawAmount))
-}
-
 export function formatCompactNumber(value?: number): string {
   if (typeof value !== 'number') return EMPTY_VALUE_LABEL
 
@@ -179,12 +172,14 @@ export function getIneligibilityReason(order: OrderWithChainId, savedCode: strin
 
     if (executedFeeToken !== sellToken) return 'Fee token mismatch.'
 
-    const sellAmount = new BigNumber(order.executedSellAmount)
-    const feeAmount = new BigNumber(order.executedFee || '0')
+    const precisionMultiplier = 100n
+    const executedSellAmount = BigInt(order.executedSellAmount)
+    const executedFeeAmount = BigInt(order.executedFee || '0')
 
-    const feeBps = feeAmount.multipliedBy(10_000).dividedBy(sellAmount)
-
-    if (feeBps.lt(MIN_FEE_BPS)) {
+    if (
+      executedFeeAmount * 10_000n * precisionMultiplier <
+      executedSellAmount * BigInt(MIN_FEE_BPS * Number(precisionMultiplier))
+    ) {
       return `Fee below minimum threshold (${MIN_FEE_BPS} bps).`
     }
   } catch {

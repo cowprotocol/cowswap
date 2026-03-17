@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { formatDateWithTimezone, formatShortDate, getExplorerOrderLink } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 import {
   Badge,
@@ -10,6 +11,7 @@ import {
   ContextMenuTooltip,
   InfoTooltip,
   NetworkLogo,
+  TokenAmount,
   UI,
 } from '@cowprotocol/ui'
 
@@ -21,7 +23,7 @@ import styled from 'styled-components/macro'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 import { OrderWithChainId } from '../api/fetchTraderActivity'
-import { formatAmount, getIneligibilityReason, toValidDate } from '../lib/affiliateProgramUtils'
+import { getIneligibilityReason, toValidDate } from '../lib/affiliateProgramUtils'
 
 export interface AffiliateTraderActivityTableRowProps {
   order: OrderWithChainId
@@ -71,18 +73,28 @@ export function AffiliateTraderActivityTableRow({ order, savedCode }: AffiliateT
           </TokenPair>
           <TradeSummary>
             <TradeLine>
-              <b>{formatAmount(executedSellAmount, sellToken)}</b>
-              <small>{sellToken?.symbol}</small>
+              {sellToken && (
+                <TokenAmount
+                  amount={CurrencyAmount.fromRawAmount(sellToken, executedSellAmount)}
+                  tokenSymbol={sellToken}
+                />
+              )}
             </TradeLine>
             <TradeLine>
-              <b>{formatAmount(executedBuyAmount, buyToken)}</b>
-              <small>{buyToken?.symbol}</small>
+              {buyToken && (
+                <TokenAmount
+                  amount={CurrencyAmount.fromRawAmount(buyToken, executedBuyAmount)}
+                  tokenSymbol={buyToken}
+                />
+              )}
             </TradeLine>
           </TradeSummary>
         </TradeCell>
       </td>
       <td>
-        {formatAmount(executedFee, feeToken)} {feeToken?.symbol}
+        {feeToken && (
+          <TokenAmount amount={CurrencyAmount.fromRawAmount(feeToken, executedFee || '0')} tokenSymbol={feeToken} />
+        )}
       </td>
       <td>
         <EligibilityCell>
@@ -151,15 +163,6 @@ const TradeLine = styled.span`
   align-items: center;
   gap: 6px;
   line-height: 1.2;
-
-  > b {
-    font-weight: 600;
-    color: var(${UI.COLOR_TEXT});
-  }
-
-  > small {
-    color: var(${UI.COLOR_TEXT_OPACITY_60});
-  }
 `
 
 const NetworkCell = styled.div`
