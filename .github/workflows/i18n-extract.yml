@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [ opened, synchronize ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -42,7 +46,7 @@ jobs:
       - name: Commit and push if changed
         run: |
           if git diff --quiet 'apps/cowswap-frontend/src/locales/*.po'; then
-            echo "No i18n changes detected"
+            echo "No i18n changes detected in changed files"
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
