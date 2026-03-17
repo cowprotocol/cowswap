@@ -53,7 +53,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
 
   return (
     <ColumnOneCard showLoader={statsLoading || codeLoading}>
-      {!info ? null : (
+      {!info || !savedCode ? null : (
         <>
           <RewardsHeader>
             <CardTitle>
@@ -63,7 +63,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
           <LinkedCard $isExpired={isExpired}>
             <LinkedCodeRow $isExpired={isExpired}>
               <LinkedCopy>
-                <CopyHelper toCopy={savedCode!} iconSize={16} hideCopiedLabel />
+                <CopyHelper toCopy={savedCode} iconSize={16} hideCopiedLabel />
                 <LinkedCodeText>{savedCode}</LinkedCodeText>
               </LinkedCopy>
               {isExpired ? (
