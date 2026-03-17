@@ -4,6 +4,7 @@ import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
+import { XSTOCK_MIN_TRADE_SIZE_USD } from '../consts'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
 // eslint-disable-next-line max-lines-per-function, complexity
@@ -29,6 +30,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestrictedForCountry,
     isBalancesLoading,
     isBundlingSupported,
+    isInputCurrencyXstock,
   } = context
 
   const {
@@ -37,6 +39,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     inputCurrencyAmount,
     outputCurrencyAmount,
     inputCurrencyBalance,
+    inputCurrencyFiatAmount,
     recipient,
     orderKind,
   } = derivedTradeState
@@ -54,6 +57,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
+  const inputAmountUsd = inputCurrencyFiatAmount ? +inputCurrencyFiatAmount.toExact() : null
+  const isXstockSellBelowLimt = Boolean(
+    isInputCurrencyXstock && inputAmountUsd && inputAmountUsd < XSTOCK_MIN_TRADE_SIZE_USD,
+  )
 
   const validations: TradeFormValidation[] = []
 
@@ -106,6 +113,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (inputAmountIsNotSet) {
     validations.push(TradeFormValidation.InputAmountNotSet)
+  }
+
+  if (isXstockSellBelowLimt) {
+    validations.push(TradeFormValidation.XstockMinimumTradeSize)
   }
 
   if (!!account && isBundlingSupported === null) {

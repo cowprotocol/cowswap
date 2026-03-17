@@ -16,6 +16,7 @@ import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 
+import { XSTOCK_MIN_TRADE_SIZE_USD } from '../../consts'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
@@ -106,6 +107,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.InputAmountNotSet]: {
     text: <Trans>Enter an amount</Trans>,
+  },
+  [TradeFormValidation.XstockMinimumTradeSize]: {
+    text: <Trans>Minimum trade size {XSTOCK_MIN_TRADE_SIZE_USD}$</Trans>,
   },
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
