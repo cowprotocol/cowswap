@@ -109,7 +109,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: <Trans>Enter an amount</Trans>,
   },
   [TradeFormValidation.XstockMinimumTradeSize]: {
-    text: <Trans>Minimum trade size {XSTOCK_MIN_TRADE_SIZE_USD}$</Trans>,
+    text: <Trans>Minimum trade size for xStocks tokens is {XSTOCK_MIN_TRADE_SIZE_USD}$</Trans>,
   },
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
