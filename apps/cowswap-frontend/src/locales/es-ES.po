@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-03-16 15:27\n"
+"PO-Revision-Date: 2026-03-17 16:35\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1868,6 +1868,10 @@ msgstr "Todos los Hooks ({allHooksCount})"
 msgid "Approving <0/> <1><2/></1> for trading"
 msgstr "Aprobando <0/> <1><2/></1> para operar"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
+msgid "This wallet has already traded on CoW Swap."
+msgstr ""
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
 #~ msgstr "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
@@ -2735,8 +2739,8 @@ msgid "Dismiss hiring message"
 msgstr "Descartar mensaje de contratación"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
-#~ msgid "Referral rewards are for new wallets only."
-#~ msgstr "Referral rewards are for new wallets only."
+msgid "Referral rewards are for new wallets only."
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/Modal/index.tsx
 msgid "dialog content"
@@ -4564,6 +4568,10 @@ msgstr "Expiración de la transacción"
 msgid "Search network"
 msgstr "Buscar red"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
+msgid "Updates daily at 02:00 UTC"
+msgstr ""
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
 msgstr "Cowswap sin conexión"
@@ -5814,8 +5822,8 @@ msgid "Sandwich icon"
 msgstr "Icono de Sandwich"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
-msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
-msgstr ""
+#~ msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
+#~ msgstr "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Network compatibility error"
@@ -7273,8 +7281,8 @@ msgid "Exec. price"
 msgstr "Precio Ejec."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
-msgid "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
-msgstr ""
+#~ msgid "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
+#~ msgstr "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "You sold <0/>"
