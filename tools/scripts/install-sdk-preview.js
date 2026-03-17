@@ -50,6 +50,7 @@ fs.writeFileSync('.npmrc', npmrc)
 // Non-SDK packages (e.g. @cowprotocol/cms) are only on npmjs and would fail to install.
 // Fix: pin them to explicit npmjs tarball URLs so pnpm fetches them directly, bypassing the scope registry.
 pinNonSdkPackagesToNpmjs()
+pinNonSdkLockfileResolutions()
 
 function isSdkPackage(name) {
   return name === '@cowprotocol/cow-sdk' || name.startsWith('@cowprotocol/sdk-')
@@ -100,5 +101,34 @@ function pinNonSdkPackagesToNpmjs() {
     if (changed) {
       fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
     }
+  }
+}
+
+// The lockfile stores resolution entries for @cowprotocol/* non-SDK packages without a tarball URL.
+// Locally, pnpm resolves them via the .npmrc scope registry (npm.pkg.github.com), but in CI
+// that registry doesn't host these packages. Fix: add explicit npmjs tarball URLs to the lockfile.
+function pinNonSdkLockfileResolutions() {
+  const lockfilePath = path.join(ROOT_DIR, 'pnpm-lock.yaml')
+  if (!fs.existsSync(lockfilePath)) return
+
+  let content = fs.readFileSync(lockfilePath, 'utf-8')
+  let changed = false
+
+  // Match: '@cowprotocol/<name>@<version>':\n    resolution: {integrity: <hash>}
+  // Skip entries that already have a tarball field
+  const resolutionRegex = /( {2}'@cowprotocol\/([\w-]+)@([\d][^']*)':\n {4}resolution: \{integrity: )(sha512-[^,}]+)\}/g
+
+  content = content.replace(resolutionRegex, (match, prefix, unscopedName, version, integrity) => {
+    const fullName = `@cowprotocol/${unscopedName}`
+    if (isSdkPackage(fullName)) return match
+
+    const tarballUrl = getNpmjsTarballUrl(fullName, version)
+    console.log(`[install-sdk-preview.js] pinning lockfile resolution ${fullName}@${version} -> ${tarballUrl}`)
+    changed = true
+    return `${prefix}${integrity}, tarball: ${tarballUrl}}`
+  })
+
+  if (changed) {
+    fs.writeFileSync(lockfilePath, content)
   }
 }
