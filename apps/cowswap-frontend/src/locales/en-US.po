@@ -1128,6 +1128,11 @@ msgstr "sandwich-icon"
 msgid "Bridging to destination..."
 msgstr "Bridging to destination..."
 
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHeaderButton.container.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHeaderButton.container.tsx
+msgid "Refer"
+msgstr "Refer"
+
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
 #~ msgstr "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
