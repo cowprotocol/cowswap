@@ -31,52 +31,6 @@ let longSafeInfoInterval: NodeJS.Timeout | null
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 
-interface WalletUpdaterProps {
-  standaloneMode?: boolean
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
-  const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
-  const gnosisSafeInfo = useSafeInfo(walletInfo)
-
-  const setWalletInfo = useSetAtom(walletInfoAtom)
-  const setWalletDetails = useSetAtom(walletDetailsAtom)
-  const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
-
-  // Update wallet info
-  useEffect(() => {
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
-    setWalletInfo(walletInfo)
-  }, [walletInfo, setWalletInfo])
-
-  // Update wallet details
-  useEffect(() => {
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
-    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
-    setWalletDetails({
-      walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
-      ...walletDetails,
-    })
-  }, [walletDetails, setWalletDetails, gnosisSafeInfo])
-
-  // Update Gnosis Safe info
-  useEffect(() => {
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
-    setGnosisSafeInfo(gnosisSafeInfo)
-  }, [gnosisSafeInfo, setGnosisSafeInfo])
-
-  return null
-}
-
 function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
@@ -198,4 +152,50 @@ function useWalletInfo(): WalletInfo {
       }) satisfies WalletInfo,
     [isChainIdUnsupported, chainId, active, account, provider, legacyConnector, connector],
   )
+}
+
+interface WalletUpdaterProps {
+  standaloneMode?: boolean
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
+  const walletInfo = useWalletInfo()
+  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
+  const gnosisSafeInfo = useSafeInfo(walletInfo)
+
+  const setWalletInfo = useSetAtom(walletInfoAtom)
+  const setWalletDetails = useSetAtom(walletDetailsAtom)
+  const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
+
+  // Update wallet info
+  useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
+    setWalletInfo(walletInfo)
+  }, [walletInfo, setWalletInfo])
+
+  // Update wallet details
+  useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
+    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
+    setWalletDetails({
+      walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
+      ...walletDetails,
+    })
+  }, [walletDetails, setWalletDetails, gnosisSafeInfo])
+
+  // Update Gnosis Safe info
+  useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
+    setGnosisSafeInfo(gnosisSafeInfo)
+  }, [gnosisSafeInfo, setGnosisSafeInfo])
+
+  return null
 }
