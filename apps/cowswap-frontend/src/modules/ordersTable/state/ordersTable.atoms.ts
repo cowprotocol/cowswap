@@ -56,10 +56,6 @@ export const ordersTableStateAtom = atom<OrdersTableState>({
 })
 
 export const DEFAULT_ORDERS_TABLE_FILTERS = {
-  // orderType: TabOrderTypes.LIMIT,
-  // currentPageNumber: 1, // TODO: Init from URL...
-  // tabs: [],
-  // currentTabId: OrderTabId.OPEN, // TODO: Init from URL...
   searchTerm: '',
   historyStatusFilter: HistoryStatusFilter.FILLED,
 } as const satisfies OrdersTableFilters

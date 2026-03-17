@@ -24,20 +24,12 @@ export interface OrderActions {
 }
 
 export interface OrdersTableFilters {
-  // Page:
-  // orderType: TabOrderTypes
-  // currentPageNumber: number
+  // Looking for order type, page number or tab id?
+  // See apps/cowswap-frontend/src/common/state/routesState.ts
 
-  // Tab:
-  // tabs: TabParams[]
-  // currentTabId: OrderTabId
-
-  // Query:
+  // Query (not persisted in URL)
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
-
-  // Other:W
-  // displayOrdersOnlyForSafeApp: boolean
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>
@@ -51,16 +43,48 @@ export interface OrdersTableParams {
   orders: Order[]
 }
 
-// TODO: Add TS Doc about what each of them is:
+/**
+ * OrdersTableState derived from Redux orders, current route, current tab, and filters.
+ */
 export interface OrdersTableState {
+  /**
+   * All orders for the current route that belong to the current account:
+   * - SWAP page => Limit orders
+   * - LIMIT page => Limit orders
+   * - ADVANCED page => TWAP orders (includes emulated twap orders + emulated part orders + discrete twap orders (from Redux)).
+   * */
   reduxOrders: Order[]
+
+  /** Orders in reduxOrders with status PENDING. Used for unfillable checks, permit validity, and pending UI. */
   pendingOrders: Order[]
+
+  /** Orders bucketed by tab (open, history, unfillable, signing). Built by getOrdersTableList from reduxOrders. */
   ordersList: OrdersTableList
+
+  /**
+   * Orders for the currently selected tab only (`ordersList[currentTabId]`).
+   * This is the list that is paginated and rendered in the table.
+   * */
   orders: OrderTableItem[]
+
+  /**
+   * `orders` after applying search and history status filter.
+   * This is the list that is paginated and rendered in the table.
+   * */
   filteredOrders: OrderTableItem[]
+
+  /**
+   * True once orders have been loaded for the current chain/account/route.
+   * Used to distinguish loading from empty state.
+   * TODO: Currently not used.
+   * */
   hasHydratedOrders: boolean
+
+  /**
+   * Balances and token allowances for tokens used by the orders in reduxOrders.
+   * Used for balance display and permit/approval state.
+   * */
   balancesAndAllowances: BalancesAndAllowances
-  // orderActions: OrderActions
 }
 
 export interface OrderTableGroup {
