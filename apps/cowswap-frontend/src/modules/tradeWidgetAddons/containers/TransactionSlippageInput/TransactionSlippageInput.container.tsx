@@ -36,7 +36,7 @@ export function TransactionSlippageInput(): JSX.Element {
 
   const autoButton = (
     <styledEl.AutoButton onClick={setAutoSlippage} active={!isSlippageModified}>
-      <Trans>Dynamic</Trans>
+      <Trans>Auto</Trans>
       {!isSlippageModified && isQuoteLoading ? <Loader size="16px" /> : null}
     </styledEl.AutoButton>
   )

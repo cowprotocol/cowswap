@@ -124,7 +124,7 @@ export function getNonNativeSlippageTooltip({
       {isSettingsModal ? (
         <>
           <p>
-            <Trans>To let Cow Swap automatically select the slippage tolerance, toggle the "Dynamic" option.</Trans>
+            <Trans>To let Cow Swap automatically select the slippage tolerance, toggle the "Auto" option.</Trans>
           </p>
           <p>
             <Trans>Either way, trades are protected from MEV, so your slippage can't be exploited!</Trans>
