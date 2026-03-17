@@ -42,6 +42,7 @@ import {
   OrdersStateNetwork,
   OrderTypeKeys,
   PartialOrdersMap,
+  OrderObject,
 } from './reducer'
 import { deserializeOrder } from './utils/deserializeOrder'
 
@@ -100,9 +101,7 @@ interface UpdateOrdersBatchParams {
   isSafeWallet: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
+export function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]): (OrderObject | undefined)[] {
   if (!state) return []
 
   const firstState = state[keys[0]] || {}
