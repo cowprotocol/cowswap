@@ -1,3 +1,5 @@
+/* eslint-disable max-lines-per-function, complexity */
+
 import { atom } from 'jotai'
 
 import {
@@ -91,9 +93,7 @@ function setIsOrderUnfillable(params: SetIsOrderUnfillableParams): void {
   cowSwapStore.dispatch(createSetIsOrderUnfillableAction(params))
 }
 
-// eslint-disable-next-line max-lines-per-function
 ordersTableStateAtom.onMount = () => {
-  // eslint-disable-next-line max-lines-per-function
   const unobserve = observe((get, set) => {
     const { chainId, account } = get(walletInfoAtom)
     const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom)
@@ -113,6 +113,10 @@ ordersTableStateAtom.onMount = () => {
         [TabOrderTypes.LIMIT]: UiOrderType.LIMIT,
         [TabOrderTypes.ADVANCED]: UiOrderType.TWAP,
       }[orderType]
+
+      if (!orderType || !uiOrderType) {
+        console.warn('Invalid order type', { orderType, uiOrderType })
+      }
 
       /*
       const ordersTokens = useMemo(() => getOrdersInputTokens(allOrders), [allOrders])
@@ -157,8 +161,6 @@ ordersTableStateAtom.onMount = () => {
         reduxOrders.push(mappedOrder)
         ordersTokensSet.add(getAddressKey(mappedOrder.inputToken.address))
       })
-
-      console.log('orderType =', orderType)
 
       if (orderType === TabOrderTypes.ADVANCED) {
         /*

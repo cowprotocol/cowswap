@@ -6,8 +6,6 @@ import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPri
 
 import * as styledEl from './AffectedPermitOrdersTable.styled'
 
-import { useResetOrdersTableFilters } from '../../hooks/useResetOrdersTableFilters'
-import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { AffectedPermitOrderWithActions } from '../AffectedPermitOrderWithActions/AffectedPermitOrderWithActions.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
 
@@ -17,10 +15,6 @@ interface AffectedPermitOrdersTableProps {
 
 export function AffectedPermitOrdersTable({ ordersWithPermit }: AffectedPermitOrdersTableProps): ReactNode {
   const pendingOrdersPrices = usePendingOrdersPrices()
-
-  useResetOrdersTableFilters({
-    historyStatusFilter: HistoryStatusFilter.FILLED,
-  })
 
   return (
     <>

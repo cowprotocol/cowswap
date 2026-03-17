@@ -17,12 +17,7 @@ import {
 import { PageTitle } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
-import {
-  OrdersTableWidget,
-  HistoryStatusFilter,
-  ordersTableStateAtom,
-  useResetOrdersTableFilters,
-} from 'modules/ordersTable'
+import { OrdersTableWidget, ordersTableStateAtom } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
@@ -55,11 +50,6 @@ export function AdvancedOrdersPage(): ReactNode {
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
-
-  useResetOrdersTableFilters({
-    historyStatusFilter: HistoryStatusFilter.FILLED,
-  })
-
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
 
   return (

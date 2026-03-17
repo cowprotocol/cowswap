@@ -1,7 +1,10 @@
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useDeferredValue, useEffect, useRef, useState } from 'react'
 
 import { useLatestRef } from './useLatestRef'
 
+/**
+ * This
+ */
 export function useStateWithDeferredValue<T>(
   value: T,
   deferredCallback: (deferredValue: T) => void,
@@ -9,9 +12,15 @@ export function useStateWithDeferredValue<T>(
   const [state, setState] = useState(value)
   const deferredValue = useDeferredValue(state)
 
+  const isFirstRender = useRef(true)
   const deferredCallbackRef = useLatestRef(deferredCallback)
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
     deferredCallbackRef.current(deferredValue)
   }, [deferredCallbackRef, deferredValue])
 

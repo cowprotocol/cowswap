@@ -6,21 +6,42 @@ import { Location } from 'history'
 
 import { hashHistory } from '../constants/routes'
 
-export const locationAtom = atom<Location>({
-  key: '',
-  pathname: '',
-  search: '',
-  hash: '',
-  state: undefined,
-})
+function getInitialLocation(): Location {
+  if (typeof window === 'undefined') {
+    return {
+      key: '',
+      pathname: '',
+      search: '',
+      hash: '',
+      state: undefined,
+    }
+  }
+
+  // We are using HashRouter, so we need to extract pathname and search from the hash:
+  const { hash } = window.location
+  const [pathname, search] = hash.substring(1).split('?')
+
+  return {
+    key: `INITIAL_LOCATION_KEY_${Date.now()}`,
+    pathname,
+    search,
+    hash: '',
+    state: undefined,
+  }
+}
+export const locationAtom = atom<Location>(getInitialLocation())
 
 locationAtom.onMount = (setAtom) => {
+  setAtom(getInitialLocation())
+
   return hashHistory.listen((event) => {
     setAtom(event.location)
   })
 }
 
-export const locationPathnameAtom = atom((get) => get(locationAtom).pathname)
+export const locationPathnameAtom = atom((get) => {
+  return get(locationAtom).pathname
+})
 
 // Segments:
 
@@ -31,9 +52,9 @@ export enum TabOrderTypes {
 }
 
 export const locationNetworkAtom = atom(
-  (get) => (parseInt(get(locationAtom).pathname.split('/')[1]) || null) as SupportedChainId | null,
+  (get) => (parseInt(get(locationPathnameAtom).split('/')[1]) || null) as SupportedChainId | null,
 )
-export const locationOrderTypeAtom = atom((get) => get(locationAtom).pathname.split('/')[2] as TabOrderTypes)
+export const locationOrderTypeAtom = atom((get) => get(locationPathnameAtom).split('/')[2] as TabOrderTypes)
 
 // Search:
 export const locationSearchAtom = atom((get) => get(locationAtom).search)

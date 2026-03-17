@@ -1,8 +1,8 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 
-import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
-import { SetIsOrderUnfillableParams } from 'legacy/state/orders/actions'
+import { Order, OrderStatus, PENDING_STATES, SetIsOrderUnfillableParams } from 'legacy/state/orders/actions'
 
+import { TabOrderTypes } from 'common/state/routesState'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
@@ -10,7 +10,7 @@ import { getOrderParams } from './getOrderParams'
 import { groupOrdersTable } from './groupOrdersTable'
 import { getParsedOrderFromTableItem, isParsedOrder } from './orderTableGroupUtils'
 
-import { OrdersTableList, OrderTableItem, TabOrderTypes } from '../state/ordersTable.types'
+import { OrdersTableList, OrderTableItem } from '../state/ordersTable.types'
 import { PendingOrdersPermitValidityState } from '../state/permit/pendingOrdersPermitValidity.atom'
 
 const ORDER_LIMIT = 1000
