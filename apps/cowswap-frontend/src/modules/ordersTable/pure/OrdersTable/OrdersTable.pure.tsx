@@ -5,6 +5,7 @@ import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
 import { usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
+import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 import { ordersToCancelMapAtom } from 'common/state/ordersToCancel.atom'
 import { TabOrderTypes, pageParamAtom, OrderTabId, locationOrderTypeAtom } from 'common/state/routesState'
@@ -18,7 +19,6 @@ import { OrdersTablePagination } from './Pagination/OrdersTablePagination.pure'
 import { OrdersTableRow } from './Row/OrdersTableRow.pure'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
-import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../state/tabs/ordersTableTabs.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
 
@@ -36,7 +36,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const orderType = useAtomValue(locationOrderTypeAtom)
   const currentPageNumber = useAtomValue(pageParamAtom)
 
-  const { filteredOrders, balancesAndAllowances } = useOrdersTableState() || {}
+  const { filteredOrders, balancesAndAllowances } = useAtomValue(ordersTableStateAtom)
 
   const orderActions = useOrderActions()
 

@@ -24,9 +24,9 @@ import {
   Select,
 } from './OrdersTableWidget.styled'
 
-import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
+import { ordersTableStateAtom } from '../../state/ordersTable.atoms'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../state/tabs/ordersTableTabs.constants'
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
@@ -63,7 +63,7 @@ export function OrdersTableWidget(): ReactNode {
     partiallyUpdateOrdersTableFilters({ historyStatusFilter: e.target.value as HistoryStatusFilter })
   }
 
-  const { filteredOrders, reduxOrders } = useOrdersTableState() || {}
+  const { filteredOrders, reduxOrders } = useAtomValue(ordersTableStateAtom)
   const ordersTableParams = useAtomValue(ordersTableParamsAtom)
   const currentTabId = ordersTableParams.tab
   const currentPageNumber = ordersTableParams.page

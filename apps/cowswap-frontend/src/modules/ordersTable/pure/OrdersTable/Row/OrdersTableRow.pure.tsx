@@ -5,6 +5,7 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
+import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 import { ordersToCancelMapAtom } from 'common/state/ordersToCancel.atom'
 import { OrderTabId } from 'common/state/routesState'
@@ -12,7 +13,6 @@ import { OrderTabId } from 'common/state/routesState'
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 
 import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
-import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../state/ordersTable.types'
 import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/usePendingOrderPermitValidity'
 import { getOrderParams } from '../../../utils/getOrderParams'
@@ -27,16 +27,14 @@ interface OrderTableRowProps {
 export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
-  const tableState = useOrdersTableState()
+  const ordersTableState = useAtomValue(ordersTableStateAtom)
   const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
   const getSpotPrice = useGetSpotPrice()
   const pendingOrdersPrices = usePendingOrdersPrices()
   const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
   const orderActions = useOrderActions()
 
-  if (!tableState) return null
-
-  const { balancesAndAllowances } = tableState
+  const { balancesAndAllowances } = ordersTableState
 
   const isRowSelectable = allowsOffchainSigning
 
