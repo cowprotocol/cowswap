@@ -35,6 +35,25 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
+function useWalletInfo(): WalletInfo {
+  const { account, chainId, isActive: active, provider, connector: legacyConnector } = useWeb3React()
+  const { connector } = useConnection()
+  const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
+
+  return useMemo(
+    () =>
+      ({
+        chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
+        active,
+        account: account as Address,
+        provider,
+        legacyConnector,
+        connector,
+      }) satisfies WalletInfo,
+    [isChainIdUnsupported, chainId, active, account, provider, legacyConnector, connector],
+  )
+}
+
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
@@ -133,25 +152,6 @@ function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDet
       isSafeApp,
     }
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
-}
-
-function useWalletInfo(): WalletInfo {
-  const { account, chainId, isActive: active, provider, connector: legacyConnector } = useWeb3React()
-  const { connector } = useConnection()
-  const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
-
-  return useMemo(
-    () =>
-      ({
-        chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
-        active,
-        account: account as Address,
-        provider,
-        legacyConnector,
-        connector,
-      }) satisfies WalletInfo,
-    [isChainIdUnsupported, chainId, active, account, provider, legacyConnector, connector],
-  )
 }
 
 interface WalletUpdaterProps {
