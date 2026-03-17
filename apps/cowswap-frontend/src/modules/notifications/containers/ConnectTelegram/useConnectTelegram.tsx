@@ -8,8 +8,6 @@ import { TelegramData } from '../../types'
 
 const TELEGRAM_AUTH_WIDGET_URL = 'https://telegram.org/js/telegram-widget.js?22'
 
-type TelegramSubscriptionControls = ReturnType<typeof useTgSubscription>
-
 export interface ConnectTelegramController {
   wrapperRef: RefObject<HTMLDivElement | null>
   isLoading: boolean
@@ -20,6 +18,8 @@ export interface ConnectTelegramController {
   subscribeWithData: TelegramSubscriptionControls['subscribeWithData']
   username?: string
 }
+
+type TelegramSubscriptionControls = ReturnType<typeof useTgSubscription>
 
 export function useConnectTelegram(): ConnectTelegramController {
   const { account } = useWalletInfo()

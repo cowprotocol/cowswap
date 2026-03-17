@@ -2,6 +2,11 @@
   "name": "@cowprotocol/types",
   "version": "4.0.0",
   "description": "CoW Swap types",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap.git",
+    "directory": "libs/types"
+  },
   "type": "commonjs",
   "main": "./src/index.ts",
   "types": "./src/index.d.ts",
@@ -10,8 +15,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.0",
-    "@cowprotocol/sdk-bridging": "3.0.0",
+    "@cowprotocol/cow-sdk": "8.0.3",
+    "@cowprotocol/sdk-bridging": "3.1.2",
     "@cowprotocol/currency": "workspace:*",
     "eventemitter3": "^4.0.0"
   }
