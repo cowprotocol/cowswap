@@ -10,20 +10,6 @@ import SVG from 'react-inlinesvg'
 
 import { MenuImageProps, MenuItemKind, MenuLink } from './types'
 
-function MenuImage(props: MenuImageProps): React.ReactNode | null {
-  const { title, iconSVG, icon, iconComponent: IconComponent } = props
-
-  if (iconSVG) {
-    return <SVG src={iconSVG} description={`${title} icon`} />
-  } else if (IconComponent) {
-    return <IconComponent size="1.8rem" aria-hidden="true" focusable="false" />
-  } else if (icon) {
-    return <img src={icon} alt={`${title} icon`} />
-  } else {
-    return null
-  }
-}
-
 interface InternalExternalLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   link: MenuLink
   handleMobileMenuOnClick?: Command
@@ -61,5 +47,19 @@ export default function InternalExternalMenuLink({
         {title}
       </LinkWithPrefixNetwork>
     )
+  }
+}
+
+function MenuImage(props: MenuImageProps): React.ReactNode | null {
+  const { title, iconSVG, icon, iconComponent: IconComponent } = props
+
+  if (iconSVG) {
+    return <SVG src={iconSVG} description={`${title} icon`} />
+  } else if (IconComponent) {
+    return <IconComponent size="1.8rem" aria-hidden="true" focusable="false" />
+  } else if (icon) {
+    return <img src={icon} alt={`${title} icon`} />
+  } else {
+    return null
   }
 }
