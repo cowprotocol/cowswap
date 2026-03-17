@@ -10,8 +10,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.1",
-    "@cowprotocol/sdk-bridging": "3.1.0",
+    "@cowprotocol/cow-sdk": "8.0.3",
+    "@cowprotocol/sdk-bridging": "3.1.2",
     "@cowprotocol/types": "workspace:*"
   }
 }
