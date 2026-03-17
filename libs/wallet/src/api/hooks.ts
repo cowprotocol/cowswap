@@ -5,7 +5,6 @@ import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 
 import { useConnection } from 'wagmi'
 
-import { useWalletCapabilities } from './hooks/useWalletCapabilities'
 import {
   gnosisSafeInfoAtom,
   walletDetailsAtom,
@@ -19,11 +18,11 @@ import {
   selectedEip6963ProviderAtom,
   selectedEip6963ProviderRdnsAtom,
 } from './state/multiInjectedProvidersAtom'
+import { isBundlingSupportedAtom } from './state/walletCapabilitiesAtom'
 import { ConnectionType, ConnectorType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useConnectionType } from '../web3-react/hooks/useConnectionType'
-import { useIsSafeApp, useIsSafeViaWc } from '../web3-react/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -55,18 +54,8 @@ export function useEndEagerConnect(): () => void {
   return useCallback(() => set((prev) => (prev > 0 ? prev - 1 : 0)), [set])
 }
 
-// TODO: Replace with isBundlingSupportedAtom
 export function useIsTxBundlingSupported(): boolean | null {
-  // TODO this will be fixed in M-3 COW-569
-  const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
-  const isSafeApp = useIsSafeApp()
-  const isSafeViaWc = useIsSafeViaWc()
-
-  if (isSafeApp) return true
-
-  if (isCapabilitiesLoading) return null
-
-  return isSafeViaWc && capabilities?.atomic?.status === 'supported'
+  return useAtomValue(isBundlingSupportedAtom)
 }
 
 // TODO: Add proper return type annotation
