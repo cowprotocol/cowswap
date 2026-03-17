@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useENSAddress } from '@cowprotocol/ens'
-import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
+import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
@@ -40,6 +41,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
+  const isInputCurrencyXstock = useIsXstockToken(
+    inputCurrency && getIsNativeToken(inputCurrency) ? null : inputCurrency,
+  )
 
   const isBundlingSupported = useIsTxBundlingSupported()
   const isWrapUnwrap = useIsWrapOrUnwrap()
@@ -94,6 +98,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isRestrictedForCountry,
       isBalancesLoading: !hasFirstLoad || isBalancesLoading,
       balancesError,
+      isInputCurrencyXstock,
     }
   }, [
     hasFirstLoad,
@@ -120,6 +125,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     toBeImported,
     tradeQuote,
     balancesError,
+    isInputCurrencyXstock,
   ])
 }
 

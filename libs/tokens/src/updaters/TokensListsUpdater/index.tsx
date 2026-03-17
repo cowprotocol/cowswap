@@ -13,6 +13,7 @@ import useSWR, { SWRConfiguration } from 'swr'
 
 import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
 
+import { XSTOCKS_LIST_URL } from '../../const/tokensLists'
 import { fetchTokenList } from '../../services/fetchTokenList'
 import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
@@ -59,10 +60,6 @@ const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 /**
  * Temporary hidden under feature flag xStocks list URL
  */
-const XSTOCKS_LIST_URL =
-  'https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json'
-
-// TODO: Break down this large function into smaller functions
 export function TokensListsUpdater({
   chainId: currentChainId,
   isGeoBlockEnabled,

@@ -53,6 +53,7 @@ export enum TradeFormValidation {
 
   // RWA/Geo restrictions
   RestrictedForCountry,
+  XstockMinimumTradeSize,
 }
 
 export interface TradeFormValidationCommonContext {
@@ -78,6 +79,7 @@ export interface TradeFormValidationCommonContext {
   isRestrictedForCountry: boolean
   isBalancesLoading: boolean
   balancesError: string | null
+  isInputCurrencyXstock: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
