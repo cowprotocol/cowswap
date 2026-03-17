@@ -20,6 +20,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
   const isCreating = state === SmartOrderStatus.CREATING
   const isIndexing = state === SmartOrderStatus.CREATION_MINED
   const isFilled = state === SmartOrderStatus.FILLED
+  const isCanceling = !!cancellation.hash && cancellation.failed === undefined
   const isCancelled = cancellation.failed === false
   const isOrderCreated = order.isCreated
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
@@ -68,6 +69,14 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
       }
     }
 
+    if (isCanceling && !isFilled) {
+      return {
+        label: t`Cancelling Order`,
+        state: 'pending',
+        icon: Exclamation,
+      }
+    }
+
     if (isCancelled && !isFilled) {
       return {
         label: t`Order Cancelled`,
@@ -81,7 +90,16 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
       state: 'success',
       icon: Checkmark,
     }
-  }, [hasCreationError, expiredBeforeCreate, isCancelled, isCreating, isFilled, isIndexing, rejectedReason])
+  }, [
+    hasCreationError,
+    expiredBeforeCreate,
+    isCancelled,
+    isCanceling,
+    isCreating,
+    isFilled,
+    isIndexing,
+    rejectedReason,
+  ])
 
   return (
     <Step state={stepState} icon={icon} label={label} errorMessage={error}>

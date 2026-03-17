@@ -57,7 +57,7 @@ describe('EthFlowStepper', () => {
       }),
     )
 
-    expect(screen.getByText('Order Created')).not.toBeNull()
+    expect(screen.getByText('Cancelling Order')).not.toBeNull()
     expect(screen.queryByText('Order Cancelled')).toBeNull()
     expect(screen.queryByText('ETH Refunded')).toBeNull()
   })
