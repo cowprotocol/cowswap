@@ -20,7 +20,6 @@ import {
   TitleWithTooltip,
 } from './shared'
 
-import { AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS } from '../config/affiliateProgram.const'
 import { getApproxStatsUpdatedAt } from '../lib/affiliateProgramUtils'
 
 export interface MetricsCardItem {
@@ -83,7 +82,7 @@ export function MetricsCard({
             <Trans>Last updated</Trans>
             <span title={formatDateWithTimezone(approxUpdatedAt)}> ~ {statsUpdatedTimeAgo}</span>
           </span>
-          <HelpTooltip text={<Trans>Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours</Trans>} dimmed />
+          <HelpTooltip text={<Trans>Updates daily at 02:00 UTC</Trans>} dimmed />
         </LabelContent>
       </BottomMetaRow>
     </ColumnTwoCard>
