@@ -3,7 +3,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
-import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -348,8 +348,7 @@ async function _updateOrders({
   markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
-  const lowerCaseAccount = account.toLowerCase()
-  const pending = orders.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
+  const pending = orders.filter(({ owner }) => areAddressesEqual(owner, account))
 
   // Exit early when there are no pending orders
   if (!pending.length) {

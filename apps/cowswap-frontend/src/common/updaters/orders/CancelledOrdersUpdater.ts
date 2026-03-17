@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
-import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
@@ -65,7 +65,6 @@ export function CancelledOrdersUpdater(): null {
 
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string, isSafeWallet: boolean) => {
-      const lowerCaseAccount = account.toLowerCase()
       const now = Date.now()
 
       if (isUpdating.current) {
@@ -81,10 +80,7 @@ export function CancelledOrdersUpdater(): null {
         const pending = cancelledRef.current.filter((order) => {
           const lastRelevantUpdateTime = getLastRelevantUpdateTime(order, allTransactionsRef.current)
 
-          return (
-            order.owner.toLowerCase() === lowerCaseAccount &&
-            now - lastRelevantUpdateTime < CANCELLED_ORDERS_PENDING_TIME
-          )
+          return areAddressesEqual(order.owner, account) && now - lastRelevantUpdateTime < CANCELLED_ORDERS_PENDING_TIME
         })
 
         if (pending.length === 0) {

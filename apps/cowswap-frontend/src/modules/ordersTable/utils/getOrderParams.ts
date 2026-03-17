@@ -1,6 +1,6 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { isEnoughAmount } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -44,8 +44,8 @@ export function getOrderParams(
   }
 
   const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address.toLowerCase()]
-  const allowance = allowances?.[order.inputToken.address.toLowerCase()]
+  const balance = balances[getAddressKey(order.inputToken.address)]
+  const allowance = allowances?.[getAddressKey(order.inputToken.address)]
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
     partiallyFillable: order.partiallyFillable,

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowprotocol/common-const'
 import { getDateTimestamp } from '@cowprotocol/common-utils'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -154,12 +154,10 @@ export function useRecentActivity(): TransactionAndOrder[] {
       return []
     }
 
-    const accountLowerCase = account.toLowerCase()
-
     return Object.values(allTransactions)
       .filter((tx) => {
         return (
-          tx.from.toLowerCase() === accountLowerCase &&
+          areAddressesEqual(tx.from, account) &&
           isTransactionRecent(tx) &&
           isNotEthFlowTx(tx) &&
           isNotOnChainCancellationTx(tx)
