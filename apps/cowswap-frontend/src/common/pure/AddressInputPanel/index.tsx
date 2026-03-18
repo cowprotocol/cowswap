@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import {
@@ -6,7 +6,7 @@ import {
   isPrefixedAddress,
   parsePrefixedAddress,
 } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isBtcAddress, isEvmChain, isSolanaAddress, TargetChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -19,6 +19,21 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { autofocus } from '../../utils/autofocus'
 import ChainPrefixWarning from '../ChainPrefixWarning'
+
+function useAddressResolution(
+  value: string,
+  isNonEvmTarget: boolean,
+): { address: string | null; loading: boolean; name: string | null } {
+  const { address: ensAddress, loading: ensLoading, name } = useENS(isNonEvmTarget ? undefined : value)
+
+  return useMemo(() => {
+    if (isNonEvmTarget) {
+      const isValid = value.length > 0 && (isBtcAddress(value) || isSolanaAddress(value))
+      return { address: isValid ? value : null, loading: false, name: null }
+    }
+    return { address: ensAddress, loading: ensLoading, name }
+  }, [isNonEvmTarget, value, ensAddress, ensLoading, name])
+}
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -85,10 +100,8 @@ const Input = styled.input<{ error?: boolean }>`
   }
 `
 
-// TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
@@ -104,15 +117,16 @@ export function AddressInputPanel({
   placeholder?: string
   value: string
   onChange: (value: string) => void
-  targetChainId?: SupportedChainId
+  targetChainId?: TargetChainId
 }) {
   const { t } = useLingui()
   const { chainId: walletChainId } = useWalletInfo()
   // Use targetChainId if provided (for cross-chain), otherwise fall back to wallet's chain
   const chainId = targetChainId ?? walletChainId
+  const isNonEvmTarget = targetChainId !== undefined && !isEvmChain(targetChainId)
   const chainInfo = getChainInfo(chainId)
   const addressPrefix = chainInfo?.addressPrefix
-  const { address, loading, name } = useENS(value)
+  const { address, loading, name } = useAddressResolution(value, isNonEvmTarget)
   const [chainPrefixWarning, setChainPrefixWarning] = useState('')
   const isDarkMode = useIsDarkMode()
 
@@ -122,7 +136,7 @@ export function AddressInputPanel({
       setChainPrefixWarning('')
       let value = input.replace(/\s+/g, '')
 
-      if (isPrefixedAddress(value)) {
+      if (!isNonEvmTarget && isPrefixedAddress(value)) {
         const { prefix, address } = parsePrefixedAddress(value)
 
         if (prefix && addressPrefix !== prefix) {
@@ -136,7 +150,7 @@ export function AddressInputPanel({
 
       onChange(value)
     },
-    [onChange, addressPrefix],
+    [onChange, addressPrefix, isNonEvmTarget],
   )
 
   //clear warning if target chainId changes and we are now on the right network
@@ -158,7 +172,7 @@ export function AddressInputPanel({
           <AutoColumn gap="md">
             <RowBetween>
               <span>{label ?? <Trans>Recipient</Trans>}</span>
-              {address && chainId && (
+              {address && chainId && !isNonEvmTarget && (
                 <ExternalLink href={getExplorerLink(chainId, 'address', name ?? address)} style={{ fontSize: '14px' }}>
                   <Trans>(View on Explorer)</Trans>
                 </ExternalLink>
@@ -171,7 +185,7 @@ export function AddressInputPanel({
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck="false"
-              placeholder={placeholder ?? t`Wallet Address or ENS name`}
+              placeholder={placeholder ?? (isNonEvmTarget ? t`Recipient address` : t`Wallet Address or ENS name`)}
               error={error}
               pattern="^(0x[a-fA-F0-9]{40})$"
               onChange={handleInput}

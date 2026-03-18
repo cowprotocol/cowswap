@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
+import { isBtcAddress, isSolanaAddress } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDerivedTradeState } from 'modules/trade'
@@ -25,7 +26,7 @@ export function useQuoteParamsRecipient(): string | undefined {
 
   return useMemo(() => {
     if (isReceiverAccountBridgeProvider) {
-      if (recipient && isAddress(recipient)) {
+      if (recipient && (isAddress(recipient) || isBtcAddress(recipient) || isSolanaAddress(recipient))) {
         return recipient
       }
     }

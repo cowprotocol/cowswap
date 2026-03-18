@@ -110,6 +110,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
+  [TradeFormValidation.RecipientNotSet]: {
+    text: <Trans>Enter a receiver address</Trans>,
+  },
   [TradeFormValidation.RecipientInvalid]: ({
     derivedState: { inputCurrency, outputCurrency, recipient },
   }: ButtonComponentProps) => {

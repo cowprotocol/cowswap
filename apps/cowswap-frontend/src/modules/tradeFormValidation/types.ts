@@ -71,6 +71,7 @@ export enum TradeFormValidation {
   CurrencyNotSet,
   InputAmountNotSet,
   RecipientInvalid,
+  RecipientNotSet,
   NetworkNotSupported,
   NetworkDeprecated,
   BrowserOffline,

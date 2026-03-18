@@ -98,7 +98,7 @@ export function formatOrderId(orderId: string): string {
 
 // Get the right block explorer URL by chainId
 export function getBlockExplorerUrl(
-  chainId: SupportedChainId,
+  chainId: TargetChainId,
   type: BlockExplorerLinkType,
   data: string,
   base?: string,
