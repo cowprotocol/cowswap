@@ -1,17 +1,11 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
 
 import { ParsedOrder } from './parseOrder'
-
-// TODO: using .toNumber() we potentially lose accuracy
-// TODO: if we do migrations to etherjs v6, we should use native ES6 bignumber
-function legacyBigNumberToCurrencyAmount(currency: Token, value: BigNumber | undefined): CurrencyAmount<Token> {
-  return CurrencyAmount.fromRawAmount(currency, Math.ceil((value?.toNumber() || 0) * 10 ** currency.decimals))
-}
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -72,4 +66,10 @@ export function getFilledAmounts(order: ParsedOrder) {
     swappedAmountWithFee,
     filledAmountWithFee,
   }
+}
+
+// TODO: using .toNumber() we potentially lose accuracy
+// TODO: if we do migrations to etherjs v6, we should use native ES6 bignumber
+function legacyBigNumberToCurrencyAmount(currency: Token, value: BigNumber | undefined): CurrencyAmount<Token> {
+  return CurrencyAmount.fromRawAmount(currency, Math.ceil((value?.toNumber() || 0) * 10 ** currency.decimals))
 }

@@ -5,6 +5,19 @@ import { FiX } from 'react-icons/fi'
 import { ACTIVE_FILTER_ACTIVE, ACTIVE_FILTER_INACTIVE, ALL_FILTER } from './SolversDirectoryTable.helpers'
 import { ClearInputButton, Controls, Input, SearchInputWrapper, Select } from './SolversDirectoryTable.styles'
 
+interface FiltersBarProps {
+  searchQuery: string
+  networkFilter: string
+  environmentFilter: string
+  activeFilter: string
+  networkOptions: [number, string][]
+  environmentOptions: string[]
+  setSearchQuery: (value: string) => void
+  setNetworkFilter: (value: string) => void
+  setEnvironmentFilter: (value: string) => void
+  setActiveFilter: (value: string) => void
+}
+
 export function SolversDirectoryTableFilters(props: FiltersBarProps): React.ReactNode {
   const {
     searchQuery,
@@ -56,17 +69,4 @@ export function SolversDirectoryTableFilters(props: FiltersBarProps): React.Reac
       </Select>
     </Controls>
   )
-}
-
-interface FiltersBarProps {
-  searchQuery: string
-  networkFilter: string
-  environmentFilter: string
-  activeFilter: string
-  networkOptions: [number, string][]
-  environmentOptions: string[]
-  setSearchQuery: (value: string) => void
-  setNetworkFilter: (value: string) => void
-  setEnvironmentFilter: (value: string) => void
-  setActiveFilter: (value: string) => void
 }

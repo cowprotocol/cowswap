@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { LP_TOKEN_LIST_COW_AMM_ONLY, useAllLpTokens } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -15,7 +16,7 @@ import { vampireAttackAtom } from '../state/vampireAttackAtom'
 import { TokenWithAlternative, TokenWithSuperiorAlternative } from '../types'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function VampireAttackUpdater(): null {
   const { account } = useWalletInfo()
   const { tokens: lpTokensWithBalances, count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
@@ -37,8 +38,8 @@ export function VampireAttackUpdater(): null {
         })
 
         if (alternative) {
-          const tokenPoolInfo = poolsInfo?.[lpToken.address.toLowerCase()]?.info
-          const alternativePoolInfo = poolsInfo?.[alternative.address.toLowerCase()]?.info
+          const tokenPoolInfo = poolsInfo?.[getAddressKey(lpToken.address)]?.info
+          const alternativePoolInfo = poolsInfo?.[getAddressKey(alternative.address)]?.info
 
           // When CoW AMM pool has better APY
           if (alternativePoolInfo?.apy && tokenPoolInfo?.apy && alternativePoolInfo.apy > tokenPoolInfo.apy) {
@@ -70,8 +71,8 @@ export function VampireAttackUpdater(): null {
         return b.tokenPoolInfo.apy - a.tokenPoolInfo.apy
       }),
       alternatives: result.alternatives.sort((a, b) => {
-        const aBalance = lpTokensWithBalances[a.token.address.toLowerCase()].balance
-        const bBalance = lpTokensWithBalances[b.token.address.toLowerCase()].balance
+        const aBalance = lpTokensWithBalances[getAddressKey(a.token.address)].balance
+        const bBalance = lpTokensWithBalances[getAddressKey(b.token.address)].balance
 
         return +bBalance.sub(aBalance).toString()
       }),

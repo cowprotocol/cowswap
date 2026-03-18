@@ -2,18 +2,17 @@ import { useEffect, useRef } from 'react'
 
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Currency } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
-import { useIsWrapOrUnwrap } from 'modules/trade'
-import { useDerivedTradeState } from 'modules/trade'
+import { useIsWrapOrUnwrap, useDerivedTradeState } from 'modules/trade'
 import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
@@ -112,6 +111,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       appCode,
       signer,
 
+      ethFlowContractOverride: COW_PROTOCOL_ETH_FLOW_ADDRESS,
       receiver,
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : undefined),

@@ -69,7 +69,7 @@ select
   trades.is_excluded_low_fee,
   trades.is_excluded_integrators_source,
   case
-    when trades.is_excluded_integrators_source then 'integrator_disqualified'
+    when trades.is_excluded_integrators_source then 'integrator_ignored'
     when first_ref_trade.first_ref_trade_time is null then 'no_ref_trade'
     when first_trade.first_trade_time <> first_ref_trade.first_ref_trade_time then 'ref_after_first_trade'
     else 'eligible'

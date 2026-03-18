@@ -1,4 +1,5 @@
 export { AffiliateTermsFaqLinks } from './AffiliateTermsFaqLinks.pure'
+export { IneligibleImage } from './IneligibleImage.pure'
 
 export {
   PageWrapper,
@@ -28,7 +29,8 @@ export {
   LinkedBadge,
   LinkedMetaList,
   RewardsHeader,
-  ValidStatusBadge,
+  ValidBadge,
+  ExpiredBadge,
   LinkedCopy,
   LinkedLinkRow,
   LinkedLinkText,
@@ -56,7 +58,6 @@ export {
 
 export {
   IneligibleCard,
-  IneligibleImage,
   IneligibleTitle,
   IneligibleSubtitle,
   UnsupportedNetworkCard,

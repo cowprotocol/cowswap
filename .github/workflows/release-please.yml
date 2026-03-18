@@ -12,6 +12,7 @@ env:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   release-please:
@@ -47,13 +48,17 @@ jobs:
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org"
           cache: pnpm
 
-      # 4️⃣ Install dependencies
+      # 4️⃣ Upgrade npm for trusted publishing (requires npm >= 11.5.1)
+      - run: npm install -g npm@latest
+
+      # 5️⃣ Install dependencies
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # 5️⃣ Get publishable libs from nx.json
+      # 6️⃣ Get publishable libs from nx.json
       - name: Get publishable libs
         id: get-libs
         run: |
@@ -64,11 +69,11 @@ jobs:
           echo "libs_csv=$LIBS_CSV" >> $GITHUB_OUTPUT
           echo "libs_space=$LIBS_SPACE" >> $GITHUB_OUTPUT
 
-      # 6️⃣ Build publishable libs
+      # 7️⃣ Build publishable libs
       - name: Build publishable libs
         run: pnpm exec nx run-many --target=build --projects=${{ steps.get-libs.outputs.libs_csv }} --parallel
 
-      # 7️⃣ Prepare packages for publishing (apply publishConfig, resolve workspace:*)
+      # 8️⃣ Prepare packages for publishing (apply publishConfig, resolve workspace:*)
       - name: Prepare packages for publishing
         run: |
           for lib in ${{ steps.get-libs.outputs.libs_space }}; do
@@ -79,12 +84,6 @@ jobs:
             fi
           done
 
-      # 8️⃣ Setup npm auth
-      - name: Setup npm auth
-        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       # 9️⃣ Publish released packages
       - name: Publish released packages
-        run: pnpm exec nx release publish --tag latest --access public
+        run: pnpm exec nx release publish --tag latest --access public --provenance
