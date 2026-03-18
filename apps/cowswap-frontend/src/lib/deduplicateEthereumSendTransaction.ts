@@ -69,8 +69,8 @@ function patchProvider(provider: EthereumLike): boolean {
 
 function install(): boolean {
   const w = typeof window !== 'undefined' ? window : null
-  if (!w?.ethereum || typeof (w.ethereum as EthereumLike).request !== 'function') return false
-  const ethereum = w.ethereum as EthereumLike
+  if (!w?.ethereum || typeof (w.ethereum as unknown as EthereumLike).request !== 'function') return false
+  const ethereum = w.ethereum as unknown as EthereumLike
   const patched = patchProvider(ethereum)
   if (patched && Array.isArray(ethereum.providers)) {
     ethereum.providers.forEach((p: EthereumLike) => patchProvider(p))
