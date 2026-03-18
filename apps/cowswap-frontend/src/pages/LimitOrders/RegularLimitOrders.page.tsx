@@ -32,6 +32,7 @@ export function RegularLimitOrdersPage(): ReactNode {
       secondaryOnLeft={ordersTableOnLeft}
       maxWidth={LIMIT_ORDERS_MAX_WIDTH}
       hideOrdersTable={hideOrdersTable}
+      stacked
     >
       <styledEl.PrimaryWrapper>
         <LimitOrdersWidget />

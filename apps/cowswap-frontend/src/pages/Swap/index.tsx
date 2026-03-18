@@ -7,11 +7,13 @@ import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application'
 import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
-import { parameterizeTradeRoute, getDefaultTradeRawState } from 'modules/trade'
+import { parameterizeTradeRoute, getDefaultTradeRawState, PageWrapper, PrimaryWrapper } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { useEffectiveChainId } from 'common/hooks/useEffectiveChainId'
 import { HydrateAtom } from 'common/state/HydrateAtom'
+
+const TRADE_PAGE_MAX_WIDTH = '1800px'
 
 export function SwapPage(): ReactNode {
   const params = useParams()
@@ -27,7 +29,11 @@ export function SwapPage(): ReactNode {
       <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
 
       <SwapUpdaters />
-      <SwapWidget />
+      <PageWrapper isUnlocked maxWidth={TRADE_PAGE_MAX_WIDTH} hideOrdersTable>
+        <PrimaryWrapper>
+          <SwapWidget />
+        </PrimaryWrapper>
+      </PageWrapper>
     </HydrateAtom>
   )
 }
