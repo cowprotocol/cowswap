@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
 import { COW_CDN, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { getAddressKey, ALL_SUPPORTED_CHAIN_IDS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 import useSWR, { SWRResponse } from 'swr'
 
-import { NATIVE_TOKEN_ADDRESS, NATIVE_TOKEN_PER_NETWORK } from '../const'
+import { NATIVE_TOKEN_PER_NETWORK } from '../const'
 
 type TokenListByAddress = Record<string, TokenInfo>
 type TokenListPerNetwork = Record<SupportedChainId, TokenListByAddress>
@@ -65,7 +65,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
 
     const nativeToken = NATIVE_TOKEN_PER_NETWORK[chainId]
 
-    data[getAddressKey(NATIVE_TOKEN_ADDRESS)] = {
+    data[getAddressKey(nativeToken.address)] = {
       ...nativeToken,
       name: nativeToken.name || '',
       symbol: nativeToken.symbol || '',

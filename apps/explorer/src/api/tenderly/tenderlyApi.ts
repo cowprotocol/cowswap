@@ -1,6 +1,6 @@
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, TENDERLY_API_URL } from 'const'
+import { APP_NAME, NATIVE_TOKEN_ADDRESS_NORMALIZED, TENDERLY_API_URL } from 'const'
 import { abbreviateString } from 'utils'
 
 import { fetchQuery } from 'api/baseApi'
@@ -89,19 +89,19 @@ export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
           feeAmount: log.inputs[IndexTradeInput.feeAmount].value,
           orderUid: log.inputs[IndexTradeInput.orderUid].value,
         }
-        if (trade.buyToken === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
+        if (trade.buyToken === NATIVE_TOKEN_ADDRESS_NORMALIZED) {
           //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
           transfers.push({
-            token: NATIVE_TOKEN_ADDRESS_LOWERCASE,
+            token: NATIVE_TOKEN_ADDRESS_NORMALIZED,
             from: log.raw.address,
             to: trade.owner,
             value: trade.buyAmount,
             isInternal: log.raw.address === trade.owner,
           })
-        } else if (trade.sellToken === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
+        } else if (trade.sellToken === NATIVE_TOKEN_ADDRESS_NORMALIZED) {
           //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
           transfers.push({
-            token: NATIVE_TOKEN_ADDRESS_LOWERCASE,
+            token: NATIVE_TOKEN_ADDRESS_NORMALIZED,
             from: trade.owner,
             to: log.raw.address,
             value: trade.sellAmount,
@@ -197,9 +197,9 @@ function _contractName(name: string): string {
 }
 
 export function getAliasFromAddress(address: string, isUnknown = false): string {
-  const lowerCaseAddress = address.toLowerCase()
+  const addressKey = getAddressKey(address)
 
-  if (SPECIAL_ADDRESSES[lowerCaseAddress]) return SPECIAL_ADDRESSES[lowerCaseAddress]
+  if (SPECIAL_ADDRESSES[addressKey]) return SPECIAL_ADDRESSES[addressKey]
 
   return isUnknown ? abbreviateString(address, 6, 4) : ALIAS_TRADER_NAME
 }

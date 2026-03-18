@@ -1,3 +1,4 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
@@ -55,7 +56,7 @@ export function getImageUrl(tokenAddress?: string): string | undefined {
 }
 
 export function isNativeToken(address: string): boolean {
-  return address.toLowerCase() === NATIVE_TOKEN_ADDRESS.toLowerCase()
+  return getAddressKey(address) === getAddressKey(NATIVE_TOKEN_ADDRESS)
 }
 
 const NetworkImageAddressMap: Record<Network, string> = {

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { getErc20Info } from 'services/helpers'
@@ -61,7 +63,7 @@ export function useMultipleErc20(
   const fromTokenList = useMemo(
     () =>
       addresses.reduce((acc, address) => {
-        const token = tokenListTokens[address.toLowerCase()]
+        const token = tokenListTokens[getAddressKey(address)]
         if (token) {
           acc[address] = token
         }
@@ -81,7 +83,7 @@ export function useMultipleErc20(
           // Overwrite native address because otherwise it won't match the case
           // Causing the caller to never know we got the token it was looking for
           // return { ...nativeToken, address }
-          return { [address.toLowerCase()]: nativeToken }
+          return { [getAddressKey(address)]: nativeToken }
         }
         return undefined
       }, undefined) || {},
