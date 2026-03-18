@@ -2,8 +2,8 @@ import { ReactNode } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'

@@ -17,7 +17,8 @@ export const Body = styled.div`
   padding: 10px;
   gap: 10px;
 
-  > img {
+  > img,
+  > svg {
     width: 100%;
     max-width: 180px;
     height: auto;
@@ -25,7 +26,8 @@ export const Body = styled.div`
   }
 
   ${Media.upToSmall()} {
-    > img {
+    > img,
+    > svg {
       max-width: 150px;
     }
   }

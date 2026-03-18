@@ -4,14 +4,10 @@ import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 import { Category, GtmEvent } from '../types'
 
-interface DataLayerEvent extends Record<string, unknown> {
-  event: string
-}
-
 type DataLayer = DataLayerEvent[]
 
-function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
+interface DataLayerEvent extends Record<string, unknown> {
+  event: string
 }
 
 function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unknown> {
@@ -30,6 +26,10 @@ function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unk
   } = event as GtmEvent<Category> & Record<string, unknown>
 
   return sanitizeRecord(rest)
+}
+
+function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
 }
 
 declare global {
@@ -174,6 +174,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
         eventType: 'wallet_disconnection',
         previousWalletAddress: this.previousAccount,
         previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
+        ...this.getDimensions(),
       })
       this.setContext(AnalyticsContext.walletName, undefined)
       return
@@ -185,7 +186,11 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
 
     // Get wallet name from context if not provided
-    const walletNameToUse = walletName || this.dimensions[AnalyticsContext.walletName] || 'Unknown'
+    const previousWalletName = this.dimensions[AnalyticsContext.walletName] || 'Unknown'
+    const walletNameToUse = walletName || previousWalletName
+
+    // Set wallet name context before spreading dimensions so dimension_walletName matches the payload walletName.
+    this.setContext(AnalyticsContext.walletName, walletNameToUse)
 
     // Common properties for wallet events
     const commonEventProps = {
@@ -199,6 +204,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
         event: 'wallet_connected',
         eventType: 'wallet_initial_connection',
         ...commonEventProps,
+        ...this.getDimensions(),
       })
     }
     // Wallet switched (account changes from one defined value to another)
@@ -207,12 +213,11 @@ export class CowAnalyticsGtm implements CowAnalytics {
         event: 'wallet_switched',
         eventType: 'wallet_switch',
         previousWalletAddress: this.previousAccount,
-        previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
+        previousWalletName,
         ...commonEventProps,
+        ...this.getDimensions(),
       })
     }
-
-    this.setContext(AnalyticsContext.walletName, walletNameToUse)
   }
 
   sendPageView(path?: string, params?: string[], title?: string): void {

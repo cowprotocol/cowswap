@@ -84,7 +84,7 @@ export function AdvancedOrdersPage(): ReactNode {
         </styledEl.PrimaryWrapper>
 
         {!hideOrdersTable && (
-          <styledEl.SecondaryWrapper>
+          <styledEl.SecondaryWrapper className="trade-orders-table">
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
                 displayOrdersOnlyForSafeApp

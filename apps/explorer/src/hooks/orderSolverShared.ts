@@ -19,6 +19,9 @@ export type UseOrderSolverResult = {
 }
 
 const SOLVER_SUFFIX_REGEX = /-solve$/i
+type CompetitionStatusEntry = NonNullable<OrderCompetitionStatus['value']>[number]
+type ExecutedAmounts = NonNullable<CompetitionStatusEntry['executedAmounts']>
+
 export async function resolveSolver(
   networkId: number,
   orderUid: string,
@@ -41,6 +44,7 @@ export async function resolveSolver(
 
   return buildSolverInfo(winnerSolverName, solvers)
 }
+
 export async function resolveSolverByTxHash(networkId: number, txHash: string): Promise<OrderSolverInfo | undefined> {
   const [competition, solvers] = await Promise.all([
     getSolverCompetitionByTxHash({ networkId, txHash }),
@@ -52,10 +56,6 @@ export async function resolveSolverByTxHash(networkId: number, txHash: string): 
 
   return buildSolverInfo(winnerSolverName, solvers)
 }
-
-type CompetitionStatusEntry = NonNullable<OrderCompetitionStatus['value']>[number]
-
-type ExecutedAmounts = NonNullable<CompetitionStatusEntry['executedAmounts']>
 
 function buildSolverInfo(winnerSolverName: string, solvers: SolverInfo[]): OrderSolverInfo {
   const matchingSolver = matchSolverByName(winnerSolverName, solvers)

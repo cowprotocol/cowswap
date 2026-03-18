@@ -8,12 +8,12 @@ import {
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { getChainCurrencySymbols } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 
@@ -26,18 +26,16 @@ import { assertProviderNetwork } from 'common/utils/assertProviderNetwork'
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
 
-export interface WrapUnwrapCallbackParams {
-  useModals?: boolean
-}
-
-export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<TransactionResponse | null>
-
-type TransactionAdder = ReturnType<typeof useTransactionAdder>
-
 export interface WrapDescription {
   confirmationMessage: string
   operationMessage: string
   summary: string
+}
+
+export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<TransactionResponse | null>
+
+export interface WrapUnwrapCallbackParams {
+  useModals?: boolean
 }
 
 export interface WrapUnwrapContext {
@@ -51,21 +49,9 @@ export interface WrapUnwrapContext {
   analytics: ReturnType<typeof useCowAnalytics>
 }
 
-type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
+type TransactionAdder = ReturnType<typeof useTransactionAdder>
 
-function sendWrapEvent(
-  analytics: WrapUnwrapContext['analytics'],
-  action: WrapAction,
-  operationMessage: string,
-  amount: CurrencyAmount<Currency>,
-): void {
-  analytics.sendEvent({
-    category: CowSwapAnalyticsCategory.WRAP_NATIVE_TOKEN,
-    action,
-    label: operationMessage,
-    value: Number(amount.toSignificant(6)),
-  })
-}
+type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 
 interface WrapUnwrapTxData {
   txResponse: TransactionResponse
@@ -127,6 +113,15 @@ export async function wrapUnwrapCallback(
   }
 }
 
+function _handleGasEstimateError(error: unknown): BigNumber {
+  console.log(
+    '[useWrapCallback] Error estimating gas for wrap/unwrap. Using default gas limit ' +
+      WRAP_UNWRAP_GAS_LIMIT_DEFAULT.toString(),
+    error,
+  )
+  return WRAP_UNWRAP_GAS_LIMIT_DEFAULT
+}
+
 function getWrapDescription(
   chainId: SupportedChainId,
   isWrap: boolean,
@@ -145,6 +140,40 @@ function getWrapDescription(
     summary,
     operationMessage,
     confirmationMessage,
+  }
+}
+
+function sendWrapEvent(
+  analytics: WrapUnwrapContext['analytics'],
+  action: WrapAction,
+  operationMessage: string,
+  amount: CurrencyAmount<Currency>,
+): void {
+  analytics.sendEvent({
+    category: CowSwapAnalyticsCategory.WRAP_NATIVE_TOKEN,
+    action,
+    label: operationMessage,
+    value: Number(amount.toSignificant(6)),
+  })
+}
+
+async function unwrapContractCall(
+  wethContract: Contract,
+  amountHex: string,
+  chainId: SupportedChainId,
+  _account: string,
+): Promise<WrapUnwrapTxData> {
+  const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
+  const gasLimit = calculateGasMargin(estimatedGas)
+
+  const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
+
+  const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
+
+  const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
+
+  return {
+    txResponse,
   }
 }
 
@@ -176,33 +205,4 @@ async function wrapContractCall(
   return {
     txResponse,
   }
-}
-
-async function unwrapContractCall(
-  wethContract: Contract,
-  amountHex: string,
-  chainId: SupportedChainId,
-  _account: string,
-): Promise<WrapUnwrapTxData> {
-  const estimatedGas = await wethContract.estimateGas.withdraw(amountHex).catch(_handleGasEstimateError)
-  const gasLimit = calculateGasMargin(estimatedGas)
-
-  const tx = await wethContract.populateTransaction.withdraw(amountHex, { gasLimit })
-
-  const network = await assertProviderNetwork(chainId, wethContract.provider, 'unwrap')
-
-  const txResponse = await wethContract.signer.sendTransaction({ ...tx, chainId: network })
-
-  return {
-    txResponse,
-  }
-}
-
-function _handleGasEstimateError(error: unknown): BigNumber {
-  console.log(
-    '[useWrapCallback] Error estimating gas for wrap/unwrap. Using default gas limit ' +
-      WRAP_UNWRAP_GAS_LIMIT_DEFAULT.toString(),
-    error,
-  )
-  return WRAP_UNWRAP_GAS_LIMIT_DEFAULT
 }

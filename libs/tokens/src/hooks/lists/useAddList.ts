@@ -6,23 +6,7 @@ import { addListAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { listsStatesByChainAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
 
-const TOKEN_LISTS_CONTENT_LIMIT = 5000
-
-function getTokenListsStateCount(states: ListState[]): number {
-  return states
-    .map((item) => (item ? item.list.tokens.length : 0))
-    .flat()
-    .reduce((acc, count) => acc + count, 0)
-}
-
-function getTokenListsLimitError(currentStateCount: number, updateCount: number): string {
-  return `
-Cannot add token list.
-Token lists content limit exceeded: ${TOKEN_LISTS_CONTENT_LIMIT}.
-Current tokens count: ${currentStateCount}.
-Tokens in update: ${updateCount}.
-  `
-}
+const TOKEN_LISTS_CONTENT_LIMIT = 10_000
 
 export function useAddList(onAddList: (source: string) => void): (state: ListState) => void {
   const { chainId } = useAtomValue(environmentAtom)
@@ -37,7 +21,7 @@ export function useAddList(onAddList: (source: string) => void): (state: ListSta
       const updateCount = getTokenListsStateCount([state])
       const totalCount = currentStateCount + updateCount
 
-      // Due to localStorage limit, we need to limit the amount of tokens we can store
+      // Limit token lists volume to control app performance
       if (totalCount > TOKEN_LISTS_CONTENT_LIMIT) {
         throw new Error(getTokenListsLimitError(currentStateCount, updateCount))
       }
@@ -47,4 +31,20 @@ export function useAddList(onAddList: (source: string) => void): (state: ListSta
     },
     [addList, listsStatesByChain, chainId, onAddList],
   )
+}
+
+function getTokenListsLimitError(currentStateCount: number, updateCount: number): string {
+  return `
+Cannot add token list.
+Token lists content limit exceeded: ${TOKEN_LISTS_CONTENT_LIMIT}.
+Current tokens count: ${currentStateCount}.
+Tokens in update: ${updateCount}.
+  `
+}
+
+function getTokenListsStateCount(states: ListState[]): number {
+  return states
+    .map((item) => (item ? item.list.tokens.length : 0))
+    .flat()
+    .reduce((acc, count) => acc + count, 0)
 }

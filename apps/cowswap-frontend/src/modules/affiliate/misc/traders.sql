@@ -65,6 +65,7 @@ trades_with_referrer as (
 first_trade as (
   select trader, min(block_time) as first_trade_time
   from trades_with_referrer
+  where not is_excluded_integrators_source
   group by 1
 ),
 first_ref_trade as (

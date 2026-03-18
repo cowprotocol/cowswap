@@ -1,8 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { ReactNode, useEffect, useMemo } from 'react'
+import { ReactNode, useEffect } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { ChainInfo, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -56,12 +55,6 @@ interface TokensListsUpdaterProps {
  */
 const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
-/**
- * Temporary hidden under feature flag xStocks list URL
- */
-const XSTOCKS_LIST_URL =
-  'https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json'
-
 // TODO: Break down this large function into smaller functions
 export function TokensListsUpdater({
   chainId: currentChainId,
@@ -75,34 +68,25 @@ export function TokensListsUpdater({
   const allTokensLists = useAtomValue(allListsSourcesAtom)
   const lastUpdateTimeState = useAtomValue(lastUpdateTimeAtom)
   const updateLastUpdateTime = useSetAtom(updateLastUpdateTimeAtom)
-  const { isXStocksListEnabled } = useFeatureFlags()
 
   const setTokenListsUpdating = useSetAtom(tokenListsUpdatingAtom)
   const upsertLists = useSetAtom(upsertListsAtom)
-
-  const filteredTokenLists = useMemo(() => {
-    if (isXStocksListEnabled !== true) {
-      return allTokensLists.filter((list) => list.source.toLowerCase() !== XSTOCKS_LIST_URL.toLowerCase())
-    }
-    return allTokensLists
-  }, [allTokensLists, isXStocksListEnabled])
 
   useEffect(() => {
     setEnvironment({ chainId: currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo })
   }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo])
 
-  // Reset last update time when feature flag changes to force immediate refetch
   useEffect(() => {
     updateLastUpdateTime({ [chainId]: 0 })
-  }, [chainId, isXStocksListEnabled, updateLastUpdateTime])
+  }, [chainId, updateLastUpdateTime])
 
   // Fetch tokens lists once in 6 hours
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(
-    ['TokensListsUpdater', filteredTokenLists, chainId, lastUpdateTimeState, isXStocksListEnabled],
+    ['TokensListsUpdater', allTokensLists, chainId, lastUpdateTimeState],
     () => {
       if (!getIsTimeToUpdate(lastUpdateTimeState[chainId] || LAST_UPDATE_TIME_DEFAULT)) return null
 
-      return Promise.allSettled(filteredTokenLists.map(fetchTokenList)).then(getFulfilledResults)
+      return Promise.allSettled(allTokensLists.map(fetchTokenList)).then(getFulfilledResults)
     },
     swrOptions,
   )

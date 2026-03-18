@@ -1219,6 +1219,10 @@ msgstr "Orders history"
 #~ msgid "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
 #~ msgstr "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
 
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderExpiryBanner.tsx
+msgid "Your referral code expires {timeAgo}. Trade now to maximize your rewards."
+msgstr "Your referral code expires {timeAgo}. Trade now to maximize your rewards."
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days."
 msgstr "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days."
@@ -1870,6 +1874,10 @@ msgstr "All Hooks ({allHooksCount})"
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 msgid "Approving <0/> <1><2/></1> for trading"
 msgstr "Approving <0/> <1><2/></1> for trading"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
+msgid "This wallet has already traded on CoW Swap."
+msgstr "This wallet has already traded on CoW Swap."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
@@ -2738,8 +2746,8 @@ msgid "Dismiss hiring message"
 msgstr "Dismiss hiring message"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
-#~ msgid "Referral rewards are for new wallets only."
-#~ msgstr "Referral rewards are for new wallets only."
+msgid "Referral rewards are for new wallets only."
+msgstr "Referral rewards are for new wallets only."
 
 #: apps/cowswap-frontend/src/common/pure/Modal/index.tsx
 msgid "dialog content"
@@ -2889,6 +2897,7 @@ msgid "<0/><1/>Trades are protected from MEV, so your slippage can't be exploite
 msgstr "<0/><1/>Trades are protected from MEV, so your slippage can't be exploited!"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Expired"
@@ -3023,8 +3032,8 @@ msgid "Download .WEBP"
 msgstr "Download .WEBP"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
-msgid "Paid weekly via airdrop"
-msgstr "Paid weekly via airdrop"
+#~ msgid "Paid weekly by Friday via airdrop"
+#~ msgstr "Paid weekly by Friday via airdrop"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Token not permittable"
@@ -3055,6 +3064,11 @@ msgstr "Liquidity pools on CoW AMM grow faster than on other AMMs because they d
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP"
 msgstr "TWAP"
+
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
+msgid "Will be updated {approxNextUpdateTimeAgo}"
+msgstr "Will be updated {approxNextUpdateTimeAgo}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHistory.tsx
 #~ msgid "Rewards activity"
@@ -4563,6 +4577,10 @@ msgstr "Transaction expiration"
 msgid "Search network"
 msgstr "Search network"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
+msgid "Updates daily at 02:00 UTC"
+msgstr "Updates daily at 02:00 UTC"
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
 msgstr "CowSwap no connection"
@@ -5813,8 +5831,8 @@ msgid "Sandwich icon"
 msgstr "Sandwich icon"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
-msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
-msgstr "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
+#~ msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
+#~ msgstr "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Network compatibility error"
@@ -5912,6 +5930,10 @@ msgstr "was sent to"
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 msgid "Deposit"
 msgstr "Deposit"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
+msgid "Paid weekly by Friday via airdropp"
+msgstr "Paid weekly by Friday via airdrop"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 msgid "Review TWAP order"
@@ -6246,6 +6268,10 @@ msgstr "{solversLength} out of {totalSolvers} solvers"
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
 msgid "My Rewards"
 msgstr "My Rewards"
+
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderExpiryBanner.tsx
+msgid "Your referral code expired on {rewardsEndLabel}."
+msgstr "Your referral code expired on {rewardsEndLabel}."
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Something went wrong"
@@ -7123,6 +7149,10 @@ msgstr "Longer limit orders - place orders for up to a year."
 msgid "User rejected signing the cancellation"
 msgstr "User rejected signing the cancellation"
 
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
+msgid "Total referrals"
+msgstr "Total referrals"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
 msgstr "Loading {accountProxyLabel}"
@@ -7264,8 +7294,8 @@ msgid "Exec. price"
 msgstr "Exec. price"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
-msgid "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
-msgstr "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
+#~ msgid "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
+#~ msgstr "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "You sold <0/>"
