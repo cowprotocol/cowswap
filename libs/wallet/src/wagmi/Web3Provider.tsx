@@ -8,19 +8,17 @@ import { useConnect, useConnection, useConnectors, useReconnect, WagmiProvider }
 
 import { REOWN_USE_NOOP_STORAGE, wagmiAdapter } from './config'
 
-import { USER_DISCONNECTED_SESSION_KEY } from '../constants'
+import { OPEN_WALLET_MODAL_EVENT, USER_DISCONNECTED_SESSION_KEY } from '../constants'
 
 import type { Connector } from 'wagmi'
-
-/** Custom event name for "open wallet modal". Dispatched by the app; handled here so we can run reconnect (wagmi) then open (AppKit) inside Web3Provider. */
-export const OPEN_WALLET_MODAL_EVENT = 'cowswap-open-wallet-modal'
 
 const WALLET_MODAL_OPEN_THROTTLE_MS = 1200
 
 /** Listens for OPEN_WALLET_MODAL_EVENT, runs reconnect then opens AppKit modal. Must be mounted inside Web3Provider so useReconnect is valid. */
 function WalletModalOpenListener(): null {
-  const { mutate: reconnect } = useReconnect()
+  const { mutateAsync: reconnect } = useReconnect()
   const { open } = useAppKit()
+  const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
   const lastOpenTimeRef = useRef(0)
 
   useEffect(() => {
@@ -28,12 +26,17 @@ function WalletModalOpenListener(): null {
       const now = Date.now()
       if (now - lastOpenTimeRef.current < WALLET_MODAL_OPEN_THROTTLE_MS) return
       lastOpenTimeRef.current = now
-      reconnect()
-      open()
+      if (!isConnectedThroughSafeApp) {
+        open()
+        return
+      }
+      void reconnect({ connectors: undefined })
+        .then(() => open())
+        .catch(() => open())
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
     return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)
-  }, [reconnect, open])
+  }, [reconnect, open, isConnectedThroughSafeApp])
 
   return null
 }
@@ -46,14 +49,17 @@ interface Web3ProviderProps {
 
 function ReconnectOnMount(): null {
   const { mutate: reconnect } = useReconnect()
+  const connectors = useConnectors()
+  const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
   const didReconnect = useRef(false)
 
   useEffect(() => {
     if (!shouldReconnectOnMount()) return
     if (didReconnect.current) return
+    if (isConnectedThroughSafeApp) return
     didReconnect.current = true
-    reconnect()
-  }, [reconnect])
+    reconnect({ connectors: connectors.filter((c: Connector) => c.id !== 'safe') })
+  }, [reconnect, connectors, isConnectedThroughSafeApp])
 
   return null
 }
@@ -129,26 +135,27 @@ export function Web3Provider({ children }: Web3ProviderProps): React.ReactNode {
   )
 }
 
+let safeConnectAttemptedThisSession = false
+
 function SafeConnectionHandler({ children }: Web3ProviderProps): React.ReactNode {
   const { connector: currentConnector } = useConnection()
   const { mutateAsync: connect } = useConnect()
   const connectors = useConnectors()
   const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
-  const didAttemptSafeConnect = useRef(false)
 
   useEffect(() => {
     if (!isConnectedThroughSafeApp || currentConnector?.id === 'safe') {
       return
     }
-    if (didAttemptSafeConnect.current) {
+    if (safeConnectAttemptedThisSession) {
       return
     }
     const safeConnector = connectors.find((connector: Connector) => connector.id === 'safe')
     if (!safeConnector) return
 
-    didAttemptSafeConnect.current = true
+    safeConnectAttemptedThisSession = true
     connect({ connector: safeConnector }).catch(() => {
-      didAttemptSafeConnect.current = false
+      safeConnectAttemptedThisSession = false
     })
   }, [currentConnector, isConnectedThroughSafeApp, connect, connectors])
 

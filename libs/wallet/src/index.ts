@@ -33,7 +33,7 @@ export * from './api/utils/connection'
 
 // Connectors and providers
 export { WalletProvider } from './api/container/WalletProvider'
-export { OPEN_WALLET_MODAL_EVENT, Web3Provider } from './wagmi/Web3Provider'
+export { Web3Provider } from './wagmi/Web3Provider'
 
 // State
 // TODO: this export is discussable, however it's already used outside

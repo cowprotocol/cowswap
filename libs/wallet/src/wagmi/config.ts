@@ -10,6 +10,14 @@ import { throttledInjected } from './connectors/throttledInjected'
 
 import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
+type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof throttledInjected>
+
+/** Safe connector only works when the app runs inside the Safe iframe (Safe App). Outside that context it fails with "Connection declined" / "Provider not found". So we only add it in embedded context. */
+function getConnectors(): ConnectorInstance[] {
+  if (typeof window === 'undefined') return [safe(), throttledInjected()]
+  return window.self !== window.top ? [safe(), throttledInjected()] : [throttledInjected()]
+}
+
 /** Custom RPC URLs so read calls use our RPCs instead of WalletConnect relay (avoids CORS/403 on localhost). */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
@@ -43,7 +51,7 @@ const metadata = {
 }
 
 export const wagmiAdapter = new WagmiAdapter({
-  connectors: [safe(), throttledInjected()],
+  connectors: getConnectors() as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
   customRpcUrls,
   networks: SUPPORTED_REOWN_NETWORKS,
   projectId,
