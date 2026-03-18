@@ -31,7 +31,7 @@ export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode
             <styledEl.TabsContainer>
               <OrdersTabs />
               {children && (
-                <styledEl.RightContainer $isHistoryTab={currentTabId === OrderTabId.HISTORY /* || OrderTabId.OPEN */}>
+                <styledEl.RightContainer $isHistoryTab={currentTabId === OrderTabId.HISTORY}>
                   {children}
                 </styledEl.RightContainer>
               )}
