@@ -28,7 +28,7 @@ export function RegularLimitOrdersPage(): ReactNode {
       </styledEl.PrimaryWrapper>
 
       {!hideOrdersTable && (
-        <styledEl.SecondaryWrapper>
+        <styledEl.SecondaryWrapper className="trade-orders-table">
           {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
           <Suspense fallback={<Loading />}>
             <OrdersTableWidget />
