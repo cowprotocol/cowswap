@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useMemo } from 'react'
+import { useLayoutEffect, useMemo } from 'react'
 
 import { parseChainIdFromUrlSegment } from '@cowprotocol/common-utils'
 
@@ -37,12 +37,9 @@ export function useSetupTradeStateFromUrl(): null {
     }
   }, [location.search, stringifiedParams])
 
-  /**
-   * useEffect() runs after the render completes and useMemo() runs during rendering.
-   * In order to update tradeStateFromUrlAtom faster we use useMemo() here.
-   * We need this, because useSetupTradeState() depends on the atom value and needs it to be udpated ASAP.
-   */
-  useMemo(() => {
+  // Update atom in useLayoutEffect so the value is available before paint and before
+  // useSetupTradeState's effect runs, without triggering "Cannot update a component while rendering another".
+  useLayoutEffect(() => {
     const state: TradeRawState = {
       chainId,
       targetChainId,

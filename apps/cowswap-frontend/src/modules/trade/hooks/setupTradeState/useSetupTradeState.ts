@@ -5,6 +5,10 @@ import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useLocation } from 'react-router'
+
+import { Routes, RoutesValues } from 'common/constants/routes'
+
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
@@ -18,10 +22,43 @@ import { useTradeState } from '../useTradeState'
 
 const EMPTY_TOKEN_ID = '_'
 
+/** Compare trade raw state by value to avoid redundant updates and effect loops. */
+function isTradeStateEqual(a: TradeRawState | null | undefined, b: TradeRawState | null | undefined): boolean {
+  if (a === b) return true
+  if (!a || !b) return false
+  const key = (s: TradeRawState): string =>
+    [
+      s.chainId,
+      s.targetChainId,
+      s.inputCurrencyId,
+      s.outputCurrencyId,
+      s.recipient ?? '',
+      s.recipientAddress ?? '',
+    ].join('\0')
+  return key(a) === key(b)
+}
+
+/** Order matters: more specific (e.g. /swap/hooks) must come before /swap. */
+const ROUTE_PATH_PAIRS: ReadonlyArray<{ patterns: readonly [string, string]; route: RoutesValues }> = [
+  { patterns: ['/trade/yield', '/yield'], route: Routes.YIELD },
+  { patterns: ['/trade/limit', '/limit'], route: Routes.LIMIT_ORDERS },
+  { patterns: ['/trade/advanced', '/advanced'], route: Routes.ADVANCED_ORDERS },
+  { patterns: ['/trade/swap/hooks', '/swap/hooks'], route: Routes.HOOKS },
+  { patterns: ['/trade/swap', '/swap'], route: Routes.SWAP },
+]
+
+function getRouteFromPathname(pathname: string): RoutesValues | undefined {
+  for (const { patterns, route } of ROUTE_PATH_PAIRS) {
+    if (pathname.includes(patterns[0]) || pathname.includes(patterns[1])) return route
+  }
+  return undefined
+}
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useSetupTradeState(): void {
   useSetupTradeStateFromUrl()
+  const location = useLocation()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
   const prevAccount = usePrevious(account)
@@ -43,6 +80,10 @@ export function useSetupTradeState(): void {
   const pendingSwitchToChainIdRef = useRef<number | null>(null)
   const providerChainIdRef = useRef(providerChainId)
   const urlChainIdRef = useRef<number | null>(null)
+  const pathnameRef = useRef(location.pathname)
+  const providerChangeTimeoutRef = useRef<number | null>(null)
+
+  pathnameRef.current = location.pathname
 
   const isWalletConnected = !!account
   const urlChainId = tradeStateFromUrl?.chainId ?? null
@@ -87,15 +128,16 @@ export function useSetupTradeState(): void {
       chainId: number | null,
       tradeState: TradeRawState,
       currentProviderChainId: SupportedChainId | null,
+      preserveRoute?: RoutesValues,
     ): Promise<void> => {
-      await tradeNavigate(chainId, tradeState)
+      await tradeNavigate(chainId, tradeState, undefined, preserveRoute)
       await switchNetworkInWallet(chainId || SupportedChainId.MAINNET, currentProviderChainId)
     },
     [tradeNavigate, switchNetworkInWallet],
   )
 
   const onProviderNetworkChanges = useCallback(
-    (resolvedProviderChainId?: number) => {
+    (resolvedProviderChainId?: number, currentRouteFromPathname?: RoutesValues) => {
       const chainId = resolvedProviderChainId ?? providerChainId
       const rememberedUrlState = rememberedUrlStateRef.current
 
@@ -115,9 +157,9 @@ export function useSetupTradeState(): void {
         return
       }
 
-      // User changed network in wallet, or URL has no chain: navigate to provider's chain.
+      // User changed network in wallet, or URL has no chain: navigate to provider's chain (preserve current route e.g. yield).
       if (!chainId) return
-      navigateAndSwitchNetwork(chainId, getDefaultTradeRawState(chainId), null)
+      navigateAndSwitchNetwork(chainId, getDefaultTradeRawState(chainId), null, currentRouteFromPathname)
     },
     [
       providerChainId,
@@ -205,12 +247,18 @@ export function useSetupTradeState(): void {
       return
     }
 
-    if (sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
-      navigateAndSwitchNetwork(currentChainId, defaultState, prevProviderChainId)
+    const currentRoute = getRouteFromPathname(location.pathname)
+    // On Yield/Limit/Advanced, empty tokens in URL are valid; only force reset for empty tokens on Swap (or Hooks).
+    const shouldResetForEmptyTokens =
+      tokensAreEmpty && (currentRoute === Routes.SWAP || currentRoute === Routes.HOOKS || currentRoute === undefined)
+
+    if (sameTokens || shouldResetForEmptyTokens || onlyChainIdIsChanged) {
+      const preserveRoute = currentRoute
+      navigateAndSwitchNetwork(currentChainId, defaultState, prevProviderChainId, preserveRoute)
 
       if (sameTokens) {
         console.debug('[TRADE STATE]', 'Url contains invalid tokens, resetting')
-      } else if (tokensAreEmpty) {
+      } else if (shouldResetForEmptyTokens) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
       } else if (onlyChainIdIsChanged) {
         updateState?.({ ...state, chainId: currentChainId })
@@ -220,12 +268,17 @@ export function useSetupTradeState(): void {
       return
     }
 
+    // Skip if current state already matches URL to avoid effect loops (updateState would re-render and re-trigger this effect).
+    if (state && isTradeStateEqual(state, tradeStateFromUrl)) {
+      return
+    }
+
     updateState?.(tradeStateFromUrl)
     console.debug('[TRADE STATE]', 'Applying a new state from URL', tradeStateFromUrl)
 
     // Triggering only on changes from URL
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tradeStateFromUrl, isAlternativeModalVisible, isLimitOrderTrade])
+  }, [tradeStateFromUrl, isAlternativeModalVisible, isLimitOrderTrade, location.pathname])
 
   /**
    * On URL chain change (user selected a different chain in the app): switch the wallet to the new URL chain.
@@ -273,6 +326,11 @@ export function useSetupTradeState(): void {
   const PROVIDER_CHANGE_DEBOUNCE_MS = 350
 
   useEffect(() => {
+    if (providerChangeTimeoutRef.current) {
+      clearTimeout(providerChangeTimeoutRef.current)
+      providerChangeTimeoutRef.current = null
+    }
+
     // When we came back to the tab and there is a new chainId in provider
     const providerChangedNetworkWhenWindowInactive =
       isWindowVisible && prevIsWindowVisible !== isWindowVisible && providerChainId !== urlChainId
@@ -291,7 +349,8 @@ export function useSetupTradeState(): void {
 
     if (shouldSkip) return
 
-    const timeoutId = window.setTimeout(() => {
+    providerChangeTimeoutRef.current = window.setTimeout(() => {
+      providerChangeTimeoutRef.current = null
       const settledChainId = providerChainIdRef.current
       // Still waiting for wallet to switch to URL chain (e.g. user just connected and we requested switch) – don't navigate yet
       if (
@@ -301,16 +360,22 @@ export function useSetupTradeState(): void {
       ) {
         return
       }
-      onProviderNetworkChanges(settledChainId)
+      const currentRoute = getRouteFromPathname(pathnameRef.current)
+      onProviderNetworkChanges(settledChainId, currentRoute)
       console.debug('[TRADE STATE]', 'Provider changed chainId (settled)', {
         providerChainId: settledChainId,
         urlChanges: rememberedUrlStateRef.current,
       })
     }, PROVIDER_CHANGE_DEBOUNCE_MS)
 
-    return () => window.clearTimeout(timeoutId)
+    return () => {
+      if (providerChangeTimeoutRef.current) {
+        clearTimeout(providerChangeTimeoutRef.current)
+        providerChangeTimeoutRef.current = null
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWindowVisible, onProviderNetworkChanges])
+  }, [isWindowVisible, onProviderNetworkChanges, location.pathname])
 
   /**
    * If user opened a link with some token symbol, and we have more than one token with the same symbol in the listing
