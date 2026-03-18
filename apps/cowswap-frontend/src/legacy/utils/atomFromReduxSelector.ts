@@ -1,4 +1,4 @@
-import { atom } from 'jotai'
+import { atom, PrimitiveAtom } from 'jotai'
 
 import { shallowEqual } from 'react-redux'
 
@@ -7,7 +7,7 @@ import { cowSwapStore, AppState } from 'legacy/state'
 export function atomFromReduxSelector<T>(
   selector: (state: AppState) => T,
   equalityFn: (a: T, b: T) => boolean = shallowEqual,
-) {
+): PrimitiveAtom<T> {
   const baseAtom = atom<T>(selector(cowSwapStore.getState()))
 
   baseAtom.onMount = (set) => {
