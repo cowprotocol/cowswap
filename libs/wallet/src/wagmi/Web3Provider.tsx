@@ -22,7 +22,7 @@ function ReconnectOnMount(): null {
   const didReconnect = useRef(false)
 
   useEffect(() => {
-    if (REOWN_USE_NOOP_STORAGE) return
+    if (!shouldReconnectOnMount()) return
     if (didReconnect.current) return
     didReconnect.current = true
     reconnect()
@@ -37,6 +37,11 @@ const INJECTED_AUTO_CONNECT_DELAY_MS = 400
 function isInEmbeddedContext(): boolean {
   if (typeof window === 'undefined') return false
   return window.self !== window.top
+}
+
+function shouldReconnectOnMount(): boolean {
+  if (REOWN_USE_NOOP_STORAGE) return false
+  return isInEmbeddedContext()
 }
 
 /** When the app is opened inside an in-app browser (e.g. Safe app iframe, MetaMask iOS), connect to the injected provider so the user stays connected. Skipped on normal desktop to avoid opening the extension (e.g. Rabby) on every reload. */
@@ -98,7 +103,7 @@ export function Web3Provider({ children }: Web3ProviderProps): React.ReactNode {
 
 function SafeConnectionHandler({ children }: Web3ProviderProps): React.ReactNode {
   const { connector: currentConnector } = useConnection()
-  const { mutate: connect } = useConnect()
+  const { mutateAsync: connect } = useConnect()
   const connectors = useConnectors()
   const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
   const didAttemptSafeConnect = useRef(false)
