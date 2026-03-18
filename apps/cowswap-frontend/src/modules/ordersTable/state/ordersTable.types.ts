@@ -1,6 +1,6 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import type { Token } from '@cowprotocol/currency'
 import type { Command } from '@cowprotocol/types'
-import type { Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 
@@ -12,6 +12,8 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import type { OrderTabId } from './tabs/ordersTableTabs.constants'
 
 export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
+
+export type OrdersTableHistoryStatusFilterOverride = 'filled' | 'cancelled' | 'expired' | 'all'
 
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
@@ -26,7 +28,17 @@ export interface OrderActions {
   approveOrderToken(token: Token): void
 }
 
-export type OrdersTableHistoryStatusFilterOverride = 'filled' | 'cancelled' | 'expired' | 'all'
+export interface OrderTableGroup {
+  parent: ParsedOrder
+  children: ParsedOrder[]
+}
+
+export type OrderTableItem = OrderTableGroup | ParsedOrder
+
+export enum TabOrderTypes {
+  LIMIT = 'limit',
+  ADVANCED = 'advanced',
+}
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>
 
@@ -54,21 +66,9 @@ export interface OrdersTableState {
   currentPageNumber: number
 }
 
-export interface OrderTableGroup {
-  parent: ParsedOrder
-  children: ParsedOrder[]
-}
-
-export type OrderTableItem = OrderTableGroup | ParsedOrder
-
 export interface TabParams {
   id: OrderTabId
   title: MessageDescriptor
   count: number
   isActive?: boolean
-}
-
-export enum TabOrderTypes {
-  LIMIT = 'limit',
-  ADVANCED = 'advanced',
 }

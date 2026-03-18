@@ -50,6 +50,14 @@ const MOCK_SOLVERS: SolverInfo[] = [
   },
 ]
 
+const CROSS_NETWORK_SOLVER: SolverInfo = {
+  solverId: 'ExtQuasimodo',
+  displayName: 'ExtQuasimodo',
+  image: 'https://example.com/extquasimodo.svg',
+  networks: [],
+  deployments: [],
+}
+
 function createMockOrder(overrides: Partial<Order> = {}): Order {
   return {
     uid: 'order-abc-123',
@@ -135,6 +143,28 @@ describe('useOrderSolver', () => {
     expect(result.current.isLoading).toBe(false)
   })
 
+  it('returns no solver for unfilled orders and skips solver lookups', () => {
+    const { result } = renderHook(() =>
+      useOrderSolver(
+        createMockOrder({
+          txHash: undefined,
+          executedBuyAmount: ZERO,
+          executedSellAmount: ZERO,
+          filledAmount: ZERO,
+          filledPercentage: ZERO,
+          fullyFilled: false,
+          status: 'cancelled' as Order['status'],
+        }),
+      ),
+    )
+
+    expect(result.current.solver).toBeUndefined()
+    expect(result.current.isLoading).toBe(false)
+    expect(mockedGetOrderCompetitionStatus).not.toHaveBeenCalled()
+    expect(mockedGetSolverCompetitionByTxHash).not.toHaveBeenCalled()
+    expect(mockedFetchSolversInfo).not.toHaveBeenCalled()
+  })
+
   it('is loading while resolving solver', () => {
     mockedGetOrderCompetitionStatus.mockReturnValue(new Promise(() => {}))
     mockedFetchSolversInfo.mockReturnValue(new Promise(() => {}))
@@ -192,6 +222,59 @@ describe('useOrderSolver', () => {
     expect(result.current.solver).toBeUndefined()
   })
 
+  it('ignores competition entries that have zero executed amounts', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce({
+      type: 'traded' as OrderCompetitionStatus['type'],
+      value: [{ solver: 'projectblanc', executedAmounts: { sell: '0', buy: '0' } }],
+    })
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+
+    const order = createMockOrder({ txHash: undefined })
+    const { result } = renderHook(() => useOrderSolver(order))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(mockedGetSolverCompetitionByTxHash).not.toHaveBeenCalled()
+    expect(result.current.solver).toBeUndefined()
+  })
+
+  it('falls back to txHash competition when executed amounts are malformed', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce({
+      type: 'traded' as OrderCompetitionStatus['type'],
+      value: [{ solver: 'invalid-solver', executedAmounts: { sell: 'da1', buy: '0' } }],
+    })
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('projectblanc'))
+
+    const order = createMockOrder({ txHash: '0xmalformed' })
+    const { result } = renderHook(() => useOrderSolver(order))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(mockedGetSolverCompetitionByTxHash).toHaveBeenCalledWith({ networkId: 1, txHash: '0xmalformed' })
+    expect(result.current.solver).toEqual({
+      solverId: 'projectblanc',
+      displayName: 'Project Blanc',
+      image: 'https://example.com/blanc.png',
+    })
+  })
+
+  it('ignores malformed executed amounts without txHash fallback', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce({
+      type: 'traded' as OrderCompetitionStatus['type'],
+      value: [{ solver: 'invalid-solver', executedAmounts: { sell: '1e2', buy: '0' } }],
+    })
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+
+    const order = createMockOrder({ txHash: undefined })
+    const { result } = renderHook(() => useOrderSolver(order))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(mockedGetSolverCompetitionByTxHash).not.toHaveBeenCalled()
+    expect(result.current.solver).toBeUndefined()
+  })
+
   it('normalizes solver name with -Solve suffix for matching', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('CopperSolver-Solve'))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
@@ -205,6 +288,23 @@ describe('useOrderSolver', () => {
       displayName: 'Copper Solver',
       image: undefined,
     })
+  })
+
+  it('matches solver metadata from the global list even when the current network has no CMS deployment', async () => {
+    mockedUseNetworkId.mockReturnValue(42161)
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('extquasimodo-solve'))
+    mockedFetchSolversInfo.mockResolvedValueOnce([CROSS_NETWORK_SOLVER])
+
+    const { result } = renderHook(() => useOrderSolver(createMockOrder()))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toEqual({
+      solverId: 'ExtQuasimodo',
+      displayName: 'ExtQuasimodo',
+      image: 'https://example.com/extquasimodo.svg',
+    })
+    expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
   })
 
   it('returns raw solver name when no CMS match is found', async () => {

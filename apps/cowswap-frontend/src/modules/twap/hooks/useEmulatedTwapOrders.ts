@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useMachineTimeMs } from '@cowprotocol/common-hooks'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -28,15 +29,13 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
   // Update emulated twap orders every 5 seconds to recalculate expired state
   const refresher = useMachineTimeMs(EMULATED_ORDERS_REFRESH_MS)
 
-  const accountLowerCase = account?.toLowerCase()
-
   return useMemo(() => {
     // It's not possible, just to prevent react-hooks/exhaustive-deps errors
     if (!refresher) return []
     if (!tokensByAddress) return []
 
     return allTwapOrders.reduce<Order[]>((acc, order) => {
-      if (order.chainId !== chainId || order.safeAddress.toLowerCase() !== accountLowerCase) {
+      if (order.chainId !== chainId || !areAddressesEqual(order.safeAddress, account)) {
         return acc
       }
 
@@ -47,5 +46,5 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
 
       return acc
     }, [])
-  }, [allTwapOrders, accountLowerCase, chainId, tokensByAddress, refresher])
+  }, [allTwapOrders, account, chainId, tokensByAddress, refresher])
 }

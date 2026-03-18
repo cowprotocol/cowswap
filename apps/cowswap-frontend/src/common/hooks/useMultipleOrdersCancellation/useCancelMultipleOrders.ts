@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -48,6 +49,11 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
 
       const orderUids = offChainOrders.map((order) => order.id)
       const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellations(orderUids, chainId, signer)
+      const signedOrderCancellations = await OrderSigningUtils.signOrderCancellations(orderUids, chainId, signer, {
+        env: isBarnBackendEnv ? 'staging' : 'prod',
+        settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+      })
+      const { signature, signingScheme } = signedOrderCancellations
 
       if (!signature) throw new Error(t`Signature is undefined!`)
 

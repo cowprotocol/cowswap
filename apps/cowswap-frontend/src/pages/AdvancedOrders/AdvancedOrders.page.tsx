@@ -94,7 +94,7 @@ export function AdvancedOrdersPage(): ReactNode {
         </styledEl.PrimaryWrapper>
 
         {!hideOrdersTable && (
-          <styledEl.SecondaryWrapper>
+          <styledEl.SecondaryWrapper className="trade-orders-table">
             {isTwapEoaPrototypeMode && <TwapPrototypeProxyBanner />}
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget

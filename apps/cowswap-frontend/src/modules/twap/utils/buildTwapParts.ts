@@ -1,5 +1,11 @@
 import { isTruthy } from '@cowprotocol/common-utils'
-import { ContractsOrder, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  ContractsOrder,
+  OrderParameters,
+  SupportedChainId,
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
+  AddressPerChain,
+} from '@cowprotocol/cow-sdk'
 
 import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
@@ -47,7 +53,17 @@ export async function generateTwapOrderParts(
     .map((_, index) => createPartOrderFromParent(twapOrder, index))
     .filter(isTruthy)
 
-  const ids = await Promise.all(parts.map((part) => computeOrderUid(chainId, safeAddress, part as ContractsOrder)))
+  const ids = await Promise.all(
+    parts.map((part) =>
+      computeOrderUid(
+        chainId,
+        safeAddress,
+        part as ContractsOrder,
+        // TWAP orders always run on the production settlement contract regardless of the current environment.
+        COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD as AddressPerChain,
+      ),
+    ),
+  )
 
   return {
     [twapOrderId]: ids.map<TwapPartOrderItem>((uid, index) => {

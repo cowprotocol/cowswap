@@ -1,7 +1,7 @@
 import { EnrichedOrder, OrderClass, OrderCreation, SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { BigNumberish } from '@ethersproject/bignumber'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { createAction } from '@reduxjs/toolkit'
 
@@ -35,7 +35,6 @@ export interface AddOrUpdateOrdersParams {
   orders: SerializedOrder[]
   isSafeWallet: boolean
 }
-
 export interface AddPendingOrderParams {
   id: UID
   chainId: ChainId
@@ -159,13 +158,11 @@ export type SetIsOrderUnfillableParams = {
   isUnfillable: boolean
 }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
-
 export interface UpdateOrderParams {
   chainId: ChainId
   order: Partial<Omit<SerializedOrder, 'id'>> & Pick<SerializedOrder, 'id'>
   isSafeWallet: boolean
 }
-
 export interface UpdatePresignGnosisSafeTxParams {
   orderId: UID
   chainId: ChainId
@@ -173,7 +170,6 @@ export interface UpdatePresignGnosisSafeTxParams {
 }
 
 type RefundItem = { id: UID; refundHash: string }
-
 export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/addOrUpdateOrders')
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
 

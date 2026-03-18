@@ -2,11 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { Address } from '@cowprotocol/cow-sdk'
 
+import { useAffiliateTraderPastOrders } from './useAffiliateTraderPastOrders'
 import { useHasLocalTrades } from './useHasLocalTrades'
-import { useHasOrderbookTrades } from './useHasOrderbookTrades'
 
 import { AFFILIATE_ELIGIBILITY_LOADING_WARNING_MS } from '../config/affiliateProgram.const'
 import { logAffiliate } from '../utils/logger'
+
+export interface TraderEligibilityState {
+  status: TraderEligibilityStatus
+  hasLoadingTimeout: boolean
+}
 
 export enum TraderEligibilityStatus {
   IDLE = 'idle',
@@ -14,11 +19,6 @@ export enum TraderEligibilityStatus {
   ERROR = 'error',
   HAS_PAST_TRADES = 'has-past-trades',
   NO_PAST_TRADES = 'no-past-trades',
-}
-
-export interface TraderEligibilityState {
-  status: TraderEligibilityStatus
-  hasLoadingTimeout: boolean
 }
 
 interface UseAffiliateTraderEligibilityParams {
@@ -44,10 +44,11 @@ export function useAffiliateTraderEligibility(params: UseAffiliateTraderEligibil
   const [hasLoadingTimeout, setHasLoadingTimeout] = useState(false)
 
   const {
-    data: hasOrderbookTrades,
+    data: pastTradesCheck,
     error,
     isLoading,
-  } = useHasOrderbookTrades({ account, enabled: shouldFetchOrderbook })
+  } = useAffiliateTraderPastOrders({ account, enabled: shouldFetchOrderbook })
+  const hasOrderbookTrades = pastTradesCheck?.hasPastTrades
 
   const status = useMemo(() => {
     if (!isEnabled) {

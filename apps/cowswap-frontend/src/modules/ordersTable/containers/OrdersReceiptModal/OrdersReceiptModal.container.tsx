@@ -1,14 +1,14 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTwapOrderById } from 'entities/twap'
 import JSBI from 'jsbi'
 
 import { PendingOrdersPrices } from 'modules/orders'
-import { useTwapOrderByChildId } from 'modules/twap'
+import { useTwapOrderByChildId, useTwapPartOrdersList } from 'modules/twap'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
@@ -30,8 +30,12 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
 
   const twapOrderById = useTwapOrderById(order?.id)
   const twapOrderByChildId = useTwapOrderByChildId(order?.id)
+  const twapPartOrdersList = useTwapPartOrdersList()
   const twapOrder = twapOrderById || twapOrderByChildId
   const isTwapPartOrder = !!twapOrderByChildId
+  const twapPartOrderIndex = useMemo(() => {
+    return twapPartOrdersList.find(({ uid }) => uid === order?.id)?.index
+  }, [order?.id, twapPartOrdersList])
 
   const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const alternativeOrderModalContextFromHook = useGetAlternativeOrderModalContext(order)
@@ -75,6 +79,7 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
       chainId={chainId}
       order={order}
       twapOrder={twapOrder}
+      twapPartOrderIndex={twapPartOrderIndex}
       isTwapPartOrder={isTwapPartOrder}
       isOpen={!!order}
       onDismiss={closeReceiptModal}

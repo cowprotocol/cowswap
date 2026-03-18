@@ -2,9 +2,9 @@ import { ReactElement } from 'react'
 
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
@@ -53,6 +53,7 @@ interface ReceiptProps {
   order: ParsedOrder
   receiverEnsName: string | null
   twapOrder: TwapOrderItem | null
+  twapPartOrderIndex?: number
   isTwapPartOrder: boolean
   chainId: SupportedChainId
   onDismiss: Command
@@ -121,6 +122,7 @@ export function ReceiptModal({
   onDismiss,
   order,
   twapOrder,
+  twapPartOrderIndex,
   isTwapPartOrder,
   chainId,
   buyAmount,
@@ -205,7 +207,7 @@ export function ReceiptModal({
               <styledEl.Field>
                 <FieldLabel label={t`TWAP parts`} tooltip={i18n._(TOOLTIPS_MSG.TWAP_PARTS)} />
                 <div>
-                  <span>{getTwapPartsValue({ isTwapPartOrder, twapOrderN })}</span>
+                  <span>{getTwapPartsValue({ isTwapPartOrder, twapOrderN, twapPartOrderIndex })}</span>
                 </div>
               </styledEl.Field>
             )}
@@ -417,11 +419,23 @@ function getOwnerTooltipMessage(order: ParsedOrder, hasSafeTxParams: boolean): M
 function getTwapPartsValue({
   isTwapPartOrder,
   twapOrderN,
+  twapPartOrderIndex,
 }: {
   isTwapPartOrder: boolean
   twapOrderN: number
+  twapPartOrderIndex?: number
 }): ReactElement | string {
   if (isTwapPartOrder) {
+    if (typeof twapPartOrderIndex === 'number') {
+      const partNumber = twapPartOrderIndex + 1
+
+      return (
+        <Trans>
+          Part {partNumber} of {twapOrderN} parts
+        </Trans>
+      )
+    }
+
     return <Trans>Part of {twapOrderN} parts</Trans>
   }
 

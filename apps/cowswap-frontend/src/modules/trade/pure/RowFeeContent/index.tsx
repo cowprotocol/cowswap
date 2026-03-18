@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { FiatAmount, getTokenAmountTitle, InfoTooltip, RowBetween, RowFixed, TokenAmount, UI } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'

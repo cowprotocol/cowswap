@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { ALL_FILTER, filterSolvers, getEnvironmentOptions, getNetworkOptions } from './SolversDirectoryTable.helpers'
+import {
+  ACTIVE_FILTER_ACTIVE,
+  ALL_FILTER,
+  filterSolvers,
+  getEnvironmentOptions,
+  getNetworkOptions,
+} from './SolversDirectoryTable.helpers'
 import { Table, TableScrollHint } from './SolversDirectoryTable.styles'
 import { SolversDirectoryTableBody } from './SolversDirectoryTableBody'
 import { SolversDirectoryTableFilters } from './SolversDirectoryTableFilters'
@@ -15,23 +21,27 @@ interface SolversDirectoryTableProps {
 
 const SOLVER_SUFFIX_REGEX = /-solve$/i
 
-function normalizeSolverIdentifier(value: string): string {
-  return value.trim().toLowerCase().replace(SOLVER_SUFFIX_REGEX, '')
-}
-
-function findMatchingSolverId(solversInfo: SolverInfo[], solverDeeplink?: string | null): string | null {
+function findMatchingSolver(solversInfo: SolverInfo[], solverDeeplink?: string | null): SolverInfo | null {
   if (!solverDeeplink) return null
 
   const normalizedSolverDeeplink = normalizeSolverIdentifier(solverDeeplink)
 
-  const matchingSolver = solversInfo.find((solver) => {
-    const normalizedSolverId = normalizeSolverIdentifier(solver.solverId)
-    const normalizedDisplayName = normalizeSolverIdentifier(solver.displayName)
+  return (
+    solversInfo.find((solver) => {
+      const normalizedSolverId = normalizeSolverIdentifier(solver.solverId)
+      const normalizedDisplayName = normalizeSolverIdentifier(solver.displayName)
 
-    return normalizedSolverId === normalizedSolverDeeplink || normalizedDisplayName === normalizedSolverDeeplink
-  })
+      return normalizedSolverId === normalizedSolverDeeplink || normalizedDisplayName === normalizedSolverDeeplink
+    }) || null
+  )
+}
 
-  return matchingSolver?.solverId || null
+function normalizeSolverIdentifier(value: string): string {
+  return value.trim().toLowerCase().replace(SOLVER_SUFFIX_REGEX, '')
+}
+
+function shouldShowAllStatusesForSolverDeeplink(solver: SolverInfo | null): boolean {
+  return !!solver && !solver.deployments.some((deployment) => deployment.active)
 }
 
 const SOLVERS_TABLE_HEADER = (
@@ -39,8 +49,6 @@ const SOLVERS_TABLE_HEADER = (
     <th>Solver</th>
     <th>Networks</th>
     <th>Environments</th>
-    <th>Website</th>
-    <th>Description</th>
   </tr>
 )
 
@@ -52,7 +60,10 @@ export function SolversDirectoryTable({
   const [searchQuery, setSearchQuery] = useState('')
   const [networkFilter, setNetworkFilter] = useState(ALL_FILTER)
   const [environmentFilter, setEnvironmentFilter] = useState(ALL_FILTER)
-  const [activeFilter, setActiveFilter] = useState(ALL_FILTER)
+  const deeplinkedSolver = useMemo(() => findMatchingSolver(solversInfo, solverDeeplink), [solverDeeplink, solversInfo])
+  const deeplinkedSolverId = deeplinkedSolver?.solverId || null
+  const shouldShowAllStatuses = shouldShowAllStatusesForSolverDeeplink(deeplinkedSolver)
+  const [activeFilter, setActiveFilter] = useState(() => (shouldShowAllStatuses ? ALL_FILTER : ACTIVE_FILTER_ACTIVE))
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
   const [scrolledSolverId, setScrolledSolverId] = useState<string | null>(null)
 
@@ -62,14 +73,16 @@ export function SolversDirectoryTable({
     () => filterSolvers(solversInfo, searchQuery, networkFilter, environmentFilter, activeFilter),
     [activeFilter, environmentFilter, networkFilter, searchQuery, solversInfo],
   )
-  const deeplinkedSolverId = useMemo(
-    () => findMatchingSolverId(solversInfo, solverDeeplink),
-    [solverDeeplink, solversInfo],
-  )
 
   const toggleExpandedRow = useCallback((solverId: string): void => {
     setExpandedRows((current) => ({ ...current, [solverId]: !current[solverId] }))
   }, [])
+
+  useEffect(() => {
+    if (!deeplinkedSolverId || !shouldShowAllStatuses) return
+
+    setActiveFilter((current) => (current === ACTIVE_FILTER_ACTIVE ? ALL_FILTER : current))
+  }, [deeplinkedSolverId, shouldShowAllStatuses])
 
   useEffect(() => {
     onFilteredCountChange?.(filteredSolvers.length)
@@ -109,7 +122,7 @@ export function SolversDirectoryTable({
       />
       <TableScrollHint>
         <Table
-          numColumns={5}
+          numColumns={3}
           header={SOLVERS_TABLE_HEADER}
           body={
             <SolversDirectoryTableBody

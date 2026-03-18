@@ -1,5 +1,5 @@
 import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
 
 import { getIsNativeToken } from './getIsNativeToken'
 

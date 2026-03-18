@@ -1,9 +1,10 @@
 import { ReactNode, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -93,7 +94,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     }
 
     if (current) {
-      const normalisedAddress = getCurrencyAddress(current).toLowerCase()
+      const normalisedAddress = getAddressKey(getCurrencyAddress(current))
       const balance = balances[normalisedAddress]
       const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
 

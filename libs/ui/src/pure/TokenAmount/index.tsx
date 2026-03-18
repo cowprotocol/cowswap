@@ -1,7 +1,7 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { Fraction } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
-import { Fraction } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -50,6 +50,10 @@ export interface TokenAmountProps {
   noTitle?: boolean
 }
 
+export function getTokenAmountTitle({ amount, tokenSymbol }: Pick<TokenAmountProps, 'amount' | 'tokenSymbol'>): string {
+  return FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TokenAmount({
@@ -82,8 +86,4 @@ export function TokenAmount({
       <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>
   )
-}
-
-export function getTokenAmountTitle({ amount, tokenSymbol }: Pick<TokenAmountProps, 'amount' | 'tokenSymbol'>): string {
-  return FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
 }

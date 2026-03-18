@@ -1,5 +1,67 @@
 # Changelog
 
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.0...ens-v3.0.1) (2026-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.1
+    * @cowprotocol/common-utils bumped to 3.0.1
+    * @cowprotocol/wallet-provider bumped to 2.1.9
+
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/ens-v2.4.0...ens-v3.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.0
+    * @cowprotocol/common-utils bumped to 3.0.0
+    * @cowprotocol/wallet-provider bumped to 2.1.8
+
+## [2.4.0](https://github.com/cowprotocol/cowswap/compare/ens-v2.3.2...ens-v2.4.0) (2026-03-10)
+
+
+### ✨ Features
+
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.4.0
+    * @cowprotocol/common-utils bumped to 2.4.0
+    * @cowprotocol/wallet-provider bumped to 2.1.7
+
 ## [2.3.2](https://github.com/cowprotocol/cowswap/compare/ens-v2.3.1...ens-v2.3.2) (2026-02-25)
 
 

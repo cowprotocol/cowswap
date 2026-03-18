@@ -3,9 +3,9 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 

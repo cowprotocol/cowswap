@@ -10,30 +10,6 @@ import { TokensVirtualRow } from './types'
 import { tokensListSorter } from '../../utils/tokensListSorter'
 import { getCheckingRouteTooltip, getNoRouteTooltip } from '../constants'
 
-type BalancesMap = BalancesState['values'] | undefined
-
-export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
-  if (!balances) {
-    return tokens
-  }
-
-  const prioritized: TokenWithLogo[] = []
-  const remainder: TokenWithLogo[] = []
-
-  for (const token of tokens) {
-    const hasBalance = Boolean(balances[token.address.toLowerCase()])
-    if (hasBalance || getIsNativeToken(token)) {
-      prioritized.push(token)
-    } else {
-      remainder.push(token)
-    }
-  }
-
-  const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
-
-  return [...sortedPrioritized, ...remainder]
-}
-
 export interface BuildVirtualRowsParams {
   sortedTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[] | undefined
@@ -43,6 +19,8 @@ export interface BuildVirtualRowsParams {
   bridgeSupportedTokensMap: Record<string, boolean> | null
   areTokensFromBridge: boolean
 }
+
+type BalancesMap = BalancesState['values'] | undefined
 
 export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualRow[] {
   const {
@@ -116,4 +94,26 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
   }
 
   return [...composedRows, ...tokenRows]
+}
+
+export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
+  if (!balances) {
+    return tokens
+  }
+
+  const prioritized: TokenWithLogo[] = []
+  const remainder: TokenWithLogo[] = []
+
+  for (const token of tokens) {
+    const hasBalance = Boolean(balances[getAddressKey(token.address)])
+    if (hasBalance || getIsNativeToken(token)) {
+      prioritized.push(token)
+    } else {
+      remainder.push(token)
+    }
+  }
+
+  const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
+
+  return [...sortedPrioritized, ...remainder]
 }
