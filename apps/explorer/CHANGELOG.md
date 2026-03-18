@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.0...explorer-v4.0.1) (2026-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.1
+    * @cowprotocol/common-const bumped to 3.0.1
+    * @cowprotocol/common-hooks bumped to 3.0.1
+    * @cowprotocol/common-utils bumped to 3.0.1
+    * @cowprotocol/core bumped to 3.0.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.9
+    * @cowprotocol/types bumped to 4.0.1
+    * @cowprotocol/ui bumped to 3.0.1
+
 ## [4.0.0](https://github.com/cowprotocol/cowswap/compare/explorer-v3.4.0...explorer-v4.0.0) (2026-03-11)
 
 

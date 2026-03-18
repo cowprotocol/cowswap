@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/core-v3.0.0...core-v3.0.1) (2026-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.1
+
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/core-v2.5.0...core-v3.0.0) (2026-03-11)
 
 

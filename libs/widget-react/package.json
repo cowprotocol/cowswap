@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/widget-react",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "CoW Swap Widget Library. Allows you to easily embed a CoW Swap widget on your React application.",
   "repository": {
     "type": "git",
