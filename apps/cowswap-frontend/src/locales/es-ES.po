@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-03-17 16:35\n"
+"PO-Revision-Date: 2026-03-18 10:23\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -3025,8 +3025,8 @@ msgid "Download .WEBP"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
-msgid "Paid weekly via airdrop"
-msgstr ""
+#~ msgid "Paid weekly by Friday via airdrop"
+#~ msgstr "Paid weekly by Friday via airdrop"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Token not permittable"
@@ -5921,6 +5921,10 @@ msgstr "fue enviado a"
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 msgid "Deposit"
 msgstr "Depósito"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
+msgid "Paid weekly by Friday via airdropp"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 msgid "Review TWAP order"
