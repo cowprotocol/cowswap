@@ -86,7 +86,7 @@ export type OrderTypeKeys =
   | EthFlowOrderTypes
   | 'scheduled'
 
-export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
+export const ORDER_LIST_KEYS = [
   'pending',
   'presignaturePending',
   'expired',
@@ -95,7 +95,8 @@ export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
   'creating',
   'failed',
   'scheduled',
-]
+] as const satisfies OrderTypeKeys[]
+
 export const ORDERS_LIST: OrderLists = {
   pending: {},
   presignaturePending: {},

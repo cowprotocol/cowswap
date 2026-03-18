@@ -110,7 +110,9 @@ ordersTableStateAtom.onMount = () => {
       const orderType = get(locationOrderTypeAtom)
 
       const uiOrderType: UiOrderType = {
-        [TabOrderTypes.SWAP]: UiOrderType.LIMIT, // TODO: Is this correct (for AffectedPermitOrdersTable / SwapPage)?
+        // This mapping is intentional.
+        // The swap page and `AffectedPermitOrdersTable` component check open limit orders with partial approvals.
+        [TabOrderTypes.SWAP]: UiOrderType.LIMIT,
         [TabOrderTypes.LIMIT]: UiOrderType.LIMIT,
         [TabOrderTypes.ADVANCED]: UiOrderType.TWAP,
       }[orderType]
@@ -164,16 +166,6 @@ ordersTableStateAtom.onMount = () => {
       })
 
       if (orderType === TabOrderTypes.ADVANCED) {
-        /*
-        TWAP:
-
-        const allEmulatedOrders = useAllEmulatedOrders()
-
-        const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
-
-        // Then allEmulatedOrders goes into the updater
-        */
-
         const isBundlingSupportedLoadable = get(isBundlingSupportedLoadableAtom)
         const isBundlingSupported =
           isBundlingSupportedLoadable.state === 'hasData' ? !!isBundlingSupportedLoadable.data : false
@@ -181,36 +173,12 @@ ordersTableStateAtom.onMount = () => {
         if (!isBundlingSupported) {
           reduxOrders = []
         } else {
-          // reduxOrders = useOrders(chainId, account, UiOrderType.TWAP)
-
-          // const twapOrdersTokens = useTwapOrdersTokens() // emulatedTwapOrdersAtom and emulatedPartOrdersAtom access twapOrdersTokens on their own
-
           const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
           const emulatedPartOrders = get(emulatedPartOrdersAtom)
-
           const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
-
-          // TODO: AdvancedOrdersPage needs this plus pendingOrders:
-          // const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
           reduxOrders = emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)
         }
-      } else if (orderType === TabOrderTypes.LIMIT) {
-        /*
-        Limit:
-
-        const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
-
-        const pendingLimitOrders = useMemo(
-          () => allLimitOrders.filter((order) => order.status === OrderStatus.PENDING),
-          [allLimitOrders],
-        )
-
-        Then allLimitOrders goes into the updater
-
-        No extra processing here, we just continue with reduxOrders...
-
-        */
       }
 
       const pendingOrders: Order[] = reduxOrders.filter((order) => order.status === OrderStatus.PENDING)

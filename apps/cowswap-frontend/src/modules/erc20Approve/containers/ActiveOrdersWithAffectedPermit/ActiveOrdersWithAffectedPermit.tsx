@@ -25,7 +25,6 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
   const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
 
-  // TODO: Consider moving to atom:
   const ordersWithPermit = useMemo(() => {
     return pendingOrders.filter((order) => {
       return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)
