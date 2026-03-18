@@ -2,9 +2,6 @@ import { useDeferredValue, useEffect, useRef, useState } from 'react'
 
 import { useLatestRef } from './useLatestRef'
 
-/**
- * This
- */
 export function useStateWithDeferredValue<T>(
   value: T,
   deferredCallback: (deferredValue: T) => void,

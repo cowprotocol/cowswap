@@ -4,11 +4,10 @@ import { useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { GnosisSafe } from '@web3-react/gnosis-safe'
 
-import { gnosisSafeInfoAtom, walletInfoAtom } from 'src/api/state'
-
 import { useSafeAppsSdk } from './useSafeAppsSdk'
 
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
+import { gnosisSafeInfoAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
 import { getConnectionIcon, getConnectionName } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
