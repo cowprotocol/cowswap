@@ -1,9 +1,9 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { OPEN_WALLET_MODAL_EVENT } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
-import { useAppKit } from '@reown/appkit/react'
 
 import { ApplicationModal } from './reducer'
 
@@ -28,21 +28,14 @@ export function useCloseModal(_modal: ApplicationModal): Command {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
-const WALLET_MODAL_OPEN_THROTTLE_MS = 1200
-
-/** Opens AppKit wallet connection modal. Throttled so double-invocation (e.g. Strict Mode or duplicate handlers) only opens once and avoids two "Review permissions" dialogs in MetaMask. */
+/**
+ * Dispatches OPEN_WALLET_MODAL_EVENT so a listener inside Web3Provider runs reconnect then opens the AppKit modal.
+ * No wagmi/Reown hooks here so this is safe to call from any part of the tree.
+ */
 export function useToggleWalletModal(): Command {
-  const { open } = useAppKit()
-  const lastOpenTimeRef = useRef(0)
-
   return useCallback(() => {
-    const now = Date.now()
-    if (now - lastOpenTimeRef.current < WALLET_MODAL_OPEN_THROTTLE_MS) {
-      return
-    }
-    lastOpenTimeRef.current = now
-    open()
-  }, [open])
+    document.dispatchEvent(new CustomEvent(OPEN_WALLET_MODAL_EVENT))
+  }, [])
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced

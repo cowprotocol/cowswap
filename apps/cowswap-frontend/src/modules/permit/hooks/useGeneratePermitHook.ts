@@ -51,27 +51,23 @@ async function runPermitRequest(
   const cachedPermit = await getCachedPermit(params.inputToken.address, amount, spender)
   if (cachedPermit) return cachedPermit
 
-  try {
-    params.preSignCallback?.()
-    const hookData = await generatePermitHook({
-      account: params.account,
-      amount,
-      chainId,
-      config,
-      eip2612Utils,
-      inputToken: params.inputToken,
-      nonce,
-      permitInfo: params.permitInfo,
-      spender,
-    })
-    if (hookData) {
-      params.postSignCallback?.()
-      storePermit({ ...permitParams, hookData, spender })
-    }
-    return hookData
-  } catch {
-    return undefined
+  params.preSignCallback?.()
+  const hookData = await generatePermitHook({
+    account: params.account,
+    amount,
+    chainId,
+    config,
+    eip2612Utils,
+    inputToken: params.inputToken,
+    nonce,
+    permitInfo: params.permitInfo,
+    spender,
+  })
+  if (hookData) {
+    params.postSignCallback?.()
+    storePermit({ ...permitParams, hookData, spender })
   }
+  return hookData
 }
 
 /**

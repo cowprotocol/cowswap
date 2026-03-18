@@ -1,3 +1,6 @@
+import { RPC_URLS } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { safe } from '@wagmi/connectors'
@@ -6,6 +9,15 @@ import { createStorage } from 'wagmi'
 import { throttledInjected } from './connectors/throttledInjected'
 
 import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
+
+/** Custom RPC URLs so read calls use our RPCs instead of WalletConnect relay (avoids CORS/403 on localhost). */
+const customRpcUrls: Record<string, Array<{ url: string }>> = {}
+for (const chain of SUPPORTED_REOWN_NETWORKS) {
+  const url = RPC_URLS[chain.id as SupportedChainId]
+  if (url) {
+    customRpcUrls[`eip155:${chain.id}`] = [{ url }]
+  }
+}
 
 const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
 
@@ -32,6 +44,7 @@ const metadata = {
 
 export const wagmiAdapter = new WagmiAdapter({
   connectors: [safe(), throttledInjected()],
+  customRpcUrls,
   networks: SUPPORTED_REOWN_NETWORKS,
   projectId,
   storage,
@@ -40,6 +53,7 @@ export const wagmiAdapter = new WagmiAdapter({
 export const reownAppKit = createAppKit({
   adapters: [wagmiAdapter],
   allowUnsupportedChain: false,
+  customRpcUrls,
   defaultNetwork: SUPPORTED_REOWN_NETWORKS[0],
   enableEIP6963: true,
   enableReconnect: true,
