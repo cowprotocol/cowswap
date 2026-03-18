@@ -1,9 +1,9 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { getAddress } from '@ethersproject/address'
 import { id } from '@ethersproject/hash'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { resolveDisplayTwapOrder } from './resolveDisplayTwapOrder'
 

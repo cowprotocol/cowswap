@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
+import { Percent } from '@cowprotocol/currency'
 import { useIsSafeViaWc, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-import { Percent } from '@uniswap/sdk-core'
 
 import { useTradeRouteContext } from 'modules/trade'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'

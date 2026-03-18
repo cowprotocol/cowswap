@@ -2,8 +2,8 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useMemo } from 'react'
 
 import { formatTokenAmount, shortenAddress, shortenOrderId } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { twapOrdersListAtom, useTwapOrdersTokens } from 'entities/twap'

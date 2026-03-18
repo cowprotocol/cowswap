@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { USDC } from '@cowprotocol/common-const'
 import { SupportedChainId, getTokenId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { PrototypeProxyTokenSummary } from 'modules/twap'
 import { getUsdPriceStateKey, useUsdPrices } from 'modules/usdAmount'
