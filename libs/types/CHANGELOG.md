@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/cowprotocol/cowswap/compare/types-v4.0.0...types-v4.0.1) (2026-03-18)
+
+
+### 🐛 Bug Fixes
+
+* update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
+
 ## [4.0.0](https://github.com/cowprotocol/cowswap/compare/types-v3.4.0...types-v4.0.0) (2026-03-11)
 
 
