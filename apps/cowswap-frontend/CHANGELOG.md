@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.1...cowswap-v3.0.2) (2026-03-18)
+
+
+### 🐛 Bug Fixes
+
+* trigger release ([#7178](https://github.com/cowprotocol/cowswap/issues/7178)) ([3753588](https://github.com/cowprotocol/cowswap/commit/375358892dad51cee54e5e1c152ffb51e46581fb))
+
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.0...cowswap-v3.0.1) (2026-03-18)
 
 
