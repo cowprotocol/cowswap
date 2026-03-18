@@ -161,7 +161,6 @@ export const isSafeViaWcAtom = atom((get) => {
  * but NOT loaded as a Safe App
  */
 export function useIsSafeViaWc(): boolean {
-  // TODO: Replace with isSafeViaWcAtom
   const isSafeApp = useIsSafeApp()
   const isSafeWallet = useIsSafeWallet()
 
