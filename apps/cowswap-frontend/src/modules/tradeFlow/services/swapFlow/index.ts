@@ -1,4 +1,11 @@
-import { delay, getCurrencyAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import {
+  captureError,
+  delay,
+  ERROR_TYPES,
+  getCurrencyAddress,
+  normalizeError,
+  reportPermitWithDefaultSigner,
+} from '@cowprotocol/common-utils'
 import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
@@ -249,9 +256,9 @@ export async function swapFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const isCoWShedEip1271SignatureError = error instanceof CoWShedEip1271SignatureInvalid
 
@@ -260,6 +267,7 @@ export async function swapFlow(
         ? BridgeInvalidEip1271SignatureError
         : getSwapErrorMessage(error)
 
+    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)

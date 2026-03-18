@@ -1,7 +1,5 @@
 # Snackbars
 
-![](./demo.png)
-
 ## Usage
 
 ```tsx

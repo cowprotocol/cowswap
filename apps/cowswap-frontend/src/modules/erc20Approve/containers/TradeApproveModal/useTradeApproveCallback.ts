@@ -114,9 +114,8 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         } else {
           return { txResponse: response, approvedAmount: undefined }
         }
-      } catch (error) {
-        handleApprovalError(error)
-        return undefined
+      } catch (err: unknown) {
+        handleApprovalError(err)
       } finally {
         updateApproveProgressModalState({
           currency,

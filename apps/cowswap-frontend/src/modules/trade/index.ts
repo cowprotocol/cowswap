@@ -86,3 +86,5 @@ export * from './pure/ConfirmDetailsItem'
 export { CompatibilityIssuesWarning } from './pure/CompatibilityIssuesWarning'
 export * from './pure/Row/styled'
 export * from './pure/TradePageLayout'
+
+export { useTradeState } from './hooks/useTradeState'
