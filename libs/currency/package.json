@@ -10,7 +10,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.3",
+    "@cowprotocol/cow-sdk": "8.0.4-pr-844-6636198b.0",
     "jsbi": "^3.1.4"
   }
 }
