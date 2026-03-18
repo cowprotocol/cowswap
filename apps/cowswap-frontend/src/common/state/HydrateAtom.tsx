@@ -11,6 +11,11 @@ interface HydrateAtomProps {
   children: ReactNode
 }
 
+/**
+ * Hydrates the atom with state so children (e.g. SwapUpdaters, quote/price logic) can read it.
+ * Uses useLayoutEffect so the update runs before paint; ref guard is only used inside the effect
+ * to satisfy react-hooks/refs (no ref access during render).
+ */
 export function HydrateAtom({ atom, state, children }: HydrateAtomProps): ReactNode {
   const prevStateRef = useRef<unknown | undefined>(undefined)
   const setAtom = useSetAtom(atom)
