@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
+import { OrderClass, PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
@@ -213,7 +213,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         void settlementContract // in deps for memo stability
         return {
           tradeQuoteState,
-          tradeQuote,
+          tradeQuote: tradeQuote as QuoteAndPost,
           bridgeQuoteAmounts,
           context: {
             chainId,
