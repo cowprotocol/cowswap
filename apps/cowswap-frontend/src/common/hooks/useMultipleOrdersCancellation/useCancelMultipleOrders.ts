@@ -48,7 +48,6 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
       if (!signer) return
 
       const orderUids = offChainOrders.map((order) => order.id)
-      const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellations(orderUids, chainId, signer)
       const signedOrderCancellations = await OrderSigningUtils.signOrderCancellations(orderUids, chainId, signer, {
         env: isBarnBackendEnv ? 'staging' : 'prod',
         settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
