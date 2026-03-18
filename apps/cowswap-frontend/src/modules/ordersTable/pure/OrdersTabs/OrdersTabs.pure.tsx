@@ -12,11 +12,12 @@ import SVG from 'react-inlinesvg'
 import { ordersTableTabsAtom } from 'modules/ordersTable/state/tabs/ordersTableTabs.atom'
 
 import { useNavigate } from 'common/hooks/useNavigate'
-import { OrderTabId, tabParamAtom } from 'common/state/routesState'
+import { OrderTabId } from 'common/state/routesState'
 
 import * as styledEl from './OrdersTabs.styled'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
+import { ordersTableTabIdAtom } from '../../state/tabs/ordersTableTabs.atom'
 
 export function OrdersTabs(): ReactNode {
   const { i18n } = useLingui()
@@ -25,7 +26,7 @@ export function OrdersTabs(): ReactNode {
   const navigate = useNavigate()
 
   const tabs = useAtomValue(ordersTableTabsAtom)
-  const currentTabId = useAtomValue(tabParamAtom)
+  const currentTabId = useAtomValue(ordersTableTabIdAtom)
 
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     const tabId = event.target.value as OrderTabId
@@ -35,7 +36,7 @@ export function OrdersTabs(): ReactNode {
   return (
     <>
       <styledEl.SelectContainer>
-        <styledEl.Select value={currentTabId} onChange={handleSelectChange}>
+        <styledEl.Select value={currentTabId || undefined} onChange={handleSelectChange}>
           {tabs.map((tab) => {
             const isUnfillable = tab.id === 'unfillable'
             const isSigning = tab.id === 'signing'

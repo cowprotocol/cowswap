@@ -49,6 +49,7 @@ export enum TabOrderTypes {
   SWAP = 'swap',
   LIMIT = 'limit',
   ADVANCED = 'advanced',
+  YIELD = 'yield',
 }
 
 export const locationNetworkAtom = atom(
@@ -69,9 +70,5 @@ export enum OrderTabId {
   HISTORY = 'history',
 }
 
-export const tabParamAtom = atom((get) => (get(locationSearchParamsAtom).get('tab') || OrderTabId.OPEN) as OrderTabId)
-export const pageParamAtom = atom((get) => parseInt(get(locationSearchParamsAtom).get('page') || '') || 1)
-export const ordersTableParamsAtom = atom((get) => ({
-  tab: get(tabParamAtom),
-  page: get(pageParamAtom),
-}))
+export const tabParamAtom = atom((get) => (get(locationSearchParamsAtom).get('tab') || null) as OrderTabId | null)
+export const pageParamAtom = atom((get) => parseInt(get(locationSearchParamsAtom).get('page') || '') || null)

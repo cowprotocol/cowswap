@@ -7,7 +7,6 @@ import {
   balancesAtom,
   tokenAllowancesLoadableFamily,
 } from '@cowprotocol/balances-and-allowances'
-import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { areAddressesEqual, SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
@@ -28,27 +27,41 @@ import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork, getDefaultNetworkStat
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
 
+import { ordersTablePageAtom, ordersTableTabIdAtom } from 'modules/ordersTable/state/tabs/ordersTableTabs.atom'
 import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/utils/getFilteredOrders'
 import { getOrdersTableList } from 'modules/ordersTable/utils/getOrdersTableList'
+import { buildOrdersTableUrl } from 'modules/ordersTable/utils/url/buildOrdersTableUrl'
 import { emulatedPartOrdersAtom } from 'modules/twap/state/emulatedPartOrdersAtom'
 import { emulatedTwapOrdersAtom } from 'modules/twap/state/emulatedTwapOrdersAtom'
 
-import { TabOrderTypes, locationOrderTypeAtom, tabParamAtom, OrderTabId } from 'common/state/routesState'
+import { hashHistory } from 'common/constants/routes'
+import {
+  TabOrderTypes,
+  locationOrderTypeAtom,
+  tabParamAtom,
+  OrderTabId,
+  locationAtom,
+  pageParamAtom,
+} from 'common/state/routesState'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { OrdersTableState, OrdersTableFilters } from './ordersTable.types'
+import { OrdersTableState, OrdersTableList } from './ordersTable.types'
+import { ordersTableFiltersAtom } from './ordersTableFilters.atom'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
+import { getTabsAndCurrentTab } from './tabs/ordersTableTabs.atom'
+
+const EMPTY_ORDERS_LIST = {
+  [OrderTabId.OPEN]: [],
+  [OrderTabId.HISTORY]: [],
+  [OrderTabId.UNFILLABLE]: [],
+  [OrderTabId.SIGNING]: [],
+} as const satisfies OrdersTableList
 
 export const ordersTableStateAtom = atom<OrdersTableState>({
   reduxOrders: [],
   pendingOrders: [],
   orders: [],
-  ordersList: {
-    open: [],
-    history: [],
-    unfillable: [],
-    signing: [],
-  },
+  ordersList: EMPTY_ORDERS_LIST,
   filteredOrders: [],
   hasHydratedOrders: false,
   balancesAndAllowances: {
@@ -57,28 +70,6 @@ export const ordersTableStateAtom = atom<OrdersTableState>({
     allowances: {},
   },
 })
-
-export const DEFAULT_ORDERS_TABLE_FILTERS = {
-  searchTerm: '',
-  historyStatusFilter: HistoryStatusFilter.FILLED,
-} as const satisfies OrdersTableFilters
-
-export const ordersTableFiltersAtom = atom<OrdersTableFilters>(DEFAULT_ORDERS_TABLE_FILTERS)
-
-export const { updateAtom: partiallyUpdateOrdersTableFiltersAtom } = atomWithPartialUpdate(ordersTableFiltersAtom)
-
-ordersTableFiltersAtom.onMount = () => {
-  observe((get, set) => {
-    get(tabParamAtom)
-
-    // Reset filters if tab changes:
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    set(partiallyUpdateOrdersTableFiltersAtom as any, {
-      searchTerm: '',
-      historyStatusFilter: HistoryStatusFilter.FILLED,
-    })
-  })
-}
 
 const reduxOrdersStateAtom = atomFromReduxSelector<OrdersState>((appState) => appState.orders)
 
@@ -95,7 +86,7 @@ function setIsOrderUnfillable(params: SetIsOrderUnfillableParams): void {
 }
 
 ordersTableStateAtom.onMount = () => {
-  const unobserve = observe((get, set) => {
+  const unobserveReduxOrders = observe((get, set) => {
     const { chainId, account } = get(walletInfoAtom)
     const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom)
     const reduxOrdersStateInCurrentChain = selectReduxOrdersStateByChain(chainId)
@@ -115,6 +106,7 @@ ordersTableStateAtom.onMount = () => {
         [TabOrderTypes.SWAP]: UiOrderType.LIMIT,
         [TabOrderTypes.LIMIT]: UiOrderType.LIMIT,
         [TabOrderTypes.ADVANCED]: UiOrderType.TWAP,
+        [TabOrderTypes.YIELD]: UiOrderType.LIMIT,
       }[orderType]
 
       if (!orderType || !uiOrderType) {
@@ -152,8 +144,8 @@ ordersTableStateAtom.onMount = () => {
         if (!order) return
 
         const doesBelongToAccount = areAddressesEqual(order.order.owner, account)
-        const orderType = getUiOrderType(order.order)
-        const doesMatchClass = orderType === uiOrderType
+        const orderUiOrderType = getUiOrderType(order.order)
+        const doesMatchClass = orderUiOrderType === uiOrderType
 
         if (!doesBelongToAccount || !doesMatchClass) return
 
@@ -222,29 +214,32 @@ ordersTableStateAtom.onMount = () => {
 
       console.log('3. ordersList =', ordersList)
 
-      const { searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
-
-      // TODO: Instead, create allowedTabParamAtom with logic in useCurrentTab(). Or simply add the property to ordersTableStateAtom...
-      const currentTabId = get(tabParamAtom)
-
-      const orders = ordersList[currentTabId]
-
-      // TODO: Check here if currentTab Id has orders or if a different tab should be shown. Return the right data regardless of currentTabId. Redirect will happen shortly.
-
-      console.log(`4. orders (${currentTabId}) =`, orders)
-
-      const filteredOrders = getFilteredOrders(orders, {
-        searchTerm,
-        // The status filter select is only visible in the story tab:
-        historyStatusFilter: currentTabId === OrderTabId.HISTORY ? historyStatusFilter : HistoryStatusFilter.ALL,
-      })
-
-      console.log(`5. filteredOrders (${currentTabId}) =`, filteredOrders)
+      // hasHydratedOrders:
 
       const { lastCheckedBlock } = reduxOrdersStateInCurrentChain
       const defaultBlock = ContractDeploymentBlocks[chainId] ?? 0
       const hasHydratedOrders =
         reduxOrders.length > 0 || (typeof lastCheckedBlock === 'number' && lastCheckedBlock !== defaultBlock)
+
+      // current tab(s):
+
+      // Note we don't use the URL param directly (`tabParam`), but the verified/corrected `tabId`. This means we show
+      // the orders for the right tab even if the URL param is incorrect. The redirect will happen shortly.
+      const tabParam = get(tabParamAtom)
+      const { tabId } = getTabsAndCurrentTab({ hasHydratedOrders, ordersList, tabParam })
+      const orders = tabId ? ordersList[tabId] : []
+
+      console.log(`4. orders (${tabId}) =`, orders)
+
+      const { searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
+
+      const filteredOrders = getFilteredOrders(orders, {
+        searchTerm,
+        // The status filter select is only visible in the story tab:
+        historyStatusFilter: tabId === OrderTabId.HISTORY ? historyStatusFilter : HistoryStatusFilter.ALL,
+      })
+
+      console.log(`5. filteredOrders (${tabId}) =`, filteredOrders)
 
       set(ordersTableStateAtom, {
         reduxOrders,
@@ -258,8 +253,39 @@ ordersTableStateAtom.onMount = () => {
     }
   }, jotaiStore)
 
+  const unobserveURL = observe((get) => {
+    const orderTypeParam = get(locationOrderTypeAtom)
+
+    // Only in /limit and /advanced routes, we want to make sure we sync the tab and page params.
+    if (orderTypeParam !== TabOrderTypes.LIMIT && orderTypeParam !== TabOrderTypes.ADVANCED) return
+
+    // These are the values in the URL params, and the user controls them, so they might be incorrect.
+    // They state an intention, but are not a source of truth.
+    const tabParam = get(tabParamAtom)
+    const pageParam = get(pageParamAtom)
+
+    // These ones, on the other hand, take into consideration the value of the params in the URL, plus the current
+    // app state. If they do not match, we redirect the user to the right place. Some examples:
+    // - Page just loaded, no params in the URL yet. Depending on the orders loaded, the default state will be OPEN or HISTORY.
+    // - URL tab param = signing but there are no signing orders
+    const expectedTab = get(ordersTableTabIdAtom)
+    const expectedPage = get(ordersTablePageAtom)
+
+    if (!expectedTab || !expectedPage || (tabParam === expectedTab && pageParam === expectedPage)) return
+
+    const location = get(locationAtom)
+
+    const redirectTo = buildOrdersTableUrl(location, {
+      tabId: expectedTab,
+      pageNumber: expectedPage,
+    })
+
+    hashHistory.replace(redirectTo)
+  }, jotaiStore)
+
   return () => {
-    unobserve()
+    unobserveReduxOrders()
+    unobserveURL()
   }
 }
 

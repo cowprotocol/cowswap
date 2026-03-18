@@ -8,7 +8,7 @@ import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 import { ordersToCancelMapAtom } from 'common/state/ordersToCancel.atom'
-import { TabOrderTypes, pageParamAtom, OrderTabId, locationOrderTypeAtom } from 'common/state/routesState'
+import { TabOrderTypes, OrderTabId, locationOrderTypeAtom } from 'common/state/routesState'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
@@ -19,11 +19,12 @@ import { OrdersTablePagination } from './Pagination/OrdersTablePagination.pure'
 import { OrdersTableRow } from './Row/OrdersTableRow.pure'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
+import { ordersTablePageAtom } from '../../state/tabs/ordersTableTabs.atom'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../state/tabs/ordersTableTabs.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
 
 export interface OrdersTableProps {
-  currentTab: OrderTabId
+  currentTab: OrderTabId | null
 }
 
 export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
@@ -34,7 +35,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
   const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
 
   const orderType = useAtomValue(locationOrderTypeAtom)
-  const currentPageNumber = useAtomValue(pageParamAtom)
+  const currentPageNumber = useAtomValue(ordersTablePageAtom) || 1
 
   const { filteredOrders, balancesAndAllowances } = useAtomValue(ordersTableStateAtom)
 
@@ -76,7 +77,7 @@ export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
     })
   }, [tableHeaders, currentTab])
 
-  if (!chainId || !balancesAndAllowances || !orderActions || !pendingOrdersPrices) return null
+  if (!currentTab || !chainId || !balancesAndAllowances || !orderActions || !pendingOrdersPrices) return null
 
   const isTwapTable = orderType === TabOrderTypes.ADVANCED
   const totalFilteredOrders = filteredOrders?.length || 0

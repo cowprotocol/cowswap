@@ -4,28 +4,25 @@ import { ReactNode } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { locationOrderTypeAtom, OrderTabId } from 'common/state/routesState'
+import { locationOrderTypeAtom } from 'common/state/routesState'
 
 import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersContent'
 import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletContent'
 import { OrdersTableUnsupportedNetworkContent } from './UnsupportedNetwork/OrdersTableUnsupportedNetworkContent'
 
 import { ordersTableStateAtom } from '../../../state/ordersTable.atoms'
+import { ordersTableTabIdAtom } from '../../../state/tabs/ordersTableTabs.atom'
 import { HistoryStatusFilter } from '../../../utils/getFilteredOrders'
 import { OrdersTable } from '../OrdersTable.pure'
 
 interface OrdersTableContentProps {
-  currentTab: OrderTabId
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
 }
 
-export function OrdersTableContent({
-  currentTab,
-  searchTerm,
-  historyStatusFilter,
-}: OrdersTableContentProps): ReactNode {
+export function OrdersTableContent({ searchTerm, historyStatusFilter }: OrdersTableContentProps): ReactNode {
   const orderType = useAtomValue(locationOrderTypeAtom)
+  const currentTabId = useAtomValue(ordersTableTabIdAtom)
   const { orders, filteredOrders, hasHydratedOrders } = useAtomValue(ordersTableStateAtom)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { account } = useWalletInfo()
@@ -41,13 +38,13 @@ export function OrdersTableContent({
   return filteredOrders?.length === 0 ? (
     <OrdersTableNoOrdersContent
       orderType={orderType}
-      currentTab={currentTab}
+      currentTab={currentTabId}
       searchTerm={searchTerm}
       historyStatusFilter={historyStatusFilter}
       hasHydratedOrders={hasHydratedOrders}
       hasOrders={!!orders?.length}
     />
   ) : (
-    <OrdersTable currentTab={currentTab} />
+    <OrdersTable currentTab={currentTabId} />
   )
 }

@@ -21,7 +21,7 @@ const Lottie = lazy(() => import('lottie-react'))
 
 interface OrdersTableNoOrdersContentProps {
   orderType: TabOrderTypes
-  currentTab: OrderTabId
+  currentTab: OrderTabId | null
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   hasHydratedOrders: boolean

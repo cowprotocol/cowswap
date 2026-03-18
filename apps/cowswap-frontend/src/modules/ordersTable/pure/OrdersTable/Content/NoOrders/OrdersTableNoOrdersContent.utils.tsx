@@ -13,7 +13,7 @@ import * as styledEl from '../../Container/OrdersTableContainer.styled'
 import { LoadMoreOrdersButton } from '../../LoadMore/Button/LoadMoreOrdersButton'
 
 export interface GetTitleOptions {
-  currentTab: OrderTabId
+  currentTab: OrderTabId | null
   hasOrders: boolean
   limit: number
   hasMoreOrders: boolean
@@ -53,7 +53,7 @@ export function getTitle({
 }
 
 export interface GetDescriptionOptions {
-  currentTab: OrderTabId
+  currentTab: OrderTabId | null
   hasOrders: boolean
   limit: number
   hasMoreOrders: boolean

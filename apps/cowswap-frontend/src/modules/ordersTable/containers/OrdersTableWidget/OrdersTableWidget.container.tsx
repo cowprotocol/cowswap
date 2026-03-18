@@ -9,9 +9,8 @@ import { useLingui } from '@lingui/react/macro'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders'
-import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
-import { OrderTabId, ordersTableParamsAtom } from 'common/state/routesState'
+import { OrderTabId } from 'common/state/routesState'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -27,6 +26,8 @@ import {
 import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
 import { ordersTableStateAtom } from '../../state/ordersTable.atoms'
+import { ordersTableFiltersAtom } from '../../state/ordersTableFilters.atom'
+import { ordersTableParamsAtom } from '../../state/tabs/ordersTableTabs.atom'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../state/tabs/ordersTableTabs.constants'
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'

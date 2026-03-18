@@ -4,14 +4,15 @@ import { PropsWithChildren, ReactNode } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
-import { ordersTableFiltersAtom } from 'modules/ordersTable/state/ordersTable.atoms'
+import { ordersTableFiltersAtom } from 'modules/ordersTable'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { OrderTabId, tabParamAtom } from 'common/state/routesState'
+import { OrderTabId } from 'common/state/routesState'
 
 import * as styledEl from './OrdersTableContainer.styled'
 
 import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDisplayProtocolFeeBanner'
+import { ordersTableTabIdAtom } from '../../../state/tabs/ordersTableTabs.atom'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
 
@@ -21,7 +22,7 @@ export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
   const { searchTerm, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
-  const currentTabId = useAtomValue(tabParamAtom)
+  const currentTabId = useAtomValue(ordersTableTabIdAtom)
 
   return (
     <styledEl.Wrapper>
@@ -46,7 +47,7 @@ export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode
         </>
       )}
 
-      <OrdersTableContent currentTab={currentTabId} searchTerm={searchTerm} historyStatusFilter={historyStatusFilter} />
+      <OrdersTableContent searchTerm={searchTerm} historyStatusFilter={historyStatusFilter} />
     </styledEl.Wrapper>
   )
 }

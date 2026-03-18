@@ -5,8 +5,8 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { partiallyUpdateOrdersTableFiltersAtom } from '../state/ordersTable.atoms'
 import { OrdersTableFilters } from '../state/ordersTable.types'
+import { partiallyUpdateOrdersTableFiltersAtom } from '../state/ordersTableFilters.atom'
 import { buildOrdersTableUrl } from '../utils/url/buildOrdersTableUrl'
 
 export function usePartiallyUpdateOrdersTableFiltersAtom(): (filters: Partial<OrdersTableFilters>) => void {

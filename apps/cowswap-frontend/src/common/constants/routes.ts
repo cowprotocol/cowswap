@@ -4,47 +4,15 @@ import { BadgeTypes } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
-import { createHashHistory, createPath } from 'history'
+import { createHashHistory } from 'history'
 
-import type { HistoryRouterProps, Location as RouterLocation, Path, To } from 'react-router'
+import type { HistoryRouterProps } from 'react-router'
 
-const historyBase = createHashHistory()
+type History = HistoryRouterProps['history']
 
-type RouterHistory = HistoryRouterProps['history']
-
-/** React Router 7 History API; history@5 HashHistory omits these and uses a different listen Update shape. */
-function createURL(to: To): URL {
-  const href = typeof to === 'string' ? to : createPath(to)
-  const normalized = href.replace(/ $/, '%20')
-  const baseUrl =
-    typeof window !== 'undefined' && window.location.origin !== 'null' ? window.location.origin : 'http://localhost'
-  return new URL(normalized, baseUrl)
-}
-
-function encodeLocation(to: To): Path {
-  const url = createURL(to)
-  return {
-    pathname: url.pathname,
-    search: url.search,
-    hash: url.hash,
-  }
-}
-
-function listenForRouter(listener: Parameters<RouterHistory['listen']>[0]): ReturnType<RouterHistory['listen']> {
-  return historyBase.listen((update) => {
-    listener({
-      action: update.action,
-      location: update.location as unknown as RouterLocation,
-      delta: null,
-    })
-  })
-}
-
-export const hashHistory: RouterHistory = Object.assign(historyBase, {
-  createURL,
-  encodeLocation,
-  listen: listenForRouter,
-})
+// Using react-router's `UNSAFE_createHashHistory` here produces runtime `BUILDING_BLOCK_flushCallbacks `
+// errors. Using `history` instead does not.
+export const hashHistory = createHashHistory() as unknown as History
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 
