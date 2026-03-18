@@ -9,7 +9,7 @@ import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
-import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { useAutoAddOrderToSurplusQueue } from 'entities/surplusModal'
 import { useDispatch } from 'react-redux'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
@@ -86,6 +86,7 @@ interface UpdateOrdersParams {
   getSafeTxInfo: GetSafeTxInfo
   safeNonce: number | undefined
   allTransactions: ReturnType<typeof useAllTransactions>
+  handledFinalOrderIds: Set<string>
   markPollComplete?: (chainId: ChainId) => void
 }
 
@@ -101,6 +102,7 @@ export function PendingOrdersUpdater(): null {
   const dispatch = useDispatch<AppDispatch>()
 
   const pending = useCombinedPendingOrders({ chainId, account })
+  const handledFinalOrderIdsRef = useRef<Set<string>>(new Set())
   // TODO: Implement using SWR or retry/cancellable promises
   const isUpdatingMarket = useRef(false)
   const isUpdatingLimit = useRef(false)
@@ -132,12 +134,16 @@ export function PendingOrdersUpdater(): null {
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const invalidateOrdersBatch = useInvalidateOrdersBatch()
   const presignOrders = usePresignOrders()
-  const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
+  const addOrderToSurplusQueue = useAutoAddOrderToSurplusQueue()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
   const getSerializedBridgeOrder = useGetSerializedBridgeOrder()
   const getSerializedBridgeOrderRef = useRef(getSerializedBridgeOrder)
+
+  useEffect(() => {
+    handledFinalOrderIdsRef.current.clear()
+  }, [account, chainId])
 
   useEffect(() => {
     getSerializedBridgeOrderRef.current = getSerializedBridgeOrder
@@ -205,6 +211,7 @@ export function PendingOrdersUpdater(): null {
           getSafeTxInfo,
           safeNonce,
           allTransactions,
+          handledFinalOrderIds: handledFinalOrderIdsRef.current,
           markPollComplete: shouldMarkCompletion ? markPollComplete : undefined,
         }).finally(() => {
           isUpdating.current = false
@@ -233,27 +240,22 @@ export function PendingOrdersUpdater(): null {
       return
     }
 
-    const marketInterval = setInterval(
-      () => updateOrders(chainId, account, isSafeWallet, UiOrderType.SWAP),
-      MARKET_OPERATOR_API_POLL_INTERVAL,
-    )
-    const limitInterval = setInterval(
-      () => updateOrders(chainId, account, isSafeWallet, UiOrderType.LIMIT),
-      LIMIT_OPERATOR_API_POLL_INTERVAL,
-    )
-    const twapInterval = setInterval(
-      () => updateOrders(chainId, account, isSafeWallet, UiOrderType.TWAP),
-      LIMIT_OPERATOR_API_POLL_INTERVAL,
+    const pollOrderTypes = Object.values(UiOrderType) as UiOrderType[]
+    const intervals = pollOrderTypes.map((uiOrderType) =>
+      setInterval(
+        () => updateOrders(chainId, account, isSafeWallet, uiOrderType),
+        uiOrderType === UiOrderType.SWAP ? MARKET_OPERATOR_API_POLL_INTERVAL : LIMIT_OPERATOR_API_POLL_INTERVAL,
+      ),
     )
 
-    updateOrders(chainId, account, isSafeWallet, UiOrderType.SWAP)
-    updateOrders(chainId, account, isSafeWallet, UiOrderType.LIMIT)
-    updateOrders(chainId, account, isSafeWallet, UiOrderType.TWAP)
+    pollOrderTypes.forEach((uiOrderType) => {
+      updateOrders(chainId, account, isSafeWallet, uiOrderType)
+    })
 
     return () => {
-      clearInterval(marketInterval)
-      clearInterval(limitInterval)
-      clearInterval(twapInterval)
+      intervals.forEach((interval) => {
+        clearInterval(interval)
+      })
     }
   }, [account, chainId, isSafeWallet, updateOrders])
 
@@ -350,10 +352,13 @@ async function _updateOrders({
   getSafeTxInfo,
   safeNonce,
   allTransactions,
+  handledFinalOrderIds,
   markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
-  const pending = orders.filter(({ owner }) => areAddressesEqual(owner, account))
+  const pending = orders.filter(({ owner, id }) => {
+    return areAddressesEqual(owner, account) && !handledFinalOrderIds.has(id)
+  })
 
   // Exit early when there are no pending orders
   if (!pending.length) {
@@ -385,6 +390,10 @@ async function _updateOrders({
   handlePresignedOrders({ presigned, orders, getSerializedBridgeOrder, chainId, account, isSafeWallet, presignOrders })
 
   if (expired.length > 0) {
+    expired.forEach((order) => {
+      handledFinalOrderIds.add(order.uid)
+    })
+
     expireOrdersBatch({
       ids: expired.map(({ uid }) => uid),
       chainId,
@@ -397,6 +406,10 @@ async function _updateOrders({
   }
 
   if (cancelled.length > 0) {
+    cancelled.forEach((order) => {
+      handledFinalOrderIds.add(order.uid)
+    })
+
     cancelOrdersBatch({
       ids: cancelled.map(({ uid }) => uid),
       chainId,
@@ -412,6 +425,10 @@ async function _updateOrders({
   }
 
   if (fulfilled.length > 0) {
+    fulfilled.forEach((order) => {
+      handledFinalOrderIds.add(order.uid)
+    })
+
     // update redux state
     fulfillOrdersBatch({
       orders: fulfilled,

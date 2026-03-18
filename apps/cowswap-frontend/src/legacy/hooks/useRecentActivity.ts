@@ -14,6 +14,7 @@ import { useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
 import { OrderFillability, usePendingOrdersFillability } from 'modules/ordersTable'
 
 import { ActivityStatus, ActivityType } from 'common/types/activity'
+import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'
 
 export interface ActivityDescriptors {
   id: string
@@ -95,16 +96,14 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
 
   activities.forEach((activity) => {
     const { date } = activity
-
     const timestamp = getDateTimestamp(date)
 
     mapByTimestamp[timestamp] = (mapByTimestamp[timestamp] || []).concat(activity)
   })
 
   return Object.keys(mapByTimestamp).map((strTimestamp) => {
-    // Keys are always string, convert back to number
     const timestamp = Number(strTimestamp)
-    // For easier handling later, transform into a list of objects with nested lists
+
     return { date: new Date(timestamp), activities: mapByTimestamp[timestamp] }
   })
 }
@@ -137,14 +136,12 @@ export function useRecentActivity(): TransactionAndOrder[] {
   const recentOrdersAdjusted = useMemo<TransactionAndOrder[]>(() => {
     return (
       allNonEmptyOrders
-        .map((order) =>
+        .map((order) => ({
+          ...order,
           // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
           // and time in MS vs ISO string as Orders uses
-          ({
-            ...order,
-            addedTime: Date.parse(order.creationTime),
-          }),
-        )
+          addedTime: Date.parse(order.creationTime),
+        }))
         // sort orders by calculated `addedTime` descending
         .sort((a, b) => b.addedTime - a.addedTime)
         // show at most MAXIMUM_ORDERS_TO_DISPLAY regular orders, and as much pending as there are
@@ -157,26 +154,21 @@ export function useRecentActivity(): TransactionAndOrder[] {
       return []
     }
 
-    return (
-      Object.values(allTransactions)
-        // Only show orders for connected account
-        .filter((tx) => {
-          return (
-            areAddressesEqual(tx.from, account) &&
-            isTransactionRecent(tx) &&
-            isNotEthFlowTx(tx) &&
-            isNotOnChainCancellationTx(tx)
-          )
-        })
-        .map((tx) => {
-          return {
-            ...tx,
-            // we need to adjust Transaction object and add "id" + "status" to match Orders type
-            id: tx.hash,
-            status: tx.receipt ? OrderStatus.FULFILLED : tx.errorMessage ? OrderStatus.FAILED : OrderStatus.PENDING,
-          }
-        })
-    )
+    return Object.values(allTransactions)
+      .filter((tx) => {
+        return (
+          areAddressesEqual(tx.from, account) &&
+          isTransactionRecent(tx) &&
+          isNotEthFlowTx(tx) &&
+          isNotOnChainCancellationTx(tx)
+        )
+      })
+      .map((tx) => ({
+        ...tx,
+        // we need to adjust Transaction object and add "id" + "status" to match Orders type
+        id: tx.hash,
+        status: tx.receipt ? OrderStatus.FULFILLED : tx.errorMessage ? OrderStatus.FAILED : OrderStatus.PENDING,
+      }))
   }, [account, allTransactions])
 
   return useMemo(
@@ -218,21 +210,19 @@ function getIsOrderCancelling(order: Order): boolean {
   return (order.isCancelling || false) && [OrderStatus.CREATING, OrderStatus.PENDING].includes(order.status)
 }
 
+function getIsOrderConfirmed(order: Order, isPending: boolean): boolean {
+  return !isPending && (order.status === OrderStatus.FULFILLED || isOrderFilled(order))
+}
+
 function getIsReceiptConfirmed(tx: EnhancedTransactionDetails): boolean {
   return tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
 }
 
 function getOrderActivityStatus(order: Order): ActivityStatus {
-  const isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING // Smart contract orders only
-  const isCreating = order.status === OrderStatus.CREATING // EthFlow orders only
-  const isPending = order.status === OrderStatus.PENDING // All orders
-  const isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
-  // `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
-  // We can only do so if the order is in a "pending" state.
-  // `isPending` is used for all orders when they are "OPEN".
-  // `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
-  // After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
-  // Thus, we add both here to tell if the order is being cancelled
+  const isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING
+  const isCreating = order.status === OrderStatus.CREATING
+  const isPending = order.status === OrderStatus.PENDING
+  const isConfirmed = getIsOrderConfirmed(order, isPending)
   const isCancelling = getIsOrderCancelling(order)
   const isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
   const isFailed = order.status === OrderStatus.FAILED

@@ -9,7 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote } from 'entities/bridgeOrders'
-import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { useAutoAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { emitBridgingSuccessEvent } from 'modules/orders'
 import { getCowSoundError, getCowSoundSuccess } from 'modules/sounds'
@@ -18,38 +18,37 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 const APPZI_CHECK_INTERVAL = 60_000
 
-function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
-  const { provider: _, ...eventPayload } = crossChainOrder
-
-  // Display snackbar
-  emitBridgingSuccessEvent(eventPayload)
-
-  // Play sound
-  getCowSoundSuccess().play()
-
-  // Trigger Appzi survey
-  triggerAppziSurvey(
-    {
-      isBridging: true,
-      explorerUrl: crossChainOrder.explorerUrl,
-      chainId: crossChainOrder.chainId,
-      orderType: UiOrderType.SWAP,
-      account: crossChainOrder.order.owner,
-    },
-    'nps',
-  )
-}
-
 interface PendingOrderUpdaterProps {
   chainId: SupportedChainId
   orderUid: string
   openSince?: number
 }
 
+export function PendingBridgeOrdersUpdater(): ReactNode {
+  const { chainId } = useWalletInfo()
+
+  const pendingBridgeOrders = usePendingBridgeOrders()
+
+  if (!pendingBridgeOrders) return null
+
+  return (
+    <>
+      {pendingBridgeOrders.map((order) => (
+        <PendingOrderUpdater
+          key={order.orderUid}
+          chainId={chainId}
+          orderUid={order.orderUid}
+          openSince={order.creationTimestamp}
+        />
+      ))}
+    </>
+  )
+}
+
 function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdaterProps): ReactNode {
   const { data: crossChainOrder } = useCrossChainOrder(chainId, orderUid)
   const updateBridgeOrderQuote = useUpdateBridgeOrderQuote()
-  const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
+  const addOrderToSurplusQueue = useAutoAddOrderToSurplusQueue()
   const analytics = useCowAnalytics()
   const waitingTooLongNpsTriggeredRef = useRef(false)
 
@@ -128,23 +127,24 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
   return null
 }
 
-export function PendingBridgeOrdersUpdater(): ReactNode {
-  const { chainId } = useWalletInfo()
+function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
+  const { provider: _, ...eventPayload } = crossChainOrder
 
-  const pendingBridgeOrders = usePendingBridgeOrders()
+  // Display snackbar
+  emitBridgingSuccessEvent(eventPayload)
 
-  if (!pendingBridgeOrders) return null
+  // Play sound
+  getCowSoundSuccess().play()
 
-  return (
-    <>
-      {pendingBridgeOrders.map((order) => (
-        <PendingOrderUpdater
-          key={order.orderUid}
-          chainId={chainId}
-          orderUid={order.orderUid}
-          openSince={order.creationTimestamp}
-        />
-      ))}
-    </>
+  // Trigger Appzi survey
+  triggerAppziSurvey(
+    {
+      isBridging: true,
+      explorerUrl: crossChainOrder.explorerUrl,
+      chainId: crossChainOrder.chainId,
+      orderType: UiOrderType.SWAP,
+      account: crossChainOrder.order.owner,
+    },
+    'nps',
   )
 }

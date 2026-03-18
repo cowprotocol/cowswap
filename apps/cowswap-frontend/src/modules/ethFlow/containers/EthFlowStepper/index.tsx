@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { formatSymbol, getIsNativeToken } from '@cowprotocol/common-utils'
+import { OrderStatus as ApiOrderStatus } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
 
@@ -9,11 +10,11 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { isOrderExpired } from 'legacy/state/orders/utils'
 
-import { SmartOrderStatus } from 'modules/ethFlow/pure/EthFlowStepper/constants'
-
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'
 
 import { EthFlowStepper as Pure, EthFlowStepperProps as PureProps, TxState } from '../../pure/EthFlowStepper'
+import { SmartOrderStatus } from '../../pure/EthFlowStepper/constants'
 
 interface CreationState {
   state: TxState
@@ -49,6 +50,9 @@ export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
   const rejectedReason = creationTxFailed ? t`Transaction failed` : undefined
 
   const refundHash = order.refundHash || order.apiAdditionalInfo?.ethflowData?.refundTxHash || undefined
+  // A backend-confirmed EthFlow cancellation implies the ETH should already be on the
+  // refund path, even when no explicit refund tx or flag is present yet.
+  const shouldTreatAsRefunded = isCancellationConfirmed(order) || order.isRefunded === true || !!refundHash
 
   const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
@@ -64,7 +68,7 @@ export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
     creation,
     refund: {
       hash: refundHash,
-      failed: !refundHash,
+      failed: shouldTreatAsRefunded ? false : undefined,
     },
     cancellation: {
       hash: cancellationHash,
@@ -77,28 +81,27 @@ export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
 
 const ORDER_INDEXED_STATUSES: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.EXPIRED, OrderStatus.CANCELLED]
 
-function mapOrderToEthFlowStepperState(
-  order: Order | undefined,
-  creationTx: EnhancedTransactionDetails | undefined,
-  cancellationTx: EnhancedTransactionDetails | undefined,
-): SmartOrderStatus | undefined {
-  if (!order) return
-
-  const { status } = order
-
-  if (status === 'fulfilled') {
-    return SmartOrderStatus.FILLED
+function didCancellationFail(order: Order, tx: EnhancedTransactionDetails | undefined): boolean | undefined {
+  if (order.status === OrderStatus.FULFILLED || isOrderFilled(order)) {
+    return undefined
   }
 
-  if (ORDER_INDEXED_STATUSES.includes(status) || cancellationTx?.receipt) {
-    return SmartOrderStatus.INDEXED
+  if (isCancellationConfirmed(order)) {
+    return false
   }
 
-  if (status === 'creating' && creationTx?.receipt) {
-    return SmartOrderStatus.CREATION_MINED
+  if (tx?.receipt?.status === 0) {
+    return true
   }
 
-  return SmartOrderStatus.CREATING
+  return undefined
+}
+
+function didTxFail(tx: EnhancedTransactionDetails | undefined): boolean | undefined {
+  if (tx?.receipt?.status === undefined) {
+    return undefined
+  }
+  return tx.receipt.status !== 1
 }
 
 function getCreationTxState(order: Order, allTxs: { [txHash: string]: EnhancedTransactionDetails }): CreationState {
@@ -120,20 +123,36 @@ function getCreationTxState(order: Order, allTxs: { [txHash: string]: EnhancedTr
   }
 }
 
+// Uses the backend API status directly instead of classifyOrder(), because the
+// buffered classifier intentionally waits before exposing cancelled state.
+function isCancellationConfirmed(order: Order): boolean {
+  return order.apiAdditionalInfo?.status === ApiOrderStatus.CANCELLED
+}
+
 function isEthFlowOrderExpired(order: Order | undefined): boolean {
   return order?.status === 'expired' || isOrderExpired({ validTo: order?.validTo as number })
 }
 
-function didTxFail(tx: EnhancedTransactionDetails | undefined): boolean | undefined {
-  if (tx?.receipt?.status === undefined) {
-    return undefined
-  }
-  return tx.receipt.status !== 1
-}
+function mapOrderToEthFlowStepperState(
+  order: Order | undefined,
+  creationTx: EnhancedTransactionDetails | undefined,
+  cancellationTx: EnhancedTransactionDetails | undefined,
+): SmartOrderStatus | undefined {
+  if (!order) return
 
-function didCancellationFail(order: Order, tx: EnhancedTransactionDetails | undefined): boolean | undefined {
-  if (order.status === OrderStatus.CANCELLED) {
-    return false
+  const { status } = order
+
+  if (status === 'fulfilled' || isOrderFilled(order)) {
+    return SmartOrderStatus.FILLED
   }
-  return didTxFail(tx)
+
+  if (ORDER_INDEXED_STATUSES.includes(status) || cancellationTx?.receipt) {
+    return SmartOrderStatus.INDEXED
+  }
+
+  if (status === 'creating' && creationTx?.receipt) {
+    return SmartOrderStatus.CREATION_MINED
+  }
+
+  return SmartOrderStatus.CREATING
 }

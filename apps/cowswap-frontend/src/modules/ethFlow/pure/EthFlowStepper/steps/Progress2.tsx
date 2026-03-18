@@ -11,8 +11,7 @@ export function Progress2({ order, creation, refund, cancellation }: EthFlowStep
 
   const { status: progressStatus, value: progress } = useMemo<ProgressProps>(() => {
     const hasRefundActivity = !!refundHash || !!cancellationHash
-    const isRefundSuccessful =
-      (refundHash && refundFailed === false) || (cancellationHash && cancellationFailed === false)
+    const isRefundSuccessful = refundFailed === false
     const isRefundFailed = (refundHash && refundFailed === true) || (cancellationHash && cancellationFailed === true)
     const isNotStarted = state === SmartOrderStatus.CREATING || state === SmartOrderStatus.CREATION_MINED
     const isFilled = state === SmartOrderStatus.FILLED

@@ -17,14 +17,13 @@ import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrde
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { ActivityState, getActivityState } from 'legacy/hooks/useActivityDerivedState'
-import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { OrderFillability, useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
-import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
+import { useSwapPartialApprovalToggleState } from 'modules/swap'
 import { ConfirmDetailsItem } from 'modules/trade'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
@@ -47,6 +46,7 @@ import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { isOrderFilled } from 'utils/orderUtils/isOrderFilled'
 
 import { StatusDetails } from './StatusDetails'
 import {
@@ -197,7 +197,7 @@ export function ActivityDetails(props: {
     const outputAmount = CurrencyAmount.fromRawAmount(effectiveOutputToken, buyAmount.toString())
     const feeAmount = CurrencyAmount.fromRawAmount(inputToken, feeAmountRaw.toString())
 
-    isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
+    isOrderFulfilled = isOrderFilled(order)
 
     const { executedSellAmountBeforeFees, executedBuyAmount } = order.apiAdditionalInfo || {}
     const rateInputCurrencyAmount = isOrderFulfilled
