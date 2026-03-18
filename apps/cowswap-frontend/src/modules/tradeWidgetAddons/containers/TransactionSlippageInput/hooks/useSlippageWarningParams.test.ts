@@ -71,6 +71,8 @@ describe('useSlippageWarningParams', () => {
         tooHigh: false,
         min: 0.01,
         max: 50,
+        lowSlippageBound: 4,
+        highSlippageBound: 6,
       })
     })
 
@@ -86,6 +88,8 @@ describe('useSlippageWarningParams', () => {
         tooHigh: true,
         min: 0.01,
         max: 50,
+        lowSlippageBound: 4,
+        highSlippageBound: 6,
       })
     })
 
@@ -101,6 +105,8 @@ describe('useSlippageWarningParams', () => {
         tooHigh: false,
         min: 0.01,
         max: 50,
+        lowSlippageBound: 4,
+        highSlippageBound: 6,
       })
     })
   })
@@ -130,6 +136,8 @@ describe('useSlippageWarningParams', () => {
           tooHigh: false,
           min: 0.01,
           max: 50,
+          lowSlippageBound: 0.5,
+          highSlippageBound: 1,
         })
 
         mockUseTradeSlippage.mockReturnValue(bps(150))
@@ -139,6 +147,8 @@ describe('useSlippageWarningParams', () => {
           tooHigh: true,
           min: 0.01,
           max: 50,
+          lowSlippageBound: 0.5,
+          highSlippageBound: 1,
         })
       })
     })
@@ -163,6 +173,8 @@ describe('useSlippageWarningParams', () => {
           tooHigh: false,
           min: 0.01,
           max: 50,
+          lowSlippageBound: 0.5,
+          highSlippageBound: 10,
         })
 
         mockUseTradeSlippage.mockReturnValue(bps(500))
@@ -172,6 +184,8 @@ describe('useSlippageWarningParams', () => {
           tooHigh: false,
           min: 0.01,
           max: 50,
+          lowSlippageBound: 0.5,
+          highSlippageBound: 10,
         })
 
         mockUseTradeSlippage.mockReturnValue(bps(1100))
@@ -181,6 +195,8 @@ describe('useSlippageWarningParams', () => {
           tooHigh: true,
           min: 0.01,
           max: 50,
+          lowSlippageBound: 0.5,
+          highSlippageBound: 10,
         })
       })
     })
