@@ -112,20 +112,26 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
 /** Sync atom that exposes { state, data, error } for walletCapabilitiesAtom. Use in hooks for loading/data. */
 export const walletCapabilitiesLoadableAtom = loadable(walletCapabilitiesAtom)
 
-export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean | null> => {
+export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> => {
   if (get(isSafeAppAtom)) return true
 
   const walletCapabilities = await get(walletCapabilitiesAtom)
 
-  if (!walletCapabilities) return null
+  // If `walletCapabilitiesAtom` returns `undefined` it's because `shouldCheckCapabilities === false`,
+  // or because some kind of API empty response or error. So, if we cannot check, then we must be false,
+  // not null (as some components/functions like `validateTradeForm` treat `null` as loading):
+  if (!walletCapabilities) return false
 
   return !!get(isSafeViaWcAtom) && walletCapabilities.atomic?.status === 'supported'
 })
 
 export const isBundlingSupportedLoadableAtom = loadable(isBundlingSupportedAsyncAtom)
 
-export const isBundlingSupportedAtom = atom((get) => {
-  const isBundlingSupported = get(isBundlingSupportedLoadableAtom)
+export const isBundlingSupportedAtom = atom((get): boolean | null => {
+  const loadable = get(isBundlingSupportedLoadableAtom)
 
-  return isBundlingSupported.state === 'hasData' ? isBundlingSupported.data : null
+  if (loadable.state === 'loading') return null
+  if (loadable.state === 'hasError') return false
+
+  return loadable.data ?? false
 })
