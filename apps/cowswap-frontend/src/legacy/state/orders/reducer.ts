@@ -562,5 +562,5 @@ function reClassifyOrder(
   if (existingOrder?.order.status === OrderStatus.CANCELLED) {
     return { status: existingOrder.order.status, isCancelling: false }
   }
-  return { status: newOrder.status, isCancelling: newOrder.isCancelling }
+  return { status: newOrder.status, isCancelling: existingOrder?.order.isCancelling || newOrder.isCancelling }
 }
