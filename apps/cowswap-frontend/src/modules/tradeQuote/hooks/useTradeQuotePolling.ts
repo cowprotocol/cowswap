@@ -36,10 +36,6 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const quoteParamsState = useQuoteParams(amountStr, partiallyFillable)
   const { quoteParams, inputCurrency } = quoteParamsState || {}
 
-  const currentAmountRef = useRef<string | null>(null)
-  // eslint-disable-next-line react-hooks/refs
-  currentAmountRef.current = amountStr ?? null
-
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
 
   const isWindowVisible = useIsWindowVisible()
@@ -48,7 +44,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
-  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState, currentAmountRef)
+  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState)
   const pollQuoteRef = useRef(pollQuote)
   // eslint-disable-next-line react-hooks/refs
   pollQuoteRef.current = pollQuote
@@ -68,14 +64,15 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
 
   /**
-   * Fetch the quote instantly once the quote params are changed.
-   * For bridge, doQuotePolling only fetches when confirm is open; we let it decide.
+   * Fetch the quote instantly once the quote params are changed
    */
   useLayoutEffect(() => {
+    if (isConfirmOpen) return
+
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
+  }, [isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL

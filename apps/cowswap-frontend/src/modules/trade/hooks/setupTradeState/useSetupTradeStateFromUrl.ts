@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useLayoutEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { parseChainIdFromUrlSegment } from '@cowprotocol/common-utils'
 
@@ -11,8 +11,6 @@ import { TradeRawState } from '../../types/TradeRawState'
 /**
  * Updater to fetch trade state from URL params and query, and store it on jotai state
  * /1/swap/WETH/DAI?recipient=0x -> { chainId: 1, inputCurrencyId: 'WETH', outputCurrencyId: 'DAI', recipient: '0x' }
- *
- * Load this hook only once to avoid unnecessary re-renders
  */
 export function useSetupTradeStateFromUrl(): null {
   const params = useParams()
@@ -37,9 +35,11 @@ export function useSetupTradeStateFromUrl(): null {
     }
   }, [location.search, stringifiedParams])
 
-  // Update atom in useLayoutEffect so the value is available before paint and before
-  // useSetupTradeState's effect runs, without triggering "Cannot update a component while rendering another".
-  useLayoutEffect(() => {
+  /**
+   * useEffect() runs after the render completes and useMemo() runs during rendering.
+   * In order to update tradeStateFromUrlAtom faster we use useMemo() here.
+   */
+  useMemo(() => {
     const state: TradeRawState = {
       chainId,
       targetChainId,

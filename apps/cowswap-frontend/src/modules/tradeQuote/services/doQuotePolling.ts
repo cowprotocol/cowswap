@@ -6,6 +6,13 @@ import { TradeQuoteState } from '../state/tradeQuoteAtom'
 import { TradeQuoteFetchParams } from '../types'
 import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
+function isQuoteCached(quote: TradeQuoteState): boolean {
+  const hasCachedResponse = quote.quote
+  const hasCachedError = quote.error
+
+  return Boolean(hasCachedResponse || hasCachedError)
+}
+
 export interface QuoteUpdateContext {
   currentQuote: TradeQuoteState
   quoteParams: QuoteBridgeRequest | undefined
@@ -15,95 +22,44 @@ export interface QuoteUpdateContext {
   forceUpdate: boolean
   isBrowserOnline: boolean
   isConfirmOpen: boolean
-  hasPendingTrade: boolean
   fastQuote?: boolean
   hasSmartSlippage?: boolean
 }
 
-function isQuoteCached(quote: TradeQuoteState): boolean {
-  return Boolean(quote.quote || quote.error)
-}
+export function doQuotePolling({
+  currentQuote,
+  quoteParams,
+  appData,
+  forceUpdate,
+  hasParamsChanged,
+  isBrowserOnline,
+  isConfirmOpen,
+  fastQuote,
+  fetchQuote,
+  hasSmartSlippage,
+}: QuoteUpdateContext): boolean {
+  const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo.doc
 
-function shouldSkipDueToCachedOrOffline(
-  currentQuote: TradeQuoteState,
-  quoteParams: QuoteBridgeRequest | undefined,
-  appDataDoc: QuoteUpdateContext['appData'],
-  hasSmartSlippage: boolean | undefined,
-  forceUpdate: boolean,
-  isBrowserOnline: boolean,
-): boolean {
-  if (forceUpdate) return false
-  if (
-    isQuoteCached(currentQuote) &&
-    quoteUsingSameParameters(
-      currentQuote,
-      quoteParams,
-      currentQuote.quote?.quoteResults.appDataInfo.doc,
-      appDataDoc,
-      hasSmartSlippage,
-    )
-  ) {
-    return true
-  }
-  return !isBrowserOnline
-}
+  if (!forceUpdate) {
+    if (
+      isQuoteCached(currentQuote) &&
+      quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData, hasSmartSlippage)
+    ) {
+      return false
+    }
 
-function runBridgingFlow(
-  isConfirmOpen: boolean,
-  currentQuote: TradeQuoteState,
-  fetchQuote: QuoteUpdateContext['fetchQuote'],
-  hasParamsChanged: boolean,
-): boolean {
-  if (!isConfirmOpen) return false
-  if (isQuoteCached(currentQuote)) return false
-  const fetchStartTimestamp = Date.now()
-  fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
-  return true
-}
-
-function runNonBridgingFlow(
-  isConfirmOpen: boolean,
-  fastQuote: boolean | undefined,
-  fetchQuote: QuoteUpdateContext['fetchQuote'],
-  hasParamsChanged: boolean,
-): boolean {
-  if (isConfirmOpen) return false
-  const fetchStartTimestamp = Date.now()
-  if (fastQuote) {
-    fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
-  }
-  fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
-  return true
-}
-
-export function doQuotePolling(context: QuoteUpdateContext): boolean {
-  const {
-    currentQuote,
-    quoteParams,
-    appData,
-    forceUpdate,
-    hasParamsChanged,
-    isBrowserOnline,
-    isConfirmOpen,
-    hasPendingTrade,
-    fastQuote,
-    fetchQuote,
-    hasSmartSlippage,
-  } = context
-
-  if (hasPendingTrade) return false
-
-  if (
-    shouldSkipDueToCachedOrOffline(currentQuote, quoteParams, appData, hasSmartSlippage, forceUpdate, isBrowserOnline)
-  ) {
-    return false
+    if (!isBrowserOnline) {
+      return false
+    }
   }
 
   const isBridging = !!quoteParams && quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
+  const fetchStartTimestamp = Date.now()
 
-  if (isBridging) {
-    return runBridgingFlow(isConfirmOpen, currentQuote, fetchQuote, hasParamsChanged)
+  if (fastQuote && !isConfirmOpen && !isBridging) {
+    fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
   }
+  fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
 
-  return runNonBridgingFlow(isConfirmOpen, fastQuote, fetchQuote, hasParamsChanged)
+  return true
 }

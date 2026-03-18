@@ -15,6 +15,7 @@ import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap, useDerivedTradeState } from 'modules/trade'
 import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
+import type { VolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -34,6 +35,72 @@ export interface QuoteParams {
   hasSmartSlippage?: boolean
 }
 
+function buildQuoteParams(args: {
+  amount: Nullish<string>
+  partiallyFillable: boolean
+  inputCurrency: Currency
+  outputCurrency: Currency
+  orderKind: QuoteBridgeRequest['kind']
+  appDataDoc: AppDataInfo['doc'] | undefined
+  receiver: QuoteBridgeRequest['receiver']
+  account: string | undefined
+  walletClient: { account: { address: string } } | undefined
+  volumeFee: VolumeFee | undefined
+  userSlippageBps: number | undefined
+  smartSlippageBpsRef: { current: number | undefined }
+}): QuoteParams | undefined {
+  const {
+    amount,
+    partiallyFillable,
+    inputCurrency,
+    outputCurrency,
+    orderKind,
+    appDataDoc,
+    receiver,
+    account,
+    walletClient,
+    volumeFee,
+    userSlippageBps,
+    smartSlippageBpsRef,
+  } = args
+  const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
+  const sellTokenAddress = getCurrencyAddress(inputCurrency)
+  const buyTokenAddress = getCurrencyAddress(outputCurrency)
+  if (!amount) {
+    return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
+  }
+  const signer =
+    account && walletClient
+      ? { ...walletClient, getAddress: (): string => walletClient.account.address }
+      : getBridgeQuoteSigner(inputCurrency.chainId)
+  const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
+  const quoteParams: QuoteBridgeRequest = {
+    kind: orderKind,
+    amount: BigInt(amount),
+    owner,
+    sellTokenChainId: inputCurrency.chainId,
+    sellTokenAddress,
+    sellTokenDecimals: inputCurrency.decimals,
+    buyTokenChainId: outputCurrency.chainId,
+    buyTokenAddress,
+    buyTokenDecimals: outputCurrency.decimals,
+    account: owner,
+    appCode,
+    signer,
+    receiver,
+    validFor: DEFAULT_QUOTE_TTL,
+    ...(volumeFee ? { partnerFee: volumeFee } : undefined),
+    partiallyFillable,
+    ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
+  }
+  return {
+    quoteParams,
+    inputCurrency,
+    appData: appDataDoc,
+    hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
+  }
+}
+
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
   const { data: walletClient } = useWalletClient()
@@ -41,92 +108,37 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
-
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-
   const userSlippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
-
-  /**
-   * Smart-slippage change should not trigger quote fetching. Only user entered value should trigger it
-   * Because of that, we use smartSlippageBps as ref
-   */
   const smartSlippageBpsRef = useRef(smartSlippageBps)
   useEffect(() => {
     smartSlippageBpsRef.current = smartSlippageBps
   }, [smartSlippageBps])
-
   const { inputCurrency, outputCurrency, orderKind } = state || {}
-
   const receiver = useQuoteParamsRecipient()
   const appDataDoc = appData?.doc
 
-  // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
     if (!inputCurrency || !outputCurrency || !orderKind) return
-    // When connected, we need a wallet client for the signer; when disconnected, use bridge quote signer stub
     if (account && !walletClient) return
-
-    const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
-
-    const sellTokenAddress = getCurrencyAddress(inputCurrency)
-    const buyTokenAddress = getCurrencyAddress(outputCurrency)
-
-    const sellTokenDecimals = inputCurrency.decimals
-    const buyTokenDecimals = outputCurrency.decimals
-
-    if (!amount) {
-      return {
-        quoteParams: undefined,
-        inputCurrency,
-        appData: appDataDoc,
-      }
-    }
-
-    /**
-     * BridgingSDK validates route and expects a signer. With wagmi we use WalletClient when connected;
-     * when disconnected we use a stub (see getBridgeQuoteSigner).
-     */
-    const signer = account ? walletClient : getBridgeQuoteSigner(inputCurrency.chainId)
-    const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
-
-    const quoteParams: QuoteBridgeRequest = {
-      kind: orderKind,
-      amount: BigInt(amount),
-      owner,
-
-      sellTokenChainId: inputCurrency.chainId,
-      sellTokenAddress,
-      sellTokenDecimals,
-
-      buyTokenChainId: outputCurrency.chainId,
-      buyTokenAddress,
-      buyTokenDecimals,
-
-      account: owner,
-      appCode,
-      signer,
-
-      receiver,
-      validFor: DEFAULT_QUOTE_TTL,
-      ...(volumeFee ? { partnerFee: volumeFee } : undefined),
+    return buildQuoteParams({
+      amount,
       partiallyFillable,
-      /**
-       * Specify only the user entered slippage
-       * Because if it's not specified, SDK will suggest a slippage, so no need to pass it in quote request
-       */
-      ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
-    }
-
-    return {
-      quoteParams,
       inputCurrency,
-      appData: appDataDoc,
-      hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
-    }
+      outputCurrency,
+      orderKind,
+      appDataDoc,
+      receiver,
+      account,
+      walletClient: walletClient ?? undefined,
+      volumeFee,
+      userSlippageBps,
+      smartSlippageBpsRef,
+    })
   }, [
     walletClient,
     inputCurrency,

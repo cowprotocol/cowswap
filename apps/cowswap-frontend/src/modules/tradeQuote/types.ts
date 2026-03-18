@@ -12,3 +12,8 @@ export interface TradeQuotePollingParameters {
   useSuggestedSlippageApi: boolean
   hasPendingTrade: boolean
 }
+
+export interface QuotePollingUpdateTimings {
+  now: number
+  ref: { current: number | null }
+}
