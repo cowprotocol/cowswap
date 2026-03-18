@@ -112,7 +112,7 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
 /** Sync atom that exposes { state, data, error } for walletCapabilitiesAtom. Use in hooks for loading/data. */
 export const walletCapabilitiesLoadableAtom = loadable(walletCapabilitiesAtom)
 
-export const isBundlingSupportedAtom = atom(async (get): Promise<boolean | null> => {
+export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean | null> => {
   if (get(isSafeAppAtom)) return true
 
   const walletCapabilities = await get(walletCapabilitiesAtom)
@@ -122,4 +122,10 @@ export const isBundlingSupportedAtom = atom(async (get): Promise<boolean | null>
   return !!get(isSafeViaWcAtom) && walletCapabilities.atomic?.status === 'supported'
 })
 
-export const isBundlingSupportedLoadableAtom = loadable(isBundlingSupportedAtom)
+export const isBundlingSupportedLoadableAtom = loadable(isBundlingSupportedAsyncAtom)
+
+export const isBundlingSupportedAtom = atom((get) => {
+  const isBundlingSupported = get(isBundlingSupportedLoadableAtom)
+
+  return isBundlingSupported.state === 'hasData' ? isBundlingSupported.data : null
+})
