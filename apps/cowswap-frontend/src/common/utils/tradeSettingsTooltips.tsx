@@ -42,7 +42,11 @@ export function getNonNativeOrderDeadlineTooltip(): ReactNode {
   )
 }
 
-export function getNativeSlippageTooltip(symbols: (string | undefined)[] | undefined): ReactNode {
+export function getNativeSlippageTooltip(
+  symbols: (string | undefined)[] | undefined,
+  slippageWarningParams?: null | SlippageWarningParams,
+): ReactNode {
+  const amountRange = slippageWarningParams ? ` (${slippageWarningParams?.min} - ${slippageWarningParams?.max}%)` : ''
   const minimumETHFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)
   const aNativeCurrency = symbols?.[0] || t`a native currency`
   const currencyNameCapitalized = symbols?.[0] || t`Native currency`
@@ -53,7 +57,7 @@ export function getNativeSlippageTooltip(symbols: (string | undefined)[] | undef
       <p>
         <Trans>
           When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher
-          to ensure a high likelihood of order matching, even in volatile market conditions.
+          {amountRange} to ensure a high likelihood of order matching, even in volatile market conditions.
         </Trans>
       </p>
       <p>
@@ -86,9 +90,9 @@ export function getNonNativeSlippageTooltip({
   isSettingsModal,
   slippageWarningParams,
 }: GetNonNativeSlippageTooltipParams = {}): ReactNode {
-  if (isDynamic) {
-    const amountRange = slippageWarningParams ? ` (${slippageWarningParams?.min} - ${slippageWarningParams?.max}%)` : ''
+  const amountRange = slippageWarningParams ? ` (${slippageWarningParams?.min} - ${slippageWarningParams?.max}%)` : ''
 
+  if (isDynamic) {
     return (
       <SimpleStyledText>
         <p>
@@ -119,10 +123,11 @@ export function getNonNativeSlippageTooltip({
     )
   }
 
-  let manualSlippageDescription: ReactNode | null = null
+  /*
+  If at some point we want to show the specific ranges our validation logic considers:
 
   if (slippageWarningParams) {
-    manualSlippageDescription = (
+    const manualSlippageDescription = (
       <ul>
         <li>
           <Trans>
@@ -145,13 +150,13 @@ export function getNonNativeSlippageTooltip({
       </ul>
     )
   }
+  */
 
   return (
     <SimpleStyledText>
       <p>
-        <Trans>Custom slippage amount set{slippageWarningParams ? ':' : '.'}</Trans>
+        <Trans>Custom slippage amount set{amountRange}.</Trans>
       </p>
-      {manualSlippageDescription}
       {isSettingsModal ? (
         <>
           <p>

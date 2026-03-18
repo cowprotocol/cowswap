@@ -71,7 +71,10 @@ export function TransactionSlippageInput(): JSX.Element {
       label={t`MEV-protected slippage`}
       tooltip={
         isEoaEthFlow
-          ? getNativeSlippageTooltip([nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
+          ? getNativeSlippageTooltip(
+              [nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol],
+              slippageWarningParams,
+            )
           : getNonNativeSlippageTooltip({
               isDynamic: isSmartSlippageApplied,
               isSettingsModal: true,
