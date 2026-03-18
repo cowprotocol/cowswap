@@ -5,7 +5,7 @@ import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount } from '@cowprotocol/currency'
+import { safeFromRawAmount } from '@cowprotocol/currency'
 import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -227,10 +227,10 @@ export function TokenTable({
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {
               const balanceRaw = balances && balances[getAddressKey(data.address)]
-              const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, balanceRaw.toString()) : undefined
+              const balance = balanceRaw ? safeFromRawAmount(data, balanceRaw.toString()) : undefined
 
               const allowancesRaw = allowances && allowances[getAddressKey(data.address)]
-              const allowance = allowancesRaw ? CurrencyAmount.fromRawAmount(data, allowancesRaw.toString()) : undefined
+              const allowance = allowancesRaw ? safeFromRawAmount(data, allowancesRaw.toString()) : undefined
 
               if (data) {
                 return (
