@@ -10,8 +10,9 @@ import type { HistoryRouterProps } from 'react-router'
 
 type History = HistoryRouterProps['history']
 
-// Using react-router's `UNSAFE_createHashHistory` here produces runtime `BUILDING_BLOCK_flushCallbacks `
-// errors. Using `history` instead does not.
+// Use standalone history package: UNSAFE_createHashHistory from react-router triggers
+// BUILDING_BLOCK_flushCallbacks in dev. Vite resolve.dedupe keeps a single react-router
+// in the production bundle so Router context remains valid.
 export const hashHistory = createHashHistory() as unknown as History
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
