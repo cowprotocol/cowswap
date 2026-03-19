@@ -226,7 +226,12 @@ export function getReferralTrafficPercent(triggerVolume?: number, progressToNext
 export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOrder): boolean {
   const { status } = order
 
-  if (status === OrderStatus.CANCELLED || status === OrderStatus.EXPIRED) return false
+  if (status !== OrderStatus.FULFILLED && !order.partiallyFillable) return false
+
+  const executedBuy = (order as EnrichedOrder).executedBuyAmount !== '0'
+  const executedSell = (order as EnrichedOrder).executedSellAmount !== '0'
+
+  if (!executedBuy && !executedSell) return false
 
   const fullAppData = extractFullAppDataFromOrder(order)
   const appCode = decodeAppData(fullAppData)?.appCode
