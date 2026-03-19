@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.0.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.0.1...common-utils-v3.0.2) (2026-03-19)
+
+
+### 🐛 Bug Fixes
+
+* update sdk version with fixes for addresses ([#7166](https://github.com/cowprotocol/cowswap/issues/7166)) ([8192f79](https://github.com/cowprotocol/cowswap/commit/8192f795bcd8c70cccb18013b50dfbeba954c67d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.2
+    * @cowprotocol/types bumped to 4.0.2
+
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.0.0...common-utils-v3.0.1) (2026-03-18)
 
 
