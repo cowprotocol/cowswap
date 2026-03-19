@@ -122,7 +122,9 @@ export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> =
   // not null (as some components/functions like `validateTradeForm` treat `null` as loading):
   if (!walletCapabilities) return false
 
-  return !!get(isSafeViaWcAtom) && walletCapabilities.atomic?.status === 'supported'
+  const status = walletCapabilities.atomic?.status || ''
+
+  return !!get(isSafeViaWcAtom) && ['supported', 'ready'].includes(status)
 })
 
 export const isBundlingSupportedLoadableAtom = loadable(isBundlingSupportedAsyncAtom)

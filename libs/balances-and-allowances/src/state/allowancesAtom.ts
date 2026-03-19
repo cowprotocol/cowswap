@@ -79,7 +79,7 @@ export interface TokenAllowancesFamilyParams {
  */
 export const tokenAllowancesLoadableFamily = atomFamily(
   ({ chainId, account, tokenAddresses }: TokenAllowancesFamilyParams) => {
-    const alowancesAtom = atom(async (): Promise<AllowancesState | undefined> => {
+    const allowancesAtom = atom(async (): Promise<AllowancesState | undefined> => {
       const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
       if (!chainId || !account || !spender || !tokenAddresses.length) return undefined
@@ -89,7 +89,7 @@ export const tokenAllowancesLoadableFamily = atomFamily(
       return fetchAllowances(chainId, account, spender, tokenAddresses)
     })
 
-    return loadable(alowancesAtom)
+    return loadable(allowancesAtom)
   },
   areTokenAllowancesParamsEqual,
 )
