@@ -14,20 +14,14 @@ import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wa
 
 import { observe } from 'jotai-effect'
 
-import { cowSwapStore } from 'legacy/state'
-import {
-  OrderStatus,
-  Order,
-  setIsOrderUnfillable as createSetIsOrderUnfillableAction,
-  SetIsOrderUnfillableParams,
-} from 'legacy/state/orders/actions'
+import { OrderStatus, Order } from 'legacy/state/orders/actions'
 import { ContractDeploymentBlocks } from 'legacy/state/orders/consts'
 import { _concatOrdersState } from 'legacy/state/orders/hooks'
 import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork, getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
 
-import { ordersTablePageAtom, ordersTableTabIdAtom } from 'modules/ordersTable/state/tabs/ordersTableTabs.atom'
+import { ordersTablePageAtom, ordersTableTabIdAtom } from 'modules/ordersTable/state/params/ordersTableParams.atom'
 import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/utils/getFilteredOrders'
 import { getOrdersTableList } from 'modules/ordersTable/utils/getOrdersTableList'
 import { buildOrdersTableUrl } from 'modules/ordersTable/utils/url/buildOrdersTableUrl'
@@ -45,31 +39,12 @@ import {
 } from 'common/state/routesState'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { OrdersTableState, OrdersTableList } from './ordersTable.types'
-import { ordersTableFiltersAtom } from './ordersTableFilters.atom'
+import { ordersTableFiltersAtom } from './filters/ordersTableFilters.atom'
+import { setIsOrderUnfillable } from './odersTable.utils'
+import { EMPTY_ORDERS_TABLE_STATE } from './ordersTable.constants'
+import { OrdersTableState } from './ordersTable.types'
+import { getTabsAndCurrentTab } from './params/ordersTableParams.atom'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
-import { getTabsAndCurrentTab } from './tabs/ordersTableTabs.atom'
-
-const EMPTY_ORDERS_LIST = {
-  [OrderTabId.OPEN]: [],
-  [OrderTabId.HISTORY]: [],
-  [OrderTabId.UNFILLABLE]: [],
-  [OrderTabId.SIGNING]: [],
-} as const satisfies OrdersTableList
-
-const EMPTY_ORDERS_TABLE_STATE = {
-  reduxOrders: [],
-  pendingOrders: [],
-  orders: [],
-  ordersList: EMPTY_ORDERS_LIST,
-  filteredOrders: [],
-  hasHydratedOrders: false,
-  balancesAndAllowances: {
-    isLoading: false,
-    balances: {},
-    allowances: {},
-  },
-} as const satisfies OrdersTableState
 
 export const ordersTableStateAtom = atom<OrdersTableState>(EMPTY_ORDERS_TABLE_STATE)
 
@@ -82,10 +57,6 @@ const reduxOrdersStateByChainAtom = atom((get) => (chainId: SupportedChainId) =>
 
   return { ...getDefaultNetworkState(chainId), ...reduxOrdersStateByChain }
 })
-
-function setIsOrderUnfillable(params: SetIsOrderUnfillableParams): void {
-  cowSwapStore.dispatch(createSetIsOrderUnfillableAction(params))
-}
 
 ordersTableStateAtom.onMount = () => {
   const unobserveReduxOrders = observe((get, set) => {

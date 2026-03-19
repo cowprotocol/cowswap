@@ -11,7 +11,7 @@ import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletConten
 import { OrdersTableUnsupportedNetworkContent } from './UnsupportedNetwork/OrdersTableUnsupportedNetworkContent'
 
 import { ordersTableStateAtom } from '../../../state/ordersTable.atoms'
-import { ordersTableTabIdAtom } from '../../../state/tabs/ordersTableTabs.atom'
+import { ordersTableTabIdAtom } from '../../../state/params/ordersTableParams.atom'
 import { HistoryStatusFilter } from '../../../utils/getFilteredOrders'
 import { OrdersTable } from '../OrdersTable.pure'
 

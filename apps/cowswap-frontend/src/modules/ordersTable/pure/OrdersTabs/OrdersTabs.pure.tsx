@@ -9,7 +9,7 @@ import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { ordersTableTabsAtom } from 'modules/ordersTable/state/tabs/ordersTableTabs.atom'
+import { ordersTableTabsAtom } from 'modules/ordersTable/state/params/ordersTableParams.atom'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 import { OrderTabId } from 'common/state/routesState'
@@ -17,7 +17,7 @@ import { OrderTabId } from 'common/state/routesState'
 import * as styledEl from './OrdersTabs.styled'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
-import { ordersTableTabIdAtom } from '../../state/tabs/ordersTableTabs.atom'
+import { ordersTableTabIdAtom } from '../../state/params/ordersTableParams.atom'
 
 export function OrdersTabs(): ReactNode {
   const { i18n } = useLingui()

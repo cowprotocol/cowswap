@@ -19,8 +19,8 @@ import { OrdersTablePagination } from './Pagination/OrdersTablePagination.pure'
 import { OrdersTableRow } from './Row/OrdersTableRow.pure'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
-import { ordersTablePageAtom } from '../../state/tabs/ordersTableTabs.atom'
-import { ORDERS_TABLE_PAGE_SIZE } from '../../state/tabs/ordersTableTabs.constants'
+import { ordersTablePageAtom } from '../../state/params/ordersTableParams.atom'
+import { ORDERS_TABLE_PAGE_SIZE } from '../../state/params/ordersTableParams.constants'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
 
 export interface OrdersTableProps {

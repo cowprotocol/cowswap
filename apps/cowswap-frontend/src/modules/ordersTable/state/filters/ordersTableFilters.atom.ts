@@ -7,9 +7,8 @@ import { observe } from 'jotai-effect'
 
 import { locationPathnameAtom } from 'common/state/routesState'
 
-import { OrdersTableFilters } from './ordersTable.types'
-
-import { HistoryStatusFilter } from '../utils/getFilteredOrders'
+import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
+import { OrdersTableFilters } from '../ordersTable.types'
 
 export const DEFAULT_ORDERS_TABLE_FILTERS = {
   searchTerm: '',

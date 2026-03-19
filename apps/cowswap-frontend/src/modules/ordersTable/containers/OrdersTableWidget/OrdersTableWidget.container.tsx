@@ -25,10 +25,10 @@ import {
 
 import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
+import { ordersTableFiltersAtom } from '../../state/filters/ordersTableFilters.atom'
 import { ordersTableStateAtom } from '../../state/ordersTable.atoms'
-import { ordersTableFiltersAtom } from '../../state/ordersTableFilters.atom'
-import { ordersTableParamsAtom } from '../../state/tabs/ordersTableTabs.atom'
-import { ORDERS_TABLE_PAGE_SIZE } from '../../state/tabs/ordersTableTabs.constants'
+import { ordersTableParamsAtom } from '../../state/params/ordersTableParams.atom'
+import { ORDERS_TABLE_PAGE_SIZE } from '../../state/params/ordersTableParams.constants'
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'

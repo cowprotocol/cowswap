@@ -8,10 +8,9 @@ import { OrdersTableList } from 'modules/ordersTable/state/ordersTable.types'
 
 import { OrderTabId, pageParamAtom, tabParamAtom } from 'common/state/routesState'
 
-import { OrderTab } from './ordersTableTabs.constants'
+import { OrderTab, ORDERS_TABLE_PAGE_SIZE } from './ordersTableParams.constants'
 
 import { ordersTableStateAtom } from '../ordersTable.atoms'
-import { ORDERS_TABLE_PAGE_SIZE } from '../tabs/ordersTableTabs.constants'
 
 export interface GetTabIdParams {
   hasHydratedOrders: boolean

@@ -12,7 +12,7 @@ import { OrderTabId } from 'common/state/routesState'
 import * as styledEl from './OrdersTableContainer.styled'
 
 import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDisplayProtocolFeeBanner'
-import { ordersTableTabIdAtom } from '../../../state/tabs/ordersTableTabs.atom'
+import { ordersTableTabIdAtom } from '../../../state/params/ordersTableParams.atom'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
 

@@ -9,7 +9,9 @@ export interface OrderTab {
   isActive?: boolean
 }
 
-export const ORDERS_TABLE_PAGE_SIZE = 10
-
+// Tab:
 export const ORDERS_TABLE_TAB_KEY = 'tab'
+
+// Page:
 export const ORDERS_TABLE_PAGE_KEY = 'page'
+export const ORDERS_TABLE_PAGE_SIZE = 10
