@@ -57,7 +57,7 @@ const EMPTY_ORDERS_LIST = {
   [OrderTabId.SIGNING]: [],
 } as const satisfies OrdersTableList
 
-export const ordersTableStateAtom = atom<OrdersTableState>({
+const EMPTY_ORDERS_TABLE_STATE = {
   reduxOrders: [],
   pendingOrders: [],
   orders: [],
@@ -69,7 +69,9 @@ export const ordersTableStateAtom = atom<OrdersTableState>({
     balances: {},
     allowances: {},
   },
-})
+} as const satisfies OrdersTableState
+
+export const ordersTableStateAtom = atom<OrdersTableState>(EMPTY_ORDERS_TABLE_STATE)
 
 const reduxOrdersStateAtom = atomFromReduxSelector<OrdersState>((appState) => appState.orders)
 
@@ -88,6 +90,14 @@ function setIsOrderUnfillable(params: SetIsOrderUnfillableParams): void {
 ordersTableStateAtom.onMount = () => {
   const unobserveReduxOrders = observe((get, set) => {
     const { chainId, account } = get(walletInfoAtom)
+
+    if (!account || !chainId) {
+      console.warn('No account or chainId, setting empty orders table state...')
+
+      set(ordersTableStateAtom, EMPTY_ORDERS_TABLE_STATE)
+      return
+    }
+
     const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom)
     const reduxOrdersStateInCurrentChain = selectReduxOrdersStateByChain(chainId)
 
