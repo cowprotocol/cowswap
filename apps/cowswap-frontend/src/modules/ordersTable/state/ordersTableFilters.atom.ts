@@ -25,10 +25,6 @@ ordersTableFiltersAtom.onMount = () => {
     get(locationPathnameAtom)
 
     // Reset filters when validated tab changes
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    set(partiallyUpdateOrdersTableFiltersAtom as any, {
-      searchTerm: '',
-      historyStatusFilter: HistoryStatusFilter.FILLED,
-    })
+    set(ordersTableFiltersAtom, DEFAULT_ORDERS_TABLE_FILTERS)
   }, jotaiStore)
 }
