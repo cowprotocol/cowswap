@@ -7,5 +7,5 @@ export default {
   },
   setupFilesAfterEnv: ['../../jest.setup.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/core',
+  coverageDirectory: '../../coverage/libs/currency',
 }
