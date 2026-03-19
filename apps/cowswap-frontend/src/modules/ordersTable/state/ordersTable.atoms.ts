@@ -40,7 +40,7 @@ import {
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { ordersTableFiltersAtom } from './filters/ordersTableFilters.atom'
-import { setIsOrderUnfillable } from './odersTable.utils'
+import { logOrdersTableDebug, setIsOrderUnfillable } from './odersTable.utils'
 import { EMPTY_ORDERS_TABLE_STATE } from './ordersTable.constants'
 import { OrdersTableState } from './ordersTable.types'
 import { getTabsAndCurrentTab } from './params/ordersTableParams.atom'
@@ -62,18 +62,20 @@ ordersTableStateAtom.onMount = () => {
   const unobserveReduxOrders = observe((get, set) => {
     const { chainId, account } = get(walletInfoAtom)
 
-    if (!account || !chainId) {
-      console.warn('No account or chainId, setting empty orders table state...')
+    if (!chainId || !account) {
+      logOrdersTableDebug('No account or chainId, setting empty orders table state...')
 
       set(ordersTableStateAtom, EMPTY_ORDERS_TABLE_STATE)
+
       return
     }
 
     const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom)
     const reduxOrdersStateInCurrentChain = selectReduxOrdersStateByChain(chainId)
 
-    console.log('1. reduxOrdersStateInCurrentChain =', reduxOrdersStateInCurrentChain)
+    logOrdersTableDebug('1. reduxOrdersStateInCurrentChain =', reduxOrdersStateInCurrentChain)
 
+    // This will include all orders of the right type based on `orderType` / `uiOrderType`:
     let reduxOrders: Order[] = []
 
     const ordersTokensSet = new Set<string>()
@@ -91,35 +93,15 @@ ordersTableStateAtom.onMount = () => {
       }[orderType]
 
       if (!orderType || !uiOrderType) {
-        console.warn('Invalid order type', { orderType, uiOrderType })
+        logOrdersTableDebug('Invalid order type', { orderType, uiOrderType })
+
+        return
       }
 
-      /*
-      const ordersTokens = useMemo(() => getOrdersInputTokens(allOrders), [allOrders])
-      const balancesAndAllowances = useBalancesAndAllowances(ordersTokens)
-      const orderActions = useOrderActions(allOrders)
-
-      const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
-
-      const { currentTabId, currentPageNumber } = useCurrentTab(ordersList)
-
-      const orders = ordersList[currentTabId]
-      const filteredOrders = useFilteredOrders(orders, {
-        searchTerm,
-        // The status filter select is only visible in the story tab:
-        historyStatusFilter: currentTabId === OrderTabId.HISTORY ? historyStatusFilter : HistoryStatusFilter.ALL,
-      })
-      const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
-      const tabs = useTabs(ordersList, currentTabId)
-      */
-
-      // TODO: Can this be optimized instead of looping through orders various times?
-
-      // TODO: Also extract pending in the same loop.
-
-      // TODO: TWAPs need additional processing, do it in the same loop.
-
-      // TODO: Maybe instead of using _concatOrdersState we can process only the ones we need (mapping ordersTableFilters.orderType to OrderTypeKeys)
+      // TODO: `reduxOrdersStateInCurrentChain` are already classified by state: cancelled, creating, expired, failed...
+      //
+      // Therefore, it might be possible to map them directly between those states and into the target state (`orders`)
+      // using `tabId`, and without using `_concatOrdersState` at all, optimizing the logic below.
 
       _concatOrdersState(reduxOrdersStateInCurrentChain, ORDER_LIST_KEYS).forEach((order) => {
         if (!order) return
@@ -154,23 +136,24 @@ ordersTableStateAtom.onMount = () => {
         }
       }
 
+      logOrdersTableDebug('2. reduxOrders =', reduxOrders)
+
+      // All pending orders of the right type based on `orderType` / `uiOrderType`:
       const pendingOrders: Order[] = reduxOrders.filter((order) => order.status === OrderStatus.PENDING)
 
-      // TODO: This can probably be optimized, as we are loading allowances for all orders tokens regardless of order
-      // type or status.
-      const ordersTokensAddresses = Array.from(ordersTokensSet)
-
-      console.log('2. reduxOrders =', reduxOrders)
+      logOrdersTableDebug('3. pendingOrders =', pendingOrders)
 
       const balancesState = get(balancesAtom)
       const allowancesLoadable = get(
         tokenAllowancesLoadableFamily({
           chainId,
           account,
-          tokenAddresses: ordersTokensAddresses,
+          tokenAddresses: Array.from(ordersTokensSet),
         }),
       )
-      const pendingOrdersPermitValidityState = get(pendingOrdersPermitValidityStateAtom)
+
+      // TODO: This can probably be optimized, as we are loading allowances for all orders tokens regardless of order
+      // type or status.
 
       const { isLoading: balancesLoading, values: balances } = balancesState
       const allowancesLoading = allowancesLoadable.state === 'loading'
@@ -182,8 +165,9 @@ ordersTableStateAtom.onMount = () => {
         allowances,
       }
 
-      // All orders of orderType:
+      const pendingOrdersPermitValidityState = get(pendingOrdersPermitValidityStateAtom)
 
+      // All orders classified by tab (open, history, unfillable, signing):
       const ordersList = getOrdersTableList(
         reduxOrders,
         orderType,
@@ -193,7 +177,7 @@ ordersTableStateAtom.onMount = () => {
         setIsOrderUnfillable,
       )
 
-      console.log('3. ordersList =', ordersList)
+      logOrdersTableDebug('4. ordersList =', ordersList)
 
       // hasHydratedOrders:
 
@@ -210,17 +194,18 @@ ordersTableStateAtom.onMount = () => {
       const { tabId } = getTabsAndCurrentTab({ hasHydratedOrders, ordersList, tabParam })
       const orders = tabId ? ordersList[tabId] : []
 
-      console.log(`4. orders (${tabId}) =`, orders)
+      logOrdersTableDebug(`5. orders = ordersList[${tabId}] =`, orders)
 
       const { searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
 
+      // `orders` after applying search and history status filter:
       const filteredOrders = getFilteredOrders(orders, {
         searchTerm,
-        // The status filter select is only visible in the story tab:
+        // The status filter applied only if we are in the story tab:
         historyStatusFilter: tabId === OrderTabId.HISTORY ? historyStatusFilter : HistoryStatusFilter.ALL,
       })
 
-      console.log(`5. filteredOrders (${tabId}) =`, filteredOrders)
+      logOrdersTableDebug(`6. filteredOrders =  ordersList[${tabId}].filter(...) =`, filteredOrders)
 
       set(ordersTableStateAtom, {
         reduxOrders,
@@ -269,5 +254,3 @@ ordersTableStateAtom.onMount = () => {
     unobserveURL()
   }
 }
-
-// TODO: Maybe create separate limitOrdersTable, twapOrdersTable and reduxOrders atom with onMount
