@@ -1,4 +1,4 @@
-import { Settings, SettingsProps } from './index'
+import { LimitOrdersSettingsDropdown, SettingsProps } from './LimitOrdersSettings.pure'
 
 const defaultProps: SettingsProps = {
   state: {
@@ -16,4 +16,4 @@ const defaultProps: SettingsProps = {
   },
 }
 
-export default <Settings {...defaultProps} />
+export default <LimitOrdersSettingsDropdown {...defaultProps} />
