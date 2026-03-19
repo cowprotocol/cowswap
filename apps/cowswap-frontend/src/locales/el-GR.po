@@ -8,7 +8,7 @@ msgstr ""
 "Language: el\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-03-19 11:09\n"
+"PO-Revision-Date: 2026-03-19 15:19\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -3072,10 +3072,6 @@ msgstr ""
 msgid "Download .WEBP"
 msgstr ""
 
-#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
-#~ msgid "Paid weekly by Friday via airdrop"
-#~ msgstr "Paid weekly by Friday via airdrop"
-
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Token not permittable"
 msgstr ""
@@ -3158,6 +3154,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "The Tenderly simulation failed. Please review your transaction."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
+msgid "Paid weekly by Friday via airdrop"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
@@ -5713,6 +5713,10 @@ msgstr ""
 msgid "Approve <0/> and {contextDefaultText}"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
+#~ msgid "Paid weekly by Friday via airdropp"
+#~ msgstr "Paid weekly by Friday via airdrop"
+
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Minimum receive"
@@ -6022,10 +6026,6 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 msgid "Deposit"
-msgstr ""
-
-#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
-msgid "Paid weekly by Friday via airdropp"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
