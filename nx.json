@@ -7,7 +7,6 @@
   "release": {
     "projectsRelationship": "independent",
     "projects": [
-      "libs/common-entities",
       "libs/events",
       "libs/types",
       "libs/permit-utils",
