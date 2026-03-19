@@ -12,18 +12,6 @@
         "lintFilePatterns": ["libs/currency/**/*.{ts,tsx,js,jsx}"]
       }
     },
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/currency",
-        "main": "libs/currency/src/index.ts",
-        "tsConfig": "libs/currency/tsconfig.lib.json",
-        "assets": ["libs/currency/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true,
-        "buildableProjectDepsInPackageJsonType": "dependencies"
-      }
-    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
