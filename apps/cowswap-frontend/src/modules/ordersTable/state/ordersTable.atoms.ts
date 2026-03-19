@@ -8,7 +8,6 @@ import {
   tokenAllowancesLoadableFamily,
 } from '@cowprotocol/balances-and-allowances'
 import { jotaiStore } from '@cowprotocol/core'
-import { areAddressesEqual, SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wallet'
 
@@ -16,10 +15,6 @@ import { observe } from 'jotai-effect'
 
 import { OrderStatus, Order } from 'legacy/state/orders/actions'
 import { ContractDeploymentBlocks } from 'legacy/state/orders/consts'
-import { _concatOrdersState } from 'legacy/state/orders/hooks'
-import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork, getDefaultNetworkState } from 'legacy/state/orders/reducer'
-import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
-import { atomFromReduxSelector } from 'legacy/utils/atomFromReduxSelector'
 
 import { ordersTablePageAtom, ordersTableTabIdAtom } from 'modules/ordersTable/state/params/ordersTableParams.atom'
 import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/utils/getFilteredOrders'
@@ -37,26 +32,16 @@ import {
   locationAtom,
   pageParamAtom,
 } from 'common/state/routesState'
-import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { ordersTableFiltersAtom } from './filters/ordersTableFilters.atom'
 import { logOrdersTableDebug, setIsOrderUnfillable } from './odersTable.utils'
-import { EMPTY_ORDERS_TABLE_STATE } from './ordersTable.constants'
+import { UI_ORDER_TYPE_BY_TAB_ORDER_TYPE, EMPTY_ORDERS_TABLE_STATE } from './ordersTable.constants'
 import { OrdersTableState } from './ordersTable.types'
 import { getTabsAndCurrentTab } from './params/ordersTableParams.atom'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
+import { reduxOrdersByOrderTypeAtom } from './redux/reduxOrders.atom'
 
 export const ordersTableStateAtom = atom<OrdersTableState>(EMPTY_ORDERS_TABLE_STATE)
-
-const reduxOrdersStateAtom = atomFromReduxSelector<OrdersState>((appState) => appState.orders)
-
-const reduxOrdersStateByChainAtom = atom((get) => (chainId: SupportedChainId) => {
-  if (!chainId) return {} as OrdersStateNetwork
-
-  const reduxOrdersStateByChain = get(reduxOrdersStateAtom)?.[chainId] || {}
-
-  return { ...getDefaultNetworkState(chainId), ...reduxOrdersStateByChain }
-})
 
 ordersTableStateAtom.onMount = () => {
   const unobserveReduxOrders = observe((get, set) => {
@@ -70,153 +55,128 @@ ordersTableStateAtom.onMount = () => {
       return
     }
 
-    const selectReduxOrdersStateByChain = get(reduxOrdersStateByChainAtom)
-    const reduxOrdersStateInCurrentChain = selectReduxOrdersStateByChain(chainId)
+    const orderType = get(locationOrderTypeAtom)
+    const uiOrderType: UiOrderType = UI_ORDER_TYPE_BY_TAB_ORDER_TYPE[orderType]
 
-    logOrdersTableDebug('1. reduxOrdersStateInCurrentChain =', reduxOrdersStateInCurrentChain)
+    if (!orderType || !uiOrderType) {
+      logOrdersTableDebug('Invalid order type', { orderType, uiOrderType })
 
-    // This will include all orders of the right type based on `orderType` / `uiOrderType`:
-    let reduxOrders: Order[] = []
-
-    const ordersTokensSet = new Set<string>()
-
-    if (reduxOrdersStateInCurrentChain && account) {
-      const orderType = get(locationOrderTypeAtom)
-
-      const uiOrderType: UiOrderType = {
-        // This mapping is intentional.
-        // The swap page and `AffectedPermitOrdersTable` component check open limit orders with partial approvals.
-        [TabOrderTypes.SWAP]: UiOrderType.LIMIT,
-        [TabOrderTypes.LIMIT]: UiOrderType.LIMIT,
-        [TabOrderTypes.ADVANCED]: UiOrderType.TWAP,
-        [TabOrderTypes.YIELD]: UiOrderType.LIMIT,
-      }[orderType]
-
-      if (!orderType || !uiOrderType) {
-        logOrdersTableDebug('Invalid order type', { orderType, uiOrderType })
-
-        return
-      }
-
-      // TODO: `reduxOrdersStateInCurrentChain` are already classified by state: cancelled, creating, expired, failed...
-      //
-      // Therefore, it might be possible to map them directly between those states and into the target state (`orders`)
-      // using `tabId`, and without using `_concatOrdersState` at all, optimizing the logic below.
-
-      _concatOrdersState(reduxOrdersStateInCurrentChain, ORDER_LIST_KEYS).forEach((order) => {
-        if (!order) return
-
-        const doesBelongToAccount = areAddressesEqual(order.order.owner, account)
-        const orderUiOrderType = getUiOrderType(order.order)
-        const doesMatchClass = orderUiOrderType === uiOrderType
-
-        if (!doesBelongToAccount || !doesMatchClass) return
-
-        const mappedOrder = deserializeOrder(order)
-
-        if (!mappedOrder || mappedOrder.isHidden) return
-
-        reduxOrders.push(mappedOrder)
-        ordersTokensSet.add(getAddressKey(mappedOrder.inputToken.address))
-      })
-
-      if (orderType === TabOrderTypes.ADVANCED) {
-        const isBundlingSupportedLoadable = get(isBundlingSupportedLoadableAtom)
-        const isBundlingSupported =
-          isBundlingSupportedLoadable.state === 'hasData' ? !!isBundlingSupportedLoadable.data : false
-
-        if (!isBundlingSupported) {
-          reduxOrders = []
-        } else {
-          const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
-          const emulatedPartOrders = get(emulatedPartOrdersAtom)
-          const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
-
-          reduxOrders = emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)
-        }
-      }
-
-      logOrdersTableDebug('2. reduxOrders =', reduxOrders)
-
-      // All pending orders of the right type based on `orderType` / `uiOrderType`:
-      const pendingOrders: Order[] = reduxOrders.filter((order) => order.status === OrderStatus.PENDING)
-
-      logOrdersTableDebug('3. pendingOrders =', pendingOrders)
-
-      const balancesState = get(balancesAtom)
-      const allowancesLoadable = get(
-        tokenAllowancesLoadableFamily({
-          chainId,
-          account,
-          tokenAddresses: Array.from(ordersTokensSet),
-        }),
-      )
-
-      // TODO: This can probably be optimized, as we are loading allowances for all orders tokens regardless of order
-      // type or status.
-
-      const { isLoading: balancesLoading, values: balances } = balancesState
-      const allowancesLoading = allowancesLoadable.state === 'loading'
-      const allowances = allowancesLoadable.state === 'hasData' ? allowancesLoadable.data : undefined
-
-      const balancesAndAllowances: BalancesAndAllowances = {
-        isLoading: balancesLoading || allowancesLoading,
-        balances,
-        allowances,
-      }
-
-      const pendingOrdersPermitValidityState = get(pendingOrdersPermitValidityStateAtom)
-
-      // All orders classified by tab (open, history, unfillable, signing):
-      const ordersList = getOrdersTableList(
-        reduxOrders,
-        orderType,
-        chainId,
-        balancesAndAllowances,
-        pendingOrdersPermitValidityState,
-        setIsOrderUnfillable,
-      )
-
-      logOrdersTableDebug('4. ordersList =', ordersList)
-
-      // hasHydratedOrders:
-
-      const { lastCheckedBlock } = reduxOrdersStateInCurrentChain
-      const defaultBlock = ContractDeploymentBlocks[chainId] ?? 0
-      const hasHydratedOrders =
-        reduxOrders.length > 0 || (typeof lastCheckedBlock === 'number' && lastCheckedBlock !== defaultBlock)
-
-      // current tab(s):
-
-      // Note we don't use the URL param directly (`tabParam`), but the verified/corrected `tabId`. This means we show
-      // the orders for the right tab even if the URL param is incorrect. The redirect will happen shortly.
-      const tabParam = get(tabParamAtom)
-      const { tabId } = getTabsAndCurrentTab({ hasHydratedOrders, ordersList, tabParam })
-      const orders = tabId ? ordersList[tabId] : []
-
-      logOrdersTableDebug(`5. orders = ordersList[${tabId}] =`, orders)
-
-      const { searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
-
-      // `orders` after applying search and history status filter:
-      const filteredOrders = getFilteredOrders(orders, {
-        searchTerm,
-        // The status filter applied only if we are in the story tab:
-        historyStatusFilter: tabId === OrderTabId.HISTORY ? historyStatusFilter : HistoryStatusFilter.ALL,
-      })
-
-      logOrdersTableDebug(`6. filteredOrders =  ordersList[${tabId}].filter(...) =`, filteredOrders)
-
-      set(ordersTableStateAtom, {
-        reduxOrders,
-        pendingOrders,
-        ordersList,
-        orders,
-        filteredOrders,
-        balancesAndAllowances,
-        hasHydratedOrders,
-      })
+      return
     }
+
+    const reduxOrdersByOrderTypeResult = get(reduxOrdersByOrderTypeAtom)(uiOrderType)
+
+    const { reduxOrdersStateInCurrentChain, ordersTokensSet } = reduxOrdersByOrderTypeResult
+
+    // `reduxOrders` will include all orders of the right type based on `orderType` / `uiOrderType`. For TWAPS, we need
+    // to add emulated twap orders, emulated part orders and discrete twap orders (this last one is directly derived
+    // from `reduxOrders`):
+    let { reduxOrders } = reduxOrdersByOrderTypeResult
+
+    logOrdersTableDebug(`1. reduxOrdersStateInCurrentChain (${chainId}) =`, reduxOrdersStateInCurrentChain)
+
+    if (!reduxOrdersStateInCurrentChain || !reduxOrders || !ordersTokensSet) {
+      logOrdersTableDebug('Redux orders missing', { reduxOrdersStateInCurrentChain, reduxOrders, ordersTokensSet })
+
+      return
+    }
+
+    if (orderType === TabOrderTypes.ADVANCED) {
+      const isBundlingSupportedLoadable = get(isBundlingSupportedLoadableAtom)
+      const isBundlingSupported =
+        isBundlingSupportedLoadable.state === 'hasData' ? !!isBundlingSupportedLoadable.data : false
+
+      if (!isBundlingSupported) {
+        reduxOrders = []
+      } else {
+        const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
+        const emulatedPartOrders = get(emulatedPartOrdersAtom)
+        const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
+
+        reduxOrders = emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)
+      }
+    }
+
+    logOrdersTableDebug(`2. reduxOrders (${orderType} / ${uiOrderType}) =`, reduxOrders)
+
+    // All pending orders of the right type based on `orderType` / `uiOrderType`:
+    const pendingOrders: Order[] = reduxOrders.filter((order) => order.status === OrderStatus.PENDING)
+
+    logOrdersTableDebug('3. pendingOrders =', pendingOrders)
+
+    const balancesState = get(balancesAtom)
+    const allowancesLoadable = get(
+      tokenAllowancesLoadableFamily({
+        chainId,
+        account,
+        tokenAddresses: Array.from(ordersTokensSet),
+      }),
+    )
+
+    // TODO: This can probably be optimized, as we are loading allowances for all orders tokens regardless of order
+    // type or status.
+
+    const { isLoading: balancesLoading, values: balances } = balancesState
+    const allowancesLoading = allowancesLoadable.state === 'loading'
+    const allowances = allowancesLoadable.state === 'hasData' ? allowancesLoadable.data : undefined
+
+    const balancesAndAllowances: BalancesAndAllowances = {
+      isLoading: balancesLoading || allowancesLoading,
+      balances,
+      allowances,
+    }
+
+    const pendingOrdersPermitValidityState = get(pendingOrdersPermitValidityStateAtom)
+
+    // All orders classified by tab (open, history, unfillable, signing):
+    const ordersList = getOrdersTableList(
+      reduxOrders,
+      orderType,
+      chainId,
+      balancesAndAllowances,
+      pendingOrdersPermitValidityState,
+      setIsOrderUnfillable,
+    )
+
+    logOrdersTableDebug('4. ordersList =', ordersList)
+
+    // hasHydratedOrders:
+
+    const { lastCheckedBlock } = reduxOrdersStateInCurrentChain
+    const defaultBlock = ContractDeploymentBlocks[chainId] ?? 0
+    const hasHydratedOrders =
+      reduxOrders.length > 0 || (typeof lastCheckedBlock === 'number' && lastCheckedBlock !== defaultBlock)
+
+    // current tab(s):
+
+    // Note we don't use the URL param directly (`tabParam`), but the verified/corrected `tabId`. This means we show
+    // the orders for the right tab even if the URL param is incorrect. The redirect will happen shortly.
+    const tabParam = get(tabParamAtom)
+    const { tabId } = getTabsAndCurrentTab({ hasHydratedOrders, ordersList, tabParam })
+    const orders = tabId ? ordersList[tabId] : []
+
+    logOrdersTableDebug(`5. orders = ordersList[${tabId}] =`, orders)
+
+    const { searchTerm, historyStatusFilter } = get(ordersTableFiltersAtom)
+
+    // `orders` after applying search and history status filter:
+    const filteredOrders = getFilteredOrders(orders, {
+      searchTerm,
+      // The status filter applied only if we are in the story tab:
+      historyStatusFilter: tabId === OrderTabId.HISTORY ? historyStatusFilter : HistoryStatusFilter.ALL,
+    })
+
+    logOrdersTableDebug(`6. filteredOrders =  ordersList[${tabId}].filter(...) =`, filteredOrders)
+
+    set(ordersTableStateAtom, {
+      reduxOrders,
+      pendingOrders,
+      ordersList,
+      orders,
+      filteredOrders,
+      balancesAndAllowances,
+      hasHydratedOrders,
+    })
   }, jotaiStore)
 
   const unobserveURL = observe((get) => {
