@@ -1128,6 +1128,11 @@ msgstr "sandwich-icon"
 msgid "Bridging to destination..."
 msgstr "Bridging to destination..."
 
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHeaderButton.container.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHeaderButton.container.tsx
+msgid "Refer"
+msgstr "Refer"
+
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
 #~ msgstr "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
@@ -3031,10 +3036,6 @@ msgstr "Select a pool"
 msgid "Download .WEBP"
 msgstr "Download .WEBP"
 
-#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
-#~ msgid "Paid weekly by Friday via airdrop"
-#~ msgstr "Paid weekly by Friday via airdrop"
-
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Token not permittable"
 msgstr "Token not permittable"
@@ -3118,6 +3119,10 @@ msgstr "{buyTokenPart} for at most {sellTokenPart}"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "The Tenderly simulation failed. Please review your transaction."
 msgstr "The Tenderly simulation failed. Please review your transaction."
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
+msgid "Paid weekly by Friday via airdrop"
+msgstr "Paid weekly by Friday via airdrop"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 msgid "Fill or kill"
@@ -5620,6 +5625,10 @@ msgstr "No open orders found"
 msgid "Approve <0/> and {contextDefaultText}"
 msgstr "Approve <0/> and {contextDefaultText}"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
+#~ msgid "Paid weekly by Friday via airdropp"
+#~ msgstr "Paid weekly by Friday via airdrop"
+
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Minimum receive"
@@ -5930,10 +5939,6 @@ msgstr "was sent to"
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 msgid "Deposit"
 msgstr "Deposit"
-
-#: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
-msgid "Paid weekly by Friday via airdropp"
-msgstr "Paid weekly by Friday via airdrop"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 msgid "Review TWAP order"
