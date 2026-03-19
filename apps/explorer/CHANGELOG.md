@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.1...explorer-v4.0.2) (2026-03-19)
+
+
+### 🐛 Bug Fixes
+
+* bump explorer version ([#7185](https://github.com/cowprotocol/cowswap/issues/7185)) ([3219f65](https://github.com/cowprotocol/cowswap/commit/3219f65a0bd705c3dd2df3dbfcd6a652ec6df04a))
+
 ## [4.0.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.0...explorer-v4.0.1) (2026-03-18)
 
 
