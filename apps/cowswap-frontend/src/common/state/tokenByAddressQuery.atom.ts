@@ -1,4 +1,5 @@
 import { TokenWithLogo, getRpcProvider } from '@cowprotocol/common-const'
+import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
 
 import { atomFamily } from 'jotai-family'
@@ -24,7 +25,7 @@ export const tokenQueryFamily = atomFamily((key: string) =>
       queryFn: async (): Promise<TokenWithLogo | null> => {
         const provider = getRpcProvider(chainId)
 
-        if (!provider) return null
+        if (!provider || !isSupportedChainId(chainId)) return null
 
         // TODO M-6 COW-573
         // This flow will be reviewed and updated later, to include a wagmi alternative
