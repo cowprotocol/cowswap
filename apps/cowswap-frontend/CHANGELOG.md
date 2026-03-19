@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.0.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.3...cowswap-v3.0.4) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.2
+    * @cowprotocol/balances-and-allowances bumped to 3.0.2
+    * @cowprotocol/common-const bumped to 3.0.2
+    * @cowprotocol/common-hooks bumped to 3.0.2
+    * @cowprotocol/common-utils bumped to 3.0.2
+    * @cowprotocol/core bumped to 3.0.2
+    * @cowprotocol/ens bumped to 3.0.2
+    * @cowprotocol/events bumped to 4.0.2
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.10
+    * @cowprotocol/iframe-transport bumped to 2.0.10
+    * @cowprotocol/multicall bumped to 3.0.2
+    * @cowprotocol/permit-utils bumped to 3.0.2
+    * @cowprotocol/snackbars bumped to 2.0.12
+    * @cowprotocol/tokens bumped to 3.0.2
+    * @cowprotocol/types bumped to 4.1.0
+    * @cowprotocol/ui bumped to 3.0.2
+    * @cowprotocol/wallet bumped to 3.0.2
+    * @cowprotocol/wallet-provider bumped to 2.1.10
+    * @cowprotocol/widget-lib bumped to 2.0.2
+
 ## [3.0.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.2...cowswap-v3.0.3) (2026-03-19)
 
 
