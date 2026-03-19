@@ -2,6 +2,11 @@
 
 ## [4.0.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.1...explorer-v4.0.2) (2026-03-19)
 
+### ✨ Features
+
+* remove xstocks list ff & add the same custom error for xstocks for weekend ([#7119](https://github.com/cowprotocol/cowswap/issues/7119)) ([4135404](https://github.com/cowprotocol/cowswap/commit/413540470a8b08a74d4e9077501493504fc74cd7))
+* update settlement and vault relayer contracts staging ([#7083](https://github.com/cowprotocol/cowswap/issues/7083)) ([3c449d3](https://github.com/cowprotocol/cowswap/commit/3c449d35952bb90cc5d26d8717e7f5da0c1a7f0d))
+
 
 ### 🐛 Bug Fixes
 
