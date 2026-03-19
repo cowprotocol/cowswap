@@ -124,6 +124,9 @@ export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> =
 
   const status = walletCapabilities.atomic?.status || ''
 
+  // See https://www.eip5792.xyz/getting-started:
+  // - supported: The wallet will execute all calls atomically and contiguously
+  // - ready: The wallet is able to upgrade to supported pending user approval (e.g. via EIP-7702)
   return !!get(isSafeViaWcAtom) && ['supported', 'ready'].includes(status)
 })
 
