@@ -11,6 +11,7 @@
   "libs/common-hooks": "3.0.2",
   "libs/common-utils": "3.0.2",
   "libs/core": "3.0.2",
+  "libs/currency": "1.0.0",
   "libs/ens": "3.0.2",
   "libs/events": "4.0.2",
   "libs/snackbars": "2.0.12",
