@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type Command = () => void
 

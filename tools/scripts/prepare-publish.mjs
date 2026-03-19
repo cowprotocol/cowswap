@@ -22,9 +22,9 @@ function writeJson(path, data) {
   writeFileSync(path, JSON.stringify(data, null, 2) + '\n')
 }
 
-function getWorkspaceVersions() {
-  // Read all libs package.json to get current versions
-  const versions = {}
+function getWorkspacePackageInfo() {
+  // Read all libs package.json to get current versions and private status
+  const packages = {}
   const libsDir = join(rootDir, 'libs')
 
   for (const lib of readdirSync(libsDir)) {
@@ -32,17 +32,17 @@ function getWorkspaceVersions() {
     if (existsSync(pkgPath)) {
       const pkg = readJson(pkgPath)
       if (pkg.name) {
-        versions[pkg.name] = pkg.version
+        packages[pkg.name] = { version: pkg.version, private: pkg.private === true }
       }
     }
   }
 
-  return versions
+  return packages
 }
 
 function preparePackage(distPkgPath) {
   const pkg = readJson(distPkgPath)
-  const workspaceVersions = getWorkspaceVersions()
+  const workspacePackages = getWorkspacePackageInfo()
 
   // Apply publishConfig overrides
   if (pkg.publishConfig) {
@@ -72,11 +72,15 @@ function preparePackage(distPkgPath) {
 
     for (const [name, version] of Object.entries(deps)) {
       if (version.startsWith('workspace:')) {
-        const actualVersion = workspaceVersions[name]
-        if (actualVersion) {
-          deps[name] = `^${actualVersion}`
-        } else {
+        const info = workspacePackages[name]
+        if (!info) {
           console.warn(`Warning: Could not resolve workspace version for ${name}`)
+        } else if (info.private) {
+          // Private packages are bundled into the output — remove from published deps
+          console.log(`Removing private workspace dep ${name} (bundled into output)`)
+          delete deps[name]
+        } else {
+          deps[name] = `^${info.version}`
         }
       }
     }

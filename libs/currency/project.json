@@ -12,6 +12,15 @@
         "lintFilePatterns": ["libs/currency/**/*.{ts,tsx,js,jsx}"]
       }
     },
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/currency",
+        "configFile": "libs/currency/vite.config.mts",
+        "assets": ["libs/currency/*.md"]
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

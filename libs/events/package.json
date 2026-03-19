@@ -12,7 +12,16 @@
   "types": "./src/index.d.ts",
   "license": "ISC",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./index.d.ts",
+        "import": "./index.js",
+        "require": "./index.cjs"
+      }
+    }
   },
   "dependencies": {
     "@cowprotocol/cow-sdk": "8.0.3",
