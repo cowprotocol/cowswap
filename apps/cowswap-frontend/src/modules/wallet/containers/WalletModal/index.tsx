@@ -1,7 +1,8 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { errorToString } from '@cowprotocol/common-utils'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { errorToString, isMobile } from '@cowprotocol/common-utils'
 import { useWalletInfo, useActivateConnector, ConnectionType } from '@cowprotocol/wallet'
 
 import { useCloseModal, useModalIsOpen } from 'legacy/state/application/hooks'
@@ -11,39 +12,130 @@ import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
 import { useAccountModalState } from 'modules/account'
 
+import { sendCoinbaseConnectionFlowEvent } from 'common/analytics/coinbaseConnectionFlow'
+
 import { useSetWalletConnectionError } from '../../hooks/useSetWalletConnectionError'
 import { useWalletConnectionError } from '../../hooks/useWalletConnectionError'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../pure/WalletModal'
 import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
 
-// TODO: Break down this large function into smaller functions
+interface WalletActivationContextParams {
+  chainId: number | undefined
+  closeWalletModal: () => void
+  cowAnalytics: ReturnType<typeof useCowAnalytics>
+  dispatch: ReturnType<typeof useAppDispatch>
+  isWalletChangingFlow: boolean
+  setWalletConnectionError: (error: string | undefined) => void
+  setWalletView: Dispatch<SetStateAction<WalletModalView>>
+  toggleAccountSelectorModal: () => void
+}
+
+interface WalletActivationContext {
+  skipNetworkChanging: boolean
+  beforeActivation(connectionType: ConnectionType): void
+  afterActivation(isHardWareWallet: boolean, connectionType: ConnectionType): void
+  onActivationError(error: unknown, connectionType: ConnectionType): void
+}
+
+function emitCoinbaseConnectionEvent(
+  cowAnalytics: ReturnType<typeof useCowAnalytics>,
+  chainId: number | undefined,
+  stage: 'connectStart' | 'connectSuccess' | 'connectError',
+  result: 'started' | 'success' | 'error',
+  error?: unknown,
+): void {
+  sendCoinbaseConnectionFlowEvent(cowAnalytics, {
+    stage,
+    result,
+    source: 'walletModal',
+    chainId,
+    isMobile,
+    isCoinbaseWallet: true,
+    error,
+  })
+}
+
+function useWalletActivationContext({
+  chainId,
+  closeWalletModal,
+  cowAnalytics,
+  dispatch,
+  isWalletChangingFlow,
+  setWalletConnectionError,
+  setWalletView,
+  toggleAccountSelectorModal,
+}: WalletActivationContextParams): WalletActivationContext {
+  return useMemo(
+    () => ({
+      skipNetworkChanging: isWalletChangingFlow,
+      beforeActivation(connectionType: ConnectionType) {
+        setWalletView('pending')
+        setWalletConnectionError(undefined)
+
+        if (connectionType === ConnectionType.COINBASE_WALLET) {
+          emitCoinbaseConnectionEvent(cowAnalytics, chainId, 'connectStart', 'started')
+        }
+      },
+      afterActivation(isHardWareWallet: boolean, connectionType: ConnectionType) {
+        if (connectionType === ConnectionType.COINBASE_WALLET) {
+          emitCoinbaseConnectionEvent(cowAnalytics, chainId, 'connectSuccess', 'success')
+        }
+
+        dispatch(updateSelectedWallet({ wallet: connectionType }))
+
+        if (isHardWareWallet) {
+          toggleAccountSelectorModal()
+        }
+
+        closeWalletModal()
+        setWalletView('account')
+      },
+      onActivationError(error: unknown, connectionType: ConnectionType) {
+        if (connectionType === ConnectionType.COINBASE_WALLET) {
+          emitCoinbaseConnectionEvent(cowAnalytics, chainId, 'connectError', 'error', error)
+        }
+
+        dispatch(updateSelectedWallet({ wallet: undefined }))
+        setWalletConnectionError(errorToString(error))
+      },
+    }),
+    [
+      isWalletChangingFlow,
+      setWalletView,
+      setWalletConnectionError,
+      cowAnalytics,
+      chainId,
+      dispatch,
+      toggleAccountSelectorModal,
+      closeWalletModal,
+    ],
+  )
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WalletModal() {
   const dispatch = useAppDispatch()
-  const { account } = useWalletInfo()
+  const cowAnalytics = useCowAnalytics()
+  const { account, chainId } = useWalletInfo()
   const setWalletConnectionError = useSetWalletConnectionError()
+  const pendingError = useWalletConnectionError()
 
   const [walletView, setWalletView] = useState<WalletModalView>('options')
   const isPendingView = walletView === 'pending'
-
-  const pendingError = useWalletConnectionError()
-
   const walletModalOpen = useModalIsOpen(ApplicationModal.WALLET)
   const closeWalletModal = useCloseModal(ApplicationModal.WALLET)
   const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
 
   const openOptions = useCallback(() => setWalletView('options'), [setWalletView])
-
   const { isOpen: isAccountModalOpen } = useAccountModalState()
-  // Wallet changing currently is only possible through the account modal
   const isWalletChangingFlow = isAccountModalOpen
 
   useEffect(() => {
     if (walletModalOpen) {
       setWalletView(account ? 'account' : 'options')
     }
-  }, [walletModalOpen, setWalletView, account])
+  }, [walletModalOpen, account])
 
   useEffect(() => {
     if (!isPendingView) {
@@ -51,34 +143,18 @@ export function WalletModal() {
     }
   }, [isPendingView, setWalletConnectionError])
 
-  const { tryActivation, retryPendingActivation } = useActivateConnector(
-    useMemo(
-      () => ({
-        skipNetworkChanging: isWalletChangingFlow,
-        beforeActivation() {
-          setWalletView('pending')
-          setWalletConnectionError(undefined)
-        },
-        afterActivation(isHardWareWallet: boolean, connectionType: ConnectionType) {
-          dispatch(updateSelectedWallet({ wallet: connectionType }))
+  const activationContext = useWalletActivationContext({
+    chainId,
+    closeWalletModal,
+    cowAnalytics,
+    dispatch,
+    isWalletChangingFlow,
+    setWalletConnectionError,
+    setWalletView,
+    toggleAccountSelectorModal,
+  })
 
-          if (isHardWareWallet) {
-            toggleAccountSelectorModal()
-          }
-
-          closeWalletModal()
-          setWalletView('account')
-        },
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onActivationError(error: any) {
-          dispatch(updateSelectedWallet({ wallet: undefined }))
-          setWalletConnectionError(errorToString(error))
-        },
-      }),
-      [isWalletChangingFlow, closeWalletModal, dispatch, setWalletConnectionError, toggleAccountSelectorModal],
-    ),
-  )
+  const { tryActivation, retryPendingActivation } = useActivateConnector(activationContext)
 
   return (
     <WalletModalPure
