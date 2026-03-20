@@ -10,15 +10,17 @@ import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import type { OrderObject, OrdersState } from 'legacy/state/orders/reducer'
 import type { SerializedToken } from 'legacy/state/user/types'
 
-// `var` so the binding exists before hoisted `jest.mock` factories run (avoids TDZ with `let`).
-let mockReduxOrdersStateAtom: WritableAtom<OrdersState, [OrdersState], void>
+type GlobalWithReduxOrdersTestAtom = typeof globalThis & {
+  __cowGetReduxOrdersStateAtomForTest?: () => WritableAtom<OrdersState, [OrdersState], void>
+}
 
 jest.mock('legacy/utils/atomFromReduxSelector', () => {
   const jotai = require('jotai') as typeof import('jotai')
   const { atom } = jotai
-  mockReduxOrdersStateAtom = atom<OrdersState>({})
+  const a = atom<OrdersState>({})
+  ;(globalThis as GlobalWithReduxOrdersTestAtom).__cowGetReduxOrdersStateAtomForTest = () => a
   return {
-    atomFromReduxSelector: () => mockReduxOrdersStateAtom,
+    atomFromReduxSelector: () => a,
   }
 })
 
@@ -49,6 +51,14 @@ jest.mock('@cowprotocol/wallet', () => {
 })
 
 import { reduxOrdersByOrderTypeAtom, reduxOrdersStateByChainAtom } from './reduxOrders.atom'
+
+function getMockReduxOrdersStateAtom(): WritableAtom<OrdersState, [OrdersState], void> {
+  const get = (globalThis as GlobalWithReduxOrdersTestAtom).__cowGetReduxOrdersStateAtomForTest
+  if (!get) {
+    throw new Error('atomFromReduxSelector mock did not register __cowGetReduxOrdersStateAtomForTest')
+  }
+  return get()
+}
 
 function st(address: string): SerializedToken {
   return {
@@ -97,7 +107,7 @@ describe('reduxOrdersStateByChainAtom', () => {
 
   beforeEach(() => {
     store = createStore()
-    store.set(mockReduxOrdersStateAtom, {})
+    store.set(getMockReduxOrdersStateAtom(), {})
   })
 
   it('returns default network state merged with persisted chain state', () => {
@@ -107,7 +117,7 @@ describe('reduxOrdersStateByChainAtom', () => {
       orderClass: OrderClass.LIMIT,
     })
 
-    store.set(mockReduxOrdersStateAtom, {
+    store.set(getMockReduxOrdersStateAtom(), {
       [MOCK_CHAIN]: {
         ...getDefaultNetworkState(MOCK_CHAIN),
         pending: { '0x01': pendingOrder },
@@ -133,7 +143,7 @@ describe('reduxOrdersByOrderTypeAtom', () => {
 
   beforeEach(() => {
     store = createStore()
-    store.set(mockReduxOrdersStateAtom, {})
+    store.set(getMockReduxOrdersStateAtom(), {})
     store.set(walletInfoAtom, baseWallet)
   })
 
@@ -164,7 +174,7 @@ describe('reduxOrdersByOrderTypeAtom', () => {
       orderClass: OrderClass.LIMIT,
     })
 
-    store.set(mockReduxOrdersStateAtom, {
+    store.set(getMockReduxOrdersStateAtom(), {
       [MOCK_CHAIN]: {
         ...getDefaultNetworkState(MOCK_CHAIN),
         pending: { '0xm': mine, '0xt': theirs },
@@ -188,7 +198,7 @@ describe('reduxOrdersByOrderTypeAtom', () => {
       orderClass: OrderClass.MARKET,
     })
 
-    store.set(mockReduxOrdersStateAtom, {
+    store.set(getMockReduxOrdersStateAtom(), {
       [MOCK_CHAIN]: {
         ...getDefaultNetworkState(MOCK_CHAIN),
         pending: { '0xl': limitOrder, '0xs': marketOrder },
