@@ -15,8 +15,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.4-pr-844-802c492c.0",
-    "@cowprotocol/sdk-bridging": "3.2.0-pr-844-802c492c.0",
+    "@cowprotocol/cow-sdk": "8.0.4-pr-844-eecad552.0",
+    "@cowprotocol/sdk-bridging": "3.2.0-pr-844-eecad552.0",
     "@cowprotocol/currency": "workspace:*",
     "eventemitter3": "^4.0.0"
   }
