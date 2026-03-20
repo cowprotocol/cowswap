@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.0.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.1...analytics-v3.0.2) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.2
+    * @cowprotocol/common-hooks bumped to 3.0.2
+    * @cowprotocol/common-utils bumped to 3.0.2
+    * @cowprotocol/events bumped to 4.0.2
+
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.0...analytics-v3.0.1) (2026-03-18)
 
 

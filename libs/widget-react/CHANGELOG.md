@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.11...widget-react-v1.1.0) (2026-03-19)
+
+
+### ✨ Features
+
+* publish libs tp npm ([#7191](https://github.com/cowprotocol/cowswap/issues/7191)) ([c6177bb](https://github.com/cowprotocol/cowswap/commit/c6177bb9a8c828c7c3f82aceb6fcef00da15cdcf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.2
+    * @cowprotocol/types bumped to 4.1.0
+    * @cowprotocol/widget-lib bumped to 2.0.2
+
 ## [1.0.11](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.10...widget-react-v1.0.11) (2026-03-18)
 
 
