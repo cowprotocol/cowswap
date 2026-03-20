@@ -10,17 +10,20 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 import { RoutesApp } from './RoutesApp'
 
 import { AppContainer } from '../AppContainer/AppContainer.container'
+import { React310RecoveryErrorBoundary } from '../React310RecoveryErrorBoundary/React310RecoveryErrorBoundary.container'
 
 export function App(): ReactNode {
   return (
     <ErrorBoundary>
-      <RedirectAnySwapAffectedUsers />
-      <InvalidCoWShedSetup />
+      <React310RecoveryErrorBoundary>
+        <RedirectAnySwapAffectedUsers />
+        <InvalidCoWShedSetup />
 
-      <AppContainer>
-        <TopLevelModals />
-        <RoutesApp />
-      </AppContainer>
+        <AppContainer>
+          <TopLevelModals />
+          <RoutesApp />
+        </AppContainer>
+      </React310RecoveryErrorBoundary>
     </ErrorBoundary>
   )
 }
