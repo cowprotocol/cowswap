@@ -17,10 +17,9 @@ trades as (
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
     dune.cowprotocol.result_fac_trades.swap_source as swap_source,
-    dune.cowprotocol.result_fac_trades.protocol_fee_bps,
     dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
     (
-      coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 1e9) < constants.min_fee_bps
+      coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 0) < constants.min_fee_bps
     ) as is_excluded_low_fee,
     (
       lower(coalesce(dune.cowprotocol.result_fac_trades.swap_source, '')) = 'integrations'
