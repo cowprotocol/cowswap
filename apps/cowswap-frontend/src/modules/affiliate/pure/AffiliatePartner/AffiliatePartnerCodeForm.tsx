@@ -81,7 +81,9 @@ export function AffiliatePartnerCodeForm({
               <LabelContent>
                 <Trans>Referral code</Trans>
                 <HelpTooltip
-                  text={t`Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores`}
+                  text={
+                    <Trans>Referral codes contain 5-20 uppercase letters (A-Z), numbers, dashes, or underscores</Trans>
+                  }
                   dimmed
                 />
               </LabelContent>
