@@ -3,9 +3,6 @@ import { Provider as AtomProvider } from 'jotai'
 import { Component, type ReactNode, StrictMode } from 'react'
 import './sentry'
 
-// Deduplicate eth_sendTransaction at the provider so only one "transaction complete" window opens (MetaMask).
-deduplicateEthereumSendTransaction()
-
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
@@ -33,6 +30,8 @@ import { loadActiveLocaleMessages } from 'lib/localeMessages'
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
+
+deduplicateEthereumSendTransaction()
 
 const cowAnalytics = initGtm()
 const helmetContext = {}
@@ -80,6 +79,12 @@ interface MainProps {
   localeMessages: Messages | undefined
 }
 
+function Toasts(): ReactNode {
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
+}
+
 export function Main({ localeMessages }: MainProps): ReactNode {
   return (
     <StrictMode>
@@ -115,12 +120,6 @@ export function Main({ localeMessages }: MainProps): ReactNode {
       </RootErrorBoundary>
     </StrictMode>
   )
-}
-
-function Toasts(): ReactNode {
-  const { disableToastMessages = false } = useInjectedWidgetParams()
-
-  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
 }
 
 async function initApp(): Promise<void> {

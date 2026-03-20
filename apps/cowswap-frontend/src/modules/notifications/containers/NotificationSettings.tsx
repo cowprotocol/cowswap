@@ -1,12 +1,10 @@
 import { ReactNode } from 'react'
 
 import TELEGRAM_ICON from '@cowprotocol/assets/images/icon-telegram.svg'
-import { RowBetween, RowFixed, HoverTooltip, UI } from '@cowprotocol/ui'
+import { RowBetween, RowFixed, HoverTooltip, UI, Toggle } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import { Toggle } from 'legacy/components/Toggle'
 
 import { ConnectTelegram } from './ConnectTelegram'
 import { useConnectTelegram } from './ConnectTelegram/useConnectTelegram'
@@ -104,7 +102,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
                 wrapInContainer={false}
                 className="toggle-wrapper"
               >
-                <Toggle isActive={true} toggle={() => {}} isDisabled={true} />
+                <Toggle checked toggle={() => {}} disabled />
               </HoverTooltip>
             </RowBetween>
           </SettingsRow>
@@ -118,7 +116,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
                 wrapInContainer={false}
                 className="toggle-wrapper"
               >
-                <Toggle isActive={true} toggle={() => {}} isDisabled={true} />
+                <Toggle checked toggle={() => {}} disabled />
               </HoverTooltip>
             </RowBetween>
           </SettingsRow>

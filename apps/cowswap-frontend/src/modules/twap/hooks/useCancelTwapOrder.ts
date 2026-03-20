@@ -11,7 +11,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
-import { useGP2SettlementContractData } from 'common/hooks/useContract'
+import { useGP2SettlementContractProd } from 'common/hooks/useContract'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
 import { processTwapCancellation } from '../services/processTwapCancellation'
@@ -28,7 +28,7 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const sendBatchTransactions = useSendBatchTransactions()
   const composableCowContract = useComposableCowContractData()
-  const settlementContract = useGP2SettlementContractData()
+  const settlementContract = useGP2SettlementContractProd()
   const { t } = useLingui()
 
   const composableCowChainId = composableCowContract.chainId

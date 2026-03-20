@@ -1,9 +1,5 @@
-import {
-  areAddressesEqual,
-  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
-  getAddressKey,
-  SupportedChainId,
-} from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
+import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 
 import { decodeFunctionData, type Hex, erc20Abi, maxUint256 } from 'viem'

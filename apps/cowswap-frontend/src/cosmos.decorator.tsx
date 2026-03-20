@@ -20,8 +20,10 @@ import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
-import enMessages from './locales/en-US.po'
 import { ThemeConfigUpdater } from './theme/ThemeConfigUpdater'
+
+/** No locale import in Cosmos: .po needs Lingui transform, .js is CJS and breaks in the iframe. Fixtures still render; some text may show as message IDs. */
+const COSMOS_MESSAGES = undefined
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -71,6 +73,7 @@ const WrapperInner = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  padding-top: 48px;
 `
 
 export const DemoContainer = styled.div`
@@ -99,7 +102,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
         <HashRouter>
           <ThemeProvider>
             <ThemedGlobalStyle />
-            <LanguageProvider messages={enMessages}>
+            <LanguageProvider messages={COSMOS_MESSAGES}>
               <Web3Provider>
                 <BlockNumberProvider>
                   <WalletUpdater />

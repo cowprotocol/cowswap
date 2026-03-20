@@ -1,5 +1,7 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -76,7 +78,7 @@ const mockProcessApprovalTransaction = processApprovalTransaction as jest.Mocked
 // eslint-disable-next-line max-lines-per-function
 describe('useTradeApproveCallback', () => {
   const mockToken = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'TEST', 'Test Token')
-  const mockSpenderAddress = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
+  const mockSpenderAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET]
   const mockAmount = BigInt('1000000000000000000')
 
   const mockSendEvent = jest.fn()

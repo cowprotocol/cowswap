@@ -5,8 +5,12 @@ import {
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
-import { isEns, isProd, isStaging } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEns, isProd, isStaging, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
+import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
+  CowEnv,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 import { CoWSwapEthFlowAbi, GPv2SettlementAbi, vCowAbi, WethAbi } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -80,6 +84,20 @@ export function useGP2SettlementContractData(): SettlementContractData {
     () => ({
       abi: GPv2SettlementAbi,
       address: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
+}
+
+/** TWAP / extensible fallback: always use production settlement addresses regardless of barn/staging env. */
+export function useGP2SettlementContractProd(): SettlementContractData {
+  const { chainId } = useWalletInfo()
+
+  return useMemo(
+    () => ({
+      abi: GPv2SettlementAbi,
+      address: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD[chainId],
       chainId,
     }),
     [chainId],

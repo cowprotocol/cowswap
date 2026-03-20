@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -89,6 +89,7 @@ function buildQuoteParams(args: {
     signer,
     receiver,
     validFor: DEFAULT_QUOTE_TTL,
+    ethFlowContractOverride: COW_PROTOCOL_ETH_FLOW_ADDRESS,
     ...(volumeFee ? { partnerFee: volumeFee } : undefined),
     partiallyFillable,
     ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
@@ -153,6 +154,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     isProviderNetworkUnsupported,
     isProviderNetworkDeprecated,
     userSlippageBps,
+    smartSlippageBps,
   ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)

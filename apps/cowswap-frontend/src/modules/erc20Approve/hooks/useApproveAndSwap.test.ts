@@ -1,3 +1,5 @@
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 
 import { renderHook, waitFor } from '@testing-library/react'
@@ -51,6 +53,14 @@ describe('useApproveAndSwap', () => {
       status: 'success',
       blockNumber: 123456n,
       transactionHash: '0xtxhash' as `0x${string}`,
+      to: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
+      from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+      contractAddress: mockToken.address,
+      transactionIndex: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      gasUsed: { toString: () => '21000' } as any,
+      logsBloom: '0x',
+      blockHash: '0xblockhash',
       logs: [],
     }
   }

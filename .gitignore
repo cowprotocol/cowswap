@@ -66,6 +66,7 @@ apps/cowswap-frontend/public/robots.txt
 # Claude context files (local only)
 CLAUDE.md
 .claude/
+.superpowers/**/*
 
 # Agents context files (local only)
 .agents/

@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
-    "@cowprotocol/cow-sdk": "8.0.0",
-    "@cowprotocol/sdk-composable": "0.1.38",
-    "@cowprotocol/sdk-viem-adapter": "0.3.11",
+    "@cowprotocol/cow-sdk": "8.0.4",
+    "@cowprotocol/sdk-composable": "0.2.3",
+    "@cowprotocol/sdk-viem-adapter": "0.3.14",
     "inter-ui": "^3.19.3",
     "react": "19.1.2",
     "react-dom": "19.1.2",

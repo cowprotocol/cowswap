@@ -2,15 +2,29 @@
   "name": "@cowprotocol/currency",
   "version": "1.0.0",
   "description": "CoW Swap re-exports of @uniswap/sdk-core entities",
-  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap.git",
+    "directory": "libs/currency"
+  },
+  "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.d.ts",
-  "license": "MIT",
+  "license": "ISC",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./index.d.ts",
+        "import": "./index.js",
+        "require": "./index.cjs"
+      }
+    }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.0",
+    "@cowprotocol/cow-sdk": "8.0.4",
     "jsbi": "^3.1.4"
   }
 }

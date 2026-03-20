@@ -28,8 +28,6 @@ import {
   StatusText,
 } from '../shared'
 
-type AffiliatePartnerCodeFormRefInputProps = Omit<RefCodeInputProps, 'disabled' | 'isLoading' | 'hasError'>
-
 interface AffiliatePartnerCodeFormProps extends AffiliatePartnerCodeFormRefInputProps {
   availability: PartnerCodeAvailability
   showInvalidFormat: boolean
@@ -39,6 +37,8 @@ interface AffiliatePartnerCodeFormProps extends AffiliatePartnerCodeFormRefInput
   onGenerate: () => void
   onCreate: () => void
 }
+
+type AffiliatePartnerCodeFormRefInputProps = Omit<RefCodeInputProps, 'disabled' | 'isLoading' | 'hasError'>
 
 export function AffiliatePartnerCodeForm({
   availability,

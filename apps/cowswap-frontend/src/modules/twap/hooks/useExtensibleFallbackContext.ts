@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { type Config, useConfig } from 'wagmi'
 
-import { type SettlementContractData, useGP2SettlementContractData } from 'common/hooks/useContract'
+import { type SettlementContractData, useGP2SettlementContractProd } from 'common/hooks/useContract'
 
 export interface ExtensibleFallbackContext {
   chainId: SupportedChainId
@@ -17,7 +17,7 @@ export interface ExtensibleFallbackContext {
 export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null {
   const config = useConfig()
   const { account } = useWalletInfo()
-  const settlementContract = useGP2SettlementContractData()
+  const settlementContract = useGP2SettlementContractProd()
 
   return useMemo(() => {
     if (!account || !settlementContract.address) {
