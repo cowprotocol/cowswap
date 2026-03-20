@@ -2,11 +2,7 @@
 
 import { atom } from 'jotai'
 
-import {
-  BalancesAndAllowances,
-  balancesAtom,
-  tokenAllowancesLoadableFamily,
-} from '@cowprotocol/balances-and-allowances'
+import { BalancesAndAllowances, balancesAtom, tokenAllowancesFamily } from '@cowprotocol/balances-and-allowances'
 import { jotaiStore } from '@cowprotocol/core'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wallet'
@@ -116,8 +112,8 @@ ordersTableStateAtom.onMount = () => {
     logOrdersTableDebug('3. pendingOrders =', pendingOrders)
 
     const balancesState = get(balancesAtom)
-    const allowancesLoadable = get(
-      tokenAllowancesLoadableFamily({
+    const allowancesState = get(
+      tokenAllowancesFamily({
         chainId,
         account,
         tokenAddresses: Array.from(ordersTokensSet),
@@ -128,8 +124,8 @@ ordersTableStateAtom.onMount = () => {
     // type or status.
 
     const { isLoading: balancesLoading, values: balances } = balancesState
-    const allowancesLoading = allowancesLoadable.state === 'loading'
-    const allowances = allowancesLoadable.state === 'hasData' ? allowancesLoadable.data : undefined
+    const allowancesLoading = allowancesState === null
+    const allowances = allowancesState || {}
 
     const balancesAndAllowances: BalancesAndAllowances = {
       isLoading: balancesLoading || allowancesLoading,

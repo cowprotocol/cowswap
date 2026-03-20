@@ -45,7 +45,7 @@ export function getOrderParams(
 
   const { balances, allowances } = balancesAndAllowances
   const balance = balances[getAddressKey(order.inputToken.address)]
-  const allowance = allowances?.[getAddressKey(order.inputToken.address)]
+  const allowance = allowances[getAddressKey(order.inputToken.address)]
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
     partiallyFillable: order.partiallyFillable,

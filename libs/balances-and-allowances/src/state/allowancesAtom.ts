@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { atomWithStorage, loadable } from 'jotai/utils'
+import { atomWithStorage } from 'jotai/utils'
 
 import { getRpcProvider } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
@@ -11,7 +11,6 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { atomFamily } from 'jotai-family'
-import ms from 'ms.macro'
 
 export type AllowancesState = Record<string, BigNumber | undefined>
 
@@ -72,37 +71,53 @@ export interface TokenAllowancesFamilyParams {
   tokenAddresses: string[]
 }
 
-export const tokenAllowancesLoadableFamily = atomFamily(
-  ({ chainId, account, tokenAddresses }: TokenAllowancesFamilyParams) => {
-    const allowancesAtom = atom(async (): Promise<AllowancesState | undefined> => {
-      const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
+export const tokenAllowancesFamily = atomFamily((params: TokenAllowancesFamilyParams) => {
+  const tokenAllowancesAtom = atom<AllowancesState | null>(null)
 
-      if (!chainId || !account || !spender || !tokenAddresses.length) return undefined
+  tokenAllowancesAtom.onMount = (set) => {
+    const { chainId, account, tokenAddresses } = params
+    const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
-      // TODO: This can be improved by caching at the module-level, and only actually refetching if the previously fetched allowances
-      // DO NOT include some of the requested tokens.
-      return fetchAllowances(chainId, account, spender, tokenAddresses)
-    })
+    const totalFamilyMembers = tokenAllowancesFamily.length
 
-    return loadable(allowancesAtom)
-  },
-  areTokenAllowancesParamsEqual,
-)
+    if (totalFamilyMembers > 10) {
+      console.warn('Possible memory leak detected in tokenAllowancesFamily')
+    }
 
-const TOKEN_ALLOWANCES_FAMILY_MAX_AGE_MS = ms`10m`
+    if (!chainId || !account || !spender || !tokenAddresses.length) {
+      return () => {
+        tokenAllowancesFamily.remove(params)
+      }
+    }
 
-// Runs immediately and when you are about to get an atom from the cache.
-// Internally, atomFamily is just a Map whose key is a param and whose value is
-// an atom config. Unless you explicitly remove unused params, this leads to
-// memory leaks. This is crucial if you use infinite number of params.
-tokenAllowancesLoadableFamily.setShouldRemove((createdAt, params) => {
-  // Allowances expire after 10 minutes:
-  if (Date.now() - createdAt > TOKEN_ALLOWANCES_FAMILY_MAX_AGE_MS) return true
+    let cancelled = false
 
-  // Always remove all other allowances:
-  for (const param of tokenAllowancesLoadableFamily.getParams()) {
-    if (!areTokenAllowancesParamsEqual(param, params)) tokenAllowancesLoadableFamily.remove(param)
+    fetchAllowances(chainId, account, spender, tokenAddresses)
+      .then((result) => {
+        if (cancelled) return
+
+        set(result)
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return
+
+        console.error('[tokenAllowancesFamily] error:', err)
+
+        set({})
+      })
+
+    return () => {
+      cancelled = true
+      tokenAllowancesFamily.remove(params)
+    }
   }
 
-  return false
-})
+  return tokenAllowancesAtom
+}, areTokenAllowancesParamsEqual)
+
+// Why are we doing the cleanup using `onMount` instead of `setShouldRemove`?
+// Well, `setShouldRemove` runs immediately and when you are about to get an
+// atom from the cache. Internally, atomFamily is just a Map whose key is a
+// param and whose value is an atom config. Unless you explicitly remove unused
+// params, this leads to memory leaks. This is crucial if you use infinite
+// number of params.

@@ -25,9 +25,9 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   isLoading: boolean
 } {
   /*
-  TODO: Replace with tokenAllowancesLoadableAtomFamily
+  TODO: Replace with tokenAllowancesFamily
 
-  const loadable = useLoadable(tokenAllowancesLoadableAtomFamily(tokenAddresses))
+  const loadable = useLoadable(tokenAllowancesFamily(tokenAddresses))
   const isLoading = loadable.state === 'loading'
   const state = loadable.state === 'hasData' ? loadable.data : undefined
   return { state, isLoading }
