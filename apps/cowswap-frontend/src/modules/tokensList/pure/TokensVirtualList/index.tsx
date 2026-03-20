@@ -5,6 +5,8 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { VirtualItem } from '@tanstack/react-virtual'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { VirtualList } from 'common/pure/VirtualList'
 
@@ -36,6 +38,7 @@ export function TokensVirtualList({
   } = useTokenListContext()
   const { values: balances } = selectTokenContext.balancesState
   const { isYieldEnabled } = useFeatureFlags()
+  const { hideRecentTokens, hideFavoriteTokens } = useInjectedWidgetParams()
 
   const sortedTokens = useMemo(() => sortTokensByBalance(tokensToDisplay, balances), [tokensToDisplay, balances])
 
@@ -49,6 +52,8 @@ export function TokensVirtualList({
         onClearRecentTokens,
         bridgeSupportedTokensMap,
         areTokensFromBridge,
+        hideRecentTokens,
+        hideFavoriteTokens,
       }),
     [
       favoriteTokens,
@@ -58,6 +63,8 @@ export function TokensVirtualList({
       sortedTokens,
       bridgeSupportedTokensMap,
       areTokensFromBridge,
+      hideRecentTokens,
+      hideFavoriteTokens,
     ],
   )
 

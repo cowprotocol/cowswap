@@ -216,6 +216,26 @@ export interface CowSwapWidgetParams {
   tokenLists?: string[]
 
   /**
+   * The token lists urls to use in the widget for ONLY SELL tokens
+   */
+  sellTokenLists?: string[]
+
+  /**
+   * The token lists urls to use in the widget for ONLY BUY tokens
+   */
+  buyTokenLists?: string[]
+
+  /**
+   * Control the "Recent tokens" section displaying in the token selector
+   */
+  hideRecentTokens?: boolean
+
+  /**
+   * Control the "Favorite tokens" section displaying in the token selector
+   */
+  hideFavoriteTokens?: boolean
+
+  /**
    * Swap, Limit or Advanced (Twap).
    */
   tradeType?: TradeType
