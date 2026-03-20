@@ -10,9 +10,9 @@ import { fetchTokens } from 'common/state/fetchTokens.utils'
 
 import { twapOrdersListAtom } from './twapOrdersListAtom'
 
-const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
+export const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
 
-const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | null> => {
+export const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | null> => {
   // TODO: Why do we read chainId from libs/tokens/src/state/environmentAtom.ts in here?
   const { tokens, chainId } = await get(tokensByAddressAtom)
   const twapOrdersTokensAddresses = get(twapOrdersTokensAddressesAtom)
@@ -24,7 +24,7 @@ const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | nu
   return fetchTokens(chainId, tokens, twapOrdersTokensAddresses)
 })
 
-const twapOrdersTokensLoadableAtom = loadable(twapOrdersTokensAsyncAtom)
+export const twapOrdersTokensLoadableAtom = loadable(twapOrdersTokensAsyncAtom)
 
 export const twapOrdersTokensAtom = atom((get): TokensByAddress | null => {
   const loadableState = get(twapOrdersTokensLoadableAtom)
