@@ -1,7 +1,31 @@
 import { WalletConnect } from '@web3-react/walletconnect-v2'
 
 export class WalletConnectV2Connector extends WalletConnect {
-  async activate(desiredChainId?: number): Promise<void> {
+  private connectionPromise: Promise<void> | undefined
+
+  public override connectEagerly(): Promise<void> {
+    return this.runSingleFlight(() => super.connectEagerly())
+  }
+
+  public override activate(desiredChainId?: number): Promise<void> {
+    if (this.provider?.session) {
+      return this.activateAndSyncState(desiredChainId)
+    }
+
+    return this.runSingleFlight(() => this.activateAndSyncState(desiredChainId))
+  }
+
+  private runSingleFlight(task: () => Promise<void>): Promise<void> {
+    if (!this.connectionPromise) {
+      this.connectionPromise = task().finally(() => {
+        this.connectionPromise = undefined
+      })
+    }
+
+    return this.connectionPromise
+  }
+
+  private async activateAndSyncState(desiredChainId?: number): Promise<void> {
     const isNetworkSwitching = !!this.provider?.session
 
     await super.activate(isNetworkSwitching ? desiredChainId : undefined)
