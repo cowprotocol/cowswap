@@ -10,7 +10,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.4-pr-844-802c492c.0",
+    "@cowprotocol/cow-sdk": "8.0.4-pr-844-eecad552.0",
     "jsbi": "^3.1.4"
   }
 }
