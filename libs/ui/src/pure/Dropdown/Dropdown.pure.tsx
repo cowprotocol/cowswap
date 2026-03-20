@@ -1,7 +1,7 @@
 import type { RefObject } from 'react'
 
-import { SmartModal } from '../SmartModal'
-import type { SmartModalPlacement, SmartModalProps } from '../SmartModal'
+import { SmartModal } from '../SmartModal/SmartModal.pure'
+import type { SmartModalPlacement, SmartModalProps } from '../SmartModal/SmartModal.pure'
 import { Media } from '../../consts'
 
 type DropdownPropsBase = Omit<SmartModalProps, 'anchorRef' | 'containerId' | 'drawerMediaQuery'> & {

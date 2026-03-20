@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 import { useMediaQuery, useInterval } from '@cowprotocol/common-hooks'
@@ -8,8 +8,8 @@ import type { Placement, Options as PopperOptions } from '@popperjs/core'
 import { usePopper } from 'react-popper'
 import { useTransition } from '@react-spring/web'
 
-import { DropdownBackdrop, DropdownPanel, SmartModalContent, SmartModalOverlay } from './styled'
-import type { SmartModalPlacement, SmartModalProps } from './types'
+import { DropdownBackdrop, DropdownPanel, SmartModalContent, SmartModalOverlay } from './SmartModal.styled'
+import type { SmartModalPlacement, SmartModalProps } from './SmartModal.types'
 import { useDrawerGesture } from './useDrawerGesture'
 
 const DEFAULT_Z_INDEX = 1000
@@ -35,7 +35,7 @@ export function SmartModal({
   initialFocusRef,
   minHeight = false,
   maxHeight = 90,
-}: SmartModalProps): React.JSX.Element | null {
+}: SmartModalProps): ReactNode {
   const isDrawerMode = useMediaQuery(drawerMediaQuery)
   const hasAnchor = anchorRef?.current != null
   const hasAnchorRef = anchorRef != null
@@ -206,6 +206,6 @@ function SmartModalDropdown({
   )
 }
 
-export type { SmartModalPlacement, SmartModalProps } from './types'
-export { SMART_MODAL_PLACEMENTS } from './types'
+export type { SmartModalPlacement, SmartModalProps } from './SmartModal.types'
+export { SMART_MODAL_PLACEMENTS } from './SmartModal.types'
 export { useDrawerGesture } from './useDrawerGesture'
