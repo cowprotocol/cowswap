@@ -41,6 +41,17 @@ import { getTabsAndCurrentTab } from './params/ordersTableParams.atom'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
 import { reduxOrdersByOrderTypeAtom } from './redux/reduxOrders.atom'
 
+/**
+ * WARNING: It looks like this could be a derived atom, but it cannot!
+ *
+ * If we do that, the routing logic must be moved somewhere else, most likely to
+ * `reduxOrdersAtom.onMount`. In that case, the routing logic will trigger
+ * before the `ordersTableStateAtom` is updated, and tab/page atoms can still
+ * see the old value while `locationAtom` has already changed while, or
+ * `hashHistory.replace` might still be running during the same Jotai flush,
+ * leading to the tabs UI rendering based on stale data OR "Detected store
+ * mutation during atom read" errors, depending how you structure the code.
+ */
 export const ordersTableStateAtom = atom<OrdersTableState>(EMPTY_ORDERS_TABLE_STATE)
 
 ordersTableStateAtom.onMount = () => {
