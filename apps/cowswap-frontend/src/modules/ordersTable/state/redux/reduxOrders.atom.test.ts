@@ -10,17 +10,19 @@ import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import type { OrderObject, OrdersState } from 'legacy/state/orders/reducer'
 import type { SerializedToken } from 'legacy/state/user/types'
 
-type GlobalWithReduxOrdersTestAtom = typeof globalThis & {
-  __cowGetReduxOrdersStateAtomForTest?: () => WritableAtom<OrdersState, [OrdersState], void>
-}
+// Jest hoists `jest.mock` factories, and ES modules evaluate static imports before the rest of
+// this file. The mock runs while `./reduxOrders.atom` loads — before `let`/`const` bindings
+// here are initialized, so assigning to them in the factory hits the temporal dead zone.
+// `var` is hoisted and starts as `undefined`, so the factory can assign the atom safely.
+// eslint-disable-next-line no-var -- see preceding comment (TDZ); `let`/`const` fail here
+var mockReduxOrdersStateAtom: WritableAtom<OrdersState, [OrdersState], void> | undefined
 
 jest.mock('legacy/utils/atomFromReduxSelector', () => {
   const jotai = require('jotai') as typeof import('jotai')
   const { atom } = jotai
-  const a = atom<OrdersState>({})
-  ;(globalThis as GlobalWithReduxOrdersTestAtom).__cowGetReduxOrdersStateAtomForTest = () => a
+  mockReduxOrdersStateAtom = atom<OrdersState>({})
   return {
-    atomFromReduxSelector: () => a,
+    atomFromReduxSelector: () => mockReduxOrdersStateAtom as WritableAtom<OrdersState, [OrdersState], void>,
   }
 })
 
@@ -53,11 +55,11 @@ jest.mock('@cowprotocol/wallet', () => {
 import { reduxOrdersByOrderTypeAtom, reduxOrdersStateByChainAtom } from './reduxOrders.atom'
 
 function getMockReduxOrdersStateAtom(): WritableAtom<OrdersState, [OrdersState], void> {
-  const get = (globalThis as GlobalWithReduxOrdersTestAtom).__cowGetReduxOrdersStateAtomForTest
-  if (!get) {
-    throw new Error('atomFromReduxSelector mock did not register __cowGetReduxOrdersStateAtomForTest')
+  const atom = mockReduxOrdersStateAtom
+  if (!atom) {
+    throw new Error('mockReduxOrdersStateAtom not set by atomFromReduxSelector mock')
   }
-  return get()
+  return atom
 }
 
 function st(address: string): SerializedToken {
