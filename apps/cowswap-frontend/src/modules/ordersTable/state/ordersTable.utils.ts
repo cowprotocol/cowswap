@@ -7,7 +7,7 @@ import {
 const ENABLE_ORDERS_TABLE_DEBUG = false
 
 /**
- * Debug logging for UTM processing
+ * Debug logging for orders table.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function logOrdersTableDebug(message: string, ...optionalParams: any[]): void {
