@@ -1,38 +1,52 @@
 import { TokenWithLogo, getRpcProvider } from '@cowprotocol/common-const'
 import { isSupportedChainId } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
+import type { TokensByAddress } from '@cowprotocol/tokens'
 
-import { atomFamily } from 'jotai-family'
-import { atomWithQuery } from 'jotai-tanstack-query'
-
-function parseTokenKey(key: string): { chainId: number; address: string } {
-  const [chainIdStr, address] = key.split('::')
-  return { chainId: Number(chainIdStr), address: address ?? '' }
-}
-
-export function tokenKey(chainId: number, address: string): string {
+export function getTokenKey(chainId: number, address: string): string {
   return `${chainId}::${address.toLowerCase()}`
 }
 
-// TODO: Maybe it's better to just create a module that stores the fetched tokens in memory.
-export const tokenQueryFamily = atomFamily((key: string) =>
-  atomWithQuery(() => {
-    const { chainId, address } = parseTokenKey(key)
+const cachedTokens: Record<string, TokenWithLogo> = {}
 
-    return {
-      queryKey: ['twapOrderToken', chainId, address],
-      staleTime: Infinity,
-      queryFn: async (): Promise<TokenWithLogo | null> => {
-        const provider = getRpcProvider(chainId)
+export async function fetchTokens(
+  chainId: SupportedChainId,
+  tokensByAddress: TokensByAddress,
+  addresses: string[],
+): Promise<null | TokensByAddress> {
+  const provider = getRpcProvider(chainId)
 
-        if (!provider || !isSupportedChainId(chainId)) return null
+  if (!provider || !isSupportedChainId(chainId)) return null
 
-        // TODO M-6 COW-573
-        // This flow will be reviewed and updated later, to include a wagmi alternative
-        const token = await fetchTokenFromBlockchain(address, chainId, provider)
+  const tokens: Record<string, TokenWithLogo> = {}
+  const tokenPromises: Promise<TokenWithLogo>[] = []
 
-        return TokenWithLogo.fromToken(token)
-      },
+  addresses.forEach((address) => {
+    const addressKey = address.toLowerCase()
+    const tokenKey = getTokenKey(chainId, address)
+
+    if (cachedTokens[tokenKey]) {
+      tokens[addressKey] = cachedTokens[tokenKey]
+    } else if (tokensByAddress[addressKey]) {
+      tokens[addressKey] = tokensByAddress[addressKey]
+    } else {
+      // TODO M-6 COW-573
+      // This flow will be reviewed and updated later, to include a wagmi alternative
+
+      tokenPromises.push(fetchTokenFromBlockchain(address, chainId, provider).then(TokenWithLogo.fromToken))
     }
-  }),
-)
+  })
+
+  const resolvedTokens = await Promise.all(tokenPromises)
+
+  resolvedTokens.forEach((token) => {
+    const addressKey = token.address.toLowerCase()
+    const tokenKey = getTokenKey(chainId, token.address)
+
+    tokens[addressKey] = token
+    cachedTokens[tokenKey] = token
+  })
+
+  return tokens
+}

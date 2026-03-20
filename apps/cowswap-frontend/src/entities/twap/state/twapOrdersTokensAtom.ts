@@ -6,7 +6,7 @@ import type { TokensByAddress } from '@cowprotocol/tokens'
 
 import { getTokensListFromOrders } from 'modules/orders'
 
-import { tokenQueryFamily, tokenKey } from 'common/state/tokenByAddressQuery.atom'
+import { fetchTokens } from 'common/state/tokenByAddressQuery.atom'
 
 import { twapOrdersListAtom } from '../index'
 
@@ -19,39 +19,9 @@ const twapOrdersTokensAsyncAtom = atom(async (get): Promise<TokensByAddress | nu
 
   // TODO: Before, new tokens would be added using addUserTokenAtom, so the next time they'll be available from
   // tokensByAddressAtom. For now, we can skip that. Once everything's working again, we can consider moving
-  // all token-related logic to query atoms.
-  const twapOrdersTokens: TokensByAddress = {}
-
-  let missingTokens = 0
-
-  for (const tokensAddresses of twapOrdersTokensAddresses) {
-    const keyLower = tokensAddresses.toLowerCase()
-
-    if (tokens[keyLower]) {
-      twapOrdersTokens[keyLower] = tokens[keyLower]
-    } else {
-      const tokenQueryAtom = tokenQueryFamily(tokenKey(chainId, keyLower))
-      const queryResult = get(tokenQueryAtom)
-
-      if (queryResult.data) {
-        twapOrdersTokens[keyLower] = queryResult.data
-      } else {
-        ++missingTokens
-      }
-    }
-  }
-
-  if (missingTokens > 0) return null
-
-  const expectedAddresses = [...twapOrdersTokensAddresses.map((addr) => addr.toLowerCase())].sort().join('::')
-  const loadedAddresses = Object.keys(twapOrdersTokens).sort().join('::')
-
-  if (expectedAddresses !== loadedAddresses) {
-    console.error('Tokens finished loading but addresses mismatch:', { expectedAddresses, loadedAddresses })
-    return null
-  }
-
-  return twapOrdersTokens
+  // all token-related logic to query atoms. Also, once we do all token fetching using `fetchTokens` and its
+  // in-memory caching, we can remove the `tokensByAddressAtom` dependency.
+  return fetchTokens(chainId, tokens, twapOrdersTokensAddresses)
 })
 
 const twapOrdersTokensLoadableAtom = loadable(twapOrdersTokensAsyncAtom)
