@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.11...widget-react-v1.1.0) (2026-03-19)
+
+
+### ✨ Features
+
+* publish libs tp npm ([#7191](https://github.com/cowprotocol/cowswap/issues/7191)) ([c6177bb](https://github.com/cowprotocol/cowswap/commit/c6177bb9a8c828c7c3f82aceb6fcef00da15cdcf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.2
+    * @cowprotocol/types bumped to 4.1.0
+    * @cowprotocol/widget-lib bumped to 2.0.2
+
+## [1.0.11](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.10...widget-react-v1.0.11) (2026-03-18)
+
+
+### 🐛 Bug Fixes
+
+* update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.1
+    * @cowprotocol/types bumped to 4.0.1
+    * @cowprotocol/widget-lib bumped to 2.0.1
+
 ## [1.0.10](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.0.9...widget-react-v1.0.10) (2026-03-11)
 
 

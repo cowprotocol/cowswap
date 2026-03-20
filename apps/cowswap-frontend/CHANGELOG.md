@@ -1,5 +1,111 @@
 # Changelog
 
+## [3.0.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.3...cowswap-v3.0.4) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.2
+    * @cowprotocol/balances-and-allowances bumped to 3.0.2
+    * @cowprotocol/common-const bumped to 3.0.2
+    * @cowprotocol/common-hooks bumped to 3.0.2
+    * @cowprotocol/common-utils bumped to 3.0.2
+    * @cowprotocol/core bumped to 3.0.2
+    * @cowprotocol/ens bumped to 3.0.2
+    * @cowprotocol/events bumped to 4.0.2
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.10
+    * @cowprotocol/iframe-transport bumped to 2.0.10
+    * @cowprotocol/multicall bumped to 3.0.2
+    * @cowprotocol/permit-utils bumped to 3.0.2
+    * @cowprotocol/snackbars bumped to 2.0.12
+    * @cowprotocol/tokens bumped to 3.0.2
+    * @cowprotocol/types bumped to 4.1.0
+    * @cowprotocol/ui bumped to 3.0.2
+    * @cowprotocol/wallet bumped to 3.0.2
+    * @cowprotocol/wallet-provider bumped to 2.1.10
+    * @cowprotocol/widget-lib bumped to 2.0.2
+
+## [3.0.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.2...cowswap-v3.0.3) (2026-03-19)
+
+
+### 🔧 Miscellaneous
+
+* update changelog ([#7183](https://github.com/cowprotocol/cowswap/issues/7183)) ([2595d59](https://github.com/cowprotocol/cowswap/commit/2595d5925a58ba60d755549d82aabb1728defc9e))
+
+## [3.0.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.1...cowswap-v3.0.2) (2026-03-18)
+
+
+### ✨ Features
+
+* add btc/sol as destination chains in UI ([#7150](https://github.com/cowprotocol/cowswap/issues/7150)) ([95c004e](https://github.com/cowprotocol/cowswap/commit/95c004e77b5b7c8ccd105a334cff945c0d9dbb24))
+* add loading state for Affiliate Trader and update ineligible illustration ([#7102](https://github.com/cowprotocol/cowswap/issues/7102)) ([e77048e](https://github.com/cowprotocol/cowswap/commit/e77048ec55d5a5db902727b7fbfcfbfb105a828a))
+* add useWalletSessionDuration hook to track wallet session duration ([#7019](https://github.com/cowprotocol/cowswap/issues/7019)) ([f1f3baf](https://github.com/cowprotocol/cowswap/commit/f1f3bafe00ad722db4cda442e38e0fca94148e4e))
+* **affiliate:** add AffiliateTraderHeaderButton ([#7161](https://github.com/cowprotocol/cowswap/issues/7161)) ([0541130](https://github.com/cowprotocol/cowswap/commit/054113074064fff5f1c43a481a0702a326debbb9))
+* **affiliate:** improve order checking for both eligiblity and ref code recovery ([#7111](https://github.com/cowprotocol/cowswap/issues/7111)) ([af8e99c](https://github.com/cowprotocol/cowswap/commit/af8e99cfc8d60f7ed9f27379ed9ecfc21f9029b6))
+* **affiliate:** link to explorer if ineligible ([#7140](https://github.com/cowprotocol/cowswap/issues/7140)) ([fc9476e](https://github.com/cowprotocol/cowswap/commit/fc9476edc724d40788c09af850dbe0952d208680))
+* **affiliate:** see partner stats on all networks ([#7137](https://github.com/cowprotocol/cowswap/issues/7137)) ([0e91789](https://github.com/cowprotocol/cowswap/commit/0e9178946f01be2ed6941ca5b3de2f4ad736b913))
+* **affiliate:** show expired state in my rewards ([#7116](https://github.com/cowprotocol/cowswap/issues/7116)) ([ada1ced](https://github.com/cowprotocol/cowswap/commit/ada1ced73c4f33bf2a79ffd2f4dfcbbae861d587))
+* **affiliate:** show total referrals & fix active referrals ([#7139](https://github.com/cowprotocol/cowswap/issues/7139)) ([e2ba19b](https://github.com/cowprotocol/cowswap/commit/e2ba19be1467a4f1c1a0f7c8e984bcdba5cee237))
+* create @cowprotocol/currency lib with uniswap export ([#7110](https://github.com/cowprotocol/cowswap/issues/7110)) ([7eab49b](https://github.com/cowprotocol/cowswap/commit/7eab49b27985bdc5ae0cd831243fa0ad9e8db920))
+* implement uniswap-sdk entities ([#7117](https://github.com/cowprotocol/cowswap/issues/7117)) ([20a0d2f](https://github.com/cowprotocol/cowswap/commit/20a0d2f5143fdc4f14b392775ae2ccb4b2a00022))
+* remove xstocks list ff & add the same custom error for xstocks for weekend ([#7119](https://github.com/cowprotocol/cowswap/issues/7119)) ([4135404](https://github.com/cowprotocol/cowswap/commit/413540470a8b08a74d4e9077501493504fc74cd7))
+* show tooltip if linked since & rewards end dates are missing ([#7107](https://github.com/cowprotocol/cowswap/issues/7107)) ([7acd0d1](https://github.com/cowprotocol/cowswap/commit/7acd0d1b5333b1ebfb1e0b3ddd64d56dce91e6a1))
+* update settlement and vault relayer contracts staging ([#7083](https://github.com/cowprotocol/cowswap/issues/7083)) ([3c449d3](https://github.com/cowprotocol/cowswap/commit/3c449d35952bb90cc5d26d8717e7f5da0c1a7f0d))
+
+
+### 🐛 Bug Fixes
+
+* **affiliate:** disable submit button if payout confirmation missing ([#7115](https://github.com/cowprotocol/cowswap/issues/7115)) ([259ac09](https://github.com/cowprotocol/cowswap/commit/259ac098ce5e76b09d93a6df7d877bbad72ecfe3))
+* **affiliate:** dont require a code for connecting wallet ([#7138](https://github.com/cowprotocol/cowswap/issues/7138)) ([0243d61](https://github.com/cowprotocol/cowswap/commit/0243d6166d0ff16de76e2e9576cde21939bbef44))
+* check supported network in correlated tokens ([#7142](https://github.com/cowprotocol/cowswap/issues/7142)) ([76e003c](https://github.com/cowprotocol/cowswap/commit/76e003cce30e4d82f0e3c130cc67dfae5f460410))
+* **quotes:** Fix stale quotes ([#7145](https://github.com/cowprotocol/cowswap/issues/7145)) ([cb3bec5](https://github.com/cowprotocol/cowswap/commit/cb3bec531dc789f5d29f5e8f06412f726a9a7c2c))
+* trigger release ([#7178](https://github.com/cowprotocol/cowswap/issues/7178)) ([3753588](https://github.com/cowprotocol/cowswap/commit/375358892dad51cee54e5e1c152ffb51e46581fb))
+* **twap:** display part sell amount before all fees ([#7147](https://github.com/cowprotocol/cowswap/issues/7147)) ([abdd6ee](https://github.com/cowprotocol/cowswap/commit/abdd6eef55b81a51ef920cff6c6544ff34d1ce2a))
+* update next payout message ([#7165](https://github.com/cowprotocol/cowswap/issues/7165)) ([0cf0c62](https://github.com/cowprotocol/cowswap/commit/0cf0c62fcb80d0e08f1776ad89a6ceda82ed1f62))
+* **widget:** enhance error type processing ([#7114](https://github.com/cowprotocol/cowswap/issues/7114)) ([8ebb7cd](https://github.com/cowprotocol/cowswap/commit/8ebb7cdd21cc27384d994ffed8b19ff4af04c561))
+
+
+### ♻️ Refactoring
+
+* **affiliate:** enhance Donut component rendering and styling ([#7154](https://github.com/cowprotocol/cowswap/issues/7154)) ([d79b0ba](https://github.com/cowprotocol/cowswap/commit/d79b0ba952010aeedb3309632f52a2e44b4763b1))
+* replace address.toLowerCase() with getAddressKey/areAddressesEqual ([#7143](https://github.com/cowprotocol/cowswap/issues/7143)) ([592ecdc](https://github.com/cowprotocol/cowswap/commit/592ecdcb519921a17c1f864756c85ff29e565232))
+
+
+### 🔧 Miscellaneous
+
+* add orderbook api version to footer ([#7124](https://github.com/cowprotocol/cowswap/issues/7124)) ([4834541](https://github.com/cowprotocol/cowswap/commit/48345410ce3943b2f5c79f6f9543aea184aa70c6))
+* **account:** remove native token balance ([#7152](https://github.com/cowprotocol/cowswap/issues/7152)) ([ceaf1f8](https://github.com/cowprotocol/cowswap/commit/ceaf1f8ec9d555a7f8446597f6c130dc5bda5bc4))
+* **affiliate:** address feedback from testing ([#7159](https://github.com/cowprotocol/cowswap/issues/7159)) ([c1c8dba](https://github.com/cowprotocol/cowswap/commit/c1c8dbae5250c97c920b8cbd67a168556e7272d7))
+
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.0...cowswap-v3.0.1) (2026-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.1
+    * @cowprotocol/balances-and-allowances bumped to 3.0.1
+    * @cowprotocol/common-const bumped to 3.0.1
+    * @cowprotocol/common-hooks bumped to 3.0.1
+    * @cowprotocol/common-utils bumped to 3.0.1
+    * @cowprotocol/core bumped to 3.0.1
+    * @cowprotocol/ens bumped to 3.0.1
+    * @cowprotocol/events bumped to 4.0.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.9
+    * @cowprotocol/iframe-transport bumped to 2.0.9
+    * @cowprotocol/multicall bumped to 3.0.1
+    * @cowprotocol/permit-utils bumped to 3.0.1
+    * @cowprotocol/snackbars bumped to 2.0.11
+    * @cowprotocol/tokens bumped to 3.0.1
+    * @cowprotocol/types bumped to 4.0.1
+    * @cowprotocol/ui bumped to 3.0.1
+    * @cowprotocol/wallet bumped to 3.0.1
+    * @cowprotocol/wallet-provider bumped to 2.1.9
+    * @cowprotocol/widget-lib bumped to 2.0.1
+
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v2.6.0...cowswap-v3.0.0) (2026-03-11)
 
 
