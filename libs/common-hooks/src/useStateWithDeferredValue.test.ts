@@ -45,13 +45,15 @@ describe('useStateWithDeferredValue', () => {
     await act(async () => {
       result.current[1]('step1')
     })
-    await waitFor(() => expect(cb1).toHaveBeenCalled())
+    await waitFor(() => expect(cb1).toHaveBeenCalledTimes(1))
 
     rerender({ fn: cb2 })
+    const cb1CallsAfterRerender = cb1.mock.calls.length
 
     await act(async () => {
       result.current[1]('step2')
     })
-    await waitFor(() => expect(cb2).toHaveBeenCalled())
+    await waitFor(() => expect(cb2).toHaveBeenCalledTimes(1))
+    expect(cb1).toHaveBeenCalledTimes(cb1CallsAfterRerender)
   })
 })
