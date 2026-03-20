@@ -16,7 +16,9 @@ export { useAffiliatePartnerInfo } from './hooks/useAffiliatePartnerInfo'
 export { useIsRefCodeExpired } from './hooks/useIsRefCodeExpired'
 export { useShouldShowAffiliateTraderHeaderButton } from './hooks/useShouldShowAffiliateTraderHeaderButton'
 export { useAffiliateTraderWallet, TraderWalletStatus } from './hooks/useAffiliateTraderWallet'
+export { useAffiliateTraderStats } from './hooks/useAffiliateTraderStats'
 export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
+export { useTraderActivity } from './hooks/useTraderActivity'
 
 export { isSupportedPayoutsNetwork } from './lib/affiliateProgramUtils'
 
@@ -24,6 +26,7 @@ export { AffiliateTermsFaqLinks, ColumnOneCard, ThreeColumnGrid, PageWrapper } f
 export { AffiliateTraderIneligible } from './pure/AffiliateTrader/AffiliateTraderIneligible'
 export { AffiliateTraderLoading } from './pure/AffiliateTrader/AffiliateTraderLoading'
 export { AffiliateTraderUnsupportedNetwork } from './pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork'
+export { AffiliateTraderActivityTable } from './pure/AffiliateTraderActivityTable'
 export { UnsupportedNetwork } from './pure/UnsupportedNetwork'
 
 export { affiliateTraderSavedCodeAtom } from './state/affiliateTraderSavedCodeAtom'

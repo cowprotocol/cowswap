@@ -4,6 +4,10 @@ params as (
     split('{{blockchain}}', ',') as blockchains,
     case when '{{is_staging_env}}' = 'true' then true else false end as is_staging_env,
     case
+      when '{{start_date}}' in ('', 'default value') then date '2026-01-01'
+      else cast('{{start_date}}' as date)
+    end as start_date,
+    case
       when '{{trader_payout_sources}}' in ('', 'default value') then cast(array[] as array(varchar))
       else transform(split('{{trader_payout_sources}}', ','), x -> lower(trim(x)))
     end as trader_payout_sources
@@ -48,10 +52,9 @@ trades_with_referrer as (
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
     dune.cowprotocol.result_fac_trades.swap_source as swap_source,
-    dune.cowprotocol.result_fac_trades.protocol_fee_bps,
     dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
     (
-      coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 1e9) < constants.min_fee_bps
+      coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 0) < constants.min_fee_bps
     ) as is_excluded_low_fee,
     (
       lower(coalesce(dune.cowprotocol.result_fac_trades.swap_source, '')) = 'integrations'
@@ -61,6 +64,7 @@ trades_with_referrer as (
   cross join constants
   where
     if(array_position(params.blockchains, '-=All=-') > 0, true, array_position(params.blockchains, dune.cowprotocol.result_fac_trades.blockchain) > 0)
+    and dune.cowprotocol.result_fac_trades.block_time >= cast(params.start_date as timestamp)
 ),
 first_trade as (
   select trader, min(block_time) as first_trade_time
@@ -127,7 +131,7 @@ payouts as (
   cross join unnest(params.trader_payout_sources) as ps(payout_source)
   where lower(to_hex("from")) = replace(ps.payout_source, '0x', '')
     and contract_address = 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
-    and evt_block_time >= date '2026-01-01'
+    and evt_block_time >= cast(params.start_date as timestamp)
   group by 1
 )
 select

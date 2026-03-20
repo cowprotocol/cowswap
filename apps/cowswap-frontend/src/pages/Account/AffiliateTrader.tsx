@@ -11,9 +11,11 @@ import {
   AffiliateTraderLoading,
   AffiliateTraderNextPayout,
   AffiliateTraderOnboard,
+  AffiliateTraderActivityTable,
   AffiliateTraderStats,
   TraderWalletStatus,
   useAffiliateTraderWallet,
+  useTraderActivity,
   AffiliateTraderIneligible,
   AffiliateTraderUnsupportedNetwork,
   ThreeColumnGrid,
@@ -28,6 +30,7 @@ export default function AffiliateTrader(): ReactNode {
 
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
+  const { data: activityOrders, isLoading: activityLoading } = useTraderActivity()
 
   return (
     <>
@@ -51,6 +54,11 @@ export default function AffiliateTrader(): ReactNode {
               <AffiliateTraderStats />
               <AffiliateTraderNextPayout />
             </ThreeColumnGrid>
+            <AffiliateTraderActivityTable
+              orders={activityOrders || []}
+              savedCode={savedCode}
+              showLoader={activityLoading}
+            />
           </>
         )}
       </PageWrapper>

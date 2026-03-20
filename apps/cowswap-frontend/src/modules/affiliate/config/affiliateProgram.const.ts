@@ -19,7 +19,9 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
 ] as const
 
 export const TRADE_ENVS_TO_CHECK: CowEnv[] = ['prod', 'staging']
-export const PAST_ORDERS_SCAN_LIMIT = 10
+export const PAST_ORDERS_SCAN_LIMIT = 10 // per chain and env
+export const ACTIVITY_SCAN_LIMIT = 10 // per chain and env
+export const ACTIVITY_UI_LIMIT = 20
 
 export const AFFILIATE_TRADER_SAVED_CODES_STORAGE_KEY = 'cowswap:affiliateTraderSavedCodes:v0'
 export const AFFILIATE_TRADER_PAYOUT_CONFIRMATIONS_STORAGE_KEY = 'cowswap:affiliateTraderPayoutConfirmations:v0'
@@ -61,6 +63,8 @@ export const BACKOFF_MAX_ATTEMPTS = 3
 export const REF_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
 export const REF_CODE_MIN_LENGTH = 5
 export const REF_CODE_MAX_LENGTH = 20
+
+export const MIN_FEE_BPS = 1.9
 
 /**
  * Defaults params - keep them in sync with the cms env vars: `infrastructure/cms/index.ts`
