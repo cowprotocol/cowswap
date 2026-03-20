@@ -35,7 +35,8 @@ import { OrdersTableState } from './ordersTable.types'
 import { logOrdersTableDebug, setIsOrderUnfillable } from './ordersTable.utils'
 import { getTabsAndCurrentTab } from './params/ordersTableParams.atom'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
-import { reduxOrdersByOrderTypeAtom } from './redux/reduxOrders.atom'
+import { getReduxOrdersByOrderTypeFromNetworkState } from './redux/getReduxOrdersByOrderType'
+import { reduxOrdersStateByChainAtom } from './redux/reduxOrders.atom'
 
 /**
  * WARNING: It looks like this could be a derived atom, but it cannot!
@@ -71,9 +72,14 @@ ordersTableStateAtom.onMount = () => {
       return
     }
 
-    const reduxOrdersByOrderTypeResult = get(reduxOrdersByOrderTypeAtom)(uiOrderType)
+    const reduxOrdersStateInCurrentChain = get(reduxOrdersStateByChainAtom)(chainId)
+    const reduxOrdersByOrderTypeResult = getReduxOrdersByOrderTypeFromNetworkState({
+      account,
+      reduxOrdersStateInCurrentChain,
+      uiOrderType,
+    })
 
-    const { reduxOrdersStateInCurrentChain, ordersTokensSet } = reduxOrdersByOrderTypeResult
+    const { ordersTokensSet } = reduxOrdersByOrderTypeResult
 
     // `reduxOrders` will include all orders of the right type based on `orderType` / `uiOrderType`. For TWAPS, we need
     // to add emulated twap orders, emulated part orders and discrete twap orders (this last one is directly derived

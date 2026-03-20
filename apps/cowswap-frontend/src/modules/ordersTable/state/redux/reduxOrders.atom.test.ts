@@ -1,9 +1,6 @@
 import { createStore, WritableAtom } from 'jotai'
 
 import { OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UiOrderType } from '@cowprotocol/types'
-import { walletInfoAtom } from '@cowprotocol/wallet'
-import type { WalletInfo } from '@cowprotocol/wallet'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
@@ -28,31 +25,9 @@ jest.mock('legacy/utils/atomFromReduxSelector', () => {
 
 // Valid checksummed addresses (areAddressesEqual / isEvmAddress reject invalid hex).
 const MOCK_ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
-const OTHER_OWNER = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
 const MOCK_CHAIN = SupportedChainId.MAINNET
 
-const baseWallet: WalletInfo = {
-  chainId: MOCK_CHAIN,
-  account: MOCK_ACCOUNT,
-  provider: {} as WalletInfo['provider'],
-  legacyConnector: {} as WalletInfo['legacyConnector'],
-  connector: {} as WalletInfo['connector'],
-}
-
-jest.mock('@cowprotocol/wallet', () => {
-  const jotai = require('jotai') as typeof import('jotai')
-  return {
-    walletInfoAtom: jotai.atom({
-      chainId: 1,
-      account: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-      provider: {},
-      legacyConnector: {},
-      connector: {},
-    }),
-  }
-})
-
-import { reduxOrdersByOrderTypeAtom, reduxOrdersStateByChainAtom } from './reduxOrders.atom'
+import { reduxOrdersStateByChainAtom } from './reduxOrders.atom'
 
 function getMockReduxOrdersStateAtom(): WritableAtom<OrdersState, [OrdersState], void> {
   const atom = mockReduxOrdersStateAtom
@@ -137,80 +112,5 @@ describe('reduxOrdersStateByChainAtom', () => {
     const getByChain = store.get(reduxOrdersStateByChainAtom)
     const network = getByChain(0 as SupportedChainId)
     expect(network).toEqual({})
-  })
-})
-
-describe('reduxOrdersByOrderTypeAtom', () => {
-  let store: ReturnType<typeof createStore>
-
-  beforeEach(() => {
-    store = createStore()
-    store.set(getMockReduxOrdersStateAtom(), {})
-    store.set(walletInfoAtom, baseWallet)
-  })
-
-  it('returns null triple when chainId or account is missing', () => {
-    store.set(walletInfoAtom, { ...baseWallet, chainId: undefined } as unknown as WalletInfo)
-
-    const result = store.get(reduxOrdersByOrderTypeAtom)(UiOrderType.LIMIT)
-    expect(result).toEqual({
-      reduxOrdersStateInCurrentChain: null,
-      reduxOrders: null,
-      ordersTokensSet: null,
-    })
-
-    store.set(walletInfoAtom, { ...baseWallet, account: undefined })
-    const result2 = store.get(reduxOrdersByOrderTypeAtom)(UiOrderType.LIMIT)
-    expect(result2.reduxOrders).toBeNull()
-  })
-
-  it('keeps only orders whose owner matches the connected account', () => {
-    const mine = makeOrderObject({
-      id: '0xm',
-      owner: MOCK_ACCOUNT,
-      orderClass: OrderClass.LIMIT,
-    })
-    const theirs = makeOrderObject({
-      id: '0xt',
-      owner: OTHER_OWNER,
-      orderClass: OrderClass.LIMIT,
-    })
-
-    store.set(getMockReduxOrdersStateAtom(), {
-      [MOCK_CHAIN]: {
-        ...getDefaultNetworkState(MOCK_CHAIN),
-        pending: { '0xm': mine, '0xt': theirs },
-      },
-    })
-
-    const { reduxOrders } = store.get(reduxOrdersByOrderTypeAtom)(UiOrderType.LIMIT)
-
-    expect(reduxOrders?.map((o) => o.id)).toEqual([mine.id])
-  })
-
-  it('keeps only orders whose UiOrderType matches the requested type', () => {
-    const limitOrder = makeOrderObject({
-      id: '0xl',
-      owner: MOCK_ACCOUNT,
-      orderClass: OrderClass.LIMIT,
-    })
-    const marketOrder = makeOrderObject({
-      id: '0xs',
-      owner: MOCK_ACCOUNT,
-      orderClass: OrderClass.MARKET,
-    })
-
-    store.set(getMockReduxOrdersStateAtom(), {
-      [MOCK_CHAIN]: {
-        ...getDefaultNetworkState(MOCK_CHAIN),
-        pending: { '0xl': limitOrder, '0xs': marketOrder },
-      },
-    })
-
-    const limitResult = store.get(reduxOrdersByOrderTypeAtom)(UiOrderType.LIMIT)
-    expect(limitResult.reduxOrders?.map((o) => o.id)).toEqual([limitOrder.id])
-
-    const swapResult = store.get(reduxOrdersByOrderTypeAtom)(UiOrderType.SWAP)
-    expect(swapResult.reduxOrders?.map((o) => o.id)).toEqual([marketOrder.id])
   })
 })
