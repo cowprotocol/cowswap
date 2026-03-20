@@ -1,8 +1,10 @@
 import { createStore } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import {
+  getShouldCheckCapabilities,
   isBundlingSupportedAtom,
   isBundlingSupportedAsyncAtom,
   isBundlingSupportedLoadableAtom,
@@ -101,6 +103,21 @@ describe('walletCapabilitiesAtom', () => {
     mockGetIsWalletConnect.mockReturnValue(false)
     mockGetRpcProvider.mockReturnValue({})
     setViemMigration(false)
+  })
+
+  describe('getShouldCheckCapabilities (widget meta info)', () => {
+    it('resolves when WidgetEthereumProvider never sends meta (timeout)', async () => {
+      jest.useFakeTimers()
+      const provider = new WidgetEthereumProvider({ eventSource: window, eventTarget: window })
+      mockGetRpcProvider.mockReturnValue(provider)
+
+      const promise = getShouldCheckCapabilities(false, MOCK_CHAIN_ID)
+      await jest.advanceTimersByTimeAsync(10_000)
+      const result = await promise
+
+      expect(result).toBe(true)
+      jest.useRealTimers()
+    })
   })
 
   describe('walletInfoAtom state: missing account/chain/provider', () => {

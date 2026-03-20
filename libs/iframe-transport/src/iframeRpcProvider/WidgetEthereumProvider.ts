@@ -340,6 +340,13 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   }
 
   /**
+   * Clears the pending provider meta-info callback (e.g. when a consumer times out).
+   */
+  public clearProviderMetaInfoListener(): void {
+    this.providerMetaInfoCallback = undefined
+  }
+
+  /**
    * Handle a Rpc Request
    */
   // TODO: Add proper return type annotation

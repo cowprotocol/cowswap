@@ -40,8 +40,14 @@ function fetchWidgetProviderMetaInfo(chainId: SupportedChainId): Promise<Provide
   const provider = getRpcProvider(chainId)
 
   if (provider instanceof WidgetEthereumProvider) {
-    return new Promise((resolve) => {
-      provider.onProviderMetaInfo(resolve)
+    return PromiseWithTimeout<ProviderMetaInfoPayload>(REQUEST_TIMEOUT_MS, (resolve) => {
+      provider.onProviderMetaInfo((data) => {
+        provider.clearProviderMetaInfoListener()
+        resolve(data)
+      })
+    }).catch(() => {
+      provider.clearProviderMetaInfoListener()
+      return null
     })
   }
 
