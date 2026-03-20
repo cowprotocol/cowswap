@@ -1,30 +1,19 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { TwapOrderInfo, TwapOrdersSafeData } from '../types'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { parseTwapOrderStruct } from '../utils/parseTwapOrderStruct'
 
 /**
- * Builds the current TWAP order info map from Safe Transaction Service data.
- * Replaces state on each snapshot so proposals removed from the Safe queue disappear here too.
+ * Maps Safe Transaction Service rows (see `fetchTwapOrdersFromSafe`) to TWAP order info.
+ *
+ * **Semantics:** This is a **snapshot** of what the API currently returns for the query we use
+ * (`executed=false`, `queued=true`, etc.). We do **not** learn whether a missing proposal was
+ * rejected, replaced, executed, or removed — only that it is **no longer in this listing**, so the
+ * UI should stop treating it as “pending in queue” unless other logic (e.g. on-chain auth,
+ * order-book parts) says otherwise.
  */
-export function useAllTwapOrdersInfo(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInfo[] {
-  const [allOrdersInfo, setAllOrdersInfo] = useState<Record<string, TwapOrderInfo>>({})
-
-  useEffect(() => {
-    const parsed = parseOrdersSafeData(ordersSafeData)
-    const nextMap = parsed.reduce<Record<string, TwapOrderInfo>>((acc, item) => {
-      acc[item.id] = item
-      return acc
-    }, {})
-
-    setAllOrdersInfo(nextMap)
-  }, [ordersSafeData])
-
-  return useMemo(() => Object.values(allOrdersInfo), [allOrdersInfo])
-}
-
-function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInfo[] {
+export function buildTwapOrderInfoListFromSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInfo[] {
   const ordersInfoMap = ordersSafeData.reduce<{ [id: string]: TwapOrderInfo }>((acc, data) => {
     try {
       const id = getConditionalOrderId(data.conditionalOrderParams)
@@ -43,7 +32,7 @@ function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInf
         return acc
       }
 
-      const info = {
+      const info: TwapOrderInfo = {
         id,
         orderStruct: parseTwapOrderStruct(data.conditionalOrderParams.staticInput as `0x${string}`),
         safeData: data,
@@ -51,11 +40,19 @@ function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInf
 
       acc[id] = info
     } catch {
-      // Do nothing
+      // Malformed conditional order payload; skip
     }
 
     return acc
   }, {})
 
   return Object.values(ordersInfoMap)
+}
+
+/**
+ * Derives the list of TWAP orders that appear in the **current** Safe Transaction Service snapshot.
+ * Purely derived from `ordersSafeData` (no sync effect), so it always matches the latest fetch.
+ */
+export function useAllTwapOrdersInfo(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInfo[] {
+  return useMemo(() => buildTwapOrderInfoListFromSafeData(ordersSafeData), [ordersSafeData])
 }

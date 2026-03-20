@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -8,21 +8,24 @@ import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 import { twapOrdersAtom } from 'entities/twap'
 import ms from 'ms.macro'
 
-import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import type { ComposableCowContractData } from 'modules/advancedOrders'
 
-import { TWAP_PENDING_STATUSES } from '../const'
+import {
+  buildPendingTwapOrderIds,
+  getOrphanedOptimisticSigningIds,
+  getStaleNonceOrderIds,
+} from './twapOrdersUpdater.helpers'
+import { useTwapOrdersUpdateInterval } from './useTwapOrdersUpdateInterval'
+
 import { useAllTwapOrdersInfo } from '../hooks/useAllTwapOrdersInfo'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
 import { deleteTwapOrdersFromListAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { TwapOrderInfo, TwapOrderItem, TwapOrderStatus } from '../types'
-import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
-import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
+import { buildTwapOrdersItems, mergePersistedSigningTwapOrders } from '../utils/buildTwapOrdersItems'
 
 const ORDERS_UPDATE_DEBOUNCE = ms`500ms`
 const TWAP_ORDERS_UPDATE_INTERVAL = ms`3s`
-const AUTH_TIME_THRESHOLD = ms`1m`
 const ORPHAN_SIGNING_MAX_AGE_MS = ms`3m`
 
 export function TwapOrdersUpdater(props: {
@@ -38,13 +41,9 @@ export function TwapOrdersUpdater(props: {
   const safeInfo = useGnosisSafeInfo()
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
-  const [updateTimestamp, setUpdateTimestamp] = useState(0)
+  const updateTimestamp = useTwapOrdersUpdateInterval(TWAP_ORDERS_UPDATE_INTERVAL)
   const safeNonce = safeInfo?.nonce
   const lastUpdateTimestamp = useRef(0)
-
-  const twapOrdersListRef = useRef(twapOrdersList)
-  // eslint-disable-next-line react-hooks/refs
-  twapOrdersListRef.current = twapOrdersList
 
   const allOrdersInfo = useDebounce(useAllTwapOrdersInfo(ordersSafeData), ORDERS_UPDATE_DEBOUNCE)
 
@@ -53,51 +52,20 @@ export function TwapOrdersUpdater(props: {
   // eslint-disable-next-line react-hooks/refs
   twapOrderExecutions.current = _twapOrderExecutions
 
-  // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
-  const pendingTwapOrderIds = useMemo(() => {
-    // eslint-disable-next-line react-hooks/refs
-    return allOrdersInfo.reduce<string[]>((acc, info) => {
-      if (shouldCheckOrderAuth(info, twapOrdersListRef.current[info.id])) {
-        acc.push(info.id)
-      }
+  const pendingTwapOrderIds = useMemo(
+    () => buildPendingTwapOrderIds(allOrdersInfo, twapOrdersList),
+    [allOrdersInfo, twapOrdersList],
+  )
 
-      return acc
-    }, [])
-  }, [allOrdersInfo])
-
-  // Here we know which orders are cancelled: if it's auth === false, then it's cancelled
   const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, pendingTwapOrderIds)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setUpdateTimestamp(Date.now())
-    }, TWAP_ORDERS_UPDATE_INTERVAL)
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
-
-  /**
-   * Remove stale "Signing" rows without waiting for auth multicall (which can be null while loading
-   * and would otherwise block cleanup). Safe API is the source of truth for queued proposals.
-   */
-  useEffect(() => {
-    const idsFromSafe = new Set(allOrdersInfo.map((i) => i.id))
-    const now = Date.now()
-
-    const orphanedSigningIds = Object.entries(twapOrdersList)
-      .filter(([orderId, o]) => {
-        if (o.status !== TwapOrderStatus.WaitSigning || idsFromSafe.has(orderId)) {
-          return false
-        }
-        if (o.safeTxParams !== undefined) {
-          return true
-        }
-        const submitted = Date.parse(o.submissionDate)
-        return Number.isFinite(submitted) && now - submitted > ORPHAN_SIGNING_MAX_AGE_MS
-      })
-      .map(([orderId]) => orderId)
+    const orphanedSigningIds = getOrphanedOptimisticSigningIds(
+      allOrdersInfo,
+      twapOrdersList,
+      Date.now(),
+      ORPHAN_SIGNING_MAX_AGE_MS,
+    )
 
     if (orphanedSigningIds.length > 0) {
       deleteTwapOrders(orphanedSigningIds)
@@ -105,10 +73,8 @@ export function TwapOrdersUpdater(props: {
   }, [allOrdersInfo, deleteTwapOrders, twapOrdersList])
 
   useEffect(() => {
-    if (!ordersAuthResult) return
+    const ordersAuthEffective = ordersAuthResult ?? {}
 
-    // Do not update more often than once in 3 seconds
-    // At the same time, do updates every 3 seconds
     if (
       updateTimestamp &&
       lastUpdateTimestamp.current &&
@@ -117,29 +83,22 @@ export function TwapOrdersUpdater(props: {
       return
     }
 
-    const items = buildTwapOrdersItems(
+    const built = buildTwapOrdersItems(
       chainId,
       safeAddress,
       allOrdersInfo,
-      ordersAuthResult,
+      ordersAuthEffective,
       twapOrderExecutions.current,
     )
 
-    /**
-     * Since, a transaction proposal might be rejected in Safe
-     * We should remove this TWAP order creation transactions from store
-     */
-    const ordersToDelete = (() => {
-      if (!safeNonce) return []
+    const items = mergePersistedSigningTwapOrders(
+      built,
+      twapOrdersList,
+      ordersAuthEffective,
+      twapOrderExecutions.current,
+    )
 
-      return allOrdersInfo
-        .filter((data) => {
-          const { nonce, isExecuted } = data.safeData.safeTxParams
-
-          return !isExecuted && BigInt(nonce) < BigInt(safeNonce)
-        })
-        .map((item) => item.id)
-    })()
+    const ordersToDelete = getStaleNonceOrderIds(allOrdersInfo, safeNonce)
 
     ordersToDelete.forEach((id) => {
       delete items[id]
@@ -157,36 +116,8 @@ export function TwapOrdersUpdater(props: {
     updateTimestamp,
     updateTwapOrders,
     deleteTwapOrders,
+    twapOrdersList,
   ])
 
   return null
-}
-
-function shouldCheckOrderAuth(info: TwapOrderInfo, existingOrder: TwapOrderItem | undefined): boolean {
-  const { isExecuted, confirmations, executionDate: _executionDate } = info.safeData.safeTxParams
-  const executionDate = _executionDate ? new Date(_executionDate) : null
-
-  // Skip expired orders
-  if (isTwapOrderExpired(info.orderStruct, executionDate)) return false
-
-  const isTxMined = isExecuted && confirmations > 0
-
-  // Skip not mined orders
-  if (!isTxMined) return false
-
-  /**
-   * Sometimes, there can be a gap between Safe and Infura node.
-   * Safe tells us, that tx is mined, but smart-contract call via Infura says that tx is not mined yet
-   * To avoid falsy triggers, we additionally wait 1min after tx mining
-   */
-  if (!executionDate || Date.now() - executionDate.getTime() < AUTH_TIME_THRESHOLD) {
-    return false
-  }
-
-  // Skip NOT pending orders
-  if (existingOrder) {
-    return TWAP_PENDING_STATUSES.includes(existingOrder.status)
-  }
-
-  return true
 }

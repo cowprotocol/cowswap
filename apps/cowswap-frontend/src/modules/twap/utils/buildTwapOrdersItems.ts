@@ -7,7 +7,14 @@ import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
 import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { TwapOrdersExecutionMap } from '../hooks/useTwapOrdersExecutions'
-import { TwapOrderInfo, TwapOrderItem, TwapOrdersAuthResult, TwapOrdersExecution, TwapOrdersSafeData } from '../types'
+import {
+  TwapOrderInfo,
+  TwapOrderItem,
+  TwapOrdersAuthResult,
+  TwapOrdersExecution,
+  TwapOrdersSafeData,
+  TwapOrderStatus,
+} from '../types'
 
 import type { Hex } from 'viem'
 
@@ -29,6 +36,45 @@ export function buildTwapOrdersItems(
     )
     return acc
   }, {})
+}
+
+/**
+ * When a Safe proposal executes it disappears from the pending-queue snapshot (`allOrdersInfo`), but
+ * the UI row still exists as `WaitSigning`. Merge those rows using `singleOrders` (auth) until the
+ * order reaches a terminal status.
+ */
+export function mergePersistedSigningTwapOrders(
+  items: TwapOrdersList,
+  twapOrdersList: TwapOrdersList,
+  ordersAuthResult: TwapOrdersAuthResult,
+  twapOrderExecutions: TwapOrdersExecutionMap,
+): TwapOrdersList {
+  const next = { ...items }
+
+  for (const [id, stored] of Object.entries(twapOrdersList)) {
+    if (stored.status !== TwapOrderStatus.WaitSigning || next[id]) {
+      continue
+    }
+
+    const authorized = ordersAuthResult[id]
+    if (authorized === undefined) {
+      continue
+    }
+
+    const executionInfo = twapOrderExecutions[id] ?? DEFAULT_TWAP_EXECUTION
+    const executionDate = stored.safeTxParams?.executionDate ? new Date(stored.safeTxParams.executionDate) : null
+    const isExecuted = stored.safeTxParams?.isExecuted ?? false
+
+    const status = getTwapOrderStatus(stored.order, isExecuted, executionDate, authorized, executionInfo)
+
+    next[id] = {
+      ...stored,
+      status,
+      executionInfo,
+    }
+  }
+
+  return next
 }
 
 function getTwapOrderItem(

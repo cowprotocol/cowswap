@@ -21,7 +21,9 @@ export function getTwapOrderStatus(
     return TwapOrderStatus.Expired
   }
 
-  if (!isTransactionExecuted) return TwapOrderStatus.WaitSigning
+  // Safe tx may already be gone from the pending queue while the composable order is not yet
+  // reflected in our snapshot; `singleOrders` (auth) is the on-chain source of truth.
+  if (!isTransactionExecuted && auth !== true) return TwapOrderStatus.WaitSigning
 
   return TwapOrderStatus.Pending
 }
