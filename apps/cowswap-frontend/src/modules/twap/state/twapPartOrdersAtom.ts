@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 
 import { deepEqual } from '@cowprotocol/common-utils'
 import { atomWithIdbStorage } from '@cowprotocol/core'
-import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 export interface TwapPartOrderItem {
@@ -35,11 +35,9 @@ export const twapPartOrdersListAtom = atom<TwapPartOrderItem[]>((get) => {
 
   const twapPartOrders = get(twapPartOrdersAtom)
 
-  const accountLowerCase = account.toLowerCase()
-
   const orders = Object.values(twapPartOrders)
 
-  return orders.flat().filter((order) => order.safeAddress === accountLowerCase && order.chainId === chainId)
+  return orders.flat().filter((order) => areAddressesEqual(order.safeAddress, account) && order.chainId === chainId)
 })
 
 /**

@@ -3,7 +3,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { getRpcProvider } from '@cowprotocol/common-const'
 import { asyncAtomFamily, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
 import { multiCall } from '@cowprotocol/multicall'
 import { PersistentStateByChain } from '@cowprotocol/types'
@@ -16,7 +16,7 @@ function buildAllowancesState(
   decodedResults: (readonly [BigNumber] | undefined)[],
 ): AllowancesState {
   return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
-    acc[address.toLowerCase()] = decodedResults[index]?.[0]
+    acc[getAddressKey(address)] = decodedResults[index]?.[0]
     return acc
   }, {})
 }
@@ -29,7 +29,7 @@ async function fetchAllowances(
 ): Promise<AllowancesState> {
   const provider = getRpcProvider(chainId as number)
   if (!provider)
-    return tokenAddresses.reduce<AllowancesState>((acc, a) => ({ ...acc, [a.toLowerCase()]: undefined }), {})
+    return tokenAddresses.reduce<AllowancesState>((acc, a) => ({ ...acc, [getAddressKey(a)]: undefined }), {})
 
   const callData = ERC_20_INTERFACE.encodeFunctionData('allowance', [account, spender])
   const calls = tokenAddresses.map((address) => ({ target: address, callData }))
@@ -55,7 +55,11 @@ export const allowancesAtom = atomWithStorage<PersistentStateByChain<Record<stri
 
 /** Stable key for atomFamily so [a,b] and [b,a] resolve to the same atom. */
 function tokenAllowancesFamilyKey(params: TokenAllowancesFamilyParams): string {
-  return [params.chainId, params.account, ...params.tokenAddresses.map((a) => a.toLowerCase()).sort()].join(',')
+  return [
+    params.chainId,
+    getAddressKey(params.account),
+    ...params.tokenAddresses.map((a) => getAddressKey(a)).sort(),
+  ].join(',')
 }
 
 function areTokenAllowancesParamsEqual(a: TokenAllowancesFamilyParams, b: TokenAllowancesFamilyParams): boolean {

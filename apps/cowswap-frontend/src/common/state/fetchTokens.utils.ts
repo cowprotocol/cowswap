@@ -1,11 +1,11 @@
 import { TokenWithLogo, getRpcProvider } from '@cowprotocol/common-const'
 import { isSupportedChainId } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
 import type { TokensByAddress } from '@cowprotocol/tokens'
 
 function getTokenKey(chainId: number, address: string): string {
-  return `${chainId}::${address.toLowerCase()}`
+  return `${chainId}::${getAddressKey(address)}`
 }
 
 const cachedTokens: Record<string, TokenWithLogo> = {}
@@ -23,7 +23,7 @@ export async function fetchTokens(
   const tokenPromises: Promise<TokenWithLogo>[] = []
 
   addresses.forEach((address) => {
-    const addressKey = address.toLowerCase()
+    const addressKey = getAddressKey(address)
     const tokenKey = getTokenKey(chainId, address)
 
     if (cachedTokens[tokenKey]) {
@@ -41,7 +41,7 @@ export async function fetchTokens(
   const resolvedTokens = await Promise.all(tokenPromises)
 
   resolvedTokens.forEach((token) => {
-    const addressKey = token.address.toLowerCase()
+    const addressKey = getAddressKey(token.address)
     const tokenKey = getTokenKey(chainId, token.address)
 
     tokens[addressKey] = token

@@ -1,5 +1,6 @@
 import { atom } from 'jotai'
 
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { twapOrdersListAtom, mapTwapOrderToStoreOrder, twapOrdersTokensAtom } from 'entities/twap'
@@ -16,10 +17,8 @@ export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
 
   if (!twapOrdersTokens) return []
 
-  const accountLowerCase = account?.toLowerCase()
-
   return allTwapOrders.reduce<Order[]>((acc, order) => {
-    if (order.chainId !== chainId || order.safeAddress.toLowerCase() !== accountLowerCase) {
+    if (order.chainId !== chainId || !account || !areAddressesEqual(order.safeAddress, account)) {
       return acc
     }
 
