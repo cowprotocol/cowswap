@@ -25,7 +25,7 @@ export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
   const { executedSellAmount = '0', executedBuyAmount = '0', executedFeeAmount = '0' } = executionInfo?.info || {}
 
   return {
-    signingScheme: SigningScheme.EIP1271,
+    signingScheme: item.isPrototype ? SigningScheme.EIP712 : SigningScheme.EIP1271,
     status: statusMap[status],
     sellToken,
     buyToken,

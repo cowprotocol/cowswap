@@ -57,7 +57,10 @@ export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
 
 export const DEFAULT_TWAP_EXECUTION = { confirmedPartsCount: 0, info: DEFAULT_TWAP_EXECUTION_INFO }
 
+export const DEFAULT_PROTOTYPE_TWAP_PART_PROGRESS_MS = ms`8s`
+
 export const UNSUPPORTED_SAFE_LINK =
   'https://cow.fi/learn/all-you-need-to-know-about-cow-swap-new-safe-fallback-handler'
 export const UNSUPPORTED_WALLET_LINK = 'https://cow.fi/learn/how-to-use-cow-swap-twap-orders-via-safe-wallet'
 export const TWAP_LEARN_MORE_LINK = 'https://cow.fi/learn/cow-swap-launches-twap-orders'
+export const TWAP_EOA_HOW_IT_WORKS_LINK = 'https://cow.fi/learn'

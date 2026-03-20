@@ -27,6 +27,8 @@ export interface OrderEstimatedExecutionPriceProps extends TokenAmountProps {
   canShowWarning: boolean
   executesAtPrice?: Nullish<Price<Currency, Currency>>
   isInverted: boolean
+  isPrototypeTwapBalanceIssue?: boolean
+  prototypeTwapBalanceIssueScope?: 'parent' | 'child'
   isUnfillable: boolean
   marketPrice?: Nullish<Price<Currency, Currency>>
   onApprove?: Command
@@ -51,6 +53,8 @@ export function OrderEstimatedExecutionPrice({
   canShowWarning,
   executesAtPrice,
   isInverted,
+  isPrototypeTwapBalanceIssue,
+  prototypeTwapBalanceIssueScope,
   isUnfillable,
   marketPrice,
   onApprove,
@@ -115,12 +119,35 @@ export function OrderEstimatedExecutionPrice({
           <HoverTooltip
             content={
               <warningTooltopEl.WarningContent>
-                <h3>{internationalizedWarningText}</h3>
-                <p>
-                  {warningText === 'Insufficient allowance'
-                    ? t`The order remains open. Execution requires adequate allowance. Approve the token to proceed.`
-                    : t`The order remains open. Execution requires sufficient balance.`}
-                </p>
+                {warningText === 'Insufficient balance' && isPrototypeTwapBalanceIssue ? (
+                  <>
+                    <h3>
+                      <Trans>Funds withdrawn from TWAP proxy account</Trans>
+                    </h3>
+                    <p>
+                      <Trans>Funds for this TWAP were withdrawn from your TWAP proxy account.</Trans>{' '}
+                      {prototypeTwapBalanceIssueScope === 'child' ? (
+                        <Trans>
+                          This TWAP part will not execute. You can let the TWAP expire on its own or cancel it.
+                        </Trans>
+                      ) : (
+                        <Trans>
+                          One or more remaining TWAP parts will not execute. You can let the TWAP expire on its own or
+                          cancel it.
+                        </Trans>
+                      )}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h3>{internationalizedWarningText}</h3>
+                    <p>
+                      {warningText === 'Insufficient allowance'
+                        ? t`The order remains open. Execution requires adequate allowance. Approve the token to proceed.`
+                        : t`The order remains open. Execution requires sufficient balance.`}
+                    </p>
+                  </>
+                )}
                 {warningText === 'Insufficient allowance' && handleApproveClick && (
                   <warningTooltopEl.WarningActionBox>
                     {approveClicked ? (

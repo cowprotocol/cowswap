@@ -1,11 +1,16 @@
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { ContextMenuTooltip, ContextMenuItemButton, ContextMenuExternalLink } from '@cowprotocol/ui'
+import {
+  ContextMenuTooltip,
+  ContextMenuItemButton,
+  ContextMenuExternalLink,
+  ContextMenuItemText,
+} from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { Edit, FileText, MoreVertical, Repeat, Trash2 } from 'react-feather'
+import { Edit, FileText, MoreVertical, Pocket, Repeat, Trash2 } from 'react-feather'
 
 import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 
@@ -14,6 +19,8 @@ export interface OrderContextMenuProps {
   activityUrl: string | undefined
   showCancellationModal: Command | null
   alternativeOrderModalContext?: AlternativeOrderModalContext
+  openProxyAccount?: Command | null
+  isPrototype?: boolean
 }
 
 export function OrderContextMenu({
@@ -21,18 +28,29 @@ export function OrderContextMenu({
   activityUrl,
   showCancellationModal,
   alternativeOrderModalContext,
+  openProxyAccount,
+  isPrototype,
 }: OrderContextMenuProps): ReactNode {
   return (
     <ContextMenuTooltip
       disableHoverBackground
       content={
         <>
+          {isPrototype && <ContextMenuItemText>{t`Prototype order (local only)`}</ContextMenuItemText>}
           <ContextMenuItemButton onClick={openReceipt}>
             <FileText size={16} />
             <span>
               <Trans>Order receipt</Trans>
             </span>
           </ContextMenuItemButton>
+          {openProxyAccount && (
+            <ContextMenuItemButton onClick={openProxyAccount}>
+              <Pocket size={16} />
+              <span>
+                <Trans>View TWAP proxy account</Trans>
+              </span>
+            </ContextMenuItemButton>
+          )}
           {activityUrl && <ContextMenuExternalLink href={activityUrl} label={t`View on explorer`} />}
           {alternativeOrderModalContext && (
             <ContextMenuItemButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>

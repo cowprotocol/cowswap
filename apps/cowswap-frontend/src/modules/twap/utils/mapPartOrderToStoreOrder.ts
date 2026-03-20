@@ -3,6 +3,7 @@ import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { getPrototypeProxyOrderFundsState, getRemainingSellAmountRaw } from './buildPrototypeProxyState'
 import { getIsLastPartOrder } from './getIsLastPartOrder'
 import { getPartOrderStatus } from './getPartOrderStatus'
 
@@ -18,6 +19,9 @@ export function mapPartOrderToStoreOrder(
 ): Order | null {
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
+  const prototypeFundsState = parent.isPrototype
+    ? getPrototypeProxyOrderFundsState(parent, getRemainingSellAmountRaw(parent))
+    : undefined
 
   const inputToken = tokensByAddress[getAddressKey(enrichedOrder.sellToken)]
   const outputToken = tokensByAddress[getAddressKey(enrichedOrder.buyToken)]
@@ -31,6 +35,8 @@ export function mapPartOrderToStoreOrder(
       isVirtualPart,
       isTheLastPart: getIsLastPartOrder(item, parent),
       parentId: parent.id,
+      isPrototype: item.isPrototype || parent.isPrototype,
+      prototypeFundsState,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
     inputToken,

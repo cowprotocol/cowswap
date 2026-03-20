@@ -14,6 +14,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders'
+import { useOpenTwapPrototypeProxyPage } from 'modules/twap'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -101,6 +102,7 @@ export function OrderRow({
     return spotPrice && feeAmount && getEstimatedExecutionPrice(order, spotPrice, feeAmount.quotient.toString())
   }, [spotPrice, feeAmount, order])
   const isSafeWallet = useIsSafeWallet()
+  const openTwapPrototypeProxyPage = useOpenTwapPrototypeProxyPage()
 
   const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const showCancellationModal = useMemo(() => {
@@ -128,6 +130,9 @@ export function OrderRow({
     TIME_AGO_UPDATE_INTERVAL,
   )
   const activityUrl = chainId ? getActivityUrl(chainId, order) : undefined
+  const openProxyAccount = useMemo(() => {
+    return order.composableCowInfo?.isPrototype ? openTwapPrototypeProxyPage : null
+  }, [openTwapPrototypeProxyPage, order.composableCowInfo?.isPrototype])
 
   const isInvertedState = useState(() => {
     // On mount, apply smart quote selection
@@ -151,6 +156,12 @@ export function OrderRow({
   const isUnfillable = !percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
+  const isPrototypeTwapBalanceIssue =
+    hasEnoughBalance === false &&
+    !!order.composableCowInfo?.isPrototype &&
+    order.composableCowInfo?.prototypeFundsState === 'withdrawn'
+  const prototypeTwapBalanceIssueScope =
+    isPrototypeTwapBalanceIssue && isTwapTable ? (isChild ? 'child' : 'parent') : undefined
 
   // NOTE: Don't internationalize this, the text is being used as a flag...
   const warningText =
@@ -185,6 +196,8 @@ export function OrderRow({
       isInverted={isInverted}
       isSafeWallet={isSafeWallet}
       isTwapTable={isTwapTable}
+      isPrototypeTwapBalanceIssue={isPrototypeTwapBalanceIssue}
+      prototypeTwapBalanceIssueScope={prototypeTwapBalanceIssueScope}
       isUnfillable={isUnfillable}
       onApprove={onApprove}
       order={order}
@@ -353,6 +366,8 @@ export function OrderRow({
                   hasEnoughBalance={hasEnoughBalance ?? false}
                   hasEnoughAllowance={hasEnoughAllowance ?? false}
                   inputTokenSymbol={inputTokenSymbol}
+                  isPrototypeTwapBalanceIssue={isPrototypeTwapBalanceIssue}
+                  prototypeTwapBalanceIssueScope={prototypeTwapBalanceIssueScope}
                   isOrderScheduled={isOrderScheduled}
                   onApprove={() => orderActions.approveOrderToken(order.inputToken)}
                 />
@@ -375,6 +390,8 @@ export function OrderRow({
       <styledEl.CellElement>
         <OrderContextMenu
           activityUrl={activityUrl}
+          isPrototype={!!order.composableCowInfo?.isPrototype}
+          openProxyAccount={openProxyAccount}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
           alternativeOrderModalContext={alternativeOrderModalContext}

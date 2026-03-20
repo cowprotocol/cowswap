@@ -13,6 +13,8 @@ import type { OrderTabId } from './tabs/ordersTableTabs.constants'
 
 export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
 
+export type OrdersTableHistoryStatusFilterOverride = 'filled' | 'cancelled' | 'expired' | 'all'
+
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
   getAlternativeOrderModalContext: (order: ParsedOrder) => AlternativeOrderModalContext
@@ -24,6 +26,18 @@ export interface OrderActions {
   toggleOrdersForCancellation(orders: ParsedOrder[]): void
 
   approveOrderToken(token: Token): void
+}
+
+export interface OrderTableGroup {
+  parent: ParsedOrder
+  children: ParsedOrder[]
+}
+
+export type OrderTableItem = OrderTableGroup | ParsedOrder
+
+export enum TabOrderTypes {
+  LIMIT = 'limit',
+  ADVANCED = 'advanced',
 }
 
 export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>
@@ -52,21 +66,9 @@ export interface OrdersTableState {
   currentPageNumber: number
 }
 
-export interface OrderTableGroup {
-  parent: ParsedOrder
-  children: ParsedOrder[]
-}
-
-export type OrderTableItem = OrderTableGroup | ParsedOrder
-
 export interface TabParams {
   id: OrderTabId
   title: MessageDescriptor
   count: number
   isActive?: boolean
-}
-
-export enum TabOrderTypes {
-  LIMIT = 'limit',
-  ADVANCED = 'advanced',
 }

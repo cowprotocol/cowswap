@@ -16,6 +16,8 @@ export type ComposableCowInfo = {
   parentId?: string
   isVirtualPart?: boolean
   isTheLastPart?: boolean
+  isPrototype?: boolean
+  prototypeFundsState?: 'active' | 'claimable' | 'claimed' | 'withdrawn' | 'none'
 }
 
 export type GenericOrder = Order | ParsedOrder

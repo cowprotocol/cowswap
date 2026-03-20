@@ -14,7 +14,11 @@ import { FAQItem, FAQWrapper } from './styled'
 
 import { COW_SHED_VERSIONS } from '../../consts'
 
-const Answer1: FC = () => {
+interface AnswerProps {
+  isTwapPrototypeEnabled: boolean
+}
+
+const Answer1: FC<AnswerProps> = ({ isTwapPrototypeEnabled }) => {
   const { i18n } = useLingui()
   const accountProxyLabelString = i18n._(ACCOUNT_PROXY_LABEL)
 
@@ -27,6 +31,12 @@ const Answer1: FC = () => {
       <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">
         <Trans>CoW Hooks</Trans>
       </ExternalLink>
+      {isTwapPrototypeEnabled ? (
+        <>
+          {' '}
+          <Trans>and TWAP orders placed from non-Safe wallets.</Trans>
+        </>
+      ) : null}
       .
       <br />
       <br />
@@ -34,6 +44,16 @@ const Answer1: FC = () => {
         This contract is deployed per account, with that account becoming the single owner. CoW Shed acts as an
         intermediary account that handles trading on your behalf.
       </Trans>
+      {isTwapPrototypeEnabled ? (
+        <>
+          <br />
+          <br />
+          <Trans>
+            For TWAP orders placed from non-Safe wallets, you may also see a dedicated TWAP proxy account here. It is
+            used to hold funds for those TWAP orders.
+          </Trans>
+        </>
+      ) : null}
       <br />
       <br />
       <Trans>
@@ -57,7 +77,11 @@ const Answer1: FC = () => {
   )
 }
 
-const Answer2: FC<{ recoverRouteLink: string }> = ({ recoverRouteLink }) => {
+interface Answer2Props extends AnswerProps {
+  recoverRouteLink: string
+}
+
+const Answer2: FC<Answer2Props> = ({ recoverRouteLink, isTwapPrototypeEnabled }) => {
   const { i18n } = useLingui()
   const accountProxyLabelString = i18n._(ACCOUNT_PROXY_LABEL)
 
@@ -68,6 +92,16 @@ const Answer2: FC<{ recoverRouteLink: string }> = ({ recoverRouteLink }) => {
         cases.
       </Trans>
       <Trans>This tool helps you recover your funds.</Trans>
+      {isTwapPrototypeEnabled ? (
+        <>
+          <br />
+          <br />
+          <Trans>
+            If a token in your TWAP proxy account is still being used by active TWAP orders from a non-Safe wallet,
+            withdrawing it will make those orders unfillable.
+          </Trans>
+        </>
+      ) : null}
       <ol>
         <li>
           <Trans>
@@ -84,10 +118,11 @@ const Answer2: FC<{ recoverRouteLink: string }> = ({ recoverRouteLink }) => {
 }
 
 interface FAQContentProps {
+  isTwapPrototypeEnabled: boolean
   recoverRouteLink: string
 }
 
-export function FAQContent({ recoverRouteLink }: FAQContentProps): ReactNode {
+export function FAQContent({ recoverRouteLink, isTwapPrototypeEnabled }: FAQContentProps): ReactNode {
   const { i18n } = useLingui()
   const [openItems, setOpenItems] = useState<Record<number, boolean>>({ 0: true })
 
@@ -100,11 +135,11 @@ export function FAQContent({ recoverRouteLink }: FAQContentProps): ReactNode {
   const FAQ_DATA = [
     {
       question: msg`What is ${accountProxyLabel}?`,
-      answer: <Answer1 />,
+      answer: <Answer1 isTwapPrototypeEnabled={isTwapPrototypeEnabled} />,
     },
     {
       question: msg`How do I recover my funds from ${accountProxyLabel}?`,
-      answer: <Answer2 recoverRouteLink={recoverRouteLink} />,
+      answer: <Answer2 recoverRouteLink={recoverRouteLink} isTwapPrototypeEnabled={isTwapPrototypeEnabled} />,
     },
   ]
 

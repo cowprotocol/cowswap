@@ -11,18 +11,21 @@ import { useParams } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
 
-import { AccountCardContainer, ErrorMessage, LinkStyled, Title, TokenListItemStyled, Wrapper } from './styled'
+import { AccountCardContainer, ErrorMessage, LinkStyled, TokenListItemStyled, Title, Wrapper } from './styled'
 
+import { AccountProxyKind, useAccountProxies } from '../../hooks/useAccountProxies'
 import { useRefundAmounts } from '../../hooks/useRefundAmounts'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
 import { AccountDataCard } from '../../pure/AccountDataCard'
 import { BaseAccountCard } from '../../pure/BaseAccountCard'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
 import { sumUpUsdAmounts } from '../../utils/sumUpUsdAmounts'
+import { PrototypeAccountProxyPage } from '../PrototypeAccountProxyPage/PrototypeAccountProxyPage.container'
 
 export function AccountProxyPage(): ReactNode {
   const { chainId } = useWalletInfo()
   const { proxyAddress } = useParams()
+  const proxies = useAccountProxies()
 
   const tokensToRefund = useTokensToRefund()
   const refundAmounts = useRefundAmounts()
@@ -30,13 +33,14 @@ export function AccountProxyPage(): ReactNode {
 
   const refundValues = refundAmounts ? Object.values(refundAmounts) : null
 
-  const isSomeTokenLoading = !!refundValues?.length ? refundValues.some((t) => t.isLoading) : balances.isLoading
+  const isSomeTokenLoading = !!refundValues?.length ? refundValues.some((token) => token.isLoading) : balances.isLoading
 
   const totalUsdAmount = refundAmounts ? sumUpUsdAmounts(chainId, refundAmounts) : null
+  const selectedProxy = proxies?.find((proxy) => proxy.account.toLowerCase() === proxyAddress?.toLowerCase())
+  const isPrototypeProxy = selectedProxy?.kind === AccountProxyKind.TwapPrototype
 
   if (!proxyAddress) return null
 
-  // Validate proxy address early
   if (!isAddress(proxyAddress)) {
     return (
       <Wrapper>
@@ -49,6 +53,10 @@ export function AccountProxyPage(): ReactNode {
         </AccountCardContainer>
       </Wrapper>
     )
+  }
+
+  if (isPrototypeProxy) {
+    return <PrototypeAccountProxyPage chainId={chainId} proxyAddress={proxyAddress} />
   }
 
   return (
@@ -68,23 +76,22 @@ export function AccountProxyPage(): ReactNode {
       <Title>
         <Trans>Recoverable tokens</Trans> · {tokensToRefund?.length || 0}
       </Title>
-      {refundValues &&
-        refundValues.map(({ token, balance, usdAmount }) => {
-          return (
-            <LinkStyled
-              key={token.address}
-              to={parameterizeRoute(Routes.ACCOUNT_PROXY_RECOVER, {
-                chainId,
-                proxyAddress,
-                tokenAddress: token.address,
-              })}
-            >
-              <TokenListItemStyled token={token} isWalletConnected balance={balance} usdAmount={usdAmount}>
-                <ArrowIcon verticalCenter />
-              </TokenListItemStyled>
-            </LinkStyled>
-          )
-        })}
+      {refundValues?.map(({ token, balance, usdAmount }) => {
+        return (
+          <LinkStyled
+            key={token.address}
+            to={parameterizeRoute(Routes.ACCOUNT_PROXY_RECOVER, {
+              chainId,
+              proxyAddress,
+              tokenAddress: token.address,
+            })}
+          >
+            <TokenListItemStyled token={token} isWalletConnected balance={balance} usdAmount={usdAmount}>
+              <ArrowIcon verticalCenter />
+            </TokenListItemStyled>
+          </LinkStyled>
+        )
+      })}
     </Wrapper>
   )
 }

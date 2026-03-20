@@ -1,25 +1,47 @@
 import { useMemo } from 'react'
 
 import { CowShedHooks, CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+
+import { getIsTwapEoaPrototypeEnabled } from 'entities/twap'
+import { useLocation } from 'react-router'
+
+import { getPrototypeProxyAddress } from 'modules/twap'
 
 import { COW_SHED_VERSIONS } from '../consts'
 
-interface AccountProxyInfo {
+export interface AccountProxyInfo {
   account: string
-  version: CoWShedVersion
+  kind: AccountProxyKind
+  version?: CoWShedVersion
+}
+
+export enum AccountProxyKind {
+  Standard = 'standard',
+  TwapPrototype = 'twapPrototype',
 }
 
 export function useAccountProxies(): AccountProxyInfo[] | null {
   const { chainId, account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
+  const { search, hash } = useLocation()
 
   return useMemo(() => {
     if (!account) return null
 
-    return COW_SHED_VERSIONS.map((version) => {
+    const proxies: AccountProxyInfo[] = COW_SHED_VERSIONS.map((version) => {
       const sdk = new CowShedHooks(chainId, undefined, version)
 
-      return { account: sdk.proxyOf(account), version }
+      return { account: sdk.proxyOf(account), version, kind: AccountProxyKind.Standard }
     })
-  }, [chainId, account])
+
+    if (getIsTwapEoaPrototypeEnabled(search, hash) && !isSafeWallet) {
+      proxies.unshift({
+        account: getPrototypeProxyAddress(account, chainId),
+        kind: AccountProxyKind.TwapPrototype,
+      })
+    }
+
+    return proxies
+  }, [account, chainId, hash, isSafeWallet, search])
 }

@@ -26,12 +26,14 @@ export function AccountProxiesPage(): ReactNode {
     <Wrapper>
       <Title>
         <Trans>
-          Select an {accountProxyLabelString} to check for available refunds {chain}
+          Select an {accountProxyLabelString} to inspect available funds {chain}
         </Trans>
       </Title>
 
-      {proxies?.map(({ account, version }) => {
-        return <AccountItem key={account} chainId={chainId} account={account} version={version} />
+      {proxies?.map(({ account, version, kind }) => {
+        return (
+          <AccountItem key={`${kind}:${account}`} chainId={chainId} account={account} version={version} kind={kind} />
+        )
       })}
     </Wrapper>
   )

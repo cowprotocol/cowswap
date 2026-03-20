@@ -25,6 +25,7 @@ export interface TradeWidgetParams {
   disablePriceImpact?: boolean
   disableSuggestedSlippageApi?: boolean
   hideTradeWarnings?: boolean
+  noImpactWarningAcceptLabel?: ReactNode
   enableSmartSlippage?: boolean
   isMarketOrderWidget?: boolean
   displayTokenName?: boolean
@@ -32,17 +33,6 @@ export interface TradeWidgetParams {
   isPriceStatic?: boolean
   allowSwapSameToken?: boolean
   customSelectTokenButton?: ReactNode
-}
-
-export interface TradeWidgetSlots {
-  settingsWidget: ReactNode
-  lockScreen?: ReactNode
-  topContent?: ReactNode
-  middleContent?: ReactNode
-  bottomContent?(warnings: ReactNode | null): ReactNode
-  outerContent?: ReactNode
-  updaters?: ReactNode
-  selectTokenWidget?: ReactNode
 }
 
 export interface TradeWidgetProps {
@@ -55,4 +45,15 @@ export interface TradeWidgetProps {
   disableOutput?: boolean
   confirmModal?: ReactNode
   genericModal?: ReactNode
+}
+
+export interface TradeWidgetSlots {
+  settingsWidget: ReactNode
+  lockScreen?: ReactNode
+  topContent?: ReactNode
+  middleContent?: ReactNode
+  bottomContent?(warnings: ReactNode | null): ReactNode
+  outerContent?: ReactNode
+  updaters?: ReactNode
+  selectTokenWidget?: ReactNode
 }

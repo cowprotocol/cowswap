@@ -1,11 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
-import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
+import { Percent } from '@cowprotocol/currency'
+import { useIsSafeViaWc, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
-import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { TradeFormValidation } from 'modules/tradeFormValidation/types'
+import { useTradeRouteContext } from 'modules/trade'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
@@ -19,7 +19,9 @@ import { BigPartTimeWarning } from './warnings/BigPartTimeWarning'
 import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
+import { DEFAULT_NUM_OF_PARTS } from '../../const'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useMaxTwapPartsShortcut } from '../../hooks/useMaxTwapPartsShortcut'
 import { useSwapAmountDifference } from '../../hooks/useSwapAmountDifference'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
@@ -33,8 +35,29 @@ interface TwapFormWarningsProps {
   isConfirmationModal?: boolean
 }
 
+interface TwapWarningsRendererParams {
+  localFormValidation: TwapFormState | null
+  primaryFormValidation: TradeFormValidation | null
+  isSafeViaWc: boolean
+  isSmartContractWallet: boolean | undefined
+  chainId: ReturnType<typeof useWalletInfo>['chainId']
+  account: ReturnType<typeof useWalletInfo>['account']
+  isFallbackHandlerSetupAccepted: boolean
+  toggleFallbackHandlerSetupFlag(isFallbackHandlerSetupAccepted: boolean): void
+  showFallbackHandlerWarning: boolean
+  showTradeFormWarnings: boolean
+  isAtMinimumParts: boolean
+  deadline: number
+  slippage: Percent
+  swapPriceDifferenceWarning: ReactNode
+  maxValidParts: number
+  canUseMaxPartsShortcut: boolean
+  useMaxPartsShortcut(): void
+}
+
 export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps): ReactNode {
-  const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
+  const { isFallbackHandlerSetupAccepted, numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
+  const isAtMinimumParts = numberOfPartsValue === DEFAULT_NUM_OF_PARTS
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
@@ -42,6 +65,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const primaryFormValidation = useGetTradeFormValidation()
 
   const { chainId, account } = useWalletInfo()
+  const isSmartContractWallet = useIsSmartContractWallet()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
@@ -57,6 +81,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   const showTradeFormWarnings = !isConfirmationModal && canTrade
   const showFallbackHandlerWarning = showTradeFormWarnings && isFallbackHandlerRequired
+  const { maxValidParts, canUseMaxPartsShortcut, useMaxPartsShortcut } = useMaxTwapPartsShortcut(isConfirmationModal)
 
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
@@ -69,48 +94,103 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     />
   ) : null
 
+  return getTwapWarningContent({
+    localFormValidation,
+    primaryFormValidation,
+    isSafeViaWc,
+    isSmartContractWallet,
+    chainId,
+    account,
+    isFallbackHandlerSetupAccepted,
+    toggleFallbackHandlerSetupFlag,
+    showFallbackHandlerWarning,
+    showTradeFormWarnings,
+    isAtMinimumParts,
+    deadline,
+    slippage,
+    swapPriceDifferenceWarning,
+    maxValidParts,
+    canUseMaxPartsShortcut,
+    useMaxPartsShortcut,
+  })
+}
+
+function getTwapWarningContent(params: TwapWarningsRendererParams): ReactNode {
+  const {
+    localFormValidation,
+    primaryFormValidation,
+    isSafeViaWc,
+    isSmartContractWallet,
+    chainId,
+    account,
+    isFallbackHandlerSetupAccepted,
+    toggleFallbackHandlerSetupFlag,
+    showFallbackHandlerWarning,
+    showTradeFormWarnings,
+    isAtMinimumParts,
+    deadline,
+    slippage,
+    swapPriceDifferenceWarning,
+    maxValidParts,
+    canUseMaxPartsShortcut,
+    useMaxPartsShortcut,
+  } = params
+
+  if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
+    return (
+      <UnsupportedWalletWarning
+        isSafeViaWc={isSafeViaWc}
+        isSmartContractWallet={isSmartContractWallet}
+        chainId={chainId}
+        account={account}
+      />
+    )
+  }
+
+  if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
+    return <SellNativeWarningBanner />
+  }
+
+  if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
+    return (
+      <SmallPartVolumeWarning
+        chainId={chainId}
+        isAtMinimumParts={isAtMinimumParts}
+        maxPartsValue={canUseMaxPartsShortcut ? maxValidParts : undefined}
+        onUseMaxParts={canUseMaxPartsShortcut ? useMaxPartsShortcut : undefined}
+      />
+    )
+  }
+
+  if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
+    return (
+      <SmallPartTimeWarning
+        maxPartsValue={canUseMaxPartsShortcut ? maxValidParts : undefined}
+        onUseMaxParts={canUseMaxPartsShortcut ? useMaxPartsShortcut : undefined}
+      />
+    )
+  }
+
+  if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_LONG) {
+    return <BigPartTimeWarning />
+  }
+
+  if (showFallbackHandlerWarning) {
+    return (
+      <>
+        {isFallbackHandlerSetupAccepted && swapPriceDifferenceWarning}
+        <FallbackHandlerWarning
+          isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
+          toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
+        />
+      </>
+    )
+  }
+
   return (
     <>
-      {(() => {
-        if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
-          return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} chainId={chainId} account={account} />
-        }
-
-        if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
-          return <SellNativeWarningBanner />
-        }
-
-        if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
-          return <SmallPartVolumeWarning chainId={chainId} />
-        }
-
-        if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
-          return <SmallPartTimeWarning />
-        }
-
-        if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_LONG) {
-          return <BigPartTimeWarning />
-        }
-
-        if (showFallbackHandlerWarning) {
-          return (
-            <>
-              {isFallbackHandlerSetupAccepted && swapPriceDifferenceWarning}
-              <FallbackHandlerWarning
-                isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
-                toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
-              />
-            </>
-          )
-        }
-
-        return (
-          <>
-            {showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) && <SmallPriceProtectionWarning />}
-            {swapPriceDifferenceWarning}
-          </>
-        )
-      })()}
+      {showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) && <SmallPriceProtectionWarning />}
+      {swapPriceDifferenceWarning}
     </>
   )
 }

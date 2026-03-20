@@ -4,17 +4,23 @@ import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-import { UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
+import { UNSUPPORTED_WALLET_LINK } from '../../../const'
 
 export interface UnsupportedWalletWarningProps {
   chainId: SupportedChainId
   account?: string
   isSafeViaWc: boolean
+  isSmartContractWallet?: boolean
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: UnsupportedWalletWarningProps) {
+export function UnsupportedWalletWarning({
+  isSafeViaWc,
+  isSmartContractWallet,
+  chainId,
+  account,
+}: UnsupportedWalletWarningProps) {
   if (isSafeViaWc && account) {
     return (
       <InlineBanner bannerType={StatusColorVariant.Info}>
@@ -31,6 +37,23 @@ export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: Unsu
     )
   }
 
+  if (isSmartContractWallet) {
+    return (
+      <InlineBanner bannerType={StatusColorVariant.Alert} iconSize={32}>
+        <strong>
+          <Trans>Unsupported smart contract wallet</Trans>
+        </strong>
+        <p>
+          <Trans>
+            Advanced TWAP orders currently support Safe only. Other smart contract wallets, including Coinbase Smart
+            Wallet, are not supported yet. If you have a Safe, switch to it. Need setup?{' '}
+            <ExternalLink href={UNSUPPORTED_WALLET_LINK}>Click here</ExternalLink>.
+          </Trans>
+        </p>
+      </InlineBanner>
+    )
+  }
+
   return (
     <InlineBanner bannerType={StatusColorVariant.Alert} iconSize={32}>
       <strong>
@@ -38,9 +61,9 @@ export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: Unsu
       </strong>
       <p>
         <Trans>
-          TWAP orders currently require a Safe with a special fallback handler. Have one? Switch to it! Need setup?{' '}
+          Advanced TWAP orders currently support Safe only. Have one? Switch to it! Need setup?{' '}
           <ExternalLink href={UNSUPPORTED_WALLET_LINK}>Click here</ExternalLink>. Future updates may extend wallet
-          support!
+          support.
         </Trans>
       </p>
       <p>

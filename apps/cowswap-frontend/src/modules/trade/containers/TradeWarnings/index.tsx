@@ -10,9 +10,14 @@ import { NoImpactWarning } from '../NoImpactWarning'
 interface TradeWarningsProps {
   isTradePriceUpdating: boolean
   enableSmartSlippage?: boolean
+  noImpactWarningAcceptLabel?: ReactNode
 }
 
-export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: TradeWarningsProps): ReactNode {
+export function TradeWarnings({
+  isTradePriceUpdating,
+  enableSmartSlippage,
+  noImpactWarningAcceptLabel,
+}: TradeWarningsProps): ReactNode {
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const inputAmountWithSlippage = receiveAmountInfo?.amountsToSign.sellAmount
   const shouldZeroApprove = useShouldShowZeroApproveWarning(inputAmountWithSlippage)
@@ -20,7 +25,7 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
   return (
     <>
       {shouldZeroApprove && <ZeroApprovalWarning currency={inputAmountWithSlippage?.currency} />}
-      <NoImpactWarning />
+      <NoImpactWarning acceptLabel={noImpactWarningAcceptLabel} />
       {enableSmartSlippage && <HighSuggestedSlippageWarning isTradePriceUpdating={isTradePriceUpdating} />}
     </>
   )

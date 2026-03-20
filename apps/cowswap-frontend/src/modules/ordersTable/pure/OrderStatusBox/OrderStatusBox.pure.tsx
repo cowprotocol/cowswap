@@ -105,6 +105,14 @@ const StatusContent = styled.div`
   }
 `
 
+const StatusContainer = styled.div<{ widthAuto?: boolean }>`
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+  gap: 8px;
+  width: ${({ widthAuto }) => (widthAuto ? 'auto' : '100%')};
+`
+
 type OrderStatusBoxProps = {
   order: ParsedOrder
   widthAuto?: boolean
@@ -129,17 +137,19 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick, Warning
   )
 
   return (
-    <Wrapper
-      color={color}
-      background={background}
-      widthAuto={widthAuto}
-      withWarning={withWarning}
-      clickable={!!onClick}
-      onClick={onClick}
-      isCancelling={order.isCancelling && !order.executionData.fullyFilled}
-      isSigning={order.status === OrderStatus.PRESIGNATURE_PENDING}
-    >
-      {content}
-    </Wrapper>
+    <StatusContainer widthAuto={widthAuto}>
+      <Wrapper
+        color={color}
+        background={background}
+        widthAuto={widthAuto}
+        withWarning={withWarning}
+        clickable={!!onClick}
+        onClick={onClick}
+        isCancelling={order.isCancelling && !order.executionData.fullyFilled}
+        isSigning={order.status === OrderStatus.PRESIGNATURE_PENDING}
+      >
+        {content}
+      </Wrapper>
+    </StatusContainer>
   )
 }

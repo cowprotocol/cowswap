@@ -2,19 +2,20 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useGasPrices } from 'legacy/state/gas/hooks'
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { getIsOffChainCancellable } from './getIsOffChainCancellable'
 import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
@@ -50,13 +51,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   return useCallback(
     (order: Order) => {
       // Check the 'cancellability'
-
-      const isEthFlowOrder = getIsNativeToken(order.inputToken)
-
-      // 1. EthFlow orders will never be able to be cancelled offChain
-      // 2. The wallet must support offChain singing
-      // 3. The order must be PENDING
-      const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
+      const isOffChainCancellable = getIsOffChainCancellable({ allowsOffchainSigning, order })
 
       // When the order is not cancellable, there won't be a callback
       if (!isOrderCancellable(order)) {
