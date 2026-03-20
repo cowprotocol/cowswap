@@ -1,61 +1,42 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
+
+import { useWatchBlockNumber } from 'wagmi'
 
 import { BlockNumberContext } from './context'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BlockNumberProvider({ children }: { children: ReactNode }) {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+export function BlockNumberProvider({ children }: { children: ReactNode }): ReactNode {
+  const windowVisible = useIsWindowVisible()
   const activeChainId = useWalletChainId()
 
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({ chainId: activeChainId })
 
-  const onBlock = useCallback(
-    (block: number) => {
+  const onBlockNumber = useCallback(
+    (blockNumber: bigint) => {
+      const num = Number(blockNumber)
       setChainBlock((chainBlock) => {
         if (chainBlock.chainId === activeChainId) {
-          if (!chainBlock.block || chainBlock.block < block) {
-            return { chainId: activeChainId, block }
+          if (!chainBlock.block || chainBlock.block < num) {
+            return { chainId: activeChainId, block: num }
           }
         }
         return chainBlock
       })
     },
-    [activeChainId, setChainBlock],
+    [activeChainId],
   )
 
-  const windowVisible = useIsWindowVisible()
+  useWatchBlockNumber({
+    chainId: activeChainId,
+    enabled: Boolean(activeChainId) && windowVisible,
+    onBlockNumber,
+  })
+
   useEffect(() => {
-    let stale = false
-
-    if (provider && activeChainId && windowVisible) {
-      // If chainId hasn't changed, don't clear the block. This prevents re-fetching still valid data.
-      setChainBlock((chainBlock) => (chainBlock.chainId === activeChainId ? chainBlock : { chainId: activeChainId }))
-
-      provider
-        .getBlockNumber()
-        .then((block) => {
-          if (!stale) onBlock(block)
-        })
-        .catch((error) => {
-          console.error(`Failed to get block number for chainId ${activeChainId}`, error)
-        })
-
-      provider.on('block', onBlock)
-
-      return () => {
-        stale = true
-        provider.removeListener('block', onBlock)
-      }
-    }
-
-    return void 0
-  }, [activeChainId, provider, onBlock, setChainBlock, windowVisible])
+    setChainBlock((chainBlock) => (chainBlock.chainId === activeChainId ? chainBlock : { chainId: activeChainId }))
+  }, [activeChainId])
 
   const value = useMemo(
     () => ({

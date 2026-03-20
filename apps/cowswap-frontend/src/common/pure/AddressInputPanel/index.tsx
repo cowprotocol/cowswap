@@ -88,7 +88,7 @@ const Input = styled.input<{ error?: boolean }>`
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
@@ -112,7 +112,7 @@ export function AddressInputPanel({
   const chainId = targetChainId ?? walletChainId
   const chainInfo = getChainInfo(chainId)
   const addressPrefix = chainInfo?.addressPrefix
-  const { address, loading, name } = useENS(value)
+  const { address, loading, name } = useENS(value as `0x${string}`)
   const [chainPrefixWarning, setChainPrefixWarning] = useState('')
   const isDarkMode = useIsDarkMode()
 

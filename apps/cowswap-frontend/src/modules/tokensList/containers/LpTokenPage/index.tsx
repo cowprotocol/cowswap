@@ -34,7 +34,6 @@ interface LpTokenPageProps {
   onSelectToken(token: TokenWithLogo): void
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: LpTokenPageProps): ReactNode {
   const poolsInfo = usePoolsInfo()
   const tokensByAddress = useTokensByAddressMap()

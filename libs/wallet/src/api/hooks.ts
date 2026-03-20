@@ -1,8 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
-
 import { useConnection } from 'wagmi'
 
 import { useWalletCapabilities } from './hooks/useWalletCapabilities'
@@ -19,11 +17,11 @@ import {
   selectedEip6963ProviderAtom,
   selectedEip6963ProviderRdnsAtom,
 } from './state/multiInjectedProvidersAtom'
-import { ConnectionType, ConnectorType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
+import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
-import { useConnectionType } from '../web3-react/hooks/useConnectionType'
-import { useIsSafeApp, useIsSafeViaWc } from '../web3-react/hooks/useWalletMetadata'
+import { useConnectionType } from '../wagmi/hooks/useConnectionType'
+import { useIsSafeApp, useIsSafeViaWc } from '../wagmi/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -93,14 +91,10 @@ export function useSelectedEip6963ProviderInfo() {
 }
 
 export function useIsAssetWatchingSupported(): boolean {
-  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
 
   if (!info || !isInjectedConnection) return false
 
@@ -109,14 +103,10 @@ export function useIsAssetWatchingSupported(): boolean {
 }
 
 export function useIsRabbyWallet(): boolean {
-  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
 
   if (!info || !isInjectedConnection) return false
 
@@ -124,14 +114,10 @@ export function useIsRabbyWallet(): boolean {
 }
 
 export function useIsBraveWallet(): boolean {
-  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
 
   if (!info || !isInjectedConnection) return false
 
@@ -140,15 +126,10 @@ export function useIsBraveWallet(): boolean {
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
   const { connector } = useConnection()
-  const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isMetamaskConnection = connectionType === ConnectionType.METAMASK
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
+  const isInjectedConnection = connector?.type === ConnectionType.INJECTED
 
   if (isMetamaskConnection) return true
 

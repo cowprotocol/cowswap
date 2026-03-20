@@ -85,7 +85,7 @@ export function useOrderProgressBarProps(
   )
 
   const surplusData = useGetSurplusData(order)
-  const receiverEnsName = useENS(order?.receiver).name || undefined
+  const receiverEnsName = useENS((order?.receiver ?? undefined) as `0x${string}` | undefined).name || undefined
 
   const props = useMemo(() => {
     // Add supplementary stuff

@@ -1,28 +1,62 @@
-import { Interface } from '@ethersproject/abi'
+import { decodeFunctionData, type Address, type Hex } from 'viem'
+
 // Combined ABI for both EIP-2612 and DAI-like permit functions
 const COMBINED_ABI = [
-  'function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)',
-  'function permit(address holder, address spender, uint256 nonce, uint256 expiry, bool allowed, uint8 v, bytes32 r, bytes32 s)',
-]
+  {
+    type: 'function',
+    name: 'permit',
+    inputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' },
+      { name: 'v', type: 'uint8' },
+      { name: 'r', type: 'bytes32' },
+      { name: 's', type: 'bytes32' },
+    ],
+  },
+  {
+    type: 'function',
+    name: 'permit',
+    inputs: [
+      { name: 'holder', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'expiry', type: 'uint256' },
+      { name: 'allowed', type: 'bool' },
+      { name: 'v', type: 'uint8' },
+      { name: 'r', type: 'bytes32' },
+      { name: 's', type: 'bytes32' },
+    ],
+  },
+] as const
 
-const iface = new Interface(COMBINED_ABI)
 /**
  * Recovers the spender address from either EIP-2612 or DAI-like permit calldata
  * @param calldata - The permit function calldata as a hex string
  * @returns An object containing the spender address and the detected format
  */
-export function recoverSpenderFromCalldata(calldata?: string): string | undefined {
+export function recoverSpenderFromCalldata(calldata?: Hex): string | undefined {
   if (!calldata) {
     return
   }
+  let error = new Error('')
 
-  try {
-    const decodedData = iface.parseTransaction({ data: calldata })
-    const spender = decodedData.args[1] // spender is the second argument in both formats
+  for (const abiEntry of COMBINED_ABI) {
+    try {
+      const { args } = decodeFunctionData({
+        abi: [abiEntry],
+        data: calldata,
+      })
+      const [_owner, spender] = args as [Address, Address] // spender is the second argument in both formats
 
-    return spender
-  } catch (error) {
-    console.error(`Invalid permit calldata: ${error.message}`)
-    return
+      return spender
+    } catch (e) {
+      error = e
+      continue
+    }
   }
+
+  console.error(`Invalid permit calldata: ${error.message}`)
+  return
 }

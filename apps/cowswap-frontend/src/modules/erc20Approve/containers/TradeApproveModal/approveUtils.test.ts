@@ -1,13 +1,14 @@
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { id } from '@ethersproject/hash'
+
+import { keccak256, stringToBytes } from 'viem'
 
 import { processApprovalTransaction } from './approveUtils'
 
-const APPROVAL_EVENT_TOPIC = id('Approval(address,address,uint256)')
+import type { ApprovalTxReceipt } from './approveUtils'
+
+const APPROVAL_EVENT_TOPIC = keccak256(stringToBytes('Approval(address,address,uint256)'))
 
 describe('processApprovalTransaction', () => {
   const mockChainId = SupportedChainId.MAINNET
@@ -24,32 +25,20 @@ describe('processApprovalTransaction', () => {
     return '0x' + '0'.repeat(24) + address.slice(2).toLowerCase()
   }
 
-  // Helper to encode approval amount
-  const encodeAmount = (amount: bigint): string => {
-    return defaultAbiCoder.encode(['uint256'], [amount.toString()])
+  const encodeAmountData = (amount: bigint): `0x${string}` => {
+    const hex = amount.toString(16).padStart(64, '0')
+    return `0x${hex}` as `0x${string}`
   }
 
-  const createMockTransactionReceipt = (status: number, logs: TransactionReceipt['logs'] = []): TransactionReceipt => {
+  const createMockTransactionReceipt = (
+    status: 'success' | 'reverted',
+    logs: ApprovalTxReceipt['logs'] = [],
+  ): ApprovalTxReceipt => {
     return {
-      to: mockSpender,
-      from: mockAccount,
-      contractAddress: mockTokenAddress,
-      transactionIndex: 1,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      gasUsed: { toString: () => '21000' } as any,
-      logsBloom: '0x',
-      blockHash: '0xblockhash',
-      transactionHash: '0xtxhash',
-      logs,
-      blockNumber: mockBlockNumber,
-      confirmations: 1,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cumulativeGasUsed: { toString: () => '21000' } as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      effectiveGasPrice: { toString: () => '1000000000' } as any,
-      byzantium: true,
-      type: 2,
       status,
+      blockNumber: BigInt(mockBlockNumber),
+      transactionHash: '0xtxhash' as `0x${string}`,
+      logs,
     }
   }
 
@@ -58,24 +47,18 @@ describe('processApprovalTransaction', () => {
     owner: string,
     spender: string,
     amount: bigint,
-  ): TransactionReceipt['logs'][0] => {
+  ): ApprovalTxReceipt['logs'][0] => {
     return {
-      blockNumber: mockBlockNumber,
-      blockHash: '0xblockhash',
-      transactionIndex: 1,
-      removed: false,
       address: tokenAddress,
-      data: encodeAmount(amount),
+      data: encodeAmountData(amount),
       topics: [APPROVAL_EVENT_TOPIC, createAddressTopic(owner), createAddressTopic(spender)],
-      transactionHash: '0xtxhash',
-      logIndex: 0,
     }
   }
 
   describe('successful approval extraction', () => {
     it('should extract approval data from valid transaction receipt', () => {
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, mockAmount)
-      const txReceipt = createMockTransactionReceipt(1, [approvalLog])
+      const txReceipt = createMockTransactionReceipt('success', [approvalLog])
 
       const result = processApprovalTransaction(
         {
@@ -100,7 +83,7 @@ describe('processApprovalTransaction', () => {
     it('should handle zero approval amount (revoke approval)', () => {
       const zeroAmount = BigInt('0')
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, zeroAmount)
-      const txReceipt = createMockTransactionReceipt(1, [approvalLog])
+      const txReceipt = createMockTransactionReceipt('success', [approvalLog])
 
       const result = processApprovalTransaction(
         {
@@ -135,7 +118,7 @@ describe('processApprovalTransaction', () => {
         logIndex: 0,
       }
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, mockAmount)
-      const txReceipt = createMockTransactionReceipt(1, [otherLog, approvalLog, otherLog])
+      const txReceipt = createMockTransactionReceipt('success', [otherLog, approvalLog, otherLog])
 
       const result = processApprovalTransaction(
         {
@@ -161,7 +144,7 @@ describe('processApprovalTransaction', () => {
   describe('failed transaction handling', () => {
     it('should throw error when transaction status is not 1', () => {
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, mockAmount)
-      const txReceipt = createMockTransactionReceipt(0, [approvalLog])
+      const txReceipt = createMockTransactionReceipt('reverted', [approvalLog])
 
       expect(() =>
         processApprovalTransaction(
@@ -202,7 +185,7 @@ describe('processApprovalTransaction', () => {
       const actualAmount = BigInt('5000000000000000000')
 
       const approvalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, actualAmount)
-      const txReceipt = createMockTransactionReceipt(1, [approvalLog])
+      const txReceipt = createMockTransactionReceipt('success', [approvalLog])
 
       const result = processApprovalTransaction(
         {
@@ -226,7 +209,7 @@ describe('processApprovalTransaction', () => {
       const wrongApprovalLog = createApprovalLog(mockTokenAddress, mockAccount, otherSpender, otherAmount)
       const correctApprovalLog = createApprovalLog(mockTokenAddress, mockAccount, mockSpender, mockAmount)
 
-      const txReceipt = createMockTransactionReceipt(1, [wrongApprovalLog, correctApprovalLog])
+      const txReceipt = createMockTransactionReceipt('success', [wrongApprovalLog, correctApprovalLog])
 
       const result = processApprovalTransaction(
         {

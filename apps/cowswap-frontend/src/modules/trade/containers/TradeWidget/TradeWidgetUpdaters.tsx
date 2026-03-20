@@ -30,7 +30,7 @@ export function TradeWidgetUpdaters({
   allowSwapSameToken,
   children,
 }: TradeWidgetUpdatersProps): JSX.Element {
-  const { isOpen: isConfirmOpen } = useTradeConfirmState()
+  const { isOpen: isConfirmOpen, pendingTrade } = useTradeConfirmState()
 
   const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
 
@@ -44,6 +44,7 @@ export function TradeWidgetUpdaters({
         useSuggestedSlippageApi={!disableSuggestedSlippageApi}
         isConfirmOpen={isConfirmOpen}
         isQuoteUpdatePossible={isQuoteUpdatePossible && !disableQuotePolling}
+        hasPendingTrade={!!pendingTrade}
       />
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />

@@ -28,7 +28,7 @@ export function CurrencyArrowSeparator({
   return (
     <styledEl.Box
       id="currency-arrow-separator"
-      data-isLoading={isLoading ? true : undefined}
+      data-isloading={isLoading ? true : undefined}
       isCollapsed={isCollapsed}
       hasSeparatorLine={hasSeparatorLine}
     >

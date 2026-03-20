@@ -20,8 +20,11 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { deduplicatedSendTransaction } from 'modules/tradeFlow/utils/deduplicatedSendTransaction'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
+
+import type { Hex } from 'viem'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
@@ -44,7 +47,7 @@ export async function tradeFlow(
     dispatch,
     generatePermitHook,
     quoteState,
-    signer,
+    config,
   } = params
   const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet, inputAmount, outputAmount } =
     postOrderParams
@@ -74,7 +77,7 @@ export async function tradeFlow(
     postOrderParams.appData = await handlePermit({
       permitInfo,
       inputToken: sellToken,
-      account,
+      account: account as `0x${string}`,
       appData,
       typedHooks,
       generatePermitHook,
@@ -125,7 +128,11 @@ export async function tradeFlow(
     if (!postOrderParams.allowsOffchainSigning) {
       const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
-      presignTxHash = (await signer.sendTransaction(presignTx)).hash
+      presignTxHash = await deduplicatedSendTransaction(config, {
+        to: presignTx.to as `0x${string}`,
+        value: BigInt(presignTx.value),
+        data: presignTx.data as Hex,
+      })
     }
 
     const order = mapUnsignedOrderToOrder({

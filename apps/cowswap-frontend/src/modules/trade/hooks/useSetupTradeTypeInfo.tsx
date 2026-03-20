@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 
 import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
 
@@ -11,7 +11,9 @@ export function useSetupTradeTypeInfo(): TradeTypeInfo | null {
 
   const type = useTradeTypeInfoFromUrl()
 
-  useEffect(() => {
+  // useLayoutEffect so tradeTypeAtom is set before paint and before quote/price logic runs;
+  // same phase as HydrateAtom's swapDerivedStateAtom update, so derivedTradeStateAtom has correct value.
+  useLayoutEffect(() => {
     setTradeType(type)
   }, [type, setTradeType])
 

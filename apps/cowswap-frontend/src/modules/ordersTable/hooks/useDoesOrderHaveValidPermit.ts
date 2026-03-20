@@ -1,8 +1,8 @@
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
+import { usePublicClient } from 'wagmi'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
@@ -14,6 +14,8 @@ import { isPermitDecodedCalldataValid } from 'utils/orderUtils/isPermitValidForO
 
 import { checkPermitNonceAndAmount } from '../utils/checkPermitNonceAndAmount'
 
+import type { Hex } from 'viem'
+
 const SWR_CONFIG: SWRConfiguration = {
   refreshInterval: ms`30s`,
   revalidateOnFocus: false,
@@ -22,25 +24,23 @@ const SWR_CONFIG: SWRConfiguration = {
 }
 
 export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: TradeType): boolean | undefined {
+  const publicClient = usePublicClient()
   const { chainId, account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const permit = order ? getOrderPermitIfExists(order) : null
   const tokenPermitInfo = usePermitInfo(order?.inputToken, tradeType)
 
   const isPendingOrder = order ? isPending(order) : false
-  const checkPermit = isPermitValid(permit, chainId, account) && account && provider && isPendingOrder && tradeType
+  const checkPermit = isPermitValid(permit, chainId, account) && account && publicClient && isPendingOrder && tradeType
 
   const { data: isValid } = useSWR(
     checkPermit ? [account, chainId, order?.id, tradeType, permit] : null,
     async ([account, chainId]) => {
-      if (!permit || !order || !account || !provider || !chainId || !tokenPermitInfo) {
+      if (!permit || !order || !account || !publicClient || !chainId || !tokenPermitInfo) {
         return undefined
       }
 
       try {
-        return await checkPermitNonceAndAmount(account, chainId, provider, order, permit, tokenPermitInfo)
+        return await checkPermitNonceAndAmount(account, chainId, publicClient, order, permit, tokenPermitInfo)
       } catch (error) {
         console.error('Error validating permit:', error)
         return undefined
@@ -52,6 +52,6 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
   return isValid
 }
 
-function isPermitValid(permit: string | null, chainId: number, account: string | undefined): boolean {
+function isPermitValid(permit: Hex | null, chainId: number, account: string | undefined): boolean {
   return permit && account ? isPermitDecodedCalldataValid(permit, chainId, account).isValid : false
 }

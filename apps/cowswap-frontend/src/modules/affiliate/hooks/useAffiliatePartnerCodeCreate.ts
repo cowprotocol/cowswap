@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { WalletClient } from 'viem'
 
 import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
@@ -14,7 +14,7 @@ import { buildPartnerTypedData } from '../lib/affiliateProgramUtils'
 
 interface UseAffiliatePartnerCodeCreateParams {
   account: string | undefined
-  provider: ReturnType<typeof useWalletProvider>
+  walletClient?: WalletClient
   code: string
   setError: (error?: AffiliatePartnerCodeCreateError) => void
 }
@@ -26,7 +26,7 @@ interface UseAffiliatePartnerCodeCreateResult {
 
 export function useAffiliatePartnerCodeCreate({
   account,
-  provider,
+  walletClient,
   code,
   setError,
 }: UseAffiliatePartnerCodeCreateParams): UseAffiliatePartnerCodeCreateResult {
@@ -34,19 +34,24 @@ export function useAffiliatePartnerCodeCreate({
   const { mutate: mutatePartnerInfo } = useAffiliatePartnerInfo(account)
 
   const onCreate = useCallback(async (): Promise<void> => {
-    if (!account || !provider) return
+    if (!account || !walletClient || !walletClient.account) return
 
     setSubmitting(true)
     setError(undefined)
 
     try {
-      const signer = provider.getSigner()
       const typedData = buildPartnerTypedData({
         walletAddress: account,
         code,
         chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
       })
-      const signedMessage = await signer._signTypedData(typedData.domain, typedData.types, typedData.message)
+      const signedMessage = await walletClient.signTypedData({
+        account: walletClient.account?.address,
+        domain: typedData.domain,
+        types: typedData.types,
+        primaryType: 'AffiliateCode',
+        message: typedData.message,
+      })
 
       await bffAffiliateApi.createCode({
         code,
@@ -60,7 +65,7 @@ export function useAffiliatePartnerCodeCreate({
     } finally {
       setSubmitting(false)
     }
-  }, [account, code, mutatePartnerInfo, provider, setError])
+  }, [account, code, mutatePartnerInfo, walletClient, setError])
 
   return useMemo(() => ({ submitting, onCreate }), [submitting, onCreate])
 }

@@ -4,13 +4,12 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 
-import { Interface } from 'ethers/lib/utils'
+import { encodeFunctionData } from 'viem'
 
 import { CowHook } from 'modules/hooksStore/types/hooks'
 
 import { SimulationData, SimulationInput } from '../types'
 
-const erc20Interface = new Interface(Erc20Abi)
 export interface GetTransferTenderlySimulationInput {
   currencyAmount: string
   from: string
@@ -75,7 +74,11 @@ export function getTransferTenderlySimulationInput({
   receiver,
   token,
 }: GetTransferTenderlySimulationInput): SimulationInput {
-  const callData = erc20Interface.encodeFunctionData('transfer', [receiver, currencyAmount])
+  const callData = encodeFunctionData({
+    abi: Erc20Abi,
+    functionName: 'transfer',
+    args: [receiver as `0x${string}`, BigInt(currencyAmount)],
+  })
 
   return {
     input: callData,

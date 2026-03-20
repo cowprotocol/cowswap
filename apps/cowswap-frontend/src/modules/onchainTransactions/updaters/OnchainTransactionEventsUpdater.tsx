@@ -24,7 +24,7 @@ export function OnchainTransactionEventsUpdater() {
       event: CowWidgetEvents.ON_ONCHAIN_TRANSACTION,
       handler(payload: OnTransactionPayload) {
         const { receipt, summary } = payload
-        const isSuccess = receipt.status === 1 && receipt.replacementType !== 'cancel'
+        const isSuccess = receipt.status === 'success' && receipt.replacementType !== 'cancel'
 
         // Display a snackbar in CowSwap UI
         addSnackbar({

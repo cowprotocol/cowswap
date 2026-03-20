@@ -7,7 +7,7 @@ import { Currency } from '@cowprotocol/currency'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWalletProvider, type WalletProviderLike } from '@cowprotocol/wallet-provider'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -31,7 +31,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const { icon, walletName } = useWalletDetails()
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const provider = useWalletProvider() as WalletProviderLike | undefined
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isAssetWatchingSupported = useIsAssetWatchingSupported()
@@ -64,7 +64,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
         })
         setSuccess(true)
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error('Can not add an asset to wallet', error)
         // Track failure event
         cowAnalytics.sendEvent({

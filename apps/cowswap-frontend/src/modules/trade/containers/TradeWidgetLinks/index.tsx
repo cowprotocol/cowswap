@@ -43,7 +43,7 @@ interface TradeWidgetLinksProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) {
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
@@ -87,7 +87,8 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           ? addChainIdToRoute(item.route, chainId)
           : parameterizeTradeRoute(tradeUrlParams, item.route, !isCurrentPathYield)
 
-      const isActive = location.pathname.startsWith(routePath.split('?')[0])
+      const routeBasePath = addChainIdToRoute(item.route, chainId)
+      const isActive = location.pathname.startsWith(routeBasePath)
 
       return (
         <MenuItem

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { isTruthy } from '@cowprotocol/common-utils'
+import { isTruthy, stringifyJsonSafe } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -145,13 +145,14 @@ function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersSta
     return state.orders?.[chainId]
   })
 
-  // Additional memoization to avoid excessive re-renders
-  // ordersState is a plain object that contains serialized data, so we can stringify it safely
+  // Additional memoization to avoid excessive re-renders.
+  // Use shared bigint-safe stringify so state that contains sellAmountBeforeFee (bigint) never hits JSON.stringify.
+  const ordersStateKey = useMemo(() => (ordersState == null ? '' : stringifyJsonSafe(ordersState)), [ordersState])
   return useMemo(() => {
     if (!chainId) return undefined
     return { ...getDefaultNetworkState(chainId), ...(ordersState || {}) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(ordersState), chainId])
+  }, [ordersStateKey, chainId])
 }
 
 export const useOrders = (

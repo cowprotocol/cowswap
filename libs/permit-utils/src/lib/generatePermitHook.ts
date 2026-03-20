@@ -1,11 +1,15 @@
 import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
+import { Address, Hex } from 'viem'
+import { estimateGas } from 'wagmi/actions'
+
+import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_ACCOUNT } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
 import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
+
+import type { Config } from 'wagmi'
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
@@ -34,7 +38,7 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
 }
 
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
-  const { inputToken, spender, chainId, permitInfo, provider, account, eip2612Utils, nonce: preFetchedNonce } = params
+  const { inputToken, spender, chainId, permitInfo, config, account, eip2612Utils, nonce: preFetchedNonce } = params
 
   const tokenAddress = inputToken.address
   // TODO: remove the need for `name` from input token. Should come from permitInfo instead
@@ -48,7 +52,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
     throw new Error(`No token name for token: ${tokenAddress}`)
   }
 
-  const owner = account || PERMIT_SIGNER.address
+  const owner = account || PERMIT_ACCOUNT.address
 
   // Only fetch the nonce in case it wasn't pre-fetched before
   // That's the case for static account
@@ -93,33 +97,45 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
           ],
         })
 
-  const gasLimit = await calculateGasLimit(callData, owner, tokenAddress, provider, !!account)
+  const gasLimit = await calculateGasLimit({
+    data: callData,
+    from: owner,
+    to: tokenAddress,
+    config,
+    isUserAccount: !!account,
+  })
 
   return {
     target: tokenAddress,
     callData,
-    gasLimit,
+    gasLimit: gasLimit.toString(),
     dappId: PERMIT_HOOK_DAPP_ID,
   }
 }
 
-async function calculateGasLimit(
-  data: string,
-  from: string,
-  to: string,
-  provider: JsonRpcProvider,
-  isUserAccount: boolean,
-): Promise<string> {
+async function calculateGasLimit({
+  data,
+  from,
+  to,
+  config,
+  isUserAccount,
+}: {
+  data: Hex
+  from: Address
+  to: Address
+  config: Config
+  isUserAccount: boolean
+}): Promise<bigint> {
   try {
     // Query the actual gas estimate
-    const actual = await provider.estimateGas({ data, from, to })
+    const actual = await estimateGas(config, { account: from, to, data })
 
     // Add 10% to actual value to account for minor differences with real account
     // Do not add it if this is the real user's account
-    const gasLimit = !isUserAccount ? actual.add(actual.div(10)) : actual
+    const gasLimit = !isUserAccount ? actual + actual / 10n : actual
 
     // Pick the biggest between estimated and default
-    return gasLimit.gt(DEFAULT_PERMIT_GAS_LIMIT) ? gasLimit.toString() : DEFAULT_PERMIT_GAS_LIMIT
+    return gasLimit > DEFAULT_PERMIT_GAS_LIMIT ? gasLimit : DEFAULT_PERMIT_GAS_LIMIT
   } catch (e) {
     console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
 

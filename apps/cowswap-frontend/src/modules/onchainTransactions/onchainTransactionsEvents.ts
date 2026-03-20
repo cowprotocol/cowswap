@@ -1,7 +1,8 @@
 import { SimpleCowEventEmitter } from '@cowprotocol/events'
-import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import type { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+
+import type { TransactionReceipt } from 'viem'
 
 interface FinalizeTxPayload {
   receipt: TransactionReceipt

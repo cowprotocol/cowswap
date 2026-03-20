@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { OPEN_WALLET_MODAL_EVENT } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
 
@@ -27,8 +28,14 @@ export function useCloseModal(_modal: ApplicationModal): Command {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
+/**
+ * Dispatches OPEN_WALLET_MODAL_EVENT so a listener inside Web3Provider runs reconnect then opens the AppKit modal.
+ * No wagmi/Reown hooks here so this is safe to call from any part of the tree.
+ */
 export function useToggleWalletModal(): Command {
-  return useToggleModal(ApplicationModal.WALLET)
+  return useCallback(() => {
+    document.dispatchEvent(new CustomEvent(OPEN_WALLET_MODAL_EVENT))
+  }, [])
 }
 
 // TODO: These two seem to be gone from original. Check whether they have been replaced

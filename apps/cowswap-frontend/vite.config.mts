@@ -140,12 +140,9 @@ export default defineConfig(({ mode }) => {
         // force esm usage for misconfigured deps' package.json (e.g. @safe-global/safe-apps-sdk)
         mainFields: ['exports', 'module', 'main'],
       },
-      include: [
-        '@walletconnect/ethereum-provider',
-        '@walletconnect/universal-provider',
-        '@walletconnect/utils',
-        '@walletconnect/sign-client',
-      ],
+      // Only include packages that are direct or resolvable from the app; transitive
+      // WalletConnect deps (universal-provider, utils, sign-client) are not resolvable here.
+      include: ['@walletconnect/ethereum-provider'],
     },
 
     resolve: {
@@ -154,6 +151,10 @@ export default defineConfig(({ mode }) => {
       },
       // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
       conditions: ['module', 'import', 'browser', 'default'],
+      // Dedupe packages that rely on shared React context across workspace libs.
+      // Without this, pnpm creates separate copies per workspace package (different peer dep sets),
+      // causing context mismatches (e.g. WagmiProvider in libs/wallet vs useConnection in libs/wallet-provider).
+      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
     },
 
     build: {

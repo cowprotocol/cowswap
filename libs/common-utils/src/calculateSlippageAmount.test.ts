@@ -1,5 +1,6 @@
 import { CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
-import { AddressZero } from '@ethersproject/constants'
+
+import { zeroAddress } from 'viem'
 
 import { calculateSlippageAmount } from './calculateSlippageAmount'
 
@@ -7,7 +8,7 @@ import { calculateSlippageAmount } from './calculateSlippageAmount'
 
 describe('#calculateSlippageAmount', () => {
   it('bounds are correct', () => {
-    const tokenAmount = CurrencyAmount.fromRawAmount(new Token(1, AddressZero, 0), '100')
+    const tokenAmount = CurrencyAmount.fromRawAmount(new Token(1, zeroAddress, 0), '100')
     expect(() => calculateSlippageAmount(tokenAmount, new Percent(-1, 10_000))).toThrow('Unexpected slippage')
     expect(() => calculateSlippageAmount(tokenAmount, new Percent(10_001, 10_000))).toThrow('Unexpected slippage')
     expect(calculateSlippageAmount(tokenAmount, new Percent(0, 10_000)).map((bound) => bound.toString())).toEqual([

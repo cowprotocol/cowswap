@@ -6,6 +6,7 @@ import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
+import { useConnection } from 'wagmi'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
@@ -25,7 +26,10 @@ import { TradeFormValidationCommonContext } from '../types'
 
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
-  const { account } = useWalletInfo()
+  const { address: wagmiAddress } = useConnection()
+  const { account: atomAccount } = useWalletInfo()
+  // Use wagmi connection state so swap button updates immediately when wallet connects (avoids lag from WalletUpdater → atom).
+  const account = wagmiAddress ?? atomAccount
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()

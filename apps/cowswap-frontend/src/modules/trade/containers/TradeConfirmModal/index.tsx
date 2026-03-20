@@ -9,6 +9,7 @@ import { useSigningStep } from 'entities/trade'
 import styled from 'styled-components/macro'
 
 import { PermitModal } from 'common/containers/PermitModal'
+import { useEffectiveChainId } from 'common/hooks/useEffectiveChainId'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { TradeAmounts } from 'common/types'
@@ -35,19 +36,24 @@ export interface TradeConfirmModalProps {
 export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { children, submittedContent, title } = props
 
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
+  const effectiveChainId = useEffectiveChainId()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
   const signingStep = useSigningStep()
 
-  if (!account) return null
+  // When returning from MM after signing, account can be briefly undefined; keep success state visible
+  const showSuccessState = !!transactionHash
+  if (!account && !showSuccessState) return null
+
+  const effectiveAccount = account ?? ''
 
   return (
     <Container>
       <InnerComponent
-        chainId={chainId}
-        account={account}
+        chainId={effectiveChainId}
+        account={effectiveAccount}
         error={error}
         title={title}
         pendingTrade={pendingTrade}

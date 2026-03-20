@@ -1,11 +1,10 @@
 import { ReactNode } from 'react'
 
 import { TradeSpenderOverrideUpdater } from '@cowprotocol/balances-and-allowances'
-import { percentToBps } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
+import { percentToBps, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { AppDataUpdater } from 'modules/appData'
 
 import { CreatedInOrderBookOrdersUpdater } from './CreatedInOrderBookOrdersUpdater'
@@ -21,12 +20,13 @@ import { useTwapSlippage } from '../hooks/useTwapSlippage'
 export function TwapUpdaters(): ReactNode {
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
+  const composableCowContract = useComposableCowContractData()
   const twapOrderSlippage = useTwapSlippage()
 
-  const shouldLoadTwapOrders = !!(isSafeWallet && account && composableCowContract)
+  const shouldLoadTwapOrders = !!(isSafeWallet && account && composableCowContract.address)
+  const composableCowChainId = composableCowContract.chainId
   // TWAP orders always approve against the production vault relayer regardless of the current environment.
-  const spenderAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
+  const spenderAddress = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
 
   return (
     <>

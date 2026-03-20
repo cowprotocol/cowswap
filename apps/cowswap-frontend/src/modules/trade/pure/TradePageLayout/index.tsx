@@ -10,6 +10,8 @@ export const PageWrapper = styled.div<{
   secondaryOnLeft?: boolean
   maxWidth?: string
   hideOrdersTable?: boolean
+  /** When true, widget and orders table are always stacked (one column); widget stays in same position as Swap/Yield */
+  stacked?: boolean
 }>`
   width: 100%;
   display: grid;
@@ -21,15 +23,25 @@ export const PageWrapper = styled.div<{
   gap: 20px;
 
   ${Media.LargeAndUp()} {
-    grid-template-columns: ${({ isUnlocked, hideOrdersTable, secondaryOnLeft }) =>
-      isUnlocked && !hideOrdersTable
-        ? secondaryOnLeft
-          ? '1fr minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px)'
-          : 'minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px) 1fr'
-        : '1fr'};
-    grid-template-rows: 1fr;
-    grid-template-areas: ${({ secondaryOnLeft, hideOrdersTable }) =>
-      hideOrdersTable ? '"primary"' : secondaryOnLeft ? '"secondary primary"' : '"primary secondary"'};
+    grid-template-columns: ${({ isUnlocked, hideOrdersTable, secondaryOnLeft, stacked }) =>
+      stacked
+        ? '1fr'
+        : isUnlocked && !hideOrdersTable
+          ? secondaryOnLeft
+            ? '1fr minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px)'
+            : 'minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px) 1fr'
+          : '1fr'};
+    grid-template-rows: ${({ stacked, hideOrdersTable }) => (stacked && !hideOrdersTable ? 'auto 1fr' : '1fr')};
+    grid-template-areas: ${({ secondaryOnLeft, hideOrdersTable, stacked }) =>
+      stacked
+        ? hideOrdersTable
+          ? '"primary"'
+          : '"primary" "secondary"'
+        : hideOrdersTable
+          ? '"primary"'
+          : secondaryOnLeft
+            ? '"secondary primary"'
+            : '"primary secondary"'};
   }
 
   > .trade-orders-table {

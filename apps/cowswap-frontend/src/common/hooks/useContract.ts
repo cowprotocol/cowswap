@@ -5,137 +5,215 @@ import {
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
-import {
-  getContract,
-  isEns,
-  isProd,
-  isStaging,
-  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
-} from '@cowprotocol/common-utils'
+import { isEns, isProd, isStaging, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import {
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
   CowEnv,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
-import {
-  CoWSwapEthFlow,
-  CoWSwapEthFlowAbi,
-  Erc20,
-  Erc20Abi,
-  GPv2Settlement,
-  GPv2SettlementAbi,
-  VCow,
-  vCowAbi,
-  Weth,
-  WethAbi,
-} from '@cowprotocol/cowswap-abis'
+import { CoWSwapEthFlowAbi, GPv2SettlementAbi, vCowAbi, WethAbi } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Contract, ContractInterface } from '@ethersproject/contracts'
-import { Web3Provider } from '@ethersproject/providers'
+
+import { type Address, erc20Abi } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
 
 const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
-  Object.entries(WRAPPED_NATIVE_CURRENCIES).map(([chainId, token]) => [chainId, token.address]),
+  Object.entries(WRAPPED_NATIVE_CURRENCIES).map(([chainId, token]) => [
+    chainId,
+    (token as unknown as { address: string }).address,
+  ]),
 )
 
 export const ethFlowEnv: CowEnv = isProd || isStaging || isEns ? 'prod' : 'staging'
 
-export type UseContractResult<T extends Contract = Contract> = {
-  contract: T | null
-  error: unknown | null
-  loading: boolean
-  chainId: SupportedChainId
+export type UseContractResult<T> = { abi: T; address: string; chainId: SupportedChainId }
+
+/** Minimal stub for legacy useContract(address, abi, withContract). Returns contract data only; contract methods require viem/wagmi. */
+export function useContract<TContract = null, TAbi = unknown>(
+  address: string | undefined,
+  abi: TAbi,
+  _withContract?: boolean,
+): UseContractResult<TAbi> & { contract: TContract | null } {
+  const { chainId } = useWalletInfo()
+  return useMemo(
+    () => ({
+      abi,
+      address: address ?? '',
+      chainId: chainId ?? (1 as SupportedChainId),
+      contract: null,
+    }),
+    [address, abi, chainId],
+  ) as UseContractResult<TAbi> & { contract: TContract | null }
 }
 
-// returns null on errors
-export function useContract<T extends Contract = Contract>(
-  addressOrAddressMap: string | { [chainId: number]: string | undefined | null } | undefined,
-  ABI: ContractInterface,
-  withSignerIfPossible = true,
-  customProvider?: Web3Provider,
-): UseContractResult<T> {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const defaultProvider = useWalletProvider()
-  const { account, chainId } = useWalletInfo()
-  const provider = customProvider || defaultProvider
+export type WethContractData = UseContractResult<typeof WethAbi>
+export function useWethContractData(): WethContractData {
+  const { chainId } = useWalletInfo()
 
-  return useMemo(() => {
-    if (!addressOrAddressMap || !ABI || !provider) {
-      // Loading, waiting for chain or some basic information to instantiate the contract
-      return {
-        contract: null,
-        error: null,
-        chainId,
-        loading: true,
-      }
-    }
-
-    // Get the address for the contract
-    const address = typeof addressOrAddressMap === 'string' ? addressOrAddressMap : addressOrAddressMap[chainId]
-
-    if (!address) {
-      // No address, no contract
-      return {
-        contract: null,
-        error: null,
-        chainId,
-        loading: false,
-      }
-    }
-    try {
-      // Load and return the contract
-      const contract = getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined)
-
-      return {
-        contract,
-        error: null,
-        chainId,
-        loading: false,
-      }
-    } catch (error) {
-      // Error getting the contract instance
-      console.error('Failed to get contract', error)
-
-      return {
-        contract: null,
-        error: error,
-        chainId,
-        loading: false,
-      }
-    }
-  }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as UseContractResult<T>
+  return useMemo(
+    () => ({
+      abi: WethAbi,
+      address: WETH_CONTRACT_ADDRESS_MAP[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
 
-export function useEthFlowContract(): {
-  result: UseContractResult<CoWSwapEthFlow>
-} {
+export type EthFlowContractData = UseContractResult<typeof CoWSwapEthFlowAbi>
+export function useEthFlowContractData(): EthFlowContractData {
   const { chainId } = useWalletInfo()
 
   const contractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId)
 
-  return {
-    result: useContract<CoWSwapEthFlow>(contractAddress, CoWSwapEthFlowAbi, true),
-  }
+  return useMemo(
+    () => ({
+      abi: CoWSwapEthFlowAbi,
+      address: contractAddress,
+      chainId,
+    }),
+    [contractAddress, chainId],
+  )
 }
 
-export function useGP2SettlementContract(): UseContractResult<GPv2Settlement> {
-  return useContract<GPv2Settlement>(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, GPv2SettlementAbi, true)
+export type SettlementContractData = UseContractResult<typeof GPv2SettlementAbi>
+export function useGP2SettlementContractData(): SettlementContractData {
+  const { chainId } = useWalletInfo()
+
+  return useMemo(
+    () => ({
+      abi: GPv2SettlementAbi,
+      address: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
 
-// TWAP orders always run on the production settlement contract regardless of the current environment.
-export function useGP2SettlementContractProd(): UseContractResult<GPv2Settlement> {
-  return useContract<GPv2Settlement>(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD, GPv2SettlementAbi, true)
+/** TWAP / extensible fallback: always use production settlement addresses regardless of barn/staging env. */
+export function useGP2SettlementContractProd(): SettlementContractData {
+  const { chainId } = useWalletInfo()
+
+  return useMemo(
+    () => ({
+      abi: GPv2SettlementAbi,
+      address: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
 
-export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): UseContractResult<Erc20> {
-  return useContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible)
+export type VCowContractData = Omit<UseContractResult<typeof vCowAbi>, 'address'> & { address: string | null }
+export function useVCowContractData(): VCowContractData {
+  const { chainId } = useWalletInfo()
+
+  return useMemo(
+    () => ({
+      abi: vCowAbi,
+      address: V_COW_CONTRACT_ADDRESS[chainId],
+      chainId,
+    }),
+    [chainId],
+  )
 }
 
-export function useVCowContract(): UseContractResult<VCow> {
-  return useContract<VCow>(V_COW_CONTRACT_ADDRESS, vCowAbi, true)
+/** ERC20 contract wrapper for viem: returns { contract, chainId } for token at address */
+export function useTokenContract(tokenAddress: string | undefined): {
+  contract: { allowance: (owner: string, spender: string) => Promise<bigint> } | null
+  chainId: SupportedChainId | undefined
+} {
+  const { chainId } = useWalletInfo()
+  const publicClient = usePublicClient()
+
+  const contract = useMemo(() => {
+    if (!tokenAddress || !chainId || !publicClient) return null
+    const address = tokenAddress as Address
+    return {
+      allowance: (owner: string, spender: string) =>
+        publicClient.readContract({
+          address,
+          abi: erc20Abi,
+          functionName: 'allowance',
+          args: [owner as Address, spender as Address],
+        }),
+    }
+  }, [tokenAddress, chainId, publicClient])
+
+  return useMemo(
+    () => ({
+      contract,
+      chainId: chainId ?? undefined,
+    }),
+    [contract, chainId],
+  )
 }
 
-export function useWethContract(withSignerIfPossible?: boolean): UseContractResult<Weth> {
-  return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
+/** vCow contract wrapper for viem: returns { contract, chainId } with swapAll, balanceOf, swappableBalanceOf */
+export function useVCowContract(): {
+  contract: {
+    estimateGas: { swapAll: (params?: { from?: string }) => Promise<bigint> }
+    swapAll: (params: { from: string; gasLimit: bigint }) => Promise<{ hash: `0x${string}` }>
+    swappableBalanceOf: (account: string) => Promise<bigint>
+    balanceOf: (account: string) => Promise<bigint>
+  } | null
+  chainId: SupportedChainId | undefined
+} {
+  const { chainId } = useWalletInfo()
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
+  const vCowAddress = chainId ? V_COW_CONTRACT_ADDRESS[chainId] : null
+
+  const contract = useMemo(() => {
+    if (!vCowAddress || !chainId || !publicClient || !walletClient) return null
+    const address = vCowAddress as Address
+    return {
+      estimateGas: {
+        swapAll: async (params?: { from?: string }) => {
+          try {
+            return await publicClient.estimateContractGas({
+              address,
+              abi: vCowAbi,
+              functionName: 'swapAll',
+              account: (params?.from ?? walletClient.account?.address) as Address,
+            })
+          } catch {
+            return 0n
+          }
+        },
+      },
+      swapAll: async (params: { from: string; gasLimit: bigint }) => {
+        const hash = await walletClient.writeContract({
+          address,
+          abi: vCowAbi,
+          functionName: 'swapAll',
+          account: params.from as Address,
+          gas: params.gasLimit,
+        })
+        return { hash }
+      },
+      swappableBalanceOf: (account: string) =>
+        publicClient.readContract({
+          address,
+          abi: vCowAbi,
+          functionName: 'swappableBalanceOf',
+          args: [account as Address],
+        }),
+      balanceOf: (account: string) =>
+        publicClient.readContract({
+          address,
+          abi: vCowAbi,
+          functionName: 'balanceOf',
+          args: [account as Address],
+        }),
+    }
+  }, [vCowAddress, chainId, publicClient, walletClient])
+
+  return useMemo(
+    () => ({
+      contract,
+      chainId: chainId ?? undefined,
+    }),
+    [contract, chainId],
+  )
 }

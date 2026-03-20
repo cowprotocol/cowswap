@@ -9,7 +9,7 @@ export interface SetOptimisticAllowanceParams {
   owner: string
   spender: string
   amount: bigint
-  blockNumber: number
+  blockNumber: bigint
   chainId: number
 }
 

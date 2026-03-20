@@ -7,7 +7,12 @@ const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
 const perfectionist = require('eslint-plugin-perfectionist')
-const prettier = require('eslint-plugin-prettier')
+let prettier
+try {
+  prettier = require('eslint-plugin-prettier')
+} catch {
+  prettier = null
+}
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const reactRefresh = require('eslint-plugin-react-refresh')
@@ -28,7 +33,7 @@ module.exports = [
       '@nx': nxEslintPlugin,
       'unused-imports': unusedImports,
       import: eslintImport,
-      prettier: prettier,
+      ...(prettier && { prettier }),
     },
   },
 
@@ -217,7 +222,7 @@ module.exports = [
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
+              pattern: '{@cowprotocol,@uniswap,@safe-global}/**',
               group: 'external',
               position: 'before',
             },
@@ -267,7 +272,7 @@ module.exports = [
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',
       'no-var': 'error',
-      'prettier/prettier': 'warn',
+      ...(prettier && { 'prettier/prettier': 'warn' }),
     },
   },
 

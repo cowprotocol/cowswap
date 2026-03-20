@@ -28,6 +28,8 @@ export interface TradeApproveButtonProps {
   label?: string
   buttonSize?: ButtonSize
   useModals?: boolean
+  /** When true, skip permit and always use on-chain approval so the wallet opens for signing. */
+  ignorePermit?: boolean
   approveClickEvent?: string
   swapClickEvent?: string
 }

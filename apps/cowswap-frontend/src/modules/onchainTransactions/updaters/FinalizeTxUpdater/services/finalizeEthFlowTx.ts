@@ -1,6 +1,5 @@
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-
 import { t } from '@lingui/core/macro'
+import { TransactionReceipt } from 'viem'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
@@ -21,7 +20,7 @@ export function finalizeEthFlowTx(
   const { chainId, isSafeWallet, dispatch, nativeCurrencySymbol } = params
 
   if (subType === 'creation') {
-    if (receipt.status !== 1) {
+    if (receipt.status !== 'success') {
       // If creation failed:
       // 1. Mark order as invalid
       dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))

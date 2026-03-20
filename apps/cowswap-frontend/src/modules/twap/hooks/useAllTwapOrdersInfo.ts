@@ -1,31 +1,24 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { TwapOrderInfo, TwapOrdersSafeData } from '../types'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { parseTwapOrderStruct } from '../utils/parseTwapOrderStruct'
 
+/**
+ * Builds the current TWAP order info map from Safe Transaction Service data.
+ * Replaces state on each snapshot so proposals removed from the Safe queue disappear here too.
+ */
 export function useAllTwapOrdersInfo(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInfo[] {
   const [allOrdersInfo, setAllOrdersInfo] = useState<Record<string, TwapOrderInfo>>({})
-  const allOrdersInfoRef = useRef(allOrdersInfo)
-
-  // eslint-disable-next-line react-hooks/refs
-  allOrdersInfoRef.current = allOrdersInfo
 
   useEffect(() => {
     const parsed = parseOrdersSafeData(ordersSafeData)
-    const ordersToAdd = parsed.filter((item) => !allOrdersInfoRef.current[item.id])
-
-    if (!ordersToAdd.length) return
-
-    const update = ordersToAdd.reduce<Record<string, TwapOrderInfo>>((acc, item) => {
+    const nextMap = parsed.reduce<Record<string, TwapOrderInfo>>((acc, item) => {
       acc[item.id] = item
-
       return acc
     }, {})
 
-    setAllOrdersInfo((state) => {
-      return { ...state, ...update }
-    })
+    setAllOrdersInfo(nextMap)
   }, [ordersSafeData])
 
   return useMemo(() => Object.values(allOrdersInfo), [allOrdersInfo])
@@ -52,7 +45,7 @@ function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInf
 
       const info = {
         id,
-        orderStruct: parseTwapOrderStruct(data.conditionalOrderParams.staticInput),
+        orderStruct: parseTwapOrderStruct(data.conditionalOrderParams.staticInput as `0x${string}`),
         safeData: data,
       }
 

@@ -172,6 +172,13 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.scheduled[id]
 }
 
+/** Normalize order for storage so it is JSON-serializable (e.g. for redux-localstorage-simple). */
+function normalizeOrderForStorage(order: SerializedOrder): SerializedOrder {
+  const fee =
+    typeof order.sellAmountBeforeFee === 'bigint' ? order.sellAmountBeforeFee.toString() : order.sellAmountBeforeFee
+  return { ...order, sellAmountBeforeFee: fee } as unknown as SerializedOrder
+}
+
 function addOrderToState(
   state: Required<OrdersState>,
   chainId: ChainId,
@@ -180,12 +187,12 @@ function addOrderToState(
   order: SerializedOrder,
   isSafeWallet: boolean,
 ): void {
+  // Normalize so stored state is JSON-serializable (BigInt -> string for sellAmountBeforeFee)
+  const orderToStore = normalizeOrderForStorage(order)
   // Attempt to fix `TypeError: Cannot add property <x>, object is not extensible`
   // seen on https://user-images.githubusercontent.com/34510341/138450105-bb94a2d1-656e-4e15-ae99-df9fb33c8ca4.png
   // by creating a new object instead of trying to edit the existing one
-  // Seems to be due to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions
-  // but only happened on Chrome
-  state[chainId][status] = { ...state[chainId][status], [id]: { order, id, isSafeWallet } }
+  state[chainId][status] = { ...state[chainId][status], [id]: { order: orderToStore, id, isSafeWallet } }
 }
 
 function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id: string): OrderObject | undefined {

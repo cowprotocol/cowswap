@@ -21,7 +21,7 @@ export function processRecoverTransaction(
       onTxFinished()
 
       // Go back to the proxy page when tx is mined
-      if (data.receipt.status === 1) {
+      if (data.receipt.status === 'success') {
         onTxSuccess()
       }
     }

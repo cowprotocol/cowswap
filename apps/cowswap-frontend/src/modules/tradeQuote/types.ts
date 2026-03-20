@@ -10,4 +10,10 @@ export interface TradeQuotePollingParameters {
   isConfirmOpen: boolean
   isQuoteUpdatePossible: boolean
   useSuggestedSlippageApi: boolean
+  hasPendingTrade: boolean
+}
+
+export interface QuotePollingUpdateTimings {
+  now: number
+  ref: { current: number | null }
 }

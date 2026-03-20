@@ -16,10 +16,9 @@ import {
   SigningScheme,
   SupportedChainId as ChainId,
   UnsignedOrder,
+  type Signer,
 } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
-import type { Signer } from '@ethersproject/abstract-signer'
-import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
@@ -31,6 +30,8 @@ import { AppDataInfo } from 'modules/appData'
 import { getIsOrderBookTypedError } from 'api/cowProtocol'
 import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorError'
 
+import type { WalletClient } from 'viem'
+
 export type MapUnsignedOrderToOrderParams = {
   unsignedOrder: UnsignedOrder
   additionalParams: UnsignedOrderAdditionalParams
@@ -39,7 +40,7 @@ export type MapUnsignedOrderToOrderParams = {
 export type PostOrderParams = {
   account: string
   chainId: ChainId
-  signer: JsonRpcSigner
+  signer: WalletClient
   kind: OrderKind
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
@@ -209,7 +210,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     apiAdditionalInfo: undefined,
 
     // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
-    sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
+    sellAmountBeforeFee: BigInt(sellAmountBeforeFee.quotient.toString()),
   }
 }
 

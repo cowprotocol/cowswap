@@ -72,7 +72,8 @@ function _transformOrderBookOrderToStoreOrder(
   const storeOrder: Order = {
     ...order,
     // TODO: for some reason executedSellAmountBeforeFees is zero for limit-orders
-    sellAmountBeforeFee: order.class === OrderClass.LIMIT ? order.sellAmount : order.executedSellAmountBeforeFees,
+    sellAmountBeforeFee:
+      order.class === OrderClass.LIMIT ? BigInt(order.sellAmount) : BigInt(order.executedSellAmountBeforeFees),
     inputToken,
     outputToken,
     id,

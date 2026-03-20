@@ -1,13 +1,12 @@
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20__factory } from '@cowprotocol/cowswap-abis'
+import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
-import type { Web3Provider } from '@ethersproject/providers'
 
 import { renderHook } from '@testing-library/react'
 import useSWR from 'swr'
+import { encodeFunctionData } from 'viem'
+import { usePublicClient } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -18,6 +17,8 @@ import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 
 import { useDoesOrderHaveValidPermit } from './useDoesOrderHaveValidPermit'
+
+import type { Hex } from 'viem'
 
 // Mock SWR response interface
 interface MockSWRResponse {
@@ -32,8 +33,11 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
 }))
 
-jest.mock('@cowprotocol/wallet-provider', () => ({
-  useWalletProvider: jest.fn(),
+jest.mock('wagmi', () => ({
+  createConfig: jest.fn(),
+  http: jest.fn(),
+  useConfig: jest.fn().mockReturnValue({}),
+  usePublicClient: jest.fn().mockReturnValue({}),
 }))
 
 jest.mock('modules/permit', () => ({
@@ -57,33 +61,34 @@ jest.mock('../utils/checkPermitNonceAndAmount', () => ({
   checkPermitNonceAndAmount: jest.fn(),
 }))
 
-const erc20Interface = Erc20__factory.createInterface()
-
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseWalletProvider = useWalletProvider as jest.MockedFunction<typeof useWalletProvider>
+const mockUsePublicClient = usePublicClient as jest.MockedFunction<typeof usePublicClient>
 const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
 const mockIsPending = isPending as jest.MockedFunction<typeof isPending>
 const mockGetOrderPermitIfExists = getOrderPermitIfExists as jest.MockedFunction<typeof getOrderPermitIfExists>
 const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
 
-function createEip2612PermitCallData(owner: string, spender: string, value: EthersBigNumber, deadline: number): string {
-  const permitData = erc20Interface.encodeFunctionData('permit', [
-    owner,
-    spender,
-    value,
-    deadline,
-    0, // v
-    '0x0000000000000000000000000000000000000000000000000000000000000000', // r
-    '0x0000000000000000000000000000000000000000000000000000000000000000', // s
-  ])
+function createEip2612PermitCallData(owner: string, spender: string, value: bigint, deadline: bigint): Hex {
+  const permitData = encodeFunctionData({
+    abi: Erc20Abi,
+    functionName: 'permit',
+    args: [
+      owner,
+      spender,
+      value,
+      deadline,
+      0, // v
+      '0x0000000000000000000000000000000000000000000000000000000000000000', // r
+      '0x0000000000000000000000000000000000000000000000000000000000000000', // s
+    ],
+  })
   // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with EIP_2612_PERMIT_SELECTOR
-  return oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + permitData.slice(10)
+  return (oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + permitData.slice(10)) as Hex
 }
 
 describe('useDoesOrderHaveValidPermit', () => {
   const mockAccount = '0x1234567890123456789012345678901234567890'
   const mockChainId = SupportedChainId.MAINNET
-  const mockProvider = {} as Web3Provider
   const mockOrder = {
     id: 'test-order-id',
     sellToken: '0x1234567890123456789012345678901234567890',
@@ -99,8 +104,8 @@ describe('useDoesOrderHaveValidPermit', () => {
     },
   } as Order
   const spenderAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[mockChainId]
-  const futureDeadline = Math.floor(Date.now() / 1000) + 86400 // 24 hours from now
-  const permitValue = EthersBigNumber.from('1000000000000000000') // 1 token
+  const futureDeadline = BigInt(Math.floor(Date.now() / 1000) + 86400) // 24 hours from now
+  const permitValue = 1000000000000000000n // 1 token
   const mockPermit = createEip2612PermitCallData(mockAccount, spenderAddress, permitValue, futureDeadline)
   const mockPermitInfo = { type: 'eip-2612' as const }
 
@@ -109,7 +114,6 @@ describe('useDoesOrderHaveValidPermit', () => {
 
     // Default mocks
     mockUseWalletInfo.mockReturnValue({ account: mockAccount, chainId: mockChainId })
-    mockUseWalletProvider.mockReturnValue(mockProvider)
     mockUsePermitInfo.mockReturnValue(mockPermitInfo)
     mockIsPending.mockReturnValue(true)
     mockGetOrderPermitIfExists.mockReturnValue(mockPermit)
@@ -142,9 +146,9 @@ describe('useDoesOrderHaveValidPermit', () => {
     })
   })
 
-  describe('when provider is not available', () => {
+  describe('when public client is not available', () => {
     it('should return undefined', () => {
-      mockUseWalletProvider.mockReturnValue(undefined)
+      mockUsePublicClient.mockReturnValueOnce(undefined)
 
       const { result } = renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.SWAP))
 
@@ -186,6 +190,7 @@ describe('useDoesOrderHaveValidPermit', () => {
 
   describe('when all conditions are met', () => {
     it('should call SWR with correct parameters', () => {
+      console.log('TEST QUE ME INTERESSA ----------')
       const { result: _result } = renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.SWAP))
 
       expect(mockUseSWR).toHaveBeenCalledWith(

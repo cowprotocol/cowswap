@@ -52,7 +52,7 @@ export function useTokenAllowance(
     ([targetOwner, targetSpender]) => {
       if (!erc20Contract) return undefined
 
-      return erc20Contract.allowance(targetOwner, targetSpender).then((result) => result.toBigInt())
+      return erc20Contract.allowance(targetOwner, targetSpender)
     },
     SWR_OPTIONS,
   )

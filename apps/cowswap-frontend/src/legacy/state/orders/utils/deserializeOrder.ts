@@ -16,8 +16,13 @@ export function deserializeOrder(orderObject: OrderObject | V2OrderObject | unde
 
     const deserialisedInputToken = deserializeToken(serialisedOrder.inputToken)
     const deserialisedOutputToken = deserializeToken(serialisedOrder.outputToken)
+    const sellAmountBeforeFee =
+      typeof serialisedOrder.sellAmountBeforeFee === 'string'
+        ? BigInt(serialisedOrder.sellAmountBeforeFee)
+        : serialisedOrder.sellAmountBeforeFee
     order = {
       ...serialisedOrder,
+      sellAmountBeforeFee,
       inputToken: deserialisedInputToken,
       outputToken: deserialisedOutputToken,
     }

@@ -16,24 +16,24 @@ import { GeneratePermitHookParams } from '../types'
  * Internally checks whether the token is permittable
  *
  * If not permittable or not able to tell, returns undefined
+ *
+ * @param enablePreGeneration - When false, does not request a signature (avoids popup before user confirms). Default true.
  */
-export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
+export function useAccountAgnosticPermitHookData(enablePreGeneration = true): PermitHookData | undefined {
   const params = useGeneratePermitHookParams()
   const generatePermitHook = useGeneratePermitHook()
 
   const [data, setData] = useState<PermitHookData | undefined>(undefined)
 
   useEffect(() => {
-    if (!params) {
+    if (!enablePreGeneration || !params) {
       setData(undefined)
-
       return
     }
-
     generatePermitHook(params).then(setData)
-  }, [generatePermitHook, params])
+  }, [enablePreGeneration, generatePermitHook, params])
 
-  return data
+  return enablePreGeneration ? data : undefined
 }
 
 function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
@@ -49,7 +49,7 @@ function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
     if (!address || !isSupportedPermitInfo(permitInfo)) return undefined
 
     return {
-      inputToken: { address, name },
+      inputToken: { address: address as `0x${string}`, name },
       permitInfo,
     }
   }, [address, name, permitInfo])

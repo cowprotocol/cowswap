@@ -1,13 +1,13 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
-import { ReactNode, StrictMode } from 'react'
+import { Component, type ReactNode, StrictMode } from 'react'
 import './sentry'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
-import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
+import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
 
 import { Messages } from '@lingui/core'
 import { LanguageProvider } from 'i18n'
@@ -20,75 +20,63 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { ThemeProvider } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
-import { useAppSelector } from 'legacy/state/hooks'
 
 import { App, Updaters, WithLDProvider } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
+import { deduplicateEthereumSendTransaction } from 'lib/deduplicateEthereumSendTransaction'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
+deduplicateEthereumSendTransaction()
+
 const cowAnalytics = initGtm()
 const helmetContext = {}
+
+/** Catches render errors so the page shows a message instead of staying blank. */
+class RootErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  override state = { error: null as Error | null }
+
+  static getDerivedStateFromError(error: Error): { error: Error } {
+    return { error }
+  }
+
+  override componentDidCatch(error: Error): void {
+    console.error('Root error boundary:', error)
+  }
+
+  override render(): ReactNode {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 24, fontFamily: 'sans-serif', maxWidth: 560 }}>
+          <h1>Something went wrong</h1>
+          <p>{this.state.error.message}</p>
+          <pre style={{ overflow: 'auto', fontSize: 12 }}>{this.state.error.stack}</pre>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
 
-if (window.ethereum) {
-  window.ethereum.autoRefreshOnNetworkChange = false
+// Disable MetaMask network auto-refresh; ignore when window.ethereum is read-only (e.g. another extension set it with a getter).
+try {
+  if (window.ethereum) {
+    window.ethereum.autoRefreshOnNetworkChange = false
+  }
+} catch {
+  // ignore when property cannot be set (multiple wallet extensions conflict)
 }
 
 interface MainProps {
   localeMessages: Messages | undefined
-}
-
-export function Main({ localeMessages }: MainProps): ReactNode {
-  return (
-    <StrictMode>
-      <SvgCacheProvider>
-        <HelmetProvider context={helmetContext}>
-          <Provider store={cowSwapStore}>
-            <AtomProvider store={jotaiStore}>
-              <ThemeProvider>
-                <HashRouter>
-                  <LanguageProvider messages={localeMessages}>
-                    <WithLDProvider>
-                      <Web3ProviderInstance>
-                        <BlockNumberProvider>
-                          <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                            <WalletUnsupportedNetworkBanner />
-                            <Updaters />
-                            <Toasts />
-                            <App />
-                          </CowAnalyticsProvider>
-                        </BlockNumberProvider>
-                      </Web3ProviderInstance>
-                    </WithLDProvider>
-                  </LanguageProvider>
-                </HashRouter>
-              </ThemeProvider>
-            </AtomProvider>
-          </Provider>
-        </HelmetProvider>
-      </SvgCacheProvider>
-    </StrictMode>
-  )
-}
-
-async function initApp(): Promise<void> {
-  const container = document.getElementById('root')
-  if (container !== null) {
-    const root = createRoot(container)
-    // load localeMessages before initial <Main> render to prevent extra renders
-    const localeMessages = await loadActiveLocaleMessages()
-    root.render(<Main localeMessages={localeMessages} />)
-  } else {
-    console.error('Failed to find the root element')
-  }
 }
 
 function Toasts(): ReactNode {
@@ -97,15 +85,63 @@ function Toasts(): ReactNode {
   return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
 }
 
-function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-  const { standaloneMode } = useInjectedWidgetParams()
-
+export function Main({ localeMessages }: MainProps): ReactNode {
   return (
-    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
-      <Web3Provider>{children}</Web3Provider>
-    </LegacyWeb3Provider>
+    <StrictMode>
+      <RootErrorBoundary>
+        <SvgCacheProvider>
+          <HelmetProvider context={helmetContext}>
+            <Provider store={cowSwapStore}>
+              <AtomProvider store={jotaiStore}>
+                <ThemeProvider>
+                  <WalletProvider>
+                    <HashRouter>
+                      <LanguageProvider messages={localeMessages}>
+                        <WithLDProvider>
+                          <Web3Provider>
+                            <BlockNumberProvider>
+                              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                                <WalletUnsupportedNetworkBanner />
+                                <Updaters />
+                                <Toasts />
+                                <App />
+                              </CowAnalyticsProvider>
+                            </BlockNumberProvider>
+                          </Web3Provider>
+                        </WithLDProvider>
+                      </LanguageProvider>
+                    </HashRouter>
+                  </WalletProvider>
+                </ThemeProvider>
+              </AtomProvider>
+            </Provider>
+          </HelmetProvider>
+        </SvgCacheProvider>
+      </RootErrorBoundary>
+    </StrictMode>
   )
+}
+
+async function initApp(): Promise<void> {
+  const container = document.getElementById('root')
+  if (container === null) {
+    console.error('Failed to find the root element')
+    return
+  }
+  const root = createRoot(container)
+  try {
+    const localeMessages = await loadActiveLocaleMessages()
+    root.render(<Main localeMessages={localeMessages} />)
+  } catch (err) {
+    console.error('Failed to init app', err)
+    const message = err instanceof Error ? err.message : String(err)
+    root.render(
+      <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
+        <h1>Failed to load</h1>
+        <p>{message}</p>
+      </div>,
+    )
+  }
 }
 
 initApp()

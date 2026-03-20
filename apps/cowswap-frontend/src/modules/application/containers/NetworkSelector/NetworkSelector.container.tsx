@@ -12,11 +12,12 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 import { NetworksList } from 'common/pure/NetworksList/NetworksList.pure'
 
 import * as styledEl from './NetworkSelector.styled'
+
+import { useOnSelectNetwork } from '../../hooks/useOnSelectNetwork'
 
 type OnSelectNetwork = ReturnType<typeof useOnSelectNetwork>
 type OnSelectNetworkTarget = Parameters<OnSelectNetwork>[0]
@@ -77,12 +78,12 @@ export function NetworkSelector(): ReactNode {
 
   return (
     <styledEl.SelectorWrapper ref={node} onClick={toggleModal}>
-      <styledEl.SelectorControls ref={nodeSelector} isChainIdUnsupported={isChainIdUnsupported} isOpen={isOpen}>
+      <styledEl.SelectorControls ref={nodeSelector} $isChainIdUnsupported={isChainIdUnsupported} $isOpen={isOpen}>
         {!isChainIdUnsupported ? (
           <>
             <styledEl.SelectorLogo src={logoUrl} />
             <styledEl.SelectorLabel>{info?.label}</styledEl.SelectorLabel>
-            <styledEl.StyledChevronDown isOpen={isOpen} />
+            <styledEl.StyledChevronDown $isOpen={isOpen} />
           </>
         ) : (
           <>
@@ -90,7 +91,7 @@ export function NetworkSelector(): ReactNode {
             <styledEl.NetworkAlertLabel>
               <Trans>Switch Network</Trans>
             </styledEl.NetworkAlertLabel>
-            <styledEl.StyledChevronDown isOpen={isOpen} />
+            <styledEl.StyledChevronDown $isOpen={isOpen} />
           </>
         )}
       </styledEl.SelectorControls>

@@ -40,9 +40,7 @@ describe('validatePartnerFee()', () => {
         recipient: 'asvbfbdf',
       })
 
-      expect(result).toEqual([
-        'invalid address (argument="address", value="asvbfbdf", code=INVALID_ARGUMENT, version=address/5.7.0)',
-      ])
+      expect(result).toContainEqual(expect.stringContaining('Address "asvbfbdf" is invalid'))
     })
 
     it('When the recipient is valid, then should return undefined', () => {
@@ -155,9 +153,7 @@ describe('validatePartnerFee()', () => {
         },
       })
 
-      expect(result).toEqual([
-        'invalid address (argument="address", value="rtrth", code=INVALID_ARGUMENT, version=address/5.7.0)',
-      ])
+      expect(result).toContainEqual(expect.stringContaining('Address "rtrth" is invalid'))
     })
 
     it('When all addresses are valid, then should return undefined', () => {
@@ -211,9 +207,7 @@ describe('validatePartnerFee()', () => {
         },
       })
 
-      expect(result).toEqual([
-        'invalid address (argument="address", value="rtrth", code=INVALID_ARGUMENT, version=address/5.7.0)',
-      ])
+      expect(result).toContainEqual(expect.stringContaining('Address "rtrth" is invalid'))
     })
 
     it('When everything is valid, then should return undefined', () => {
