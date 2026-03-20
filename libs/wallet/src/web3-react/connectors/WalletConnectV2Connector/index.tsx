@@ -1,5 +1,27 @@
 import { WalletConnect } from '@web3-react/walletconnect-v2'
 
+type WalletConnectRelayerLike = {
+  transportClose?(): Promise<void>
+}
+
+type WalletConnectClientLike = {
+  core?: {
+    relayer?: WalletConnectRelayerLike
+  }
+}
+
+type WalletConnectSignerLike = {
+  cleanup?(): Promise<void>
+  client?: WalletConnectClientLike
+}
+
+type WalletConnectProviderLike = {
+  accounts: string[]
+  chainId: number
+  session?: Record<string, unknown>
+  signer?: WalletConnectSignerLike
+}
+
 export class WalletConnectV2Connector extends WalletConnect {
   private connectionPromise: Promise<void> | undefined
 
@@ -13,6 +35,21 @@ export class WalletConnectV2Connector extends WalletConnect {
     }
 
     return this.runSingleFlight(() => this.activateAndSyncState(desiredChainId))
+  }
+
+  public override async deactivate(): Promise<void> {
+    const provider = this.provider as WalletConnectProviderLike | undefined
+    const shouldCleanupTransientProvider = !!provider && !provider.session
+
+    try {
+      await super.deactivate()
+    } finally {
+      this.connectionPromise = undefined
+
+      if (shouldCleanupTransientProvider && provider) {
+        await this.cleanupTransientProvider(provider)
+      }
+    }
   }
 
   private runSingleFlight(task: () => Promise<void>): Promise<void> {
@@ -37,6 +74,20 @@ export class WalletConnectV2Connector extends WalletConnect {
      */
     if (this.provider) {
       this.actions.update({ chainId: this.provider.chainId, accounts: this.provider.accounts })
+    }
+  }
+
+  private async cleanupTransientProvider(provider: WalletConnectProviderLike): Promise<void> {
+    try {
+      await provider.signer?.cleanup?.()
+    } catch {
+      // Best-effort cleanup for cancelled pre-session attempts.
+    }
+
+    try {
+      await provider.signer?.client?.core?.relayer?.transportClose?.()
+    } catch {
+      // Best-effort cleanup for cancelled pre-session attempts.
     }
   }
 }

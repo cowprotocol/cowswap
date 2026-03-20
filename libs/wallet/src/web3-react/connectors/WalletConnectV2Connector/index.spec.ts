@@ -7,6 +7,16 @@ type TestProvider = {
   accounts: string[]
   chainId: number
   session?: Record<string, unknown>
+  signer?: {
+    cleanup?: jest.Mock<Promise<void>, []>
+    client?: {
+      core?: {
+        relayer?: {
+          transportClose?: jest.Mock<Promise<void>, []>
+        }
+      }
+    }
+  }
 }
 
 const createActions = (): Actions => ({
@@ -30,7 +40,7 @@ function createConnector(actions: Actions = createActions()): WalletConnectV2Con
 }
 
 function attachProvider(connector: WalletConnectV2Connector, provider: TestProvider): void {
-  ;(connector as WalletConnectV2Connector & { provider?: TestProvider }).provider = provider
+  ;(connector as unknown as { provider?: TestProvider }).provider = provider
 }
 
 describe('WalletConnectV2Connector', () => {
@@ -103,5 +113,33 @@ describe('WalletConnectV2Connector', () => {
 
     resolveConnection()
     await Promise.all([firstConnection, secondConnection])
+  })
+
+  it('cleans up cancelled pre-session providers during deactivation', async () => {
+    const connector = createConnector()
+    const cleanup = jest.fn<Promise<void>, []>().mockResolvedValue()
+    const transportClose = jest.fn<Promise<void>, []>().mockResolvedValue()
+
+    attachProvider(connector, {
+      accounts: [],
+      chainId: 1,
+      signer: {
+        cleanup,
+        client: {
+          core: {
+            relayer: {
+              transportClose,
+            },
+          },
+        },
+      },
+    })
+
+    jest.spyOn(WalletConnect.prototype, 'deactivate').mockResolvedValue()
+
+    await connector.deactivate()
+
+    expect(cleanup).toHaveBeenCalledTimes(1)
+    expect(transportClose).toHaveBeenCalledTimes(1)
   })
 })
