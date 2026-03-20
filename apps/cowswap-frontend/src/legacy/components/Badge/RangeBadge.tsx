@@ -1,7 +1,7 @@
 import { HoverTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { AlertCircle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { BadgeVariant } from './constants'
@@ -42,7 +42,7 @@ export default function RangeBadge({
       {removed ? (
         <HoverTooltip wrapInContainer content={<Trans>Your position has 0 liquidity, and is not earning fees.</Trans>}>
           <Badge variant={BadgeVariant.DEFAULT}>
-            <AlertCircle width={14} height={14} />
+            <AlertTriangle width={14} height={14} />
             &nbsp;
             <BadgeText>
               <Trans>Closed</Trans>
@@ -75,7 +75,7 @@ export default function RangeBadge({
           }
         >
           <Badge variant={BadgeVariant.WARNING}>
-            <AlertCircle width={14} height={14} />
+            <AlertTriangle width={14} height={14} />
             &nbsp;
             <BadgeText>
               <Trans>Out of range</Trans>
