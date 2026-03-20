@@ -30,9 +30,9 @@ import {
 } from 'common/state/routesState'
 
 import { ordersTableFiltersAtom } from './filters/ordersTableFilters.atom'
-import { logOrdersTableDebug, setIsOrderUnfillable } from './odersTable.utils'
 import { UI_ORDER_TYPE_BY_TAB_ORDER_TYPE, EMPTY_ORDERS_TABLE_STATE } from './ordersTable.constants'
 import { OrdersTableState } from './ordersTable.types'
+import { logOrdersTableDebug, setIsOrderUnfillable } from './ordersTable.utils'
 import { getTabsAndCurrentTab } from './params/ordersTableParams.atom'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
 import { reduxOrdersByOrderTypeAtom } from './redux/reduxOrders.atom'
