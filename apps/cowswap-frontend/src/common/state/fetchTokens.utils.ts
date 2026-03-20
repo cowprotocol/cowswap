@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
 import type { TokensByAddress } from '@cowprotocol/tokens'
 
-export function getTokenKey(chainId: number, address: string): string {
+function getTokenKey(chainId: number, address: string): string {
   return `${chainId}::${address.toLowerCase()}`
 }
 
