@@ -8,7 +8,7 @@ import { getTokensListFromOrders } from 'modules/orders'
 
 import { fetchTokens } from 'common/state/fetchTokens.utils'
 
-import { twapOrdersListAtom } from '../index'
+import { twapOrdersListAtom } from './twapOrdersListAtom'
 
 const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
 
