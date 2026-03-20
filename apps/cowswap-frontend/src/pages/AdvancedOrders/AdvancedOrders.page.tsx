@@ -65,7 +65,6 @@ export function AdvancedOrdersPage(): ReactNode {
         maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
         secondaryOnLeft={ordersTableOnLeft}
         hideOrdersTable={hideOrdersTable}
-        stacked
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
