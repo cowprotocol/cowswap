@@ -65,6 +65,7 @@ trades_with_referrer as (
 first_trade as (
   select trader, min(block_time) as first_trade_time
   from trades_with_referrer
+  where not is_excluded_integrators_source
   group by 1
 ),
 first_ref_trade as (
@@ -125,7 +126,12 @@ affiliate_rewards as (
     count(*) as swaps,
     count(*) as total_trades,
     count(distinct trader) as traders,
-    sum(case when (bound_time + time_cap_days * interval '1' day) > now() and (volume_cap = 0 or cum_volume < volume_cap) then 1 else 0 end) as active_traders
+    count(
+      distinct case
+        when (bound_time + time_cap_days * interval '1' day) > now() and (volume_cap = 0 or cum_volume < volume_cap)
+          then trader
+      end
+    ) as active_traders
   from capped_trades
   group by 1
 ),

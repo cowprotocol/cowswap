@@ -3,17 +3,17 @@ import { atom } from 'jotai'
 import { USDC } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Fraction, Price, Token } from '@uniswap/sdk-core'
+import { Fraction, Price, Token } from '@cowprotocol/currency'
 
 import { usdRawPricesAtom, UsdRawPriceState } from './usdRawPricesAtom'
 
 import { UsdPriceStateKey } from '../types'
 
+export type UsdPrices = { [key: UsdPriceStateKey]: UsdPriceState }
+
 export interface UsdPriceState extends Omit<UsdRawPriceState, 'price'> {
   price: Price<Token, Token> | null
 }
-
-export type UsdPrices = { [key: UsdPriceStateKey]: UsdPriceState }
 
 export const usdTokenPricesAtom = atom((get) => {
   const usdPrices = get(usdRawPricesAtom)

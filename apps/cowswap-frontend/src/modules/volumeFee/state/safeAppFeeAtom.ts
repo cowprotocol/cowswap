@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 
 import { STABLECOINS } from '@cowprotocol/common-const'
 import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
-import { mapAddressToSupportedNetworks, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapAddressToSupportedNetworks, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletDetailsAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { derivedTradeStateAtom } from 'modules/trade'
@@ -54,8 +54,8 @@ export const safeAppFeeAtom = atom<VolumeFee | null>((get) => {
   if (typeof fiatAmount !== 'number') return null
 
   const stablecoins = STABLECOINS[chainId]
-  const isInputStableCoin = !!inputCurrency && stablecoins.has(getCurrencyAddress(inputCurrency).toLowerCase())
-  const isOutputStableCoin = !!outputCurrency && stablecoins.has(getCurrencyAddress(outputCurrency).toLowerCase())
+  const isInputStableCoin = !!inputCurrency && stablecoins.has(getAddressKey(getCurrencyAddress(inputCurrency)))
+  const isOutputStableCoin = !!outputCurrency && stablecoins.has(getAddressKey(getCurrencyAddress(outputCurrency)))
   const isStableCoinTrade = isInputStableCoin && isOutputStableCoin
 
   const volumeBps = (() => {

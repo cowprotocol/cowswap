@@ -1,15 +1,29 @@
 {
   "name": "@cowprotocol/permit-utils",
-  "version": "3.0.0",
-  "type": "commonjs",
+  "version": "3.0.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap.git",
+    "directory": "libs/permit-utils"
+  },
+  "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.d.ts",
   "license": "ISC",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./index.d.ts",
+        "import": "./index.js",
+        "require": "./index.cjs"
+      }
+    }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.0",
+    "@cowprotocol/cow-sdk": "8.0.4",
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@ethersproject/abi": "5.7.0",

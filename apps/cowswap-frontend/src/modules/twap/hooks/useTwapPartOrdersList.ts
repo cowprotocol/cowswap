@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TwapPartOrderItem, twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
@@ -14,10 +15,8 @@ export function useTwapPartOrdersList(): TwapPartOrderItem[] {
   return useMemo(() => {
     if (!account || !chainId) return EMPTY_PART_ITEMS
 
-    const accountLowerCase = account.toLowerCase()
-
     const orders = Object.values(twapPartOrders)
 
-    return orders.flat().filter((order) => order.safeAddress === accountLowerCase && order.chainId === chainId)
+    return orders.flat().filter((order) => areAddressesEqual(order.safeAddress, account) && order.chainId === chainId)
   }, [account, chainId, twapPartOrders])
 }

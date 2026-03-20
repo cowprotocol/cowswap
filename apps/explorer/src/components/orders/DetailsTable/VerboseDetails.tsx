@@ -21,7 +21,17 @@ import { OrderHooksDetails } from '../OrderHooksDetails'
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
 import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
 
-// eslint-disable-next-line max-lines-per-function
+interface VerboseDetailsProps {
+  order: Order
+  showSolverDetails: boolean
+  solvedBy?: OrderSolverInfo
+  isSolvedByLoading?: boolean
+  isPriceInverted: boolean
+  invertPrice: Command
+  showFillsButton: boolean | undefined
+  viewFills: Command
+}
+
 export function VerboseDetails({
   order,
   showSolverDetails,
@@ -111,15 +121,4 @@ export function VerboseDetails({
       </DetailRow>
     </>
   )
-}
-
-interface VerboseDetailsProps {
-  order: Order
-  showSolverDetails: boolean
-  solvedBy?: OrderSolverInfo
-  isSolvedByLoading?: boolean
-  isPriceInverted: boolean
-  invertPrice: Command
-  showFillsButton: boolean | undefined
-  viewFills: Command
 }

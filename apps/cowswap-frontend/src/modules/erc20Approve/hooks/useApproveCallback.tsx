@@ -2,9 +2,9 @@ import { useCallback } from 'react'
 
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Erc20 } from '@cowprotocol/cowswap-abis'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 

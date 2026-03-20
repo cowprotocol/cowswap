@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Currency, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
@@ -38,7 +38,7 @@ export interface OrderFillsAtWithDistanceProps {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderFillsAtWithDistance({
   isTwapTable,
   isChild,

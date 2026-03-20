@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useHooks } from 'entities/orderHooks/useHooks'
@@ -28,7 +28,7 @@ export function BalancesCombinedUpdater() {
       setBalancesCombined(tokenBalances)
       return
     }
-    const accountBalancesDiff = preHooksBalancesDiff[account.toLowerCase()] || {}
+    const accountBalancesDiff = preHooksBalancesDiff[getAddressKey(account)] || {}
     const balancesChainId = tokenBalances.chainId ?? chainId
     setBalancesCombined(applyBalanceDiffs(tokenBalances, accountBalancesDiff, balancesChainId))
   }, [account, chainId, preHooksBalancesDiff, isHooksTradeType, tokenBalances, preHooks.length, setBalancesCombined])

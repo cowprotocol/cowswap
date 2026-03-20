@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { Nullish } from 'types'
 
 import { usePreGeneratedPermitInfo } from './usePreGeneratedPermitInfo'
@@ -15,7 +17,7 @@ export function usePreGeneratedPermitInfoForToken(token: Nullish<{ address: stri
 } {
   const { allPermitInfo, isLoading } = usePreGeneratedPermitInfo()
 
-  const address = token?.address.toLowerCase()
+  const address = token?.address ? getAddressKey(token.address) : undefined
 
   const permitInfo = address ? allPermitInfo[address] : undefined
 

@@ -1,24 +1,4 @@
-export enum AnalyticsContext {
-  chainId = 'chainId',
-  walletName = 'walletName',
-  customBrowserType = 'customBrowserType',
-  userAddress = 'userAddress',
-  market = 'market',
-  injectedWidgetAppId = 'injectedWidgetAppId',
-}
-
-export type EventOptions = {
-  action: string
-  category: string
-  label?: string
-  value?: number
-  nonInteraction?: boolean
-}
-
-export interface OutboundLinkParams {
-  label: string
-  hitCallback: () => unknown
-}
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface CowAnalytics {
   setUserAccount(account: string | undefined, walletName?: string): void
@@ -28,4 +8,27 @@ export interface CowAnalytics {
   sendError(error: Error, errorInfo?: string): void
   outboundLink(params: OutboundLinkParams): void
   setContext(key: AnalyticsContext, value?: string): void
+}
+
+export type EventOptions = {
+  action: string
+  category: string
+  label?: string
+  value?: number
+  nonInteraction?: boolean
+  chainId?: SupportedChainId
+}
+
+export interface OutboundLinkParams {
+  label: string
+  hitCallback: () => unknown
+}
+
+export enum AnalyticsContext {
+  chainId = 'chainId',
+  walletName = 'walletName',
+  customBrowserType = 'customBrowserType',
+  userAddress = 'userAddress',
+  market = 'market',
+  injectedWidgetAppId = 'injectedWidgetAppId',
 }

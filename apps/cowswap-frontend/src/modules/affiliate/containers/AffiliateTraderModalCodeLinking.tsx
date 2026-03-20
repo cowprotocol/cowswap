@@ -35,9 +35,10 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
 
   const onTogglePayoutConfirmed = useCallback(
     (checked: boolean): void => {
+      if (isVerifying) return
       setPayoutConfirmed(checked)
     },
-    [setPayoutConfirmed],
+    [setPayoutConfirmed, isVerifying],
   )
 
   const submitButtonLabel = useMemo(() => {
@@ -76,7 +77,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
     <AffiliateTradeCodeForm
       walletStatus={walletStatus}
       account={account}
-      requiresPayoutConfirmation={!!account && !isSupportedPayoutsNetwork(chainId)}
+      requiresPayoutConfirmation={!!account && !savedCode && !isSupportedPayoutsNetwork(chainId)}
       codeInfo={codeInfo}
       payoutConfirmed={payoutConfirmed}
       onTogglePayoutConfirmed={onTogglePayoutConfirmed}

@@ -1,5 +1,5 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent, Price, Token } from '@cowprotocol/currency'
 
 import { getCrossChainReceiveAmountInfo } from './getCrossChainReceiveAmountInfo'
 import { getOrderTypeReceiveAmounts } from './getOrderTypeReceiveAmounts'

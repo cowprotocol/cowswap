@@ -1,9 +1,8 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { isValidIntegerFactory, percentToBps } from '@cowprotocol/common-utils'
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/currency'
 
 import {
   useDefaultTradeSlippage,
@@ -15,18 +14,6 @@ import {
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-enum SlippageError {
-  InvalidInput = 'InvalidInput',
-}
-
-type TxSettingAction = 'Default' | 'Custom'
-
-interface SlippageAnalyticsEvent {
-  category: CowSwapAnalyticsCategory.TRADE
-  action: `${TxSettingAction} Slippage Tolerance`
-  value: number
-}
-
 interface ReturnType {
   slippageViewValue: string
   slippageError: SlippageError | false
@@ -36,8 +23,16 @@ interface ReturnType {
   setAutoSlippage: () => void
 }
 
-function getSlippageForView(slippageInput: string, isSlippageModified: boolean, swapSlippage: Percent): string {
-  return slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)
+interface SlippageAnalyticsEvent {
+  category: CowSwapAnalyticsCategory.TRADE
+  action: `${TxSettingAction} Slippage Tolerance`
+  value: number
+}
+
+type TxSettingAction = 'Default' | 'Custom'
+
+enum SlippageError {
+  InvalidInput = 'InvalidInput',
 }
 
 export function useSlippageInput(): ReturnType {
@@ -117,9 +112,6 @@ export function useSlippageInput(): ReturnType {
     setSlippageInput('')
   }, [slippageError, placeholderSlippage, setSwapSlippage, sendSlippageAnalytics])
 
-  const wrapperRef = useRef(null)
-  useOnClickOutside([wrapperRef], onSlippageInputBlur)
-
   const setAutoSlippage = useCallback(() => {
     setSwapSlippage(null)
   }, [setSwapSlippage])
@@ -132,4 +124,8 @@ export function useSlippageInput(): ReturnType {
     onSlippageInputBlur,
     setAutoSlippage,
   }
+}
+
+function getSlippageForView(slippageInput: string, isSlippageModified: boolean, swapSlippage: Percent): string {
+  return slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)
 }
