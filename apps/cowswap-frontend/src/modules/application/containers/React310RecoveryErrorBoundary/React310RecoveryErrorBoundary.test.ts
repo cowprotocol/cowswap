@@ -1,4 +1,4 @@
-import { isReactError310 } from './React310RecoveryErrorBoundary.container'
+import { isReactError310 } from '../../lib/react310Recovery'
 
 describe('isReactError310', () => {
   it('detects minified production message', () => {
