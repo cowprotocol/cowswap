@@ -63,11 +63,14 @@ export const LoadingWrapper = styled.button<{ $isLoading: boolean }>`
     cursor: not-allowed;
   }
 
-  &:not(:disabled):hover {
-    transform: translateY(-2px);
-  }
-
-  ${({ $isLoading }) => $isLoading && loadingAnimationMixin}
+  ${({ $isLoading }) =>
+    $isLoading
+      ? loadingAnimationMixin
+      : css`
+          &:not(:disabled):hover {
+            transform: translateY(-2px);
+          }
+        `}
 `
 
 export const ArrowDownIcon = styled(ArrowDown)<{ disabled: boolean }>`

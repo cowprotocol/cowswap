@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-utils",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.3",
+    "@cowprotocol/cow-sdk": "8.0.4",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@ethersproject/abstract-provider": "5.7.0",
