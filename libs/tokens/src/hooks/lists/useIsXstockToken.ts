@@ -3,12 +3,12 @@ import { useMemo } from 'react'
 
 import { areAddressesEqual, Nullish } from '@cowprotocol/cow-sdk'
 
-import { XSTOCKS_LIST_URL } from '../../const/tokensLists'
+import { XSTOCKS_TOKENS_LIST_SOURCE } from '../../const/tokensLists'
 import { listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'
 
 export function useIsXstockToken(token: Nullish<{ address: string }>): boolean {
   const listStatesMapAtom = useAtomValue(listsStatesMapAtom)
-  const listState = listStatesMapAtom[XSTOCKS_LIST_URL]
+  const listState = listStatesMapAtom[XSTOCKS_TOKENS_LIST_SOURCE]
 
   return useMemo(() => {
     if (!listState || !token) return false
