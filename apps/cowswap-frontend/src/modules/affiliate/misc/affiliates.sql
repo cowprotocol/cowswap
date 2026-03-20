@@ -134,6 +134,7 @@ affiliate_rewards as (
       distinct case
         when (bound_time + time_cap_days * interval '1' day) > now() and (volume_cap = 0 or cum_volume < volume_cap)
           then trader
+        else null
       end
     ) as active_traders
   from capped_trades
