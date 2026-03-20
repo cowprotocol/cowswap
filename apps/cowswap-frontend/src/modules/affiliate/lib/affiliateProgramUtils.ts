@@ -228,17 +228,21 @@ export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOr
 
   if (status !== OrderStatus.FULFILLED && !order.partiallyFillable) return false
 
-  const executedBuy = (order as EnrichedOrder).executedBuyAmount !== '0'
-  const executedSell = (order as EnrichedOrder).executedSellAmount !== '0'
-
-  if (!executedBuy && !executedSell) return false
-
   const fullAppData = extractFullAppDataFromOrder(order)
   const appCode = decodeAppData(fullAppData)?.appCode
 
   if (typeof appCode !== 'string') return false
 
-  return appCode === DEFAULT_APP_CODE || appCode === SAFE_APP_CODE
+  return hasAmountExecuted(order) && (appCode === DEFAULT_APP_CODE || appCode === SAFE_APP_CODE)
+}
+
+function hasAmountExecuted(order: EnrichedOrder | SerializedOrder): boolean {
+  const executedBuyAmount =
+    (order as EnrichedOrder).executedBuyAmount || (order as SerializedOrder).apiAdditionalInfo?.executedBuyAmount
+  const executedSellAmount =
+    (order as EnrichedOrder).executedSellAmount || (order as SerializedOrder).apiAdditionalInfo?.executedSellAmount
+
+  return Number(executedBuyAmount) > 0 || Number(executedSellAmount) > 0
 }
 
 export function isSupportedPayoutsNetwork(chainId: number): boolean {
