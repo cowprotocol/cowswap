@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.2](https://github.com/cowprotocol/cowswap/compare/events-v4.0.1...events-v4.0.2) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.1.0
+
 ## [4.0.1](https://github.com/cowprotocol/cowswap/compare/events-v4.0.0...events-v4.0.1) (2026-03-18)
 
 
