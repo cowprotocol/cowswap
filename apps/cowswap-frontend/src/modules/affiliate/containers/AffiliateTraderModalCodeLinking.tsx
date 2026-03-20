@@ -11,7 +11,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useAffiliateTraderCodeInput } from '../hooks/useAffiliateTraderCodeInput'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
-import { isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
+import { formatRefCode, isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
 import { AffiliateTradeCodeForm } from '../pure/AffiliateTraderModal/AffiliateTradeCodeForm'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import {
@@ -32,6 +32,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const { codeInput, error, isVerifying, verifyCode, onChange, onEdit, onRemove } = useAffiliateTraderCodeInput()
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const { data: codeInfo } = useAffiliateTraderInfo(savedCode)
+  const showInvalidFormat = !!codeInput && !formatRefCode(codeInput)
 
   const onTogglePayoutConfirmed = useCallback(
     (checked: boolean): void => {
@@ -83,6 +84,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
       onTogglePayoutConfirmed={onTogglePayoutConfirmed}
       value={codeInput}
       onChange={onChange}
+      showInvalidFormat={showInvalidFormat}
       savedCode={savedCode}
       isLoading={isVerifying}
       error={error}
