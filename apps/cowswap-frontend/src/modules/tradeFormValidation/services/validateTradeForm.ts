@@ -39,6 +39,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     inputCurrencyAmount,
     outputCurrencyAmount,
     inputCurrencyBalance,
+    inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
     orderKind,
@@ -57,9 +58,12 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
+  const inputAmountUsd = inputCurrencyFiatAmount ? +inputCurrencyFiatAmount.toExact() : null
   const outputAmountUsd = outputCurrencyFiatAmount ? +outputCurrencyFiatAmount.toExact() : null
-  const isXstockSellBelowLimit = Boolean(
-    isOutputCurrencyXstock && outputAmountUsd && outputAmountUsd < XSTOCK_MIN_TRADE_SIZE_USD,
+
+  const xstockBuyLimitUsdValue = outputAmountUsd ?? inputAmountUsd
+  const isXstockBuyBelowLimit = Boolean(
+    isOutputCurrencyXstock && (xstockBuyLimitUsdValue ? xstockBuyLimitUsdValue < XSTOCK_MIN_TRADE_SIZE_USD : false),
   )
 
   const validations: TradeFormValidation[] = []
@@ -75,6 +79,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isRestrictedForCountry) {
     validations.push(TradeFormValidation.RestrictedForCountry)
+  }
+
+  if (!inputAmountIsNotSet && isXstockBuyBelowLimit) {
+    validations.push(TradeFormValidation.XstockMinimumTradeSize)
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {
@@ -113,10 +121,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (inputAmountIsNotSet) {
     validations.push(TradeFormValidation.InputAmountNotSet)
-  }
-
-  if (isXstockSellBelowLimit) {
-    validations.push(TradeFormValidation.XstockMinimumTradeSize)
   }
 
   if (!!account && isBundlingSupported === null) {
