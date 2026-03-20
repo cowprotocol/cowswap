@@ -10,8 +10,9 @@ import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
-import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
+import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap, useTradePriceImpact } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -28,6 +29,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
+  const injectedWidgetParams = useInjectedWidgetParams()
+  const tradePriceImpact = useTradePriceImpact()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isOnline = useIsOnline()
@@ -94,6 +97,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isRestrictedForCountry,
       isBalancesLoading: !hasFirstLoad || isBalancesLoading,
       balancesError,
+      injectedWidgetParams,
+      tradePriceImpact,
     }
   }, [
     hasFirstLoad,
@@ -120,6 +125,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     toBeImported,
     tradeQuote,
     balancesError,
+    injectedWidgetParams,
+    tradePriceImpact,
   ])
 }
 
