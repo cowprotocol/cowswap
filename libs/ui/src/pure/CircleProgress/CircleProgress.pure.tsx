@@ -49,16 +49,16 @@ export function CircleProgress({
 
   return (
     <Loader $blink={isLoading} className={className} width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={halfSize} cy={halfSize} r={radius} fill="none" stroke={backgroundColor} stroke-width={borderWidth} />
+      <circle cx={halfSize} cy={halfSize} r={radius} fill="none" stroke={backgroundColor} strokeWidth={borderWidth} />
       <circle
         cx={halfSize}
         cy={halfSize}
         r={radius}
-        stroke-dashoffset={100 - percent}
+        strokeDashoffset={100 - percent}
         fill="none"
         stroke={borderColor}
-        stroke-width={borderWidth}
-        pathLength="100"
+        strokeWidth={borderWidth}
+        pathLength={100}
       />
     </Loader>
   )
