@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-03-19 15:18\n"
+"PO-Revision-Date: 2026-03-20 15:02\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -5252,6 +5252,7 @@ msgid "Edit"
 msgstr "Редактирование"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 msgid "The code must be at least {REF_CODE_MIN_LENGTH} characters long."
 msgstr "Код должен содержать не менее {REF_CODE_MIN_LENGTH} символов."
 
@@ -6128,6 +6129,11 @@ msgstr "Часть раздела {twapOrderN} части TWAP ордера"
 msgid "Claim COW <0/>"
 msgstr "Получить COW <0/>"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
+msgid "Referral codes contain 5-20 uppercase letters (A-Z), numbers, dashes, or underscores"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridged via"
 msgstr "Мост через"
@@ -6498,6 +6504,7 @@ msgstr "Скидка за оплату"
 
 #: apps/cowswap-frontend/src/modules/affiliate/hooks/useAffiliateTraderVerification.ts
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 msgid "Only A-Z, 0-9, dashes, and underscores are allowed."
 msgstr "Только A-Z, 0-9, дефисы и нижние подчеркивания"
 
@@ -7605,8 +7612,8 @@ msgstr "Влияние цены <0>{formattedPriceImpact}%</0>. Подумайт
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
-msgid "Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores"
-msgstr "Реферальный код должен содержать от 5 до 20 заглавных букв, цифр, дефисов или знаков подчеркивания."
+#~ msgid "Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores"
+#~ msgstr "Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 msgid "Receive (incl. fees)"
