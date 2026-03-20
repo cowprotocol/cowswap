@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -23,6 +23,30 @@ interface LimitOrdersFormParams {
   feeAmount: CurrencyAmount<Currency> | null
   sellAmount: CurrencyAmount<Currency> | null
   buyAmount: CurrencyAmount<Currency> | null
+}
+
+export function useLimitOrdersFormState(): LimitOrdersFormState | null {
+  const { quote } = useTradeQuote()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+  const { activeRate, isLoading } = useAtomValue(limitRateAtom)
+
+  const feeRawAmount = quote?.quoteResults.quoteResponse.quote.feeAmount
+  const feeAmount =
+    feeRawAmount && inputCurrencyAmount
+      ? CurrencyAmount.fromRawAmount(inputCurrencyAmount.currency, feeRawAmount)
+      : null
+
+  const params: LimitOrdersFormParams = {
+    activeRate,
+    feeAmount,
+    isRateLoading: isLoading,
+    sellAmount: inputCurrencyAmount,
+    buyAmount: outputCurrencyAmount,
+  }
+
+  return useSafeMemo(() => {
+    return getLimitOrdersFormState(params)
+  }, Object.values(params))
 }
 
 // TODO: Reduce function complexity by extracting logic
@@ -50,28 +74,4 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   }
 
   return null
-}
-
-export function useLimitOrdersFormState(): LimitOrdersFormState | null {
-  const { quote } = useTradeQuote()
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
-  const { activeRate, isLoading } = useAtomValue(limitRateAtom)
-
-  const feeRawAmount = quote?.quoteResults.quoteResponse.quote.feeAmount
-  const feeAmount =
-    feeRawAmount && inputCurrencyAmount
-      ? CurrencyAmount.fromRawAmount(inputCurrencyAmount.currency, feeRawAmount)
-      : null
-
-  const params: LimitOrdersFormParams = {
-    activeRate,
-    feeAmount,
-    isRateLoading: isLoading,
-    sellAmount: inputCurrencyAmount,
-    buyAmount: outputCurrencyAmount,
-  }
-
-  return useSafeMemo(() => {
-    return getLimitOrdersFormState(params)
-  }, Object.values(params))
 }

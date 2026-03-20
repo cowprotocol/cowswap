@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type FormEvent, type ReactNode, useId } from 'react'
 
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
@@ -6,6 +6,8 @@ import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
+
+import { REF_CODE_MIN_LENGTH } from 'modules/affiliate'
 
 import { CodeLinkingStatusSection } from './CodeLinkingStatusSection'
 import { CodeLinkingSubtitle } from './CodeLinkingSubtitle'
@@ -25,6 +27,7 @@ import {
 
 import { type TraderInfoResponse } from '../../api/bffAffiliateApi.types'
 import { type TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
+import { formatRefCode } from '../../lib/affiliateProgramUtils'
 import { RefCodeInput, type RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
 import { LabelContent, StatusText } from '../shared'
 
@@ -33,6 +36,7 @@ export interface AffiliateTradeCodeFormProps
     Pick<RefCodeInputProps, 'value' | 'onChange'> {
   walletStatus: TraderWalletStatus
   requiresPayoutConfirmation: boolean
+  showInvalidFormat: boolean
   codeInfo?: TraderInfoResponse | null
   savedCode?: string
   isLoading: boolean
@@ -47,6 +51,7 @@ export function AffiliateTradeCodeForm({
   walletStatus,
   account,
   requiresPayoutConfirmation,
+  showInvalidFormat,
   codeInfo,
   payoutConfirmed,
   onTogglePayoutConfirmed,
@@ -59,11 +64,17 @@ export function AffiliateTradeCodeForm({
   onSubmit,
   ...inputProps
 }: AffiliateTradeCodeFormProps): ReactNode {
+  const referralCodeInputId = useId()
+  const hasError = showInvalidFormat || !!error
+  const canSubmit =
+    !account ||
+    (!isLoading && (!requiresPayoutConfirmation || payoutConfirmed) && !!formatRefCode(String(inputProps.value)))
+
   return (
     <FormGroup
-      onSubmit={(event) => {
+      onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        onSubmit()
+        if (canSubmit) onSubmit()
       }}
     >
       <Body>
@@ -73,11 +84,14 @@ export function AffiliateTradeCodeForm({
         </Title>
         <CodeLinkingSubtitle codeInfo={codeInfo} />
         <LabelRow>
-          <Label>
+          <Label htmlFor={referralCodeInputId}>
             <LabelContent>
               <Trans>Referral code</Trans>
               <HelpTooltip
-                text={<Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>}
+                text={
+                  <Trans>Referral codes contain 5-20 uppercase letters (A-Z), numbers, dashes, or underscores</Trans>
+                }
+                dimmed
               />
             </LabelContent>
           </Label>
@@ -96,13 +110,22 @@ export function AffiliateTradeCodeForm({
           </LabelAffordances>
         </LabelRow>
         <RefCodeInput
-          hasError={!!error}
+          id={referralCodeInputId}
+          hasError={hasError}
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}
-          adornmentVariant={isLoading ? 'checking' : error ? 'error' : savedCode ? 'valid' : undefined}
-          required
+          adornmentVariant={hasError ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
           {...inputProps}
         />
+        {showInvalidFormat && (
+          <StatusText $variant="error">
+            {typeof inputProps.value === 'string' && inputProps.value.length < REF_CODE_MIN_LENGTH ? (
+              <Trans>The code must be at least {REF_CODE_MIN_LENGTH} characters long.</Trans>
+            ) : (
+              <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
+            )}
+          </StatusText>
+        )}
         {error && <StatusText $variant="error">{error}</StatusText>}
         <CodeLinkingStatusSection walletStatus={walletStatus} codeInfo={codeInfo} />
         {requiresPayoutConfirmation && (
@@ -114,7 +137,7 @@ export function AffiliateTradeCodeForm({
         )}
       </Body>
       <Footer>
-        <ButtonPrimary disabled={isLoading} type="submit">
+        <ButtonPrimary disabled={!canSubmit} type="submit">
           {submitButtonLabel}
         </ButtonPrimary>
       </Footer>

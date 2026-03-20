@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

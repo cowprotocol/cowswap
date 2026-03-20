@@ -1,17 +1,31 @@
 {
   "name": "@cowprotocol/events",
-  "version": "3.3.2",
+  "version": "4.0.2",
   "description": "CoW Swap events",
-  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap.git",
+    "directory": "libs/events"
+  },
+  "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.d.ts",
   "license": "ISC",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./index.d.ts",
+        "import": "./index.js",
+        "require": "./index.cjs"
+      }
+    }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.4.1",
-    "@cowprotocol/sdk-bridging": "2.1.0",
+    "@cowprotocol/cow-sdk": "8.0.4",
+    "@cowprotocol/sdk-bridging": "3.2.0",
     "@cowprotocol/types": "workspace:*"
   }
 }

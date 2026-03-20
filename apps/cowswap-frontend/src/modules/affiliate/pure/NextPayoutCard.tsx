@@ -26,6 +26,8 @@ export function NextPayoutCard({ payout, showLoader }: NextPayoutCardProps): Rea
           </span>
           <HelpTooltip
             text={t`The amount you should expect to receive at the next payout, if no further volume is generated.`}
+            dimmed
+            noMargin
           />
         </TitleWithTooltip>
       </CardTitle>
@@ -35,7 +37,7 @@ export function NextPayoutCard({ payout, showLoader }: NextPayoutCardProps): Rea
       </PayoutValue>
       <BottomMetaRow>
         <InlineNote>
-          <Trans>Paid weekly via airdrop</Trans>
+          <Trans>Paid weekly by Friday via airdrop</Trans>
         </InlineNote>
       </BottomMetaRow>
     </ColumnThreeCard>

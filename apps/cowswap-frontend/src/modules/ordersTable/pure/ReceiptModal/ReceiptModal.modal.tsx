@@ -2,9 +2,9 @@ import { ReactElement } from 'react'
 
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'

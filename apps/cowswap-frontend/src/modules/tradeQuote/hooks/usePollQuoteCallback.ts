@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useCallback, useRef } from 'react'
+import { useCallback, RefObject, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -19,6 +19,7 @@ import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 export function usePollQuoteCallback(
   quotePollingParams: TradeQuotePollingParameters,
   quoteParamsState: QuoteParams | undefined,
+  currentAmountRef: RefObject<string | null>,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const getCorrelatedTokensByChainId = useGetCorrelatedTokensByChainId()
@@ -39,9 +40,8 @@ export function usePollQuoteCallback(
   // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
-  const updatingStartTimestamp = useRef<null | number>(null)
-
   return useCallback(
+    // eslint-disable-next-line complexity
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
       const { isQuoteUpdatePossible, isConfirmOpen } = quotePollingParams
 
@@ -49,25 +49,18 @@ export function usePollQuoteCallback(
         return false
       }
 
-      if (quoteParams.amount.toString() === '0') {
+      if (quoteParams.amount.toString() === '0' || quoteParams.amount.toString() !== currentAmountRef.current) {
         tradeQuoteManager.reset()
         return false
       }
 
       const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> => {
-        const now = Date.now()
-        updatingStartTimestamp.current = now
-
         return fetchAndProcessQuote(
           fetchParams,
           quoteParams,
           quotePollingParams,
           appData,
           tradeQuoteManager,
-          {
-            now,
-            ref: updatingStartTimestamp,
-          },
           getCorrelatedTokensByChainId,
         )
       }
@@ -108,6 +101,7 @@ export function usePollQuoteCallback(
       getCorrelatedTokensByChainId,
       hasSmartSlippage,
       hasSmartSlippagePrev,
+      currentAmountRef,
     ],
   )
 }

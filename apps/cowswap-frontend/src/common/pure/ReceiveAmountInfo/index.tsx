@@ -2,8 +2,8 @@
 import React, { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -20,10 +20,6 @@ export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo
   subsidyAndBalance: BalanceAndSubsidy
   allowsOffchainSigning: boolean
-}
-
-function hasValidFee(amount: CurrencyAmount<Currency> | undefined, bps: number | undefined): boolean {
-  return !!amount && !!bps && !amount.equalTo(0)
 }
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
@@ -89,4 +85,8 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
       )}
     </styledEl.Box>
   )
+}
+
+function hasValidFee(amount: CurrencyAmount<Currency> | undefined, bps: number | undefined): boolean {
+  return !!amount && !!bps && !amount.equalTo(0)
 }

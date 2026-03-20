@@ -24,6 +24,7 @@ import {
   LinkedActions,
   LinkedBadge,
   LinkedCard,
+  LinkedCardGroup,
   LinkedCodeRow,
   LinkedCodeText,
   LinkedCopy,
@@ -33,6 +34,7 @@ import {
   LinkedLinkText,
   LinkedMetaList,
   MetricItem,
+  MetricValue,
 } from '../pure/shared'
 
 export function AffiliatePartnerCodeInfo(): ReactNode {
@@ -41,9 +43,10 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
 
   const refCode = partnerInfo?.code
   const referralLink = useMemo(() => getReferralLink(refCode || ''), [refCode])
-  const shareText = useMemo(
-    () => encodeURIComponent(`Trade on CoW Swap with my referral code ${refCode}. ${referralLink} @CoWSwap`),
-    [refCode, referralLink],
+  const shareUrl = useMemo(
+    () =>
+      `https://x.com/intent/tweet?text=${encodeURIComponent(`Trade on CoW Swap with my referral link! @CoWSwap`)}&url=${encodeURIComponent(referralLink)}`,
+    [referralLink],
   )
 
   const { isModalOpen, openModal, closeModal } = useModalState()
@@ -57,47 +60,48 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
       <CardTitle>
         <Trans>Your referral code</Trans>
       </CardTitle>
-      <LinkedCard>
-        <LinkedCodeRow>
-          <LinkedCopy>
-            <CopyHelper toCopy={refCode} iconSize={16} hideCopiedLabel />
-            <LinkedCodeText>{refCode}</LinkedCodeText>
-          </LinkedCopy>
-          <LinkedBadge>
-            <SVG src={LockedIcon} width={12} height={10} />
-            <Trans>Created</Trans>
-          </LinkedBadge>
-        </LinkedCodeRow>
-        <LinkedLinkRow>
-          <LinkedCopy>
-            <CopyHelper toCopy={referralLink} iconSize={16} hideCopiedLabel />
-            <LinkedLinkText>{referralLink}</LinkedLinkText>
-          </LinkedCopy>
-        </LinkedLinkRow>
-      </LinkedCard>
+      <LinkedCardGroup>
+        <LinkedCard>
+          <LinkedCodeRow>
+            <LinkedCopy>
+              <CopyHelper toCopy={refCode} iconSize={16} hideCopiedLabel />
+              <LinkedCodeText>{refCode}</LinkedCodeText>
+            </LinkedCopy>
+            <LinkedBadge>
+              <SVG src={LockedIcon} width={16} height={16} />
+              <Trans>Created</Trans>
+            </LinkedBadge>
+          </LinkedCodeRow>
+          <LinkedLinkRow>
+            <LinkedCopy>
+              <CopyHelper toCopy={referralLink} iconSize={16} hideCopiedLabel />
+              <LinkedLinkText>
+                {referralLink
+                  .split(/(ref=)/)
+                  .map((part, i) => (part === 'ref=' ? part : i > 1 ? <strong key={i}>{part}</strong> : part))}
+              </LinkedLinkText>
+            </LinkedCopy>
+          </LinkedLinkRow>
+        </LinkedCard>
 
-      <LinkedMetaList>
-        <MetricItem>
-          <span>
-            <Trans>Created on</Trans>
-          </span>
-          <strong>
-            {partnerInfo && toValidDate(partnerInfo.createdAt) ? formatShortDate(partnerInfo.createdAt) : '-'}
-          </strong>
-        </MetricItem>
-      </LinkedMetaList>
+        <LinkedMetaList>
+          <MetricItem>
+            <span>
+              <Trans>Created on</Trans>
+            </span>
+            <MetricValue>
+              {partnerInfo && toValidDate(partnerInfo.createdAt) ? formatShortDate(partnerInfo.createdAt) : '-'}
+            </MetricValue>
+          </MetricItem>
+        </LinkedMetaList>
+      </LinkedCardGroup>
 
       <LinkedFooter>
         <LinkedFooterNote>
           <Trans>Links/codes don't reveal your wallet.</Trans>
         </LinkedFooterNote>
         <LinkedActions>
-          <LinkedActionButton
-            as="a"
-            href={`https://twitter.com/intent/tweet?text=${shareText}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <LinkedActionButton as="a" href={shareUrl} target="_blank" rel="noopener noreferrer">
             <LinkedActionIcon>
               <SVG src={ICON_SOCIAL_X} width={14} height={14} />
             </LinkedActionIcon>

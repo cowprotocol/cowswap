@@ -15,11 +15,11 @@ import {
   SetupAdvancedOrderAmountsFromUrlUpdater,
   useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
-import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import * as styledEl from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -30,8 +30,8 @@ import {
   useMapTwapCurrencyInfo,
   useTwapFormState,
   useTwapSlippage,
+  TwapFormState,
 } from 'modules/twap'
-import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { HydrateAtom } from 'common/state/HydrateAtom'
 
@@ -84,7 +84,7 @@ export function AdvancedOrdersPage(): ReactNode {
         </styledEl.PrimaryWrapper>
 
         {!hideOrdersTable && (
-          <styledEl.SecondaryWrapper>
+          <styledEl.SecondaryWrapper className="trade-orders-table">
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
                 displayOrdersOnlyForSafeApp

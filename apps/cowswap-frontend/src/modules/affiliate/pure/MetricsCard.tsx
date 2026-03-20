@@ -7,26 +7,23 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { Donut } from './Donut.pure'
 import {
   BottomMetaRow,
   CardTitle,
   ColumnTwoCard,
-  Donut,
-  DonutValue,
   LabelContent,
   MetricItem,
+  MetricValue,
   RewardsMetricsList,
   RewardsMetricsRow,
   TitleWithTooltip,
 } from './shared'
 
-import {
-  AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS,
-  AFFILIATE_REWARDS_UPDATE_LAG_HOURS,
-} from '../config/affiliateProgram.const'
 import { getApproxStatsUpdatedAt } from '../lib/affiliateProgramUtils'
 
 export interface MetricsCardItem {
+  id: string
   label: ReactNode
   value: string
 }
@@ -50,14 +47,8 @@ export function MetricsCard({
   donutLabel,
   donutSubtitle,
 }: MetricsCardProps): ReactNode {
-  const approxUpdatedAt = useMemo(
-    () => getApproxStatsUpdatedAt(AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS, AFFILIATE_REWARDS_UPDATE_LAG_HOURS),
-    [],
-  )
-
+  const approxUpdatedAt = useMemo(() => getApproxStatsUpdatedAt(), [])
   const statsUpdatedTimeAgo = useTimeAgo(approxUpdatedAt, 60_000)
-  const statsUpdatedLabel = statsUpdatedTimeAgo ? ` ~ ${statsUpdatedTimeAgo}` : '-'
-  const statsUpdatedTitle = formatDateWithTimezone(approxUpdatedAt) ?? undefined
 
   return (
     <ColumnTwoCard showLoader={showLoader}>
@@ -65,7 +56,7 @@ export function MetricsCard({
         {titleTooltip ? (
           <TitleWithTooltip>
             <span>{title}</span>
-            <HelpTooltip text={titleTooltip} />
+            <HelpTooltip text={titleTooltip} dimmed noMargin />
           </TitleWithTooltip>
         ) : (
           <span>{title}</span>
@@ -73,27 +64,25 @@ export function MetricsCard({
       </CardTitle>
       <RewardsMetricsRow>
         <RewardsMetricsList>
-          {items.map(({ label, value }, index) => (
-            <MetricItem key={`${index}-${value}`}>
+          {items.map(({ id, label, value }) => (
+            <MetricItem key={id}>
               <LabelContent>{label}</LabelContent>
-              <strong>{value}</strong>
+              <MetricValue>{value}</MetricValue>
             </MetricItem>
           ))}
         </RewardsMetricsList>
-        <Donut $value={donutValue}>
-          <DonutValue>
-            <span>{donutLabel}</span>
-            {donutSubtitle ? <small>{donutSubtitle}</small> : null}
-          </DonutValue>
+        <Donut value={donutValue}>
+          <span>{donutLabel}</span>
+          {donutSubtitle ? <small>{donutSubtitle}</small> : null}
         </Donut>
       </RewardsMetricsRow>
       <BottomMetaRow>
         <LabelContent>
           <span>
             <Trans>Last updated</Trans>
-            <span title={statsUpdatedTitle}>{statsUpdatedLabel}</span>
+            <span title={formatDateWithTimezone(approxUpdatedAt)}> ~ {statsUpdatedTimeAgo}</span>
           </span>
-          <HelpTooltip text={<Trans>Updates every 6 hours</Trans>} />
+          <HelpTooltip text={<Trans>Updates daily at 02:00 UTC</Trans>} dimmed />
         </LabelContent>
       </BottomMetaRow>
     </ColumnTwoCard>

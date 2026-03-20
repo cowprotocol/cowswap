@@ -6,6 +6,7 @@ const tseslint = require('@typescript-eslint/eslint-plugin')
 const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
+const perfectionist = require('eslint-plugin-perfectionist')
 const prettier = require('eslint-plugin-prettier')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
@@ -88,12 +89,36 @@ module.exports = [
       'react-refresh/only-export-components': 'warn',
     },
   },
+  {
+    files: ['**/*.{js,ts}', '**/*.{jsx,tsx}'],
+    plugins: { perfectionist },
+    rules: {
+      // TODO: Turn this back on after the Viem migration, and only after running eslint:fix in the whole project.
+      'perfectionist/sort-modules': [
+        'off',
+        {
+          groups: [
+            ['export-interface', 'export-type'],
+            'export-enum',
+            ['interface', 'type'],
+            'enum',
+            'export-class',
+            'export-function',
+            'class',
+            'function',
+          ],
+          order: 'asc',
+        },
+      ],
+    },
+  },
 
   // React components get higher complexity limit due to ternary operators
   {
     files: ['**/*.tsx'],
     rules: {
-      complexity: ['error', 15],
+      complexity: ['error', 20],
+      'max-lines-per-function': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
     },
   },
   {
@@ -126,6 +151,12 @@ module.exports = [
         'error',
         {
           paths: [
+            {
+              name: '@cowprotocol/cow-sdk',
+              importNames: ['COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS', 'COW_PROTOCOL_VAULT_RELAYER_ADDRESS'],
+              message:
+                "Please import COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS and COW_PROTOCOL_VAULT_RELAYER_ADDRESS from '@cowprotocol/common-utils', which provides environment-aware versions of these constants.",
+            },
             {
               name: 'ethers',
               message: "Please import from '@ethersproject/module' directly to support tree-shaking.",
@@ -297,6 +328,14 @@ module.exports = [
           patterns: ['modules/*'],
         },
       ],
+    },
+  },
+
+  // cowProtocolContracts.ts is the only file allowed to import these directly from @cowprotocol/cow-sdk
+  {
+    files: ['libs/common-utils/src/cowProtocolContracts.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': 'off',
     },
   },
 

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-const",
-  "version": "2.3.2",
+  "version": "3.0.2",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,11 +24,11 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.4.1",
+    "@cowprotocol/cow-sdk": "8.0.4",
     "@cowprotocol/types": "workspace:*",
     "@ethersproject/providers": "5.7.0",
     "@lingui/core": "^5.4.1",
-    "@uniswap/sdk-core": "^3.0.1",
+    "@cowprotocol/currency": "workspace:*",
     "ethers": "5.7.2",
     "jsbi": "^3.1.4",
     "ms.macro": "^2.0.0"

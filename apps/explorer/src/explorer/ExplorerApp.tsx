@@ -21,6 +21,7 @@ import { GlobalStyle, MainWrapper } from './styled'
 import { version } from '../../package.json'
 import { GenericLayout } from '../components/layout'
 import { withGlobalContext } from '../hooks/useGlobalState'
+import { useSolversFeatureFlag } from '../hooks/useSolversFeatureFlag'
 import { CowSdkUpdater } from '../sdk/cowSdk'
 import { RedirectMainnet, RedirectXdai, useNetworkId } from '../state/network'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
@@ -131,6 +132,7 @@ const networkPrefixes = CHAIN_INFO_ARRAY.map((info) => info.urlAlias)
 
 const AppContent = (): React.ReactNode => {
   const chainId = useNetworkId()
+  const isSolversEnabled = useSolversFeatureFlag()
   useAnalyticsReporter({
     account: undefined, // Explorer doesn't have wallet functionality
     walletName: undefined, // Explorer doesn't have wallet functionality
@@ -146,25 +148,23 @@ const AppContent = (): React.ReactNode => {
   const pathPrefix = networkPrefixes.includes(prefix) ? `/${prefix}` : '/'
 
   return (
-    <WithLDProvider>
-      <GenericLayout header={<Header />}>
-        <React.Suspense fallback={null}>
-          <Routes>
-            <Route path={pathPrefix + '/'} element={<Home />} />
-            <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-            <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-            <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-            <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
-            <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
-            <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
-            <Route path={pathPrefix + '/solvers'} element={<Solvers />} />
-            <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
-            <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </React.Suspense>
-      </GenericLayout>
-    </WithLDProvider>
+    <GenericLayout header={<Header />}>
+      <React.Suspense fallback={null}>
+        <Routes>
+          <Route path={pathPrefix + '/'} element={<Home />} />
+          <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+          <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+          <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+          <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
+          <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
+          <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
+          {isSolversEnabled && <Route path={pathPrefix + '/solvers'} element={<Solvers />} />}
+          <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
+          <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </React.Suspense>
+    </GenericLayout>
   )
 }
 
@@ -176,15 +176,17 @@ export const ExplorerApp: React.FC = () => {
     <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
       <GlobalStyle />
       <MainWrapper>
-        <Router basename={process.env.BASE_URL}>
-          <StateUpdaters />
-          <CowSdkUpdater />
-          <Routes>
-            <Route path="/mainnet" element={<RedirectMainnet />} />
-            <Route path="/xdai" element={<RedirectXdai />} />
-            <Route path="*" element={<AppContent />} />
-          </Routes>
-        </Router>
+        <WithLDProvider>
+          <Router basename={process.env.BASE_URL}>
+            <StateUpdaters />
+            <CowSdkUpdater />
+            <Routes>
+              <Route path="/mainnet" element={<RedirectMainnet />} />
+              <Route path="/xdai" element={<RedirectXdai />} />
+              <Route path="*" element={<AppContent />} />
+            </Routes>
+          </Router>
+        </WithLDProvider>
       </MainWrapper>
     </CowAnalyticsProvider>
   )

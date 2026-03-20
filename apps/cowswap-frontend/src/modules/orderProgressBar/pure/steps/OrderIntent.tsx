@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 

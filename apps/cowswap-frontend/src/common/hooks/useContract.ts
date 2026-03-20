@@ -5,8 +5,18 @@ import {
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
-import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  getContract,
+  isEns,
+  isProd,
+  isStaging,
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+} from '@cowprotocol/common-utils'
+import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
+  CowEnv,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 import {
   CoWSwapEthFlow,
   CoWSwapEthFlowAbi,
@@ -97,14 +107,6 @@ export function useContract<T extends Contract = Contract>(
   }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as UseContractResult<T>
 }
 
-export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): UseContractResult<Erc20> {
-  return useContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible)
-}
-
-export function useWethContract(withSignerIfPossible?: boolean): UseContractResult<Weth> {
-  return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
-}
-
 export function useEthFlowContract(): {
   result: UseContractResult<CoWSwapEthFlow>
 } {
@@ -121,6 +123,19 @@ export function useGP2SettlementContract(): UseContractResult<GPv2Settlement> {
   return useContract<GPv2Settlement>(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, GPv2SettlementAbi, true)
 }
 
+// TWAP orders always run on the production settlement contract regardless of the current environment.
+export function useGP2SettlementContractProd(): UseContractResult<GPv2Settlement> {
+  return useContract<GPv2Settlement>(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD, GPv2SettlementAbi, true)
+}
+
+export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): UseContractResult<Erc20> {
+  return useContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible)
+}
+
 export function useVCowContract(): UseContractResult<VCow> {
   return useContract<VCow>(V_COW_CONTRACT_ADDRESS, vCowAbi, true)
+}
+
+export function useWethContract(withSignerIfPossible?: boolean): UseContractResult<Weth> {
+  return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
 }

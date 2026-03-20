@@ -5,7 +5,7 @@ import {
   mapSupportedNetworks,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
-import { Fraction, Percent } from '@uniswap/sdk-core'
+import { Fraction, Percent } from '@cowprotocol/currency'
 
 import { msg } from '@lingui/core/macro'
 import JSBI from 'jsbi'
@@ -51,8 +51,23 @@ export const PAGE_TITLES = {
   MY_REWARDS: msg`Rewards hub - My Rewards`,
 }
 
+/**
+ * Should be fully replaced with BARN_ETH_FLOW_ADDRESSES once backend migrated all the networks
+ */
+export const OLD_BARN_ETH_FLOW_ADDRESS = '0x04501b9b1d52e67f6862d157e00d13419d2d6e95'
+
+export const STAGING_MIGRATED_CONTRACT_NETWORKS = [SupportedChainId.MAINNET]
+
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
-  return env === 'prod' ? ETH_FLOW_ADDRESSES[chainId] : BARN_ETH_FLOW_ADDRESSES[chainId]
+  if (env === 'prod') {
+    return ETH_FLOW_ADDRESSES[chainId]
+  }
+
+  if (STAGING_MIGRATED_CONTRACT_NETWORKS.includes(chainId)) {
+    return BARN_ETH_FLOW_ADDRESSES[chainId]
+  }
+
+  return OLD_BARN_ETH_FLOW_ADDRESS
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
@@ -71,7 +86,6 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
   [SupportedChainId.AVALANCHE]: null,
-  [SupportedChainId.LENS]: null,
   [SupportedChainId.BNB]: '0x5bfdaa3f7c28b9994b56135403bf1acea02595b0',
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
@@ -130,7 +144,6 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'https://polygon.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.AVALANCHE]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.AVALANCHE}`,
-  [SupportedChainId.LENS]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LENS}`,
   [SupportedChainId.BNB]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.BNB}`,
   [SupportedChainId.LINEA]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LINEA}`,
   [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
@@ -144,7 +157,6 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.POLYGON]: null,
   [SupportedChainId.AVALANCHE]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
-  [SupportedChainId.LENS]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.BNB]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.LINEA]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.PLASMA]: null,

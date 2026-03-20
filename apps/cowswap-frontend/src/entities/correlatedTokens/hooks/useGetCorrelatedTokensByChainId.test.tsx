@@ -38,10 +38,12 @@ function TestProvider({
   )
 }
 
+const ADDRESS_1 = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' // USDC
+
 describe('useGetCorrelatedTokensByChainId', () => {
-  it('should return token address in lowercase', async () => {
+  it('should return token address normalized', async () => {
     const initialState = {
-      [SupportedChainId.MAINNET]: [{ '0xABCDEF1234567890': 'TOKEN1' }],
+      [SupportedChainId.MAINNET]: [{ [ADDRESS_1]: 'TOKEN1' }],
     }
 
     const { result } = renderHook(() => useGetCorrelatedTokensByChainId(), {
@@ -49,12 +51,13 @@ describe('useGetCorrelatedTokensByChainId', () => {
     })
 
     const tokens = await result.current(SupportedChainId.MAINNET)
-    expect(tokens).toEqual(['0xabcdef1234567890'])
+    expect(tokens).toEqual([ADDRESS_1.toLowerCase()])
   })
 
-  it('should convert uppercase addresses to lowercase', async () => {
+  it('should normalize checksummed addresses consistently', async () => {
+    // ADDRESS_1 is already EIP-55 checksummed (mixed case), verify it normalizes to lowercase
     const initialState = {
-      [SupportedChainId.MAINNET]: [{ '0XABCDEF': 'TOKEN1' }],
+      [SupportedChainId.MAINNET]: [{ [ADDRESS_1]: 'TOKEN1' }],
     }
 
     const { result } = renderHook(() => useGetCorrelatedTokensByChainId(), {
@@ -62,12 +65,12 @@ describe('useGetCorrelatedTokensByChainId', () => {
     })
 
     const tokens = await result.current(SupportedChainId.MAINNET)
-    expect(tokens).toEqual(['0xabcdef'])
+    expect(tokens).toEqual([ADDRESS_1.toLowerCase()])
   })
 
   it('should remove duplicate addresses', async () => {
     const initialState = {
-      [SupportedChainId.MAINNET]: [{ '0xToken1': 'TOKEN1' }, { '0xToken1': 'TOKEN1' }, { '0xToken1': 'TOKEN1' }],
+      [SupportedChainId.MAINNET]: [{ [ADDRESS_1]: 'TOKEN1' }, { [ADDRESS_1]: 'TOKEN1' }, { [ADDRESS_1]: 'TOKEN1' }],
     }
 
     const { result } = renderHook(() => useGetCorrelatedTokensByChainId(), {
@@ -76,6 +79,6 @@ describe('useGetCorrelatedTokensByChainId', () => {
 
     const tokens = await result.current(SupportedChainId.MAINNET)
     expect(tokens).toHaveLength(1)
-    expect(tokens).toEqual(['0xtoken1'])
+    expect(tokens).toEqual([ADDRESS_1.toLowerCase()])
   })
 })

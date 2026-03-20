@@ -1,13 +1,27 @@
 {
   "name": "@cowprotocol/iframe-transport",
-  "version": "2.0.6",
+  "version": "2.0.10",
   "description": "CoW Swap iframe-transport",
-  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap.git",
+    "directory": "libs/iframe-transport"
+  },
+  "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.d.ts",
   "license": "ISC",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./index.d.ts",
+        "import": "./index.js",
+        "require": "./index.cjs"
+      }
+    }
   },
   "dependencies": {
     "@cowprotocol/types": "workspace:*",
