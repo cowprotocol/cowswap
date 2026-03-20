@@ -14,7 +14,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 const reduxOrdersStateAtom = atomFromReduxSelector<OrdersState>((appState) => appState.orders)
 
-const reduxOrdersStateByChainAtom = atom((get) => (chainId: SupportedChainId) => {
+export const reduxOrdersStateByChainAtom = atom((get) => (chainId: SupportedChainId) => {
   if (!chainId) return {} as OrdersStateNetwork
 
   const reduxOrdersStateByChain = get(reduxOrdersStateAtom)?.[chainId] || {}
