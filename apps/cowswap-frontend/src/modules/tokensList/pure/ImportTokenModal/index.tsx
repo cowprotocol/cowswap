@@ -7,7 +7,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, ExternalLink, ModalHeader, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { AlertTriangle, AlertTriangle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import * as styledEl from './styled'
