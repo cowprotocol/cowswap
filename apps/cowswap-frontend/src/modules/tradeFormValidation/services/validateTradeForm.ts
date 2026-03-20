@@ -29,6 +29,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestrictedForCountry,
     isBalancesLoading,
     isBundlingSupported,
+    injectedWidgetParams,
+    tradePriceImpact,
   } = context
 
   const {
@@ -168,6 +170,25 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isWrapUnwrap) {
     validations.push(TradeFormValidation.WrapUnwrapFlow)
+  }
+
+  if (injectedWidgetParams?.disableTrade?.whenPriceImpactIsUnknown) {
+    const isPriceImpactUnknown = !!account && !tradePriceImpact.loading && !tradePriceImpact.priceImpact
+
+    if (isPriceImpactUnknown) {
+      validations.push(TradeFormValidation.DisableTradeWithUnknownPriceImpact)
+    }
+  }
+
+  const widgetPriceImpactThreshold = injectedWidgetParams?.disableTrade?.whenPriceImpactIsHigherThan
+
+  if (typeof widgetPriceImpactThreshold === 'number' && tradePriceImpact.priceImpact) {
+    const priceImpactAsNum = +tradePriceImpact.priceImpact.toSignificant()
+    const isPriceImpactAboveThreshold = priceImpactAsNum > widgetPriceImpactThreshold
+
+    if (isPriceImpactAboveThreshold) {
+      validations.push(TradeFormValidation.DisableTradeWithHighPriceImpact)
+    }
   }
 
   if (![ApproveRequiredReason.Unsupported, ApproveRequiredReason.NotRequired].includes(isApproveRequired)) {
