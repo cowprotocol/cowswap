@@ -1,13 +1,10 @@
-import { atom } from 'jotai'
 import { useMemo } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
-import { GnosisSafe } from '@web3-react/gnosis-safe'
 
 import { useSafeAppsSdk } from './useSafeAppsSdk'
 
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
-import { gnosisSafeInfoAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
 import { getConnectionIcon, getConnectionName } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
@@ -62,24 +59,6 @@ function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
   return defaultOutput
 }
 
-/**
- * Detects whether the currently connected wallet is a Safe App
- * It'll be false if connected to Safe wallet via WalletConnect
- */
-export function useIsSafeApp(): boolean {
-  const isSafeWallet = useIsSafeWallet()
-  const sdk = useSafeAppsSdk()
-
-  // If the wallet is not a Safe, or we don't have access to the SafeAppsSDK, we know is not a Safe App
-  if (!isSafeWallet || !sdk) {
-    return false
-  }
-
-  // Will only be a SafeApp if within an iframe
-  // Which means, window.parent is different than window
-  return window?.parent !== window
-}
-
 // FIXME: I notice this function is not calculating always correctly the walletName. Out of scope of this PR to fix. "getConnnectionName" might help
 export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
   const { connector, provider, account } = useWeb3React()
@@ -129,15 +108,13 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
   }, [connectionType, provider, account, selectedEip6963Provider, standaloneMode])
 }
 
-export const safeAppSdkAtom = atom((get) => {
-  const { account, legacyConnector } = get(walletInfoAtom)
-
-  return !account || !(legacyConnector instanceof GnosisSafe) || !legacyConnector.sdk ? null : legacyConnector.sdk
-})
-
-export const isSafeAppAtom = atom((get) => {
-  const isSafeWallet = get(gnosisSafeInfoAtom)
-  const sdk = get(safeAppSdkAtom)
+/**
+ * Detects whether the currently connected wallet is a Safe App
+ * It'll be false if connected to Safe wallet via WalletConnect
+ */
+export function useIsSafeApp(): boolean {
+  const isSafeWallet = useIsSafeWallet()
+  const sdk = useSafeAppsSdk()
 
   // If the wallet is not a Safe, or we don't have access to the SafeAppsSDK, we know is not a Safe App
   if (!isSafeWallet || !sdk) {
@@ -147,14 +124,7 @@ export const isSafeAppAtom = atom((get) => {
   // Will only be a SafeApp if within an iframe
   // Which means, window.parent is different than window
   return window?.parent !== window
-})
-
-export const isSafeViaWcAtom = atom((get) => {
-  const isSafeApp = get(isSafeAppAtom)
-  const isSafeWallet = get(gnosisSafeInfoAtom)
-
-  return isSafeWallet && !isSafeApp
-})
+}
 
 /**
  * Detects whether the currently connected wallet is a Safe wallet

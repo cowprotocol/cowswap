@@ -11,7 +11,7 @@ import { getCapabilities } from 'viem/actions'
 import { config } from '../../wagmi/config'
 import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
 import { getIsWalletConnect as getIsWalletConnectLegacy } from '../../web3-react/hooks/useIsWalletConnect'
-import { isSafeAppAtom, isSafeViaWcAtom } from '../../web3-react/hooks/useWalletMetadata'
+import { isSafeAppAtom, isSafeViaWcAtom } from '../../web3-react/state/walletMetadata.atoms'
 import { walletInfoAtom } from '../state'
 
 const REQUEST_TIMEOUT_MS = 10_000

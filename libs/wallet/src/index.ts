@@ -56,3 +56,4 @@ export {
   isBundlingSupportedLoadableAtom,
   type WalletCapabilities,
 } from './api/state/walletCapabilitiesAtom'
+export * from './web3-react/state/walletMetadata.atoms'
