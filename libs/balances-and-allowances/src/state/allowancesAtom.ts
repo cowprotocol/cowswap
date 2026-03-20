@@ -11,6 +11,7 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { atomFamily } from 'jotai-family'
+import ms from 'ms.macro'
 
 export type AllowancesState = Record<string, BigNumber | undefined>
 
@@ -71,12 +72,6 @@ export interface TokenAllowancesFamilyParams {
   tokenAddresses: string[]
 }
 
-/**
- * Atom family that fetches ERC20 allowances for the given token addresses.
- * Uses wallet account and chain from walletInfoAtom; spender is the protocol vault relayer.
- * Param is compared by sorted token list (value equality) so different array refs with same tokens reuse the same atom.
- * When no one is listening, the atom is removed from memory (setShouldRemove).
- */
 export const tokenAllowancesLoadableFamily = atomFamily(
   ({ chainId, account, tokenAddresses }: TokenAllowancesFamilyParams) => {
     const allowancesAtom = atom(async (): Promise<AllowancesState | undefined> => {
@@ -94,9 +89,15 @@ export const tokenAllowancesLoadableFamily = atomFamily(
   areTokenAllowancesParamsEqual,
 )
 
+const TOKEN_ALLOWANCES_FAMILY_MAX_AGE_MS = ms`10m`
+
+// Runs immediately and when you are about to get an atom from the cache.
+// Internally, atomFamily is just a Map whose key is a param and whose value is
+// an atom config. Unless you explicitly remove unused params, this leads to
+// memory leaks. This is crucial if you use infinite number of params.
 tokenAllowancesLoadableFamily.setShouldRemove((createdAt, params) => {
   // Allowances expire after 10 minutes:
-  if (Date.now() - createdAt > 10 * 60 * 1000) return true
+  if (Date.now() - createdAt > TOKEN_ALLOWANCES_FAMILY_MAX_AGE_MS) return true
 
   // Always remove all other allowances:
   for (const param of tokenAllowancesLoadableFamily.getParams()) {
