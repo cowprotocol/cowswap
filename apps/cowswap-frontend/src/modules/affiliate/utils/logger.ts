@@ -1,3 +1,5 @@
+import { log } from '@cowprotocol/common-utils'
+
 export function logAffiliate(...args: unknown[]): void {
-  console.debug(`%c [Affiliate]`, 'font-weight: bold; color: #1c5dbf', ...args)
+  log('Affiliate', undefined, ...args)
 }

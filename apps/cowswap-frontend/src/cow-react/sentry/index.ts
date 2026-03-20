@@ -1,8 +1,9 @@
-import { environmentName } from '@cowprotocol/common-utils'
+import { environmentName, registerOnWindow } from '@cowprotocol/common-utils'
 
 import * as Sentry from '@sentry/react'
 
 import { SENTRY_IGNORED_QUOTE_ERRORS } from 'api/cowProtocol/errors/QuoteError'
+import { USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 
 import { beforeSend } from './beforeSend'
 import { NO_DEDUP_EVENTS } from './events'
@@ -27,6 +28,9 @@ class SentryDedupeLocal extends Sentry.Dedupe {
   }
 }
 
+const release = 'CowSwap@v' + pkg.version
+registerOnWindow({ release })
+
 if (SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -41,9 +45,9 @@ if (SENTRY_DSN) {
       new Sentry.HttpContext(),
       new Sentry.BrowserTracing(),
     ],
-    release: 'CowSwap@v' + pkg.version,
+    release,
     environment: environmentName,
-    ignoreErrors: [...SENTRY_IGNORED_QUOTE_ERRORS, `Can't find variable: bytecode`],
+    ignoreErrors: [...SENTRY_IGNORED_QUOTE_ERRORS, `Can't find variable: bytecode`, USER_SWAP_REJECTED_ERROR],
     beforeSend,
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.

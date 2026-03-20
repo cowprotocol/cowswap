@@ -1,6 +1,12 @@
 import { useCallback } from 'react'
 
-import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import {
+  captureError,
+  ERROR_TYPES,
+  extractErrorCode,
+  isRejectRequestProviderError,
+  normalizeError,
+} from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -14,16 +20,15 @@ export function useHandleApprovalError(symbol: string | undefined): (error: unkn
   const { t } = useLingui()
 
   return useCallback(
-    (error: unknown) => {
-      console.error('Error setting the allowance for token', error)
+    (err: unknown) => {
+      const error = normalizeError(err)
 
       if (isRejectRequestProviderError(error)) {
         updateApproveProgressModalState({ error: t`User rejected approval transaction` })
       } else {
-        const errorCode =
-          error && typeof error === 'object' && 'code' in error && typeof error.code === 'number' ? error.code : null
-        approvalAnalytics('Error', symbol, errorCode)
-        updateApproveProgressModalState({ error: errorToString(error) })
+        captureError(error, ERROR_TYPES.ON_APPROVE)
+        approvalAnalytics('Error', symbol, extractErrorCode(error))
+        updateApproveProgressModalState({ error: error.message })
       }
     },
     [updateApproveProgressModalState, t, approvalAnalytics, symbol],
