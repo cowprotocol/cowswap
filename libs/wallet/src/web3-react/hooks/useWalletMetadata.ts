@@ -31,6 +31,37 @@ export interface WalletMetaData {
   icon?: string
 }
 
+// TODO: Add proper return type annotation
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
+function getWcWalletIcon(meta: any) {
+  return meta.icons?.length > 0 ? meta.icons[0] : undefined
+}
+
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
+  // fix for this https://github.com/gnosis/cowswap/issues/1929
+  const defaultOutput = { walletName: undefined, icon: undefined }
+
+  if (!provider) {
+    return defaultOutput
+  }
+
+  const v1MetaData = provider?.connector?.peerMeta
+  const v2MetaData = provider?.signer?.session?.peer?.metadata
+  const meta = v1MetaData || v2MetaData
+
+  if (meta) {
+    return {
+      walletName: meta.name,
+      icon: getWcWalletIcon(meta),
+    }
+  }
+
+  return defaultOutput
+}
+
 /**
  * Detects whether the currently connected wallet is a Safe App
  * It'll be false if connected to Safe wallet via WalletConnect
@@ -96,37 +127,6 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
       walletName: getConnectionName(connectionType),
     }
   }, [connectionType, provider, account, selectedEip6963Provider, standaloneMode])
-}
-
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
-  // fix for this https://github.com/gnosis/cowswap/issues/1929
-  const defaultOutput = { walletName: undefined, icon: undefined }
-
-  if (!provider) {
-    return defaultOutput
-  }
-
-  const v1MetaData = provider?.connector?.peerMeta
-  const v2MetaData = provider?.signer?.session?.peer?.metadata
-  const meta = v1MetaData || v2MetaData
-
-  if (meta) {
-    return {
-      walletName: meta.name,
-      icon: getWcWalletIcon(meta),
-    }
-  }
-
-  return defaultOutput
-}
-
-// TODO: Add proper return type annotation
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-function getWcWalletIcon(meta: any) {
-  return meta.icons?.length > 0 ? meta.icons[0] : undefined
 }
 
 export const safeAppSdkAtom = atom((get) => {

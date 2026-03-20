@@ -8,9 +8,6 @@ import { Order } from 'legacy/state/orders/actions'
 
 /**
  * Returns a list of emulated twap orders
- *
- * `tokenByAddress` is a map of all known tokens from twapOrdersTokensLoadableAtom,
- * which fetches unknown tokens from blockchain via atomWithQuery.
  */
 export const emulatedTwapOrdersAtom = atom<Order[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)

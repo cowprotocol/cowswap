@@ -23,7 +23,6 @@ export interface ReduxOrdersByOrderTypeData {
 
 /**
  * Maps Redux per-chain order state into deserialized `Order[]` for a single `UiOrderType`.
- * Pure: no Jotai `get`, no Redux dispatch — safe to call from any atom read path.
  */
 export function getReduxOrdersByOrderTypeFromNetworkState({
   account,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -40,9 +40,6 @@ export interface OrdersTableRowGroupProps {
   isTwapTable?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrdersTableRowGroup({
   item,
   prices,
@@ -55,7 +52,7 @@ export function OrdersTableRowGroup({
   chainId,
   balancesAndAllowances,
   isTwapTable,
-}: OrdersTableRowGroupProps) {
+}: OrdersTableRowGroupProps): ReactNode {
   const { parent, children } = item
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true)

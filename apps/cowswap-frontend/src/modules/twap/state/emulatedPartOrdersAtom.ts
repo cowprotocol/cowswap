@@ -13,7 +13,9 @@ import { TwapPartOrderItem, twapPartOrdersListAtom } from './twapPartOrdersAtom'
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
 
-/** Writable atom: when set (e.g. when next part-order expiry timeout fires), emulatedPartOrdersAtom re-runs. */
+/**
+ * Used to trigger `emulatedPartOrdersAtom`.
+ * */
 export const partOrdersRefreshTriggerAtom = atom(0)
 
 export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
@@ -28,7 +30,11 @@ export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
   return emulatePartOrders(twapParticleOrders, twapOrders, twapOrdersTokens)
 })
 
-/** Next part-order expiry time in ms (min validTo among non-expired), or null. Used to schedule a single timeout. */
+/**
+ * Next part-order expiry time in ms (min validTo among non-expired), or `null`.
+ * Used to schedule the timeout that will update `partOrdersRefreshTriggerAtom`
+ * to trigger `emulatedPartOrdersAtom` to re-run.
+ * */
 export const nextPartOrderExpiryMsAtom = atom((get) => {
   const orders = get(emulatedPartOrdersAtom)
   const now = Date.now()
