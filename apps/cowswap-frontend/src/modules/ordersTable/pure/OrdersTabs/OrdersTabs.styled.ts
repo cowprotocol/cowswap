@@ -43,6 +43,7 @@ export const SelectContainer = styled.div`
   }
 `
 
+// TODO: Remove
 export const Select = styled.select`
   width: 100%;
   padding: 10px 40px 10px 10px;

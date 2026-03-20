@@ -1,6 +1,8 @@
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import {
+  FormOption,
+  Select,
   SettingsDropdownSection,
   SettingsBox,
   SimpleStyledText,
@@ -29,7 +31,6 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
   const { i18n } = useLingui()
   const { LEFT_ALIGNED } = getOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
-  const [isOpen, setIsOpen] = useState(false)
   const {
     showRecipient,
     partialFillsEnabled,
@@ -57,7 +58,6 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
       e.stopPropagation()
       analytics.changeLimitPricePosition(limitPricePosition, value)
       onStateChanged({ ...state, limitPricePosition: value })
-      setIsOpen(false)
     },
     [analytics, onStateChanged, state, limitPricePosition],
   )
@@ -74,20 +74,17 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
     onStateChanged({ ...state, ordersTableOnLeft: newValue })
   }, [analytics, onStateChanged, state, ordersTableOnLeft])
 
-  const toggleDropdown = (e: React.MouseEvent): void => {
-    e.stopPropagation()
-    setIsOpen(!isOpen)
-  }
-
   const handleContainerClick = (e: React.MouseEvent): void => {
     e.stopPropagation()
   }
 
-  const POSITION_LABELS = {
-    top: t`Top`,
-    between: t`Between currencies`,
-    bottom: t`Bottom`,
-  }
+  const positionOptions: FormOption<LimitOrdersSettingsState['limitPricePosition']>[] = useMemo(() => {
+    return [
+      { label: t`Top`, value: 'top' },
+      { label: t`Between currencies`, value: 'between' },
+      { label: t`Bottom`, value: 'bottom' },
+    ]
+  }, [])
 
   return (
     <div onClick={handleContainerClick}>
@@ -156,21 +153,13 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
               title={t`Limit Price Position`}
               tooltip={t`Choose where to display the limit price input.`}
             />
-            <styledEl.DropdownContainer>
-              <styledEl.DropdownButton onClick={toggleDropdown}>
-                {POSITION_LABELS[limitPricePosition]}
-              </styledEl.DropdownButton>
-              <styledEl.DropdownList isOpen={isOpen}>
-                {Object.entries(POSITION_LABELS).map(([value, label]) => (
-                  <styledEl.DropdownItem
-                    key={value}
-                    onClick={handleSelect(value as LimitOrdersSettingsState['limitPricePosition'])}
-                  >
-                    {label}
-                  </styledEl.DropdownItem>
-                ))}
-              </styledEl.DropdownList>
-            </styledEl.DropdownContainer>
+            <Select
+              variant="text"
+              name="limitPricePosition"
+              value={limitPricePosition}
+              options={positionOptions}
+              onChange={handleSelect}
+            />
           </styledEl.SettingsRow>
         </SettingsDropdownSection>
       </SettingsContainer>

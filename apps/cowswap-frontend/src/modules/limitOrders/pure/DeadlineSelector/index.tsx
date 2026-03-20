@@ -1,23 +1,10 @@
-import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
 import { useExtractText } from '@cowprotocol/common-utils'
-import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
+import { FormOption, Select } from '@cowprotocol/ui'
 
 import { i18n } from '@lingui/core'
-import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { Menu } from '@reach/menu-button'
-import { ChevronDown } from 'react-feather'
-
-import {
-  calculateMinMax,
-  formatDateToLocalTime,
-  getInputStartDate,
-  getTimeZoneOffset,
-  limitDateString,
-} from 'modules/limitOrders/pure/DeadlineSelector/utils'
-
-import { CowModal as Modal } from 'common/pure/Modal'
 
 import { getLimitOrderDeadlines, LimitOrderDeadline } from './deadlines'
 import * as styledEl from './styled'
@@ -43,20 +30,21 @@ export interface DeadlineSelectorProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const { deadline, customDeadline, isDeadlineDisabled, selectDeadline, selectCustomDeadline } = props
   const { extractTextFromStringOrI18nDescriptor } = useExtractText()
   const currentDeadlineNode = useRef<HTMLButtonElement | null>(null)
-  const [[minDate, maxDate], setMinMax] = useState<[Date, Date]>(calculateMinMax)
+  // const [[minDate, maxDate], setMinMax] = useState<[Date, Date]>(calculateMinMax)
 
-  const min = limitDateString(minDate)
-  const max = limitDateString(maxDate)
+  // const min = limitDateString(minDate)
+  // const max = limitDateString(maxDate)
 
-  const [error, setError] = useState<string | null>(null)
-  const [value, setValue] = useState<string>('')
+  // const [error, setError] = useState<string | null>(null)
+  // const [value, setValue] = useState<string>('')
 
   // Validate `value` from datetime-local input
+  /*
   useEffect(() => {
     try {
       const newDeadline = new Date(value).getTime()
@@ -76,6 +64,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       setError(t`Failed to parse date and time provided`)
     }
   }, [maxDate, minDate, selectCustomDeadline, value])
+  */
 
   const limitOrderDeadlines = useMemo(() => getLimitOrderDeadlines(deadline), [deadline])
 
@@ -95,7 +84,15 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     [selectCustomDeadline, selectDeadline],
   )
 
+  const handleSetDeadline = useCallback(
+    (deadline: number) => {
+      setDeadline(getLimitOrderDeadlines(deadline)[0])
+    },
+    [setDeadline],
+  )
+
   // Sets value from input, if it exists
+  /*
   const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       // Some browsers offer a `clear` button in their date picker
@@ -105,35 +102,35 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     },
     [minDate],
   )
+  */
 
-  const [isOpen, setIsOpen] = useState(false)
-
-  const openModal = useCallback(() => {
-    currentDeadlineNode.current?.click() // Close dropdown
-    setIsOpen(true)
-    setError(null)
-
-    const minMax = calculateMinMax()
-    setMinMax(minMax) // Update min/max every time modal is open
-    setValue(formatDateToLocalTime(getInputStartDate(customDeadline, minMax[0]))) // reset input to clear unsaved values
-  }, [customDeadline])
-
-  const onDismiss = useCallback(() => setIsOpen(false), [])
-
+  /*
   const setCustomDeadline = useCallback(() => {
     // `value` is a timezone aware string
     // thus, we append the timezone offset (if any) when building the date object
     const newDeadline = Math.round(new Date(value + getTimeZoneOffset()).getTime() / 1000)
 
     selectCustomDeadline(newDeadline)
-    onDismiss()
-  }, [onDismiss, selectCustomDeadline, value])
+    // onDismiss()
+  }, [selectCustomDeadline, value])
+  */
 
   const deadlineDisplay = customDeadline
     ? customDeadlineTitle
     : deadline
       ? extractTextFromStringOrI18nDescriptor(deadline.title)
       : ''
+
+  // TODO: Add custom value prop to Select and add a custom option here.
+
+  const deadlineOptions: FormOption<number>[] = useMemo(() => {
+    return limitOrderDeadlines.map((item) => {
+      return {
+        label: extractTextFromStringOrI18nDescriptor(item.title) || `${item.value}ms`,
+        value: item.value,
+      }
+    })
+  }, [extractTextFromStringOrI18nDescriptor, limitOrderDeadlines])
 
   return (
     <styledEl.Wrapper>
@@ -146,30 +143,18 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           <span>{deadlineDisplay}</span>
         </div>
       ) : (
-        <Menu>
-          {/* TODO: Replace any with proper type definitions */}
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>
-            <span>{deadlineDisplay}</span>
-            <ChevronDown size="18" />
-          </styledEl.Current>
-          <styledEl.ListWrapper>
-            {limitOrderDeadlines.map((item) => (
-              <li key={item.value}>
-                <styledEl.ListItem onSelect={() => setDeadline(item)}>
-                  {extractTextFromStringOrI18nDescriptor(item.title)}
-                </styledEl.ListItem>
-              </li>
-            ))}
-            <styledEl.ListItem onSelect={openModal}>
-              <Trans>Custom</Trans>
-            </styledEl.ListItem>
-          </styledEl.ListWrapper>
-        </Menu>
+        <Select
+          variant="text"
+          height={32}
+          name="deadline"
+          value={deadline?.value || 0}
+          options={deadlineOptions}
+          onChange={handleSetDeadline}
+        />
       )}
 
       {/* Custom deadline modal */}
-      <Modal isOpen={isOpen} onDismiss={onDismiss}>
+      {/* <Modal isOpen={isOpen} onDismiss={onDismiss}>
         <styledEl.ModalWrapper>
           <styledEl.ModalHeader>
             <h3>
@@ -199,7 +184,6 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
                 }}
               />
             </styledEl.CustomLabel>
-            {/* TODO: style me!!! */}
             {error && <div>{error}</div>}
           </styledEl.ModalContent>
           <styledEl.ModalFooter>
@@ -211,7 +195,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
             </ButtonPrimary>
           </styledEl.ModalFooter>
         </styledEl.ModalWrapper>
-      </Modal>
+      </Modal> */}
     </styledEl.Wrapper>
   )
 }
