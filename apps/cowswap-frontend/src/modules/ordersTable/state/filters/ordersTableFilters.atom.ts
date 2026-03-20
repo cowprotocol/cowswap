@@ -5,7 +5,7 @@ import { jotaiStore } from '@cowprotocol/core'
 
 import { observe } from 'jotai-effect'
 
-import { locationPathnameAtom } from 'common/state/routesState'
+import { locationPathnameAtom, tabParamAtom } from 'common/state/routesState'
 
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { OrdersTableFilters } from '../ordersTable.types'
@@ -22,8 +22,9 @@ export const { updateAtom: partiallyUpdateOrdersTableFiltersAtom } = atomWithPar
 ordersTableFiltersAtom.onMount = () => {
   return observe((get, set) => {
     get(locationPathnameAtom)
+    get(tabParamAtom)
 
-    // Reset filters when validated tab changes
+    // Reset filters when route (pathname) or orders-table tab query (?tab=) changes
     set(ordersTableFiltersAtom, DEFAULT_ORDERS_TABLE_FILTERS)
   }, jotaiStore)
 }
