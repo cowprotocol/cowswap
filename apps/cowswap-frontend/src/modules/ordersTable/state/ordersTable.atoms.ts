@@ -142,6 +142,8 @@ ordersTableStateAtom.onMount = () => {
       chainId,
       balancesAndAllowances,
       pendingOrdersPermitValidityState,
+
+      // TODO: We should not have side-effects during reads. This should eventually be removed...
       setIsOrderUnfillable,
     )
 
