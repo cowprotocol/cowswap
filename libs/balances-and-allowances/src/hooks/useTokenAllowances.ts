@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -24,6 +25,15 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   state: AllowancesState | undefined
   isLoading: boolean
 } {
+  /*
+  TODO: Replace with tokenAllowancesFamily
+
+  const loadable = useLoadable(tokenAllowancesFamily(tokenAddresses))
+  const isLoading = loadable.state === 'loading'
+  const state = loadable.state === 'hasData' ? loadable.data : undefined
+  return { state, isLoading }
+  */
+
   const { chainId, account } = useWalletInfo()
 
   const spender = useTradeSpenderAddress()
@@ -46,7 +56,7 @@ export function useTokenAllowances(tokenAddresses: string[]): {
     if (!results?.length) return
 
     return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
-      acc[address.toLowerCase()] = results[index]?.[0]
+      acc[getAddressKey(address)] = results[index]?.[0]
       return acc
     }, {})
   }, [tokenAddresses, results])

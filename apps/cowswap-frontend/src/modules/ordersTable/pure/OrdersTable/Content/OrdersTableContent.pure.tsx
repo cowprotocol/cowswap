@@ -1,36 +1,34 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { locationOrderTypeAtom } from 'common/state/routesState'
 
 import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersContent'
 import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletContent'
 import { OrdersTableUnsupportedNetworkContent } from './UnsupportedNetwork/OrdersTableUnsupportedNetworkContent'
 
-import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
-import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
-import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
+import { ordersTableStateAtom } from '../../../state/ordersTable.atoms'
+import { ordersTableTabIdAtom } from '../../../state/params/ordersTableParams.atom'
+import { HistoryStatusFilter } from '../../../utils/getFilteredOrders'
 import { OrdersTable } from '../OrdersTable.pure'
 
 interface OrdersTableContentProps {
-  currentTab: OrderTabId
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
 }
 
-export function OrdersTableContent({
-  searchTerm,
-  historyStatusFilter,
-  currentTab,
-}: OrdersTableContentProps): ReactNode {
-  const { filteredOrders, hasHydratedOrders } = useOrdersTableState() || {}
-  const isHydrated = !!hasHydratedOrders
+export function OrdersTableContent({ searchTerm, historyStatusFilter }: OrdersTableContentProps): ReactNode {
+  const orderType = useAtomValue(locationOrderTypeAtom)
+  const currentTabId = useAtomValue(ordersTableTabIdAtom)
+  const { orders, filteredOrders, hasHydratedOrders } = useAtomValue(ordersTableStateAtom)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { account } = useWalletInfo()
 
   if (!account) {
-    return <OrdersTableNoWalletContent />
+    return <OrdersTableNoWalletContent orderType={orderType} />
   }
 
   if (isProviderNetworkUnsupported) {
@@ -39,12 +37,14 @@ export function OrdersTableContent({
 
   return filteredOrders?.length === 0 ? (
     <OrdersTableNoOrdersContent
-      currentTab={currentTab}
+      orderType={orderType}
+      currentTab={currentTabId}
       searchTerm={searchTerm}
       historyStatusFilter={historyStatusFilter}
-      hasHydratedOrders={isHydrated}
+      hasHydratedOrders={hasHydratedOrders}
+      hasOrders={!!orders?.length}
     />
   ) : (
-    <OrdersTable currentTab={currentTab} />
+    <OrdersTable currentTab={currentTabId} />
   )
 }

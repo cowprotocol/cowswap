@@ -1,42 +1,42 @@
+import { useAtomValue } from 'jotai'
 import React, { ReactNode } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
+import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
+import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
-import { useOrdersToCancelMap } from 'common/hooks/useMultipleOrdersCancellation/useOrdersToCancelMap'
+import { ordersToCancelMapAtom } from 'common/state/ordersToCancel.atom'
+import { OrderTabId } from 'common/state/routesState'
 
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 
 import { OrderRow } from '../../../containers/OrderRow/OrderRow.container'
-import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../state/ordersTable.types'
-import { TabOrderTypes } from '../../../state/ordersTable.types'
 import { useGetPendingOrdersPermitValidityState } from '../../../state/permit/usePendingOrderPermitValidity'
-import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 
 interface OrderTableRowProps {
   currentTab: OrderTabId
+  isTwapTable: boolean
   item: OrderTableItem
 }
 
-export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactNode {
+export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
-  const tableState = useOrdersTableState()
+  const ordersTableState = useAtomValue(ordersTableStateAtom)
   const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
   const getSpotPrice = useGetSpotPrice()
   const pendingOrdersPrices = usePendingOrdersPrices()
-  const ordersToCancelMap = useOrdersToCancelMap()
+  const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
+  const orderActions = useOrderActions()
 
-  if (!tableState) return null
-
-  const { balancesAndAllowances, orderActions, orderType } = tableState
+  const { balancesAndAllowances } = ordersTableState
 
   const isRowSelectable = allowsOffchainSigning
-  const isTwapTable = orderType === TabOrderTypes.ADVANCED
 
   const { inputToken, outputToken } = getParsedOrderFromTableItem(item)
 
@@ -53,7 +53,7 @@ export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactN
       <OrderRow
         isRowSelectable={isRowSelectable}
         isRowSelected={!!ordersToCancelMap[order.id]}
-        isHistoryTab={currentTab === OrderTabId.history}
+        isHistoryTab={currentTab === OrderTabId.HISTORY}
         order={order}
         spotPrice={spotPrice}
         prices={pendingOrdersPrices[order.id]}
@@ -74,7 +74,7 @@ export function OrdersTableRow({ item, currentTab }: OrderTableRowProps): ReactN
         balancesAndAllowances={balancesAndAllowances}
         isRowSelectable={isRowSelectable}
         isRowSelected={!!ordersToCancelMap[item.parent.id]}
-        isHistoryTab={currentTab === OrderTabId.history}
+        isHistoryTab={currentTab === OrderTabId.HISTORY}
         spotPrice={spotPrice}
         prices={pendingOrdersPrices[item.parent.id]}
         isRateInverted={false}

@@ -1,12 +1,12 @@
+import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
-import { useWalletCapabilities } from './useWalletCapabilities'
-
 import { useSafeAppsSdk } from '../../web3-react/hooks/useSafeAppsSdk'
 import { useWalletInfo } from '../hooks'
+import { isBundlingSupportedAtom } from '../state/walletCapabilitiesAtom'
 
 export type SendBatchTxCallback = (txs: MetaTransactionData[]) => Promise<string>
 
@@ -15,12 +15,11 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
   const safeAppsSdk = useSafeAppsSdk()
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
-  const { data: capabilities } = useWalletCapabilities()
-  const isAtomicBatchSupported = capabilities?.atomic?.status === 'supported'
+  const isBundlingSupported = useAtomValue(isBundlingSupportedAtom)
 
   return useCallback(
     async (txs: MetaTransactionData[]) => {
-      if (isAtomicBatchSupported && provider && account && chainId) {
+      if (isBundlingSupported && provider && account && chainId) {
         const chainIdHex = '0x' + (+chainId).toString(16)
         const calls = txs.map((tx) => ({ ...tx, chainId: chainIdHex }))
 
@@ -39,6 +38,6 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
         throw new Error('Batch transactions sending is not supported')
       }
     },
-    [isAtomicBatchSupported, provider, account, chainId, safeAppsSdk],
+    [isBundlingSupported, provider, account, chainId, safeAppsSdk],
   )
 }

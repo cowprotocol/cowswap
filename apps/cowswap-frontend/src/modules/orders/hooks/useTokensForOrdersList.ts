@@ -10,6 +10,8 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
+// TODO: This could be replaced with apps/cowswap-frontend/src/entities/twap/state/twapOrdersTokensAtom.ts
+
 export function useTokensForOrdersList(): (tokensToFetch: string[], signal?: AbortSignal) => Promise<TokensByAddress> {
   const { chainId } = useWalletInfo()
   // TODO M-6 COW-573

@@ -26,7 +26,7 @@ msgstr "selected"
 msgid "View token contract"
 msgstr "View token contract"
 
-#: apps/cowswap-frontend/src/common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "Signature is undefined!"
 msgstr "Signature is undefined!"
@@ -453,7 +453,7 @@ msgstr "ENTER CODE"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
-#: apps/cowswap-frontend/src/modules/ordersTable/state/tabs/ordersTableTabs.constants.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Open"
 msgstr "Open"
 
@@ -632,7 +632,7 @@ msgstr "Sell amount"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
-#: apps/cowswap-frontend/src/modules/ordersTable/state/tabs/ordersTableTabs.constants.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Unfillable"
 msgstr "Unfillable"
 
@@ -683,8 +683,8 @@ msgid "h"
 msgstr "h"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
-msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
+#~ msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
+#~ msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "A U.S. Person or resident of the United States."
@@ -894,6 +894,10 @@ msgstr "Maybe next time"
 msgid "Can't find the pool you're looking for?"
 msgstr "Can't find the pool you're looking for?"
 
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "Custom slippage amount set{amountRange}."
+msgstr "Custom slippage amount set{amountRange}."
+
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 msgid "Order recipient address differs from order owner!"
 msgstr "Order recipient address differs from order owner!"
@@ -977,7 +981,7 @@ msgid "Proposal 2"
 msgstr "Proposal 2"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
-#: apps/cowswap-frontend/src/modules/ordersTable/state/tabs/ordersTableTabs.constants.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Signing"
 msgstr "Signing"
 
@@ -1228,12 +1232,11 @@ msgstr "to save on costs!"
 msgid "Swaps not supported"
 msgstr "Swaps not supported"
 
-#: apps/cowswap-frontend/src/common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
 msgid "Some orders can not be cancelled!"
 msgstr "Some orders can not be cancelled!"
 
-#: apps/cowswap-frontend/src/modules/ordersTable/state/tabs/ordersTableTabs.constants.ts
-#: apps/cowswap-frontend/src/modules/ordersTable/test/ordersTable.cosmos.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Orders history"
 msgstr "Orders history"
 
@@ -5152,8 +5155,8 @@ msgid "tip"
 msgstr "tip"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/test/ordersTable.cosmos.tsx
-msgid "Open orders"
-msgstr "Open orders"
+#~ msgid "Open orders"
+#~ msgstr "Open orders"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 #~ msgid "<0>Switch to {wrappedNativeSymbol}</0> or <1>Wrap {nativeSymbol} to {wrappedNativeSymbol}</1> first."
@@ -5237,6 +5240,10 @@ msgstr "Version"
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
 msgstr "All tokens"
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
+msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Additional Results from External Sources"
@@ -5544,11 +5551,9 @@ msgstr "Favorite tokens"
 #~ msgid "Limit Orders"
 #~ msgstr "Limit Orders"
 
-#. placeholder {0}: slippageWarningParams.lowSlippageBound.toFixed(2)
-#. placeholder {1}: slippageWarningParams.highSlippageBound.toFixed(2)
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "{0} - {1}%: Recommended slippage tolerance."
-msgstr "{0} - {1}%: Recommended slippage tolerance."
+#~ msgid "{0} - {1}%: Recommended slippage tolerance."
+#~ msgstr "{0} - {1}%: Recommended slippage tolerance."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.ts
 msgid "Approved amount is not sufficient!"
@@ -5588,11 +5593,9 @@ msgstr "Orders on CoW Swap can either be market orders (which fill at the market
 #~ msgid "Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 #~ msgstr "Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 
-#. placeholder {0}: (slippageWarningParams.highSlippageBound + 0.01).toFixed(2)
-#. placeholder {1}: slippageWarningParams.max.toFixed(2)
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "{0} - {1}%: High slippage. You may not get the best price."
-msgstr "{0} - {1}%: High slippage. You may not get the best price."
+#~ msgid "{0} - {1}%: High slippage. You may not get the best price."
+#~ msgstr "{0} - {1}%: High slippage. You may not get the best price."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at least"
@@ -7271,11 +7274,9 @@ msgstr "Longer limit orders - place orders for up to a year."
 msgid "User rejected signing the cancellation"
 msgstr "User rejected signing the cancellation"
 
-#. placeholder {0}: slippageWarningParams.min.toFixed(2)
-#. placeholder {1}: (slippageWarningParams.lowSlippageBound - 0.01).toFixed(2)
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "{0} - {1}%: Low slippage. Your transaction may expire."
-msgstr "{0} - {1}%: Low slippage. Your transaction may expire."
+#~ msgid "{0} - {1}%: Low slippage. Your transaction may expire."
+#~ msgstr "{0} - {1}%: Low slippage. Your transaction may expire."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 msgid "Total referrals"
@@ -7301,10 +7302,9 @@ msgstr "We weren't able to check your eligibility. Feel free to continue, but yo
 msgid "Reset {symbol} allowance to 0 before setting new spending cap"
 msgstr "Reset {symbol} allowance to 0 before setting new spending cap"
 
-#. placeholder {0}: slippageWarningParams ? ':' : '.'
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "Custom slippage amount set{0}"
-msgstr "Custom slippage amount set{0}"
+#~ msgid "Custom slippage amount set{0}"
+#~ msgstr "Custom slippage amount set{0}"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate Now"

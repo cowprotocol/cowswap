@@ -1,17 +1,17 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowprotocol/common-const'
 import { getDateTimestamp } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
+import { useOrder, useOrdersById } from 'legacy/state/orders/hooks'
 
-import { OrderFillability, usePendingOrdersFillability } from 'modules/ordersTable'
+import { OrderFillability, usePendingOrdersFillability, swapOrdersAtom } from 'modules/ordersTable'
 
 import { ActivityStatus, ActivityType } from 'common/types/activity'
 
@@ -130,13 +130,14 @@ export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDesc
  * @description returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
  */
 export function useRecentActivity(): TransactionAndOrder[] {
-  const { chainId, account } = useWalletInfo()
+  const { account } = useWalletInfo()
   const allTransactions = useAllTransactions()
-  const allNonEmptyOrders = useOrders(chainId, account, UiOrderType.SWAP)
+  const { reduxOrders: allNonEmptyOrders } = useAtomValue(swapOrdersAtom)
 
+  // TODO: Consider moving this to swapOrdersAtom as well:
   const recentOrdersAdjusted = useMemo<TransactionAndOrder[]>(() => {
     return (
-      allNonEmptyOrders
+      (allNonEmptyOrders || [])
         .map((order) =>
           // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
           // and time in MS vs ISO string as Orders uses

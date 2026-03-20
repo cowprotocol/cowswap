@@ -10,6 +10,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
+import { useConnection } from 'wagmi'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
@@ -35,16 +36,21 @@ function checkIsSupportedWallet(walletName?: string): boolean {
 }
 
 function useWalletInfo(): WalletInfo {
-  const { account, chainId, isActive: active } = useWeb3React()
+  const { account, chainId, isActive: active, provider, connector: legacyConnector } = useWeb3React()
+  const { connector } = useConnection()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
   return useMemo(
-    () => ({
-      chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
-      active,
-      account: account as Address,
-    }),
-    [chainId, active, account, isChainIdUnsupported],
+    () =>
+      ({
+        chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
+        active,
+        account: account as Address,
+        provider,
+        legacyConnector,
+        connector,
+      }) satisfies WalletInfo,
+    [isChainIdUnsupported, chainId, active, account, provider, legacyConnector, connector],
   )
 }
 

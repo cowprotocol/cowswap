@@ -60,6 +60,7 @@ export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from './hooks/tokens/useRestrictedToken'
 export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTokens/restrictedTokensAtom'
 export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
+export { tokensByAddressAtom } from './state/tokens/allTokensAtom'
 
 // Utils
 export { getTokenId } from '@cowprotocol/cow-sdk'

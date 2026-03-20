@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -13,7 +13,7 @@ import type { PendingOrderPrices } from 'modules/orders'
 
 import { OrderRow } from '../../../../containers/OrderRow/OrderRow.container'
 import { OrderActions, OrderTableGroup } from '../../../../state/ordersTable.types'
-import { ORDERS_TABLE_PAGE_SIZE } from '../../../../state/tabs/ordersTableTabs.constants'
+import { ORDERS_TABLE_PAGE_SIZE } from '../../../../state/params/ordersTableParams.constants'
 import { getOrderParams } from '../../../../utils/getOrderParams'
 import { TwapStatusAndToggle } from '../../../TwapStatusAndToggle/TwapStatusAndToggle.pure'
 import { OrdersTablePagination } from '../../Pagination/OrdersTablePagination.pure'
@@ -40,9 +40,6 @@ export interface OrdersTableRowGroupProps {
   isTwapTable?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function OrdersTableRowGroup({
   item,
   prices,
@@ -55,7 +52,7 @@ export function OrdersTableRowGroup({
   chainId,
   balancesAndAllowances,
   isTwapTable,
-}: OrdersTableRowGroupProps) {
+}: OrdersTableRowGroupProps): ReactNode {
   const { parent, children } = item
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true)

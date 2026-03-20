@@ -141,6 +141,7 @@ export default defineConfig(({ mode }) => {
         mainFields: ['exports', 'module', 'main'],
       },
       include: [
+        'react-router',
         '@walletconnect/ethereum-provider',
         '@walletconnect/universal-provider',
         '@walletconnect/utils',
@@ -152,6 +153,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         'node-fetch': 'isomorphic-fetch',
       },
+      dedupe: ['react-router'],
       // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
       conditions: ['module', 'import', 'browser', 'default'],
     },

@@ -10,12 +10,15 @@ import SVG from 'react-inlinesvg'
 import { Web3Status } from 'modules/wallet'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
+import { TabOrderTypes } from 'common/state/routesState'
 
-import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 
-export function OrdersTableNoWalletContent(): ReactNode {
-  const { orderType } = useOrdersTableState() || {}
+export interface OrdersTableNoWalletContentProps {
+  orderType: TabOrderTypes
+}
+
+export function OrdersTableNoWalletContent({ orderType }: OrdersTableNoWalletContentProps): ReactNode {
   const pendingActivitiesCount = usePendingActivitiesCount()
 
   return (

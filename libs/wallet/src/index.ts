@@ -7,7 +7,6 @@ export * from './constants'
 
 // Hooks
 export * from './api/hooks'
-export { useWalletCapabilities } from './api/hooks/useWalletCapabilities'
 export { useWidgetProviderMetaInfo } from './api/hooks/useWidgetProviderMetaInfo'
 export { useSendBatchTransactions } from './api/hooks/useSendBatchTransactions'
 export type { SendBatchTxCallback } from './api/hooks/useSendBatchTransactions'
@@ -50,4 +49,11 @@ export { MetaMaskSdkOption } from './web3-react/connection/metaMaskSdk'
 // State
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
-export * from './api/state'
+export {
+  walletCapabilitiesAtom,
+  walletCapabilitiesLoadableAtom,
+  isBundlingSupportedAtom,
+  isBundlingSupportedLoadableAtom,
+  type WalletCapabilities,
+} from './api/state/walletCapabilitiesAtom'
+export * from './web3-react/state/walletMetadata.atoms'
