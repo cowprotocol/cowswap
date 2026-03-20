@@ -1,6 +1,8 @@
+import { useAtomValue } from 'jotai'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useAllActiveTokens, useFavoriteTokens } from '@cowprotocol/tokens'
+import { useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
@@ -14,6 +16,11 @@ import { useTokensToSelect } from './useTokensToSelect'
 
 import { DEFAULT_SELECT_TOKEN_WIDGET_STATE } from '../state/selectTokenWidgetAtom'
 
+jest.mock('jotai', () => ({
+  ...jest.requireActual('jotai'),
+  useAtomValue: jest.fn(),
+}))
+
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
@@ -21,7 +28,6 @@ jest.mock('@cowprotocol/wallet', () => ({
 
 jest.mock('@cowprotocol/tokens', () => ({
   ...jest.requireActual('@cowprotocol/tokens'),
-  useAllActiveTokens: jest.fn(),
   useFavoriteTokens: jest.fn(),
 }))
 
@@ -38,8 +44,8 @@ jest.mock('./useChainsToSelect', () => ({
   useChainsToSelect: jest.fn(),
 }))
 
+const mockUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseAllActiveTokens = useAllActiveTokens as jest.MockedFunction<typeof useAllActiveTokens>
 const mockUseFavoriteTokens = useFavoriteTokens as jest.MockedFunction<typeof useFavoriteTokens>
 const mockUseBridgeSupportedTokens = useBridgeSupportedTokens as jest.MockedFunction<typeof useBridgeSupportedTokens>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
@@ -73,8 +79,8 @@ describe('useTokensToSelect', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    mockUseAtomValue.mockReturnValue([mainnetToken])
     mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
-    mockUseAllActiveTokens.mockReturnValue({ tokens: [mainnetToken] } as ReturnType<typeof useAllActiveTokens>)
     mockUseFavoriteTokens.mockReturnValue([])
     mockUseBridgeSupportedTokens.mockReturnValue({
       data: { tokens: [lineaToken], isRouteAvailable: true },
