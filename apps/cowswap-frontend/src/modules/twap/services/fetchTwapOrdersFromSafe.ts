@@ -47,10 +47,9 @@ export async function fetchTwapOrdersFromSafe(
 
   const flattenState = accumulator.flat()
 
-  setData(flattenState)
-
   // Exit from the recursion if we have enough transactions or there is no next page
   if (accumulator.length >= SAFE_TX_HISTORY_DEPTH || !response?.next) {
+    setData(flattenState)
     return flattenState
   }
 

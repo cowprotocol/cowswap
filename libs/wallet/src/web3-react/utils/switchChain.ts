@@ -1,5 +1,6 @@
 import { getChainInfo, RPC_URLS } from '@cowprotocol/common-const'
 import {
+  ALL_SUPPORTED_CHAIN_IDS,
   arbitrumOne,
   avalanche,
   base,
@@ -14,13 +15,14 @@ import {
   SupportedChainId,
   HttpsString,
 } from '@cowprotocol/cow-sdk'
+
+import { Network } from '@web3-react/network'
 import { Connector } from '@web3-react/types'
+import { WalletConnect } from '@web3-react/walletconnect-v2'
 
-import { getWeb3ReactConnection } from './getWeb3ReactConnection'
-import { isChainAllowed } from './isChainAllowed'
-
-import { ConnectionType } from '../../api/types'
-import { getIsWalletConnect } from '../hooks/useIsWalletConnect'
+function isChainAllowed(_connector: Connector, chainId: SupportedChainId): boolean {
+  return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
+}
 
 function getRpcUrls(chainId: SupportedChainId): [HttpsString] {
   const rpcUrl = WALLET_RPC_SUGGESTION[chainId] || RPC_URLS[chainId]
@@ -42,18 +44,15 @@ const WALLET_RPC_SUGGESTION: Record<SupportedChainId, HttpsString | null> = {
   [SupportedChainId.INK]: ink.rpcUrls.default.http[0],
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const switchChain = async (connector: Connector, chainId: SupportedChainId) => {
+export async function switchChain(connector: Connector, chainId: SupportedChainId): Promise<void> {
   if (!isChainAllowed(connector, chainId)) {
     throw new Error(`Chain ${chainId} not supported for connector (${typeof connector})`)
   }
 
-  const connection = getWeb3ReactConnection(connector)
-  const isNetworkConnection = connection.type === ConnectionType.NETWORK
-  const isWalletConnect = getIsWalletConnect(connector)
+  const isNetworkConnection = connector instanceof Network
+  const isWalletConnectConnector = connector instanceof WalletConnect
 
-  if (isNetworkConnection || isWalletConnect) {
+  if (isNetworkConnection || isWalletConnectConnector) {
     await connector.activate(chainId)
   } else {
     const info = getChainInfo(chainId)

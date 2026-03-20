@@ -16,13 +16,14 @@ import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
 import { deleteTwapOrdersFromListAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { TwapOrderInfo, TwapOrderItem } from '../types'
+import { TwapOrderInfo, TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
 
 const ORDERS_UPDATE_DEBOUNCE = ms`500ms`
 const TWAP_ORDERS_UPDATE_INTERVAL = ms`3s`
 const AUTH_TIME_THRESHOLD = ms`1m`
+const ORPHAN_SIGNING_MAX_AGE_MS = ms`3m`
 
 export function TwapOrdersUpdater(props: {
   safeAddress: string
@@ -76,6 +77,32 @@ export function TwapOrdersUpdater(props: {
       clearInterval(interval)
     }
   }, [])
+
+  /**
+   * Remove stale "Signing" rows without waiting for auth multicall (which can be null while loading
+   * and would otherwise block cleanup). Safe API is the source of truth for queued proposals.
+   */
+  useEffect(() => {
+    const idsFromSafe = new Set(allOrdersInfo.map((i) => i.id))
+    const now = Date.now()
+
+    const orphanedSigningIds = Object.entries(twapOrdersList)
+      .filter(([orderId, o]) => {
+        if (o.status !== TwapOrderStatus.WaitSigning || idsFromSafe.has(orderId)) {
+          return false
+        }
+        if (o.safeTxParams !== undefined) {
+          return true
+        }
+        const submitted = Date.parse(o.submissionDate)
+        return Number.isFinite(submitted) && now - submitted > ORPHAN_SIGNING_MAX_AGE_MS
+      })
+      .map(([orderId]) => orderId)
+
+    if (orphanedSigningIds.length > 0) {
+      deleteTwapOrders(orphanedSigningIds)
+    }
+  }, [allOrdersInfo, deleteTwapOrders, twapOrdersList])
 
   useEffect(() => {
     if (!ordersAuthResult) return
