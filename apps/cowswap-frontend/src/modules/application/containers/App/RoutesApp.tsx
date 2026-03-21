@@ -10,8 +10,9 @@ import {
   TWITTER_LINK,
 } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
@@ -23,6 +24,7 @@ import {
   AccountProxyRecoverPage,
   AccountProxiesPage,
 } from 'modules/accountProxy'
+import { parameterizeRoute } from 'modules/accountProxy/utils/parameterizeRoute'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
@@ -49,6 +51,8 @@ const AccountAffiliateTrader = lazy(
 )
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 
+type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
+
 function ExternalRedirect({ url }: { url: string }): null {
   useEffect(() => {
     window.location.replace(url)
@@ -57,10 +61,27 @@ function ExternalRedirect({ url }: { url: string }): null {
   return null
 }
 
-type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
-
 function LazyRoute({ route, element, key }: LazyRouteProps): ReactNode {
   return <Route key={key} path={route} element={<Suspense fallback={<Loading />}>{element}</Suspense>} />
+}
+
+function LegacyAccountProxyRedirect({ target }: { target: RoutesValues }): ReactNode {
+  const { search } = useLocation()
+  const { chainId, proxyAddress, tokenAddress } = useParams()
+
+  const parsedChainId = Number(chainId)
+
+  if (typeof chainId !== 'string' || Number.isNaN(parsedChainId)) {
+    return <Navigate to={RoutesEnum.ACCOUNT} replace />
+  }
+
+  const to = parameterizeRoute(target, {
+    chainId: parsedChainId as SupportedChainId,
+    proxyAddress,
+    tokenAddress,
+  })
+
+  return <Navigate to={`${to}${search}`} replace />
 }
 
 const lazyRoutes: LazyRouteProps[] = [
@@ -96,15 +117,31 @@ export function RoutesApp(): ReactNode {
         {isAffiliateProgramEnabled && (
           <Route path={RoutesEnum.ACCOUNT_AFFILIATE_TRADER} element={<AccountAffiliateTrader />} />
         )}
+        <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<AccountProxyWidgetPage />}>
+          <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
+          <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
+          <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
+          <Route index element={<AccountProxiesPage />} />
+        </Route>
         <Route path="*" element={<AccountNotFound />} />
       </Route>
 
-      <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<AccountProxyWidgetPage />}>
-        <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
-        <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
-        <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
-        <Route index element={<AccountProxiesPage />} />
-      </Route>
+      <Route
+        path={RoutesEnum.LEGACY_ACCOUNT_PROXIES}
+        element={<LegacyAccountProxyRedirect target={RoutesEnum.ACCOUNT_PROXIES} />}
+      />
+      <Route
+        path={RoutesEnum.LEGACY_ACCOUNT_PROXY}
+        element={<LegacyAccountProxyRedirect target={RoutesEnum.ACCOUNT_PROXY} />}
+      />
+      <Route
+        path={RoutesEnum.LEGACY_ACCOUNT_PROXY_RECOVER}
+        element={<LegacyAccountProxyRedirect target={RoutesEnum.ACCOUNT_PROXY_RECOVER} />}
+      />
+      <Route
+        path={RoutesEnum.LEGACY_ACCOUNT_PROXY_HELP}
+        element={<LegacyAccountProxyRedirect target={RoutesEnum.ACCOUNT_PROXY_HELP} />}
+      />
       <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
       <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 

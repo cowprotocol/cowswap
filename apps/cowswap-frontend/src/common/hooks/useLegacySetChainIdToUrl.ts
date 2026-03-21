@@ -17,7 +17,7 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
   return useCallback(
     (chainId: SupportedChainId) => {
       // Don't set chainId as query parameter when it's already set as /{chainId}
-      if (/^\/\d+\//.test(location.pathname)) return
+      if (/^\/(?:account\/)?\d+(?:\/|$)/.test(location.pathname)) return
 
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
