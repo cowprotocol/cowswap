@@ -3,6 +3,13 @@ import { useCallback, useMemo, useState } from 'react'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { Connector } from '@web3-react/types'
 
+import {
+  getActivationAttempt,
+  cleanupActivationError,
+  getRetryConnector,
+  PendingConnection,
+} from './useActivateConnector.utils'
+
 import { useWalletInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
 import { getIsHardWareWallet } from '../utils/getIsHardWareWallet'
@@ -29,28 +36,36 @@ export function useActivateConnector({
   onActivationError,
 }: ConnectorActivationContext) {
   const { chainId } = useWalletInfo()
-  const [pendingConnector, setPendingConnector] = useState<Connector | undefined>()
+  const [pendingConnection, setPendingConnection] = useState<PendingConnection | undefined>()
 
   const tryActivation = useCallback(
-    async (connector: Connector) => {
+    async (connector: Connector, retryPendingConnection?: PendingConnection) => {
+      const currentChainId = getCurrentChainIdFromUrl()
       const connection = getWeb3ReactConnection(connector)
       const connectionType = connection.type
       const isHardWareWallet = getIsHardWareWallet(connectionType)
+      const { activationChainId, pendingConnection: nextPendingConnection } = getActivationAttempt(
+        connectionType,
+        currentChainId,
+        retryPendingConnection,
+      )
 
       // Skips wallet connection if the connection should override the default
       // behavior, i.e. install MetaMask or launch Coinbase app
       if (connection.overrideActivate?.(chainId)) return
 
       try {
-        setPendingConnector(connector)
+        setPendingConnection(nextPendingConnection)
         beforeActivation()
 
-        await connector.activate(skipNetworkChanging ? undefined : getCurrentChainIdFromUrl())
+        await connector.activate(skipNetworkChanging ? undefined : activationChainId)
 
         afterActivation(isHardWareWallet, connectionType)
         // TODO: Replace any with proper type definitions
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
+        await cleanupActivationError(connector, nextPendingConnection)
+
         console.error(`[tryActivation] web3-react connection error`, error)
 
         onActivationError(error)
@@ -63,11 +78,13 @@ export function useActivateConnector({
     () => ({
       tryActivation,
       retryPendingActivation: () => {
-        if (pendingConnector) {
-          tryActivation(pendingConnector)
+        if (pendingConnection) {
+          return tryActivation(getRetryConnector(pendingConnection), pendingConnection)
         }
+
+        return undefined
       },
     }),
-    [tryActivation, pendingConnector],
+    [tryActivation, pendingConnection],
   )
 }
