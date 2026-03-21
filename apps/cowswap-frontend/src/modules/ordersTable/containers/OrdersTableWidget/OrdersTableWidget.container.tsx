@@ -1,6 +1,7 @@
 import { ReactNode, useMemo, useState, useEffect } from 'react'
 
-import { t } from '@lingui/core/macro'
+import { FormOption, Select } from '@cowprotocol/ui'
+
 import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -11,14 +12,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import {
-  SearchIcon,
-  SearchInput,
-  SearchInputContainer,
-  StyledCloseIcon,
-  SelectContainer,
-  Select,
-} from './OrdersTableWidget.styled'
+import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon } from './OrdersTableWidget.styled'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
 import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
@@ -39,9 +33,18 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
 
-// eslint-disable-next-line max-lines-per-function
 export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
-  const { i18n } = useLingui()
+  const { t } = useLingui()
+
+  const historyStatusFilterOptions = useMemo<FormOption<HistoryStatusFilter>[]>(
+    () => [
+      { label: t`Filled orders`, value: HistoryStatusFilter.FILLED },
+      { label: t`Cancelled orders`, value: HistoryStatusFilter.CANCELLED },
+      { label: t`Expired orders`, value: HistoryStatusFilter.EXPIRED },
+      { label: t`All orders`, value: HistoryStatusFilter.ALL },
+    ],
+    [t],
+  )
   const navigate = useNavigate()
 
   const [searchTerm, setSearchTerm] = useState('')
@@ -69,8 +72,10 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
     resetPagination()
   }
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    setHistoryStatusFilter(e.target.value as HistoryStatusFilter)
+  const handleSelectChange = (historyStatusFilter: HistoryStatusFilter): void => {
+    console.log('handleSelectChange', historyStatusFilter)
+
+    setHistoryStatusFilter(historyStatusFilter)
 
     // If any filter changes, reset pagination:
     resetPagination()
@@ -121,14 +126,14 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
           <>
             {/* Show onlyFilled select only in history tab */}
             {currentTabId === OrderTabId.history && (
-              <SelectContainer>
-                <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
-                  <option value="filled">{i18n._('Filled orders')}</option>
-                  <option value="cancelled">{i18n._('Cancelled orders')}</option>
-                  <option value="expired">{i18n._('Expired orders')}</option>
-                  <option value="all">{i18n._('All orders')}</option>
-                </Select>
-              </SelectContainer>
+              <Select
+                variant="border"
+                height={32}
+                name="historyStatusFilter"
+                value={historyStatusFilter}
+                options={historyStatusFilterOptions}
+                onChange={handleSelectChange}
+              />
             )}
 
             <SearchInputContainer>
