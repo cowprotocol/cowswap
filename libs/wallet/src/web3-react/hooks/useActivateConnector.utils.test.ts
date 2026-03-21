@@ -1,7 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Connector } from '@web3-react/types'
 
-import { cleanupActivationError, getPendingConnection, getRetryConnector } from './useActivateConnector.utils'
+import {
+  cleanupActivationError,
+  getActivationAttempt,
+  getPendingConnection,
+  getRetryConnector,
+} from './useActivateConnector.utils'
 
 import { ConnectionType } from '../../api/types'
 
@@ -39,6 +44,27 @@ describe('useActivateConnector utils', () => {
     })
     expect(getRetryConnector(pendingConnection)).toBe(freshConnector)
     expect(mockGetWalletConnectV2Connection).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
+  })
+
+  it('uses the current app chain for fresh WalletConnect activations', () => {
+    expect(getActivationAttempt(ConnectionType.WALLET_CONNECT_V2, SupportedChainId.BASE)).toEqual({
+      activationChainId: SupportedChainId.BASE,
+      pendingConnection: {
+        connectionType: ConnectionType.WALLET_CONNECT_V2,
+        walletConnectChainId: SupportedChainId.BASE,
+      },
+    })
+  })
+
+  it('preserves the original WalletConnect chain across retries', () => {
+    const retryPendingConnection = getPendingConnection(ConnectionType.WALLET_CONNECT_V2, SupportedChainId.GNOSIS_CHAIN)
+
+    expect(
+      getActivationAttempt(ConnectionType.WALLET_CONNECT_V2, SupportedChainId.BASE, retryPendingConnection),
+    ).toEqual({
+      activationChainId: SupportedChainId.GNOSIS_CHAIN,
+      pendingConnection: retryPendingConnection,
+    })
   })
 
   it('resets cached WalletConnect connections after transient activation errors', () => {

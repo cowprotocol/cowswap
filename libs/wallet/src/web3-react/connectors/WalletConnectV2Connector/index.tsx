@@ -23,10 +23,11 @@ type WalletConnectProviderLike = {
 }
 
 export class WalletConnectV2Connector extends WalletConnect {
-  private connectionPromise: Promise<void> | undefined
+  private activationPromise: Promise<void> | undefined
+  private eagerConnectionPromise: Promise<void> | undefined
 
   public override connectEagerly(): Promise<void> {
-    return this.runSingleFlight(() => super.connectEagerly())
+    return this.runEagerConnectionSingleFlight(() => super.connectEagerly())
   }
 
   public override activate(desiredChainId?: number): Promise<void> {
@@ -34,7 +35,7 @@ export class WalletConnectV2Connector extends WalletConnect {
       return this.activateAndSyncState(desiredChainId)
     }
 
-    return this.runSingleFlight(() => this.activateAndSyncState(desiredChainId))
+    return this.runActivationSingleFlight(() => this.activateAndSyncState(desiredChainId))
   }
 
   public override async deactivate(): Promise<void> {
@@ -44,7 +45,8 @@ export class WalletConnectV2Connector extends WalletConnect {
     try {
       await super.deactivate()
     } finally {
-      this.connectionPromise = undefined
+      this.activationPromise = undefined
+      this.eagerConnectionPromise = undefined
 
       if (shouldCleanupTransientProvider && provider) {
         await this.cleanupTransientProvider(provider)
@@ -52,14 +54,24 @@ export class WalletConnectV2Connector extends WalletConnect {
     }
   }
 
-  private runSingleFlight(task: () => Promise<void>): Promise<void> {
-    if (!this.connectionPromise) {
-      this.connectionPromise = task().finally(() => {
-        this.connectionPromise = undefined
+  private runActivationSingleFlight(task: () => Promise<void>): Promise<void> {
+    if (!this.activationPromise) {
+      this.activationPromise = task().finally(() => {
+        this.activationPromise = undefined
       })
     }
 
-    return this.connectionPromise
+    return this.activationPromise
+  }
+
+  private runEagerConnectionSingleFlight(task: () => Promise<void>): Promise<void> {
+    if (!this.eagerConnectionPromise) {
+      this.eagerConnectionPromise = task().finally(() => {
+        this.eagerConnectionPromise = undefined
+      })
+    }
+
+    return this.eagerConnectionPromise
   }
 
   private async activateAndSyncState(desiredChainId?: number): Promise<void> {

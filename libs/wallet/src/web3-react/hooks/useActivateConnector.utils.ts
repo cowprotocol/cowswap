@@ -17,6 +17,11 @@ export interface PendingConnection {
   walletConnectChainId?: SupportedChainId
 }
 
+export interface ActivationAttempt {
+  activationChainId: SupportedChainId
+  pendingConnection: PendingConnection
+}
+
 export function getPendingConnection(
   connectionType: ConnectionType,
   walletConnectChainId: SupportedChainId,
@@ -26,6 +31,28 @@ export function getPendingConnection(
   }
 
   return { connectionType }
+}
+
+export function getActivationAttempt(
+  connectionType: ConnectionType,
+  currentChainId: SupportedChainId,
+  retryPendingConnection?: PendingConnection,
+): ActivationAttempt {
+  if (
+    connectionType === ConnectionType.WALLET_CONNECT_V2 &&
+    retryPendingConnection?.connectionType === ConnectionType.WALLET_CONNECT_V2 &&
+    retryPendingConnection.walletConnectChainId
+  ) {
+    return {
+      activationChainId: retryPendingConnection.walletConnectChainId,
+      pendingConnection: retryPendingConnection,
+    }
+  }
+
+  return {
+    activationChainId: currentChainId,
+    pendingConnection: getPendingConnection(connectionType, currentChainId),
+  }
 }
 
 export function getRetryConnector(pendingConnection: PendingConnection): Connector {

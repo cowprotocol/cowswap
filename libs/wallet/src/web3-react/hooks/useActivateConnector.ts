@@ -4,8 +4,8 @@ import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { Connector } from '@web3-react/types'
 
 import {
+  getActivationAttempt,
   cleanupActivationError,
-  getPendingConnection,
   getRetryConnector,
   PendingConnection,
 } from './useActivateConnector.utils'
@@ -39,12 +39,16 @@ export function useActivateConnector({
   const [pendingConnection, setPendingConnection] = useState<PendingConnection | undefined>()
 
   const tryActivation = useCallback(
-    async (connector: Connector) => {
-      const activationChainId = getCurrentChainIdFromUrl()
+    async (connector: Connector, retryPendingConnection?: PendingConnection) => {
+      const currentChainId = getCurrentChainIdFromUrl()
       const connection = getWeb3ReactConnection(connector)
       const connectionType = connection.type
       const isHardWareWallet = getIsHardWareWallet(connectionType)
-      const nextPendingConnection = getPendingConnection(connectionType, activationChainId)
+      const { activationChainId, pendingConnection: nextPendingConnection } = getActivationAttempt(
+        connectionType,
+        currentChainId,
+        retryPendingConnection,
+      )
 
       // Skips wallet connection if the connection should override the default
       // behavior, i.e. install MetaMask or launch Coinbase app
@@ -75,7 +79,7 @@ export function useActivateConnector({
       tryActivation,
       retryPendingActivation: () => {
         if (pendingConnection) {
-          return tryActivation(getRetryConnector(pendingConnection))
+          return tryActivation(getRetryConnector(pendingConnection), pendingConnection)
         }
 
         return undefined

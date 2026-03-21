@@ -43,103 +43,150 @@ function attachProvider(connector: WalletConnectV2Connector, provider: TestProvi
   ;(connector as unknown as { provider?: TestProvider }).provider = provider
 }
 
-describe('WalletConnectV2Connector', () => {
-  afterEach(() => {
-    jest.restoreAllMocks()
-  })
+function describeActivationSingleFlight(): void {
+  describe('activation single-flight', () => {
+    it('dedupes concurrent activate calls while establishing a session', async () => {
+      const actions = createActions()
+      const connector = createConnector(actions)
+      let resolveActivation = (): void => undefined
 
-  it('dedupes concurrent activate calls while establishing a session', async () => {
-    const actions = createActions()
-    const connector = createConnector(actions)
-    let resolveActivation = (): void => undefined
-
-    const activateSpy = jest.spyOn(WalletConnect.prototype, 'activate').mockImplementation(function (
-      this: WalletConnectV2Connector,
-    ) {
-      return new Promise<void>((resolve) => {
-        resolveActivation = () => {
-          attachProvider(this, { accounts: ['0x1'], chainId: 1 })
-          resolve()
-        }
+      const activateSpy = jest.spyOn(WalletConnect.prototype, 'activate').mockImplementation(function (
+        this: WalletConnectV2Connector,
+      ) {
+        return new Promise<void>((resolve) => {
+          resolveActivation = () => {
+            attachProvider(this, { accounts: ['0x1'], chainId: 1 })
+            resolve()
+          }
+        })
       })
+
+      const firstActivation = connector.activate(1)
+      const secondActivation = connector.activate(1)
+
+      expect(activateSpy).toHaveBeenCalledTimes(1)
+
+      resolveActivation()
+      await Promise.all([firstActivation, secondActivation])
+
+      expect(actions.update).toHaveBeenCalledTimes(1)
+      expect(actions.update).toHaveBeenCalledWith({ accounts: ['0x1'], chainId: 1 })
     })
 
-    const firstActivation = connector.activate(1)
-    const secondActivation = connector.activate(1)
+    it('clears the single-flight guard after activation errors', async () => {
+      const actions = createActions()
+      const connector = createConnector(actions)
 
-    expect(activateSpy).toHaveBeenCalledTimes(1)
+      const activateSpy = jest
+        .spyOn(WalletConnect.prototype, 'activate')
+        .mockRejectedValueOnce(new Error('boom'))
+        .mockImplementationOnce(function (this: WalletConnectV2Connector) {
+          attachProvider(this, { accounts: ['0x1'], chainId: 1 })
 
-    resolveActivation()
-    await Promise.all([firstActivation, secondActivation])
+          return Promise.resolve()
+        })
 
-    expect(actions.update).toHaveBeenCalledTimes(1)
-    expect(actions.update).toHaveBeenCalledWith({ accounts: ['0x1'], chainId: 1 })
+      await expect(connector.activate(1)).rejects.toThrow('boom')
+      await expect(connector.activate(1)).resolves.toBeUndefined()
+
+      expect(activateSpy).toHaveBeenCalledTimes(2)
+      expect(actions.update).toHaveBeenCalledTimes(1)
+    })
   })
+}
 
-  it('clears the single-flight guard after activation errors', async () => {
-    const actions = createActions()
-    const connector = createConnector(actions)
+function describeEagerConnectionSingleFlight(): void {
+  describe('eager connection single-flight', () => {
+    it('dedupes concurrent eager connection attempts', async () => {
+      const connector = createConnector()
+      let resolveConnection = (): void => undefined
 
-    const activateSpy = jest
-      .spyOn(WalletConnect.prototype, 'activate')
-      .mockRejectedValueOnce(new Error('boom'))
-      .mockImplementationOnce(function (this: WalletConnectV2Connector) {
+      const connectEagerlySpy = jest.spyOn(WalletConnect.prototype, 'connectEagerly').mockImplementation(() => {
+        return new Promise<void>((resolve) => {
+          resolveConnection = resolve
+        })
+      })
+
+      const firstConnection = connector.connectEagerly()
+      const secondConnection = connector.connectEagerly()
+
+      expect(connectEagerlySpy).toHaveBeenCalledTimes(1)
+
+      resolveConnection()
+      await Promise.all([firstConnection, secondConnection])
+    })
+
+    it('does not block explicit activation behind an in-flight eager connection', async () => {
+      const actions = createActions()
+      const connector = createConnector(actions)
+      let resolveEagerConnection = (): void => undefined
+
+      const connectEagerlySpy = jest.spyOn(WalletConnect.prototype, 'connectEagerly').mockImplementation(() => {
+        return new Promise<void>((resolve) => {
+          resolveEagerConnection = resolve
+        })
+      })
+
+      const activateSpy = jest.spyOn(WalletConnect.prototype, 'activate').mockImplementation(function (
+        this: WalletConnectV2Connector,
+      ) {
         attachProvider(this, { accounts: ['0x1'], chainId: 1 })
 
         return Promise.resolve()
       })
 
-    await expect(connector.activate(1)).rejects.toThrow('boom')
-    await expect(connector.activate(1)).resolves.toBeUndefined()
+      const eagerConnection = connector.connectEagerly()
+      const activation = connector.activate(1)
 
-    expect(activateSpy).toHaveBeenCalledTimes(2)
-    expect(actions.update).toHaveBeenCalledTimes(1)
-  })
+      expect(connectEagerlySpy).toHaveBeenCalledTimes(1)
+      expect(activateSpy).toHaveBeenCalledTimes(1)
 
-  it('dedupes concurrent eager connection attempts', async () => {
-    const connector = createConnector()
-    let resolveConnection = (): void => undefined
+      resolveEagerConnection()
+      await Promise.all([eagerConnection, activation])
 
-    const connectEagerlySpy = jest.spyOn(WalletConnect.prototype, 'connectEagerly').mockImplementation(() => {
-      return new Promise<void>((resolve) => {
-        resolveConnection = resolve
-      })
+      expect(actions.update).toHaveBeenCalledWith({ accounts: ['0x1'], chainId: 1 })
     })
-
-    const firstConnection = connector.connectEagerly()
-    const secondConnection = connector.connectEagerly()
-
-    expect(connectEagerlySpy).toHaveBeenCalledTimes(1)
-
-    resolveConnection()
-    await Promise.all([firstConnection, secondConnection])
   })
+}
 
-  it('cleans up cancelled pre-session providers during deactivation', async () => {
-    const connector = createConnector()
-    const cleanup = jest.fn<Promise<void>, []>().mockResolvedValue()
-    const transportClose = jest.fn<Promise<void>, []>().mockResolvedValue()
+function describeTransientCleanup(): void {
+  describe('transient cleanup', () => {
+    it('cleans up cancelled pre-session providers during deactivation', async () => {
+      const connector = createConnector()
+      const cleanup = jest.fn<Promise<void>, []>().mockResolvedValue()
+      const transportClose = jest.fn<Promise<void>, []>().mockResolvedValue()
 
-    attachProvider(connector, {
-      accounts: [],
-      chainId: 1,
-      signer: {
-        cleanup,
-        client: {
-          core: {
-            relayer: {
-              transportClose,
+      attachProvider(connector, {
+        accounts: [],
+        chainId: 1,
+        signer: {
+          cleanup,
+          client: {
+            core: {
+              relayer: {
+                transportClose,
+              },
             },
           },
         },
-      },
+      })
+
+      jest.spyOn(WalletConnect.prototype, 'deactivate').mockResolvedValue()
+
+      await connector.deactivate()
+
+      expect(cleanup).toHaveBeenCalledTimes(1)
+      expect(transportClose).toHaveBeenCalledTimes(1)
     })
-
-    jest.spyOn(WalletConnect.prototype, 'deactivate').mockResolvedValue()
-
-    await connector.deactivate()
-
-    expect(cleanup).toHaveBeenCalledTimes(1)
-    expect(transportClose).toHaveBeenCalledTimes(1)
   })
+}
+
+describe('WalletConnectV2Connector', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  describeActivationSingleFlight()
+  describeEagerConnectionSingleFlight()
+  describeTransientCleanup()
 })

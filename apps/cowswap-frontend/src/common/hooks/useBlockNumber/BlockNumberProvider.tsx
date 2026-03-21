@@ -2,19 +2,23 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { getRpcProvider } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { BlockNumberContext } from './context'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BlockNumberProvider({ children }: { children: ReactNode }) {
+interface BlockNumberProviderProps {
+  children: ReactNode
+}
+
+export function BlockNumberProvider({ children }: BlockNumberProviderProps): ReactNode {
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
   const activeChainId = useWalletChainId()
-  const provider = useMemo(() => {
-    return activeChainId ? getRpcProvider(activeChainId) : undefined
+  const walletProvider = useWalletProvider()
+  const rpcProvider = useMemo(() => {
+    return activeChainId ? getRpcProvider(activeChainId) : null
   }, [activeChainId])
+  const provider = walletProvider || rpcProvider
 
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({ chainId: activeChainId })
 
