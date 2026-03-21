@@ -60,6 +60,7 @@ export function SmartModal({
         {fadeTransition((props, item) =>
           item ? (
             <SmartModalOverlay
+              $zIndex={zIndex}
               className={className}
               style={props}
               onDismiss={onDismiss}

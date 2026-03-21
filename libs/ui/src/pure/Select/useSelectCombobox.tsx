@@ -1,4 +1,13 @@
-import { useId, useMemo, useRef, type FocusEvent, type KeyboardEvent, type MouseEvent, type RefObject } from 'react'
+import {
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  type FocusEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+  type RefObject,
+} from 'react'
 
 import { useSelectComboboxEffects } from './useSelectCombobox.effects'
 import { useSelectComboboxActions } from './useSelectComboboxActions'
@@ -30,6 +39,7 @@ export function useSelectCombobox<T>({ value, options, onChange, disabled }: Sel
   const buttonId = `select-${uid}-trigger`
   const listboxId = `select-${uid}-listbox`
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const isOpenRef = useRef(false)
 
   const {
     isOpen,
@@ -43,6 +53,10 @@ export function useSelectCombobox<T>({ value, options, onChange, disabled }: Sel
     applyTypeahead,
     beginTypeaheadFromClosed,
   } = useSelectFilterAndOpen(value, options)
+
+  useLayoutEffect(() => {
+    isOpenRef.current = isOpen
+  }, [isOpen])
 
   const selectedOption = useMemo(() => options.find((o) => o.value === value), [options, value])
   const selectedLabel = selectedOption?.label ?? ''
@@ -60,6 +74,9 @@ export function useSelectCombobox<T>({ value, options, onChange, disabled }: Sel
   const { handleButtonClick, handleButtonBlur, handleOptionClick, handleOptionMouseEnter } = useSelectComboboxActions({
     disabled,
     isOpen,
+    isOpenRef,
+    listboxId,
+    buttonRef,
     options,
     onChange,
     closeDropdown,

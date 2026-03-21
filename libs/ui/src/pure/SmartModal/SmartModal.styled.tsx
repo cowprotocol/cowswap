@@ -6,9 +6,12 @@ import styled, { css } from 'styled-components/macro'
 import { UI } from '../../enum'
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
-export const SmartModalOverlay = styled(AnimatedDialogOverlay)`
+/** Match DEFAULT_Z_INDEX in SmartModal.pure when $zIndex is omitted */
+const SMART_MODAL_OVERLAY_Z_DEFAULT = 1000
+
+export const SmartModalOverlay = styled(AnimatedDialogOverlay)<{ $zIndex?: number }>`
   &[data-reach-dialog-overlay] {
-    z-index: 2;
+    z-index: ${({ $zIndex }) => $zIndex ?? SMART_MODAL_OVERLAY_Z_DEFAULT};
     background-color: transparent;
     overflow: hidden;
     display: flex;
