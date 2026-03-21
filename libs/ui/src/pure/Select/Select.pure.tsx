@@ -1,98 +1,97 @@
-import { useState, useCallback, useRef, useEffect, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { ChevronDown } from 'react-feather'
 
 import * as styledEl from './Select.styled'
+import { labelMatchesFilter, preventAnchorBlur } from './selectCombobox.utils'
+import { useSelectCombobox } from './useSelectCombobox'
 
 import { Dropdown } from '../Dropdown/Dropdown.pure'
-export type SelectVariant = 'text' | 'border' | 'solid'
 
-export type SelectHeight = 32 | 40 | 48
+import type { FormOption, SelectHeight, SelectProps, SelectVariant } from './Select.types'
 
-export interface FormOption<T> {
-  label: string
-  value: T
-  // TODO: Add logo/image and description
-}
+export type { FormOption, SelectHeight, SelectProps, SelectVariant }
 
-export interface SelectProps<T> {
-  variant: SelectVariant
-  height?: SelectHeight
-  name: string
-  value: T
-  options: FormOption<T>[]
-  onChange: (value: T) => void
-  disabled?: boolean
-}
-
-export function Select<T>({ variant, height, name, value, options, onChange, disabled }: SelectProps<T>): ReactNode {
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  const [inputValue, setInputValue] = useState(`${value}`)
-
-  const [isOpen, setIsOpen] = useState(false)
-
-  useEffect(() => {
-    if (isOpen) inputRef.current?.focus()
-  }, [isOpen])
-
-  const handleToggleOpen = useCallback(() => {
-    console.log('handleToggleOpen', isOpen)
-    if (!isOpen) setIsOpen(true)
-  }, [isOpen])
-
-  const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
-  }, [])
-
-  const handleOptionSelected = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const value = e.currentTarget.dataset.value
-
-      // TODO: Validate value is in options
-      if (value) onChange(value as T)
-    },
-    [onChange],
-  )
-
-  const handleFocus = useCallback(() => {
-    console.log('handleFocus')
-    setInputValue(`${value}`)
-    setIsOpen(true)
-  }, [value])
-
-  const handleBlur = useCallback(() => {
-    console.log('handleBlur')
-    setInputValue(`${value}`)
-    setIsOpen(false)
-  }, [value])
+export function Select<T>({
+  variant,
+  height,
+  name,
+  ariaLabel,
+  value,
+  options,
+  onChange,
+  disabled,
+}: SelectProps<T>): ReactNode {
+  const {
+    buttonRef,
+    buttonId,
+    listboxId,
+    selectedLabel,
+    isOpen,
+    activeIndex,
+    filterQuery,
+    activeDescendantId,
+    handleButtonClick,
+    handleButtonKeyDown,
+    handleButtonBlur,
+    handleOptionClick,
+    handleOptionMouseEnter,
+    closeDropdown,
+  } = useSelectCombobox({ variant, height, name, ariaLabel, value, options, onChange, disabled })
 
   return (
     <styledEl.Wrapper>
-      <styledEl.SelectInput
-        ref={inputRef}
+      <styledEl.SelectButton
+        ref={buttonRef}
+        type="button"
+        id={buttonId}
         name={name}
         $variant={variant}
         $height={height}
-        value={`${inputValue}`}
-        placeholder={`${value}`}
-        onInput={handleInput}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
         disabled={disabled}
-      />
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls={listboxId}
+        aria-activedescendant={activeDescendantId}
+        {...(ariaLabel ? { 'aria-label': ariaLabel } : {})}
+        aria-autocomplete="list"
+        role="combobox"
+        onClick={handleButtonClick}
+        onKeyDown={handleButtonKeyDown}
+        onBlur={handleButtonBlur}
+      >
+        <styledEl.ButtonLabel>{selectedLabel}</styledEl.ButtonLabel>
+        <styledEl.ChevronIconWrapper $isOpen={isOpen} aria-hidden>
+          <ChevronDown size={20} />
+        </styledEl.ChevronIconWrapper>
+      </styledEl.SelectButton>
 
-      <styledEl.ChevronIconWrapper $isOpen={isOpen} onClick={handleToggleOpen}>
-        <ChevronDown size={20} />
-      </styledEl.ChevronIconWrapper>
-
-      <Dropdown isOpen={isOpen} onDismiss={() => setIsOpen(false)} anchorRef={inputRef}>
-        <styledEl.DropdownContent>
-          {options.map((option) => (
-            <styledEl.DropdownItem key={`${option.value}`} onClick={handleOptionSelected} data-value={option.value}>
-              {option.label}
-            </styledEl.DropdownItem>
-          ))}
+      <Dropdown isOpen={isOpen} onDismiss={closeDropdown} anchorRef={buttonRef}>
+        <styledEl.DropdownContent
+          id={listboxId}
+          role="listbox"
+          aria-labelledby={buttonId}
+          onMouseDown={preventAnchorBlur}
+        >
+          {options.map((option, index) => {
+            const isDimmed = filterQuery.length > 0 && !labelMatchesFilter(option.label, filterQuery)
+            const isActive = index === activeIndex
+            return (
+              <styledEl.DropdownItem
+                key={`${option.value}`}
+                id={`${listboxId}-option-${index}`}
+                role="option"
+                aria-selected={option.value === value}
+                data-option-index={index}
+                $isActive={isActive}
+                $isDimmed={isDimmed}
+                onClick={handleOptionClick}
+                onMouseEnter={() => handleOptionMouseEnter(index)}
+              >
+                {option.label}
+              </styledEl.DropdownItem>
+            )
+          })}
         </styledEl.DropdownContent>
       </Dropdown>
     </styledEl.Wrapper>

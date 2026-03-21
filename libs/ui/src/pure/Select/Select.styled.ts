@@ -1,24 +1,27 @@
 import styled, { css } from 'styled-components/macro'
 
-import { SelectHeight, SelectVariant } from './Select.pure'
-
 import { UI } from '../../enum'
+
+import type { SelectHeight, SelectVariant } from './Select.types'
 
 export const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: red;
 `
 
-export const SelectInput = styled.input<{
+export const SelectButton = styled.button<{
   $variant: SelectVariant
   $height?: SelectHeight
 }>`
   field-sizing: content;
   width: 100%;
-  padding: 10px ${({ $height }) => ($height || 32) + 8}px 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 8px;
   border-radius: 14px;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   background: var(${UI.COLOR_PAPER});
@@ -29,6 +32,7 @@ export const SelectInput = styled.input<{
   outline: none;
   appearance: none;
   text-align: left;
+  font-family: inherit;
 
   ${({ $variant }) =>
     $variant === 'text' &&
@@ -36,48 +40,48 @@ export const SelectInput = styled.input<{
       background: transparent;
       border: none;
       padding: 0;
-      padding-right: 24px;
       font-size: inherit;
       font-weight: inherit;
-      // cursor: pointer;
-      outline: none;
       border-radius: 0;
     `}
 `
 
-export const ChevronIconWrapper = styled.button<{ $isOpen: boolean }>`
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  aspect-ratio: 1;
-  cursor: pointer;
+export const ButtonLabel = styled.span`
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+
+export const ChevronIconWrapper = styled.span<{ $isOpen: boolean }>`
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
   color: inherit;
   transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+  pointer-events: none;
 `
 
-export const DropdownContent = styled.div`¡
+export const DropdownContent = styled.div`
   width: 100%;
+  max-height: min(320px, 50vh);
+  overflow-y: auto;
   background: var(${UI.COLOR_PAPER});
   border-radius: 14px;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 10px;
 `
 
-export const DropdownItem = styled.div`
+export const DropdownItem = styled.div<{ $isActive: boolean; $isDimmed: boolean }>`
   padding: 10px;
   cursor: pointer;
-
-  &:hover {
-    background: var(${UI.COLOR_PRIMARY_OPACITY_10});
-  }
+  border-radius: 8px;
+  opacity: ${({ $isDimmed }) => ($isDimmed ? 0.35 : 1)};
+  transition:
+    opacity var(${UI.ANIMATION_DURATION}) ease,
+    background-color var(${UI.ANIMATION_DURATION}) ease;
+  background: ${({ $isActive }) => ($isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_10})` : 'transparent')};
 `
