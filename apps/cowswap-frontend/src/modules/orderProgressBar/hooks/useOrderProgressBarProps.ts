@@ -221,6 +221,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     previousBackendApiStatus,
     lastTimeChangedSteps,
     previousStepName,
+    progressBarStepName,
     bridgingStatus,
     isBridgingTrade,
   )
@@ -272,6 +273,7 @@ export function getProgressBarStepName(
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName'],
+  persistedProgressBarStepName: OrderProgressBarState['progressBarStepName'],
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
 ): OrderProgressBarStepName {
@@ -345,6 +347,8 @@ export function getProgressBarStepName(
   } else if (backendApiStatus) {
     // straight mapping API status to progress bar steps
     return BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME[backendApiStatus]
+  } else if (persistedProgressBarStepName && persistedProgressBarStepName !== OrderProgressBarStepName.INITIAL) {
+    return persistedProgressBarStepName
   }
 
   return OrderProgressBarStepName.INITIAL
@@ -417,6 +421,7 @@ function useProgressBarStepNameUpdater(
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
   previousStepName: OrderProgressBarState['previousStepName'],
+  persistedProgressBarStepName: OrderProgressBarState['progressBarStepName'],
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
 ): void {
@@ -433,6 +438,7 @@ function useProgressBarStepNameUpdater(
     backendApiStatus,
     previousBackendApiStatus,
     previousStepName,
+    persistedProgressBarStepName,
     bridgingStatus,
     isBridgingTrade,
   )
