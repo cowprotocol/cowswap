@@ -16,24 +16,24 @@ import { GeneratePermitHookParams } from '../types'
  * Internally checks whether the token is permittable
  *
  * If not permittable or not able to tell, returns undefined
- *
- * @param enablePreGeneration - When false, does not request a signature (avoids popup before user confirms). Default true.
  */
-export function useAccountAgnosticPermitHookData(enablePreGeneration = true): PermitHookData | undefined {
+export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
   const params = useGeneratePermitHookParams()
   const generatePermitHook = useGeneratePermitHook()
 
   const [data, setData] = useState<PermitHookData | undefined>(undefined)
 
   useEffect(() => {
-    if (!enablePreGeneration || !params) {
+    if (!params) {
       setData(undefined)
+
       return
     }
-    generatePermitHook(params).then(setData)
-  }, [enablePreGeneration, generatePermitHook, params])
 
-  return enablePreGeneration ? data : undefined
+    generatePermitHook(params).then(setData)
+  }, [generatePermitHook, params])
+
+  return data
 }
 
 function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {

@@ -77,7 +77,12 @@ export async function swapFlow(
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
   try {
-    logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
+    logTradeFlow('SWAP FLOW', 'STEP 2: handle permit', {
+      permitInfo,
+      shouldSignPermit,
+      cachedPermit: !!cachedPermit,
+      permitAmountToSign,
+    })
     if (shouldSignPermit) {
       setSigningStep(isBridgingOrder ? '1/3' : '1/2', SigningSteps.PermitSigning)
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
