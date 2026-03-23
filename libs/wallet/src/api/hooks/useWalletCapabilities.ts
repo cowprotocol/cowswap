@@ -41,6 +41,13 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
   return useCapabilities({
     account,
     chainId,
-    query: { enabled: shouldFetchCapabilities, retry: false },
+    query: {
+      enabled: shouldFetchCapabilities,
+      retry: false,
+      retryOnMount: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   })
 }
