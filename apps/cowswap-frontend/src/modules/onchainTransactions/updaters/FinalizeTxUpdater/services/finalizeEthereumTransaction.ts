@@ -10,6 +10,12 @@ import { CheckEthereumTransactions } from '../types'
 
 import type { TransactionReceipt, Hex } from 'viem'
 
+const finalizedEthereumTxDedupeKeys = new Set<string>()
+
+function getEthereumTxFinalizeDedupeKey(chainId: number, receiptTransactionHash: string): string {
+  return `${chainId}:${receiptTransactionHash.toLowerCase()}`
+}
+
 export function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
   transaction: EnhancedTransactionDetails,
@@ -18,6 +24,12 @@ export function finalizeEthereumTransaction(
 ): void {
   const { chainId, dispatch } = params
   const { hash } = transaction
+
+  const dedupeKey = getEthereumTxFinalizeDedupeKey(chainId, receipt.transactionHash)
+  if (finalizedEthereumTxDedupeKeys.has(dedupeKey)) {
+    return
+  }
+  finalizedEthereumTxDedupeKeys.add(dedupeKey)
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt, transaction)
 
