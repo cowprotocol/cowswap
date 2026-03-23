@@ -267,7 +267,6 @@ export const tradeButtonsMap: Record<
         supportsPartialApprove={supportsPartialApprove}
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
-        ignorePermit
         approveClickEvent={context.approveClickEvent}
         swapClickEvent={context.confirmClickEvent}
       >

@@ -38,7 +38,7 @@ async function runPermitRequest(
 ): Promise<PermitHookData | undefined> {
   if (!publicClient || !isSupportedPermitInfo(params.permitInfo)) return undefined
 
-  const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient })
+  const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient, account: params.account })
   const spender = params.customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId as SupportedChainId]
   const nonce = params.account ? await eip2612Utils.getTokenNonce(params.inputToken.address, params.account) : undefined
   const permitParams = {
