@@ -27,6 +27,7 @@ export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
 
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
+export { useAllListsSources } from './hooks/lists/useAllListsSources'
 export { useAddList } from './hooks/lists/useAddList'
 export { useAllActiveTokens } from './hooks/tokens/useAllActiveTokens'
 export { useVirtualLists } from './hooks/lists/useVirtualLists'

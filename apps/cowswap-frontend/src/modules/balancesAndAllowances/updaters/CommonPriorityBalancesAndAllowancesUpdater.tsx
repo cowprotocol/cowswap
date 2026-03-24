@@ -2,12 +2,13 @@ import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
-  isBffSupportedNetwork,
+  isBwSupportedNetwork,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
-  useIsBffFailed,
+  useIsBalanceWatcherFailed,
 } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useAllListsSources, useListsEnabledState, useUserAddedTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -16,20 +17,6 @@ import { useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
-
-function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
-  // Early exit for 100%, meaning should be enabled for everyone
-  if (percentage === 100) {
-    return true
-  }
-
-  // Falsy conditions
-  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) {
-    return false
-  }
-
-  return BigInt(account) % 100n < percentage
-}
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const sourceChainId = useSourceChainId().chainId
@@ -67,16 +54,26 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
     }
   }, [account, priorityTokenCount])
 
-  const { bffBalanceEnabledPercentage } = useFeatureFlags()
-  const isBffFailed = useIsBffFailed()
-  const isBffSupportNetwork = isBffSupportedNetwork(sourceChainId)
-  const isBffEnabled = shouldApplyBffBalances(account, bffBalanceEnabledPercentage)
-  const isBffSwitchedOn = isBffEnabled && !isBffFailed && isBffSupportNetwork
+  const { isBwEnabled: isBwFeatureFlag } = useFeatureFlags()
+  const isBalanceWatcherFailed = useIsBalanceWatcherFailed()
+  const isBwSupported = isBwSupportedNetwork(sourceChainId)
+  const isBwEnabled = !!isBwFeatureFlag && isBwSupported
+  const isBwSwitchedOn = isBwEnabled && !isBalanceWatcherFailed
   const invalidateCacheTrigger = useOrdersFilledEventsTrigger()
+
+  const listsSources = useAllListsSources()
+  const listsEnabledState = useListsEnabledState()
+  const tokenListUrls = useMemo(
+    () => listsSources.filter((s) => listsEnabledState[s.source]).map((s) => s.source),
+    [listsSources, listsEnabledState],
+  )
+
+  const userAddedTokens = useUserAddedTokens()
+  const customTokenAddresses = useMemo(() => userAddedTokens.map((t) => t.address), [userAddedTokens])
 
   return (
     <>
-      {!isBffSwitchedOn ? (
+      {!isBwSwitchedOn ? (
         <PriorityTokensUpdater
           // We can and should save one RPC call at the very beginning
           // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
@@ -89,10 +86,12 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
       <BalancesAndAllowancesUpdater
         account={balancesAccount}
         chainId={sourceChainId}
-        isBffSwitchedOn={isBffSwitchedOn}
-        isBffEnabled={isBffEnabled}
+        isBwSwitchedOn={isBwSwitchedOn}
+        isBwEnabled={isBwEnabled}
         excludedTokens={priorityTokenAddresses}
         invalidateCacheTrigger={invalidateCacheTrigger}
+        tokenListUrls={tokenListUrls}
+        customTokenAddresses={customTokenAddresses}
       />
     </>
   )

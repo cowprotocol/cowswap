@@ -1,3 +1,4 @@
+export * from './balanceWatcher'
 export * from './bff'
 export * from './chainInfo'
 export * from './cdn'
