@@ -14,11 +14,15 @@ import type { Connector } from 'wagmi'
 
 const WALLET_MODAL_OPEN_THROTTLE_MS = 1200
 
-/** Listens for OPEN_WALLET_MODAL_EVENT, runs reconnect then opens AppKit modal. Must be mounted inside Web3Provider so useReconnect is valid. */
+/**
+ * Listens for OPEN_WALLET_MODAL_EVENT, runs reconnect then opens AppKit modal. Must be mounted inside Web3Provider so useReconnect is valid.
+ * When already connected, skip opening AppKit: `open()` re-scans EIP-6963 providers and can make other extensions (e.g. Rabby) show a connect prompt even though the user uses MetaMask.
+ */
 function WalletModalOpenListener(): null {
   const { mutateAsync: reconnect } = useReconnect()
   const { open } = useAppKit()
   const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
+  const { isConnected } = useConnection()
   const lastOpenTimeRef = useRef(0)
 
   useEffect(() => {
@@ -27,6 +31,7 @@ function WalletModalOpenListener(): null {
       if (now - lastOpenTimeRef.current < WALLET_MODAL_OPEN_THROTTLE_MS) return
       lastOpenTimeRef.current = now
       if (!isConnectedThroughSafeApp) {
+        if (isConnected) return
         open()
         return
       }
@@ -36,7 +41,7 @@ function WalletModalOpenListener(): null {
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
     return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)
-  }, [reconnect, open, isConnectedThroughSafeApp])
+  }, [reconnect, open, isConnectedThroughSafeApp, isConnected])
 
   return null
 }
