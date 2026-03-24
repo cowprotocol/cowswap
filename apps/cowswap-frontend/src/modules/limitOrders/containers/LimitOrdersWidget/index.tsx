@@ -43,7 +43,11 @@ import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
 import { TradeRateDetails } from '../TradeRateDetails'
 
-export function LimitOrdersWidget(): ReactElement {
+export interface LimitOrdersWidgetProps {
+  toggleMyOrders: () => void
+}
+
+export function LimitOrdersWidget({ toggleMyOrders }: LimitOrdersWidgetProps): ReactElement {
   const {
     inputCurrency,
     outputCurrency,
@@ -113,7 +117,7 @@ export function LimitOrdersWidget(): ReactElement {
     widgetActions,
   }
 
-  return <LimitOrders {...props} />
+  return <LimitOrders {...props} toggleMyOrders={toggleMyOrders} />
 }
 
 const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
@@ -141,7 +145,7 @@ const UNLOCK_SCREEN = {
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-const LimitOrders = React.memo((props: LimitOrdersProps) => {
+const LimitOrders = React.memo((props: LimitOrdersProps & LimitOrdersWidgetProps) => {
   const { i18n } = useLingui()
   const {
     inputCurrencyInfo,
@@ -154,6 +158,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     rateInfoParams,
     priceImpact,
     feeAmount,
+    toggleMyOrders,
   } = props
 
   const tradeContext = useTradeFlowContext()
@@ -268,6 +273,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           />
         ) : null
       }
+      toggleMyOrders={toggleMyOrders}
     />
   )
 }, limitOrdersPropsChecker)

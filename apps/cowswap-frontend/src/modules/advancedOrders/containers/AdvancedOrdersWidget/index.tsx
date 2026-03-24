@@ -61,17 +61,19 @@ export type AdvancedOrdersWidgetProps = {
   mapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
   confirmContent: ReactElement
   children(warnings: ReactNode): ReactNode
+  toggleMyOrders: () => void
 }
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AdvancedOrdersWidget({
   children,
   updaters,
   params,
   confirmContent,
   mapCurrencyInfo,
+  toggleMyOrders,
 }: AdvancedOrdersWidgetProps) {
   const { i18n } = useLingui()
   const { title, orderType, buttonText, buttonLink, subtitle } = UNLOCK_SCREEN
@@ -163,6 +165,7 @@ export function AdvancedOrdersWidget({
       inputCurrencyInfo={mapCurrencyInfo ? mapCurrencyInfo(inputCurrencyInfo) : inputCurrencyInfo}
       outputCurrencyInfo={mapCurrencyInfo ? mapCurrencyInfo(outputCurrencyInfo) : outputCurrencyInfo}
       confirmModal={confirmContent}
+      toggleMyOrders={toggleMyOrders}
     />
   )
 }

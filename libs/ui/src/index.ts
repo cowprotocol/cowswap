@@ -1,5 +1,4 @@
 'use client'
-
 export { loadingOpacityMixin, LoadingRows, LoadingRowSmall } from './pure/Loader/styled'
 export * from './colors'
 export * from './consts'
@@ -10,6 +9,7 @@ export * from './enum'
 export * from './pure/ArrowIcon'
 export * from './pure/BackButton'
 export * from './pure/Badge'
+export * from './pure/BlockOrDrawer/BlockOrDrawer.component'
 export * from './pure/Button'
 export * from './pure/ButtonSecondaryAlt'
 export * from './pure/CenteredDots'
