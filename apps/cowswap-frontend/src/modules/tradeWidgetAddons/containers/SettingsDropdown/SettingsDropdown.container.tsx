@@ -117,10 +117,28 @@ export function SettingsDropdown({
         </styledEl.StyledMenuButton>
       </styledEl.StyledMenu>
 
+      {menuOpen && (
+        <div
+          id="testBox"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            left: 0,
+            right: 0,
+            padding: '48px 10px 10px',
+            width: 'auto',
+            maxHeight: '100%',
+            background: 'rgba(0, 0, 0, .25)',
+            zIndex: 1000,
+            // pointerEvents: "none",
+          }}
+        ></div>
+      )}
+
       <Dropdown
         isOpen={menuOpen}
         onDismiss={handleDismiss}
-        anchorRef={menuButtonRef}
+        containerId="testBox"
         drawerMediaQuery={Media.upToSmall(false)}
         placement="bottom-end"
         showBackdrop={false}

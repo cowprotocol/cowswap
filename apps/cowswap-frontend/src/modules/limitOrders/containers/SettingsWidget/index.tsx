@@ -43,8 +43,6 @@ export function SettingsWidget(): ReactNode {
     [updateSettingsState, updateLimitOrdersRawState],
   )
 
-  console.log('isOpen', isOpen)
-
   return (
     <ButtonsContainer>
       <SettingsButton
@@ -58,10 +56,28 @@ export function SettingsWidget(): ReactNode {
         <SettingsIcon />
       </SettingsButton>
 
+      {isOpen && (
+        <div
+          id="testBox"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            left: 0,
+            right: 0,
+            padding: '48px 10px 10px',
+            width: 'auto',
+            maxHeight: '100%',
+            background: 'rgba(0, 0, 0, .25)',
+            zIndex: 1000,
+            // pointerEvents: "none",
+          }}
+        ></div>
+      )}
+
       <Dropdown
         isOpen={isOpen}
         onDismiss={handleDismiss}
-        anchorRef={buttonRef}
+        containerId="testBox"
         drawerMediaQuery={Media.upToSmall(false)}
         placement="bottom-end"
         showBackdrop={false}

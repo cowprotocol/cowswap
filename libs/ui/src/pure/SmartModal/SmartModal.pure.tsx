@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, ReactNode } from 'react'
+import React, { useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 
@@ -23,22 +23,21 @@ function getPortalContainer(containerId: string | null | undefined): HTMLElement
   return document.getElementById(containerId) ?? document.body
 }
 
-function useSmartModalDropdownPointerDismiss(
+function useSmartModalPointerDismiss(
   isOpen: boolean,
-  showBackdrop: boolean,
   onDismiss: () => void,
-  anchorRef: React.RefObject<HTMLElement | null>,
-  popperElement: HTMLDivElement | null,
+  anchorRef: React.RefObject<HTMLElement | null> | undefined,
+  panelElement: HTMLElement | null,
   layerDepth: number,
 ): void {
   useEffect(() => {
-    if (!isOpen || showBackdrop) return
+    if (!isOpen || !panelElement) return
 
     const onPointerDownCapture = (e: PointerEvent): void => {
       const target = e.target
       if (!(target instanceof Node)) return
-      if (anchorRef.current?.contains(target)) return
-      if (popperElement?.contains(target)) return
+      if (anchorRef?.current?.contains(target)) return
+      if (panelElement.contains(target)) return
 
       const el = target instanceof Element ? target : target.parentElement
       if (el) {
@@ -55,10 +54,120 @@ function useSmartModalDropdownPointerDismiss(
 
     document.addEventListener('pointerdown', onPointerDownCapture, true)
     return () => document.removeEventListener('pointerdown', onPointerDownCapture, true)
-  }, [isOpen, showBackdrop, onDismiss, anchorRef, popperElement, layerDepth])
+  }, [isOpen, onDismiss, anchorRef, panelElement, layerDepth])
 }
 
-// eslint-disable-next-line max-lines-per-function, complexity
+interface SmartModalDialogSurfaceProps {
+  isOpen: boolean
+  onDismiss: () => void
+  parentDepth: number
+  isDrawerMode: boolean
+  maxHeight: number
+  minHeight: number | false
+  drawerGesture: ReturnType<typeof useDrawerGesture>
+  initialFocusRef: SmartModalProps['initialFocusRef']
+  zIndex: number
+  className: string | undefined
+  /** @react-spring/web animated overlay style (SpringValue fields). */
+  springStyle: Record<string, unknown>
+  children: React.ReactNode
+}
+
+function SmartModalDialogSurface({
+  isOpen,
+  onDismiss,
+  parentDepth,
+  isDrawerMode,
+  maxHeight,
+  minHeight,
+  drawerGesture,
+  initialFocusRef,
+  zIndex,
+  className,
+  springStyle,
+  children,
+}: SmartModalDialogSurfaceProps): React.JSX.Element {
+  const layerDepth = parentDepth + 1
+  const [panelEl, setPanelEl] = useState<HTMLDivElement | null>(null)
+
+  useSmartModalPointerDismiss(isOpen, onDismiss, undefined, panelEl, layerDepth)
+
+  return (
+    <SmartModalOverlay
+      $zIndex={zIndex}
+      className={clsx('dropdown', 'isDrawer', className)}
+      style={springStyle as React.CSSProperties}
+      onDismiss={onDismiss}
+      initialFocusRef={initialFocusRef as React.RefObject<HTMLElement | null>}
+      dangerouslyBypassFocusLock={false}
+    >
+      <SmartModalContent
+        {...(isDrawerMode
+          ? {
+              ...drawerGesture.bind(),
+              style: drawerGesture.style,
+            }
+          : {})}
+        $mobile={isDrawerMode}
+        $maxHeight={maxHeight}
+        $minHeight={minHeight}
+        // $noSurface
+      >
+        {!initialFocusRef && isDrawerMode ? <div tabIndex={0} /> : null}
+        <DropdownPanel
+          ref={setPanelEl}
+          data-smart-modal-panel=""
+          data-smart-modal-depth={layerDepth}
+          $mobile={isDrawerMode}
+          style={{ width: '100%', boxSizing: 'border-box' }}
+        >
+          <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
+        </DropdownPanel>
+      </SmartModalContent>
+    </SmartModalOverlay>
+  )
+}
+
+interface SmartModalPortalShellProps {
+  isOpen: boolean
+  showBackdrop: boolean
+  onDismiss: () => void
+  parentDepth: number
+  zIndex: number
+  className: string | undefined
+  children: React.ReactNode
+}
+
+function SmartModalPortalShell({
+  isOpen,
+  showBackdrop,
+  onDismiss,
+  parentDepth,
+  zIndex,
+  className,
+  children,
+}: SmartModalPortalShellProps): React.JSX.Element {
+  const layerDepth = parentDepth + 1
+  const [panelEl, setPanelEl] = useState<HTMLDivElement | null>(null)
+
+  useSmartModalPointerDismiss(isOpen, onDismiss, undefined, panelEl, layerDepth)
+
+  return (
+    <>
+      {showBackdrop && <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />}
+      <DropdownPanel
+        ref={setPanelEl}
+        data-smart-modal-panel=""
+        data-smart-modal-depth={layerDepth}
+        className={className}
+        style={{ position: 'relative', zIndex: zIndex + 1, boxSizing: 'border-box' }}
+      >
+        <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
+      </DropdownPanel>
+    </>
+  )
+}
+
 export function SmartModal({
   isOpen,
   onDismiss,
@@ -87,39 +196,30 @@ export function SmartModal({
   })
 
   const isCenteredModal = !isDrawerMode && !hasAnchorRef && !containerId
-  const isDropdownMode = !isDrawerMode && (hasAnchorRef || containerId !== null)
-  const isContainerOnly = !isDrawerMode && containerId !== null && !hasAnchorRef
+  const isContainerOnly = !isDrawerMode && containerId != null && !hasAnchorRef
 
   const portalContainer = getPortalContainer(containerId ?? undefined)
 
   if (isDrawerMode || isCenteredModal) {
     return (
       <>
-        {fadeTransition((props, item) =>
+        {fadeTransition((springStyle, item) =>
           item ? (
-            <SmartModalOverlay
-              $zIndex={zIndex}
-              className={clsx('dropdown', 'isDrawer', className)}
-              style={props}
+            <SmartModalDialogSurface
+              isOpen={isOpen}
               onDismiss={onDismiss}
-              initialFocusRef={initialFocusRef as React.RefObject<HTMLElement | null>}
-              dangerouslyBypassFocusLock={false}
+              parentDepth={parentDepth}
+              isDrawerMode={isDrawerMode}
+              maxHeight={maxHeight}
+              minHeight={minHeight}
+              drawerGesture={drawerGesture}
+              initialFocusRef={initialFocusRef}
+              zIndex={zIndex}
+              className={className}
+              springStyle={springStyle}
             >
-              <SmartModalContent
-                {...(isDrawerMode
-                  ? {
-                      ...drawerGesture.bind(),
-                      style: drawerGesture.style,
-                    }
-                  : {})}
-                $mobile={isDrawerMode}
-                $maxHeight={maxHeight}
-                $minHeight={minHeight}
-              >
-                {!initialFocusRef && isDrawerMode ? <div tabIndex={0} /> : null}
-                <SmartModalLayerContext.Provider value={parentDepth + 1}>{children}</SmartModalLayerContext.Provider>
-              </SmartModalContent>
-            </SmartModalOverlay>
+              {children}
+            </SmartModalDialogSurface>
           ) : null,
         )}
       </>
@@ -129,20 +229,22 @@ export function SmartModal({
   if (isContainerOnly && portalContainer) {
     return createPortal(
       isOpen ? (
-        <SmartModalLayerContext.Provider value={parentDepth + 1}>
-          <>
-            {showBackdrop && <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />}
-            <div className={className} style={{ position: 'relative', zIndex: zIndex + 1 }}>
-              {children}
-            </div>
-          </>
-        </SmartModalLayerContext.Provider>
+        <SmartModalPortalShell
+          isOpen={isOpen}
+          showBackdrop={showBackdrop}
+          onDismiss={onDismiss}
+          parentDepth={parentDepth}
+          zIndex={zIndex}
+          className={className}
+        >
+          {children}
+        </SmartModalPortalShell>
       ) : null,
       portalContainer,
     )
   }
 
-  if (isDropdownMode && hasAnchorRef) {
+  if (hasAnchorRef) {
     return (
       <SmartModalDropdown
         isOpen={isOpen}
@@ -155,22 +257,6 @@ export function SmartModal({
         className={clsx('dropdown', 'isDropdown', className)}
         containerId={containerId}
       />
-    )
-  }
-
-  if (isDropdownMode && containerId != null && !hasAnchorRef && portalContainer) {
-    return createPortal(
-      isOpen ? (
-        <SmartModalLayerContext.Provider value={parentDepth + 1}>
-          <>
-            {showBackdrop && <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />}
-            <DropdownPanel style={{ position: 'relative', zIndex: zIndex + 1 }} className={className}>
-              {children}
-            </DropdownPanel>
-          </>
-        </SmartModalLayerContext.Provider>
-      ) : null,
-      portalContainer,
     )
   }
 
@@ -204,7 +290,7 @@ function SmartModalDropdown({
   const layerDepth = parentDepth + 1
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
 
-  useSmartModalDropdownPointerDismiss(isOpen, showBackdrop, onDismiss, anchorRef, popperElement, layerDepth)
+  useSmartModalPointerDismiss(isOpen, onDismiss, anchorRef, popperElement, layerDepth)
 
   const options = useMemo(
     () =>

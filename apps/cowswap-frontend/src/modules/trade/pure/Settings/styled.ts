@@ -8,8 +8,7 @@ export const SettingsContainer = styled.div`
   flex-direction: column;
   margin: 0;
   gap: 10px;
-  min-width: 280px;
-  max-width: calc(100vw - 32px);
+  width: 100%;
 `
 
 export const SettingsButton = styled.button.attrs({ type: 'button' })`

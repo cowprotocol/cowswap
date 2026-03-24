@@ -28,12 +28,18 @@ interface SmartModalContentAttrs {
   $mobile?: boolean
   $maxHeight?: number
   $minHeight?: number | false
+  /** When true, dialog chrome is transparent so an inner DropdownPanel provides the solid surface. */
+  $noSurface?: boolean
 }
 
 export const SmartModalContent = styled(
-  ({ $mobile: _, $maxHeight: __, $minHeight: ___, ...rest }: SmartModalContentAttrs & Record<string, unknown>) => (
-    <AnimatedDialogContent {...rest} />
-  ),
+  ({
+    $mobile: _,
+    $maxHeight: __,
+    $minHeight: ___,
+    $noSurface: ____,
+    ...rest
+  }: SmartModalContentAttrs & Record<string, unknown>) => <AnimatedDialogContent {...rest} />,
 ).attrs<SmartModalContentAttrs>(() => ({
   'aria-label': 'dialog',
 }))`
@@ -79,6 +85,14 @@ export const SmartModalContent = styled(
         border-bottom-right-radius: 0;
         padding: 0 0 58px;
       `}
+
+    ${({ $noSurface }) =>
+      $noSurface &&
+      css`
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      `}
   }
 `
 
@@ -95,7 +109,7 @@ export const DropdownBackdrop = styled.div<{ $show: boolean; $zIndex: number }>`
     opacity 0.15s linear;
 `
 
-export const DropdownPanel = styled.div`
+export const DropdownPanel = styled.div<{ $mobile?: boolean }>`
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_PAPER});
   box-shadow: var(${UI.BOX_SHADOW});
@@ -104,7 +118,14 @@ export const DropdownPanel = styled.div`
   font-size: 13px;
   overflow: auto;
   border-radius: 12px;
+  max-height: 100%;
 
-  // padding: 6px 3px;
+  ${({ $mobile }) =>
+    $mobile &&
+    css`
+      border-radius: 0;
+      box-shadow: none;
+      border: none;
+    `}// padding: 6px 3px;
   // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `
