@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
-import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
+import { Media, Dropdown } from '@cowprotocol/ui'
 
 import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
@@ -25,6 +25,13 @@ export function SettingsWidget(): ReactNode {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSettingsDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
+  const [isOpen, setIsOpen] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const handleDismiss = useCallback(() => {
+    console.log('handleDismiss')
+    setIsOpen(false)
+  }, [setIsOpen])
 
   const onSettingsChange = useCallback(
     (update: Partial<LimitOrdersSettingsState>) => {
@@ -36,26 +43,31 @@ export function SettingsWidget(): ReactNode {
     [updateSettingsState, updateLimitOrdersRawState],
   )
 
+  console.log('isOpen', isOpen)
+
   return (
     <ButtonsContainer>
-      <Menu>
-        <SettingsButton disabled={isSettingsDisabled} onClick={() => analytics.openSettings()}>
-          <SettingsIcon />
-        </SettingsButton>
-        <MenuPopover portal={false}>
-          <MenuItems>
-            <MenuItem onSelect={() => null}>
-              <div
-                onClick={(e) => e.stopPropagation()}
-                onMouseDown={(e) => e.stopPropagation()}
-                onMouseUp={(e) => e.stopPropagation()}
-              >
-                <LimitOrdersSettingsDropdown state={settingsState} onStateChanged={onSettingsChange} />
-              </div>
-            </MenuItem>
-          </MenuItems>
-        </MenuPopover>
-      </Menu>
+      <SettingsButton
+        ref={buttonRef}
+        disabled={isSettingsDisabled}
+        onClick={() => {
+          analytics.openSettings()
+          setIsOpen((open) => !open)
+        }}
+      >
+        <SettingsIcon />
+      </SettingsButton>
+
+      <Dropdown
+        isOpen={isOpen}
+        onDismiss={handleDismiss}
+        anchorRef={buttonRef}
+        drawerMediaQuery={Media.upToSmall(false)}
+        placement="bottom-end"
+        showBackdrop={false}
+      >
+        <LimitOrdersSettingsDropdown state={settingsState} onStateChanged={onSettingsChange} />
+      </Dropdown>
     </ButtonsContainer>
   )
 }
