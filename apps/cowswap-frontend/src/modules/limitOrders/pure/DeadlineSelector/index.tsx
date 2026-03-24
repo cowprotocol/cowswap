@@ -84,11 +84,13 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     [selectCustomDeadline, selectDeadline],
   )
 
-  const handleSetDeadline = useCallback(
-    (deadline: number) => {
-      setDeadline(getLimitOrderDeadlines(deadline)[0])
+  const handleDeadlineValueChange = useCallback(
+    (value: number) => {
+      const item = limitOrderDeadlines.find((d) => d.value === value)
+      if (!item) return
+      setDeadline(item)
     },
-    [setDeadline],
+    [limitOrderDeadlines, setDeadline],
   )
 
   // Sets value from input, if it exists
@@ -150,7 +152,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           name="deadline"
           value={deadline?.value || 0}
           options={deadlineOptions}
-          onChange={handleSetDeadline}
+          onChange={handleDeadlineValueChange}
         />
       )}
 

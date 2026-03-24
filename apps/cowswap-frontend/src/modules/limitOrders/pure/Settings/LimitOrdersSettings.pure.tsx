@@ -22,7 +22,7 @@ import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
 
 export interface SettingsProps {
   state: LimitOrdersSettingsState
-  onStateChanged: (state: LimitOrdersSettingsState) => void
+  onStateChanged: (state: Partial<LimitOrdersSettingsState>) => void
 }
 
 // TODO: Break down this large function into smaller functions
@@ -53,13 +53,12 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
     onStateChanged({ ...state, partialFillsEnabled: newValue })
   }, [analytics, onStateChanged, state, partialFillsEnabled])
 
-  const handleSelect = useCallback(
-    (value: LimitOrdersSettingsState['limitPricePosition']) => (e: React.MouseEvent) => {
-      e.stopPropagation()
+  const handleLimitPricePositionChange = useCallback(
+    (value: LimitOrdersSettingsState['limitPricePosition']) => {
       analytics.changeLimitPricePosition(limitPricePosition, value)
-      onStateChanged({ ...state, limitPricePosition: value })
+      onStateChanged({ limitPricePosition: value })
     },
-    [analytics, onStateChanged, state, limitPricePosition],
+    [analytics, onStateChanged, limitPricePosition],
   )
 
   const handleLimitPriceLockedToggle = useCallback(() => {
@@ -152,7 +151,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
             name="limitPricePosition"
             value={limitPricePosition}
             options={positionOptions}
-            onChange={handleSelect}
+            onChange={handleLimitPricePositionChange}
           />
         </styledEl.SettingsRow>
       </SettingsDropdownSection>
