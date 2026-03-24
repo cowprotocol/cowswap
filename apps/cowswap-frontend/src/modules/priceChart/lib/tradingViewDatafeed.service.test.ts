@@ -164,70 +164,17 @@ describe('createPriceChartDatafeed', () => {
     expect(onError).not.toHaveBeenCalled()
     expect(onStatusChange).toHaveBeenNthCalledWith(1, {
       kind: 'loading',
-      message: 'Loading USDCUSD history from Codex.',
+      message: 'Loading USDCUSD history.',
       ticker: 'USDCUSD',
     })
     expect(onStatusChange).toHaveBeenLastCalledWith({
       kind: 'ready',
-      message: 'Codex history loaded for USDCUSD.',
+      message: 'Price history loaded for USDCUSD.',
       ticker: 'USDCUSD',
     })
   })
 
-  it('falls back to USD history when token-quoted pair history is empty', async () => {
-    const symbol = createSymbolDescriptor(
-      createCurrency({
-        address: '0xbase',
-        chainId: SupportedChainId.MAINNET,
-        symbol: 'COW',
-      }),
-      createCurrency({
-        address: '0xquote',
-        chainId: SupportedChainId.MAINNET,
-        symbol: 'ETH',
-      }),
-    )
-    const onStatusChange = jest.fn()
-    mockedFetchPriceChartData.mockResolvedValueOnce([]).mockResolvedValueOnce([
-      {
-        close: 2,
-        high: 3,
-        low: 1,
-        open: 1.5,
-        status: 'ok',
-        time: 1710000000,
-        volume: '10',
-      },
-    ])
-
-    const { datafeed } = createPriceChartDatafeed({
-      onStatusChange,
-      symbols: [symbol],
-    })
-
-    datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, jest.fn(), jest.fn())
-    await flushTasks()
-
-    expect(mockedFetchPriceChartData).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({
-        currencyCode: 'TOKEN',
-      }),
-    )
-    expect(mockedFetchPriceChartData).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({
-        currencyCode: 'USD',
-      }),
-    )
-    expect(onStatusChange).toHaveBeenLastCalledWith({
-      kind: 'ready',
-      message: 'Direct COWETH history unavailable. Showing COWUSD from Codex.',
-      ticker: 'COWETH',
-    })
-  })
-
-  it('reports empty data when all requests resolve with no bars', async () => {
+  it('loads token pair history', async () => {
     const symbol = createSymbolDescriptor(
       createCurrency({
         address: '0xbase',
@@ -244,7 +191,17 @@ describe('createPriceChartDatafeed', () => {
     const onResult = jest.fn()
     const onError = jest.fn()
 
-    mockedFetchPriceChartData.mockResolvedValue([])
+    mockedFetchPriceChartData.mockResolvedValue([
+      {
+        close: 2,
+        high: 3,
+        low: 1,
+        open: 1.5,
+        status: 'ok',
+        time: 1710000000,
+        volume: '42.5',
+      },
+    ])
 
     const { datafeed } = createPriceChartDatafeed({
       onStatusChange,
@@ -254,11 +211,79 @@ describe('createPriceChartDatafeed', () => {
     datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, onResult, onError)
     await flushTasks()
 
+    expect(mockedFetchPriceChartData).toHaveBeenCalledWith({
+      address: '0xbase',
+      chainId: SupportedChainId.MAINNET,
+      countback: 300,
+      currencyCode: 'TOKEN',
+      from: 1710000000,
+      removeEmptyBars: true,
+      removeLeadingNullValues: true,
+      resolution: '60',
+      to: 1710007200,
+    })
+    expect(onResult).toHaveBeenCalledWith(
+      [
+        {
+          close: 2,
+          high: 3,
+          low: 1,
+          open: 1.5,
+          time: 1710000000000,
+          volume: 42.5,
+        },
+      ],
+      { noData: false },
+    )
+    expect(onError).not.toHaveBeenCalled()
+    expect(onStatusChange).toHaveBeenLastCalledWith({
+      kind: 'ready',
+      message: 'Price history loaded for COWETH.',
+      ticker: 'COWETH',
+    })
+  })
+
+  it('shows an empty-state overlay when pair history is unavailable', async () => {
+    const symbol = createSymbolDescriptor(
+      createCurrency({
+        address: '0xbase',
+        chainId: SupportedChainId.MAINNET,
+        symbol: 'COW',
+      }),
+      createCurrency({
+        address: '0xquote',
+        chainId: SupportedChainId.MAINNET,
+        symbol: 'ETH',
+      }),
+    )
+    const onStatusChange = jest.fn()
+    const onResult = jest.fn()
+    const onError = jest.fn()
+    mockedFetchPriceChartData.mockResolvedValue([])
+    const { datafeed } = createPriceChartDatafeed({
+      onStatusChange,
+      symbols: [symbol],
+    })
+
+    datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, onResult, onError)
+    await flushTasks()
+
+    expect(mockedFetchPriceChartData).toHaveBeenCalledWith({
+      address: '0xbase',
+      chainId: SupportedChainId.MAINNET,
+      countback: 300,
+      currencyCode: 'TOKEN',
+      from: 1710000000,
+      removeEmptyBars: true,
+      removeLeadingNullValues: true,
+      resolution: '60',
+      to: 1710007200,
+    })
     expect(onResult).toHaveBeenCalledWith([], { noData: true })
     expect(onError).not.toHaveBeenCalled()
     expect(onStatusChange).toHaveBeenLastCalledWith({
       kind: 'empty',
-      message: 'No chart history available for COWETH.',
+      message: 'No price history found for COWETH.',
       ticker: 'COWETH',
     })
   })
@@ -301,9 +326,10 @@ describe('createPriceChartDatafeed', () => {
         symbol: 'COW',
       }),
       createCurrency({
-        address: '0xquote',
-        chainId: SupportedChainId.MAINNET,
-        symbol: 'ETH',
+        kind: 'usd',
+        key: 'usd',
+        name: 'US Dollar',
+        symbol: 'USD',
       }),
     )
     const onStatusChange = jest.fn()
@@ -324,8 +350,8 @@ describe('createPriceChartDatafeed', () => {
     expect(onError).toHaveBeenCalledWith('No access')
     expect(onStatusChange).toHaveBeenLastCalledWith({
       kind: 'error',
-      message: 'Failed to load COWETH history from Codex. No access',
-      ticker: 'COWETH',
+      message: 'Failed to load COWUSD history.',
+      ticker: 'COWUSD',
     })
   })
 

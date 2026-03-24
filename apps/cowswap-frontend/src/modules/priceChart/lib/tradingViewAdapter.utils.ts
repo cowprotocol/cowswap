@@ -5,7 +5,11 @@ import type {
   PriceChartQueryParams,
   PriceChartResolution,
 } from './priceChart.types'
-import type { PriceChartResolvedPriceRequest, PriceChartSymbolDescriptor } from './tradingView.types'
+import type {
+  PriceChartCurrencyDescriptor,
+  PriceChartResolvedPriceRequest,
+  PriceChartSymbolDescriptor,
+} from './tradingView.types'
 
 const RESOLUTION_TO_PRICE_CHART: Partial<Record<string, PriceChartResolution>> = {
   '1': '1',
@@ -26,11 +30,11 @@ function parseVolume(value: string | undefined): number | undefined {
 }
 
 function buildResolvedPriceRequest(
-  symbol: PriceChartSymbolDescriptor,
+  asset: PriceChartCurrencyDescriptor,
   currencyCode: PriceChartCurrencyCode,
   isFallback: boolean,
 ): PriceChartResolvedPriceRequest | null {
-  const { address, chainId } = symbol.baseAsset
+  const { address, chainId } = asset
 
   if (!address || chainId === undefined) {
     return null
@@ -82,27 +86,67 @@ export function buildPriceChartQueryParams(
 
 export function getResolvedPriceRequests(symbol: PriceChartSymbolDescriptor): PriceChartResolvedPriceRequest[] {
   if (symbol.quoteAsset.kind === 'usd') {
-    const request = buildResolvedPriceRequest(symbol, 'USD', false)
+    const usdRequest = buildResolvedPriceRequest(symbol.baseAsset, 'USD', false)
 
-    return request ? [request] : []
+    return usdRequest ? [usdRequest] : []
   }
 
-  const requests = [buildResolvedPriceRequest(symbol, 'TOKEN', false), buildResolvedPriceRequest(symbol, 'USD', true)]
+  if (symbol.quoteAsset.kind !== 'token') {
+    return []
+  }
 
-  return requests.filter((request): request is PriceChartResolvedPriceRequest => Boolean(request))
+  const baseUsdRequest = buildResolvedPriceRequest(symbol.baseAsset, 'USD', false)
+  const quoteUsdRequest = buildResolvedPriceRequest(symbol.quoteAsset, 'USD', false)
+
+  return [baseUsdRequest, quoteUsdRequest].filter(
+    (request): request is PriceChartResolvedPriceRequest => request !== null,
+  )
+}
+
+function getDerivedPairValue(numerator: number, denominator: number): number | null {
+  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || numerator <= 0 || denominator <= 0) {
+    return null
+  }
+
+  return numerator / denominator
+}
+
+export function derivePairBarsFromUsdBars(baseBars: PriceChartBar[], quoteBars: PriceChartBar[]): PriceChartBar[] {
+  const quoteBarsByTime = new Map(quoteBars.map((bar) => [bar.time, bar]))
+
+  return baseBars.reduce<PriceChartBar[]>((acc, baseBar) => {
+    const quoteBar = quoteBarsByTime.get(baseBar.time)
+
+    if (!quoteBar) {
+      return acc
+    }
+
+    const open = getDerivedPairValue(baseBar.open, quoteBar.open)
+    const high = getDerivedPairValue(baseBar.high, quoteBar.low)
+    const low = getDerivedPairValue(baseBar.low, quoteBar.high)
+    const close = getDerivedPairValue(baseBar.close, quoteBar.close)
+
+    if (open === null || high === null || low === null || close === null) {
+      return acc
+    }
+
+    acc.push({
+      close,
+      high: Math.max(high, low),
+      low: Math.min(high, low),
+      open,
+      status: baseBar.status,
+      time: baseBar.time,
+      volume: undefined,
+    })
+
+    return acc
+  }, [])
 }
 
 export function getReadyStatusMessage(
   symbol: PriceChartSymbolDescriptor,
-  request: PriceChartResolvedPriceRequest,
+  _request: PriceChartResolvedPriceRequest,
 ): string {
-  if (request.isFallback) {
-    return `Direct ${symbol.ticker} history unavailable. Showing ${symbol.baseAsset.symbol}USD from Codex.`
-  }
-
-  if (request.currencyCode === 'USD') {
-    return `Codex history loaded for ${symbol.ticker}.`
-  }
-
-  return `Codex token-quoted history loaded for ${symbol.ticker}.`
+  return `Price history loaded for ${symbol.ticker}.`
 }
