@@ -4,6 +4,8 @@ import { UI } from '@cowprotocol/ui'
 
 import * as styledEl from './PriceChart.styled'
 
+import { useTheme } from 'common/hooks/useTheme'
+
 import { logPriceChart } from '../../api'
 import {
   type ChartPropertiesOverrides,
@@ -161,6 +163,7 @@ function useTradingViewWidget(
   activeTicker: string,
   containerId: string,
   datafeed: ReturnType<typeof createPriceChartDatafeed>['datafeed'],
+  darkMode: boolean,
   limitLinePrice: number | null | undefined,
   onSelectPrice: ((price: number) => void) | undefined,
   symbols: PriceChartSymbolDescriptor[],
@@ -328,6 +331,18 @@ function useTradingViewWidget(
       widget,
     })
   }, [activeTicker, limitLinePrice])
+
+  useEffect(() => {
+    const widget = widgetRef.current
+
+    if (!widget || !isWidgetReadyRef.current) {
+      return
+    }
+
+    void widget.changeTheme(darkMode ? 'dark' : 'light').then(() => {
+      widget.applyOverrides(getThemeOverrides())
+    })
+  }, [darkMode])
 }
 
 export function PriceChartPure({
@@ -337,6 +352,7 @@ export function PriceChartPure({
   onSelectTicker,
   symbols,
 }: PriceChartPureProps): ReactNode {
+  const { darkMode } = useTheme()
   const chartId = useId().replace(/:/g, '')
   const containerId = `${PRO_CHART_CONTAINER_ID}-${chartId}`
   const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>({ kind: 'idle' })
@@ -374,7 +390,7 @@ export function PriceChartPure({
     })
   }, [activeTicker])
 
-  useTradingViewWidget(activeTicker, containerId, datafeedController.datafeed, limitLinePrice, onSelectPrice, symbols)
+  useTradingViewWidget(activeTicker, containerId, datafeedController.datafeed, darkMode, limitLinePrice, onSelectPrice, symbols)
 
   if (!symbols.length) {
     return <styledEl.EmptyState>Select both tokens to load the TradingView chart.</styledEl.EmptyState>
