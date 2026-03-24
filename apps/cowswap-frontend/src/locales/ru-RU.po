@@ -2132,7 +2132,7 @@ msgstr "или отправьте нам письмо на"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 #~ msgid "CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
-#~ msgstr "CoW Swap использует личный {accountProxyLabelString}, для максимально у-му-у-у-у-удобного бриджа. Подтвердите, что адрес получателя выше — <0/>"
+#~ msgstr "CoW Swap использует выделенный {ACCOUNT_PROXY_LABEL}, для максимально у-му-у-у-у-удобного бриджа. Подтвердите, что адрес получателя выше — <0/>"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "The minimum possible outcome after swap, including costs and slippage."
