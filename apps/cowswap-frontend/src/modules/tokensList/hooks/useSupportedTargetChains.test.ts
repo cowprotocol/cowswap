@@ -21,7 +21,7 @@ describe('useSupportedTargetChains', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     ;(mapChainInfo as jest.Mock).mockImplementation((id) => ({ id, label: `Chain ${id}` }) as unknown as ChainInfo)
-    mockUseFlags.mockReturnValue({ isInkEnabled: true, isBtcBridgeEnabled: false, isSolBridgeEnabled: false })
+    mockUseFlags.mockReturnValue({ isBtcBridgeEnabled: false, isSolBridgeEnabled: false })
   })
 
   it('excludes BTC and Solana when both flags are disabled', () => {
@@ -33,7 +33,7 @@ describe('useSupportedTargetChains', () => {
   })
 
   it('includes BTC when isBtcBridgeEnabled is true', () => {
-    mockUseFlags.mockReturnValue({ isInkEnabled: true, isBtcBridgeEnabled: true, isSolBridgeEnabled: false })
+    mockUseFlags.mockReturnValue({ isBtcBridgeEnabled: true, isSolBridgeEnabled: false })
 
     const { result } = renderHook(() => useSupportedTargetChains())
 
@@ -43,7 +43,7 @@ describe('useSupportedTargetChains', () => {
   })
 
   it('includes Solana when isSolBridgeEnabled is true', () => {
-    mockUseFlags.mockReturnValue({ isInkEnabled: true, isBtcBridgeEnabled: false, isSolBridgeEnabled: true })
+    mockUseFlags.mockReturnValue({ isBtcBridgeEnabled: false, isSolBridgeEnabled: true })
 
     const { result } = renderHook(() => useSupportedTargetChains())
 
@@ -53,7 +53,7 @@ describe('useSupportedTargetChains', () => {
   })
 
   it('includes both BTC and Solana when both flags are enabled', () => {
-    mockUseFlags.mockReturnValue({ isInkEnabled: true, isBtcBridgeEnabled: true, isSolBridgeEnabled: true })
+    mockUseFlags.mockReturnValue({ isBtcBridgeEnabled: true, isSolBridgeEnabled: true })
 
     const { result } = renderHook(() => useSupportedTargetChains())
 
@@ -63,23 +63,12 @@ describe('useSupportedTargetChains', () => {
   })
 
   it('always includes EVM supported chains', () => {
-    mockUseFlags.mockReturnValue({ isInkEnabled: true, isBtcBridgeEnabled: false, isSolBridgeEnabled: false })
+    mockUseFlags.mockReturnValue({ isBtcBridgeEnabled: false, isSolBridgeEnabled: false })
 
     const { result } = renderHook(() => useSupportedTargetChains())
 
     const ids = result.current.map((c) => c.id)
     expect(ids).toContain(SupportedChainId.MAINNET)
     expect(ids).toContain(SupportedChainId.GNOSIS_CHAIN)
-  })
-
-  it('excludes INK when isInkEnabled is false', () => {
-    mockUseFlags.mockReturnValue({ isInkEnabled: false, isBtcBridgeEnabled: true, isSolBridgeEnabled: true })
-
-    const { result } = renderHook(() => useSupportedTargetChains())
-
-    const ids = result.current.map((c) => c.id)
-    expect(ids).not.toContain(SupportedChainId.INK)
-    expect(ids).toContain(AdditionalTargetChainId.BITCOIN)
-    expect(ids).toContain(AdditionalTargetChainId.SOLANA)
   })
 })
