@@ -32,14 +32,14 @@ jobs:
       app: ${{ matrix.app }}
 
   vercel-pre-prod:
-    # Deploys to Vercel staging and barn environments only when there is a tag for CowSwap or Explorer
+    # Deploys to Vercel staging environment only when there is a tag for CowSwap or Explorer
     name: Vercel pre-prod
     if: startsWith(github.ref, 'refs/tags')
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     strategy:
       matrix:
-        env_name: [ barn, staging ] # deploys both in parallel
+        env_name: [ staging ] # deploys both in parallel
     with:
       env_name: ${{ matrix.env_name }}
       # Pick app according to published tag
@@ -62,7 +62,7 @@ jobs:
 
   notify-failure:
     name: Notify Slack on Failure
-    needs: [vercel-dev, vercel-pre-prod, vercel-prod]
+    needs: [ vercel-dev, vercel-pre-prod, vercel-prod ]
     runs-on: ubuntu-latest
     if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
