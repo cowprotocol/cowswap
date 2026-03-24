@@ -276,23 +276,6 @@ export const SecondaryLink = styled(ExternalLink)`
   }
 `
 
-export const DEMO_DROPDOWN = styled.select`
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 999999999;
-  padding: 5px;
-  font-size: 14px;
-
-  ${Media.upToSmall()} {
-    bottom: initial;
-    top: 0;
-    width: 100%;
-    right: 0;
-    left: 0;
-  }
-`
-
 export const StarIcon = styled.div<{
   color?: string
   size?: number
