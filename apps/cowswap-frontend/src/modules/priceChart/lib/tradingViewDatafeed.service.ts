@@ -7,6 +7,7 @@ import {
 } from './tradingView.constants'
 import {
   buildPriceChartQueryParams,
+  derivePairBarsFromUsdBars,
   getReadyStatusMessage,
   getResolvedPriceRequests,
   mapPriceChartBarsToTradingViewBars,
@@ -37,7 +38,7 @@ function resolveSymbolFromInfo(
 function getLoadingStatus(symbol: PriceChartSymbolDescriptor): PriceChartHistoryStatus {
   return {
     kind: 'loading',
-    message: `Loading ${symbol.ticker} history from Codex.`,
+    message: `Loading ${symbol.ticker} history.`,
     ticker: symbol.ticker,
   }
 }
@@ -45,15 +46,15 @@ function getLoadingStatus(symbol: PriceChartSymbolDescriptor): PriceChartHistory
 function getEmptyStatus(symbol: PriceChartSymbolDescriptor): PriceChartHistoryStatus {
   return {
     kind: 'empty',
-    message: `No chart history available for ${symbol.ticker}.`,
+    message: `No price history found for ${symbol.ticker}.`,
     ticker: symbol.ticker,
   }
 }
 
-function getErrorStatus(symbol: PriceChartSymbolDescriptor, reason: string): PriceChartHistoryStatus {
+function getErrorStatus(symbol: PriceChartSymbolDescriptor): PriceChartHistoryStatus {
   return {
     kind: 'error',
-    message: `Failed to load ${symbol.ticker} history from Codex. ${reason}`,
+    message: `Failed to load ${symbol.ticker} history.`,
     ticker: symbol.ticker,
   }
 }
@@ -101,46 +102,9 @@ export function createPriceChartDatafeed({
       const isLatestRequest = (): boolean => !disposed && latestRequestIdsByTicker.get(symbol.ticker) === requestId
 
       void (async () => {
-        let lastError: Error | null = null
+        const requests = getResolvedPriceRequests(symbol)
 
-        for (const request of getResolvedPriceRequests(symbol)) {
-          try {
-            const bars = await fetchPriceChartData(
-              buildPriceChartQueryParams(
-                symbol,
-                request,
-                periodParams.from,
-                periodParams.to,
-                resolvedResolution,
-                periodParams.countBack,
-              ),
-            )
-
-            if (!isLatestRequest()) {
-              return
-            }
-
-            if (!bars.length) {
-              continue
-            }
-
-            onResult(mapPriceChartBarsToTradingViewBars(bars), { noData: false })
-            setStatus({
-              kind: 'ready',
-              message: getReadyStatusMessage(symbol, request),
-              ticker: symbol.ticker,
-            })
-            return
-          } catch (error) {
-            lastError = error instanceof Error ? error : new Error(String(error))
-          }
-        }
-
-        if (!isLatestRequest()) {
-          return
-        }
-
-        if (!lastError) {
+        if (!requests.length) {
           onResult([], { noData: true })
           if (periodParams.firstDataRequest) {
             setStatus(getEmptyStatus(symbol))
@@ -148,10 +112,60 @@ export function createPriceChartDatafeed({
           return
         }
 
-        const message = lastError.message || 'Unknown chart error'
-        onError(message)
-        if (periodParams.firstDataRequest) {
-          setStatus(getErrorStatus(symbol, message))
+        try {
+          const responses = await Promise.all(
+            requests.map((request) =>
+              fetchPriceChartData(
+                buildPriceChartQueryParams(
+                  symbol,
+                  request,
+                  periodParams.from,
+                  periodParams.to,
+                  resolvedResolution,
+                  periodParams.countBack,
+                ),
+              ),
+            ),
+          )
+
+          if (!isLatestRequest()) {
+            return
+          }
+
+          const bars =
+            symbol.quoteAsset.kind === 'token'
+              ? derivePairBarsFromUsdBars(responses[0] || [], responses[1] || [])
+              : responses[0] || []
+
+          if (!bars.length) {
+            onResult([], { noData: true })
+            if (periodParams.firstDataRequest) {
+              setStatus(getEmptyStatus(symbol))
+            }
+            return
+          }
+
+          onResult(mapPriceChartBarsToTradingViewBars(bars), { noData: false })
+          setStatus({
+            kind: 'ready',
+            latestPrice: bars[bars.length - 1]?.close,
+            message: getReadyStatusMessage(symbol, requests[0]),
+            ticker: symbol.ticker,
+          })
+          return
+        } catch (error) {
+          const lastError = error instanceof Error ? error : new Error(String(error))
+
+          if (!isLatestRequest()) {
+            return
+          }
+
+          const message = lastError.message || 'Unknown chart error'
+          onError(message)
+          if (periodParams.firstDataRequest) {
+            setStatus(getErrorStatus(symbol))
+          }
+          return
         }
       })()
     },

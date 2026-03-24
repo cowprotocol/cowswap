@@ -22,6 +22,7 @@ export const Heading = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  margin-left: 10px;
 `
 
 export const Title = styled.h2`
@@ -30,7 +31,7 @@ export const Title = styled.h2`
   line-height: 1.2;
 `
 
-export const Subtitle = styled.p`
+export const LatestPrice = styled.p`
   margin: 0;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 13px;
@@ -79,28 +80,6 @@ export const ChartContainer = styled.div`
   width: 100%;
 `
 
-export const StatusBanner = styled.div<{ $kind: 'ready' | 'loading' | 'empty' | 'error' }>`
-  border: 1px solid
-    ${({ $kind }) => {
-      if ($kind === 'error') return `var(${UI.COLOR_DANGER})`
-      if ($kind === 'empty') return `var(${UI.COLOR_WARNING})`
-      if ($kind === 'loading') return `var(${UI.COLOR_PRIMARY})`
-
-      return `var(${UI.COLOR_BORDER})`
-    }};
-  background: ${({ $kind }) => {
-    if ($kind === 'error') return `color-mix(in srgb, var(${UI.COLOR_DANGER}) 12%, transparent)`
-    if ($kind === 'empty') return `var(${UI.COLOR_WARNING_BG})`
-    if ($kind === 'loading') return `var(${UI.COLOR_PRIMARY_OPACITY_10})`
-
-    return `var(${UI.COLOR_PAPER_DARKER})`
-  }};
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 13px;
-  line-height: 1.4;
-`
-
 export const OverlayState = styled.div`
   position: absolute;
   inset: 0;
@@ -108,7 +87,7 @@ export const OverlayState = styled.div`
   place-items: center;
   padding: 24px;
   text-align: center;
-  background: color-mix(in srgb, var(${UI.COLOR_PAPER_DARKER}) 88%, transparent);
+  background: transparent;
   color: var(${UI.COLOR_TEXT});
   font-size: 14px;
   line-height: 1.5;

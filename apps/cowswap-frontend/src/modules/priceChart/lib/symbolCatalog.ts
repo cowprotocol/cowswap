@@ -9,7 +9,9 @@ import {
   PRO_CHART_USD_ASSET,
 } from './tradingView.constants'
 
-import type { PriceChartCurrencyDescriptor, PriceChartSymbolDescriptor } from './tradingView.types'
+import type { PriceChartCurrencyDescriptor, PriceChartFormat, PriceChartSymbolDescriptor } from './tradingView.types'
+
+const DEFAULT_PRICE_CHART_FORMAT: PriceChartFormat = 3
 
 function normalizeSymbol(value: string | null | undefined): string {
   if (!value) return 'TOKEN'
@@ -35,6 +37,7 @@ function toCurrencyDescriptor(currency: Currency): PriceChartCurrencyDescriptor 
 function buildSymbolDescriptor(
   baseAsset: PriceChartCurrencyDescriptor,
   quoteAsset: PriceChartCurrencyDescriptor,
+  selectionId: PriceChartFormat,
 ): PriceChartSymbolDescriptor {
   const ticker = `${baseAsset.symbol}${quoteAsset.symbol}`
   const description = ticker
@@ -72,6 +75,7 @@ function buildSymbolDescriptor(
       ticker,
       type: PRO_CHART_SYMBOL_TYPE,
     },
+    selectionId,
     ticker,
   }
 }
@@ -87,17 +91,35 @@ export function createSwapChartSymbols(
   const sellAsset = toCurrencyDescriptor(inputCurrency)
   const buyAsset = toCurrencyDescriptor(outputCurrency)
   const symbols = [
-    buildSymbolDescriptor(sellAsset, PRO_CHART_USD_ASSET),
-    buildSymbolDescriptor(buyAsset, PRO_CHART_USD_ASSET),
-    buildSymbolDescriptor(sellAsset, buyAsset),
-    buildSymbolDescriptor(buyAsset, sellAsset),
+    buildSymbolDescriptor(sellAsset, PRO_CHART_USD_ASSET, 1),
+    buildSymbolDescriptor(buyAsset, PRO_CHART_USD_ASSET, 2),
+    buildSymbolDescriptor(sellAsset, buyAsset, DEFAULT_PRICE_CHART_FORMAT),
+    buildSymbolDescriptor(buyAsset, sellAsset, 4),
   ]
 
   return symbols.filter((symbol, index, array) => array.findIndex((item) => item.ticker === symbol.ticker) === index)
 }
 
-export function getDefaultChartTicker(symbols: PriceChartSymbolDescriptor[]): string | undefined {
-  return symbols[2]?.ticker || symbols[0]?.ticker
+export function getDefaultPriceChartFormat(symbols: PriceChartSymbolDescriptor[]): PriceChartFormat | undefined {
+  return (
+    symbols.find((symbol) => symbol.selectionId === DEFAULT_PRICE_CHART_FORMAT)?.selectionId || symbols[0]?.selectionId
+  )
+}
+
+export function getChartTickerByFormat(
+  symbols: PriceChartSymbolDescriptor[],
+  format: PriceChartFormat | undefined,
+): string | undefined {
+  if (!format) return undefined
+
+  return symbols.find((symbol) => symbol.selectionId === format)?.ticker
+}
+
+export function getChartFormatByTicker(
+  symbols: PriceChartSymbolDescriptor[],
+  ticker: string,
+): PriceChartFormat | undefined {
+  return symbols.find((symbol) => symbol.ticker === ticker)?.selectionId
 }
 
 export function findChartSymbol(
