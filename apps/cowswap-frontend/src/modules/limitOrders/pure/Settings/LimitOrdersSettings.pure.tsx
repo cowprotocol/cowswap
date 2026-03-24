@@ -155,6 +155,8 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
             />
             <Select
               variant="text"
+              title={t`Limit Price Position`}
+              tooltip={t`Choose where to display the limit price input.`}
               name="limitPricePosition"
               value={limitPricePosition}
               options={positionOptions}

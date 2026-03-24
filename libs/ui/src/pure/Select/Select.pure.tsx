@@ -10,11 +10,17 @@ import { Dropdown } from '../Dropdown/Dropdown.pure'
 
 import type { FormOption, SelectHeight, SelectProps, SelectVariant } from './Select.types'
 
+// TODO: Duplicated, extract.
+const NBSP = '\u00A0'
+
 export type { FormOption, SelectHeight, SelectProps, SelectVariant }
 
+// eslint-disable-next-line max-lines-per-function
 export function Select<T>({
   variant,
   height,
+  title,
+  tooltip,
   name,
   ariaLabel,
   value,
@@ -37,7 +43,18 @@ export function Select<T>({
     handleOptionClick,
     handleOptionMouseEnter,
     closeDropdown,
-  } = useSelectCombobox({ variant, height, name, ariaLabel, value, options, onChange, disabled })
+  } = useSelectCombobox({
+    variant,
+    height,
+    title,
+    tooltip,
+    name,
+    ariaLabel,
+    value,
+    options,
+    onChange,
+    disabled,
+  })
 
   useEffect(() => {
     if (!isOpen) return
@@ -63,7 +80,7 @@ export function Select<T>({
         aria-expanded={isOpen}
         aria-controls={listboxId}
         aria-activedescendant={activeDescendantId}
-        {...(ariaLabel ? { 'aria-label': ariaLabel } : {})}
+        aria-label={ariaLabel}
         aria-autocomplete="list"
         role="combobox"
         onClick={handleButtonClick}
@@ -76,6 +93,15 @@ export function Select<T>({
       </styledEl.SelectButton>
 
       <Dropdown isOpen={isOpen} onDismiss={closeDropdown} anchorRef={buttonRef}>
+        <styledEl.DropdownHeader>
+          <styledEl.DropdownTitle>{title} </styledEl.DropdownTitle>
+          {tooltip ? (
+            <>
+              {NBSP}
+              <styledEl.DropdownHelpTooltip text={tooltip} noMargin dimmed />
+            </>
+          ) : null}
+        </styledEl.DropdownHeader>
         <styledEl.DropdownContent
           id={listboxId}
           role="listbox"

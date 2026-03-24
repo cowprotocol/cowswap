@@ -43,6 +43,7 @@
     "@react-spring/web": "^9.6.1",
     "@use-gesture/react": "^10.2.23",
     "bignumber.js": "^9.1.2",
+    "clsx": "^2.1.1",
     "color2k": "^2.0.2",
     "jotai": "2.16.2",
     "next": "15.2.8",

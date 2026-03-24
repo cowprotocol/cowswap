@@ -1,16 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useState, ReactNode } from 'react'
-import { createPortal } from 'react-dom'
+import React, { useMemo, useState, ReactNode } from 'react'
 
-import { useMediaQuery, useInterval } from '@cowprotocol/common-hooks'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 
-import { DialogOverlay } from '@reach/dialog'
-import type { Placement, Options as PopperOptions } from '@popperjs/core'
-import { usePopper } from 'react-popper'
 import { useTransition } from '@react-spring/web'
+import { clsx } from 'clsx'
+import { createPortal } from 'react-dom'
+import { usePopper } from 'react-popper'
 
 import { DropdownBackdrop, DropdownPanel, SmartModalContent, SmartModalOverlay } from './SmartModal.styled'
-import type { SmartModalPlacement, SmartModalProps } from './SmartModal.types'
 import { useDrawerGesture } from './useDrawerGesture'
+
+import type { SmartModalPlacement, SmartModalProps } from './SmartModal.types'
+import type { Options as PopperOptions } from '@popperjs/core'
 
 const DEFAULT_Z_INDEX = 1000
 const POPPER_OFFSET = 8
@@ -21,6 +22,7 @@ function getPortalContainer(containerId: string | null | undefined): HTMLElement
   return document.getElementById(containerId) ?? document.body
 }
 
+// eslint-disable-next-line max-lines-per-function, complexity
 export function SmartModal({
   isOpen,
   onDismiss,
@@ -37,7 +39,6 @@ export function SmartModal({
   maxHeight = 90,
 }: SmartModalProps): ReactNode {
   const isDrawerMode = useMediaQuery(drawerMediaQuery)
-  const hasAnchor = anchorRef?.current != null
   const hasAnchorRef = anchorRef != null
   const drawerGesture = useDrawerGesture({ onClose: onDismiss })
 
@@ -55,13 +56,15 @@ export function SmartModal({
   const portalContainer = getPortalContainer(containerId ?? undefined)
 
   if (isDrawerMode || isCenteredModal) {
+    console.log('SmartModal 1')
+
     return (
       <>
         {fadeTransition((props, item) =>
           item ? (
             <SmartModalOverlay
               $zIndex={zIndex}
-              className={className}
+              className={clsx('dropdown', 'isDrawer', className)}
               style={props}
               onDismiss={onDismiss}
               initialFocusRef={initialFocusRef as React.RefObject<HTMLElement | null>}
@@ -89,12 +92,12 @@ export function SmartModal({
   }
 
   if (isContainerOnly && portalContainer) {
+    console.log('SmartModal 2')
+
     return createPortal(
       isOpen ? (
         <>
-          {showBackdrop && (
-            <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />
-          )}
+          {showBackdrop && <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />}
           <div className={className} style={{ position: 'relative', zIndex: zIndex + 1 }}>
             {children}
           </div>
@@ -105,6 +108,8 @@ export function SmartModal({
   }
 
   if (isDropdownMode && hasAnchorRef) {
+    console.log('SmartModal 3')
+
     return (
       <SmartModalDropdown
         isOpen={isOpen}
@@ -114,19 +119,19 @@ export function SmartModal({
         placement={placement}
         showBackdrop={showBackdrop}
         zIndex={zIndex}
-        className={className}
+        className={clsx('dropdown', 'isDropdown', className)}
         containerId={containerId}
       />
     )
   }
 
   if (isDropdownMode && containerId != null && !hasAnchorRef && portalContainer) {
+    console.log('SmartModal 4')
+
     return createPortal(
       isOpen ? (
         <>
-          {showBackdrop && (
-            <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />
-          )}
+          {showBackdrop && <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />}
           <DropdownPanel style={{ position: 'relative', zIndex: zIndex + 1 }} className={className}>
             {children}
           </DropdownPanel>
@@ -163,19 +168,28 @@ function SmartModalDropdown({
   containerId,
 }: SmartModalDropdownProps): React.JSX.Element | null {
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
-  const referenceElement = anchorRef.current
+
   const options = useMemo(
-    () => ({
-      placement: placement,
-      strategy: 'absolute',
-      modifiers: [
-        { name: 'offset', options: { offset: [0, POPPER_OFFSET] } },
-        { name: 'preventOverflow', options: { padding: POPPER_OFFSET } },
-      ],
-    } satisfies PopperOptions),
+    () =>
+      ({
+        placement: placement,
+        strategy: 'absolute',
+        modifiers: [
+          { name: 'offset', options: { offset: [0, POPPER_OFFSET] } },
+          { name: 'preventOverflow', options: { padding: POPPER_OFFSET } },
+        ],
+      }) satisfies PopperOptions,
     [placement],
   )
-  const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
+
+  // eslint-disable-next-line react-hooks/refs
+  const referenceElement = anchorRef.current
+
+  const {
+    styles,
+    attributes,
+    // update
+  } = usePopper(referenceElement, popperElement, options)
 
   // TODO: Implement as per example here https://codesandbox.io/p/sandbox/gallant-sea-rcg43b?file=%2Fsrc%2FApp.tsx
   // or not at all (just close on resize or scroll)
@@ -191,15 +205,8 @@ function SmartModalDropdown({
 
   return createPortal(
     <>
-      {showBackdrop && (
-        <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />
-      )}
-      <DropdownPanel
-        ref={setPopperElement}
-        style={popperStyle}
-        {...attributes.popper}
-        className={className}
-      >
+      {showBackdrop && <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />}
+      <DropdownPanel ref={setPopperElement} style={popperStyle} {...attributes.popper} className={className}>
         {children}
       </DropdownPanel>
     </>,

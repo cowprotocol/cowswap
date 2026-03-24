@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 
 import { UI } from '../../enum'
+import { HelpTooltip } from '../HelpTooltip'
 
 import type { SelectHeight, SelectVariant } from './Select.types'
 
@@ -65,8 +66,32 @@ export const ChevronIconWrapper = styled.span<{ $isOpen: boolean }>`
   pointer-events: none;
 `
 
+export const DropdownHeader = styled.header`
+  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  padding: 10px;
+  display: none;
+
+  .dropdown.isDrawer & {
+    display: block;
+  }
+`
+
+export const DropdownTitle = styled.h3`
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+`
+
+export const DropdownHelpTooltip = styled(HelpTooltip)`
+  display: inline-flex;
+  vertical-align: middle;
+`
+
 export const DropdownContent = styled.div`
   width: 100%;
+
+  // TODO: This should only be set in the parent, not managed by Select.
   max-height: min(320px, 50vh);
   overflow-y: auto;
   padding: 10px;

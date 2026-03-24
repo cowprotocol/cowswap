@@ -38,6 +38,7 @@ export const SmartModalContent = styled(
   'aria-label': 'dialog',
 }))`
   overflow-y: auto;
+
   &[data-reach-dialog-content] {
     background: var(${UI.COLOR_PAPER});
     border: 1px solid var(${UI.COLOR_PAPER_DARKER});
@@ -48,6 +49,9 @@ export const SmartModalContent = styled(
     overflow-x: hidden;
     align-self: ${({ $mobile }) => ($mobile ? 'flex-end' : 'center')};
     max-width: 420px;
+    display: flex;
+    flex-direction: column;
+
     ${({ $maxHeight }) =>
       $maxHeight != null &&
       css`

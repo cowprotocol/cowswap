@@ -73,8 +73,6 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
   }
 
   const handleSelectChange = (historyStatusFilter: HistoryStatusFilter): void => {
-    console.log('handleSelectChange', historyStatusFilter)
-
     setHistoryStatusFilter(historyStatusFilter)
 
     // If any filter changes, reset pagination:
@@ -129,6 +127,7 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
               <Select
                 variant="border"
                 height={32}
+                title={t`History status`}
                 name="historyStatusFilter"
                 value={historyStatusFilter}
                 options={historyStatusFilterOptions}

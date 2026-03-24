@@ -146,6 +146,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
         <Select
           variant="text"
           height={32}
+          title={i18n._('Order expires in')}
           name="deadline"
           value={deadline?.value || 0}
           options={deadlineOptions}
