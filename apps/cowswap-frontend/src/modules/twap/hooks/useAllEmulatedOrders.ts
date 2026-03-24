@@ -25,6 +25,13 @@ export function useAllEmulatedOrders(): Order[] {
   }, [twapOrders])
 
   return useMemo(() => {
+    console.log('[useAllEmulatedOrders]', {
+      isBundlingSupported,
+      emulatedTwapOrders: emulatedTwapOrders.length,
+      emulatedPartOrders: emulatedPartOrders.length,
+      discreteTwapOrders: discreteTwapOrders.length,
+    })
+
     if (!isBundlingSupported) return []
 
     return emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)

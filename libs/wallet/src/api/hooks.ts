@@ -59,11 +59,21 @@ export function useIsTxBundlingSupported(): boolean | null {
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
 
-  if (isSafeApp) return true
+  const result = (() => {
+    if (isSafeApp) return true
+    if (isCapabilitiesLoading) return null
+    return isSafeViaWc && capabilities?.atomic?.status === 'supported'
+  })()
 
-  if (isCapabilitiesLoading) return null
+  console.log('[useIsTxBundlingSupported]', {
+    result,
+    isSafeApp,
+    isSafeViaWc,
+    isCapabilitiesLoading,
+    atomicStatus: capabilities?.atomic?.status,
+  })
 
-  return isSafeViaWc && capabilities?.atomic?.status === 'supported'
+  return result
 }
 
 // TODO: Add proper return type annotation

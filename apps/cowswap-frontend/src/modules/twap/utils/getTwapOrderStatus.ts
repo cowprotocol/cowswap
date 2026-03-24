@@ -13,6 +13,17 @@ export function getTwapOrderStatus(
   const isCancelled = auth === false
   const isExpired = confirmedPartsCount === order.n || isTwapOrderExpired(order, executionDate)
 
+  console.log('[getTwapOrderStatus]', {
+    isTransactionExecuted,
+    auth,
+    isFulfilled,
+    isCancelled,
+    isExpired,
+    confirmedPartsCount,
+    n: order.n,
+    executionDate: executionDate?.toISOString(),
+  })
+
   if (isFulfilled) return TwapOrderStatus.Fulfilled
 
   if (isCancelled) return TwapOrderStatus.Cancelled
