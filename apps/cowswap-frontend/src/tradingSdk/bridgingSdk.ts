@@ -1,5 +1,5 @@
 import { bungeeAffiliateCode } from '@cowprotocol/common-const'
-import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
+import { isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import {
   AcrossBridgeProvider,
   BridgingSdk,
@@ -37,7 +37,7 @@ export const bridgingSdk = new BridgingSdk({
 bridgingSdk.setAvailableProviders([bungeeBridgeProvider.info.dappId])
 
 function getBungeeApiBase(): string | undefined {
-  if (isProd || isDev || isStaging || isBarn) {
+  if (isProd || isDev || isStaging) {
     return 'https://backend.bungee.exchange'
   }
 

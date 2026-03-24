@@ -7,7 +7,6 @@ const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   staging: '^(staging.swap.cow.fi|staging.explorer.cow.fi|swap-staging.vercel.app|explorer-staging.vercel.app)',
   production:
     '^(swap.cow.fi|explorer.cow.fi|swap-prod.vercel.app|explorer-prod-seven.vercel.app|cow.trade|cowswap.exchange)$',
-  barn: '^(barn.cow.fi|barn.explorer.cow.fi|swap-barn.vercel.app|explorer-barn.vercel.app|barn.cowswap.exchange)$',
   ens: '(:?^cowswap.eth|ipfs)',
 }
 
@@ -21,7 +20,6 @@ function getRegex(env: EnvironmentName) {
 export interface EnvironmentChecks {
   isProd: boolean
   isEns: boolean
-  isBarn: boolean
   isStaging: boolean
   isPr: boolean
   isDev: boolean
@@ -39,24 +37,20 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
     isStaging: getRegex('staging').test(host),
     isProd: getRegex('production').test(host),
     isEns: ensRegex.test(host) || ensRegex.test(path),
-
-    // Environment used for Backend workflow
-    // The latest stable version pointing to the DEV api
-    isBarn: getRegex('barn').test(host),
   }
 }
 
 // A hack to test against prod API
 const forceProdApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceProdApi')
+const forceStagingApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceStagingApi')
 
 // Default values for environments
 let isLocal = false
 let isDev = false
 let isPr = false
-let isStaging = false
+let isStaging = forceStagingApi
 let isProd = forceProdApi
 let isEns = false
-let isBarn = false
 
 if (typeof window !== 'undefined') {
   const envChecks = checkEnvironment(window.location.host, window.location.pathname)
@@ -66,25 +60,14 @@ if (typeof window !== 'undefined') {
   isStaging = envChecks.isStaging
   isProd = envChecks.isProd
   isEns = envChecks.isEns
-  isBarn = envChecks.isBarn
 }
 
-export const ALL_ENVIRONMENTS: EnvironmentName[] = [
-  'local',
-  'development',
-  'pr',
-  'staging',
-  'production',
-  'barn',
-  'ens',
-]
-export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'barn' | 'ens'
+export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'staging', 'production', 'ens']
+export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'ens'
 
 export const environmentName: EnvironmentName | undefined = (function () {
   if (isProd) {
     return 'production'
-  } else if (isBarn) {
-    return 'barn'
   } else if (isEns) {
     return 'ens'
   } else if (isStaging) {
@@ -100,11 +83,11 @@ export const environmentName: EnvironmentName | undefined = (function () {
   }
 })()
 
-const isProdLike = isProd || isEns || isStaging || isBarn
-const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || isBarn
+const isProdLike = isProd || isEns || isStaging
+const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || forceStagingApi
 
 if (typeof window !== 'undefined') {
   registerOnWindow({ environment: environmentName })
 }
 
-export { isLocal, isDev, isPr, isBarn, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv }
+export { isLocal, isDev, isPr, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv }

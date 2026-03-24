@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { bungeeAffiliateCode, getRpcProvider } from '@cowprotocol/common-const'
-import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
+import { isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import { OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AcrossBridgeProvider, BungeeBridgeProvider, NearIntentsBridgeProvider } from '@cowprotocol/sdk-bridging'
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
@@ -32,7 +32,7 @@ const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey: proces
 export const knownBridgeProviders = [bungeeBridgeProvider, acrossBridgeProvider, nearIntentsBridgeProvider]
 
 function getBungeeApiBase(): string | undefined {
-  if (isProd || isDev || isStaging || isBarn) {
+  if (isProd || isDev || isStaging) {
     return 'https://backend.bungee.exchange'
   }
 
