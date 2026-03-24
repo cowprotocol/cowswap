@@ -54,6 +54,7 @@ import { SurplusCard } from './SurplusCard'
 
 import { useCloseAccountModal } from '../../hooks/useToggleAccountModal'
 import { CowShedInfo } from '../CowShedInfo'
+import { Header } from '../OrdersPanel'
 import { CreationDateText } from '../Transaction/styled'
 
 const CowShedInfoStyled = styled(CowShedInfo)`
@@ -186,7 +187,7 @@ export function AccountDetails({
 
           {activityTotalCount ? (
             <LowerSection>
-              <span>
+              <Header>
                 {' '}
                 <h5>
                   <Trans>Recent Activity</Trans> <span>{`(${activityTotalCount})`}</span>
@@ -196,7 +197,7 @@ export function AccountDetails({
                     <Trans>View all orders</Trans> ↗
                   </ExternalLink>
                 )}
-              </span>
+              </Header>
 
               <div>
                 {activitiesGroupedByDate.map(({ date, activities }) => (

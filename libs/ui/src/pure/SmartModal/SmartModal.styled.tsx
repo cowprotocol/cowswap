@@ -60,7 +60,7 @@ export const SmartModalContent = styled(
     overflow: hidden;
     overflow-x: hidden;
     align-self: ${({ $mobile }) => ($mobile ? 'flex-end' : 'center')};
-    max-width: 420px;
+    // max-width: 420px;
     display: flex;
     flex-direction: column;
     /* Flex child of overlay: allow shrinking below content so max-height + inner scroll work */
