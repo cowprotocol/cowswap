@@ -44,6 +44,10 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
 const forceProdApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceProdApi')
 const forceStagingApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceStagingApi')
 
+if (forceProdApi || forceStagingApi) {
+  console.debug('[BackendApiOverwrite]', `forceProdApi: ${forceProdApi}, forceStagingApi: ${forceStagingApi}`)
+}
+
 // Default values for environments
 let isLocal = false
 let isDev = false
