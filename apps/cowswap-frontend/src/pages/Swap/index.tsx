@@ -27,7 +27,7 @@ export function SwapPage(): ReactNode {
       <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
 
       <SwapUpdaters />
-      <SwapWidget />
+      <SwapWidget toggleMyOrders={() => {}} />
     </HydrateAtom>
   )
 }
