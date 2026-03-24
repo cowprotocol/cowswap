@@ -1,19 +1,17 @@
-import { ReactNode, ChangeEvent } from 'react'
+import { ReactNode } from 'react'
 
-import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
-import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
+import { FormOption, Select } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import SVG from 'react-inlinesvg'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import * as styledEl from './OrdersTabs.styled'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
-import { OrderTab, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { ORDERS_TABLE_TABS, OrderTab, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]
@@ -29,33 +27,35 @@ export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
     0,
   )
 
-  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-    const tabId = event.target.value as OrderTabId
+  const handleSelectChange = (tabId: OrderTabId): void => {
     navigate(buildOrdersTableUrl({ tabId, pageNumber: 1 }))
   }
+
+  const ttabs = ORDERS_TABLE_TABS
+
+  const tabOptions = ttabs.map((tab) => ({
+    label: `${i18n._(tab.title)} ${account && `(${tab.count})`}`,
+    value: tab.id,
+  })) as FormOption<OrderTabId>[]
 
   return (
     <>
       <styledEl.SelectContainer>
-        <styledEl.Select value={tabs[activeTabIndex]?.id || tabs[0]?.id} onChange={handleSelectChange}>
-          {tabs.map((tab) => {
-            const isUnfillable = tab.id === 'unfillable'
-            const isSigning = tab.id === 'signing'
-            return (
-              <option key={tab.id} value={tab.id}>
-                {isUnfillable && '⚠️ '}
-                {isSigning && '⏳ '}
-                {i18n._(tab.title)} {account && `(${tab.count})`}
-              </option>
-            )
-          })}
-        </styledEl.Select>
+        <Select
+          variant="border"
+          title={t`Orders`}
+          name="orders-tabs"
+          value={tabs[activeTabIndex]?.id || tabs[0]?.id}
+          options={tabOptions}
+          onChange={handleSelectChange}
+        />
       </styledEl.SelectContainer>
 
       <styledEl.Tabs>
-        {tabs.map((tab, index) => {
+        {ttabs.map((tab, index) => {
           const isUnfillable = tab.id === 'unfillable'
           const isSigning = tab.id === 'signing'
+
           return (
             <styledEl.TabButton
               key={index}
@@ -65,9 +65,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
               $isDisabled={!account}
               to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
             >
-              {isUnfillable && <SVG src={alertCircle} description={t`warning`} />}
-              {isSigning && <SVG src={orderPresignaturePending} description={t`signing`} />}
-              {i18n._(tab.title)} {account && <span>({tab.count})</span>}
+              {tab.icon} {i18n._(tab.title)} {account && <span>({tab.count})</span>}
             </styledEl.TabButton>
           )
         })}

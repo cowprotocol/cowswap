@@ -40,6 +40,8 @@ export const SmartModalContent = styled(
   overflow-y: auto;
 
   &[data-reach-dialog-content] {
+    --dropdownTextSize: 13px;
+
     background: var(${UI.COLOR_PAPER});
     border: 1px solid var(${UI.COLOR_PAPER_DARKER});
     box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(theme.shadow1, 0.95)};

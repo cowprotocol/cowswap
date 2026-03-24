@@ -77,8 +77,9 @@ export const DropdownHeader = styled.header`
 `
 
 export const DropdownTitle = styled.h3`
+  display: inline-block;
   margin: 0;
-  font-size: 13px;
+  font-size: var(--dropdownTextSize);
   font-weight: 500;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
@@ -102,6 +103,7 @@ export const DropdownContent = styled.div`
 `
 
 export const DropdownItem = styled.div<{ $isActive: boolean; $isDimmed: boolean }>`
+  font-size: var(--dropdownTextSize);
   padding: 10px;
   cursor: pointer;
   border-radius: 8px;

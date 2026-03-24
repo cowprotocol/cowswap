@@ -43,34 +43,6 @@ export const SelectContainer = styled.div`
   }
 `
 
-// TODO: Remove
-export const Select = styled.select`
-  width: 100%;
-  padding: 10px 40px 10px 10px;
-  border-radius: 14px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  background: var(${UI.COLOR_PAPER});
-  color: inherit;
-  font-size: 13px;
-  font-weight: 400;
-  cursor: pointer;
-  outline: none;
-  appearance: none;
-  text-align: left;
-  transition: border-color var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover,
-  &:focus {
-    border-color: var(${UI.COLOR_TEXT_OPACITY_50});
-  }
-
-  option {
-    padding: 10px;
-    background: var(${UI.COLOR_PAPER});
-    color: inherit;
-  }
-`
-
 export const TabButton = styled(Link)<{
   active: string
   $isUnfillable?: boolean
