@@ -49,4 +49,11 @@ export interface SmartModalProps {
   minHeight?: number | false
   /** Max height (vh) for content panel in modal/drawer mode. */
   maxHeight?: number
+  /** When set (centered modal only), overrides default max-width for wide dialogs (e.g. token picker). */
+  contentMaxWidth?: string
+  /**
+   * When false, the inner DropdownPanelScroller does not scroll; children must own overflow (e.g. virtualized lists).
+   * Default true: panel scrolls for generic modal/drawer content.
+   */
+  panelScrolls?: boolean
 }

@@ -30,6 +30,8 @@ interface SmartModalContentAttrs {
   $minHeight?: number | false
   /** When true, dialog chrome is transparent so an inner DropdownPanel provides the solid surface. */
   $noSurface?: boolean
+  /** Wider modals (e.g. token selector); ignored in $mobile drawer mode. */
+  $contentMaxWidth?: string
 }
 
 export const SmartModalContent = styled(
@@ -38,12 +40,14 @@ export const SmartModalContent = styled(
     $maxHeight: __,
     $minHeight: ___,
     $noSurface: ____,
+    $contentMaxWidth: _____,
     ...rest
   }: SmartModalContentAttrs & Record<string, unknown>) => <AnimatedDialogContent {...rest} />,
 ).attrs<SmartModalContentAttrs>(() => ({
   'aria-label': 'dialog',
 }))`
-  overflow-y: auto;
+  /* Shell does not scroll; inner DropdownPanelScroller is the single scrollport (avoids nested scrollbars). */
+  overflow: hidden;
 
   &[data-reach-dialog-content] {
     --dropdownTextSize: 13px;
@@ -53,12 +57,14 @@ export const SmartModalContent = styled(
     box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(theme.shadow1, 0.95)};
     padding: 0;
     width: 50vw;
-    overflow-y: auto;
+    overflow: hidden;
     overflow-x: hidden;
     align-self: ${({ $mobile }) => ($mobile ? 'flex-end' : 'center')};
     max-width: 420px;
     display: flex;
     flex-direction: column;
+    /* Flex child of overlay: allow shrinking below content so max-height + inner scroll work */
+    min-height: 0;
 
     ${({ $maxHeight }) =>
       $maxHeight != null &&
@@ -93,6 +99,14 @@ export const SmartModalContent = styled(
         border: none;
         box-shadow: none;
       `}
+
+    ${({ $contentMaxWidth, $mobile }) =>
+      $contentMaxWidth &&
+      !$mobile &&
+      css`
+        max-width: ${$contentMaxWidth};
+        width: min(96vw, ${$contentMaxWidth});
+      `}
   }
 `
 
@@ -112,6 +126,8 @@ export const DropdownBackdrop = styled.div<{ $show: boolean; $zIndex: number }>`
 export const DropdownPanel = styled.div<{ $mobile?: boolean }>`
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_PAPER});
   box-shadow: var(${UI.BOX_SHADOW});
@@ -132,7 +148,12 @@ export const DropdownPanel = styled.div<{ $mobile?: boolean }>`
   // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `
 
-export const DropdownPanelScroller = styled.div`
-  overflow-y: auto;
+export const DropdownPanelScroller = styled.div<{ $panelScrolls?: boolean }>`
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: ${({ $panelScrolls = true }) => ($panelScrolls ? 'auto' : 'hidden')};
   max-height: 100%;
 `

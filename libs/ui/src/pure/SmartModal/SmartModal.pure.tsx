@@ -70,6 +70,8 @@ interface SmartModalDialogSurfaceProps {
   isDrawerMode: boolean
   maxHeight: number
   minHeight: number | false
+  contentMaxWidth: string | undefined
+  panelScrolls: boolean
   drawerGesture: ReturnType<typeof useDrawerGesture>
   initialFocusRef: SmartModalProps['initialFocusRef']
   zIndex: number
@@ -86,6 +88,8 @@ function SmartModalDialogSurface({
   isDrawerMode,
   maxHeight,
   minHeight,
+  contentMaxWidth,
+  panelScrolls,
   drawerGesture,
   initialFocusRef,
   zIndex,
@@ -117,7 +121,7 @@ function SmartModalDialogSurface({
         $mobile={isDrawerMode}
         $maxHeight={maxHeight}
         $minHeight={minHeight}
-        // $noSurface
+        $contentMaxWidth={contentMaxWidth}
       >
         {!initialFocusRef && isDrawerMode ? <div tabIndex={0} /> : null}
         <DropdownPanel
@@ -127,7 +131,7 @@ function SmartModalDialogSurface({
           $mobile={isDrawerMode}
           style={{ width: '100%', boxSizing: 'border-box' }}
         >
-          <DropdownPanelScroller>
+          <DropdownPanelScroller $panelScrolls={panelScrolls}>
             <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
           </DropdownPanelScroller>
         </DropdownPanel>
@@ -192,6 +196,8 @@ export function SmartModal({
   initialFocusRef,
   minHeight = false,
   maxHeight = 90,
+  contentMaxWidth,
+  panelScrolls = true,
 }: SmartModalProps): ReactNode {
   const parentDepth = useSmartModalLayerDepth()
   const isDrawerMode = useMediaQuery(drawerMediaQuery)
@@ -222,6 +228,8 @@ export function SmartModal({
               isDrawerMode={isDrawerMode}
               maxHeight={maxHeight}
               minHeight={minHeight}
+              contentMaxWidth={contentMaxWidth}
+              panelScrolls={panelScrolls}
               drawerGesture={drawerGesture}
               initialFocusRef={initialFocusRef}
               zIndex={zIndex}
