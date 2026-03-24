@@ -29,6 +29,28 @@ function getPortalContainer(containerId: string | null | undefined): HTMLElement
   return document.getElementById(containerId) ?? document.body
 }
 
+/**
+ * True when the event target lies under a SmartModal layer deeper than `layerDepth`
+ * (nested panel, portaled backdrop, or dialog overlay tagged with data-smart-modal-depth).
+ * Portaled dropdown backdrops are siblings of their panel, so closest('[data-smart-modal-panel]')
+ * never sees them — tagging depth on overlay/backdrop fixes parent layers dismissing together.
+ */
+function targetIsUnderDeeperSmartModalLayer(target: Node, layerDepth: number): boolean {
+  const start = target instanceof Element ? target : target.parentElement
+  let el: Element | null = start
+  while (el) {
+    const raw = el.getAttribute('data-smart-modal-depth')
+    if (raw != null) {
+      const d = Number.parseInt(raw, 10)
+      if (!Number.isNaN(d) && d > layerDepth) {
+        return true
+      }
+    }
+    el = el.parentElement
+  }
+  return false
+}
+
 function useSmartModalPointerDismiss(
   isOpen: boolean,
   onDismiss: () => void,
@@ -44,16 +66,7 @@ function useSmartModalPointerDismiss(
       if (!(target instanceof Node)) return
       if (anchorRef?.current?.contains(target)) return
       if (panelElement.contains(target)) return
-
-      const el = target instanceof Element ? target : target.parentElement
-      if (el) {
-        const panel = el.closest('[data-smart-modal-panel]')
-        if (panel instanceof HTMLElement) {
-          const raw = panel.dataset.smartModalDepth
-          const nestedDepth = raw === undefined ? NaN : Number.parseInt(raw, 10)
-          if (!Number.isNaN(nestedDepth) && nestedDepth > layerDepth) return
-        }
-      }
+      if (targetIsUnderDeeperSmartModalLayer(target, layerDepth)) return
 
       onDismiss()
     }
@@ -105,6 +118,7 @@ function SmartModalDialogSurface({
   return (
     <SmartModalOverlay
       $zIndex={zIndex}
+      data-smart-modal-depth={layerDepth}
       className={clsx('dropdown', 'isDrawer', className)}
       style={springStyle as React.CSSProperties}
       onDismiss={onDismiss}
@@ -166,7 +180,9 @@ function SmartModalPortalShell({
 
   return (
     <>
-      {showBackdrop && <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />}
+      {showBackdrop && (
+        <DropdownBackdrop $show $zIndex={zIndex} data-smart-modal-depth={layerDepth} onClick={onDismiss} aria-hidden />
+      )}
       <DropdownPanel
         ref={setPanelEl}
         data-smart-modal-panel=""
@@ -339,7 +355,9 @@ function SmartModalDropdown({
 
   return createPortal(
     <>
-      {showBackdrop && <DropdownBackdrop $show $zIndex={zIndex} onClick={onDismiss} aria-hidden />}
+      {showBackdrop && (
+        <DropdownBackdrop $show $zIndex={zIndex} data-smart-modal-depth={layerDepth} onClick={onDismiss} aria-hidden />
+      )}
       <DropdownPanel
         ref={setPopperElement}
         style={popperStyle}
