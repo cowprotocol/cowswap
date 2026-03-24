@@ -66,8 +66,6 @@ export function useSelectCombobox<T>({ value, options, onChange, disabled }: Sel
     optionsLength: options.length,
     activeIndex,
     listboxId,
-    buttonRef,
-    closeDropdown,
     setActiveIndex,
   })
 
