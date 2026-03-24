@@ -11,7 +11,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import * as styledEl from './OrdersTabs.styled'
 
 import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
-import { ORDERS_TABLE_TABS, OrderTab, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { OrderTab, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]
@@ -31,9 +31,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
     navigate(buildOrdersTableUrl({ tabId, pageNumber: 1 }))
   }
 
-  const ttabs = ORDERS_TABLE_TABS
-
-  const tabOptions = ttabs.map((tab) => ({
+  const tabOptions = tabs.map((tab) => ({
     label: `${i18n._(tab.title)} ${account && `(${tab.count})`}`,
     value: tab.id,
   })) as FormOption<OrderTabId>[]
@@ -43,8 +41,8 @@ export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
       <styledEl.SelectContainer>
         <Select
           variant="border"
-          title={t`Orders`}
-          name="orders-tabs"
+          title={t`Order type`}
+          name="order-type"
           value={tabs[activeTabIndex]?.id || tabs[0]?.id}
           options={tabOptions}
           onChange={handleSelectChange}
@@ -52,7 +50,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps): ReactNode {
       </styledEl.SelectContainer>
 
       <styledEl.Tabs>
-        {ttabs.map((tab, index) => {
+        {tabs.map((tab, index) => {
           const isUnfillable = tab.id === 'unfillable'
           const isSigning = tab.id === 'signing'
 
