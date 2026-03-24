@@ -1,6 +1,6 @@
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 
-import { decodeFunctionData, type Address, type Hex } from 'viem'
+import { decodeFunctionData, type Hex } from 'viem'
 
 const COMBINED_ABI = [
   ...oneInchPermitUtilsConsts.EIP_2612_PERMIT_ABI,
@@ -24,9 +24,11 @@ export function recoverSpenderFromCalldata(calldata?: Hex): string | undefined {
         abi: [abiEntry],
         data: calldata,
       })
-      const [_owner, spender] = args as [Address, Address] // spender is the second argument in both formats
-
-      return spender
+      // Spender is always the second argument for both standard EIP-2612 and DAI-style permits.
+      const spender = args[1]
+      if (typeof spender === 'string') {
+        return spender
+      }
     } catch (e) {
       error = e
       continue
