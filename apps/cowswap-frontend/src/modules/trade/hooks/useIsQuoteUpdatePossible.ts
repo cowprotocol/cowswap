@@ -1,3 +1,7 @@
+import { useAtomValue } from 'jotai'
+
+import { uiGuideQuotePausedState } from 'entities/uiGuide'
+
 import { TradeFormValidation, useGetTradeFormValidations } from 'modules/tradeFormValidation'
 
 const NO_UPDATE_STATES = [
@@ -12,6 +16,9 @@ const NO_UPDATE_STATES = [
 
 export function useIsQuoteUpdatePossible(): boolean {
   const validations = useGetTradeFormValidations()
+  const uiGuideQuotePaused = useAtomValue(uiGuideQuotePausedState)
+
+  if (uiGuideQuotePaused) return false
 
   return validations ? !NO_UPDATE_STATES.some((state) => validations.includes(state)) : true
 }

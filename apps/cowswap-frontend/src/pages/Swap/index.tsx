@@ -6,8 +6,15 @@ import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application'
-import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
+import {
+  swapDerivedStateAtom,
+  SwapUpdaters,
+  SwapWidget,
+  useSwapDerivedStateToFill,
+  useSwapRawState,
+} from 'modules/swap'
 import { parameterizeTradeRoute, getDefaultTradeRawState, PageWrapper, PrimaryWrapper } from 'modules/trade'
+import { swapSteps, UiGuideGreeting, UiGuideContainer } from 'modules/uiGuide'
 
 import { Routes } from 'common/constants/routes'
 import { useEffectiveChainId } from 'common/hooks/useEffectiveChainId'
@@ -19,6 +26,7 @@ export function SwapPage(): ReactNode {
   const params = useParams()
   const { i18n } = useLingui()
   const swapDerivedStateToFill = useSwapDerivedStateToFill()
+  const { isUnlocked } = useSwapRawState()
 
   if (!params.chainId) {
     return <SwapPageRedirect />
@@ -27,11 +35,15 @@ export function SwapPage(): ReactNode {
   return (
     <HydrateAtom atom={swapDerivedStateAtom} state={swapDerivedStateToFill}>
       <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
-
       <SwapUpdaters />
       <PageWrapper isUnlocked maxWidth={TRADE_PAGE_MAX_WIDTH} hideOrdersTable>
         <PrimaryWrapper>
           <SwapWidget />
+          {isUnlocked && (
+            <UiGuideGreeting>
+              <UiGuideContainer steps={swapSteps} />
+            </UiGuideGreeting>
+          )}
         </PrimaryWrapper>
       </PageWrapper>
     </HydrateAtom>

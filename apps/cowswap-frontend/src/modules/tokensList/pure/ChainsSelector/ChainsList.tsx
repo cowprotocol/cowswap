@@ -27,7 +27,7 @@ export function ChainsList({
   isSwapMode = false,
 }: ChainsListProps): ReactNode {
   return (
-    <styledEl.List>
+    <styledEl.List id="token-selector-chains-list">
       {chains.map((chain) => {
         const isDisabled = disabledChainIds?.has(chain.id) ?? false
         const isLoading = loadingChainIds?.has(chain.id) ?? false

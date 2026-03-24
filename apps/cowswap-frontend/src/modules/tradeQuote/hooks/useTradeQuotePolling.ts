@@ -57,11 +57,11 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
     // Because we already have a quote and don't want to reset it
     if (isConfirmOpen || !tradeQuoteManager) return
 
-    if (!isWindowVisible || !document.hasFocus() || !amountStr) {
+    if (((!isWindowVisible || !document.hasFocus()) && isQuoteUpdatePossible) || !amountStr) {
       tradeQuoteManager.reset()
       setTradeQuotePolling(0)
     }
-  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
+  }, [isWindowVisible, isQuoteUpdatePossible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
 
   /**
    * Fetch the quote instantly once the quote params are changed
