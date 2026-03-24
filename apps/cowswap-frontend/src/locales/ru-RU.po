@@ -1500,7 +1500,7 @@ msgstr "Неизвестный токен"
 
 #: apps/cowswap-frontend/src/legacy/components/CowSubsidyModal/index.tsx
 msgid "Read more about the tokenomics"
-msgstr "Подробнее о tokenomics"
+msgstr "Подробнее о токеномике"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and got an extra "
@@ -1534,7 +1534,7 @@ msgstr "Слишком много времени между частями"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
-msgstr "ПОСТ"
+msgstr "POST"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/index.tsx
 msgid "1/2 Confirm funds recovering"
@@ -1551,7 +1551,7 @@ msgstr "Поделиться в Twitter"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencyArrowSeparator/index.tsx
 #~ msgid "loading"
-#~ msgstr "loading"
+#~ msgstr "загрузка"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
