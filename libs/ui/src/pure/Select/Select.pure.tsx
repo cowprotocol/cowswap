@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { ChevronDown } from 'react-feather'
 
@@ -32,12 +32,22 @@ export function Select<T>({
     filterQuery,
     activeDescendantId,
     handleButtonClick,
-    handleButtonKeyDown,
+    handleKeyDown,
     handleButtonBlur,
     handleOptionClick,
     handleOptionMouseEnter,
     closeDropdown,
   } = useSelectCombobox({ variant, height, name, ariaLabel, value, options, onChange, disabled })
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, handleKeyDown])
 
   return (
     <styledEl.Wrapper>
@@ -57,7 +67,6 @@ export function Select<T>({
         aria-autocomplete="list"
         role="combobox"
         onClick={handleButtonClick}
-        onKeyDown={handleButtonKeyDown}
         onBlur={handleButtonBlur}
       >
         <styledEl.ButtonLabel>{selectedLabel}</styledEl.ButtonLabel>

@@ -1,4 +1,4 @@
-import { useCallback, type Dispatch, type KeyboardEvent, type SetStateAction } from 'react'
+import { useCallback, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from 'react'
 
 import { handleSelectComboboxKeyDown } from './selectCombobox.keydown'
 
@@ -34,9 +34,9 @@ export function useSelectComboboxKeyHandler<T>({
   applyTypeahead,
   beginTypeaheadFromClosed,
   scheduleFilterReset,
-}: UseSelectComboboxKeyHandlerParams<T>): (e: KeyboardEvent<HTMLButtonElement>) => void {
+}: UseSelectComboboxKeyHandlerParams<T>): (e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>) => void {
   return useCallback(
-    (e: KeyboardEvent<HTMLButtonElement>) => {
+    (e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>) => {
       handleSelectComboboxKeyDown(e, {
         disabled: !!disabled,
         isOpen,

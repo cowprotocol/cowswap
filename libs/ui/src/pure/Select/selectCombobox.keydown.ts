@@ -1,4 +1,4 @@
-import type { Dispatch, KeyboardEvent, SetStateAction } from 'react'
+import type { Dispatch, KeyboardEvent as ReactKeyboardEvent, SetStateAction } from 'react'
 
 import { isPrintableTypeaheadKey, labelMatchesFilter } from './selectCombobox.utils'
 
@@ -20,14 +20,22 @@ export interface SelectComboboxKeydownPayload<T> {
   scheduleFilterReset: () => void
 }
 
-function tryHandleEscape(e: KeyboardEvent, isOpen: boolean, closeDropdown: () => void): boolean {
+function tryHandleEscape(
+  e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>,
+  isOpen: boolean,
+  closeDropdown: () => void,
+): boolean {
   if (e.key !== 'Escape' || !isOpen) return false
   e.preventDefault()
   closeDropdown()
   return true
 }
 
-function tryHandleArrowDown<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload<T>, optionCount: number): boolean {
+function tryHandleArrowDown<T>(
+  e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>,
+  p: SelectComboboxKeydownPayload<T>,
+  optionCount: number,
+): boolean {
   if (e.key !== 'ArrowDown') return false
   e.preventDefault()
   if (!p.isOpen) {
@@ -38,7 +46,11 @@ function tryHandleArrowDown<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload
   return true
 }
 
-function tryHandleArrowUp<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload<T>, optionCount: number): boolean {
+function tryHandleArrowUp<T>(
+  e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>,
+  p: SelectComboboxKeydownPayload<T>,
+  optionCount: number,
+): boolean {
   if (e.key !== 'ArrowUp') return false
   e.preventDefault()
   if (!p.isOpen) {
@@ -49,7 +61,11 @@ function tryHandleArrowUp<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload<T
   return true
 }
 
-function tryHandleHomeEnd<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload<T>, optionCount: number): boolean {
+function tryHandleHomeEnd<T>(
+  e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>,
+  p: SelectComboboxKeydownPayload<T>,
+  optionCount: number,
+): boolean {
   if (!p.isOpen) return false
   if (e.key === 'Home') {
     e.preventDefault()
@@ -64,7 +80,10 @@ function tryHandleHomeEnd<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload<T
   return false
 }
 
-function tryHandleEnterSpace<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload<T>): boolean {
+function tryHandleEnterSpace<T>(
+  e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>,
+  p: SelectComboboxKeydownPayload<T>,
+): boolean {
   if (e.key !== 'Enter' && e.key !== ' ') return false
   if (!p.isOpen) {
     e.preventDefault()
@@ -80,7 +99,10 @@ function tryHandleEnterSpace<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayloa
   return true
 }
 
-function tryHandleBackspace<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload<T>): boolean {
+function tryHandleBackspace<T>(
+  e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>,
+  p: SelectComboboxKeydownPayload<T>,
+): boolean {
   if (!p.isOpen || e.key !== 'Backspace' || p.filterQuery.length === 0) return false
   e.preventDefault()
   const nextQuery = p.filterQuery.slice(0, -1)
@@ -93,7 +115,10 @@ function tryHandleBackspace<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload
   return true
 }
 
-function tryHandlePrintable<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload<T>): boolean {
+function tryHandlePrintable<T>(
+  e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>,
+  p: SelectComboboxKeydownPayload<T>,
+): boolean {
   if (!isPrintableTypeaheadKey(e)) return false
   e.preventDefault()
   if (!p.isOpen) {
@@ -105,9 +130,11 @@ function tryHandlePrintable<T>(e: KeyboardEvent, p: SelectComboboxKeydownPayload
 }
 
 export function handleSelectComboboxKeyDown<T>(
-  e: KeyboardEvent<HTMLButtonElement>,
+  e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>,
   p: SelectComboboxKeydownPayload<T>,
 ): void {
+  // TODO: Verify the focus is still within the dropdown?
+
   if (p.disabled) return
   const n = p.options.length
   if (n === 0) return

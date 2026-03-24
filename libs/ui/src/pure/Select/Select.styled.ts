@@ -69,10 +69,11 @@ export const DropdownContent = styled.div`
   width: 100%;
   max-height: min(320px, 50vh);
   overflow-y: auto;
-  background: var(${UI.COLOR_PAPER});
-  border-radius: 14px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 10px;
+
+  // background: var(${UI.COLOR_PAPER});
+  // border-radius: 14px;
+  // border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
 `
 
 export const DropdownItem = styled.div<{ $isActive: boolean; $isDimmed: boolean }>`

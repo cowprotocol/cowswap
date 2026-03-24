@@ -4,7 +4,7 @@ import {
   useMemo,
   useRef,
   type FocusEvent,
-  type KeyboardEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent,
   type RefObject,
 } from 'react'
@@ -26,10 +26,10 @@ export interface UseSelectComboboxResult {
   filterQuery: string
   activeDescendantId: string | undefined
   handleButtonClick: () => void
-  handleButtonKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => void
   handleButtonBlur: (e: FocusEvent<HTMLButtonElement>) => void
   handleOptionClick: (e: MouseEvent<HTMLDivElement>) => void
   handleOptionMouseEnter: (index: number) => void
+  handleKeyDown: (e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>) => void
   closeDropdown: () => void
 }
 
@@ -84,7 +84,7 @@ export function useSelectCombobox<T>({ value, options, onChange, disabled }: Sel
     setActiveIndex,
   })
 
-  const handleButtonKeyDown = useSelectComboboxKeyHandler({
+  const handleKeyDown = useSelectComboboxKeyHandler({
     disabled,
     isOpen,
     filterQuery,
@@ -112,7 +112,7 @@ export function useSelectCombobox<T>({ value, options, onChange, disabled }: Sel
     filterQuery,
     activeDescendantId,
     handleButtonClick,
-    handleButtonKeyDown,
+    handleKeyDown,
     handleButtonBlur,
     handleOptionClick,
     handleOptionMouseEnter,

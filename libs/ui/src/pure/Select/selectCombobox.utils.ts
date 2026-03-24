@@ -1,4 +1,4 @@
-import type { KeyboardEvent, SyntheticEvent } from 'react'
+import type { KeyboardEvent as ReactKeyboardEvent, SyntheticEvent } from 'react'
 
 /** After last typeahead key, filter text clears; active option index is unchanged. */
 export const SELECT_FILTER_RESET_MS = 2800
@@ -11,7 +11,7 @@ export function preventAnchorBlur(event: SyntheticEvent): void {
   event.preventDefault()
 }
 
-export function isPrintableTypeaheadKey(e: KeyboardEvent): boolean {
+export function isPrintableTypeaheadKey(e: KeyboardEvent | ReactKeyboardEvent<HTMLButtonElement>): boolean {
   return e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey
 }
 
