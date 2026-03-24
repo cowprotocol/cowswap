@@ -2,7 +2,7 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 
-import { decodeFunctionData, type Hex, erc20Abi, maxUint256 } from 'viem'
+import { decodeFunctionData, type Hex, maxUint256 } from 'viem'
 
 export interface PermitValidationResult {
   isValid: boolean
@@ -70,7 +70,7 @@ function validateEip2612Permit(
 ): PermitValidationResult | null {
   try {
     const { args } = decodeFunctionData({
-      abi: erc20Abi,
+      abi: oneInchPermitUtilsConsts.EIP_2612_PERMIT_ABI as readonly unknown[],
       data: callData as Hex,
     })
     const tuple = args as unknown as readonly [
