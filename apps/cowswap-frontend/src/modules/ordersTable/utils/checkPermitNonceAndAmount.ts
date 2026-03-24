@@ -41,7 +41,7 @@ export async function checkPermitNonceAndAmount(
           permitInfo,
         )
 
-        if (!isPermitValid) return false
+        if (isPermitValid === false) return false
       } catch (error) {
         console.error('Error validating EIP-2612 permit:', error)
         return false

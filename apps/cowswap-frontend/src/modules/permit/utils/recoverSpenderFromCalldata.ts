@@ -1,34 +1,10 @@
+import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
+
 import { decodeFunctionData, type Address, type Hex } from 'viem'
 
-// Combined ABI for both EIP-2612 and DAI-like permit functions
 const COMBINED_ABI = [
-  {
-    type: 'function',
-    name: 'permit',
-    inputs: [
-      { name: 'owner', type: 'address' },
-      { name: 'spender', type: 'address' },
-      { name: 'value', type: 'uint256' },
-      { name: 'deadline', type: 'uint256' },
-      { name: 'v', type: 'uint8' },
-      { name: 'r', type: 'bytes32' },
-      { name: 's', type: 'bytes32' },
-    ],
-  },
-  {
-    type: 'function',
-    name: 'permit',
-    inputs: [
-      { name: 'holder', type: 'address' },
-      { name: 'spender', type: 'address' },
-      { name: 'nonce', type: 'uint256' },
-      { name: 'expiry', type: 'uint256' },
-      { name: 'allowed', type: 'bool' },
-      { name: 'v', type: 'uint8' },
-      { name: 'r', type: 'bytes32' },
-      { name: 's', type: 'bytes32' },
-    ],
-  },
+  ...oneInchPermitUtilsConsts.EIP_2612_PERMIT_ABI,
+  ...oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI,
 ] as const
 
 /**
