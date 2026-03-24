@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, ReactNode } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 

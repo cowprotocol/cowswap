@@ -7,7 +7,13 @@ import { clsx } from 'clsx'
 import { createPortal } from 'react-dom'
 import { usePopper } from 'react-popper'
 
-import { DropdownBackdrop, DropdownPanel, SmartModalContent, SmartModalOverlay } from './SmartModal.styled'
+import {
+  DropdownBackdrop,
+  DropdownPanel,
+  DropdownPanelScroller,
+  SmartModalContent,
+  SmartModalOverlay,
+} from './SmartModal.styled'
 import { SmartModalLayerContext, useSmartModalLayerDepth } from './SmartModalLayerContext'
 import { useDrawerGesture } from './useDrawerGesture'
 
@@ -121,7 +127,9 @@ function SmartModalDialogSurface({
           $mobile={isDrawerMode}
           style={{ width: '100%', boxSizing: 'border-box' }}
         >
-          <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
+          <DropdownPanelScroller>
+            <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
+          </DropdownPanelScroller>
         </DropdownPanel>
       </SmartModalContent>
     </SmartModalOverlay>
@@ -162,7 +170,9 @@ function SmartModalPortalShell({
         className={className}
         style={{ position: 'relative', zIndex: zIndex + 1, boxSizing: 'border-box' }}
       >
-        <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
+        <DropdownPanelScroller>
+          <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
+        </DropdownPanelScroller>
       </DropdownPanel>
     </>
   )
@@ -330,7 +340,9 @@ function SmartModalDropdown({
         data-smart-modal-panel=""
         data-smart-modal-depth={layerDepth}
       >
-        <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
+        <DropdownPanelScroller>
+          <SmartModalLayerContext.Provider value={layerDepth}>{children}</SmartModalLayerContext.Provider>
+        </DropdownPanelScroller>
       </DropdownPanel>
     </>,
     portalContainer,

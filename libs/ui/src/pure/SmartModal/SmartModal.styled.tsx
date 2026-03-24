@@ -110,15 +110,17 @@ export const DropdownBackdrop = styled.div<{ $show: boolean; $zIndex: number }>`
 `
 
 export const DropdownPanel = styled.div<{ $mobile?: boolean }>`
+  display: flex;
+  flex-direction: column;
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_PAPER});
   box-shadow: var(${UI.BOX_SHADOW});
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   border-radius: 12px;
   font-size: 13px;
-  overflow: auto;
   border-radius: 12px;
   max-height: 100%;
+  overflow: hidden;
 
   ${({ $mobile }) =>
     $mobile &&
@@ -128,4 +130,9 @@ export const DropdownPanel = styled.div<{ $mobile?: boolean }>`
       border: none;
     `}// padding: 6px 3px;
   // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+`
+
+export const DropdownPanelScroller = styled.div`
+  overflow-y: auto;
+  max-height: 100%;
 `
