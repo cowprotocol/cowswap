@@ -73,4 +73,14 @@ describe('getProgressBarStepName', () => {
 
     expect(result).toBe(OrderProgressBarStepName.SOLVING)
   })
+
+  it('does not regress from SOLVING back to INITIAL when backend returns OPEN', () => {
+    const result = callGetProgressBarStepName({
+      backendApiStatus: OPEN_STATUS,
+      previousStepName: OrderProgressBarStepName.INITIAL,
+      persistedProgressBarStepName: OrderProgressBarStepName.SOLVING,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.DELAYED)
+  })
 })

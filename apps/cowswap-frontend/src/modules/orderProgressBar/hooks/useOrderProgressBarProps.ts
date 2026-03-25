@@ -339,8 +339,8 @@ export function getProgressBarStepName(
   } else if (
     (backendApiStatus === CompetitionOrderStatus.type.OPEN ||
       backendApiStatus === CompetitionOrderStatus.type.SCHEDULED) &&
-    previousStepName &&
-    previousStepName !== OrderProgressBarStepName.INITIAL
+    persistedProgressBarStepName &&
+    persistedProgressBarStepName !== OrderProgressBarStepName.INITIAL
   ) {
     // once moved out of initial state, never go back to it
     return OrderProgressBarStepName.DELAYED
