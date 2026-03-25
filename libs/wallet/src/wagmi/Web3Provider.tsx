@@ -142,14 +142,13 @@ export function Web3Provider({ children }: Web3ProviderProps): React.ReactNode {
   )
 }
 
-let safeConnectAttemptedThisSession = false
-
 function SafeConnectionHandler({ children }: Web3ProviderProps): React.ReactNode {
-  const { connector: currentConnector } = useConnection()
+  const { connector: currentConnector, isConnected } = useConnection()
   const { mutateAsync: connect } = useConnect()
   const { mutateAsync: disconnect } = useDisconnect()
   const connectors = useConnectors()
   const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
+  const isConnectingToSafe = useRef(false)
 
   // If we're in Safe iframe but connected to a non-Safe wallet, disconnect and reconnect to Safe
   useEffect(() => {
@@ -157,25 +156,26 @@ function SafeConnectionHandler({ children }: Web3ProviderProps): React.ReactNode
     if (!currentConnector || currentConnector.id === 'safe') return
 
     // Connected to wrong wallet in Safe context - disconnect and let the effect below reconnect to Safe
-    safeConnectAttemptedThisSession = false // Reset flag so we can try connecting to Safe again
+    isConnectingToSafe.current = false
     disconnect().catch(() => {})
   }, [currentConnector, isConnectedThroughSafeApp, disconnect])
 
+  // Auto-connect to Safe when in Safe iframe
   useEffect(() => {
-    if (!isConnectedThroughSafeApp || currentConnector?.id === 'safe') {
-      return
-    }
-    if (safeConnectAttemptedThisSession) {
-      return
-    }
+    if (!isConnectedThroughSafeApp) return
+    if (isConnected && currentConnector?.id === 'safe') return
+    if (isConnectingToSafe.current) return
+
     const safeConnector = connectors.find((connector: Connector) => connector.id === 'safe')
     if (!safeConnector) return
 
-    safeConnectAttemptedThisSession = true
-    connect({ connector: safeConnector }).catch(() => {
-      safeConnectAttemptedThisSession = false
-    })
-  }, [currentConnector, isConnectedThroughSafeApp, connect, connectors])
+    isConnectingToSafe.current = true
+    connect({ connector: safeConnector })
+      .catch(() => {})
+      .finally(() => {
+        isConnectingToSafe.current = false
+      })
+  }, [currentConnector, isConnected, isConnectedThroughSafeApp, connect, connectors])
 
   return children
 }
