@@ -67,6 +67,15 @@ export function mergePersistedSigningTwapOrders(
 
     const status = getTwapOrderStatus(stored.order, isExecuted, executionDate, authorized, executionInfo)
 
+    console.log('[mergePersistedSigningTwapOrders]', {
+      id: id.slice(0, 10),
+      storedStatus: stored.status,
+      newStatus: status,
+      authorized,
+      isExecuted,
+      executionDate: executionDate?.toISOString() ?? null,
+    })
+
     next[id] = {
       ...stored,
       status,
