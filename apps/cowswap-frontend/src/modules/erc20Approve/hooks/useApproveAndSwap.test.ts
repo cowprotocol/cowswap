@@ -100,9 +100,15 @@ describe('useApproveAndSwap', () => {
       })
     })
 
-    it('should not call onApproveConfirm if permit signing fails', async () => {
+    it('should fall back to on-chain approve when permit signing fails or is rejected', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(false)
+      const mockTxReceipt = createMockTransactionReceipt()
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
+        txResponse: mockTxReceipt,
+        approvedAmount: BigInt('2000000000000000000'),
+      }
+      mockHandleApprove.mockResolvedValue(mockResult)
 
       const { result } = renderHook(
         () =>
@@ -119,8 +125,8 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockGeneratePermitToTrade).toHaveBeenCalled()
-        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
-        expect(mockHandleApprove).not.toHaveBeenCalled()
+        expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
+        expect(mockOnApproveConfirm).toHaveBeenCalled()
       })
     })
 
@@ -458,10 +464,16 @@ describe('useApproveAndSwap', () => {
       expect(mockOnApproveConfirm).not.toHaveBeenCalled()
     })
 
-    it('should propagate errors from generatePermitToTrade', async () => {
+    it('should fall back to on-chain approve when generatePermitToTrade throws', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       const mockError = new Error('Permit generation failed')
       mockGeneratePermitToTrade.mockRejectedValue(mockError)
+      const mockTxReceipt = createMockTransactionReceipt()
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
+        txResponse: mockTxReceipt,
+        approvedAmount: BigInt('2000000000000000000'),
+      }
+      mockHandleApprove.mockResolvedValue(mockResult)
 
       const { result } = renderHook(
         () =>
@@ -474,11 +486,13 @@ describe('useApproveAndSwap', () => {
         { wrapper: LinguiWrapper },
       )
 
-      await expect(result.current()).rejects.toThrow('Permit generation failed')
+      await result.current()
 
-      expect(mockGeneratePermitToTrade).toHaveBeenCalled()
-      expect(mockHandleApprove).not.toHaveBeenCalled()
-      expect(mockOnApproveConfirm).not.toHaveBeenCalled()
+      await waitFor(() => {
+        expect(mockGeneratePermitToTrade).toHaveBeenCalled()
+        expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
+        expect(mockOnApproveConfirm).toHaveBeenCalled()
+      })
     })
   })
 })

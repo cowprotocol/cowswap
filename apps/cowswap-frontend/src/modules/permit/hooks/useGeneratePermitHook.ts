@@ -11,8 +11,8 @@ import {
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { maxUint256 } from 'viem'
-import { usePublicClient, useConfig } from 'wagmi'
+import { maxUint256, type WalletClient } from 'viem'
+import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
@@ -25,6 +25,7 @@ type PermitDeps = {
   chainId: number
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   storePermit: ReturnType<typeof useSetAtom<typeof storePermitCacheAtom>>
+  walletClient: WalletClient | undefined
 }
 
 async function runPermitRequest(
@@ -35,10 +36,16 @@ async function runPermitRequest(
   chainId: number,
   getCachedPermit: PermitDeps['getCachedPermit'],
   storePermit: PermitDeps['storePermit'],
+  walletClient: PermitDeps['walletClient'],
 ): Promise<PermitHookData | undefined> {
   if (!publicClient || !isSupportedPermitInfo(params.permitInfo)) return undefined
 
-  const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient, account: params.account })
+  const eip2612Utils = await getPermitUtilsInstance({
+    chainId,
+    publicClient,
+    account: params.account,
+    walletClient: params.account ? walletClient : undefined,
+  })
   const spender = params.customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId as SupportedChainId]
   const nonce = params.account ? await eip2612Utils.getTokenNonce(params.inputToken.address, params.account) : undefined
   const permitParams = {
@@ -53,22 +60,25 @@ async function runPermitRequest(
   if (cachedPermit) return cachedPermit
 
   params.preSignCallback?.()
-  const hookData = await generatePermitHook({
-    account: params.account,
-    amount,
-    chainId,
-    config,
-    eip2612Utils,
-    inputToken: params.inputToken,
-    nonce,
-    permitInfo: params.permitInfo,
-    spender,
-  })
-  if (hookData) {
+  try {
+    const hookData = await generatePermitHook({
+      account: params.account,
+      amount,
+      chainId,
+      config,
+      eip2612Utils,
+      inputToken: params.inputToken,
+      nonce,
+      permitInfo: params.permitInfo,
+      spender,
+    })
+    if (hookData) {
+      storePermit({ ...permitParams, hookData, spender })
+    }
+    return hookData
+  } finally {
     params.postSignCallback?.()
-    storePermit({ ...permitParams, hookData, spender })
   }
-  return hookData
 }
 
 /**
@@ -77,6 +87,7 @@ async function runPermitRequest(
 export function useGeneratePermitHook(): GeneratePermitHook {
   const config = useConfig()
   const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
   const { chainId } = useWalletInfo()
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
@@ -94,7 +105,8 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         chainId,
         getCachedPermit,
         storePermit,
+        walletClient,
       ),
-    [config, publicClient, chainId, getCachedPermit, storePermit],
+    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
   )
 }

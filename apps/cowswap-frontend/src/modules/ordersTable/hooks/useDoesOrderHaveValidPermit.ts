@@ -2,7 +2,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
-import { usePublicClient } from 'wagmi'
+import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
@@ -25,6 +25,7 @@ const SWR_CONFIG: SWRConfiguration = {
 
 export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: TradeType): boolean | undefined {
   const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
   const { chainId, account } = useWalletInfo()
   const permit = order ? getOrderPermitIfExists(order) : null
   const tokenPermitInfo = usePermitInfo(order?.inputToken, tradeType)
@@ -40,7 +41,15 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
       }
 
       try {
-        return await checkPermitNonceAndAmount(account, chainId, publicClient, order, permit, tokenPermitInfo)
+        return await checkPermitNonceAndAmount(
+          account,
+          chainId,
+          publicClient,
+          order,
+          permit,
+          tokenPermitInfo,
+          walletClient,
+        )
       } catch (error) {
         console.error('Error validating permit:', error)
         return undefined

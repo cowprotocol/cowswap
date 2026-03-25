@@ -1,4 +1,12 @@
-import { type Address, createWalletClient, custom, http, type EIP1193Provider, type PublicClient } from 'viem'
+import {
+  type Address,
+  createWalletClient,
+  custom,
+  http,
+  type EIP1193Provider,
+  type PublicClient,
+  type WalletClient,
+} from 'viem'
 
 import { PERMIT_ACCOUNT } from '../const'
 import { PermitProviderConnector } from '../utils/PermitProviderConnector'
@@ -18,10 +26,12 @@ export async function getPermitUtilsInstance({
   chainId,
   publicClient,
   account,
+  walletClient: wagmiWalletClient,
 }: {
   chainId: number
   publicClient: PublicClient
   account?: Address
+  walletClient?: WalletClient | null
 }): Promise<Eip2612PermitUtils> {
   const chainCache = CHAIN_UTILS_CACHE.get(chainId)
 
@@ -35,28 +45,36 @@ export async function getPermitUtilsInstance({
     return providerCache
   }
 
-  // For account-agnostic permit hooks (no real account), use HTTP transport to avoid
-  // triggering wallet connection popups. Only use window.ethereum when we have a real account.
-  const transport = account && window.ethereum ? custom(window.ethereum as unknown as EIP1193Provider) : http()
+  // Account-agnostic: read-only RPC (nonces, etc.) — never send user signatures here.
+  // With a real account: prefer wagmi's wallet client (WalletConnect / AppKit), then injected, never plain HTTP
+  // (Infura etc. do not implement eth_signTypedData_v4).
+  let walletClient: WalletClient
 
-  const walletClient = createWalletClient({
-    account: account || PERMIT_ACCOUNT,
-    chain: publicClient.chain,
-    transport,
-  })
+  if (!account) {
+    walletClient = createWalletClient({
+      account: PERMIT_ACCOUNT,
+      chain: publicClient.chain,
+      transport: http(),
+    })
+  } else if (wagmiWalletClient) {
+    walletClient = wagmiWalletClient
+  } else if (typeof window !== 'undefined' && window.ethereum) {
+    walletClient = createWalletClient({
+      account,
+      chain: publicClient.chain,
+      transport: custom(window.ethereum as unknown as EIP1193Provider),
+    })
+  } else {
+    throw new Error('Permit signing needs an active wallet client. Reconnect your wallet or use an injected extension.')
+  }
 
   const web3ProviderConnector = new PermitProviderConnector(publicClient, walletClient)
   const Eip2612PermitUtilsClass = await import('../imports/1inchPermitUtils').then((r) => r.Eip2612PermitUtils)
   const eip2612PermitUtils = new Eip2612PermitUtilsClass(web3ProviderConnector, { enabledCheckSalt: true })
 
   if (!account) {
-    console.log(`[getPermitUtilsInstance] Set cached chain utils for chain ${chainId}`, eip2612PermitUtils)
     CHAIN_UTILS_CACHE.set(chainId, eip2612PermitUtils)
   } else {
-    console.log(
-      `[getPermitUtilsInstance] Set cached provider utils for chain ${chainId}-${account}`,
-      eip2612PermitUtils,
-    )
     PROVIDER_UTILS_CACHE.set(providerCacheKey, eip2612PermitUtils)
   }
 

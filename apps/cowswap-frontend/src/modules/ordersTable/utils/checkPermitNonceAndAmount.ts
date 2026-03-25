@@ -4,7 +4,7 @@ import { GenericOrder } from 'common/types'
 
 import { extractPermitData } from './extractPermitData'
 
-import type { Hex, PublicClient } from 'viem'
+import type { Hex, PublicClient, WalletClient } from 'viem'
 
 export async function checkPermitNonceAndAmount(
   account: string,
@@ -13,9 +13,15 @@ export async function checkPermitNonceAndAmount(
   order: GenericOrder,
   permitCallData: Hex,
   permitInfo: PermitInfo,
+  walletClient?: WalletClient | null,
 ): Promise<boolean | undefined> {
   try {
-    const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient, account: account as `0x${string}` })
+    const eip2612Utils = await getPermitUtilsInstance({
+      chainId,
+      publicClient,
+      account: account as `0x${string}`,
+      walletClient,
+    })
     const sellTokenAddress = order.inputToken.address
 
     const { permitNonce, permitAmount, permitType } = extractPermitData(permitCallData)

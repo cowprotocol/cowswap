@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { Nullish } from '@cowprotocol/types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -12,6 +14,35 @@ import { TradeType } from '../../trade'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { useIsPartialApproveSelectedByUser, useUpdateApproveProgressModalState } from '../state'
 import { getIsTradeApproveResult } from '../utils/getIsTradeApproveResult'
+
+import type { GenerecTradeApproveResult } from '../containers'
+
+function confirmTradeApproveResult(
+  tx: GenerecTradeApproveResult | SafeMultisigTransactionResponse,
+  amountToApproveBig: bigint,
+  minAmountToSignForSwap: CurrencyAmount<Currency> | undefined,
+  onApproveConfirm: (transactionHash: string | null) => void,
+  updateTradeApproveState: (state: { error: string }) => void,
+  approvedAmountInsufficientLabel: string,
+): void {
+  if (getIsTradeApproveResult(tx)) {
+    const approvedAmount = tx.approvedAmount
+    const minAmountToSignForSwapBig = minAmountToSignForSwap
+      ? BigInt(minAmountToSignForSwap.quotient.toString())
+      : amountToApproveBig
+    const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= minAmountToSignForSwapBig)
+
+    if (isApprovedAmountSufficient) {
+      const hash = 'transactionHash' in tx.txResponse ? tx.txResponse.transactionHash : tx.txResponse.hash
+
+      onApproveConfirm(hash)
+    } else {
+      updateTradeApproveState({ error: approvedAmountInsufficientLabel })
+    }
+  } else {
+    onApproveConfirm(tx.transactionHash)
+  }
+}
 
 export interface ApproveAndSwapProps {
   amountToApprove: CurrencyAmount<Currency>
@@ -36,48 +67,43 @@ export function useApproveAndSwap({
   const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
   const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
-  const handlePermit = useCallback(async () => {
-    if (isPermitSupported && onApproveConfirm) {
-      const isPermitSigned = await generatePermitToTrade()
-      if (isPermitSigned) {
-        onApproveConfirm(null)
-      }
-
-      return true
+  const handlePermit = useCallback(async (): Promise<boolean> => {
+    if (!isPermitSupported || !onApproveConfirm) {
+      return false
     }
-
-    return false
+    const isPermitSigned = await generatePermitToTrade()
+    if (!isPermitSigned) {
+      return false
+    }
+    onApproveConfirm(null)
+    return true
   }, [isPermitSupported, onApproveConfirm, generatePermitToTrade])
 
   return useCallback(async (): Promise<void> => {
-    const isPermitFlow = await handlePermit()
+    let permitHandled = false
+    try {
+      permitHandled = await handlePermit()
+    } catch {
+      permitHandled = false
+    }
 
-    if (isPermitFlow) {
+    if (permitHandled) {
       return
     }
 
     const amountToApproveBig = BigInt(amountToApprove.quotient.toString())
     const toApprove = isPartialApproveEnabledByUser ? amountToApproveBig : MAX_APPROVE_AMOUNT
-    const tx = await handleApprove(toApprove)
+    const tx: Nullish<GenerecTradeApproveResult | SafeMultisigTransactionResponse> = await handleApprove(toApprove)
 
     if (tx && onApproveConfirm) {
-      if (getIsTradeApproveResult(tx)) {
-        const approvedAmount = tx.approvedAmount
-        const minAmountToSignForSwapBig = minAmountToSignForSwap
-          ? BigInt(minAmountToSignForSwap.quotient.toString())
-          : amountToApproveBig
-        const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= minAmountToSignForSwapBig)
-
-        if (isApprovedAmountSufficient) {
-          const hash = 'transactionHash' in tx.txResponse ? tx.txResponse.transactionHash : tx.txResponse.hash
-
-          onApproveConfirm(hash)
-        } else {
-          updateTradeApproveState({ error: t`Approved amount is not sufficient!` })
-        }
-      } else {
-        onApproveConfirm(tx.transactionHash)
-      }
+      confirmTradeApproveResult(
+        tx,
+        amountToApproveBig,
+        minAmountToSignForSwap,
+        onApproveConfirm,
+        updateTradeApproveState,
+        t`Approved amount is not sufficient!`,
+      )
     }
   }, [
     handlePermit,
