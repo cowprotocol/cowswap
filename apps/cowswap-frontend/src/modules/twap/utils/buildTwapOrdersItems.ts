@@ -57,6 +57,15 @@ export function mergePersistedSigningTwapOrders(
     }
 
     const authorized = ordersAuthResult[id]
+
+    console.log('[mergePersistedSigningTwapOrders]', {
+      id: id.slice(0, 10),
+      storedStatus: stored.status,
+      authorized,
+      isInBuiltItems: !!next[id],
+      authResultKeys: Object.keys(ordersAuthResult).map((k) => k.slice(0, 10)),
+    })
+
     if (authorized === undefined) {
       continue
     }
