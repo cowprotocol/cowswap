@@ -80,14 +80,13 @@ export function useApproveAndSwap({
   }, [isPermitSupported, onApproveConfirm, generatePermitToTrade])
 
   return useCallback(async (): Promise<void> => {
-    let permitHandled = false
     try {
-      permitHandled = await handlePermit()
-    } catch {
-      permitHandled = false
-    }
+      const permitHandled = await handlePermit()
 
-    if (permitHandled) {
+      if (permitHandled) {
+        return
+      }
+    } catch {
       return
     }
 

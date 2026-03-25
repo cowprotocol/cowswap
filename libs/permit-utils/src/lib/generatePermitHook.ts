@@ -13,6 +13,18 @@ import type { Config } from 'wagmi'
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
+// User rejection detection (EIP-1193 error codes and common wallet messages)
+const USER_REJECTION_CODES = [4001, -32000]
+const USER_REJECTION_MESSAGES = ['user denied', 'user rejected', 'rejected transaction', 'transaction was rejected']
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isUserRejectionError(error: any): boolean {
+  if (!error) return false
+  if (USER_REJECTION_CODES.includes(error.code)) return true
+  const message = (typeof error === 'string' ? error : error.message)?.toLowerCase() || ''
+  return USER_REJECTION_MESSAGES.some((msg) => message.includes(msg))
+}
+
 export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData | undefined> {
   const permitKey = getCacheKey(params)
 
@@ -24,6 +36,10 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
 
   const request = generatePermitHookRaw(params)
     .catch((e) => {
+      // Re-throw user rejection errors so they propagate to the UI
+      if (isUserRejectionError(e)) {
+        throw e
+      }
       console.debug(`[generatePermitHook] cached request failed`, e)
       return undefined
     })

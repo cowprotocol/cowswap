@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getWrappedToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -28,16 +28,24 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
         amountToApprove,
       })
 
-    const permitData = await generatePermit({
-      inputToken: { name: token.name || '', address: token.address as `0x${string}` },
-      account,
-      permitInfo,
-      amount: BigInt(amountToApprove.quotient.toString()),
-      preSignCallback,
-      postSignCallback: resetApproveProgressModalState,
-    })
+    try {
+      const permitData = await generatePermit({
+        inputToken: { name: token.name || '', address: token.address as `0x${string}` },
+        account,
+        permitInfo,
+        amount: BigInt(amountToApprove.quotient.toString()),
+        preSignCallback,
+        postSignCallback: resetApproveProgressModalState,
+      })
 
-    return !!permitData
+      return !!permitData
+    } catch (error) {
+      if (isRejectRequestProviderError(error)) {
+        resetApproveProgressModalState()
+        throw error
+      }
+      return false
+    }
   }, [
     account,
     amountToApprove,
