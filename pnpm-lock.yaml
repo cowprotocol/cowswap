@@ -1659,9 +1659,6 @@ importers:
       '@1inch/permit-signed-approvals-utils':
         specifier: ^1.5.1
         version: 1.5.2(bufferutil@4.0.8)(utf-8-validate@6.0.6)
-      '@cowprotocol/common-utils':
-        specifier: workspace:*
-        version: link:../common-utils
       '@cowprotocol/cow-sdk':
         specifier: 8.0.4
         version: 8.0.4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(ipfs-only-hash@4.0.0(encoding@0.1.13))(multiformats@9.9.0)
