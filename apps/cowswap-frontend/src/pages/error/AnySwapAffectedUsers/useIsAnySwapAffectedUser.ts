@@ -28,6 +28,9 @@ export function useIsAnySwapAffectedUser(): boolean {
       functionName: 'allowance',
       args: [account as `0x${string}`, ANYSWAP_V4_CONTRACT as `0x${string}`],
     })),
+    query: {
+      enabled: !!account && chainId === ChainId.MAINNET,
+    },
   })
 
   return useMemo(() => {

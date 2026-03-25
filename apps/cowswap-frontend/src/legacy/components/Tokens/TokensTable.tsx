@@ -226,11 +226,12 @@ export function TokenTable({
 
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {
-              const balanceRaw = balances && balances[getAddressKey(data.address)]
-              const balance = balanceRaw ? safeFromRawAmount(data, balanceRaw.toString()) : undefined
+              const balanceRaw = balances?.[getAddressKey(data.address)]
+              const balance = balanceRaw !== undefined ? safeFromRawAmount(data, balanceRaw.toString()) : undefined
 
-              const allowancesRaw = allowances && allowances[getAddressKey(data.address)]
-              const allowance = allowancesRaw ? safeFromRawAmount(data, allowancesRaw.toString()) : undefined
+              const allowancesRaw = allowances?.[getAddressKey(data.address)]
+              const allowance =
+                allowancesRaw !== undefined ? safeFromRawAmount(data, allowancesRaw.toString()) : undefined
 
               if (data) {
                 return (

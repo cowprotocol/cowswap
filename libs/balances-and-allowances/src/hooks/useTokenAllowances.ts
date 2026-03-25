@@ -23,8 +23,11 @@ export function useTokenAllowances(tokenAddresses: string[]): {
       address: address as `0x${string}`,
       chainId,
       functionName: 'allowance',
-      args: [account, spender],
+      args: [account as `0x${string}`, spender as `0x${string}`],
     })),
+    query: {
+      enabled: !!account && !!spender && tokenAddresses.length > 0,
+    },
   })
 
   const state = useMemo(() => {

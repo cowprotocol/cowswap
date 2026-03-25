@@ -36,9 +36,12 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
       address: address as `0x${string}`,
       chainId,
       functionName: 'balanceOf',
-      args: [account],
+      args: [account as `0x${string}`],
     })),
-    query: queryOptions,
+    query: {
+      ...queryOptions,
+      enabled: !!account && tokenAddresses.length > 0,
+    },
   })
 
   // Set balances loading state
