@@ -31,19 +31,15 @@ const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
 
 const WAGMI_STORAGE_KEY = 'cowswap-wallet'
 
-/** In iframe context (Safe App), we don't want Wagmi to reconnect to the previously connected wallet (signer). The SafeConnectionHandler will connect to Safe instead. */
-const isInIframe = typeof window !== 'undefined' && window.self !== window.top
-
-export const REOWN_USE_NOOP_STORAGE = isInIframe
-const noopStorage = { getItem: () => null, setItem: () => {}, removeItem: () => {} }
+export const REOWN_USE_NOOP_STORAGE = false
 const storage =
-  typeof window !== 'undefined' && !isInIframe
+  typeof window !== 'undefined'
     ? createStorage({
         storage: window.localStorage,
         key: WAGMI_STORAGE_KEY,
       })
     : createStorage({
-        storage: noopStorage,
+        storage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
       })
 
 const metadata = {
@@ -67,9 +63,8 @@ export const reownAppKit = createAppKit({
   allowUnsupportedChain: false,
   customRpcUrls,
   defaultNetwork: SUPPORTED_REOWN_NETWORKS[0],
-  // In iframe (Safe App), disable EIP-6963 provider discovery and auto-reconnect to prevent connecting to the signer wallet
-  enableEIP6963: !isInIframe,
-  enableReconnect: !isInIframe,
+  enableEIP6963: true,
+  enableReconnect: true,
   enableWalletGuide: false,
   featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   features: {

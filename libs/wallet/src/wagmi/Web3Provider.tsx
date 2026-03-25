@@ -6,7 +6,7 @@ import { useAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useConnect, useConnection, useConnectors, useDisconnect, useReconnect, WagmiProvider } from 'wagmi'
 
-import { REOWN_USE_NOOP_STORAGE, wagmiAdapter } from './config'
+import { wagmiAdapter } from './config'
 
 import { OPEN_WALLET_MODAL_EVENT, USER_DISCONNECTED_SESSION_KEY } from '../constants'
 
@@ -78,7 +78,6 @@ function isInEmbeddedContext(): boolean {
 }
 
 function shouldReconnectOnMount(): boolean {
-  if (REOWN_USE_NOOP_STORAGE) return false
   return isInEmbeddedContext()
 }
 
@@ -91,8 +90,6 @@ function InjectedBrowserAutoConnect(): null {
 
   useEffect(() => {
     if (!isInEmbeddedContext()) return
-    // In Safe iframe, don't auto-connect to injected - SafeConnectionHandler will connect to Safe
-    if (REOWN_USE_NOOP_STORAGE) return
     if (isConnected || !!address) {
       if (typeof sessionStorage !== 'undefined') {
         sessionStorage.removeItem(USER_DISCONNECTED_SESSION_KEY)
@@ -147,22 +144,25 @@ function SafeConnectionHandler({ children }: Web3ProviderProps): React.ReactNode
   const { mutateAsync: connect } = useConnect()
   const { mutateAsync: disconnect } = useDisconnect()
   const connectors = useConnectors()
-  const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
+  const { connected: isConnectedThroughSafeApp, safe } = useSafeAppsSDK()
   const isConnectingToSafe = useRef(false)
+
+  // Only act if we're truly in a Safe context (SDK connected AND we have Safe info)
+  const isInSafeContext = isConnectedThroughSafeApp && !!safe.safeAddress
 
   // If we're in Safe iframe but connected to a non-Safe wallet, disconnect and reconnect to Safe
   useEffect(() => {
-    if (!isConnectedThroughSafeApp) return
+    if (!isInSafeContext) return
     if (!currentConnector || currentConnector.id === 'safe') return
 
     // Connected to wrong wallet in Safe context - disconnect and let the effect below reconnect to Safe
     isConnectingToSafe.current = false
     disconnect().catch(() => {})
-  }, [currentConnector, isConnectedThroughSafeApp, disconnect])
+  }, [currentConnector, isInSafeContext, disconnect])
 
   // Auto-connect to Safe when in Safe iframe
   useEffect(() => {
-    if (!isConnectedThroughSafeApp) return
+    if (!isInSafeContext) return
     if (isConnected && currentConnector?.id === 'safe') return
     if (isConnectingToSafe.current) return
 
@@ -175,7 +175,7 @@ function SafeConnectionHandler({ children }: Web3ProviderProps): React.ReactNode
       .finally(() => {
         isConnectingToSafe.current = false
       })
-  }, [currentConnector, isConnected, isConnectedThroughSafeApp, connect, connectors])
+  }, [currentConnector, isConnected, isInSafeContext, connect, connectors])
 
   return children
 }
