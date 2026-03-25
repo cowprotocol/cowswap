@@ -14,6 +14,7 @@ export function finalizeEthFlowTx(
   receipt: TransactionReceipt,
   params: CheckEthereumTransactions,
   hash: string,
+  shouldShowNotification = true,
 ): void {
   const ethFlowInfo = transaction.ethFlow!
   const { orderId, subType } = ethFlowInfo
@@ -24,24 +25,34 @@ export function finalizeEthFlowTx(
       // If creation failed:
       // 1. Mark order as invalid
       dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
-      // 2. Show failure tx pop-up
+      // 2. Show failure tx pop-up (only if not from a previous session)
 
-      emitOnchainTransactionEvent({
-        receipt: {
-          to: receipt.to,
-          from: receipt.from,
-          contractAddress: receipt.contractAddress,
-          transactionHash: receipt.transactionHash,
-          blockNumber: receipt.blockNumber,
-          status: receipt.status,
-          replacementType: transaction.replacementType,
-        },
-        summary: t`Failed to place order selling ${nativeCurrencySymbol}`,
-      })
+      if (shouldShowNotification) {
+        emitOnchainTransactionEvent({
+          receipt: {
+            to: receipt.to,
+            from: receipt.from,
+            contractAddress: receipt.contractAddress,
+            transactionHash: receipt.transactionHash,
+            blockNumber: receipt.blockNumber,
+            status: receipt.status,
+            replacementType: transaction.replacementType,
+          },
+          summary: t`Failed to place order selling ${nativeCurrencySymbol}`,
+        })
+      }
     }
   }
 
   if (subType === 'cancellation') {
-    finalizeOnChainCancellation(transaction, receipt, params, hash, orderId, nativeCurrencySymbol)
+    finalizeOnChainCancellation(
+      transaction,
+      receipt,
+      params,
+      hash,
+      orderId,
+      nativeCurrencySymbol,
+      shouldShowNotification,
+    )
   }
 }

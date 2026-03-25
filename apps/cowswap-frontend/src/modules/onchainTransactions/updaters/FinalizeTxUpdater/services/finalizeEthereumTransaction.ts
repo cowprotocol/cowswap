@@ -12,6 +12,9 @@ import type { TransactionReceipt, Hex } from 'viem'
 
 const finalizedEthereumTxDedupeKeys = new Set<string>()
 
+// Track when the current page session started to avoid showing notifications for old transactions on reload
+const pageLoadTime = Date.now()
+
 function getEthereumTxFinalizeDedupeKey(chainId: number, receiptTransactionHash: string): string {
   return `${chainId}:${receiptTransactionHash.toLowerCase()}`
 }
@@ -52,15 +55,30 @@ export function finalizeEthereumTransaction(
     }),
   )
 
+  // Skip showing notification for transactions that were added before this page session
+  // This prevents duplicate notifications on page reload for already-mined transactions
+  const isTransactionFromPreviousSession = transaction.addedTime < pageLoadTime
+  const shouldShowNotification = !isTransactionFromPreviousSession
+
+  if (isTransactionFromPreviousSession) {
+    console.log(
+      `[FinalizeTxUpdater] Skipping notification for transaction ${receipt.transactionHash} - added before page load`,
+    )
+  }
+
   if (transaction.ethFlow) {
-    finalizeEthFlowTx(transaction, receipt, params, hash)
+    finalizeEthFlowTx(transaction, receipt, params, hash, shouldShowNotification)
     return
   }
 
   if (transaction.onChainCancellation) {
     const { orderId, sellTokenSymbol } = transaction.onChainCancellation
 
-    finalizeOnChainCancellation(transaction, receipt, params, hash, orderId, sellTokenSymbol)
+    finalizeOnChainCancellation(transaction, receipt, params, hash, orderId, sellTokenSymbol, shouldShowNotification)
+    return
+  }
+
+  if (!shouldShowNotification) {
     return
   }
 

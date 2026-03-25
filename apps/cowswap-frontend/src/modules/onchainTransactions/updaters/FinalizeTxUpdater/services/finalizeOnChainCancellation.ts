@@ -20,6 +20,7 @@ export function finalizeOnChainCancellation(
   hash: string,
   orderId: string,
   sellTokenSymbol: string,
+  shouldShowNotification = true,
 ) {
   const { chainId, isSafeWallet, dispatch, cancelOrdersBatch, getTwapOrderById } = params
 
@@ -56,18 +57,20 @@ export function finalizeOnChainCancellation(
       { chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined }, isSafeWallet },
       dispatch,
     )
-    // 2. Show failure tx pop-up
-    emitOnchainTransactionEvent({
-      receipt: {
-        to: receipt.to,
-        from: receipt.from,
-        contractAddress: receipt.contractAddress,
-        transactionHash: receipt.transactionHash,
-        blockNumber: receipt.blockNumber,
-        status: receipt.status,
-        replacementType: transaction.replacementType,
-      },
-      summary: t`Failed to cancel order selling ${sellTokenSymbol}`,
-    })
+    // 2. Show failure tx pop-up (only if not from a previous session)
+    if (shouldShowNotification) {
+      emitOnchainTransactionEvent({
+        receipt: {
+          to: receipt.to,
+          from: receipt.from,
+          contractAddress: receipt.contractAddress,
+          transactionHash: receipt.transactionHash,
+          blockNumber: receipt.blockNumber,
+          status: receipt.status,
+          replacementType: transaction.replacementType,
+        },
+        summary: t`Failed to cancel order selling ${sellTokenSymbol}`,
+      })
+    }
   }
 }
