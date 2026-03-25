@@ -21,7 +21,12 @@ export function getTwapOrderStatus(
     isExpired,
     confirmedPartsCount,
     n: order.n,
+    t: order.t,
     executionDate: executionDate?.toISOString(),
+    endTime: executionDate
+      ? new Date((Math.ceil(executionDate.getTime() / 1000) + order.t * order.n) * 1000).toISOString()
+      : null,
+    now: new Date().toISOString(),
   })
 
   if (isFulfilled) return TwapOrderStatus.Fulfilled
