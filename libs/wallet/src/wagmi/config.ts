@@ -31,15 +31,19 @@ const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
 
 const WAGMI_STORAGE_KEY = 'cowswap-wallet'
 
-export const REOWN_USE_NOOP_STORAGE = false
+/** In iframe context (Safe App), we don't want Wagmi to reconnect to the previously connected wallet (signer). The SafeConnectionHandler will connect to Safe instead. */
+const isInIframe = typeof window !== 'undefined' && window.self !== window.top
+
+export const REOWN_USE_NOOP_STORAGE = isInIframe
+const noopStorage = { getItem: () => null, setItem: () => {}, removeItem: () => {} }
 const storage =
-  typeof window !== 'undefined'
+  typeof window !== 'undefined' && !isInIframe
     ? createStorage({
         storage: window.localStorage,
         key: WAGMI_STORAGE_KEY,
       })
     : createStorage({
-        storage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+        storage: noopStorage,
       })
 
 const metadata = {

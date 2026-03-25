@@ -82,24 +82,15 @@ function shouldReconnectOnMount(): boolean {
   return isInEmbeddedContext()
 }
 
-/** When the app is opened inside an in-app browser (e.g. MetaMask iOS), connect to the injected provider so the user stays connected. Skipped on normal desktop to avoid opening the extension (e.g. Rabby) on every reload. Also skipped in Safe iframe context - SafeConnectionHandler handles that. */
+/** When the app is opened inside an in-app browser (e.g. Safe app iframe, MetaMask iOS), connect to the injected provider so the user stays connected. Skipped on normal desktop to avoid opening the extension (e.g. Rabby) on every reload. */
 function InjectedBrowserAutoConnect(): null {
   const { address, isConnected } = useConnection()
   const connectors = useConnectors()
   const { mutateAsync: connect } = useConnect()
-  const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
   const didTryInjected = useRef(false)
-  const isSafeContextRef = useRef(isConnectedThroughSafeApp)
-
-  // Keep ref in sync for use inside setTimeout closure
-  useEffect(() => {
-    isSafeContextRef.current = isConnectedThroughSafeApp
-  }, [isConnectedThroughSafeApp])
 
   useEffect(() => {
     if (!isInEmbeddedContext()) return
-    // Skip if in Safe iframe context - SafeConnectionHandler will handle the connection
-    if (isConnectedThroughSafeApp) return
     if (isConnected || !!address) {
       if (typeof sessionStorage !== 'undefined') {
         sessionStorage.removeItem(USER_DISCONNECTED_SESSION_KEY)
@@ -113,8 +104,6 @@ function InjectedBrowserAutoConnect(): null {
     }
 
     const timeoutId = setTimeout(() => {
-      // Double-check Safe context at execution time (not just when timeout was scheduled)
-      if (isSafeContextRef.current) return
       if (didTryInjected.current) return
       if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(USER_DISCONNECTED_SESSION_KEY)) {
         return
@@ -131,7 +120,7 @@ function InjectedBrowserAutoConnect(): null {
     }, INJECTED_AUTO_CONNECT_DELAY_MS)
 
     return () => clearTimeout(timeoutId)
-  }, [address, isConnected, connectors, connect, isConnectedThroughSafeApp])
+  }, [address, isConnected, connectors, connect])
 
   return null
 }
