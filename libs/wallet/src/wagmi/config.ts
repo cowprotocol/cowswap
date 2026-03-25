@@ -67,8 +67,9 @@ export const reownAppKit = createAppKit({
   allowUnsupportedChain: false,
   customRpcUrls,
   defaultNetwork: SUPPORTED_REOWN_NETWORKS[0],
-  enableEIP6963: true,
-  enableReconnect: true,
+  // In iframe (Safe App), disable EIP-6963 provider discovery and auto-reconnect to prevent connecting to the signer wallet
+  enableEIP6963: !isInIframe,
+  enableReconnect: !isInIframe,
   enableWalletGuide: false,
   featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   features: {
