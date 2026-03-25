@@ -4,7 +4,7 @@ import { SafeProvider, useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { useAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useConnect, useConnection, useConnectors, useReconnect, WagmiProvider } from 'wagmi'
+import { useConnect, useConnection, useConnectors, useDisconnect, useReconnect, WagmiProvider } from 'wagmi'
 
 import { REOWN_USE_NOOP_STORAGE, wagmiAdapter } from './config'
 
@@ -82,7 +82,7 @@ function shouldReconnectOnMount(): boolean {
   return isInEmbeddedContext()
 }
 
-/** When the app is opened inside an in-app browser (e.g. Safe app iframe, MetaMask iOS), connect to the injected provider so the user stays connected. Skipped on normal desktop to avoid opening the extension (e.g. Rabby) on every reload. */
+/** When the app is opened inside an in-app browser (e.g. MetaMask iOS), connect to the injected provider so the user stays connected. Skipped on normal desktop to avoid opening the extension (e.g. Rabby) on every reload. Also skipped in Safe iframe - SafeConnectionHandler handles that case. */
 function InjectedBrowserAutoConnect(): null {
   const { address, isConnected } = useConnection()
   const connectors = useConnectors()
@@ -91,6 +91,8 @@ function InjectedBrowserAutoConnect(): null {
 
   useEffect(() => {
     if (!isInEmbeddedContext()) return
+    // In Safe iframe, don't auto-connect to injected - SafeConnectionHandler will connect to Safe
+    if (REOWN_USE_NOOP_STORAGE) return
     if (isConnected || !!address) {
       if (typeof sessionStorage !== 'undefined') {
         sessionStorage.removeItem(USER_DISCONNECTED_SESSION_KEY)
@@ -145,8 +147,19 @@ let safeConnectAttemptedThisSession = false
 function SafeConnectionHandler({ children }: Web3ProviderProps): React.ReactNode {
   const { connector: currentConnector } = useConnection()
   const { mutateAsync: connect } = useConnect()
+  const { mutateAsync: disconnect } = useDisconnect()
   const connectors = useConnectors()
   const { connected: isConnectedThroughSafeApp } = useSafeAppsSDK()
+
+  // If we're in Safe iframe but connected to a non-Safe wallet, disconnect and reconnect to Safe
+  useEffect(() => {
+    if (!isConnectedThroughSafeApp) return
+    if (!currentConnector || currentConnector.id === 'safe') return
+
+    // Connected to wrong wallet in Safe context - disconnect and let the effect below reconnect to Safe
+    safeConnectAttemptedThisSession = false // Reset flag so we can try connecting to Safe again
+    disconnect().catch(() => {})
+  }, [currentConnector, isConnectedThroughSafeApp, disconnect])
 
   useEffect(() => {
     if (!isConnectedThroughSafeApp || currentConnector?.id === 'safe') {
