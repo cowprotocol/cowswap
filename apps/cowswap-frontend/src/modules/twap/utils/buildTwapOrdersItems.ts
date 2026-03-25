@@ -57,15 +57,6 @@ export function mergePersistedSigningTwapOrders(
     }
 
     const authorized = ordersAuthResult[id]
-
-    console.log('[mergePersistedSigningTwapOrders]', {
-      id: id.slice(0, 10),
-      storedStatus: stored.status,
-      authorized,
-      isInBuiltItems: !!next[id],
-      authResultKeys: Object.keys(ordersAuthResult).map((k) => k.slice(0, 10)),
-    })
-
     if (authorized === undefined) {
       continue
     }
@@ -75,15 +66,6 @@ export function mergePersistedSigningTwapOrders(
     const isExecuted = stored.safeTxParams?.isExecuted ?? false
 
     const status = getTwapOrderStatus(stored.order, isExecuted, executionDate, authorized, executionInfo)
-
-    console.log('[mergePersistedSigningTwapOrders]', {
-      id: id.slice(0, 10),
-      storedStatus: stored.status,
-      newStatus: status,
-      authorized,
-      isExecuted,
-      executionDate: executionDate?.toISOString() ?? null,
-    })
 
     next[id] = {
       ...stored,

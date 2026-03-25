@@ -43,16 +43,6 @@ export async function fetchTwapOrdersFromSafe(
   const results = response?.results || []
   const parsedResults = parseSafeTransactionsResult(composableCowContract, results)
 
-  console.log('[fetchTwapOrdersFromSafe]', {
-    totalResults: results.length,
-    parsedTwapOrders: parsedResults.length,
-    parsedDetails: parsedResults.map((r) => ({
-      isExecuted: r.safeTxParams.isExecuted,
-      executionDate: r.safeTxParams.executionDate,
-      nonce: r.safeTxParams.nonce,
-    })),
-  })
-
   accumulator.push(parsedResults)
 
   const flattenState = accumulator.flat()
