@@ -65,14 +65,6 @@ export function useIsTxBundlingSupported(): boolean | null {
     return isSafeViaWc && capabilities?.atomic?.status === 'supported'
   })()
 
-  console.log('[useIsTxBundlingSupported]', {
-    result,
-    isSafeApp,
-    isSafeViaWc,
-    isCapabilitiesLoading,
-    atomicStatus: capabilities?.atomic?.status,
-  })
-
   return result
 }
 
