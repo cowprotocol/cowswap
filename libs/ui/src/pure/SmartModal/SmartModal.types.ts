@@ -1,5 +1,7 @@
 import type { ReactNode, RefObject } from 'react'
 
+import type { PositioningStrategy } from '@popperjs/core'
+
 /**
  * 8 placement options for anchor-based positioning (aligned with Popper, without auto variants).
  * - top / top-start / top-end = top center / top left / top right
@@ -39,6 +41,7 @@ export interface SmartModalProps {
   drawerMediaQuery: string
   /** For anchor mode. Default 'bottom'. */
   placement?: SmartModalPlacement
+  strategy?: PositioningStrategy
   /** Show backdrop in dropdown/modal mode. Default true for modal/drawer, configurable for dropdown. */
   showBackdrop?: boolean
   zIndex?: number

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 
+import { PositioningStrategy } from '@popperjs/core'
 import { useTransition } from '@react-spring/web'
 import { clsx } from 'clsx'
 import { createPortal } from 'react-dom'
@@ -206,6 +207,7 @@ export function SmartModal({
   containerId,
   drawerMediaQuery,
   placement = 'bottom',
+  strategy = 'absolute',
   showBackdrop = true,
   zIndex = DEFAULT_Z_INDEX,
   className,
@@ -286,6 +288,7 @@ export function SmartModal({
         children={children}
         anchorRef={anchorRef}
         placement={placement}
+        strategy={strategy}
         showBackdrop={showBackdrop}
         zIndex={zIndex}
         className={clsx('dropdown', 'isDropdown', className)}
@@ -303,6 +306,7 @@ interface SmartModalDropdownProps {
   children: React.ReactNode
   anchorRef: React.RefObject<HTMLElement | null>
   placement: SmartModalPlacement
+  strategy: PositioningStrategy
   showBackdrop: boolean
   zIndex: number
   className?: string
@@ -315,6 +319,7 @@ function SmartModalDropdown({
   children,
   anchorRef,
   placement,
+  strategy,
   showBackdrop,
   zIndex,
   className,
@@ -329,14 +334,14 @@ function SmartModalDropdown({
   const options = useMemo(
     () =>
       ({
-        placement: placement,
-        strategy: 'absolute',
+        placement,
+        strategy,
         modifiers: [
           { name: 'offset', options: { offset: [0, POPPER_OFFSET] } },
           { name: 'preventOverflow', options: { padding: POPPER_OFFSET } },
         ],
       }) satisfies PopperOptions,
-    [placement],
+    [placement, strategy],
   )
 
   // eslint-disable-next-line react-hooks/refs
