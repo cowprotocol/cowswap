@@ -64,7 +64,6 @@ export function usePollQuoteCallback(
           quotePollingParams,
           appData,
           tradeQuoteManager,
-          { now, ref: updatingStartTimestamp },
           getCorrelatedTokensByChainId,
         )
       }

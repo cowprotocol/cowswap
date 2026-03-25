@@ -17,7 +17,7 @@ import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedErr
 import { coWBFFClient } from 'common/services/bff'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { QuotePollingUpdateTimings, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
+import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
@@ -31,7 +31,6 @@ export async function fetchAndProcessQuote(
   { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
-  timings: QuotePollingUpdateTimings,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
@@ -53,8 +52,6 @@ export async function fetchAndProcessQuote(
   }
 
   const processQuoteError = (error: Error): void => {
-    if (timings.ref.current != null && timings.now !== timings.ref.current) return
-
     const parsedError = parseError(error)
 
     console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
@@ -77,7 +74,7 @@ export async function fetchAndProcessQuote(
   tradeQuoteManager.setLoading(hasParamsChanged, quoteParams)
 
   if (isBridge) {
-    await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError, timings)
+    await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   } else {
     await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   }
@@ -118,7 +115,6 @@ async function fetchBridgingQuote(
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (error: Error) => void,
-  timings: QuotePollingUpdateTimings,
 ): Promise<void> {
   let isRequestCancelled = false
 
@@ -150,8 +146,6 @@ async function fetchBridgingQuote(
     const error = data?.error
 
     if (error) {
-      if (timings.ref.current != null && timings.now !== timings.ref.current) return
-
       if (error instanceof BridgeProviderQuoteError) {
         tradeQuoteManager.onError(error, quoteParams.sellTokenChainId, quoteParams, fetchParams)
         return
