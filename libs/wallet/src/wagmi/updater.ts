@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
@@ -62,16 +62,15 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
+const SAFE_INFO_POLL_INTERVAL = 3000
+
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { account, chainId } = walletInfo
-  const { connected, safe, sdk } = useSafeAppsSDK()
+  const { connected, sdk } = useSafeAppsSDK()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
-
-  // Debug: Log when safe context changes
-  useEffect(() => {
-    console.log('[useSafeInfo] Safe context:', { connected, safe, safeIsReadOnly: safe?.isReadOnly })
-  }, [connected, safe])
+  // Use ref to track last isReadOnly value - avoids state updates when polling returns same value
+  const lastIsReadOnlyRef = useRef<boolean | undefined>(undefined)
 
   useEffect(() => {
     if (!connected) {
@@ -83,7 +82,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
             const _safeInfo = await getSafeInfo(chainId, account)
             if (isStale) return
             const { address, threshold, owners, nonce } = _safeInfo
-            console.log('[useSafeInfo] API fallback - setting safeInfo with isReadOnly: false')
+            lastIsReadOnlyRef.current = false
             setSafeInfo({
               chainId,
               address,
@@ -94,6 +93,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
             })
           } catch {
             if (!isStale) {
+              lastIsReadOnlyRef.current = undefined
               setSafeInfo(undefined)
             }
           }
@@ -106,36 +106,49 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
 
       // No Safe context and no account - clear info
       if (!account) {
+        lastIsReadOnlyRef.current = undefined
         setSafeInfo(undefined)
       }
       return undefined
     }
 
-    // In Safe App context - fetch info when safe context changes (including isReadOnly)
+    // In Safe App context - poll for isReadOnly changes
+    let isStale = false
+
     const fetchInfo = async (): Promise<void> => {
+      if (isStale) return
       try {
         const fetchedInfo = await sdk.safe.getInfo()
-        console.log('[useSafeInfo] SDK getInfo result:', {
-          isReadOnly: fetchedInfo.isReadOnly,
-          safeAddress: fetchedInfo.safeAddress,
-        })
-        setSafeInfo({
-          address: fetchedInfo.safeAddress,
-          chainId: fetchedInfo.chainId,
-          threshold: fetchedInfo.threshold,
-          owners: fetchedInfo.owners,
-          nonce: 0,
-          isReadOnly: fetchedInfo.isReadOnly,
-        })
-      } catch (error) {
-        console.error('[useSafeInfo] SDK getInfo error:', error)
+        if (isStale) return
+
+        // Only update state if isReadOnly actually changed - this prevents unnecessary re-renders
+        if (lastIsReadOnlyRef.current !== fetchedInfo.isReadOnly) {
+          lastIsReadOnlyRef.current = fetchedInfo.isReadOnly
+          setSafeInfo({
+            address: fetchedInfo.safeAddress,
+            chainId: fetchedInfo.chainId,
+            threshold: fetchedInfo.threshold,
+            owners: fetchedInfo.owners,
+            nonce: 0,
+            isReadOnly: fetchedInfo.isReadOnly,
+          })
+        }
+      } catch {
+        // Ignore polling errors
       }
     }
 
-    console.log('[useSafeInfo] Fetching info - dependencies changed')
+    // Initial fetch
     fetchInfo()
-    return undefined
-  }, [account, chainId, connected, sdk, safe])
+
+    // Poll for changes - only triggers state update when isReadOnly changes
+    const intervalId = setInterval(fetchInfo, SAFE_INFO_POLL_INTERVAL)
+
+    return () => {
+      isStale = true
+      clearInterval(intervalId)
+    }
+  }, [account, chainId, connected, sdk])
 
   return safeInfo
 }
@@ -169,10 +182,6 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
 
   // Update Gnosis Safe info
   useEffect(() => {
-    console.log('[WalletUpdater] Setting gnosisSafeInfo atom:', {
-      isReadOnly: gnosisSafeInfo?.isReadOnly,
-      address: gnosisSafeInfo?.address,
-    })
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 

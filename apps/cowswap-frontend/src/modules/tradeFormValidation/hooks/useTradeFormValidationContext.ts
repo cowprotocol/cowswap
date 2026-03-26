@@ -55,10 +55,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
-  console.log('[useTradeFormValidationContext] gnosisSafeInfo:', {
-    isReadOnly: gnosisSafeInfo?.isReadOnly,
-    isSafeReadonlyUser,
-  })
 
   const isApproveRequired = useIsApprovalOrPermitRequired({
     isBundlingSupportedOrEnabledForContext: isBundlingSupported,
