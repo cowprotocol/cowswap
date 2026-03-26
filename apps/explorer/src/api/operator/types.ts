@@ -110,6 +110,7 @@ export type Order = Pick<
   surplusAmount: BigNumber
   surplusPercentage: BigNumber
   bridgeProviderId?: string
+  isBridgeOrder: boolean
 }
 
 export type OrderCompetitionStatus = CompetitionOrderStatus
