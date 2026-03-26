@@ -26,6 +26,7 @@ import { ToggleFilter } from './ToggleFilter'
 
 import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
+import { Tags } from '../../common/Tags'
 import { StatusLabel } from '../StatusLabel'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
@@ -51,26 +52,6 @@ const Wrapper = styled.div`
   font-size: 1.5rem;
   padding: 3.2rem;
   min-height: 25rem;
-`
-
-const Tag = styled.div`
-  font-weight: ${({ theme }): string => theme.fontBold};
-  border-radius: 0.4rem;
-  line-height: 1.1;
-  padding: 0.5rem 0.8rem;
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  white-space: nowrap;
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  background: ${Color.explorer_greyOpacity};
-  color: ${Color.explorer_grey};
-`
-
-const TagsWrapper = styled.div`
-  display: flex;
-  justify-content: center;
 `
 
 export type Props = SimpleTableProps & {
@@ -201,7 +182,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
         <OrderSurplusDisplayStyledByRow order={order} />
       </td>
       <td>
-        <TagsWrapper>{order.bridgeProviderId ? <Tag>bridge</Tag> : '-'}</TagsWrapper>
+        <Tags order={order} />
       </td>
       <td>
         <DateDisplay date={creationDate} showIcon={true} />
