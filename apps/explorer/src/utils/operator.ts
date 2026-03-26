@@ -386,7 +386,6 @@ export function transformOrder(rawOrder: RawOrder): Order {
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
   const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(rawOrder)
   const bridgeProviderId = getOrderBridgeProviderId(rawOrder)
-  const isBridgeOrder = isBridgeOrderLogic(rawOrder)
 
   return {
     ...rest,
@@ -412,19 +411,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     surplusAmount,
     surplusPercentage,
     bridgeProviderId,
-    isBridgeOrder,
   } as Order
-}
-
-function isBridgeOrderLogic(order: RawOrder): boolean {
-  if (!order.fullAppData) return false
-
-  try {
-    const appData = JSON.parse(order.fullAppData)
-    return !!appData.metadata?.bridging
-  } catch {
-    return false
-  }
 }
 
 /**
