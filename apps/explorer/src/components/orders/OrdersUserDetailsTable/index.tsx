@@ -68,6 +68,11 @@ const Tag = styled.div`
   color: ${Color.explorer_grey};
 `
 
+const TagsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`
+
 export type Props = SimpleTableProps & {
   orders: Order[] | undefined
   tableState: TableState
@@ -196,7 +201,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
         <OrderSurplusDisplayStyledByRow order={order} />
       </td>
       <td>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>{order.isBridgeOrder ? <Tag>bridge</Tag> : '-'}</div>
+        <TagsWrapper>{order.bridgeProviderId ? <Tag>bridge</Tag> : '-'}</TagsWrapper>
       </td>
       <td>
         <DateDisplay date={creationDate} showIcon={true} />
