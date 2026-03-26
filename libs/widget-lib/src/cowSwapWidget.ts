@@ -7,6 +7,7 @@ import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
   EthereumProvider,
+  WidgetHookEvents,
   WidgetMethodsEmit,
   WidgetMethodsListen,
   WindowListener,
@@ -45,7 +46,7 @@ export interface CowSwapWidgetHandler {
 /**
  * Generates and injects a CoW Swap Widget into the provided container.
  * @param container - The HTML element to inject the widget into.
- * @param params - Parameters for configuring the widget.
+ * @param props - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
@@ -78,19 +79,22 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   // 5. Intercept deeplinks navigation in the iframe
   windowListeners.push(interceptDeepLinks())
 
-  // 6. Handle and forward widget events to the listeners
+  // 6. Handle two-way communication of widget hooks
+  windowListeners.push(processWidgetHooks(iframeWindow, params.hooks))
+
+  // 7. Handle and forward widget events to the listeners
   const iFrameCowEventEmitter = new IframeCowEventEmitter(window, listeners)
 
-  // 7. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
+  // 8. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
   let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
-  // 8. Schedule the uploading of the params, once the iframe is loaded
+  // 9. Schedule the uploading of the params, once the iframe is loaded
   iframe.addEventListener('load', () => updateParams(iframeWindow, currentParams, provider))
 
-  // 9. Listen for messages from the iframe
+  // 10. Listen for messages from the iframe
   const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
 
-  // 10. Return the handler, so the widget, listeners, and provider can be updated
+  // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
     updateParams: (newParams: CowSwapWidgetParams) => {
       currentParams = newParams
@@ -256,4 +260,17 @@ function listenToHeightChanges(
       iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
     }),
   ]
+}
+
+function processWidgetHooks(contentWindow: Window, hooks: CowSwapWidgetParams['hooks']): WindowListener {
+  return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.PROCESS_HOOK, async (data) => {
+    if (data.event === WidgetHookEvents.ON_BEFORE_APPROVAL) {
+      const isHookPassed = hooks?.onBeforeApproval ? await hooks.onBeforeApproval() : true
+
+      widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.HOOK_RESULT, {
+        id: data.id,
+        result: isHookPassed,
+      })
+    }
+  })
 }

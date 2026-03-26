@@ -7,10 +7,14 @@ import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 import { GenerecTradeApproveResult, useTradeApproveCallback } from 'modules/erc20Approve'
 import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'
 
+export type ApproveCurrencyCallback = (
+  amount: bigint,
+) => Promise<Nullish<GenerecTradeApproveResult | SafeMultisigTransactionResponse>>
+
 export function useApproveCurrency(
   amountToApprove: CurrencyAmount<Currency> | undefined,
   useModals = true,
-): (amount: bigint) => Promise<Nullish<GenerecTradeApproveResult | SafeMultisigTransactionResponse>> {
+): ApproveCurrencyCallback {
   const currency = amountToApprove?.currency
 
   const tradeApproveCallback = useTradeApproveCallback(currency)
