@@ -13,7 +13,9 @@ function buildFullAppData(appCode: string): string {
 
 function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
   return {
-    status: OrderStatus.OPEN,
+    status: OrderStatus.FULFILLED,
+    executedBuyAmount: '1',
+    executedSellAmount: '1',
     fullAppData: buildFullAppData(DEFAULT_APP_CODE),
     ...overrides,
   } as EnrichedOrder
