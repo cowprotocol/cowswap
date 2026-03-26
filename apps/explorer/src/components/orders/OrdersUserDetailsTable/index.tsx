@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Command } from '@cowprotocol/types'
 import { Color, TruncatedText } from '@cowprotocol/ui'
 
-import { faExchangeAlt, faCheck } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
@@ -52,6 +51,21 @@ const Wrapper = styled.div`
   font-size: 1.5rem;
   padding: 3.2rem;
   min-height: 25rem;
+`
+
+const Tag = styled.div`
+  font-weight: ${({ theme }): string => theme.fontBold};
+  border-radius: 0.4rem;
+  line-height: 1.1;
+  padding: 0.5rem 0.8rem;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  white-space: nowrap;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  background: ${Color.explorer_greyOpacity};
+  color: ${Color.explorer_grey};
 `
 
 export type Props = SimpleTableProps & {
@@ -181,8 +195,8 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
       <td>
         <OrderSurplusDisplayStyledByRow order={order} />
       </td>
-      <td style={{ textAlign: 'center' }}>
-        {order.isBridgeOrder ? <FontAwesomeIcon icon={faCheck} color={Color.explorer_green1} /> : '-'}
+      <td>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>{order.isBridgeOrder ? <Tag>bridge</Tag> : '-'}</div>
       </td>
       <td>
         <DateDisplay date={creationDate} showIcon={true} />
@@ -240,7 +254,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
                 </span>
               </th>
               <th>Surplus</th>
-              <th>Bridge</th>
+              <th>Tags</th>
               <th>Created</th>
               <th>Status</th>
             </tr>
