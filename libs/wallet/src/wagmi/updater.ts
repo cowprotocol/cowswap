@@ -68,6 +68,11 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
 
+  // Debug: Log when safe context changes
+  useEffect(() => {
+    console.log('[useSafeInfo] Safe context:', { connected, safe, safeIsReadOnly: safe?.isReadOnly })
+  }, [connected, safe])
+
   useEffect(() => {
     if (!connected) {
       // Only use API fallback when NOT in Safe App context
@@ -78,6 +83,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
             const _safeInfo = await getSafeInfo(chainId, account)
             if (isStale) return
             const { address, threshold, owners, nonce } = _safeInfo
+            console.log('[useSafeInfo] API fallback - setting safeInfo with isReadOnly: false')
             setSafeInfo({
               chainId,
               address,
@@ -109,6 +115,10 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
     const fetchInfo = async (): Promise<void> => {
       try {
         const fetchedInfo = await sdk.safe.getInfo()
+        console.log('[useSafeInfo] SDK getInfo result:', {
+          isReadOnly: fetchedInfo.isReadOnly,
+          safeAddress: fetchedInfo.safeAddress,
+        })
         setSafeInfo({
           address: fetchedInfo.safeAddress,
           chainId: fetchedInfo.chainId,
@@ -117,11 +127,12 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
           nonce: 0,
           isReadOnly: fetchedInfo.isReadOnly,
         })
-      } catch {
-        // Ignore errors
+      } catch (error) {
+        console.error('[useSafeInfo] SDK getInfo error:', error)
       }
     }
 
+    console.log('[useSafeInfo] Fetching info - dependencies changed')
     fetchInfo()
     return undefined
   }, [account, chainId, connected, sdk, safe])
@@ -158,6 +169,10 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
 
   // Update Gnosis Safe info
   useEffect(() => {
+    console.log('[WalletUpdater] Setting gnosisSafeInfo atom:', {
+      isReadOnly: gnosisSafeInfo?.isReadOnly,
+      address: gnosisSafeInfo?.address,
+    })
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 
