@@ -31,9 +31,18 @@ const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
 
 const WAGMI_STORAGE_KEY = 'cowswap-wallet'
 
-export const REOWN_USE_NOOP_STORAGE = false
+/** True when the app is in an embedded context (e.g. Safe app iframe). */
+function isInEmbeddedContext(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.self !== window.top
+}
+
+/**
+ * In Safe iframe context, use noop storage to prevent auto-reconnecting to previously saved wallets.
+ * The SafeConnectionHandler will handle connecting to the Safe connector.
+ */
 const storage =
-  typeof window !== 'undefined'
+  typeof window !== 'undefined' && !isInEmbeddedContext()
     ? createStorage({
         storage: window.localStorage,
         key: WAGMI_STORAGE_KEY,

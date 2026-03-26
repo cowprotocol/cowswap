@@ -64,41 +64,71 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
 
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { account, chainId } = walletInfo
-  const { connected, safe, sdk } = useSafeAppsSDK()
+  const { connected, safe } = useSafeAppsSDK()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
 
+  // When connected as Safe App, use the safe object directly from SDK context
   useEffect(() => {
-    const updateSafeInfo = async (): Promise<void> => {
-      if (connected) {
-        const fetchedInfo = await sdk.safe.getInfo()
-        setSafeInfo({ ...fetchedInfo, address: fetchedInfo.safeAddress })
-      } else {
-        if (chainId && account) {
-          try {
-            const _safeInfo = await getSafeInfo(chainId, account)
-            const { address, threshold, owners, nonce } = _safeInfo
-            setSafeInfo((prevSafeInfo) => ({
-              ...prevSafeInfo,
-              chainId,
-              address,
-              threshold,
-              owners,
-              // Time to time Safe sends a string or a number
-              nonce: Number(nonce),
-              isReadOnly: false,
-            }))
-          } catch {
-            console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
-            setSafeInfo(undefined)
-          }
-        } else {
-          setSafeInfo(undefined)
-        }
+    // Track if this effect has been cleaned up (to prevent stale async updates)
+    let isStale = false
+
+    // If we're in Safe App context (connected via Safe SDK), use SDK data
+    // This takes priority over API fallback
+    if (connected && safe.safeAddress) {
+      setSafeInfo({
+        address: safe.safeAddress,
+        chainId: safe.chainId,
+        threshold: safe.threshold,
+        owners: safe.owners,
+        nonce: 0,
+        isReadOnly: safe.isReadOnly,
+      })
+      // Return cleanup that marks this as stale
+      return () => {
+        isStale = true
       }
     }
-    updateSafeInfo()
-  }, [account, chainId, connected, sdk, safe])
+
+    // Only use API fallback when NOT in Safe App context
+    if (!connected && chainId && account) {
+      const fetchSafeInfo = async (): Promise<void> => {
+        try {
+          const _safeInfo = await getSafeInfo(chainId, account)
+          // Don't update if the effect was cleaned up (e.g., Safe SDK connected in the meantime)
+          if (isStale) {
+            return
+          }
+          const { address, threshold, owners, nonce } = _safeInfo
+          setSafeInfo({
+            chainId,
+            address,
+            threshold,
+            owners,
+            nonce: Number(nonce),
+            isReadOnly: false,
+          })
+        } catch {
+          if (!isStale) {
+            setSafeInfo(undefined)
+          }
+        }
+      }
+      fetchSafeInfo()
+      return () => {
+        isStale = true
+      }
+    }
+
+    // No Safe context and no account - clear info
+    if (!connected && !account) {
+      setSafeInfo(undefined)
+    }
+
+    return () => {
+      isStale = true
+    }
+  }, [account, chainId, connected, safe])
 
   return safeInfo
 }
