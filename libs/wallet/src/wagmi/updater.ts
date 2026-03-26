@@ -128,7 +128,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
     return () => {
       isStale = true
     }
-  }, [account, chainId, connected, safe])
+  }, [account, chainId, connected, safe, safe.isReadOnly])
 
   return safeInfo
 }
