@@ -359,4 +359,30 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.RestrictedForCountry]: {
     text: <Trans>This token is not available in your region</Trans>,
   },
+  [TradeFormValidation.DisableTradeWithUnknownPriceImpact]: () => {
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Unknown price impact</Trans>
+          <HelpTooltip
+            placement="top"
+            text={t`Not enough price data for one or both assets to calculate the price impact`}
+          />
+        </>
+      </TradeFormBlankButton>
+    )
+  },
+  [TradeFormValidation.DisableTradeWithHighPriceImpact]: ({ widgetPriceImpactThreshold = 0 }) => {
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Price impact is too high</Trans>
+          <HelpTooltip
+            placement="top"
+            text={t`Trading is not allowed with price impact higher than ${widgetPriceImpactThreshold}%`}
+          />
+        </>
+      </TradeFormBlankButton>
+    )
+  },
 }
