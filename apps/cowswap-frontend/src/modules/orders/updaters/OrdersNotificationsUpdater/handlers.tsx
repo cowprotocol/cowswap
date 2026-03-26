@@ -9,6 +9,7 @@ import {
   OnExpiredOrderPayload,
   OnFulfilledOrderPayload,
   OnPresignedOrderPayload,
+  BaseOrderPayload,
   ToastMessageType,
 } from '@cowprotocol/events'
 import { IconType } from '@cowprotocol/snackbars'
@@ -47,6 +48,21 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<OrderStatusEvents, OrdersNotif
           payload={payloadFixed}
           messageType={ToastMessageType.ORDER_CREATED}
         />
+      )
+    },
+  },
+  [OrderStatusEvents.ON_PENDING_ORDER]: {
+    icon: 'success',
+    handler: (payload: BaseOrderPayload) => {
+      const { chainId, order } = payload
+
+      return (
+        <OrderNotification
+          title={t`Order Created`}
+          chainId={chainId}
+          orderUid={order.uid}
+          messageType={ToastMessageType.ORDER_PENDING}
+        ></OrderNotification>
       )
     },
   },

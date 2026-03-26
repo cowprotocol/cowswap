@@ -5,6 +5,7 @@ import {
   OnExpiredOrderPayload,
   OnPresignedOrderPayload,
   OnBridgingSuccessPayload,
+  BaseOrderPayload,
 } from './orders'
 import { OnToastMessagePayload } from './toastMessages'
 import { OnTradeParamsPayload } from './trade'
@@ -16,6 +17,7 @@ export enum CowWidgetEvents {
 
   // Orders
   ON_POSTED_ORDER = 'ON_POSTED_ORDER',
+  ON_PENDING_ORDER = 'ON_PENDING_ORDER',
   ON_FULFILLED_ORDER = 'ON_FULFILLED_ORDER',
   ON_CANCELLED_ORDER = 'ON_CANCELLED_ORDER',
   ON_EXPIRED_ORDER = 'ON_EXPIRED_ORDER',
@@ -31,6 +33,7 @@ export enum CowWidgetEvents {
 export interface CowWidgetEventPayloadMap {
   [CowWidgetEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload
   [CowWidgetEvents.ON_POSTED_ORDER]: OnPostedOrderPayload
+  [CowWidgetEvents.ON_PENDING_ORDER]: BaseOrderPayload
   [CowWidgetEvents.ON_FULFILLED_ORDER]: OnFulfilledOrderPayload
   [CowWidgetEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload
   [CowWidgetEvents.ON_EXPIRED_ORDER]: OnExpiredOrderPayload
