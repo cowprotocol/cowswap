@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
-
 import { Connector, useConnection } from 'wagmi'
+
+import { useConnectionType } from './useConnectionType'
 
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
@@ -107,9 +107,9 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
  * It'll be false if connected to Safe wallet via WalletConnect
  */
 export function useIsSafeApp(): boolean {
-  const { connected } = useSafeAppsSDK()
+  const connectionType = useConnectionType()
 
-  return connected
+  return connectionType === ConnectionType.GNOSIS_SAFE
 }
 
 /**

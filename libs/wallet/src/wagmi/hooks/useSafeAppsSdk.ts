@@ -1,19 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
-import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
-import type SafeAppsSDK from '@safe-global/safe-apps-sdk'
+import SafeAppsSDK from '@safe-global/safe-apps-sdk'
+
+import { useConnectionType } from './useConnectionType'
+
+import { ConnectionType } from '../../api/types'
+
+const sdk = new SafeAppsSDK()
 
 export function useSafeAppsSdk(): SafeAppsSDK | null {
-  const { connected: isConnectedThroughSafeApp, sdk } = useSafeAppsSDK()
-  const [safeAppsSdk, setSafeAppsSdk] = useState<SafeAppsSDK | null>(null)
+  const connectionType = useConnectionType()
 
-  useEffect(() => {
-    if (!isConnectedThroughSafeApp) {
-      setSafeAppsSdk(null)
-    } else {
-      setSafeAppsSdk(sdk)
-    }
-  }, [isConnectedThroughSafeApp, sdk])
-
-  return safeAppsSdk
+  return useMemo(() => (connectionType === ConnectionType.GNOSIS_SAFE ? sdk : null), [connectionType])
 }

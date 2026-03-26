@@ -4,7 +4,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { safe } from '@wagmi/connectors'
-import { createStorage } from 'wagmi'
+import { http } from 'viem'
+import { createStorage, type Transport } from 'wagmi'
 
 import { throttledInjected } from './connectors/throttledInjected'
 
@@ -12,13 +13,23 @@ import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
 type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof throttledInjected>
 
-/** Safe connector only works when the app runs inside the Safe iframe (Safe App). Outside that context it fails with "Connection declined" / "Provider not found". So we only add it in embedded context. */
 function getConnectors(): ConnectorInstance[] {
-  if (typeof window === 'undefined') return [safe({ shimDisconnect: true }), throttledInjected()]
-  return window.self !== window.top ? [safe({ shimDisconnect: true }), throttledInjected()] : [throttledInjected()]
+  return [safe({ shimDisconnect: true }), throttledInjected()]
 }
 
-/** Custom RPC URLs so read calls use our RPCs instead of WalletConnect relay (avoids CORS/403 on localhost). */
+const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
+  (acc, chain) => {
+    const chainId = chain.id as SupportedChainId
+    const url = RPC_URLS[chainId]
+    if (url) {
+      acc[chainId] = http(url)
+    }
+    return acc
+  },
+  {} as Record<SupportedChainId, Transport>,
+)
+
+/** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
   const url = RPC_URLS[chain.id as SupportedChainId]
@@ -31,24 +42,14 @@ const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
 
 const WAGMI_STORAGE_KEY = 'cowswap-wallet'
 
-/** True when the app is in an embedded context (e.g. Safe app iframe). */
-function isInEmbeddedContext(): boolean {
-  if (typeof window === 'undefined') return false
-  return window.self !== window.top
-}
-
-/**
- * In Safe iframe context, use noop storage to prevent auto-reconnecting to previously saved wallets.
- * The SafeConnectionHandler will handle connecting to the Safe connector.
- */
 const storage =
-  typeof window !== 'undefined' && !isInEmbeddedContext()
+  typeof window === 'undefined'
     ? createStorage({
-        storage: window.localStorage,
-        key: WAGMI_STORAGE_KEY,
+        storage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
       })
     : createStorage({
-        storage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+        storage: window.localStorage,
+        key: WAGMI_STORAGE_KEY,
       })
 
 const metadata = {
@@ -65,6 +66,7 @@ export const wagmiAdapter = new WagmiAdapter({
   networks: SUPPORTED_REOWN_NETWORKS,
   projectId,
   storage,
+  transports: wagmiTransports,
 })
 
 export const config = wagmiAdapter.wagmiConfig

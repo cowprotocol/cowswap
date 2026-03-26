@@ -1,11 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
-import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
+import ms from 'ms.macro'
 import { Address } from 'viem'
 import { useConnection, useEnsName } from 'wagmi'
 
@@ -13,9 +13,11 @@ import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
-import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
+import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
+
+const SAFE_INFO_SHORT_INTERVAL = ms`5s`
 
 function useWalletInfo(): WalletInfo {
   const { address, chainId, isConnected } = useConnection()
@@ -60,24 +62,53 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
-function useSafeInfo(_walletInfo: WalletInfo): GnosisSafeInfo | undefined {
-  const { connected, safe, sdk } = useSafeAppsSDK()
+function useSafeInfo(): GnosisSafeInfo | undefined {
+  const { connected: reactConnected, sdk } = useSafeAppsSDK()
+  const { isConnected, connector } = useConnection()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
 
+  const shouldFetchSafeInfo =
+    !!sdk && (reactConnected || (isConnected && connector?.type === ConnectionType.GNOSIS_SAFE))
+
   useEffect(() => {
-    if (connected) {
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      const getInfo = async () => {
+    if (!shouldFetchSafeInfo) {
+      setSafeInfo(undefined)
+      return
+    }
+
+    const fetchAndSet = async (): Promise<void> => {
+      try {
         const fetchedInfo = await sdk.safe.getInfo()
         setSafeInfo({ ...fetchedInfo, address: fetchedInfo.safeAddress })
+      } catch {
+        setSafeInfo(undefined)
       }
-      getInfo()
-    } else {
-      // TODO M-3 COW-569
-      // Wagmi connection to safe will be refined in a future task
     }
-  }, [connected, sdk, safe])
+
+    void fetchAndSet()
+
+    const refetch = (): void => {
+      void fetchAndSet()
+    }
+
+    const onVisibilityChange = (): void => {
+      if (document.visibilityState === 'visible') {
+        refetch()
+      }
+    }
+
+    window.addEventListener('focus', refetch)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+
+    const intervalId = window.setInterval(refetch, SAFE_INFO_SHORT_INTERVAL)
+
+    return () => {
+      window.clearInterval(intervalId)
+      window.removeEventListener('focus', refetch)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
+  }, [shouldFetchSafeInfo, sdk])
 
   return safeInfo
 }
@@ -89,25 +120,17 @@ interface WalletUpdaterProps {
 export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   const walletInfo = useWalletInfo()
   const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
-  const gnosisSafeInfo = useSafeInfo(walletInfo)
+  const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
 
-  // Update wallet info
   useEffect(() => {
-    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
-  // Update wallet details
   useEffect(() => {
-    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
       ...walletDetails,
@@ -115,11 +138,7 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
     })
   }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 
-  // Update Gnosis Safe info
   useEffect(() => {
-    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return
-    }
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 
