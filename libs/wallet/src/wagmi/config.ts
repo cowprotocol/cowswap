@@ -14,8 +14,8 @@ type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof throttledIn
 
 /** Safe connector only works when the app runs inside the Safe iframe (Safe App). Outside that context it fails with "Connection declined" / "Provider not found". So we only add it in embedded context. */
 function getConnectors(): ConnectorInstance[] {
-  if (typeof window === 'undefined') return [safe(), throttledInjected()]
-  return window.self !== window.top ? [safe(), throttledInjected()] : [throttledInjected()]
+  if (typeof window === 'undefined') return [safe({ shimDisconnect: true }), throttledInjected()]
+  return window.self !== window.top ? [safe({ shimDisconnect: true }), throttledInjected()] : [throttledInjected()]
 }
 
 /** Custom RPC URLs so read calls use our RPCs instead of WalletConnect relay (avoids CORS/403 on localhost). */
@@ -66,6 +66,8 @@ export const wagmiAdapter = new WagmiAdapter({
   projectId,
   storage,
 })
+
+export const config = wagmiAdapter.wagmiConfig
 
 export const reownAppKit = createAppKit({
   adapters: [wagmiAdapter],

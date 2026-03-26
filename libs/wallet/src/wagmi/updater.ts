@@ -1,14 +1,13 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
+import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
-import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useENSName } from '@cowprotocol/ens'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { Address } from 'viem'
-import { useChainId, useConnection } from 'wagmi'
+import { useConnection, useEnsName } from 'wagmi'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
@@ -19,8 +18,7 @@ import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 function useWalletInfo(): WalletInfo {
-  const { address, isConnected } = useConnection()
-  const chainId = useChainId()
+  const { address, chainId, isConnected } = useConnection()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
   return useMemo(
@@ -41,7 +39,7 @@ function checkIsSupportedWallet(walletName?: string): boolean {
 }
 
 function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
-  const { ENSName: ensName } = useENSName(account ?? undefined)
+  const { data: ensName } = useEnsName({ address: account })
   const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData(standaloneMode)
   const isSafeApp = useIsSafeApp()
@@ -62,93 +60,24 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
-const SAFE_INFO_POLL_INTERVAL = 3000
-
-function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
-  const { account, chainId } = walletInfo
-  const { connected, sdk } = useSafeAppsSDK()
+function useSafeInfo(_walletInfo: WalletInfo): GnosisSafeInfo | undefined {
+  const { connected, safe, sdk } = useSafeAppsSDK()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
-  // Use ref to track last isReadOnly value - avoids state updates when polling returns same value
-  const lastIsReadOnlyRef = useRef<boolean | undefined>(undefined)
 
   useEffect(() => {
-    if (!connected) {
-      // Only use API fallback when NOT in Safe App context
-      if (chainId && account) {
-        let isStale = false
-        const fetchSafeInfo = async (): Promise<void> => {
-          try {
-            const _safeInfo = await getSafeInfo(chainId, account)
-            if (isStale) return
-            const { address, threshold, owners, nonce } = _safeInfo
-            lastIsReadOnlyRef.current = false
-            setSafeInfo({
-              chainId,
-              address,
-              threshold,
-              owners,
-              nonce: Number(nonce),
-              isReadOnly: false,
-            })
-          } catch {
-            if (!isStale) {
-              lastIsReadOnlyRef.current = undefined
-              setSafeInfo(undefined)
-            }
-          }
-        }
-        fetchSafeInfo()
-        return () => {
-          isStale = true
-        }
-      }
-
-      // No Safe context and no account - clear info
-      if (!account) {
-        lastIsReadOnlyRef.current = undefined
-        setSafeInfo(undefined)
-      }
-      return undefined
-    }
-
-    // In Safe App context - poll for isReadOnly changes
-    let isStale = false
-
-    const fetchInfo = async (): Promise<void> => {
-      if (isStale) return
-      try {
+    if (connected) {
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      const getInfo = async () => {
         const fetchedInfo = await sdk.safe.getInfo()
-        if (isStale) return
-
-        // Only update state if isReadOnly actually changed - this prevents unnecessary re-renders
-        if (lastIsReadOnlyRef.current !== fetchedInfo.isReadOnly) {
-          lastIsReadOnlyRef.current = fetchedInfo.isReadOnly
-          setSafeInfo({
-            address: fetchedInfo.safeAddress,
-            chainId: fetchedInfo.chainId,
-            threshold: fetchedInfo.threshold,
-            owners: fetchedInfo.owners,
-            nonce: 0,
-            isReadOnly: fetchedInfo.isReadOnly,
-          })
-        }
-      } catch {
-        // Ignore polling errors
+        setSafeInfo({ ...fetchedInfo, address: fetchedInfo.safeAddress })
       }
+      getInfo()
+    } else {
+      // TODO M-3 COW-569
+      // Wagmi connection to safe will be refined in a future task
     }
-
-    // Initial fetch
-    fetchInfo()
-
-    // Poll for changes - only triggers state update when isReadOnly changes
-    const intervalId = setInterval(fetchInfo, SAFE_INFO_POLL_INTERVAL)
-
-    return () => {
-      isStale = true
-      clearInterval(intervalId)
-    }
-  }, [account, chainId, connected, sdk])
+  }, [connected, sdk, safe])
 
   return safeInfo
 }
@@ -168,20 +97,29 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
 
   // Update wallet info
   useEffect(() => {
+    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
   // Update wallet details
   useEffect(() => {
+    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
       ...walletDetails,
-      walletName: walletDetails.walletName || getWalletTypeLabel(walletType),
+      walletName: getWalletTypeLabel(walletType) || walletDetails.walletName,
     })
   }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 
   // Update Gnosis Safe info
   useEffect(() => {
+    if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 

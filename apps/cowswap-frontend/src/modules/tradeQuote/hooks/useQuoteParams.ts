@@ -6,10 +6,10 @@ import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
-import { useWalletClient } from 'wagmi'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap, useDerivedTradeState } from 'modules/trade'
@@ -44,7 +44,8 @@ function buildQuoteParams(args: {
   appDataDoc: AppDataInfo['doc'] | undefined
   receiver: QuoteBridgeRequest['receiver']
   account: string | undefined
-  walletClient: { account: { address: string } } | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  provider: any
   volumeFee: VolumeFee | undefined
   userSlippageBps: number | undefined
   smartSlippageBpsRef: { current: number | undefined }
@@ -58,7 +59,7 @@ function buildQuoteParams(args: {
     appDataDoc,
     receiver,
     account,
-    walletClient,
+    provider,
     volumeFee,
     userSlippageBps,
     smartSlippageBpsRef,
@@ -69,10 +70,9 @@ function buildQuoteParams(args: {
   if (!amount) {
     return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
   }
-  const signer =
-    account && walletClient
-      ? { ...walletClient, getAddress: (): string => walletClient.account.address }
-      : getBridgeQuoteSigner(inputCurrency.chainId)
+  // Check if provider has getSigner method (wallet provider vs publicClient fallback)
+  const hasGetSigner = typeof provider.getSigner === 'function'
+  const signer = account && hasGetSigner ? provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
   const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
   const quoteParams: QuoteBridgeRequest = {
     kind: orderKind,
@@ -104,7 +104,7 @@ function buildQuoteParams(args: {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
-  const { data: walletClient } = useWalletClient()
+  const provider = useWalletProvider()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -124,8 +124,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
-    if (!inputCurrency || !outputCurrency || !orderKind) return
-    if (account && !walletClient) return
+    if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
     return buildQuoteParams({
       amount,
       partiallyFillable,
@@ -135,13 +134,13 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       appDataDoc,
       receiver,
       account,
-      walletClient: walletClient ?? undefined,
+      provider,
       volumeFee,
       userSlippageBps,
       smartSlippageBpsRef,
     })
   }, [
-    walletClient,
+    provider,
     inputCurrency,
     outputCurrency,
     amount,
