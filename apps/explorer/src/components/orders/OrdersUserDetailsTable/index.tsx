@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Color } from '@cowprotocol/ui'
-import { TruncatedText } from '@cowprotocol/ui'
+import { Color, TruncatedText } from '@cowprotocol/ui'
 
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
@@ -181,6 +181,9 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
       <td>
         <OrderSurplusDisplayStyledByRow order={order} />
       </td>
+      <td style={{ textAlign: 'center' }}>
+        {order.isBridgeOrder ? <FontAwesomeIcon icon={faCheck} color={Color.explorer_green1} /> : '-'}
+      </td>
       <td>
         <DateDisplay date={creationDate} showIcon={true} />
       </td>
@@ -237,13 +240,14 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
                 </span>
               </th>
               <th>Surplus</th>
+              <th>Bridge</th>
               <th>Created</th>
               <th>Status</th>
             </tr>
           )}
           {showPreSigning && (
             <FilterRow>
-              <td colSpan={8}>
+              <td colSpan={9}>
                 <div>
                   <UnsignedOrderWarning />
                 </div>
@@ -267,7 +271,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
 
           {showFilter && (
             <FilterRow>
-              <td colSpan={8}>
+              <td colSpan={9}>
                 <div>
                   <HiddenOrdersLegend>
                     {hiddenOrdersCount > 0 ? (
