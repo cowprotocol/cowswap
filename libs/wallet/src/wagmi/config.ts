@@ -13,8 +13,16 @@ import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
 type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof throttledInjected>
 
+function isEmbeddedInIframe(): boolean {
+  return typeof window !== 'undefined' && window.self !== window.top
+}
+
 function getConnectors(): ConnectorInstance[] {
-  return [safe({ shimDisconnect: true }), throttledInjected()]
+  const injected = throttledInjected()
+  if (isEmbeddedInIframe()) {
+    return [safe({ shimDisconnect: true }), injected]
+  }
+  return [injected]
 }
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
