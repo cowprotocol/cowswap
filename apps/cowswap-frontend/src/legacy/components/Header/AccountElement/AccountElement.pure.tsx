@@ -3,8 +3,6 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import ReactDOM from 'react-dom'
-
 import { useToggleAccountModal } from 'modules/account'
 import { AffiliateTraderHeaderButton, useShouldShowAffiliateTraderHeaderButton } from 'modules/affiliate'
 import {
@@ -18,18 +16,12 @@ import { Web3Status } from 'modules/wallet'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import { NotificationAlertPopover } from './NotificationAlertPopover'
-import { Wrapper } from './styled'
+import { Wrapper } from './AccountElement.styled'
+
+import { NotificationAlertPopover } from '../NotificationAlertPopover/NotificationAlertPopover.pure'
 
 interface AccountElementProps {
   className?: string
-}
-
-interface NotificationSidebarPortalProps {
-  portalTarget: HTMLElement | null
-  isSidebarOpen: boolean
-  onClose: () => void
-  initialSettingsOpen: boolean
 }
 
 export function AccountElement({ className }: AccountElementProps): ReactNode {
@@ -44,6 +36,7 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const [shouldOpenSettings, setShouldOpenSettings] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const notificationBellRef = useRef<HTMLButtonElement>(null)
 
   const shouldShowPopover =
     areTelegramNotificationsEnabled && !!account && !isDismissed && !hasSubscription && !isLoading
@@ -61,8 +54,6 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
     setSidebarOpen(true)
   }, [shouldShowPopover, dismiss])
 
-  const portalTarget = typeof document !== 'undefined' ? document.body : null
-
   return (
     <>
       <Wrapper className={className} active={!!account} ref={wrapperRef}>
@@ -72,26 +63,28 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
           onClick={() => account && toggleAccountModal()}
         />
         {account && (
-          <NotificationAlertPopover
-            show={shouldShowPopover}
-            onEnableAlerts={handleEnableAlerts}
-            onDismiss={dismiss}
-            containerRef={wrapperRef}
-          >
-            <NotificationBell
-              unreadCount={unreadNotificationsCount}
-              data-click-event={createNotificationClickEventData(
-                unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
-              )}
-              onClick={handleBellClick}
-            />
-          </NotificationAlertPopover>
+          <>
+            <NotificationAlertPopover
+              show={shouldShowPopover}
+              onEnableAlerts={handleEnableAlerts}
+              onDismiss={dismiss}
+              containerRef={wrapperRef}
+            >
+              <NotificationBell
+                ref={notificationBellRef}
+                unreadCount={unreadNotificationsCount}
+                data-click-event={createNotificationClickEventData(
+                  unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
+                )}
+                onClick={handleBellClick}
+              />
+            </NotificationAlertPopover>
+          </>
         )}
       </Wrapper>
 
-      <NotificationSidebarPortal
-        portalTarget={portalTarget}
-        isSidebarOpen={isSidebarOpen}
+      <NotificationSidebar
+        isOpen={isSidebarOpen}
         onClose={() => {
           setSidebarOpen(false)
           setShouldOpenSettings(false)
@@ -107,18 +100,4 @@ function createNotificationClickEventData(event: string): string {
     category: CowSwapAnalyticsCategory.NOTIFICATIONS,
     action: event,
   })
-}
-
-function NotificationSidebarPortal({
-  portalTarget,
-  isSidebarOpen,
-  onClose,
-  initialSettingsOpen,
-}: NotificationSidebarPortalProps): ReactNode {
-  if (!portalTarget) return null
-
-  return ReactDOM.createPortal(
-    <NotificationSidebar isOpen={isSidebarOpen} onClose={onClose} initialSettingsOpen={initialSettingsOpen} />,
-    portalTarget,
-  )
 }

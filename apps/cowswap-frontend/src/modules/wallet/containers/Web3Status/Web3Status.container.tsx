@@ -9,8 +9,8 @@ import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
-import { Web3StatusInner } from '../../pure/Web3StatusInner'
-import { Wrapper } from '../../pure/Web3StatusInner/styled'
+import { Web3StatusInner } from '../../pure/Web3StatusInner/Web3StatusInner.pure'
+import { Web3StatusWrapper } from '../../pure/Web3StatusInner/Web3StatusInner.styled'
 import { AccountSelectorModal } from '../AccountSelectorModal'
 import { WalletModal } from '../WalletModal'
 
@@ -30,7 +30,7 @@ export function Web3Status({ className, onClick, joinedLeft = false }: Web3Statu
   const showUnfillableOrdersAlert = useShowUnfillableOrderAlert()
 
   return (
-    <Wrapper className={className} onClick={onClick} $joinedLeft={joinedLeft}>
+    <Web3StatusWrapper className={className} onClick={onClick} $joinedLeft={joinedLeft}>
       {account && <TradeOrdersPermitUpdater />}
       <Web3StatusInner
         showUnfillableOrdersAlert={showUnfillableOrdersAlert}
@@ -42,6 +42,6 @@ export function Web3Status({ className, onClick, joinedLeft = false }: Web3Statu
       />
       <WalletModal />
       <AccountSelectorModal />
-    </Wrapper>
+    </Web3StatusWrapper>
   )
 }
