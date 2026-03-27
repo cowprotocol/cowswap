@@ -29,14 +29,20 @@ export function throttledInjected(): ReturnType<typeof createConnector> {
       inFlightConnectorId = connectorId
       inFlightPromise = originalConnect(params)
       try {
-        return (await inFlightPromise) as unknown as Awaited<ReturnType<typeof originalConnect>>
-      } finally {
+        const result = (await inFlightPromise) as Awaited<ReturnType<typeof originalConnect>>
         setTimeout(() => {
           if (inFlightConnectorId === connectorId) {
             inFlightPromise = null
             inFlightConnectorId = null
           }
         }, CONNECT_DEDUPE_MS)
+        return result
+      } catch (err: unknown) {
+        if (inFlightConnectorId === connectorId) {
+          inFlightPromise = null
+          inFlightConnectorId = null
+        }
+        throw err
       }
     }) as typeof base.connect
 

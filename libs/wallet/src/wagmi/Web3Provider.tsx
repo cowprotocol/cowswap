@@ -13,12 +13,17 @@ import { OPEN_WALLET_MODAL_EVENT } from '../constants'
 
 const queryClient = new QueryClient()
 
+function ReconnectOnMount(): null {
+  useEffect(() => {
+    void reconnect(config).catch(() => {})
+  }, [])
+  return null
+}
+
 function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
     const handler = (): void => {
-      void reconnect(config).finally(() => {
-        void reownAppKit.open()
-      })
+      void reownAppKit.open()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
     return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)
@@ -33,6 +38,7 @@ interface Web3ProviderProps {
 export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
   return (
     <WagmiProvider config={config}>
+      <ReconnectOnMount />
       <OpenWalletModalOnCustomEvent />
       <QueryClientProvider client={queryClient}>
         <SafeProvider>

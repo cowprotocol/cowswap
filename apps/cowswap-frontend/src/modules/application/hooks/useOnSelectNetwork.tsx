@@ -7,6 +7,7 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { useSwitchNetwork } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
+import { useConnection } from 'wagmi'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -21,12 +22,20 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
   const setChainIdToUrl = useLegacySetChainIdToUrl()
   const setWalletConnectionError = useSetWalletConnectionError()
   const switchNetwork = useSwitchNetwork()
+  const { isConnected } = useConnection()
 
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       setWalletConnectionError(undefined)
       // Update URL first so it stays in sync (and connect flow uses it); then switch wallet if connected
       setChainIdToUrl(targetChain)
+
+      if (!isConnected) {
+        if (!skipClose) {
+          closeModal()
+        }
+        return
+      }
 
       try {
         await switchNetwork(targetChain)
@@ -59,6 +68,6 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
         closeModal()
       }
     },
-    [switchNetwork, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl],
+    [isConnected, switchNetwork, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl],
   )
 }

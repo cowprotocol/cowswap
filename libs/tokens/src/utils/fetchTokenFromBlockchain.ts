@@ -18,14 +18,16 @@ export async function fetchTokenFromBlockchain(
       {
         abi: erc20Abi,
         address: formattedAddress,
+        chainId,
         functionName: 'name',
       },
       {
         abi: erc20Abi,
         address: formattedAddress,
+        chainId,
         functionName: 'symbol',
       },
-      { abi: erc20Abi, address: formattedAddress, functionName: 'decimals' },
+      { abi: erc20Abi, address: formattedAddress, chainId, functionName: 'decimals' },
     ],
   })
 

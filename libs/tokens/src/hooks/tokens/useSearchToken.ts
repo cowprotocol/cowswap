@@ -179,7 +179,7 @@ function useFetchTokenFromBlockchain(
   const { chainId } = useAtomValue(environmentAtom)
   const config = useConfig()
 
-  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', input], () => {
+  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', chainId, input], () => {
     if (isTokenAlreadyFoundByAddress || !input || !isAddress(input)) {
       return null
     }

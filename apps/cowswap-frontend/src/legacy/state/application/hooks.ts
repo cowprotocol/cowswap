@@ -29,7 +29,7 @@ export function useCloseModal(_modal: ApplicationModal): Command {
 }
 
 /**
- * Dispatches OPEN_WALLET_MODAL_EVENT so a listener inside Web3Provider runs reconnect then opens the AppKit modal.
+ * Dispatches OPEN_WALLET_MODAL_EVENT so Web3Provider opens the Reown (AppKit) modal.
  * No wagmi/Reown hooks here so this is safe to call from any part of the tree.
  */
 export function useToggleWalletModal(): Command {
