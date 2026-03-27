@@ -1,6 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { TradeType } from '@cowprotocol/widget-lib'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
@@ -10,36 +10,38 @@ import MenuItem from '@mui/material/MenuItem'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
-const LABEL = 'Trade types'
+import { WIDGET_HOOKS } from '../consts'
 
-export function TradeModesControl({
+const LABEL = 'Widget hooks'
+
+export function WidgetHooksControl({
   state,
 }: {
-  state: [TradeType[], Dispatch<SetStateAction<TradeType[]>>]
+  state: [WidgetHookEvents[], Dispatch<SetStateAction<WidgetHookEvents[]>>]
 }): ReactNode {
-  const [tradeModes, setTradeModes] = state
+  const [widgetHooks, setWidgetHooks] = state
 
-  const handleTradeModeChange = (event: SelectChangeEvent<TradeType[]>): void => {
+  const handleChange = (event: SelectChangeEvent<WidgetHookEvents[]>): void => {
     if (!event.target.value.length) return
 
-    setTradeModes(event.target.value as TradeType[])
+    setWidgetHooks(event.target.value as WidgetHookEvents[])
   }
 
   return (
     <FormControl sx={{ width: '100%' }}>
       <InputLabel>{LABEL}</InputLabel>
       <Select
-        id="trade-mode-select"
+        id="widget-hooks-select"
         multiple
         size="small"
-        value={tradeModes}
-        onChange={handleTradeModeChange}
-        input={<OutlinedInput id="trade-mode-select-outlined" label={LABEL} />}
+        value={widgetHooks}
+        onChange={handleChange}
+        input={<OutlinedInput id="widget-hooks-select-outlined" label={LABEL} />}
         renderValue={(selected) => selected.join(', ')}
       >
-        {Object.values(TradeType).map((option) => (
+        {WIDGET_HOOKS.map((option) => (
           <MenuItem key={option} value={option}>
-            <Checkbox checked={tradeModes.indexOf(option) > -1} />
+            <Checkbox checked={widgetHooks.indexOf(option) > -1} />
             <ListItemText primary={option} />
           </MenuItem>
         ))}

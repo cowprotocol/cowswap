@@ -4,7 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -39,6 +39,7 @@ import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { WidgetHooksControl } from './controls/WidgetHooksControl'
 import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
@@ -101,6 +102,9 @@ export function Configurator({ title }: { title: string }) {
 
   const tradeModesState = useState<TradeType[]>(TRADE_MODES)
   const [enabledTradeTypes] = tradeModesState
+
+  const widgetHooksState = useState<WidgetHookEvents[]>([])
+  const [enabledWidgetHooks] = widgetHooksState
 
   const sellTokenState = useState<string>(DEFAULT_STATE.sellToken)
   const sellTokenAmountState = useState<number>(DEFAULT_STATE.sellAmount)
@@ -175,6 +179,7 @@ export function Configurator({ title }: { title: string }) {
     theme: mode,
     currentTradeType,
     enabledTradeTypes,
+    enabledWidgetHooks,
     sellToken,
     sellTokenAmount,
     buyToken,
@@ -288,6 +293,8 @@ export function Configurator({ title }: { title: string }) {
 
         <TradeModesControl state={tradeModesState} />
 
+        <WidgetHooksControl state={widgetHooksState} />
+
         <CurrentTradeTypeControl state={tradeTypeState} />
 
         {!IS_IFRAME && (
@@ -363,6 +370,13 @@ export function Configurator({ title }: { title: string }) {
 
         <FormControl component="fieldset">
           <FormLabel component="legend">Hide orders table:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideOrdersTable} onChange={toggleHideOrdersTable}>
+            <FormControlLabel value="false" control={<Radio />} label="Show orders table" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
+          </RadioGroup>
+        </FormControl>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Hooks:</FormLabel>
           <RadioGroup row aria-label="mode" name="mode" value={hideOrdersTable} onChange={toggleHideOrdersTable}>
             <FormControlLabel value="false" control={<Radio />} label="Show orders table" />
             <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />

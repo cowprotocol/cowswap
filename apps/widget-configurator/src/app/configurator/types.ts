@@ -1,5 +1,11 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowSwapWidgetPaletteColors, PartnerFee, SlippageConfig, TradeType } from '@cowprotocol/widget-lib'
+import {
+  CowSwapWidgetPaletteColors,
+  PartnerFee,
+  SlippageConfig,
+  TradeType,
+  WidgetHookEvents,
+} from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
@@ -17,6 +23,7 @@ export interface ConfiguratorState {
   theme: PaletteMode
   currentTradeType: TradeType
   enabledTradeTypes: TradeType[]
+  enabledWidgetHooks: WidgetHookEvents[]
   sellToken: string
   sellTokenAmount: number | undefined
   buyToken: string

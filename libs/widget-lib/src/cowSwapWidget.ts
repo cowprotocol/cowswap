@@ -80,7 +80,19 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   windowListeners.push(interceptDeepLinks())
 
   // 6. Handle two-way communication of widget hooks
-  windowListeners.push(processWidgetHooks(iframeWindow, params.hooks))
+  let widgetHooksListener: WindowListener | null = null
+
+  function updateWidgetHooks(): void {
+    if (!iframeWindow) return
+    if (widgetHooksListener) {
+      window.removeEventListener('message', widgetHooksListener)
+    }
+
+    widgetHooksListener = processWidgetHooks(iframeWindow, currentParams.hooks)
+    windowListeners.push(widgetHooksListener)
+  }
+
+  updateWidgetHooks()
 
   // 7. Handle and forward widget events to the listeners
   const iFrameCowEventEmitter = new IframeCowEventEmitter(window, listeners)
@@ -89,7 +101,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
   // 9. Schedule the uploading of the params, once the iframe is loaded
-  iframe.addEventListener('load', () => updateParams(iframeWindow, currentParams, provider))
+  iframe.addEventListener('load', () => {
+    updateParams(iframeWindow, currentParams, provider)
+  })
 
   // 10. Listen for messages from the iframe
   const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
@@ -99,6 +113,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateParams: (newParams: CowSwapWidgetParams) => {
       currentParams = newParams
       updateParams(iframeWindow, currentParams, provider)
+      updateWidgetHooks()
     },
     updateListeners: (newListeners?: CowWidgetEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
@@ -178,6 +193,8 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * Updates the CoW Swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
+ * @param provider - EIP-1193 provider
+ * @param windowListeners - array of WindowListener
  */
 function updateParams(
   contentWindow: Window,
@@ -190,7 +207,7 @@ function updateParams(
   const search = buildWidgetUrlQuery(params).toString()
 
   // Omit theme from appParams
-  const { theme: _theme, ...appParams } = params
+  const { theme: _theme, hooks: _hooks, ...appParams } = params
 
   widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {
