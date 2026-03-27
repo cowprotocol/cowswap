@@ -21,6 +21,12 @@ export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo
   return useMemo(() => {
     if (!inputTokenToSearch) return null
 
+    if (foundToken.isLoading) return null
+
+    if (foundToken.activeListsResult.some((token) => doesTokenMatchSymbolOrAddress(token, inputTokenToSearch))) {
+      return null
+    }
+
     return (
       [foundToken.inactiveListsResult, foundToken.externalApiResult, foundToken.blockchainResult]
         .flat()

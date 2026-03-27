@@ -56,7 +56,8 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   const isInputStale = debouncedInputInExternals !== inputLowerCase
 
   // Search in active and inactive lists
-  const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
+  const { tokensFromActiveLists, tokensFromInactiveLists, isListsSearchPending } =
+    useSearchTokensInLists(debouncedInputInList)
 
   const isTokenAlreadyFoundByAddress = useMemo(() => {
     return [...tokensFromActiveLists, ...tokensFromInactiveLists].some(
@@ -82,6 +83,11 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   }, [inputLowerCase])
 
   useEffect(() => {
+    if (isListsSearchPending) {
+      setIsLoading(true)
+      return
+    }
+
     // When there are results from toke lists, then we don't need to wait for the rest
     if (tokensFromActiveLists.length || tokensFromInactiveLists.length) {
       setIsLoading(false)
@@ -95,7 +101,14 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     if (!apiIsLoading && !blockchainIsLoading) {
       setIsLoading(false)
     }
-  }, [isInputStale, apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists])
+  }, [
+    isInputStale,
+    apiIsLoading,
+    blockchainIsLoading,
+    isListsSearchPending,
+    tokensFromActiveLists,
+    tokensFromInactiveLists,
+  ])
 
   return useMemo(() => {
     if (!debouncedInputInList) {
@@ -105,7 +118,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     if (isTokenAlreadyFoundByAddress) {
       return {
         ...emptyResponse,
-        isLoading,
+        isLoading: isLoading || isListsSearchPending,
         activeListsResult: tokensFromActiveLists,
         inactiveListsResult: tokensFromInactiveLists,
       }
@@ -115,7 +128,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     const externalApiResult = !isInputStale && apiResultTokens ? apiResultTokens : []
 
     return {
-      isLoading,
+      isLoading: isLoading || isListsSearchPending,
       activeListsResult: tokensFromActiveLists,
       inactiveListsResult: tokensFromInactiveLists,
       blockchainResult,
@@ -124,6 +137,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   }, [
     isInputStale,
     isLoading,
+    isListsSearchPending,
     debouncedInputInList,
     isTokenAlreadyFoundByAddress,
     tokensFromActiveLists,
@@ -133,11 +147,13 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   ])
 }
 
-function useSearchTokensInLists(input: string | undefined): FromListsResult {
+type SearchTokensInListsResult = FromListsResult & { isListsSearchPending: boolean }
+
+function useSearchTokensInLists(input: string | undefined): SearchTokensInListsResult {
   const activeTokens = useAtomValue(allActiveTokensAtom).tokens
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
-  const { data: inListsResult } = useSWR<FromListsResult>(
+  const { data: inListsResult, isLoading: isListsSwrLoading } = useSWR<FromListsResult>(
     ['searchTokensInLists', input, activeTokens, inactiveTokens],
     () => {
       if (!input) return emptyFromListsResult
@@ -150,7 +166,13 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
     },
   )
 
-  return inListsResult || emptyFromListsResult
+  const lists = inListsResult ?? emptyFromListsResult
+  const isListsSearchPending = Boolean(input) && isListsSwrLoading && inListsResult === undefined
+
+  return {
+    ...lists,
+    isListsSearchPending,
+  }
 }
 
 // eslint-disable-next-line unused-imports/no-unused-vars
