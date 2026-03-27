@@ -23,14 +23,15 @@ function useWalletInfo(): WalletInfo {
   const { address, chainId, isConnected } = useConnection()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
-  return useMemo(
-    () => ({
-      chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
+  return useMemo(() => {
+    const resolvedChainId = !isConnected || isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId
+
+    return {
+      chainId: resolvedChainId,
       active: isConnected,
       account: address,
-    }),
-    [address, chainId, isConnected, isChainIdUnsupported],
-  )
+    }
+  }, [address, chainId, isConnected, isChainIdUnsupported])
 }
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
