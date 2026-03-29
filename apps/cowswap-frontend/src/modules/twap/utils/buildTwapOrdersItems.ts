@@ -8,12 +8,12 @@ import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { TwapOrdersExecutionMap } from '../hooks/useTwapOrdersExecutions'
 import {
-  TwapOrderInfo,
-  TwapOrderItem,
-  TwapOrdersAuthResult,
-  TwapOrdersExecution,
-  TwapOrdersSafeData,
   TwapOrderStatus,
+  type TwapOrderInfo,
+  type TwapOrderItem,
+  type TwapOrdersAuthResult,
+  type TwapOrdersExecution,
+  type TwapOrdersSafeData,
 } from '../types'
 
 import type { Hex } from 'viem'
@@ -42,6 +42,9 @@ export function buildTwapOrdersItems(
  * When a Safe proposal executes it disappears from the pending-queue snapshot (`allOrdersInfo`), but
  * the UI row still exists as `WaitSigning`. Merge those rows using `singleOrders` (auth) until the
  * order reaches a terminal status.
+ *
+ * Also handles stale "Cancelling" orders - if a cancellation transaction was rejected or replaced,
+ * the order should be reset to its actual status based on the on-chain auth result.
  */
 export function mergePersistedSigningTwapOrders(
   items: TwapOrdersList,
@@ -50,31 +53,36 @@ export function mergePersistedSigningTwapOrders(
   twapOrderExecutions: TwapOrdersExecutionMap,
 ): TwapOrdersList {
   const next = { ...items }
+  const statusesToMerge = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Cancelling, TwapOrderStatus.Pending]
 
   for (const [id, stored] of Object.entries(twapOrdersList)) {
-    if (stored.status !== TwapOrderStatus.WaitSigning || next[id]) {
-      continue
-    }
+    const shouldMerge = statusesToMerge.includes(stored.status) && !next[id]
+    if (!shouldMerge) continue
 
     const authorized = ordersAuthResult[id]
-    if (authorized === undefined) {
-      continue
-    }
+    if (authorized === undefined) continue
 
-    const executionInfo = twapOrderExecutions[id] ?? DEFAULT_TWAP_EXECUTION
-    const executionDate = stored.safeTxParams?.executionDate ? new Date(stored.safeTxParams.executionDate) : null
-    const isExecuted = stored.safeTxParams?.isExecuted ?? false
-
-    const status = getTwapOrderStatus(stored.order, isExecuted, executionDate, authorized, executionInfo)
-
-    next[id] = {
-      ...stored,
-      status,
-      executionInfo,
-    }
+    next[id] = buildMergedOrderItem(stored, authorized, twapOrderExecutions[id])
   }
 
   return next
+}
+
+function buildMergedOrderItem(
+  stored: TwapOrderItem,
+  authorized: boolean,
+  executionInfoParam: TwapOrdersExecution | undefined,
+): TwapOrderItem {
+  const executionInfo = executionInfoParam ?? DEFAULT_TWAP_EXECUTION
+  const executionDate = stored.safeTxParams?.executionDate ? new Date(stored.safeTxParams.executionDate) : null
+  const isExecuted = stored.safeTxParams?.isExecuted ?? false
+  const status = getTwapOrderStatus(stored.order, isExecuted, executionDate, authorized, executionInfo)
+
+  return {
+    ...stored,
+    status,
+    executionInfo,
+  }
 }
 
 function getTwapOrderItem(

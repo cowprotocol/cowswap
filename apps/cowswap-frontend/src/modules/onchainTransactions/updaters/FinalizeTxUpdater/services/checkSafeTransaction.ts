@@ -1,5 +1,5 @@
 import { updateSafeTransaction } from 'legacy/state/enhancedTransactions/actions'
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 import { checkOnChainTransaction } from './checkOnChainTransaction'
 import { finalizeEthereumTransaction } from './finalizeEthereumTransaction'
@@ -7,7 +7,14 @@ import { handleTransactionReplacement } from './handleTransactionReplacement'
 
 import { CheckEthereumTransactions } from '../types'
 
-const SAFE_TX_NOT_FOUND_ERROR = 'No MultisigTransaction matches the given query'
+/**
+ * How long to wait before considering a Safe transaction as "dropped" if the Safe Transaction
+ * Service can't find it. This handles cases where:
+ * - User rejected the transaction in the Safe wallet
+ * - Transaction was never actually submitted
+ * - Safe Transaction Service is having issues
+ */
+const SAFE_TX_NOT_FOUND_TIMEOUT_MS = 2 * 60 * 1000 // 2 minutes
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -51,17 +58,29 @@ export function checkSafeTransaction(transaction: EnhancedTransactionDetails, pa
       dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
     })
     .catch((error) => {
-      /**
-       * There is an exceptional behavior for Safes with 1/1 signers and immediate execution.
-       * In this case, Safe via WC returns on-chain tx hash instead of Safe tx hash.
-       * So, we fallback to check the on-chain transaction.
-       */
-      if (error.message?.includes(SAFE_TX_NOT_FOUND_ERROR)) {
-        checkOnChainTransaction(transaction, params)
+      if (error.isCancelledError) {
+        return
       }
 
-      if (!error.isCancelledError) {
-        console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
+      /**
+       * When the Safe Transaction Service fails to find a transaction, the approach depends
+       * on whether the hash is a Safe tx hash or an Ethereum tx hash:
+       *
+       * 1. For GNOSIS_SAFE_TX (safeTxHash): The hash is a Safe-specific identifier that won't
+       *    exist on-chain. If we can't find it after a timeout, the user likely rejected it.
+       *
+       * 2. For ETHEREUM_TX: This can happen for 1/1 signers with immediate execution where
+       *    the Safe returns an on-chain tx hash. We should try to find it on-chain.
+       */
+      const isGnosisSafeTx = transaction.hashType !== HashType.ETHEREUM_TX
+      const transactionAge = Date.now() - transaction.addedTime
+
+      if (isGnosisSafeTx) {
+        if (transactionAge > SAFE_TX_NOT_FOUND_TIMEOUT_MS) {
+          handleTransactionReplacement(transaction, params)
+        }
+      } else {
+        checkOnChainTransaction(transaction, params)
       }
     })
 

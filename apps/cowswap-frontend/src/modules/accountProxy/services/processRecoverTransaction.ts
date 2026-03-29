@@ -28,7 +28,7 @@ export function processRecoverTransaction(
   }
 
   const listener = {
-    event: OnchainTxEvents.BEFORE_TX_FINALIZE,
+    event: OnchainTxEvents.BEFORE_TX_FINALIZE as const,
     handler: onTxMined,
   }
 

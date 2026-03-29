@@ -8,7 +8,7 @@ import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { useComposableCowContractData } from 'modules/advancedOrders'
 
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 import { useGP2SettlementContractProd } from 'common/hooks/useContract'
@@ -69,9 +69,16 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
             setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
             processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
 
-            processTwapCancellation(txHash, () => {
-              setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelled)
-            })
+            processTwapCancellation(
+              txHash,
+              () => {
+                setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelled)
+              },
+              () => {
+                // Reset status when cancellation transaction fails or is replaced (e.g., user rejected in Safe wallet)
+                setTwapOrderStatus(twapOrderId, TwapOrderStatus.Pending)
+              },
+            )
           })
         },
       }
