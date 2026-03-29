@@ -15,6 +15,7 @@ widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsListen.HOOK
 
   if (callback) {
     callback(data.result)
+    callsRegistry.delete(data.id)
   }
 })
 
