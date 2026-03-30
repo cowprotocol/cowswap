@@ -122,14 +122,21 @@ export function useIsSafeWallet(): boolean {
 
 /**
  * Detects whether the currently connected wallet is a Safe wallet
- * but NOT loaded as a Safe App
+ * but NOT loaded as a Safe App.
+ *
+ * For WalletConnect connections, gnosisSafeInfo is not available because
+ * the Safe Apps SDK only works inside the Safe iframe. Instead, we detect
+ * Safe wallets by checking the WalletConnect peer metadata name.
  */
 export function useIsSafeViaWc(): boolean {
   const isSafeApp = useIsSafeApp()
-  const isSafeWallet = useIsSafeWallet()
   const { connector } = useConnection()
+  const wcPeerMetadata = useWcPeerMetadata(connector)
 
+  if (isSafeApp) return false
   if (connector?.type !== ConnectionType.WALLET_CONNECT_V2) return false
 
-  return isSafeWallet && !isSafeApp
+  const peerName = wcPeerMetadata.walletName?.toLowerCase() || ''
+
+  return peerName.includes('safe')
 }
