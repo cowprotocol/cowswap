@@ -24,7 +24,7 @@ export function Header({
   return (
     <styledEl.TitleBar>
       <styledEl.TitleGroup>
-        <BackButton onClick={onDismiss} />
+        <BackButton id="modal-back-button" onClick={onDismiss} />
         <styledEl.ModalTitle>{title}</styledEl.ModalTitle>
       </styledEl.TitleGroup>
       {showManageButton && onOpenManageWidget && (

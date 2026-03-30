@@ -24,14 +24,23 @@ const BackIcon = styled(ArrowLeft as any)<{ onClick: Command }>`
 interface BackButtonProps {
   size?: number
   className?: string
+  id?: string
 
   onClick(): void
 }
 
+const BlankButton = styled.button`
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+`
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BackButton(props: BackButtonProps) {
-  const { className, size = 22, onClick } = props
+  const { className, id, size = 22, onClick } = props
 
   // Close on Escape press
   useEffect(() => {
@@ -50,5 +59,9 @@ export function BackButton(props: BackButtonProps) {
     }
   }, [onClick])
 
-  return <BackIcon size={size} className={className} onClick={onClick} />
+  return (
+    <BlankButton id={id} onClick={onClick}>
+      <BackIcon size={size} className={className} />
+    </BlankButton>
+  )
 }
