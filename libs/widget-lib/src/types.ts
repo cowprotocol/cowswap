@@ -1,5 +1,11 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowWidgetEventListeners, CowWidgetEventPayloadMap, CowWidgetEvents } from '@cowprotocol/events'
+import {
+  BaseOrderPayload,
+  CowWidgetEventListeners,
+  CowWidgetEventPayloadMap,
+  CowWidgetEvents,
+  OnTradeParamsPayload,
+} from '@cowprotocol/events'
 
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -21,6 +27,7 @@ export enum WidgetMethodsEmit {
   EMIT_COW_EVENT = 'EMIT_COW_EVENT',
   PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
   INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
+  PROCESS_HOOK = 'PROCESS_HOOK',
 }
 
 export enum WidgetMethodsListen {
@@ -28,6 +35,15 @@ export enum WidgetMethodsListen {
   UPDATE_APP_DATA = 'UPDATE_APP_DATA',
   PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
   PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
+  HOOK_RESULT = 'HOOK_RESULT',
+}
+
+export enum WidgetHookEvents {
+  ON_BEFORE_APPROVAL = 'ON_BEFORE_APPROVAL',
+  ON_BEFORE_TRADE = 'ON_BEFORE_TRADE',
+  ON_BEFORE_WRAP_UNWRAP = 'ON_BEFORE_WRAP_UNWRAP',
+  ON_BEFORE_ORDER_CANCEL = 'ON_BEFORE_ORDER_CANCEL',
+  ON_BEFORE_ORDERS_CANCEL = 'ON_BEFORE_ORDERS_CANCEL',
 }
 
 export interface CowSwapWidgetProps {
@@ -373,6 +389,14 @@ export interface CowSwapWidgetParams {
     whenPriceImpactIsUnknown?: boolean
     whenPriceImpactIsHigherThan?: number
   }
+
+  hooks?: Partial<{
+    onBeforeApproval(): Promise<boolean> | boolean
+    onBeforeWrapOrUnwrap(): Promise<boolean> | boolean
+    onBeforeTrade(): Promise<boolean> | boolean
+    onBeforeOrderCancel(): Promise<boolean> | boolean
+    onBeforeOrdersCancel(): Promise<boolean> | boolean
+  }>
 }
 
 // Define types for event payloads
@@ -383,6 +407,7 @@ export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
   [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload
+  [WidgetMethodsEmit.PROCESS_HOOK]: WidgetHookPayload<WidgetHookEvents>
 }
 
 export interface WidgetMethodsListenPayloadMap {
@@ -390,6 +415,7 @@ export interface WidgetMethodsListenPayloadMap {
   [WidgetMethodsListen.UPDATE_PARAMS]: UpdateParamsPayload
   [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload
   [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
+  [WidgetMethodsListen.HOOK_RESULT]: WidgetHookResultPayload
 }
 
 export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethodsListenPayloadMap
@@ -421,6 +447,33 @@ export interface UpdateWidgetHeightPayload {
 
 export interface SetWidgetFullHeightPayload {
   isUpToSmall?: boolean
+}
+
+export type WidgetHookId = string
+
+export interface WidgetHookPayload<T extends WidgetHookEvents> {
+  id: WidgetHookId
+  event: T
+  payload: WidgetHookPayloadMap[T]
+}
+
+export interface WidgetHookResultPayload {
+  id: WidgetHookId
+  result: boolean
+}
+
+export interface WidgetHookPayloadMap {
+  [WidgetHookEvents.ON_BEFORE_APPROVAL]: {
+    chainId: SupportedChainId
+    sellToken: TokenInfo
+    sellAmount: string
+    walletAddress: string
+    spenderAddress: string
+  }
+  [WidgetHookEvents.ON_BEFORE_TRADE]: OnTradeParamsPayload
+  [WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP]: OnTradeParamsPayload
+  [WidgetHookEvents.ON_BEFORE_ORDER_CANCEL]: BaseOrderPayload
+  [WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL]: BaseOrderPayload
 }
 
 export interface EmitCowEventPayload<T extends CowWidgetEvents> {

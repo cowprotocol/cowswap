@@ -7,6 +7,7 @@ import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
   EthereumProvider,
+  WidgetHookEvents,
   WidgetMethodsEmit,
   WidgetMethodsListen,
   WindowListener,
@@ -45,7 +46,7 @@ export interface CowSwapWidgetHandler {
 /**
  * Generates and injects a CoW Swap Widget into the provided container.
  * @param container - The HTML element to inject the widget into.
- * @param params - Parameters for configuring the widget.
+ * @param props - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
@@ -78,23 +79,41 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   // 5. Intercept deeplinks navigation in the iframe
   windowListeners.push(interceptDeepLinks())
 
-  // 6. Handle and forward widget events to the listeners
+  // 6. Handle two-way communication of widget hooks
+  let widgetHooksListener: WindowListener | null = null
+
+  function updateWidgetHooks(): void {
+    if (!iframeWindow) return
+    if (widgetHooksListener) {
+      window.removeEventListener('message', widgetHooksListener)
+    }
+
+    widgetHooksListener = processWidgetHooks(iframeWindow, currentParams.hooks)
+    windowListeners.push(widgetHooksListener)
+  }
+
+  updateWidgetHooks()
+
+  // 7. Handle and forward widget events to the listeners
   const iFrameCowEventEmitter = new IframeCowEventEmitter(window, listeners)
 
-  // 7. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
+  // 8. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
   let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
-  // 8. Schedule the uploading of the params, once the iframe is loaded
-  iframe.addEventListener('load', () => updateParams(iframeWindow, currentParams, provider))
+  // 9. Schedule the uploading of the params, once the iframe is loaded
+  iframe.addEventListener('load', () => {
+    updateParams(iframeWindow, currentParams, provider)
+  })
 
-  // 9. Listen for messages from the iframe
+  // 10. Listen for messages from the iframe
   const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
 
-  // 10. Return the handler, so the widget, listeners, and provider can be updated
+  // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
     updateParams: (newParams: CowSwapWidgetParams) => {
       currentParams = newParams
       updateParams(iframeWindow, currentParams, provider)
+      updateWidgetHooks()
     },
     updateListeners: (newListeners?: CowWidgetEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
@@ -174,6 +193,8 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * Updates the CoW Swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
+ * @param provider - EIP-1193 provider
+ * @param windowListeners - array of WindowListener
  */
 function updateParams(
   contentWindow: Window,
@@ -186,7 +207,7 @@ function updateParams(
   const search = buildWidgetUrlQuery(params).toString()
 
   // Omit theme from appParams
-  const { theme: _theme, ...appParams } = params
+  const { theme: _theme, hooks: _hooks, ...appParams } = params
 
   widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {
@@ -256,4 +277,17 @@ function listenToHeightChanges(
       iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
     }),
   ]
+}
+
+function processWidgetHooks(contentWindow: Window, hooks: CowSwapWidgetParams['hooks']): WindowListener {
+  return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.PROCESS_HOOK, async (data) => {
+    if (data.event === WidgetHookEvents.ON_BEFORE_APPROVAL) {
+      const isHookPassed = hooks?.onBeforeApproval ? await hooks.onBeforeApproval() : true
+
+      widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.HOOK_RESULT, {
+        id: data.id,
+        result: isHookPassed,
+      })
+    }
+  })
 }

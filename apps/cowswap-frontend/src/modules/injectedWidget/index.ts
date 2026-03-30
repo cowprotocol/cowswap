@@ -6,3 +6,5 @@ export { useInjectedWidgetMetaData } from './hooks/useInjectedWidgetMetaData'
 export { useInjectedWidgetPalette } from './hooks/useInjectedWidgetPalette'
 export { injectedWidgetPartnerFeeAtom } from './state/injectedWidgetParamsAtom'
 export { WidgetMarkdownContent } from './pure/WidgetMarkdownContent'
+
+export { callWidgetHook } from './services/callWidgetHook'

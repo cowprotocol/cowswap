@@ -1,12 +1,20 @@
 import { COW_CDN } from '@cowprotocol/common-const'
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
-import { CowSwapWidgetPaletteParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetPaletteParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { TokenListItem } from './types'
 
 // CoW DAO addresses
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
+
+export const WIDGET_HOOKS = [
+  WidgetHookEvents.ON_BEFORE_APPROVAL,
+  WidgetHookEvents.ON_BEFORE_TRADE,
+  WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP,
+  WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL,
+  WidgetHookEvents.ON_BEFORE_ORDER_CANCEL,
+]
 
 // Sourced from https://tokenlists.org/
 export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [

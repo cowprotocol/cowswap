@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
@@ -28,8 +28,7 @@ const DEFAULT_BASE_URL = getBaseUrl()
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
-  // TODO: Break down this large function into smaller functions
-
+  // eslint-disable-next-line max-lines-per-function
   return useMemo(() => {
     const {
       chainId,
@@ -55,6 +54,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       hideBridgeInfo,
       hideOrdersTable,
       slippage,
+      enabledWidgetHooks,
     } = configuratorState
 
     const themeColors = {
@@ -111,6 +111,15 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       hideBridgeInfo,
       hideOrdersTable,
       slippage,
+      hooks: {
+        ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_APPROVAL)
+          ? {
+              onBeforeApproval() {
+                return prompt('Type "ok" to proceed') === 'ok'
+              },
+            }
+          : null),
+      },
     }
 
     return params
