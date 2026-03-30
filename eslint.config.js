@@ -194,6 +194,24 @@ module.exports = [
           selector: 'ImportExpression[source.value="@1inch/permit-signed-approvals-utils"]',
           message: 'Please import dynamically from @cowprotocol/permit-utils',
         },
+        {
+          selector:
+            'ImportDeclaration[source.value=/\\.svg$/] > ImportDefaultSpecifier:not([local.name=/^(icon|svg)[A-Za-z0-9]+Src$/])',
+          message:
+            'Default import from .svg must be named iconSomethingSrc or svgSomethingSrc (camelCase body + Src suffix).',
+        },
+        {
+          selector:
+            'ImportDeclaration[source.value=/\\.svg$/] > ImportNamespaceSpecifier:not([local.name=/^(icon|svg)[A-Za-z0-9]+Src$/])',
+          message:
+            'Namespace import from .svg must be named iconSomethingSrc or svgSomethingSrc (camelCase body + Src suffix).',
+        },
+        {
+          selector:
+            'ImportDeclaration[source.value=/\\.svg$/] ImportSpecifier[imported.type=Identifier][imported.name=default]:not([local.name=/^(icon|svg)[A-Za-z0-9]+Src$/])',
+          message:
+            'Default re-export import from .svg must be named iconSomethingSrc or svgSomethingSrc (camelCase body + Src suffix).',
+        },
       ],
       'no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
