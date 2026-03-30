@@ -8,7 +8,7 @@ import { metaMaskSdkConnection } from '../connection/metaMaskSdk'
 import { networkConnection } from '../connection/network'
 import { gnosisSafeConnection } from '../connection/safe'
 import { trezorConnection } from '../connection/trezor'
-import { getWalletConnectV2Connection } from '../connection/walletConnectV2'
+import { getWalletConnectV2Connection } from '../connection/walletConnectV2.utils'
 import { WalletConnectV2Connector } from '../connectors/WalletConnectV2Connector'
 import { Web3ReactConnection } from '../types'
 
