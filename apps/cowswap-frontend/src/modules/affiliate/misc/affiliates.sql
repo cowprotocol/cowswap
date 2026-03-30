@@ -4,6 +4,10 @@ params as (
     split('{{blockchain}}', ',') as blockchains,
     case when '{{is_staging_env}}' = 'true' then true else false end as is_staging_env,
     case
+      when '{{start_date}}' in ('', 'default value') then date '2026-01-01'
+      else cast('{{start_date}}' as date)
+    end as start_date,
+    case
       when '{{affiliate_payout_sources}}' in ('', 'default value') then cast(array[] as array(varchar))
       else transform(split('{{affiliate_payout_sources}}', ','), x -> lower(trim(x)))
     end as affiliate_payout_sources
@@ -61,6 +65,7 @@ trades_with_referrer as (
   cross join constants
   where
     if(array_position(params.blockchains, '-=All=-') > 0, true, array_position(params.blockchains, dune.cowprotocol.result_fac_trades.blockchain) > 0)
+    and dune.cowprotocol.result_fac_trades.block_time >= cast(params.start_date as timestamp)
 ),
 first_trade as (
   select trader, min(block_time) as first_trade_time
@@ -144,7 +149,7 @@ payouts as (
   cross join unnest(params.affiliate_payout_sources) as ps(payout_source)
   where lower(to_hex("from")) = replace(ps.payout_source, '0x', '')
     and contract_address = 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
-    and evt_block_time >= date '2026-01-01'
+    and evt_block_time >= cast(params.start_date as timestamp)
   group by 1
 )
 select
