@@ -29,6 +29,7 @@ node_modules
 
 # misc
 /.sass-cache
+/.cache
 /connect.lock
 /coverage
 /libpeerconnection.log

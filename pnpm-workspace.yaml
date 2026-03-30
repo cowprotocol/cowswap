@@ -12,3 +12,5 @@ minimumReleaseAgeExclude:
   - typescript
   - '@types/*'
   - '@cowprotocol/*'
+  - storybook
+  - '@storybook/*'
