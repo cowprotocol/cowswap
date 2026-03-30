@@ -186,8 +186,6 @@ export default class OperatorError extends Error {
   }
 }
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isValidOperatorError(error: any): error is OperatorError {
+export function isValidOperatorError(error: unknown): error is OperatorError {
   return error instanceof OperatorError
 }
