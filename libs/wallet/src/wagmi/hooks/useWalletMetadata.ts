@@ -129,7 +129,7 @@ export function useIsSafeViaWc(): boolean {
   const isSafeWallet = useIsSafeWallet()
   const { connector } = useConnection()
 
-  if (connector?.type !== ConnectorType.WALLET_CONNECT_V2) return false
+  if (connector?.type !== ConnectionType.WALLET_CONNECT_V2) return false
 
   return isSafeWallet && !isSafeApp
 }
