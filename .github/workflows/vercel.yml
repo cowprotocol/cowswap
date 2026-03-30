@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       env_name:
-        description: 'Environment to deploy to. Options are: dev, staging, barn and prod'
+        description: 'Environment to deploy to. Options are: dev, staging and prod'
         required: true
         type: string
       app:

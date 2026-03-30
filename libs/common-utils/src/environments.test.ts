@@ -3,7 +3,6 @@ import { checkEnvironment, EnvironmentChecks } from './environments'
 const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
   isProd: false,
   isEns: false,
-  isBarn: false,
   isStaging: false,
   isPr: false,
   isDev: false,
@@ -55,14 +54,6 @@ describe('Detect environments using host and path', () => {
       expect(checkEnvironment('gateway.pinata.cloud', '/ipfs/QmZW5abzempvhyPvSMbLhnmZ6d6SEGgGQd3paaHRK7CSfm')).toEqual(
         isEns,
       )
-    })
-  })
-
-  describe('Is Barn', () => {
-    const isBarn = { ...DEFAULT_ENVIRONMENTS_CHECKS, isBarn: true }
-
-    it('barn.cow.fi', () => {
-      expect(checkEnvironment('barn.cow.fi', '')).toEqual(isBarn)
     })
   })
 
