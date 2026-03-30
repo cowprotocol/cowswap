@@ -7,7 +7,7 @@ import { useAllActiveTokens, useTokensByAddressMapForChain } from '@cowprotocol/
 import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
-import { BalancesBffUpdater } from './BalancesBffUpdater'
+import { BalancesBwUpdater } from './BalancesBwUpdater'
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
 import { BalancesRpcCallUpdater } from './BalancesRpcCallUpdater'
@@ -27,17 +27,20 @@ export interface BalancesAndAllowancesUpdaterProps {
   chainId: SupportedChainId
   invalidateCacheTrigger: number
   excludedTokens: Set<string>
-  isBffSwitchedOn: boolean
-  isBffEnabled?: boolean
+  isBwSwitchedOn: boolean
+  isBwEnabled?: boolean
+  tokenListUrls: string[]
+  customTokenAddresses: string[]
 }
 
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
-  invalidateCacheTrigger,
-  isBffSwitchedOn,
+  isBwSwitchedOn,
   excludedTokens,
-  isBffEnabled,
+  isBwEnabled,
+  tokenListUrls,
+  customTokenAddresses,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const updateTokenBalance = useUpdateTokenBalance()
 
@@ -67,25 +70,25 @@ export function BalancesAndAllowancesUpdater({
   const rpcBalancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, RPC_BALANCES_SWR_CONFIG)
   // Add native token balance to the store as well
   useEffect(() => {
-    if (isBffSwitchedOn) return
+    if (isBwSwitchedOn) return
 
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
     if (nativeToken && nativeTokenBalance) {
       updateTokenBalance(nativeToken.address, nativeTokenBalance)
     }
-  }, [isBffSwitchedOn, nativeTokenBalance, chainId, updateTokenBalance])
+  }, [isBwSwitchedOn, nativeTokenBalance, chainId, updateTokenBalance])
 
-  const enableRpcFallback = !isBffSwitchedOn || !isBffEnabled
+  const enableRpcFallback = !isBwSwitchedOn || !isBwEnabled
 
   return (
     <>
-      {isBffEnabled && (
-        <BalancesBffUpdater
+      {isBwEnabled && (
+        <BalancesBwUpdater
           account={account}
           chainId={chainId}
-          invalidateCacheTrigger={invalidateCacheTrigger}
-          tokenAddresses={tokenAddresses}
+          tokenListUrls={tokenListUrls}
+          customTokenAddresses={customTokenAddresses}
         />
       )}
       {enableRpcFallback && (
