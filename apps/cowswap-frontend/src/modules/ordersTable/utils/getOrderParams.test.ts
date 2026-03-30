@@ -109,4 +109,43 @@ describe('getOrderParams', () => {
       expect(result.hasEnoughAllowance).toEqual(false)
     })
   })
+
+  describe('prototype twap proxy funds', () => {
+    it('treats active prototype TWAP proxy funds as sufficient even if wallet balance is empty', () => {
+      const order = {
+        ...BASE_ORDER,
+        composableCowInfo: {
+          ...BASE_ORDER.composableCowInfo,
+          isPrototype: true,
+          prototypeFundsState: 'active' as const,
+        },
+      }
+      const balancesAndAllowances: BalancesAndAllowances = {
+        balances: {},
+        allowances: {},
+        isLoading: false,
+      }
+
+      const result = getOrderParams(1, balancesAndAllowances, order)
+
+      expect(result.hasEnoughBalance).toEqual(true)
+      expect(result.hasEnoughAllowance).toEqual(true)
+    })
+
+    it('treats withdrawn prototype TWAP proxy funds as insufficient regardless of wallet balance', () => {
+      const order = {
+        ...BASE_ORDER,
+        composableCowInfo: {
+          ...BASE_ORDER.composableCowInfo,
+          isPrototype: true,
+          prototypeFundsState: 'withdrawn' as const,
+        },
+      }
+
+      const result = getOrderParams(1, BASE_BALANCES_AND_ALLOWANCES, order)
+
+      expect(result.hasEnoughBalance).toEqual(false)
+      expect(result.hasEnoughAllowance).toEqual(true)
+    })
+  })
 })

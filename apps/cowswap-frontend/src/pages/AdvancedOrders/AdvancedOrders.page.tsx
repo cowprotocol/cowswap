@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -25,8 +26,12 @@ import {
   TwapConfirmModal,
   TwapFormWidget,
   TwapUpdaters,
+  TwapPrototypePanel,
+  TwapPrototypeProxyBanner,
+  TwapPrototypeProxyModals,
   useAllEmulatedOrders,
   useIsFallbackHandlerRequired,
+  useIsTwapEoaPrototypeEnabled,
   useMapTwapCurrencyInfo,
   useTwapFormState,
   useTwapSlippage,
@@ -48,7 +53,10 @@ export function AdvancedOrdersPage(): ReactNode {
   const twapFormValidation = useTwapFormState()
   const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
+  const isSafeWallet = useIsSafeWallet()
+  const isTwapEoaPrototypeEnabled = useIsTwapEoaPrototypeEnabled()
   const { hideOrdersTable } = useInjectedWidgetParams()
+  const isTwapEoaPrototypeMode = isTwapEoaPrototypeEnabled && !isSafeWallet
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
@@ -66,7 +74,9 @@ export function AdvancedOrdersPage(): ReactNode {
         secondaryOnLeft={ordersTableOnLeft}
         hideOrdersTable={hideOrdersTable}
       >
+        <TwapPrototypeProxyModals />
         <styledEl.PrimaryWrapper>
+          <TwapPrototypePanel />
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
           <AdvancedOrdersWidget
             updaters={<TwapUpdaters />}
@@ -85,9 +95,10 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper className="trade-orders-table">
+            {isTwapEoaPrototypeMode && <TwapPrototypeProxyBanner />}
             <Suspense fallback={<Loading />}>
               <OrdersTableWidget
-                displayOrdersOnlyForSafeApp
+                displayOrdersOnlyForSafeApp={!isTwapEoaPrototypeMode}
                 orderType={TabOrderTypes.ADVANCED}
                 orders={allEmulatedOrders}
               />

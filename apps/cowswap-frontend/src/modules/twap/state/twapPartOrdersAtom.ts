@@ -12,13 +12,14 @@ export interface TwapPartOrderItem {
   twapOrderId: string
   isCreatedInOrderBook: boolean
   isCancelling: boolean
+  isPrototype?: boolean
   order: OrderParameters
 }
 
 export type TwapPartOrders = { [twapOrderHash: string]: TwapPartOrderItem[] }
 
 // Fields that are stored only in localStorage
-const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isCancelling']
+const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isCancelling', 'isPrototype']
 
 // Migrating from localStorage to indexedDB
 localStorage.removeItem('twap-part-orders-list:v1')

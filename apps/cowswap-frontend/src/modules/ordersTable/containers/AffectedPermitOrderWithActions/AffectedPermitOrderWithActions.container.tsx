@@ -50,6 +50,7 @@ export function AffectedPermitOrderWithActions({ order }: AffectedPermitOrderPro
         <OrderContextMenu
           openReceipt={() => orderActions?.selectReceiptOrder(parsedOrder)}
           activityUrl={activityUrl}
+          isPrototype={!!parsedOrder.composableCowInfo?.isPrototype}
           showCancellationModal={() => cancelOrder?.()}
           alternativeOrderModalContext={null}
         ></OrderContextMenu>

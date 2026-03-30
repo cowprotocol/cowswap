@@ -1,10 +1,11 @@
 import ShieldImage from '@cowprotocol/assets/cow-swap/protection.svg'
+import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
+import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 
 const IconImage = styled.div`
   display: flex;
@@ -28,8 +29,17 @@ export interface LabelTooltipItems {
   [key: string]: LabelTooltip
 }
 
+export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
+  const tooltips = useLabelsTooltips()
+  return {
+    sellAmount: tooltips.sellAmount,
+    buyAmount: tooltips.buyAmount,
+  }
+}
+
 export function useLabelsTooltips(): LabelTooltipItems {
   const { t } = useLingui()
+  const isSafeWallet = useIsSafeWallet()
 
   return {
     numberOfParts: {
@@ -94,15 +104,9 @@ export function useLabelsTooltips(): LabelTooltipItems {
     },
     startTime: {
       label: t`Start time`,
-      tooltip: t`The order will start when it is validated and executed in your Safe.`,
+      tooltip: isSafeWallet
+        ? t`The order will start when it is validated and executed in your Safe.`
+        : t`The order will start when it is validated and executed in your wallet.`,
     },
-  }
-}
-
-export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
-  const tooltips = useLabelsTooltips()
-  return {
-    sellAmount: tooltips.sellAmount,
-    buyAmount: tooltips.buyAmount,
   }
 }

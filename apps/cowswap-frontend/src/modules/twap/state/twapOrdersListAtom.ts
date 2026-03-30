@@ -44,7 +44,26 @@ export const setTwapOrderStatusAtom = atom(null, (get, set, orderId: string, sta
   const currentState = get(twapOrdersAtom)
   const currentOrder = currentState[orderId]
 
+  if (!currentOrder) return
   if (TWAP_FINAL_STATUSES.includes(currentOrder.status)) return
 
   set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentOrder, status } })
 })
+
+export const updateTwapOrderAtom = atom(
+  null,
+  (get, set, payload: { orderId: string; updates: Partial<TwapOrderItem> }) => {
+    const currentState = get(twapOrdersAtom)
+    const currentOrder = currentState[payload.orderId]
+
+    if (!currentOrder) return
+
+    set(twapOrdersAtom, {
+      ...currentState,
+      [payload.orderId]: {
+        ...currentOrder,
+        ...payload.updates,
+      },
+    })
+  },
+)

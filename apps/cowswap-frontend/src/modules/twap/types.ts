@@ -43,6 +43,9 @@ export interface TwapOrderItem {
   id: string
   safeTxParams?: SafeTransactionParams
   executionInfo: TwapOrdersExecution
+  isPrototype?: boolean
+  prototypeSimulation?: TwapPrototypeSimulation
+  prototypeProxyFundsClaimedAt?: string
 }
 
 export type TwapOrdersAuthResult = { [key: string]: boolean | undefined }
@@ -70,6 +73,21 @@ export interface TWAPOrderStruct {
   appData: string
 }
 
+export interface TwapPrototypeOrderParams {
+  status?: TwapOrderStatus
+  submissionDate?: string
+  executedDate?: string
+  confirmedPartsCount?: number
+  createPartOrders?: boolean
+  saltSeed?: number
+  prototypeSimulation?: TwapPrototypeSimulation
+}
+
+export interface TwapPrototypeSimulation {
+  partProgressMs: number
+  maxConfirmedParts?: number
+}
+
 export enum TwapOrderStatus {
   WaitSigning = 'WaitSigning',
   Pending = 'Pending',
@@ -77,4 +95,15 @@ export enum TwapOrderStatus {
   Cancelled = 'Cancelled',
   Expired = 'Expired',
   Fulfilled = 'Fulfilled',
+}
+
+export enum TwapPrototypeScenario {
+  AutoProgressOpen = 'autoProgressOpen',
+  StaticOpen = 'staticOpen',
+  Cancelling = 'cancelling',
+  Cancelled = 'cancelled',
+  Expired = 'expired',
+  PartiallyExpired = 'partiallyExpired',
+  PartiallyCancelled = 'partiallyCancelled',
+  Fulfilled = 'fulfilled',
 }

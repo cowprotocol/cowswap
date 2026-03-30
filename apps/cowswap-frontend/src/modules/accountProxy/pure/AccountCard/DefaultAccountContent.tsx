@@ -28,6 +28,7 @@ interface DefaultAccountContentProps {
   chainId: SupportedChainId
   totalUsdAmount?: CurrencyAmount<Currency> | null
   loading?: boolean
+  valueLabel?: ReactNode
 }
 
 export function DefaultAccountContent({
@@ -35,15 +36,14 @@ export function DefaultAccountContent({
   chainId,
   totalUsdAmount,
   loading,
+  valueLabel,
 }: DefaultAccountContentProps): ReactNode {
   const addressLink = getExplorerLink(chainId, account, ExplorerDataType.ADDRESS)
 
   return (
     <>
       <LeftTop>
-        <ValueLabel>
-          <Trans>Recoverable value</Trans>
-        </ValueLabel>
+        <ValueLabel>{valueLabel || <Trans>Recoverable value</Trans>}</ValueLabel>
         <ValueAmount aria-live="polite">
           {loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}
         </ValueAmount>

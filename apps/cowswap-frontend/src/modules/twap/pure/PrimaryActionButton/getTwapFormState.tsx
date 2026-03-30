@@ -17,6 +17,7 @@ export interface TwapFormStateParams {
   sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
   chainId: SupportedChainId | undefined
   partTime: number | undefined
+  skipSafeChecks?: boolean
 }
 
 export enum TwapFormState {
@@ -28,11 +29,14 @@ export enum TwapFormState {
 }
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
-  const { twapOrder, isTxBundlingSupported, verification, sellAmountPartFiat, chainId, partTime } = props
+  const { twapOrder, isTxBundlingSupported, verification, sellAmountPartFiat, chainId, partTime, skipSafeChecks } =
+    props
 
-  if (isTxBundlingSupported === false) return TwapFormState.TX_BUNDLING_NOT_SUPPORTED
+  if (!skipSafeChecks && isTxBundlingSupported === false) return TwapFormState.TX_BUNDLING_NOT_SUPPORTED
 
-  if (verification === null || isTxBundlingSupported === null) return TwapFormState.LOADING_SAFE_INFO
+  if (!skipSafeChecks && (verification === null || isTxBundlingSupported === null)) {
+    return TwapFormState.LOADING_SAFE_INFO
+  }
 
   if (!isFractionFalsy(twapOrder?.buyAmount) && isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
     return TwapFormState.SELL_AMOUNT_TOO_SMALL

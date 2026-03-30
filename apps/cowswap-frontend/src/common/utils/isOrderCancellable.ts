@@ -2,12 +2,15 @@ import { Token } from '@cowprotocol/currency'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { ComposableCowInfo } from 'common/types'
+
 export interface CancellableOrder {
   id: string
   inputToken: Token
   isCancelling?: boolean
   cancellationHash?: string
   status: OrderStatus
+  composableCowInfo?: ComposableCowInfo
 }
 
 // 1. An order can be cancelled when the order is CREATING or PENDING

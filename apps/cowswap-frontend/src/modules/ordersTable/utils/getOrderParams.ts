@@ -43,6 +43,19 @@ export function getOrderParams(
     invertedActiveRateFiatAmount: null,
   }
 
+  const prototypeFundsState = order.composableCowInfo?.prototypeFundsState
+
+  if (order.composableCowInfo?.isPrototype && prototypeFundsState) {
+    return {
+      chainId,
+      sellAmount,
+      buyAmount,
+      rateInfoParams,
+      hasEnoughBalance: prototypeFundsState !== 'withdrawn',
+      hasEnoughAllowance: true,
+    }
+  }
+
   const { balances, allowances } = balancesAndAllowances
   const balance = balances[getAddressKey(order.inputToken.address)]
   const allowance = allowances?.[getAddressKey(order.inputToken.address)]

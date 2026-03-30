@@ -14,6 +14,8 @@ import { useTwapPartOrdersList } from './useTwapPartOrdersList'
 import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 import { mapPartOrderToStoreOrder } from '../utils/mapPartOrderToStoreOrder'
+import { resolveDisplayTwapOrder } from '../utils/resolveDisplayTwapOrder'
+import { resolveDisplayTwapPartOrder } from '../utils/resolveDisplayTwapPartOrder'
 
 const EMULATED_ORDERS_REFRESH_MS = ms`5s`
 
@@ -45,8 +47,10 @@ function emulatePartOrders(
 
     if (!parent) return acc
 
-    const enrichedOrder = emulatePartAsOrder(item, parent)
-    const order = mapPartOrderToStoreOrder(item, enrichedOrder, isVirtualPart, parent, tokensByAddress)
+    const resolvedParent = resolveDisplayTwapOrder(parent)
+    const resolvedItem = resolveDisplayTwapPartOrder(item, resolvedParent)
+    const enrichedOrder = emulatePartAsOrder(resolvedItem, resolvedParent)
+    const order = mapPartOrderToStoreOrder(resolvedItem, enrichedOrder, isVirtualPart, resolvedParent, tokensByAddress)
 
     if (order) acc.push(order)
 

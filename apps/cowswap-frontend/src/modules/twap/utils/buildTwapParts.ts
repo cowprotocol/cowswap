@@ -13,7 +13,7 @@ import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
 
 export function createPartOrderFromParent(twapOrder: TwapOrderItem, index: number): OrderParameters | null {
-  const executionDate = twapOrder.safeTxParams?.executionDate
+  const executionDate = twapOrder.safeTxParams?.executionDate || twapOrder.executedDate || twapOrder.submissionDate
 
   if (!executionDate) {
     return null
@@ -75,6 +75,7 @@ export async function generateTwapOrderParts(
         safeAddress,
         isCreatedInOrderBook: false,
         isCancelling: false,
+        isPrototype: twapOrder.isPrototype,
         order: parts[index],
       }
     }),

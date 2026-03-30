@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
@@ -9,13 +9,18 @@ import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusCo
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans as TransReact } from '@lingui/react'
-import { useLingui, Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { CloseIcon } from 'theme'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
 
-import { TwapOrderItem } from 'modules/twap'
+import {
+  getPrototypeProxyAddress,
+  TwapOrderItem,
+  useOpenTwapPrototypeProxyPage,
+  useTwapPrototypeProxy,
+} from 'modules/twap'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
@@ -48,6 +53,7 @@ interface ReceiptProps {
   order: ParsedOrder
   receiverEnsName: string | null
   twapOrder: TwapOrderItem | null
+  twapPartOrderIndex?: number
   isTwapPartOrder: boolean
   chainId: SupportedChainId
   onDismiss: Command
@@ -68,6 +74,12 @@ const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
   NETWORK_COSTS: msg`CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price.`,
   CREATED: msg`Your order was created on this date & time. It will remain open until it expires or is filled.`,
   RECEIVER: msg`The account address which will/did receive the bought amount.`,
+  OWNER: msg`The wallet or smart contract that owns this order.`,
+  OWNER_SAFE: msg`The Safe that owns this order.`,
+  OWNER_WALLET: msg`The wallet that owns this order.`,
+  OWNER_SMART_CONTRACT: msg`The smart contract that owns this order.`,
+  TWAP_PARTS: msg`The total number of parts in this TWAP order split.`,
+  TWAP_PROXY_ACCOUNT: msg`Funds for EOA TWAP orders are held in this proxy account while they are reserved for execution or awaiting withdrawal.`,
   EXPIRY: msg`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
   TOTAL_FEE: msg`This fee helps pay for maintenance & improvements to the trade experience`,
 }
@@ -100,7 +112,6 @@ const TOOLTIPS_JSX: Record<string, ReactElement> = {
 }
 
 const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
-
 // TODO: add cosmos fixture for this component
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
@@ -111,6 +122,7 @@ export function ReceiptModal({
   onDismiss,
   order,
   twapOrder,
+  twapPartOrderIndex,
   isTwapPartOrder,
   chainId,
   buyAmount,
@@ -121,6 +133,8 @@ export function ReceiptModal({
   alternativeOrderModalContext,
 }: ReceiptProps) {
   const { i18n } = useLingui()
+  const openTwapPrototypeProxyPage = useOpenTwapPrototypeProxyPage()
+  const { getOrderFundsState } = useTwapPrototypeProxy()
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
@@ -139,6 +153,15 @@ export function ReceiptModal({
   const inputLabel = isSell ? t`You sell` : t`You sell at most`
   const outputLabel = isSell ? t`You receive at least` : t`You receive exactly`
   const safeTxParams = twapOrder?.safeTxParams
+  const isPrototypeTwap = !!twapOrder?.isPrototype
+  const isEoaTwap = !!twapOrder && !safeTxParams
+  const twapOrderFundsState = twapOrder ? getOrderFundsState(twapOrder.id) : null
+  const showEoaTwapActiveFundsNotice = isEoaTwap && twapOrderFundsState === 'active'
+  const showEoaTwapWithdrawFundsNotice = isEoaTwap && twapOrderFundsState === 'claimable'
+  const showEoaTwapWithdrawnFundsNotice = isEoaTwap && twapOrderFundsState === 'withdrawn'
+  const twapProxyAddress =
+    isPrototypeTwap && isEoaTwap && order.owner ? getPrototypeProxyAddress(order.owner, chainId) : null
+  const ownerTooltip = i18n._(getOwnerTooltipMessage(order, !!safeTxParams))
 
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
   const twapOrderN = twapOrder?.order.n
@@ -149,7 +172,7 @@ export function ReceiptModal({
         <styledEl.Header>
           <div>
             <styledEl.Title>
-              <Trans>Order Receipt</Trans>
+              {isPrototypeTwap ? <Trans>Order Receipt (prototype only)</Trans> : <Trans>Order Receipt</Trans>}
             </styledEl.Title>
             {alternativeOrderModalContext && (
               <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
@@ -160,20 +183,6 @@ export function ReceiptModal({
           </div>
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
-
-        {twapOrder && (
-          <styledEl.InfoBannerWrapper>
-            <InlineBanner bannerType={StatusColorVariant.Info}>
-              <p>
-                {isTwapPartOrder ? (
-                  <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
-                ) : (
-                  <Trans>TWAP order split into {twapOrderN} parts</Trans>
-                )}
-              </p>
-            </InlineBanner>
-          </styledEl.InfoBannerWrapper>
-        )}
 
         <styledEl.Body>
           <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
@@ -194,6 +203,15 @@ export function ReceiptModal({
               <StatusField order={order} />
             </styledEl.Field>
 
+            {twapOrderN && (
+              <styledEl.Field>
+                <FieldLabel label={t`TWAP parts`} tooltip={i18n._(TOOLTIPS_MSG.TWAP_PARTS)} />
+                <div>
+                  <span>{getTwapPartsValue({ isTwapPartOrder, twapOrderN, twapPartOrderIndex })}</span>
+                </div>
+              </styledEl.Field>
+            )}
+
             {order.receiver && (
               <styledEl.Field>
                 <FieldLabel label={t`Recipient`} tooltip={i18n._(TOOLTIPS_MSG.RECEIVER)} />
@@ -203,6 +221,17 @@ export function ReceiptModal({
                   )}
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                     {receiverEnsName || shortenAddress(order.receiver)} ↗
+                  </ExternalLink>
+                </div>
+              </styledEl.Field>
+            )}
+
+            {order.owner && (
+              <styledEl.Field>
+                <FieldLabel label={t`Owner`} tooltip={ownerTooltip} />
+                <div>
+                  <ExternalLink href={getExplorerLink(chainId, order.owner, ExplorerDataType.ADDRESS)}>
+                    {shortenAddress(order.owner)} ↗
                   </ExternalLink>
                 </div>
               </styledEl.Field>
@@ -306,9 +335,109 @@ export function ReceiptModal({
                 confirmationsRequired={safeTxParams.confirmationsRequired}
               />
             )}
+            {twapProxyAddress && (
+              <styledEl.Field>
+                <FieldLabel label={t`TWAP proxy account`} tooltip={i18n._(TOOLTIPS_MSG.TWAP_PROXY_ACCOUNT)} />
+                <styledEl.Value>
+                  <styledEl.InlineWrapper>
+                    <span>{shortenAddress(twapProxyAddress)}</span>
+                    <span> - </span>
+                    <styledEl.BannerLink onClick={openTwapPrototypeProxyPage}>
+                      <Trans>View account</Trans>
+                    </styledEl.BannerLink>
+                  </styledEl.InlineWrapper>
+                </styledEl.Value>
+              </styledEl.Field>
+            )}
           </styledEl.FieldsWrapper>
         </styledEl.Body>
+        {showEoaTwapActiveFundsNotice && (
+          <styledEl.InfoBannerWrapper>
+            <InlineBanner bannerType={StatusColorVariant.Info} orientation={BannerOrientation.Horizontal} noWrapContent>
+              <styledEl.InfoBannerText>
+                <Trans>Funds for this TWAP are held in your </Trans>
+                <styledEl.BannerLink onClick={openTwapPrototypeProxyPage}>
+                  <Trans>TWAP proxy account</Trans>
+                </styledEl.BannerLink>
+                <Trans> while the order is active and can be withdrawn at any time.</Trans>
+              </styledEl.InfoBannerText>
+            </InlineBanner>
+          </styledEl.InfoBannerWrapper>
+        )}
+        {showEoaTwapWithdrawnFundsNotice && (
+          <styledEl.InfoBannerWrapper>
+            <InlineBanner
+              bannerType={StatusColorVariant.Warning}
+              orientation={BannerOrientation.Horizontal}
+              noWrapContent
+            >
+              <styledEl.InfoBannerText>
+                <Trans>
+                  Funds for this TWAP were withdrawn from your TWAP proxy account. This order is now unfillable.
+                </Trans>{' '}
+                <styledEl.BannerLink onClick={openTwapPrototypeProxyPage}>
+                  <Trans>View TWAP proxy account</Trans>
+                </styledEl.BannerLink>
+              </styledEl.InfoBannerText>
+            </InlineBanner>
+          </styledEl.InfoBannerWrapper>
+        )}
+        {showEoaTwapWithdrawFundsNotice && (
+          <styledEl.InfoBannerWrapper>
+            <InlineBanner bannerType={StatusColorVariant.Info} orientation={BannerOrientation.Horizontal} noWrapContent>
+              <styledEl.InfoBannerText>
+                <Trans>Any unused funds for this TWAP remain there until you withdraw them from your </Trans>
+                <styledEl.BannerLink onClick={openTwapPrototypeProxyPage}>
+                  <Trans>TWAP proxy account</Trans>
+                </styledEl.BannerLink>
+                .
+              </styledEl.InfoBannerText>
+            </InlineBanner>
+          </styledEl.InfoBannerWrapper>
+        )}
       </styledEl.Wrapper>
     </CowModal>
   )
+}
+
+function getOwnerTooltipMessage(order: ParsedOrder, hasSafeTxParams: boolean): MessageDescriptor {
+  if (hasSafeTxParams) {
+    return TOOLTIPS_MSG.OWNER_SAFE
+  }
+
+  if (order.signingScheme === SigningScheme.EIP712) {
+    return TOOLTIPS_MSG.OWNER_WALLET
+  }
+
+  if (order.signingScheme === SigningScheme.EIP1271) {
+    return TOOLTIPS_MSG.OWNER_SMART_CONTRACT
+  }
+
+  return TOOLTIPS_MSG.OWNER
+}
+
+function getTwapPartsValue({
+  isTwapPartOrder,
+  twapOrderN,
+  twapPartOrderIndex,
+}: {
+  isTwapPartOrder: boolean
+  twapOrderN: number
+  twapPartOrderIndex?: number
+}): ReactElement | string {
+  if (isTwapPartOrder) {
+    if (typeof twapPartOrderIndex === 'number') {
+      const partNumber = twapPartOrderIndex + 1
+
+      return (
+        <Trans>
+          Part {partNumber} of {twapOrderN} parts
+        </Trans>
+      )
+    }
+
+    return <Trans>Part of {twapOrderN} parts</Trans>
+  }
+
+  return <Trans>{twapOrderN} parts</Trans>
 }

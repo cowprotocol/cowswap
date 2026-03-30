@@ -5,7 +5,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
 
@@ -14,16 +14,22 @@ import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
-import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
-import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import {
+  TradeFlowAnalyticsContext,
+  useTradeConfirmActions,
+  useTradeFlowAnalytics,
+  useTradePriceImpact,
+} from 'modules/trade'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
+import { useIsTwapEoaPrototypeEnabled } from './useIsTwapEoaPrototypeEnabled'
 import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
+import { useTwapPrototypeOrders } from './useTwapPrototypeOrders'
 
 import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
@@ -56,8 +62,11 @@ interface TwapOrderEvent extends TwapAnalyticsEvent {
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const isTwapEoaPrototypeEnabled = useIsTwapEoaPrototypeEnabled()
   const twapOrder = useTwapOrder()
+  const { createPrototypeOrder } = useTwapPrototypeOrders()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
 
@@ -103,7 +112,7 @@ export function useCreateTwapOrder() {
     [analytics],
   )
 
-  return useCallback(
+  const createTwapOrder = useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
 
@@ -228,4 +237,61 @@ export function useCreateTwapOrder() {
       isSmartContractWallet,
     ],
   )
+
+  const createPrototypeTwapOrder = useCallback(
+    async (fallbackHandlerIsNotSet: boolean) => {
+      if (!chainId || !account || !inputCurrencyAmount || !outputCurrencyAmount || !twapOrder) return
+
+      const isPriceImpactConfirmed = await confirmPriceImpactWithoutFee(priceImpact)
+
+      if (!isPriceImpactConfirmed) {
+        return
+      }
+
+      const pendingTrade = {
+        inputAmount: inputCurrencyAmount,
+        outputAmount: outputCurrencyAmount,
+      }
+
+      try {
+        tradeConfirmActions.onSign(pendingTrade)
+
+        const orderId = await createPrototypeOrder({
+          status: TwapOrderStatus.Pending,
+          executedDate: new Date().toISOString(),
+        })
+
+        if (!orderId) return
+
+        getCowSoundSend().play()
+        updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
+        tradeConfirmActions.onSuccess(orderId)
+        navigateToOrdersTableTab(OrderTabId.open)
+      } catch (error) {
+        const errorMessage = getErrorMessage(error)
+        tradeConfirmActions.onError(errorMessage)
+        sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
+      }
+    },
+    [
+      account,
+      chainId,
+      confirmPriceImpactWithoutFee,
+      createPrototypeOrder,
+      inputCurrencyAmount,
+      navigateToOrdersTableTab,
+      outputCurrencyAmount,
+      priceImpact,
+      sendTwapConversionAnalytics,
+      tradeConfirmActions,
+      twapOrder,
+      updateAdvancedOrdersState,
+    ],
+  )
+
+  if (isTwapEoaPrototypeEnabled && !isSafeWallet) {
+    return createPrototypeTwapOrder
+  }
+
+  return createTwapOrder
 }

@@ -9,24 +9,24 @@ import { useLingui } from '@lingui/react/macro'
 
 import { Field } from 'legacy/state/types'
 
-import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
-import { BottomBanners } from 'modules/advancedOrders/pure/BottomBanners/BottomBanners.pure'
-import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
 import {
   TradeWidget,
   TradeWidgetSlots,
-  useTradePriceImpact,
   useGetReceiveAmountInfo,
   TradeWidgetParams,
+  UnlockWidgetScreen,
+  useTradePriceImpact,
 } from 'modules/trade'
-import { UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
+import { TWAP_LEARN_MORE_LINK } from 'modules/twap'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
+import { useAdvancedOrdersDerivedState } from '../../hooks/useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from '../../hooks/useAdvancedOrdersRawState'
+import { BottomBanners } from '../../pure/BottomBanners/BottomBanners.pure'
+import { advancedOrdersSettingsAtom } from '../../state/advancedOrdersSettingsAtom'
 import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
 const TWAP_BULLETIN_LIST_CONTENT: MessageDescriptor[] = [
@@ -150,6 +150,7 @@ export function AdvancedOrdersWidget({
     isTradePriceUpdating,
     priceImpact,
     disablePriceImpact,
+    noImpactWarningAcceptLabel: i18n._(msg`Proceed anyway`),
     disableSuggestedSlippageApi: true,
   }
 

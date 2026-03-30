@@ -1,14 +1,32 @@
-import { InlineBanner } from '@cowprotocol/ui'
+import { ReactNode } from 'react'
+
+import { InlineBanner, LinkStyledButton, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import styled from 'styled-components/macro'
 
 import { MINIMUM_PART_TIME } from '../../../const'
 import { deadlinePartsDisplay } from '../../../utils/deadlinePartsDisplay'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SmallPartTimeWarning() {
+interface SmallPartTimeWarningProps {
+  maxPartsValue?: number
+  onUseMaxParts?(): void
+}
+
+const UseMaxPartsLink = styled(LinkStyledButton)`
+  color: var(${UI.COLOR_TEXT});
+  text-decoration: underline;
+
+  :hover,
+  :focus,
+  :active {
+    text-decoration: underline;
+  }
+`
+
+export function SmallPartTimeWarning({ maxPartsValue, onUseMaxParts }: SmallPartTimeWarningProps): ReactNode {
   const time = deadlinePartsDisplay(MINIMUM_PART_TIME, true)
+  const hasMaxPartsAction = Boolean(onUseMaxParts && maxPartsValue)
 
   return (
     <InlineBanner>
@@ -21,6 +39,13 @@ export function SmallPartTimeWarning() {
           total duration.
         </Trans>
       </p>
+      {hasMaxPartsAction && (
+        <p>
+          <UseMaxPartsLink onClick={onUseMaxParts}>
+            <Trans>Set to maximum parts ({maxPartsValue})</Trans>
+          </UseMaxPartsLink>
+        </p>
+      )}
     </InlineBanner>
   )
 }

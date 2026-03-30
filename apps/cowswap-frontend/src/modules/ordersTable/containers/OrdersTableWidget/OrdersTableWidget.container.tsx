@@ -1,3 +1,4 @@
+import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useMemo, useState, useEffect } from 'react'
 
 import { t } from '@lingui/core/macro'
@@ -24,6 +25,7 @@ import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTabl
 import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
+import { ordersTableHistoryStatusFilterOverrideAtom } from '../../state/ordersTable.atoms'
 import { OrdersTableParams } from '../../state/ordersTable.types'
 import { OrdersTableStateUpdater } from '../../state/OrdersTable.updater'
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
@@ -43,6 +45,8 @@ const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfilla
 export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
   const { i18n } = useLingui()
   const navigate = useNavigate()
+  const historyStatusFilterOverride = useAtomValue(ordersTableHistoryStatusFilterOverrideAtom)
+  const setHistoryStatusFilterOverride = useSetAtom(ordersTableHistoryStatusFilterOverrideAtom)
 
   const [searchTerm, setSearchTerm] = useState('')
   const [historyStatusFilter, setHistoryStatusFilter] = useState<HistoryStatusFilter>(HistoryStatusFilter.FILLED)
@@ -81,9 +85,16 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
 
   useEffect(() => {
+    if (currentTabId === OrderTabId.history && historyStatusFilterOverride) {
+      setHistoryStatusFilter(historyStatusFilterOverride as HistoryStatusFilter)
+      setHistoryStatusFilterOverride(null)
+
+      return
+    }
+
     // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
     if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
-  }, [currentTabId])
+  }, [currentTabId, historyStatusFilterOverride, setHistoryStatusFilterOverride])
 
   const pendingOrders = useMemo(() => {
     const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)

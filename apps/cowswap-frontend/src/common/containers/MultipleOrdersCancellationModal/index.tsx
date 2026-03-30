@@ -17,6 +17,7 @@ import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMu
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+import { getIsPrototypeTwapCancellationOrder } from 'common/utils/getIsPrototypeTwapCancellationOrder'
 
 import { ConfirmationPendingContent } from '../../pure/ConfirmationPendingContent'
 interface Props {
@@ -54,9 +55,11 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
       await cancelAll(ordersToCancel)
 
       // Change orders state in store
-      ordersToCancel.forEach((order) => {
-        cancelPendingOrder({ chainId, id: order.id })
-      })
+      ordersToCancel
+        .filter((order) => !getIsPrototypeTwapCancellationOrder(order))
+        .forEach((order) => {
+          cancelPendingOrder({ chainId, id: order.id })
+        })
 
       // Clean cancellation queue
       updateOrdersToCancel([])
@@ -70,15 +73,13 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
   if (!isOpen || !chainId) return null
 
   if (cancellationError) {
-    const errorMessage = isRejectRequestProviderError(cancellationError)
-      ? t`User rejected signing the cancellation`
-      : getIsOrderBookTypedError(cancellationError)
-        ? cancellationError.body.description || cancellationError.body.errorType
-        : (getProviderErrorMessage(cancellationError) ?? String(cancellationError))
-
     return (
       <Modal isOpen onDismiss={dismissAll}>
-        <TransactionErrorContent modalMode onDismiss={dismissAll} message={errorMessage} />
+        <TransactionErrorContent
+          modalMode
+          onDismiss={dismissAll}
+          message={getMultipleCancellationErrorMessage(cancellationError)}
+        />
       </Modal>
     )
   }
@@ -119,4 +120,12 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
       />
     </Modal>
   )
+}
+
+function getMultipleCancellationErrorMessage(cancellationError: Error): string {
+  return isRejectRequestProviderError(cancellationError)
+    ? t`User rejected signing the cancellation`
+    : getIsOrderBookTypedError(cancellationError)
+      ? cancellationError.body.description || cancellationError.body.errorType
+      : (getProviderErrorMessage(cancellationError) ?? String(cancellationError))
 }
