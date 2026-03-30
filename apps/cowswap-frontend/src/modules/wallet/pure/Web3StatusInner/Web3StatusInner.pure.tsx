@@ -16,7 +16,7 @@ import { useConnection } from 'wagmi'
 
 import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import { Text, UnfillableWarning, Web3StatusConnect, Web3StatusConnected } from './styled'
+import { Text, UnfillableWarning, Web3StatusConnect, Web3StatusConnected } from './Web3StatusInner.styled'
 
 import { StatusIcon } from '../StatusIcon'
 
