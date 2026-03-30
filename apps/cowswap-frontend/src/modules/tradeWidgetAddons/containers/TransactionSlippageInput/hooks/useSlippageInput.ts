@@ -1,7 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { isValidIntegerFactory, percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@cowprotocol/currency'
 
@@ -112,9 +111,6 @@ export function useSlippageInput(): ReturnType {
 
     setSlippageInput('')
   }, [slippageError, placeholderSlippage, setSwapSlippage, sendSlippageAnalytics])
-
-  const wrapperRef = useRef(null)
-  useOnClickOutside([wrapperRef], onSlippageInputBlur)
 
   const setAutoSlippage = useCallback(() => {
     setSwapSlippage(null)
