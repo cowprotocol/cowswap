@@ -14,6 +14,8 @@ import type { Event } from '@sentry/types'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
+const GIT_COMMIT_HASH = process.env.REACT_APP_GIT_COMMIT_HASH
+const GIT_COMMIT_DATE = process.env.REACT_APP_GIT_COMMIT_DATE
 
 /**
  * Extended Dedupe class that allows to skip deduplication for specific events
@@ -29,7 +31,11 @@ class SentryDedupeLocal extends Sentry.Dedupe {
 }
 
 const release = 'CowSwap@v' + pkg.version
-registerOnWindow({ release })
+registerOnWindow({
+  release,
+  gitCommitHash: GIT_COMMIT_HASH,
+  gitCommitDate: GIT_COMMIT_DATE,
+})
 
 if (SENTRY_DSN) {
   Sentry.init({
