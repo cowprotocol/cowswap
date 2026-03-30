@@ -12,7 +12,7 @@ export default {
   setupFilesAfterEnv: ['./jest.setup.ts'],
   setupFiles: ['dotenv/config'],
   transformIgnorePatterns: [
-    '/node_modules/.pnpm/(?!.*(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem))',
-    '/node_modules/(?!(\\.pnpm|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem))',
+    '/node_modules/.pnpm/(?!.*(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|jotai-tanstack-query))',
+    '/node_modules/(?!(\\.pnpm|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|jotai-tanstack-query))',
   ],
 }

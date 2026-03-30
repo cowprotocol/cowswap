@@ -1,16 +1,17 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { PENDING_STATES } from 'legacy/state/orders/actions'
 
-import { useOrdersTableState } from '../hooks/useOrdersTableState'
+import { ordersTableStateAtom } from '../state/ordersTable.atoms'
 import { tableItemsToOrders } from '../utils/orderTableGroupUtils'
 
 const PROTOCOL_FEE_START_DATE = new Date('2025-11-26T00:00:00Z')
 
 export function useShouldDisplayProtocolFeeBanner(): boolean {
-  const { orders } = useOrdersTableState() || {}
+  const { orders } = useAtomValue(ordersTableStateAtom)
   const { isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
 
   return useMemo(() => {

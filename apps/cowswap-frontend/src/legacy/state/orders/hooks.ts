@@ -3,14 +3,11 @@ import { useCallback, useMemo } from 'react'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UiOrderType } from '@cowprotocol/types'
 
 import { useDispatch, useSelector } from 'react-redux'
 import useSWR from 'swr'
 
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-
-import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import {
   addOrUpdateOrders,
@@ -36,12 +33,12 @@ import {
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 import {
   getDefaultNetworkState,
-  ORDER_LIST_KEYS,
   ORDERS_LIST,
   OrdersState,
   OrdersStateNetwork,
   OrderTypeKeys,
   PartialOrdersMap,
+  OrderObject,
 } from './reducer'
 import { deserializeOrder } from './utils/deserializeOrder'
 
@@ -100,9 +97,7 @@ interface UpdateOrdersBatchParams {
   isSafeWallet: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
+export function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]): (OrderObject | undefined)[] {
   if (!state) return []
 
   const firstState = state[keys[0]] || {}
@@ -152,35 +147,6 @@ function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersSta
     return { ...getDefaultNetworkState(chainId), ...(ordersState || {}) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(ordersState), chainId])
-}
-
-export const useOrders = (
-  chainId: SupportedChainId,
-  account: string | undefined,
-  uiOrderType: UiOrderType,
-): Order[] => {
-  const state = useOrdersStateNetwork(chainId)
-  return useMemo(() => {
-    if (!state) return EMPTY_ORDERS_ARRAY
-
-    return _concatOrdersState(state, ORDER_LIST_KEYS).reduce<Order[]>((acc, order) => {
-      if (!order) return acc
-
-      const doesBelongToAccount = areAddressesEqual(order.order.owner, account)
-      const orderType = getUiOrderType(order.order)
-      const doesMatchClass = orderType === uiOrderType
-
-      if (doesBelongToAccount && doesMatchClass) {
-        const mappedOrder = deserializeOrder(order)
-
-        if (mappedOrder && !mappedOrder.isHidden) {
-          acc.push(mappedOrder)
-        }
-      }
-
-      return acc
-    }, [])
-  }, [state, account, uiOrderType])
 }
 
 export const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {

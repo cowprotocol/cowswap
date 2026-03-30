@@ -90,6 +90,7 @@
     "@sentry/browser": "^7.80.0",
     "@sentry/react": "^7.80.0",
     "@sentry/types": "^7.80.0",
+    "@tanstack/query-core": "^5.90.20",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-virtual": "^3.0.2",
     "@uniswap/token-lists": "^1.0.0-beta.30",
@@ -104,8 +105,10 @@
     "exponential-backoff": "^3.1.1",
     "fraction.js": "^4.2.0",
     "framer-motion": "^11.3.29",
+    "history": "^5.3.0",
     "jotai": "2.16.2",
     "jotai-effect": "^2.2.3",
+    "jotai-family": "^1.0.1",
     "jotai-tanstack-query": "^0.11.0",
     "jsbi": "^3.1.4",
     "json-stringify-deterministic": "^1.0.12",
@@ -126,7 +129,7 @@
     "react-markdown": "^10.1.0",
     "react-qrcode-logo": "^4.0.0",
     "react-redux": "^8.0.2",
-    "react-router": "7.5.2",
+    "react-router": "7.13.0",
     "react-snowfall": "^2.2.0",
     "rebass": "^4.0.7",
     "redux": "^4.1.2",
@@ -162,6 +165,12 @@
     "react-cosmos": "^7.0.0",
     "rollup-plugin-bundle-stats": "^4.21.7",
     "ts-mockito": "^2.6.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "react-router": "7.13.0",
+      "react-router-dom": "7.13.0"
+    }
   },
   "nx": {}
 }

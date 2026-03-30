@@ -1,4 +1,7 @@
-import { ReactNode, useMemo, useState, useEffect } from 'react'
+import { useAtomValue } from 'jotai'
+import { ReactNode, useMemo } from 'react'
+
+import { useStateWithDeferredValue } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -7,7 +10,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders'
 
-import { useNavigate } from 'common/hooks/useNavigate'
+import { OrderTabId } from 'common/state/routesState'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -20,13 +23,13 @@ import {
   Select,
 } from './OrdersTableWidget.styled'
 
-import { useGetBuildOrdersTableUrl } from '../../hooks/url/useGetBuildOrdersTableUrl'
-import { HistoryStatusFilter } from '../../hooks/useFilteredOrders'
-import { useOrdersTableState } from '../../hooks/useOrdersTableState'
+import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import { OrdersTableParams } from '../../state/ordersTable.types'
-import { OrdersTableStateUpdater } from '../../state/OrdersTable.updater'
-import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
+import { ordersTableFiltersAtom } from '../../state/filters/ordersTableFilters.atom'
+import { ordersTableStateAtom } from '../../state/ordersTable.atoms'
+import { ordersTableParamsAtom } from '../../state/params/ordersTableParams.atom'
+import { ORDERS_TABLE_PAGE_SIZE } from '../../state/params/ordersTableParams.constants'
+import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
@@ -37,55 +40,37 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
   return orders.slice(start, end)
 }
 
-const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.unfillable] as const
+const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.OPEN, OrderTabId.UNFILLABLE] as const
 
-// eslint-disable-next-line max-lines-per-function
-export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNode {
+export function OrdersTableWidget(): ReactNode {
   const { i18n } = useLingui()
-  const navigate = useNavigate()
 
-  const [searchTerm, setSearchTerm] = useState('')
-  const [historyStatusFilter, setHistoryStatusFilter] = useState<HistoryStatusFilter>(HistoryStatusFilter.FILLED)
+  const { searchTerm: searchTermFilter, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
+  const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
 
-  const resetPagination = (): void => {
-    if (!currentPageNumber || currentPageNumber === 1 || !filteredOrders) return
-
-    const url = buildOrdersTableUrl({ pageNumber: 1 })
-
-    navigate(url, { replace: true })
-  }
+  const [searchTerm, setSearchTerm] = useStateWithDeferredValue(searchTermFilter, (searchTerm) => {
+    partiallyUpdateOrdersTableFilters({ searchTerm })
+  })
 
   const resetSearchTerm = (): void => {
-    setSearchTerm('')
-
-    // If any filter changes, reset pagination:
-    resetPagination()
+    partiallyUpdateOrdersTableFilters({ searchTerm: '' })
   }
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value)
-
-    // If any filter changes, reset pagination:
-    resetPagination()
   }
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    setHistoryStatusFilter(e.target.value as HistoryStatusFilter)
-
-    // If any filter changes, reset pagination:
-    resetPagination()
+    partiallyUpdateOrdersTableFilters({ historyStatusFilter: e.target.value as HistoryStatusFilter })
   }
 
-  const { filteredOrders, orders, currentTabId, currentPageNumber } = useOrdersTableState() || {}
+  const { filteredOrders, reduxOrders } = useAtomValue(ordersTableStateAtom)
+  const ordersTableParams = useAtomValue(ordersTableParamsAtom)
+  const currentTabId = ordersTableParams.tab
+  const currentPageNumber = ordersTableParams.page
   const pendingOrdersPrices = usePendingOrdersPrices()
-  const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
 
-  useEffect(() => {
-    // When moving away from the history tab, reset the showOnlyFilled filter, as the UI for it won't be shown in other tabs:
-    if (currentTabId !== OrderTabId.history) setHistoryStatusFilter(HistoryStatusFilter.FILLED)
-  }, [currentTabId])
-
-  const pendingOrders = useMemo(() => {
+  const pendingOrdersInCurrentPage = useMemo(() => {
     const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
 
     if (!isTabWithPending || !filteredOrders || typeof currentPageNumber !== 'number') return undefined
@@ -101,26 +86,20 @@ export function OrdersTableWidget(ordersTableParams: OrdersTableParams): ReactNo
     })
   }, [currentTabId, filteredOrders, currentPageNumber])
 
-  const hasPendingOrders = !!pendingOrders?.length
+  const hasPendingOrdersInCurrentPage = !!pendingOrdersInCurrentPage?.length
 
   return (
     <>
-      {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
+      {hasPendingOrdersInCurrentPage && <UnfillableOrdersUpdater orders={pendingOrdersInCurrentPage} />}
 
-      <OrdersTableStateUpdater
-        searchTerm={searchTerm}
-        historyStatusFilter={historyStatusFilter}
-        {...ordersTableParams}
-      />
-
-      <OrdersTableContainer searchTerm={searchTerm} historyStatusFilter={historyStatusFilter}>
-        {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
+      <OrdersTableContainer>
+        {hasPendingOrdersInCurrentPage && <MultipleCancellationMenu pendingOrders={pendingOrdersInCurrentPage} />}
 
         {/* Show filters only if there are orders */}
-        {!!orders?.length && (
+        {!!reduxOrders?.length && (
           <>
             {/* Show onlyFilled select only in history tab */}
-            {currentTabId === OrderTabId.history && (
+            {currentTabId === OrderTabId.HISTORY && (
               <SelectContainer>
                 <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
                   <option value="filled">{i18n._('Filled orders')}</option>

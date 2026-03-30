@@ -1,15 +1,14 @@
 import { useAtomValue } from 'jotai'
 import React, { ReactNode, useEffect, useRef } from 'react'
 
-import { ordersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { ordersToCancelAtom } from 'common/state/ordersToCancel.atom'
+import { OrderTabId } from 'common/state/routesState'
 
 import { TableHeaderConfig } from './ordersTableHeader.constants'
-import { HeaderElement } from './OrdersTableHeader.styled'
-import { TableHeaderWrapper } from './OrdersTableHeader.styled'
+import { HeaderElement, TableHeaderWrapper } from './OrdersTableHeader.styled'
 
-import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
+import { useOrderActions } from '../../../hooks/useOrderActions'
 import { OrderTableItem } from '../../../state/ordersTable.types'
-import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
 import { tableItemsToOrders } from '../../../utils/orderTableGroupUtils'
 import { CheckboxCheckmark, TableRowCheckbox, TableRowCheckboxWrapper } from '../Row/Checkbox/Checkbox.styled'
 
@@ -32,7 +31,7 @@ export function OrdersTableHeader({
   cancellableOrders,
   ordersPage,
 }: OrdersTableHeaderProps): ReactNode {
-  const { orderActions } = useOrdersTableState() || {}
+  const orderActions = useOrderActions()
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
   const ordersToCancelCount = ordersToCancel?.length || 0
 
@@ -51,12 +50,12 @@ export function OrdersTableHeader({
 
   return (
     <TableHeaderWrapper
-      isHistoryTab={currentTab === OrderTabId.history}
+      isHistoryTab={currentTab === OrderTabId.HISTORY}
       isRowSelectable={isRowSelectable}
       isTwapTable={isTwapTable}
     >
       {visibleHeaders.map((header) => {
-        if (header.id === 'checkbox' && (!isRowSelectable || currentTab === OrderTabId.history)) {
+        if (header.id === 'checkbox' && (!isRowSelectable || currentTab === OrderTabId.HISTORY)) {
           return null
         }
 

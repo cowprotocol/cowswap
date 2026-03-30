@@ -3,6 +3,10 @@ export { BalancesAndAllowancesUpdater } from './updaters/BalancesAndAllowancesUp
 export { TradeSpenderOverrideUpdater } from './updaters/TradeSpenderOverrideUpdater'
 export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updaters/PriorityTokensUpdater'
 
+// Atoms
+export { balancesAtom } from './state/balancesAtom'
+export { allowancesAtom, tokenAllowancesFamily } from './state/allowancesAtom'
+
 // Hooks
 export { useTokensBalances } from './hooks/useTokensBalances'
 export { useNativeTokenBalance } from './hooks/useNativeTokenBalance'
