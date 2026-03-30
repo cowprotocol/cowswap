@@ -30,7 +30,7 @@ export function AlternativeLimitOrderPage() {
   return (
     <Wrapper>
       <NewModal modalMode title={title} onDismiss={hideAlternativeOrderModal} maxWidth={MODAL_MAX_WIDTH}>
-        <LimitOrdersWidget />
+        <LimitOrdersWidget toggleMyOrders={() => {}} />
       </NewModal>
     </Wrapper>
   )

@@ -24,7 +24,6 @@ import { PreHookButton } from '../PreHookButton'
 
 type HookPosition = 'pre' | 'post'
 
-// eslint-disable-next-line max-lines-per-function
 export function HooksStoreWidget(): ReactNode {
   const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
@@ -106,7 +105,7 @@ export function HooksStoreWidget(): ReactNode {
     <>
       <TradeWidgetWrapper visible$={!hideSwapWidget}>
         {/*TODO: sell=buy feature. Add allowSwapSameToken attribute again when feature is ready */}
-        <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
+        <SwapWidget topContent={TopContent} bottomContent={BottomContent} toggleMyOrders={() => {}} />
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (

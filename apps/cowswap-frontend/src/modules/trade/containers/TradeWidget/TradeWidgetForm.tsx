@@ -5,7 +5,7 @@ import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-ho
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
+import { ButtonOutlined, Media } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -49,16 +49,6 @@ import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const scrollToMyOrders = () => {
-  const element = document.getElementById(MY_ORDERS_ID)
-  if (element) {
-    const elementTop = element.getBoundingClientRect().top + window.scrollY - SWAP_HEADER_OFFSET
-    window.scrollTo({ top: elementTop, behavior: 'smooth' })
-  }
-}
-
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
@@ -80,7 +70,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isSellTrade = !!orderKind && isSellOrder(orderKind)
   const hideQuoteAmount = useShouldHideQuoteAmounts()
 
-  const { slots, actions, params, disableOutput } = props
+  const { slots, actions, params, disableOutput, toggleMyOrders } = props
   const { settingsWidget, lockScreen, topContent, middleContent, bottomContent, outerContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
@@ -209,9 +199,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     if (isMarketOrderWidget) {
       toggleAccountModal()
     } else {
-      scrollToMyOrders()
+      toggleMyOrders()
     }
-  }, [isMarketOrderWidget, toggleAccountModal])
+  }, [isMarketOrderWidget, toggleAccountModal, toggleMyOrders])
 
   const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
 

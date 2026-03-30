@@ -3,10 +3,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { Search, X } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import {
-  SelectContainer as OrdersTableSelectContainer,
-  Select as OrdersTableSelect,
-} from '../../pure/OrdersTabs/OrdersTabs.styled'
+import { SelectContainer as OrdersTableSelectContainer } from '../../pure/OrdersTabs/OrdersTabs.styled'
 
 export const SearchInputContainer = styled.label`
   position: relative;
@@ -77,8 +74,4 @@ export const SearchInput = styled.input`
 
 export const SelectContainer = styled(OrdersTableSelectContainer)`
   display: block !important;
-`
-
-export const Select = styled(OrdersTableSelect)`
-  min-width: 120px;
 `

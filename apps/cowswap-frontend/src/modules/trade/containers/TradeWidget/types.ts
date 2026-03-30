@@ -55,4 +55,5 @@ export interface TradeWidgetProps {
   disableOutput?: boolean
   confirmModal?: ReactNode
   genericModal?: ReactNode
+  toggleMyOrders: () => void
 }

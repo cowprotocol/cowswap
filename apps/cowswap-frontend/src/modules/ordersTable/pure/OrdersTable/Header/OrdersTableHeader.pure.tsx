@@ -4,8 +4,7 @@ import React, { ReactNode, useEffect, useRef } from 'react'
 import { ordersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 
 import { TableHeaderConfig } from './ordersTableHeader.constants'
-import { HeaderElement } from './OrdersTableHeader.styled'
-import { TableHeaderWrapper } from './OrdersTableHeader.styled'
+import { HeaderElement, TableHeaderWrapper } from './OrdersTableHeader.styled'
 
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { OrderTableItem } from '../../../state/ordersTable.types'

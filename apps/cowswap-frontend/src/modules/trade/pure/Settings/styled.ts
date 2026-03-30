@@ -1,28 +1,17 @@
 import { UI } from '@cowprotocol/ui'
 
-import { MenuButton, MenuList } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
+/** Panel for limit/TWAP settings inside SmartModal/Dropdown — flow layout (not Reach Menu positioning). */
 export const SettingsContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0;
-  border-radius: 12px;
-  box-shadow: var(${UI.BOX_SHADOW_2});
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
-  background: var(${UI.COLOR_PAPER});
-  color: inherit;
   gap: 10px;
-  position: absolute;
-  right: 9px;
-  margin: auto;
-  top: 48px;
-  z-index: 100;
-  min-width: 330px;
-  max-width: calc(100% - var(--padding, 16px) * 2);
+  width: 100%;
 `
 
-export const SettingsButton = styled(MenuButton)`
+export const SettingsButton = styled.button.attrs({ type: 'button' })`
   --maxSize: 28px;
   --iconSize: 18px;
 
@@ -61,7 +50,7 @@ export const SettingsButton = styled(MenuButton)`
   }
 `
 
-export const MenuContent = styled(MenuList)`
+export const MenuContent = styled.div`
   position: relative;
   z-index: 2;
   color: var(${UI.COLOR_TEXT_PAPER});

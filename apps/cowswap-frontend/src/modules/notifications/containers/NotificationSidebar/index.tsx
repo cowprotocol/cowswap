@@ -1,10 +1,8 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notification-settings.svg'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
+import { useMediaQuery, useOnClickOutside, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { Media, SmartModal } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -12,7 +10,7 @@ import SVG from 'react-inlinesvg'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import { Sidebar, SidebarHeader, ArrowLeft, NotificationSettingsIcon, EnableAlertsButtonWithIcon } from './styled'
+import { SidebarHeader, ArrowLeft, NotificationSettingsIcon, EnableAlertsButtonWithIcon } from './styled'
 
 import { useHasNotificationSubscription } from '../../hooks/useHasNotificationSubscription'
 import { useNotificationSettingsPopoverDismissal } from '../../hooks/useNotificationSettingsPopoverDismissal'
@@ -164,7 +162,14 @@ export function NotificationSidebar({
   const listKey = `notifications-list-${isSettingsOpen}`
 
   return (
-    <Sidebar ref={sidebarRef} isOpen={isOpen}>
+    <SmartModal
+      isOpen={isOpen}
+      onDismiss={onClose}
+      anchorRef={sidebarRef}
+      drawerMediaQuery={Media.upToSmall(false)}
+      placement="bottom-end"
+      showBackdrop={false}
+    >
       {isSettingsOpen ? (
         <NotificationSettings>
           <SettingsHeader onBack={toggleSettingsOpen} />
@@ -188,6 +193,6 @@ export function NotificationSidebar({
           />
         </NotificationsList>
       )}
-    </Sidebar>
+    </SmartModal>
   )
 }

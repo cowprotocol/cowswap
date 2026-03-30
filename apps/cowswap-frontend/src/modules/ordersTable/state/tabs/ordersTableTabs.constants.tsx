@@ -1,5 +1,11 @@
+import { ReactNode } from 'react'
+
+import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
+
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
+import SVG from 'react-inlinesvg'
 
 export enum OrderTabId {
   signing = 'signing',
@@ -11,6 +17,7 @@ export enum OrderTabId {
 export interface OrderTab {
   id: OrderTabId
   title: MessageDescriptor
+  icon?: ReactNode
   count: number
   isActive?: boolean
 }
@@ -19,6 +26,7 @@ export const ORDERS_TABLE_TABS: OrderTab[] = [
   {
     id: OrderTabId.signing,
     title: msg`Signing`,
+    icon: <SVG src={orderPresignaturePending} />,
     count: 0,
   },
   {
@@ -29,6 +37,7 @@ export const ORDERS_TABLE_TABS: OrderTab[] = [
   {
     id: OrderTabId.unfillable,
     title: msg`Unfillable`,
+    icon: <SVG src={alertCircle} />,
     count: 0,
   },
   {
