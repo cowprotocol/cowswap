@@ -1,5 +1,5 @@
 import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
-import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
+import { captureError, ERROR_TYPES, normalizeError, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
 import { areAddressesEqual, OrderClass, SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
@@ -192,10 +192,12 @@ export async function ethFlow({
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = normalizeError(err)
     logTradeFlow('ETH FLOW', 'STEP 7: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
+    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
