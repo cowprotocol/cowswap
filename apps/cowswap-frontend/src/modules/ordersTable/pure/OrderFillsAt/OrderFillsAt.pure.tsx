@@ -157,8 +157,7 @@ export function OrderFillsAt({
 
     return (
       <styledEl.ExecuteCellWrapper>
-        {false &&
-        !isUnfillable &&
+        {!isUnfillable &&
         priceDiffs?.percentage &&
         Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
           <HoverTooltip
