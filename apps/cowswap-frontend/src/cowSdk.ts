@@ -8,6 +8,7 @@ import {
   OrderBookApi,
   setGlobalAdapter,
   AbstractProviderAdapter,
+  ApiBaseUrls,
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
@@ -17,7 +18,7 @@ import { useWeb3React } from '@web3-react/core'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 const chainId = getCurrentChainIdFromUrl()
-const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
+export const ORDER_BOOK_BASE_URLS: ApiBaseUrls | undefined = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
   : undefined
 
@@ -29,7 +30,7 @@ setGlobalAdapter(legacyAdapter)
 
 export const orderBookApi = new OrderBookApi({
   env: isBarnBackendEnv ? 'staging' : 'prod',
-  ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
+  ...(ORDER_BOOK_BASE_URLS ? { baseUrls: ORDER_BOOK_BASE_URLS } : undefined),
   backoffOpts: DEFAULT_BACKOFF_OPTIONS,
 })
 
