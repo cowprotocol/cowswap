@@ -12,6 +12,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
+import { execSync } from 'child_process'
 import * as path from 'path'
 
 import { formatChunkFileName } from '../../tools/formatChunkFileName'
@@ -104,6 +105,12 @@ export default defineConfig(({ mode }) => {
     base: './',
     define: {
       ...getReactProcessEnv(mode),
+      'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(
+        execSync('git rev-parse --short=7 HEAD').toString().trim(),
+      ),
+      'process.env.REACT_APP_GIT_COMMIT_DATE': JSON.stringify(
+        execSync('git show -s --format=%cI HEAD').toString().trim(),
+      ),
     },
 
     assetsInclude: ['**/*.md'],
