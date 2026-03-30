@@ -7,7 +7,7 @@ import { useChainAnalyticsContext, useChainPanelState } from '../../hooks'
 
 export function ConnectedChainSelector(): ReactNode {
   const widgetState = useSelectTokenWidgetState()
-  const chainPanel = useChainPanelState(widgetState.tradeType)
+  const chainPanel = useChainPanelState(widgetState.tradeType, widgetState.field)
   const analyticsContext = useChainAnalyticsContext()
 
   if (!chainPanel.isEnabled) return null
