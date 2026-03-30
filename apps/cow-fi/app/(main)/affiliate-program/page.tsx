@@ -136,7 +136,7 @@ function WhyCowSwapSection(): ReactNode {
   return (
     <ContainerCard bgColor="transparent">
       <ContainerCardSection>
-        <SectionTitleWrapper padding="150px 0 0" maxWidth={1300}>
+        <SectionTitleWrapper maxWidth={1300}>
           <SectionTitleIcon $size={82}>
             <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
           </SectionTitleIcon>
@@ -174,9 +174,9 @@ function WhyCowSwapSection(): ReactNode {
 
 function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
   return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
+    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`}>
       <ContainerCardSection padding="0">
-        <SectionTitleWrapper>
+        <SectionTitleWrapper margin="6rem auto 0">
           <SectionTitleIcon $size={62}>
             <LazySVG src={IMG_ICON_FAQ} />
           </SectionTitleIcon>
@@ -185,7 +185,7 @@ function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode
 
         <FAQ faqs={AFFILIATE_PROGRAM_FAQ} />
 
-        <SectionTitleWrapper margin="24px auto 0" maxWidth={900} gap={16}>
+        <SectionTitleWrapper margin="2.4rem auto" maxWidth={900} gap={36}>
           <SectionTitleDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_40})`}>
             Looking for more details? Read the full documentation and FAQ.
           </SectionTitleDescription>
@@ -208,8 +208,8 @@ function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode
 
 function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
   return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`}>
-      <ContainerCardSection padding="0">
+    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
+      <ContainerCardSection padding="6rem 0">
         <SectionTitleWrapper margin="0 auto">
           <SectionTitleIcon>
             <ProductLogo variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
@@ -262,8 +262,8 @@ export default function Page(): ReactNode {
       <AffiliateHero sendEvent={sendEvent} />
       <HowItWorksSection sendEvent={sendEvent} />
       <WhyCowSwapSection />
-      <FooterCtaSection sendEvent={sendEvent} />
       <AffiliateFaqSection sendEvent={sendEvent} />
+      <FooterCtaSection sendEvent={sendEvent} />
     </PageWrapper>
   )
 }
