@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Color } from '@cowprotocol/ui'
-import { TruncatedText } from '@cowprotocol/ui'
+import { Color, TruncatedText } from '@cowprotocol/ui'
 
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
@@ -27,6 +26,7 @@ import { ToggleFilter } from './ToggleFilter'
 
 import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
+import { Tags } from '../../common/Tags'
 import { StatusLabel } from '../StatusLabel'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
@@ -182,6 +182,9 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
         <OrderSurplusDisplayStyledByRow order={order} />
       </td>
       <td>
+        <Tags order={order} />
+      </td>
+      <td>
         <DateDisplay date={creationDate} showIcon={true} />
       </td>
       <td>
@@ -237,13 +240,14 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
                 </span>
               </th>
               <th>Surplus</th>
+              <th>Tags</th>
               <th>Created</th>
               <th>Status</th>
             </tr>
           )}
           {showPreSigning && (
             <FilterRow>
-              <td colSpan={8}>
+              <td colSpan={9}>
                 <div>
                   <UnsignedOrderWarning />
                 </div>
@@ -267,7 +271,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
 
           {showFilter && (
             <FilterRow>
-              <td colSpan={8}>
+              <td colSpan={9}>
                 <div>
                   <HiddenOrdersLegend>
                     {hiddenOrdersCount > 0 ? (
