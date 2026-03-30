@@ -1,3 +1,4 @@
+import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -188,12 +189,13 @@ export async function safeBundleFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return orderId
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
     logTradeFlow(LOG_PREFIX, 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
+    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     throw error
