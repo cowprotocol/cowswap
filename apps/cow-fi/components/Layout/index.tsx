@@ -44,7 +44,7 @@ interface LayoutProps {
 
 export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeight }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
-  const { isSolversEnabled } = useFeatureFlags()
+  const { isAffiliateProgramEnabled, isSolversEnabled } = useFeatureFlags()
 
   const GlobalStyles = GlobalCoWDAOStyles()
   const LocalStyles = createGlobalStyle(
@@ -62,7 +62,7 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
       {/* Override global light theme to force dark mode for MenuBar only */}
       <ThemeProvider theme={darkTheme}>
         <MenuBar
-          navItems={getNavItems(!!isSolversEnabled)}
+          navItems={getNavItems(!!isSolversEnabled, !!isAffiliateProgramEnabled)}
           productVariant={PRODUCT_VARIANT}
           additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
           padding="10px 60px"

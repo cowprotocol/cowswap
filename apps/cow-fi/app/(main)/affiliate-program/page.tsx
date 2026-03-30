@@ -1,12 +1,15 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-cowswap-hero.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { useRouter } from 'next/navigation'
 import { CowFiCategory } from 'src/common/analytics/types'
 
 import FAQ from '@/components/FAQ'
@@ -234,6 +237,18 @@ function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
 
 export default function Page(): ReactNode {
   const analytics = useCowAnalytics()
+  const router = useRouter()
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
+
+  useEffect(() => {
+    if (isAffiliateProgramEnabled === false) {
+      router.replace('/')
+    }
+  }, [isAffiliateProgramEnabled, router])
+
+  if (typeof isAffiliateProgramEnabled !== 'boolean' || !isAffiliateProgramEnabled) {
+    return null
+  }
 
   const sendEvent = (action: string): void => {
     analytics.sendEvent({
