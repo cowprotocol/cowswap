@@ -27,7 +27,7 @@ export function useHandleApprovalError(symbol: string | undefined): (error: unkn
         updateApproveProgressModalState({ error: t`User rejected approval transaction` })
       } else {
         captureError(error, ERROR_TYPES.ON_APPROVE)
-        approvalAnalytics('Error', symbol, extractErrorCode(error))
+        approvalAnalytics('Error', symbol, extractErrorCode(err))
         updateApproveProgressModalState({ error: error.message })
       }
     },
