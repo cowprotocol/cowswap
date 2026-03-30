@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useEffect } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
@@ -7,7 +6,8 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import * as Sentry from '@sentry/browser'
 
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { useTradeState } from 'modules/trade'
 
 export function SentryUpdater(): null {
   const { account, chainId } = useWalletInfo()
@@ -22,12 +22,9 @@ export function SentryUpdater(): null {
     if (windowVisible) {
       // setup scope/context/tags
       Sentry.configureScope(function (scope) {
-        // setup a context
-        scope.setContext('user', {
-          user: account || SentryTag.DISCONNECTED,
-          sellToken: inputCurrencyId,
-          buyToken: outputCurrencyId,
-        })
+        if (account) scope.setTag('walletAddress', account)
+        if (inputCurrencyId) scope.setTag('sellToken', inputCurrencyId)
+        if (outputCurrencyId) scope.setTag('buyToken', outputCurrencyId)
         // also set tags for each session
         scope.setTag('chainId', chainId)
         // connectivity tag
