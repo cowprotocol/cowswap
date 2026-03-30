@@ -20,16 +20,12 @@ export function SentryUpdater(): null {
 
   useEffect(() => {
     if (windowVisible) {
-      // setup scope/context/tags
       Sentry.configureScope(function (scope) {
-        if (account) scope.setTag('walletAddress', account)
-        if (inputCurrencyId) scope.setTag('sellToken', inputCurrencyId)
-        if (outputCurrencyId) scope.setTag('buyToken', outputCurrencyId)
-        // also set tags for each session
+        scope.setTag('walletAddress', account)
+        scope.setTag('sellToken', inputCurrencyId)
+        scope.setTag('buyToken', outputCurrencyId)
         scope.setTag('chainId', chainId)
-        // connectivity tag
         scope.setTag('walletConnected', !!account)
-        // set walletName tag
         scope.setTag('wallet', walletName || SentryTag.UNKNOWN)
       })
     }
