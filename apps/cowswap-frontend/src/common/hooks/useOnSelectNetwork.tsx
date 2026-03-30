@@ -5,7 +5,6 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import { useSwitchNetwork } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -15,29 +14,30 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useSetWalletConnectionError } from 'modules/wallet/hooks/useSetWalletConnectionError'
 
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
+import { SwitchInProgressError, useSwitchNetworkWithGuidance } from './useSwitchNetworkWithGuidance'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const addSnackbar = useAddSnackbar()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
   const setWalletConnectionError = useSetWalletConnectionError()
-  const switchNetwork = useSwitchNetwork()
+  const switchNetwork = useSwitchNetworkWithGuidance()
 
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       try {
         setWalletConnectionError(undefined)
-        await switchNetwork(targetChain)
+        await switchNetwork(targetChain, { source: 'networkSelector' })
 
         setChainIdToUrl(targetChain)
         // TODO: Replace any with proper type definitions
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        console.error('Failed to switch networks', error)
-
-        if (isRejectRequestProviderError(error)) {
+        if (isRejectRequestProviderError(error) || error instanceof SwitchInProgressError) {
           return
         }
+
+        console.error('Failed to switch networks', error)
 
         const chainInfoLabel = getChainInfo(targetChain)?.label
 
