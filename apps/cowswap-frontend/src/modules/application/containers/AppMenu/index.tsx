@@ -103,7 +103,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       activeBackgroundDark="#282854"
       activeFillDark="#DEE3E6"
       additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
-      bgColorDark={'rgb(222 227 230 / 7%)'}
+      bgColorDark={'rgb(157 158 245 / 7%)'}
       bgDropdownColorDark={Color.neutral0}
       bgDropdownColorLight={Color.neutral100}
       colorDark={'#DEE3E6'}
