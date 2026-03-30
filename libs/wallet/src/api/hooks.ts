@@ -60,9 +60,9 @@ export function useIsTxBundlingSupported(): boolean | null {
   const isSafeViaWc = useIsSafeViaWc()
 
   const result = (() => {
-    if (isSafeApp) return true
+    if (isSafeApp || isSafeViaWc) return true
     if (isCapabilitiesLoading) return null
-    return isSafeViaWc && capabilities?.atomic?.status === 'supported'
+    return capabilities?.atomic?.status === 'supported'
   })()
 
   return result
