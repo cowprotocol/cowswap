@@ -316,6 +316,11 @@ We are moving toward FSD for frontend apps. Adopt incrementally.
 - LocalStorage/IndexedDB keys must follow `camelCaseBase:v{number}`; start new keys at `:v0` and bump the version when the stored shape changes.
 - Avoid underscores/dashes in key bases so app-wide key scans stay consistent.
 
+### Address handling
+
+- **Never** cast addresses with `address.toLowerCase()`. Always use `getAddressKey` from `@cowprotocol/cow-sdk` for normalizing addresses (e.g., as map keys or storage keys).
+- **Never** compare addresses with `===`, `toLowerCase()`, or manual string comparison. Always use `areAddressesEqual` from `@cowprotocol/cow-sdk`.
+
 ### Utility reuse
 
 - Search the repo before adding new utilities; reuse when possible.

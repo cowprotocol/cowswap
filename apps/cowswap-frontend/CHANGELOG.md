@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.4...cowswap-v3.0.5) (2026-03-20)
+
+
+### 🐛 Bug Fixes
+
+* **affiliate:** improve expired/canceled order check ([#7193](https://github.com/cowprotocol/cowswap/issues/7193)) ([bb5bdf3](https://github.com/cowprotocol/cowswap/commit/bb5bdf3fcdd8ad6d86136d70bb52ba87a69a52ce))
+* **affiliate:** show invalid code msg in trade form ([#7187](https://github.com/cowprotocol/cowswap/issues/7187)) ([7ca10f9](https://github.com/cowprotocol/cowswap/commit/7ca10f968b931290d242741f9e34c5fec6facd66))
+
 ## [3.0.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.3...cowswap-v3.0.4) (2026-03-19)
 
 

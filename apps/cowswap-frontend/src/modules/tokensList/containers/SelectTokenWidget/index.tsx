@@ -62,8 +62,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone, customFlows
 
 function SelectTokenWidgetContent(): ReactNode {
   const flowResult = useViewWithFlows()
-  const { tradeType } = useSelectTokenWidgetState()
-  const { isEnabled: isChainPanelEnabled } = useChainPanelState(tradeType)
+  const { tradeType, field } = useSelectTokenWidgetState()
+  const { isEnabled: isChainPanelEnabled } = useChainPanelState(tradeType, field)
 
   // Generic flow content checks - applies to ALL views
   // If there's pre-flow content, render it instead of the base view

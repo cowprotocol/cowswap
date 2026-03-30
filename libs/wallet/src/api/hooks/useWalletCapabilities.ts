@@ -38,9 +38,11 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
     [isWalletConnect, widgetProviderMetaInfo, account, chainId],
   )
 
+  // Fetch capabilities for all chains (no chainId filter) so we can apply
+  // the Safe wallet fallback: if the exact chain is missing, use the first entry.
+  // See https://github.com/safe-global/safe-wallet-monorepo/issues/6906
   return useCapabilities({
     account,
-    chainId,
     query: {
       enabled: shouldFetchCapabilities,
       retry: false,
@@ -48,6 +50,11 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
+      select(capabilities) {
+        if (!capabilities || !chainId) return undefined as WalletCapabilities | undefined
+
+        return (capabilities[chainId] || Object.values(capabilities)[0]) as WalletCapabilities | undefined
+      },
     },
   })
 }
