@@ -3,11 +3,7 @@ export function normalizeError(err: unknown): Error {
     return err
   }
 
-  if (typeof err === 'string') {
-    return new Error(err)
-  }
-
-  if (typeof err === 'number' || typeof err === 'boolean' || err === null || err === undefined) {
+  if (typeof err !== 'object' || err === null) {
     return new Error(String(err))
   }
 
