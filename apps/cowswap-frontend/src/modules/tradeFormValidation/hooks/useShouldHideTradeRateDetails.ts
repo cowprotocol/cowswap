@@ -1,19 +1,31 @@
-import { useShouldHideQuoteAmounts } from 'modules/trade'
+import { useAtomValue } from 'jotai'
 
-import { useGetTradeFormValidations } from './useGetTradeFormValidations'
+import { useIsWrapOrUnwrap, useShouldHideQuoteAmounts } from 'modules/trade'
 
+import { tradeFormValidationAtom } from '../state/tradeFormValidationAtom'
 import { TradeFormValidation } from '../types'
+
+interface Options {
+  hideIfWrapUnwrap?: boolean
+}
 
 /**
  * Hook to determine if trade rate details and quote-related information should be hidden.
  * Encapsulates the logic of hiding details when a quote is loading, has an error,
  * or when specific validation errors (like xStock minimum trade size) are present.
  */
-export function useShouldHideTradeRateDetails(): boolean {
+export function useShouldHideTradeRateDetails(options?: Options): boolean {
   const shouldHideQuoteAmounts = useShouldHideQuoteAmounts()
-  const validations = useGetTradeFormValidations()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const validations = useAtomValue(tradeFormValidationAtom)
 
   const hasXstockError = validations?.includes(TradeFormValidation.XstockMinimumTradeSize)
 
-  return shouldHideQuoteAmounts || !!hasXstockError
+  const hide = shouldHideQuoteAmounts || !!hasXstockError
+
+  if (options?.hideIfWrapUnwrap && isWrapOrUnwrap) {
+    return true
+  }
+
+  return hide
 }

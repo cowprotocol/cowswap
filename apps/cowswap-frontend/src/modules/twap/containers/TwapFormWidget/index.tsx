@@ -10,7 +10,6 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useGetReceiveAmountInfo } from 'modules/trade'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
@@ -75,9 +74,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const localFormValidation = useTwapFormState()
   const validations = useGetTradeFormValidations()
   const primaryFormValidation = validations?.[0] || null
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const hideQuoteAmount = useShouldHideTradeRateDetails()
+  const hideQuoteAmount = useShouldHideTradeRateDetails({ hideIfWrapUnwrap: true })
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -167,7 +165,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
   return (
     <>
-      {!isWrapOrUnwrap && !hideQuoteAmount && (
+      {!hideQuoteAmount && (
         <>
           <styledEl.FooterBox>
             <RateInfo
