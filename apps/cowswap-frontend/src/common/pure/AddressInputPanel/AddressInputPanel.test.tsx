@@ -9,7 +9,7 @@ import { render, screen } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
-import { AddressInputPanel } from './index'
+import { AddressInputPanel } from './AddressInputPanel'
 
 jest.mock('@cowprotocol/ens', () => ({
   useENS: jest.fn(() => ({ address: null, loading: false, name: null })),
