@@ -38,7 +38,9 @@ export async function resolveSolver(
 
   const winnerSolverName =
     winnerFromOrder ||
-    (txHash ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash })) : undefined)
+    (txHash
+      ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash }), orderUid)
+      : undefined)
 
   if (!winnerSolverName) return undefined
 
