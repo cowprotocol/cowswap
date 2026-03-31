@@ -1,13 +1,8 @@
-import { ChangeEvent, ReactElement, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import {
-  getBlockExplorerUrl as getExplorerLink,
-  isPrefixedAddress,
-  parsePrefixedAddress,
-} from '@cowprotocol/common-utils'
+import { getBlockExplorerUrl as getExplorerLink } from '@cowprotocol/common-utils'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
-import { useENS } from '@cowprotocol/ens'
 import { ExternalLink, RowBetween } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -16,6 +11,8 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { AutoColumn } from 'legacy/components/Column'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
+import { useAddressResolution } from './hooks/useAddressResolution'
+import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { ContainerRow, Input, InputContainer, InputPanel } from './styled'
 
 import { getAddressValidationStrategy } from '../../utils/addressValidation'
@@ -30,22 +27,6 @@ export interface AddressInputPanelProps {
   value: string
   onChange: (value: string) => void
   targetChainId?: TargetChainId
-}
-
-function useAddressResolution(
-  value: string,
-  targetChainId: TargetChainId | undefined,
-): { address: string | null; loading: boolean; name: string | null } {
-  const strategy = getAddressValidationStrategy(targetChainId)
-  const { address: ensAddress, loading: ensLoading, name } = useENS(strategy.supportsENS ? value : undefined)
-
-  return useMemo(() => {
-    if (!strategy.supportsENS) {
-      const isValid = value.length > 0 && strategy.isValidAddress(value)
-      return { address: isValid ? value : null, loading: false, name: null }
-    }
-    return { address: ensAddress, loading: ensLoading, name }
-  }, [strategy, value, ensAddress, ensLoading, name])
 }
 
 export function AddressInputPanel({
@@ -64,37 +45,8 @@ export function AddressInputPanel({
   const chainInfo = getChainInfo(chainId)
   const addressPrefix = chainInfo?.addressPrefix
   const { address, loading, name } = useAddressResolution(value, targetChainId)
-  const [chainPrefixWarning, setChainPrefixWarning] = useState('')
+  const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, addressPrefix, strategy)
   const isDarkMode = useIsDarkMode()
-
-  const handleInput = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const input = event.target.value
-      setChainPrefixWarning('')
-      let parsed = input.replace(/\s+/g, '')
-
-      if (strategy.supportsChainPrefix && isPrefixedAddress(parsed)) {
-        const { prefix, address: prefixedAddr } = parsePrefixedAddress(parsed)
-
-        if (prefix && addressPrefix !== prefix) {
-          setChainPrefixWarning(prefix)
-        }
-
-        if (prefixedAddr) {
-          parsed = prefixedAddr
-        }
-      }
-
-      onChange(parsed)
-    },
-    [onChange, addressPrefix, strategy],
-  )
-
-  useEffect(() => {
-    if (chainPrefixWarning && chainPrefixWarning === addressPrefix) {
-      setChainPrefixWarning('')
-    }
-  }, [chainPrefixWarning, addressPrefix])
 
   const error = Boolean(value.length > 0 && !loading && !address)
 
