@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, ReactElement, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import {
@@ -6,102 +6,48 @@ import {
   isPrefixedAddress,
   parsePrefixedAddress,
 } from '@cowprotocol/common-utils'
-import { isBtcAddress, isEvmChain, isSolanaAddress, TargetChainId } from '@cowprotocol/cow-sdk'
+import { TargetChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
-import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
+import { ExternalLink, RowBetween } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
+import { ContainerRow, Input, InputContainer, InputPanel } from './styled'
+
+import { getAddressValidationStrategy } from '../../utils/addressValidation'
 import { autofocus } from '../../utils/autofocus'
 import ChainPrefixWarning from '../ChainPrefixWarning'
 
+export interface AddressInputPanelProps {
+  id?: string
+  className?: string
+  label?: ReactNode
+  placeholder?: string
+  value: string
+  onChange: (value: string) => void
+  targetChainId?: TargetChainId
+}
+
 function useAddressResolution(
   value: string,
-  isNonEvmTarget: boolean,
+  targetChainId: TargetChainId | undefined,
 ): { address: string | null; loading: boolean; name: string | null } {
-  const { address: ensAddress, loading: ensLoading, name } = useENS(isNonEvmTarget ? undefined : value)
+  const strategy = getAddressValidationStrategy(targetChainId)
+  const { address: ensAddress, loading: ensLoading, name } = useENS(strategy.supportsENS ? value : undefined)
 
   return useMemo(() => {
-    if (isNonEvmTarget) {
-      const isValid = value.length > 0 && (isBtcAddress(value) || isSolanaAddress(value))
+    if (!strategy.supportsENS) {
+      const isValid = value.length > 0 && strategy.isValidAddress(value)
       return { address: isValid ? value : null, loading: false, name: null }
     }
     return { address: ensAddress, loading: ensLoading, name }
-  }, [isNonEvmTarget, value, ensAddress, ensLoading, name])
+  }, [strategy, value, ensAddress, ensLoading, name])
 }
 
-const InputPanel = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap}
-  position: relative;
-  border-radius: 16px;
-  background-color: var(${UI.COLOR_PAPER_DARKER});
-  color: inherit;
-  z-index: 1;
-  width: 100%;
-`
-
-const ContainerRow = styled.div<{ error: boolean }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 16px;
-  border: 0;
-  color: inherit;
-  background-color: var(${UI.COLOR_PAPER_DARKER});
-`
-
-export const InputContainer = styled.div`
-  flex: 1;
-  padding: 1rem;
-`
-
-const Input = styled.input<{ error?: boolean }>`
-  font-size: 1.25rem;
-  outline: none;
-  border: none;
-  flex: 1 1 auto;
-  background: none;
-  transition: color 0.2s ${({ error }) => (error ? 'step-end' : 'step-start')};
-  color: ${({ error }) => (error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 500;
-  width: 100%;
-
-  &&::placeholder {
-    color: inherit;
-    opacity: 0.5;
-  }
-
-  &:focus::placeholder {
-    color: transparent;
-  }
-
-  padding: 0px;
-  appearance: textfield;
-  -webkit-appearance: textfield;
-
-  ::-webkit-search-decoration {
-    -webkit-appearance: none;
-  }
-
-  ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-
-  ::placeholder {
-    color: ${({ theme }) => theme.text4};
-  }
-`
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
@@ -110,23 +56,14 @@ export function AddressInputPanel({
   value,
   onChange,
   targetChainId,
-}: {
-  id?: string
-  className?: string
-  label?: ReactNode
-  placeholder?: string
-  value: string
-  onChange: (value: string) => void
-  targetChainId?: TargetChainId
-}) {
+}: AddressInputPanelProps): ReactElement {
   const { t } = useLingui()
   const { chainId: walletChainId } = useWalletInfo()
-  // Use targetChainId if provided (for cross-chain), otherwise fall back to wallet's chain
   const chainId = targetChainId ?? walletChainId
-  const isNonEvmTarget = targetChainId !== undefined && !isEvmChain(targetChainId)
+  const strategy = getAddressValidationStrategy(targetChainId)
   const chainInfo = getChainInfo(chainId)
   const addressPrefix = chainInfo?.addressPrefix
-  const { address, loading, name } = useAddressResolution(value, isNonEvmTarget)
+  const { address, loading, name } = useAddressResolution(value, targetChainId)
   const [chainPrefixWarning, setChainPrefixWarning] = useState('')
   const isDarkMode = useIsDarkMode()
 
@@ -134,26 +71,25 @@ export function AddressInputPanel({
     (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       setChainPrefixWarning('')
-      let value = input.replace(/\s+/g, '')
+      let parsed = input.replace(/\s+/g, '')
 
-      if (!isNonEvmTarget && isPrefixedAddress(value)) {
-        const { prefix, address } = parsePrefixedAddress(value)
+      if (strategy.supportsChainPrefix && isPrefixedAddress(parsed)) {
+        const { prefix, address: prefixedAddr } = parsePrefixedAddress(parsed)
 
         if (prefix && addressPrefix !== prefix) {
           setChainPrefixWarning(prefix)
         }
 
-        if (address) {
-          value = address
+        if (prefixedAddr) {
+          parsed = prefixedAddr
         }
       }
 
-      onChange(value)
+      onChange(parsed)
     },
-    [onChange, addressPrefix, isNonEvmTarget],
+    [onChange, addressPrefix, strategy],
   )
 
-  //clear warning if target chainId changes and we are now on the right network
   useEffect(() => {
     if (chainPrefixWarning && chainPrefixWarning === addressPrefix) {
       setChainPrefixWarning('')
@@ -172,7 +108,7 @@ export function AddressInputPanel({
           <AutoColumn gap="md">
             <RowBetween>
               <span>{label ?? <Trans>Recipient</Trans>}</span>
-              {address && chainId && !isNonEvmTarget && (
+              {address && chainId && strategy.supportsENS && (
                 <ExternalLink href={getExplorerLink(chainId, 'address', name ?? address)} style={{ fontSize: '14px' }}>
                   <Trans>(View on Explorer)</Trans>
                 </ExternalLink>
@@ -185,7 +121,10 @@ export function AddressInputPanel({
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck="false"
-              placeholder={placeholder ?? (isNonEvmTarget ? t`Recipient address` : t`Wallet Address or ENS name`)}
+              placeholder={
+                placeholder ??
+                (strategy.placeholderKey === 'nonEvm' ? t`Recipient address` : t`Wallet Address or ENS name`)
+              }
               error={error}
               pattern="^(0x[a-fA-F0-9]{40})$"
               onChange={handleInput}

@@ -312,7 +312,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     recipient={recipient || ''}
                     onChangeRecipient={onChangeRecipient}
                     targetChainId={buyToken?.chainId}
-                    isMandatory={isNonEvmBridging}
+                    isRequired={isNonEvmBridging}
                   />
                 )}
 
