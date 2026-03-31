@@ -8,5 +8,5 @@
   ],
   "buildCommand": "cd ../../ && pnpm build:cowswap",
   "outputDirectory": "../../build/cowswap",
-  "installCommand": "cd ../../ && pnpm run install:ci"
+  "installCommand": "cd ../../ && corepack enable && corepack prepare pnpm@10.30.3 --activate && pnpm run install:ci"
 }
