@@ -143,16 +143,37 @@ export function useIsMetamaskBrowserExtensionWallet(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isMetamaskConnection = connectionType === ConnectionType.METAMASK
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const { isMetamaskConnection, isInjectedConnection } = getMetaMaskConnectionInfo({
+    connector,
+    connectionType,
+  })
 
   if (isMetamaskConnection) return true
 
   if (!info || !isInjectedConnection) return false
 
   return METAMASK_RDNS === info.info.rdns
+}
+
+function getMetaMaskConnectionInfo({
+  connector,
+  connectionType,
+}: {
+  connector: ReturnType<typeof useConnection>['connector']
+  connectionType: ConnectionType | undefined
+}): { isMetamaskConnection: boolean; isInjectedConnection: boolean } {
+  if (!LAUNCH_DARKLY_VIEM_MIGRATION) {
+    return {
+      isMetamaskConnection: connectionType === ConnectionType.METAMASK,
+      isInjectedConnection: connectionType === ConnectionType.INJECTED,
+    }
+  }
+
+  const normalizedConnectorName = connector?.name?.toLowerCase().trim()
+  const isMetaMaskConnectorId = connector?.id === 'metaMaskSDK'
+
+  return {
+    isMetamaskConnection: isMetaMaskConnectorId || normalizedConnectorName === 'metamask',
+    isInjectedConnection: connector?.type === ConnectorType.INJECTED || isMetaMaskConnectorId,
+  }
 }

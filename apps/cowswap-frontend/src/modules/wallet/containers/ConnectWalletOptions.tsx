@@ -6,7 +6,7 @@ import { EIP6963ProviderDetail } from '@cowprotocol/types'
 import {
   CoinbaseWalletOption,
   InjectedOption as DefaultInjectedOption,
-  MetaMaskSdkOption,
+  MetaMaskConnectOption,
   WalletConnectV2Option,
   getIsInjected,
   TryActivation,
@@ -38,9 +38,9 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
   const hasInjectedMetaMask = multiInjectedProviders.some((providerInfo) =>
     providerInfo.info.rdns.startsWith('io.metamask'),
   )
-  const showMetaMaskSdkOption = !hasInjectedMetaMask && !isMobile
-  const metaMaskSdkOption = showMetaMaskSdkOption ? (
-    <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
+  const showMetaMaskConnectOption = !hasInjectedMetaMask && !isMobile
+  const metaMaskConnectOption = showMetaMaskConnectOption ? (
+    <MetaMaskConnectOption key="MetaMaskConnectOption" {...connectionProps} />
   ) : null
 
   const coinbaseWalletOption =
@@ -68,7 +68,7 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
 
   const items = [
     injectedOption,
-    metaMaskSdkOption,
+    metaMaskConnectOption,
     walletConnectionV2Option,
     coinbaseWalletOption,
     /*{trezorOption}*/

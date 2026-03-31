@@ -39,7 +39,7 @@
     "@ethersproject/providers": "5.7.0",
     "@ethersproject/transactions": "5.7.0",
     "@metamask/jazzicon": "^2.0.0",
-    "@metamask/sdk": "^0.31.4",
+    "@metamask/connect-evm": "^0.5.0",
     "@safe-global/api-kit": "^4.0.1",
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@safe-global/types-kit": "^3.0.0",

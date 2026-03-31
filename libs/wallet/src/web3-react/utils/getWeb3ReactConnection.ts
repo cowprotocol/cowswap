@@ -4,7 +4,7 @@ import { Connector } from '@web3-react/types'
 import { ConnectionType } from '../../api/types'
 import { coinbaseWalletConnection } from '../connection/coinbase'
 import { injectedWalletConnection } from '../connection/injectedWallet'
-import { metaMaskSdkConnection } from '../connection/metaMaskSdk'
+import { metaMaskConnectConnection } from '../connection/metaMaskConnect'
 import { networkConnection } from '../connection/network'
 import { gnosisSafeConnection } from '../connection/safe'
 import { trezorConnection } from '../connection/trezor'
@@ -17,7 +17,7 @@ const connectionTypeToConnection: Record<
   Web3ReactConnection
 > = {
   [ConnectionType.INJECTED]: injectedWalletConnection,
-  [ConnectionType.METAMASK]: metaMaskSdkConnection,
+  [ConnectionType.METAMASK]: metaMaskConnectConnection,
   [ConnectionType.COINBASE_WALLET]: coinbaseWalletConnection,
   [ConnectionType.NETWORK]: networkConnection,
   [ConnectionType.GNOSIS_SAFE]: gnosisSafeConnection,

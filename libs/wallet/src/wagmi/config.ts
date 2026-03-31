@@ -1,7 +1,7 @@
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { safe, injected } from '@wagmi/connectors'
+import { safe, injected, metaMask } from '@wagmi/connectors'
 import { Chain, http } from 'viem'
 import { arbitrum, avalanche, base, bsc, gnosis, ink, linea, mainnet, plasma, polygon, sepolia } from 'viem/chains'
 import { createConfig, Transport } from 'wagmi'
@@ -31,5 +31,14 @@ export const config = createConfig({
     },
     {} as Record<SupportedChainId, Transport>,
   ),
-  connectors: [safe(), injected()],
+  connectors: [
+    safe(),
+    injected(),
+    metaMask({
+      dapp: {
+        name: 'CoW Swap',
+        url: typeof window === 'undefined' ? 'https://swap.cow.fi' : window.location.origin,
+      },
+    }),
+  ],
 })
