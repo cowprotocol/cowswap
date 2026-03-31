@@ -44,7 +44,8 @@ interface LayoutProps {
 
 export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeight }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
-  const { isAffiliateProgramEnabled, isSolversEnabled } = useFeatureFlags()
+  const { isSolversEnabled } = useFeatureFlags()
+  const isAffiliateProgramEnabled = true
 
   const GlobalStyles = GlobalCoWDAOStyles()
   const LocalStyles = createGlobalStyle(

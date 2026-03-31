@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react'
 
 import { initGtm } from '@cowprotocol/analytics'
+import IMG_AFFILIATE_EARN from '@cowprotocol/assets/images/image-affiliate-earn.svg'
+import IMG_GENERATE_LINK from '@cowprotocol/assets/images/image-generate-link.svg'
+import IMG_SHARE_IT from '@cowprotocol/assets/images/image-shareit.svg'
 import { UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -26,30 +29,33 @@ export const AFFILIATE_PROGRAM_DOCS_CTA = {
 
 export const AFFILIATE_PROGRAM_STEPS = [
   {
-    label: 'Step 1',
     title: 'Generate your link',
     description: 'Head to the affiliate portal and generate your unique referral link. No application. No approval.',
-    bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
-    textColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
-    descriptionColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
+    bgColor: `var(${UI.COLOR_YELLOW_800_PRIMARY})`,
+    textColor: `var(${UI.COLOR_YELLOW_300_PRIMARY})`,
+    descriptionColor: `var(${UI.COLOR_YELLOW_300_PRIMARY})`,
+    image: IMG_GENERATE_LINK,
+    imageHeight: 128,
   },
   {
-    label: 'Step 2',
     title: 'Share it',
     description:
       'Post it on X, drop it in your Telegram, link it in your YouTube description, or share it wherever your community lives.',
-    bgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
-    textColor: `var(${UI.COLOR_NEUTRAL_100})`,
-    descriptionColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
+    bgColor: `var(${UI.COLOR_YELLOW_300_PRIMARY})`,
+    textColor: `var(${UI.COLOR_YELLOW_800_PRIMARY})`,
+    descriptionColor: `var(${UI.COLOR_YELLOW_800_PRIMARY})`,
+    image: IMG_SHARE_IT,
+    imageHeight: 132,
   },
   {
-    label: 'Step 3',
     title: 'Earn rewards',
     description:
       'When referred wallets hit trading milestones, rewards are triggered for you and your traders. Paid weekly in USDC.',
-    bgColor: `var(${UI.COLOR_BLUE_100_PRIMARY})`,
-    textColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
-    descriptionColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
+    bgColor: `var(${UI.COLOR_YELLOW_700_PRIMARY})`,
+    textColor: `var(${UI.COLOR_NEUTRAL_100})`,
+    descriptionColor: `var(${UI.COLOR_NEUTRAL_100})`,
+    image: IMG_AFFILIATE_EARN,
+    imageHeight: 128,
   },
 ] as const
 

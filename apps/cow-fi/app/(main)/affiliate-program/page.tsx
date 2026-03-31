@@ -1,15 +1,12 @@
 'use client'
-
 import type { ReactNode } from 'react'
-import { useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import IMG_ICON_COW_LENS from '@cowprotocol/assets/images/icon-cow-lens.svg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-cowswap-hero.svg'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-affiliate-hero.svg'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
-import { useRouter } from 'next/navigation'
 import { CowFiCategory } from 'src/common/analytics/types'
 
 import FAQ from '@/components/FAQ'
@@ -39,17 +36,17 @@ import {
   TopicCard,
   TopicCardInner,
   TopicDescription,
+  TopicImage,
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
 
 type SendEvent = (action: string) => void
-
 function AffiliateHero({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
   return (
-    <HeroContainer variant="secondary">
+    <HeroContainer variant="secondary" minHeight="40vh">
       <HeroContent variant="secondary">
-        <HeroSubtitle color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}>Affiliate Program</HeroSubtitle>
+        <HeroSubtitle color={`var(${UI.COLOR_YELLOW_700_PRIMARY})`}>Affiliate Program</HeroSubtitle>
         <HeroTitle>Moo &amp; Earn</HeroTitle>
         <HeroDescription color={`var(${UI.COLOR_NEUTRAL_30})`}>
           Turn your influence into income. Share CoW Swap with your audience and earn rewards every time they trade.
@@ -57,8 +54,8 @@ function AffiliateHero({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
           No gatekeepers. No approval. Just your link - and the moos.
         </HeroDescription>
         <Link
-          bgColor={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
-          color={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
+          bgColor={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
+          color={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
           href={AFFILIATE_PROGRAM_CTA.href}
           external
           linkType={LinkType.HeroButton}
@@ -68,61 +65,70 @@ function AffiliateHero({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
           {AFFILIATE_PROGRAM_CTA.text}
         </Link>
       </HeroContent>
-      <HeroImage width={470} height={470} color={`var(${UI.COLOR_BLUE_900_PRIMARY})`} marginMobile="24px auto 56px">
+      <HeroImage
+        width={470}
+        height={470}
+        widthMobile="100%"
+        heightMobile={300}
+        color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
+        marginMobile="24px auto 56px"
+      >
         <LazySVG src={IMG_COWSWAP_HERO} />
       </HeroImage>
     </HeroContainer>
   )
 }
-
-function HowItWorksSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
+function HowItWorksSection(): ReactNode {
   return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`}>
-      <ContainerCardSection gap={90}>
-        <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={920}>
-          <SectionTitleIcon>
-            <ProductLogo variant={ProductVariant.CowSwap} theme="dark" logoIconOnly />
+    <ContainerCard
+      bgColor={`var(${UI.COLOR_NEUTRAL_10})`}
+      color={`var(${UI.COLOR_NEUTRAL_100})`}
+      padding="12rem 6rem 6rem"
+    >
+      <ContainerCardSection gap={64}>
+        <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_100})`} margin="0 auto" gap={64}>
+          <SectionTitleIcon $multiple $size={110}>
+            <LazySVG src={IMG_ICON_COW_LENS} style={{ filter: 'brightness(0) saturate(100%) invert(100%)' }} />
           </SectionTitleIcon>
-          <SectionTitleText>
-            The more you moo,
-            <br />
-            the more you earn
-          </SectionTitleText>
-          <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_50})`}>
+          <SectionTitleText>The more you moo, the more you earn</SectionTitleText>
+          <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_70})`} fontSize={30} maxWidth={760}>
             Share CoW Swap with your community and earn USDC rewards when they hit volume milestones. It&apos;s
             permissionless, transparent, and built for the people who move markets.
           </SectionTitleDescription>
-          <Link
-            bgColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-            color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
-            href={AFFILIATE_PROGRAM_DOCS_CTA.href}
-            external
-            linkType={LinkType.SectionTitleButton}
-            utmContent={AFFILIATE_PROGRAM_DOCS_CTA.utmContent}
-            onClick={() => sendEvent(AFFILIATE_PROGRAM_DOCS_CTA.action)}
-          >
-            {AFFILIATE_PROGRAM_DOCS_CTA.text} &#8594;
-          </Link>
         </SectionTitleWrapper>
-
-        <TopicList columns={3} columnsTablet={2}>
+        <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_100})`} margin="6.4rem auto 1.6rem" gap={0}>
+          <SectionTitleText fontSize={42} fontSizeMobile={32}>
+            How it works
+          </SectionTitleText>
+        </SectionTitleWrapper>
+        <TopicList columns={3} columnsTablet={2} gap={24}>
           {AFFILIATE_PROGRAM_STEPS.map((step) => (
             <TopicCard
               key={step.title}
               contentAlign="left"
               bgColor={step.bgColor}
               textColor={step.textColor}
-              padding="32px"
+              padding="24px"
               asProp="div"
+              height="100%"
             >
-              <TopicCardInner contentAlign="left">
-                <TopicDescription fontSize={16} color={step.descriptionColor} margin="0">
-                  {step.label}
-                </TopicDescription>
-                <TopicTitle fontSize={38}>{step.title}</TopicTitle>
-                <TopicDescription fontSize={21} color={step.descriptionColor} margin="0">
+              <TopicCardInner contentAlign="left" height="100%" gap={24}>
+                <TopicTitle fontSize={28} color={step.textColor}>
+                  {step.title}
+                </TopicTitle>
+                <TopicDescription fontSize={18} color={step.descriptionColor} margin="0">
                   {step.description}
                 </TopicDescription>
+                <TopicImage
+                  width={260}
+                  maxWidth="100%"
+                  height={step.imageHeight}
+                  margin="auto 0 0 auto"
+                  marginMobile="auto 0 0 auto"
+                  bgColor="transparent"
+                >
+                  <LazySVG src={step.image} />
+                </TopicImage>
               </TopicCardInner>
             </TopicCard>
           ))}
@@ -131,7 +137,6 @@ function HowItWorksSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
     </ContainerCard>
   )
 }
-
 function WhyCowSwapSection(): ReactNode {
   return (
     <ContainerCard bgColor="transparent">
@@ -145,24 +150,19 @@ function WhyCowSwapSection(): ReactNode {
             The DEX of choice for crypto whales and pros
           </SectionTitleDescription>
         </SectionTitleWrapper>
-
         <TopicList columns={4} columnsTablet={2}>
           {AFFILIATE_PROGRAM_METRICS.map((metric) => (
             <TopicCard
               key={metric.title}
               contentAlign="left"
-              bgColor={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
-              textColor={`var(${UI.COLOR_NEUTRAL_100})`}
+              bgColor={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
+              textColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
               padding="32px"
               asProp="div"
             >
               <TopicCardInner contentAlign="left">
-                <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`} fontSize={51}>
-                  {metric.title}
-                </TopicTitle>
-                <TopicDescription fontSize={21} color={`var(${UI.COLOR_BLUE_300_PRIMARY})`}>
-                  {metric.description}
-                </TopicDescription>
+                <TopicTitle fontSize={51}>{metric.title}</TopicTitle>
+                <TopicDescription fontSize={21}>{metric.description}</TopicDescription>
               </TopicCardInner>
             </TopicCard>
           ))}
@@ -171,7 +171,6 @@ function WhyCowSwapSection(): ReactNode {
     </ContainerCard>
   )
 }
-
 function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
   return (
     <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`}>
@@ -182,7 +181,6 @@ function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode
           </SectionTitleIcon>
           <SectionTitleText>FAQs</SectionTitleText>
         </SectionTitleWrapper>
-
         <FAQ faqs={AFFILIATE_PROGRAM_FAQ} fontSize={18} />
 
         <SectionTitleWrapper margin="2.4rem auto" maxWidth={900} gap={36}>
@@ -190,8 +188,8 @@ function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode
             Looking for more details? Read the full documentation and FAQ.
           </SectionTitleDescription>
           <Link
-            bgColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-            color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
+            bgColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
+            color={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
             href={AFFILIATE_PROGRAM_DOCS_CTA.href}
             external
             linkType={LinkType.SectionTitleButton}
@@ -205,7 +203,6 @@ function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode
     </ContainerCard>
   )
 }
-
 function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
   return (
     <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
@@ -219,8 +216,8 @@ function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
             Generate your link. Share it. Earn USDC - every week.
           </SectionTitleDescription>
           <Link
-            bgColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-            color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
+            bgColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
+            color={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
             href={AFFILIATE_PROGRAM_CTA.href}
             external
             linkType={LinkType.SectionTitleButton}
@@ -234,33 +231,15 @@ function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
     </ContainerCard>
   )
 }
-
 export default function Page(): ReactNode {
   const analytics = useCowAnalytics()
-  const router = useRouter()
-  const { isAffiliateProgramEnabled } = useFeatureFlags()
-
-  useEffect(() => {
-    if (isAffiliateProgramEnabled === false) {
-      router.replace('/')
-    }
-  }, [isAffiliateProgramEnabled, router])
-
-  if (typeof isAffiliateProgramEnabled !== 'boolean' || !isAffiliateProgramEnabled) {
-    return null
-  }
-
   const sendEvent = (action: string): void => {
-    analytics.sendEvent({
-      category: CowFiCategory.COWSWAP,
-      action,
-    })
+    analytics.sendEvent({ category: CowFiCategory.COWSWAP, action })
   }
-
   return (
     <PageWrapper>
       <AffiliateHero sendEvent={sendEvent} />
-      <HowItWorksSection sendEvent={sendEvent} />
+      <HowItWorksSection />
       <WhyCowSwapSection />
       <AffiliateFaqSection sendEvent={sendEvent} />
       <FooterCtaSection sendEvent={sendEvent} />
