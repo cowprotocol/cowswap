@@ -5,7 +5,7 @@
       "destination": "/index.html"
     }
   ],
-  "buildCommand": "cd ../../ && corepack enable && corepack prepare pnpm@10.30.3 --activate && pnpm run build:widget",
+  "buildCommand": "cd ../.. && npx --yes pnpm@10.30.3 run build:widget",
   "outputDirectory": "../../build/widget-configurator",
-  "installCommand": "cd ../../ && corepack enable && corepack prepare pnpm@10.30.3 --activate && node tools/scripts/install-sdk-preview.js && pnpm install --frozen-lockfile"
+  "installCommand": "cd ../.. && node tools/scripts/install-sdk-preview.js && npx --yes pnpm@10.30.3 install --frozen-lockfile"
 }
