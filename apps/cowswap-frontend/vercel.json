@@ -6,7 +6,7 @@
       "permanent": false
     }
   ],
-  "buildCommand": "cd ../../ && pnpm build:cowswap",
+  "buildCommand": "cd ../../ && corepack enable && corepack prepare pnpm@10.30.3 --activate && pnpm build:cowswap",
   "outputDirectory": "../../build/cowswap",
-  "installCommand": "cd ../../ && corepack enable && corepack prepare pnpm@10.30.3 --activate && pnpm run install:ci"
+  "installCommand": "cd ../../ && corepack enable && corepack prepare pnpm@10.30.3 --activate && node tools/scripts/install-sdk-preview.js && pnpm install --frozen-lockfile"
 }
