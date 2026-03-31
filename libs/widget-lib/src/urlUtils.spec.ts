@@ -1,5 +1,5 @@
 import { TradeType } from './types'
-import { buildWidgetUrl } from './urlUtils'
+import { buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
 
 const chainId = 1
 const tradeType = TradeType.SWAP
@@ -84,5 +84,17 @@ describe.skip('buildWidgetUrl', () => {
       })
       expect(url).toEqual('https://swap.cow.fi/#/100/widget/swap/DAI/USDC?sellAmount=0.1&buyAmount=0.1&theme=light')
     })
+  })
+})
+
+describe('buildWidgetUrlQuery', () => {
+  it('serializes locale forcing as lng', () => {
+    expect(buildWidgetUrlQuery({ locale: 'es-ES' }).toString()).toBe('palette=null&lng=es-ES')
+  })
+
+  it('includes locale in the iframe URL', () => {
+    expect(buildWidgetUrl({ chainId, tradeType, locale: 'fr' })).toBe(
+      'https://swap.cow.fi/#/1/widget/swap/_/_?palette=null&lng=fr',
+    )
   })
 })

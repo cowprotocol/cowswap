@@ -242,6 +242,13 @@ export interface CowSwapWidgetParams {
   buyTokenLists?: string[]
 
   /**
+   * Forces the widget locale.
+   * Serialized as the `lng` query param used by the frontend locale resolver.
+   * Accepts supported locales like `en-US` and fuzzy values like `en`.
+   */
+  locale?: string
+
+  /**
    * Control the "Recent tokens" section displaying in the token selector
    */
   hideRecentTokens?: boolean
