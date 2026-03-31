@@ -42,13 +42,23 @@ function validateDaiPermit(
       abi: oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI as readonly unknown[],
       data: callData as Hex,
     })
-    const decoded = args as unknown as { holder?: string; spender?: string; expiry?: bigint }
+    const tuple = args as unknown as readonly [
+      holder: `0x${string}`,
+      spender: `0x${string}`,
+      nonce: bigint,
+      expiry: bigint,
+      allowed: boolean,
+    ]
+    if (!tuple || tuple.length < 5) return null
+
+    const holder = tuple[0]
+    const spender = tuple[1]
+    const expiry = tuple[3]
 
     if (
-      decoded &&
-      areAddressesEqual(decoded.spender ?? '', spenderAddress) &&
-      areAddressesEqual(decoded.holder ?? '', ownerAddress) &&
-      Number(decoded.expiry ?? 0) > Date.now() / 1000
+      areAddressesEqual(String(spender), spenderAddress) &&
+      areAddressesEqual(String(holder), ownerAddress) &&
+      Number(expiry) > Date.now() / 1000
     ) {
       // DAI permit has no value in the call data, so we assume it's always max approval
       return {

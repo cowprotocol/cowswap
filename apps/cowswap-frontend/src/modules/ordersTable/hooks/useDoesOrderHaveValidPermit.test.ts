@@ -38,6 +38,7 @@ jest.mock('wagmi', () => ({
   http: jest.fn(),
   useConfig: jest.fn().mockReturnValue({}),
   usePublicClient: jest.fn().mockReturnValue({}),
+  useWalletClient: jest.fn().mockReturnValue({ data: undefined }),
 }))
 
 jest.mock('modules/permit', () => ({

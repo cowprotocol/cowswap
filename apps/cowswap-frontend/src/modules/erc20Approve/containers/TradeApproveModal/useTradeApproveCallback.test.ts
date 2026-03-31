@@ -7,6 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook, waitFor } from '@testing-library/react'
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
+import { usePublicClient } from 'wagmi'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
@@ -57,7 +58,7 @@ jest.mock('viem', () => ({
 
 jest.mock('wagmi', () => ({
   ...jest.requireActual('wagmi'),
-  usePublicClient: jest.fn(() => ({})),
+  usePublicClient: jest.fn(),
 }))
 
 const mockUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
@@ -74,6 +75,7 @@ const mockUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.MockedFu
 const mockProcessApprovalTransaction = processApprovalTransaction as jest.MockedFunction<
   typeof processApprovalTransaction
 >
+const mockUsePublicClient = usePublicClient as jest.MockedFunction<typeof usePublicClient>
 
 // eslint-disable-next-line max-lines-per-function
 describe('useTradeApproveCallback', () => {
@@ -116,6 +118,10 @@ describe('useTradeApproveCallback', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockUseWalletInfo.mockReturnValue({ chainId: mockChainId, account: mockAccount } as any)
     mockUseSetOptimisticAllowance.mockReturnValue(mockSetOptimisticAllowance)
+    mockUsePublicClient.mockReturnValue({
+      waitForTransactionReceipt: mockWaitForTransactionReceipt,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any)
   })
 
   describe('successful approval flow', () => {
@@ -259,7 +265,7 @@ describe('useTradeApproveCallback', () => {
       await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
       await waitFor(() => {
-        expect(mockWait).toHaveBeenCalled()
+        expect(mockWaitForTransactionReceipt).toHaveBeenCalled()
       })
     })
   })

@@ -75,7 +75,7 @@ describe('processApprovalTransaction', () => {
         owner: mockAccount,
         spender: mockSpender,
         amount: mockAmount,
-        blockNumber: mockBlockNumber,
+        blockNumber: BigInt(mockBlockNumber),
         chainId: mockChainId,
       })
     })
@@ -100,7 +100,7 @@ describe('processApprovalTransaction', () => {
         owner: mockAccount,
         spender: mockSpender,
         amount: zeroAmount,
-        blockNumber: mockBlockNumber,
+        blockNumber: BigInt(mockBlockNumber),
         chainId: mockChainId,
       })
     })
@@ -135,7 +135,7 @@ describe('processApprovalTransaction', () => {
         owner: mockAccount,
         spender: mockSpender,
         amount: mockAmount,
-        blockNumber: mockBlockNumber,
+        blockNumber: BigInt(mockBlockNumber),
         chainId: mockChainId,
       })
     })
