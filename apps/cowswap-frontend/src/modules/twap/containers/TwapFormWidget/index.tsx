@@ -9,12 +9,12 @@ import { TradeType } from '@cowprotocol/widget-lib'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
-import { useGetReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
-import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useGetTradeFormValidations, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -73,10 +73,11 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const updateSettingsState = useSetAtom(updateTwapOrdersSettingsAtom)
 
   const localFormValidation = useTwapFormState()
-  const primaryFormValidation = useGetTradeFormValidation()
+  const validations = useGetTradeFormValidations()
+  const primaryFormValidation = validations?.[0] || null
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const hideQuoteAmount = useShouldHideQuoteAmounts()
+  const hideQuoteAmount = useShouldHideTradeRateDetails()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
