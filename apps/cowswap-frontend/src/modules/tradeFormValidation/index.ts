@@ -1,6 +1,7 @@
 export * from './updaters/TradeFormValidationUpdater'
 export * from './hooks/useGetTradeFormValidation'
 export * from './hooks/useGetTradeFormValidations'
+export * from './hooks/useShouldHideTradeRateDetails'
 export * from './hooks/useTradeFormButtonContext'
 export * from './hooks/useIsTradeFormValidationPassed'
 export * from './pure/TradeFormButtons'
