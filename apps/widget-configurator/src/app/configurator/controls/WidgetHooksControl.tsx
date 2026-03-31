@@ -22,8 +22,6 @@ export function WidgetHooksControl({
   const [widgetHooks, setWidgetHooks] = state
 
   const handleChange = (event: SelectChangeEvent<WidgetHookEvents[]>): void => {
-    if (!event.target.value.length) return
-
     setWidgetHooks(event.target.value as WidgetHookEvents[])
   }
 
@@ -41,7 +39,7 @@ export function WidgetHooksControl({
       >
         {WIDGET_HOOKS.map((option) => (
           <MenuItem key={option} value={option}>
-            <Checkbox checked={widgetHooks.indexOf(option) > -1} />
+            <Checkbox checked={widgetHooks.includes(option)} />
             <ListItemText primary={option} />
           </MenuItem>
         ))}

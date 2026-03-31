@@ -8,13 +8,7 @@ import { TokenListItem } from './types'
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
 
-export const WIDGET_HOOKS = [
-  WidgetHookEvents.ON_BEFORE_APPROVAL,
-  WidgetHookEvents.ON_BEFORE_TRADE,
-  WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP,
-  WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL,
-  WidgetHookEvents.ON_BEFORE_ORDER_CANCEL,
-]
+export const WIDGET_HOOKS = Object.values(WidgetHookEvents)
 
 // Sourced from https://tokenlists.org/
 export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
