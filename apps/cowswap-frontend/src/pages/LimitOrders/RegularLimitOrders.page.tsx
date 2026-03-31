@@ -1,7 +1,8 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense, useMemo } from 'react'
+import { ReactNode, Suspense, useMemo, useState } from 'react'
 
 import { UiOrderType } from '@cowprotocol/types'
+import { BlockOrDrawer } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Loading } from 'legacy/components/FlashingLoading'
@@ -16,6 +17,7 @@ import * as styledEl from 'modules/trade/pure/TradePageLayout'
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 
 export function RegularLimitOrdersPage(): ReactNode {
+  const [isOrdersTableOpen, setIsOrdersTableOpen] = useState(false)
   const isUnlocked = useIsWidgetUnlocked()
   const { chainId, account } = useWalletInfo()
   const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
@@ -34,16 +36,18 @@ export function RegularLimitOrdersPage(): ReactNode {
       hideOrdersTable={hideOrdersTable}
     >
       <styledEl.PrimaryWrapper>
-        <LimitOrdersWidget />
+        <LimitOrdersWidget toggleMyOrders={() => setIsOrdersTableOpen(true)} />
       </styledEl.PrimaryWrapper>
 
       {!hideOrdersTable && (
-        <styledEl.SecondaryWrapper className="trade-orders-table">
-          {pendingLimitOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingLimitOrders} />}
-          <Suspense fallback={<Loading />}>
-            <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
-          </Suspense>
-        </styledEl.SecondaryWrapper>
+        <BlockOrDrawer isOpen={isOrdersTableOpen} onDismiss={() => setIsOrdersTableOpen(false)}>
+          <styledEl.SecondaryWrapper className="trade-orders-table">
+            {pendingLimitOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingLimitOrders} />}
+            <Suspense fallback={<Loading />}>
+              <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
+            </Suspense>
+          </styledEl.SecondaryWrapper>
+        </BlockOrDrawer>
       )}
     </styledEl.PageWrapper>
   )

@@ -247,6 +247,7 @@ export function YieldWidget() {
           outputCurrencyInfo={outputCurrencyPreviewInfo}
         />
       }
+      toggleMyOrders={() => {}}
     />
   )
 }

@@ -32,6 +32,7 @@ export const ContainerBox = styled.div`
   box-shadow: ${({ theme }) => (theme.isWidget ? theme.boxShadow1 : 'none')};
   padding: 10px;
   position: relative;
+  overflow: hidden;
 
   > div,
   > span {

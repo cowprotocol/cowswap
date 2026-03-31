@@ -2,11 +2,10 @@ import { useSetAtom } from 'jotai'
 
 import Close from '@cowprotocol/assets/images/x.svg?react'
 import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
-import { Media, UI } from '@cowprotocol/ui'
+import { Media, UI, SmartModal } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/AccountSelectorModal/state'
@@ -18,57 +17,7 @@ import { useCloseAccountModalOnNavigate } from '../../hooks/useCloseAccountModal
 import { useToggleAccountModal } from '../../hooks/useToggleAccountModal'
 import { AccountDetails } from '../AccountDetails'
 
-const SideBar = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-flow: row wrap;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  max-width: 850px;
-  height: 80vh;
-  border-radius: 24px;
-  margin: auto;
-  bottom: 0;
-  left: 0;
-  z-index: 5;
-  padding: 0;
-  cursor: default;
-  overflow-y: hidden;
-  box-shadow: ${({ theme }) => theme.boxShadow1};
-  background: var(${UI.COLOR_PAPER});
-
-  ${Media.upToMedium()} {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    border-radius: ${({ theme }) => (theme.isWidget ? '24px' : '0')};
-    z-index: 10;
-  }
-
-  ${Media.upToSmall()} {
-    padding: 0 0 58px;
-  }
-`
-
-const SidebarBackground = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 4;
-  width: 100%;
-  height: 100%;
-  background: ${({ theme }) => (theme.isWidget ? 'transparent' : transparentize(theme.black, 0.1))};
-  backdrop-filter: blur(3px);
-
-  ${Media.upToSmall()} {
-    display: none;
-  }
-`
-
-const Header = styled.div`
+export const Header = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -155,26 +104,23 @@ export function OrdersPanel() {
   }
 
   return (
-    <>
-      <SidebarBackground onClick={handleCloseOrdersPanel} />
-      <SideBar>
-        <Wrapper>
-          <Header>
-            <strong>
-              <Trans>Account</Trans>
-            </strong>
-            <CloseIcon onClick={handleCloseOrdersPanel} />
-          </Header>
+    <SmartModal isOpen={isOpen} onDismiss={handleCloseOrdersPanel} drawerMediaQuery={Media.upToSmall(false)}>
+      <Wrapper>
+        <Header>
+          <strong>
+            <Trans>Account</Trans>ss
+          </strong>
+          <CloseIcon onClick={handleCloseOrdersPanel} />
+        </Header>
 
-          <AccountDetails
-            ENSName={ensName}
-            pendingTransactions={pendingActivity}
-            confirmedTransactions={confirmedActivity}
-            toggleAccountSelectorModal={toggleAccountSelectorModal}
-            handleCloseOrdersPanel={handleCloseOrdersPanel}
-          />
-        </Wrapper>
-      </SideBar>
-    </>
+        <AccountDetails
+          ENSName={ensName}
+          pendingTransactions={pendingActivity}
+          confirmedTransactions={confirmedActivity}
+          toggleAccountSelectorModal={toggleAccountSelectorModal}
+          handleCloseOrdersPanel={handleCloseOrdersPanel}
+        />
+      </Wrapper>
+    </SmartModal>
   )
 }

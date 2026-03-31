@@ -1,7 +1,8 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense } from 'react'
+import { ReactNode, Suspense, useState } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { BlockOrDrawer } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -38,6 +39,8 @@ import { HydrateAtom } from 'common/state/HydrateAtom'
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
 export function AdvancedOrdersPage(): ReactNode {
+  const [isOrdersTableOpen, setIsOrdersTableOpen] = useState(false)
+
   const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
@@ -73,6 +76,7 @@ export function AdvancedOrdersPage(): ReactNode {
             confirmContent={<TwapConfirmModal />}
             params={advancedWidgetParams}
             mapCurrencyInfo={mapTwapCurrencyInfo}
+            toggleMyOrders={() => setIsOrdersTableOpen(true)}
           >
             {(tradeWarnings) => (
               <>
@@ -84,15 +88,17 @@ export function AdvancedOrdersPage(): ReactNode {
         </styledEl.PrimaryWrapper>
 
         {!hideOrdersTable && (
-          <styledEl.SecondaryWrapper className="trade-orders-table">
-            <Suspense fallback={<Loading />}>
-              <OrdersTableWidget
-                displayOrdersOnlyForSafeApp
-                orderType={TabOrderTypes.ADVANCED}
-                orders={allEmulatedOrders}
-              />
-            </Suspense>
-          </styledEl.SecondaryWrapper>
+          <BlockOrDrawer isOpen={isOrdersTableOpen} onDismiss={() => setIsOrdersTableOpen(false)}>
+            <styledEl.SecondaryWrapper className="trade-orders-table">
+              <Suspense fallback={<Loading />}>
+                <OrdersTableWidget
+                  displayOrdersOnlyForSafeApp
+                  orderType={TabOrderTypes.ADVANCED}
+                  orders={allEmulatedOrders}
+                />
+              </Suspense>
+            </styledEl.SecondaryWrapper>
+          </BlockOrDrawer>
         )}
       </styledEl.PageWrapper>
     </HydrateAtom>

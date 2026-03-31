@@ -1,9 +1,9 @@
-import { MouseEvent, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
+import { Media, SmartModal } from '@cowprotocol/ui'
 
-import { createPortal } from 'react-dom'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 import {
   ConnectedChainSelector,
@@ -27,7 +27,7 @@ import {
   useWidgetEffects,
   useWidgetOpenState,
 } from '../hooks'
-import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
+import { InnerWrapper, ModalContainer, Wrapper } from '../styled'
 
 export interface SelectTokenModalProps {
   children: ReactNode
@@ -48,27 +48,28 @@ export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode
 
   if (!isOpen) return null
 
-  const handleOverlayClick = (event: MouseEvent<HTMLDivElement>): void => {
-    if (event.target === event.currentTarget) onDismiss()
-  }
+  const contentMaxWidth = isCompactLayout
+    ? undefined
+    : chainPanel.isEnabled
+      ? WIDGET_MAX_WIDTH.tokenSelectSidebar
+      : WIDGET_MAX_WIDTH.tokenSelect
 
-  const content = (
-    <Wrapper>
-      <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
-        <ModalContainer>{children}</ModalContainer>
-      </InnerWrapper>
-    </Wrapper>
+  return (
+    <SmartModal
+      isOpen={isOpen}
+      onDismiss={onDismiss}
+      drawerMediaQuery={Media.upToMedium(false)}
+      maxHeight={90}
+      contentMaxWidth={contentMaxWidth}
+      panelScrolls={false}
+    >
+      <Wrapper>
+        <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
+          <ModalContainer>{children}</ModalContainer>
+        </InnerWrapper>
+      </Wrapper>
+    </SmartModal>
   )
-
-  const overlay = (
-    <WidgetOverlay onClick={handleOverlayClick}>
-      <WidgetCard $isCompactLayout={isCompactLayout} $hasChainPanel={chainPanel.isEnabled}>
-        {content}
-      </WidgetCard>
-    </WidgetOverlay>
-  )
-
-  return typeof document === 'undefined' ? overlay : createPortal(overlay, document.body)
 }
 
 // Slot components

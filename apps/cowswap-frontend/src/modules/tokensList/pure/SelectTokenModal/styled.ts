@@ -7,6 +7,9 @@ import { blankButtonMixin } from '../commonElements'
 export const Wrapper = styled.div<{ $hasChainPanel?: boolean; $isFullScreen?: boolean }>`
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
   background: var(${UI.COLOR_PAPER});
   border-radius: ${({ $isFullScreen }) => ($isFullScreen ? '0' : '20px')};
   width: 100%;

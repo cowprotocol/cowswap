@@ -1,8 +1,8 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
-import { Badge, BadgeTypes } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, BaseItemComponentProps, List } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -17,8 +17,8 @@ const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([SupportedChainId.PLASMA, Su
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
   isDarkMode: boolean
-  availableChains: TargetChainId[]
-  onSelectChain(targetChainId: TargetChainId): void
+  availableChains: SupportedChainId[]
+  onSelectChain(targetChainId: SupportedChainId): void
 }
 
 export function NetworksList({
@@ -29,63 +29,87 @@ export function NetworksList({
 }: NetworksListProps): ReactNode {
   const deprecatedChains = useDeprecatedChains()
 
+  const items = useMemo(() => {
+    return availableChains.map((chainId: SupportedChainId) => {
+      return {
+        chainId,
+        isActive: chainId === currentChainId,
+        isNew: NEW_NETWORK_IDS.has(chainId),
+        isDeprecated: deprecatedChains.has(chainId),
+      } satisfies NetworkListItemData
+    })
+  }, [availableChains, deprecatedChains, currentChainId])
+
+  return <List root="ul" itemComponent={NetworkListItem} items={items} extraProps={{ isDarkMode, onSelectChain }} />
+}
+
+export interface NetworkListItemData {
+  chainId: SupportedChainId
+  isActive: boolean
+  isNew: boolean
+  isDeprecated: boolean
+}
+
+export interface NetworkListItemExtraProps {
+  isDarkMode: boolean
+  onSelectChain(chainId: SupportedChainId): void
+}
+
+export type NetworkListItemProps = BaseItemComponentProps<NetworkListItemData, NetworkListItemExtraProps>
+
+export function NetworkListItem({
+  root: Root,
+  data: { chainId, isActive, isNew, isDeprecated },
+  extraProps: { isDarkMode, onSelectChain },
+}: NetworkListItemProps): ReactNode {
+  const info = getChainInfo(chainId)
+  const { label, logo } = info
+  const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
+
+  const rowContent = (
+    <styledEl.FlyoutRow
+      key={chainId}
+      type="button"
+      // TODO: Use link instead.
+      onClick={() => onSelectChain(chainId)}
+      $active={isActive}
+    >
+      <styledEl.Logo src={logoUrl} />
+      <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
+
+      {isDeprecated && (
+        <Badge
+          type={isDarkMode ? BadgeTypes.ALERT : isActive ? BadgeTypes.ALERT2 : BadgeTypes.ALERT}
+          style={isActive ? { marginRight: '10px' } : undefined}
+        >
+          <Trans>READ-ONLY</Trans>
+        </Badge>
+      )}
+
+      {isNew && !isDeprecated && (
+        <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
+          <Trans>NEW</Trans>
+        </Badge>
+      )}
+
+      {isActive && <styledEl.FlyoutRowActiveIndicator $active />}
+    </styledEl.FlyoutRow>
+  )
+
+  if (!isActive) {
+    return <Root>{rowContent}</Root>
+  }
+
   return (
-    <>
-      {availableChains.map((targetChainId: TargetChainId) => {
-        const info = getChainInfo(targetChainId)
-        const { label, logo } = info
-
-        const isActive = targetChainId === currentChainId
-        const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
-        const isNewNetwork = NEW_NETWORK_IDS.has(targetChainId)
-        const isDeprecatedNetwork = deprecatedChains.has(targetChainId)
-
-        const rowContent = (
-          <styledEl.FlyoutRow
-            key={targetChainId}
-            type="button"
-            onClick={() => onSelectChain(targetChainId)}
-            $active={isActive}
-          >
-            <styledEl.Logo src={logoUrl} />
-            <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
-
-            {isDeprecatedNetwork && (
-              <Badge
-                type={isDarkMode ? BadgeTypes.ALERT : isActive ? BadgeTypes.ALERT2 : BadgeTypes.ALERT}
-                style={isActive ? { marginRight: '10px' } : undefined}
-              >
-                <Trans>READ-ONLY</Trans>
-              </Badge>
-            )}
-
-            {isNewNetwork && !isDeprecatedNetwork && (
-              <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
-                <Trans>NEW</Trans>
-              </Badge>
-            )}
-
-            {isActive && <styledEl.FlyoutRowActiveIndicator $active />}
-          </styledEl.FlyoutRow>
-        )
-
-        if (!isActive) {
-          return rowContent
-        }
-
-        return (
-          <styledEl.ActiveRowWrapper key={targetChainId}>
-            {rowContent}
-            <ActiveRowLinks
-              bridge={info.bridge}
-              explorer={info.explorer}
-              explorerTitle={info.explorerTitle}
-              helpCenterUrl={info.helpCenterUrl}
-              targetChainId={targetChainId}
-            />
-          </styledEl.ActiveRowWrapper>
-        )
-      })}
-    </>
+    <styledEl.ActiveRowWrapper key={chainId} as={Root}>
+      {rowContent}
+      <ActiveRowLinks
+        bridge={info.bridge}
+        explorer={info.explorer}
+        explorerTitle={info.explorerTitle}
+        helpCenterUrl={info.helpCenterUrl}
+        targetChainId={chainId}
+      />
+    </styledEl.ActiveRowWrapper>
   )
 }

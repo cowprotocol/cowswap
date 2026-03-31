@@ -1,11 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
-import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
-import styled from 'styled-components/macro'
+import { Media, Dropdown } from '@cowprotocol/ui'
 
 import { AdvancedOrdersSettingsDropdown } from 'modules/advancedOrders/pure/Settings/AdvancedOrdersSettings'
-import { SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
+import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -17,24 +16,20 @@ import {
   updateAdvancedOrdersSettingsAtom,
 } from '../../state/advancedOrdersSettingsAtom'
 
-const MenuWrapper = styled.div`
-  [data-reach-menu-popover] {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    top: 0;
-  }
-`
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function AdvancedOrdersSettings() {
+export function AdvancedOrdersSettings(): ReactNode {
   const settingsState = useAtomValue(advancedOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateAdvancedOrdersSettingsAtom)
   const updateAdvancedOrdersRawState = useUpdateAdvancedOrdersRawState()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSettingsDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
+  const [isOpen, setIsOpen] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const handleDismiss = useCallback(() => {
+    console.log('handleDismiss')
+    setIsOpen(false)
+  }, [setIsOpen])
 
   const onStateChanged = useCallback(
     (state: Partial<AdvancedOrdersSettingsState>) => {
@@ -47,19 +42,39 @@ export function AdvancedOrdersSettings() {
   )
 
   return (
-    <MenuWrapper>
-      <Menu>
-        <SettingsButton disabled={isSettingsDisabled}>
-          <SettingsIcon />
-        </SettingsButton>
-        <MenuPopover portal={false}>
-          <MenuItems>
-            <MenuItem disabled={true} onSelect={() => void 0}>
-              <AdvancedOrdersSettingsDropdown state={settingsState} onStateChanged={onStateChanged} />
-            </MenuItem>
-          </MenuItems>
-        </MenuPopover>
-      </Menu>
-    </MenuWrapper>
+    <ButtonsContainer>
+      <SettingsButton ref={buttonRef} disabled={isSettingsDisabled} onClick={() => setIsOpen((open) => !open)}>
+        <SettingsIcon />
+      </SettingsButton>
+
+      {isOpen && (
+        <div
+          id="testBox"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            left: 0,
+            right: 0,
+            padding: '48px 10px 10px',
+            width: 'auto',
+            maxHeight: '100%',
+            background: 'rgba(0, 0, 0, .25)',
+            zIndex: 1000,
+            // pointerEvents: "none",
+          }}
+        ></div>
+      )}
+
+      <Dropdown
+        isOpen={isOpen}
+        onDismiss={handleDismiss}
+        containerId="testBox"
+        drawerMediaQuery={Media.upToSmall(false)}
+        placement="bottom-end"
+        showBackdrop={false}
+      >
+        <AdvancedOrdersSettingsDropdown state={settingsState} onStateChanged={onStateChanged} />
+      </Dropdown>
+    </ButtonsContainer>
   )
 }

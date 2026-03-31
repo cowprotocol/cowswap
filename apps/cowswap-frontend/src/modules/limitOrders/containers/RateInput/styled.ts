@@ -1,5 +1,4 @@
-import { Loader, Media, TokenSymbol } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { Loader, Media, TokenSymbol, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 

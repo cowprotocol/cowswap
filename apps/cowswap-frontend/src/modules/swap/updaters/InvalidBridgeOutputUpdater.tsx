@@ -7,8 +7,7 @@ import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { useLocation } from 'react-router'
 
-import { useTradeTypeInfo } from 'modules/trade'
-import { parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
+import { useTradeTypeInfo, parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 
 import type { RoutesValues } from 'common/constants/routes'

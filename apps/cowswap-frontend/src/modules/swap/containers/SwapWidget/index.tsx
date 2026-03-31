@@ -57,11 +57,17 @@ export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
   allowSwapSameToken?: boolean
+  toggleMyOrders: () => void
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function,complexity
-export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
+// eslint-disable-next-line max-lines-per-function
+export function SwapWidget({
+  topContent,
+  bottomContent,
+  allowSwapSameToken,
+  toggleMyOrders,
+}: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
@@ -276,6 +282,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
             />
           }
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+          toggleMyOrders={toggleMyOrders}
         />
       )}
       <BottomBanners />

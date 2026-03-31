@@ -2,10 +2,10 @@ import { ReactNode, useRef, type MouseEvent } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains, useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
+import { Media, SmartModal } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -20,10 +20,6 @@ import * as styledEl from './NetworkSelector.styled'
 
 type OnSelectNetwork = ReturnType<typeof useOnSelectNetwork>
 type OnSelectNetworkTarget = Parameters<OnSelectNetwork>[0]
-
-const stopPropagation = (event: MouseEvent<HTMLDivElement>): void => {
-  event.stopPropagation()
-}
 
 const createCloseHandler =
   (isOpen: boolean, toggleModal: () => void) =>
@@ -66,7 +62,6 @@ export function NetworkSelector(): ReactNode {
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
   const availableChains = useAvailableChains()
-  const { t } = useLingui()
 
   const handleClose = createCloseHandler(isOpen, toggleModal)
   const handleSelectChain = createSelectHandler(isOpen, toggleModal, onSelectChain)
@@ -94,7 +89,25 @@ export function NetworkSelector(): ReactNode {
           </>
         )}
       </styledEl.SelectorControls>
-      {isOpen && (
+
+      <SmartModal
+        isOpen={isOpen}
+        onDismiss={() => handleClose({ stopPropagation: () => {} } as MouseEvent<HTMLButtonElement>)}
+        anchorRef={nodeSelector}
+        drawerMediaQuery={Media.upToSmall(false)}
+        placement="bottom-end"
+        strategy="fixed"
+        showBackdrop={false}
+      >
+        <NetworksList
+          currentChainId={isChainIdUnsupported ? null : chainId}
+          isDarkMode={isDarkMode}
+          onSelectChain={handleSelectChain}
+          availableChains={availableChains}
+        />
+      </SmartModal>
+
+      {/*isOpen && (
         <styledEl.FlyoutMenu>
           <styledEl.FlyoutMenuContents ref={nodeMobile} onClick={stopPropagation}>
             <styledEl.FlyoutMenuScrollable>
@@ -117,7 +130,7 @@ export function NetworkSelector(): ReactNode {
             </styledEl.FlyoutMenuScrollable>
           </styledEl.FlyoutMenuContents>
         </styledEl.FlyoutMenu>
-      )}
+      )*/}
     </styledEl.SelectorWrapper>
   )
 }
