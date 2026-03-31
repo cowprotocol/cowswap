@@ -132,4 +132,30 @@ describe('useTradeSolver', () => {
 
     expect(result.current.solver).toBeUndefined()
   })
+
+  it('returns undefined solver when winner solution orderId mismatches requested orderId', async () => {
+    const requestedOrderId = '0xrequestedOrder123'
+    const winnerOrderId = '0xwinnerOrder456'
+
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce({
+      auctionId: 1,
+      solutions: [
+        {
+          solver: 'projectblanc',
+          isWinner: true,
+          solverAddress: '0xsolver',
+          ranking: 1,
+          orders: [{ id: winnerOrderId }],
+        } as unknown as NonNullable<SolverCompetitionResponse['solutions']>[0],
+      ],
+    } as SolverCompetitionResponse)
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+
+    const { result } = renderHook(() => useTradeSolver('0xtx789', requestedOrderId))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toBeUndefined()
+    expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
+  })
 })
