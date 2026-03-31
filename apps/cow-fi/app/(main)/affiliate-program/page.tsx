@@ -183,7 +183,7 @@ function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode
           <SectionTitleText>FAQs</SectionTitleText>
         </SectionTitleWrapper>
 
-        <FAQ faqs={AFFILIATE_PROGRAM_FAQ} />
+        <FAQ faqs={AFFILIATE_PROGRAM_FAQ} fontSize={18} />
 
         <SectionTitleWrapper margin="2.4rem auto" maxWidth={900} gap={36}>
           <SectionTitleDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_40})`}>
