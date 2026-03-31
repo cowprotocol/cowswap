@@ -10,29 +10,10 @@ import { Connector } from '@web3-react/types'
 
 import { parseChainId } from '../../utils/parseChainId'
 
-type MetaMaskConnectEvmClient = {
-  init?: () => Promise<void>
-  connect: (options?: { chainIds?: string[]; account?: string; forceRequest?: boolean }) => Promise<{
-    accounts: string[]
-    chainId: string
-  }>
-  disconnect: () => Promise<void>
-  switchChain: (options: {
-    chainId: string
-    chainConfiguration?: {
-      chainName: string
-      nativeCurrency: { name: string; symbol: string; decimals: number }
-      rpcUrls: string[]
-      blockExplorerUrls?: string[]
-    }
-  }) => Promise<void>
-  getProvider: () => Provider
-}
+import type * as ConnectEvm from '@metamask/connect-evm'
 
-type CreateEVMClient = (options: {
-  dapp: { name?: string; url: string; iconUrl?: string }
-  api?: { supportedNetworks?: Record<string, string> }
-}) => Promise<MetaMaskConnectEvmClient>
+/** Resolved EVM client type from the real package (avoids hand-written types that drift from MetamaskConnectEVM). */
+type MetaMaskConnectEvmClient = Awaited<ReturnType<typeof ConnectEvm.createEVMClient>>
 
 type Listener = Parameters<Provider['on']>[1]
 
@@ -112,22 +93,19 @@ export class MetaMaskConnect extends Connector {
 
     this.eagerConnection = import('@metamask/connect-evm').then(async (module) => {
       if (!this.client) {
-        const createEVMClient = module.createEVMClient as CreateEVMClient
-        this.client = await createEVMClient({
+        this.client = await module.createEVMClient({
           dapp: {
-            name: this.options.dappMetadata.name,
+            name: this.options.dappMetadata.name ?? 'CoW Swap',
             url: this.options.dappMetadata.url ?? '',
-            iconUrl: this.options.dappMetadata.iconUrl,
+            ...(this.options.dappMetadata.iconUrl !== undefined ? { iconUrl: this.options.dappMetadata.iconUrl } : {}),
           },
           api: {
-            supportedNetworks: this.options.readonlyRPCMap,
+            supportedNetworks: (this.options.readonlyRPCMap ?? {}) as Record<`0x${string}`, string>,
           },
         })
-
-        await this.client.init?.()
       }
 
-      this.provider = this.client.getProvider() as MetaMaskProvider
+      this.provider = this.client.getProvider() as unknown as MetaMaskProvider
 
       this.provider.on('connect', (({ chainId }: ProviderConnectInfo): void => {
         this.actions.update({ chainId: parseChainId(chainId) })
@@ -195,7 +173,7 @@ export class MetaMaskConnect extends Connector {
         if (!this.provider || !this.client) throw new NoMetaMaskConnectError()
 
         const connectResult = await this.client.connect({
-          chainIds: desiredChainId ? [`0x${desiredChainId.toString(16)}`] : undefined,
+          chainIds: desiredChainId ? [`0x${desiredChainId.toString(16)}` as `0x${string}`] : undefined,
         })
 
         this.actions.update({ chainId: parseChainId(connectResult.chainId), accounts: connectResult.accounts })
@@ -242,7 +220,7 @@ export class MetaMaskConnect extends Connector {
 
     if (!desiredChainId || currentChainId === desiredChainId) return currentChainId
 
-    const chainIdHex = `0x${desiredChainId.toString(16)}`
+    const chainIdHex = `0x${desiredChainId.toString(16)}` as `0x${string}`
 
     try {
       await this.client.switchChain({
