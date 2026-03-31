@@ -35,5 +35,7 @@ export interface ConfiguratorState {
   disableProgressBar: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  disableTradeWhenPriceImpactIsUnknown: boolean
+  disableTradeWhenPriceImpactIsHigherThan: number | undefined
   slippage?: SlippageConfig
 }

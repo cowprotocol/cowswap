@@ -30,6 +30,7 @@ const DEFAULT_BASE_URL = getBaseUrl()
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   // TODO: Break down this large function into smaller functions
 
+  // eslint-disable-next-line max-lines-per-function
   return useMemo(() => {
     const {
       chainId,
@@ -54,6 +55,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       disableProgressBar,
       hideBridgeInfo,
       hideOrdersTable,
+      disableTradeWhenPriceImpactIsUnknown,
+      disableTradeWhenPriceImpactIsHigherThan,
       slippage,
     } = configuratorState
 
@@ -111,6 +114,10 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       hideBridgeInfo,
       hideOrdersTable,
       slippage,
+      disableTrade: {
+        whenPriceImpactIsUnknown: disableTradeWhenPriceImpactIsUnknown,
+        whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,
+      },
     }
 
     return params

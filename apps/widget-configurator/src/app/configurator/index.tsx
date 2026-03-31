@@ -154,6 +154,30 @@ export function Configurator({ title }: { title: string }) {
   const [hideOrdersTable, setHideOrdersTable] = useState<boolean | undefined>(false)
   const toggleHideOrdersTable = useCallback(() => setHideOrdersTable((curr) => !curr), [])
 
+  const [disableTradeWhenPriceImpactIsUnknown, setDisableTradeWhenPriceImpactIsUnknown] = useState(false)
+  const selectBlockUnknownPriceImpact = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setDisableTradeWhenPriceImpactIsUnknown(event.target.value === 'true')
+  }, [])
+
+  const [disableTradeWhenPriceImpactIsHigherThan, setDisableTradeWhenPriceImpactIsHigherThan] = useState<
+    number | undefined
+  >()
+  const setBlockPriceImpactAboveValue = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value.trim()
+
+    if (!nextValue) {
+      setDisableTradeWhenPriceImpactIsHigherThan(undefined)
+
+      return
+    }
+
+    const parsedValue = Number(nextValue)
+
+    if (Number.isNaN(parsedValue)) return
+
+    setDisableTradeWhenPriceImpactIsHigherThan(parsedValue)
+  }, [])
+
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
     { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
@@ -189,6 +213,8 @@ export function Configurator({ title }: { title: string }) {
     disableProgressBar,
     hideBridgeInfo,
     hideOrdersTable,
+    disableTradeWhenPriceImpactIsUnknown,
+    disableTradeWhenPriceImpactIsHigherThan,
   }
 
   const rawParamsObject = useMemo(() => {
@@ -368,6 +394,35 @@ export function Configurator({ title }: { title: string }) {
             <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
           </RadioGroup>
         </FormControl>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Disable trade when price impact is unknown:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="disable-trade-when-price-impact-is-unknown"
+            name="disable-trade-when-price-impact-is-unknown"
+            value={disableTradeWhenPriceImpactIsUnknown}
+            onChange={selectBlockUnknownPriceImpact}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Allow trade" />
+            <FormControlLabel value="true" control={<Radio />} label="Disable trade" />
+          </RadioGroup>
+        </FormControl>
+
+        <TextField
+          fullWidth
+          margin="dense"
+          id="disableTradeWhenPriceImpactIsHigherThan"
+          label="Disable trade when price impact is higher than (%)"
+          type="number"
+          value={disableTradeWhenPriceImpactIsHigherThan ?? ''}
+          onChange={setBlockPriceImpactAboveValue}
+          size="medium"
+          helperText="Leave empty to disable"
+          inputProps={{
+            min: 0,
+            step: 'any',
+          }}
+        />
 
         <TextField
           fullWidth
