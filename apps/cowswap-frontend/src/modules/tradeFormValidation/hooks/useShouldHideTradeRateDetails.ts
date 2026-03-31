@@ -21,11 +21,5 @@ export function useShouldHideTradeRateDetails(options?: Options): boolean {
 
   const hasXstockError = validations?.includes(TradeFormValidation.XstockMinimumTradeSize)
 
-  const hide = shouldHideQuoteAmounts || !!hasXstockError
-
-  if (options?.hideIfWrapUnwrap && isWrapOrUnwrap) {
-    return true
-  }
-
-  return hide
+  return (options?.hideIfWrapUnwrap && isWrapOrUnwrap) || shouldHideQuoteAmounts || !!hasXstockError
 }
