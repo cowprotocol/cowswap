@@ -25,6 +25,11 @@ import {
 
 import { useNetworkId } from '../state/network'
 
+/** Lens (chain 232); cow-sdk v8 typings omit `SupportedChainId.LENS`. */
+const LENS_CHAIN_ID = 232 as const
+
+type ViemChainMapKey = SupportedChainId | typeof LENS_CHAIN_ID
+
 export const cowSdkAdapter = new ViemAdapter({
   provider: createPublicClient({ chain: mainnet, transport: http(RPC_URLS[SupportedChainId.MAINNET]) }),
 }) as AbstractProviderAdapter
@@ -58,12 +63,12 @@ function getBungeeApiBase(): string | undefined {
 
 setGlobalAdapter(cowSdkAdapter)
 
-const CHAINS: Record<SupportedChainId, Chain> = {
+const CHAINS: Record<ViemChainMapKey, Chain> = {
   [SupportedChainId.MAINNET]: mainnet,
   [SupportedChainId.BNB]: bsc,
   [SupportedChainId.GNOSIS_CHAIN]: gnosis,
   [SupportedChainId.POLYGON]: polygon,
-  [SupportedChainId.LENS]: lens,
+  [LENS_CHAIN_ID]: lens,
   [SupportedChainId.BASE]: base,
   [SupportedChainId.PLASMA]: plasma,
   [SupportedChainId.ARBITRUM_ONE]: arbitrum,
@@ -81,7 +86,14 @@ export function CowSdkUpdater(): null {
 
     setGlobalAdapter(
       new ViemAdapter({
-        provider: createPublicClient({ chain: CHAINS[chainId], transport: http(RPC_URLS[chainId]) }),
+        provider: createPublicClient({
+          chain: CHAINS[chainId as ViemChainMapKey],
+          transport: http(
+            (chainId as number) === LENS_CHAIN_ID
+              ? ((process.env['REACT_APP_NETWORK_URL_232'] as string | undefined) ?? 'https://rpc.lens.xyz')
+              : RPC_URLS[chainId as SupportedChainId],
+          ),
+        }),
         signer: privateKeyToAccount('0xa50dc0f7fc051309434deb3b1c71e927dbb711759231d8ecbf630c85d94a42fe'),
       }) as AbstractProviderAdapter,
     )
