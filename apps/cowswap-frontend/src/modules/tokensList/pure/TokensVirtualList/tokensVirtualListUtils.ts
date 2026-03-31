@@ -40,8 +40,10 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
 
   const tokenRows = sortedTokens.map<TokensVirtualRow>((token) => ({ type: 'token', token }))
   const composedRows: TokensVirtualRow[] = []
+  const hasFavoriteSection = !!favoriteTokens?.length && !hideFavoriteTokens
+  const hasRecentSection = !!recentTokens?.length && !hideRecentTokens
 
-  if (favoriteTokens?.length && !hideFavoriteTokens) {
+  if (hasFavoriteSection) {
     composedRows.push({
       type: 'favorite-section',
       tokens: favoriteTokens,
@@ -49,7 +51,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
     })
   }
 
-  if (recentTokens?.length && !hideRecentTokens) {
+  if (hasRecentSection) {
     const noRouteTooltip = getNoRouteTooltip()
     const checkingRouteTooltip = getCheckingRouteTooltip()
 
@@ -94,7 +96,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
     })
   }
 
-  if (favoriteTokens?.length || recentTokens?.length) {
+  if (hasFavoriteSection || hasRecentSection) {
     composedRows.push({ type: 'title', label: t`All tokens` })
   }
 
