@@ -83,6 +83,7 @@ export enum TradeFormValidation {
 
   // Quote loading indicator
   QuoteLoading,
+  ImpactLoading,
   QuoteExpired,
 
   // Balances

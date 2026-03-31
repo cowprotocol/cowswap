@@ -172,19 +172,26 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (injectedWidgetParams?.disableTrade?.whenPriceImpactIsUnknown) {
-    const isPriceImpactUnknown = !!account && !tradePriceImpact.loading && !tradePriceImpact.priceImpact
+  const { whenPriceImpactIsHigherThan, whenPriceImpactIsUnknown } = injectedWidgetParams?.disableTrade || {}
+
+  const checkHighPriceImpact = typeof whenPriceImpactIsHigherThan === 'number'
+  const checkUnknownPriceImpact = whenPriceImpactIsUnknown || checkHighPriceImpact
+
+  if (checkUnknownPriceImpact) {
+    const isPriceImpactUnknown = !tradePriceImpact.loading && !tradePriceImpact.priceImpact
 
     if (isPriceImpactUnknown) {
       validations.push(TradeFormValidation.DisableTradeWithUnknownPriceImpact)
     }
+
+    if (tradePriceImpact.loading) {
+      validations.push(TradeFormValidation.ImpactLoading)
+    }
   }
 
-  const widgetPriceImpactThreshold = injectedWidgetParams?.disableTrade?.whenPriceImpactIsHigherThan
-
-  if (typeof widgetPriceImpactThreshold === 'number' && tradePriceImpact.priceImpact) {
+  if (checkHighPriceImpact && tradePriceImpact.priceImpact) {
     const priceImpactAsNum = +tradePriceImpact.priceImpact.toSignificant()
-    const isPriceImpactAboveThreshold = priceImpactAsNum > widgetPriceImpactThreshold
+    const isPriceImpactAboveThreshold = priceImpactAsNum > whenPriceImpactIsHigherThan
 
     if (isPriceImpactAboveThreshold) {
       validations.push(TradeFormValidation.DisableTradeWithHighPriceImpact)

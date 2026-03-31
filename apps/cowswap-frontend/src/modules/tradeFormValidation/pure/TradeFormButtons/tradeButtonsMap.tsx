@@ -266,6 +266,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
+  [TradeFormValidation.ImpactLoading]: {
+    text: (
+      <>
+        <Trans>Fetching price impact</Trans>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
   [TradeFormValidation.BalancesLoading]: {
     text: (
       <>
