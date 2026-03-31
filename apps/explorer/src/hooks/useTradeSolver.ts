@@ -11,7 +11,7 @@ export function useTradeSolver(txHash: Nullish<string>, orderId: Nullish<string>
   const [solver, setSolver] = useState<OrderSolverInfo | undefined>()
   const [doneFor, setDoneFor] = useState<string | null>(null)
 
-  const currentKey = txHash && networkId ? `${networkId}:${txHash}` : null
+  const currentKey = txHash && networkId && orderId ? `${networkId}:${txHash}:${orderId}` : null
 
   useEffect(() => {
     if (!networkId || !txHash || !currentKey) {
