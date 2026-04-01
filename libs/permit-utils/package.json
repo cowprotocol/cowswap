@@ -23,7 +23,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.5",
+    "@cowprotocol/cow-sdk": "8.0.4-pr-847-05dc5760.0",
     "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@ethersproject/abi": "5.7.0",

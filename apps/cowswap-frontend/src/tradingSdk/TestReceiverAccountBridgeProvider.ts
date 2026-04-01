@@ -99,7 +99,7 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
   }
 
   getExplorerUrl(bridgingId: string): string {
-    return this.bridgeProvider.getExplorerUrl(bridgingId)
+    return this.bridgeProvider.getExplorerUrl(bridgingId, '')
   }
 
   async getStatus(bridgingId: string, originChainId: number): Promise<BridgeStatusResult> {
