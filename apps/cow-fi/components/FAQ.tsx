@@ -16,7 +16,7 @@ const Wrapper = styled.div<{ $fontSize?: number }>`
   gap: 10px;
   margin: 24px 0;
   width: 100%;
-  font-size: ${({ $fontSize }) => ($fontSize ? `${$fontSize}px` : '24px')};
+  font-size: ${({ $fontSize }) => `${$fontSize ?? 24}px`};
   font-weight: ${Font.weight.bold};
 
   ${Media.upToMedium()} {
