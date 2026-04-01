@@ -52,16 +52,18 @@ describe('validateTradeForm - xStock logic', () => {
     isRestrictedForCountry: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
+    isInputCurrencyXstock: false,
+    isOutputCurrencyXstock: false,
   }
 
-  test('should show xStock minimum trade size error if below limit', () => {
+  test('shows xStock minimum trade size for sell orders when xStock sell amount is below $10', () => {
     const context = {
       ...baseContext,
-      isOutputCurrencyXstock: true,
+      isInputCurrencyXstock: true,
       derivedTradeState: {
         ...baseContext.derivedTradeState,
         inputCurrencyFiatAmount: mockCurrencyAmount('5'),
-        outputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: mockCurrencyAmount('50'),
       },
     } as unknown as TradeFormValidationContext
 
@@ -69,40 +71,25 @@ describe('validateTradeForm - xStock logic', () => {
     expect(result).toContain(TradeFormValidation.XstockMinimumTradeSize)
   })
 
-  test('should NOT show xStock minimum trade size error if exactly $10', () => {
+  test('shows xStock minimum trade size for sell orders when xStock sell amount is exactly $10', () => {
     const context = {
       ...baseContext,
-      isOutputCurrencyXstock: true,
+      isInputCurrencyXstock: true,
       derivedTradeState: {
         ...baseContext.derivedTradeState,
         inputCurrencyFiatAmount: mockCurrencyAmount('10'),
-        outputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: mockCurrencyAmount('50'),
       },
     } as unknown as TradeFormValidationContext
 
     const result = validateTradeForm(context)
-    expect(result || []).not.toContain(TradeFormValidation.XstockMinimumTradeSize)
+    expect(result).toContain(TradeFormValidation.XstockMinimumTradeSize)
   })
 
-  test('should NOT show xStock minimum trade size error if above $10', () => {
+  test('does not show xStock minimum trade size for sell orders when xStock sell amount is above $10', () => {
     const context = {
       ...baseContext,
-      isOutputCurrencyXstock: true,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: mockCurrencyAmount('15'),
-        outputCurrencyFiatAmount: null,
-      },
-    } as unknown as TradeFormValidationContext
-
-    const result = validateTradeForm(context)
-    expect(result || []).not.toContain(TradeFormValidation.XstockMinimumTradeSize)
-  })
-
-  test('should use output amount if available', () => {
-    const context = {
-      ...baseContext,
-      isOutputCurrencyXstock: true,
+      isInputCurrencyXstock: true,
       derivedTradeState: {
         ...baseContext.derivedTradeState,
         inputCurrencyFiatAmount: mockCurrencyAmount('15'),
@@ -111,17 +98,49 @@ describe('validateTradeForm - xStock logic', () => {
     } as unknown as TradeFormValidationContext
 
     const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.XstockMinimumTradeSize)
+  })
+
+  test('shows xStock minimum trade size for buy orders when xStock buy amount is below $10', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        orderKind: OrderKind.BUY,
+        inputCurrencyFiatAmount: mockCurrencyAmount('50'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('5'),
+      },
+      isOutputCurrencyXstock: true,
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
     expect(result).toContain(TradeFormValidation.XstockMinimumTradeSize)
   })
 
-  test('should show error if amount is 0', () => {
+  test('does not show xStock minimum trade size for buy orders when xStock buy amount is above $10', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        orderKind: OrderKind.BUY,
+        inputCurrencyFiatAmount: mockCurrencyAmount('5'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('15'),
+      },
+      isOutputCurrencyXstock: true,
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.XstockMinimumTradeSize)
+  })
+
+  test('shows xStock minimum trade size for sell orders when xStock is only on the buy side', () => {
     const context = {
       ...baseContext,
       isOutputCurrencyXstock: true,
       derivedTradeState: {
         ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: mockCurrencyAmount('0'),
-        outputCurrencyFiatAmount: null,
+        inputCurrencyFiatAmount: mockCurrencyAmount('5'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('5'),
       },
     } as unknown as TradeFormValidationContext
 
@@ -129,14 +148,30 @@ describe('validateTradeForm - xStock logic', () => {
     expect(result).toContain(TradeFormValidation.XstockMinimumTradeSize)
   })
 
-  test('should prioritize xStock error over quote errors', () => {
+  test('shows xStock minimum trade size for buy orders when xStock is only on the sell side', () => {
     const context = {
       ...baseContext,
-      isOutputCurrencyXstock: true,
+      isInputCurrencyXstock: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        orderKind: OrderKind.BUY,
+        inputCurrencyFiatAmount: mockCurrencyAmount('5'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('5'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.XstockMinimumTradeSize)
+  })
+
+  test('prioritizes xStock minimum trade size over quote errors', () => {
+    const context = {
+      ...baseContext,
+      isInputCurrencyXstock: true,
       derivedTradeState: {
         ...baseContext.derivedTradeState,
         inputCurrencyFiatAmount: mockCurrencyAmount('5'),
-        outputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: mockCurrencyAmount('50'),
       },
       tradeQuote: {
         isLoading: false,

@@ -30,6 +30,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestrictedForCountry,
     isBalancesLoading,
     isBundlingSupported,
+    isInputCurrencyXstock,
     isOutputCurrencyXstock,
   } = context
 
@@ -60,10 +61,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const isFastQuote = getIsFastQuote(fetchParams)
   const inputAmountUsd = inputCurrencyFiatAmount ? Number(inputCurrencyFiatAmount.toExact()) : null
   const outputAmountUsd = outputCurrencyFiatAmount ? Number(outputCurrencyFiatAmount.toExact()) : null
-
-  const xstockBuyLimitUsdValue = outputAmountUsd ?? inputAmountUsd
-  const isXstockBuyBelowLimit =
-    isOutputCurrencyXstock && xstockBuyLimitUsdValue !== null && xstockBuyLimitUsdValue < XSTOCK_MIN_TRADE_SIZE_USD
+  const hasXstockToken = isInputCurrencyXstock || isOutputCurrencyXstock
+  const xstockTradeUsdAmount = isSellOrder(orderKind) ? inputAmountUsd : outputAmountUsd
+  const isXstockTradeBelowLimit =
+    hasXstockToken && xstockTradeUsdAmount !== null && xstockTradeUsdAmount <= XSTOCK_MIN_TRADE_SIZE_USD
 
   const validations: TradeFormValidation[] = []
 
@@ -85,9 +86,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return validations
   }
 
-  // If the buy amount is below the xstock minimum trade size, we want to show a specific error message,
+  // If the xstock trade amount is below the minimum trade size, we want to show a specific error message,
   // even if there are other issues with the trade (e.g. quote loading or wallet not connected)
-  if (!inputAmountIsNotSet && isXstockBuyBelowLimit) {
+  if (!inputAmountIsNotSet && isXstockTradeBelowLimit) {
     return [TradeFormValidation.XstockMinimumTradeSize]
   }
 

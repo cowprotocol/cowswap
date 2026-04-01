@@ -41,9 +41,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
-  const isOutputCurrencyXstock = useIsXstockToken(
-    outputCurrency && getIsNativeToken(outputCurrency) ? null : outputCurrency,
-  )
+  const isInputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(inputCurrency))
+  const isOutputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(outputCurrency))
 
   const isBundlingSupported = useIsTxBundlingSupported()
   const isWrapUnwrap = useIsWrapOrUnwrap()
@@ -98,6 +97,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isRestrictedForCountry,
       isBalancesLoading: !hasFirstLoad || isBalancesLoading,
       balancesError,
+      isInputCurrencyXstock,
       isOutputCurrencyXstock,
     }
   }, [
@@ -121,6 +121,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isSwapUnsupported,
     isWrapUnwrap,
     isProxySetupValid,
+    isInputCurrencyXstock,
     recipientEnsAddress,
     toBeImported,
     tradeQuote,
@@ -131,4 +132,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
 function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
   return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
+}
+
+function getNonNativeCurrency<T extends { isNative?: boolean }>(currency: T | null | undefined): T | null {
+  return currency && getIsNativeToken(currency) ? null : currency || null
 }

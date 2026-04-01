@@ -49,6 +49,7 @@ export interface TradeFormValidationCommonContext {
   isRestrictedForCountry: boolean
   isBalancesLoading: boolean
   balancesError: string | null
+  isInputCurrencyXstock: boolean
   isOutputCurrencyXstock: boolean
 }
 
