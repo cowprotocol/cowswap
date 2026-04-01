@@ -434,14 +434,6 @@ export interface CowSwapWidgetParams {
     onBeforeOrderCancel(payload: BaseOrderPayload): WidgetHookResult
     onBeforeOrdersCancel(payload: BaseOrdersPayload): WidgetHookResult
   }>
-
-  /**
-   * Conditions to control the ability to trade
-   */
-  disableTrade?: {
-    whenPriceImpactIsUnknown?: boolean
-    whenPriceImpactIsHigherThan?: number
-  }
 }
 
 // Define types for event payloads
