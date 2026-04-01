@@ -211,17 +211,22 @@ export interface CowSwapWidgetParams {
   targetChainId?: number
 
   /**
-   * The token lists urls to use in the widget
+   * The token lists (as urls) enabled for the widget.
+   * These lists are available to both sell and buy selectors.
    */
   tokenLists?: string[]
 
   /**
-   * The token lists urls to use in the widget for ONLY SELL tokens
+   * The token lists (as urls) to use in the sell selector.
+   * Note: these lists also contribute to the widget's globally enabled list set.
+   * If omitted, the sell selector falls back to the globally enabled lists.
    */
   sellTokenLists?: string[]
 
   /**
-   * The token lists urls to use in the widget for ONLY BUY tokens
+   * The token lists (as urls) to use in the buy selector.
+   * Note: these lists also contribute to the widget's globally enabled list set.
+   * If omitted, the buy selector falls back to the globally enabled lists.
    */
   buyTokenLists?: string[]
 
