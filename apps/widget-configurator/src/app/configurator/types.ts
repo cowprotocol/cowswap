@@ -41,5 +41,7 @@ export interface ConfiguratorState {
   hideFavoriteTokens: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  disableTradeWhenPriceImpactIsUnknown: boolean
+  disableTradeWhenPriceImpactIsHigherThan: number | undefined
   slippage?: SlippageConfig
 }
