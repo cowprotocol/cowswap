@@ -8,6 +8,8 @@ We used to wire MetaMask through **`@metamask/sdk`**. MetaMask’s direction now
 - **`ConnectionType.METAMASK`** is still the same enum value — we didn’t invent a second “flavour” of MetaMask in the app.
 - **Mobile:** we stopped hiding the MetaMask Connect row just because the user is on a phone. If there’s **no** injected MetaMask (normal mobile Safari/Chrome), they see the MetaMask tile and go through Connect. If they’re **already** inside MetaMask’s browser or something that announces `io.metamask` via EIP-6963, we **don’t** show that duplicate row — they use the injected wallet entry.
 - We pass **`mobile: { useDeeplink: true }`** into `createEVMClient` so opening the MetaMask app prefers the native `metamask://` style links (same spirit as the old SDK’s deeplink behaviour).
+- EIP-1193 provider from client.getProvider() is wired into web3-react with the usual event handlers (chainChanged, accountsChanged, etc.).
+- getWeb3ReactConnection still maps ConnectionType.METAMASK to metaMaskConnectConnection.
 
 **Where to look**
 

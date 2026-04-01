@@ -66,9 +66,10 @@ function getOriginalRpcError(error: ProviderRpcError): ProviderRpcError {
 }
 
 /**
- * MetaMask wallet connection for CoW, backed by `@metamask/connect-evm` instead of the old `@metamask/sdk`.
+ * MetaMask wallet connection for CoW,
+ * backed by `@metamask/connect-evm` instead of the old `@metamask/sdk`.
  *
- * Responsibilities: spin up the EVM client once, subscribe provider events into web3-react state, and
+ * Responsibilities: spin up once the EVM client, subscribe provider events into web3-react state, and
  * implement `activate` / `deactivate` / chain switch the same way other connectors do.
  */
 export class MetaMaskConnect extends Connector {
@@ -109,7 +110,8 @@ export class MetaMaskConnect extends Connector {
 
     this.eagerConnection = import('@metamask/connect-evm').then(async (module) => {
       if (!this.client) {
-        // Library entry point: builds the multichain client, wires mobile deeplinks when not in the extension.
+        // Library entry point: builds the multichain client,
+        // wires mobile deeplinks when not shown in the extension.
         this.client = await module.createEVMClient({
           dapp: {
             name: this.options.dappMetadata.name ?? 'CoW Swap',
