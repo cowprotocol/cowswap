@@ -148,6 +148,12 @@ export function Configurator({ title }: { title: string }) {
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
   const toggleDisableProgressBar = useCallback(() => setDisableProgressBar((curr) => !curr), [])
 
+  const [hideRecentTokens, setHideRecentTokens] = useState<boolean>(false)
+  const toggleHideRecentTokens = useCallback(() => setHideRecentTokens((curr) => !curr), [])
+
+  const [hideFavoriteTokens, setHideFavoriteTokens] = useState<boolean>(false)
+  const toggleHideFavoriteTokens = useCallback(() => setHideFavoriteTokens((curr) => !curr), [])
+
   const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
   const toggleHideBridgeInfo = useCallback(() => setHideBridgeInfo((curr) => !curr), [])
 
@@ -187,6 +193,8 @@ export function Configurator({ title }: { title: string }) {
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
+    hideRecentTokens,
+    hideFavoriteTokens,
     hideBridgeInfo,
     hideOrdersTable,
   }
@@ -350,6 +358,22 @@ export function Configurator({ title }: { title: string }) {
           <RadioGroup row aria-label="mode" name="mode" value={disableProgressBar} onChange={toggleDisableProgressBar}>
             <FormControlLabel value="false" control={<Radio />} label="Show SWAP progress bar" />
             <FormControlLabel value="true" control={<Radio />} label="Hide SWAP progress bar" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Recent tokens:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideRecentTokens} onChange={toggleHideRecentTokens}>
+            <FormControlLabel value="false" control={<Radio />} label="Show recent tokens" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide recent tokens" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Favorite tokens:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideFavoriteTokens} onChange={toggleHideFavoriteTokens}>
+            <FormControlLabel value="false" control={<Radio />} label="Show favorite tokens" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide favorite tokens" />
           </RadioGroup>
         </FormControl>
 
