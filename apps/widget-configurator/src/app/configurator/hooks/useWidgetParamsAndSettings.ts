@@ -32,6 +32,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
   return useMemo(() => {
     const {
       chainId,
+      locale,
       theme,
       currentTradeType,
       enabledTradeTypes,
@@ -67,6 +68,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       width: '100%',
       height: '640px',
       chainId,
+      locale,
       tokenLists: tokenListUrls.filter((list) => list.enabled).map((list) => list.url),
       baseUrl: DEFAULT_BASE_URL,
       tradeType: currentTradeType,

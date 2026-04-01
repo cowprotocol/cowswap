@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
+import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK, SupportedLocale } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
@@ -33,6 +33,7 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
 import { CustomSoundsControl } from './controls/CustomSoundsControl'
 import { DeadlineControl } from './controls/DeadlineControl'
+import { LocaleControl } from './controls/LocaleControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
@@ -99,6 +100,9 @@ export function Configurator({ title }: { title: string }) {
 
   const tradeTypeState = useState<TradeType>(TRADE_MODES[0])
   const [currentTradeType] = tradeTypeState
+
+  const localeState = useState<SupportedLocale | ''>('')
+  const [locale] = localeState
 
   const tradeModesState = useState<TradeType[]>(TRADE_MODES)
   const [enabledTradeTypes] = tradeModesState
@@ -176,6 +180,7 @@ export function Configurator({ title }: { title: string }) {
     limitDeadline,
     advancedDeadline,
     chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
+    locale: locale || undefined,
     theme: mode,
     currentTradeType,
     enabledTradeTypes,
@@ -296,6 +301,8 @@ export function Configurator({ title }: { title: string }) {
         <WidgetHooksControl state={widgetHooksState} />
 
         <CurrentTradeTypeControl state={tradeTypeState} />
+
+        <LocaleControl state={localeState} />
 
         {!IS_IFRAME && (
           <NetworkControl

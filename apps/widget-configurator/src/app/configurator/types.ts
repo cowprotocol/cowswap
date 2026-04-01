@@ -20,6 +20,7 @@ export interface TokenListItem {
 
 export interface ConfiguratorState {
   chainId?: SupportedChainId
+  locale?: string
   theme: PaletteMode
   currentTradeType: TradeType
   enabledTradeTypes: TradeType[]
