@@ -1,4 +1,4 @@
-import { CowWidgetEventListeners } from '@cowprotocol/events'
+import { BaseOrderPayload, BaseOrdersPayload, CowWidgetEventListeners, OnTradeParamsPayload } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
@@ -7,6 +7,7 @@ import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
   EthereumProvider,
+  OnApprovalPayload,
   WidgetHookEvents,
   WidgetMethodsEmit,
   WidgetMethodsListen,
@@ -281,13 +282,27 @@ function listenToHeightChanges(
 
 function processWidgetHooks(contentWindow: Window, hooks: CowSwapWidgetParams['hooks']): WindowListener {
   return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.PROCESS_HOOK, async (data) => {
-    if (data.event === WidgetHookEvents.ON_BEFORE_APPROVAL) {
-      const isHookPassed = hooks?.onBeforeApproval ? await hooks.onBeforeApproval() : true
+    // eslint-disable-next-line complexity
+    const isHookPassed = await (() => {
+      switch (data.event) {
+        case WidgetHookEvents.ON_BEFORE_APPROVAL:
+          return hooks?.onBeforeApproval ? hooks.onBeforeApproval(data.payload as OnApprovalPayload) : true
+        case WidgetHookEvents.ON_BEFORE_TRADE:
+          return hooks?.onBeforeTrade ? hooks.onBeforeTrade(data.payload as OnTradeParamsPayload) : true
+        case WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP:
+          return hooks?.onBeforeWrapOrUnwrap ? hooks.onBeforeWrapOrUnwrap(data.payload as OnTradeParamsPayload) : true
+        case WidgetHookEvents.ON_BEFORE_ORDER_CANCEL:
+          return hooks?.onBeforeOrderCancel ? hooks.onBeforeOrderCancel(data.payload as BaseOrderPayload) : true
+        case WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL:
+          return hooks?.onBeforeOrdersCancel ? hooks.onBeforeOrdersCancel(data.payload as BaseOrdersPayload) : true
+        default:
+          return true
+      }
+    })()
 
-      widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.HOOK_RESULT, {
-        id: data.id,
-        result: isHookPassed,
-      })
-    }
+    widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.HOOK_RESULT, {
+      id: data.id,
+      result: isHookPassed,
+    })
   })
 }

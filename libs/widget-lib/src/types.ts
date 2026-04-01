@@ -1,6 +1,7 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   BaseOrderPayload,
+  BaseOrdersPayload,
   CowWidgetEventListeners,
   CowWidgetEventPayloadMap,
   CowWidgetEvents,
@@ -8,6 +9,7 @@ import {
 } from '@cowprotocol/events'
 
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
+export type { BaseOrderPayload, BaseOrdersPayload, OnTradeParamsPayload } from '@cowprotocol/events'
 
 export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
 
@@ -44,6 +46,16 @@ export enum WidgetHookEvents {
   ON_BEFORE_WRAP_UNWRAP = 'ON_BEFORE_WRAP_UNWRAP',
   ON_BEFORE_ORDER_CANCEL = 'ON_BEFORE_ORDER_CANCEL',
   ON_BEFORE_ORDERS_CANCEL = 'ON_BEFORE_ORDERS_CANCEL',
+}
+
+export type WidgetHookResult = Promise<boolean> | boolean
+
+export interface OnApprovalPayload {
+  chainId: SupportedChainId
+  sellToken: TokenInfo
+  sellAmount: string
+  walletAddress: string
+  spenderAddress: string
 }
 
 export interface CowSwapWidgetProps {
@@ -405,11 +417,11 @@ export interface CowSwapWidgetParams {
   }
 
   hooks?: Partial<{
-    onBeforeApproval(): Promise<boolean> | boolean
-    onBeforeWrapOrUnwrap(): Promise<boolean> | boolean
-    onBeforeTrade(): Promise<boolean> | boolean
-    onBeforeOrderCancel(): Promise<boolean> | boolean
-    onBeforeOrdersCancel(): Promise<boolean> | boolean
+    onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult
+    onBeforeWrapOrUnwrap(payload: OnTradeParamsPayload): WidgetHookResult
+    onBeforeTrade(payload: OnTradeParamsPayload): WidgetHookResult
+    onBeforeOrderCancel(payload: BaseOrderPayload): WidgetHookResult
+    onBeforeOrdersCancel(payload: BaseOrdersPayload): WidgetHookResult
   }>
 }
 
@@ -477,17 +489,11 @@ export interface WidgetHookResultPayload {
 }
 
 export interface WidgetHookPayloadMap {
-  [WidgetHookEvents.ON_BEFORE_APPROVAL]: {
-    chainId: SupportedChainId
-    sellToken: TokenInfo
-    sellAmount: string
-    walletAddress: string
-    spenderAddress: string
-  }
+  [WidgetHookEvents.ON_BEFORE_APPROVAL]: OnApprovalPayload
   [WidgetHookEvents.ON_BEFORE_TRADE]: OnTradeParamsPayload
   [WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP]: OnTradeParamsPayload
   [WidgetHookEvents.ON_BEFORE_ORDER_CANCEL]: BaseOrderPayload
-  [WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL]: BaseOrderPayload
+  [WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL]: BaseOrdersPayload
 }
 
 export interface EmitCowEventPayload<T extends CowWidgetEvents> {

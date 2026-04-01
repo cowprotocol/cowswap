@@ -8,3 +8,8 @@ export { injectedWidgetPartnerFeeAtom } from './state/injectedWidgetParamsAtom'
 export { WidgetMarkdownContent } from './pure/WidgetMarkdownContent'
 
 export { callWidgetHook } from './services/callWidgetHook'
+export {
+  buildOrderWidgetHookPayload,
+  buildOrdersWidgetHookPayload,
+  buildTradeWidgetHookPayload,
+} from './services/widgetHooksPayload'

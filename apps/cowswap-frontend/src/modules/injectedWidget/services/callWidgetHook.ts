@@ -1,3 +1,4 @@
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   WidgetHookEvents,
   WidgetHookPayloadMap,
@@ -18,6 +19,8 @@ widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsListen.HOOK
 })
 
 export function callWidgetHook(event: WidgetHookEvents, payload: WidgetHookPayloadMap[typeof event]): Promise<boolean> {
+  if (!isInjectedWidget()) return Promise.resolve(true)
+
   const id = window.crypto.randomUUID()
 
   widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.PROCESS_HOOK, {

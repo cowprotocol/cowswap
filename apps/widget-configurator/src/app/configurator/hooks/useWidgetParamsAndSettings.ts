@@ -125,8 +125,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       hooks: {
         ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_APPROVAL)
           ? {
-              onBeforeApproval() {
-                return prompt('Type "ok" to proceed') === 'ok'
+              onBeforeApproval(payload) {
+                return prompt(`Type "ok" to proceed with ${payload.sellAmount} approval`) === 'ok'
               },
             }
           : null),
