@@ -1,5 +1,13 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { isBtcAddress, isEvmAddress, isSolanaAddress, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
+import {
+  isBtcAddress,
+  isBtcChain,
+  isEvmAddress,
+  isEvmChain,
+  isSolanaAddress,
+  SupportedChainId,
+  TargetChainId,
+} from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
@@ -134,13 +142,7 @@ export function shortenOrderId(orderId: string): string {
   return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
 }
 
-// eslint-disable-next-line complexity
-function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
-  // Allow override via environment variable for local development (e.g., Otterscan)
-  const basePath = BLOCK_EXPLORER_URL_OVERRIDE || base || CHAIN_INFO[chainId]?.explorer
-
-  if (!basePath) return ''
-
+function getEvmLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
   switch (type) {
     case 'transaction':
       return `${basePath}/tx/${data}`
@@ -158,4 +160,48 @@ function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplor
     default:
       return `${basePath}/address/${data}`
   }
+}
+
+function getSolLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+  switch (type) {
+    case 'transaction':
+    case 'event':
+      return `${basePath}/tx/${data}`
+    case 'token':
+    case 'token-transfer':
+    case 'address':
+    case 'contract':
+    default:
+      return `${basePath}/address/${data}`
+    case 'block':
+      return `${basePath}` // Solana explorer has no block page
+  }
+}
+
+function getBtcLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+  switch (type) {
+    case 'transaction':
+    case 'event':
+      return `${basePath}/tx/${data}`
+    case 'block':
+      return `${basePath}/block/${data}`
+    case 'address':
+    case 'token-transfer':
+    default:
+      return `${basePath}/address/${data}`
+    case 'token':
+    case 'contract':
+      return `${basePath}` // BTC has no token or contract page
+  }
+}
+
+function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
+  // Allow override via environment variable for local development (e.g., Otterscan)
+  const basePath = BLOCK_EXPLORER_URL_OVERRIDE || base || CHAIN_INFO[chainId]?.explorer
+
+  if (!basePath) return ''
+
+  if (isBtcChain(chainId)) return getBtcLegacyExplorerUrl(basePath, data, type)
+  if (!isEvmChain(chainId)) return getSolLegacyExplorerUrl(basePath, data, type) // non-EVM, non-BTC = Solana
+  return getEvmLegacyExplorerUrl(basePath, data, type)
 }
