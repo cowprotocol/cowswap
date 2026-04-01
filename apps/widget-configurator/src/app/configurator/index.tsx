@@ -148,6 +148,12 @@ export function Configurator({ title }: { title: string }) {
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
   const toggleDisableProgressBar = useCallback(() => setDisableProgressBar((curr) => !curr), [])
 
+  const [disableCrossChainSwap, setDisableCrossChainSwap] = useState<boolean>(false)
+  const toggleDisableCrossChainSwap = useCallback(() => setDisableCrossChainSwap((curr) => !curr), [])
+
+  const [disableTokenImport, setDisableTokenImport] = useState<boolean>(false)
+  const toggleDisableTokenImport = useCallback(() => setDisableTokenImport((curr) => !curr), [])
+
   const [hideRecentTokens, setHideRecentTokens] = useState<boolean>(false)
   const toggleHideRecentTokens = useCallback(() => setHideRecentTokens((curr) => !curr), [])
 
@@ -193,6 +199,8 @@ export function Configurator({ title }: { title: string }) {
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
+    disableCrossChainSwap,
+    disableTokenImport,
     hideRecentTokens,
     hideFavoriteTokens,
     hideBridgeInfo,
@@ -358,6 +366,28 @@ export function Configurator({ title }: { title: string }) {
           <RadioGroup row aria-label="mode" name="mode" value={disableProgressBar} onChange={toggleDisableProgressBar}>
             <FormControlLabel value="false" control={<Radio />} label="Show SWAP progress bar" />
             <FormControlLabel value="true" control={<Radio />} label="Hide SWAP progress bar" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Cross-chain swaps:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="mode"
+            name="mode"
+            value={disableCrossChainSwap}
+            onChange={toggleDisableCrossChainSwap}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Enable cross-chain swaps" />
+            <FormControlLabel value="true" control={<Radio />} label="Disable cross-chain swaps" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Custom tokens and lists:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={disableTokenImport} onChange={toggleDisableTokenImport}>
+            <FormControlLabel value="false" control={<Radio />} label="Allow importing custom tokens/lists" />
+            <FormControlLabel value="true" control={<Radio />} label="Disable importing custom tokens/lists" />
           </RadioGroup>
         </FormControl>
 

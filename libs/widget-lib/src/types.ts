@@ -288,6 +288,12 @@ export interface CowSwapWidgetParams {
    * Defaults to false.
    */
   disableCrossChainSwap?: boolean
+
+  /**
+   * Disables adding custom tokens and custom token lists.
+   * Defaults to false.
+   */
+  disableTokenImport?: boolean
   /**
    * Disables showing the confirmation modal you get after posting an order.
    * Defaults to false.

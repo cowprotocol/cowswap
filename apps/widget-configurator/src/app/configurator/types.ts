@@ -35,6 +35,8 @@ export interface ConfiguratorState {
   standaloneMode: boolean
   disableToastMessages: boolean
   disableProgressBar: boolean
+  disableCrossChainSwap: boolean
+  disableTokenImport: boolean
   hideRecentTokens: boolean
   hideFavoriteTokens: boolean
   hideBridgeInfo: boolean | undefined

@@ -7,6 +7,8 @@ import { Loader } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import { VirtualItem } from '@tanstack/react-virtual'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { VirtualList } from 'common/pure/VirtualList'
 
 import { TokenSearchRowRenderer } from './TokenSearchRowRenderer'
@@ -23,6 +25,7 @@ export function TokenSearchContent({
   areTokensFromBridge = false,
   bridgeSupportedTokensMap,
 }: TokenSearchContentProps): ReactNode {
+  const { disableTokenImport } = useInjectedWidgetParams()
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
 
   const searchCount = [
@@ -53,6 +56,7 @@ export function TokenSearchContent({
     isLoading,
     matchedTokens,
     activeList,
+    disableTokenImport,
     blockchainResult,
     inactiveListsResult,
     externalApiResult,

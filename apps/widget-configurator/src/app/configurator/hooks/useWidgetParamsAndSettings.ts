@@ -103,6 +103,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       standaloneMode,
       disableToastMessages,
       disableProgressBar,
+      disableCrossChainSwap,
+      disableTokenImport,
       hideRecentTokens,
       hideFavoriteTokens,
       hideBridgeInfo,
@@ -129,6 +131,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       standaloneMode,
       disableToastMessages,
       disableProgressBar,
+      disableCrossChainSwap,
+      disableTokenImport,
       hideRecentTokens,
       hideFavoriteTokens,
 
