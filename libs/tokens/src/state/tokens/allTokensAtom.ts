@@ -29,7 +29,7 @@ interface TokensState {
 }
 
 const tokensStateAtom = atom(async (get) => {
-  const { chainId } = get(environmentAtom)
+  const { chainId, selectedLists } = get(environmentAtom)
   const listsStatesList = await get(listsStatesListAtom)
   const listsEnabledState = await get(listsEnabledStateAtom)
   const blockedListSources = get(blockedListSourcesAtom)
@@ -49,8 +49,9 @@ const tokensStateAtom = atom(async (get) => {
             return acc
           }
 
-          const isListEnabled = listsEnabledState[list.source]
+          const isListEnabled = listsEnabledState[list.source] || selectedLists?.includes(list.source)
           const lpTokenProvider = list.lpTokenProvider
+
           list.list.tokens.forEach((token) => {
             const tokenInfo = parseTokenInfo(chainId, token)
             const tokenAddressKey = tokenInfo?.address.toLowerCase()
