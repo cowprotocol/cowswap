@@ -38,7 +38,9 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
   const hasInjectedMetaMask = multiInjectedProviders.some((providerInfo) =>
     providerInfo.info.rdns.startsWith('io.metamask'),
   )
-  const showMetaMaskConnectOption = !hasInjectedMetaMask && !isMobile
+  // MetaMask Connect row: show on mobile too when there’s no injected MetaMask (browser / extension).
+  // If MetaMask already announces via EIP-6963, hide this row so we don’t list MetaMask twice.
+  const showMetaMaskConnectOption = !hasInjectedMetaMask
   const metaMaskConnectOption = showMetaMaskConnectOption ? (
     <MetaMaskConnectOption key="MetaMaskConnectOption" {...connectionProps} />
   ) : null

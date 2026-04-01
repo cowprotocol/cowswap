@@ -1,3 +1,11 @@
+/**
+ * Web3-react bridge for MetaMask’s official **Connect EVM** stack (`@metamask/connect-evm`).
+ *
+ * We lazy-load the package, call `createEVMClient`, then forward the EIP-1193 provider into web3-react
+ * so the rest of the app keeps using the same `activate` / hooks flow as other wallets.
+ *
+ * See `metaMaskConnect/README.md` in this folder for the human story (SDK → Connect, mobile, etc.).
+ */
 import type {
   Actions,
   AddEthereumChainParameter,
@@ -12,7 +20,7 @@ import { parseChainId } from '../../utils/parseChainId'
 
 import type * as ConnectEvm from '@metamask/connect-evm'
 
-/** Resolved EVM client type from the real package (avoids hand-written types that drift from MetamaskConnectEVM). */
+/** Whatever `createEVMClient` actually returns — we derive it from the package so types stay in sync. */
 type MetaMaskConnectEvmClient = Awaited<ReturnType<typeof ConnectEvm.createEVMClient>>
 
 type Listener = Parameters<Provider['on']>[1]
@@ -21,6 +29,7 @@ type MetaMaskProvider = Provider & {
   isConnected?: () => boolean
 }
 
+/** What we pass into the connector from `metaMaskConnect.tsx` (dapp branding + RPC map for read-only calls). */
 type MetaMaskConnectOptions = {
   dappMetadata: {
     name?: string
@@ -30,6 +39,7 @@ type MetaMaskConnectOptions = {
   readonlyRPCMap?: Record<string, string>
 }
 
+/** Thrown when the user picks MetaMask Connect but the client/provider never became available. */
 export class NoMetaMaskConnectError extends Error {
   public constructor() {
     super('MetaMask Connect not installed')
@@ -55,6 +65,12 @@ function getOriginalRpcError(error: ProviderRpcError): ProviderRpcError {
   return error
 }
 
+/**
+ * MetaMask wallet connection for CoW, backed by `@metamask/connect-evm` instead of the old `@metamask/sdk`.
+ *
+ * Responsibilities: spin up the EVM client once, subscribe provider events into web3-react state, and
+ * implement `activate` / `deactivate` / chain switch the same way other connectors do.
+ */
 export class MetaMaskConnect extends Connector {
   private client?: MetaMaskConnectEvmClient
   provider?: MetaMaskProvider = undefined
@@ -93,6 +109,7 @@ export class MetaMaskConnect extends Connector {
 
     this.eagerConnection = import('@metamask/connect-evm').then(async (module) => {
       if (!this.client) {
+        // Library entry point: builds the multichain client, wires mobile deeplinks when not in the extension.
         this.client = await module.createEVMClient({
           dapp: {
             name: this.options.dappMetadata.name ?? 'CoW Swap',
@@ -101,6 +118,10 @@ export class MetaMaskConnect extends Connector {
           },
           api: {
             supportedNetworks: (this.options.readonlyRPCMap ?? {}) as Record<`0x${string}`, string>,
+          },
+          // Prefer native `metamask://` deeplinks on mobile (see @metamask/connect-multichain `mobile.useDeeplink`).
+          mobile: {
+            useDeeplink: true,
           },
         })
       }

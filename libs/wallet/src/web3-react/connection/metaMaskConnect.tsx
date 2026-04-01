@@ -1,3 +1,7 @@
+/**
+ * Registers the MetaMask Connect connector with web3-react: one shared instance + hooks for the app.
+ * CoW branding and per-chain RPC URLs for read-only use live here; the heavy lifting is in `MetaMaskConnect`.
+ */
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { initializeConnector } from '@web3-react/core'
 

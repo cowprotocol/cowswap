@@ -1,3 +1,7 @@
+/**
+ * The “MetaMask” row in the connect modal when we’re using MetaMask Connect (not an injected EIP-6963 entry).
+ * Clicks call `tryActivation` on the connector from `metaMaskConnect.tsx`.
+ */
 import { ReactNode } from 'react'
 
 import { metaMaskConnectConnection } from './metaMaskConnect'
@@ -15,6 +19,7 @@ const metaMaskOption = {
   id: 'metamask',
 }
 
+/** Presentational wallet tile; activation logic lives in the connector + web3-react. */
 export function MetaMaskConnectOption({ tryActivation, selectedWallet }: ConnectionOptionProps): ReactNode {
   const isActive = useIsActiveConnection(selectedWallet, metaMaskConnectConnection)
 
