@@ -16,6 +16,7 @@ import {
 import Tabs from '@mui/material/Tabs'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../consts'
+import { parseCustomTokensInput } from '../utils/parseCustomTokensInput'
 import { validateURL } from '../utils/validateURL'
 
 const jsonTextAreaStyles = {
@@ -93,9 +94,9 @@ export function AddCustomListDialog({
     }
 
     try {
-      const parsedTokens = JSON.parse(e.target.value)
+      const parsedTokens = parseCustomTokensInput(e.target.value)
 
-      if (Array.isArray(parsedTokens)) {
+      if (parsedTokens) {
         setCustomTokens(parsedTokens)
       } else {
         setHasJsonErrors(true)
@@ -163,7 +164,7 @@ export function AddCustomListDialog({
         <CustomTabPanel value={tabIndex} index={1}>
           <textarea ref={textareaRef} style={jsonTextAreaStyles as never} onChange={handleJsonInputChange}></textarea>
           <Button onClick={addJsonExample}>Add an example</Button>
-          {hasJsonErrors && <FormHelperText error>Enter valid JSON</FormHelperText>}
+          {hasJsonErrors && <FormHelperText error>Enter a token array or token list JSON</FormHelperText>}
         </CustomTabPanel>
       </DialogContent>
       <DialogActions>
