@@ -1,9 +1,13 @@
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import { renderHook, waitFor } from '@testing-library/react'
+
+import { callWidgetHook } from 'modules/injectedWidget'
 
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
@@ -15,11 +19,26 @@ import { MAX_APPROVE_AMOUNT } from '../constants'
 import { TradeApproveResult } from '../containers'
 import { useIsPartialApproveSelectedByUser, useUpdateApproveProgressModalState } from '../state'
 
+jest.mock('@cowprotocol/balances-and-allowances', () => ({
+  useTradeSpenderAddress: jest.fn(),
+}))
+
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(),
+}))
+
+jest.mock('modules/injectedWidget', () => ({
+  callWidgetHook: jest.fn(),
+}))
+
 jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
 jest.mock('../../permit')
 jest.mock('../state')
 
+const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
+const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockCallWidgetHook = callWidgetHook as jest.MockedFunction<typeof callWidgetHook>
 const mockUseApproveCurrency = useApproveCurrency as jest.MockedFunction<typeof useApproveCurrency>
 const mockUseGeneratePermitInAdvanceToTrade = useGeneratePermitInAdvanceToTrade as jest.MockedFunction<
   typeof useGeneratePermitInAdvanceToTrade
@@ -36,6 +55,8 @@ const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jes
 describe('useApproveAndSwap', () => {
   const mockToken = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'TEST', 'Test Token')
   const mockAmount = BigInt('1000000000000000000')
+  const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+  const mockSpenderAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET]
   const mockAmountToApprove = {
     currency: mockToken,
     quotient: { toString: () => mockAmount.toString() },
@@ -74,6 +95,10 @@ describe('useApproveAndSwap', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    mockUseTradeSpenderAddress.mockReturnValue(mockSpenderAddress)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockUseWalletInfo.mockReturnValue({ account: mockAccount } as any)
+    mockCallWidgetHook.mockResolvedValue(true)
     mockUseApproveCurrency.mockReturnValue(mockHandleApprove)
     mockUseGeneratePermitInAdvanceToTrade.mockReturnValue(mockGeneratePermitToTrade)
     mockUseTokenSupportsPermit.mockReturnValue(false)
@@ -261,7 +286,13 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({ error: 'Approved amount is not sufficient!' })
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          error: expect.objectContaining({
+            props: expect.objectContaining({
+              message: 'Approved amount is not sufficient!',
+            }),
+          }),
+        })
         expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
@@ -289,7 +320,13 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({ error: 'Approved amount is not sufficient!' })
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          error: expect.objectContaining({
+            props: expect.objectContaining({
+              message: 'Approved amount is not sufficient!',
+            }),
+          }),
+        })
         expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })

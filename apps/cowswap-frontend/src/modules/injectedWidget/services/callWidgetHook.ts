@@ -6,8 +6,6 @@ import {
   WidgetMethodsListen,
 } from '@cowprotocol/widget-lib'
 
-import { v4 as uuidv4 } from 'uuid'
-
 const callsRegistry = new Map<string, (result: boolean) => void>()
 
 widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsListen.HOOK_RESULT, (data) => {
@@ -20,7 +18,7 @@ widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsListen.HOOK
 })
 
 export function callWidgetHook(event: WidgetHookEvents, payload: WidgetHookPayloadMap[typeof event]): Promise<boolean> {
-  const id = uuidv4()
+  const id = window.crypto.randomUUID()
 
   widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.PROCESS_HOOK, {
     id,
