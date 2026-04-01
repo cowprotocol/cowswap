@@ -30,9 +30,9 @@ export function TokenSearchContent({
 
   const searchCount = [
     activeListsResult.length,
-    inactiveListsResult?.length ?? 0,
-    blockchainResult?.length ?? 0,
-    externalApiResult?.length ?? 0,
+    disableTokenImport ? 0 : (inactiveListsResult?.length ?? 0),
+    disableTokenImport ? 0 : (blockchainResult?.length ?? 0),
+    disableTokenImport ? 0 : (externalApiResult?.length ?? 0),
   ].reduce<number>((acc, cur) => acc + cur, 0)
 
   const isTokenNotFound = isLoading ? false : searchCount === 0
