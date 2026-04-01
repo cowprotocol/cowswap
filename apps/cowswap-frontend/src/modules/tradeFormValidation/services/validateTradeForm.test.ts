@@ -71,7 +71,7 @@ describe('validateTradeForm - xStock logic', () => {
     expect(result).toContain(TradeFormValidation.XstockMinimumTradeSize)
   })
 
-  test('shows xStock minimum trade size for sell orders when xStock sell amount is exactly $10', () => {
+  test('does not show xStock minimum trade size for sell orders when xStock sell amount is exactly $10', () => {
     const context = {
       ...baseContext,
       isInputCurrencyXstock: true,
@@ -83,7 +83,7 @@ describe('validateTradeForm - xStock logic', () => {
     } as unknown as TradeFormValidationContext
 
     const result = validateTradeForm(context)
-    expect(result).toContain(TradeFormValidation.XstockMinimumTradeSize)
+    expect(result).not.toContain(TradeFormValidation.XstockMinimumTradeSize)
   })
 
   test('does not show xStock minimum trade size for sell orders when xStock sell amount is above $10', () => {

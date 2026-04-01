@@ -64,7 +64,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const hasXstockToken = isInputCurrencyXstock || isOutputCurrencyXstock
   const xstockTradeUsdAmount = isSellOrder(orderKind) ? inputAmountUsd : outputAmountUsd
   const isXstockTradeBelowLimit =
-    hasXstockToken && xstockTradeUsdAmount !== null && xstockTradeUsdAmount <= XSTOCK_MIN_TRADE_SIZE_USD
+    hasXstockToken && xstockTradeUsdAmount !== null && xstockTradeUsdAmount < XSTOCK_MIN_TRADE_SIZE_USD
 
   const validations: TradeFormValidation[] = []
 
