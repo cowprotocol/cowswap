@@ -1,17 +1,12 @@
 import type { ReactNode } from 'react'
 
-import { initGtm } from '@cowprotocol/analytics'
 import IMG_AFFILIATE_EARN from '@cowprotocol/assets/images/image-affiliate-earn.svg'
 import IMG_GENERATE_LINK from '@cowprotocol/assets/images/image-generate-link.svg'
 import IMG_SHARE_IT from '@cowprotocol/assets/images/image-shareit.svg'
 import { UI } from '@cowprotocol/ui'
 
-import { CowFiCategory } from 'src/common/analytics/types'
-
 import { Link } from '@/components/Link'
 import { CONFIG } from '@/const/meta'
-
-const analytics = initGtm()
 
 export const AFFILIATE_PROGRAM_CTA = {
   text: 'Become an affiliate',
@@ -78,64 +73,56 @@ export const AFFILIATE_PROGRAM_METRICS = [
   },
 ] as const
 
-export const AFFILIATE_PROGRAM_FAQ: { question: string; answer: ReactNode }[] = [
-  {
-    question: 'Do I need approval to participate?',
-    answer:
-      'No. The Moo & Earn Affiliate Program is fully permissionless. Anyone can generate a referral link and start sharing immediately. No application, no whitelist, no waiting.',
-  },
-  {
-    question: 'How do rewards work?',
-    answer:
-      'Rewards are triggered when wallets you refer hit qualifying trading volume milestones on CoW Swap. Both you and your referred traders can earn rewards depending on where they are in the milestone journey.',
-  },
-  {
-    question: 'When are rewards paid?',
-    answer: 'Rewards are distributed every week in USDC. Hit a milestone, get paid - simple as that.',
-  },
-  {
-    question: 'What counts as qualifying volume?',
-    answer: (
-      <>
-        Only eligible trades on supported CoW Swap chains count toward milestone volume. Some trade types may be
-        excluded based on program rules. Read the{' '}
-        <Link
-          href={CONFIG.url.docs}
-          external
-          utmContent="affiliate-program-faq-docs"
-          onClick={() =>
-            analytics.sendEvent({
-              category: CowFiCategory.COWSWAP,
-              action: 'click-affiliate-faq-docs',
-            })
-          }
-        >
-          full docs
-        </Link>{' '}
-        for details.
-      </>
-    ),
-  },
-  {
-    question: 'Where can I get support?',
-    answer: (
-      <>
-        The CoW Swap{' '}
-        <Link
-          href={CONFIG.social.discord.url}
-          external
-          utmContent="affiliate-program-discord-support"
-          onClick={() =>
-            analytics.sendEvent({
-              category: CowFiCategory.COWSWAP,
-              action: 'click-affiliate-discord-support',
-            })
-          }
-        >
-          Discord
-        </Link>{' '}
-        is the best place to ask questions, get help, or connect with the community.
-      </>
-    ),
-  },
-]
+export function getAffiliateProgramFaq(sendEvent: (action: string) => void): { question: string; answer: ReactNode }[] {
+  return [
+    {
+      question: 'Do I need approval to participate?',
+      answer:
+        'No. The Moo & Earn Affiliate Program is fully permissionless. Anyone can generate a referral link and start sharing immediately. No application, no whitelist, no waiting.',
+    },
+    {
+      question: 'How do rewards work?',
+      answer:
+        'Rewards are triggered when wallets you refer hit qualifying trading volume milestones on CoW Swap. Both you and your referred traders can earn rewards depending on where they are in the milestone journey.',
+    },
+    {
+      question: 'When are rewards paid?',
+      answer: 'Rewards are distributed every week in USDC. Hit a milestone, get paid - simple as that.',
+    },
+    {
+      question: 'What counts as qualifying volume?',
+      answer: (
+        <>
+          Only eligible trades on supported CoW Swap chains count toward milestone volume. Some trade types may be
+          excluded based on program rules. Read the{' '}
+          <Link
+            href={CONFIG.url.docs}
+            external
+            utmContent="affiliate-program-faq-docs"
+            onClick={() => sendEvent('click-affiliate-faq-docs')}
+          >
+            full docs
+          </Link>{' '}
+          for details.
+        </>
+      ),
+    },
+    {
+      question: 'Where can I get support?',
+      answer: (
+        <>
+          The CoW Swap{' '}
+          <Link
+            href={CONFIG.social.discord.url}
+            external
+            utmContent="affiliate-program-discord-support"
+            onClick={() => sendEvent('click-affiliate-discord-support')}
+          >
+            Discord
+          </Link>{' '}
+          is the best place to ask questions, get help, or connect with the community.
+        </>
+      ),
+    },
+  ]
+}
