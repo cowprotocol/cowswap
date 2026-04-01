@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -134,6 +136,10 @@ function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
   return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }
 
-function getNonNativeCurrency<T extends { isNative?: boolean }>(currency: T | null | undefined): T | null {
-  return currency && getIsNativeToken(currency) ? null : currency || null
+function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
+  if (!currency || getIsNativeToken(currency) || !('address' in currency)) {
+    return null
+  }
+
+  return currency
 }
