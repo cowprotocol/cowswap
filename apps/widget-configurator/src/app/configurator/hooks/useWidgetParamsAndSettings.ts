@@ -25,15 +25,43 @@ const getBaseUrl = (): string => {
 
 const DEFAULT_BASE_URL = getBaseUrl()
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+function getThemeParam(
+  theme: ConfiguratorState['theme'],
+  customColors: ConfiguratorState['customColors'],
+  defaultColors: ConfiguratorState['defaultColors'],
+  boxShadow: ConfiguratorState['boxShadow'],
+): CowSwapWidgetParams['theme'] {
+  if (JSON.stringify(customColors) === JSON.stringify(defaultColors) && !boxShadow) {
+    return theme
+  }
+
+  const themeColors = {
+    ...defaultColors,
+    ...customColors,
+  }
+
+  return {
+    baseTheme: theme,
+    primary: themeColors.primary,
+    background: themeColors.background,
+    paper: themeColors.paper,
+    text: themeColors.text,
+    danger: themeColors.danger,
+    warning: themeColors.warning,
+    alert: themeColors.alert,
+    info: themeColors.info,
+    success: themeColors.success,
+    ...(boxShadow ? { boxShadow } : null),
+  }
+}
+
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
-  // eslint-disable-next-line max-lines-per-function
   return useMemo(() => {
     const {
       chainId,
       locale,
       theme,
+      boxShadow,
       currentTradeType,
       enabledTradeTypes,
       sellToken,
@@ -58,11 +86,6 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       enabledWidgetHooks,
     } = configuratorState
 
-    const themeColors = {
-      ...defaultColors,
-      ...customColors,
-    }
-
     const params: CowSwapWidgetParams = {
       appCode: 'CoW Widget: Configurator',
       width: '100%',
@@ -83,21 +106,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
             }
           : deadline,
       enabledTradeTypes,
-      theme:
-        JSON.stringify(customColors) === JSON.stringify(defaultColors)
-          ? theme
-          : {
-              baseTheme: theme,
-              primary: themeColors.primary,
-              background: themeColors.background,
-              paper: themeColors.paper,
-              text: themeColors.text,
-              danger: themeColors.danger,
-              warning: themeColors.warning,
-              alert: themeColors.alert,
-              info: themeColors.info,
-              success: themeColors.success,
-            },
+      theme: getThemeParam(theme, customColors, defaultColors, boxShadow),
 
       standaloneMode,
       disableToastMessages,

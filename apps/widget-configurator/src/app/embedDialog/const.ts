@@ -10,7 +10,7 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   width: 'Width in pixels (or 100% to use all available space)',
   chainId: '1 (Mainnet), 100 (Gnosis), 11155111 (Sepolia)',
   tokenLists: 'All default enabled token lists. Also see https://tokenlists.org',
-  theme: 'light/dark or provide your own color palette',
+  theme: 'light/dark or provide your own color palette, plus optional `boxShadow`',
   tradeType: 'swap, limit or advanced',
   sell: 'Sell token. Optionally add amount for sell orders',
   buy: 'Buy token. Optionally add amount for buy orders',

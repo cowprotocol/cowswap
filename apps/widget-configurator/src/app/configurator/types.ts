@@ -22,6 +22,7 @@ export interface ConfiguratorState {
   chainId?: SupportedChainId
   locale?: string
   theme: PaletteMode
+  boxShadow?: string
   currentTradeType: TradeType
   enabledTradeTypes: TradeType[]
   enabledWidgetHooks: WidgetHookEvents[]

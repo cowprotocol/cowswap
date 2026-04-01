@@ -149,7 +149,14 @@ export type CowSwapWidgetPaletteColors = (typeof WIDGET_PALETTE_COLORS)[number]
 
 export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: string }
 
-export type CowSwapWidgetPalette = { baseTheme: CowSwapTheme } & CowSwapWidgetPaletteParams
+export type CowSwapWidgetPalette = {
+  baseTheme: CowSwapTheme
+  /**
+   * Overrides the main widget card shadow.
+   * Accepts any valid CSS box-shadow value, for example `none` or `0 12px 24px rgba(0, 0, 0, 0.12)`.
+   */
+  boxShadow?: string
+} & CowSwapWidgetPaletteParams
 
 export interface CowSwapWidgetSounds {
   /**

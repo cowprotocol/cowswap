@@ -147,6 +147,7 @@ export function Configurator({ title }: { title: string }) {
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
+  const [boxShadow, setBoxShadow] = useState<string>('')
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
@@ -182,6 +183,7 @@ export function Configurator({ title }: { title: string }) {
     chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
     locale: locale || undefined,
     theme: mode,
+    boxShadow: boxShadow || undefined,
     currentTradeType,
     enabledTradeTypes,
     enabledWidgetHooks,
@@ -295,6 +297,17 @@ export function Configurator({ title }: { title: string }) {
         <ThemeControl />
 
         <PaletteControl paletteManager={paletteManager} />
+
+        <TextField
+          fullWidth
+          margin="dense"
+          id="boxShadow"
+          label="Widget shadow"
+          helperText='CSS box-shadow value. Use "none" to disable it.'
+          value={boxShadow}
+          onChange={(event) => setBoxShadow(event.target.value)}
+          size="medium"
+        />
 
         <TradeModesControl state={tradeModesState} />
 
