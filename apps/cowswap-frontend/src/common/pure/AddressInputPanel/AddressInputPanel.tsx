@@ -78,7 +78,7 @@ export function AddressInputPanel({
                 (strategy.placeholderKey === 'nonEvm' ? t`Recipient address` : t`Wallet Address or ENS name`)
               }
               error={error}
-              pattern="^(0x[a-fA-F0-9]{40})$"
+              pattern={strategy.pattern}
               onChange={handleInput}
               value={value}
               onFocus={autofocus}
