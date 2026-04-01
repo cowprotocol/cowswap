@@ -31,8 +31,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isBundlingSupported,
     injectedWidgetParams,
     tradePriceImpact,
-    injectedWidgetParams,
-    tradePriceImpact,
   } = context
 
   const {
