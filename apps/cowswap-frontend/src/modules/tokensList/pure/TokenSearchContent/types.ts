@@ -8,6 +8,7 @@ export interface TokenSearchContentProps {
   searchResults: TokenSearchResponse
   selectTokenContext: SelectTokenContext
   importToken: (tokenToImport: TokenWithLogo) => void
+  disableTokenImport?: boolean
   areTokensFromBridge?: boolean
   bridgeSupportedTokensMap?: Record<string, boolean> | null
 }
@@ -34,6 +35,7 @@ export interface UseSearchRowsParams {
   isLoading: boolean
   matchedTokens: TokenWithLogo[]
   activeList: TokenWithLogo[]
+  disableTokenImport?: boolean
   blockchainResult?: TokenWithLogo[]
   inactiveListsResult?: TokenWithLogo[]
   externalApiResult?: TokenWithLogo[]
