@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
 
-import { formatRefCode } from 'modules/affiliate/lib/affiliateProgramUtils'
+import { REF_CODE_MIN_LENGTH } from 'modules/affiliate'
 
 import { CodeLinkingStatusSection } from './CodeLinkingStatusSection'
 import { CodeLinkingSubtitle } from './CodeLinkingSubtitle'
@@ -27,18 +27,16 @@ import {
 
 import { type TraderInfoResponse } from '../../api/bffAffiliateApi.types'
 import { type TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
+import { formatRefCode } from '../../lib/affiliateProgramUtils'
 import { RefCodeInput, type RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
 import { LabelContent, StatusText } from '../shared'
-
-const REFERRAL_CODE_HELP_TEXT = (
-  <Trans>Referral codes contain 5-20 uppercase letters, numbers, dashes, or underscores</Trans>
-)
 
 export interface AffiliateTradeCodeFormProps
   extends Omit<PayoutConfirmationProps, 'payoutWallet'>,
     Pick<RefCodeInputProps, 'value' | 'onChange'> {
   walletStatus: TraderWalletStatus
   requiresPayoutConfirmation: boolean
+  showInvalidFormat: boolean
   codeInfo?: TraderInfoResponse | null
   savedCode?: string
   isLoading: boolean
@@ -53,6 +51,7 @@ export function AffiliateTradeCodeForm({
   walletStatus,
   account,
   requiresPayoutConfirmation,
+  showInvalidFormat,
   codeInfo,
   payoutConfirmed,
   onTogglePayoutConfirmed,
@@ -66,6 +65,7 @@ export function AffiliateTradeCodeForm({
   ...inputProps
 }: AffiliateTradeCodeFormProps): ReactNode {
   const referralCodeInputId = useId()
+  const hasError = showInvalidFormat || !!error
   const canSubmit =
     !account ||
     (!isLoading && (!requiresPayoutConfirmation || payoutConfirmed) && !!formatRefCode(String(inputProps.value)))
@@ -87,7 +87,12 @@ export function AffiliateTradeCodeForm({
           <Label htmlFor={referralCodeInputId}>
             <LabelContent>
               <Trans>Referral code</Trans>
-              <HelpTooltip text={REFERRAL_CODE_HELP_TEXT} dimmed />
+              <HelpTooltip
+                text={
+                  <Trans>Referral codes contain 5-20 uppercase letters (A-Z), numbers, dashes, or underscores</Trans>
+                }
+                dimmed
+              />
             </LabelContent>
           </Label>
           <LabelAffordances>
@@ -106,12 +111,21 @@ export function AffiliateTradeCodeForm({
         </LabelRow>
         <RefCodeInput
           id={referralCodeInputId}
-          hasError={!!error}
+          hasError={hasError}
           disabled={isLoading || !!savedCode}
           isLoading={isLoading}
-          adornmentVariant={error ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
+          adornmentVariant={hasError ? 'error' : isLoading ? 'checking' : savedCode ? 'valid' : undefined}
           {...inputProps}
         />
+        {showInvalidFormat && (
+          <StatusText $variant="error">
+            {typeof inputProps.value === 'string' && inputProps.value.length < REF_CODE_MIN_LENGTH ? (
+              <Trans>The code must be at least {REF_CODE_MIN_LENGTH} characters long.</Trans>
+            ) : (
+              <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
+            )}
+          </StatusText>
+        )}
         {error && <StatusText $variant="error">{error}</StatusText>}
         <CodeLinkingStatusSection walletStatus={walletStatus} codeInfo={codeInfo} />
         {requiresPayoutConfirmation && (

@@ -7,8 +7,8 @@
   "release": {
     "projectsRelationship": "independent",
     "projects": [
-      "libs/common-entities",
       "libs/events",
+      "libs/currency",
       "libs/types",
       "libs/permit-utils",
       "libs/widget-lib",
