@@ -7,7 +7,10 @@ import {
   WidgetMethodsListen,
 } from '@cowprotocol/widget-lib'
 
+import ms from 'ms.macro'
+
 const callsRegistry = new Map<string, (result: boolean) => void>()
+const HOOK_RESPONSE_TIMEOUT_MS = ms`5m`
 
 widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsListen.HOOK_RESULT, (data) => {
   const callback = callsRegistry.get(data.id)
@@ -18,18 +21,29 @@ widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsListen.HOOK
   }
 })
 
-export function callWidgetHook(event: WidgetHookEvents, payload: WidgetHookPayloadMap[typeof event]): Promise<boolean> {
+export function callWidgetHook<T extends WidgetHookEvents>(
+  event: T,
+  payload: WidgetHookPayloadMap[T],
+): Promise<boolean> {
   if (!isInjectedWidget()) return Promise.resolve(true)
 
   const id = window.crypto.randomUUID()
 
-  widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.PROCESS_HOOK, {
-    id,
-    event,
-    payload,
-  })
-
   return new Promise((resolve) => {
-    callsRegistry.set(id, resolve)
+    const timeoutId = window.setTimeout(() => {
+      callsRegistry.delete(id)
+      resolve(false)
+    }, HOOK_RESPONSE_TIMEOUT_MS)
+
+    callsRegistry.set(id, (result) => {
+      window.clearTimeout(timeoutId)
+      resolve(result)
+    })
+
+    widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.PROCESS_HOOK, {
+      id,
+      event,
+      payload,
+    })
   })
 }

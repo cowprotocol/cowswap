@@ -38,7 +38,7 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
           inputAmount: state?.inputCurrencyAmount,
           outputAmount: state?.outputCurrencyAmount,
         }),
-      )
+      ).catch(() => false)
 
       if (!isWidgetHookPassed) {
         return null

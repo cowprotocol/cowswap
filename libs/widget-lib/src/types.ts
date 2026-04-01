@@ -1,7 +1,5 @@
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
-  BaseOrderPayload,
-  BaseOrdersPayload,
   CowWidgetEventListeners,
   CowWidgetEventPayloadMap,
   CowWidgetEvents,
@@ -9,7 +7,7 @@ import {
 } from '@cowprotocol/events'
 
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
-export type { BaseOrderPayload, BaseOrdersPayload, OnTradeParamsPayload } from '@cowprotocol/events'
+export type { OnTradeParamsPayload } from '@cowprotocol/events'
 
 export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
 
@@ -431,8 +429,8 @@ export interface CowSwapWidgetParams {
     onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult
     onBeforeWrapOrUnwrap(payload: OnTradeParamsPayload): WidgetHookResult
     onBeforeTrade(payload: OnTradeParamsPayload): WidgetHookResult
-    onBeforeOrderCancel(payload: BaseOrderPayload): WidgetHookResult
-    onBeforeOrdersCancel(payload: BaseOrdersPayload): WidgetHookResult
+    onBeforeOrderCancel(payload: EnrichedOrder): WidgetHookResult
+    onBeforeOrdersCancel(payload: EnrichedOrder[]): WidgetHookResult
   }>
 }
 
@@ -460,7 +458,7 @@ export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethods
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
-export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme'>
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks'>
 
 export interface UpdateParamsPayload {
   urlParams: {
@@ -503,8 +501,8 @@ export interface WidgetHookPayloadMap {
   [WidgetHookEvents.ON_BEFORE_APPROVAL]: OnApprovalPayload
   [WidgetHookEvents.ON_BEFORE_TRADE]: OnTradeParamsPayload
   [WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP]: OnTradeParamsPayload
-  [WidgetHookEvents.ON_BEFORE_ORDER_CANCEL]: BaseOrderPayload
-  [WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL]: BaseOrdersPayload
+  [WidgetHookEvents.ON_BEFORE_ORDER_CANCEL]: EnrichedOrder
+  [WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL]: EnrichedOrder[]
 }
 
 export interface EmitCowEventPayload<T extends CowWidgetEvents> {

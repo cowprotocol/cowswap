@@ -49,7 +49,7 @@ export function NoImpactWarning(props: NoImpactWarningProps): ReactNode {
 
   const showPriceImpactWarning = canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
 
-  const acceptCallback: () => void = () => setIsAccepted((state) => !state)
+  const acceptCallback = (): void => setIsAccepted((state) => !state)
 
   useEffect(() => {
     setIsAccepted(!showPriceImpactWarning)

@@ -133,20 +133,6 @@ export function useCreateTwapOrder() {
       }
 
       const orderType = UiOrderType.TWAP
-      const isWidgetHookPassed = await callWidgetHook(
-        WidgetHookEvents.ON_BEFORE_TRADE,
-        buildTradeWidgetHookPayload({
-          orderType,
-          inputAmount: inputCurrencyAmount,
-          outputAmount: outputCurrencyAmount,
-          recipient: twapOrder.receiver,
-          orderKind: OrderKind.SELL,
-        }),
-      )
-
-      if (!isWidgetHookPassed) {
-        return
-      }
 
       const twapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
         account,
@@ -157,6 +143,21 @@ export function useCreateTwapOrder() {
       }
 
       try {
+        const isWidgetHookPassed = await callWidgetHook(
+          WidgetHookEvents.ON_BEFORE_TRADE,
+          buildTradeWidgetHookPayload({
+            orderType,
+            inputAmount: inputCurrencyAmount,
+            outputAmount: outputCurrencyAmount,
+            recipient: twapOrder.receiver,
+            orderKind: OrderKind.SELL,
+          }),
+        )
+
+        if (!isWidgetHookPassed) {
+          return
+        }
+
         const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
         const orderId = getConditionalOrderId(paramsStruct)
 

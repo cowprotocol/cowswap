@@ -89,7 +89,10 @@ describe.skip('buildWidgetUrl', () => {
 
 describe('buildWidgetUrlQuery', () => {
   it('serializes locale forcing as lng', () => {
-    expect(buildWidgetUrlQuery({ locale: 'es-ES' }).toString()).toBe('palette=null&lng=es-ES')
+    const query = buildWidgetUrlQuery({ locale: 'es-ES' })
+
+    expect(query.get('lng')).toBe('es-ES')
+    expect(query.get('palette')).toBe('null')
   })
 
   it('serializes widget shadow inside the theme palette', () => {

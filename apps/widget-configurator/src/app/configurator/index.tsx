@@ -504,14 +504,6 @@ export function Configurator({ title }: { title: string }) {
             step: 'any',
           }}
         />
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Hooks:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={hideOrdersTable} onChange={toggleHideOrdersTable}>
-            <FormControlLabel value="false" control={<Radio />} label="Show orders table" />
-            <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
-          </RadioGroup>
-        </FormControl>
-
         <TextField
           fullWidth
           margin="dense"

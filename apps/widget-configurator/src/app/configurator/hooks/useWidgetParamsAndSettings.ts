@@ -90,18 +90,14 @@ function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetPa
     ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDER_CANCEL)
       ? {
           onBeforeOrderCancel(payload) {
-            return confirmWidgetHookAction(
-              `Type "ok" to cancel order ${payload.order.uid} on chainId ${payload.chainId}`,
-            )
+            return confirmWidgetHookAction(`Type "ok" to cancel order ${payload.uid}`)
           },
         }
       : null),
     ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL)
       ? {
           onBeforeOrdersCancel(payload) {
-            return confirmWidgetHookAction(
-              `Type "ok" to cancel ${payload.orders.length} orders on chainId ${payload.chainId}`,
-            )
+            return confirmWidgetHookAction(`Type "ok" to cancel ${payload.length} orders`)
           },
         }
       : null),

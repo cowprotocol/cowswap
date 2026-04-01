@@ -96,9 +96,10 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       // The callback returned that triggers the modal
       return () => {
         void (async () => {
-          const isWidgetHookPassed = chainId
-            ? await callWidgetHook(WidgetHookEvents.ON_BEFORE_ORDER_CANCEL, buildOrderWidgetHookPayload(chainId, order))
-            : true
+          const isWidgetHookPassed = await callWidgetHook(
+            WidgetHookEvents.ON_BEFORE_ORDER_CANCEL,
+            buildOrderWidgetHookPayload(order),
+          ).catch(() => false)
 
           if (!isWidgetHookPassed) return
 

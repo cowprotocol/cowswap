@@ -1,7 +1,7 @@
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@cowprotocol/currency'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
@@ -50,6 +50,7 @@ const mockUseIsPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser 
 const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
   typeof useUpdateApproveProgressModalState
 >
+type WalletInfo = ReturnType<typeof useWalletInfo>
 
 // eslint-disable-next-line max-lines-per-function
 describe('useApproveAndSwap', () => {
@@ -57,11 +58,7 @@ describe('useApproveAndSwap', () => {
   const mockAmount = BigInt('1000000000000000000')
   const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
   const mockSpenderAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET]
-  const mockAmountToApprove = {
-    currency: mockToken,
-    quotient: { toString: () => mockAmount.toString() },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any
+  const mockAmountToApprove = CurrencyAmount.fromRawAmount(mockToken, mockAmount.toString())
 
   const mockOnApproveConfirm = jest.fn()
   const mockHandleApprove = jest.fn()
@@ -96,8 +93,7 @@ describe('useApproveAndSwap', () => {
     jest.clearAllMocks()
 
     mockUseTradeSpenderAddress.mockReturnValue(mockSpenderAddress)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mockUseWalletInfo.mockReturnValue({ account: mockAccount } as any)
+    mockUseWalletInfo.mockReturnValue({ account: mockAccount } as WalletInfo)
     mockCallWidgetHook.mockResolvedValue(true)
     mockUseApproveCurrency.mockReturnValue(mockHandleApprove)
     mockUseGeneratePermitInAdvanceToTrade.mockReturnValue(mockGeneratePermitToTrade)
@@ -204,6 +200,31 @@ describe('useApproveAndSwap', () => {
         expect(mockGeneratePermitToTrade).not.toHaveBeenCalled()
         expect(mockHandleApprove).toHaveBeenCalled()
         expect(mockOnApproveConfirm).toHaveBeenCalled()
+      })
+    })
+
+    it('should skip approval flow when widget hook blocks it', async () => {
+      mockCallWidgetHook.mockResolvedValue(false)
+
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      await result.current()
+
+      await waitFor(() => {
+        expect(mockCallWidgetHook).toHaveBeenCalled()
+        expect(mockGeneratePermitToTrade).not.toHaveBeenCalled()
+        expect(mockHandleApprove).not.toHaveBeenCalled()
+        expect(mockUpdateTradeApproveState).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
   })

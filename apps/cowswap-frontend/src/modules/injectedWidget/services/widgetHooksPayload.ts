@@ -1,7 +1,7 @@
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { EnrichedOrder, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { AtomsAndUnits, BaseOrderPayload, BaseOrdersPayload, OnTradeParamsPayload } from '@cowprotocol/events'
+import { AtomsAndUnits, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -61,20 +61,14 @@ export function buildTradeWidgetHookPayload({
   }
 }
 
-export function buildOrderWidgetHookPayload(chainId: SupportedChainId, order: Order): BaseOrderPayload {
-  return {
-    chainId,
-    order: (order.apiAdditionalInfo || order) as EnrichedOrder,
-  }
+export function buildOrderWidgetHookPayload(order: Order): EnrichedOrder {
+  return (order.apiAdditionalInfo || order) as EnrichedOrder
 }
 
-export function buildOrdersWidgetHookPayload(chainId: SupportedChainId, orders: CancellableOrder[]): BaseOrdersPayload {
-  return {
-    chainId,
-    orders: orders.map((order) => {
-      const candidate = order as { apiAdditionalInfo?: EnrichedOrder }
+export function buildOrdersWidgetHookPayload(orders: CancellableOrder[]): EnrichedOrder[] {
+  return orders.map((order) => {
+    const candidate = order as { apiAdditionalInfo?: EnrichedOrder }
 
-      return (candidate.apiAdditionalInfo || order) as EnrichedOrder
-    }),
-  }
+    return (candidate.apiAdditionalInfo || order) as EnrichedOrder
+  })
 }

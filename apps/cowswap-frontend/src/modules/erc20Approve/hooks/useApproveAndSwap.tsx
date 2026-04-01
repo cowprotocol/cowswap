@@ -5,7 +5,6 @@ import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
-import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -136,10 +135,7 @@ async function approveAndSwap({
       const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= minAmountToSignForSwapBig)
 
       if (isApprovedAmountSufficient) {
-        const hash =
-          (tx.txResponse as TransactionReceipt).transactionHash || (tx.txResponse as TransactionResponse).hash
-
-        onApproveConfirm(hash)
+        onApproveConfirm(getApprovalTxHash(tx.txResponse))
       } else {
         updateTradeApproveState({ error: <Trans>Approved amount is not sufficient!</Trans> })
       }
@@ -147,4 +143,16 @@ async function approveAndSwap({
       onApproveConfirm(tx.transactionHash)
     }
   }
+}
+
+function getApprovalTxHash(txResponse: object): string | null {
+  if ('transactionHash' in txResponse && typeof txResponse.transactionHash === 'string') {
+    return txResponse.transactionHash
+  }
+
+  if ('hash' in txResponse && typeof txResponse.hash === 'string') {
+    return txResponse.hash
+  }
+
+  return null
 }

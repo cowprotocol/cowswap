@@ -20,9 +20,12 @@ export function TradeModesControl({
   const [tradeModes, setTradeModes] = state
 
   const handleTradeModeChange = (event: SelectChangeEvent<TradeType[]>): void => {
-    if (!event.target.value.length) return
+    const value = event.target.value
+    const nextTradeModes = typeof value === 'string' ? (value.split(',') as TradeType[]) : value
 
-    setTradeModes(event.target.value as TradeType[])
+    if (!nextTradeModes.length) return
+
+    setTradeModes(nextTradeModes)
   }
 
   return (

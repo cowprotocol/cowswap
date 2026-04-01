@@ -1,4 +1,4 @@
-import { BaseOrderPayload, BaseOrdersPayload, CowWidgetEventListeners, OnTradeParamsPayload } from '@cowprotocol/events'
+import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
@@ -7,8 +7,10 @@ import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
   EthereumProvider,
-  OnApprovalPayload,
   WidgetHookEvents,
+  WidgetHookPayload,
+  WidgetHookPayloadMap,
+  WidgetHookResult,
   WidgetMethodsEmit,
   WidgetMethodsListen,
   WindowListener,
@@ -280,25 +282,36 @@ function listenToHeightChanges(
   ]
 }
 
+type WidgetHookHandlerMap = {
+  [K in WidgetHookEvents]: (payload: WidgetHookPayloadMap[K], hooks: CowSwapWidgetParams['hooks']) => WidgetHookResult
+}
+
+const widgetHookHandlers: WidgetHookHandlerMap = {
+  [WidgetHookEvents.ON_BEFORE_APPROVAL]: (payload, hooks) =>
+    hooks?.onBeforeApproval ? hooks.onBeforeApproval(payload) : true,
+  [WidgetHookEvents.ON_BEFORE_TRADE]: (payload, hooks) => (hooks?.onBeforeTrade ? hooks.onBeforeTrade(payload) : true),
+  [WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP]: (payload, hooks) =>
+    hooks?.onBeforeWrapOrUnwrap ? hooks.onBeforeWrapOrUnwrap(payload) : true,
+  [WidgetHookEvents.ON_BEFORE_ORDER_CANCEL]: (payload, hooks) =>
+    hooks?.onBeforeOrderCancel ? hooks.onBeforeOrderCancel(payload) : true,
+  [WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL]: (payload, hooks) =>
+    hooks?.onBeforeOrdersCancel ? hooks.onBeforeOrdersCancel(payload) : true,
+}
+
+function executeWidgetHook<T extends WidgetHookEvents>(
+  data: WidgetHookPayload<T>,
+  hooks: CowSwapWidgetParams['hooks'],
+): WidgetHookResult {
+  return widgetHookHandlers[data.event](data.payload, hooks)
+}
+
 function processWidgetHooks(contentWindow: Window, hooks: CowSwapWidgetParams['hooks']): WindowListener {
   return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.PROCESS_HOOK, async (data) => {
-    // eslint-disable-next-line complexity
-    const isHookPassed = await (() => {
-      switch (data.event) {
-        case WidgetHookEvents.ON_BEFORE_APPROVAL:
-          return hooks?.onBeforeApproval ? hooks.onBeforeApproval(data.payload as OnApprovalPayload) : true
-        case WidgetHookEvents.ON_BEFORE_TRADE:
-          return hooks?.onBeforeTrade ? hooks.onBeforeTrade(data.payload as OnTradeParamsPayload) : true
-        case WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP:
-          return hooks?.onBeforeWrapOrUnwrap ? hooks.onBeforeWrapOrUnwrap(data.payload as OnTradeParamsPayload) : true
-        case WidgetHookEvents.ON_BEFORE_ORDER_CANCEL:
-          return hooks?.onBeforeOrderCancel ? hooks.onBeforeOrderCancel(data.payload as BaseOrderPayload) : true
-        case WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL:
-          return hooks?.onBeforeOrdersCancel ? hooks.onBeforeOrdersCancel(data.payload as BaseOrdersPayload) : true
-        default:
-          return true
-      }
-    })()
+    let isHookPassed = false
+
+    try {
+      isHookPassed = await executeWidgetHook(data, hooks)
+    } catch {}
 
     widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.HOOK_RESULT, {
       id: data.id,
