@@ -25,6 +25,64 @@ const getBaseUrl = (): string => {
 
 const DEFAULT_BASE_URL = getBaseUrl()
 
+function confirmWidgetHookAction(message: string): boolean {
+  return prompt(message) === 'ok'
+}
+
+function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetParams['hooks'] {
+  const hooks: CowSwapWidgetParams['hooks'] = {
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_APPROVAL)
+      ? {
+          onBeforeApproval(payload) {
+            return confirmWidgetHookAction(`Type "ok" to proceed with approval on chainId ${payload.chainId}`)
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_TRADE)
+      ? {
+          onBeforeTrade(payload) {
+            const sellToken = payload.sellToken?.symbol || 'unknown'
+            const buyToken = payload.buyToken?.symbol || 'unknown'
+
+            return confirmWidgetHookAction(
+              `Type "ok" to proceed with ${payload.orderType} trade ${sellToken} -> ${buyToken}`,
+            )
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP)
+      ? {
+          onBeforeWrapOrUnwrap(payload) {
+            const sellToken = payload.sellToken?.symbol || 'unknown'
+            const buyToken = payload.buyToken?.symbol || 'unknown'
+
+            return confirmWidgetHookAction(`Type "ok" to proceed with wrap/unwrap ${sellToken} -> ${buyToken}`)
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDER_CANCEL)
+      ? {
+          onBeforeOrderCancel(payload) {
+            return confirmWidgetHookAction(
+              `Type "ok" to cancel order ${payload.order.uid} on chainId ${payload.chainId}`,
+            )
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL)
+      ? {
+          onBeforeOrdersCancel(payload) {
+            return confirmWidgetHookAction(
+              `Type "ok" to cancel ${payload.orders.length} orders on chainId ${payload.chainId}`,
+            )
+          },
+        }
+      : null),
+  }
+
+  return hooks
+}
+
 function getThemeParam(
   theme: ConfiguratorState['theme'],
   customColors: ConfiguratorState['customColors'],
@@ -122,15 +180,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       hideBridgeInfo,
       hideOrdersTable,
       slippage,
-      hooks: {
-        ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_APPROVAL)
-          ? {
-              onBeforeApproval(payload) {
-                return prompt(`Type "ok" to proceed with ${payload.sellAmount} approval`) === 'ok'
-              },
-            }
-          : null),
-      },
+      hooks: getWidgetHooks(enabledWidgetHooks),
     }
 
     return params
