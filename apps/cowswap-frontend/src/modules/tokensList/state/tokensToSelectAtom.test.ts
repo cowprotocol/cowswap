@@ -38,7 +38,7 @@ jest.mock('./selectTokenWidgetAtom', () => {
 })
 
 // Import AFTER mocks are registered
-import { tokensToSelectAtom } from './tokensToSelectAtom'
+import { tokensToSelectAtom, tokensToSelectAtomPerField } from './tokensToSelectAtom'
 
 const token1 = { address: '0xaaa111', chainId: 1, decimals: 18, symbol: 'TK1', name: 'Token 1' } as TokenWithLogo
 const token2 = { address: '0xbbb222', chainId: 1, decimals: 18, symbol: 'TK2', name: 'Token 2' } as TokenWithLogo
@@ -65,6 +65,24 @@ describe('tokensToSelectAtom', () => {
   it('returns all tokens when no selected lists are configured', async () => {
     const result = await store.get(tokensToSelectAtom)
     expect(result).toEqual([token1, token2, token3])
+  })
+
+  it('precomputes tokens for both fields', async () => {
+    store.set(mockEnvironmentAtom, {
+      sellSelectedLists: [LIST_A],
+      buySelectedLists: [LIST_B],
+    })
+    store.set(mockListsStatesMapAtom, {
+      [LIST_A]: makeListState(LIST_A, [token1.address, token2.address]),
+      [LIST_B]: makeListState(LIST_B, [token3.address]),
+    })
+
+    const result = await store.get(tokensToSelectAtomPerField)
+
+    expect(result).toEqual({
+      [Field.INPUT]: [token1, token2],
+      [Field.OUTPUT]: [token3],
+    })
   })
 
   describe('sell field (Field.INPUT)', () => {

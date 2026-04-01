@@ -12,13 +12,24 @@ export const WIDGET_HOOKS = Object.values(WidgetHookEvents)
 
 // Sourced from https://tokenlists.org/
 export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
-  { url: `${COW_CDN}/tokens/CowSwap.json`, enabled: true },
-  { url: `${COW_CDN}/token-lists/CoinGecko.1.json`, enabled: true },
-  { url: 'https://www.gemini.com/uniswap/manifest.json', enabled: false },
-  { url: 'https://messari.io/tokenlist/messari-verified', enabled: false },
-  { url: 'https://static.optimism.io/optimism.tokenlist.json', enabled: false },
-  { url: 'https://app.tryroll.com/tokens.json', enabled: false },
-  { url: 'https://ipfs.io/ipns/tokens.uniswap.org', enabled: false },
+  { url: `${COW_CDN}/tokens/CowSwap.json`, enabled: true, enabledForSell: false, enabledForBuy: false },
+  { url: `${COW_CDN}/token-lists/CoinGecko.1.json`, enabled: true, enabledForSell: false, enabledForBuy: false },
+  {
+    url: 'https://wispy-bird-88a7.uniswap.workers.dev/?url=http://stablecoin.cmc.eth.link',
+    enabled: false,
+    enabledForSell: false,
+    enabledForBuy: false,
+  },
+  { url: 'https://www.gemini.com/uniswap/manifest.json', enabled: false, enabledForSell: false, enabledForBuy: false },
+  { url: 'https://messari.io/tokenlist/messari-verified', enabled: false, enabledForSell: false, enabledForBuy: false },
+  {
+    url: 'https://static.optimism.io/optimism.tokenlist.json',
+    enabled: false,
+    enabledForSell: false,
+    enabledForBuy: false,
+  },
+  { url: 'https://app.tryroll.com/tokens.json', enabled: false, enabledForSell: false, enabledForBuy: false },
+  { url: 'https://ipfs.io/ipns/tokens.uniswap.org', enabled: false, enabledForSell: false, enabledForBuy: false },
 ]
 // TODO: Move default palette to a new lib that only exposes the palette colors.
 // This way it can be consumed by both the configurator and the widget.

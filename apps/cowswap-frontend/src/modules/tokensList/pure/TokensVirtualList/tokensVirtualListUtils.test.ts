@@ -186,4 +186,32 @@ describe('buildVirtualRows', () => {
       expect(favSection).toBeDefined()
     })
   })
+
+  describe('All tokens title', () => {
+    it('does not render the title when recent and favorite sections are both hidden', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        sortedTokens: [mockToken],
+        recentTokens: [mockToken],
+        favoriteTokens: [mockBridgeableToken],
+        hideRecentTokens: true,
+        hideFavoriteTokens: true,
+      })
+
+      const allTokensTitle = result.find((r) => r.type === 'title' && r.label === 'All tokens')
+      expect(allTokensTitle).toBeUndefined()
+    })
+
+    it('renders the title when at least one extra section is visible', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        sortedTokens: [mockToken],
+        recentTokens: [mockToken],
+        hideFavoriteTokens: true,
+      })
+
+      const allTokensTitle = result.find((r) => r.type === 'title' && r.label === 'All tokens')
+      expect(allTokensTitle).toBeDefined()
+    })
+  })
 })

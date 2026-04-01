@@ -16,6 +16,8 @@ export type ColorPalette = {
 export interface TokenListItem {
   url: string
   enabled: boolean
+  enabledForSell: boolean
+  enabledForBuy: boolean
 }
 
 export interface ConfiguratorState {
@@ -42,7 +44,13 @@ export interface ConfiguratorState {
   standaloneMode: boolean
   disableToastMessages: boolean
   disableProgressBar: boolean
+  disableCrossChainSwap: boolean
+  disableTokenImport: boolean
+  hideRecentTokens: boolean
+  hideFavoriteTokens: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  disableTradeWhenPriceImpactIsUnknown: boolean
+  disableTradeWhenPriceImpactIsHigherThan: number | undefined
   slippage?: SlippageConfig
 }

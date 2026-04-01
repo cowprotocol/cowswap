@@ -25,6 +25,33 @@ const getBaseUrl = (): string => {
 
 const DEFAULT_BASE_URL = getBaseUrl()
 
+const getTokenListsParam = (
+  tokenListUrls: ConfiguratorState['tokenListUrls'],
+  key: 'enabled' | 'enabledForSell' | 'enabledForBuy',
+): string[] => {
+  return tokenListUrls.filter((list) => list[key]).map((list) => list.url)
+}
+
+const getForcedOrderDeadline = ({
+  deadline,
+  swapDeadline,
+  limitDeadline,
+  advancedDeadline,
+}: Pick<
+  ConfiguratorState,
+  'deadline' | 'swapDeadline' | 'limitDeadline' | 'advancedDeadline'
+>): CowSwapWidgetParams['forcedOrderDeadline'] => {
+  if (!swapDeadline && !limitDeadline && !advancedDeadline) {
+    return deadline
+  }
+
+  return {
+    [TradeType.SWAP]: swapDeadline,
+    [TradeType.LIMIT]: limitDeadline,
+    [TradeType.ADVANCED]: advancedDeadline,
+  }
+}
+
 function confirmWidgetHookAction(message: string): boolean {
   return prompt(message) === 'ok'
 }
@@ -138,8 +165,14 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       standaloneMode,
       disableToastMessages,
       disableProgressBar,
+      disableCrossChainSwap,
+      disableTokenImport,
+      hideRecentTokens,
+      hideFavoriteTokens,
       hideBridgeInfo,
       hideOrdersTable,
+      disableTradeWhenPriceImpactIsUnknown,
+      disableTradeWhenPriceImpactIsHigherThan,
       slippage,
       enabledWidgetHooks,
     } = configuratorState
@@ -150,25 +183,24 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       height: '640px',
       chainId,
       locale,
-      tokenLists: tokenListUrls.filter((list) => list.enabled).map((list) => list.url),
+      tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
+      sellTokenLists: getTokenListsParam(tokenListUrls, 'enabledForSell'),
+      buyTokenLists: getTokenListsParam(tokenListUrls, 'enabledForBuy'),
       baseUrl: DEFAULT_BASE_URL,
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
-      forcedOrderDeadline:
-        swapDeadline || limitDeadline || advancedDeadline
-          ? {
-              [TradeType.SWAP]: swapDeadline,
-              [TradeType.LIMIT]: limitDeadline,
-              [TradeType.ADVANCED]: advancedDeadline,
-            }
-          : deadline,
+      forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
       enabledTradeTypes,
       theme: getThemeParam(theme, customColors, defaultColors, boxShadow),
 
       standaloneMode,
       disableToastMessages,
       disableProgressBar,
+      disableCrossChainSwap,
+      disableTokenImport,
+      hideRecentTokens,
+      hideFavoriteTokens,
 
       partnerFee:
         partnerFeeBps > 0
@@ -180,6 +212,10 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       hideBridgeInfo,
       hideOrdersTable,
       slippage,
+      disableTrade: {
+        whenPriceImpactIsUnknown: disableTradeWhenPriceImpactIsUnknown,
+        whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,
+      },
       hooks: getWidgetHooks(enabledWidgetHooks),
     }
 

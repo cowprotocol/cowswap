@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { errorToString } from '@cowprotocol/common-utils'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { useWalletInfo, useActivateConnector, ConnectionType } from '@cowprotocol/wallet'
 
 import { useCloseModal, useModalIsOpen } from 'legacy/state/application/hooks'
@@ -69,11 +69,10 @@ export function WalletModal() {
           closeWalletModal()
           setWalletView('account')
         },
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onActivationError(error: any) {
+        onActivationError(err: unknown) {
+          const error = normalizeError(err)
           dispatch(updateSelectedWallet({ wallet: undefined }))
-          setWalletConnectionError(errorToString(error))
+          setWalletConnectionError(error.message)
         },
       }),
       [isWalletChangingFlow, closeWalletModal, dispatch, setWalletConnectionError, toggleAccountSelectorModal],
