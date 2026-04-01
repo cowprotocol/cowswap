@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { isSupportedChainId } from '@cowprotocol/common-utils'
+import { isAdditionalTargetChain } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 
 import { useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
@@ -69,7 +70,10 @@ export function InvalidBridgeOutputUpdater(): null {
   const rawChainId = rawState.chainId ?? undefined
   const rawTargetChainId = rawState.targetChainId ?? undefined
   const sourceChainId = isSupportedChainId(rawChainId) ? rawChainId : undefined
-  const targetChainId = isSupportedChainId(rawTargetChainId) ? rawTargetChainId : undefined
+  const isValidTargetChain =
+    rawTargetChainId !== undefined &&
+    (isSupportedChainId(rawTargetChainId) || isAdditionalTargetChain(rawTargetChainId))
+  const targetChainId = isValidTargetChain ? rawTargetChainId : undefined
 
   const { data: bridgeSupportedNetworks, isLoading: isBridgeSupportedNetworksLoading } = useBridgeSupportedNetworks()
 
