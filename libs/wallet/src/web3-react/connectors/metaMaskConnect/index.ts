@@ -87,7 +87,7 @@ export class MetaMaskConnect extends Connector {
       ...options,
       dappMetadata: options?.dappMetadata ?? {
         url: defaultUrl,
-        name: defaultUrl !== '' ? undefined : 'wagmi',
+        name: defaultUrl !== '' ? undefined : 'CoW Swap',
       },
     }
   }
@@ -121,7 +121,7 @@ export class MetaMaskConnect extends Connector {
           api: {
             supportedNetworks: (this.options.readonlyRPCMap ?? {}) as Record<`0x${string}`, string>,
           },
-          // Prefer native `metamask://` deeplinks on mobile (see @metamask/connect-multichain `mobile.useDeeplink`).
+          // createEVMClient is typed to accept MultichainOptions.mobile (see @metamask/connect-evm connect.d.ts).
           mobile: {
             useDeeplink: true,
           },
@@ -175,6 +175,7 @@ export class MetaMaskConnect extends Connector {
       const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
       this.actions.update({ chainId: parseChainId(chainId), accounts })
     } catch {
+      cancelActivation?.()
       this.actions.resetState()
     }
   }

@@ -170,10 +170,10 @@ function getMetaMaskConnectionInfo({
   }
 
   const normalizedConnectorName = connector?.name?.toLowerCase().trim()
-  const isMetaMaskConnectorId = connector?.id === 'metaMaskSDK'
+  const isWagmiMetaMaskConnector = connector?.type === ConnectorType.METAMASK
 
   return {
-    isMetamaskConnection: isMetaMaskConnectorId || normalizedConnectorName === 'metamask',
-    isInjectedConnection: connector?.type === ConnectorType.INJECTED || isMetaMaskConnectorId,
+    isMetamaskConnection: isWagmiMetaMaskConnector || normalizedConnectorName === 'metamask',
+    isInjectedConnection: connector?.type === ConnectorType.INJECTED || isWagmiMetaMaskConnector,
   }
 }

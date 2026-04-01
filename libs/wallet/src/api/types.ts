@@ -1,13 +1,14 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 
-import { injected, walletConnect, coinbaseWallet, safe } from '@wagmi/connectors'
+import { coinbaseWallet, injected, metaMask, safe, walletConnect } from '@wagmi/connectors'
 import { Address } from 'viem'
 
 export const ConnectorType = {
   COINBASE_WALLET: coinbaseWallet.type,
   GNOSIS_SAFE: safe.type,
   INJECTED: injected.type,
+  METAMASK: metaMask.type,
   WALLET_CONNECT_V2: walletConnect.type,
 } as const
 
