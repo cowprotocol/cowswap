@@ -376,6 +376,14 @@ export interface CowSwapWidgetParams {
    * Customizable slippage settings for the widget.
    */
   slippage?: FlexibleSlippageConfig
+
+  /**
+   * Conditions to control the ability to trade
+   */
+  disableTrade?: {
+    whenPriceImpactIsUnknown?: boolean
+    whenPriceImpactIsHigherThan?: number
+  }
 }
 
 // Define types for event payloads

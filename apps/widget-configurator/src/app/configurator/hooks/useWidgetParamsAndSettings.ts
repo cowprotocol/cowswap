@@ -109,6 +109,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       hideFavoriteTokens,
       hideBridgeInfo,
       hideOrdersTable,
+      disableTradeWhenPriceImpactIsUnknown,
+      disableTradeWhenPriceImpactIsHigherThan,
       slippage,
     } = configuratorState
 
@@ -146,6 +148,10 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       hideBridgeInfo,
       hideOrdersTable,
       slippage,
+      disableTrade: {
+        whenPriceImpactIsUnknown: disableTradeWhenPriceImpactIsUnknown,
+        whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,
+      },
     }
 
     return params

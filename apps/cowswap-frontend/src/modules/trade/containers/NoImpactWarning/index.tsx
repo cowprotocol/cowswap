@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -33,9 +33,7 @@ export interface NoImpactWarningProps {
   className?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function NoImpactWarning(props: NoImpactWarningProps) {
+export function NoImpactWarning(props: NoImpactWarningProps): ReactNode {
   const { withoutAccepting, className } = props
 
   const [isAccepted, setIsAccepted] = useAtom(noImpactWarningAcceptedAtom)
@@ -51,9 +49,7 @@ export function NoImpactWarning(props: NoImpactWarningProps) {
 
   const showPriceImpactWarning = canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const acceptCallback = () => setIsAccepted((state) => !state)
+  const acceptCallback: () => void = () => setIsAccepted((state) => !state)
 
   useEffect(() => {
     setIsAccepted(!showPriceImpactWarning)
