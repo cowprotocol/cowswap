@@ -29,6 +29,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestrictedForCountry,
     isBalancesLoading,
     isBundlingSupported,
+    injectedWidgetParams,
+    tradePriceImpact,
   } = context
 
   const {
@@ -168,6 +170,32 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isWrapUnwrap) {
     validations.push(TradeFormValidation.WrapUnwrapFlow)
+  }
+
+  const { whenPriceImpactIsHigherThan, whenPriceImpactIsUnknown } = injectedWidgetParams?.disableTrade || {}
+
+  const checkHighPriceImpact = typeof whenPriceImpactIsHigherThan === 'number'
+  const checkUnknownPriceImpact = whenPriceImpactIsUnknown || checkHighPriceImpact
+
+  if (checkUnknownPriceImpact) {
+    const isPriceImpactUnknown = !tradePriceImpact.loading && !tradePriceImpact.priceImpact
+
+    if (isPriceImpactUnknown) {
+      validations.push(TradeFormValidation.DisableTradeWithUnknownPriceImpact)
+    }
+
+    if (tradePriceImpact.loading) {
+      validations.push(TradeFormValidation.ImpactLoading)
+    }
+  }
+
+  if (checkHighPriceImpact && tradePriceImpact.priceImpact) {
+    const priceImpactAsNum = +tradePriceImpact.priceImpact.toSignificant()
+    const isPriceImpactAboveThreshold = priceImpactAsNum > whenPriceImpactIsHigherThan
+
+    if (isPriceImpactAboveThreshold) {
+      validations.push(TradeFormValidation.DisableTradeWithHighPriceImpact)
+    }
   }
 
   if (![ApproveRequiredReason.Unsupported, ApproveRequiredReason.NotRequired].includes(isApproveRequired)) {
