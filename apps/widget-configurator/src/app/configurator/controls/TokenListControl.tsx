@@ -1,19 +1,19 @@
-import React, { useState, useCallback, useMemo, Dispatch, SetStateAction } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useState } from 'react'
 
 import { TokenInfo } from '@cowprotocol/types'
 
 import {
-  Checkbox,
+  Box,
   Button,
-  OutlinedInput,
+  Checkbox,
+  Chip,
+  FormControl,
   InputLabel,
   ListItemText,
   MenuItem,
-  FormControl,
+  OutlinedInput,
   Select,
   SelectChangeEvent,
-  Chip,
-  Box,
 } from '@mui/material'
 
 import { AddCustomListDialog } from './AddCustomListDialog'
@@ -22,7 +22,7 @@ import { TokenListItem } from '../types'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
-const MenuProps = {
+const MENU_PROPS = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
@@ -31,32 +31,124 @@ const MenuProps = {
   },
 }
 
+type TokenListScope = 'enabled' | 'enabledForSell' | 'enabledForBuy'
+
 type TokenListControlProps = {
   tokenListUrlsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
   customTokensState: [TokenInfo[], Dispatch<SetStateAction<TokenInfo[]>>]
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export const TokenListControl = ({ tokenListUrlsState, customTokensState }: TokenListControlProps) => {
+interface TokenListSelectProps {
+  label: string
+  labelId: string
+  selectedUrls: string[]
+  options: ReactNode
+  onChange(event: SelectChangeEvent<string[]>): void
+}
+
+interface TokenListSelectionsProps {
+  tokenListUrls: TokenListItem[]
+  onChangeByScope: Record<TokenListScope, (event: SelectChangeEvent<string[]>) => void>
+}
+
+const TOKEN_LIST_SELECT_CONFIG: { label: string; labelId: string; scope: TokenListScope }[] = [
+  { label: 'Active Token Lists', labelId: 'token-list-chip-label', scope: 'enabled' },
+  { label: 'Sell Token Lists', labelId: 'sell-token-list-chip-label', scope: 'enabledForSell' },
+  { label: 'Buy Token Lists', labelId: 'buy-token-list-chip-label', scope: 'enabledForBuy' },
+]
+
+const getSelectedTokenListUrls = (tokenListUrls: TokenListItem[], scope: TokenListScope): string[] => {
+  return tokenListUrls.filter((list) => list[scope]).map((list) => list.url)
+}
+
+const getTokenListOptions = (tokenListUrls: TokenListItem[], scope: TokenListScope): ReactNode[] => {
+  return [...tokenListUrls]
+    .sort((a, b) => {
+      if (a[scope] === b[scope]) {
+        return a.url.localeCompare(b.url)
+      }
+
+      return a[scope] ? -1 : 1
+    })
+    .map((list) => (
+      <MenuItem key={`${scope}-${list.url}`} value={list.url}>
+        <Checkbox checked={list[scope]} />
+        <ListItemText
+          primary={list.url}
+          disableTypography={true}
+          style={{
+            fontSize: '13px',
+            whiteSpace: 'initial',
+            wordBreak: 'break-word',
+          }}
+        />
+      </MenuItem>
+    ))
+}
+
+function TokenListSelect({ label, labelId, selectedUrls, options, onChange }: TokenListSelectProps): ReactNode {
+  return (
+    <FormControl sx={{ width: '100%' }}>
+      <InputLabel id={labelId}>{label}</InputLabel>
+      <Select
+        labelId={labelId}
+        multiple
+        value={selectedUrls}
+        onChange={onChange}
+        input={<OutlinedInput label={label} />}
+        renderValue={(selected) => (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+            {selected.map((url) => (
+              <Chip key={url} label={url} />
+            ))}
+          </Box>
+        )}
+        MenuProps={MENU_PROPS}
+      >
+        {options}
+      </Select>
+    </FormControl>
+  )
+}
+
+function TokenListSelections({ tokenListUrls, onChangeByScope }: TokenListSelectionsProps): ReactNode {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {TOKEN_LIST_SELECT_CONFIG.map(({ label, labelId, scope }) => (
+        <TokenListSelect
+          key={scope}
+          label={label}
+          labelId={labelId}
+          selectedUrls={getSelectedTokenListUrls(tokenListUrls, scope)}
+          options={getTokenListOptions(tokenListUrls, scope)}
+          onChange={onChangeByScope[scope]}
+        />
+      ))}
+    </Box>
+  )
+}
+
+export const TokenListControl = ({ tokenListUrlsState, customTokensState }: TokenListControlProps): ReactNode => {
   const [tokenListUrls, setTokenListUrls] = tokenListUrlsState
   const [customTokens, setCustomTokens] = customTokensState
-
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  const handleChange = useCallback(
-    (event: SelectChangeEvent<string[]>) => {
-      const selected = event.target.value as string[]
-
-      setTokenListUrls((prev) =>
-        prev.map((list) => ({
-          ...list,
-          enabled: selected.includes(list.url),
-        })),
-      )
+  const setTokenListScope = useCallback(
+    (scope: TokenListScope, selectedUrls: string[]) => {
+      setTokenListUrls((prev) => prev.map((list) => ({ ...list, [scope]: selectedUrls.includes(list.url) })))
     },
     [setTokenListUrls],
+  )
+
+  const onChangeByScope = useMemo(
+    () => ({
+      enabled: (event: SelectChangeEvent<string[]>) => setTokenListScope('enabled', event.target.value as string[]),
+      enabledForSell: (event: SelectChangeEvent<string[]>) =>
+        setTokenListScope('enabledForSell', event.target.value as string[]),
+      enabledForBuy: (event: SelectChangeEvent<string[]>) =>
+        setTokenListScope('enabledForBuy', event.target.value as string[]),
+    }),
+    [setTokenListScope],
   )
 
   const handleAddListUrl = useCallback(
@@ -65,79 +157,31 @@ export const TokenListControl = ({ tokenListUrlsState, customTokensState }: Toke
 
       if (existing) return
 
-      setTokenListUrls((prev) => [...prev, { url: newListUrl, enabled: true }])
+      setTokenListUrls((prev) => [
+        ...prev,
+        { url: newListUrl, enabled: true, enabledForSell: false, enabledForBuy: false },
+      ])
     },
     [tokenListUrls, setTokenListUrls],
   )
 
-  const handleAddCustomTokens = useCallback(
-    (tokens: TokenInfo[]) => {
-      setCustomTokens(tokens)
-    },
-    [setCustomTokens],
-  )
-
-  const tokenListOptions = useMemo(
-    () =>
-      tokenListUrls
-        .sort((a, b) => {
-          if (a.enabled) return -1
-
-          return a.url.length > b.url.length ? 1 : -1
-        })
-        .map((list) => (
-          <MenuItem key={list.url} value={list.url}>
-            <Checkbox checked={list.enabled} />
-            <ListItemText
-              primary={list.url}
-              disableTypography={true}
-              style={{
-                fontSize: '13px',
-                whiteSpace: 'initial',
-                wordBreak: 'break-word',
-              }}
-            />
-          </MenuItem>
-        )),
-    [tokenListUrls],
-  )
-
   return (
     <>
-      <div>
-        <FormControl sx={{ width: '100%' }}>
-          <InputLabel id="token-list-chip-label">Active Token Lists</InputLabel>
-          <Select
-            labelId="token-list-chip-label"
-            id="token-list-chip-select"
-            multiple
-            value={tokenListUrls.filter((list) => list.enabled).map((list) => list.url)}
-            onChange={handleChange}
-            input={<OutlinedInput label="Active Token Lists" />}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((url) => (
-                  <Chip key={url} label={url} />
-                ))}
-              </Box>
-            )}
-            MenuProps={MenuProps}
-          >
-            {tokenListOptions}
-          </Select>
-        </FormControl>
+      <TokenListSelections tokenListUrls={tokenListUrls} onChangeByScope={onChangeByScope} />
 
+      <Box sx={{ mt: 2 }}>
         <AddCustomListDialog
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           customTokens={customTokens}
           onAddListUrl={handleAddListUrl}
-          onAddCustomTokens={handleAddCustomTokens}
+          onAddCustomTokens={setCustomTokens}
         />
-      </div>
-      <Button sx={{ width: '100%' }} variant="outlined" onClick={() => setDialogOpen(true)}>
-        Add Custom List
-      </Button>
+
+        <Button sx={{ width: '100%' }} variant="outlined" onClick={() => setDialogOpen(true)}>
+          Add Custom List
+        </Button>
+      </Box>
     </>
   )
 }
