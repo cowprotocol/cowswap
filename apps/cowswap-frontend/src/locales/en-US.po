@@ -6416,6 +6416,10 @@ msgstr "Wrap {amountStr} {native} to {wrapped}"
 #~ msgid "Claim COW Airdrop"
 #~ msgstr "Claim COW Airdrop"
 
+#: apps/cowswap-frontend/src/common/hooks/useSwitchNetworkWithGuidance.tsx
+msgid "Please open the Coinbase Wallet app to complete the network switch."
+msgstr "Please open the Coinbase Wallet app to complete the network switch."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/CancelledStep.tsx
 msgid "Your order was successfully cancelled."
 msgstr "Your order was successfully cancelled."
