@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.4](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.3...explorer-v4.0.4) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/ui bumped to 3.1.0
+
 ## [4.0.3](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.2...explorer-v4.0.3) (2026-03-19)
 
 

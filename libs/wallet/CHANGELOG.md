@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.0.3](https://github.com/cowprotocol/cowswap/compare/wallet-v3.0.2...wallet-v3.0.3) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/assets bumped to 2.2.0
+    * @cowprotocol/ui bumped to 3.1.0
+
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.0.1...wallet-v3.0.2) (2026-03-19)
 
 
