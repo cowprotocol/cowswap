@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.5...cowswap-v3.1.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **affiliate:** add affiliate program page to cow-fi ([#7232](https://github.com/cowprotocol/cowswap/issues/7232)) ([fbf93d7](https://github.com/cowprotocol/cowswap/commit/fbf93d71b6c423d3378eb9b7d51ab09082f770a9))
+
+
+### 🐛 Bug Fixes
+
+* **affiliate:** unit tests ([4b59489](https://github.com/cowprotocol/cowswap/commit/4b594896e1434043edff56216f262153cbaf9d4a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/assets bumped to 2.2.0
+    * @cowprotocol/balances-and-allowances bumped to 3.0.3
+    * @cowprotocol/multicall bumped to 3.0.3
+    * @cowprotocol/snackbars bumped to 2.0.13
+    * @cowprotocol/tokens bumped to 3.0.3
+    * @cowprotocol/ui bumped to 3.1.0
+    * @cowprotocol/wallet bumped to 3.0.3
+
 ## [3.0.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.4...cowswap-v3.0.5) (2026-03-20)
 
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.0.3](https://github.com/cowprotocol/cowswap/compare/tokens-v3.0.2...tokens-v3.0.3) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/ui bumped to 3.1.0
+
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.0.1...tokens-v3.0.2) (2026-03-19)
 
 
