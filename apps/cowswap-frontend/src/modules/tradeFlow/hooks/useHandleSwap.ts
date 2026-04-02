@@ -64,7 +64,7 @@ export function useHandleSwap(
     )
 
     if (!isWidgetHookPassed) {
-      return false
+      return
     }
 
     const result = await (() => {
