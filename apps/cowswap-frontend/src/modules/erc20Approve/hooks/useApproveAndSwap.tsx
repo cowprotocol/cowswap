@@ -64,6 +64,9 @@ export function useApproveAndSwap({
     if (!account || !tradeSpenderAddress) return
 
     const tokenAmount = currencyAmountToTokenAmount(amountToApprove)
+    const approvalAmount = isPartialApproveEnabledByUser
+      ? amountToApprove.quotient.toString()
+      : MAX_APPROVE_AMOUNT.toString()
     const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
       chainId: tokenAmount.currency.chainId,
       sellToken: {
@@ -71,7 +74,7 @@ export function useApproveAndSwap({
         name: tokenAmount.currency.name || '',
         symbol: tokenAmount.currency.symbol || '',
       },
-      sellAmount: amountToApprove.quotient.toString(),
+      sellAmount: approvalAmount,
       walletAddress: account,
       spenderAddress: tradeSpenderAddress,
     })
