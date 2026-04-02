@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
@@ -13,6 +13,7 @@ import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 const TRADE_SET_UP_DEBOUNCE_TIME = ms`100ms`
+const PRICE_IMPACT_LOADING_TIMEOUT = ms`2m`
 
 export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; isLoading: boolean } | null {
   const state = useDerivedTradeState()
@@ -29,6 +30,20 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
   } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount, inputToken, outputToken)
 
   const isLoading = inputIsLoading || outputIsLoading
+  const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
+
+  useEffect(() => {
+    if (!isTradeSetUp || !isLoading) {
+      setHasLoadingTimedOut(false)
+      return
+    }
+
+    const timeoutId = setTimeout(() => {
+      setHasLoadingTimedOut(true)
+    }, PRICE_IMPACT_LOADING_TIMEOUT)
+
+    return () => clearTimeout(timeoutId)
+  }, [isTradeSetUp, isLoading])
 
   return useSafeMemo(() => {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
@@ -39,8 +54,8 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
       fiatValueOutput ? FractionUtils.fractionLikeToFraction(fiatValueOutput) : null,
     )
 
-    return { priceImpact, isLoading }
-  }, [isTradeSetUp, fiatValueInput, fiatValueOutput, isLoading])
+    return { priceImpact, isLoading: isLoading && !hasLoadingTimedOut }
+  }, [isTradeSetUp, fiatValueInput, fiatValueOutput, isLoading, hasLoadingTimedOut])
 }
 
 function computeFiatValuePriceImpact(
