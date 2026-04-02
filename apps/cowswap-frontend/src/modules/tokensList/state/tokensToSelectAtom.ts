@@ -42,7 +42,7 @@ function getTokensBySelectedLists(
   }
 
   const availableTokens = Object.values(listsStatesMap).reduce<Set<AddressKey>>((acc, state) => {
-    if (selectedLists.includes(state.source)) {
+    if (selectedLists.includes(state.source.toLowerCase())) {
       state.list.tokens.forEach((token) => {
         acc.add(getAddressKey(token.address))
       })

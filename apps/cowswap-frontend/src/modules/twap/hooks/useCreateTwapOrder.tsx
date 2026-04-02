@@ -6,11 +6,13 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
+import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
@@ -131,6 +133,7 @@ export function useCreateTwapOrder() {
       }
 
       const orderType = UiOrderType.TWAP
+
       const twapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
         account,
         recipient: twapOrder.receiver,
@@ -140,6 +143,21 @@ export function useCreateTwapOrder() {
       }
 
       try {
+        const isWidgetHookPassed = await callWidgetHook(
+          WidgetHookEvents.ON_BEFORE_TRADE,
+          buildTradeWidgetHookPayload({
+            orderType,
+            inputAmount: inputCurrencyAmount,
+            outputAmount: outputCurrencyAmount,
+            recipient: twapOrder.receiver,
+            orderKind: OrderKind.SELL,
+          }),
+        )
+
+        if (!isWidgetHookPassed) {
+          return
+        }
+
         const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
         const orderId = getConditionalOrderId(paramsStruct)
 
