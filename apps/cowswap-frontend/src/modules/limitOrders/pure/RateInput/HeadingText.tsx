@@ -1,6 +1,6 @@
+import { Currency } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol, UI } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'

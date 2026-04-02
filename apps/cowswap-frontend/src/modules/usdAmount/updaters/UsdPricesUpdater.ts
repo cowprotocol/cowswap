@@ -2,11 +2,12 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { Token } from '@uniswap/sdk-core'
+import { Token } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
@@ -36,6 +37,7 @@ export function UsdPricesUpdater() {
   const setUsdPricesLoading = useSetAtom(setUsdPricesLoadingAtom)
   const currenciesUsdPriceQueue = useAtomValue(currenciesUsdPriceQueueAtom)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   const queue = useMemo(() => Object.values(currenciesUsdPriceQueue), [currenciesUsdPriceQueue])
 
@@ -52,7 +54,7 @@ export function UsdPricesUpdater() {
   useEffect(() => {
     const { data, isLoading, error } = swrResponse
 
-    if (isProviderNetworkUnsupported) {
+    if (isProviderNetworkUnsupported || isProviderNetworkDeprecated) {
       setUsdPrices(EMPTY_USD_PRICES)
       return
     }
@@ -67,7 +69,7 @@ export function UsdPricesUpdater() {
     }
 
     setUsdPrices(data)
-  }, [swrResponse, setUsdPrices, isProviderNetworkUnsupported])
+  }, [swrResponse, setUsdPrices, isProviderNetworkUnsupported, isProviderNetworkDeprecated])
 
   return null
 }

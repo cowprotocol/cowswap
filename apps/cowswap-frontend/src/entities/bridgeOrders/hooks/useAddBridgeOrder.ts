@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { BridgeOrderData } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -14,7 +15,7 @@ export function useAddBridgeOrder(): (order: BridgeOrderData) => void {
     (order: BridgeOrderData) => {
       if (!account) return
 
-      const accountLower = account.toLowerCase()
+      const accountLower = getAddressKey(account)
 
       setBridgeOrders((state) => {
         const orders = state[chainId]?.[accountLower] || []

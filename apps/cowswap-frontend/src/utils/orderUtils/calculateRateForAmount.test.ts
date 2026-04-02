@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 
 import { calculateRateForAmount } from './calculateRateForAmount'
 

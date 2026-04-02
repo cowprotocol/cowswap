@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { COW_TOKEN_TO_CHAIN, USDC_MAINNET } from '@cowprotocol/common-const'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Fraction, Token } from '@uniswap/sdk-core'
+import { Fraction, Token } from '@cowprotocol/currency'
 
 import { act, render, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'

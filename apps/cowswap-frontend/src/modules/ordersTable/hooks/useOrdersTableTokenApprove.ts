@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { MaxUint256 } from '@ethersproject/constants'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useApproveCurrency } from 'modules/erc20Approve'
 

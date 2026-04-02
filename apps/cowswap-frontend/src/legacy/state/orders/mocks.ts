@@ -1,6 +1,6 @@
 import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
+import { Token } from '@cowprotocol/currency'
 
 import { Order, OrderStatus } from './actions'
 

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfoParams } from 'common/pure/RateInfo'

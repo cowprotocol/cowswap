@@ -1,7 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { Token } from '@uniswap/sdk-core'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
@@ -44,37 +45,6 @@ export function useUsdPrice(currency: Nullish<Token>): UsdPriceState | null {
 }
 
 /**
- * Subscribe to USD prices for multiple currencies, returns void
- */
-function useSubscribeUsdPrices(currencies: Token[]): void {
-  const addCurrencyToUsdPrice = useSetAtom(addCurrencyToUsdPriceQueue)
-  const removeCurrencyToUsdPrice = useSetAtom(removeCurrencyToUsdPriceFromQueue)
-
-  useEffect(() => {
-    // Avoid subscribing to the same currency multiple times
-    const seenCurrencies = new Set<string>()
-
-    currencies.forEach((currency) => {
-      if (seenCurrencies.has(currency?.address?.toLowerCase())) {
-        return
-      }
-
-      addCurrencyToUsdPrice(currency)
-      seenCurrencies.add(currency?.address?.toLowerCase())
-    })
-
-    return () => {
-      currencies.forEach((currency) => {
-        if (seenCurrencies.has(currency?.address?.toLowerCase())) {
-          removeCurrencyToUsdPrice(currency)
-          seenCurrencies.delete(currency?.address?.toLowerCase())
-        }
-      })
-    }
-  }, [currencies, addCurrencyToUsdPrice, removeCurrencyToUsdPrice])
-}
-
-/**
  * Subscribe to USD prices for multiple currencies and returns the USD prices state
  */
 export function useUsdPrices(currencies: Token[]): Record<UsdPriceStateKey, UsdPriceState | null> {
@@ -92,4 +62,37 @@ export function useUsdPrices(currencies: Token[]): Record<UsdPriceStateKey, UsdP
       }, {}),
     [currencies, usdPrices],
   )
+}
+
+/**
+ * Subscribe to USD prices for multiple currencies, returns void
+ */
+function useSubscribeUsdPrices(currencies: Token[]): void {
+  const addCurrencyToUsdPrice = useSetAtom(addCurrencyToUsdPriceQueue)
+  const removeCurrencyToUsdPrice = useSetAtom(removeCurrencyToUsdPriceFromQueue)
+
+  useEffect(() => {
+    // Avoid subscribing to the same currency multiple times
+    const seenCurrencies = new Set<string>()
+
+    currencies.forEach((currency) => {
+      const currencyKey = currency?.address ? getAddressKey(currency.address) : undefined
+      if (!currencyKey || seenCurrencies.has(currencyKey)) {
+        return
+      }
+
+      addCurrencyToUsdPrice(currency)
+      seenCurrencies.add(currencyKey)
+    })
+
+    return () => {
+      currencies.forEach((currency) => {
+        const currencyKey = currency?.address ? getAddressKey(currency.address) : undefined
+        if (currencyKey && seenCurrencies.has(currencyKey)) {
+          removeCurrencyToUsdPrice(currency)
+          seenCurrencies.delete(currencyKey)
+        }
+      })
+    }
+  }, [currencies, addCurrencyToUsdPrice, removeCurrencyToUsdPrice])
 }

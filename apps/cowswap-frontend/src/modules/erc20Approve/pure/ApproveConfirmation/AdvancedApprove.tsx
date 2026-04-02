@@ -1,8 +1,8 @@
 import { FocusEvent, KeyboardEvent, ReactNode, useState } from 'react'
 
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { ChevronDown, ChevronUp, HelpCircle } from 'react-feather'
@@ -121,6 +121,14 @@ export function AdvancedApprove({
   )
 }
 
+export function HelpTooltip({ children }: { children: ReactNode }): ReactNode {
+  return (
+    <HoverTooltip wrapInContainer placement="top" content={children}>
+      <HelpCircle size="20" />
+    </HoverTooltip>
+  )
+}
+
 function filterAmountInput(e: KeyboardEvent<HTMLDivElement>, inputChangedText: string): void {
   if (e.altKey || e.ctrlKey || e.metaKey) return
 
@@ -138,12 +146,4 @@ function filterAmountInput(e: KeyboardEvent<HTMLDivElement>, inputChangedText: s
     e.preventDefault()
     return
   }
-}
-
-export function HelpTooltip({ children }: { children: ReactNode }): ReactNode {
-  return (
-    <HoverTooltip wrapInContainer placement="top" content={children}>
-      <HelpCircle size="20" />
-    </HoverTooltip>
-  )
 }

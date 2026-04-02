@@ -14,6 +14,7 @@ import { AppliedHookList } from '../../pure/AppliedHookList'
 import { HookTooltip } from '../../pure/HookTooltip'
 
 export interface PreHookButtonProps {
+  disabled?: boolean
   onOpen(): void
   onEditHook(uuid: string): void
   hideTooltip?: boolean
@@ -23,7 +24,7 @@ const isPreHook = true
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function PreHookButton({ onOpen, onEditHook, hideTooltip }: PreHookButtonProps) {
+export function PreHookButton({ disabled = false, onOpen, onEditHook, hideTooltip }: PreHookButtonProps) {
   const { account } = useWalletInfo()
   const { preHooks } = useHooks()
   const removeHook = useRemoveHook(isPreHook)
@@ -34,6 +35,7 @@ export function PreHookButton({ onOpen, onEditHook, hideTooltip }: PreHookButton
     <>
       {preHooks.length > 0 && (
         <AppliedHookList
+          disabled={disabled}
           dapps={dapps}
           account={account}
           hooks={preHooks}
@@ -45,7 +47,7 @@ export function PreHookButton({ onOpen, onEditHook, hideTooltip }: PreHookButton
       )}
 
       <styledEl.Wrapper>
-        <styledEl.AddHookButton onClick={onOpen}>
+        <styledEl.AddHookButton disabled={disabled} onClick={disabled ? undefined : onOpen}>
           <SVG src={PLUS_ICON} /> <Trans>Add Pre-Hook Action</Trans> {!hideTooltip && <HookTooltip isPreHook />}
         </styledEl.AddHookButton>
       </styledEl.Wrapper>

@@ -113,7 +113,7 @@ function createChainAccent({
  * - Chain names and CSS variables are generated automatically from CHAIN_INFO
  *
  * CUSTOMIZATION:
- * - Override colors in CHAIN_ACCENT_OVERRIDES if CHAIN_INFO color differs from design (e.g., MAINNET, LENS)
+ * - Override colors in CHAIN_ACCENT_OVERRIDES if CHAIN_INFO color differs from design (e.g., MAINNET)
  */
 
 // Color overrides for chains where CHAIN_INFO color differs from original design
@@ -121,11 +121,6 @@ const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, ChainAccentOverri
   [SupportedChainId.MAINNET]: {
     // Override: Original color #627EEA differs from SDK's #62688F
     color: '#627EEA',
-  },
-  [SupportedChainId.LENS]: {
-    // Override: Original color #5A5A5A differs from SDK's #FFFFFF
-    color: '#5A5A5A',
-    darkColor: '#D7D7D7',
   },
 }
 
@@ -374,6 +369,7 @@ export const ThemeColorVars = css`
     ${UI.FONT_SIZE_LARGER}: 20px;
     ${UI.FONT_SIZE_LARGEST}: 24px;
     ${UI.FONT_FAMILY_PRIMARY}: 'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif;
+    ${UI.FONT_FAMILY_MONO}: 'studiofeixenmono', 'IBM Plex Mono', 'Roboto Mono', 'Courier New', monospace;
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;

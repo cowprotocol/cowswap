@@ -2,7 +2,7 @@ import { atom, useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@cowprotocol/currency'
 
 import { getCanonicalMarketChainKey } from 'common/utils/markets'
 
@@ -37,6 +37,12 @@ export const updateSpotPricesAtom = atom(null, (get, set, params: UpdateSpotPric
   })
 })
 
+export function useGetSpotPrice(): (params: SpotPricesKeyParams) => Price<Currency, Currency> | null {
+  const spotPrices = useAtomValue(spotPricesAtom)
+
+  return useCallback((params: SpotPricesKeyParams) => getSpotPrice(params, spotPrices), [spotPrices])
+}
+
 /**
  * Get Spot Price
  *
@@ -56,10 +62,4 @@ function getSpotPrice(params: SpotPricesKeyParams, spotPrices: SpotPrices): Pric
   }
 
   return marketInverted ? spotPrice.invert() : spotPrice
-}
-
-export function useGetSpotPrice(): (params: SpotPricesKeyParams) => Price<Currency, Currency> | null {
-  const spotPrices = useAtomValue(spotPricesAtom)
-
-  return useCallback((params: SpotPricesKeyParams) => getSpotPrice(params, spotPrices), [spotPrices])
 }

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { BaseChainInfo } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/react/macro'
@@ -24,9 +26,8 @@ type ChainPrefixWarningProps = {
   chainInfo: BaseChainInfo
   isDarkMode: boolean
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: ChainPrefixWarningProps) {
+
+export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: ChainPrefixWarningProps): ReactNode {
   const { label, addressPrefix } = chainInfo
   return (
     <Wrapper>

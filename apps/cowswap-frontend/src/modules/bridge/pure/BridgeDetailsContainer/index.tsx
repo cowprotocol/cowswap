@@ -1,7 +1,7 @@
 import { ReactNode, useState, KeyboardEvent } from 'react'
 
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
@@ -32,29 +32,6 @@ export interface BridgeDetailsContainerProps {
   explorerUrl?: string
 }
 
-function useToggleExpanded(
-  defaultExpanded: boolean,
-  isCollapsible: boolean,
-): {
-  isExpanded: boolean
-  toggleExpanded: () => void
-  onKeyDown: (e: KeyboardEvent) => void
-} {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-
-  const toggleExpanded = (): void => {
-    setIsExpanded((state) => !state)
-  }
-
-  const onKeyDown = (e: KeyboardEvent): void => {
-    if (!isCollapsible) return
-    if (!['Enter', ' '].includes(e.key)) return
-    toggleExpanded()
-  }
-
-  return { isExpanded, toggleExpanded, onKeyDown }
-}
-
 interface SectionContentComponentProps {
   sellAmount: CurrencyAmount<Currency> | undefined
   buyAmount: CurrencyAmount<Currency> | undefined
@@ -64,42 +41,10 @@ interface SectionContentComponentProps {
   children: ReactNode
 }
 
-function SectionContentComponent({
-  sellAmount,
-  buyAmount,
-  buyAmountUsd,
-  chainName,
-  isExpanded,
-  children,
-}: SectionContentComponentProps): ReactNode {
-  if (!sellAmount || !buyAmount) {
-    return children
-  }
-
-  return (
-    <SectionContent isExpanded={isExpanded}>
-      <RouteTitle chainName={chainName} sellAmount={sellAmount} buyAmount={buyAmount} buyAmountUsd={buyAmountUsd} />
-      {children}
-    </SectionContent>
-  )
-}
-
 interface TitleActionsComponentProps {
   explorerUrl?: string
   isCollapsible?: boolean
   isExpanded?: boolean
-}
-
-function TitleActionsComponent({ isCollapsible = false, isExpanded = false }: TitleActionsComponentProps): ReactNode {
-  return (
-    <>
-      {isCollapsible && (
-        <ToggleIconContainer>
-          <ToggleArrow isOpen={isExpanded} />
-        </ToggleIconContainer>
-      )}
-    </>
-  )
 }
 
 export function BridgeDetailsContainer({
@@ -162,4 +107,59 @@ export function BridgeDetailsContainer({
       </SectionContentComponent>
     </>
   )
+}
+
+function SectionContentComponent({
+  sellAmount,
+  buyAmount,
+  buyAmountUsd,
+  chainName,
+  isExpanded,
+  children,
+}: SectionContentComponentProps): ReactNode {
+  if (!sellAmount || !buyAmount) {
+    return children
+  }
+
+  return (
+    <SectionContent isExpanded={isExpanded}>
+      <RouteTitle chainName={chainName} sellAmount={sellAmount} buyAmount={buyAmount} buyAmountUsd={buyAmountUsd} />
+      {children}
+    </SectionContent>
+  )
+}
+
+function TitleActionsComponent({ isCollapsible = false, isExpanded = false }: TitleActionsComponentProps): ReactNode {
+  return (
+    <>
+      {isCollapsible && (
+        <ToggleIconContainer>
+          <ToggleArrow isOpen={isExpanded} />
+        </ToggleIconContainer>
+      )}
+    </>
+  )
+}
+
+function useToggleExpanded(
+  defaultExpanded: boolean,
+  isCollapsible: boolean,
+): {
+  isExpanded: boolean
+  toggleExpanded: () => void
+  onKeyDown: (e: KeyboardEvent) => void
+} {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+
+  const toggleExpanded = (): void => {
+    setIsExpanded((state) => !state)
+  }
+
+  const onKeyDown = (e: KeyboardEvent): void => {
+    if (!isCollapsible) return
+    if (!['Enter', ' '].includes(e.key)) return
+    toggleExpanded()
+  }
+
+  return { isExpanded, toggleExpanded, onKeyDown }
 }

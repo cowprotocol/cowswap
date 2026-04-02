@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { Nullish } from '@cowprotocol/types'
 import { BannerOrientation } from '@cowprotocol/ui'
 
@@ -27,7 +28,8 @@ export function ConfirmWarnings({
   const showRecipientWarning =
     recipient &&
     (account || ensName) &&
-    ![account?.toLowerCase(), ensName?.toLowerCase()].includes(recipient.toLowerCase())
+    !areAddressesEqual(account, recipient) &&
+    !areAddressesEqual(ensName, recipient)
 
   return (
     <>

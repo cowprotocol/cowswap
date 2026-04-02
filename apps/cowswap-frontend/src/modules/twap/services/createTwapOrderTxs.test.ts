@@ -1,6 +1,6 @@
 import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { COMPOSABLE_COW_ADDRESS, CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'

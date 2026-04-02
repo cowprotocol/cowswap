@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import {
   ExternalLink,
   FiatAmount,
@@ -10,7 +11,6 @@ import {
   ContextMenuCopyButton,
   ContextMenuExternalLink,
 } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

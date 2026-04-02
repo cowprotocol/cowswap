@@ -26,7 +26,6 @@ const ARBITRUM_ONE_START_DATE = 'May 2024'
 const BASE_START_DATE = 'December 2024'
 const POLYGON_START_DATE = 'June 2025'
 const AVALANCHE_START_DATE = 'June 2025'
-const LENS_START_DATE = 'September 2025'
 const BNB_START_DATE = 'September 2025'
 const LINEA_START_DATE = 'November 2025'
 const PLASMA_START_DATE = 'January 2026'
@@ -40,7 +39,6 @@ const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.SEPOLIA]: DEFAULT_START_DATE,
   [SupportedChainId.POLYGON]: POLYGON_START_DATE,
   [SupportedChainId.AVALANCHE]: AVALANCHE_START_DATE,
-  [SupportedChainId.LENS]: LENS_START_DATE,
   [SupportedChainId.BNB]: BNB_START_DATE,
   [SupportedChainId.LINEA]: LINEA_START_DATE,
   [SupportedChainId.PLASMA]: PLASMA_START_DATE,

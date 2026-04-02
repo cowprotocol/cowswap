@@ -4,14 +4,18 @@ import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { COW_TOKEN_TO_CHAIN, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
-import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
+import {
+  COW_TOKEN_TO_CHAIN,
+  COW_CONTRACT_ADDRESS,
+  V_COW,
+  WRAPPED_NATIVE_CURRENCIES as WETH,
+} from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -24,6 +28,7 @@ import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useSetSwapVCowStatus, useSwapVCowCallback, useSwapVCowStatus, useVCowData } from 'legacy/state/cowToken/hooks'
 
 import { useBlockNumber } from 'common/hooks/useBlockNumber'
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
@@ -64,6 +69,7 @@ export default function Profile() {
   const cowContractAddress = COW_CONTRACT_ADDRESS[chainId]
   const nativeWrappedToken = WETH[chainId]
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const blockNumber = useBlockNumber()
   const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
   const [shouldUpdate, setShouldUpdate] = useState<boolean>(false)
@@ -240,7 +246,7 @@ export default function Profile() {
 
       <ErrorModal />
 
-      {isCardsLoading && !isProviderNetworkUnsupported ? (
+      {isCardsLoading && !isProviderNetworkUnsupported && !isProviderNetworkDeprecated ? (
         <Card>
           <CardsLoader>
             <CardsSpinner size="42px" />
@@ -303,7 +309,7 @@ export default function Profile() {
                     <Trans>Available COW balance</Trans>
                   </i>
                   <b>
-                    {!isProviderNetworkUnsupported && (
+                    {!isProviderNetworkUnsupported && !isProviderNetworkDeprecated && (
                       <TokenAmount amount={cowBalance} defaultValue="0" tokenSymbol={cowToken} />
                     )}
                   </b>

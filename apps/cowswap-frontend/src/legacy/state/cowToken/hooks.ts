@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react'
 
 import { V_COW } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
@@ -21,6 +21,11 @@ import { AppState } from '../index'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
+interface SwapVCowCallbackParams {
+  openModal: (message: string) => void
+  closeModal: Command
+}
+
 type VCowData = {
   isLoading: boolean
   total: CurrencyAmount<Currency> | undefined | null
@@ -28,66 +33,12 @@ type VCowData = {
   vested: CurrencyAmount<Currency> | undefined | null
 }
 
-interface SwapVCowCallbackParams {
-  openModal: (message: string) => void
-  closeModal: Command
-}
-
 /**
- * Hook that parses the result input with BigNumber value to CurrencyAmount
+ * Hook that sets the swap vCow->Cow status
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useParseVCowResult(result: BigNumber | undefined) {
-  const { chainId } = useWalletInfo()
-
-  const vCowToken = V_COW[chainId]
-
-  return useMemo(() => {
-    if (!vCowToken || !result) {
-      return
-    }
-
-    return CurrencyAmount.fromRawAmount(vCowToken, result.toString())
-  }, [result, vCowToken])
-}
-
-/**
- * Hook that fetches the needed vCow data and returns it in VCowData type
- */
-export function useVCowData(): VCowData {
-  const { contract: vCowContract } = useVCowContract()
-  const { account } = useWalletInfo()
-
-  const { data: vestedResult, isLoading: isVestedLoading } = useSWR(
-    account && vCowContract ? ['useVCowData.swappableBalanceOf', account, vCowContract] : null,
-    async ([, _account, contract]) => contract.swappableBalanceOf(_account),
-  )
-
-  const { data: totalResult, isLoading: isTotalLoading } = useSWR(
-    account && vCowContract ? ['useVCowData.balanceOf', account, vCowContract] : null,
-    async ([, _account, contract]) => contract.balanceOf(_account),
-  )
-
-  const vested = useParseVCowResult(vestedResult)
-  const total = useParseVCowResult(totalResult)
-
-  const unvested = useMemo(() => {
-    if (!total || !vested) {
-      return null
-    }
-
-    // Check if total < vested, if it is something is probably wrong and we return null
-    if (total.lessThan(vested)) {
-      return null
-    }
-
-    return total.subtract(vested)
-  }, [total, vested])
-
-  const isLoading = isVestedLoading || isTotalLoading
-
-  return useMemo(() => ({ isLoading, vested, unvested, total }), [isLoading, vested, unvested, total])
+export function useSetSwapVCowStatus(): SetSwapVCowStatusCallback {
+  const dispatch = useAppDispatch()
+  return useCallback((payload: SwapVCowStatus) => dispatch(setSwapVCowStatus(payload)), [dispatch])
 }
 
 /**
@@ -146,18 +97,67 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
 }
 
 /**
- * Hook that sets the swap vCow->Cow status
- */
-export function useSetSwapVCowStatus(): SetSwapVCowStatusCallback {
-  const dispatch = useAppDispatch()
-  return useCallback((payload: SwapVCowStatus) => dispatch(setSwapVCowStatus(payload)), [dispatch])
-}
-
-/**
  * Hook that gets swap vCow->Cow status
  */
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSwapVCowStatus() {
   return useAppSelector((state: AppState) => state.cowToken.swapVCowStatus)
+}
+
+/**
+ * Hook that fetches the needed vCow data and returns it in VCowData type
+ */
+export function useVCowData(): VCowData {
+  const { contract: vCowContract } = useVCowContract()
+  const { account } = useWalletInfo()
+
+  const { data: vestedResult, isLoading: isVestedLoading } = useSWR(
+    account && vCowContract ? ['useVCowData.swappableBalanceOf', account, vCowContract] : null,
+    async ([, _account, contract]) => contract.swappableBalanceOf(_account),
+  )
+
+  const { data: totalResult, isLoading: isTotalLoading } = useSWR(
+    account && vCowContract ? ['useVCowData.balanceOf', account, vCowContract] : null,
+    async ([, _account, contract]) => contract.balanceOf(_account),
+  )
+
+  const vested = useParseVCowResult(vestedResult)
+  const total = useParseVCowResult(totalResult)
+
+  const unvested = useMemo(() => {
+    if (!total || !vested) {
+      return null
+    }
+
+    // Check if total < vested, if it is something is probably wrong and we return null
+    if (total.lessThan(vested)) {
+      return null
+    }
+
+    return total.subtract(vested)
+  }, [total, vested])
+
+  const isLoading = isVestedLoading || isTotalLoading
+
+  return useMemo(() => ({ isLoading, vested, unvested, total }), [isLoading, vested, unvested, total])
+}
+
+/**
+ * Hook that parses the result input with BigNumber value to CurrencyAmount
+ */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function useParseVCowResult(result: BigNumber | undefined) {
+  const { chainId } = useWalletInfo()
+
+  const vCowToken = V_COW[chainId]
+
+  return useMemo(() => {
+    if (!vCowToken || !result) {
+      return
+    }
+
+    return CurrencyAmount.fromRawAmount(vCowToken, result.toString())
+  }, [result, vCowToken])
 }

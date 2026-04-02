@@ -1,7 +1,8 @@
 import React, { useContext } from 'react'
 
 import { OrdersTableContext } from './context/OrdersTableContext'
-import { useSearchInAnotherNetwork, EmptyOrdersMessage } from './useSearchInAnotherNetwork'
+import { EmptyOrdersMessage } from './EmptyOrdersMessage/EmptyOrdersMessage.component'
+import { useSearchInAnotherNetwork } from './useSearchInAnotherNetwork'
 
 import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import OrdersTable from '../../../components/orders/OrdersUserDetailsTable'

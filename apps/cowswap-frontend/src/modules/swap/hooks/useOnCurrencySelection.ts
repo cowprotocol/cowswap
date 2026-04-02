@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { getIsNativeToken, isSellOrder } from '@cowprotocol/common-utils'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
 
 import { Field } from 'legacy/state/types'
 

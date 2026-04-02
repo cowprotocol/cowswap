@@ -1,6 +1,6 @@
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { Fraction, Token } from '@cowprotocol/currency'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { RateLimitError, UnknownCurrencyError } from '../apis/errors'
 import { getBffUsdPrice } from '../apis/getBffUsdPrice'
@@ -14,37 +14,6 @@ let defillamaRateLimitHitTimestamp: null | number = null
 
 const defillamaUnknownCurrencies: UnknownCurrenciesMap = mapSupportedNetworks({})
 const bffUnknownCurrencies: UnknownCurrenciesMap = mapSupportedNetworks({})
-
-function getShouldSkipDefillama(currency: Token): boolean {
-  return getShouldSkipPriceSource(
-    currency,
-    DEFILLAMA_PLATFORMS,
-    defillamaUnknownCurrencies,
-    defillamaRateLimitHitTimestamp,
-    DEFILLAMA_RATE_LIMIT_TIMEOUT,
-  )
-}
-
-function getShouldSkipPriceSource(
-  currency: Token,
-  platforms: Record<SupportedChainId, string | null> | null,
-  unknownCurrenciesMap: UnknownCurrenciesMap,
-  rateLimitTimestamp: null | number,
-  timeout: number,
-): boolean {
-  const chainId = currency.chainId as SupportedChainId
-  const unknownCurrenciesForChain = unknownCurrenciesMap[chainId] || {}
-
-  if (platforms && !platforms[chainId]) return true
-
-  if (unknownCurrenciesForChain[currency.address.toLowerCase()]) return true
-
-  return !!rateLimitTimestamp && Date.now() - rateLimitTimestamp < timeout
-}
-
-function getShouldSkipBff(currency: Token): boolean {
-  return getShouldSkipPriceSource(currency, null, bffUnknownCurrencies, null, 0)
-}
 
 /**
  * Fetches USD price for a given currency from BFF, Defillama, or CowProtocol
@@ -88,6 +57,37 @@ export async function fetchCurrencyUsdPrice(currency: Token): Promise<Fraction |
   return null
 }
 
+function getShouldSkipBff(currency: Token): boolean {
+  return getShouldSkipPriceSource(currency, null, bffUnknownCurrencies, null, 0)
+}
+
+function getShouldSkipDefillama(currency: Token): boolean {
+  return getShouldSkipPriceSource(
+    currency,
+    DEFILLAMA_PLATFORMS,
+    defillamaUnknownCurrencies,
+    defillamaRateLimitHitTimestamp,
+    DEFILLAMA_RATE_LIMIT_TIMEOUT,
+  )
+}
+
+function getShouldSkipPriceSource(
+  currency: Token,
+  platforms: Record<SupportedChainId, string | null> | null,
+  unknownCurrenciesMap: UnknownCurrenciesMap,
+  rateLimitTimestamp: null | number,
+  timeout: number,
+): boolean {
+  const chainId = currency.chainId as SupportedChainId
+  const unknownCurrenciesForChain = unknownCurrenciesMap[chainId] || {}
+
+  if (platforms && !platforms[chainId]) return true
+
+  if (unknownCurrenciesForChain[getAddressKey(currency.address)]) return true
+
+  return !!rateLimitTimestamp && Date.now() - rateLimitTimestamp < timeout
+}
+
 function handleErrorFactory(
   currency: Token,
   rateLimitTimestamp: null | number,
@@ -103,12 +103,12 @@ function handleErrorFactory(
       // Mark currency as unknown
       const chainId = currency.chainId as SupportedChainId
       const unknownCurrenciesForChain = unknownCurrenciesMap[chainId]
-      const addressToLowercase = currency.address.toLowerCase()
+      const addressKey = getAddressKey(currency.address)
 
       if (unknownCurrenciesForChain === undefined) {
-        unknownCurrenciesMap[chainId] = { [addressToLowercase]: true }
+        unknownCurrenciesMap[chainId] = { [addressKey]: true }
       } else {
-        unknownCurrenciesForChain[addressToLowercase] = true
+        unknownCurrenciesForChain[addressKey] = true
       }
     } else {
     }

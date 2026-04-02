@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

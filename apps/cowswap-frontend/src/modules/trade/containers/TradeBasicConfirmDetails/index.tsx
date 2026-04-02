@@ -1,7 +1,7 @@
 import { ReactNode, useMemo, useState } from 'react'
 
+import { Percent } from '@cowprotocol/currency'
 import { PercentDisplay } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
@@ -21,20 +21,6 @@ import { getLimitPriceFromReceiveAmount } from '../../utils/getLimitPriceFromRec
 import { getOrderTypeReceiveAmounts } from '../../utils/getOrderTypeReceiveAmounts'
 import { TradeFeesAndCosts } from '../TradeFeesAndCosts'
 
-type Props = {
-  receiveAmountInfo: ReceiveAmountInfo
-  rateInfoParams: RateInfoParams
-  slippage: Percent
-  labelsAndTooltips?: LabelsAndTooltips
-  children?: ReactNode
-  recipient: Nullish<string>
-  recipientAddress: Nullish<string>
-  account: Nullish<string>
-  hideLimitPrice?: boolean
-  hideUsdValues?: boolean
-  withTimelineDot?: boolean
-}
-
 type LabelsAndTooltips = {
   priceLabel?: ReactNode
   expectReceiveLabel?: ReactNode
@@ -48,22 +34,18 @@ type LabelsAndTooltips = {
   networkCostsTooltipSuffix?: ReactNode
 }
 
-function getLabelsAndTooltipsWithDefaults(labelsAndTooltips: LabelsAndTooltips | undefined): LabelsAndTooltips {
-  const priceLabel = labelsAndTooltips?.priceLabel || t`Price`
-  const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || t`Min received (incl. costs)`
-  const expectReceiveLabel = labelsAndTooltips?.expectReceiveLabel || t`Expected to receive`
-  const minReceivedTooltip =
-    labelsAndTooltips?.minReceivedTooltip || t`This is the minimum amount that you will receive.`
-  const slippageLabel = labelsAndTooltips?.slippageLabel || t`Slippage tolerance`
-
-  return {
-    ...labelsAndTooltips,
-    priceLabel,
-    minReceivedLabel,
-    expectReceiveLabel,
-    minReceivedTooltip,
-    slippageLabel,
-  }
+type Props = {
+  receiveAmountInfo: ReceiveAmountInfo
+  rateInfoParams: RateInfoParams
+  slippage: Percent
+  labelsAndTooltips?: LabelsAndTooltips
+  children?: ReactNode
+  recipient: Nullish<string>
+  recipientAddress: Nullish<string>
+  account: Nullish<string>
+  hideLimitPrice?: boolean
+  hideUsdValues?: boolean
+  withTimelineDot?: boolean
 }
 
 export function TradeBasicConfirmDetails(props: Props): ReactNode {
@@ -103,30 +85,25 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
           fontSize={13}
         />
       </styledEl.RateInfoWrapper>
-
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
         withTimelineDot={withTimelineDot}
         networkCostsSuffix={networkCostsSuffix}
         networkCostsTooltipSuffix={networkCostsTooltipSuffix}
       />
-
       <ReviewOrderModalAmountRow
         highlighted
         amount={amountAfterFees}
         fiatAmount={amountAfterFeesUsd}
         label={expectReceiveLabel}
       />
-
       <DividerHorizontal />
-
       {/* Slippage */}
       {
         <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip={slippageTooltip} label={slippageLabel}>
           <PercentDisplay percent={slippage.toFixed(2)} />
         </ReviewOrderModalAmountRow>
       }
-
       {/* Min received */}
       <ReviewOrderModalAmountRow
         highlighted={true}
@@ -135,7 +112,6 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
         tooltip={minReceivedTooltip}
         label={minReceivedLabel}
       />
-
       {/* Limit Price */}
       {!hideLimitPrice && (
         <LimitPriceRow
@@ -145,7 +121,6 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
           limitPriceLabel={labelsAndTooltips?.limitPriceLabel}
         />
       )}
-
       {/*Recipient*/}
       <RecipientRow
         chainId={rateInfoParams.chainId}
@@ -156,4 +131,22 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
       {children}
     </styledEl.Wrapper>
   )
+}
+
+function getLabelsAndTooltipsWithDefaults(labelsAndTooltips: LabelsAndTooltips | undefined): LabelsAndTooltips {
+  const priceLabel = labelsAndTooltips?.priceLabel || t`Price`
+  const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || t`Min received (incl. costs)`
+  const expectReceiveLabel = labelsAndTooltips?.expectReceiveLabel || t`Expected to receive`
+  const minReceivedTooltip =
+    labelsAndTooltips?.minReceivedTooltip || t`This is the minimum amount that you will receive.`
+  const slippageLabel = labelsAndTooltips?.slippageLabel || t`Slippage tolerance`
+
+  return {
+    ...labelsAndTooltips,
+    priceLabel,
+    minReceivedLabel,
+    expectReceiveLabel,
+    minReceivedTooltip,
+    slippageLabel,
+  }
 }

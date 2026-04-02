@@ -1,3 +1,5 @@
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
 import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders/const'
 
 import { getSignatureVerifierContract } from './getSignatureVerifierContract'
@@ -25,7 +27,7 @@ export async function verifyExtensibleFallback(
   try {
     const domainVerifier = await signatureVerifierContract.callStatic.domainVerifiers(safeAddress, domainSeparator)
 
-    if (domainVerifier.toLowerCase() === composableCowContractAddress.toLowerCase()) {
+    if (areAddressesEqual(domainVerifier, composableCowContractAddress)) {
       return ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER
     }
 

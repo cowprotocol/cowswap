@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useDispatch } from 'react-redux'
 

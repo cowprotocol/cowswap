@@ -1,4 +1,4 @@
-import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, EvmChains, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
@@ -421,18 +421,6 @@ export const USDT_AVALANCHE = new TokenWithLogo(
   'Tether USD',
 )
 
-// Lens
-
-export const USDC_LENS = new TokenWithLogo(
-  USDC_MAINNET.logoURI,
-  SupportedChainId.LENS,
-  // https://explorer.lens.xyz/address/0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884
-  '0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884',
-  6,
-  'USDC',
-  'USD Coin',
-)
-
 // BNB
 
 export const USDC_BNB = new TokenWithLogo(
@@ -544,6 +532,16 @@ export const USDC_INK = new TokenWithLogo(
   'USDC',
 )
 
+export const USDCE_INK = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.INK,
+  // https://explorer.inkonchain.com/token/0xF1815bd50389c46847f0Bda824eC8da914045D14
+  '0xF1815bd50389c46847f0Bda824eC8da914045D14',
+  6,
+  'USDC.e',
+  'Stargate Bridged USDC',
+)
+
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(
@@ -556,7 +554,7 @@ export const USDC_OPTIMISM = new TokenWithLogo(
   'USD Coin',
 )
 
-export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithLogo> = {
+export const USDC: Record<EvmChains, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
@@ -565,7 +563,6 @@ export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithL
   [SupportedChainId.POLYGON]: USDC_POLYGON,
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
   [AdditionalTargetChainId.OPTIMISM]: USDC_OPTIMISM,
-  [SupportedChainId.LENS]: USDC_LENS,
   [SupportedChainId.BNB]: USDC_BNB,
   [SupportedChainId.LINEA]: USDC_LINEA,
   /**
@@ -644,7 +641,6 @@ export const COW_TOKEN_BASE = getCowTokenForChain(SupportedChainId.BASE, COW_TOK
 export const COW_TOKEN_SEPOLIA = getCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_POLYGON = getCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_AVALANCHE = getCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_LENS = getCowTokenForChain(SupportedChainId.LENS, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_BNB = getCowTokenForChain(SupportedChainId.BNB, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_LINEA = getCowTokenForChain(SupportedChainId.LINEA, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_PLASMA = getCowTokenForChain(SupportedChainId.PLASMA, COW_TOKEN_MAINNET?.logoURI)
@@ -658,7 +654,6 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.SEPOLIA]: COW_TOKEN_SEPOLIA,
   [SupportedChainId.POLYGON]: COW_TOKEN_POLYGON,
   [SupportedChainId.AVALANCHE]: COW_TOKEN_AVALANCHE,
-  [SupportedChainId.LENS]: COW_TOKEN_LENS,
   [SupportedChainId.BNB]: COW_TOKEN_BNB,
   [SupportedChainId.LINEA]: COW_TOKEN_LINEA,
   [SupportedChainId.PLASMA]: COW_TOKEN_PLASMA,
@@ -729,12 +724,6 @@ const POLYGON_STABLECOINS = [USDC_POLYGON.address, USDT_POLYGON.address, DAI_POL
 
 const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address, USDT_AVALANCHE.address].map((t) => t.toLowerCase())
 
-const LENS_STABLECOINS = [
-  USDC_LENS.address,
-  NATIVE_CURRENCIES[SupportedChainId.LENS].address, // GHO
-  WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS].address, // WGHO
-].map((t) => t.toLowerCase())
-
 const BNB_STABLECOINS = [USDC_BNB.address, USDT_BNB.address, DAI_BNB.address, BUSD_BNB.address].map((t) =>
   t.toLowerCase(),
 )
@@ -743,7 +732,7 @@ const LINEA_STABLECOINS = [USDC_LINEA.address].map((t) => t.toLowerCase())
 
 const PLASMA_STABLECOINS = [USDT_PLASMA.address].map((t) => t.toLowerCase())
 
-const INK_STABLECOINS = [USDC_INK.address, USDT_INK.address].map((t) => t.toLowerCase())
+const INK_STABLECOINS = [USDC_INK.address, USDCE_INK.address, USDT_INK.address].map((t) => t.toLowerCase())
 
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
@@ -755,7 +744,6 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
   [SupportedChainId.POLYGON]: new Set(POLYGON_STABLECOINS),
   [SupportedChainId.AVALANCHE]: new Set(AVALANCHE_STABLECOINS),
-  [SupportedChainId.LENS]: new Set(LENS_STABLECOINS),
   [SupportedChainId.BNB]: new Set(BNB_STABLECOINS),
   [SupportedChainId.LINEA]: new Set(LINEA_STABLECOINS),
   [SupportedChainId.PLASMA]: new Set(PLASMA_STABLECOINS),

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { getTokenId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
 import { TokenLogo, TokenSearchResponse, useRemoveUserToken, useResetUserTokens } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
@@ -19,7 +19,7 @@ import { ImportTokenItem } from '../../pure/ImportTokenItem'
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const tokensListToMap = (tokens: TokenWithLogo[]) => {
   return tokens.reduce<Record<string, TokenWithLogo>>((acc, token) => {
-    acc[token.address.toLowerCase()] = token
+    acc[getAddressKey(token.address)] = token
     return acc
   }, {})
 }

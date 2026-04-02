@@ -3,21 +3,13 @@ import { ReactElement, ReactNode, useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { ChainInfo, OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenInfo } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { OrderSummaryTemplateProps } from './summaryTemplates'
-import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
+import { OrderSummaryTemplateProps, BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
 
 import { TradeAmounts } from '../../types'
-
-interface TokensAndAmounts {
-  inputToken: TokenInfo
-  outputToken: TokenInfo
-  sellAmount: string
-  buyAmount: string
-}
 
 type OrderSummaryProps = {
   actionTitle?: string
@@ -27,6 +19,13 @@ type OrderSummaryProps = {
   children?: ReactElement | string
   customTemplate?: React.ComponentType<OrderSummaryTemplateProps>
 } & (TradeAmounts | TokensAndAmounts)
+
+interface TokensAndAmounts {
+  inputToken: TokenInfo
+  outputToken: TokenInfo
+  sellAmount: string
+  buyAmount: string
+}
 
 export function OrderSummary(props: OrderSummaryProps): ReactNode {
   const { kind, children, customTemplate: CustomTemplateComponent, actionTitle, srcChainData, dstChainData } = props
