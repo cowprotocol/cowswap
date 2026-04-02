@@ -177,7 +177,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const checkHighPriceImpact = typeof whenPriceImpactIsHigherThan === 'number'
   const checkUnknownPriceImpact = whenPriceImpactIsUnknown || checkHighPriceImpact
 
-  if (checkUnknownPriceImpact) {
+  if (!isWrapUnwrap && checkUnknownPriceImpact) {
     const isPriceImpactUnknown = !tradePriceImpact.loading && !tradePriceImpact.priceImpact
 
     if (isPriceImpactUnknown) {
@@ -189,7 +189,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
-  if (checkHighPriceImpact && tradePriceImpact.priceImpact) {
+  if (!isWrapUnwrap && checkHighPriceImpact && tradePriceImpact.priceImpact) {
     const priceImpactAsNum = +tradePriceImpact.priceImpact.toSignificant()
     const isPriceImpactAboveThreshold = priceImpactAsNum > whenPriceImpactIsHigherThan
 

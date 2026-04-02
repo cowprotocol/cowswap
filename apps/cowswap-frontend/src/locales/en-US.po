@@ -4505,6 +4505,10 @@ msgstr "Valid to"
 msgid "Composable Cow and Settlement contracts are not on the same chain"
 msgstr "Composable Cow and Settlement contracts are not on the same chain"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Fetching price impact"
+msgstr "Fetching price impact"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Swap bridged via your"
 msgstr "Swap bridged via your"
@@ -5472,6 +5476,11 @@ msgstr "Favorite tokens"
 #~ msgstr "Limit Orders"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.ts
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+#~ msgid "{0} - {1}%: Recommended slippage tolerance."
+#~ msgstr "{0} - {1}%: Recommended slippage tolerance."
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.tsx
 msgid "Approved amount is not sufficient!"
 msgstr "Approved amount is not sufficient!"
 

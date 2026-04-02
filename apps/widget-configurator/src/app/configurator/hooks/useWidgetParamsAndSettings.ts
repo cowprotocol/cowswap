@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
@@ -52,12 +52,67 @@ const getForcedOrderDeadline = ({
   }
 }
 
-const getThemeParam = ({
-  theme,
-  customColors,
-  defaultColors,
-}: Pick<ConfiguratorState, 'theme' | 'customColors' | 'defaultColors'>): CowSwapWidgetParams['theme'] => {
-  if (JSON.stringify(customColors) === JSON.stringify(defaultColors)) {
+function confirmWidgetHookAction(message: string): boolean {
+  return prompt(message) === 'ok'
+}
+
+function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetParams['hooks'] {
+  const hooks: CowSwapWidgetParams['hooks'] = {
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_APPROVAL)
+      ? {
+          onBeforeApproval(payload) {
+            return confirmWidgetHookAction(`Type "ok" to proceed with approval on chainId ${payload.chainId}`)
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_TRADE)
+      ? {
+          onBeforeTrade(payload) {
+            const sellToken = payload.sellToken?.symbol || 'unknown'
+            const buyToken = payload.buyToken?.symbol || 'unknown'
+
+            return confirmWidgetHookAction(
+              `Type "ok" to proceed with ${payload.orderType} trade ${sellToken} -> ${buyToken}`,
+            )
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP)
+      ? {
+          onBeforeWrapOrUnwrap(payload) {
+            const sellToken = payload.sellToken?.symbol || 'unknown'
+            const buyToken = payload.buyToken?.symbol || 'unknown'
+
+            return confirmWidgetHookAction(`Type "ok" to proceed with wrap/unwrap ${sellToken} -> ${buyToken}`)
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDER_CANCEL)
+      ? {
+          onBeforeOrderCancel(payload) {
+            return confirmWidgetHookAction(`Type "ok" to cancel order ${payload.uid}`)
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL)
+      ? {
+          onBeforeOrdersCancel(payload) {
+            return confirmWidgetHookAction(`Type "ok" to cancel ${payload.length} orders`)
+          },
+        }
+      : null),
+  }
+
+  return hooks
+}
+
+function getThemeParam(
+  theme: ConfiguratorState['theme'],
+  customColors: ConfiguratorState['customColors'],
+  defaultColors: ConfiguratorState['defaultColors'],
+  boxShadow: ConfiguratorState['boxShadow'],
+): CowSwapWidgetParams['theme'] {
+  if (JSON.stringify(customColors) === JSON.stringify(defaultColors) && !boxShadow) {
     return theme
   }
 
@@ -77,6 +132,7 @@ const getThemeParam = ({
     alert: themeColors.alert,
     info: themeColors.info,
     success: themeColors.success,
+    ...(boxShadow ? { boxShadow } : null),
   }
 }
 
@@ -84,7 +140,9 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
   return useMemo(() => {
     const {
       chainId,
+      locale,
       theme,
+      boxShadow,
       currentTradeType,
       enabledTradeTypes,
       sellToken,
@@ -112,6 +170,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       disableTradeWhenPriceImpactIsUnknown,
       disableTradeWhenPriceImpactIsHigherThan,
       slippage,
+      enabledWidgetHooks,
     } = configuratorState
 
     const params: CowSwapWidgetParams = {
@@ -119,6 +178,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       width: '100%',
       height: '640px',
       chainId,
+      locale,
       tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
       sellTokenLists: getTokenListsParam(tokenListUrls, 'enabledForSell'),
       buyTokenLists: getTokenListsParam(tokenListUrls, 'enabledForBuy'),
@@ -128,7 +188,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
       enabledTradeTypes,
-      theme: getThemeParam({ theme, customColors, defaultColors }),
+      theme: getThemeParam(theme, customColors, defaultColors, boxShadow),
 
       standaloneMode,
       disableToastMessages,
@@ -152,6 +212,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
         whenPriceImpactIsUnknown: disableTradeWhenPriceImpactIsUnknown,
         whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,
       },
+      hooks: getWidgetHooks(enabledWidgetHooks),
     }
 
     return params
