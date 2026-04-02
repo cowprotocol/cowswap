@@ -1,25 +1,26 @@
 import { useCallback } from 'react'
 
 import { useNavigate } from 'react-router'
-import { usePathPrefix } from 'state/network'
+import { useNavigationPathPrefix } from 'state/network'
 import { isAnAddressAccount, isAnOrderId, isATxHash, isEns } from 'utils'
 
 export function pathAccordingTo(query: string): string {
-  let path = 'search'
   if (isAnAddressAccount(query)) {
-    path = 'address'
-  } else if (isAnOrderId(query)) {
-    path = 'orders'
-  } else if (isATxHash(query)) {
-    path = 'tx'
+    return 'address'
+  }
+  if (isAnOrderId(query)) {
+    return 'orders'
+  }
+  if (isATxHash(query)) {
+    return 'tx'
   }
 
-  return path
+  return 'search'
 }
 
 export function useSearchSubmit(): (query: string) => void {
   const navigate = useNavigate()
-  const prefixNetwork = usePathPrefix()
+  const prefixNetwork = useNavigationPathPrefix()
 
   return useCallback(
     (query: string) => {

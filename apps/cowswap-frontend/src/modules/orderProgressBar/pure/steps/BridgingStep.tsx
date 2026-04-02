@@ -4,7 +4,9 @@ import { Confetti, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { ProgressDetails, SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
+import { ProgressDetails } from 'modules/bridge/pure/ProgressDetails'
+import type { SwapAndBridgeContext } from 'modules/bridge/types'
+import { SwapAndBridgeStatus } from 'modules/bridge/types'
 
 import type { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 

@@ -59,3 +59,20 @@ jobs:
       env_name: prod
       app: ${{ matrix.app }}
       disable_nx_cache: true
+
+  notify-failure:
+    name: Notify Slack on Failure
+    needs: [vercel-dev, vercel-pre-prod, vercel-prod]
+    runs-on: ubuntu-latest
+    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    steps:
+      - name: Notify Failure
+        run: |
+          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ Deployment failed on \`$REF_NAME\`. <$SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID|See run $RUN_ID on GH>.\"}" "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REF_NAME: ${{ github.ref_name }}
+          SERVER_URL: ${{ github.server_url }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}

@@ -13,15 +13,12 @@
       }
     },
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/iframe-transport",
-        "main": "libs/iframe-transport/src/index.ts",
-        "tsConfig": "libs/iframe-transport/tsconfig.lib.json",
-        "assets": ["libs/iframe-transport/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true,
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "configFile": "libs/iframe-transport/vite.config.mts",
+        "assets": ["libs/iframe-transport/*.md"]
       }
     },
     "test": {

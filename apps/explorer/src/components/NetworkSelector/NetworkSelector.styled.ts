@@ -19,11 +19,11 @@ export const SelectorContainer = styled.div`
   color: ${Color.explorer_orange1};
 `
 
-export const OptionsContainer = styled.div<{ width: number }>`
+export const OptionsContainer = styled.div<{ $width: number }>`
   position: absolute;
   z-index: 1;
   margin: 0 auto;
-  width: ${(props: { width: number }): string => `${184 + props.width}px`};
+  width: ${({ $width }) => `${184 + $width}px`};
   left: 15px;
   top: 54px;
   background: var(${UI.COLOR_NEUTRAL_0});
@@ -32,7 +32,7 @@ export const OptionsContainer = styled.div<{ width: number }>`
   border-radius: 6px;
 `
 
-export const Option = styled(NavLink)<{ color: string }>`
+export const Option = styled(NavLink)<{ $color: string }>`
   display: flex;
   flex: 1;
   font-weight: 800;
@@ -65,11 +65,11 @@ export const Option = styled(NavLink)<{ color: string }>`
     height: 8px;
     border-radius: 100%;
     margin-right: 9px;
-    background: ${({ color }) => color};
+    background: ${({ $color }) => $color};
   }
 `
 
-export const NetworkLabel = styled.span<{ color: string }>`
+export const NetworkLabel = styled.span<{ $color: string }>`
   border-radius: 0.6rem;
   display: flex;
   margin: 0 0.5rem;
@@ -79,8 +79,8 @@ export const NetworkLabel = styled.span<{ color: string }>`
   text-transform: uppercase;
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
-  background: ${({ color }) => color};
-  color: ${({ color }) => readableColor(color)};
+  background: ${({ $color }) => $color};
+  color: ${({ $color }) => readableColor($color)};
 `
 
 export const StyledFAIcon = styled(FontAwesomeIcon)`

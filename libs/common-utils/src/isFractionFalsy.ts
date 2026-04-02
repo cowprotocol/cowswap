@@ -1,4 +1,4 @@
-import { Fraction } from '@uniswap/sdk-core'
+import { Fraction } from '@cowprotocol/currency'
 
 export function isFractionFalsy(amount: Fraction | null | undefined): boolean {
   if (!amount) return true

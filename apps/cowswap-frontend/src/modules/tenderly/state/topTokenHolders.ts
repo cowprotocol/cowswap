@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface GetTopTokenHoldersParams {
   tokenAddress?: string
@@ -12,6 +12,11 @@ export interface GetTopTokenHoldersParams {
 export interface TokenHolder {
   address: string
   balance: string
+}
+
+interface CachedValue<T> {
+  value: T
+  timestamp: number
 }
 
 // TODO: Add proper return type annotation
@@ -24,11 +29,6 @@ export async function getTopTokenHolder({ tokenAddress, chainId }: GetTopTokenHo
   }).then((res) => res.json())) as TokenHolder[]
 }
 
-interface CachedValue<T> {
-  value: T
-  timestamp: number
-}
-
 const baseTopTokenHolderAtom = atomWithStorage<Record<string, CachedValue<TokenHolder[] | undefined>>>(
   'topTokenHolders:v1',
   {},
@@ -37,7 +37,7 @@ const baseTopTokenHolderAtom = atomWithStorage<Record<string, CachedValue<TokenH
 export const topTokenHoldersAtom = atom(
   (get) => get(baseTopTokenHolderAtom),
   async (get, set, params: GetTopTokenHoldersParams) => {
-    const key = `${params.chainId}:${params.tokenAddress?.toLowerCase()}`
+    const key = `${params.chainId}:${params.tokenAddress ? getAddressKey(params.tokenAddress) : undefined}`
     const cachedData = get(baseTopTokenHolderAtom)
     const currentTime = Date.now() / 1000
 

@@ -27,6 +27,8 @@ import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
 
@@ -60,6 +62,10 @@ export function RateInput() {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const rateImpact = useRateImpact()
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
+
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
+  const isRateInputDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
   const inputCurrencyId = inputCurrency?.symbol
   const outputCurrencyId = outputCurrency?.symbol
 
@@ -221,7 +227,7 @@ export function RateInput() {
   }, [inputCurrency, outputCurrency])
 
   return (
-    <>
+    <styledEl.OuterWrapper $disabled={isRateInputDisabled} htmlFor="rate-limit-amount-input">
       <styledEl.Wrapper>
         <styledEl.Header>
           <HeadingText
@@ -262,6 +268,7 @@ export function RateInput() {
               prependSymbol={isUsdRateMode ? '$' : ''}
               value={displayedRate + typedTrailingZeros}
               onUserInput={handleUserInput}
+              disabled={isRateInputDisabled}
             />
           )}
 
@@ -303,6 +310,6 @@ export function RateInput() {
           />
         </span>
       </styledEl.EstimatedRate>
-    </>
+    </styledEl.OuterWrapper>
   )
 }

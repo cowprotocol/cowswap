@@ -1,5 +1,5 @@
 import { Erc20 } from '@cowprotocol/cowswap-abis'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

@@ -1,6 +1,6 @@
 import { loadingOpacityMixin, Media, TokenAmount, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
 
@@ -10,7 +10,8 @@ export const OuterWrapper = styled.div`
   flex-flow: column wrap;
 `
 
-export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; readOnly: boolean; pointerDisabled: boolean }>`
+export const Wrapper = styled.label<{ withReceiveAmountInfo: boolean; readOnly: boolean; pointerDisabled: boolean }>`
+  position: relative;
   display: flex;
   flex-flow: row wrap;
   align-content: space-between;
@@ -23,6 +24,19 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; readOnly: bo
   min-height: 106px;
   pointer-events: ${({ pointerDisabled }) => (pointerDisabled ? 'none' : '')};
   max-width: 100%;
+
+  ${({ pointerDisabled }) =>
+    pointerDisabled &&
+    css`
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        cursor: not-allowed;
+        pointer-events: auto;
+      }
+    `}
 
   ${Media.upToSmall()} {
     padding: 16px 12px;

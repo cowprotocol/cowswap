@@ -21,6 +21,7 @@ env:
   REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
+  NX_DISABLE_REMOTE_CACHE: true
 
 jobs:
   setup:
@@ -74,7 +75,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm run install:ci --frozen-lockfile
 
       - name: Load generated files
         id: cache-generated-files
@@ -113,7 +114,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm run install:ci --frozen-lockfile
 
       - name: Load generated files
         id: cache-generated-files
@@ -125,6 +126,40 @@ jobs:
 
       - name: Run eslint
         run: pnpm run lint
+
+  typecheck:
+    name: Typecheck
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+
+      - name: Set up node
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm run install:ci --frozen-lockfile
+
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: |
+            apps/cowswap-frontend/src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Run typecheck
+        run: pnpm run typecheck
 
   integration-tests:
     name: Cypress
@@ -148,7 +183,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm run install:ci --frozen-lockfile
 
       - name: Install Cypress binary
         working-directory: apps/cowswap-frontend-e2e
@@ -187,17 +222,33 @@ jobs:
 
   notify-failure:
     name: Notify Slack on Failure
-    needs: [setup, test, lint]
+    needs: [setup, test, lint, typecheck, integration-tests]
     runs-on: ubuntu-latest
     if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
     steps:
       - name: Notify Failure
         run: |
-          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ CI failed on $REF_NAME. Check the build at $SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID\"}" "$SLACK_WEBHOOK_URL"
+          failed_jobs=()
+          [ "$TEST_RESULT" = "failure" ] && failed_jobs+=("Test")
+          [ "$LINT_RESULT" = "failure" ] && failed_jobs+=("Lint")
+          [ "$TYPECHECK_RESULT" = "failure" ] && failed_jobs+=("Typecheck")
+          [ "$INTEGRATION_TESTS_RESULT" = "failure" ] && failed_jobs+=("Cypress")
+
+          if [ ${#failed_jobs[@]} -eq 0 ]; then
+            failure_summary="CI"
+          else
+            failure_summary=$(IFS=', '; echo "${failed_jobs[*]}")
+          fi
+
+          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ ${failure_summary} failed on \`$REF_NAME\`. <$SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID|See run $RUN_ID on GH>.\"}" "$SLACK_WEBHOOK_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REF_NAME: ${{ github.ref_name }}
           SERVER_URL: ${{ github.server_url }}
           REPOSITORY: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          TEST_RESULT: ${{ needs.test.result }}
+          LINT_RESULT: ${{ needs.lint.result }}
+          TYPECHECK_RESULT: ${{ needs.typecheck.result }}
+          INTEGRATION_TESTS_RESULT: ${{ needs.integration-tests.result }}

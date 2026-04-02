@@ -1,9 +1,29 @@
 import { Loader, Media, TokenSymbol } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import Input from 'legacy/components/NumericalInput'
+
+export const OuterWrapper = styled.label<{ $disabled?: boolean }>`
+  position: relative;
+  width: 100%;
+
+  ${({ $disabled }) =>
+    $disabled &&
+    css`
+      pointer-events: none;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        cursor: not-allowed;
+        pointer-events: auto;
+      }
+    `}
+`
 
 export const Wrapper = styled.div`
   padding: 16px 16px 0;
@@ -221,7 +241,7 @@ export const ActiveSymbol = styled.span<{ $active?: boolean }>`
     > div > img {
       opacity: 0.5;
     }
-    
+
     > ${TokenSymbol} {
       color: var(${UI.COLOR_TEXT_OPACITY_50});
     }

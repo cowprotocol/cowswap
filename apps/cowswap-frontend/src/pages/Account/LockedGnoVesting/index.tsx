@@ -16,10 +16,10 @@ import {
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ButtonSize, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -34,13 +34,6 @@ import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBrea
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 
-enum ClaimStatus {
-  INITIAL,
-  ATTEMPTING,
-  SUBMITTED,
-  CONFIRMED,
-}
-
 interface Props {
   openModal: (message: string) => void
   closeModal: Command
@@ -48,6 +41,13 @@ interface Props {
   allocated: CurrencyAmount<Currency>
   claimed: CurrencyAmount<Currency>
   loading: boolean
+}
+
+enum ClaimStatus {
+  INITIAL,
+  ATTEMPTING,
+  SUBMITTED,
+  CONFIRMED,
 }
 
 // TODO: Break down this large function into smaller functions

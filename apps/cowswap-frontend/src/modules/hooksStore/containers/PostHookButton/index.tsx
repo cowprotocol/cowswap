@@ -13,6 +13,7 @@ import { HookTooltip } from '../../pure/HookTooltip'
 import * as styledEl from '../PreHookButton/styled'
 
 export interface PostHookButtonProps {
+  disabled?: boolean
   onOpen(): void
   onEditHook(uuid: string): void
   hideTooltip?: boolean
@@ -22,7 +23,7 @@ const isPreHook = false
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function PostHookButton({ onOpen, onEditHook, hideTooltip }: PostHookButtonProps) {
+export function PostHookButton({ disabled = false, onOpen, onEditHook, hideTooltip }: PostHookButtonProps) {
   const { account } = useWalletInfo()
   const { postHooks } = useHooks()
   const removeHook = useRemoveHook(isPreHook)
@@ -33,6 +34,7 @@ export function PostHookButton({ onOpen, onEditHook, hideTooltip }: PostHookButt
     <>
       {postHooks.length > 0 && (
         <AppliedHookList
+          disabled={disabled}
           dapps={dapps}
           account={account}
           hooks={postHooks}
@@ -43,7 +45,7 @@ export function PostHookButton({ onOpen, onEditHook, hideTooltip }: PostHookButt
         />
       )}
       <styledEl.Wrapper>
-        <styledEl.AddHookButton onClick={onOpen}>
+        <styledEl.AddHookButton disabled={disabled} onClick={disabled ? undefined : onOpen}>
           <SVG src={PLUS_ICON} /> <Trans>Add Post-Hook Action</Trans>{' '}
           {!hideTooltip && <HookTooltip isPreHook={false} />}
         </styledEl.AddHookButton>

@@ -20,6 +20,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isApproveRequired,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
     isOnline,
     intermediateTokenToBeImported,
     isAccountProxyLoading,
@@ -89,6 +90,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isProviderNetworkUnsupported) {
     validations.push(TradeFormValidation.NetworkNotSupported)
+  }
+
+  if (isProviderNetworkDeprecated) {
+    validations.push(TradeFormValidation.NetworkDeprecated)
   }
 
   if (isSafeReadonlyUser) {

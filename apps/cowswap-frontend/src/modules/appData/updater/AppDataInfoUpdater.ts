@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 
 import { useAsyncEffect } from '@cowprotocol/common-hooks'
 import { UtmParams } from '@cowprotocol/common-utils'
-import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEnv } from '@cowprotocol/cow-sdk'
 
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 
@@ -14,7 +14,6 @@ import { getAppData } from '../utils/fullAppData'
 
 export interface UseAppDataParams {
   appCodeWithWidgetMetadata: AppCodeWithWidgetMetadata | null
-  chainId: SupportedChainId
   slippageBips: number
   isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
@@ -23,6 +22,7 @@ export interface UseAppDataParams {
   volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
   userConsent?: UserConsentsMetadata
+  refCode?: string
 }
 
 /**
@@ -34,7 +34,6 @@ export interface UseAppDataParams {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
-  chainId,
   slippageBips,
   isSmartSlippage,
   orderClass,
@@ -43,6 +42,7 @@ export function AppDataInfoUpdater({
   volumeFee,
   replacedOrderUid,
   userConsent,
+  refCode,
 }: UseAppDataParams) {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -56,7 +56,6 @@ export function AppDataInfoUpdater({
 
     const { appCode, environment, widget } = appCodeWithWidgetMetadata
     const params: BuildAppDataParams = {
-      chainId,
       slippageBips,
       isSmartSlippage,
       appCode,
@@ -68,6 +67,7 @@ export function AppDataInfoUpdater({
       widget,
       replacedOrderUid,
       userConsent,
+      refCode,
     }
 
     try {
@@ -82,7 +82,6 @@ export function AppDataInfoUpdater({
     }
   }, [
     appCodeWithWidgetMetadata,
-    chainId,
     setAppDataInfo,
     slippageBips,
     orderClass,
@@ -92,6 +91,7 @@ export function AppDataInfoUpdater({
     replacedOrderUid,
     isSmartSlippage,
     userConsent,
+    refCode,
   ])
 
   return null

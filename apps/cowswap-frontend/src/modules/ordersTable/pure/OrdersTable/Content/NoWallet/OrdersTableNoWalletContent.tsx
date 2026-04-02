@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { Web3Status } from 'modules/wallet/containers/Web3Status'
+import { Web3Status } from 'modules/wallet'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 

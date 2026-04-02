@@ -1,7 +1,7 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useAtomValue } from 'jotai'
+import { useMemo } from 'react'
 
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/currency'
 
 import { TradeType } from 'modules/trade'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
@@ -16,14 +16,13 @@ export function useAdvancedOrdersDerivedState(): AdvancedOrdersDerivedState {
   return useAtomValue(advancedOrdersDerivedStateAtom)
 }
 
-export function useFillAdvancedOrdersDerivedState(slippage: Percent): void {
+export function useAdvancedOrdersDerivedStateToFill(slippage: Percent): AdvancedOrdersDerivedState {
   const rawState = useAtomValue(advancedOrdersAtom)
-  const updateDerivedState = useSetAtom(advancedOrdersDerivedStateAtom)
 
   const derivedState = useBuildTradeDerivedState(advancedOrdersAtom, false)
   const isUnlocked = rawState.isUnlocked
 
-  useEffect(() => {
-    updateDerivedState({ ...derivedState, isUnlocked, slippage, tradeType: TradeType.ADVANCED_ORDERS })
-  }, [derivedState, isUnlocked, updateDerivedState, slippage])
+  return useMemo(() => {
+    return { ...derivedState, isUnlocked, slippage, tradeType: TradeType.ADVANCED_ORDERS }
+  }, [derivedState, isUnlocked, slippage])
 }

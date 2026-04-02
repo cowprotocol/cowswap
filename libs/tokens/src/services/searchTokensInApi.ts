@@ -3,6 +3,10 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { gql, GraphQLClient } from 'graphql-request'
 
+export interface TokenSearchFromApiResult extends FetchTokensResult {
+  chainId: SupportedChainId
+}
+
 type Address = `0x${string}`
 
 type Chain =
@@ -16,6 +20,10 @@ type Chain =
   | 'BNB'
   | 'BASE'
   | 'UNKNOWN_CHAIN'
+
+interface FetchTokensApiResult {
+  searchTokens: FetchTokensResult[]
+}
 
 interface FetchTokensResult {
   id: string
@@ -35,14 +43,6 @@ interface FetchTokensResult {
     }
     safetyLevel: string
   }
-}
-
-interface FetchTokensApiResult {
-  searchTokens: FetchTokensResult[]
-}
-
-export interface TokenSearchFromApiResult extends FetchTokensResult {
-  chainId: SupportedChainId
 }
 
 const SEARCH_TOKENS = gql`
@@ -131,7 +131,6 @@ const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.GNOSIS_CHAIN]: null,
   [SupportedChainId.POLYGON]: 'POLYGON',
   [SupportedChainId.AVALANCHE]: 'AVALANCHE',
-  [SupportedChainId.LENS]: null,
   [SupportedChainId.BNB]: 'BNB',
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,

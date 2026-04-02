@@ -1,7 +1,7 @@
 import { COW_TOKEN_TO_CHAIN, GNO_MAINNET } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Percent, Price } from '@uniswap/sdk-core'
+import { Currency, Percent, Price } from '@cowprotocol/currency'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
@@ -54,6 +54,10 @@ export const inputCurrencyInfoMock: CurrencyInfo = {
     },
     afterSlippage: {
       sellAmount: tryParseCurrencyAmount('110', inputCurrency),
+      buyAmount: tryParseCurrencyAmount('530', outputCurrency),
+    },
+    amountsToSign: {
+      sellAmount: tryParseCurrencyAmount('120', inputCurrency),
       buyAmount: tryParseCurrencyAmount('530', outputCurrency),
     },
   },

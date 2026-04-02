@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { USDC } from '@cowprotocol/common-const'
 import { getWrappedToken, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
 
 import { useUsdPrice } from 'modules/usdAmount'
 

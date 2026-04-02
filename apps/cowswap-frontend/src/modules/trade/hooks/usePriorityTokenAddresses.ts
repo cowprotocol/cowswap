@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 
 import { areSetsEqual, getAddress } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -29,19 +30,19 @@ export function usePriorityTokenAddresses(): Set<string> {
     const setOfTokens = new Set(
       pending.reduce((acc, order) => {
         if (order && getUiOrderType(order) === UiOrderType.SWAP) {
-          acc.push(order.inputToken.address.toLowerCase())
-          acc.push(order.outputToken.address.toLowerCase())
+          acc.push(getAddressKey(order.inputToken.address))
+          acc.push(getAddressKey(order.outputToken.address))
         }
         return acc
       }, [] as string[]),
     )
 
     if (inputCurrencyAddress) {
-      setOfTokens.add(inputCurrencyAddress.toLowerCase())
+      setOfTokens.add(getAddressKey(inputCurrencyAddress))
     }
 
     if (outputCurrencyAddress) {
-      setOfTokens.add(outputCurrencyAddress.toLowerCase())
+      setOfTokens.add(getAddressKey(outputCurrencyAddress))
     }
 
     return setOfTokens
