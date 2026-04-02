@@ -17,7 +17,7 @@ export const AFFILIATE_PROGRAM_CTA = {
 
 export const AFFILIATE_PROGRAM_DOCS_CTA = {
   text: 'Read how it works',
-  href: CONFIG.url.docs,
+  href: `${CONFIG.url.docs}/cow-protocol/affiliate-program`,
   action: 'click-read-affiliate-docs',
   utmContent: 'affiliate-program-read-how-it-works',
 } as const
@@ -96,7 +96,7 @@ export function getAffiliateProgramFaq(sendEvent: (action: string) => void): { q
           Only eligible trades on supported CoW Swap chains count toward milestone volume. Some trade types may be
           excluded based on program rules. Read the{' '}
           <Link
-            href={CONFIG.url.docs}
+            href={`${CONFIG.url.docs}/cow-protocol/affiliate-program/faq`}
             external
             utmContent="affiliate-program-faq-docs"
             onClick={() => sendEvent('click-affiliate-faq-docs')}
