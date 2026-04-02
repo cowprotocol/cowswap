@@ -77,7 +77,7 @@ describe('useEstimatedBridgeBuyAmount', () => {
             },
             costs: {
               bridgingFee: {
-                amountInSellCurrency: feeAmountRaw,
+                amountInBuyCurrency: feeAmountRaw,
               },
             },
           },
