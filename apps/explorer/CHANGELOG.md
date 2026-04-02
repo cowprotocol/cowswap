@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.0.5](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.4...explorer-v4.0.5) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.3
+    * @cowprotocol/ui bumped to 3.1.1
+
 ## [4.0.4](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.3...explorer-v4.0.4) (2026-04-02)
 
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.1.0...ui-v3.1.1) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.3
+
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.0.2...ui-v3.1.0) (2026-04-02)
 
 
