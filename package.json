@@ -27,6 +27,7 @@
     "build:cowfi": "nx build cow-fi --no-cloud && pnpm run postbuild:cowfi",
     "build:sdk-tools": "nx build sdk-tools",
     "postbuild:cowfi": "next-sitemap --config ./apps/cow-fi/next-sitemap.config.js",
+    "clean": "git clean -fixd -e .env.local",
     "build:cosmos": "nx run cowswap-frontend:build:cosmos",
     "ci:build": "pnpm run build:cowswap && pnpm run build-widget",
     "nx": "npx nx run",

@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-03-05
+last_reviewed: 2026-04-02
 source_of_truth_scope: root coordination contract for AI and human contributors
 review_cadence: weekly during active frontend work, otherwise bi-weekly
 ---
@@ -38,6 +38,11 @@ Normative language:
 - `MUST` run targeted verification (lint/tests/typecheck) for the touched area.
 - Both SWR and Jotai `atomWithQuery` are acceptable for data fetching. The team is evaluating migration; no forced migration yet.
 - Avoid introducing new `common/** -> modules/**` imports; treat existing cases as legacy debt and track cleanup in `docs/QUALITY.md`.
+
+## Address Handling
+
+- `MUST NOT` normalize addresses with `address.toLowerCase()`; use `getAddressKey` from `@cowprotocol/cow-sdk`.
+- `MUST NOT` compare addresses with `===`, `toLowerCase()`, or manual string comparison; use `areAddressesEqual` from `@cowprotocol/cow-sdk`.
 
 ## Command Baseline
 

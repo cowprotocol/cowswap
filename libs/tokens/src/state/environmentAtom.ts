@@ -10,6 +10,8 @@ interface TokensModuleEnvironment {
   isYieldEnabled?: boolean
   widgetAppCode?: string
   selectedLists?: string[]
+  sellSelectedLists?: string[]
+  buySelectedLists?: string[]
   bridgeNetworkInfo?: ChainInfo[]
 }
 export const { atom: environmentAtom, updateAtom: updateEnvironmentAtom } = atomWithPartialUpdate(
