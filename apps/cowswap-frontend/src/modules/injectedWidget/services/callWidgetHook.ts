@@ -10,7 +10,7 @@ import {
 import ms from 'ms.macro'
 
 const callsRegistry = new Map<string, (result: boolean) => void>()
-const HOOK_RESPONSE_TIMEOUT_MS = ms`5m`
+const HOOK_RESPONSE_TIMEOUT_MS = ms`2m`
 
 widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsListen.HOOK_RESULT, (data) => {
   const callback = callsRegistry.get(data.id)
@@ -25,9 +25,17 @@ export function callWidgetHook<T extends WidgetHookEvents>(
   event: T,
   payload: WidgetHookPayloadMap[T],
 ): Promise<boolean> {
-  if (!isInjectedWidget()) return Promise.resolve(true)
+  if (!isInjectedWidget()) {
+    console.log(`[COW][HOOKS] Skipping hooks, reason: not an injected widget`)
+    return Promise.resolve(true)
+  }
+  if (!areWidgetHooksEnabled()) {
+    console.log(`[COW][HOOKS] Skipping hooks, reason: hooks are not enabled`)
+    return Promise.resolve(true)
+  }
 
   const id = window.crypto.randomUUID()
+  console.log(`[COW][HOOKS] Calling widget hook, event: ${event}, generated id: ${id}`)
 
   return new Promise((resolve) => {
     const timeoutId = window.setTimeout(() => {
@@ -46,4 +54,8 @@ export function callWidgetHook<T extends WidgetHookEvents>(
       payload,
     })
   })
+}
+
+function areWidgetHooksEnabled(): boolean {
+  return new URLSearchParams(window.location.search).get('hooksEnabled') === 'true'
 }
