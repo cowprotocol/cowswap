@@ -1,3 +1,4 @@
+import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
@@ -30,10 +31,11 @@ const ENS_NAME = 'vitalik.eth'
 const SOLANA_ADDRESS = '9WfjPKjYvK5iPYzWetNVuHUArE9nBxuwtfXLoW8xhkQT'
 const BTC_ADDRESS = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4'
 
-function mockState(recipient?: string, recipientAddress?: string): void {
+function mockState(recipient?: string, recipientAddress?: string, outputChainId?: number): void {
   mockedUseDerivedTradeState.mockReturnValue({
     recipient,
     recipientAddress,
+    outputCurrency: outputChainId !== undefined ? { chainId: outputChainId } : null,
   } as unknown as TradeDerivedState)
 }
 
@@ -221,6 +223,68 @@ describe('useQuoteParamsRecipient', () => {
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+    })
+  })
+
+  describe('Non-EVM recipients gated by output chain', () => {
+    beforeEach(() => {
+      mockBridgeQuote(undefined)
+    })
+
+    it('should accept SOL address when output chain is SOL', () => {
+      mockState(SOLANA_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: SOLANA_ADDRESS })
+    })
+
+    it('should accept BTC address when output chain is BTC', () => {
+      mockState(BTC_ADDRESS, undefined, AdditionalTargetChainId.BITCOIN)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: BTC_ADDRESS })
+    })
+
+    it('should reject SOL address when output chain is BTC', () => {
+      mockState(SOLANA_ADDRESS, undefined, AdditionalTargetChainId.BITCOIN)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+    })
+
+    it('should reject BTC address when output chain is SOL', () => {
+      mockState(BTC_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+    })
+
+    it('should reject SOL address when output chain is EVM (chainId=1)', () => {
+      mockState(SOLANA_ADDRESS, undefined, 1)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+    })
+
+    it('should reject BTC address when output chain is EVM (chainId=1)', () => {
+      mockState(BTC_ADDRESS, undefined, 1)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+    })
+
+    it('should accept SOL address when outputCurrency is null (backward compat)', () => {
+      mockState(SOLANA_ADDRESS, undefined, undefined)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: SOLANA_ADDRESS })
     })
   })
 })

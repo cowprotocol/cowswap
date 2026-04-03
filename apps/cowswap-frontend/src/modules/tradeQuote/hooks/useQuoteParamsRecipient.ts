@@ -1,38 +1,30 @@
 import { useMemo } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
-import { isBtcAddress, isSolanaAddress } from '@cowprotocol/cow-sdk'
+import { isBtcAddress, isBtcChain, isEvmAddress, isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { Nullish } from 'types'
 
 import { useDerivedTradeState } from 'modules/trade'
 
 import { useTradeQuote } from './useTradeQuote'
 
-/**
- * Returns { receiver, bridgeRecipient } for quote params.
- *
- * - `receiver`: always an EVM address (for CoW API). Falls back to account.
- * - `bridgeRecipient`: the final destination address for the bridge provider.
- *   Can be non-EVM (Solana/BTC). Undefined when not bridging to non-EVM chains.
- *
- * recipientAddress is present in state only when recipient is an ENS name.
- * recipient in state is what user typed in the custom recipient input.
- * For ReceiverAccountBridgeProvider we must trigger a new quote each time when custom recipient changes.
- */
-export function useQuoteParamsRecipient(): { receiver: string | undefined; bridgeRecipient: string | undefined } {
+export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRecipient: Nullish<string> } {
   const { bridgeQuote } = useTradeQuote()
   const state = useDerivedTradeState()
   const { account } = useWalletInfo()
 
-  const { recipient, recipientAddress } = state || {}
+  const { recipient, recipientAddress, outputCurrency } = state || {}
 
   const isReceiverAccountBridgeProvider = bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
 
   return useMemo(() => {
     // Non-EVM recipient (Solana/BTC): pass as bridgeRecipient for the bridge provider,
     // and use account as the EVM receiver for the CoW API.
-    if (recipient && (isBtcAddress(recipient) || isSolanaAddress(recipient))) {
-      return { receiver: account, bridgeRecipient: recipient }
+    const bridgeRecipient = resolveNonEvmBridgeRecipient(recipient, outputCurrency)
+    if (bridgeRecipient) {
+      return { receiver: account, bridgeRecipient }
     }
 
     // EVM ReceiverAccountBridgeProvider: use the custom recipient for both
@@ -41,9 +33,27 @@ export function useQuoteParamsRecipient(): { receiver: string | undefined; bridg
     }
 
     // Default: EVM-only receiver, no separate bridge recipient
-    const evmReceiver =
-      (isAddress(recipientAddress) ? recipientAddress : isAddress(recipient) ? recipient : null) || account
+    return { receiver: resolveEvmReceiver(recipientAddress, recipient, account), bridgeRecipient: undefined }
+  }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress, outputCurrency])
+}
 
-    return { receiver: evmReceiver, bridgeRecipient: undefined }
-  }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress])
+/** Returns the recipient if it's a non-EVM address accepted for the given output chain, otherwise undefined. */
+function resolveNonEvmBridgeRecipient(
+  recipient: Nullish<string>,
+  outputCurrency: Nullish<{ chainId: number }>,
+): Nullish<string> {
+  if (!recipient || isEvmAddress(recipient)) return undefined
+  const isBtcMatched = !!outputCurrency && isBtcAddress(recipient) && isBtcChain(outputCurrency.chainId)
+  const isSolanaMatched = !!outputCurrency && isSolanaAddress(recipient) && isSolanaChain(outputCurrency.chainId)
+  const chainMatches = !outputCurrency || isBtcMatched || isSolanaMatched
+  return chainMatches ? recipient : undefined
+}
+
+/** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
+function resolveEvmReceiver(
+  recipientAddress: Nullish<string>,
+  recipient: Nullish<string>,
+  account: Nullish<string>,
+): Nullish<string> {
+  return (isAddress(recipientAddress) ? recipientAddress : isAddress(recipient) ? recipient : null) || account
 }
