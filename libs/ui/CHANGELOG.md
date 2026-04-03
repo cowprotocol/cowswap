@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.1.0...ui-v3.1.1) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.3
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.0.2...ui-v3.1.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **affiliate:** add affiliate program page to cow-fi ([#7232](https://github.com/cowprotocol/cowswap/issues/7232)) ([fbf93d7](https://github.com/cowprotocol/cowswap/commit/fbf93d71b6c423d3378eb9b7d51ab09082f770a9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/assets bumped to 2.2.0
+
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.0.1...ui-v3.0.2) (2026-03-19)
 
 
