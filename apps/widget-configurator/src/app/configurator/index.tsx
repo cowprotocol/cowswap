@@ -1,10 +1,10 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
+import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK, SupportedLocale } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -33,12 +33,14 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
 import { CustomSoundsControl } from './controls/CustomSoundsControl'
 import { DeadlineControl } from './controls/DeadlineControl'
+import { LocaleControl } from './controls/LocaleControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { WidgetHooksControl } from './controls/WidgetHooksControl'
 import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
@@ -99,8 +101,14 @@ export function Configurator({ title }: { title: string }) {
   const tradeTypeState = useState<TradeType>(TRADE_MODES[0])
   const [currentTradeType] = tradeTypeState
 
+  const localeState = useState<SupportedLocale | ''>('')
+  const [locale] = localeState
+
   const tradeModesState = useState<TradeType[]>(TRADE_MODES)
   const [enabledTradeTypes] = tradeModesState
+
+  const widgetHooksState = useState<WidgetHookEvents[]>([])
+  const [enabledWidgetHooks] = widgetHooksState
 
   const sellTokenState = useState<string>(DEFAULT_STATE.sellToken)
   const sellTokenAmountState = useState<number>(DEFAULT_STATE.sellAmount)
@@ -139,6 +147,7 @@ export function Configurator({ title }: { title: string }) {
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
+  const [boxShadow, setBoxShadow] = useState<string>('')
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
@@ -166,6 +175,30 @@ export function Configurator({ title }: { title: string }) {
   const [hideOrdersTable, setHideOrdersTable] = useState<boolean | undefined>(false)
   const toggleHideOrdersTable = useCallback(() => setHideOrdersTable((curr) => !curr), [])
 
+  const [disableTradeWhenPriceImpactIsUnknown, setDisableTradeWhenPriceImpactIsUnknown] = useState(false)
+  const selectBlockUnknownPriceImpact = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setDisableTradeWhenPriceImpactIsUnknown(event.target.value === 'true')
+  }, [])
+
+  const [disableTradeWhenPriceImpactIsHigherThan, setDisableTradeWhenPriceImpactIsHigherThan] = useState<
+    number | undefined
+  >()
+  const setBlockPriceImpactAboveValue = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value.trim()
+
+    if (!nextValue) {
+      setDisableTradeWhenPriceImpactIsHigherThan(undefined)
+
+      return
+    }
+
+    const parsedValue = Number(nextValue)
+
+    if (Number.isNaN(parsedValue)) return
+
+    setDisableTradeWhenPriceImpactIsHigherThan(parsedValue)
+  }, [])
+
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
     { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
@@ -184,9 +217,12 @@ export function Configurator({ title }: { title: string }) {
     limitDeadline,
     advancedDeadline,
     chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
+    locale: locale || undefined,
     theme: mode,
+    boxShadow: boxShadow || undefined,
     currentTradeType,
     enabledTradeTypes,
+    enabledWidgetHooks,
     sellToken,
     sellTokenAmount,
     buyToken,
@@ -205,6 +241,8 @@ export function Configurator({ title }: { title: string }) {
     hideFavoriteTokens,
     hideBridgeInfo,
     hideOrdersTable,
+    disableTradeWhenPriceImpactIsUnknown,
+    disableTradeWhenPriceImpactIsHigherThan,
   }
 
   const rawParamsObject = useMemo(() => {
@@ -302,9 +340,24 @@ export function Configurator({ title }: { title: string }) {
 
         <PaletteControl paletteManager={paletteManager} />
 
+        <TextField
+          fullWidth
+          margin="dense"
+          id="boxShadow"
+          label="Widget shadow"
+          helperText='CSS box-shadow value. Use "none" to disable it.'
+          value={boxShadow}
+          onChange={(event) => setBoxShadow(event.target.value)}
+          size="medium"
+        />
+
         <TradeModesControl state={tradeModesState} />
 
+        <WidgetHooksControl state={widgetHooksState} />
+
         <CurrentTradeTypeControl state={tradeTypeState} />
+
+        <LocaleControl state={localeState} />
 
         {!IS_IFRAME && (
           <NetworkControl
@@ -422,7 +475,35 @@ export function Configurator({ title }: { title: string }) {
             <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
           </RadioGroup>
         </FormControl>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Disable trade when price impact is unknown:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="disable-trade-when-price-impact-is-unknown"
+            name="disable-trade-when-price-impact-is-unknown"
+            value={disableTradeWhenPriceImpactIsUnknown}
+            onChange={selectBlockUnknownPriceImpact}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Allow trade" />
+            <FormControlLabel value="true" control={<Radio />} label="Disable trade" />
+          </RadioGroup>
+        </FormControl>
 
+        <TextField
+          fullWidth
+          margin="dense"
+          id="disableTradeWhenPriceImpactIsHigherThan"
+          label="Disable trade when price impact is higher than (%)"
+          type="number"
+          value={disableTradeWhenPriceImpactIsHigherThan ?? ''}
+          onChange={setBlockPriceImpactAboveValue}
+          size="medium"
+          helperText="Leave empty to disable"
+          inputProps={{
+            min: 0,
+            step: 'any',
+          }}
+        />
         <TextField
           fullWidth
           margin="dense"
