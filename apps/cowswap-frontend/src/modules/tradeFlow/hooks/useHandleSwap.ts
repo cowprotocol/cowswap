@@ -1,10 +1,13 @@
 import { useCallback } from 'react'
 
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
+
 import { useLingui } from '@lingui/react/macro'
 
 import { Field } from 'legacy/state/types'
 
 import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
+import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { TradeWidgetActions, useTradePriceImpact } from 'modules/trade'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -20,6 +23,7 @@ import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundl
 import { swapFlow } from '../services/swapFlow'
 import { FlowType } from '../types/TradeFlowContext'
 
+// eslint-disable-next-line max-lines-per-function
 export function useHandleSwap(
   params: TradeFlowParams,
   actions: TradeWidgetActions,
@@ -47,6 +51,21 @@ export function useHandleSwap(
 
   const callback = useCallback(async () => {
     if (!tradeFlowContext) return
+
+    const isWidgetHookPassed = await callWidgetHook(
+      WidgetHookEvents.ON_BEFORE_TRADE,
+      buildTradeWidgetHookPayload({
+        orderType: tradeFlowContext.swapFlowAnalyticsContext.orderType,
+        inputAmount: tradeFlowContext.context.inputAmount,
+        outputAmount: tradeFlowContext.context.outputAmount,
+        recipient: tradeFlowContext.swapFlowAnalyticsContext.recipient,
+        orderKind: tradeFlowContext.orderParams.kind,
+      }),
+    )
+
+    if (!isWidgetHookPassed) {
+      return
+    }
 
     const result = await (() => {
       if (tradeFlowType === FlowType.EOA_ETH_FLOW) {

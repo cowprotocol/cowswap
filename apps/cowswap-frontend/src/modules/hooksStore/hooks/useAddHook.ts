@@ -4,7 +4,6 @@ import { useCallback } from 'react'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 
 import { setHooksAtom } from 'entities/orderHooks/hookDetailsAtom'
-import { v4 as uuidv4 } from 'uuid'
 
 import { AddHook, HookDapp } from '../types/hooks'
 
@@ -15,7 +14,7 @@ export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
     (hookToAdd) => {
       console.log('[hooks] Add ' + (isPreHook ? 'pre-hook' : 'post-hook'), hookToAdd, isPreHook)
 
-      const uuid = uuidv4()
+      const uuid = window.crypto.randomUUID()
       const hookDetails: CowHookDetails = {
         ...hookToAdd,
         uuid,
