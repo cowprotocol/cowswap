@@ -57,5 +57,5 @@ export function callWidgetHook<T extends WidgetHookEvents>(
 }
 
 function areWidgetHooksEnabled(): boolean {
-  return new URLSearchParams(window.location.search).get('hooksEnabled') === 'true'
+  return window.location.hash.includes('hooksEnabled=true')
 }
