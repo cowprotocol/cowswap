@@ -121,4 +121,26 @@ describe('buildWidgetUrlQuery', () => {
       'https://swap.cow.fi/#/1/widget/swap/_/_?palette=null&lng=fr',
     )
   })
+
+  it('does not serialize hooksEnabled when hooks are not configured', () => {
+    const query = buildWidgetUrlQuery({})
+
+    expect(query.get('hooksEnabled')).toBeNull()
+  })
+
+  it('does not serialize hooksEnabled when hooks object is empty', () => {
+    const query = buildWidgetUrlQuery({ hooks: {} })
+
+    expect(query.get('hooksEnabled')).toBeNull()
+  })
+
+  it('serializes hooksEnabled when at least one hook callback is configured', () => {
+    const query = buildWidgetUrlQuery({
+      hooks: {
+        onBeforeTrade: () => true,
+      },
+    })
+
+    expect(query.get('hooksEnabled')).toBe('true')
+  })
 })
