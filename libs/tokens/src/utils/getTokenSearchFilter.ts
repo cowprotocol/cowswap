@@ -13,7 +13,7 @@ export function getTokenSearchFilter<T extends Token | TokenInfo>(
   }
 
   // todo fix it when guard will be fixed in sdk
-  const queryParts = (query as string)
+  const queryParts = query
     .toLowerCase()
     .split(/\s+/)
     .filter((s) => s.length > 0)

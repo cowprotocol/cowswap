@@ -10,7 +10,7 @@ const vercelSuffix = '-cowswap-dev.vercel.app'
 const getBaseUrl = (): string => {
   if (typeof window === 'undefined' || !window) return ''
 
-  if (isLocalHost) return 'http://localhost:3000'
+  if (isLocalHost) return 'https://staging.swap.cow.fi'
 
   if (isDev) return 'https://dev.swap.cow.fi'
 
