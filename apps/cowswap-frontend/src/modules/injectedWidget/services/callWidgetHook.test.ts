@@ -52,7 +52,7 @@ describe('callWidgetHook', () => {
   })
 
   it('posts PROCESS_HOOK when hooksEnabled=true', async () => {
-    window.history.replaceState({}, '', '/?hooksEnabled=true')
+    window.history.replaceState({}, '', '#/?hooksEnabled=true')
 
     const hookCall = callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, {} as never)
 
