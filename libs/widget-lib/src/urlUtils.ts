@@ -21,7 +21,10 @@ export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
 export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
   const query = new URLSearchParams()
 
-  return addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params)
+  return addLocaleToQuery(
+    addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params),
+    params,
+  )
 }
 
 function addTradeAmountsToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
@@ -60,6 +63,14 @@ function addThemePaletteToQuery(query: URLSearchParams, params: Partial<CowSwapW
 function addTargetChainIdToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
   if (params.targetChainId) {
     query.append('targetChainId', params.targetChainId.toString())
+  }
+
+  return query
+}
+
+function addLocaleToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  if (params.locale) {
+    query.append('lng', params.locale)
   }
 
   return query
