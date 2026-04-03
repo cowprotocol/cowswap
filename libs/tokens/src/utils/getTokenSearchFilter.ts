@@ -12,7 +12,6 @@ export function getTokenSearchFilter<T extends Token | TokenInfo>(
     return (t: T | NativeCurrency) => 'address' in t && areAddressesEqual(query, t.address)
   }
 
-  // todo fix it when guard will be fixed in sdk
   const queryParts = query
     .toLowerCase()
     .split(/\s+/)
