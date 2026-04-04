@@ -202,6 +202,8 @@ function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplor
   if (!basePath) return ''
 
   if (isBtcChain(chainId)) return getBtcLegacyExplorerUrl(basePath, data, type)
-  if (!isEvmChain(chainId)) return getSolLegacyExplorerUrl(basePath, data, type) // non-EVM, non-BTC = Solana
+  // Assumes Solana is the only non-EVM, non-BTC chain. If a new non-EVM chain is added,
+  // a dedicated explorer URL builder must be added here before this fallback.
+  if (!isEvmChain(chainId)) return getSolLegacyExplorerUrl(basePath, data, type)
   return getEvmLegacyExplorerUrl(basePath, data, type)
 }

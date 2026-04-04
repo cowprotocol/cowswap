@@ -13,8 +13,9 @@ export interface AddressValidationStrategy {
 // EVM hex address OR ENS name (*.eth, subdomains allowed)
 const EVM_PATTERN = '^(0x[a-fA-F0-9]{40}|[a-zA-Z0-9][a-zA-Z0-9\\-.]*\\.eth)$'
 
-// Legacy (P2PKH), P2SH, Bech32/Bech32m (bc1…)
-const BTC_PATTERN = '^(1[a-km-zA-HJ-NP-Z1-9]{25,34}|3[a-km-zA-HJ-NP-Z1-9]{25,34}|bc1[ac-hj-np-z02-9]{6,87})$'
+// Legacy P2PKH/P2SH (Base58Check, 25-34 bytes) and Bech32/Bech32m (bc1…/BC1… — case-insensitive per BIP173).
+// Mirrors the SDK's BTC_LEGACY_ADDRESS_PATTERN and BTC_BECH32_MAINNET_PATTERN exactly.
+const BTC_PATTERN = '^([13][a-km-zA-HJ-NP-Z1-9]{24,33}|bc1[a-z0-9]{39,59}|BC1[A-Z0-9]{39,59})$'
 
 // Base58-encoded 32-byte public key (no 0, O, I, l)
 const SOL_PATTERN = '^[1-9A-HJ-NP-Za-km-z]{32,44}$'
@@ -53,5 +54,7 @@ export function getAddressValidationStrategy(targetChainId?: TargetChainId): Add
   if (targetChainId === AdditionalTargetChainId.SOLANA) {
     return solanaStrategy
   }
+  // Unknown non-EVM chain: fall back to EVM validation.
+  // If a new non-EVM chain is added, a dedicated strategy should be added above.
   return evmStrategy
 }

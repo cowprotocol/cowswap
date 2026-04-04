@@ -286,5 +286,13 @@ describe('useQuoteParamsRecipient', () => {
 
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: SOLANA_ADDRESS })
     })
+
+    it('should accept BTC address when outputCurrency is null (backward compat)', () => {
+      mockState(BTC_ADDRESS, undefined, undefined)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: BTC_ADDRESS })
+    })
   })
 })
