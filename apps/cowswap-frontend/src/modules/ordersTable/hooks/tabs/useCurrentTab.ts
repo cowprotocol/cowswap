@@ -4,7 +4,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
 
-import { OrdersTableList } from '../../state/ordersTable.types'
 import { OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { parseOrdersTableUrl } from '../../utils/url/parseOrdersTableUrl'
 
@@ -18,7 +17,14 @@ const DEFAULT_STATE: CurrentTabState = {
   currentPageNumber: 1,
 }
 
-export function useCurrentTab(ordersList: OrdersTableList): CurrentTabState {
+/**
+ * Returns the current tab and page number based on URL parameters.
+ *
+ * This hook trusts the URL as the source of truth for which tab is active.
+ * Auto-navigation away from empty tabs (e.g. signing -> open when all orders
+ * are signed) is handled reactively by useRedirectWhenTabBecomesEmpty().
+ */
+export function useCurrentTab(): CurrentTabState {
   const { account } = useWalletInfo()
   const location = useLocation()
 
@@ -29,21 +35,9 @@ export function useCurrentTab(ordersList: OrdersTableList): CurrentTabState {
 
     const params = parseOrdersTableUrl(location.search)
 
-    // If we're on a tab that becomes empty (signing or unfillable),
-    // default to the open orders tab
-    if (
-      (params.tabId === OrderTabId.signing && !ordersList.signing.length) ||
-      (params.tabId === OrderTabId.unfillable && !ordersList.unfillable.length)
-    ) {
-      return {
-        currentTabId: OrderTabId.open,
-        currentPageNumber: params.pageNumber || 1,
-      }
-    }
-
     return {
       currentTabId: params.tabId || OrderTabId.open,
       currentPageNumber: params.pageNumber || 1,
     }
-  }, [location.search, ordersList.signing.length, ordersList.unfillable.length, account])
+  }, [location.search, account])
 }

@@ -17,6 +17,7 @@ import { OrdersTableParams } from './ordersTable.types'
 import { OrderTabId } from './tabs/ordersTableTabs.constants'
 
 import { useCurrentTab } from '../hooks/tabs/useCurrentTab'
+import { useRedirectWhenTabBecomesEmpty } from '../hooks/tabs/useRedirectWhenTabBecomesEmpty'
 import { useTabs } from '../hooks/tabs/useTabs'
 import { useValidatePageUrlParams } from '../hooks/url/useValidatePageUrlParams'
 import { HistoryStatusFilter, useFilteredOrders } from '../hooks/useFilteredOrders'
@@ -50,7 +51,10 @@ export function OrdersTableStateUpdater({
   const balancesAndAllowances = useBalancesAndAllowances(ordersTokens)
   const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
 
-  const { currentTabId, currentPageNumber } = useCurrentTab(ordersList)
+  const { currentTabId, currentPageNumber } = useCurrentTab()
+
+  // Redirect to Open tab when Signing/Unfillable tabs transition from non-empty to empty
+  useRedirectWhenTabBecomesEmpty(ordersList, currentTabId)
 
   const orders = ordersList[currentTabId]
   const filteredOrders = useFilteredOrders(orders, {
