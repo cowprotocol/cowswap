@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -23,7 +24,8 @@ import { PageTitle } from 'modules/application'
 
 export default function AffiliatePartner(): ReactNode {
   const { i18n } = useLingui()
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
+  const chainId = useWalletChainId()
   const { data: partnerInfo, isLoading: infoLoading } = useAffiliatePartnerInfo(account)
 
   return (

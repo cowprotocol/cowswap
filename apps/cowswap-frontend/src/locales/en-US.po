@@ -178,6 +178,10 @@ msgstr "Active referrals"
 msgid "Unexpected response from BFF: {resStatus}"
 msgstr "Unexpected response from BFF: {resStatus}"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Trading is not allowed with price impact higher than {widgetPriceImpactThreshold}%"
+msgstr "Trading is not allowed with price impact higher than {widgetPriceImpactThreshold}%"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "orders history"
 msgstr "orders history"
@@ -683,8 +687,8 @@ msgid "h"
 msgstr "h"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
-msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
+#~ msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
+#~ msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "A U.S. Person or resident of the United States."
@@ -893,6 +897,10 @@ msgstr "Maybe next time"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Can't find the pool you're looking for?"
 msgstr "Can't find the pool you're looking for?"
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "Custom slippage amount set{amountRange}."
+msgstr "Custom slippage amount set{amountRange}."
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 msgid "Order recipient address differs from order owner!"
@@ -1318,6 +1326,10 @@ msgstr "Loaded"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Insufficient <0/> balance"
 msgstr "Insufficient <0/> balance"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Not enough price data for one or both assets to calculate the price impact"
+msgstr "Not enough price data for one or both assets to calculate the price impact"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The Claim LlamaPay Vesting Hook is a powerful and user-friendly feature designed to streamline the process of claiming funds from LlamaPay vesting contracts. This tool empowers users to easily access and manage their vested tokens, ensuring a smooth and efficient experience in handling time-locked assets."
@@ -4555,6 +4567,10 @@ msgstr "Valid to"
 msgid "Composable Cow and Settlement contracts are not on the same chain"
 msgstr "Composable Cow and Settlement contracts are not on the same chain"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Fetching price impact"
+msgstr "Fetching price impact"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Swap bridged via your"
 msgstr "Swap bridged via your"
@@ -4683,6 +4699,10 @@ msgstr "Analytics"
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Unlock TWAP orders"
 msgstr "Unlock TWAP orders"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Unknown price impact"
+msgstr "Unknown price impact"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Failed to cancel order"
@@ -5238,6 +5258,10 @@ msgstr "Version"
 msgid "All tokens"
 msgstr "All tokens"
 
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
+msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Additional Results from External Sources"
 msgstr "Additional Results from External Sources"
@@ -5544,13 +5568,16 @@ msgstr "Favorite tokens"
 #~ msgid "Limit Orders"
 #~ msgstr "Limit Orders"
 
-#. placeholder {0}: slippageWarningParams.lowSlippageBound.toFixed(2)
-#. placeholder {1}: slippageWarningParams.highSlippageBound.toFixed(2)
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "{0} - {1}%: Recommended slippage tolerance."
-msgstr "{0} - {1}%: Recommended slippage tolerance."
+#~ msgid "{0} - {1}%: Recommended slippage tolerance."
+#~ msgstr "{0} - {1}%: Recommended slippage tolerance."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.ts
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+#~ msgid "{0} - {1}%: Recommended slippage tolerance."
+#~ msgstr "{0} - {1}%: Recommended slippage tolerance."
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.tsx
 msgid "Approved amount is not sufficient!"
 msgstr "Approved amount is not sufficient!"
 
@@ -5588,11 +5615,9 @@ msgstr "Orders on CoW Swap can either be market orders (which fill at the market
 #~ msgid "Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 #~ msgstr "Code binds on your first eligible trade. Earn {0} {1} per {2} eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 
-#. placeholder {0}: (slippageWarningParams.highSlippageBound + 0.01).toFixed(2)
-#. placeholder {1}: slippageWarningParams.max.toFixed(2)
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "{0} - {1}%: High slippage. You may not get the best price."
-msgstr "{0} - {1}%: High slippage. You may not get the best price."
+#~ msgid "{0} - {1}%: High slippage. You may not get the best price."
+#~ msgstr "{0} - {1}%: High slippage. You may not get the best price."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at least"
@@ -7251,6 +7276,10 @@ msgstr "{walletName} account changed"
 #~ msgid "Download QR code"
 #~ msgstr "Download QR code"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Price impact is too high"
+msgstr "Price impact is too high"
+
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "Value"
 msgstr "Value"
@@ -7271,11 +7300,9 @@ msgstr "Longer limit orders - place orders for up to a year."
 msgid "User rejected signing the cancellation"
 msgstr "User rejected signing the cancellation"
 
-#. placeholder {0}: slippageWarningParams.min.toFixed(2)
-#. placeholder {1}: (slippageWarningParams.lowSlippageBound - 0.01).toFixed(2)
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "{0} - {1}%: Low slippage. Your transaction may expire."
-msgstr "{0} - {1}%: Low slippage. Your transaction may expire."
+#~ msgid "{0} - {1}%: Low slippage. Your transaction may expire."
+#~ msgstr "{0} - {1}%: Low slippage. Your transaction may expire."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 msgid "Total referrals"
@@ -7301,10 +7328,9 @@ msgstr "We weren't able to check your eligibility. Feel free to continue, but yo
 msgid "Reset {symbol} allowance to 0 before setting new spending cap"
 msgstr "Reset {symbol} allowance to 0 before setting new spending cap"
 
-#. placeholder {0}: slippageWarningParams ? ':' : '.'
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "Custom slippage amount set{0}"
-msgstr "Custom slippage amount set{0}"
+#~ msgid "Custom slippage amount set{0}"
+#~ msgstr "Custom slippage amount set{0}"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate Now"

@@ -32,6 +32,7 @@ export function useTradeFormButtonContext(
   const { standaloneMode } = useInjectedWidgetParams()
   const derivedState = useDerivedTradeState()
   const amountToApprove = useGetAmountToSignApprove()
+  const injectedWidgetParams = useInjectedWidgetParams()
   const { maximumSendSellAmount: minAmountToSignForSwap } = useAmountsToSignFromQuote() || {}
   const customTokenError = useTokenCustomTradeError(
     derivedState?.inputCurrency,
@@ -39,6 +40,7 @@ export function useTradeFormButtonContext(
     quote.error,
   )
   const { error: balancesError } = useTokensBalancesCombined()
+  const widgetPriceImpactThreshold = injectedWidgetParams?.disableTrade?.whenPriceImpactIsHigherThan
 
   return useMemo(() => {
     if (!derivedState) return null
@@ -59,6 +61,7 @@ export function useTradeFormButtonContext(
       balancesError,
       confirmClickEvent: analytics?.confirmClickEvent,
       approveClickEvent: analytics?.approveClickEvent,
+      widgetPriceImpactThreshold,
     } satisfies TradeFormButtonContext
   }, [
     defaultText,
@@ -76,5 +79,6 @@ export function useTradeFormButtonContext(
     balancesError,
     analytics?.confirmClickEvent,
     analytics?.approveClickEvent,
+    widgetPriceImpactThreshold,
   ])
 }
