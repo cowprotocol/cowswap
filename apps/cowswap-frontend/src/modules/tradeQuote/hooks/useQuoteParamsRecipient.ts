@@ -10,6 +10,8 @@ import { useDerivedTradeState } from 'modules/trade'
 
 import { useTradeQuote } from './useTradeQuote'
 
+import { COW_QUOTE_BTC_BRIDGE_RECIPIENT, COW_QUOTE_SOL_BRIDGE_RECIPIENT } from '../utils/getBridgeQuoteSigner'
+
 export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRecipient: Nullish<string> } {
   const { bridgeQuote } = useTradeQuote()
   const state = useDerivedTradeState()
@@ -26,6 +28,12 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
     const bridgeRecipient = resolveNonEvmBridgeRecipient(recipient, outputCurrency)
     if (bridgeRecipient) {
       return { receiver: account, bridgeRecipient }
+    }
+
+    // Provide default non-EVM bridgeRecipient for quoting when user hasn't set one yet
+    const defaultBridgeRecipient = getDefaultNonEvmBridgeRecipient(outputCurrency)
+    if (defaultBridgeRecipient) {
+      return { receiver: account, bridgeRecipient: defaultBridgeRecipient }
     }
 
     // EVM ReceiverAccountBridgeProvider: use the custom recipient for both
@@ -57,6 +65,14 @@ function isBtcOrSolMatched(outputCurrency: Nullish<{ chainId: number }>, recipie
   const isBtcMatched = !!outputCurrency && isBtcAddress(recipient) && isBtcChain(outputCurrency.chainId)
   const isSolanaMatched = !!outputCurrency && isSolanaAddress(recipient) && isSolanaChain(outputCurrency.chainId)
   return isBtcMatched || isSolanaMatched
+}
+
+/** Returns the default non-EVM bridge recipient address for quoting when the user hasn't set one yet. */
+function getDefaultNonEvmBridgeRecipient(outputCurrency: Nullish<{ chainId: number }>): string | undefined {
+  if (!outputCurrency) return undefined
+  if (isBtcChain(outputCurrency.chainId)) return COW_QUOTE_BTC_BRIDGE_RECIPIENT
+  if (isSolanaChain(outputCurrency.chainId)) return COW_QUOTE_SOL_BRIDGE_RECIPIENT
+  return undefined
 }
 
 /** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
