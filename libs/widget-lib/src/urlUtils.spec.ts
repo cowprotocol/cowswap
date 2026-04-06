@@ -95,7 +95,7 @@ describe('buildWidgetUrlQuery', () => {
     expect(query.get('palette')).toBe('null')
   })
 
-  it('serializes widget shadow inside the theme palette', () => {
+  it('serializes widget shell overrides inside the theme palette', () => {
     const query = buildWidgetUrlQuery({
       theme: {
         baseTheme: 'light',
@@ -109,11 +109,17 @@ describe('buildWidgetUrlQuery', () => {
         info: '#0d5ed9',
         success: '#007B28',
         boxShadow: 'none',
+        widgetPadding: '16px 16px 24px',
+        widgetBorderRadius: '32px',
       },
     })
 
     expect(query.get('theme')).toBe('light')
-    expect(JSON.parse(decodeURIComponent(query.get('palette') || ''))).toMatchObject({ boxShadow: 'none' })
+    expect(JSON.parse(decodeURIComponent(query.get('palette') || ''))).toMatchObject({
+      boxShadow: 'none',
+      widgetPadding: '16px 16px 24px',
+      widgetBorderRadius: '32px',
+    })
   })
 
   it('includes locale in the iframe URL', () => {

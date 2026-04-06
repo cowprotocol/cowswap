@@ -28,7 +28,7 @@ export const ContainerBox = styled.div`
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_PAPER});
   border: none;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: ${({ theme }) => theme.widgetBorderRadius || `var(${UI.BORDER_RADIUS_NORMAL})`};
   box-shadow: ${({ theme }) => (theme.isWidget ? theme.boxShadow1 : 'none')};
   padding: 10px;
   position: relative;

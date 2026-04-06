@@ -24,7 +24,12 @@ export interface ConfiguratorState {
   chainId?: SupportedChainId
   locale?: string
   theme: PaletteMode
+  iframeWidth?: string
+  iframeBackgroundColor?: string
+  iframeBorderRadius?: string
   boxShadow?: string
+  widgetPadding?: string
+  widgetBorderRadius?: string
   currentTradeType: TradeType
   enabledTradeTypes: TradeType[]
   enabledWidgetHooks: WidgetHookEvents[]

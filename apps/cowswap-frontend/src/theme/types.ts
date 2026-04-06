@@ -9,6 +9,8 @@ declare module 'styled-components' {
     /** Properties specific to CoWSwap widget functionality */
     isWidget: boolean
     isIframe: boolean
+    widgetPadding?: string
+    widgetBorderRadius?: string
   }
 
   // Use CoWSwapTheme as the default theme for styled-components in this app

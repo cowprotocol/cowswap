@@ -7,12 +7,15 @@ export const PROVIDER_PARAM_COMMENT =
 
 export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   appCode: 'Name of your app (max 50 characters)',
-  width: 'Width in pixels (or 100% to use all available space)',
+  width: 'Outer iFrame width (use 100% to fill the available container width)',
+  iframeBackgroundColor: 'Background color of the outer iFrame. Default: transparent',
+  iframeBorderRadius: 'Border radius of the outer iFrame. Use 0 for a flush embed',
   chainId: '1 (Mainnet), 100 (Gnosis), 11155111 (Sepolia)',
   tokenLists: 'All default enabled token lists. Also see https://tokenlists.org',
   sellTokenLists: 'Token lists available only in the sell selector',
   buyTokenLists: 'Token lists available only in the buy selector',
-  theme: 'light/dark or provide your own color palette, plus optional `boxShadow`',
+  theme:
+    'light/dark or provide your own color palette, plus optional `boxShadow`, `widgetPadding`, and `widgetBorderRadius`',
   tradeType: 'swap, limit or advanced',
   sell: 'Sell token. Optionally add amount for sell orders',
   buy: 'Buy token. Optionally add amount for buy orders',

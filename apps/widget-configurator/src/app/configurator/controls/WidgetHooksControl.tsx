@@ -13,6 +13,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { WIDGET_HOOKS } from '../consts'
 
 const LABEL = 'Widget hooks'
+const EMPTY_VALUE_LABEL = 'No hooks selected'
+const LABEL_ID = 'widget-hooks-select-label'
 
 export function WidgetHooksControl({
   state,
@@ -27,15 +29,27 @@ export function WidgetHooksControl({
 
   return (
     <FormControl sx={{ width: '100%' }}>
-      <InputLabel>{LABEL}</InputLabel>
+      <InputLabel id={LABEL_ID} shrink>
+        {LABEL}
+      </InputLabel>
       <Select
+        labelId={LABEL_ID}
         id="widget-hooks-select"
         multiple
         size="small"
+        displayEmpty
         value={widgetHooks}
         onChange={handleChange}
         input={<OutlinedInput id="widget-hooks-select-outlined" label={LABEL} />}
-        renderValue={(selected) => selected.join(', ')}
+        renderValue={(selected) => {
+          const selectedHooks = selected as WidgetHookEvents[]
+
+          if (selectedHooks.length === 0) {
+            return EMPTY_VALUE_LABEL
+          }
+
+          return selectedHooks.join(', ')
+        }}
       >
         {WIDGET_HOOKS.map((option) => (
           <MenuItem key={option} value={option}>

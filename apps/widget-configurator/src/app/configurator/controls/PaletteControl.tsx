@@ -1,6 +1,8 @@
-import React from 'react'
+import { ReactNode, useState } from 'react'
 
-import { FormControl, Button, Collapse } from '@mui/material'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Button, Collapse, FormControl, Stack } from '@mui/material'
 import { MuiColorInput } from 'mui-color-input'
 
 import { ColorPaletteManager } from '../hooks/useColorPaletteManager'
@@ -8,16 +10,14 @@ import { ColorPalette } from '../types'
 
 const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function PaletteControl({ paletteManager }: { paletteManager: ColorPaletteManager }) {
+export function PaletteControl({ paletteManager }: { paletteManager: ColorPaletteManager }): ReactNode {
   const { colorPalette, resetColorPalette } = paletteManager
 
   const otherColorKeys = Object.keys(colorPalette).filter(
     (key): key is keyof ColorPalette => !visibleColorKeys.includes(key as keyof ColorPalette),
   )
 
-  const [expanded, setExpanded] = React.useState(false)
+  const [expanded, setExpanded] = useState(false)
 
   return (
     <div>
@@ -35,8 +35,21 @@ export function PaletteControl({ paletteManager }: { paletteManager: ColorPalett
         ))}
       </Collapse>
 
-      <Button onClick={() => setExpanded(!expanded)}>{expanded ? 'Less' : 'More'} Options</Button>
-      <Button onClick={resetColorPalette}>Reset to Default</Button>
+      <Stack spacing={1.2} sx={{ width: '100%', alignItems: 'center', mt: 1.2 }}>
+        <Button
+          endIcon={expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          onClick={() => setExpanded(!expanded)}
+          fullWidth
+          size="small"
+          sx={{ justifyContent: 'center' }}
+          variant="text"
+        >
+          {expanded ? 'Less Colors' : 'More Colors'}
+        </Button>
+        <Button fullWidth onClick={resetColorPalette} size="small" variant="outlined">
+          Reset Colors to Default
+        </Button>
+      </Stack>
     </div>
   )
 }
@@ -46,9 +59,7 @@ interface ColorInputProps {
   colorKey: keyof ColorPalette
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function ColorInput({ colorKey, paletteManager }: ColorInputProps) {
+function ColorInput({ colorKey, paletteManager }: ColorInputProps): ReactNode {
   const { colorPalette, setColorPalette, defaultPalette } = paletteManager
   // Use the custom color or fallback to the default color
   const colorValue = colorPalette[colorKey] || defaultPalette[colorKey]

@@ -14,6 +14,8 @@ describe('mapWidgetTheme', () => {
     const widgetTheme: Partial<CowSwapWidgetPalette> = {
       paper: '#101010',
       boxShadow: 'none',
+      widgetPadding: '16px 16px 24px',
+      widgetBorderRadius: '32px',
     }
 
     const result = mapWidgetTheme(widgetTheme, defaultTheme)
@@ -21,5 +23,7 @@ describe('mapWidgetTheme', () => {
     expect(result.paper).toBe('#101010')
     expect(result.buttonTextCustom).toBe('#101010')
     expect(result.boxShadow1).toBe('none')
+    expect(result.widgetPadding).toBe('16px 16px 24px')
+    expect(result.widgetBorderRadius).toBe('32px')
   })
 })

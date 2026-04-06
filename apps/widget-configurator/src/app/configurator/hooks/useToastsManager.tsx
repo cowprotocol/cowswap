@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   BaseToastMessagePayload,
@@ -31,10 +31,10 @@ export function useToastsManager(setListeners: (listeners: CowWidgetEventListene
     setToasts((t) => t.slice(1))
   }, [])
 
-  const selectDisableToastMessages = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
+  const setToastMessagesInDappMode = useCallback(
+    (enabled: boolean) => {
       closeToast(undefined)
-      setDisableToastMessages(event.target.value === 'true')
+      setDisableToastMessages(enabled)
     },
     [closeToast],
   )
@@ -73,9 +73,9 @@ export function useToastsManager(setListeners: (listeners: CowWidgetEventListene
   return useMemo(() => {
     return {
       disableToastMessages,
-      selectDisableToastMessages,
+      setToastMessagesInDappMode,
       toasts,
       closeToast,
     }
-  }, [disableToastMessages, toasts, closeToast, selectDisableToastMessages])
+  }, [disableToastMessages, toasts, closeToast, setToastMessagesInDappMode])
 }

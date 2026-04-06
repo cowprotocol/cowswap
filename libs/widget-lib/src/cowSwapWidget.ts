@@ -21,19 +21,16 @@ import { widgetIframeTransport } from './widgetIframeTransport'
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
 
-/**
- * Reference: IframeResizer (apps/cowswap-frontend/src/modules/injectedWidget/updaters/IframeResizer.ts)
- * Sometimes MutationObserver doesn't trigger when the height of the widget changes and the widget displays with a scrollbar.
- * To avoid this we add a threshold to the height.
- * 20px
- */
-const HEIGHT_THRESHOLD = 20
-
 const noopHandler: CowSwapWidgetHandler = {
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
   destroy: () => void 0,
+}
+
+interface IframeSizingConfig {
+  defaultHeight: string
+  maxHeight?: number
 }
 
 /**
@@ -56,6 +53,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   const { params, provider: providerAux, listeners } = props
   let provider = providerAux
   let currentParams = params
+  let iframeSizing = getIframeSizingConfig(params)
 
   if (typeof window === 'undefined') return noopHandler
 
@@ -77,7 +75,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode))
 
   // 4. Handle widget height changes
-  windowListeners.push(...listenToHeightChanges(iframe, params.height, params.maxHeight))
+  windowListeners.push(...listenToHeightChanges(iframe, () => iframeSizing))
 
   // 5. Intercept deeplinks navigation in the iframe
   windowListeners.push(interceptDeepLinks())
@@ -114,7 +112,12 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
     updateParams: (newParams: CowSwapWidgetParams) => {
+      const prevDefaultHeight = iframeSizing.defaultHeight
+
       currentParams = newParams
+      iframeSizing = getIframeSizingConfig(newParams)
+
+      updateIframeElement(iframe, currentParams, prevDefaultHeight)
       updateParams(iframeWindow, currentParams, provider)
       updateWidgetHooks()
     },
@@ -187,9 +190,36 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   iframe.width = width
   iframe.height = height
   iframe.style.border = '0'
+  iframe.style.backgroundColor = params.iframeBackgroundColor || 'transparent'
+  iframe.style.borderRadius = params.iframeBorderRadius || ''
   iframe.allow = 'clipboard-read; clipboard-write'
 
   return iframe
+}
+
+function updateIframeElement(
+  iframe: HTMLIFrameElement,
+  params: CowSwapWidgetParams,
+  previousDefaultHeight: string,
+): void {
+  const { width = DEFAULT_WIDTH } = params
+  const { defaultHeight } = getIframeSizingConfig(params)
+
+  iframe.width = width
+  iframe.height = defaultHeight
+  iframe.style.backgroundColor = params.iframeBackgroundColor || 'transparent'
+  iframe.style.borderRadius = params.iframeBorderRadius || ''
+
+  if (!iframe.style.height || iframe.style.height === previousDefaultHeight) {
+    iframe.style.height = defaultHeight
+  }
+}
+
+function getIframeSizingConfig(params: CowSwapWidgetParams): IframeSizingConfig {
+  return {
+    defaultHeight: params.height || DEFAULT_HEIGHT,
+    maxHeight: params.maxHeight,
+  }
 }
 
 /**
@@ -265,18 +295,16 @@ function interceptDeepLinks(): (payload: MessageEvent<unknown>) => void {
  * @param defaultHeight - Default height for the widget.
  * @param maxHeight - Maximum height for the widget.
  */
-function listenToHeightChanges(
-  iframe: HTMLIFrameElement,
-  defaultHeight = DEFAULT_HEIGHT,
-  maxHeight?: number,
-): WindowListener[] {
+function listenToHeightChanges(iframe: HTMLIFrameElement, getIframeSizing: () => IframeSizingConfig): WindowListener[] {
   return [
     widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
-      const newHeight = data.height ? data.height + HEIGHT_THRESHOLD : undefined
+      const { defaultHeight, maxHeight } = getIframeSizing()
+      const newHeight = data.height
 
       iframe.style.height = newHeight ? `${maxHeight ? Math.min(newHeight, maxHeight) : newHeight}px` : defaultHeight
     }),
     widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.SET_FULL_HEIGHT, ({ isUpToSmall }) => {
+      const { defaultHeight, maxHeight } = getIframeSizing()
       iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
     }),
   ]

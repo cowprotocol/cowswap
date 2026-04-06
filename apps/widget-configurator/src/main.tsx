@@ -1,6 +1,7 @@
 import { ReactNode, StrictMode, useMemo } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
+import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Bold.woff2'
 
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -17,7 +18,52 @@ import { initWeb3Modal } from './web3modalConfig'
 import { WithLDProvider } from './WithLDProvider'
 
 // Initialize analytics instance
-export const cowAnalytics = initGtm()
+const cowAnalytics = initGtm()
+
+const feixenFontStyles = {
+  '@font-face': {
+    fontFamily: 'studiofeixen',
+    src: `url(${FONT_STUDIO_FEIXEN_BOLD}) format('woff2')`,
+    fontStyle: 'normal',
+    fontWeight: 700,
+    fontDisplay: 'swap',
+  },
+}
+
+const configuratorControlStyles = {
+  MuiFormControlLabel: {
+    styleOverrides: {
+      label: {
+        fontSize: '1.4rem',
+      },
+    },
+  },
+  MuiInputBase: {
+    styleOverrides: {
+      input: {
+        fontSize: '1.4rem',
+
+        '&::placeholder': {
+          fontSize: '1.4rem',
+        },
+      },
+    },
+  },
+  MuiInputLabel: {
+    styleOverrides: {
+      root: {
+        fontSize: '1.4rem',
+      },
+    },
+  },
+  MuiFormHelperText: {
+    styleOverrides: {
+      root: {
+        fontSize: '1.2rem',
+      },
+    },
+  },
+}
 
 const WrapperStyled = {
   display: 'flex',
@@ -39,6 +85,7 @@ function Root(): ReactNode {
       palette,
       typography: commonTypography,
       components: {
+        ...configuratorControlStyles,
         MuiCssBaseline: {
           styleOverrides: {
             '@global': {
@@ -68,6 +115,7 @@ function Root(): ReactNode {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+          <GlobalStyles styles={feixenFontStyles} />
           <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
           <Box sx={WrapperStyled}>
             <WithLDProvider>

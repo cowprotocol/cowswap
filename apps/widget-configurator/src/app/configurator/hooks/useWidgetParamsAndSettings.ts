@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
+import { DEFAULT_IFRAME_BORDER_RADIUS, DEFAULT_IFRAME_WIDTH } from '../consts'
 import { ConfiguratorState } from '../types'
 
 const vercelSuffix = '-cowswap-dev.vercel.app'
@@ -111,8 +112,15 @@ function getThemeParam(
   customColors: ConfiguratorState['customColors'],
   defaultColors: ConfiguratorState['defaultColors'],
   boxShadow: ConfiguratorState['boxShadow'],
+  widgetPadding: ConfiguratorState['widgetPadding'],
+  widgetBorderRadius: ConfiguratorState['widgetBorderRadius'],
 ): CowSwapWidgetParams['theme'] {
-  if (JSON.stringify(customColors) === JSON.stringify(defaultColors) && !boxShadow) {
+  if (
+    JSON.stringify(customColors) === JSON.stringify(defaultColors) &&
+    !boxShadow &&
+    !widgetPadding &&
+    !widgetBorderRadius
+  ) {
     return theme
   }
 
@@ -133,87 +141,103 @@ function getThemeParam(
     info: themeColors.info,
     success: themeColors.success,
     ...(boxShadow ? { boxShadow } : null),
+    ...(widgetPadding ? { widgetPadding } : null),
+    ...(widgetBorderRadius ? { widgetBorderRadius } : null),
+  }
+}
+
+function getPartnerFeeParam(
+  partnerFeeBps: ConfiguratorState['partnerFeeBps'],
+  partnerFeeRecipient: ConfiguratorState['partnerFeeRecipient'],
+): CowSwapWidgetParams['partnerFee'] {
+  if (partnerFeeBps <= 0) {
+    return undefined
+  }
+
+  return {
+    bps: partnerFeeBps,
+    recipient: partnerFeeRecipient,
+  }
+}
+
+function buildWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
+  const {
+    chainId,
+    locale,
+    theme,
+    iframeWidth,
+    iframeBackgroundColor,
+    iframeBorderRadius,
+    boxShadow,
+    widgetPadding,
+    widgetBorderRadius,
+    currentTradeType,
+    enabledTradeTypes,
+    sellToken,
+    sellTokenAmount,
+    buyToken,
+    buyTokenAmount,
+    deadline,
+    swapDeadline,
+    limitDeadline,
+    advancedDeadline,
+    tokenListUrls,
+    customColors,
+    defaultColors,
+    partnerFeeBps,
+    partnerFeeRecipient,
+    standaloneMode,
+    disableToastMessages,
+    disableProgressBar,
+    disableCrossChainSwap,
+    disableTokenImport,
+    hideRecentTokens,
+    hideFavoriteTokens,
+    hideBridgeInfo,
+    hideOrdersTable,
+    disableTradeWhenPriceImpactIsUnknown,
+    disableTradeWhenPriceImpactIsHigherThan,
+    slippage,
+    enabledWidgetHooks,
+  } = configuratorState
+
+  return {
+    appCode: 'CoW Widget: Configurator',
+    width: iframeWidth || DEFAULT_IFRAME_WIDTH,
+    height: '640px',
+    iframeBackgroundColor,
+    iframeBorderRadius: iframeBorderRadius || DEFAULT_IFRAME_BORDER_RADIUS,
+    chainId,
+    locale,
+    tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
+    sellTokenLists: getTokenListsParam(tokenListUrls, 'enabledForSell'),
+    buyTokenLists: getTokenListsParam(tokenListUrls, 'enabledForBuy'),
+    baseUrl: DEFAULT_BASE_URL,
+    tradeType: currentTradeType,
+    sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
+    buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
+    forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
+    enabledTradeTypes,
+    theme: getThemeParam(theme, customColors, defaultColors, boxShadow, widgetPadding, widgetBorderRadius),
+    standaloneMode,
+    disableToastMessages,
+    disableProgressBar,
+    disableCrossChainSwap,
+    disableTokenImport,
+    hideRecentTokens,
+    hideFavoriteTokens,
+    partnerFee: getPartnerFeeParam(partnerFeeBps, partnerFeeRecipient),
+    hideBridgeInfo,
+    hideOrdersTable,
+    slippage,
+    disableTrade: {
+      whenPriceImpactIsUnknown: disableTradeWhenPriceImpactIsUnknown,
+      whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,
+    },
+    hooks: getWidgetHooks(enabledWidgetHooks),
   }
 }
 
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
-  return useMemo(() => {
-    const {
-      chainId,
-      locale,
-      theme,
-      boxShadow,
-      currentTradeType,
-      enabledTradeTypes,
-      sellToken,
-      sellTokenAmount,
-      buyToken,
-      buyTokenAmount,
-      deadline,
-      swapDeadline,
-      limitDeadline,
-      advancedDeadline,
-      tokenListUrls,
-      customColors,
-      defaultColors,
-      partnerFeeBps,
-      partnerFeeRecipient,
-      standaloneMode,
-      disableToastMessages,
-      disableProgressBar,
-      disableCrossChainSwap,
-      disableTokenImport,
-      hideRecentTokens,
-      hideFavoriteTokens,
-      hideBridgeInfo,
-      hideOrdersTable,
-      disableTradeWhenPriceImpactIsUnknown,
-      disableTradeWhenPriceImpactIsHigherThan,
-      slippage,
-      enabledWidgetHooks,
-    } = configuratorState
-
-    const params: CowSwapWidgetParams = {
-      appCode: 'CoW Widget: Configurator',
-      width: '100%',
-      height: '640px',
-      chainId,
-      locale,
-      tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
-      sellTokenLists: getTokenListsParam(tokenListUrls, 'enabledForSell'),
-      buyTokenLists: getTokenListsParam(tokenListUrls, 'enabledForBuy'),
-      baseUrl: DEFAULT_BASE_URL,
-      tradeType: currentTradeType,
-      sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
-      buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
-      forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
-      enabledTradeTypes,
-      theme: getThemeParam(theme, customColors, defaultColors, boxShadow),
-      standaloneMode,
-      disableToastMessages,
-      disableProgressBar,
-      disableCrossChainSwap,
-      disableTokenImport,
-      hideRecentTokens,
-      hideFavoriteTokens,
-
-      partnerFee:
-        partnerFeeBps > 0
-          ? {
-              bps: partnerFeeBps,
-              recipient: partnerFeeRecipient,
-            }
-          : undefined,
-      hideBridgeInfo,
-      hideOrdersTable,
-      slippage,
-      disableTrade: {
-        whenPriceImpactIsUnknown: disableTradeWhenPriceImpactIsUnknown,
-        whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,
-      },
-      hooks: getWidgetHooks(enabledWidgetHooks),
-    }
-
-    return params
-  }, [configuratorState])
+  return useMemo(() => buildWidgetParams(configuratorState), [configuratorState])
 }

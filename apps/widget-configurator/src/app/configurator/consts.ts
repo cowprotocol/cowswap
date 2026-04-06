@@ -57,6 +57,18 @@ export const DEFAULT_DARK_PALETTE: CowSwapWidgetPaletteParams = {
   success: '#00D897',
 }
 
+// Keep in sync with the widget theme defaults from libs/ui/src/colors.ts
+export const DEFAULT_WIDGET_SHADOW = {
+  light: '0 12px 12px rgba(5, 43, 101, 0.06)',
+  dark: '0 24px 32px rgba(0, 0, 0, 0.06)',
+} as const
+
+export const DEFAULT_IFRAME_WIDTH = '100%'
+export const MIN_IFRAME_WIDTH_PX = 360
+export const DEFAULT_IFRAME_BACKGROUND_COLOR = 'transparent'
+export const DEFAULT_IFRAME_BORDER_RADIUS = '1.6rem'
+export const DEFAULT_WIDGET_BORDER_RADIUS = '24px'
+
 export const COW_LISTENERS: CowWidgetEventListeners = [
   {
     event: CowWidgetEvents.ON_TOAST_MESSAGE,

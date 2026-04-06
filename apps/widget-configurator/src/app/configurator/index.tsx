@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { type CSSProperties, ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK, SupportedLocale } from '@cowprotocol/common-const'
@@ -10,10 +10,10 @@ import { CowSwapWidget } from '@cowprotocol/widget-react'
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
 import CloseIcon from '@mui/icons-material/Close'
 import CodeIcon from '@mui/icons-material/Code'
-import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import LanguageIcon from '@mui/icons-material/Language'
-import { FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, Snackbar } from '@mui/material'
+import { IconButton, Snackbar } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -23,31 +23,51 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
-import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
+import { COW_LISTENERS, DEFAULT_IFRAME_BORDER_RADIUS, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
+import { AccordionSection } from './controls/AccordionSection'
+import { BooleanSwitchControl } from './controls/BooleanSwitchControl'
+import { ConfiguratorBrandHeader } from './controls/ConfiguratorBrandHeader'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
 import { CustomSoundsControl } from './controls/CustomSoundsControl'
 import { DeadlineControl } from './controls/DeadlineControl'
+import { IframeBackgroundColorControl } from './controls/IframeBackgroundColorControl'
+import { IframeBorderRadiusControl } from './controls/IframeBorderRadiusControl'
+import { IframeWidthControl } from './controls/IframeWidthControl'
 import { LocaleControl } from './controls/LocaleControl'
+import { ModeControl } from './controls/ModeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { WidgetBorderRadiusControl } from './controls/WidgetBorderRadiusControl'
 import { WidgetHooksControl } from './controls/WidgetHooksControl'
+import { WidgetPaddingControl } from './controls/WidgetPaddingControl'
+import { WidgetShadowControl } from './controls/WidgetShadowControl'
 import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
+import { useResizableDrawerWidth } from './hooks/useResizableDrawerWidth'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useToastsManager } from './hooks/useToastsManager'
 import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
-import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
+import {
+  ContentStyled,
+  DRAWER_WIDTH_CSS_VAR,
+  DrawerToggleButtonStyled,
+  DrawerStyled,
+  ResizeHandleStyled,
+  WalletConnectionWrapper,
+  WrapperStyled,
+} from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
 
 import { AnalyticsCategory } from '../../common/analytics/types'
@@ -71,11 +91,20 @@ const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_sourc
 
 export type WidgetMode = 'dapp' | 'standalone'
 
+function getOptionalTextValue(value: string): string | undefined {
+  return value || undefined
+}
+
+function getIframeDefaultBackgroundColor(paperColor: string, defaultPaperColor: string): string {
+  return paperColor || defaultPaperColor
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Configurator({ title }: { title: string }) {
+  const configuratorRef = useRef<HTMLDivElement | null>(null)
   const { setThemeMode } = useWeb3ModalTheme()
   const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
   const provider = useProvider()
@@ -87,13 +116,12 @@ export function Configurator({ title }: { title: string }) {
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
   const standaloneMode = widgetMode === 'standalone'
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const selectWidgetMode = (event: ChangeEvent<HTMLInputElement>) => {
+  const selectWidgetMode = (event: ChangeEvent<HTMLInputElement>): void => {
     setWidgetMode(event.target.value as WidgetMode)
   }
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
+  const { drawerWidth, handleResizeStart } = useResizableDrawerWidth(configuratorRef)
 
   const networkControlState = useState<NetworkOption>(NetworkOptions[0])
   const [{ chainId }, setNetworkControlState] = networkControlState
@@ -147,37 +175,43 @@ export function Configurator({ title }: { title: string }) {
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
+  const iframeDefaultBackgroundColor = getIframeDefaultBackgroundColor(colorPalette.paper, defaultPalette.paper)
+  const [iframeWidth, setIframeWidth] = useState<string>('')
+  const [iframeBackgroundColor, setIframeBackgroundColor] = useState<string>('')
+  const [iframeBorderRadius, setIframeBorderRadius] = useState<string>(DEFAULT_IFRAME_BORDER_RADIUS)
   const [boxShadow, setBoxShadow] = useState<string>('')
+  const [widgetPadding, setWidgetPadding] = useState<string>('')
+  const [widgetBorderRadius, setWidgetBorderRadius] = useState<string>('')
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
-  const { closeToast, toasts, selectDisableToastMessages, disableToastMessages } = useToastsManager(setListeners)
+  const { closeToast, toasts, setToastMessagesInDappMode, disableToastMessages } = useToastsManager(setListeners)
   const firstToast = toasts?.[0]
 
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
-  const toggleDisableProgressBar = useCallback(() => setDisableProgressBar((curr) => !curr), [])
+  const setShowProgressBar = useCallback((enabled: boolean) => setDisableProgressBar(!enabled), [])
 
   const [disableCrossChainSwap, setDisableCrossChainSwap] = useState<boolean>(false)
-  const toggleDisableCrossChainSwap = useCallback(() => setDisableCrossChainSwap((curr) => !curr), [])
+  const setAllowCrossChainSwap = useCallback((enabled: boolean) => setDisableCrossChainSwap(!enabled), [])
 
   const [disableTokenImport, setDisableTokenImport] = useState<boolean>(false)
-  const toggleDisableTokenImport = useCallback(() => setDisableTokenImport((curr) => !curr), [])
+  const setAllowTokenImport = useCallback((enabled: boolean) => setDisableTokenImport(!enabled), [])
 
   const [hideRecentTokens, setHideRecentTokens] = useState<boolean>(false)
-  const toggleHideRecentTokens = useCallback(() => setHideRecentTokens((curr) => !curr), [])
+  const setShowRecentTokens = useCallback((enabled: boolean) => setHideRecentTokens(!enabled), [])
 
   const [hideFavoriteTokens, setHideFavoriteTokens] = useState<boolean>(false)
-  const toggleHideFavoriteTokens = useCallback(() => setHideFavoriteTokens((curr) => !curr), [])
+  const setShowFavoriteTokens = useCallback((enabled: boolean) => setHideFavoriteTokens(!enabled), [])
 
   const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
-  const toggleHideBridgeInfo = useCallback(() => setHideBridgeInfo((curr) => !curr), [])
+  const setShowBridgeInfo = useCallback((enabled: boolean) => setHideBridgeInfo(!enabled), [])
 
   const [hideOrdersTable, setHideOrdersTable] = useState<boolean | undefined>(false)
-  const toggleHideOrdersTable = useCallback(() => setHideOrdersTable((curr) => !curr), [])
+  const setShowOrdersTable = useCallback((enabled: boolean) => setHideOrdersTable(!enabled), [])
 
   const [disableTradeWhenPriceImpactIsUnknown, setDisableTradeWhenPriceImpactIsUnknown] = useState(false)
-  const selectBlockUnknownPriceImpact = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setDisableTradeWhenPriceImpactIsUnknown(event.target.value === 'true')
+  const setBlockUnknownPriceImpact = useCallback((enabled: boolean) => {
+    setDisableTradeWhenPriceImpactIsUnknown(enabled)
   }, [])
 
   const [disableTradeWhenPriceImpactIsHigherThan, setDisableTradeWhenPriceImpactIsHigherThan] = useState<
@@ -219,7 +253,12 @@ export function Configurator({ title }: { title: string }) {
     chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
     locale: locale || undefined,
     theme: mode,
-    boxShadow: boxShadow || undefined,
+    iframeWidth: getOptionalTextValue(iframeWidth),
+    iframeBackgroundColor: getOptionalTextValue(iframeBackgroundColor),
+    iframeBorderRadius: getOptionalTextValue(iframeBorderRadius),
+    boxShadow: getOptionalTextValue(boxShadow),
+    widgetPadding: getOptionalTextValue(widgetPadding),
+    widgetBorderRadius: getOptionalTextValue(widgetBorderRadius),
     currentTradeType,
     enabledTradeTypes,
     enabledWidgetHooks,
@@ -292,36 +331,34 @@ export function Configurator({ title }: { title: string }) {
   const availableChains = useAvailableChains()
 
   return (
-    <Box sx={WrapperStyled}>
+    <Box
+      ref={configuratorRef}
+      style={{ [DRAWER_WIDTH_CSS_VAR]: `${drawerWidth}px` } as CSSProperties}
+      sx={WrapperStyled}
+    >
       {!isDrawerOpen && (
-        <Fab
-          size="medium"
-          color="secondary"
-          aria-label="edit"
+        <IconButton
+          aria-label="show drawer"
           onClick={(e) => {
             e.stopPropagation()
             setIsDrawerOpen(true)
           }}
-          sx={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
+          sx={(theme) => ({
+            ...DrawerToggleButtonStyled(theme),
+            position: 'fixed',
+            top: '1.6rem',
+            left: '1.6rem',
+          })}
         >
-          <EditIcon />
-        </Fab>
+          <KeyboardDoubleArrowRightIcon />
+        </IconButton>
       )}
 
-      <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
-        <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
-          {title}
-        </Typography>
+      <Drawer sx={(theme) => DrawerStyled(theme)} variant="persistent" anchor="left" open={isDrawerOpen}>
+        <ConfiguratorBrandHeader title={title} themeMode={mode} />
 
         {!IS_IFRAME && (
           <>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Select Mode:</FormLabel>
-              <RadioGroup row aria-label="mode" name="mode" value={widgetMode} onChange={selectWidgetMode}>
-                <FormControlLabel value="dapp" control={<Radio />} label="Dapp mode" />
-                <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
-              </RadioGroup>
-            </FormControl>
             {!standaloneMode && (
               <div style={WalletConnectionWrapper}>
                 {/* Attempt 2 at fixing issue on Vercel build (locally it builds fine) */}
@@ -334,200 +371,176 @@ export function Configurator({ title }: { title: string }) {
           </>
         )}
 
-        <Divider variant="middle">General</Divider>
+        <Stack spacing={1.6} sx={{ width: '100%' }}>
+          <AccordionSection title="Basics" defaultExpanded>
+            {!IS_IFRAME && <ModeControl value={widgetMode} onChange={selectWidgetMode} />}
+            <LocaleControl state={localeState} />
+          </AccordionSection>
 
-        <ThemeControl />
+          <AccordionSection title="Trade setup">
+            <TradeModesControl state={tradeModesState} />
+            <CurrentTradeTypeControl state={tradeTypeState} />
+            {!IS_IFRAME && (
+              <NetworkControl
+                state={networkControlState}
+                standaloneMode={standaloneMode}
+                availableChains={availableChains}
+              />
+            )}
+            <BooleanSwitchControl
+              checked={!disableCrossChainSwap}
+              label="Allow cross-chain swaps"
+              onChange={setAllowCrossChainSwap}
+            />
+          </AccordionSection>
 
-        <PaletteControl paletteManager={paletteManager} />
+          <AccordionSection title="Tokens">
+            <CurrencyInputControl
+              label="Sell token"
+              tokenIdState={sellTokenState}
+              tokenAmountState={sellTokenAmountState}
+            />
+            <CurrencyInputControl
+              label="Buy token"
+              tokenIdState={buyTokenState}
+              tokenAmountState={buyTokenAmountState}
+            />
+            <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
+          </AccordionSection>
 
-        <TextField
-          fullWidth
-          margin="dense"
-          id="boxShadow"
-          label="Widget shadow"
-          helperText='CSS box-shadow value. Use "none" to disable it.'
-          value={boxShadow}
-          onChange={(event) => setBoxShadow(event.target.value)}
-          size="medium"
-        />
+          <AccordionSection title="Appearance">
+            <ThemeControl />
+            <PaletteControl paletteManager={paletteManager} />
+            <Divider sx={{ my: 1.6 }} />
+            <Stack spacing={1.6}>
+              <IframeWidthControl value={iframeWidth} onChange={setIframeWidth} />
+              <IframeBackgroundColorControl
+                defaultCustomColor={iframeDefaultBackgroundColor}
+                value={iframeBackgroundColor}
+                onChange={setIframeBackgroundColor}
+              />
+              <IframeBorderRadiusControl value={iframeBorderRadius} onChange={setIframeBorderRadius} />
+            </Stack>
+            <Divider sx={{ my: 1.6 }} />
+            <Stack spacing={1.6}>
+              <WidgetShadowControl value={boxShadow} mode={mode} onChange={setBoxShadow} />
+              <WidgetPaddingControl value={widgetPadding} onChange={setWidgetPadding} />
+              <WidgetBorderRadiusControl value={widgetBorderRadius} onChange={setWidgetBorderRadius} />
+            </Stack>
+          </AccordionSection>
 
-        <TradeModesControl state={tradeModesState} />
+          <AccordionSection title="Behavior">
+            <BooleanSwitchControl
+              checked={disableToastMessages}
+              label="Use app toasts"
+              helperText="When off, the widget keeps toast messages inside the iframe."
+              onChange={setToastMessagesInDappMode}
+            />
+            <BooleanSwitchControl
+              checked={!disableProgressBar}
+              label="Show progress bar"
+              onChange={setShowProgressBar}
+            />
+            <BooleanSwitchControl
+              checked={!disableTokenImport}
+              label="Allow custom token imports"
+              onChange={setAllowTokenImport}
+            />
+            <BooleanSwitchControl
+              checked={!hideRecentTokens}
+              label="Show recent tokens"
+              onChange={setShowRecentTokens}
+            />
+            <BooleanSwitchControl
+              checked={!hideFavoriteTokens}
+              label="Show favorite tokens"
+              onChange={setShowFavoriteTokens}
+            />
+            <BooleanSwitchControl checked={!hideBridgeInfo} label="Show bridge info" onChange={setShowBridgeInfo} />
+            <BooleanSwitchControl checked={!hideOrdersTable} label="Show orders table" onChange={setShowOrdersTable} />
+            <BooleanSwitchControl
+              checked={disableTradeWhenPriceImpactIsUnknown}
+              label="Block trade if price impact is unknown"
+              onChange={setBlockUnknownPriceImpact}
+            />
+            <TextField
+              fullWidth
+              margin="dense"
+              id="disableTradeWhenPriceImpactIsHigherThan"
+              label="Block trade above price impact (%)"
+              type="number"
+              value={disableTradeWhenPriceImpactIsHigherThan ?? ''}
+              onChange={setBlockPriceImpactAboveValue}
+              size="medium"
+              helperText="Leave empty to disable"
+              inputProps={{
+                min: 0,
+                step: 'any',
+              }}
+            />
+          </AccordionSection>
 
-        <WidgetHooksControl state={widgetHooksState} />
+          <AccordionSection title="Deadlines">
+            <Box>
+              <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
+                Global deadline
+              </Typography>
+              <DeadlineControl label="Deadline" deadlineState={deadlineState} />
+            </Box>
+            <Box>
+              <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
+                Per-trade deadlines
+              </Typography>
+              <Stack spacing={1.2}>
+                <DeadlineControl label="Swap" deadlineState={swapDeadlineState} />
+                <DeadlineControl label="Limit" deadlineState={limitDeadlineState} />
+                <DeadlineControl label="Advanced" deadlineState={advancedDeadlineState} />
+              </Stack>
+            </Box>
+          </AccordionSection>
 
-        <CurrentTradeTypeControl state={tradeTypeState} />
+          <AccordionSection title="Integrations">
+            <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
+          </AccordionSection>
 
-        <LocaleControl state={localeState} />
+          <AccordionSection title="Customization">
+            <CustomImagesControl state={customImagesState} />
+            <CustomSoundsControl state={customSoundsState} />
+          </AccordionSection>
 
-        {!IS_IFRAME && (
-          <NetworkControl
-            state={networkControlState}
-            standaloneMode={standaloneMode}
-            availableChains={availableChains}
-          />
-        )}
-
-        <Divider variant="middle">Tokens</Divider>
-
-        <CurrencyInputControl
-          label="Sell token"
-          tokenIdState={sellTokenState}
-          tokenAmountState={sellTokenAmountState}
-        />
-
-        <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
-
-        <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
-
-        <Divider variant="middle">Forced Order Deadline</Divider>
-
-        <Typography variant="subtitle1">Global deadline settings</Typography>
-        <DeadlineControl label={'Deadline'} deadlineState={deadlineState} />
-
-        <Typography variant="subtitle1">Individual deadline settings</Typography>
-        <DeadlineControl label={'Swap'} deadlineState={swapDeadlineState} />
-        <DeadlineControl label={'Limit'} deadlineState={limitDeadlineState} />
-        <DeadlineControl label={'Advanced'} deadlineState={advancedDeadlineState} />
-
-        <Divider variant="middle">Integrations</Divider>
-
-        <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
-
-        <Divider variant="middle">Customization</Divider>
-
-        <CustomImagesControl state={customImagesState} />
-
-        <CustomSoundsControl state={customSoundsState} />
-
-        <Divider variant="middle">Other settings</Divider>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Toast notifications:</FormLabel>
-          <RadioGroup
-            row
-            aria-label="mode"
-            name="mode"
-            value={disableToastMessages}
-            onChange={selectDisableToastMessages}
-          >
-            <FormControlLabel value="false" control={<Radio />} label="Self-contain in Widget" />
-            <FormControlLabel value="true" control={<Radio />} label="Dapp mode" />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Progress bar:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={disableProgressBar} onChange={toggleDisableProgressBar}>
-            <FormControlLabel value="false" control={<Radio />} label="Show SWAP progress bar" />
-            <FormControlLabel value="true" control={<Radio />} label="Hide SWAP progress bar" />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Cross-chain swaps:</FormLabel>
-          <RadioGroup
-            row
-            aria-label="mode"
-            name="mode"
-            value={disableCrossChainSwap}
-            onChange={toggleDisableCrossChainSwap}
-          >
-            <FormControlLabel value="false" control={<Radio />} label="Enable cross-chain swaps" />
-            <FormControlLabel value="true" control={<Radio />} label="Disable cross-chain swaps" />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Custom tokens and lists:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={disableTokenImport} onChange={toggleDisableTokenImport}>
-            <FormControlLabel value="false" control={<Radio />} label="Allow importing custom tokens/lists" />
-            <FormControlLabel value="true" control={<Radio />} label="Disable importing custom tokens/lists" />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Recent tokens:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={hideRecentTokens} onChange={toggleHideRecentTokens}>
-            <FormControlLabel value="false" control={<Radio />} label="Show recent tokens" />
-            <FormControlLabel value="true" control={<Radio />} label="Hide recent tokens" />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Favorite tokens:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={hideFavoriteTokens} onChange={toggleHideFavoriteTokens}>
-            <FormControlLabel value="false" control={<Radio />} label="Show favorite tokens" />
-            <FormControlLabel value="true" control={<Radio />} label="Hide favorite tokens" />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Hide bridge info:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={hideBridgeInfo} onChange={toggleHideBridgeInfo}>
-            <FormControlLabel value="false" control={<Radio />} label="Show bridge info" />
-            <FormControlLabel value="true" control={<Radio />} label="Hide bridge info" />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Hide orders table:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={hideOrdersTable} onChange={toggleHideOrdersTable}>
-            <FormControlLabel value="false" control={<Radio />} label="Show orders table" />
-            <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
-          </RadioGroup>
-        </FormControl>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Disable trade when price impact is unknown:</FormLabel>
-          <RadioGroup
-            row
-            aria-label="disable-trade-when-price-impact-is-unknown"
-            name="disable-trade-when-price-impact-is-unknown"
-            value={disableTradeWhenPriceImpactIsUnknown}
-            onChange={selectBlockUnknownPriceImpact}
-          >
-            <FormControlLabel value="false" control={<Radio />} label="Allow trade" />
-            <FormControlLabel value="true" control={<Radio />} label="Disable trade" />
-          </RadioGroup>
-        </FormControl>
-
-        <TextField
-          fullWidth
-          margin="dense"
-          id="disableTradeWhenPriceImpactIsHigherThan"
-          label="Disable trade when price impact is higher than (%)"
-          type="number"
-          value={disableTradeWhenPriceImpactIsHigherThan ?? ''}
-          onChange={setBlockPriceImpactAboveValue}
-          size="medium"
-          helperText="Leave empty to disable"
-          inputProps={{
-            min: 0,
-            step: 'any',
-          }}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          id="rawParams"
-          label="Raw JSON params"
-          value={rawParams}
-          onChange={(e) => setRawParams(e.target.value)}
-          size="medium"
-        />
+          <AccordionSection title="Advanced">
+            <WidgetHooksControl state={widgetHooksState} />
+            <TextField
+              fullWidth
+              margin="dense"
+              id="rawParams"
+              label="Raw JSON params"
+              value={rawParams}
+              onChange={(e) => setRawParams(e.target.value)}
+              size="medium"
+            />
+          </AccordionSection>
+        </Stack>
 
         <Button sx={{ width: '100%' }} variant="contained" onClick={updateWidget}>
           Update widget
         </Button>
 
         {isDrawerOpen && (
-          <Fab
-            size="small"
-            color="primary"
+          <IconButton
             aria-label="hide drawer"
             onClick={() => setIsDrawerOpen(false)}
-            sx={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
+            sx={(theme) => ({
+              ...DrawerToggleButtonStyled(theme),
+              width: '3.2rem',
+              height: '3.2rem',
+              position: 'absolute',
+              top: '1.8rem',
+              right: '1.2rem',
+            })}
           >
             <KeyboardDoubleArrowLeftIcon />
-          </Fab>
+          </IconButton>
         )}
 
         <List
@@ -550,9 +563,11 @@ export function Configurator({ title }: { title: string }) {
             </ListItemButton>
           ))}
         </List>
+
+        <Box aria-label="Resize sidebar" onPointerDown={handleResizeStart} role="separator" sx={ResizeHandleStyled} />
       </Drawer>
 
-      <Box sx={{ ...ContentStyled, pl: isDrawerOpen ? '290px' : 0 }}>
+      <Box sx={ContentStyled}>
         {params && (
           <>
             <EmbedDialog

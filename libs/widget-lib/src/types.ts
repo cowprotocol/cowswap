@@ -166,6 +166,16 @@ export type CowSwapWidgetPalette = {
    * Accepts any valid CSS box-shadow value, for example `none` or `0 12px 24px rgba(0, 0, 0, 0.12)`.
    */
   boxShadow?: string
+  /**
+   * Overrides the outer widget shell padding around the embedded card.
+   * Accepts any valid CSS padding value, for example `16px 16px 24px` or `0`.
+   */
+  widgetPadding?: string
+  /**
+   * Overrides the main widget card border radius.
+   * Accepts any valid CSS border-radius value, for example `24px`, `16px`, or `1.5rem`.
+   */
+  widgetBorderRadius?: string
 } & CowSwapWidgetPaletteParams
 
 export interface CowSwapWidgetSounds {
@@ -220,13 +230,27 @@ export interface CowSwapWidgetParams {
   appCode: string
 
   /**
-   * The width of the widget in pixels. Default: 400px
+   * The width of the outer iframe element. Accepts CSS width values such as `450px` or `100%`.
+   * Default: `450px`
    */
   width?: string
   /**
-   * The height of the widget in pixels. Default: 600px
+   * The height of the outer iframe element. Accepts CSS height values such as `640px`.
+   * Default: `640px`
    */
   height?: string
+
+  /**
+   * The background color of the outer iframe element.
+   * Default: `transparent`
+   */
+  iframeBackgroundColor?: string
+
+  /**
+   * The border radius of the outer iframe element.
+   * Accepts any valid CSS border-radius value, for example `1.6rem`, `24px`, or `0`.
+   */
+  iframeBorderRadius?: string
 
   /**
    * The maximum height of the widget in pixels. Default: body.offsetHeight
