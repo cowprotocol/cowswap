@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.1.0...tokens-v3.1.1) (2026-04-06)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** restrict token search to current token lists if set ([#7254](https://github.com/cowprotocol/cowswap/issues/7254)) ([3644dd0](https://github.com/cowprotocol/cowswap/commit/3644dd0548e8c4f2506b5566224c838923b34079))
+
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.0.3...tokens-v3.1.0) (2026-04-02)
 
 

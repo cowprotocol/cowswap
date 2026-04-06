@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.1.1...widget-configurator-v3.2.0) (2026-04-06)
+
+
+### ✨ Features
+
+* **widget:** add onReady callback to widget initialization ([#7255](https://github.com/cowprotocol/cowswap/issues/7255)) ([0279aac](https://github.com/cowprotocol/cowswap/commit/0279aacbbe610bbe0cfe66597bd04ebc89bab55c))
+* **widget:** allow hiding post trading tips ([#7256](https://github.com/cowprotocol/cowswap/issues/7256)) ([b484ad1](https://github.com/cowprotocol/cowswap/commit/b484ad162fb0834556dd14fcb99fd0cadbfcfaa3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.0
+    * @cowprotocol/widget-react bumped to 1.3.0
+
 ## [3.1.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.1.0...widget-configurator-v3.1.1) (2026-04-03)
 
 

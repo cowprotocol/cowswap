@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.4.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.2...cow-fi-v2.4.3) (2026-04-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-react bumped to 1.3.0
+
 ## [2.4.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.1...cow-fi-v2.4.2) (2026-04-03)
 
 
