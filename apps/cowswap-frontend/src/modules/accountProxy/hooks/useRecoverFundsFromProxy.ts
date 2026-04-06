@@ -6,11 +6,11 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { stringToHex } from 'viem'
 
+import { useAppSigner } from 'common/hooks/useAppSigner'
 import { useContract } from 'common/hooks/useContract'
 
 import { useCowShedHooks } from './useCowShedHooks'
@@ -41,9 +41,7 @@ export function useRecoverFundsFromProxy(
 ): RecoverFundsContext {
   const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const signer = useAppSigner()
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks(proxyVersion)
 
@@ -54,7 +52,7 @@ export function useRecoverFundsFromProxy(
   const callback = useCallback(async () => {
     if (
       !cowShedHooks ||
-      !provider ||
+      !signer ||
       !proxyAddress ||
       !cowShedContract ||
       !selectedTokenAddress ||
@@ -86,7 +84,7 @@ export function useRecoverFundsFromProxy(
         nonce,
         BigInt(validTo),
         ContractsSigningScheme.EIP712, // TODO: support other signing types
-        (provider as { getSigner(): unknown }).getSigner(),
+        signer,
       )
 
       setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
@@ -104,16 +102,7 @@ export function useRecoverFundsFromProxy(
     } finally {
       setTxSigningStep(null)
     }
-  }, [
-    provider,
-    proxyAddress,
-    cowShedContract,
-    selectedTokenAddress,
-    account,
-    tokenBalance,
-    cowShedHooks,
-    isNativeToken,
-  ])
+  }, [signer, proxyAddress, cowShedContract, selectedTokenAddress, account, tokenBalance, cowShedHooks, isNativeToken])
 
   return { callback, txSigningStep, proxyAddress }
 }

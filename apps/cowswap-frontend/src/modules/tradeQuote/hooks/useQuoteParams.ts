@@ -35,73 +35,6 @@ export interface QuoteParams {
   hasSmartSlippage?: boolean
 }
 
-function buildQuoteParams(args: {
-  amount: Nullish<string>
-  partiallyFillable: boolean
-  inputCurrency: Currency
-  outputCurrency: Currency
-  orderKind: QuoteBridgeRequest['kind']
-  appDataDoc: AppDataInfo['doc'] | undefined
-  receiver: QuoteBridgeRequest['receiver']
-  account: string | undefined
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  provider: any
-  volumeFee: VolumeFee | undefined
-  userSlippageBps: number | undefined
-  smartSlippageBpsRef: { current: number | undefined }
-}): QuoteParams | undefined {
-  const {
-    amount,
-    partiallyFillable,
-    inputCurrency,
-    outputCurrency,
-    orderKind,
-    appDataDoc,
-    receiver,
-    account,
-    provider,
-    volumeFee,
-    userSlippageBps,
-    smartSlippageBpsRef,
-  } = args
-  const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
-  const sellTokenAddress = getCurrencyAddress(inputCurrency)
-  const buyTokenAddress = getCurrencyAddress(outputCurrency)
-  if (!amount) {
-    return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
-  }
-  // Check if provider has getSigner method (wallet provider vs publicClient fallback)
-  const hasGetSigner = typeof provider.getSigner === 'function'
-  const signer = account && hasGetSigner ? provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
-  const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
-  const quoteParams: QuoteBridgeRequest = {
-    kind: orderKind,
-    amount: BigInt(amount),
-    owner,
-    sellTokenChainId: inputCurrency.chainId,
-    sellTokenAddress,
-    sellTokenDecimals: inputCurrency.decimals,
-    buyTokenChainId: outputCurrency.chainId,
-    buyTokenAddress,
-    buyTokenDecimals: outputCurrency.decimals,
-    account: owner,
-    appCode,
-    signer,
-    receiver,
-    validFor: DEFAULT_QUOTE_TTL,
-    ethFlowContractOverride: COW_PROTOCOL_ETH_FLOW_ADDRESS,
-    ...(volumeFee ? { partnerFee: volumeFee } : undefined),
-    partiallyFillable,
-    ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
-  }
-  return {
-    quoteParams,
-    inputCurrency,
-    appData: appDataDoc,
-    hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
-  }
-}
-
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
   const provider = useWalletProvider()
@@ -157,4 +90,73 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)
+}
+
+function buildQuoteParams(args: {
+  amount: Nullish<string>
+  partiallyFillable: boolean
+  inputCurrency: Currency
+  outputCurrency: Currency
+  orderKind: QuoteBridgeRequest['kind']
+  appDataDoc: AppDataInfo['doc'] | undefined
+  receiver: QuoteBridgeRequest['receiver']
+  account: string | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  provider: any
+  volumeFee: VolumeFee | undefined
+  userSlippageBps: number | undefined
+  smartSlippageBpsRef: { current: number | undefined }
+}): QuoteParams | undefined {
+  const {
+    amount,
+    partiallyFillable,
+    inputCurrency,
+    outputCurrency,
+    orderKind,
+    appDataDoc,
+    receiver,
+    account,
+    provider,
+    volumeFee,
+    userSlippageBps,
+    smartSlippageBpsRef,
+  } = args
+  const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
+  const sellTokenAddress = getCurrencyAddress(inputCurrency)
+  const buyTokenAddress = getCurrencyAddress(outputCurrency)
+  if (!amount) {
+    return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
+  }
+  // Check if provider has getSigner method (wallet provider vs publicClient fallback)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const hasGetSigner = typeof (provider as any).getSigner === 'function'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const signer = account && hasGetSigner ? (provider as any).getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
+  const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
+  const quoteParams: QuoteBridgeRequest = {
+    kind: orderKind,
+    amount: BigInt(amount),
+    owner,
+    sellTokenChainId: inputCurrency.chainId,
+    sellTokenAddress,
+    sellTokenDecimals: inputCurrency.decimals,
+    buyTokenChainId: outputCurrency.chainId,
+    buyTokenAddress,
+    buyTokenDecimals: outputCurrency.decimals,
+    account: owner,
+    appCode,
+    signer,
+    receiver,
+    validFor: DEFAULT_QUOTE_TTL,
+    ethFlowContractOverride: COW_PROTOCOL_ETH_FLOW_ADDRESS,
+    ...(volumeFee ? { partnerFee: volumeFee } : undefined),
+    partiallyFillable,
+    ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
+  }
+  return {
+    quoteParams,
+    inputCurrency,
+    appData: appDataDoc,
+    hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
+  }
 }
