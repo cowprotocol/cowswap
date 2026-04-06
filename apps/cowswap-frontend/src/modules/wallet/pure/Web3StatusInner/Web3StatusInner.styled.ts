@@ -72,7 +72,7 @@ export const Text = styled.p`
   font-weight: 500;
 `
 
-export const Wrapper = styled.div<{ $joinedLeft?: boolean }>`
+export const Web3StatusWrapper = styled.button<{ $joinedLeft?: boolean }>`
   color: inherit;
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   max-height: 100%;
@@ -81,6 +81,7 @@ export const Wrapper = styled.div<{ $joinedLeft?: boolean }>`
   margin: 0;
   justify-content: center;
   border: 3px solid transparent;
+  background: transparent;
 
   > button {
     height: auto;

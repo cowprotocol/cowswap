@@ -12,7 +12,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
-import { AccountElement } from 'legacy/components/Header/AccountElement'
+import { AccountElement } from 'legacy/components/Header/AccountElement/AccountElement.pure'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'

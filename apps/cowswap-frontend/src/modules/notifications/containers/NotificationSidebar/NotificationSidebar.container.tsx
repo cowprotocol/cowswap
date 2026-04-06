@@ -1,9 +1,7 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notification-settings.svg'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useOnClickOutside, useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -12,7 +10,13 @@ import SVG from 'react-inlinesvg'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import { Sidebar, SidebarHeader, ArrowLeft, NotificationSettingsIcon, EnableAlertsButtonWithIcon } from './styled'
+import {
+  Sidebar,
+  SidebarHeader,
+  ArrowLeft,
+  NotificationSettingsIcon,
+  EnableAlertsButtonWithIcon,
+} from './NotificationSidebar.styled'
 
 import { useHasNotificationSubscription } from '../../hooks/useHasNotificationSubscription'
 import { useNotificationSettingsPopoverDismissal } from '../../hooks/useNotificationSettingsPopoverDismissal'
