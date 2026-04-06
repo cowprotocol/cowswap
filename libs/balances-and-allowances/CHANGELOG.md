@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.0.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.0.4...balances-and-allowances-v3.0.5) (2026-04-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/tokens bumped to 3.1.1
+
 ## [3.0.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.0.3...balances-and-allowances-v3.0.4) (2026-04-02)
 
 
