@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.2.0...cowswap-v3.2.1) (2026-04-03)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** hooks preventing trading on older versions ([#7249](https://github.com/cowprotocol/cowswap/issues/7249)) ([120e840](https://github.com/cowprotocol/cowswap/commit/120e8402fcbdc95677aa32bc247b55bc12970257))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.1.1
+
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.1.0...cowswap-v3.2.0) (2026-04-02)
 
 
