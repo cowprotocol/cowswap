@@ -10,7 +10,8 @@ import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { useOnSelectNetwork } from 'modules/application/hooks/useOnSelectNetwork'
+
 import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
 import { AFFILIATE_PAYOUTS_CHAIN_ID, AFFILIATE_TERMS_URL, PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'

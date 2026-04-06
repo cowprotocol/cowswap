@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: apps/cowswap-frontend/src/common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders.ts
+msgid "Wallet not connected"
+msgstr "Wallet not connected"
+
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token: "
 #~ msgstr "Selected token: "
@@ -389,8 +393,8 @@ msgid "sell"
 msgstr "sell"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
-msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
-msgstr "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
+#~ msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
+#~ msgstr "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
@@ -906,7 +910,7 @@ msgstr "Order recipient address differs from order owner!"
 msgid "No signing orders"
 msgstr "No signing orders"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Import intermediate token"
 msgstr "Import intermediate token"
 
@@ -924,12 +928,12 @@ msgstr "Partial approval"
 
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
-msgid "Safe bundle flow context is not ready"
-msgstr "Safe bundle flow context is not ready"
+#~ msgid "Safe bundle flow context is not ready"
+#~ msgstr "Safe bundle flow context is not ready"
 
 #: apps/cowswap-frontend/src/modules/tradeQuote/utils/getBridgeQuoteSigner.ts
-msgid "No RPC provider available for chain ID: {chainId}"
-msgstr "No RPC provider available for chain ID: {chainId}"
+#~ msgid "No RPC provider available for chain ID: {chainId}"
+#~ msgstr "No RPC provider available for chain ID: {chainId}"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
@@ -1194,7 +1198,7 @@ msgid "Total vCOW balance"
 msgstr "Total vCOW balance"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Unsupported token"
 msgstr "Unsupported token"
 
@@ -1269,6 +1273,10 @@ msgstr "any token into CoW AMM pools to start benefiting from attractive APRs."
 msgid "Solvers"
 msgstr "Solvers"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
+msgid "The wallet request timed out. Please try again and complete signing in your wallet before the session expires."
+msgstr "The wallet request timed out. Please try again and complete signing in your wallet before the session expires."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "You don't have any {orderStatusText} orders at the moment."
 #~ msgstr "You don't have any {orderStatusText} orders at the moment."
@@ -1319,7 +1327,7 @@ msgstr "TWAP Settings"
 msgid "Loaded"
 msgstr "Loaded"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Insufficient <0/> balance"
 msgstr "Insufficient <0/> balance"
 
@@ -1342,7 +1350,7 @@ msgstr "Order Open"
 msgid "View contract"
 msgstr "View contract"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Only \"sell\" orders are supported"
 msgstr "Only \"sell\" orders are supported"
 
@@ -1436,8 +1444,8 @@ msgid "Try adjusting your search term or filters"
 msgstr "Try adjusting your search term or filters"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/styled.tsx
-msgid "New to decentralised applications?"
-msgstr "New to decentralised applications?"
+#~ msgid "New to decentralised applications?"
+#~ msgstr "New to decentralised applications?"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Begin with TWAP Today!"
@@ -1608,7 +1616,7 @@ msgstr "Your account is affected by the AnySwap Hack"
 msgid "COW vesting from locked GNO"
 msgstr "COW vesting from locked GNO"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Deprecated Network"
 msgstr "Deprecated Network"
 
@@ -1620,7 +1628,7 @@ msgstr "Deprecated Network"
 msgid "Update fallback handler"
 msgstr "Update fallback handler"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "This token is not available in your region"
 msgstr "This token is not available in your region"
 
@@ -1782,7 +1790,7 @@ msgstr ""
 msgid "See Terms"
 msgstr "See Terms"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
@@ -2104,7 +2112,7 @@ msgstr "Wrap my {nativeSymbol} and swap"
 msgid "Read more about limit orders"
 msgstr "Read more about limit orders"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Your Safe is not connected with a signer.<0/>To place an order, you must connect using a signer of this Safe."
 msgstr "Your Safe is not connected with a signer.<0/>To place an order, you must connect using a signer of this Safe."
 
@@ -2214,7 +2222,6 @@ msgid "Set custom deadline"
 msgstr "Set custom deadline"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
-#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -2289,7 +2296,6 @@ msgid "Safe nonce"
 msgstr "Safe nonce"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoWallet/OrdersTableNoWalletContent.tsx
-#: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 msgid "Connect a wallet"
 msgstr "Connect a wallet"
 
@@ -2446,8 +2452,8 @@ msgstr "(via WalletConnect)"
 msgid "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 msgstr "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Error loading price. Try again later."
 msgstr "Error loading price. Try again later."
 
@@ -2640,6 +2646,10 @@ msgstr "Context is not full to cancel TWAP order"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Sent {nativeTokenSymbol}"
 msgstr "Sent {nativeTokenSymbol}"
+
+#: apps/cowswap-frontend/src/modules/wallet/containers/ConnectWalletModal/index.tsx
+msgid "Choose a wallet to connect to CoW Swap"
+msgstr "Choose a wallet to connect to CoW Swap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage."
@@ -3050,7 +3060,7 @@ msgstr "No order history"
 msgid "Rewards will be sent on Ethereum to"
 msgstr "Rewards will be sent on Ethereum to"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Bridging without swapping is not yet supported. Let us know if you want this feature!"
 msgstr "Bridging without swapping is not yet supported. Let us know if you want this feature!"
 
@@ -3559,7 +3569,7 @@ msgstr "Invalid URL: No manifest.json file found. Please check the URL and try a
 msgid "COW token not found for chain {SupportedChainIdMAINNET}"
 msgstr "COW token not found for chain {SupportedChainIdMAINNET}"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Unwrap"
 msgstr "Unwrap"
 
@@ -3729,7 +3739,7 @@ msgstr "The time each part of your TWAP order will remain active."
 msgid "Buy per part"
 msgstr "Buy per part"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "No intermediate tokens found for the route"
 msgstr "No intermediate tokens found for the route"
 
@@ -3818,7 +3828,7 @@ msgstr "You are not eligible for this airdrop"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Select a token"
 msgstr "Select a token"
 
@@ -4084,7 +4094,6 @@ msgid "Unverified"
 msgstr "Unverified"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
-#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "Coinbase Wallet"
 msgstr "Coinbase Wallet"
 
@@ -4096,6 +4105,7 @@ msgstr "Only the {limit} most recent orders were searched."
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/ConnectWalletModal/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
 msgid "Connect wallet"
 msgstr "Connect wallet"
@@ -4234,7 +4244,7 @@ msgid "Issues have been reported with Metamask sending transactions to the wrong
 msgstr "Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to <0>v{VERSION_WHERE_BUG_WAS_FIXED}</0>. Before you sign, please check in your wallet that the transaction is being sent to the network:"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/limitOrdersTradeButtonsMap.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Sell amount is too small"
 msgstr "Sell amount is too small"
 
@@ -4368,7 +4378,7 @@ msgstr "Approving <0>{currencySymbolOrContext}</0> for trading"
 #~ msgid "A resident of the EU or EEA."
 #~ msgstr "A resident of the EU or EEA."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Couldn't load balances"
 msgstr "Couldn't load balances"
 
@@ -4575,7 +4585,7 @@ msgid "Loading..."
 msgstr "Loading..."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalUnsupported.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Unsupported Network"
 msgstr "Unsupported Network"
 
@@ -4610,8 +4620,8 @@ msgstr "Place orders for higher than available balance!"
 msgid "first."
 msgstr "first."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "No routes found"
 msgstr "No routes found"
 
@@ -4758,7 +4768,7 @@ msgstr "You sell at most"
 msgid "No matching orders found"
 msgstr "No matching orders found"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Wallet Unsupported"
 msgstr "Wallet Unsupported"
 
@@ -5192,7 +5202,7 @@ msgstr "Dismiss notification"
 #~ msgstr "Withdraw rewards from your Gnosis validators."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Selling {symbol} is not supported"
 msgstr "Selling {symbol} is not supported"
 
@@ -5349,7 +5359,7 @@ msgstr "Unlock the Power of TWAP Orders"
 msgid "Unwrapping"
 msgstr "Unwrapping"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Unknown quote error"
 msgstr "Unknown quote error"
 
@@ -5443,7 +5453,7 @@ msgstr "N/A"
 msgid "This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
 msgstr "This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Sell amount too small to bridge"
 msgstr "Sell amount too small to bridge"
 
@@ -5526,7 +5536,7 @@ msgstr "Order has expired"
 msgid "This is the amount that will be sold in each part of the TWAP order."
 msgstr "This is the amount that will be sold in each part of the TWAP order."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Quote expired. Refreshing..."
 msgstr "Quote expired. Refreshing..."
 
@@ -5679,7 +5689,7 @@ msgstr "Selling {nativeSymbol} is only supported on SWAP orders."
 #~ msgid "Amount"
 #~ msgstr "Amount"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Wrap"
 msgstr "Wrap"
 
@@ -5719,7 +5729,7 @@ msgstr "Order unlikely to execute"
 msgid "Choose where to display the limit price input."
 msgstr "Choose where to display the limit price input."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Error loading price. You are currently offline."
 msgstr "Error loading price. You are currently offline."
 
@@ -5727,7 +5737,7 @@ msgstr "Error loading price. You are currently offline."
 msgid "No open orders found"
 msgstr "No open orders found"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Approve <0/> and {contextDefaultText}"
 msgstr "Approve <0/> and {contextDefaultText}"
 
@@ -5798,7 +5808,7 @@ msgstr "You receive exactly"
 msgid "Checking"
 msgstr "Checking"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Enter an amount"
 msgstr "Enter an amount"
 
@@ -5852,7 +5862,7 @@ msgid "on {chainLabel}"
 msgstr "on {chainLabel}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/limitOrdersTradeButtonsMap.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Invalid price. Try increasing input/output amount."
 msgstr "Invalid price. Try increasing input/output amount."
 
@@ -5905,13 +5915,13 @@ msgstr "Boost Your Yield with One-Click Conversion"
 msgid "Vested"
 msgstr "Vested"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Bridging deposit address is not verified! Please contact CoW Swap support!"
 msgstr "Bridging deposit address is not verified! Please contact CoW Swap support!"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/styled.tsx
-msgid "Learn more about wallets"
-msgstr "Learn more about wallets"
+#~ msgid "Learn more about wallets"
+#~ msgstr "Learn more about wallets"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "This is the estimated amount you will receive for each part of the TWAP order."
@@ -6300,16 +6310,16 @@ msgid "on explorer"
 msgstr "on explorer"
 
 #: apps/cowswap-frontend/src/common/hooks/useGetReceipt.ts
-msgid "No provider yet"
-msgstr "No provider yet"
+#~ msgid "No provider yet"
+#~ msgstr "No provider yet"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteOverviewTitle/index.tsx
 msgid "Your trade will be executed in 2 stops. First, you swap on <0>{COW_PROTOCOL_NAME} (Stop 1)</0>, then you bridge via <1>{providerInfoName} (Stop 2)</1>."
 msgstr "Your trade will be executed in 2 stops. First, you swap on <0>{COW_PROTOCOL_NAME} (Stop 1)</0>, then you bridge via <1>{providerInfoName} (Stop 2)</1>."
 
 #: apps/cowswap-frontend/src/common/utils/assertProviderNetwork.ts
-msgid "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
-msgstr "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
+#~ msgid "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
+#~ msgstr "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerQrModal.tsx
 msgid "Download referral QR code"
@@ -6601,7 +6611,7 @@ msgstr "This route is not yet supported."
 msgid "The order remains open. Execution requires sufficient"
 msgstr "The order remains open. Execution requires sufficient"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Connect signer"
 msgstr "Connect signer"
 
@@ -6691,7 +6701,7 @@ msgstr "is required"
 msgid "Operation in progress!"
 msgstr "Operation in progress!"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Request is being rate limited"
 msgstr "Request is being rate limited"
 
@@ -6842,7 +6852,7 @@ msgstr "Order cannot be filled due to insufficient balance on the current accoun
 msgid "required"
 msgstr "required"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Fetching balances"
 msgstr "Fetching balances"
 
@@ -6893,7 +6903,7 @@ msgstr "In order to protect your funds, you will need to remove the approval on 
 msgid "Advanced"
 msgstr "Advanced"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Not yet supported"
 msgstr "Not yet supported"
 
@@ -6910,11 +6920,11 @@ msgstr "Order cannot be filled due to insufficient allowance"
 msgid "turn on expert mode"
 msgstr "turn on expert mode"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Insufficient liquidity for this trade."
 msgstr "Insufficient liquidity for this trade."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Buying native currency with smart contract wallets is not currently supported"
 msgstr "Buying native currency with smart contract wallets is not currently supported"
 
@@ -6954,7 +6964,7 @@ msgstr "Place TWAP order"
 msgid "Reload page"
 msgstr "Reload page"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "Enter a valid recipient"
 msgstr "Enter a valid recipient"
 
@@ -7094,7 +7104,7 @@ msgstr "Best price found!"
 msgid "Bridging succeeded"
 msgstr "Bridging succeeded"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.utils.ts
 msgid "Tokens must be different"
 msgstr "Tokens must be different"
 
@@ -7185,14 +7195,14 @@ msgid "1 Week"
 msgstr "1 Week"
 
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
-msgid "Eth flow context is not ready"
-msgstr "Eth flow context is not ready"
+#~ msgid "Eth flow context is not ready"
+#~ msgstr "Eth flow context is not ready"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.tsx
 msgid "There are no orders"
 msgstr "There are no orders"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.record.tsx
 msgid "ENS recipient not supported for Swap and Bridge. Use address instead."
 msgstr "ENS recipient not supported for Swap and Bridge. Use address instead."
 
@@ -7751,7 +7761,7 @@ msgstr "Order Filled"
 msgid "Invalid content type: Expected JSON but received {errorContentType}. Make sure the URL points to a valid manifest file."
 msgstr "Invalid content type: Expected JSON but received {errorContentType}. Make sure the URL points to a valid manifest file."
 
-#: apps/cowswap-frontend/src/common/hooks/useOnSelectNetwork.tsx
+#: apps/cowswap-frontend/src/modules/application/hooks/useOnSelectNetwork.tsx
 msgid "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."
 msgstr "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."
 
