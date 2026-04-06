@@ -5,6 +5,7 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -20,7 +21,6 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
-import { deduplicatedSendTransaction } from 'modules/tradeFlow/utils/deduplicatedSendTransaction'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
@@ -128,7 +128,7 @@ export async function tradeFlow(
     if (!postOrderParams.allowsOffchainSigning) {
       const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
-      presignTxHash = await deduplicatedSendTransaction(config, {
+      presignTxHash = await sendTransaction(config, {
         to: presignTx.to as `0x${string}`,
         value: BigInt(presignTx.value),
         data: presignTx.data as Hex,
