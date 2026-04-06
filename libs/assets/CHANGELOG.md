@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.1.0...assets-v2.2.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **affiliate:** add affiliate program page to cow-fi ([#7232](https://github.com/cowprotocol/cowswap/issues/7232)) ([fbf93d7](https://github.com/cowprotocol/cowswap/commit/fbf93d71b6c423d3378eb9b7d51ab09082f770a9))
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.0.1...assets-v2.1.0) (2026-03-10)
 
 
