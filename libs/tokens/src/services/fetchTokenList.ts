@@ -24,7 +24,7 @@ export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
 }
 
 async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
-  return _fetchTokenList(list.source, [list.source]).then((result) => {
+  return _fetchTokenList(list.source, [list.source], sanitizeList).then((result) => {
     return listStateFromSourceConfig(result, list)
   })
 }
@@ -34,12 +34,16 @@ async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListStat
   const translatedUri = contenthashToUri(contentHashUri)
   const urls = uriToHttp(translatedUri)
 
-  return _fetchTokenList(list.source, urls).then((result) => {
+  return _fetchTokenList(list.source, urls, sanitizeList).then((result) => {
     return listStateFromSourceConfig(result, list)
   })
 }
 
-async function _fetchTokenList(source: string, urls: string[]): Promise<ListState> {
+async function _fetchTokenList(
+  source: string,
+  urls: string[],
+  sanitizer: (list: TokenList) => Promise<TokenList>,
+): Promise<ListState> {
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i]
     const isLast = i === urls.length - 1
@@ -71,7 +75,7 @@ async function _fetchTokenList(source: string, urls: string[]): Promise<ListStat
 
       return {
         source,
-        list: await sanitizeList(json),
+        list: await sanitizer(json),
       }
     } catch (e) {
       const message = `failed to process list ${url}`
@@ -108,4 +112,37 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
 
   // Validate the list
   return validateTokenList(cleanedList)
+}
+
+/**
+ * Like sanitizeList, but skips EVM address validation.
+ * Used for additional target chains (non-EVM, e.g. Solana) where addresses are not checksummed hex.
+ */
+async function sanitizeAdditionalChainList(list: TokenList): Promise<TokenList> {
+  return validateTokenList(list)
+}
+
+/**
+ * Fetches a token list for an additional target chain (non-EVM, e.g. Solana).
+ * Unlike fetchTokenList, this skips EVM address checksum validation.
+ */
+export function fetchAdditionalChainTokenList(list: ListSourceConfig): Promise<ListState> {
+  const isEnsSource = parseENSAddress(list.source)
+  return isEnsSource ? fetchAdditionalChainTokenListByEnsName(list) : fetchAdditionalChainTokenListByUrl(list)
+}
+
+async function fetchAdditionalChainTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
+  return _fetchTokenList(list.source, [list.source], sanitizeAdditionalChainList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
+}
+
+async function fetchAdditionalChainTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
+  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_PROVIDER)
+  const translatedUri = contenthashToUri(contentHashUri)
+  const urls = uriToHttp(translatedUri)
+
+  return _fetchTokenList(list.source, urls, sanitizeAdditionalChainList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
 }
