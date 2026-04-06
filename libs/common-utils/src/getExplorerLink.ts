@@ -1,5 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { isBtcChain, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isBtcChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export enum ExplorerDataType {
   TRANSACTION = 'transaction',
@@ -81,6 +81,6 @@ export function getExplorerLink(
   const prefix = BLOCK_EXPLORER_URL_OVERRIDE || CHAIN_INFO[chainId as SupportedChainId]?.explorer || defaultPrefix
 
   if (isBtcChain(chainId)) return getBtcExplorerData(prefix, data, type)
-  if (!isEvmChain(chainId)) return getSolExplorerData(prefix, data, type) // non-EVM, non-BTC = Solana
+  if (isSolanaChain(chainId)) return getSolExplorerData(prefix, data, type)
   return getEvmExplorerData(prefix, data, type)
 }
