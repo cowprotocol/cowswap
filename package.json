@@ -47,9 +47,9 @@
     "prebuild:cowswap": "node tools/scripts/prebuild.js",
     "upgrade-sdk-preview": "node tools/scripts/update-sdk-preview.js",
     "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
-    "prepare": "node -e \"try{require('child_process').execSync('husky',{stdio:'inherit'})}catch(e){}\"",
+    "prepare": "husky",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install",
-    "install:ci": "pnpm run install:sdk-preview"
+    "install:ci": "node tools/scripts/install-sdk-preview.js && npx --yes pnpm@10.30.3 install --frozen-lockfile"
   },
   "browser": {
     "crypto": false
