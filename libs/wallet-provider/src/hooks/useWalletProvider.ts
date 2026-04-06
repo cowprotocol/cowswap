@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 
-import { type EIP1193Provider } from 'viem'
+import { type EIP1193Provider, type PublicClient } from 'viem'
 import { useConnection, usePublicClient } from 'wagmi'
 
-export function useWalletProvider(): EIP1193Provider | undefined {
+export function useWalletProvider(): EIP1193Provider | PublicClient | undefined {
   const [provider, setProvider] = useState<EIP1193Provider | undefined>()
 
   const { connector } = useConnection()
