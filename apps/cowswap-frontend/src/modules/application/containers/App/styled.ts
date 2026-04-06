@@ -17,6 +17,13 @@ import styled from 'styled-components/macro'
 
 import type { PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 
+/** Extra horizontal room so the trade card box-shadow is not clipped at iframe edges (widget embeds). */
+const WIDGET_SHADOW_HORIZONTAL_PADDING = '24px'
+
+function isWidgetTradeCardShadowVisible(theme: { isWidget: boolean; boxShadow1: string }): boolean {
+  return theme.isWidget && theme.boxShadow1 !== 'none'
+}
+
 export function isChristmasTheme(theme?: CowSwapTheme): boolean {
   if (!theme) {
     return false
@@ -75,8 +82,13 @@ export const BodyWrapper = styled.div<{
   flex: 1 1 auto;
   z-index: 2;
   color: inherit;
-  padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
-    theme.isWidget ? '16px 16px 0' : $hasActiveSpeechBubbleNotification ? '150px 16px 320px' : '150px 16px 176px'};
+  padding: ${({ theme, $hasActiveSpeechBubbleNotification }) => {
+    if (theme.isWidget) {
+      const horizontal = isWidgetTradeCardShadowVisible(theme) ? WIDGET_SHADOW_HORIZONTAL_PADDING : '16px'
+      return `16px ${horizontal} 0`
+    }
+    return $hasActiveSpeechBubbleNotification ? '150px 16px 320px' : '150px 16px 176px'
+  }};
   margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1)')};
   border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
@@ -107,8 +119,12 @@ export const BodyWrapper = styled.div<{
   }};
 
   ${Media.upToMedium()} {
-    padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
-      theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'};
+    padding: ${({ theme, $hasActiveSpeechBubbleNotification }) => {
+      if (theme.isWidget) {
+        return isWidgetTradeCardShadowVisible(theme) ? `0 ${WIDGET_SHADOW_HORIZONTAL_PADDING} 16px` : '0 0 16px'
+      }
+      return $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'
+    }};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: ${({ customTheme }) =>
@@ -132,8 +148,12 @@ export const BodyWrapper = styled.div<{
   }
 
   ${Media.upToSmall()} {
-    padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
-      theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'};
+    padding: ${({ theme, $hasActiveSpeechBubbleNotification }) => {
+      if (theme.isWidget) {
+        return isWidgetTradeCardShadowVisible(theme) ? `0 ${WIDGET_SHADOW_HORIZONTAL_PADDING} 16px` : '0 0 16px'
+      }
+      return $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'
+    }};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
     background-size: ${({ customTheme }) =>
       customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};
