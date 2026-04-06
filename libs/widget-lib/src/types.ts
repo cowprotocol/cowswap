@@ -350,6 +350,12 @@ export interface CowSwapWidgetParams {
   disableProgressBar?: boolean
 
   /**
+   * Disables CoW Swap educational tips shown after a trade completes when no surplus message is available.
+   * Defaults to false.
+   */
+  disablePostTradeTips?: boolean
+
+  /**
    * Disables showing the toast messages.
    * Some UI might want to disable it and subscribe to WidgetMethodsEmit.ON_TOAST_MESSAGE event to handle the toast messages itself.
    * Defaults to false.
