@@ -38,7 +38,7 @@ export function TokenSearchResults(): ReactNode {
       return !!(tokenLists?.length || buyTokenLists?.length)
     }
 
-    return !!tokenLists?.length
+    return !!(tokenLists?.length || sellTokenLists?.length || buyTokenLists?.length)
   }, [buyTokenLists?.length, field, sellTokenLists?.length, tokenLists?.length])
 
   const searchResults: TokenSearchResponse = useMemo(() => {
