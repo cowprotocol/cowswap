@@ -53,7 +53,7 @@ export interface CowSwapWidgetHandler {
  * @returns A callback function to update the widget with new settings.
  */
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
-  const { params, provider: providerAux, listeners } = props
+  const { params, provider: providerAux, listeners, onReady } = props
   let provider = providerAux
   let currentParams = params
 
@@ -61,6 +61,11 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   // 1. Create a brand new iframe
   const iframe = createIframe(params)
+  const windowListeners: WindowListener[] = []
+
+  if (onReady) {
+    windowListeners.push(listenToReady(iframe.contentWindow || window, onReady))
+  }
 
   // 2. Clear the content (delete any previous iFrame if it exists)
   container.innerHTML = ''
@@ -73,7 +78,6 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   }
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
-  const windowListeners: WindowListener[] = []
   windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode))
 
   // 4. Handle widget height changes
@@ -237,6 +241,17 @@ function sendAppCodeOnActivation(
     widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
       metaData: appCode ? { appCode } : undefined,
     })
+  })
+}
+
+function listenToReady(contentWindow: Window, onReady: () => void): WindowListener {
+  let isReady = false
+
+  return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.READY, () => {
+    if (isReady) return
+
+    isReady = true
+    onReady()
   })
 }
 

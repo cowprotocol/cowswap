@@ -584,6 +584,7 @@ export function Configurator({ title }: { title: string }) {
                 params={params}
                 provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
                 listeners={listeners}
+                onReady={() => console.log('[configurator:onReady] Widget ready')}
               />
             )}
           </>

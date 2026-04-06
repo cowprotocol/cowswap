@@ -22,6 +22,7 @@ export type FlexibleConfig<T> =
 
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
+  READY = 'READY',
   UPDATE_HEIGHT = 'UPDATE_HEIGHT',
   SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
   EMIT_COW_EVENT = 'EMIT_COW_EVENT',
@@ -60,6 +61,7 @@ export interface CowSwapWidgetProps {
   params: CowSwapWidgetParams
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
+  onReady?(): void
 }
 
 export interface JsonRpcRequest {
@@ -443,6 +445,7 @@ export interface CowSwapWidgetParams {
 // Define types for event payloads
 export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.ACTIVATE]: void
+  [WidgetMethodsEmit.READY]: void
   [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowWidgetEvents>
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
   [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
