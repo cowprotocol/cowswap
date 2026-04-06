@@ -1,6 +1,16 @@
 import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 
-export interface BridgeFeeAmounts {
+export interface NetworkFeeAmounts {
+  amountInSellCurrency: CurrencyAmount<Currency>
+  amountInBuyCurrency: CurrencyAmount<Currency>
+}
+
+export interface FeeAmounts {
+  amount: CurrencyAmount<Currency>
+  bps: number
+}
+
+export interface BridgeFee {
   amountInIntermediateCurrency: CurrencyAmount<Currency>
   amountInDestinationCurrency: CurrencyAmount<Currency>
 }
@@ -17,26 +27,19 @@ export interface OrderTypeReceiveAmounts {
   networkFeeAmount: CurrencyAmount<Currency>
 }
 
+export interface ReceiveAmountInfoCosts {
+  networkFee: NetworkFeeAmounts
+  partnerFee: FeeAmounts
+  protocolFee?: FeeAmounts
+  bridgeFee?: BridgeFee
+}
+
 export interface ReceiveAmountInfo {
   isSell: boolean
 
   quotePrice: Price<Currency, Currency>
 
-  costs: {
-    networkFee: {
-      amountInSellCurrency: CurrencyAmount<Currency>
-      amountInBuyCurrency: CurrencyAmount<Currency>
-    }
-    partnerFee: {
-      amount: CurrencyAmount<Currency>
-      bps: number
-    }
-    protocolFee?: {
-      amount: CurrencyAmount<Currency>
-      bps: number
-    }
-    bridgeFee?: BridgeFeeAmounts
-  }
+  costs: ReceiveAmountInfoCosts
 
   beforeAllFees: Currencies
 

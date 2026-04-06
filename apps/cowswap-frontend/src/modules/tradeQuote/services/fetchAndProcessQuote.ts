@@ -19,6 +19,7 @@ import { coWBFFClient } from 'common/services/bff'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
+import { logBridgeMultiQuoteResult } from '../utils/debugBridgeQuoteLogging'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
@@ -113,6 +114,8 @@ async function fetchBridgingQuote(
       onQuoteResult(result: MultiQuoteResult) {
         if (isRequestCancelled) return
 
+        logBridgeMultiQuoteResult('onQuoteResult', result)
+
         if (result.quote) {
           const { swap, bridge, postSwapOrderFromQuote } = result.quote
           const quoteAndPost = { quoteResults: swap, postSwapOrderFromQuote: postSwapOrderFromQuote }
@@ -129,6 +132,10 @@ async function fetchBridgingQuote(
     if (cancelled) {
       isRequestCancelled = true
       return
+    }
+
+    if (data) {
+      logBridgeMultiQuoteResult('getBestQuoteSettled', data)
     }
 
     const error = data?.error

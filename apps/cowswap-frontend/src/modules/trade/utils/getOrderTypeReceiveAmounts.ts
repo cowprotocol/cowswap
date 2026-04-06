@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { BridgeFeeAmounts, Currencies, OrderTypeReceiveAmounts, ReceiveAmountInfo } from '../types'
+import { BridgeFee, Currencies, OrderTypeReceiveAmounts, ReceiveAmountInfo } from '../types'
 
 export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeReceiveAmounts {
   const {
@@ -39,7 +39,7 @@ export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeRe
 function calculateAmountAfterFees(
   isSell: boolean,
   afterPartnerFees: Currencies,
-  bridgeFee?: BridgeFeeAmounts,
+  bridgeFee?: BridgeFee,
 ): CurrencyAmount<Currency> {
   if (isSell) {
     return bridgeFee
@@ -55,7 +55,7 @@ function getOrderTypeReceiveAmountsWithoutProtocolFee(
   afterPartnerFees: Currencies,
   afterSlippage: Currencies,
   networkFeeAmount: CurrencyAmount<Currency>,
-  bridgeFee?: BridgeFeeAmounts,
+  bridgeFee?: BridgeFee,
 ): OrderTypeReceiveAmounts {
   const amountBeforeFees = isSell ? beforeNetworkCosts.buyAmount : beforeNetworkCosts.sellAmount
   const amountAfterFees = calculateAmountAfterFees(isSell, afterPartnerFees, bridgeFee)
@@ -75,7 +75,7 @@ function getOrderTypeReceiveAmountsWithProtocolFee(
   afterPartnerFees: Currencies,
   afterSlippage: Currencies,
   networkFeeAmount: CurrencyAmount<Currency>,
-  bridgeFee?: BridgeFeeAmounts,
+  bridgeFee?: BridgeFee,
 ): OrderTypeReceiveAmounts {
   const amountAfterFees = calculateAmountAfterFees(isSell, afterPartnerFees, bridgeFee)
 
