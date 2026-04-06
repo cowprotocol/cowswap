@@ -681,9 +681,6 @@ importers:
       '@use-gesture/react':
         specifier: ^10.2.23
         version: 10.3.1(react@19.1.2)
-      '@web3-react/core':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@6.0.6)
       bignumber.js:
         specifier: ^9.1.2
         version: 9.1.2
@@ -865,9 +862,6 @@ importers:
       '@types/styled-components':
         specifier: 5.1.34
         version: 5.1.34
-      '@web3-react/types':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
       jest-fetch-mock:
         specifier: ^3.0.3
         version: 3.0.3(encoding@0.1.13)
@@ -1333,7 +1327,7 @@ importers:
         version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
       wagmi:
         specifier: 3.4.2
-        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
     devDependencies:
       '@testing-library/react':
         specifier: 16.3.0
@@ -1368,6 +1362,9 @@ importers:
       ms.macro:
         specifier: ^2.0.0
         version: 2.0.0
+      viem:
+        specifier: 2.47.1
+        version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
     devDependencies:
       '@types/ms.macro':
         specifier: ^2.0.0
@@ -1425,7 +1422,7 @@ importers:
         version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
       wagmi:
         specifier: 3.4.2
-        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
     devDependencies:
       '@testing-library/react':
         specifier: 16.3.0
@@ -1513,7 +1510,7 @@ importers:
         version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
       wagmi:
         specifier: 3.4.2
-        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
     devDependencies:
       '@types/ms':
         specifier: ^2.1.0
@@ -1602,7 +1599,7 @@ importers:
         version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
       wagmi:
         specifier: 3.4.2
-        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
     devDependencies:
       '@types/react':
         specifier: 19.1.3
@@ -1691,7 +1688,7 @@ importers:
         version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
       wagmi:
         specifier: 3.4.2
-        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
     devDependencies:
       '@types/ms.macro':
         specifier: ^2.0.0
@@ -1801,7 +1798,7 @@ importers:
         version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
       wagmi:
         specifier: 3.4.2
-        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
     devDependencies:
       '@testing-library/react':
         specifier: 16.3.0
@@ -2020,18 +2017,6 @@ importers:
       '@wagmi/core':
         specifier: 3.3.2
         version: 3.3.2(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12))
-      '@web3-react/core':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
-      '@web3-react/gnosis-safe':
-        specifier: ^8.2.4
-        version: 8.2.4(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.0.2)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@web3-react/network':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
-      '@web3-react/walletconnect-v2':
-        specifier: ^8.5.1
-        version: 8.5.1(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)
       ethereumjs-util:
         specifier: ^7.1.5
         version: 7.1.5
@@ -2072,9 +2057,6 @@ importers:
       '@types/styled-components':
         specifier: 5.1.34
         version: 5.1.34
-      '@web3-react/types':
-        specifier: ^8.2.3
-        version: 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
 
   libs/wallet-provider:
     dependencies:
@@ -2086,7 +2068,7 @@ importers:
         version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
       wagmi:
         specifier: 3.4.2
-        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+        version: 3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
     devDependencies:
       '@types/react':
         specifier: 19.1.3
@@ -5963,9 +5945,6 @@ packages:
   '@safe-global/protocol-kit@6.1.2':
     resolution: {integrity: sha512-cTpPdUAS2AMfGCkD1T601rQNjT0rtMQLA2TH7L/C+iFPAC6WrrDFop2B9lzeHjczlnVzrRpfFe4cL1bLrJ9NZw==}
 
-  '@safe-global/safe-apps-provider@0.17.1':
-    resolution: {integrity: sha512-lYfRqrbbK1aKU1/UGkYWc/X7PgySYcumXKc5FB2uuwAs2Ghj8uETuW5BrwPqyjBknRxutFbTv+gth/JzjxAhdQ==}
-
   '@safe-global/safe-apps-provider@0.18.6':
     resolution: {integrity: sha512-4LhMmjPWlIO8TTDC2AwLk44XKXaK6hfBTWyljDm0HQ6TWlOEijVWNrt2s3OCVMSxlXAcEzYfqyu1daHZooTC2Q==}
 
@@ -5973,12 +5952,6 @@ packages:
     resolution: {integrity: sha512-du7Bp3yPT2nQ8HhbfiyGit/ItcYwZ1tLEG5fbajMe8tjgr2D2YQMgNcNFmBpgHFyq+FpoA4a+toEKMEifQCMPg==}
     peerDependencies:
       react: 16.x.x || 17.x.x || 18.x.x
-
-  '@safe-global/safe-apps-sdk@8.0.0':
-    resolution: {integrity: sha512-gYw0ki/EAuV1oSyMxpqandHjnthZjYYy+YWpTAzf8BqfXM3ItcZLpjxfg+3+mXW8HIO+3jw6T9iiqEXsqHaMMw==}
-
-  '@safe-global/safe-apps-sdk@8.1.0':
-    resolution: {integrity: sha512-XJbEPuaVc7b9n23MqlF6c+ToYIS3f7P2Sel8f3cSBQ9WORE4xrSuvhMpK9fDSFqJ7by/brc+rmJR/5HViRr0/w==}
 
   '@safe-global/safe-apps-sdk@9.1.0':
     resolution: {integrity: sha512-N5p/ulfnnA2Pi2M3YeWjULeWbjo7ei22JwU/IXnhoHzKq3pYCN6ynL9mJBOlvDVv892EgLPCWCOwQk/uBT2v0Q==}
@@ -8060,26 +8033,6 @@ packages:
 
   '@walletconnect/window-metadata@1.0.1':
     resolution: {integrity: sha512-9koTqyGrM2cqFRW517BPY/iEtUDx2r1+Pwwu5m7sJ7ka79wi3EyqhqcICk/yDmv6jAS1rjKgTKXlEhanYjijcA==}
-
-  '@web3-react/core@8.2.3':
-    resolution: {integrity: sha512-0ezmRKhqQpoa9ct2/3erg60zBXfC/f/liYR1mfSGKtIroRkLnPARigZSV6pI+fi8bhfGJ0RKtFWyTCCWZzdq1w==}
-    peerDependencies:
-      react: '>=16.8'
-
-  '@web3-react/gnosis-safe@8.2.4':
-    resolution: {integrity: sha512-4M0CFludHJXtLsKJlKBIeMZcdTO60e6psYhYm2GLy76do9K9JJvBE8U4YVFBHLpk7sWpySsrCuYcaVZyzZ/xtA==}
-
-  '@web3-react/network@8.2.3':
-    resolution: {integrity: sha512-OAlXo3aNhldANmHt/N88SuLrWihVQizJf0cNy1cqnbNIAg87292PnAqCZrj3Pwaq/s8hoSgapc87zl1KFJeTjA==}
-
-  '@web3-react/store@8.2.3':
-    resolution: {integrity: sha512-qUJQ5pDsYYDra+/+glq2BmIS43HYAiEZ22sLLVh6E75WiZKRNOOqUxBDPe33KTIn718DLt51j+wd2FT+oT/kJQ==}
-
-  '@web3-react/types@8.2.3':
-    resolution: {integrity: sha512-kSG90QkN+n7IOtp10nQ44oS8J7jzfH9EmqnruwBpCGybh1FM/ohyRvUKWYZNfNE4wsjTSpKsINR0/VdDsZMHyg==}
-
-  '@web3-react/walletconnect-v2@8.5.1':
-    resolution: {integrity: sha512-K6RjdllFpEftTDQw39fRfuVcBLNCWXDxx5oZiWDc7D2RW071C0m1WridOeUiELmCXykyDCrIjd2zAVwV4GGueA==}
 
   '@web3modal/common@4.1.9':
     resolution: {integrity: sha512-UZ6dDQ5t6q+oUFMI2ONg3a8gctpNJTFj2qTdPic4/xHuktLf5nHm8LK9NGhMpUqjm7VRN95xpnTeM0gSSmcF6w==}
@@ -17562,21 +17515,6 @@ packages:
   zod@4.1.12:
     resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
-  zustand@4.4.0:
-    resolution: {integrity: sha512-2dq6wq4dSxbiPTamGar0NlIG/av0wpyWZJGeQYtUOLegIUvhM2Bf86ekPlmgpUtS5uR7HyetSiktYrGsdsyZgQ==}
-    engines: {node: '>=12.7.0'}
-    peerDependencies:
-      '@types/react': 19.1.3
-      immer: '>=9.0'
-      react: '>=16.8'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      immer:
-        optional: true
-      react:
-        optional: true
-
   zustand@5.0.0:
     resolution: {integrity: sha512-LE+VcmbartOPM+auOjCCLQOsQ05zUTp8RkgwRzefUk+2jISdMMFnxvyTjA4YNWr5ZGXYbVsEMZosttuxUBkojQ==}
     engines: {node: '>=12.20.0'}
@@ -19914,33 +19852,6 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-
-  '@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@6.0.6)':
-    dependencies:
-      '@ethersproject/abstract-provider': 5.7.0
-      '@ethersproject/abstract-signer': 5.7.0
-      '@ethersproject/address': 5.7.0
-      '@ethersproject/base64': 5.8.0
-      '@ethersproject/basex': 5.8.0
-      '@ethersproject/bignumber': 5.7.0
-      '@ethersproject/bytes': 5.7.0
-      '@ethersproject/constants': 5.7.0
-      '@ethersproject/hash': 5.7.0
-      '@ethersproject/logger': 5.8.0
-      '@ethersproject/networks': 5.8.0
-      '@ethersproject/properties': 5.7.0
-      '@ethersproject/random': 5.8.0
-      '@ethersproject/rlp': 5.8.0
-      '@ethersproject/sha2': 5.7.0
-      '@ethersproject/strings': 5.7.0
-      '@ethersproject/transactions': 5.8.0
-      '@ethersproject/web': 5.8.0
-      bech32: 1.1.4
-      ws: 7.4.6(bufferutil@4.0.8)(utf-8-validate@6.0.6)
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    optional: true
 
   '@ethersproject/providers@5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
@@ -23536,17 +23447,6 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@safe-global/safe-apps-provider@0.17.1(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
-    dependencies:
-      '@safe-global/safe-apps-sdk': 8.0.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      events: 3.3.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
   '@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
       '@safe-global/safe-apps-sdk': 9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
@@ -23587,28 +23487,6 @@ snapshots:
     dependencies:
       '@safe-global/safe-apps-sdk': 9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
       react: 19.1.2
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@safe-global/safe-apps-sdk@8.0.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
-    dependencies:
-      '@safe-global/safe-gateway-typescript-sdk': 3.8.0(encoding@0.1.13)
-      viem: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@safe-global/safe-apps-sdk@8.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
-    dependencies:
-      '@safe-global/safe-gateway-typescript-sdk': 3.8.0(encoding@0.1.13)
-      viem: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -26195,6 +26073,17 @@ snapshots:
       '@walletconnect/ethereum-provider': 2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10)
       typescript: 5.9.3
 
+  '@wagmi/connectors@7.1.6(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@wagmi/core@3.3.2(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)))(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))':
+    dependencies:
+      '@wagmi/core': 3.3.2(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+      viem: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
+    optionalDependencies:
+      '@coinbase/wallet-sdk': 4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
+      '@safe-global/safe-apps-provider': 0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
+      '@safe-global/safe-apps-sdk': 9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
+      '@walletconnect/ethereum-provider': 2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10)
+      typescript: 5.9.3
+
   '@wagmi/core@3.3.2(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@3.25.76))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))':
     dependencies:
       eventemitter3: 5.0.1
@@ -27160,105 +27049,6 @@ snapshots:
     dependencies:
       '@walletconnect/window-getters': 1.0.1
       tslib: 1.14.1
-
-  '@web3-react/core@8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@web3-react/store': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      react: 19.1.2
-      zustand: 4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    optionalDependencies:
-      '@ethersproject/providers': 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - immer
-      - utf-8-validate
-
-  '@web3-react/core@8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@6.0.6)':
-    dependencies:
-      '@web3-react/store': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      react: 19.1.2
-      zustand: 4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    optionalDependencies:
-      '@ethersproject/providers': 5.7.2(bufferutil@4.0.8)(utf-8-validate@6.0.6)
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - immer
-      - utf-8-validate
-
-  '@web3-react/gnosis-safe@8.2.4(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.0.2)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)':
-    dependencies:
-      '@safe-global/safe-apps-provider': 0.17.1(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@safe-global/safe-apps-sdk': 8.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - encoding
-      - immer
-      - react
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@web3-react/network@8.2.3(@types/react@19.1.3)(bufferutil@4.0.8)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@ethersproject/providers': 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - immer
-      - react
-      - utf-8-validate
-
-  '@web3-react/store@8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)':
-    dependencies:
-      '@ethersproject/address': 5.7.0
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      zustand: 4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - immer
-      - react
-
-  '@web3-react/types@8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)':
-    dependencies:
-      zustand: 4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - immer
-      - react
-
-  '@web3-react/walletconnect-v2@8.5.1(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.0.2)(react@19.1.2)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@walletconnect/ethereum-provider': 2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10)
-      '@walletconnect/modal': 2.7.0(@types/react@19.1.3)(react@19.1.2)
-      '@web3-react/types': 8.2.3(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)
-      eventemitter3: 4.0.7
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@types/react'
-      - '@upstash/redis'
-      - '@vercel/kv'
-      - bufferutil
-      - encoding
-      - immer
-      - react
-      - supports-color
-      - utf-8-validate
 
   '@web3modal/common@4.1.9':
     dependencies:
@@ -32678,7 +32468,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.2.0
-      ws: 8.18.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      ws: 8.20.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -36034,7 +35824,7 @@ snapshots:
       buffer: 6.0.3
       eventemitter3: 5.0.1
       uuid: 11.1.0
-      ws: 8.18.3(bufferutil@4.0.8)(utf-8-validate@6.0.6)
+      ws: 8.20.0(bufferutil@4.0.8)(utf-8-validate@6.0.6)
     optionalDependencies:
       bufferutil: 4.0.8
       utf-8-validate: 6.0.6
@@ -38187,6 +37977,30 @@ snapshots:
       - ox
       - porto
 
+  wagmi@3.4.2(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)):
+    dependencies:
+      '@tanstack/react-query': 5.90.20(react@19.1.2)
+      '@wagmi/connectors': 7.1.6(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))(@wagmi/core@3.3.2(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)))(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(typescript@5.9.3)(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+      '@wagmi/core': 3.3.2(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(ox@0.14.0(typescript@5.9.3)(zod@4.1.12))(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12))
+      react: 19.1.2
+      use-sync-external-store: 1.4.0(react@19.1.2)
+      viem: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@base-org/account'
+      - '@coinbase/wallet-sdk'
+      - '@gemini-wallet/core'
+      - '@metamask/sdk'
+      - '@safe-global/safe-apps-provider'
+      - '@safe-global/safe-apps-sdk'
+      - '@tanstack/query-core'
+      - '@types/react'
+      - '@walletconnect/ethereum-provider'
+      - immer
+      - ox
+      - porto
+
   walker@1.0.8:
     dependencies:
       makeerror: 1.0.12
@@ -38496,7 +38310,7 @@ snapshots:
       sockjs: 0.3.24
       spdy: 4.0.2
       webpack-dev-middleware: 7.4.2(webpack@5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17)))
-      ws: 8.18.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      ws: 8.20.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     optionalDependencies:
       webpack: 5.102.1(@swc/core@1.13.5(@swc/helpers@0.5.17))
     transitivePeerDependencies:
@@ -38846,12 +38660,6 @@ snapshots:
       bufferutil: 4.0.8
       utf-8-validate: 5.0.10
 
-  ws@7.4.6(bufferutil@4.0.8)(utf-8-validate@6.0.6):
-    optionalDependencies:
-      bufferutil: 4.0.8
-      utf-8-validate: 6.0.6
-    optional: true
-
   ws@7.5.10(bufferutil@4.0.8)(utf-8-validate@5.0.10):
     optionalDependencies:
       bufferutil: 4.0.8
@@ -38906,7 +38714,6 @@ snapshots:
     optionalDependencies:
       bufferutil: 4.0.8
       utf-8-validate: 5.0.10
-    optional: true
 
   ws@8.20.0(bufferutil@4.0.8)(utf-8-validate@6.0.6):
     optionalDependencies:
@@ -39036,14 +38843,6 @@ snapshots:
     optional: true
 
   zod@4.1.12: {}
-
-  zustand@4.4.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2):
-    dependencies:
-      use-sync-external-store: 1.2.0(react@19.1.2)
-    optionalDependencies:
-      '@types/react': 19.1.3
-      immer: 10.0.2
-      react: 19.1.2
 
   zustand@5.0.0(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)(use-sync-external-store@1.4.0(react@19.1.2)):
     optionalDependencies:
