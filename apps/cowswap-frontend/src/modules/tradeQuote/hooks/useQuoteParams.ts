@@ -44,8 +44,8 @@ interface BuildQuoteParamsArgs {
   account: string | undefined
   provider: ReturnType<typeof useWalletProvider>
   appDataDoc: AppDataInfo['doc'] | undefined
-  receiver: string | undefined
-  bridgeRecipient: string | undefined
+  receiver: Nullish<string>
+  bridgeRecipient: Nullish<string>
   volumeFee: VolumeFee | undefined
   userSlippageBps: number | undefined
   partiallyFillable: boolean
