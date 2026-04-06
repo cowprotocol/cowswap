@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { isTruthy, stringifyJsonSafe } from '@cowprotocol/common-utils'
+import { isTruthy } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -35,7 +35,6 @@ import {
 } from './actions'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 import {
-  getDefaultNetworkState,
   ORDER_LIST_KEYS,
   ORDERS_LIST,
   OrdersState,
@@ -138,21 +137,12 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
 }
 
 function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersStateNetwork | undefined {
-  const ordersState = useSelector<AppState, OrdersState[SupportedChainId] | undefined>((state) => {
+  return useSelector<AppState, OrdersState[SupportedChainId] | undefined>((state) => {
     if (!chainId) {
       return undefined
     }
     return state.orders?.[chainId]
   })
-
-  // Additional memoization to avoid excessive re-renders.
-  // Use shared bigint-safe stringify so state that contains sellAmountBeforeFee (bigint) never hits JSON.stringify.
-  const ordersStateKey = useMemo(() => (ordersState == null ? '' : stringifyJsonSafe(ordersState)), [ordersState])
-  return useMemo(() => {
-    if (!chainId) return undefined
-    return { ...getDefaultNetworkState(chainId), ...(ordersState || {}) }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ordersStateKey, chainId])
 }
 
 export const useOrders = (

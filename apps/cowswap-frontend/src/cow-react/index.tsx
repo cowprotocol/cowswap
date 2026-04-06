@@ -24,14 +24,11 @@ import { cowSwapStore } from 'legacy/state'
 import { App, Updaters, WithLDProvider } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
-import { deduplicateEthereumSendTransaction } from 'lib/deduplicateEthereumSendTransaction'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
-
-deduplicateEthereumSendTransaction()
 
 const cowAnalytics = initGtm()
 const helmetContext = {}
@@ -77,12 +74,6 @@ try {
 
 interface MainProps {
   localeMessages: Messages | undefined
-}
-
-function Toasts(): ReactNode {
-  const { disableToastMessages = false } = useInjectedWidgetParams()
-
-  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
 }
 
 export function Main({ localeMessages }: MainProps): ReactNode {
@@ -142,6 +133,12 @@ async function initApp(): Promise<void> {
       </div>,
     )
   }
+}
+
+function Toasts(): ReactNode {
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
 }
 
 initApp()

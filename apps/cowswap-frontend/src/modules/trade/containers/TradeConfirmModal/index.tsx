@@ -9,7 +9,6 @@ import { useSigningStep } from 'entities/trade'
 import styled from 'styled-components/macro'
 
 import { PermitModal } from 'common/containers/PermitModal'
-import { useEffectiveChainId } from 'common/hooks/useEffectiveChainId'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { TradeAmounts } from 'common/types'
@@ -33,11 +32,24 @@ export interface TradeConfirmModalProps {
   submittedContent?: ReactNode
 }
 
+type InnerComponentProps = {
+  children: ReactElement
+  chainId: SupportedChainId
+  account: string
+  title: string
+  error: string | null
+  pendingTrade: TradeAmounts | null
+  transactionHash: string | null
+  onDismiss: Command
+  permitSignatureState: string | undefined
+  isSafeWallet: boolean
+  submittedContent?: ReactNode
+}
+
 export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { children, submittedContent, title } = props
 
-  const { account } = useWalletInfo()
-  const effectiveChainId = useEffectiveChainId()
+  const { account, chainId: effectiveChainId } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
@@ -68,20 +80,6 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
       </InnerComponent>
     </Container>
   )
-}
-
-type InnerComponentProps = {
-  children: ReactElement
-  chainId: SupportedChainId
-  account: string
-  title: string
-  error: string | null
-  pendingTrade: TradeAmounts | null
-  transactionHash: string | null
-  onDismiss: Command
-  permitSignatureState: string | undefined
-  isSafeWallet: boolean
-  submittedContent?: ReactNode
 }
 
 function InnerComponent(props: InnerComponentProps): ReactNode {

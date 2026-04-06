@@ -8,21 +8,13 @@ import {
   isPrefixedAddress,
   parsePrefixedAddress,
 } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { useSearchToken } from './useSearchToken'
 import { useTokenBySymbolOrAddress } from './useTokenBySymbolOrAddress'
 import { useTokensByAddressMap } from './useTokensByAddressMap'
 
 import { tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
-
-function getAddressKeyForLookup(raw: string): string | undefined {
-  const asAddr = isAddress(raw)
-  if (asAddr) return asAddr.toLowerCase()
-  if (isPrefixedAddress(raw)) {
-    return parsePrefixedAddress(raw).address.toLowerCase()
-  }
-  return undefined
-}
 
 export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo | null {
   const tokenListsUpdating = useAtomValue(tokenListsUpdatingAtom)
@@ -61,4 +53,13 @@ export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo
 
     return candidate
   }, [inputTokenToSearch, foundToken, tokensByAddress])
+}
+
+function getAddressKeyForLookup(raw: string): string | undefined {
+  const asAddr = isAddress(raw)
+  if (asAddr) return getAddressKey(asAddr)
+  if (isPrefixedAddress(raw)) {
+    return getAddressKey(parsePrefixedAddress(raw).address)
+  }
+  return undefined
 }

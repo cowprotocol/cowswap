@@ -1,12 +1,4 @@
-import {
-  type Address,
-  createWalletClient,
-  custom,
-  http,
-  type EIP1193Provider,
-  type PublicClient,
-  type WalletClient,
-} from 'viem'
+import { type Address, createWalletClient, http, type PublicClient, type WalletClient } from 'viem'
 
 import { PERMIT_ACCOUNT } from '../const'
 import { PermitProviderConnector } from '../utils/PermitProviderConnector'
@@ -22,6 +14,22 @@ const CHAIN_UTILS_CACHE = new Map<number, Eip2612PermitUtils>()
  */
 const PROVIDER_UTILS_CACHE = new Map<string, Eip2612PermitUtils>()
 
+/**
+ * Returns a cached Eip2612PermitUtils instance for querying and signing EIP-2612 permits.
+ *
+ * Two modes of operation:
+ *
+ * 1. **Read-only (no `account`)** — Uses a static PERMIT_ACCOUNT with an HTTP transport.
+ *    This is used for checking whether a token supports permits, reading nonces, etc.
+ *    No real signatures are produced; instances are cached per chainId.
+ *
+ * 2. **Signing (with `account` + `walletClient`)** — Uses the wagmi wallet client so
+ *    `eth_signTypedData_v4` is routed through the user's actual wallet (MetaMask, WalletConnect, etc.).
+ *    Plain HTTP transports (e.g. Infura) do NOT support signing, so `walletClient` is required
+ *    when an account is provided. Instances are cached per chainId+account.
+ *
+ * The 1inch `Eip2612PermitUtils` class is lazily imported to keep it out of the main bundle.
+ */
 export async function getPermitUtilsInstance({
   chainId,
   publicClient,
@@ -58,12 +66,6 @@ export async function getPermitUtilsInstance({
     })
   } else if (wagmiWalletClient) {
     walletClient = wagmiWalletClient
-  } else if (typeof window !== 'undefined' && window.ethereum) {
-    walletClient = createWalletClient({
-      account,
-      chain: publicClient.chain,
-      transport: custom(window.ethereum as unknown as EIP1193Provider),
-    })
   } else {
     throw new Error('Permit signing needs an active wallet client. Reconnect your wallet or use an injected extension.')
   }

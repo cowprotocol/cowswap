@@ -21,7 +21,6 @@ export * from './wagmi/hooks/useConnectionType'
 
 // Updater
 export { WalletUpdater } from './wagmi/updater'
-export * from './wagmi/updaters/HwAccountIndexUpdater'
 
 // Components
 export * from './api/container/Identicon'

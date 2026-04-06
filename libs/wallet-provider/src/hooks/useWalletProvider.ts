@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 
+import { type EIP1193Provider } from 'viem'
 import { useConnection, usePublicClient } from 'wagmi'
 
-export function useWalletProvider(): unknown | undefined {
-  const [provider, setProvider] = useState<unknown | undefined>()
+export function useWalletProvider(): EIP1193Provider | undefined {
+  const [provider, setProvider] = useState<EIP1193Provider | undefined>()
 
   const { connector } = useConnection()
   const publicClient = usePublicClient()
@@ -13,9 +14,9 @@ export function useWalletProvider(): unknown | undefined {
     const getProvider = async (): Promise<void> => {
       try {
         const provider = await connector.getProvider()
-        setProvider(provider)
+        setProvider(provider as EIP1193Provider)
       } catch (error) {
-        console.error(error.message)
+        console.error(error instanceof Error ? error.message : error)
         setProvider(undefined)
       }
     }

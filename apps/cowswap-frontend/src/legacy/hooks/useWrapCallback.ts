@@ -13,8 +13,7 @@ import { getChainCurrencySymbols } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
-import { type Hash, type PublicClient, type WalletClient, Chain } from 'viem'
-import { arbitrum, avalanche, base, bsc, gnosis, ink, linea, mainnet, plasma, polygon, sepolia } from 'viem/chains'
+import { type Hash, type PublicClient, type WalletClient } from 'viem'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
@@ -24,20 +23,6 @@ import { logEthSendingIntention, logEthSendingTransaction } from 'common/service
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = 180_000n
-
-const CHAIN_ID_TO_CHAIN: Partial<Record<SupportedChainId, Chain>> = {
-  [SupportedChainId.MAINNET]: mainnet,
-  [SupportedChainId.BNB]: bsc,
-  [SupportedChainId.GNOSIS_CHAIN]: gnosis,
-  [SupportedChainId.POLYGON]: polygon,
-  [SupportedChainId.BASE]: base,
-  [SupportedChainId.PLASMA]: plasma,
-  [SupportedChainId.ARBITRUM_ONE]: arbitrum,
-  [SupportedChainId.AVALANCHE]: avalanche,
-  [SupportedChainId.LINEA]: linea,
-  [SupportedChainId.INK]: ink,
-  [SupportedChainId.SEPOLIA]: sepolia,
-}
 
 export interface WrapDescription {
   confirmationMessage: string
@@ -179,7 +164,7 @@ async function unwrapContractCall(
   walletClient: WalletClient | undefined,
   publicClient: PublicClient | undefined,
   amountHex: `0x${string}`,
-  chainId: SupportedChainId,
+  _chainId: SupportedChainId,
   _account: string,
 ): Promise<WrapUnwrapTxData> {
   if (!walletClient?.account) throw new Error('Wallet not connected')
@@ -200,7 +185,6 @@ async function unwrapContractCall(
   } catch (e) {
     gasLimit = calculateGasMargin(_handleGasEstimateError(e))
   }
-  const chain = CHAIN_ID_TO_CHAIN[chainId]
   const hash = await walletClient.writeContract({
     address,
     abi: wethContract.abi,
@@ -208,7 +192,7 @@ async function unwrapContractCall(
     args,
     account: walletClient.account,
     gas: gasLimit,
-    chain: chain ?? undefined,
+    chain: walletClient.chain,
   })
   return { hash }
 }
@@ -246,7 +230,6 @@ async function wrapContractCall(
     account: _account,
     tx: { to: wethContract.address as `0x${string}`, value: BigInt(amountHex), data: '0x' },
   })
-  const chain = CHAIN_ID_TO_CHAIN[chainId]
   const hash = await walletClient.writeContract({
     address,
     abi: wethContract.abi,
@@ -254,7 +237,7 @@ async function wrapContractCall(
     value,
     account: walletClient.account,
     gas: gasLimit,
-    chain: chain ?? undefined,
+    chain: walletClient.chain,
   })
   logEthSendingTransaction({ txHash: hash, intentionEventId })
   return { hash }

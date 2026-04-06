@@ -142,8 +142,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.CurrencyNotSupported)
     }
 
-    const isBridgeWaitingForQuote = isBridging && !tradeQuote.quote && !tradeQuote.isLoading
-    if (!isBridgeWaitingForQuote && (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading))) {
+    if (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading)) {
       validations.push(TradeFormValidation.QuoteLoading)
     }
 

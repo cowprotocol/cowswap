@@ -7,12 +7,7 @@ const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
 const perfectionist = require('eslint-plugin-perfectionist')
-let prettier
-try {
-  prettier = require('eslint-plugin-prettier')
-} catch {
-  prettier = null
-}
+const prettier = require('eslint-plugin-prettier')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const reactRefresh = require('eslint-plugin-react-refresh')
@@ -33,7 +28,7 @@ module.exports = [
       '@nx': nxEslintPlugin,
       'unused-imports': unusedImports,
       import: eslintImport,
-      ...(prettier && { prettier }),
+      prettier: prettier,
     },
   },
 
@@ -98,9 +93,8 @@ module.exports = [
     files: ['**/*.{js,ts}', '**/*.{jsx,tsx}'],
     plugins: { perfectionist },
     rules: {
-      // TODO: Turn this back on after the Viem migration, and only after running eslint:fix in the whole project.
       'perfectionist/sort-modules': [
-        'off',
+        'warn',
         {
           groups: [
             ['export-interface', 'export-type'],
@@ -122,8 +116,7 @@ module.exports = [
   {
     files: ['**/*.tsx'],
     rules: {
-      complexity: ['error', 20],
-      'max-lines-per-function': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
+      complexity: ['error', 15],
     },
   },
   {
@@ -156,12 +149,6 @@ module.exports = [
         'error',
         {
           paths: [
-            {
-              name: '@cowprotocol/cow-sdk',
-              importNames: ['COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS', 'COW_PROTOCOL_VAULT_RELAYER_ADDRESS'],
-              message:
-                "Please import COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS and COW_PROTOCOL_VAULT_RELAYER_ADDRESS from '@cowprotocol/common-utils', which provides environment-aware versions of these constants.",
-            },
             {
               name: 'ethers',
               message: "Please import from '@ethersproject/module' directly to support tree-shaking.",
@@ -222,7 +209,7 @@ module.exports = [
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@uniswap,@safe-global}/**',
+              pattern: '{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
               group: 'external',
               position: 'before',
             },
@@ -272,7 +259,7 @@ module.exports = [
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',
       'no-var': 'error',
-      ...(prettier && { 'prettier/prettier': 'warn' }),
+      'prettier/prettier': 'warn',
     },
   },
 
@@ -333,14 +320,6 @@ module.exports = [
           patterns: ['modules/*'],
         },
       ],
-    },
-  },
-
-  // cowProtocolContracts.ts is the only file allowed to import these directly from @cowprotocol/cow-sdk
-  {
-    files: ['libs/common-utils/src/cowProtocolContracts.ts'],
-    rules: {
-      '@typescript-eslint/no-restricted-imports': 'off',
     },
   },
 

@@ -15,15 +15,15 @@ import { useContract } from 'common/hooks/useContract'
 
 import { AirdropDataInfo, IAirdrop, IClaimData } from '../types'
 
+export interface PreviewClaimableTokensParams {
+  dataBaseUrl: string
+  address: string
+}
+
 /** Legacy contract shape for type narrowing; actual implementation is stub (null). */
 type AirdropContractLike = {
   isClaimed(index: number): Promise<boolean>
   interface: { encodeFunctionData(name: string, args: unknown[]): string }
-}
-
-export interface PreviewClaimableTokensParams {
-  dataBaseUrl: string
-  address: string
 }
 
 type ChunkDataType = { [key: string]: AirdropDataInfo[] }
@@ -138,7 +138,7 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
         )
       }
 
-      const isClaimed = await airdropContract.isClaimed(isEligibleData.index)
+      const isClaimed = await airdropContract?.isClaimed(isEligibleData.index)
 
       const callData = airdropContract.interface.encodeFunctionData('claim', [
         isEligibleData.index, //index

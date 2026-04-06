@@ -1,12 +1,11 @@
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useNavigateToNewOrderCallback, useTradeConfirmState } from 'modules/trade'
-
-import { useEffectiveChainId } from 'common/hooks/useEffectiveChainId'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
@@ -16,7 +15,7 @@ interface OrderSubmittedContentProps {
 }
 
 export function OrderSubmittedContent({ onDismiss }: OrderSubmittedContentProps): ReactNode {
-  const chainId = useEffectiveChainId()
+  const { chainId } = useWalletInfo()
   const { transactionHash } = useTradeConfirmState()
   const order = useOrder({ chainId, id: transactionHash || undefined })
 

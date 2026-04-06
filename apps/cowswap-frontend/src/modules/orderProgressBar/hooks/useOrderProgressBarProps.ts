@@ -85,7 +85,7 @@ export function useOrderProgressBarProps(
   )
 
   const surplusData = useGetSurplusData(order)
-  const receiverEnsName = useENS((order?.receiver ?? undefined) as `0x${string}` | undefined).name || undefined
+  const receiverEnsName = useENS(order?.receiver).name || undefined
 
   const props = useMemo(() => {
     // Add supplementary stuff
@@ -179,6 +179,39 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
+  const winnerSolver = useMemo(
+    () => (apiSolverCompetition?.[0] ? mergeSolverData(apiSolverCompetition[0], solversInfo) : undefined),
+    [apiSolverCompetition, solversInfo],
+  )
+  const { swapAndBridgeContext } = useSwapAndBridgeContext(chainId, isBridgingTrade ? order : undefined, winnerSolver)
+  const bridgingStatus = swapAndBridgeContext?.bridgingStatus
+
+  // Local updaters of the respective atom
+  useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
+  useProgressBarStepNameUpdater(
+    orderId,
+    isUnfillable,
+    isCancelled,
+    isExpired,
+    isCancelling,
+    cancellationTriggered,
+    isConfirmed,
+    countdown,
+    backendApiStatus,
+    previousBackendApiStatus,
+    lastTimeChangedSteps,
+    previousStepName,
+    bridgingStatus,
+    isBridgingTrade,
+  )
+  useCancellingOrderUpdater(orderId, isCancelling)
+  useCountdownStartUpdater(
+    orderId,
+    countdown,
+    backendApiStatus,
+    isUnfillable || isCancelled || isCancelling || isExpired,
+  )
+
   const solverCompetition = useMemo(() => {
     const solversMap = apiSolverCompetition?.reduce(
       (acc, entry) => {
@@ -199,39 +232,6 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
         .reverse()
     )
   }, [apiSolverCompetition, solversInfo])
-  const { swapAndBridgeContext } = useSwapAndBridgeContext(
-    chainId,
-    isBridgingTrade ? order : undefined,
-    solverCompetition?.[0],
-  )
-  const bridgingStatus = swapAndBridgeContext?.bridgingStatus
-
-  // Local updaters of the respective atom
-  useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
-  useProgressBarStepNameUpdater(
-    orderId,
-    isUnfillable,
-    isCancelled,
-    isExpired,
-    isCancelling,
-    cancellationTriggered,
-    isConfirmed,
-    countdown,
-    backendApiStatus,
-    previousBackendApiStatus,
-    lastTimeChangedSteps,
-    previousStepName,
-    progressBarStepName,
-    bridgingStatus,
-    isBridgingTrade,
-  )
-  useCancellingOrderUpdater(orderId, isCancelling)
-  useCountdownStartUpdater(
-    orderId,
-    countdown,
-    backendApiStatus,
-    isUnfillable || isCancelled || isCancelling || isExpired,
-  )
 
   return useMemo(() => {
     if (disableProgressBar) {
@@ -273,7 +273,6 @@ export function getProgressBarStepName(
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName'],
-  persistedProgressBarStepName: OrderProgressBarState['progressBarStepName'],
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
 ): OrderProgressBarStepName {
@@ -339,16 +338,14 @@ export function getProgressBarStepName(
   } else if (
     (backendApiStatus === CompetitionOrderStatus.type.OPEN ||
       backendApiStatus === CompetitionOrderStatus.type.SCHEDULED) &&
-    persistedProgressBarStepName &&
-    persistedProgressBarStepName !== OrderProgressBarStepName.INITIAL
+    previousStepName &&
+    previousStepName !== OrderProgressBarStepName.INITIAL
   ) {
     // once moved out of initial state, never go back to it
     return OrderProgressBarStepName.DELAYED
   } else if (backendApiStatus) {
     // straight mapping API status to progress bar steps
     return BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME[backendApiStatus]
-  } else if (persistedProgressBarStepName && persistedProgressBarStepName !== OrderProgressBarStepName.INITIAL) {
-    return persistedProgressBarStepName
   }
 
   return OrderProgressBarStepName.INITIAL
@@ -421,7 +418,6 @@ function useProgressBarStepNameUpdater(
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
   previousStepName: OrderProgressBarState['previousStepName'],
-  persistedProgressBarStepName: OrderProgressBarState['progressBarStepName'],
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
 ): void {
@@ -438,7 +434,6 @@ function useProgressBarStepNameUpdater(
     backendApiStatus,
     previousBackendApiStatus,
     previousStepName,
-    persistedProgressBarStepName,
     bridgingStatus,
     isBridgingTrade,
   )

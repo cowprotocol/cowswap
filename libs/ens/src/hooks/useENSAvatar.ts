@@ -6,7 +6,7 @@ import { useEnsAvatar } from 'wagmi'
 
 import { useENSName } from './useENSName'
 
-import { normalize } from '../utils/normalize'
+import { normalizeEnsName } from '../utils/normalize'
 
 import type { Address } from 'viem'
 
@@ -16,7 +16,7 @@ import type { Address } from 'viem'
  */
 export function useENSAvatar(account: Address | undefined): { avatar: string | null; loading: boolean } {
   const ENSName = useENSName(account).ENSName
-  const response = useEnsAvatar({ name: normalize(ENSName) })
+  const response = useEnsAvatar({ name: normalizeEnsName(ENSName) })
 
   const http = useMemo(() => response.data && uriToHttp(response.data)[0], [response.data])
 

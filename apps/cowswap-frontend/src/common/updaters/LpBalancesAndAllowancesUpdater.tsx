@@ -9,6 +9,8 @@ import ms from 'ms.macro'
 
 import { areLpBalancesLoadedAtom } from './lpBalancesState'
 
+const LP_BALANCES_QUERY_OPTIONS = { refetchInterval: 32_000, refetchOnMount: false } as const
+
 // To avoid high load to the node at the same time
 // We start the updater with a delay
 const LP_UPDATER_START_DELAY = ms`3s`
@@ -44,10 +46,7 @@ export function LpBalancesAndAllowancesUpdater({
     setAreLpBalancesLoaded(false)
   }, [account, setAreLpBalancesLoaded])
 
-  const queryOptions = useMemo(() => {
-    if (!enablePolling) return undefined
-    return { refetchInterval: 32_000, refetchOnMount: false }
-  }, [enablePolling])
+  const queryOptions = enablePolling ? LP_BALANCES_QUERY_OPTIONS : undefined
 
   return (
     <>

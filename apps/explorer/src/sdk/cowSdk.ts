@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { bungeeAffiliateCode, RPC_URLS } from '@cowprotocol/common-const'
+import { bungeeAffiliateCode, RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import { AbstractProviderAdapter, OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AcrossBridgeProvider, BungeeBridgeProvider, NearIntentsBridgeProvider } from '@cowprotocol/sdk-bridging'
@@ -8,30 +8,24 @@ import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
 import { Chain, createPublicClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import {
-  arbitrum,
-  avalanche,
-  base,
-  bsc,
-  gnosis,
-  ink,
-  lens,
-  linea,
-  mainnet,
-  plasma,
-  polygon,
-  sepolia,
-} from 'viem/chains'
+import { lens } from 'viem/chains'
 
 import { useNetworkId } from '../state/network'
 
 /** Lens (chain 232); cow-sdk v8 typings omit `SupportedChainId.LENS`. */
 const LENS_CHAIN_ID = 232 as const
+const LENS_DEFAULT_RPC = 'https://rpc.lens.xyz'
+
+/** Read-only signer for the explorer (no real funds at risk). */
+const EXPLORER_SIGNER_KEY = '0xa50dc0f7fc051309434deb3b1c71e927dbb711759231d8ecbf630c85d94a42fe' as const
 
 type ViemChainMapKey = SupportedChainId | typeof LENS_CHAIN_ID
 
 export const cowSdkAdapter = new ViemAdapter({
-  provider: createPublicClient({ chain: mainnet, transport: http(RPC_URLS[SupportedChainId.MAINNET]) }),
+  provider: createPublicClient({
+    chain: VIEM_CHAINS[SupportedChainId.MAINNET],
+    transport: http(RPC_URLS[SupportedChainId.MAINNET]),
+  }),
 }) as AbstractProviderAdapter
 
 export const orderBookApi = new OrderBookApi()
@@ -64,18 +58,8 @@ function getBungeeApiBase(): string | undefined {
 setGlobalAdapter(cowSdkAdapter)
 
 const CHAINS: Record<ViemChainMapKey, Chain> = {
-  [SupportedChainId.MAINNET]: mainnet,
-  [SupportedChainId.BNB]: bsc,
-  [SupportedChainId.GNOSIS_CHAIN]: gnosis,
-  [SupportedChainId.POLYGON]: polygon,
+  ...VIEM_CHAINS,
   [LENS_CHAIN_ID]: lens,
-  [SupportedChainId.BASE]: base,
-  [SupportedChainId.PLASMA]: plasma,
-  [SupportedChainId.ARBITRUM_ONE]: arbitrum,
-  [SupportedChainId.AVALANCHE]: avalanche,
-  [SupportedChainId.LINEA]: linea,
-  [SupportedChainId.INK]: ink,
-  [SupportedChainId.SEPOLIA]: sepolia,
 }
 
 export function CowSdkUpdater(): null {
@@ -90,11 +74,11 @@ export function CowSdkUpdater(): null {
           chain: CHAINS[chainId as ViemChainMapKey],
           transport: http(
             (chainId as number) === LENS_CHAIN_ID
-              ? ((process.env['REACT_APP_NETWORK_URL_232'] as string | undefined) ?? 'https://rpc.lens.xyz')
+              ? ((process.env['REACT_APP_NETWORK_URL_232'] as string | undefined) ?? LENS_DEFAULT_RPC)
               : RPC_URLS[chainId as SupportedChainId],
           ),
         }),
-        signer: privateKeyToAccount('0xa50dc0f7fc051309434deb3b1c71e927dbb711759231d8ecbf630c85d94a42fe'),
+        signer: privateKeyToAccount(EXPLORER_SIGNER_KEY),
       }) as AbstractProviderAdapter,
     )
   }, [chainId])

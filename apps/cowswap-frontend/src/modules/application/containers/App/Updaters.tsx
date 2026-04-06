@@ -7,7 +7,7 @@ import {
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -82,7 +82,6 @@ export function Updaters(): ReactNode {
       <TradingSdkUpdater />
       {/*Set custom chainId only when it differs from the wallet chainId*/}
       <WalletUpdater standaloneMode={standaloneMode} />
-      <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
       <PendingOrdersUpdater />

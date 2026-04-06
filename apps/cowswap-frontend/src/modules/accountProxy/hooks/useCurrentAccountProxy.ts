@@ -32,6 +32,14 @@ const COW_SHED_ABI = [
 
 const IMPLEMENTATION_STORAGE_SLOT = slot('eip1967.proxy.implementation')
 
+interface ProxyAndAccount {
+  chainId: SupportedChainId
+  proxyAddress: string
+  account: Address
+  isProxyDeployed: boolean
+  isProxySetupValid: boolean | null
+}
+
 /**
  * Returns the address of the implementation of an EIP-1967-compatible proxy
  * from its address.
@@ -48,14 +56,6 @@ export async function implementationAddress(config: Config, proxy: string): Prom
   if (!storage || storage === '0x') return ZERO_ADDRESS
 
   return `0x${storage.slice(-40)}`
-}
-
-interface ProxyAndAccount {
-  chainId: SupportedChainId
-  proxyAddress: string
-  account: Address
-  isProxyDeployed: boolean
-  isProxySetupValid: boolean | null
 }
 
 const UNKNOW_COWSHED_REFRESH_INTERVAL = ms`3s`
@@ -117,6 +117,9 @@ async function getIsProxySetupValid(
   config: Config,
   cowShedHooks: CowShedHooks,
 ): Promise<boolean | null> {
+  // Skip validation if network mismatch
+  if (config.state.chainId !== chainId) return true
+
   console.debug('[CoWShed validation] network', {
     chainId,
   })
