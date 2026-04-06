@@ -157,6 +157,9 @@ export function Configurator({ title }: { title: string }) {
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
   const toggleDisableProgressBar = useCallback(() => setDisableProgressBar((curr) => !curr), [])
 
+  const [disablePostTradeTips, setDisablePostTradeTips] = useState<boolean>(false)
+  const toggleDisablePostTradeTips = useCallback(() => setDisablePostTradeTips((curr) => !curr), [])
+
   const [disableCrossChainSwap, setDisableCrossChainSwap] = useState<boolean>(false)
   const toggleDisableCrossChainSwap = useCallback(() => setDisableCrossChainSwap((curr) => !curr), [])
 
@@ -235,6 +238,7 @@ export function Configurator({ title }: { title: string }) {
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
+    disablePostTradeTips,
     disableCrossChainSwap,
     disableTokenImport,
     hideRecentTokens,
@@ -419,6 +423,20 @@ export function Configurator({ title }: { title: string }) {
           <RadioGroup row aria-label="mode" name="mode" value={disableProgressBar} onChange={toggleDisableProgressBar}>
             <FormControlLabel value="false" control={<Radio />} label="Show SWAP progress bar" />
             <FormControlLabel value="true" control={<Radio />} label="Hide SWAP progress bar" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Post-trade CoW Swap tips:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="mode"
+            name="mode"
+            value={disablePostTradeTips}
+            onChange={toggleDisablePostTradeTips}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Show post-trade tips" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide post-trade tips" />
           </RadioGroup>
         </FormControl>
 
