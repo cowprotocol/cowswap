@@ -11,14 +11,13 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
-import { SELL_ETH_RESET_STATE } from 'modules/swap'
+import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
   TradeWidget,
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
   useIsEoaEthFlow,
-  useIsCurrentTradeBridging,
   useTradePriceImpact,
   useWrapNativeFlow,
   useShouldHideQuoteAmounts,
@@ -97,18 +96,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     isUnlocked,
   } = useSwapDerivedState()
   const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
-  const isBridge = useIsCurrentTradeBridging()
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
-
-  const hasMinimalBridgeFormData =
-    isBridge &&
-    !!inputCurrency &&
-    !!outputCurrency &&
-    !!(
-      (inputCurrencyAmount && inputCurrencyAmount.greaterThan(0)) ||
-      (outputCurrencyAmount && outputCurrencyAmount.greaterThan(0))
-    )
-  const isTradeContextReady = doTrade.contextIsReady || hasMinimalBridgeFormData
   const isSmartContractWallet = useIsSmartContractWallet()
   const { account } = useWalletInfo()
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
@@ -223,7 +211,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
             <TradeButtons
-              isTradeContextReady={isTradeContextReady}
+              isTradeContextReady={doTrade.contextIsReady}
               openNativeWrapModal={openNativeWrapModal}
               hasEnoughWrappedBalanceForSwap={hasEnoughWrappedBalanceForSwap}
               tokenToBeImported={toBeImported}
@@ -238,7 +226,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         rateInfoParams,
         deadlineState,
         buyingFiatAmount,
-        isTradeContextReady,
+        doTrade.contextIsReady,
         openNativeWrapModal,
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
