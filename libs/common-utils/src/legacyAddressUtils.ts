@@ -174,7 +174,7 @@ function getSolLegacyExplorerUrl(basePath: string, data: string, type: BlockExpl
     default:
       return `${basePath}/address/${data}`
     case 'block':
-      return `${basePath}` // Solana explorer has no block page
+      return `${basePath}/block/${data}`
   }
 }
 

@@ -43,7 +43,7 @@ function getSolExplorerData(prefix: string, data: string, type: ExplorerDataType
     case ExplorerDataType.ADDRESS:
       return `${prefix}/address/${data}`
     case ExplorerDataType.BLOCK:
-      return `${prefix}` // Solana explorer has no block page
+      return `${prefix}/block/${data}`
     default:
       return `${prefix}`
   }
