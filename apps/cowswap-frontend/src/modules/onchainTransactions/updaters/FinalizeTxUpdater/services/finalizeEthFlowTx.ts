@@ -1,5 +1,6 @@
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
+
 import { t } from '@lingui/core/macro'
-import { TransactionReceipt } from 'viem'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
@@ -14,45 +15,34 @@ export function finalizeEthFlowTx(
   receipt: TransactionReceipt,
   params: CheckEthereumTransactions,
   hash: string,
-  shouldShowNotification = true,
 ): void {
   const ethFlowInfo = transaction.ethFlow!
   const { orderId, subType } = ethFlowInfo
   const { chainId, isSafeWallet, dispatch, nativeCurrencySymbol } = params
 
   if (subType === 'creation') {
-    if (receipt.status !== 'success') {
+    if (receipt.status !== 1) {
       // If creation failed:
       // 1. Mark order as invalid
       dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
-      // 2. Show failure tx pop-up (only if not from a previous session)
+      // 2. Show failure tx pop-up
 
-      if (shouldShowNotification) {
-        emitOnchainTransactionEvent({
-          receipt: {
-            to: receipt.to,
-            from: receipt.from,
-            contractAddress: receipt.contractAddress,
-            transactionHash: receipt.transactionHash,
-            blockNumber: receipt.blockNumber,
-            status: receipt.status,
-            replacementType: transaction.replacementType,
-          },
-          summary: t`Failed to place order selling ${nativeCurrencySymbol}`,
-        })
-      }
+      emitOnchainTransactionEvent({
+        receipt: {
+          to: receipt.to,
+          from: receipt.from,
+          contractAddress: receipt.contractAddress,
+          transactionHash: receipt.transactionHash,
+          blockNumber: receipt.blockNumber,
+          status: receipt.status,
+          replacementType: transaction.replacementType,
+        },
+        summary: t`Failed to place order selling ${nativeCurrencySymbol}`,
+      })
     }
   }
 
   if (subType === 'cancellation') {
-    finalizeOnChainCancellation(
-      transaction,
-      receipt,
-      params,
-      hash,
-      orderId,
-      nativeCurrencySymbol,
-      shouldShowNotification,
-    )
+    finalizeOnChainCancellation(transaction, receipt, params, hash, orderId, nativeCurrencySymbol)
   }
 }
