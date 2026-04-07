@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.2...widget-lib-v2.2.3) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** trigger re-deployment 2 ([6df9c79](https://github.com/cowprotocol/cowswap/commit/6df9c79f407bcdf8a253db3dcf80f5ce41c59fa3))
+* **widget:** trigger re-deployment 2 ([a7b60b8](https://github.com/cowprotocol/cowswap/commit/a7b60b85193d9e2a5f7da6fe76e5a1ad590b6cbc))
+
 ## [2.2.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.1...widget-lib-v2.2.2) (2026-04-07)
 
 
