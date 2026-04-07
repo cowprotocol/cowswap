@@ -1,14 +1,11 @@
 import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/react/macro'
 
-import { callWidgetHook } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
@@ -62,24 +59,6 @@ export function useApproveAndSwap({
 
   return useCallback(async (): Promise<void> => {
     if (!account || !tradeSpenderAddress) return
-
-    const tokenAmount = currencyAmountToTokenAmount(amountToApprove)
-    const approvalAmount = isPartialApproveEnabledByUser
-      ? amountToApprove.quotient.toString()
-      : MAX_APPROVE_AMOUNT.toString()
-    const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
-      chainId: tokenAmount.currency.chainId,
-      sellToken: {
-        ...tokenAmount.currency,
-        name: tokenAmount.currency.name || '',
-        symbol: tokenAmount.currency.symbol || '',
-      },
-      sellAmount: approvalAmount,
-      walletAddress: account,
-      spenderAddress: tradeSpenderAddress,
-    })
-
-    if (!isWidgetHookPassed) return
 
     const isPermitFlow = await handlePermit()
 

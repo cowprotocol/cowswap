@@ -17,6 +17,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import { IframeResizer } from './IframeResizer'
 
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
+import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
@@ -78,11 +79,13 @@ export function InjectedWidgetUpdater(): ReactNode {
     },
     updateParams,
   ] = useAtom(injectedWidgetParamsAtom)
+  const setHooksEnabled = useSetAtom(injectedWidgetHooksEnabledAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
 
   const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
+  const isReadySentRef = useRef(false)
 
   useEffect(() => {
     // Stop listening of message outside of React
@@ -108,8 +111,10 @@ export function InjectedWidgetUpdater(): ReactNode {
         prevData.current = data
 
         const appParams = data.appParams
+        const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
 
         const errors = validateWidgetParams(appParams)
+        setHooksEnabled(hooksEnabled)
 
         updateParams({
           params: appParams,
@@ -140,11 +145,20 @@ export function InjectedWidgetUpdater(): ReactNode {
       delete messagesCache[method]
     })
 
+    const parent = window.parent !== window.self ? window.parent : null
+    const frameId = window.requestAnimationFrame(() => {
+      if (!parent || isReadySentRef.current) return
+
+      isReadySentRef.current = true
+      widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.READY, void 0)
+    })
+
     return () => {
+      window.cancelAnimationFrame(frameId)
       widgetIframeTransport.stopListeningWindowListener(window, updateParamsListener)
       widgetIframeTransport.stopListeningWindowListener(window, updateAppDataListener)
     }
-  }, [updateMetaData, navigate, updateParams])
+  }, [setHooksEnabled, updateMetaData, navigate, updateParams])
 
   // Log an error when partnerFee was set and then discarded
   useEffect(() => {
