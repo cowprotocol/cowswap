@@ -52,40 +52,6 @@ interface BuildQuoteParamsArgs {
   hasSmartSlippage: boolean
 }
 
-function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
-  const { inputCurrency, outputCurrency, orderKind, amount, account, provider } = args
-  const { appDataDoc, receiver, bridgeRecipient, volumeFee, userSlippageBps, partiallyFillable, hasSmartSlippage } =
-    args
-
-  // BridgingSDK needs a wallet for route validation, use a hardcoded one when not connected
-  const signer = account ? provider!.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
-  const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
-
-  const quoteParams: QuoteBridgeRequest = {
-    kind: orderKind,
-    amount: BigInt(amount),
-    owner,
-    sellTokenChainId: inputCurrency.chainId,
-    sellTokenAddress: getCurrencyAddress(inputCurrency),
-    sellTokenDecimals: inputCurrency.decimals,
-    buyTokenChainId: outputCurrency.chainId,
-    buyTokenAddress: getCurrencyAddress(outputCurrency),
-    buyTokenDecimals: outputCurrency.decimals,
-    account: owner,
-    appCode: appDataDoc?.appCode || DEFAULT_APP_CODE,
-    signer,
-    ethFlowContractOverride: COW_PROTOCOL_ETH_FLOW_ADDRESS,
-    receiver,
-    ...(bridgeRecipient ? { bridgeRecipient } : undefined),
-    validFor: DEFAULT_QUOTE_TTL,
-    ...(volumeFee ? { partnerFee: volumeFee } : undefined),
-    partiallyFillable,
-    ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
-  }
-
-  return { quoteParams, inputCurrency, appData: appDataDoc, hasSmartSlippage }
-}
-
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
   const provider = useWalletProvider()
@@ -151,4 +117,38 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)
+}
+
+function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
+  const { inputCurrency, outputCurrency, orderKind, amount, account, provider } = args
+  const { appDataDoc, receiver, bridgeRecipient, volumeFee, userSlippageBps, partiallyFillable, hasSmartSlippage } =
+    args
+
+  // BridgingSDK needs a wallet for route validation, use a hardcoded one when not connected
+  const signer = account ? provider!.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
+  const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
+
+  const quoteParams: QuoteBridgeRequest = {
+    kind: orderKind,
+    amount: BigInt(amount),
+    owner,
+    sellTokenChainId: inputCurrency.chainId,
+    sellTokenAddress: getCurrencyAddress(inputCurrency),
+    sellTokenDecimals: inputCurrency.decimals,
+    buyTokenChainId: outputCurrency.chainId,
+    buyTokenAddress: getCurrencyAddress(outputCurrency),
+    buyTokenDecimals: outputCurrency.decimals,
+    account: owner,
+    appCode: appDataDoc?.appCode || DEFAULT_APP_CODE,
+    signer,
+    ethFlowContractOverride: COW_PROTOCOL_ETH_FLOW_ADDRESS,
+    receiver,
+    ...(bridgeRecipient ? { bridgeRecipient } : undefined),
+    validFor: DEFAULT_QUOTE_TTL,
+    ...(volumeFee ? { partnerFee: volumeFee } : undefined),
+    partiallyFillable,
+    ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
+  }
+
+  return { quoteParams, inputCurrency, appData: appDataDoc, hasSmartSlippage }
 }

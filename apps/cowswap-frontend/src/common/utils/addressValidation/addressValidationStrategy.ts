@@ -1,5 +1,13 @@
 import { isAddress } from '@cowprotocol/common-utils'
-import { AdditionalTargetChainId, isBtcAddress, isEvmChain, isSolanaAddress, TargetChainId } from '@cowprotocol/cow-sdk'
+import {
+  AdditionalTargetChainId,
+  BTC_ADDRESS_PATTERN,
+  isBtcAddress,
+  isEvmChain,
+  isSolanaAddress,
+  SOL_ADDRESS_PATTERN,
+  TargetChainId,
+} from '@cowprotocol/cow-sdk'
 
 export interface AddressValidationStrategy {
   isValidAddress(value: string): boolean
@@ -10,22 +18,14 @@ export interface AddressValidationStrategy {
   pattern: string
 }
 
-// EVM hex address OR ENS name (*.eth, subdomains allowed)
-const EVM_PATTERN = '^(0x[a-fA-F0-9]{40}|[a-zA-Z0-9][a-zA-Z0-9\\-.]*\\.eth)$'
-
-// Legacy P2PKH/P2SH (Base58Check, 25-34 bytes) and Bech32/Bech32m (bc1…/BC1… — case-insensitive per BIP173).
-// Mirrors the SDK's BTC_LEGACY_ADDRESS_PATTERN and BTC_BECH32_MAINNET_PATTERN exactly.
-const BTC_PATTERN = '^([13][a-km-zA-HJ-NP-Z1-9]{24,33}|bc1[a-z0-9]{39,59}|BC1[A-Z0-9]{39,59})$'
-
-// Base58-encoded 32-byte public key (no 0, O, I, l)
-const SOL_PATTERN = '^[1-9A-HJ-NP-Za-km-z]{32,44}$'
+const EVM_PATTERN_WITH_ENS = '^(0x[a-fA-F0-9]{40}|[a-zA-Z0-9][a-zA-Z0-9\\-.]*\\.eth)$'
 
 const evmStrategy: AddressValidationStrategy = {
   isValidAddress: (value: string) => Boolean(isAddress(value)),
   supportsENS: true,
   placeholderKey: 'evm',
   supportsChainPrefix: true,
-  pattern: EVM_PATTERN,
+  pattern: EVM_PATTERN_WITH_ENS,
 }
 
 const btcStrategy: AddressValidationStrategy = {
@@ -33,7 +33,7 @@ const btcStrategy: AddressValidationStrategy = {
   supportsENS: false,
   placeholderKey: 'nonEvm',
   supportsChainPrefix: false,
-  pattern: BTC_PATTERN,
+  pattern: BTC_ADDRESS_PATTERN.source,
 }
 
 const solanaStrategy: AddressValidationStrategy = {
@@ -41,7 +41,7 @@ const solanaStrategy: AddressValidationStrategy = {
   supportsENS: false,
   placeholderKey: 'nonEvm',
   supportsChainPrefix: false,
-  pattern: SOL_PATTERN,
+  pattern: SOL_ADDRESS_PATTERN.source,
 }
 
 export function getAddressValidationStrategy(targetChainId?: TargetChainId): AddressValidationStrategy {
