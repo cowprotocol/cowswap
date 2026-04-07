@@ -1,5 +1,3 @@
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-
 import { t } from '@lingui/core/macro'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
@@ -9,6 +7,8 @@ import { finalizeOnChainCancellation } from './finalizeOnChainCancellation'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
+
+import type { TransactionReceipt } from 'viem'
 
 export function finalizeEthFlowTx(
   transaction: EnhancedTransactionDetails,
@@ -21,7 +21,7 @@ export function finalizeEthFlowTx(
   const { chainId, isSafeWallet, dispatch, nativeCurrencySymbol } = params
 
   if (subType === 'creation') {
-    if (receipt.status !== 1) {
+    if (receipt.status !== 'success') {
       // If creation failed:
       // 1. Mark order as invalid
       dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
