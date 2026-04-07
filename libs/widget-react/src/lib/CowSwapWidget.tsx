@@ -11,7 +11,7 @@ import {
 } from '@cowprotocol/widget-lib'
 
 export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
-  const { params, provider, listeners } = props
+  const { params, provider, listeners, onReady } = props
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
@@ -67,7 +67,12 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
 
     if (handler === null) {
       tryOrHandleError('Creating a new widget', () => {
-        widgetHandlerRef.current = createCowSwapWidget(container, { params, provider: providerRef.current, listeners })
+        widgetHandlerRef.current = createCowSwapWidget(container, {
+          params,
+          provider: providerRef.current,
+          listeners,
+          onReady,
+        })
         listenersRef.current = listeners
       })
     } else {
@@ -101,12 +106,17 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
         widgetHandlerRef.current?.destroy()
 
         // Re-create the widget
-        widgetHandlerRef.current = createCowSwapWidget(container, { params, provider: providerRef.current, listeners })
+        widgetHandlerRef.current = createCowSwapWidget(container, {
+          params,
+          provider: providerRef.current,
+          listeners,
+          onReady,
+        })
       })
     }
     // Trigger only on provider changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, tryOrHandleError])
+  }, [onReady, provider, tryOrHandleError])
 
   // Update widget listeners (if they change)
   useEffect(() => {

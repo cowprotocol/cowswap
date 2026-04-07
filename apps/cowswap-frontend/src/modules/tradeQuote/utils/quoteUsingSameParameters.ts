@@ -30,13 +30,13 @@ export function quoteUsingSameParameters(
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
     const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails?.preAuthorizedBridgingHook?.postHook
 
-    const { isChanged: isAppDataChanged, diff: appDataDiff } = compareAppDataWithoutQuoteData(
+    const { isEqual: isAppDataEqual, diff: appDataDiff } = compareAppDataWithoutQuoteData(
       removeBridgePostHook(currentAppData, bridgePostHook),
       removeBridgePostHook(appData, bridgePostHook),
     )
 
     const cases = [
-      [isAppDataChanged, 'appData', appDataDiff],
+      [isAppDataEqual, 'appData', appDataDiff],
       [currentParams.owner === nextParams.owner, 'owner'],
       [currentParams.kind === nextParams.kind, 'kind'],
       [currentParams.amount === nextParams.amount.toString(), 'amount'],
@@ -59,10 +59,10 @@ export function quoteUsingSameParameters(
     return changes.length === 0
   }
 
-  const { isChanged: isAppDataChanged, diff: appDataDiff } = compareAppDataWithoutQuoteData(currentAppData, appData)
+  const { isEqual: isAppDataEqual, diff: appDataDiff } = compareAppDataWithoutQuoteData(currentAppData, appData)
 
   const cases = [
-    [isAppDataChanged, 'appData', appDataDiff],
+    [isAppDataEqual, 'appData', appDataDiff],
     [currentParams.owner === nextParams.owner, 'owner'],
     [currentParams.kind === nextParams.kind, 'kind'],
     [currentParams.amount === nextParams.amount.toString(), 'amount'],
@@ -98,17 +98,17 @@ function areHooksEqual(hookA: CowHook | undefined, hookB: CowHook | undefined): 
 function compareAppDataWithoutQuoteData(
   a: AppDataInfo['doc'] | undefined,
   b: AppDataInfo['doc'] | undefined,
-): { isChanged: boolean; diff?: string[] } {
-  if (a === b) return { isChanged: true }
+): { isEqual: boolean; diff?: string[] } {
+  if (a === b) return { isEqual: true }
 
   if (!a || !b) {
-    return { isChanged: a === b }
+    return { isEqual: a === b }
   }
 
   const aMetaData = removeQuoteMetadata(a)
   const bMetaData = removeQuoteMetadata(b)
 
-  return { isChanged: aMetaData === bMetaData, diff: [aMetaData, bMetaData] }
+  return { isEqual: aMetaData === bMetaData, diff: [aMetaData, bMetaData] }
 }
 
 /**
