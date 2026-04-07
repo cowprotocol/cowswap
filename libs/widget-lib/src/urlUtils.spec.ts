@@ -139,6 +139,7 @@ describe('buildWidgetUrlQuery', () => {
       hooks: {
         onBeforeTrade: () => true,
         onBeforeApproval: () => true,
+        onBeforeOrderCancel: () => true,
       },
     })
 
