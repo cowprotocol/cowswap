@@ -1,5 +1,67 @@
 # Changelog
 
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.2.0...cowswap-v3.2.1) (2026-04-03)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** hooks preventing trading on older versions ([#7249](https://github.com/cowprotocol/cowswap/issues/7249)) ([120e840](https://github.com/cowprotocol/cowswap/commit/120e8402fcbdc95677aa32bc247b55bc12970257))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.1.1
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.1.0...cowswap-v3.2.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **widget:** control available tokens to select to sell or buy ([#7201](https://github.com/cowprotocol/cowswap/issues/7201)) ([7a74e24](https://github.com/cowprotocol/cowswap/commit/7a74e242deee18b47b36aaf5efefa0d4fb108973))
+* **widget:** control trading with price impact ([#7202](https://github.com/cowprotocol/cowswap/issues/7202)) ([3af7bf1](https://github.com/cowprotocol/cowswap/commit/3af7bf125aa404ac4bb30b21950eab3ee5b68067))
+* **widget:** hook wallet interactions ([#7228](https://github.com/cowprotocol/cowswap/issues/7228)) ([681b1d7](https://github.com/cowprotocol/cowswap/commit/681b1d7e77a1fc7bc03063345f71a81169691c53))
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.3
+    * @cowprotocol/balances-and-allowances bumped to 3.0.4
+    * @cowprotocol/events bumped to 4.1.0
+    * @cowprotocol/multicall bumped to 3.0.4
+    * @cowprotocol/snackbars bumped to 2.0.14
+    * @cowprotocol/tokens bumped to 3.1.0
+    * @cowprotocol/ui bumped to 3.1.1
+    * @cowprotocol/wallet bumped to 3.0.4
+    * @cowprotocol/widget-lib bumped to 2.1.0
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.5...cowswap-v3.1.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **affiliate:** add affiliate program page to cow-fi ([#7232](https://github.com/cowprotocol/cowswap/issues/7232)) ([fbf93d7](https://github.com/cowprotocol/cowswap/commit/fbf93d71b6c423d3378eb9b7d51ab09082f770a9))
+
+
+### 🐛 Bug Fixes
+
+* **affiliate:** unit tests ([4b59489](https://github.com/cowprotocol/cowswap/commit/4b594896e1434043edff56216f262153cbaf9d4a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/assets bumped to 2.2.0
+    * @cowprotocol/balances-and-allowances bumped to 3.0.3
+    * @cowprotocol/multicall bumped to 3.0.3
+    * @cowprotocol/snackbars bumped to 2.0.13
+    * @cowprotocol/tokens bumped to 3.0.3
+    * @cowprotocol/ui bumped to 3.1.0
+    * @cowprotocol/wallet bumped to 3.0.3
+
 ## [3.0.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.0.4...cowswap-v3.0.5) (2026-03-20)
 
 

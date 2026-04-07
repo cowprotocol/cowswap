@@ -1,7 +1,7 @@
 import { FormEvent, ReactNode, useCallback, useState } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import {
   PartnerCodeAvailability,
@@ -13,7 +13,8 @@ import { formatRefCode, generateSuggestedCode, isSupportedPayoutsNetwork } from 
 import { AffiliatePartnerCodeForm } from '../pure/AffiliatePartner/AffiliatePartnerCodeForm'
 
 export function AffiliatePartnerCodeCreation(): ReactNode {
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
+  const chainId = useWalletChainId()
   const provider = useWalletProvider()
 
   const isCreateEnabled = !!account && !!provider && isSupportedPayoutsNetwork(chainId)
