@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { normalizeError } from '@cowprotocol/common-utils'
 import { useWalletInfo, useActivateConnector, ConnectionType } from '@cowprotocol/wallet'
 
 import { useCloseModal, useModalIsOpen } from 'legacy/state/application/hooks'
@@ -14,6 +13,7 @@ import { useAccountModalState } from 'modules/account'
 import { useSetWalletConnectionError } from '../../hooks/useSetWalletConnectionError'
 import { useWalletConnectionError } from '../../hooks/useWalletConnectionError'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../pure/WalletModal'
+import { getWalletConnectionErrorMessage } from '../../utils/getWalletConnectionErrorMessage'
 import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
 
 // TODO: Break down this large function into smaller functions
@@ -70,9 +70,8 @@ export function WalletModal() {
           setWalletView('account')
         },
         onActivationError(err: unknown) {
-          const error = normalizeError(err)
           dispatch(updateSelectedWallet({ wallet: undefined }))
-          setWalletConnectionError(error.message)
+          setWalletConnectionError(getWalletConnectionErrorMessage(err))
         },
       }),
       [isWalletChangingFlow, closeWalletModal, dispatch, setWalletConnectionError, toggleAccountSelectorModal],

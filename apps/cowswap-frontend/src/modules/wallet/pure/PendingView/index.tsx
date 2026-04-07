@@ -1,6 +1,5 @@
 import { Command } from '@cowprotocol/types'
-import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ButtonEmpty, ButtonPrimary, Loader, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -40,22 +39,30 @@ const ErrorGroup = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
 `
 
 const LoadingWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
   justify-content: center;
+  width: 100%;
+  min-width: 0;
 `
 
 const WalletError = styled.div`
   width: 100%;
+  min-width: 0;
   padding: 16px;
   text-align: center;
   border-radius: 12px;
   background: var(${UI.COLOR_DANGER_BG});
   color: var(${UI.COLOR_DANGER_TEXT});
   margin: -15px 0 20px 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
 `
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation

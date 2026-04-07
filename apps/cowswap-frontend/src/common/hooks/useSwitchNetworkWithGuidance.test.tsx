@@ -32,9 +32,13 @@ jest.mock('@cowprotocol/common-utils', () => ({
   get isMobile() {
     return mockedIsMobile
   },
+  get isCoinbaseWalletBrowser() {
+    return mockedIsCoinbaseWalletBrowser
+  },
 }))
 
 let mockedIsMobile = false
+let mockedIsCoinbaseWalletBrowser = false
 
 const { useConnectionType } = jest.requireMock('@cowprotocol/wallet')
 
@@ -57,7 +61,12 @@ describe('useSwitchNetworkWithGuidance', () => {
     jest.clearAllMocks()
     _resetInFlightState()
     mockedIsMobile = false
+    mockedIsCoinbaseWalletBrowser = false
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.INJECTED)
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
   })
 
   // Test #1: Non-Coinbase wallet
@@ -92,29 +101,78 @@ describe('useSwitchNetworkWithGuidance', () => {
     expect(mockAddSnackbar).not.toHaveBeenCalled()
   })
 
-  // Test #3: Mobile Coinbase + switch succeeds
-  it('shows guidance snackbar and removes it on success for mobile Coinbase', async () => {
+  // Test #3: Mobile Coinbase inside Coinbase browser
+  it('does not show guidance snackbar in the Coinbase wallet browser', async () => {
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
+    mockedIsMobile = true
+    mockedIsCoinbaseWalletBrowser = true
+    jest.useFakeTimers()
+
+    const { promise, resolve } = createResolvablePromise()
+    mockSwitchNetwork.mockReturnValue(promise)
+
+    const { result } = renderHook(() => useSwitchNetworkWithGuidance())
+
+    await act(async () => {
+      const switchPromise = result.current(SupportedChainId.GNOSIS_CHAIN)
+      jest.advanceTimersByTime(500)
+      expect(mockAddSnackbar).not.toHaveBeenCalled()
+      resolve()
+      await switchPromise
+    })
+
+    expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
+    expect(mockRemoveSnackbar).not.toHaveBeenCalled()
+  })
+
+  // Test #4: Mobile Coinbase + switch succeeds quickly
+  it('does not show guidance snackbar for quick mobile Coinbase switches', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
     mockSwitchNetwork.mockResolvedValue(undefined)
+
+    jest.useFakeTimers()
 
     const { result } = renderHook(() => useSwitchNetworkWithGuidance())
 
     await act(async () => {
       await result.current(SupportedChainId.GNOSIS_CHAIN)
+      jest.advanceTimersByTime(500)
     })
 
-    expect(mockAddSnackbar).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: 'coinbase-mobile-network-switch',
-        icon: 'alert',
-      }),
-    )
-    expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
+    expect(mockAddSnackbar).not.toHaveBeenCalled()
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
   })
 
-  // Test #4: Mobile Coinbase + switch times out
+  // Test #5: Mobile Coinbase + switch stays pending
+  it('shows guidance snackbar once the mobile Coinbase switch stays pending', async () => {
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
+    mockedIsMobile = true
+
+    const { promise, resolve } = createResolvablePromise()
+    mockSwitchNetwork.mockReturnValue(promise)
+
+    jest.useFakeTimers()
+
+    const { result } = renderHook(() => useSwitchNetworkWithGuidance())
+
+    await act(async () => {
+      const switchPromise = result.current(SupportedChainId.GNOSIS_CHAIN)
+      jest.advanceTimersByTime(500)
+      expect(mockAddSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'coinbase-mobile-network-switch',
+          icon: 'alert',
+        }),
+      )
+      resolve()
+      await switchPromise
+    })
+
+    expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
+  })
+
+  // Test #6: Mobile Coinbase + switch times out
   it('removes snackbar and rethrows on timeout for mobile Coinbase', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
@@ -129,6 +187,13 @@ describe('useSwitchNetworkWithGuidance', () => {
     const promise = act(async () => {
       try {
         const switchPromise = result.current(SupportedChainId.GNOSIS_CHAIN)
+        jest.advanceTimersByTime(500)
+        expect(mockAddSnackbar).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: 'coinbase-mobile-network-switch',
+            icon: 'alert',
+          }),
+        )
         jest.advanceTimersByTime(60_000)
         await switchPromise
       } catch (e) {
@@ -141,16 +206,16 @@ describe('useSwitchNetworkWithGuidance', () => {
     expect(error).toBeDefined()
     expect(error!.message).toContain('Timeout')
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
-
-    jest.useRealTimers()
   })
 
-  // Test #5: Mobile Coinbase + user rejects
-  it('removes snackbar and rethrows on rejection for mobile Coinbase', async () => {
+  // Test #7: Mobile Coinbase + user rejects quickly
+  it('does not show guidance snackbar for immediate rejections on mobile Coinbase', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
     const rejectionError = new Error('User rejected')
     mockSwitchNetwork.mockRejectedValue(rejectionError)
+
+    jest.useFakeTimers()
 
     const { result } = renderHook(() => useSwitchNetworkWithGuidance())
 
@@ -164,11 +229,11 @@ describe('useSwitchNetworkWithGuidance', () => {
     })
 
     expect(error).toBe(rejectionError)
-    expect(mockAddSnackbar).toHaveBeenCalled()
+    expect(mockAddSnackbar).not.toHaveBeenCalled()
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
   })
 
-  // Test #6: Mobile Coinbase + concurrent from same instance
+  // Test #8: Mobile Coinbase + concurrent from same instance
   it('throws SwitchInProgressError for concurrent call from same instance', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
@@ -207,7 +272,7 @@ describe('useSwitchNetworkWithGuidance', () => {
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
   })
 
-  // Test #7: Mobile Coinbase + concurrent from different instances
+  // Test #9: Mobile Coinbase + concurrent from different instances
   it('shares in-flight guard across different hook instances', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
