@@ -56,4 +56,29 @@ describe('coinbaseConnectionFlow', () => {
       }),
     )
   })
+
+  it('preserves diagnostics for object-shaped provider errors', () => {
+    const sendEvent = jest.fn()
+    const analytics = { sendEvent } as unknown as CowAnalytics
+
+    sendCoinbaseConnectionFlowEvent(analytics, {
+      stage: 'switchError',
+      result: 'error',
+      source: 'networkSelector',
+      isMobile: false,
+      isCoinbaseWallet: true,
+      error: {
+        code: 4001,
+        message: 'User rejected the request',
+      },
+    })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        errorName: 'Error',
+        errorMessage: 'User rejected the request',
+      }),
+    )
+  })
 })

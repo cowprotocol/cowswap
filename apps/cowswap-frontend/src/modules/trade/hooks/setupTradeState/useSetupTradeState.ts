@@ -64,13 +64,13 @@ export function useSetupTradeState(): void {
         // Because it's a normal situation when we are not in Gnosis safe App
         if (error.name === 'NoSafeContext') return
 
-        // SwitchInProgressError is benign — skip noisy logging but still revert URL below
-        if (!(error instanceof SwitchInProgressError)) {
-          console.error('Network switching error: ', error)
-        }
+        // Benign in-flight retries can happen while the original switch is still settling.
+        if (error instanceof SwitchInProgressError) return
+
+        console.error('Network switching error: ', error)
 
         // Revert URL when switch failed — wallet is still on old chain.
-        // Covers: user rejection, timeout, in-flight guard, and other provider errors.
+        // Covers: user rejection, timeout, and other provider errors.
         if (currentProviderChainId) {
           const defaultState = getDefaultTradeRawState(currentProviderChainId)
           tradeNavigate(currentProviderChainId, defaultState)

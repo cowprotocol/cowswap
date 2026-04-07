@@ -105,10 +105,8 @@ describe('useSetupTradeState - switchNetworkInWallet error handling', () => {
     ;(usePrevious as jest.Mock).mockReturnValue(undefined)
   })
 
-  // Test #11: SwitchInProgressError → URL reverts to provider chain
-  // navigateAndSwitchNetwork changes URL first; if switch is blocked by in-flight guard,
-  // URL must revert so it stays in sync with the wallet's actual chain.
-  it('reverts URL on SwitchInProgressError', async () => {
+  // Test #11: SwitchInProgressError → benign retry, no URL revert
+  it('does not revert URL on SwitchInProgressError', async () => {
     mockSwitchNetwork.mockRejectedValue(new SwitchInProgressError())
 
     await act(async () => {
@@ -118,12 +116,8 @@ describe('useSetupTradeState - switchNetworkInWallet error handling', () => {
     expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN, {
       source: 'tradeStateSync',
     })
-    expect(mockTradeNavigate).toHaveBeenCalledWith(SupportedChainId.MAINNET, {
-      chainId: SupportedChainId.MAINNET,
-      targetChainId: null,
-      inputCurrencyId: 'DEFAULT_INPUT',
-      outputCurrencyId: 'DEFAULT_OUTPUT',
-    })
+    const revertCalls = mockTradeNavigate.mock.calls.filter((call: unknown[]) => call[0] === SupportedChainId.MAINNET)
+    expect(revertCalls).toHaveLength(0)
   })
 
   // Test #12: Timeout error → URL reverts

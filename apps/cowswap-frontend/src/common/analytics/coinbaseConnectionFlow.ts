@@ -41,6 +41,14 @@ interface CoinbaseConnectionFlowEventPayload {
   errorMessage?: string
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function getObjectStringField(error: Record<string, unknown>, field: 'message' | 'name'): string | undefined {
+  return field in error && typeof error[field] === 'string' ? error[field] : undefined
+}
+
 function getErrorDetails(error: unknown): Pick<CoinbaseConnectionFlowEventPayload, 'errorName' | 'errorMessage'> {
   if (error instanceof Error) {
     return {
@@ -53,6 +61,18 @@ function getErrorDetails(error: unknown): Pick<CoinbaseConnectionFlowEventPayloa
     return {
       errorName: 'Error',
       errorMessage: error,
+    }
+  }
+
+  if (isRecord(error)) {
+    const errorName = getObjectStringField(error, 'name')
+    const errorMessage = getObjectStringField(error, 'message')
+
+    if (errorName || errorMessage) {
+      return {
+        errorName: errorName || 'Error',
+        errorMessage,
+      }
     }
   }
 
