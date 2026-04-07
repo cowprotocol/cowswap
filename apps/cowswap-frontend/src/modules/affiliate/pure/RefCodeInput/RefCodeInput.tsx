@@ -9,12 +9,14 @@ export interface RefCodeInputProps extends RefCodeInputFieldProps {
   isLoading: boolean
   disabled: boolean
   adornmentVariant?: RefCodeAdornmentVariant
+  connectedBelow?: boolean
 }
 
 export function RefCodeInput({
   hasError,
   isLoading,
   adornmentVariant,
+  connectedBelow,
   compactSize,
   disabled,
   ...inputProps
@@ -28,6 +30,7 @@ export function RefCodeInput({
       isLoading={isLoading || adornmentVariant === 'checking'}
       compactSize={compactSize}
       isAdornmentWrappable={isAdornmentWrappable}
+      connectedBelow={connectedBelow}
     >
       <RefCodeInputField disabled={disabled} compactSize={compactSize} {...inputProps} />
       <RefCodeAdornment variant={adornmentVariant} isAdornmentWrappable={isAdornmentWrappable} />

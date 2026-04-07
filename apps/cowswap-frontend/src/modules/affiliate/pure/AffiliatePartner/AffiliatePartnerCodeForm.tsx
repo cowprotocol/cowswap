@@ -1,10 +1,14 @@
 import { KeyboardEvent, ReactNode, useCallback, useId } from 'react'
 
-import { HelpTooltip } from '@cowprotocol/ui'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { HelpTooltip, Media, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { RotateCw } from 'react-feather'
+import styled from 'styled-components/macro'
+
+import CopyHelper from 'legacy/components/Copy'
 
 import { REF_CODE_MIN_LENGTH } from 'modules/affiliate'
 
@@ -23,6 +27,10 @@ import {
   LabelActions,
   LabelContent,
   LabelRow,
+  LinkedCard,
+  LinkedCopy,
+  LinkedLinkRow,
+  LinkedLinkText,
   MiniAction,
   PrimaryAction,
   StatusText,
@@ -33,6 +41,8 @@ interface AffiliatePartnerCodeFormProps extends AffiliatePartnerCodeFormRefInput
   showInvalidFormat: boolean
   canSubmit: boolean
   submitting: boolean
+  previewLink?: string
+  isPreviewCopyDisabled: boolean
   error?: AffiliatePartnerCodeCreateError
   onGenerate: () => void
   onCreate: () => void
@@ -45,6 +55,8 @@ export function AffiliatePartnerCodeForm({
   showInvalidFormat,
   canSubmit,
   submitting,
+  previewLink,
+  isPreviewCopyDisabled,
   error,
   onGenerate,
   onCreate,
@@ -52,6 +64,7 @@ export function AffiliatePartnerCodeForm({
 }: AffiliatePartnerCodeFormProps): ReactNode {
   const hasError = showInvalidFormat || error === AffiliatePartnerCodeCreateError.Unavailable
   const referralCodeInputId = useId()
+  const shouldAutoFocusInput = !useMediaQuery(Media.upToSmall(false))
 
   const handleInputKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -66,12 +79,12 @@ export function AffiliatePartnerCodeForm({
   return (
     <>
       <CardTitle>
-        <Trans>Create your referral code</Trans>
+        <Trans>Your referral code</Trans>
       </CardTitle>
       <HelperText>
         <Trans>
-          Pick something memorable or let us generate one for you. Once saved, your code is permanently linked to your
-          wallet, so choose wisely. Your code never reveals your wallet address.
+          Pick your own code or generate one. Once saved, it becomes permanently linked to your wallet, without ever
+          revealing your wallet address.
         </Trans>
       </HelperText>
       <BottomMetaRow>
@@ -90,20 +103,26 @@ export function AffiliatePartnerCodeForm({
             </Label>
             <LabelActions>
               <MiniAction onClick={onGenerate} disabled={submitting}>
-                <Trans>Generate</Trans>
+                <Trans>Suggest one</Trans>
                 <RotateCw size={10} strokeWidth={3} />
               </MiniAction>
             </LabelActions>
           </LabelRow>
-          <RefCodeInput
-            id={referralCodeInputId}
-            isLoading={submitting}
-            hasError={hasError}
-            disabled={submitting}
-            adornmentVariant={ADORNMENT_VARIANT_MAP[availability]}
-            onKeyDown={handleInputKeyDown}
-            {...rest}
-          />
+          <ConnectedInputStack>
+            <RefCodeInput
+              id={referralCodeInputId}
+              isLoading={submitting}
+              hasError={hasError}
+              disabled={submitting}
+              adornmentVariant={ADORNMENT_VARIANT_MAP[availability]}
+              onKeyDown={handleInputKeyDown}
+              autoFocus={shouldAutoFocusInput}
+              placeholder={t`Your-code`}
+              connectedBelow
+              {...rest}
+            />
+            {previewLink && <ReferralLinkPreview previewLink={previewLink} isCopyDisabled={isPreviewCopyDisabled} />}
+          </ConnectedInputStack>
           {showInvalidFormat && (
             <StatusText $variant="error">
               {/* we only check the lower limit because the upper limit is enforced by the input */}
@@ -130,3 +149,44 @@ const ADORNMENT_VARIANT_MAP: Record<PartnerCodeAvailability, RefCodeAdornmentVar
   [PartnerCodeAvailability.Available]: 'available',
   [PartnerCodeAvailability.Unavailable]: 'error',
 }
+
+interface ReferralLinkPreviewProps {
+  previewLink: string
+  isCopyDisabled: boolean
+}
+
+function ReferralLinkPreview({ previewLink, isCopyDisabled }: ReferralLinkPreviewProps): ReactNode {
+  return (
+    <ConnectedPreviewCard>
+      <LinkedLinkRow>
+        <LinkedCopy>
+          <CopyHelper
+            toCopy={previewLink}
+            iconSize={16}
+            hideCopiedLabel
+            disabled={isCopyDisabled}
+            aria-label={isCopyDisabled ? t`Enter a code to copy the referral link` : t`Copy referral link`}
+          />
+          <LinkedLinkText>
+            {previewLink
+              .split(/(ref=)/)
+              .map((part, index) => (part === 'ref=' ? part : index > 1 ? <strong key={index}>{part}</strong> : part))}
+          </LinkedLinkText>
+        </LinkedCopy>
+      </LinkedLinkRow>
+    </ConnectedPreviewCard>
+  )
+}
+
+const ConnectedInputStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+`
+
+const ConnectedPreviewCard = styled(LinkedCard)`
+  border-top: 0;
+  border-radius: 0 0 9px 9px;
+  border-color: var(${UI.COLOR_BORDER});
+`

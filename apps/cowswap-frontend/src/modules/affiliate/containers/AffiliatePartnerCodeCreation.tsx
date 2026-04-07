@@ -9,7 +9,12 @@ import {
 } from '../hooks/useAffiliatePartnerCodeAvailability'
 import { useAffiliatePartnerCodeCreate } from '../hooks/useAffiliatePartnerCodeCreate'
 import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
-import { formatRefCode, generateSuggestedCode, isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
+import {
+  formatRefCode,
+  generateSuggestedCode,
+  getReferralLink,
+  isSupportedPayoutsNetwork,
+} from '../lib/affiliateProgramUtils'
 import { AffiliatePartnerCodeForm } from '../pure/AffiliatePartner/AffiliatePartnerCodeForm'
 
 export function AffiliatePartnerCodeCreation(): ReactNode {
@@ -20,8 +25,9 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
   const isCreateEnabled = !!account && !!provider && isSupportedPayoutsNetwork(chainId)
 
   const [error, setError] = useState<AffiliatePartnerCodeCreateError | undefined>()
-  const [inputCode, setInputCode] = useState(generateSuggestedCode())
-  const isInputValid = Boolean(formatRefCode(inputCode))
+  const [inputCode, setInputCode] = useState('')
+  const formattedCode = formatRefCode(inputCode)
+  const isInputValid = Boolean(formattedCode)
 
   const availability = useAffiliatePartnerCodeAvailability(inputCode, isCreateEnabled && isInputValid, setError)
   const { submitting, onCreate } = useAffiliatePartnerCodeCreate({
@@ -52,6 +58,8 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
       availability={availability}
       canSubmit={canSubmit}
       submitting={submitting}
+      previewLink={getReferralLink(formattedCode || '')}
+      isPreviewCopyDisabled={!isInputValid}
       error={availability === PartnerCodeAvailability.Unavailable ? AffiliatePartnerCodeCreateError.Unavailable : error}
       onCreate={onCreate}
       onGenerate={onGenerate}
