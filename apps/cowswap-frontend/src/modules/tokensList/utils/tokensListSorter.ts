@@ -1,11 +1,12 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 export function tokensListSorter(balances: BalancesState['values']): (a: TokenWithLogo, b: TokenWithLogo) => number {
   return (a: TokenWithLogo, b: TokenWithLogo) => {
-    const aBalance = balances[a.address.toLowerCase()]
-    const bBalance = balances[b.address.toLowerCase()]
+    const aBalance = balances[getAddressKey(a.address)]
+    const bBalance = balances[getAddressKey(b.address)]
     const aIsNative = getIsNativeToken(a)
     const bIsNative = getIsNativeToken(b)
 

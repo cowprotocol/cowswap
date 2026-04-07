@@ -5,9 +5,12 @@ import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 
 import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
-import { Settings } from '../../pure/Settings'
+import { LimitOrdersSettingsDropdown } from '../../pure/Settings/LimitOrdersSettings.pure'
 import {
   limitOrdersSettingsAtom,
   LimitOrdersSettingsState,
@@ -19,6 +22,9 @@ export function SettingsWidget(): ReactNode {
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const analytics = useLimitOrderSettingsAnalytics()
   const updateLimitOrdersRawState = useUpdateLimitOrdersRawState()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
+  const isSettingsDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
 
   const onSettingsChange = useCallback(
     (update: Partial<LimitOrdersSettingsState>) => {
@@ -33,7 +39,7 @@ export function SettingsWidget(): ReactNode {
   return (
     <ButtonsContainer>
       <Menu>
-        <SettingsButton onClick={() => analytics.openSettings()}>
+        <SettingsButton disabled={isSettingsDisabled} onClick={() => analytics.openSettings()}>
           <SettingsIcon />
         </SettingsButton>
         <MenuPopover portal={false}>
@@ -44,7 +50,7 @@ export function SettingsWidget(): ReactNode {
                 onMouseDown={(e) => e.stopPropagation()}
                 onMouseUp={(e) => e.stopPropagation()}
               >
-                <Settings state={settingsState} onStateChanged={onSettingsChange} />
+                <LimitOrdersSettingsDropdown state={settingsState} onStateChanged={onSettingsChange} />
               </div>
             </MenuItem>
           </MenuItems>

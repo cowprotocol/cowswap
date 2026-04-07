@@ -57,9 +57,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const bridgeContext = useBridgeQuoteAmounts()
 
   const sellCurrency = derivedTradeState?.inputCurrency
-  const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
+  const { sellAmount: inputAmount, buyAmount: outputAmount } = receiveAmountInfo?.amountsToSign ?? {}
   const bridgeOutputAmount = bridgeContext?.bridgeMinReceiveAmount
-  const outputAmount = receiveAmountInfo?.afterSlippage.buyAmount
 
   const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency

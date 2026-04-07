@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@cowprotocol/currency'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
@@ -42,7 +42,7 @@ export interface OrdersTableRowGroupProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrdersTableRowGroup({
   item,
   prices,

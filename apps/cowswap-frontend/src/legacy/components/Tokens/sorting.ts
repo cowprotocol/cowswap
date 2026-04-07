@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
 import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Token } from '@uniswap/sdk-core'
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 
@@ -20,6 +21,20 @@ export function balanceComparator(balanceA: BigNumber | undefined, balanceB: Big
   return 0
 }
 
+export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
+  const { values: balances } = useTokensBalances()
+
+  const comparator = useMemo(() => getTokenComparator(balances), [balances])
+
+  return useMemo(() => {
+    if (inverted) {
+      return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
+    } else {
+      return comparator
+    }
+  }, [inverted, comparator])
+}
+
 function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, tokenB: Token) => number {
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
@@ -28,8 +43,8 @@ function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, 
     // 1 = b is first
 
     // sort by balances
-    const balanceA = balances[tokenA.address.toLowerCase()]
-    const balanceB = balances[tokenB.address.toLowerCase()]
+    const balanceA = balances[getAddressKey(tokenA.address)]
+    const balanceB = balances[getAddressKey(tokenB.address)]
 
     const balanceComp = balanceComparator(balanceA, balanceB)
     if (balanceComp !== 0) return balanceComp
@@ -51,18 +66,4 @@ function getTokenComparator(balances: BalancesState['values']): (tokenA: Token, 
       return tokenA.symbol ? -1 : tokenB.symbol ? -1 : 0
     }
   }
-}
-
-export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
-  const { values: balances } = useTokensBalances()
-
-  const comparator = useMemo(() => getTokenComparator(balances), [balances])
-
-  return useMemo(() => {
-    if (inverted) {
-      return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
-    } else {
-      return comparator
-    }
-  }, [inverted, comparator])
 }

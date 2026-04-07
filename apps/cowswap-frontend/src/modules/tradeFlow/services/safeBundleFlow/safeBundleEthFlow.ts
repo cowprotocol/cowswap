@@ -1,9 +1,10 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20 } from '@cowprotocol/cowswap-abis'
+import { Percent } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
-import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
@@ -203,10 +204,13 @@ export async function safeBundleEthFlow(
     tradeConfirmActions.onSuccess(orderId)
 
     return true
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
+    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)

@@ -120,7 +120,6 @@ describe('getChainAccent', () => {
       SupportedChainId.POLYGON,
       SupportedChainId.AVALANCHE,
       SupportedChainId.GNOSIS_CHAIN,
-      SupportedChainId.LENS,
       SupportedChainId.SEPOLIA,
       SupportedChainId.LINEA,
       SupportedChainId.PLASMA,

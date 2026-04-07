@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { errorToString, isMobile } from '@cowprotocol/common-utils'
+import { isMobile, normalizeError } from '@cowprotocol/common-utils'
 import { useWalletInfo, useActivateConnector, ConnectionType } from '@cowprotocol/wallet'
 
 import { useCloseModal, useModalIsOpen } from 'legacy/state/application/hooks'
@@ -96,7 +96,7 @@ function useWalletActivationContext({
         }
 
         dispatch(updateSelectedWallet({ wallet: undefined }))
-        setWalletConnectionError(errorToString(error))
+        setWalletConnectionError(normalizeError(error).message)
       },
     }),
     [

@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { Price } from '@uniswap/sdk-core'
+import { Price } from '@cowprotocol/currency'
 
 import { useSetupTradeAmountsFromUrl } from 'modules/trade'
 

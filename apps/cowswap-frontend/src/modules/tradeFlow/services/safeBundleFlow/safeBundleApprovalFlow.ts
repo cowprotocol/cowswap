@@ -1,7 +1,8 @@
+import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
+import { Percent } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
-import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
@@ -186,10 +187,13 @@ export async function safeBundleApprovalFlow(
     tradeConfirmActions.onSuccess(orderId)
 
     return true
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
     logTradeFlow(LOG_PREFIX, 'STEP 8: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
+    captureError(error, ERROR_TYPES.ON_APPROVE, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)

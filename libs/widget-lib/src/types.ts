@@ -1,7 +1,13 @@
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowWidgetEventListeners, CowWidgetEventPayloadMap, CowWidgetEvents } from '@cowprotocol/events'
+import type { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  CowWidgetEventListeners,
+  CowWidgetEventPayloadMap,
+  CowWidgetEvents,
+  OnTradeParamsPayload,
+} from '@cowprotocol/events'
 
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
+export type { OnTradeParamsPayload } from '@cowprotocol/events'
 
 export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
 
@@ -21,6 +27,7 @@ export enum WidgetMethodsEmit {
   EMIT_COW_EVENT = 'EMIT_COW_EVENT',
   PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
   INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
+  PROCESS_HOOK = 'PROCESS_HOOK',
 }
 
 export enum WidgetMethodsListen {
@@ -28,6 +35,25 @@ export enum WidgetMethodsListen {
   UPDATE_APP_DATA = 'UPDATE_APP_DATA',
   PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
   PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
+  HOOK_RESULT = 'HOOK_RESULT',
+}
+
+export enum WidgetHookEvents {
+  ON_BEFORE_APPROVAL = 'ON_BEFORE_APPROVAL',
+  ON_BEFORE_TRADE = 'ON_BEFORE_TRADE',
+  ON_BEFORE_WRAP_UNWRAP = 'ON_BEFORE_WRAP_UNWRAP',
+  ON_BEFORE_ORDER_CANCEL = 'ON_BEFORE_ORDER_CANCEL',
+  ON_BEFORE_ORDERS_CANCEL = 'ON_BEFORE_ORDERS_CANCEL',
+}
+
+export type WidgetHookResult = Promise<boolean> | boolean
+
+export interface OnApprovalPayload {
+  chainId: SupportedChainId
+  sellToken: TokenInfo
+  sellAmount: string
+  walletAddress: string
+  spenderAddress: string
 }
 
 export interface CowSwapWidgetProps {
@@ -133,7 +159,14 @@ export type CowSwapWidgetPaletteColors = (typeof WIDGET_PALETTE_COLORS)[number]
 
 export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: string }
 
-export type CowSwapWidgetPalette = { baseTheme: CowSwapTheme } & CowSwapWidgetPaletteParams
+export type CowSwapWidgetPalette = {
+  baseTheme: CowSwapTheme
+  /**
+   * Overrides the main widget card shadow.
+   * Accepts any valid CSS box-shadow value, for example `none` or `0 12px 24px rgba(0, 0, 0, 0.12)`.
+   */
+  boxShadow?: string
+} & CowSwapWidgetPaletteParams
 
 export interface CowSwapWidgetSounds {
   /**
@@ -211,9 +244,41 @@ export interface CowSwapWidgetParams {
   targetChainId?: number
 
   /**
-   * The token lists urls to use in the widget
+   * The token lists (as urls) enabled for the widget.
+   * These lists are available to both sell and buy selectors.
    */
   tokenLists?: string[]
+
+  /**
+   * The token lists (as urls) to use in the sell selector.
+   * Note: these lists also contribute to the widget's globally enabled list set.
+   * If omitted, the sell selector falls back to the globally enabled lists.
+   */
+  sellTokenLists?: string[]
+
+  /**
+   * The token lists (as urls) to use in the buy selector.
+   * Note: these lists also contribute to the widget's globally enabled list set.
+   * If omitted, the buy selector falls back to the globally enabled lists.
+   */
+  buyTokenLists?: string[]
+
+  /**
+   * Forces the widget locale.
+   * Serialized as the `lng` query param used by the frontend locale resolver.
+   * Accepts supported locales like `en-US` and fuzzy values like `en`.
+   */
+  locale?: string
+
+  /**
+   * Control the "Recent tokens" section displaying in the token selector
+   */
+  hideRecentTokens?: boolean
+
+  /**
+   * Control the "Favorite tokens" section displaying in the token selector
+   */
+  hideFavoriteTokens?: boolean
 
   /**
    * Swap, Limit or Advanced (Twap).
@@ -263,6 +328,12 @@ export interface CowSwapWidgetParams {
    * Defaults to false.
    */
   disableCrossChainSwap?: boolean
+
+  /**
+   * Disables adding custom tokens and custom token lists.
+   * Defaults to false.
+   */
+  disableTokenImport?: boolean
   /**
    * Disables showing the confirmation modal you get after posting an order.
    * Defaults to false.
@@ -345,6 +416,22 @@ export interface CowSwapWidgetParams {
    * Customizable slippage settings for the widget.
    */
   slippage?: FlexibleSlippageConfig
+
+  /**
+   * Conditions to control the ability to trade
+   */
+  disableTrade?: {
+    whenPriceImpactIsUnknown?: boolean
+    whenPriceImpactIsHigherThan?: number
+  }
+
+  hooks?: Partial<{
+    onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult
+    onBeforeWrapOrUnwrap(payload: OnTradeParamsPayload): WidgetHookResult
+    onBeforeTrade(payload: OnTradeParamsPayload): WidgetHookResult
+    onBeforeOrderCancel(payload: EnrichedOrder): WidgetHookResult
+    onBeforeOrdersCancel(payload: EnrichedOrder[]): WidgetHookResult
+  }>
 }
 
 // Define types for event payloads
@@ -355,6 +442,7 @@ export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
   [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload
+  [WidgetMethodsEmit.PROCESS_HOOK]: WidgetHookPayload<WidgetHookEvents>
 }
 
 export interface WidgetMethodsListenPayloadMap {
@@ -362,6 +450,7 @@ export interface WidgetMethodsListenPayloadMap {
   [WidgetMethodsListen.UPDATE_PARAMS]: UpdateParamsPayload
   [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload
   [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
+  [WidgetMethodsListen.HOOK_RESULT]: WidgetHookResultPayload
 }
 
 export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethodsListenPayloadMap
@@ -369,7 +458,7 @@ export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethods
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
-export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme'>
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks'>
 
 export interface UpdateParamsPayload {
   urlParams: {
@@ -393,6 +482,27 @@ export interface UpdateWidgetHeightPayload {
 
 export interface SetWidgetFullHeightPayload {
   isUpToSmall?: boolean
+}
+
+export type WidgetHookId = string
+
+export interface WidgetHookPayload<T extends WidgetHookEvents> {
+  id: WidgetHookId
+  event: T
+  payload: WidgetHookPayloadMap[T]
+}
+
+export interface WidgetHookResultPayload {
+  id: WidgetHookId
+  result: boolean
+}
+
+export interface WidgetHookPayloadMap {
+  [WidgetHookEvents.ON_BEFORE_APPROVAL]: OnApprovalPayload
+  [WidgetHookEvents.ON_BEFORE_TRADE]: OnTradeParamsPayload
+  [WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP]: OnTradeParamsPayload
+  [WidgetHookEvents.ON_BEFORE_ORDER_CANCEL]: EnrichedOrder
+  [WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL]: EnrichedOrder[]
 }
 
 export interface EmitCowEventPayload<T extends CowWidgetEvents> {

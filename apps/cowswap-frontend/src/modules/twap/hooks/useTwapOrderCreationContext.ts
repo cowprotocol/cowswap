@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoW, Erc20 } from '@cowprotocol/cowswap-abis'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 

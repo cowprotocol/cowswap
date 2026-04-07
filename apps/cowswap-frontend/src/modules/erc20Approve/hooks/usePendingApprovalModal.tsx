@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 

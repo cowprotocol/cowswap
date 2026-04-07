@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { useEthFlowContract } from 'common/hooks/useContract'
 
@@ -27,7 +28,7 @@ export function useCheckEthFlowOrderExists(): EthFlowOrderExistsCallback {
         try {
           const { owner } = await ethFlowContract.callStatic.orders(orderDigest)
 
-          return owner.toLowerCase() !== ZERO_ADDRESS
+          return !areAddressesEqual(owner, ZERO_ADDRESS)
         } catch (e) {
           console.error('Eth-flow order existing check error: ', e)
 

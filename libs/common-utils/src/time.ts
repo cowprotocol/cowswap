@@ -12,13 +12,32 @@ export function getDateTimestamp(date: Date): number {
  * Helper function that returns a given Date/timestamp as a locale representation of it as string
  * in the format <local date string> (<time zone information>)
  */
-export function formatDateWithTimezone(date: Date | number | undefined | null): string | undefined {
-  if (!date) {
+export function formatDateWithTimezone(value: Date | number | undefined | null): string | undefined {
+  if (value === undefined || value === null) {
     return
   }
-  const _date = date instanceof Date ? date : new Date(date)
 
-  return `${_date.toLocaleString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`
+  const date = value instanceof Date ? value : new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return
+  }
+
+  return `${date.toLocaleString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`
+}
+
+export function formatShortDate(value: Date | number | string | undefined | null): string | undefined {
+  if (value === undefined || value === null) {
+    return
+  }
+
+  const date = value instanceof Date ? value : new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return
+  }
+
+  return date.toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })
 }
 
 export function timeSinceInSeconds(timestamp?: number): number | undefined {

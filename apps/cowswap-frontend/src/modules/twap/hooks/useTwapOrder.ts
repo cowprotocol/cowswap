@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { walletInfoAtom } from '@cowprotocol/wallet'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
@@ -25,7 +25,7 @@ export function useTwapOrder(): TWAPOrder | null {
   return useMemo(() => {
     if (!inputCurrencyAmount || !receiveAmountInfo) return null
 
-    const { sellAmount, buyAmount } = receiveAmountInfo.afterSlippage
+    const { sellAmount, buyAmount } = receiveAmountInfo.amountsToSign
 
     return {
       sellAmount: sellAmount as CurrencyAmount<Token>,

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeOrderDataSerialized } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -20,7 +20,7 @@ export function useGetSerializedBridgeOrder(): (
 
       if (!effectiveAccount) return undefined
 
-      const bridgeOrders = bridgeOrdersMap[chainId]?.[effectiveAccount.toLowerCase()]
+      const bridgeOrders = bridgeOrdersMap[chainId]?.[getAddressKey(effectiveAccount)]
 
       return bridgeOrders?.find((i) => i.orderUid === orderId)
     },

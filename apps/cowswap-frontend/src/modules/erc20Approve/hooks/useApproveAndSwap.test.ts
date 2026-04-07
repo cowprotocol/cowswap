@@ -1,7 +1,13 @@
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { Token } from '@uniswap/sdk-core'
 
 import { renderHook, waitFor } from '@testing-library/react'
+
+import { callWidgetHook } from 'modules/injectedWidget'
 
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
@@ -13,11 +19,26 @@ import { MAX_APPROVE_AMOUNT } from '../constants'
 import { TradeApproveResult } from '../containers'
 import { useIsPartialApproveSelectedByUser, useUpdateApproveProgressModalState } from '../state'
 
+jest.mock('@cowprotocol/balances-and-allowances', () => ({
+  useTradeSpenderAddress: jest.fn(),
+}))
+
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(),
+}))
+
+jest.mock('modules/injectedWidget', () => ({
+  callWidgetHook: jest.fn(),
+}))
+
 jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
 jest.mock('../../permit')
 jest.mock('../state')
 
+const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
+const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockCallWidgetHook = callWidgetHook as jest.MockedFunction<typeof callWidgetHook>
 const mockUseApproveCurrency = useApproveCurrency as jest.MockedFunction<typeof useApproveCurrency>
 const mockUseGeneratePermitInAdvanceToTrade = useGeneratePermitInAdvanceToTrade as jest.MockedFunction<
   typeof useGeneratePermitInAdvanceToTrade
@@ -29,16 +50,15 @@ const mockUseIsPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser 
 const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
   typeof useUpdateApproveProgressModalState
 >
+type WalletInfo = ReturnType<typeof useWalletInfo>
 
 // eslint-disable-next-line max-lines-per-function
 describe('useApproveAndSwap', () => {
   const mockToken = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'TEST', 'Test Token')
   const mockAmount = BigInt('1000000000000000000')
-  const mockAmountToApprove = {
-    currency: mockToken,
-    quotient: { toString: () => mockAmount.toString() },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any
+  const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+  const mockSpenderAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET]
+  const mockAmountToApprove = CurrencyAmount.fromRawAmount(mockToken, mockAmount.toString())
 
   const mockOnApproveConfirm = jest.fn()
   const mockHandleApprove = jest.fn()
@@ -47,7 +67,7 @@ describe('useApproveAndSwap', () => {
 
   const createMockTransactionReceipt = (): TransactionReceipt => {
     return {
-      to: '0x9008D19f58AAbD9eD0D60971565AA8510560ab41',
+      to: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
       from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
       contractAddress: mockToken.address,
       transactionIndex: 1,
@@ -72,6 +92,9 @@ describe('useApproveAndSwap', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    mockUseTradeSpenderAddress.mockReturnValue(mockSpenderAddress)
+    mockUseWalletInfo.mockReturnValue({ account: mockAccount } as WalletInfo)
+    mockCallWidgetHook.mockResolvedValue(true)
     mockUseApproveCurrency.mockReturnValue(mockHandleApprove)
     mockUseGeneratePermitInAdvanceToTrade.mockReturnValue(mockGeneratePermitToTrade)
     mockUseTokenSupportsPermit.mockReturnValue(false)
@@ -179,6 +202,31 @@ describe('useApproveAndSwap', () => {
         expect(mockOnApproveConfirm).toHaveBeenCalled()
       })
     })
+
+    it('should skip approval flow when widget hook blocks it', async () => {
+      mockCallWidgetHook.mockResolvedValue(false)
+
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      await result.current()
+
+      await waitFor(() => {
+        expect(mockCallWidgetHook).toHaveBeenCalled()
+        expect(mockGeneratePermitToTrade).not.toHaveBeenCalled()
+        expect(mockHandleApprove).not.toHaveBeenCalled()
+        expect(mockUpdateTradeApproveState).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
+      })
+    })
   })
 
   describe('approval flow with TradeApproveResult', () => {
@@ -259,7 +307,13 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({ error: 'Approved amount is not sufficient!' })
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          error: expect.objectContaining({
+            props: expect.objectContaining({
+              message: 'Approved amount is not sufficient!',
+            }),
+          }),
+        })
         expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
@@ -287,7 +341,13 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({ error: 'Approved amount is not sufficient!' })
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          error: expect.objectContaining({
+            props: expect.objectContaining({
+              message: 'Approved amount is not sufficient!',
+            }),
+          }),
+        })
         expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })

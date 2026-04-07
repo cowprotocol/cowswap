@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useExtractText } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -18,9 +19,15 @@ interface MenuItem {
   url: string
 }
 
-const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId): MenuItem[] => {
+const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean): MenuItem[] => {
   return [
     { title: msg`Overview`, url: '/account' },
+    ...(isAffiliateProgramEnabled
+      ? [
+          { title: msg`Affiliate`, url: '/account/affiliate' },
+          { title: msg`My Rewards`, url: '/account/my-rewards' },
+        ]
+      : []),
     { title: msg`Tokens`, url: '/account/tokens' },
     { title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) },
   ]
@@ -28,12 +35,13 @@ const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId): MenuItem[] => {
 
 export function AccountMenu(): ReactNode {
   const { chainId } = useWalletInfo()
+  const { isAffiliateProgramEnabled } = useFeatureFlags()
   const { extractTextFromStringOrI18nDescriptor } = useExtractText()
 
   return (
     <SideMenu longList>
       <ul>
-        {ACCOUNT_MENU_LINKS(chainId).map(({ title, url }) => (
+        {ACCOUNT_MENU_LINKS(chainId, isAffiliateProgramEnabled).map(({ title, url }) => (
           <li key={url}>
             <NavLink end to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
               {extractTextFromStringOrI18nDescriptor(title)}

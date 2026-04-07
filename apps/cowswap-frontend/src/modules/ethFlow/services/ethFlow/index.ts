@@ -1,8 +1,8 @@
 import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
-import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
-import { OrderClass, SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
+import { captureError, ERROR_TYPES, normalizeError, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
+import { areAddressesEqual, OrderClass, SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
+import { Percent } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
-import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { SigningSteps } from 'entities/trade'
@@ -81,10 +81,10 @@ export async function ethFlow({
     }
 
     // Last check before signing the order of the actual eth flow contract address (sending ETH to the wrong contract could lead to loss of funds)
-    const actualContractAddress = contract.address.toLowerCase()
-    const expectedContractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId).toLowerCase()
+    const actualContractAddress = contract.address
+    const expectedContractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId)
 
-    if (actualContractAddress !== expectedContractAddress) {
+    if (!areAddressesEqual(actualContractAddress, expectedContractAddress)) {
       throw new Error(
         t`EthFlow contract (${actualContractAddress}) address don't match the expected address for chain ${chainId} (${expectedContractAddress}). Please refresh the page and try again.`,
       )
@@ -192,10 +192,12 @@ export async function ethFlow({
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = normalizeError(err)
     logTradeFlow('ETH FLOW', 'STEP 7: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
+    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
-import type { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -23,6 +23,23 @@ const WinningSolverContainer = styled.div`
   gap: 4px;
 `
 
+export function ExecPriceContent({ rateInfoParams }: { rateInfoParams: RateInfoParams }): ReactNode {
+  return (
+    <ConfirmDetailsItem
+      withTimelineDot
+      label={
+        <span>
+          <Trans>Exec. price</Trans>
+        </span>
+      }
+    >
+      <span>
+        <RateInfo noLabel rateInfoParams={rateInfoParams} />
+      </span>
+    </ConfirmDetailsItem>
+  )
+}
+
 export function ReceivedContent({
   receivedAmount,
   receivedAmountUsd,
@@ -43,23 +60,6 @@ export function ReceivedContent({
       <b>
         <TokenAmountDisplay currencyAmount={receivedAmount} displaySymbol usdValue={receivedAmountUsd} />
       </b>
-    </ConfirmDetailsItem>
-  )
-}
-
-export function ExecPriceContent({ rateInfoParams }: { rateInfoParams: RateInfoParams }): ReactNode {
-  return (
-    <ConfirmDetailsItem
-      withTimelineDot
-      label={
-        <span>
-          <Trans>Exec. price</Trans>
-        </span>
-      }
-    >
-      <span>
-        <RateInfo noLabel rateInfoParams={rateInfoParams} />
-      </span>
     </ConfirmDetailsItem>
   )
 }

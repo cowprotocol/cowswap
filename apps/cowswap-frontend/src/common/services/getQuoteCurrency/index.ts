@@ -1,7 +1,7 @@
 import { STABLECOINS } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
@@ -39,8 +39,8 @@ export function getQuoteCurrencyByStableCoin(
 
   const stableCoins = STABLECOINS[chainId]
 
-  const inputAddress = getCurrencyAddress(inputCurrency).toLowerCase()
-  const outputAddress = getCurrencyAddress(outputCurrency).toLowerCase()
+  const inputAddress = getAddressKey(getCurrencyAddress(inputCurrency))
+  const outputAddress = getAddressKey(getCurrencyAddress(outputCurrency))
 
   const isInputStableCoin = stableCoins.has(inputAddress)
   const isOutputStableCoin = stableCoins.has(outputAddress)

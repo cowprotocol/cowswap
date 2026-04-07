@@ -3,6 +3,7 @@ import { TradeFormValidation, useGetTradeFormValidations } from 'modules/tradeFo
 const NO_UPDATE_STATES = [
   TradeFormValidation.CurrencyNotSupported,
   TradeFormValidation.NetworkNotSupported,
+  TradeFormValidation.NetworkDeprecated,
   TradeFormValidation.BrowserOffline,
   TradeFormValidation.CurrencyNotSet,
   TradeFormValidation.InputAmountNotSet,

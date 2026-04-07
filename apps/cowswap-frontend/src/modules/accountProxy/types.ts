@@ -1,6 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 export type TokenUsdAmounts = Record<
   string,

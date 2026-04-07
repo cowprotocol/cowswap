@@ -3,13 +3,14 @@ import { ReactElement, useCallback, useState } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Currency } from '@cowprotocol/currency'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Currency } from '@uniswap/sdk-core'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { WatchAssetInWallet as WatchAssetInWalletPure } from '../../pure/WatchAssetInWallet'
@@ -32,6 +33,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   // This flow will be reviewed and updated later, to include a wagmi alternative
   const provider = useWalletProvider()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isAssetWatchingSupported = useIsAssetWatchingSupported()
   const cowAnalytics = useCowAnalytics()
 
@@ -74,7 +76,14 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
       })
   }, [provider, logoURL, token, cowAnalytics])
 
-  if (!currency || !icon || !walletName || isProviderNetworkUnsupported || !isAssetWatchingSupported) {
+  if (
+    !currency ||
+    !icon ||
+    !walletName ||
+    isProviderNetworkUnsupported ||
+    isProviderNetworkDeprecated ||
+    !isAssetWatchingSupported
+  ) {
     return fallback || null
   }
 

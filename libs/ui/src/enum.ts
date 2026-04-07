@@ -98,6 +98,9 @@ export enum UI {
   COLOR_LIGHT_BLUE_OPACITY_90 = '--cow-color-lightBlue-opacity-90',
   COLOR_LIGHT_BLUE_OPACITY_80 = '--cow-color-lightBlue-opacity-80',
   COLOR_YELLOW_LIGHT = '--cow-color-yellow-light',
+  COLOR_YELLOW_300_PRIMARY = '--cow-color-yellow-300-primary',
+  COLOR_YELLOW_700_PRIMARY = '--cow-color-yellow-700-primary',
+  COLOR_YELLOW_800_PRIMARY = '--cow-color-yellow-800-primary',
   COLOR_GREEN = '--cow-color-green',
   COLOR_RED = '--cow-color-red',
 
@@ -160,6 +163,7 @@ export enum UI {
   FONT_SIZE_LARGER = '--cow-font-size-larger',
   FONT_SIZE_LARGEST = '--cow-font-size-largest',
   FONT_FAMILY_PRIMARY = '--cow-font-family-primary',
+  FONT_FAMILY_MONO = '--cow-font-family-mono',
 
   // Animation
   ANIMATION_DURATION = '--cow-animation-duration',

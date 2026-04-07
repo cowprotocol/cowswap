@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect } from 'react'
 
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { Field } from 'legacy/state/types'
 
