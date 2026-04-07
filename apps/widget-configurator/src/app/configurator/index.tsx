@@ -58,7 +58,7 @@ import { useProvider } from './hooks/useProvider'
 import { useResizableDrawerWidth } from './hooks/useResizableDrawerWidth'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useToastsManager } from './hooks/useToastsManager'
-import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL, useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import {
   ContentStyled,
   DRAWER_WIDTH_CSS_VAR,
@@ -170,6 +170,7 @@ export function Configurator({ title }: { title: string }) {
   const [customImages] = customImagesState
   const [customSounds] = customSoundsState
 
+  const [widgetAppBaseUrl, setWidgetAppBaseUrl] = useState<string>('')
   const [rawParams, setRawParams] = useState<string | undefined>()
   const [isWidgetDisplayed, setIsWidgetDisplayed] = useState(true)
 
@@ -294,17 +295,20 @@ export function Configurator({ title }: { title: string }) {
   }, [rawParams])
 
   const computedParams = useWidgetParams(state)
-  const params = useMemo(
-    () => ({
+
+  const params = useMemo(() => {
+    const trimmedWidgetAppBaseUrl = widgetAppBaseUrl.trim()
+
+    return {
       ...computedParams,
       images: customImages,
       sounds: customSounds,
       customTokens,
       ...rawParamsObject,
+      ...(trimmedWidgetAppBaseUrl ? { baseUrl: trimmedWidgetAppBaseUrl } : null),
       ...window.cowSwapWidgetParams,
-    }),
-    [computedParams, customImages, customSounds, customTokens, rawParamsObject],
-  )
+    }
+  }, [computedParams, customImages, customSounds, customTokens, rawParamsObject, widgetAppBaseUrl])
 
   const updateWidget = useCallback(() => {
     setIsWidgetDisplayed(false)
@@ -510,6 +514,17 @@ export function Configurator({ title }: { title: string }) {
 
           <AccordionSection title="Advanced">
             <WidgetHooksControl state={widgetHooksState} />
+            <TextField
+              fullWidth
+              margin="dense"
+              id="widgetAppBaseUrl"
+              label="Widget App URL"
+              value={widgetAppBaseUrl}
+              onChange={(e) => setWidgetAppBaseUrl(e.target.value)}
+              size="medium"
+              placeholder={CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
+              helperText={`Optional. Sets baseUrl (overrides Raw JSON). Default preview URL: ${CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}`}
+            />
             <TextField
               fullWidth
               margin="dense"

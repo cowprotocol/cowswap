@@ -1,5 +1,3 @@
-import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
-
 export const COMMENTS_BEFORE_PARAMS = ` Fill this form https://cowprotocol.typeform.com/to/rONXaxHV once you pick your "appCode"`
 
 export const PROVIDER_PARAM_COMMENT =
@@ -23,6 +21,7 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   partnerFee: 'Partner fee, in Basis Points (BPS) and a receiver address',
   hideRecentTokens: 'Hide the Recent section in the token selector',
   hideFavoriteTokens: 'Hide the Favorites section in the token selector',
+  baseUrl: 'URL of the CoW Swap app inside the widget iframe (defaults to production if omitted in embed code)',
 }
 
 export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
@@ -32,9 +31,9 @@ export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
 
 export const SANITIZE_PARAMS = {
   appCode: 'My Cool App',
-}
+} as const
 
-export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['baseUrl']
+export const WIDGET_CONFIGURATOR_DEFAULT_BASE_URL = 'https://swap.cow.fi'
 
 export const REACT_IMPORT_STATEMENT = `import { CowSwapWidget, CowSwapWidgetParams, TradeType }`
 export const IMPORT_STATEMENT = `import { createCowSwapWidget, CowSwapWidgetParams, TradeType }`

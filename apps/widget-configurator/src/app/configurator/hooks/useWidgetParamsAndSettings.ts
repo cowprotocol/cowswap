@@ -24,7 +24,8 @@ const getBaseUrl = (): string => {
   return 'https://swap.cow.fi'
 }
 
-const DEFAULT_BASE_URL = getBaseUrl()
+/** Resolved once at load; used by the configurator preview and as the default `baseUrl` in built params. */
+export const CONFIGURATOR_DEFAULT_WIDGET_BASE_URL = getBaseUrl()
 
 const getTokenListsParam = (
   tokenListUrls: ConfiguratorState['tokenListUrls'],
@@ -212,7 +213,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetP
     tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
     sellTokenLists: getTokenListsParam(tokenListUrls, 'enabledForSell'),
     buyTokenLists: getTokenListsParam(tokenListUrls, 'enabledForBuy'),
-    baseUrl: DEFAULT_BASE_URL,
+    baseUrl: CONFIGURATOR_DEFAULT_WIDGET_BASE_URL,
     tradeType: currentTradeType,
     sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
     buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
