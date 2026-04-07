@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId, isBtcAddress, isEvmAddress, isSolanaAddress } from '@cowprotocol/cow-sdk'
 
 export const RECENT_TOKENS_LIMIT = 4
 // Storage schema: { [chainId: number]: StoredRecentToken[] } serialized under this key.
@@ -135,6 +135,10 @@ export function readStoredTokens(limit: number): StoredRecentTokensByChain {
   }
 }
 
+function isValidAddress(address: string): boolean {
+  return isEvmAddress(address) || isBtcAddress(address) || isSolanaAddress(address)
+}
+
 function canUseLocalStorage(): boolean {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 }
@@ -161,6 +165,14 @@ function migrateLegacyStoredTokens(entries: unknown[], limit: number): StoredRec
     }, {})
 }
 
+function optionalString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined
+}
+
+function optionalTags(value: unknown): string[] | undefined {
+  return Array.isArray(value) ? value.filter((tag): tag is string => typeof tag === 'string') : undefined
+}
+
 function sanitizeStoredToken(token: unknown): StoredRecentToken | null {
   if (!token || typeof token !== 'object') {
     return null
@@ -172,14 +184,18 @@ function sanitizeStoredToken(token: unknown): StoredRecentToken | null {
     return null
   }
 
+  if (!isValidAddress(address)) {
+    return null
+  }
+
   return {
     chainId,
     address: getAddressKey(address),
     decimals,
-    symbol: typeof symbol === 'string' ? symbol : undefined,
-    name: typeof name === 'string' ? name : undefined,
-    logoURI: typeof logoURI === 'string' ? logoURI : undefined,
-    tags: Array.isArray(tags) ? tags.filter((tag): tag is string => typeof tag === 'string') : undefined,
+    symbol: optionalString(symbol),
+    name: optionalString(name),
+    logoURI: optionalString(logoURI),
+    tags: optionalTags(tags),
   }
 }
 
