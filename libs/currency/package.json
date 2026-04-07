@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.3",
+    "@cowprotocol/cow-sdk": "8.0.5-pr-852-ebb1f1a3.0",
     "jsbi": "^3.1.4"
   }
 }
