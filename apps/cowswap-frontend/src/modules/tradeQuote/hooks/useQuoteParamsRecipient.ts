@@ -1,12 +1,14 @@
 import { useMemo } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
-import { isBtcAddress, isBtcChain, isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isBtcAddress, isEvmChain, isSolanaAddress } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
 
 import { useDerivedTradeState } from 'modules/trade'
+
+import { getAddressValidationStrategy } from 'common/utils/addressValidation/addressValidationStrategy'
 
 import { useTradeQuote } from './useTradeQuote'
 
@@ -43,20 +45,20 @@ function resolveNonEvmBridgeRecipient(
   recipient: Nullish<string>,
   outputCurrency: Nullish<{ chainId: number }>,
 ): Nullish<string> {
-  const isBtcOrSolAddress = isBtcAddress(recipient) || isSolanaAddress(recipient)
-  if (!recipient || !isBtcOrSolAddress) return undefined
-  const isBtcOrSolMatch = isBtcOrSolMatched(outputCurrency, recipient)
-  // When outputCurrency is null (e.g. token not yet selected), preserve a confirmed BTC/SOL address
+  const isKnownNonEvmAddress = isBtcAddress(recipient) || isSolanaAddress(recipient)
+  if (!recipient || !isKnownNonEvmAddress) return undefined
+  const nonEvmChainMatch = isNonEvmChainMatched(outputCurrency, recipient)
+  // When outputCurrency is null (e.g. token not yet selected), preserve a confirmed non-EVM address
   // so it survives token selection. Once a token is selected, chain-gating applies.
-  const chainMatches = !outputCurrency || isBtcOrSolMatch
-  return chainMatches ? recipient : undefined
+  return !outputCurrency || nonEvmChainMatch ? recipient : undefined
 }
 
-/** Returns true if the recipient address matches the address format expected by the output chain (BTC or Solana). */
-function isBtcOrSolMatched(outputCurrency: Nullish<{ chainId: number }>, recipient: Nullish<string>): boolean {
-  const isBtcMatched = !!outputCurrency && isBtcAddress(recipient) && isBtcChain(outputCurrency.chainId)
-  const isSolanaMatched = !!outputCurrency && isSolanaAddress(recipient) && isSolanaChain(outputCurrency.chainId)
-  return isBtcMatched || isSolanaMatched
+/** Returns true if the output chain is non-EVM and the recipient address is valid for that chain. */
+function isNonEvmChainMatched(outputCurrency: Nullish<{ chainId: number }>, recipient: Nullish<string>): boolean {
+  if (!outputCurrency || !recipient) return false
+  const { chainId } = outputCurrency
+  if (isEvmChain(chainId)) return false
+  return getAddressValidationStrategy(chainId).isValidAddress(recipient)
 }
 
 /** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
