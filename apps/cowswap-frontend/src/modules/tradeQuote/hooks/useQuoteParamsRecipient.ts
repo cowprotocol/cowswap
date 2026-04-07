@@ -40,8 +40,9 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
       return { receiver: account, bridgeRecipient }
     }
 
-    // Provide default non-EVM bridgeRecipient for quoting when user hasn't set one yet
-    const defaultBridgeRecipient = getDefaultNonEvmBridgeRecipient(outputCurrency)
+    // Provide default non-EVM bridgeRecipient for quoting when user hasn't set one yet.
+    // Only applies when recipient is empty — must not override a non-empty but invalid/wrong-chain value.
+    const defaultBridgeRecipient = !recipient && getDefaultNonEvmBridgeRecipient(outputCurrency)
     if (defaultBridgeRecipient) {
       return { receiver: account, bridgeRecipient: defaultBridgeRecipient }
     }
