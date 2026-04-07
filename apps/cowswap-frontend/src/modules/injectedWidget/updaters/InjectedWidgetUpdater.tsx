@@ -83,6 +83,7 @@ export function InjectedWidgetUpdater(): ReactNode {
   const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
+  const isReadySentRef = useRef(false)
 
   useEffect(() => {
     // Stop listening of message outside of React
@@ -140,7 +141,16 @@ export function InjectedWidgetUpdater(): ReactNode {
       delete messagesCache[method]
     })
 
+    const parent = window.parent !== window.self ? window.parent : null
+    const frameId = window.requestAnimationFrame(() => {
+      if (!parent || isReadySentRef.current) return
+
+      isReadySentRef.current = true
+      widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.READY, void 0)
+    })
+
     return () => {
+      window.cancelAnimationFrame(frameId)
       widgetIframeTransport.stopListeningWindowListener(window, updateParamsListener)
       widgetIframeTransport.stopListeningWindowListener(window, updateAppDataListener)
     }

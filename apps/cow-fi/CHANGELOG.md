@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.4.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.3...cow-fi-v2.4.4) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.4
+    * @cowprotocol/common-const bumped to 3.0.3
+    * @cowprotocol/common-hooks bumped to 3.0.3
+    * @cowprotocol/common-utils bumped to 3.0.3
+    * @cowprotocol/core bumped to 3.0.3
+    * @cowprotocol/events bumped to 4.1.1
+    * @cowprotocol/types bumped to 4.1.1
+    * @cowprotocol/ui bumped to 3.1.2
+    * @cowprotocol/wallet bumped to 3.0.5
+    * @cowprotocol/wallet-provider bumped to 2.1.11
+    * @cowprotocol/widget-react bumped to 1.3.1
+
+## [2.4.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.2...cow-fi-v2.4.3) (2026-04-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-react bumped to 1.3.0
+
 ## [2.4.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.1...cow-fi-v2.4.2) (2026-04-03)
 
 
