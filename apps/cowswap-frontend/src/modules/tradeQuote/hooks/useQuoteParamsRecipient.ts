@@ -12,6 +12,16 @@ import { useTradeQuote } from './useTradeQuote'
 
 import { COW_QUOTE_BTC_BRIDGE_RECIPIENT, COW_QUOTE_SOL_BRIDGE_RECIPIENT } from '../utils/getBridgeQuoteSigner'
 
+/** Maps a chain predicate + address validator + default quote recipient for each non-EVM chain. */
+const NON_EVM_CHAIN_CONFIG: {
+  isChain: (chainId: number) => boolean
+  isAddress: (address: Nullish<string>) => boolean
+  defaultRecipient: string
+}[] = [
+  { isChain: isBtcChain, isAddress: isBtcAddress, defaultRecipient: COW_QUOTE_BTC_BRIDGE_RECIPIENT },
+  { isChain: isSolanaChain, isAddress: isSolanaAddress, defaultRecipient: COW_QUOTE_SOL_BRIDGE_RECIPIENT },
+]
+
 export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRecipient: Nullish<string> } {
   const { bridgeQuote } = useTradeQuote()
   const state = useDerivedTradeState()
@@ -51,28 +61,23 @@ function resolveNonEvmBridgeRecipient(
   recipient: Nullish<string>,
   outputCurrency: Nullish<{ chainId: number }>,
 ): Nullish<string> {
-  const isBtcOrSolAddress = isBtcAddress(recipient) || isSolanaAddress(recipient)
-  if (!recipient || !isBtcOrSolAddress) return undefined
-  const isBtcOrSolMatch = isBtcOrSolMatched(outputCurrency, recipient)
-  // When outputCurrency is null (e.g. token not yet selected), preserve a confirmed BTC/SOL address
-  // so it survives token selection. Once a token is selected, chain-gating applies.
-  const chainMatches = !outputCurrency || isBtcOrSolMatch
-  return chainMatches ? recipient : undefined
-}
+  const isNonEvmAddress = NON_EVM_CHAIN_CONFIG.some(({ isAddress: isNonEvmAddr }) => isNonEvmAddr(recipient))
+  if (!recipient || !isNonEvmAddress) return undefined
 
-/** Returns true if the recipient address matches the address format expected by the output chain (BTC or Solana). */
-function isBtcOrSolMatched(outputCurrency: Nullish<{ chainId: number }>, recipient: Nullish<string>): boolean {
-  const isBtcMatched = !!outputCurrency && isBtcAddress(recipient) && isBtcChain(outputCurrency.chainId)
-  const isSolanaMatched = !!outputCurrency && isSolanaAddress(recipient) && isSolanaChain(outputCurrency.chainId)
-  return isBtcMatched || isSolanaMatched
+  // When outputCurrency is null (e.g. token not yet selected), preserve a confirmed non-EVM address
+  // so it survives token selection. Once a token is selected, chain-gating applies.
+  if (!outputCurrency) return recipient
+
+  const chainMatches = NON_EVM_CHAIN_CONFIG.some(
+    ({ isChain, isAddress: isNonEvmAddr }) => isChain(outputCurrency.chainId) && isNonEvmAddr(recipient),
+  )
+  return chainMatches ? recipient : undefined
 }
 
 /** Returns the default non-EVM bridge recipient address for quoting when the user hasn't set one yet. */
 function getDefaultNonEvmBridgeRecipient(outputCurrency: Nullish<{ chainId: number }>): string | undefined {
   if (!outputCurrency) return undefined
-  if (isBtcChain(outputCurrency.chainId)) return COW_QUOTE_BTC_BRIDGE_RECIPIENT
-  if (isSolanaChain(outputCurrency.chainId)) return COW_QUOTE_SOL_BRIDGE_RECIPIENT
-  return undefined
+  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(outputCurrency.chainId))?.defaultRecipient
 }
 
 /** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
