@@ -49,6 +49,12 @@ function getObjectStringField(error: Record<string, unknown>, field: 'message' |
   return field in error && typeof error[field] === 'string' ? error[field] : undefined
 }
 
+function getObjectErrorCode(error: Record<string, unknown>): string | undefined {
+  const code = error.code
+
+  return typeof code === 'string' || typeof code === 'number' ? String(code) : undefined
+}
+
 function getErrorDetails(error: unknown): Pick<CoinbaseConnectionFlowEventPayload, 'errorName' | 'errorMessage'> {
   if (error instanceof Error) {
     return {
@@ -65,7 +71,7 @@ function getErrorDetails(error: unknown): Pick<CoinbaseConnectionFlowEventPayloa
   }
 
   if (isRecord(error)) {
-    const errorName = getObjectStringField(error, 'name')
+    const errorName = getObjectStringField(error, 'name') || getObjectErrorCode(error)
     const errorMessage = getObjectStringField(error, 'message')
 
     if (errorName || errorMessage) {
