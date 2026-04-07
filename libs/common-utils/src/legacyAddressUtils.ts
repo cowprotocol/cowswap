@@ -142,7 +142,7 @@ export function shortenOrderId(orderId: string): string {
   return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
 }
 
-function getEvmLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+function getEvmExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
   switch (type) {
     case 'transaction':
       return `${basePath}/tx/${data}`
@@ -162,7 +162,7 @@ function getEvmLegacyExplorerUrl(basePath: string, data: string, type: BlockExpl
   }
 }
 
-function getSolLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+function getSolExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
   switch (type) {
     case 'transaction':
     case 'event':
@@ -178,7 +178,7 @@ function getSolLegacyExplorerUrl(basePath: string, data: string, type: BlockExpl
   }
 }
 
-function getBtcLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+function getBtcExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
   switch (type) {
     case 'transaction':
     case 'event':
@@ -201,8 +201,8 @@ function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplor
 
   if (!basePath) return ''
 
-  if (isBtcChain(chainId)) return getBtcLegacyExplorerUrl(basePath, data, type)
+  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
   // a dedicated explorer URL builder must be added here before this fallback.
-  if (isSolanaChain(chainId)) return getSolLegacyExplorerUrl(basePath, data, type)
-  return getEvmLegacyExplorerUrl(basePath, data, type)
+  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
+  return getEvmExplorerUrl(basePath, data, type)
 }
