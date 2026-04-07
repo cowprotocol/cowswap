@@ -9,6 +9,8 @@ import { finalizeOnChainCancellation } from './finalizeOnChainCancellation'
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
 
+import type { TransactionReceipt } from 'viem'
+
 export function finalizeEthFlowTx(
   transaction: EnhancedTransactionDetails,
   receipt: TransactionReceipt,
