@@ -4,14 +4,15 @@ import { getRandomInt } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { FinishedStepContentSection } from './FinishedStepContentSection'
 import { ProgressSkeleton } from './ProgressSkeleton'
 import { ProgressTopSection } from './ProgressTopSection'
 import { OrderIntent } from './steps/OrderIntent'
 import * as styledEl from './styled'
 
-import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../constants'
-import { OrderProgressBarStepName } from '../constants'
+import { CHAIN_SPECIFIC_BENEFITS, OrderProgressBarStepName, SURPLUS_IMAGES } from '../constants'
 import { useProgressBarLayout } from '../hooks/useProgressBarLayout'
 import { OrderProgressBarProps } from '../types'
 
@@ -88,6 +89,7 @@ export function RenderProgressTopSection({
   debugForceShowSurplus?: boolean
 }): ReactNode {
   const { t } = useLingui()
+  const { disablePostTradeTips } = useInjectedWidgetParams()
   const { cssVariables, isLayoutReady } = useProgressBarLayout()
   const hideIntent =
     stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED
@@ -121,11 +123,12 @@ export function RenderProgressTopSection({
 
   return (
     <>
-      {isFinishedStep ? (
+      {isFinishedStep && (!disablePostTradeTips || shouldShowSurplus) && (
         <FinishedStepContentSection style={cssVariables as React.CSSProperties}>
           <ProgressContent {...progressContentProps} />
         </FinishedStepContentSection>
-      ) : (
+      )}
+      {!isFinishedStep && (
         <styledEl.ProgressTopSection style={cssVariables as React.CSSProperties}>
           <ProgressContent {...progressContentProps} />
         </styledEl.ProgressTopSection>

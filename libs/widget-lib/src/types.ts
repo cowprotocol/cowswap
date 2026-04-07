@@ -22,6 +22,7 @@ export type FlexibleConfig<T> =
 
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
+  READY = 'READY',
   UPDATE_HEIGHT = 'UPDATE_HEIGHT',
   SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
   EMIT_COW_EVENT = 'EMIT_COW_EVENT',
@@ -60,6 +61,7 @@ export interface CowSwapWidgetProps {
   params: CowSwapWidgetParams
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
+  onReady?(): void
 }
 
 export interface JsonRpcRequest {
@@ -350,6 +352,12 @@ export interface CowSwapWidgetParams {
   disableProgressBar?: boolean
 
   /**
+   * Disables CoW Swap educational tips shown after a trade completes when no surplus message is available.
+   * Defaults to false.
+   */
+  disablePostTradeTips?: boolean
+
+  /**
    * Disables showing the toast messages.
    * Some UI might want to disable it and subscribe to WidgetMethodsEmit.ON_TOAST_MESSAGE event to handle the toast messages itself.
    * Defaults to false.
@@ -437,6 +445,7 @@ export interface CowSwapWidgetParams {
 // Define types for event payloads
 export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.ACTIVATE]: void
+  [WidgetMethodsEmit.READY]: void
   [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowWidgetEvents>
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
   [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload

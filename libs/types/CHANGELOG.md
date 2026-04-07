@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/cowprotocol/cowswap/compare/types-v4.1.0...types-v4.1.1) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
 ## [4.1.0](https://github.com/cowprotocol/cowswap/compare/types-v4.0.1...types-v4.1.0) (2026-03-19)
 
 

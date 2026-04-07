@@ -19,6 +19,7 @@ export interface CustomTokensListsUpdaterProps {
   sellTokenLists?: string[]
   buyTokenLists?: string[]
   customTokens?: TokenInfo[]
+  hideFavoriteTokens?: boolean
   appCode?: string
   onTokenListAddingError(error: Error): void
   onRemoveList: (source: string) => void
@@ -38,6 +39,7 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps): 
     buyTokenLists,
     appCode,
     customTokens,
+    hideFavoriteTokens,
     onTokenListAddingError,
     onRemoveList,
     onAddList,
@@ -55,12 +57,13 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps): 
 
   useEffect(() => {
     setEnvironment({
+      hideFavoriteTokens,
       widgetAppCode: appCode,
       selectedLists: allWidgetLists?.map((list) => list.toLowerCase()),
       sellSelectedLists: sellTokenLists?.map((list) => list.toLowerCase()),
       buySelectedLists: buyTokenLists?.map((list) => list.toLowerCase()),
     })
-  }, [setEnvironment, appCode, allWidgetLists, sellTokenLists, buyTokenLists])
+  }, [setEnvironment, appCode, allWidgetLists, sellTokenLists, buyTokenLists, hideFavoriteTokens])
 
   // Take only lists that are not already in the default token lists
   const listsToImport = useMemo(() => {

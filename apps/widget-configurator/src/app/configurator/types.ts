@@ -44,6 +44,7 @@ export interface ConfiguratorState {
   standaloneMode: boolean
   disableToastMessages: boolean
   disableProgressBar: boolean
+  disablePostTradeTips: boolean
   disableCrossChainSwap: boolean
   disableTokenImport: boolean
   hideRecentTokens: boolean
