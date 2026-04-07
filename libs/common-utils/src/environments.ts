@@ -103,8 +103,6 @@ export const environmentName: EnvironmentName | undefined = (function () {
 const isProdLike = isProd || isEns || isStaging || isBarn
 const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || isBarn
 
-if (typeof window !== 'undefined') {
-  registerOnWindow({ environment: environmentName })
-}
+registerOnWindow({ environment: environmentName })
 
 export { isLocal, isDev, isPr, isBarn, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv }

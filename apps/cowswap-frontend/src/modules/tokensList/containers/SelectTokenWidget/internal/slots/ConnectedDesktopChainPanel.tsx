@@ -10,7 +10,7 @@ import { useChainAnalyticsContext, useChainPanelState } from '../../hooks'
 
 export function ConnectedDesktopChainPanel(): ReactNode {
   const widgetState = useSelectTokenWidgetState()
-  const chainPanel = useChainPanelState(widgetState.tradeType)
+  const chainPanel = useChainPanelState(widgetState.tradeType, widgetState.field)
   const analyticsContext = useChainAnalyticsContext()
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
 

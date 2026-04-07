@@ -53,7 +53,11 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
 
   // Create/Update the widget if the parameters change
   useEffect(() => {
-    if (!containerRef.current || JSON.stringify(paramsRef.current) === JSON.stringify(params)) {
+    const paramsHooksDifferent = !!paramsRef.current && areParamsHooksDifferent(paramsRef.current, params)
+    if (
+      !containerRef.current ||
+      (JSON.stringify(paramsRef.current) === JSON.stringify(params) && !paramsHooksDifferent)
+    ) {
       return
     }
 
@@ -124,4 +128,23 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
 
   // Render widget container
   return <div ref={containerRef} style={{ width: '100%' }}></div>
+}
+
+function areParamsHooksDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {
+  const nextHooks = next.hooks ?? {}
+  const nextKeys = Object.keys(nextHooks)
+
+  const prevHooks = prev.hooks ?? {}
+  const prevKeys = Object.keys(prevHooks)
+
+  return (
+    nextKeys.some((_key) => {
+      const key = _key as keyof CowSwapWidgetParams['hooks']
+      return nextHooks[key] !== prevHooks[key]
+    }) ||
+    prevKeys.some((_key) => {
+      const key = _key as keyof CowSwapWidgetParams['hooks']
+      return nextHooks[key] !== prevHooks[key]
+    })
+  )
 }
