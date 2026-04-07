@@ -35,8 +35,6 @@ interface CircleProgressProps {
   className?: string
 }
 
-const MIN_SIZE = 1
-
 export function CircleProgress({
   isLoading,
   size,
@@ -46,28 +44,21 @@ export function CircleProgress({
   borderColor,
   className,
 }: CircleProgressProps): ReactNode {
-  const safeSize = typeof size === 'number' && size >= MIN_SIZE ? size : MIN_SIZE
-  const halfSize = safeSize / 2
+  const halfSize = size / 2
   const radius = halfSize - borderWidth
 
   return (
-    <Loader
-      $blink={isLoading}
-      className={className}
-      width={safeSize}
-      height={safeSize}
-      viewBox={`0 0 ${safeSize} ${safeSize}`}
-    >
-      <circle cx={halfSize} cy={halfSize} r={radius} fill="none" stroke={backgroundColor} strokeWidth={borderWidth} />
+    <Loader $blink={isLoading} className={className} width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={halfSize} cy={halfSize} r={radius} fill="none" stroke={backgroundColor} stroke-width={borderWidth} />
       <circle
         cx={halfSize}
         cy={halfSize}
         r={radius}
-        strokeDashoffset={100 - percent}
+        stroke-dashoffset={100 - percent}
         fill="none"
         stroke={borderColor}
-        strokeWidth={borderWidth}
-        pathLength={100}
+        stroke-width={borderWidth}
+        pathLength="100"
       />
     </Loader>
   )
