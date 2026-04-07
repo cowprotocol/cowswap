@@ -1,16 +1,16 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { ChainInfo, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { ChainInfo, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'
 
-import { TOKENS_LISTS_UPDATER_INTERVAL, getFulfilledResults, getIsTimeToUpdate } from './helpers'
+import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
 
 import { fetchTokenList } from '../../services/fetchTokenList'
 import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
@@ -37,7 +37,7 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
+const NETWORKS_WITHOUT_RESTRICTIONS: SupportedChainId[] = [SupportedChainId.SEPOLIA]
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
@@ -56,15 +56,13 @@ interface TokensListsUpdaterProps {
 const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TokensListsUpdater({
   chainId: currentChainId,
   isGeoBlockEnabled,
   enableLpTokensByDefault,
   isYieldEnabled,
   bridgeNetworkInfo,
-}: TokensListsUpdaterProps) {
+}: TokensListsUpdaterProps): ReactNode {
   const { chainId } = useAtomValue(environmentAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
   const allTokensLists = useAtomValue(allListsSourcesAtom)
@@ -77,6 +75,10 @@ export function TokensListsUpdater({
   useEffect(() => {
     setEnvironment({ chainId: currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo })
   }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo])
+
+  useEffect(() => {
+    updateLastUpdateTime({ [chainId]: 0 })
+  }, [chainId, updateLastUpdateTime])
 
   // Fetch tokens lists once in 6 hours
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(

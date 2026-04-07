@@ -1,5 +1,7 @@
 export { YieldWidget } from './containers/YieldWidget'
 export { useYieldRawState } from './hooks/useYieldRawState'
+export { useYieldDerivedStateToFill } from './hooks/useYieldDerivedState'
 export { useUpdateYieldRawState } from './hooks/useUpdateYieldRawState'
+export { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from './shared'
 export { YieldUpdaters } from './updaters'
 export { yieldDerivedStateAtom } from './state/yieldRawStateAtom'

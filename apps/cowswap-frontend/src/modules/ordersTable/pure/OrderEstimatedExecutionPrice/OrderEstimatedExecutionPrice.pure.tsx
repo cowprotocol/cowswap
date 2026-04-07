@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
-import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
+import iconFilledAlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
+import iconAllowance from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondary, HoverTooltip, Loader, TokenAmount, TokenAmountProps, UI } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -33,6 +33,11 @@ export interface OrderEstimatedExecutionPriceProps extends TokenAmountProps {
   percentageDifference?: Percent
   percentageFee?: Percent
   warningText?: string
+}
+
+type UnlikelyToExecuteWarningProps = {
+  feePercentage?: Percent
+  feeAmount?: CurrencyAmount<Currency>
 }
 
 // TODO: Break down this large function into smaller functions
@@ -135,7 +140,7 @@ export function OrderEstimatedExecutionPrice({
             color={`var(${UI.COLOR_DANGER_TEXT})`}
           >
             <styledEl.WarningContent>
-              <SVG src={allowanceIcon} />
+              <SVG src={iconAllowance} />
               {internationalizedWarningText}
             </styledEl.WarningContent>
           </HoverTooltip>
@@ -221,11 +226,6 @@ export function OrderEstimatedExecutionPrice({
   )
 }
 
-type UnlikelyToExecuteWarningProps = {
-  feePercentage?: Percent
-  feeAmount?: CurrencyAmount<Currency>
-}
-
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
@@ -257,7 +257,7 @@ function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
           </warningTooltopEl.WarningContent>
         }
       >
-        <SVG src={AlertTriangle} description={t`Alert`} width="14" height="13" />
+        <SVG src={iconFilledAlertTriangle} description={t`Alert`} width="14" height="13" />
       </HoverTooltip>
     </warningTooltopEl.WarningIndicator>
   )

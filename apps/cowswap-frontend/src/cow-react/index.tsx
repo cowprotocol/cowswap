@@ -19,12 +19,17 @@ import { HashRouter } from 'react-router'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { ThemeProvider } from 'theme'
 
+import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { App } from 'modules/application/containers/App'
-import { Updaters } from 'modules/application/containers/App/Updaters'
-import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
+import {
+  App,
+  React310RecoveryErrorBoundary,
+  resetReact310RecoveryOnDocumentLoad,
+  Updaters,
+  WithLDProvider,
+} from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
@@ -58,18 +63,22 @@ export function Main({ localeMessages }: MainProps): ReactNode {
               <ThemeProvider>
                 <HashRouter>
                   <LanguageProvider messages={localeMessages}>
-                    <WithLDProvider>
-                      <Web3ProviderInstance>
-                        <BlockNumberProvider>
-                          <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                            <WalletUnsupportedNetworkBanner />
-                            <Updaters />
-                            <Toasts />
-                            <App />
-                          </CowAnalyticsProvider>
-                        </BlockNumberProvider>
-                      </Web3ProviderInstance>
-                    </WithLDProvider>
+                    <ErrorBoundary>
+                      <React310RecoveryErrorBoundary>
+                        <WithLDProvider>
+                          <Web3ProviderInstance>
+                            <BlockNumberProvider>
+                              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                                <WalletUnsupportedNetworkBanner />
+                                <Updaters />
+                                <Toasts />
+                                <App />
+                              </CowAnalyticsProvider>
+                            </BlockNumberProvider>
+                          </Web3ProviderInstance>
+                        </WithLDProvider>
+                      </React310RecoveryErrorBoundary>
+                    </ErrorBoundary>
                   </LanguageProvider>
                 </HashRouter>
               </ThemeProvider>
@@ -81,24 +90,9 @@ export function Main({ localeMessages }: MainProps): ReactNode {
   )
 }
 
-function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-  const { standaloneMode } = useInjectedWidgetParams()
-
-  return (
-    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
-      <Web3Provider>{children}</Web3Provider>
-    </LegacyWeb3Provider>
-  )
-}
-
-function Toasts(): ReactNode {
-  const { disableToastMessages = false } = useInjectedWidgetParams()
-
-  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
-}
-
 async function initApp(): Promise<void> {
+  resetReact310RecoveryOnDocumentLoad()
+
   const container = document.getElementById('root')
   if (container !== null) {
     const root = createRoot(container)
@@ -108,6 +102,23 @@ async function initApp(): Promise<void> {
   } else {
     console.error('Failed to find the root element')
   }
+}
+
+function Toasts(): ReactNode {
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />
+}
+
+function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+  const { standaloneMode } = useInjectedWidgetParams()
+
+  return (
+    <LegacyWeb3Provider standaloneMode={standaloneMode} selectedWallet={selectedWallet}>
+      <Web3Provider>{children}</Web3Provider>
+    </LegacyWeb3Provider>
+  )
 }
 
 initApp()

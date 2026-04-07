@@ -9,7 +9,6 @@ const COW_AMM_CHAINS = {
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'polygon',
   [SupportedChainId.AVALANCHE]: 'avalanche',
-  [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: '',
   [SupportedChainId.LINEA]: '', // TODO: confirm
   [SupportedChainId.PLASMA]: '', // TODO: confirm
@@ -26,7 +25,6 @@ const UNI_CHAINS = {
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'polygon',
   [SupportedChainId.AVALANCHE]: 'avalanche',
-  [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: 'bnb',
   [SupportedChainId.LINEA]: '', // TODO: confirm
   [SupportedChainId.PLASMA]: '', // TODO: confirm
@@ -43,7 +41,6 @@ const SUSHI_CHAINS = {
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'polygon',
   [SupportedChainId.AVALANCHE]: 'avalanche',
-  [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: 'bsc',
   [SupportedChainId.LINEA]: '', // TODO: confirm. This one is actually supported.
   [SupportedChainId.PLASMA]: '', // TODO: confirm
@@ -60,7 +57,6 @@ const PANCAKE_CHAINS = {
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: '',
   [SupportedChainId.AVALANCHE]: '',
-  [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: 'bsc',
   [SupportedChainId.LINEA]: '', // TODO: confirm. This one is actually supported.
   [SupportedChainId.PLASMA]: '', // TODO: confirm

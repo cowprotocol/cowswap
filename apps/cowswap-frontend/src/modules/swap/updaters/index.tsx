@@ -14,7 +14,7 @@ import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { SetupSwapAmountsFromUrlUpdater } from './SetupSwapAmountsFromUrlUpdater'
 import { UnfillableSwapOrdersUpdater } from './UnfillableSwapOrdersUpdater'
 
-import { useFillSwapDerivedState, useSwapDerivedState } from '../hooks/useSwapDerivedState'
+import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapSettings } from '../hooks/useSwapSettings'
 
 export function SwapUpdaters(): ReactNode {
@@ -24,7 +24,6 @@ export function SwapUpdaters(): ReactNode {
   const partiallyFillable = useIsHooksTradeType()
   const { enablePartialApprovalBySettings } = useSwapSettings()
 
-  useFillSwapDerivedState()
   useSetTradeQuoteParams({
     amount: isSellOrder(orderKind) ? inputCurrencyAmount : outputCurrencyAmount,
     partiallyFillable,

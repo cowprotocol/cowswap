@@ -86,7 +86,7 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
             resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
           .catch((error) => {
-            console.error('useWalletCapabilities() error', error)
+            console.warn('useWalletCapabilities() error', error)
             clearTimeout(timeout)
             resolve(undefined)
           })

@@ -15,6 +15,7 @@ import { AllowancesState, useTokenAllowances, useTokensBalances } from '@cowprot
 import { LpToken, PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -28,8 +29,9 @@ import { CloseIcon } from 'theme'
 
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
+import { PageTitle } from 'modules/application'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
 
@@ -82,6 +84,64 @@ const PAGE_VIEW_ITEMS: PageViewItem[] = Object.entries(PageView).map(([key, valu
   label: value.label,
 }))
 
+interface AccountTokensData {
+  formattedTokens: TokenWithLogo[]
+  favoriteTokens: TokenWithLogo[]
+  balances: TokenBalancesMap
+  allowances: AllowancesState
+  removeAllFavoriteTokens: () => void
+}
+
+interface ResetPageParams {
+  account: string | undefined
+  chainId: number | undefined
+  selectedView: PageViewKeys
+  setPage: Dispatch<SetStateAction<number>>
+}
+
+interface TokensOverviewHeaderProps {
+  isMenuOpen: boolean
+  selectedView: PageViewKeys
+  onToggleMenu: () => void
+  onSelectView: (view: PageViewKeys) => void
+  menuRef: RefObject<HTMLDivElement | null>
+  showResetFavorites: boolean
+  onResetFavorites: () => void
+  query: string
+  onSearchChange: ChangeEventHandler<HTMLInputElement>
+  onSearchClear: () => void
+  checkColor: string
+}
+
+interface TokensOverviewMenuItemsProps {
+  selectedView: PageViewKeys
+  onSelectView: (view: PageViewKeys) => void
+  checkColor: string
+}
+
+interface TokensTableContentProps {
+  provider: WalletProvider
+  darkMode: boolean
+  selectedView: PageViewKeys
+  formattedTokens: TokenWithLogo[]
+  favoriteTokens: TokenWithLogo[]
+  page: number
+  setPage: Dispatch<SetStateAction<number>>
+  query: string
+  prevQuery?: string
+  debouncedQuery?: string
+  balances: TokenBalancesMap
+  allowances: AllowancesState
+}
+
+interface UseTokenSearchResult {
+  query: string
+  debouncedQuery?: string
+  prevQuery?: string
+  handleSearch: ChangeEventHandler<HTMLInputElement>
+  clearSearch: () => void
+}
+
 export default function TokensOverview(): ReactNode {
   useScrollToTop()
 
@@ -97,6 +157,7 @@ export default function TokensOverview(): ReactNode {
   const { query, debouncedQuery, prevQuery, handleSearch, clearSearch } = useTokenSearch(page, setPage)
   const theme = useTheme()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   const handleRestoreTokens = useCallback(() => {
     removeAllFavoriteTokens()
@@ -109,7 +170,7 @@ export default function TokensOverview(): ReactNode {
 
   return (
     <>
-      {!isProviderNetworkUnsupported && (
+      {!isProviderNetworkUnsupported && !isProviderNetworkDeprecated && (
         <TokensOverviewHeader
           isMenuOpen={isMenuOpen}
           selectedView={selectedView}
@@ -128,6 +189,8 @@ export default function TokensOverview(): ReactNode {
         <PageTitle title={i18n._(PAGE_TITLES.TOKENS_OVERVIEW)} />
         {isProviderNetworkUnsupported ? (
           <Trans>Unsupported network</Trans>
+        ) : isProviderNetworkDeprecated ? (
+          <Trans>Deprecated network</Trans>
         ) : (
           <TokensTableContent
             provider={provider}
@@ -147,20 +210,6 @@ export default function TokensOverview(): ReactNode {
       </Overview>
     </>
   )
-}
-
-interface TokensOverviewHeaderProps {
-  isMenuOpen: boolean
-  selectedView: PageViewKeys
-  onToggleMenu: () => void
-  onSelectView: (view: PageViewKeys) => void
-  menuRef: RefObject<HTMLDivElement | null>
-  showResetFavorites: boolean
-  onResetFavorites: () => void
-  query: string
-  onSearchChange: ChangeEventHandler<HTMLInputElement>
-  onSearchClear: () => void
-  checkColor: string
 }
 
 function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
@@ -229,19 +278,25 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
   )
 }
 
-interface TokensTableContentProps {
-  provider: WalletProvider
-  darkMode: boolean
-  selectedView: PageViewKeys
-  formattedTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  page: number
-  setPage: Dispatch<SetStateAction<number>>
-  query: string
-  prevQuery?: string
-  debouncedQuery?: string
-  balances: TokenBalancesMap
-  allowances: AllowancesState
+function TokensOverviewMenuItems(props: TokensOverviewMenuItemsProps): ReactNode {
+  const { selectedView, onSelectView, checkColor } = props
+
+  const menuItems: ReactNode[] = []
+
+  const { i18n } = useLingui()
+
+  for (const { key, label } of PAGE_VIEW_ITEMS) {
+    const isActive = selectedView === key
+
+    menuItems.push(
+      <MenuItem key={key} active={isActive} onClick={() => onSelectView(key)}>
+        <span>{i18n._(label)}</span>
+        {isActive ? <Check size={20} color={checkColor} /> : null}
+      </MenuItem>,
+    )
+  }
+
+  return <>{menuItems}</>
 }
 
 function TokensTableContent(props: TokensTableContentProps): ReactNode {
@@ -286,64 +341,54 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
   )
 }
 
-interface TokensOverviewMenuItemsProps {
-  selectedView: PageViewKeys
-  onSelectView: (view: PageViewKeys) => void
-  checkColor: string
-}
+function useAccountTokensData(): AccountTokensData {
+  const allTokens = useTokensByAddressMap()
+  const favoriteTokens = useFavoriteTokens()
+  const removeAllFavoriteTokens = useResetFavoriteTokens()
 
-function TokensOverviewMenuItems(props: TokensOverviewMenuItemsProps): ReactNode {
-  const { selectedView, onSelectView, checkColor } = props
+  const formattedTokens = useMemo(() => {
+    return Object.values(allTokens).filter(isTruthy)
+  }, [allTokens])
 
-  const menuItems: ReactNode[] = []
+  const tokenAddresses = useMemo(() => {
+    return Object.values(allTokens).reduce<string[]>((acc, token) => {
+      if (token && !(token instanceof LpToken)) {
+        acc.push(getAddressKey(token.address))
+      }
+      return acc
+    }, [])
+  }, [allTokens])
 
-  const { i18n } = useLingui()
+  const { state: allowancesState } = useTokenAllowances(tokenAddresses)
+  const { values: balances } = useTokensBalances()
+  const allowances: AllowancesState = allowancesState ?? {}
 
-  for (const { key, label } of PAGE_VIEW_ITEMS) {
-    const isActive = selectedView === key
-
-    menuItems.push(
-      <MenuItem key={key} active={isActive} onClick={() => onSelectView(key)}>
-        <span>{i18n._(label)}</span>
-        {isActive ? <Check size={20} color={checkColor} /> : null}
-      </MenuItem>,
-    )
+  return {
+    formattedTokens,
+    favoriteTokens,
+    balances,
+    allowances,
+    removeAllFavoriteTokens,
   }
-
-  return <>{menuItems}</>
 }
 
-function useTokensView(): {
-  selectedView: PageViewKeys
-  isMenuOpen: boolean
-  toggleMenu: () => void
-  selectView: (view: PageViewKeys) => void
-  menuRef: RefObject<HTMLDivElement | null>
-} {
-  const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-  const menuRef = useRef<HTMLDivElement | null>(null)
+function useResetPageOnContextChange(params: ResetPageParams): void {
+  const { account, chainId, selectedView, setPage } = params
+  const prevAccount = usePrevious(account)
+  const prevChainId = usePrevious(chainId)
+  const prevSelectedView = usePrevious(selectedView)
 
-  const toggleMenu = useCallback(() => {
-    setIsMenuOpen((prev) => !prev)
-  }, [])
-
-  const selectView = useCallback((view: PageViewKeys) => {
-    setSelectedView(view)
-    setIsMenuOpen(false)
-  }, [])
-
-  useOnClickOutside([menuRef], isMenuOpen ? toggleMenu : undefined)
-
-  return { selectedView, isMenuOpen, toggleMenu, selectView, menuRef }
+  useEffect(() => {
+    if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
+      setPage(1)
+    }
+  }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView, setPage])
 }
 
-interface UseTokenSearchResult {
-  query: string
-  debouncedQuery?: string
-  prevQuery?: string
-  handleSearch: ChangeEventHandler<HTMLInputElement>
-  clearSearch: () => void
+function useScrollToTop(): void {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 }
 
 function useTokenSearch(page: number, setPage: Dispatch<SetStateAction<number>>): UseTokenSearchResult {
@@ -370,67 +415,27 @@ function useTokenSearch(page: number, setPage: Dispatch<SetStateAction<number>>)
   return { query, debouncedQuery, prevQuery, handleSearch, clearSearch }
 }
 
-function useScrollToTop(): void {
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-}
-
-interface ResetPageParams {
-  account: string | undefined
-  chainId: number | undefined
+function useTokensView(): {
   selectedView: PageViewKeys
-  setPage: Dispatch<SetStateAction<number>>
-}
+  isMenuOpen: boolean
+  toggleMenu: () => void
+  selectView: (view: PageViewKeys) => void
+  menuRef: RefObject<HTMLDivElement | null>
+} {
+  const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const menuRef = useRef<HTMLDivElement | null>(null)
 
-function useResetPageOnContextChange(params: ResetPageParams): void {
-  const { account, chainId, selectedView, setPage } = params
-  const prevAccount = usePrevious(account)
-  const prevChainId = usePrevious(chainId)
-  const prevSelectedView = usePrevious(selectedView)
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen((prev) => !prev)
+  }, [])
 
-  useEffect(() => {
-    if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
-      setPage(1)
-    }
-  }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView, setPage])
-}
+  const selectView = useCallback((view: PageViewKeys) => {
+    setSelectedView(view)
+    setIsMenuOpen(false)
+  }, [])
 
-interface AccountTokensData {
-  formattedTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  balances: TokenBalancesMap
-  allowances: AllowancesState
-  removeAllFavoriteTokens: () => void
-}
+  useOnClickOutside([menuRef], isMenuOpen ? toggleMenu : undefined)
 
-function useAccountTokensData(): AccountTokensData {
-  const allTokens = useTokensByAddressMap()
-  const favoriteTokens = useFavoriteTokens()
-  const removeAllFavoriteTokens = useResetFavoriteTokens()
-
-  const formattedTokens = useMemo(() => {
-    return Object.values(allTokens).filter(isTruthy)
-  }, [allTokens])
-
-  const tokenAddresses = useMemo(() => {
-    return Object.values(allTokens).reduce<string[]>((acc, token) => {
-      if (token && !(token instanceof LpToken)) {
-        acc.push(token.address.toLowerCase())
-      }
-      return acc
-    }, [])
-  }, [allTokens])
-
-  const { state: allowancesState } = useTokenAllowances(tokenAddresses)
-  const { values: balances } = useTokensBalances()
-  const allowances: AllowancesState = allowancesState ?? {}
-
-  return {
-    formattedTokens,
-    favoriteTokens,
-    balances,
-    allowances,
-    removeAllFavoriteTokens,
-  }
+  return { selectedView, isMenuOpen, toggleMenu, selectView, menuRef }
 }

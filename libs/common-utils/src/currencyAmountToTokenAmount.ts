@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { getIsNativeToken } from './getIsNativeToken'
 import { getWrappedToken } from './getWrappedToken'
@@ -14,5 +14,9 @@ export function currencyAmountToTokenAmount(
     return amount as CurrencyAmount<Token>
   }
 
-  return CurrencyAmount.fromFractionalAmount(getWrappedToken(amount.currency), amount.numerator, amount.denominator)
+  const wrappedToken = getWrappedToken(amount.currency)
+
+  if (!wrappedToken) return null
+
+  return CurrencyAmount.fromFractionalAmount(wrappedToken, amount.numerator, amount.denominator)
 }

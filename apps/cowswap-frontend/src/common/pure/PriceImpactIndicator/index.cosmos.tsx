@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
+import { Percent } from '@cowprotocol/currency'
 import { UI } from '@cowprotocol/ui'
-import { Percent } from '@uniswap/sdk-core'
 
 import { useSelect, useValue } from 'react-cosmos/client'
 import styled from 'styled-components/macro'

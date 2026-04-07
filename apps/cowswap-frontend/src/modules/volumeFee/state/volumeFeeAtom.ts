@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 import { resolveFlexibleConfig } from '@cowprotocol/widget-lib'
 
@@ -37,15 +38,16 @@ const shouldSkipFeeAtom = atom<boolean>((get) => {
 
   if (!inputCurrency || !outputCurrency || !correlatedTokens) return false
 
-  const inputCurrencyAddress = getCurrencyAddress(inputCurrency).toLowerCase()
+  const inputCurrencyAddress = getAddressKey(getCurrencyAddress(inputCurrency))
 
-  let outputCurrencyAddress = getCurrencyAddress(outputCurrency).toLowerCase()
+  let outputCurrencyAddress = getAddressKey(getCurrencyAddress(outputCurrency))
 
   if (inputCurrency.chainId !== outputCurrency.chainId) {
     const tradeQuotes = get(tradeQuotesAtom)
     const bridgeQuote = tradeQuotes[inputCurrencyAddress]?.bridgeQuote ?? null
 
-    outputCurrencyAddress = getBridgeIntermediateTokenAddress(bridgeQuote)?.toLowerCase() ?? ''
+    const bridgeOutputAddr = getBridgeIntermediateTokenAddress(bridgeQuote)
+    outputCurrencyAddress = bridgeOutputAddr ? getAddressKey(bridgeOutputAddr) : ''
   }
 
   return isCorrelatedTrade(inputCurrencyAddress, outputCurrencyAddress, correlatedTokens)

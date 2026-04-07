@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
 

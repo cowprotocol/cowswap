@@ -13,13 +13,56 @@ jest.mock('quick-lru', () => {
   }
 })
 
-jest.mock('@cowprotocol/analytics', () => ({
-  ...jest.requireActual('@cowprotocol/analytics'),
-  initGtm: jest.fn().mockImplementation(() => ({
-    sendEvent: jest.fn(),
-  })),
-  __resetGtmInstance: jest.fn(),
-}))
+jest.mock('@cowprotocol/analytics', () => {
+  const excludedGtmKeys = new Set([
+    'category',
+    'action',
+    'label',
+    'value',
+    'orderId',
+    'orderType',
+    'tokenSymbol',
+    'chainId',
+  ])
+
+  return {
+    __esModule: true,
+    AnalyticsCategory: {},
+    Category: {},
+    CowAnalytics: class MockCowAnalytics {
+      sendEvent = jest.fn()
+    },
+    CowAnalyticsProvider: ({ children }: { children: unknown }) => children,
+    initGtm: jest.fn().mockImplementation(() => ({
+      sendEvent: jest.fn(),
+    })),
+    initPixelAnalytics: jest.fn().mockImplementation(() => ({
+      sendEvent: jest.fn(),
+    })),
+    setupEventHandlers: jest.fn(),
+    toGtmEvent: (event: Record<string, unknown>) => {
+      const ga4Event: Record<string, unknown> = {
+        event: event['action'] || '',
+        ...(event['category'] && { event_category: event['category'] }),
+        ...(event['label'] && { event_label: event['label'] }),
+        ...(event['value'] !== undefined && { event_value: event['value'] }),
+      }
+      for (const [key, value] of Object.entries(event)) {
+        if (!excludedGtmKeys.has(key)) ga4Event[key] = value
+      }
+      return JSON.stringify(ga4Event)
+    },
+    useAnalyticsReporter: jest.fn(),
+    useCowAnalytics: jest.fn().mockImplementation(() => ({
+      sendEvent: jest.fn(),
+    })),
+    waitForAnalytics: jest.fn().mockResolvedValue(undefined),
+    WebVitalsAnalytics: class MockWebVitalsAnalytics {
+      constructor(_cowAnalytics?: unknown) {}
+    },
+    __resetGtmInstance: jest.fn(),
+  }
+})
 
 beforeEach(() => {
   const { __resetGtmInstance } = require('@cowprotocol/analytics')

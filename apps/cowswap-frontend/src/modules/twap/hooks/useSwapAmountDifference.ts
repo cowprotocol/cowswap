@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { useGetReceiveAmountInfo } from '../../trade'
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
@@ -15,7 +15,7 @@ export interface SwapAmountDifference {
 
 export function useSwapAmountDifference(): SwapAmountDifference | null {
   const fullAmountQuote = useAtomValue(fullAmountQuoteAtom)
-  const outputPartAmount = useGetReceiveAmountInfo()?.afterSlippage.buyAmount
+  const outputPartAmount = useGetReceiveAmountInfo()?.amountsToSign.buyAmount
   const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
 
   return useMemo(() => {

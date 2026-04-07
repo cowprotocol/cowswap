@@ -3,9 +3,10 @@ import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { Nullish } from 'types'
@@ -79,18 +80,6 @@ export function useBuildTradeDerivedState(
   })
 }
 
-function useTokenForTargetChain(params: BuyTokensParams | undefined, currencyId: string | null): TokenWithLogo | null {
-  const result = useBridgeSupportedTokens(params)
-
-  return useMemo(() => {
-    if (!result.data?.tokens?.length || !currencyId) return null
-
-    const currencyIdLower = currencyId.toLowerCase()
-
-    return result.data.tokens.find((token) => token.address.toLowerCase() === currencyIdLower) || null
-  }, [result, currencyId])
-}
-
 function getCurrencyAmount(
   currency: Nullish<Currency> | null,
   currencyAmount: Nullish<string>,
@@ -101,4 +90,16 @@ function getCurrencyAmount(
   // State can be stored as a full string in atoms rather than a json with numerator/denominator
   // Thus we try just that in case the first option fails
   return tryParseFractionalAmount(currency, currencyAmount) || CurrencyAmount.fromRawAmount(currency, currencyAmount)
+}
+
+function useTokenForTargetChain(params: BuyTokensParams | undefined, currencyId: string | null): TokenWithLogo | null {
+  const result = useBridgeSupportedTokens(params)
+
+  return useMemo(() => {
+    if (!result.data?.tokens?.length || !currencyId) return null
+
+    const currencyIdKey = getAddressKey(currencyId)
+
+    return result.data.tokens.find((token) => getAddressKey(token.address) === currencyIdKey) || null
+  }, [result, currencyId])
 }

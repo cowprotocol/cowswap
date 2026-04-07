@@ -1,6 +1,6 @@
+import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { InlineBanner, TokenAmount } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 

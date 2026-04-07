@@ -1,6 +1,6 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import type { Token } from '@cowprotocol/currency'
 import type { Command } from '@cowprotocol/types'
-import type { Token } from '@uniswap/sdk-core'
 
 import { MessageDescriptor } from '@lingui/core'
 
@@ -11,37 +11,7 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import type { OrderTabId } from './tabs/ordersTableTabs.constants'
 
-export interface OrdersTablePageParams {
-  tabId: OrderTabId
-  pageNumber: number
-}
-
-export enum TabOrderTypes {
-  LIMIT = 'limit',
-  ADVANCED = 'advanced',
-}
-
-export interface OrderTableGroup {
-  parent: ParsedOrder
-  children: ParsedOrder[]
-}
-
-export type OrderTableItem = OrderTableGroup | ParsedOrder
-
 export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
-
-export interface TabParams {
-  id: OrderTabId
-  title: MessageDescriptor
-  count: number
-  isActive?: boolean
-}
-
-export interface OrdersTableParams {
-  orders: Order[]
-  orderType: TabOrderTypes
-  displayOrdersOnlyForSafeApp?: boolean
-}
 
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
@@ -54,6 +24,19 @@ export interface OrderActions {
   toggleOrdersForCancellation(orders: ParsedOrder[]): void
 
   approveOrderToken(token: Token): void
+}
+
+export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>
+
+export interface OrdersTablePageParams {
+  tabId: OrderTabId
+  pageNumber: number
+}
+
+export interface OrdersTableParams {
+  orders: Order[]
+  orderType: TabOrderTypes
+  displayOrdersOnlyForSafeApp?: boolean
 }
 
 export interface OrdersTableState {
@@ -69,4 +52,21 @@ export interface OrdersTableState {
   currentPageNumber: number
 }
 
-export type OrdersTableList = Record<OrderTabId, OrderTableItem[]>
+export interface OrderTableGroup {
+  parent: ParsedOrder
+  children: ParsedOrder[]
+}
+
+export type OrderTableItem = OrderTableGroup | ParsedOrder
+
+export interface TabParams {
+  id: OrderTabId
+  title: MessageDescriptor
+  count: number
+  isActive?: boolean
+}
+
+export enum TabOrderTypes {
+  LIMIT = 'limit',
+  ADVANCED = 'advanced',
+}

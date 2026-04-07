@@ -2,6 +2,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+// eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Content } from 'modules/application/pure/Page'
 
 export const PageWithToC = styled.div<{ longList?: boolean }>`

@@ -22,6 +22,7 @@ import { NOTIFICATION_MARK_READ_DELAY_MS } from '../../constants'
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
 import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
+import { isSidebarNotification } from '../../utils/filterNotifications.utils'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
 
 interface EmptyNotificationsProps {
@@ -73,19 +74,26 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
   const unreadNotifications = useUnreadNotifications()
   const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
 
-  const groups = useMemo(() => (notifications ? groupNotificationsByDate(notifications) : null), [notifications])
+  const sidebarNotifications = useMemo(
+    () => (notifications ? notifications.filter(isSidebarNotification) : null),
+    [notifications],
+  )
+  const groups = useMemo(
+    () => (sidebarNotifications ? groupNotificationsByDate(sidebarNotifications) : null),
+    [sidebarNotifications],
+  )
 
   useEffect(() => {
-    if (!notifications) return
+    if (!sidebarNotifications) return
 
     const timeoutId = setTimeout(() => {
-      markNotificationsAsRead(notifications.map(({ id }) => id) || [])
+      markNotificationsAsRead(sidebarNotifications.map(({ id }) => id))
     }, NOTIFICATION_MARK_READ_DELAY_MS)
 
     return () => {
       clearTimeout(timeoutId)
     }
-  }, [notifications, markNotificationsAsRead])
+  }, [sidebarNotifications, markNotificationsAsRead])
 
   return (
     <>

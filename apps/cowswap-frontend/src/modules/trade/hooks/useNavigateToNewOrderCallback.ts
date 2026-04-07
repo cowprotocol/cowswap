@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -15,11 +15,6 @@ import { TradeUrlParams } from '../types/TradeRawState'
 import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
 
 type NavigateToNewOrderCallback = (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
-
-function getCurrencyId(token: Token | undefined): string {
-  if (!token) return ''
-  return getIsNativeToken(token.chainId, token.address) ? token.symbol || token.address : token.address
-}
 
 export function useNavigateToNewOrderCallback(): NavigateToNewOrderCallback {
   const navigate = useNavigate()
@@ -54,4 +49,9 @@ export function useNavigateToNewOrderCallback(): NavigateToNewOrderCallback {
     },
     [navigate],
   )
+}
+
+function getCurrencyId(token: Token | undefined): string {
+  if (!token) return ''
+  return getIsNativeToken(token.chainId, token.address) ? token.symbol || token.address : token.address
 }

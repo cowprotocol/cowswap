@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 
 import { formatTokenAmount } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Airdrop, AirdropAbi } from '@cowprotocol/cowswap-abis'
+import { Fraction } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Fraction } from '@uniswap/sdk-core'
 
-import { MessageDescriptor } from '@lingui/core'
-import { i18n } from '@lingui/core'
+import { MessageDescriptor, i18n } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
@@ -15,14 +15,14 @@ import { useContract } from 'common/hooks/useContract'
 
 import { AirdropDataInfo, IAirdrop, IClaimData } from '../types'
 
-type IntervalsType = { [key: string]: string }
-
-type ChunkDataType = { [key: string]: AirdropDataInfo[] }
-
 export interface PreviewClaimableTokensParams {
   dataBaseUrl: string
   address: string
 }
+
+type ChunkDataType = { [key: string]: AirdropDataInfo[] }
+
+type IntervalsType = { [key: string]: string }
 
 export const AIRDROP_PREVIEW_ERRORS: Record<string, MessageDescriptor> = {
   NO_CLAIMABLE_TOKENS: msg`You are not eligible for this airdrop`,
@@ -95,7 +95,7 @@ const fetchAddressIsEligible = async ({
 
   const chunkData = await fetchChunk(dataBaseUrl, intervalKey)
 
-  const addressLowerCase = address.toLowerCase()
+  const addressLowerCase = getAddressKey(address)
 
   // The user address is not listed in chunk
   if (!(addressLowerCase in chunkData)) throw new Error(i18n._(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_TOKENS))
@@ -160,7 +160,7 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
     tokenToClaimData && account
       ? {
           dataBaseUrl: tokenToClaimData.dataBaseUrl,
-          address: account.toLowerCase(),
+          address: getAddressKey(account),
         }
       : null,
     fetchPreviewClaimableTokens,

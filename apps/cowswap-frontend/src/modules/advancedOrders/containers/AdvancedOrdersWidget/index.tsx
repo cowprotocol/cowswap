@@ -11,6 +11,7 @@ import { Field } from 'legacy/state/types'
 
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
+import { BottomBanners } from 'modules/advancedOrders/pure/BottomBanners/BottomBanners.pure'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
 import {
   TradeWidget,
@@ -139,6 +140,7 @@ export function AdvancedOrdersWidget({
         handleUnlock={() => updateAdvancedOrdersState({ isUnlocked: true })}
       />
     ),
+    outerContent: isUnlocked ? <BottomBanners /> : null,
   }
 
   const tradeWidgetParams: TradeWidgetParams = {

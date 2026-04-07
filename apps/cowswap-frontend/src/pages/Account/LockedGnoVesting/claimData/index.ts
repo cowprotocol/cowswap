@@ -1,4 +1,4 @@
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import gnosisChainIndex from './gnosisChain.json'
 import mainnetIndex from './mainnet.json'
@@ -27,7 +27,7 @@ export const fetchClaim = async (address: string, chainId: SupportedChainId): Pr
   const chainName = chainNames[chainId]
   if (!chainName) return null // no claim for this chain
 
-  const lowerCaseAddress = address.toLowerCase()
+  const lowerCaseAddress = getAddressKey(address)
   const indexFile = indexFiles[chainId]
   const chunkIndex = lookupChunkIndex(indexFile, lowerCaseAddress)
   if (chunkIndex === -1) return null // address is lower than the lowest address in the index, which means it's ineligible

@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 
 import { Media, UI } from '@cowprotocol/ui'
 
@@ -8,7 +8,7 @@ import { WIDGET_MAX_WIDTH } from 'theme'
 
 import { WithClassName } from 'legacy/types'
 
-import { Widget } from 'modules/application/pure/Widget'
+import { Widget } from '../Widget'
 
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;
@@ -24,7 +24,7 @@ export const Title = styled.h1`
     theme.darkMode
       ? `0px 0px 26px var(${UI.COLOR_TEXT_OPACITY_10}), 0px 0px 28px var(${UI.COLOR_TEXT_OPACITY_25})`
       : 'none'};
-  font-weight: 500;
+  font-weight: 600;
 
   ${Media.upToExtraSmall()} {
     font-size: 24px;
@@ -211,8 +211,6 @@ export const GdocsListStyle = css`
 
 export type PageProps = PropsWithChildren<WithClassName>
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Page(props: PageProps) {
+export function Page(props: PageProps): ReactNode {
   return <PageWrapper className={props?.className}>{props?.children}</PageWrapper>
 }

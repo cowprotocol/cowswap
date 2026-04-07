@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 export type SellTokenAddress = string
 

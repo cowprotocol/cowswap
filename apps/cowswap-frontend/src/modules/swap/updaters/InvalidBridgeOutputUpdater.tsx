@@ -2,13 +2,13 @@ import { useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { isSupportedChainId } from '@cowprotocol/common-utils'
+import { isAdditionalTargetChain } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 
 import { useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { useLocation } from 'react-router'
 
-import { useTradeTypeInfo } from 'modules/trade'
-import { parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
+import { useTradeTypeInfo, parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 
 import type { RoutesValues } from 'common/constants/routes'
@@ -70,7 +70,10 @@ export function InvalidBridgeOutputUpdater(): null {
   const rawChainId = rawState.chainId ?? undefined
   const rawTargetChainId = rawState.targetChainId ?? undefined
   const sourceChainId = isSupportedChainId(rawChainId) ? rawChainId : undefined
-  const targetChainId = isSupportedChainId(rawTargetChainId) ? rawTargetChainId : undefined
+  const isValidTargetChain =
+    rawTargetChainId !== undefined &&
+    (isSupportedChainId(rawTargetChainId) || isAdditionalTargetChain(rawTargetChainId))
+  const targetChainId = isValidTargetChain ? rawTargetChainId : undefined
 
   const { data: bridgeSupportedNetworks, isLoading: isBridgeSupportedNetworksLoading } = useBridgeSupportedNetworks()
 
