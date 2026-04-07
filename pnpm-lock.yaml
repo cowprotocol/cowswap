@@ -868,9 +868,6 @@ importers:
       use-async-memo:
         specifier: ^1.2.4
         version: 1.2.4(react@19.1.2)
-      uuid:
-        specifier: ^13.0.0
-        version: 13.0.0
       viem:
         specifier: ^2.42.1
         version: 2.45.0(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.12)
@@ -16206,10 +16203,6 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
-
-  uuid@13.0.0:
-    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
-    hasBin: true
 
   uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
@@ -34589,8 +34582,6 @@ snapshots:
     optional: true
 
   utils-merge@1.0.1: {}
-
-  uuid@13.0.0: {}
 
   uuid@3.4.0: {}
 

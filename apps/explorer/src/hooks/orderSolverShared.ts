@@ -5,7 +5,7 @@ import {
   SolverCompetitionResponse,
 } from 'api/operator'
 
-import { SolverInfo, fetchSolversInfo } from '../utils/fetchSolversInfo'
+import { fetchSolversInfo, SolverInfo } from '../utils/fetchSolversInfo'
 
 export type OrderSolverInfo = {
   solverId: string
@@ -38,20 +38,26 @@ export async function resolveSolver(
 
   const winnerSolverName =
     winnerFromOrder ||
-    (txHash ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash })) : undefined)
+    (txHash
+      ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash }), orderUid)
+      : undefined)
 
   if (!winnerSolverName) return undefined
 
   return buildSolverInfo(winnerSolverName, solvers)
 }
 
-export async function resolveSolverByTxHash(networkId: number, txHash: string): Promise<OrderSolverInfo | undefined> {
+export async function resolveSolverByTxHash(
+  networkId: number,
+  txHash: string,
+  orderId: string,
+): Promise<OrderSolverInfo | undefined> {
   const [competition, solvers] = await Promise.all([
     getSolverCompetitionByTxHash({ networkId, txHash }),
     fetchSolversInfo().catch(() => []),
   ])
 
-  const winnerSolverName = getWinnerSolverFromCompetition(competition)
+  const winnerSolverName = getWinnerSolverFromCompetition(competition, orderId)
   if (!winnerSolverName) return undefined
 
   return buildSolverInfo(winnerSolverName, solvers)
@@ -75,10 +81,10 @@ function getWinnerSolver(value?: OrderCompetitionStatus['value']): string | unde
   return winner?.solver
 }
 
-function getWinnerSolverFromCompetition(competition?: SolverCompetitionResponse): string | undefined {
-  if (!competition?.solutions?.length) return undefined
+function getWinnerSolverFromCompetition(competition?: SolverCompetitionResponse, orderId?: string): string | undefined {
+  if (!competition?.solutions?.length || !orderId) return undefined
 
-  const winner = competition.solutions.find((s) => s.isWinner)
+  const winner = competition.solutions.find((s) => s.isWinner && s.orders?.find((o) => o?.id === orderId))
   if (!winner) return undefined
 
   return getWinnerSolverName(winner)
