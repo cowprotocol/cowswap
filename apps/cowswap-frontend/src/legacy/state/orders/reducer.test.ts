@@ -87,4 +87,38 @@ describe('orders reducer', () => {
     expect(nextState[CHAIN_ID]?.cancelled[cancelledOrder.id]).toBeUndefined()
     expect(nextState[CHAIN_ID]?.fulfilled[cancelledOrder.id]?.order.status).toBe(OrderStatus.FULFILLED)
   })
+
+  it('keeps a locally fulfilled order fulfilled while the API still reports it pending', () => {
+    const fulfilledOrder = createSerializedOrder(OrderStatus.FULFILLED)
+    const stalePendingOrder = { ...fulfilledOrder, status: OrderStatus.PENDING }
+
+    const fulfilledState = reducer(
+      undefined,
+      addOrUpdateOrders({ chainId: CHAIN_ID, orders: [fulfilledOrder], isSafeWallet: false }),
+    )
+    const nextState = reducer(
+      fulfilledState,
+      addOrUpdateOrders({ chainId: CHAIN_ID, orders: [stalePendingOrder], isSafeWallet: false }),
+    )
+
+    expect(nextState[CHAIN_ID]?.pending[fulfilledOrder.id]).toBeUndefined()
+    expect(nextState[CHAIN_ID]?.fulfilled[fulfilledOrder.id]?.order.status).toBe(OrderStatus.FULFILLED)
+  })
+
+  it('keeps a locally fulfilled order fulfilled when a stale cancelled snapshot arrives', () => {
+    const fulfilledOrder = createSerializedOrder(OrderStatus.FULFILLED)
+    const staleCancelledOrder = { ...fulfilledOrder, status: OrderStatus.CANCELLED }
+
+    const fulfilledState = reducer(
+      undefined,
+      addOrUpdateOrders({ chainId: CHAIN_ID, orders: [fulfilledOrder], isSafeWallet: false }),
+    )
+    const nextState = reducer(
+      fulfilledState,
+      addOrUpdateOrders({ chainId: CHAIN_ID, orders: [staleCancelledOrder], isSafeWallet: false }),
+    )
+
+    expect(nextState[CHAIN_ID]?.cancelled[fulfilledOrder.id]).toBeUndefined()
+    expect(nextState[CHAIN_ID]?.fulfilled[fulfilledOrder.id]?.order.status).toBe(OrderStatus.FULFILLED)
+  })
 })

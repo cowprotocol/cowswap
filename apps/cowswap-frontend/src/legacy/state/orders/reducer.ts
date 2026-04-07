@@ -565,14 +565,21 @@ function reClassifyOrder(
   existingOrder: OrderObject | undefined,
 ): { status: OrderStatus; isCancelling: boolean | undefined } {
   const incomingStatus = getIncomingOrderStatus(newOrder)
+  const existingStatus = existingOrder?.order.status
+
+  // Once an order is known to be filled, stale API snapshots must not regress it
+  // back into intermediate or contradictory states and retrigger terminal side effects.
+  if (existingStatus === OrderStatus.FULFILLED && incomingStatus !== OrderStatus.FULFILLED) {
+    return { status: existingStatus, isCancelling: false }
+  }
 
   // Onchain cancellations are considered final
   // Still, the order classification at apps/cowswap-frontend/src/legacy/state/orders/utils.ts can't tell
   // what type of cancellation it was as it doesn't have the local store context
   // Here we do, so we can tell whether it should stay locally cancelled while the API still lags behind.
   // Once the API reaches another terminal state (for example `fulfilled`), backend truth should win.
-  if (existingOrder?.order.status === OrderStatus.CANCELLED && PENDING_STATES.includes(incomingStatus)) {
-    return { status: existingOrder.order.status, isCancelling: false }
+  if (existingStatus === OrderStatus.CANCELLED && PENDING_STATES.includes(incomingStatus)) {
+    return { status: existingStatus, isCancelling: false }
   }
 
   return {
