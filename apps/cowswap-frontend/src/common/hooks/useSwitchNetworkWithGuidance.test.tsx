@@ -15,13 +15,14 @@ const mockSwitchNetwork = jest.fn()
 const mockAddSnackbar = jest.fn()
 const mockRemoveSnackbar = jest.fn()
 const mockSendEvent = jest.fn()
+let mockChainId = SupportedChainId.MAINNET
 
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useConnectionType: jest.fn(),
   useSwitchNetwork: () => mockSwitchNetwork,
   useWalletInfo: () => ({
-    chainId: 1,
+    chainId: mockChainId,
   }),
 }))
 
@@ -69,6 +70,7 @@ describe('useSwitchNetworkWithGuidance', () => {
     jest.clearAllMocks()
     _resetInFlightState()
     mockedIsMobile = false
+    mockChainId = SupportedChainId.MAINNET
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.INJECTED)
   })
 
@@ -90,22 +92,18 @@ describe('useSwitchNetworkWithGuidance', () => {
   })
 
   // Test #2: Desktop Coinbase (isMobile=false)
-  it('calls switchNetwork directly for desktop Coinbase wallet', async () => {
+  it('emits success only after the target chain is observed for desktop Coinbase', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = false
     mockSwitchNetwork.mockResolvedValue(undefined)
 
-    const { result } = renderHook(() => useSwitchNetworkWithGuidance())
-
-    await act(async () => {
-      await result.current(SupportedChainId.GNOSIS_CHAIN)
-    })
+    const { result, rerender } = renderHook(() => useSwitchNetworkWithGuidance())
+    const switchPromise = result.current(SupportedChainId.GNOSIS_CHAIN)
 
     expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
     expect(mockAddSnackbar).not.toHaveBeenCalled()
-    expect(mockSendEvent).toHaveBeenCalledTimes(2)
-    expect(mockSendEvent).toHaveBeenNthCalledWith(
-      1,
+    expect(mockSendEvent).toHaveBeenCalledTimes(1)
+    expect(mockSendEvent).toHaveBeenCalledWith(
       'coinbase_connection_flow',
       expect.objectContaining({
         stage: 'switchStart',
@@ -113,6 +111,14 @@ describe('useSwitchNetworkWithGuidance', () => {
         result: 'started',
       }),
     )
+
+    mockChainId = SupportedChainId.GNOSIS_CHAIN
+    rerender()
+
+    await act(async () => {
+      await switchPromise
+    })
+
     expect(mockSendEvent).toHaveBeenNthCalledWith(
       2,
       'coinbase_connection_flow',
@@ -130,11 +136,8 @@ describe('useSwitchNetworkWithGuidance', () => {
     mockedIsMobile = true
     mockSwitchNetwork.mockResolvedValue(undefined)
 
-    const { result } = renderHook(() => useSwitchNetworkWithGuidance())
-
-    await act(async () => {
-      await result.current(SupportedChainId.GNOSIS_CHAIN)
-    })
+    const { result, rerender } = renderHook(() => useSwitchNetworkWithGuidance())
+    const switchPromise = result.current(SupportedChainId.GNOSIS_CHAIN)
 
     expect(mockAddSnackbar).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -143,6 +146,14 @@ describe('useSwitchNetworkWithGuidance', () => {
       }),
     )
     expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
+
+    mockChainId = SupportedChainId.GNOSIS_CHAIN
+    rerender()
+
+    await act(async () => {
+      await switchPromise
+    })
+
     expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
     expect(mockSendEvent).toHaveBeenCalledWith(
       'coinbase_connection_flow',
@@ -192,7 +203,49 @@ describe('useSwitchNetworkWithGuidance', () => {
     jest.useRealTimers()
   })
 
-  // Test #5: Mobile Coinbase + user rejects
+  // Test #5: Desktop Coinbase + request resolves without changing the chain
+  it('times out instead of emitting success when the chain never changes on desktop Coinbase', async () => {
+    ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
+    mockedIsMobile = false
+    mockSwitchNetwork.mockResolvedValue(undefined)
+
+    jest.useFakeTimers()
+
+    const { result } = renderHook(() => useSwitchNetworkWithGuidance())
+
+    let error: Error | undefined
+
+    await act(async () => {
+      try {
+        const switchPromise = result.current(SupportedChainId.GNOSIS_CHAIN)
+        jest.advanceTimersByTime(60_000)
+        await switchPromise
+      } catch (e) {
+        error = e as Error
+      }
+    })
+
+    expect(error).toBeDefined()
+    expect(error!.message).toContain('Timeout')
+    expect(mockSendEvent).not.toHaveBeenCalledWith(
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        stage: 'switchSuccess',
+      }),
+    )
+    expect(mockSendEvent).toHaveBeenCalledWith(
+      'coinbase_connection_flow',
+      expect.objectContaining({
+        stage: 'switchError',
+        result: 'error',
+        source: 'networkSelector',
+      }),
+    )
+
+    jest.useRealTimers()
+  })
+
+  // Test #6: Mobile Coinbase + user rejects
   it('removes snackbar and rethrows on rejection for mobile Coinbase', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
@@ -222,54 +275,56 @@ describe('useSwitchNetworkWithGuidance', () => {
     )
   })
 
-  // Test #6: Mobile Coinbase + concurrent from same instance
-  it('throws SwitchInProgressError for concurrent call from same instance', async () => {
+  // Test #7: Desktop Coinbase + concurrent from same instance
+  it('throws SwitchInProgressError for concurrent desktop Coinbase calls', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
-    mockedIsMobile = true
+    mockedIsMobile = false
 
     const { promise, resolve } = createResolvablePromise()
     mockSwitchNetwork.mockReturnValue(promise)
 
-    const { result } = renderHook(() => useSwitchNetworkWithGuidance())
+    const { result, rerender } = renderHook(() => useSwitchNetworkWithGuidance())
 
     // Single act block: start first switch, attempt second, then resolve first
     let firstDone = false
     let secondError: Error | undefined
 
-    await act(async () => {
-      const firstCall = result.current(SupportedChainId.GNOSIS_CHAIN).then(() => {
-        firstDone = true
-      })
+    const firstCall = result.current(SupportedChainId.GNOSIS_CHAIN).then(() => {
+      firstDone = true
+    })
 
-      // Second call throws synchronously before awaiting — guard is already set
+    await act(async () => {
       try {
         await result.current(SupportedChainId.ARBITRUM_ONE)
       } catch (e) {
         secondError = e as Error
       }
+    })
 
-      expect(secondError).toBeInstanceOf(SwitchInProgressError)
-      // First call's snackbar should NOT have been removed yet
-      expect(mockRemoveSnackbar).not.toHaveBeenCalled()
+    expect(secondError).toBeInstanceOf(SwitchInProgressError)
 
-      // Now resolve the first call
-      resolve()
+    mockChainId = SupportedChainId.GNOSIS_CHAIN
+    rerender()
+    resolve()
+
+    await act(async () => {
       await firstCall
     })
 
     expect(firstDone).toBe(true)
-    expect(mockRemoveSnackbar).toHaveBeenCalledWith('coinbase-mobile-network-switch')
+    expect(mockAddSnackbar).not.toHaveBeenCalled()
     expect(mockSendEvent).toHaveBeenCalledWith(
       'coinbase_connection_flow',
       expect.objectContaining({
         stage: 'switchBlockedInFlight',
         result: 'blocked',
         source: 'networkSelector',
+        isMobile: false,
       }),
     )
   })
 
-  // Test #7: Mobile Coinbase + concurrent from different instances
+  // Test #8: Mobile Coinbase + concurrent from different instances
   it('shares in-flight guard across different hook instances', async () => {
     ;(useConnectionType as jest.Mock).mockReturnValue(ConnectionType.COINBASE_WALLET)
     mockedIsMobile = true
@@ -278,36 +333,44 @@ describe('useSwitchNetworkWithGuidance', () => {
     mockSwitchNetwork.mockReturnValue(promise)
 
     // Render two separate hook instances
-    const { result: instanceA } = renderHook(() => useSwitchNetworkWithGuidance())
-    const { result: instanceB } = renderHook(() => useSwitchNetworkWithGuidance())
+    const { result: resultA, rerender: rerenderA } = renderHook(() => useSwitchNetworkWithGuidance())
+    const { result: resultB, rerender: rerenderB } = renderHook(() => useSwitchNetworkWithGuidance())
 
     // Single act block: start via A, attempt via B (rejected), resolve A
     let secondError: Error | undefined
+    const firstCall = resultA.current(SupportedChainId.GNOSIS_CHAIN)
 
     await act(async () => {
-      const firstCall = instanceA.current(SupportedChainId.GNOSIS_CHAIN)
-
       // Instance B should throw SwitchInProgressError
       try {
-        await instanceB.current(SupportedChainId.ARBITRUM_ONE)
+        await resultB.current(SupportedChainId.ARBITRUM_ONE)
       } catch (e) {
         secondError = e as Error
       }
+    })
 
-      expect(secondError).toBeInstanceOf(SwitchInProgressError)
+    expect(secondError).toBeInstanceOf(SwitchInProgressError)
 
-      // Resolve first call, guard should clear
-      resolve()
+    mockChainId = SupportedChainId.GNOSIS_CHAIN
+    rerenderA()
+    rerenderB()
+    resolve()
+
+    await act(async () => {
       await firstCall
     })
 
     // Now instance B should work (guard cleared)
     const { promise: secondPromise, resolve: resolveSecond } = createResolvablePromise()
     mockSwitchNetwork.mockReturnValue(secondPromise)
+    const thirdCall = resultB.current(SupportedChainId.ARBITRUM_ONE)
+
+    mockChainId = SupportedChainId.ARBITRUM_ONE
+    rerenderA()
+    rerenderB()
+    resolveSecond()
 
     await act(async () => {
-      const thirdCall = instanceB.current(SupportedChainId.ARBITRUM_ONE)
-      resolveSecond()
       await thirdCall
     })
 

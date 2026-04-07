@@ -8,10 +8,12 @@ import { ConnectionType, useConnectionType, useSwitchNetwork, useWalletInfo } fr
 
 import { Trans } from '@lingui/react/macro'
 
+import { useWaitForTargetChain } from './useWaitForTargetChain'
+
 import { sendCoinbaseConnectionFlowEvent } from '../analytics/coinbaseConnectionFlow'
 
 const COINBASE_MOBILE_SWITCH_SNACKBAR_ID = 'coinbase-mobile-network-switch'
-const COINBASE_MOBILE_SWITCH_TIMEOUT_MS = 60_000
+const COINBASE_SWITCH_TIMEOUT_MS = 60_000
 
 // Module-scoped: shared across ALL hook instances (useOnSelectNetwork + useSetupTradeState)
 let inFlightPromise: Promise<void> | null = null
@@ -31,12 +33,14 @@ type SwitchNetworkTelemetryEvent = {
 interface SwitchExecutionParams {
   addSnackbar: ReturnType<typeof useAddSnackbar>
   chainId: SupportedChainId
+  clearPendingChainConfirmation: () => void
   cowAnalytics: ReturnType<typeof useCowAnalytics>
   isCoinbaseWallet: boolean
   removeSnackbar: ReturnType<typeof useRemoveSnackbar>
   source: SwitchNetworkWithGuidanceMeta['source']
   switchNetwork: ReturnType<typeof useSwitchNetwork>
   targetChain: SupportedChainId
+  waitForTargetChain: (targetChain: SupportedChainId) => Promise<void>
 }
 
 interface SwitchRequestParams {
@@ -44,6 +48,11 @@ interface SwitchRequestParams {
   isCoinbaseMobile: boolean
   switchNetwork: ReturnType<typeof useSwitchNetwork>
   targetChain: SupportedChainId
+}
+
+interface SwitchPromiseParams extends SwitchRequestParams {
+  isCoinbaseWallet: boolean
+  waitForTargetChain: (targetChain: SupportedChainId) => Promise<void>
 }
 
 /** Exported for test cleanup only */
@@ -57,7 +66,6 @@ export class SwitchInProgressError extends Error {
     this.name = 'SwitchInProgressError'
   }
 }
-
 function sendSwitchTelemetryEvent(
   event: SwitchNetworkTelemetryEvent,
   chainId: SupportedChainId,
@@ -79,7 +87,6 @@ function sendSwitchTelemetryEvent(
     error: event.error,
   })
 }
-
 async function performSwitchRequest({
   addSnackbar,
   isCoinbaseMobile,
@@ -91,38 +98,84 @@ async function performSwitchRequest({
       id: COINBASE_MOBILE_SWITCH_SNACKBAR_ID,
       icon: 'alert',
       content: <Trans>Please open the Coinbase Wallet app to complete the network switch.</Trans>,
-      duration: COINBASE_MOBILE_SWITCH_TIMEOUT_MS + 5_000,
+      duration: COINBASE_SWITCH_TIMEOUT_MS + 5_000,
     })
-
-    const promise = withTimeout(switchNetwork(targetChain), COINBASE_MOBILE_SWITCH_TIMEOUT_MS, 'Network switch')
-    inFlightPromise = promise
-    await promise
-    return
   }
 
   await switchNetwork(targetChain)
 }
+async function performCoinbaseSwitch(
+  params: SwitchRequestParams & { waitForTargetChain: (targetChain: SupportedChainId) => Promise<void> },
+): Promise<void> {
+  const { waitForTargetChain, targetChain } = params
+  await withTimeout(
+    (async () => {
+      await performSwitchRequest(params)
+      await waitForTargetChain(targetChain)
+    })(),
+    COINBASE_SWITCH_TIMEOUT_MS,
+    'Network switch',
+  )
+}
 
+function createSwitchPromise({
+  addSnackbar,
+  isCoinbaseMobile,
+  isCoinbaseWallet,
+  switchNetwork,
+  targetChain,
+  waitForTargetChain,
+}: SwitchPromiseParams): Promise<void> {
+  return isCoinbaseWallet
+    ? performCoinbaseSwitch({
+        addSnackbar,
+        isCoinbaseMobile,
+        switchNetwork,
+        targetChain,
+        waitForTargetChain,
+      })
+    : performSwitchRequest({
+        addSnackbar,
+        isCoinbaseMobile,
+        switchNetwork,
+        targetChain,
+      })
+}
+
+function clearSwitchFlow(
+  clearPendingChainConfirmation: () => void,
+  isCoinbaseMobile: boolean,
+  isCoinbaseWallet: boolean,
+  removeSnackbar: ReturnType<typeof useRemoveSnackbar>,
+  switchPromise: Promise<void>,
+): void {
+  clearPendingChainConfirmation()
+
+  if (isCoinbaseMobile) {
+    removeSnackbar(COINBASE_MOBILE_SWITCH_SNACKBAR_ID)
+  }
+
+  if (isCoinbaseWallet && inFlightPromise === switchPromise) {
+    inFlightPromise = null
+  }
+}
 async function executeSwitchNetworkWithGuidance({
   addSnackbar,
   chainId,
+  clearPendingChainConfirmation,
   cowAnalytics,
   isCoinbaseWallet,
   removeSnackbar,
   source,
   switchNetwork,
   targetChain,
+  waitForTargetChain,
 }: SwitchExecutionParams): Promise<void> {
   const isCoinbaseMobile = isMobile && isCoinbaseWallet
 
-  if (isCoinbaseMobile && inFlightPromise) {
+  if (isCoinbaseWallet && inFlightPromise) {
     sendSwitchTelemetryEvent(
-      {
-        stage: 'switchBlockedInFlight',
-        result: 'blocked',
-        source,
-        targetChain,
-      },
+      { stage: 'switchBlockedInFlight', result: 'blocked', source, targetChain },
       chainId,
       cowAnalytics,
       isCoinbaseWallet,
@@ -131,32 +184,27 @@ async function executeSwitchNetworkWithGuidance({
   }
 
   sendSwitchTelemetryEvent(
-    {
-      stage: 'switchStart',
-      result: 'started',
-      source,
-      targetChain,
-    },
+    { stage: 'switchStart', result: 'started', source, targetChain },
     chainId,
     cowAnalytics,
     isCoinbaseWallet,
   )
+  const switchPromise = createSwitchPromise({
+    addSnackbar,
+    isCoinbaseMobile,
+    isCoinbaseWallet,
+    switchNetwork,
+    targetChain,
+    waitForTargetChain,
+  })
 
+  if (isCoinbaseWallet) {
+    inFlightPromise = switchPromise
+  }
   try {
-    await performSwitchRequest({
-      addSnackbar,
-      isCoinbaseMobile,
-      switchNetwork,
-      targetChain,
-    })
-
+    await switchPromise
     sendSwitchTelemetryEvent(
-      {
-        stage: 'switchSuccess',
-        result: 'success',
-        source,
-        targetChain,
-      },
+      { stage: 'switchSuccess', result: 'success', source, targetChain },
       chainId,
       cowAnalytics,
       isCoinbaseWallet,
@@ -174,13 +222,9 @@ async function executeSwitchNetworkWithGuidance({
       cowAnalytics,
       isCoinbaseWallet,
     )
-
     throw error
   } finally {
-    if (isCoinbaseMobile) {
-      removeSnackbar(COINBASE_MOBILE_SWITCH_SNACKBAR_ID)
-      inFlightPromise = null
-    }
+    clearSwitchFlow(clearPendingChainConfirmation, isCoinbaseMobile, isCoinbaseWallet, removeSnackbar, switchPromise)
   }
 }
 
@@ -195,22 +239,32 @@ export function useSwitchNetworkWithGuidance(): (
   const { chainId } = useWalletInfo()
   const addSnackbar = useAddSnackbar()
   const removeSnackbar = useRemoveSnackbar()
-
+  const { clearPendingChainConfirmation, waitForTargetChain } = useWaitForTargetChain(chainId)
   return useCallback(
     async (targetChain: SupportedChainId, meta?: SwitchNetworkWithGuidanceMeta) => {
       const source = meta?.source ?? 'networkSelector'
-
       await executeSwitchNetworkWithGuidance({
         addSnackbar,
         chainId,
+        clearPendingChainConfirmation,
         cowAnalytics,
         isCoinbaseWallet,
         removeSnackbar,
         source,
         switchNetwork,
         targetChain,
+        waitForTargetChain,
       })
     },
-    [cowAnalytics, switchNetwork, isCoinbaseWallet, chainId, addSnackbar, removeSnackbar],
+    [
+      cowAnalytics,
+      switchNetwork,
+      isCoinbaseWallet,
+      chainId,
+      addSnackbar,
+      removeSnackbar,
+      clearPendingChainConfirmation,
+      waitForTargetChain,
+    ],
   )
 }
