@@ -138,6 +138,7 @@ describe('buildWidgetUrlQuery', () => {
     const query = buildWidgetUrlQuery({
       hooks: {
         onBeforeTrade: () => true,
+        onBeforeApproval: () => true,
       },
     })
 
