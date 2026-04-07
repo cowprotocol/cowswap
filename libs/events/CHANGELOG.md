@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.0](https://github.com/cowprotocol/cowswap/compare/events-v4.0.2...events-v4.1.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **tradeFormValidation:** add loading state for price impact and update validation logic ([681b1d7](https://github.com/cowprotocol/cowswap/commit/681b1d7e77a1fc7bc03063345f71a81169691c53))
+* **widget:** hook wallet interactions ([#7228](https://github.com/cowprotocol/cowswap/issues/7228)) ([681b1d7](https://github.com/cowprotocol/cowswap/commit/681b1d7e77a1fc7bc03063345f71a81169691c53))
+
 ## [4.0.2](https://github.com/cowprotocol/cowswap/compare/events-v4.0.1...events-v4.0.2) (2026-03-19)
 
 

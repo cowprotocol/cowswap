@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useWindowSize } from '@cowprotocol/common-hooks'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, StylesheetCSS } from 'cytoscape'
 
@@ -255,8 +256,8 @@ export function useTxBatchData(
   const orderTokens = useMemo(
     () =>
       orders?.reduce((acc, order) => {
-        if (order.sellToken) acc[order.sellToken.address.toLowerCase()] = order.sellToken
-        if (order.buyToken) acc[order.buyToken.address.toLowerCase()] = order.buyToken
+        if (order.sellToken) acc[getAddressKey(order.sellToken.address)] = order.sellToken
+        if (order.buyToken) acc[getAddressKey(order.buyToken.address)] = order.buyToken
 
         return acc
       }, {}) || {},

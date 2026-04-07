@@ -1,5 +1,5 @@
 import { isAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { BridgeSupportedToken } from 'entities/bridgeProvider'
 
@@ -7,7 +7,7 @@ import { SwapRawState } from '../state/swapRawStateAtom'
 
 export interface InvalidBridgeOutputPatchParams {
   sourceChainId: SupportedChainId | undefined
-  targetChainId: SupportedChainId | undefined
+  targetChainId: TargetChainId | undefined
   selectedOutputCurrencyId: string | null
   bridgeRouteData: BridgeSupportedToken | null | undefined
   isBridgeRouteLoading: boolean
@@ -15,7 +15,7 @@ export interface InvalidBridgeOutputPatchParams {
 
 export interface UnsupportedBridgePairPatchParams {
   sourceChainId: SupportedChainId | undefined
-  targetChainId: SupportedChainId | undefined
+  targetChainId: TargetChainId | undefined
   bridgeSupportedNetworks: Array<{ id: number }> | undefined
   isBridgeSupportedNetworksLoading: boolean
 }

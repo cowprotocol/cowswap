@@ -1,5 +1,6 @@
 import {
   ALL_SUPPORTED_CHAINS_MAP,
+  getAddressKey,
   mapSupportedNetworks,
   SupportedChainId,
   WRAPPED_NATIVE_CURRENCIES,
@@ -91,7 +92,7 @@ export const MEDIA = {
 }
 
 export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-export const NATIVE_TOKEN_ADDRESS_LOWERCASE = NATIVE_TOKEN_ADDRESS.toLowerCase()
+export const NATIVE_TOKEN_ADDRESS_NORMALIZED = getAddressKey(NATIVE_TOKEN_ADDRESS)
 
 export const WRAPPED_NATIVE_ADDRESS: Record<SupportedChainId, string> = mapSupportedNetworks(
   (chainId) => WRAPPED_NATIVE_CURRENCIES[chainId].address,
