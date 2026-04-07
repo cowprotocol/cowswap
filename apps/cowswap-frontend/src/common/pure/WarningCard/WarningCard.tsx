@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { AlertCircle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import Card from 'legacy/components/Card'
@@ -30,7 +30,7 @@ const RightContainer = styled.div`
   }
 `
 
-const WarningIcon = styled(AlertCircle)`
+const WarningIcon = styled(AlertTriangle)`
   min-height: 32px;
   min-width: 32px;
   color: #764e0766;

@@ -20,6 +20,7 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   partnerFee: 'Partner fee, in Basis Points (BPS) and a receiver address',
   hideRecentTokens: 'Hide the Recent section in the token selector',
   hideFavoriteTokens: 'Hide the Favorites section in the token selector',
+  disablePostTradeTips: 'Hide CoW Swap educational tips shown after a completed trade when there is no surplus card',
 }
 
 export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {

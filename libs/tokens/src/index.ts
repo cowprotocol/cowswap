@@ -64,6 +64,7 @@ export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTok
 export { environmentAtom } from './state/environmentAtom'
 export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
 export { allActiveTokensAtom } from './state/tokens/allTokensAtom'
+export { favoriteTokensListAtom } from './state/tokens/favoriteTokensAtom'
 export { listsStatesMapAtom } from './state/tokenLists/tokenListsStateAtom'
 
 // Utils
