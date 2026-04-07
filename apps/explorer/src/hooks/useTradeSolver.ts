@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { Nullish } from '@cowprotocol/cow-sdk'
+
 import { useNetworkId } from 'state/network'
 
-import { resolveSolverByTxHash, type OrderSolverInfo, type UseOrderSolverResult } from './orderSolverShared'
+import { type OrderSolverInfo, resolveSolverByTxHash, type UseOrderSolverResult } from './orderSolverShared'
 
-export function useTradeSolver(txHash: string | undefined | null): UseOrderSolverResult {
+export function useTradeSolver(txHash: Nullish<string>, orderId: Nullish<string>): UseOrderSolverResult {
   const networkId = useNetworkId()
   const [solver, setSolver] = useState<OrderSolverInfo | undefined>()
   const [doneFor, setDoneFor] = useState<string | null>(null)
 
-  const currentKey = txHash && networkId ? `${networkId}:${txHash}` : null
+  const currentKey = txHash && networkId && orderId ? `${networkId}:${txHash}:${orderId}` : null
 
   useEffect(() => {
     if (!networkId || !txHash || !currentKey) {
@@ -20,7 +22,7 @@ export function useTradeSolver(txHash: string | undefined | null): UseOrderSolve
 
     let cancelled = false
 
-    resolveSolverByTxHash(networkId, txHash)
+    resolveSolverByTxHash(networkId, txHash, orderId || '')
       .then((result) => {
         if (cancelled) return
         setSolver(result)
@@ -35,7 +37,7 @@ export function useTradeSolver(txHash: string | undefined | null): UseOrderSolve
     return () => {
       cancelled = true
     }
-  }, [networkId, txHash, currentKey])
+  }, [networkId, txHash, currentKey, orderId])
 
   const isLoading = !!currentKey && !!networkId && doneFor !== currentKey
 
