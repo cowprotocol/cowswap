@@ -6,6 +6,7 @@ import { formatDateWithTimezone } from '@cowprotocol/common-utils'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import ms from 'ms.macro'
 
 import { Donut } from './Donut.pure'
 import {
@@ -20,7 +21,7 @@ import {
   TitleWithTooltip,
 } from './shared'
 
-import { getApproxStatsUpdatedAt } from '../lib/affiliateProgramUtils'
+import { getApproxStatsUpdatedAt, toValidDate } from '../lib/affiliateProgramUtils'
 
 export interface MetricsCardItem {
   id: string
@@ -36,7 +37,10 @@ interface MetricsCardProps {
   donutValue: number
   donutLabel: string
   donutSubtitle?: ReactNode
+  lastUpdatedAt?: string
 }
+
+const TIME_AGO_UPDATE_INTERVAL_MS = ms`1m`
 
 export function MetricsCard({
   showLoader,
@@ -46,9 +50,11 @@ export function MetricsCard({
   donutValue,
   donutLabel,
   donutSubtitle,
+  lastUpdatedAt,
 }: MetricsCardProps): ReactNode {
   const approxUpdatedAt = useMemo(() => getApproxStatsUpdatedAt(), [])
-  const statsUpdatedTimeAgo = useTimeAgo(approxUpdatedAt, 60_000)
+  const statsUpdatedAt = toValidDate(lastUpdatedAt) ?? approxUpdatedAt
+  const statsUpdatedTimeAgo = useTimeAgo(statsUpdatedAt, TIME_AGO_UPDATE_INTERVAL_MS)
 
   return (
     <ColumnTwoCard showLoader={showLoader}>
@@ -80,9 +86,9 @@ export function MetricsCard({
         <LabelContent>
           <span>
             <Trans>Last updated</Trans>
-            <span title={formatDateWithTimezone(approxUpdatedAt)}> ~ {statsUpdatedTimeAgo}</span>
+            <span title={formatDateWithTimezone(statsUpdatedAt)}> {statsUpdatedTimeAgo}</span>
           </span>
-          <HelpTooltip text={<Trans>Updates daily at 02:00 UTC</Trans>} dimmed />
+          <HelpTooltip text={<Trans>Updates every 24 hours</Trans>} dimmed />
         </LabelContent>
       </BottomMetaRow>
     </ColumnTwoCard>

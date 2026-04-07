@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.1.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.1.1...ui-v3.1.2) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.4
+    * @cowprotocol/common-const bumped to 3.0.3
+    * @cowprotocol/common-hooks bumped to 3.0.3
+    * @cowprotocol/common-utils bumped to 3.0.3
+    * @cowprotocol/core bumped to 3.0.3
+    * @cowprotocol/types bumped to 4.1.1
+
 ## [3.1.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.1.0...ui-v3.1.1) (2026-04-02)
 
 

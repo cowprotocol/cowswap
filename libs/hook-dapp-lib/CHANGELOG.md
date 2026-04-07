@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.11](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.0.10...hook-dapp-lib-v2.0.11) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.0.11
+
 ## [2.0.10](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.0.9...hook-dapp-lib-v2.0.10) (2026-03-19)
 
 
