@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -41,8 +42,16 @@ export function CowShedInfo({ className, onClick }: CowShedInfoProps): ReactNode
 
   const accountProxyLink = getProxyAccountUrl(chainId)
 
+  const isWidget = isInjectedWidget()
+
   return (
-    <ProxyPageLink to={accountProxyLink} className={className} onClick={onClick}>
+    <ProxyPageLink
+      to={accountProxyLink}
+      className={className}
+      onClick={onClick}
+      target={isWidget ? '_blank' : undefined}
+      rel={isWidget ? 'noopener noreferrer' : undefined}
+    >
       <Pocket size={14} />
       <span>{i18n._(ACCOUNT_PROXY_LABEL)}</span>
     </ProxyPageLink>

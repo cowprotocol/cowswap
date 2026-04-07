@@ -1,5 +1,64 @@
 # Changelog
 
+## [3.0.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.0.4...multicall-v3.0.5) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.3
+    * @cowprotocol/types bumped to 4.1.1
+    * @cowprotocol/wallet bumped to 3.0.5
+    * @cowprotocol/wallet-provider bumped to 2.1.11
+
+## [3.0.4](https://github.com/cowprotocol/cowswap/compare/multicall-v3.0.3...multicall-v3.0.4) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/wallet bumped to 3.0.4
+
+## [3.0.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.0.2...multicall-v3.0.3) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/wallet bumped to 3.0.3
+
+## [3.0.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.0.1...multicall-v3.0.2) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.2
+    * @cowprotocol/types bumped to 4.1.0
+    * @cowprotocol/wallet bumped to 3.0.2
+    * @cowprotocol/wallet-provider bumped to 2.1.10
+
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.0.0...multicall-v3.0.1) (2026-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.1
+    * @cowprotocol/types bumped to 4.0.1
+    * @cowprotocol/wallet bumped to 3.0.1
+    * @cowprotocol/wallet-provider bumped to 2.1.9
+
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/multicall-v2.4.0...multicall-v3.0.0) (2026-03-11)
 
 

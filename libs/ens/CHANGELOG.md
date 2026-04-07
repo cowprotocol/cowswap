@@ -1,5 +1,43 @@
 # Changelog
 
+## [3.0.3](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.2...ens-v3.0.3) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.3
+    * @cowprotocol/common-utils bumped to 3.0.3
+    * @cowprotocol/wallet-provider bumped to 2.1.11
+
+## [3.0.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.1...ens-v3.0.2) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.2
+    * @cowprotocol/common-utils bumped to 3.0.2
+    * @cowprotocol/wallet-provider bumped to 2.1.10
+
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.0...ens-v3.0.1) (2026-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.1
+    * @cowprotocol/common-utils bumped to 3.0.1
+    * @cowprotocol/wallet-provider bumped to 2.1.9
+
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/ens-v2.4.0...ens-v3.0.0) (2026-03-11)
 
 

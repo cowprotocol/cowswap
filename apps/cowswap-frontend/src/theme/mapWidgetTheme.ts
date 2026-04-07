@@ -9,9 +9,12 @@ export function mapWidgetTheme(
 ): DefaultTheme {
   if (!widgetTheme) return defaultTheme
 
+  const { boxShadow, ...widgetPalette } = widgetTheme
+
   return {
     ...defaultTheme,
-    ...widgetTheme,
-    ...(widgetTheme.paper ? { buttonTextCustom: widgetTheme.paper } : null),
+    ...widgetPalette,
+    ...(widgetPalette.paper ? { buttonTextCustom: widgetPalette.paper } : null),
+    ...(boxShadow ? { boxShadow1: boxShadow } : null),
   }
 }

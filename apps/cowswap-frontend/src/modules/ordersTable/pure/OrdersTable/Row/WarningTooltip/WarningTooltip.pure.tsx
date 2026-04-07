@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
-import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import iconInformation from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondary, TokenSymbol, UI } from '@cowprotocol/ui'
 
@@ -139,7 +139,7 @@ export function WarningTooltip({
         placement="bottom"
         bgColor={`var(${UI.COLOR_DANGER_BG})`}
         color={`var(${UI.COLOR_DANGER_TEXT})`}
-        Icon={<SVG src={alertCircle} description={t`warning`} width="14" height="14" />}
+        Icon={<SVG src={iconInformation} description={t`warning`} width="14" height="14" />}
       />
       {children}
     </styledEl.WarningIndicator>

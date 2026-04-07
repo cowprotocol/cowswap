@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
+import { useConnectionType } from './useConnectionType'
 import { useSafeAppsSdk } from './useSafeAppsSdk'
 
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
@@ -141,6 +142,9 @@ export function useIsSafeWallet(): boolean {
 export function useIsSafeViaWc(): boolean {
   const isSafeApp = useIsSafeApp()
   const isSafeWallet = useIsSafeWallet()
+  const connectionType = useConnectionType()
+
+  if (connectionType !== ConnectionType.WALLET_CONNECT_V2) return false
 
   return isSafeWallet && !isSafeApp
 }

@@ -1,5 +1,26 @@
 # Changelog
 
+## [4.1.1](https://github.com/cowprotocol/cowswap/compare/types-v4.1.0...types-v4.1.1) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+## [4.1.0](https://github.com/cowprotocol/cowswap/compare/types-v4.0.1...types-v4.1.0) (2026-03-19)
+
+
+### ✨ Features
+
+* publish libs tp npm ([#7191](https://github.com/cowprotocol/cowswap/issues/7191)) ([c6177bb](https://github.com/cowprotocol/cowswap/commit/c6177bb9a8c828c7c3f82aceb6fcef00da15cdcf))
+
+## [4.0.1](https://github.com/cowprotocol/cowswap/compare/types-v4.0.0...types-v4.0.1) (2026-03-18)
+
+
+### 🐛 Bug Fixes
+
+* update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
+
 ## [4.0.0](https://github.com/cowprotocol/cowswap/compare/types-v3.4.0...types-v4.0.0) (2026-03-11)
 
 
