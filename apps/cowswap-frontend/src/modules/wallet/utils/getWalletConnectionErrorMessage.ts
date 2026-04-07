@@ -22,13 +22,7 @@ function getParsedWalletConnectionErrorMessage(errorMessage: string): string | u
   }
 }
 
-export function getWalletConnectionErrorMessage(error: unknown): string {
-  const providerErrorMessage = getProviderErrorMessage(error)
-
-  if (providerErrorMessage) {
-    return getParsedWalletConnectionErrorMessage(providerErrorMessage) || providerErrorMessage
-  }
-
+function getNormalizedWalletConnectionErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message
   }
@@ -42,4 +36,14 @@ export function getWalletConnectionErrorMessage(error: unknown): string {
   } catch {
     return 'Unknown error'
   }
+}
+
+export function getWalletConnectionErrorMessage(error: unknown): string {
+  const providerErrorMessage = getProviderErrorMessage(error)
+
+  if (typeof providerErrorMessage === 'string') {
+    return getParsedWalletConnectionErrorMessage(providerErrorMessage) || providerErrorMessage
+  }
+
+  return getNormalizedWalletConnectionErrorMessage(error)
 }

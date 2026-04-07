@@ -20,4 +20,13 @@ describe('getWalletConnectionErrorMessage', () => {
   it('falls back to the normalized error message', () => {
     expect(getWalletConnectionErrorMessage(new Error('Connection failed'))).toBe('Connection failed')
   })
+
+  it('falls back safely when the provider message is not a string', () => {
+    expect(
+      getWalletConnectionErrorMessage({
+        code: 4001,
+        message: { reason: 'Request rejected' },
+      }),
+    ).toBe('{"code":4001,"message":{"reason":"Request rejected"}}')
+  })
 })
