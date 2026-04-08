@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { DefaultBridgeProvider } from '@cowprotocol/sdk-bridging'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { useAccountType, useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import {
   acrossBridgeProvider,
@@ -13,6 +13,7 @@ import {
 } from 'tradingSdk/bridgingSdk'
 
 import { bridgeProvidersAtom } from './bridgeProvidersAtom'
+import { shouldRestrictStandardBridgeProviders } from './BridgeProvidersUpdater.utils'
 
 function toggleProvider(providers: Set<DefaultBridgeProvider>, provider: DefaultBridgeProvider, flag: boolean): void {
   if (flag) {
@@ -26,6 +27,7 @@ export function BridgeProvidersUpdater(): null {
   const setBridgeProviders = useSetAtom(bridgeProvidersAtom)
   const { isNearIntentsBridgeProviderEnabled, isAcrossBridgeProviderEnabled, isBungeeBridgeProviderEnabled } =
     useFeatureFlags()
+  const accountType = useAccountType()
   const isSmartContractWallet = useIsSmartContractWallet()
 
   useEffect(() => {
@@ -40,11 +42,16 @@ export function BridgeProvidersUpdater(): null {
 
     setBridgeProviders((providers) => {
       const newProviders = new Set(providers)
+      const shouldRestrictStandardProviders = shouldRestrictStandardBridgeProviders({
+        accountType,
+        isSmartContractWallet,
+      })
 
       toggleProvider(newProviders, nearIntentsBridgeProvider, isNearIntentsBridgeProviderEnabled)
 
       // Only Near intents provider should be available for smart-contract wallets
-      if (isSmartContractWallet) {
+      // and EIP-7702 accounts until the delegate guarantees EIP-1271 support.
+      if (shouldRestrictStandardProviders) {
         toggleProvider(newProviders, bungeeBridgeProvider, false)
         toggleProvider(newProviders, acrossBridgeProvider, false)
       } else {
@@ -60,6 +67,7 @@ export function BridgeProvidersUpdater(): null {
     isNearIntentsBridgeProviderEnabled,
     isAcrossBridgeProviderEnabled,
     isBungeeBridgeProviderEnabled,
+    accountType,
     isSmartContractWallet,
     setBridgeProviders,
   ])

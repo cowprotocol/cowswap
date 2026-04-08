@@ -6,31 +6,33 @@ import { useConnection, usePublicClient } from 'wagmi'
 
 import { useIsSafeWallet } from './useWalletMetadata'
 
-import { useWalletInfo } from '../../api/hooks'
-import { useWalletCapabilities, WalletCapabilities } from '../../api/hooks/useWalletCapabilities'
-
-// EIP-5792: atomic batching capability — catches counterfactual ERC-4337 wallets (e.g. Coinbase Smart Wallet)
-function hasAtomicBatchSupport(capabilities: WalletCapabilities | undefined): boolean {
-  const status = capabilities?.atomic?.status
-  return status === 'supported' || status === 'ready'
-}
+import { useSelectedEip6963ProviderInfo, useWalletInfo } from '../../api/hooks'
+import { useWalletCapabilities } from '../../api/hooks/useWalletCapabilities'
+import { ConnectorType } from '../../api/types'
+import { getIsSmartContractWallet } from '../../api/utils/getIsSmartContractWallet'
+import { isActiveMetaMaskConnection } from '../../api/utils/isActiveMetaMaskConnection'
 
 export function useIsSmartContractWallet(): boolean | undefined {
   const accountType = useAccountType()
   const isSafeWallet = useIsSafeWallet()
   const { data: capabilities, isLoading: capabilitiesLoading } = useWalletCapabilities()
+  const { connector } = useConnection()
+  const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
 
-  // Definitive positive signals
-  if (isSafeWallet) return true
-  if (accountType === AccountType.SMART_CONTRACT) return true
-  if (hasAtomicBatchSupport(capabilities)) return true
+  const isMetaMaskConnection = isActiveMetaMaskConnection({
+    connectorName: connector?.name,
+    ethereumProvider: typeof window === 'undefined' ? undefined : window.ethereum,
+    isInjectedConnection: connector?.type === ConnectorType.INJECTED,
+    rdns: selectedEip6963Provider?.info.rdns,
+  })
 
-  // If either detection signal is still loading, stay unknown
-  if (accountType === undefined || capabilitiesLoading) {
-    return undefined
-  }
-
-  return false
+  return getIsSmartContractWallet({
+    accountType,
+    capabilities,
+    capabilitiesLoading,
+    isSafeWallet,
+    shouldTreatAtomicCapabilitiesAsSmartWallet: !isMetaMaskConnection,
+  })
 }
 
 export function useAccountType(): AccountType | undefined {

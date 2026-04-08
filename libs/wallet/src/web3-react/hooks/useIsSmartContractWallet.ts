@@ -1,36 +1,43 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { AccountType } from '@cowprotocol/types'
+import type { Web3Provider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 
 import useSWR from 'swr'
 
 import { useIsSafeWallet } from './useWalletMetadata'
 
-import { useWalletInfo } from '../../api/hooks'
-import { useWalletCapabilities, WalletCapabilities } from '../../api/hooks/useWalletCapabilities'
-
-// EIP-5792: atomic batching capability — catches counterfactual ERC-4337 wallets (e.g. Coinbase Smart Wallet)
-function hasAtomicBatchSupport(capabilities: WalletCapabilities | undefined): boolean {
-  const status = capabilities?.atomic?.status
-  return status === 'supported' || status === 'ready'
-}
+import { useSelectedEip6963ProviderInfo, useWalletInfo } from '../../api/hooks'
+import { useWalletCapabilities } from '../../api/hooks/useWalletCapabilities'
+import { getIsSmartContractWallet } from '../../api/utils/getIsSmartContractWallet'
+import { isActiveMetaMaskConnection } from '../../api/utils/isActiveMetaMaskConnection'
+import { injectedWalletConnection } from '../connection/injectedWallet'
+import { metaMaskSdkConnection } from '../connection/metaMaskSdk'
 
 export function useIsSmartContractWallet(): boolean | undefined {
   const accountType = useAccountType()
   const isSafeWallet = useIsSafeWallet()
   const { data: capabilities, isLoading: capabilitiesLoading } = useWalletCapabilities()
+  const { connector, provider } = useWeb3React()
+  const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
+  const ethereumProvider = (provider as Web3Provider | undefined)?.provider as
+    | { isMetaMask?: boolean; isRabby?: boolean }
+    | undefined
 
-  // Definitive positive signals
-  if (isSafeWallet) return true
-  if (accountType === AccountType.SMART_CONTRACT) return true
-  if (hasAtomicBatchSupport(capabilities)) return true
+  const isMetaMaskConnection = isActiveMetaMaskConnection({
+    ethereumProvider,
+    isInjectedConnection: connector === injectedWalletConnection.connector,
+    isMetaMaskSdkConnection: connector === metaMaskSdkConnection.connector,
+    rdns: selectedEip6963Provider?.info.rdns,
+  })
 
-  // If either detection signal is still loading, stay unknown
-  if (accountType === undefined || capabilitiesLoading) {
-    return undefined
-  }
-
-  return false
+  return getIsSmartContractWallet({
+    accountType,
+    capabilities,
+    capabilitiesLoading,
+    isSafeWallet,
+    shouldTreatAtomicCapabilitiesAsSmartWallet: !isMetaMaskConnection,
+  })
 }
 
 export function useAccountType(): AccountType | undefined {
