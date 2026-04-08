@@ -112,14 +112,14 @@ describe('shouldStageExecutingStep', () => {
     expect(result).toBe(true)
   })
 
-  it('does not stage executing again once it has already been shown', () => {
+  it('restages executing after a submission retry path before finishing', () => {
     const result = shouldStageExecutingStep(
       OrderProgressBarStepName.SUBMISSION_FAILED,
       OrderProgressBarStepName.EXECUTING,
       OrderProgressBarStepName.FINISHED,
     )
 
-    expect(result).toBe(false)
+    expect(result).toBe(true)
   })
 
   it('does not stage executing while the progress bar is still on the initial step', () => {

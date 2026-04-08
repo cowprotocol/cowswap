@@ -245,4 +245,36 @@ describe('OrderProgressEventsUpdater', () => {
 
     unmount()
   })
+
+  it('restages executing before finishing after a submission retry path', () => {
+    const orderUid = '0xretry-order'
+    const { store, TestComponent } = getWrapper()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderUid]: {
+        progressBarStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
+        previousStepName: OrderProgressBarStepName.EXECUTING,
+      },
+    })
+
+    const { unmount } = render(<OrderProgressEventsUpdater />, { wrapper: TestComponent })
+
+    act(() => emitFulfilledOrder(orderUid))
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]).toMatchObject({
+      previousStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
+      progressBarStepName: OrderProgressBarStepName.EXECUTING,
+    })
+
+    act(() => {
+      jest.advanceTimersByTime(EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]).toMatchObject({
+      previousStepName: OrderProgressBarStepName.EXECUTING,
+      progressBarStepName: OrderProgressBarStepName.FINISHED,
+    })
+
+    unmount()
+  })
 })

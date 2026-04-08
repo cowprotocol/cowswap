@@ -77,6 +77,10 @@ export function shouldStageExecutingStep(
     return false
   }
 
+  if (currentStep === OrderProgressBarStepName.SUBMISSION_FAILED) {
+    return true
+  }
+
   return currentStep !== OrderProgressBarStepName.EXECUTING && previousStep !== OrderProgressBarStepName.EXECUTING
 }
 

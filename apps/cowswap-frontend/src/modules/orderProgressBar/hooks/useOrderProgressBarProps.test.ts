@@ -115,10 +115,20 @@ describe('getProgressBarStepName', () => {
     expect(result).toBe(OrderProgressBarStepName.FINISHED)
   })
 
-  it('does not restage executing after a submission retry path', () => {
+  it('restages executing after a submission retry path before finishing', () => {
     const result = callGetProgressBarStepName({
       currentStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
       previousStepName: OrderProgressBarStepName.EXECUTING,
+      isConfirmed: true,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.EXECUTING)
+  })
+
+  it('finishes after restaging executing for a submission retry path', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.EXECUTING,
+      previousStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
       isConfirmed: true,
     })
 
