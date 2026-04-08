@@ -1,9 +1,21 @@
 import { type OrderFillability } from 'modules/ordersTable'
 
+import { OrderProgressBarStepName } from '../constants'
+
 type OrderLike = {
   id: string
   isUnfillable?: boolean
 }
+
+const COMPLETION_STEPS = new Set<OrderProgressBarStepName>([
+  OrderProgressBarStepName.FINISHED,
+  OrderProgressBarStepName.BRIDGING_IN_PROGRESS,
+  OrderProgressBarStepName.BRIDGING_FAILED,
+  OrderProgressBarStepName.REFUND_COMPLETED,
+  OrderProgressBarStepName.BRIDGING_FINISHED,
+])
+
+export const EXECUTING_STEP_MIN_DISPLAY_TIME_MS = 1000
 
 export function computeUnfillableOrderIds(
   marketOrders: OrderLike[],
@@ -45,4 +57,37 @@ export function getNewlyFillableOrderIds(previous: Iterable<string>, current: It
   }
 
   return newlyFillable
+}
+
+export function isCompletionStep(step: OrderProgressBarStepName | undefined): step is OrderProgressBarStepName {
+  return !!step && COMPLETION_STEPS.has(step)
+}
+
+export function shouldStageExecutingStep(
+  currentStep: OrderProgressBarStepName | undefined,
+  previousStep: OrderProgressBarStepName | undefined,
+  nextStep: OrderProgressBarStepName | undefined,
+): boolean {
+  if (!currentStep || !isCompletionStep(nextStep) || isCompletionStep(currentStep)) {
+    return false
+  }
+
+  return currentStep !== OrderProgressBarStepName.EXECUTING && previousStep !== OrderProgressBarStepName.EXECUTING
+}
+
+export function getCompletionDelayMs(
+  currentStep: OrderProgressBarStepName | undefined,
+  nextStep: OrderProgressBarStepName | undefined,
+  lastTimeChangedSteps: number | undefined,
+  now = Date.now(),
+): number {
+  if (
+    currentStep !== OrderProgressBarStepName.EXECUTING ||
+    !isCompletionStep(nextStep) ||
+    lastTimeChangedSteps == null
+  ) {
+    return 0
+  }
+
+  return Math.max(EXECUTING_STEP_MIN_DISPLAY_TIME_MS - (now - lastTimeChangedSteps), 0)
 }

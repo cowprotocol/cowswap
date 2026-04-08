@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
@@ -18,7 +18,13 @@ import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { usePendingOrdersFillability } from 'modules/ordersTable'
 
-import { computeUnfillableOrderIds, getNewlyFillableOrderIds } from './utils'
+import {
+  computeUnfillableOrderIds,
+  EXECUTING_STEP_MIN_DISPLAY_TIME_MS,
+  getCompletionDelayMs,
+  getNewlyFillableOrderIds,
+  shouldStageExecutingStep,
+} from './utils'
 
 import { OrderProgressBarStepName } from '../constants'
 import {
@@ -26,6 +32,7 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
+import { OrdersProgressBarState } from '../types'
 
 function useUnfillableOrderIds(): string[] {
   const { chainId, account } = useWalletInfo()
@@ -42,35 +49,130 @@ function useUnfillableOrderIds(): string[] {
   )
 }
 
-export function OrderProgressEventsUpdater(): null {
-  const ordersProgressState = useAtomValue(ordersProgressBarStateAtom)
-  const setCountdown = useSetAtom(updateOrderProgressBarCountdown)
-  const setStepName = useSetAtom(updateOrderProgressBarStepName)
-  const unfillableIds = useUnfillableOrderIds()
-  const previousUnfillableRef = useRef<Set<string>>(new Set())
+function useOrdersProgressStateRef(
+  ordersProgressState: OrdersProgressBarState,
+): MutableRefObject<OrdersProgressBarState> {
   const ordersProgressStateRef = useRef(ordersProgressState)
 
   useEffect(() => {
     ordersProgressStateRef.current = ordersProgressState
   }, [ordersProgressState])
 
+  return ordersProgressStateRef
+}
+
+function useCompletionTimersRef(): MutableRefObject<Record<string, NodeJS.Timeout>> {
+  const completionTimersRef = useRef<Record<string, NodeJS.Timeout>>({})
+
+  useEffect(() => {
+    const completionTimers = completionTimersRef.current
+
+    return () => {
+      Object.values(completionTimers).forEach((timer) => clearTimeout(timer))
+    }
+  }, [])
+
+  return completionTimersRef
+}
+
+function useOrderProgressEventListeners(
+  finalizeOrderStep: (orderUid: string, step: OrderProgressBarStepName) => void,
+): void {
+  useEffect(() => {
+    const listeners: CowWidgetEventListener[] = [
+      {
+        event: CowWidgetEvents.ON_FULFILLED_ORDER,
+        handler: (payload: OnFulfilledOrderPayload) => {
+          const orderUid = payload.order.uid
+          const step = payload.bridgeOrder
+            ? OrderProgressBarStepName.BRIDGING_IN_PROGRESS
+            : OrderProgressBarStepName.FINISHED
+          finalizeOrderStep(orderUid, step)
+        },
+      },
+      {
+        event: CowWidgetEvents.ON_BRIDGING_SUCCESS,
+        handler: (payload: OnBridgingSuccessPayload) => {
+          finalizeOrderStep(payload.order.uid, OrderProgressBarStepName.BRIDGING_FINISHED)
+        },
+      },
+      {
+        event: CowWidgetEvents.ON_CANCELLED_ORDER,
+        handler: (payload: OnCancelledOrderPayload) => {
+          finalizeOrderStep(payload.order.uid, OrderProgressBarStepName.CANCELLED)
+        },
+      },
+      {
+        event: CowWidgetEvents.ON_EXPIRED_ORDER,
+        handler: (payload: OnExpiredOrderPayload) => {
+          finalizeOrderStep(payload.order.uid, OrderProgressBarStepName.EXPIRED)
+        },
+      },
+    ]
+
+    listeners.forEach((listener) => WIDGET_EVENT_EMITTER.on(listener))
+
+    return () => {
+      listeners.forEach((listener) => WIDGET_EVENT_EMITTER.off(listener))
+    }
+  }, [finalizeOrderStep])
+}
+
+export function OrderProgressEventsUpdater(): null {
+  const ordersProgressState = useAtomValue(ordersProgressBarStateAtom)
+  const setCountdown = useSetAtom(updateOrderProgressBarCountdown)
+  const setStepName = useSetAtom(updateOrderProgressBarStepName)
+  const unfillableIds = useUnfillableOrderIds()
+  const previousUnfillableRef = useRef<Set<string>>(new Set())
+  const ordersProgressStateRef = useOrdersProgressStateRef(ordersProgressState)
+  const completionTimersRef = useCompletionTimersRef()
+
   const finalizeOrderStep = useCallback(
     (orderUid: string, step: OrderProgressBarStepName) => {
       const currentState = ordersProgressStateRef.current[orderUid]
+      const currentStep = currentState?.progressBarStepName
 
-      if (currentState?.progressBarStepName === step) {
+      if (currentStep === step) {
         return
       }
-
-      setStepName({ orderId: orderUid, value: step })
 
       const currentCountdown = currentState?.countdown
 
       if (typeof currentCountdown !== 'undefined' && currentCountdown !== null) {
         setCountdown({ orderId: orderUid, value: null })
       }
+
+      const existingTimer = completionTimersRef.current[orderUid]
+
+      if (existingTimer) {
+        clearTimeout(existingTimer)
+        delete completionTimersRef.current[orderUid]
+      }
+
+      if (shouldStageExecutingStep(currentStep, currentState?.previousStepName, step)) {
+        setStepName({ orderId: orderUid, value: OrderProgressBarStepName.EXECUTING })
+        completionTimersRef.current[orderUid] = setTimeout(() => {
+          setStepName({ orderId: orderUid, value: step })
+          delete completionTimersRef.current[orderUid]
+        }, EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
+
+        return
+      }
+
+      const completionDelayMs = getCompletionDelayMs(currentStep, step, currentState?.lastTimeChangedSteps)
+
+      if (completionDelayMs > 0) {
+        completionTimersRef.current[orderUid] = setTimeout(() => {
+          setStepName({ orderId: orderUid, value: step })
+          delete completionTimersRef.current[orderUid]
+        }, completionDelayMs)
+
+        return
+      }
+
+      setStepName({ orderId: orderUid, value: step })
     },
-    [setCountdown, setStepName],
+    [completionTimersRef, ordersProgressStateRef, setCountdown, setStepName],
   )
 
   useEffect(() => {
@@ -93,49 +195,9 @@ export function OrderProgressEventsUpdater(): null {
 
     // Persist for the next diff so we only reset orders that actually recovered.
     previousUnfillableRef.current = currentUnfillable
-  }, [unfillableIds, finalizeOrderStep])
+  }, [unfillableIds, finalizeOrderStep, ordersProgressStateRef])
 
-  useEffect(() => {
-    const listeners: CowWidgetEventListener[] = [
-      {
-        event: CowWidgetEvents.ON_FULFILLED_ORDER,
-        handler: (payload: OnFulfilledOrderPayload) => {
-          const orderUid = payload.order.uid
-          const step = payload.bridgeOrder
-            ? OrderProgressBarStepName.BRIDGING_IN_PROGRESS
-            : OrderProgressBarStepName.FINISHED
-          finalizeOrderStep(orderUid, step)
-        },
-      },
-      {
-        event: CowWidgetEvents.ON_BRIDGING_SUCCESS,
-        handler: (payload: OnBridgingSuccessPayload) => {
-          const orderUid = payload.order.uid
-          finalizeOrderStep(orderUid, OrderProgressBarStepName.BRIDGING_FINISHED)
-        },
-      },
-      {
-        event: CowWidgetEvents.ON_CANCELLED_ORDER,
-        handler: (payload: OnCancelledOrderPayload) => {
-          const orderUid = payload.order.uid
-          finalizeOrderStep(orderUid, OrderProgressBarStepName.CANCELLED)
-        },
-      },
-      {
-        event: CowWidgetEvents.ON_EXPIRED_ORDER,
-        handler: (payload: OnExpiredOrderPayload) => {
-          const orderUid = payload.order.uid
-          finalizeOrderStep(orderUid, OrderProgressBarStepName.EXPIRED)
-        },
-      },
-    ]
-
-    listeners.forEach((listener) => WIDGET_EVENT_EMITTER.on(listener))
-
-    return () => {
-      listeners.forEach((listener) => WIDGET_EVENT_EMITTER.off(listener))
-    }
-  }, [finalizeOrderStep])
+  useOrderProgressEventListeners(finalizeOrderStep)
 
   return null
 }

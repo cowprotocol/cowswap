@@ -36,6 +36,7 @@ import {
   updateOrderProgressBarStepName,
 } from '../state/atoms'
 import { OrderProgressBarProps, OrderProgressBarState } from '../types'
+import { getCompletionDelayMs, shouldStageExecutingStep } from '../updaters/utils'
 
 export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
@@ -217,6 +218,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     cancellationTriggered,
     isConfirmed,
     countdown,
+    progressBarStepName,
     backendApiStatus,
     previousBackendApiStatus,
     lastTimeChangedSteps,
@@ -269,6 +271,7 @@ export function getProgressBarStepName(
   cancellationTriggered: undefined | true,
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
+  currentStepName: OrderProgressBarState['progressBarStepName'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName'],
@@ -276,23 +279,15 @@ export function getProgressBarStepName(
   isBridgingTrade: boolean,
 ): OrderProgressBarStepName {
   const isTradedOrConfirmed = backendApiStatus === CompetitionOrderStatus.type.TRADED || isConfirmed
+  const hasMovedPastInitialStep = !!currentStepName && currentStepName !== OrderProgressBarStepName.INITIAL
+  const bridgingStepName = getBridgingStepName(bridgingStatus)
 
-  if (bridgingStatus) {
-    if (bridgingStatus === SwapAndBridgeStatus.DONE) {
-      return OrderProgressBarStepName.BRIDGING_FINISHED
-    }
+  if (shouldStageExecutingStep(currentStepName, previousStepName, bridgingStepName)) {
+    return OrderProgressBarStepName.EXECUTING
+  }
 
-    if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
-      return OrderProgressBarStepName.REFUND_COMPLETED
-    }
-
-    if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
-      return OrderProgressBarStepName.BRIDGING_FAILED
-    }
-
-    if (bridgingStatus && [SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
-      return OrderProgressBarStepName.BRIDGING_IN_PROGRESS
-    }
+  if (bridgingStepName) {
+    return bridgingStepName
   }
 
   if (isTradedOrConfirmed && isBridgingTrade && !bridgingStatus) {
@@ -310,6 +305,16 @@ export function getProgressBarStepName(
     return OrderProgressBarStepName.CANCELLATION_FAILED
   } else if (isConfirmed) {
     // already traded
+    if (shouldStageExecutingStep(currentStepName, previousStepName, OrderProgressBarStepName.FINISHED)) {
+      return OrderProgressBarStepName.EXECUTING
+    }
+
+    return OrderProgressBarStepName.FINISHED
+  } else if (backendApiStatus === CompetitionOrderStatus.type.TRADED) {
+    if (shouldStageExecutingStep(currentStepName, previousStepName, OrderProgressBarStepName.FINISHED)) {
+      return OrderProgressBarStepName.EXECUTING
+    }
+
     return OrderProgressBarStepName.FINISHED
   } else if (
     previousBackendApiStatus === CompetitionOrderStatus.type.EXECUTING &&
@@ -337,8 +342,7 @@ export function getProgressBarStepName(
   } else if (
     (backendApiStatus === CompetitionOrderStatus.type.OPEN ||
       backendApiStatus === CompetitionOrderStatus.type.SCHEDULED) &&
-    previousStepName &&
-    previousStepName !== OrderProgressBarStepName.INITIAL
+    hasMovedPastInitialStep
   ) {
     // once moved out of initial state, never go back to it
     return OrderProgressBarStepName.DELAYED
@@ -348,6 +352,30 @@ export function getProgressBarStepName(
   }
 
   return OrderProgressBarStepName.INITIAL
+}
+
+function getBridgingStepName(bridgingStatus: SwapAndBridgeStatus | undefined): OrderProgressBarStepName | undefined {
+  if (!bridgingStatus) {
+    return undefined
+  }
+
+  if (bridgingStatus === SwapAndBridgeStatus.DONE) {
+    return OrderProgressBarStepName.BRIDGING_FINISHED
+  }
+
+  if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
+    return OrderProgressBarStepName.REFUND_COMPLETED
+  }
+
+  if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
+    return OrderProgressBarStepName.BRIDGING_FAILED
+  }
+
+  if ([SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
+    return OrderProgressBarStepName.BRIDGING_IN_PROGRESS
+  }
+
+  return undefined
 }
 
 function useCancellingOrderUpdater(orderId: string | undefined, isCancelling: boolean): void {
@@ -413,6 +441,7 @@ function useProgressBarStepNameUpdater(
   cancellationTriggered: undefined | true,
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
+  currentStepName: OrderProgressBarState['progressBarStepName'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
@@ -430,6 +459,7 @@ function useProgressBarStepNameUpdater(
     cancellationTriggered,
     isConfirmed,
     countdown,
+    currentStepName,
     backendApiStatus,
     previousBackendApiStatus,
     previousStepName,
@@ -452,15 +482,11 @@ function useProgressBarStepNameUpdater(
     let timer: NodeJS.Timeout | undefined
 
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
+    const completionDelayMs = getCompletionDelayMs(currentStepName, stepName, lastTimeChangedSteps)
 
-    if (
-      lastTimeChangedSteps === undefined ||
-      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === OrderProgressBarStepName.FINISHED ||
-      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
-      stepName === OrderProgressBarStepName.CANCELLED ||
-      stepName === OrderProgressBarStepName.EXPIRED
-    ) {
+    if (completionDelayMs > 0) {
+      timer = setTimeout(() => updateStepName(stepName), completionDelayMs)
+    } else if (shouldApplyStepNameImmediately(lastTimeChangedSteps, timeSinceLastChange, stepName)) {
       updateStepName(stepName)
 
       // schedule update for temporary steps
@@ -475,7 +501,22 @@ function useProgressBarStepNameUpdater(
     return () => {
       if (timer) clearTimeout(timer)
     }
-  }, [orderId, stepName, lastTimeChangedSteps, setProgressBarStepName])
+  }, [currentStepName, lastTimeChangedSteps, orderId, setProgressBarStepName, stepName])
+}
+
+function shouldApplyStepNameImmediately(
+  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
+  timeSinceLastChange: number,
+  stepName: OrderProgressBarStepName,
+): boolean {
+  return (
+    lastTimeChangedSteps === undefined ||
+    timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+    stepName === OrderProgressBarStepName.FINISHED ||
+    stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
+    stepName === OrderProgressBarStepName.CANCELLED ||
+    stepName === OrderProgressBarStepName.EXPIRED
+  )
 }
 
 function useSetExecutingOrderCountdownCallback(): (orderId: string, value: number | null) => void {

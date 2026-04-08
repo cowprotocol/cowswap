@@ -1,3 +1,5 @@
+import { SwapAndBridgeStatus } from 'modules/bridge'
+
 import { getProgressBarStepName } from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
@@ -9,14 +11,24 @@ const EXECUTING_STATUS = 'executing' as OrderProgressBarState['backendApiStatus'
 describe('getProgressBarStepName', () => {
   function callGetProgressBarStepName({
     isUnfillable = false,
+    isConfirmed = false,
+    countdown = null,
+    currentStepName,
     backendApiStatus,
     previousStepName = OrderProgressBarStepName.SOLVING,
     previousBackendApiStatus,
+    bridgingStatus,
+    isBridgingTrade = false,
   }: {
     isUnfillable?: boolean
+    isConfirmed?: boolean
+    countdown?: OrderProgressBarState['countdown']
+    currentStepName?: OrderProgressBarStepName | undefined
     backendApiStatus?: OrderProgressBarState['backendApiStatus']
     previousStepName?: OrderProgressBarStepName | undefined
     previousBackendApiStatus?: OrderProgressBarState['previousBackendApiStatus']
+    bridgingStatus?: SwapAndBridgeStatus | undefined
+    isBridgingTrade?: boolean
   }): OrderProgressBarStepName {
     return getProgressBarStepName(
       isUnfillable,
@@ -24,13 +36,14 @@ describe('getProgressBarStepName', () => {
       false, // isExpired
       false, // isCancelling
       undefined, // cancellationTriggered
-      false, // isConfirmed
-      null, // countdown
+      isConfirmed,
+      countdown,
+      currentStepName,
       backendApiStatus,
       previousBackendApiStatus,
       previousStepName,
-      undefined, // bridgingStatus
-      false, // isBridgingTrade
+      bridgingStatus,
+      isBridgingTrade,
     )
   }
 
@@ -56,6 +69,67 @@ describe('getProgressBarStepName', () => {
       backendApiStatus: EXECUTING_STATUS,
       previousStepName: OrderProgressBarStepName.UNFILLABLE,
       previousBackendApiStatus: OPEN_STATUS,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.EXECUTING)
+  })
+
+  it('keeps step 2 after the order has already left the initial state once', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.SOLVING,
+      backendApiStatus: OPEN_STATUS,
+      previousStepName: undefined,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.DELAYED)
+  })
+
+  it('stays on step 1 while the order has not moved past the initial state yet', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.INITIAL,
+      backendApiStatus: OPEN_STATUS,
+      previousStepName: undefined,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.INITIAL)
+  })
+
+  it('stages executing before finishing when the order completes from step 2', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.SOLVING,
+      previousStepName: OrderProgressBarStepName.INITIAL,
+      isConfirmed: true,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.EXECUTING)
+  })
+
+  it('finishes once the executing step has already been shown', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.EXECUTING,
+      previousStepName: OrderProgressBarStepName.SOLVING,
+      isConfirmed: true,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.FINISHED)
+  })
+
+  it('does not restage executing after a submission retry path', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
+      previousStepName: OrderProgressBarStepName.EXECUTING,
+      isConfirmed: true,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.FINISHED)
+  })
+
+  it('stages executing before showing bridge progress when the swap completes instantly', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.SOLVING,
+      previousStepName: OrderProgressBarStepName.INITIAL,
+      bridgingStatus: SwapAndBridgeStatus.PENDING,
+      isBridgingTrade: true,
     })
 
     expect(result).toBe(OrderProgressBarStepName.EXECUTING)

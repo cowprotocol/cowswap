@@ -1,29 +1,35 @@
 import type { OrderFillability } from 'modules/ordersTable'
 
-import { computeUnfillableOrderIds, getNewlyFillableOrderIds } from './utils'
+import {
+  computeUnfillableOrderIds,
+  EXECUTING_STEP_MIN_DISPLAY_TIME_MS,
+  getCompletionDelayMs,
+  getNewlyFillableOrderIds,
+  shouldStageExecutingStep,
+} from './utils'
+
+import { OrderProgressBarStepName } from '../constants'
 
 type TestOrder = {
   id: string
   isUnfillable?: boolean
 }
 
-const FILLABILITY_OK: OrderFillability = {
-  hasEnoughBalance: true,
-  hasEnoughAllowance: true,
-  hasPermit: false,
+const TEST_GENERIC_ORDER = { id: 'fillability-order' } as OrderFillability['order']
+
+function createFillability(overrides: Omit<Partial<OrderFillability>, 'order'>): OrderFillability {
+  return {
+    hasEnoughBalance: true,
+    hasEnoughAllowance: true,
+    hasPermit: false,
+    order: TEST_GENERIC_ORDER,
+    ...overrides,
+  }
 }
 
-const FILLABILITY_LACKING_BALANCE: OrderFillability = {
-  hasEnoughBalance: false,
-  hasEnoughAllowance: true,
-  hasPermit: false,
-}
-
-const FILLABILITY_LACKING_ALLOWANCE: OrderFillability = {
-  hasEnoughBalance: true,
-  hasEnoughAllowance: false,
-  hasPermit: false,
-}
+const FILLABILITY_OK = createFillability({})
+const FILLABILITY_LACKING_BALANCE = createFillability({ hasEnoughBalance: false })
+const FILLABILITY_LACKING_ALLOWANCE = createFillability({ hasEnoughAllowance: false })
 
 describe('computeUnfillableOrderIds', () => {
   it('includes orders flagged as unfillable by price', () => {
@@ -92,5 +98,61 @@ describe('getNewlyFillableOrderIds', () => {
     const result = getNewlyFillableOrderIds(previous, current)
 
     expect(result).toEqual([])
+  })
+})
+
+describe('shouldStageExecutingStep', () => {
+  it('requires executing before the final step when the order finishes from step 2', () => {
+    const result = shouldStageExecutingStep(
+      OrderProgressBarStepName.SOLVING,
+      OrderProgressBarStepName.INITIAL,
+      OrderProgressBarStepName.FINISHED,
+    )
+
+    expect(result).toBe(true)
+  })
+
+  it('does not stage executing again once it has already been shown', () => {
+    const result = shouldStageExecutingStep(
+      OrderProgressBarStepName.SUBMISSION_FAILED,
+      OrderProgressBarStepName.EXECUTING,
+      OrderProgressBarStepName.FINISHED,
+    )
+
+    expect(result).toBe(false)
+  })
+
+  it('does not move backwards from a completion step', () => {
+    const result = shouldStageExecutingStep(
+      OrderProgressBarStepName.FINISHED,
+      OrderProgressBarStepName.SOLVING,
+      OrderProgressBarStepName.FINISHED,
+    )
+
+    expect(result).toBe(false)
+  })
+})
+
+describe('getCompletionDelayMs', () => {
+  it('keeps executing visible for the configured minimum duration', () => {
+    const result = getCompletionDelayMs(
+      OrderProgressBarStepName.EXECUTING,
+      OrderProgressBarStepName.FINISHED,
+      1000,
+      1500,
+    )
+
+    expect(result).toBe(EXECUTING_STEP_MIN_DISPLAY_TIME_MS - 500)
+  })
+
+  it('does not delay non-completion steps', () => {
+    const result = getCompletionDelayMs(
+      OrderProgressBarStepName.EXECUTING,
+      OrderProgressBarStepName.DELAYED,
+      1000,
+      1500,
+    )
+
+    expect(result).toBe(0)
   })
 })
