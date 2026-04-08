@@ -8,6 +8,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { GenericOrder } from 'common/types'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
+import { getRemainingSellAmountForFillability } from '../utils/getRemainingSellAmountForFillability'
+
 export interface OrderFillability {
   hasEnoughAllowance: boolean | undefined
   hasEnoughBalance: boolean | undefined
@@ -35,11 +37,13 @@ export function useOrdersFillability(orders: GenericOrder[]): Record<string, Ord
 
       const balance = balances[inputTokenAddress]
       const allowance = allowances?.[inputTokenAddress]
-      const sellAmount = order.sellAmount !== undefined ? BigInt(order.sellAmount) : undefined
+      const remainingSell = getRemainingSellAmountForFillability(order)
 
       acc[order.id] = {
-        hasEnoughBalance: balance !== undefined && sellAmount !== undefined ? balance >= sellAmount : undefined,
-        hasEnoughAllowance: allowance !== undefined && sellAmount !== undefined ? allowance >= sellAmount : undefined,
+        hasEnoughBalance:
+          balance !== undefined && order.sellAmount !== undefined ? balance >= remainingSell : undefined,
+        hasEnoughAllowance:
+          allowance !== undefined && order.sellAmount !== undefined ? allowance >= remainingSell : undefined,
         hasPermit: doesOrderHavePermit(order),
         order,
       }
