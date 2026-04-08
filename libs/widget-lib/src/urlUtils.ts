@@ -82,6 +82,8 @@ function addLocaleToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetP
 function addHooksEnabledToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
   if (hasHooks(params.hooks)) {
     query.append('hooksEnabled', 'true')
+  } else {
+    query.delete('hooksEnabled')
   }
 
   return query
