@@ -1,5 +1,8 @@
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
+import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { ApprovalState, ApproveRequiredReason } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'
@@ -18,6 +21,7 @@ export interface TradeFormButtonContext {
   balancesError: string | null
   confirmClickEvent?: string
   approveClickEvent?: string
+  widgetPriceImpactThreshold: number | undefined
 
   confirmTrade(): void
 
@@ -51,6 +55,8 @@ export interface TradeFormValidationCommonContext {
   balancesError: string | null
   isInputCurrencyXstock: boolean
   isOutputCurrencyXstock: boolean
+  injectedWidgetParams: Partial<CowSwapWidgetAppParams>
+  tradePriceImpact: PriceImpact
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -79,6 +85,7 @@ export enum TradeFormValidation {
 
   // Quote loading indicator
   QuoteLoading,
+  ImpactLoading,
   QuoteExpired,
 
   // Balances
@@ -104,4 +111,8 @@ export enum TradeFormValidation {
   // RWA/Geo restrictions
   RestrictedForCountry,
   XstockMinimumTradeSize,
+
+  // Widget controlled
+  DisableTradeWithUnknownPriceImpact,
+  DisableTradeWithHighPriceImpact,
 }

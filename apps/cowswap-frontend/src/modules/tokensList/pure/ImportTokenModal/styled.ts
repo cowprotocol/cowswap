@@ -1,6 +1,6 @@
 import { TokenName, TokenSymbol, UI } from '@cowprotocol/ui'
 
-import { AlertCircle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
@@ -20,7 +20,7 @@ export const Contents = styled.div`
   padding: 20px;
 `
 
-export const AlertIcon = styled(AlertCircle)`
+export const AlertIcon = styled(AlertTriangle)`
   color: var(${UI.COLOR_RED});
   margin-top: 20px;
 `

@@ -68,7 +68,7 @@ export function StatusLabel({
         partialFill={tagPartiallyFilled}
         tagPosition={partialTagPosition}
       >
-        <StatusIcon status={_status} />
+        <StatusIcon status={displayStatus} />
         {customText || displayStatus.toUpperCase()}
       </Label>
     </Wrapper>

@@ -3,7 +3,7 @@ import { ReactNode, useCallback } from 'react'
 import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -33,7 +33,8 @@ import {
 
 export function AffiliatePartnerOnboard(): ReactNode {
   const provider = useWalletProvider()
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
+  const chainId = useWalletChainId()
   const { walletName } = useWalletDetails()
   const onSelectNetwork = useOnSelectNetwork()
   const toggleWalletModal = useToggleWalletModal()
