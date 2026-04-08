@@ -69,16 +69,9 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
             setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
             processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
 
-            processTwapCancellation(
-              txHash,
-              () => {
-                setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelled)
-              },
-              () => {
-                // Reset status when cancellation transaction fails or is replaced (e.g., user rejected in Safe wallet)
-                setTwapOrderStatus(twapOrderId, TwapOrderStatus.Pending)
-              },
-            )
+            processTwapCancellation(txHash, () => {
+              setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelled)
+            })
           })
         },
       }
