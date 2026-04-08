@@ -6,11 +6,31 @@
 ### ✨ Features
 
 * handle xstock buy min amount ([#7199](https://github.com/cowprotocol/cowswap/issues/7199)) ([706fd63](https://github.com/cowprotocol/cowswap/commit/706fd63fbe016cc6a43faadac68160047cc50d8c))
+* improve error reporting on approve/swap ([#7176](https://github.com/cowprotocol/cowswap/issues/7176)) ([306ee92](https://github.com/cowprotocol/cowswap/commit/306ee9272))
+* NEAR btc/sol token list support ([#7180](https://github.com/cowprotocol/cowswap/issues/7180)) ([a8da98b](https://github.com/cowprotocol/cowswap/commit/a8da98bae))
 
 
 ### 🐛 Bug Fixes
 
+* disable hover transform on swap arrow during quote loading ([#7132](https://github.com/cowprotocol/cowswap/issues/7132)) ([#7171](https://github.com/cowprotocol/cowswap/issues/7171)) ([091ceab](https://github.com/cowprotocol/cowswap/commit/091ceabf1))
+* preserve isCancelling flag when API re-fetches ([#7162](https://github.com/cowprotocol/cowswap/issues/7162)) ([5b8a5ea](https://github.com/cowprotocol/cowswap/commit/5b8a5ea06))
+* update sdk version with fixes for addresses ([#7166](https://github.com/cowprotocol/cowswap/issues/7166)) ([8192f79](https://github.com/cowprotocol/cowswap/commit/8192f795b))
+* **ui:** fix slippage not being editable while auto slippage is loading ([#7153](https://github.com/cowprotocol/cowswap/issues/7153)) ([f3049a9](https://github.com/cowprotocol/cowswap/commit/f3049a947))
+* **account:** open account proxy link in new tab when in widget mode ([#7182](https://github.com/cowprotocol/cowswap/issues/7182)) ([8a130a1](https://github.com/cowprotocol/cowswap/commit/8a130a17d))
+* display network selector for SC wallets ([#7144](https://github.com/cowprotocol/cowswap/issues/7144)) ([f17e9bc](https://github.com/cowprotocol/cowswap/commit/f17e9bc52))
+* remove some console errors due to SVG/HTML attributes ([#7203](https://github.com/cowprotocol/cowswap/issues/7203)) ([c423a10](https://github.com/cowprotocol/cowswap/commit/c423a10c5))
+* quick patch for 310 error (rendered more hooks than during...) ([#7208](https://github.com/cowprotocol/cowswap/issues/7208)) ([d47aa7f](https://github.com/cowprotocol/cowswap/commit/d47aa7f5b))
+* **affiliate:** replace useWalletInfo chainId usage with useWalletChainId ([#7230](https://github.com/cowprotocol/cowswap/issues/7230)) ([85a7d06](https://github.com/cowprotocol/cowswap/commit/85a7d0686))
+* always use AlertTriangle, not alertCircle ([#7206](https://github.com/cowprotocol/cowswap/issues/7206)) ([19378d4](https://github.com/cowprotocol/cowswap/commit/19378d460))
+* reset trade confirm state on unmount to allow surplus modal on account pages ([#7213](https://github.com/cowprotocol/cowswap/issues/7213)) ([b8d38ed](https://github.com/cowprotocol/cowswap/commit/b8d38ed16))
+* replace CompactIconTooltip with HoverTooltip for improved consistency ([#7264](https://github.com/cowprotocol/cowswap/issues/7264)) ([56e239b](https://github.com/cowprotocol/cowswap/commit/56e239b2a))
 * **widget:** hideRecentTokens causing tokens to disappear ([#7267](https://github.com/cowprotocol/cowswap/issues/7267)) ([0d67902](https://github.com/cowprotocol/cowswap/commit/0d6790289117c122fdb862ba0151da80837a8ede))
+* **widget:** preserve hooksEnabled flag after navigation ([#7260](https://github.com/cowprotocol/cowswap/issues/7260)) ([ab54b30](https://github.com/cowprotocol/cowswap/commit/ab54b3048))
+
+
+### 🔧 Miscellaneous
+
+* remove ink feature flag ([#7220](https://github.com/cowprotocol/cowswap/issues/7220)) ([0c8f326](https://github.com/cowprotocol/cowswap/commit/0c8f32658))
 
 
 ### Dependencies
