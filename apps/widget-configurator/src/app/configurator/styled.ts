@@ -53,14 +53,18 @@ export const ContentStyled: SxProps<Theme> = (theme) => {
     minWidth: 0,
     overflow: 'auto',
     padding: `${CONTENT_PADDING_PX}px`,
-    backgroundImage: `${pattern}, linear-gradient(${base}, ${base})`,
-    backgroundSize: `${TRANSPARENCY_CHECKER_PX}px ${TRANSPARENCY_CHECKER_PX}px, 100% 100%`,
-    backgroundRepeat: 'repeat, no-repeat',
-    backgroundPosition: `right ${CONTENT_PADDING_PX}px top ${CONTENT_PADDING_PX}px, 0 0`,
-    backgroundClip: 'content-box, border-box',
-    backgroundOrigin: 'content-box, border-box',
+    backgroundColor: base,
 
-    '& iframe': {
+    '& > div': {
+      backgroundImage: `${pattern}`,
+      backgroundSize: `${TRANSPARENCY_CHECKER_PX}px ${TRANSPARENCY_CHECKER_PX}px`,
+      backgroundRepeat: 'repeat',
+      backgroundPosition: `right ${CONTENT_PADDING_PX}px top ${CONTENT_PADDING_PX}px`,
+      backgroundClip: 'content-box',
+      backgroundOrigin: 'content-box',
+    },
+
+    '& > div > iframe': {
       display: 'block',
       border: 0,
       margin: '0 auto',

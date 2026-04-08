@@ -127,7 +127,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
   }
 
   // Render widget container
-  return <div ref={containerRef} style={{ width: '100%' }}></div>
+  return <div ref={containerRef} style={{ width: '100%', flex: '1 0 auto' }}></div>
 }
 
 function areParamsHooksDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {
