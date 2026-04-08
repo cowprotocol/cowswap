@@ -370,7 +370,7 @@ export function Configurator({ title }: { title: string }) {
           </>
         )}
 
-        <Stack spacing={1.6} sx={{ width: '100%' }}>
+        <Stack spacing={0} sx={{ width: 'auto', mx: '-1.6rem' }}>
           <AccordionSection title="Basics" defaultExpanded>
             {!IS_IFRAME && <ModeControl value={widgetMode} onChange={selectWidgetMode} />}
             <LocaleControl state={localeState} />

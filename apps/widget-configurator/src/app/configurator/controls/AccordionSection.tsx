@@ -19,11 +19,17 @@ export function AccordionSection({ title, defaultExpanded = false, children }: A
       disableGutters
       defaultExpanded={defaultExpanded}
       elevation={0}
+      slotProps={{ transition: { unmountOnExit: true } }}
       sx={{
-        border: (theme) => `1px solid ${theme.palette.divider}`,
-        borderRadius: '1.2rem',
+        borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+        borderRadius: '0 !important',
         overflow: 'hidden',
+
         '&:before': { display: 'none' },
+
+        '&:last-child': {
+          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+        },
       }}
     >
       <AccordionSummary
@@ -39,7 +45,7 @@ export function AccordionSection({ title, defaultExpanded = false, children }: A
           {title}
         </Typography>
       </AccordionSummary>
-      <AccordionDetails sx={{ paddingTop: 0 }}>
+      <AccordionDetails sx={{ paddingTop: '8px' }}>
         <Stack spacing={1.6}>{children}</Stack>
       </AccordionDetails>
     </Accordion>

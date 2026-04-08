@@ -29,7 +29,7 @@ export const DrawerStyled = (theme: Theme) => ({
     boxShadow: 'rgba(5, 43, 101, 0.06) 0 1.2rem 1.2rem',
     padding: '1.6rem',
     position: 'relative',
-    overflowY: 'auto',
+    overflowY: 'scroll',
   },
 })
 
