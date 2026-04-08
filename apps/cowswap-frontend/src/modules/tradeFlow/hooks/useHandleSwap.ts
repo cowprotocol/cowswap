@@ -18,6 +18,7 @@ import { useTradeFlowType } from './useTradeFlowType'
 
 import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundleFlow'
 import { swapFlow } from '../services/swapFlow'
+import { acquireSwapFlowLock, releaseSwapFlowLock } from '../state/swapFlowLock'
 import { FlowType, SafeBundleFlowContext, TradeFlowContext } from '../types/TradeFlowContext'
 
 type ConfirmPriceImpactFn = (priceImpact: Percent | undefined) => Promise<boolean>
@@ -49,6 +50,7 @@ export function useHandleSwap(
   const callback = useCallback(async () => {
     if (!tradeFlowContext) return
     if (flowInProgressRef.current) return
+    if (!acquireSwapFlowLock()) return
     flowInProgressRef.current = true
 
     try {
@@ -67,6 +69,7 @@ export function useHandleSwap(
       }
     } finally {
       flowInProgressRef.current = false
+      releaseSwapFlowLock()
     }
   }, [
     config,
