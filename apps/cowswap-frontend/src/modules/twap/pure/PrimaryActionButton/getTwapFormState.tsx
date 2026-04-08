@@ -4,7 +4,8 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
-import { TradeFormValidationContext, getIsXstockTradeBelowLimit } from 'modules/tradeFormValidation'
+import type { TradeFormValidationContext } from 'modules/tradeFormValidation'
+import { getIsXstockTradeBelowLimit } from 'modules/tradeFormValidation/services/getIsXstockTradeBelowLimit'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
