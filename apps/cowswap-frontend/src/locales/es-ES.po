@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-04-08 10:21\n"
+"PO-Revision-Date: 2026-04-08 12:34\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -478,6 +478,10 @@ msgstr "Reembolso completado!"
 msgid "When"
 msgstr "Cuándo"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "30 Minutes"
 msgstr "30 minutos"
@@ -766,6 +770,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Adding this app/hook grants it access to your wallet actions and trading information. Ensure you understand the implications."
 msgstr "Añadir esta aplicación/hook le permite acceder a sus acciones de billetera e información de trading. Asegúrese de entender las implicaciones."
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
+msgid "Updates every 24 hours"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
 msgid "(View on Explorer)"
@@ -1493,6 +1501,10 @@ msgstr "Actualizar cotización en"
 msgid "No route found for this token"
 msgstr "No se encontró ruta para este token"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/index.tsx
+msgid "This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/account/containers/OrdersPanel/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Account"
@@ -1576,7 +1588,7 @@ msgstr "Demasiado tiempo entre partes"
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Swap and Bridge"
-msgstr ""
+msgstr "Intercambiar y Puente"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
@@ -3394,10 +3406,6 @@ msgstr "Podrías ganar <0><1/></0> extra en comparación con el uso de un {swapO
 msgid "Native currency (e.g ETH)"
 msgstr "Moneda nativa (por ejemplo, ETH)"
 
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
-msgid "<0><1/> Experimental:</0> Add DeFi interactions before and after your trade."
-msgstr "<0><1/> Experimental:</0> Añade interacciones de DeFi antes y después de tu operación."
-
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "This token list is not available in your region."
 msgstr "Esta lista de tokens no está disponible en tu región."
@@ -4652,8 +4660,8 @@ msgid "Search network"
 msgstr "Buscar red"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
-msgid "Updates daily at 02:00 UTC"
-msgstr ""
+#~ msgid "Updates daily at 02:00 UTC"
+#~ msgstr "Updates daily at 02:00 UTC"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
@@ -5559,10 +5567,6 @@ msgstr "Tokens Favoritos"
 #~ msgid "Limit Orders"
 #~ msgstr "Limit Orders"
 
-#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-#~ msgid "{0} - {1}%: Recommended slippage tolerance."
-#~ msgstr "{0} - {1}%: Recommended slippage tolerance."
-
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.ts
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "{0} - {1}%: Recommended slippage tolerance."
@@ -6120,6 +6124,10 @@ msgstr "Reclamado con éxito"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Call any smart contract with your own parameters"
 #~ msgstr "Call any smart contract with your own parameters"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
+msgid "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD} per part"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationSubtitle.tsx
 #~ msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn {rewardAmount} {AFFILIATE_REWARDS_CURRENCY} per ${triggerVolume} of eligible volume in {timeCapDays} days. Payouts happen on Ethereum mainnet."
@@ -6680,7 +6688,7 @@ msgstr "Limitar precio"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
 msgid "<0><1/> Experimental:</0> Add DeFi interactions before and after your trade."
-msgstr ""
+msgstr "<0><1/> Experimental:</0> Añade interacciones de DeFi antes y después de tu operación."
 
 #: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
