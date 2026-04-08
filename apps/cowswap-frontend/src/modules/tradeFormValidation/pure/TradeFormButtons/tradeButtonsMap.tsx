@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
@@ -117,12 +118,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     derivedState: { inputCurrency, outputCurrency, recipient },
   }: ButtonComponentProps) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
+    const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
+    const showEnsTooltip = isBridging && recipient && !isNonEvmBridging
 
     return (
       <TradeFormBlankButton disabled>
         <>
           <Trans>Enter a valid recipient</Trans>
-          {isBridging && recipient && (
+          {showEnsTooltip && (
             <HelpTooltip
               placement="top"
               text={t`ENS recipient not supported for Swap and Bridge. Use address instead.`}
