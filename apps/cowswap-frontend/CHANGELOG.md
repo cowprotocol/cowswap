@@ -1,5 +1,43 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.3.3...cowswap-v3.4.0) (2026-04-08)
+
+
+### ✨ Features
+
+* handle xstock buy min amount ([#7199](https://github.com/cowprotocol/cowswap/issues/7199)) ([706fd63](https://github.com/cowprotocol/cowswap/commit/706fd63fbe016cc6a43faadac68160047cc50d8c))
+
+
+### 🐛 Bug Fixes
+
+* **widget:** hideRecentTokens causing tokens to disappear ([#7267](https://github.com/cowprotocol/cowswap/issues/7267)) ([0d67902](https://github.com/cowprotocol/cowswap/commit/0d6790289117c122fdb862ba0151da80837a8ede))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.5
+    * @cowprotocol/assets bumped to 2.2.1
+    * @cowprotocol/balances-and-allowances bumped to 3.0.7
+    * @cowprotocol/common-const bumped to 3.0.4
+    * @cowprotocol/common-hooks bumped to 3.0.4
+    * @cowprotocol/common-utils bumped to 3.0.4
+    * @cowprotocol/core bumped to 3.0.4
+    * @cowprotocol/ens bumped to 3.0.4
+    * @cowprotocol/events bumped to 4.1.2
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.12
+    * @cowprotocol/iframe-transport bumped to 2.0.12
+    * @cowprotocol/multicall bumped to 3.0.6
+    * @cowprotocol/permit-utils bumped to 3.0.4
+    * @cowprotocol/snackbars bumped to 2.0.16
+    * @cowprotocol/tokens bumped to 3.2.0
+    * @cowprotocol/types bumped to 4.1.2
+    * @cowprotocol/ui bumped to 3.1.3
+    * @cowprotocol/wallet bumped to 3.0.6
+    * @cowprotocol/wallet-provider bumped to 2.1.12
+    * @cowprotocol/widget-lib bumped to 2.2.4
+
 ## [3.3.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.3.2...cowswap-v3.3.3) (2026-04-07)
 
 
