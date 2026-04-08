@@ -17,8 +17,6 @@ export function getIsXstockTradeBelowLimit(
   const xstockTradeUsdAmount = isSellOrder(orderKind) ? inputAmountUsd : outputAmountUsd
 
   return (
-    hasXstockToken &&
-    xstockTradeUsdAmount !== null &&
-    Math.round(xstockTradeUsdAmount) < XSTOCK_MIN_TRADE_SIZE_USD * multiplier
+    hasXstockToken && xstockTradeUsdAmount !== null && xstockTradeUsdAmount < XSTOCK_MIN_TRADE_SIZE_USD * multiplier
   )
 }
