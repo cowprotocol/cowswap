@@ -23,14 +23,17 @@ export function useTabs(ordersList: OrdersTableList, currentTabId: OrderTabId): 
         return true
       }
 
-      // Only include the unfillable tab if there are unfillable orders
+      // Show the unfillable tab if it has orders or is the currently active tab.
+      // Keeping it visible when active prevents a visual glitch where the tab
+      // disappears momentarily while async state propagates (e.g. after order
+      // placement, the order list may take a render cycle to update).
       if (tab.id === OrderTabId.unfillable) {
-        return ordersList[tab.id].length > 0
+        return ordersList[tab.id].length > 0 || currentTabId === tab.id
       }
 
-      // Only include the signing tab if there are signing orders
+      // Same logic for the signing tab
       if (tab.id === OrderTabId.signing) {
-        return ordersList[tab.id].length > 0
+        return ordersList[tab.id].length > 0 || currentTabId === tab.id
       }
 
       return false
