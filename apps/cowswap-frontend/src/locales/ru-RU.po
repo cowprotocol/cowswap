@@ -42,7 +42,7 @@ msgstr "Подпись не найдена!"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
 #~ msgid "I just received surplus on"
-#~ msgstr "Я только что получил избыток на"
+#~ msgstr "Я только что получил излишек на"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "years"
@@ -251,7 +251,7 @@ msgstr "является вспомогательным контрактом, у
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 msgid "To"
-msgstr "Кому"
+msgstr "Покупка"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/shared.tsx
 #~ msgid "FAQ"
@@ -311,7 +311,7 @@ msgstr "Страница, которую вы ищете, не существу�
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Start boooosting your yield!"
-msgstr "При-му-у-у-у-умножьте доходность!"
+msgstr "При-му-у-у-у-умножить доходность!"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "replaced"
@@ -551,7 +551,7 @@ msgstr "Исполненных ордеры не найдены"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Surplus"
-msgstr "Сурплюс (излишек)"
+msgstr "Излишек"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Place multiple orders using the same balance"
@@ -727,7 +727,7 @@ msgstr "Продолжайте только в том случае, если д�
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
 msgid "I received surplus on"
-msgstr "Я получил сурплюс на"
+msgstr "Я получил излишек на"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
 msgid "Created on"
@@ -795,7 +795,7 @@ msgstr "Запланирован"
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Approve and Swap"
-msgstr "Одобрить и свапнуть"
+msgstr "Одобрение и свап"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
@@ -1068,6 +1068,10 @@ msgstr "Смарт контракт"
 msgid "Switch Network"
 msgstr "Переключить сеть"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork.tsx
+msgid "Switch network"
+msgstr "Переключите сеть"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTabs/OrdersTabs.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/index.tsx
@@ -1092,7 +1096,7 @@ msgstr "APR"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/ActiveRowLinks/ActiveRowLinks.pure.tsx
 msgid "CoW Protocol Explorer"
-msgstr "Исследователь протоколов CoW"
+msgstr "CoW Explorer"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
 msgid "Got it"
@@ -1284,7 +1288,7 @@ msgstr "Загружено"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Insufficient <0/> balance"
-msgstr "Недостаточно <0/> баланса"
+msgstr "Недостаточно <0/>"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The Claim LlamaPay Vesting Hook is a powerful and user-friendly feature designed to streamline the process of claiming funds from LlamaPay vesting contracts. This tool empowers users to easily access and manage their vested tokens, ensuring a smooth and efficient experience in handling time-locked assets."
@@ -1339,11 +1343,11 @@ msgstr "Этот хук несовместим с вашим кошельком"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Get started with limit orders"
-msgstr "Начните с лимитных ордеров"
+msgstr "Попробовать лимитные ордера"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
-msgstr "Свернуть влияние на цены с помощью TWAP"
+msgstr "Минимизировать влияние на цены с помощью TWAP"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "Allows you to set partial token approvals instead of full approvals."
@@ -1557,7 +1561,7 @@ msgstr "Поделиться в Twitter"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "Allows you to choose a destination address for the swap other than the connected one."
-msgstr "Позволяет выбрать адрес получения для свапа, отличный от адреса подключенного кошелька."
+msgstr "Позволяет указать адрес получателя средств, отличный от подключенного кошелька."
 
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "Your account is affected by the AnySwap Hack"
@@ -1706,7 +1710,7 @@ msgstr "Обмен не удался"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Didn't find a suitable hook? You can always create your own! To do this, you need to specify which smart contract you want to call, the parameters for the call and the gas limit."
-#~ msgstr "Не нашли подходящий hook? Вы всегда можете создать свой собственный! Для этого нужно указать смарт-контракт, параметры вызова и лимит газа."
+#~ msgstr "Не нашли подходящий хук? Вы всегда можете создать свой собственный! Для этого нужно указать смарт-контракт, параметры вызова и лимит газа."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Switch to WETH"
@@ -2024,10 +2028,6 @@ msgstr "Получатель"
 msgid "Your referral traffic"
 msgstr "Ваш реферальный трафик"
 
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-#~ msgid "An order’s actual execution price will vary based on the market price and network costs."
-#~ msgstr "An order’s actual execution price will vary based on the market price and network costs."
-
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "You have already claimed this airdrop"
 msgstr "Вы уже получили этот эйрдроп"
@@ -2047,7 +2047,7 @@ msgstr "Отменить несколько ордеров: {ordersCount}"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Wrap my {nativeSymbol} and swap"
-msgstr "Обернуть мои {nativeSymbol} и свап"
+msgstr "Обернуть мои {nativeSymbol} и обменять"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 msgid "Read more about limit orders"
@@ -2063,7 +2063,7 @@ msgstr "Ваш Safe не подключен к подписчику.<0/>Чтоб
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/SwapAmountPreview/SwapAmountPreview.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/SwapAmountPreview/SwapAmountPreview.tsx
 msgid "on"
-msgstr "вкл"
+msgstr "на"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Receive at least"
@@ -2092,7 +2092,7 @@ msgstr "Включить уведомления об ордерах"
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/OrdersTableWidget.container.tsx
 msgid "Filled orders"
-msgstr "Заполненные ордера"
+msgstr "Исполненные ордера"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
@@ -2796,7 +2796,7 @@ msgstr "Размещайте ордера по средневзвешенной 
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/index.tsx
 msgid "Proxy Accounts"
-msgstr "Прокси-аккаунты"
+msgstr "Прокси-аккаунт"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Tx cost:"
@@ -2857,7 +2857,7 @@ msgstr "Успешно конвертировано!"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Too <0>busy</0> <1/>to vote?"
-msgstr "Слишком <0>заняты</0> <1/>, чтобы голосовать?"
+msgstr "Нет <0>времени</0> голосовать?"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "{typeLabel} hooks are integrated code and part of the CoW Swap codebase."
@@ -2912,7 +2912,7 @@ msgstr "Если лимит (allowance) останется недостаточ�
 
 #: libs/common-const/src/common.ts
 #~ msgid "Account Proxy"
-#~ msgstr "Account Proxy"
+#~ msgstr "Прокси-аккаунт"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
@@ -3327,7 +3327,7 @@ msgstr "Комиссия протокола"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Powerful tool to generate pre/post interaction for CoW Protocol"
-msgstr "Мощный инструмент для создания взаимодействий pre/post для CoW Protocol"
+msgstr "Мощный инструмент для настройки действий до и после обмена в CoW Protocol"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Reduce your slippage by breaking big orders into smaller ones"
@@ -4396,7 +4396,7 @@ msgstr "Символ токена, адрес"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Order Receipt"
-msgstr "Квитанция ордера"
+msgstr "Чек ордера"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
@@ -4551,6 +4551,60 @@ msgstr "подключить кошелек"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowDeadline/index.tsx
 msgid "Transaction expiration"
 msgstr "Истечение срока транзакции"
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "CoW Swap has dynamically selected this slippage tolerance, accounting for current gas prices and trade size, to ensure your trade executes quickly while still getting the best price."
+msgstr "CoW Swap автоматически выбрал этот уровень проскальзывания, учитывая текущие цены на газ и размер сделки, чтобы ваша сделка исполнилась быстро и по лучшей цене."
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "Trades are protected from MEV, so your slippage can't be exploited!"
+msgstr "Сделки защищены от MEV, поэтому ваше проскальзывание не может быть использовано против вас!"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "<0><1/> Experimental:</0> Add DeFi interactions before and after your trade."
+msgstr "<0><1/> Экспериментально:</0> Добавьте DeFi-операции до и после вашего обмена."
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+#~ msgid "Custom slippage amount set{0}"
+#~ msgstr "Установлен пользовательский лимит проскальзывания{0}"
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+#~ msgid "To override this, enter your desired slippage amount.<0/><1/>Either way, your slippage is protected from MEV!"
+#~ msgstr "Чтобы изменить это, введите желаемый лимит проскальзывания.<0/><1/>В любом случае, ваше проскальзывание защищено от MEV!"
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "To override this, enter your desired slippage amount{amountRange}, but this may result in slower execution."
+msgstr "Чтобы изменить это, введите желаемый лимит проскальзывания{amountRange}, но это может привести к замедлению исполнения."
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "Either way, trades are protected from MEV, so your slippage can't be exploited!"
+msgstr "В любом случае, сделки защищены от MEV, поэтому ваше проскальзывание не может быть использовано против вас!"
+
+#: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/index.tsx
+msgid "This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap."
+msgstr "Этот провайдер бриджинга использует специальный адрес получателя для перевода средств. Данный адрес фиксирован для текущей котировки и прошел проверку CoW Swap."
+
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
+msgid "Your wallet is linked to this referral code."
+msgstr "Ваш кошелек привязан к этому реферальному коду."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+#~ msgid "An order’s actual execution price will vary based on the market price and network costs."
+#~ msgstr "Фактическая цена исполнения ордера зависит от рыночной цены и комиссий сети."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
+msgid "An order's actual execution price will vary based on the market price and network fees and costs."
+msgstr "Фактическая цена исполнения ордера зависит от рыночной цены и комиссий сети."
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
+msgid "<0><1>Allows you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount.</5><7><8>Fill or kill</8> orders will either be filled fully or not at all.</7></4></0>"
+msgstr "<0><1>Позволяет выбрать тип ваших лимитных ордеров: <2>Partially fillable</2> или <3>Fill or kill</3>.</1><4><5>Ордера <6>Partially fillable</6> могут исполняться частями, если для полного объема недостаточно ликвидности.</5><7>Ордера <8>Fill or kill</8> исполняются либо в полном объеме, либо не исполняются вообще.</7></4></0>"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "Swap Settings"
+msgstr "Настройки"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "UPPERCASE | 5-20 chars | A-Z 0-9 - _"
@@ -4908,7 +4962,7 @@ msgstr "Лимит (approval) был использован другим орд�
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 #~ msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
-#~ msgstr "Общий сурплюс в {nativeSymbol}, сгенерированный CoW Swap для всех ваших сделок с {startDate}."
+#~ msgstr "Общий излишек в {nativeSymbol}, сгенерированный CoW Swap для всех ваших сделок с {startDate}."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Enter valid token address"
@@ -4984,7 +5038,7 @@ msgstr "Ваш кошелек не подходит"
 #: apps/cowswap-frontend/src/modules/orders/containers/FulfilledOrderInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Order surplus"
-msgstr "Сурплюс ордера"
+msgstr "Излишек ордера"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts} parts</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
@@ -5067,7 +5121,7 @@ msgstr "TWAP-ордер разделен на <0>{numOfParts} равных ча�
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Your total surplus"
-msgstr "Ваш общий сурплюс"
+msgstr "Ваш общий излишек"
 
 #: apps/cowswap-frontend/src/modules/trade/const/common.ts
 msgid "Desktop: Left-Aligned Orders Table"
@@ -5120,7 +5174,7 @@ msgstr "Зарабатывайте во время торговли"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "Enable partial approvals"
-msgstr "Включить частичное одобрение"
+msgstr "Частичное одобрение"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountItem/index.tsx
@@ -5181,7 +5235,7 @@ msgstr "Недостаточный баланс токена"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 msgid "From"
-msgstr "От"
+msgstr "Продажа"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Orders not matched after the threshold time are automatically refunded."
@@ -5372,6 +5426,10 @@ msgstr "На базе"
 msgid "Accept"
 msgstr "Принять"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "Swap Interface"
+msgstr "Доп. функции"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
 msgid "Links/codes don't reveal your wallet."
 msgstr "Ссылки и коды не раскрывают адрес вашего кошелька."
@@ -5437,7 +5495,7 @@ msgstr "Проскальзывание скорректировано до {slip
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Receive surplus of your order"
-msgstr "Получайте сурплюс со своего ордера"
+msgstr "Получайте излишек со своего ордера"
 
 #: apps/cowswap-frontend/src/pages/Account/Governance.tsx
 msgid "CoW DAO Governance"
@@ -5617,7 +5675,7 @@ msgstr "Поскольку цены могут значительно менят
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "No surplus for the given time period"
-msgstr "Нет сурплюса за указанный период"
+msgstr "Нет избытка за указанный период"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
 msgid "Notifications"
@@ -6085,7 +6143,7 @@ msgstr "Расходы на свап составляют не менее {forma
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for."
-msgstr "Лимитные ордера на CoW Swap учитывают сурплюс (излишек): если цена изменится в вашу пользу, вы получите больше, чем указали."
+msgstr "Лимитные ордера на CoW Swap учитывают излишек: если цена изменится в вашу пользу, вы получите больше, чем указали."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Avg. execution price"
@@ -6182,7 +6240,7 @@ msgstr "Информация"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
-msgstr "Общий сурплюс в {nativeSymbol}, сгенерированный CoW Swap для всех ваших сделок с {startDate}"
+msgstr "Общий излишек в {nativeSymbol}, сгенерированный CoW Swap для всех ваших сделок с {startDate}"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Type or generate a code (subject to availability). Saving locks this code to your wallet and can't be changed. Links/codes don't reveal your wallet."
@@ -6458,7 +6516,7 @@ msgstr "Этот ордер должен быть подписан и испол
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
 msgid "If you approve an unlimited amount, you will only have to do this once per token."
-msgstr "Если вы одобрите неограниченную сумму, вам нужно будет сделать это только один раз для каждого токена."
+msgstr "Если вы установите неограниченный лимит, эту операцию нужно будет выполнить лишь один раз для каждого токена."
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Try Again"
@@ -6535,7 +6593,7 @@ msgstr "Если включено, таблица ордеров будет от
 
 #: apps/cowswap-frontend/src/pages/Account/Governance.tsx
 msgid "View proposals"
-msgstr "Посмотреть предложения"
+msgstr "Предложения"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
@@ -7113,7 +7171,7 @@ msgstr "Сброс лимита (allowance) {symbol} до 0 перед уста�
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate Now"
-msgstr "Делегировать сейчас"
+msgstr "Делегировать"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Try new limit orders now"
