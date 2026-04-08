@@ -1,11 +1,14 @@
 with
 params as (
   select
-    case when '{{is_staging_env}}' = 'true' then true else false end as is_staging_env,
-    case
-      when '{{start_date}}' in ('', 'default value') then date '2026-01-01'
-      else cast('{{start_date}}' as date)
-    end as start_date
+    case when '{{is_staging_env}}' = 'true' then true else false end as is_staging_env
+),
+app_data as (
+  select
+    blockchain,
+    app_hash,
+    coalesce(environment, widget_environment) as environment
+  from query_5172256
 ),
 affiliate_program_data as (
   select
@@ -40,6 +43,7 @@ trades as (
     dune.cowprotocol.result_fac_trades.units_sold as executed_sell_amount,
     dune.cowprotocol.result_fac_trades.units_bought as executed_buy_amount,
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
+    app_data.environment,
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
     dune.cowprotocol.result_fac_trades.swap_source as swap_source,
     dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
@@ -50,11 +54,20 @@ trades as (
       lower(coalesce(dune.cowprotocol.result_fac_trades.swap_source, '')) = 'integrations'
     ) as is_excluded_integrators_source
   from dune.cowprotocol.result_fac_trades
+  left join app_data
+    on app_data.blockchain = dune.cowprotocol.result_fac_trades.blockchain
+    and app_data.app_hash = dune.cowprotocol.result_fac_trades.app_data
   cross join params
   cross join constants
   where
     if(array_position(split('{{blockchain}}', ','), '-=All=-') > 0, true, array_position(split('{{blockchain}}', ','), dune.cowprotocol.result_fac_trades.blockchain) > 0)
-    and dune.cowprotocol.result_fac_trades.block_time >= cast(params.start_date as timestamp)
+    and if(
+      (select is_staging_env from params),
+      app_data.environment is not null
+        and app_data.environment <> 'production',
+      app_data.environment is null
+        or app_data.environment = 'production'
+    )
 ),
 first_trade as (
   select
@@ -146,6 +159,7 @@ capped_trades as (
   from eligible_trades
 )
 select
+  trades.environment,
   trades.blockchain,
   trades.block_time as creation_date,
   trades.tx_hash,

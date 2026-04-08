@@ -4,13 +4,16 @@ params as (
     split('{{blockchain}}', ',') as blockchains,
     case when '{{is_staging_env}}' = 'true' then true else false end as is_staging_env,
     case
-      when '{{start_date}}' in ('', 'default value') then date '2026-01-01'
-      else cast('{{start_date}}' as date)
-    end as start_date,
-    case
       when '{{trader_payout_sources}}' in ('', 'default value') then cast(array[] as array(varchar))
       else transform(split('{{trader_payout_sources}}', ','), x -> lower(trim(x)))
     end as trader_payout_sources
+),
+app_data as (
+  select
+    blockchain,
+    app_hash,
+    coalesce(environment, widget_environment) as environment
+  from query_5172256
 ),
 constants as (
   -- Exclude very low fee swaps from counting towards trader eligible volume.
@@ -53,6 +56,7 @@ trades_with_referrer as (
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
     dune.cowprotocol.result_fac_trades.swap_source as swap_source,
     dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
+    app_data.environment,
     (
       coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 0) < constants.min_fee_bps
     ) as is_excluded_low_fee,
@@ -60,11 +64,20 @@ trades_with_referrer as (
       lower(coalesce(dune.cowprotocol.result_fac_trades.swap_source, '')) = 'integrations'
     ) as is_excluded_integrators_source
   from dune.cowprotocol.result_fac_trades
+  left join app_data
+    on app_data.blockchain = dune.cowprotocol.result_fac_trades.blockchain
+    and app_data.app_hash = dune.cowprotocol.result_fac_trades.app_data
   cross join params
   cross join constants
   where
     if(array_position(params.blockchains, '-=All=-') > 0, true, array_position(params.blockchains, dune.cowprotocol.result_fac_trades.blockchain) > 0)
-    and dune.cowprotocol.result_fac_trades.block_time >= cast(params.start_date as timestamp)
+    and if(
+      params.is_staging_env,
+      app_data.environment is not null
+        and app_data.environment <> 'production',
+      app_data.environment is null
+        or app_data.environment = 'production'
+    )
 ),
 first_trade as (
   select trader, min(block_time) as first_trade_time
@@ -131,7 +144,6 @@ payouts as (
   cross join unnest(params.trader_payout_sources) as ps(payout_source)
   where lower(to_hex("from")) = replace(ps.payout_source, '0x', '')
     and contract_address = 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
-    and evt_block_time >= cast(params.start_date as timestamp)
   group by 1
 )
 select
