@@ -17,6 +17,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import { IframeResizer } from './IframeResizer'
 
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
+import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
@@ -78,6 +79,7 @@ export function InjectedWidgetUpdater(): ReactNode {
     },
     updateParams,
   ] = useAtom(injectedWidgetParamsAtom)
+  const setHooksEnabled = useSetAtom(injectedWidgetHooksEnabledAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
 
   const prevPartnerFee = usePrevious(partnerFee)
@@ -109,8 +111,10 @@ export function InjectedWidgetUpdater(): ReactNode {
         prevData.current = data
 
         const appParams = data.appParams
+        const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
 
         const errors = validateWidgetParams(appParams)
+        setHooksEnabled(hooksEnabled)
 
         updateParams({
           params: appParams,
@@ -154,7 +158,7 @@ export function InjectedWidgetUpdater(): ReactNode {
       widgetIframeTransport.stopListeningWindowListener(window, updateParamsListener)
       widgetIframeTransport.stopListeningWindowListener(window, updateAppDataListener)
     }
-  }, [updateMetaData, navigate, updateParams])
+  }, [setHooksEnabled, updateMetaData, navigate, updateParams])
 
   // Log an error when partnerFee was set and then discarded
   useEffect(() => {

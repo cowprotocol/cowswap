@@ -190,7 +190,6 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
       enabledTradeTypes,
       theme: getThemeParam(theme, customColors, defaultColors, boxShadow),
-
       standaloneMode,
       disableToastMessages,
       disableProgressBar,

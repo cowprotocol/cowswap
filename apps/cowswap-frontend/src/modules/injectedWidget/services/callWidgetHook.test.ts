@@ -1,11 +1,20 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import { WidgetHookEvents, widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 import type { WidgetMethodsEmitPayloadMap } from '@cowprotocol/widget-lib'
 
 import { callWidgetHook } from './callWidgetHook'
 
+import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
+
 jest.mock('@cowprotocol/common-utils', () => ({
   isInjectedWidget: jest.fn(),
+}))
+
+jest.mock('@cowprotocol/core', () => ({
+  jotaiStore: {
+    get: jest.fn(),
+  },
 }))
 
 jest.mock('@cowprotocol/widget-lib', () => ({
@@ -25,6 +34,7 @@ jest.mock('@cowprotocol/widget-lib', () => ({
 }))
 
 const mockIsInjectedWidget = isInjectedWidget as jest.MockedFunction<typeof isInjectedWidget>
+const mockJotaiGet = jotaiStore.get as jest.MockedFunction<typeof jotaiStore.get>
 const mockListenToMessageFromWindow = widgetIframeTransport.listenToMessageFromWindow as jest.MockedFunction<
   typeof widgetIframeTransport.listenToMessageFromWindow
 >
@@ -39,9 +49,10 @@ const hookResultListener = mockListenToMessageFromWindow.mock.calls[0][2] as (pa
 describe('callWidgetHook', () => {
   beforeEach(() => {
     mockIsInjectedWidget.mockReset()
+    mockJotaiGet.mockReset()
     mockPostMessageToWindow.mockClear()
     mockIsInjectedWidget.mockReturnValue(true)
-    window.history.replaceState({}, '', '/')
+    mockJotaiGet.mockImplementation((atom) => (atom === injectedWidgetHooksEnabledAtom ? false : undefined))
   })
 
   it('returns true without posting when hooksEnabled is absent', async () => {
@@ -52,7 +63,7 @@ describe('callWidgetHook', () => {
   })
 
   it('posts PROCESS_HOOK when hooksEnabled=true', async () => {
-    window.history.replaceState({}, '', '#/?hooksEnabled=true')
+    mockJotaiGet.mockImplementation((atom) => (atom === injectedWidgetHooksEnabledAtom ? true : undefined))
 
     const hookCall = callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, {} as never)
 

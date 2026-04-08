@@ -1,4 +1,5 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import {
   WidgetHookEvents,
   WidgetHookPayloadMap,
@@ -8,6 +9,8 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import ms from 'ms.macro'
+
+import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 
 const callsRegistry = new Map<string, (result: boolean) => void>()
 const HOOK_RESPONSE_TIMEOUT_MS = ms`2m`
@@ -57,5 +60,5 @@ export function callWidgetHook<T extends WidgetHookEvents>(
 }
 
 function areWidgetHooksEnabled(): boolean {
-  return window.location.hash.includes('hooksEnabled=true')
+  return jotaiStore.get(injectedWidgetHooksEnabledAtom)
 }
