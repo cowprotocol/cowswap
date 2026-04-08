@@ -464,6 +464,10 @@ msgstr "Возврат завершен!"
 msgid "When"
 msgstr "Когда"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}"
+msgstr "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "30 Minutes"
 msgstr "30 минут"
