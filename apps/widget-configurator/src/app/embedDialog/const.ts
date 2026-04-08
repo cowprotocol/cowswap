@@ -6,14 +6,16 @@ export const PROVIDER_PARAM_COMMENT =
 export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   appCode: 'Name of your app (max 50 characters)',
   width: 'Outer iFrame width (use 100% to fill the available container width)',
-  iframeBackgroundColor: 'Background color of the outer iFrame. Default: transparent',
-  iframeBorderRadius: 'Border radius of the outer iFrame. Use 0 for a flush embed',
   chainId: '1 (Mainnet), 100 (Gnosis), 11155111 (Sepolia)',
   tokenLists: 'All default enabled token lists. Also see https://tokenlists.org',
   sellTokenLists: 'Token lists available only in the sell selector',
   buyTokenLists: 'Token lists available only in the buy selector',
-  theme:
-    'light/dark or provide your own color palette, plus optional `boxShadow`, `widgetPadding`, and `widgetBorderRadius`',
+  theme: 'light/dark or provide your own color palette',
+  iframeStyle:
+    'Host iframe CSS (e.g. backgroundColor, borderRadius, boxShadow, border). Width/height use top-level width & height.',
+  appWrapperStyle: 'Optional inline styles on the top-level app wrapper (inside the iframe)',
+  bodyWrapperStyle: 'Optional inline styles on the body wrapper (inside the iframe)',
+  cardStyle: 'Optional inline styles on the main trade widget card (inside the iframe)',
   tradeType: 'swap, limit or advanced',
   sell: 'Sell token. Optionally add amount for sell orders',
   buy: 'Buy token. Optionally add amount for buy orders',

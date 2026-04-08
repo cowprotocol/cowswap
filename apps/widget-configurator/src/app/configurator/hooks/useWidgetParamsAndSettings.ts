@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
-import { DEFAULT_IFRAME_BORDER_RADIUS, DEFAULT_IFRAME_WIDTH } from '../consts'
 import { ConfiguratorState } from '../types'
 
 const vercelSuffix = '-cowswap-dev.vercel.app'
@@ -112,16 +111,8 @@ function getThemeParam(
   theme: ConfiguratorState['theme'],
   customColors: ConfiguratorState['customColors'],
   defaultColors: ConfiguratorState['defaultColors'],
-  boxShadow: ConfiguratorState['boxShadow'],
-  widgetPadding: ConfiguratorState['widgetPadding'],
-  widgetBorderRadius: ConfiguratorState['widgetBorderRadius'],
 ): CowSwapWidgetParams['theme'] {
-  if (
-    JSON.stringify(customColors) === JSON.stringify(defaultColors) &&
-    !boxShadow &&
-    !widgetPadding &&
-    !widgetBorderRadius
-  ) {
+  if (JSON.stringify(customColors) === JSON.stringify(defaultColors)) {
     return theme
   }
 
@@ -141,9 +132,6 @@ function getThemeParam(
     alert: themeColors.alert,
     info: themeColors.info,
     success: themeColors.success,
-    ...(boxShadow ? { boxShadow } : null),
-    ...(widgetPadding ? { widgetPadding } : null),
-    ...(widgetBorderRadius ? { widgetBorderRadius } : null),
   }
 }
 
@@ -166,12 +154,10 @@ function buildWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetP
     chainId,
     locale,
     theme,
-    iframeWidth,
-    iframeBackgroundColor,
-    iframeBorderRadius,
-    boxShadow,
-    widgetPadding,
-    widgetBorderRadius,
+    iframeStyle,
+    appWrapperStyle,
+    bodyWrapperStyle,
+    cardStyle,
     currentTradeType,
     enabledTradeTypes,
     sellToken,
@@ -204,10 +190,6 @@ function buildWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetP
 
   return {
     appCode: 'CoW Widget: Configurator',
-    width: iframeWidth || DEFAULT_IFRAME_WIDTH,
-    height: '640px',
-    iframeBackgroundColor,
-    iframeBorderRadius: iframeBorderRadius || DEFAULT_IFRAME_BORDER_RADIUS,
     chainId,
     locale,
     tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
@@ -219,7 +201,11 @@ function buildWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetP
     buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
     forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
     enabledTradeTypes,
-    theme: getThemeParam(theme, customColors, defaultColors, boxShadow, widgetPadding, widgetBorderRadius),
+    theme: getThemeParam(theme, customColors, defaultColors),
+    iframeStyle,
+    appWrapperStyle,
+    bodyWrapperStyle,
+    cardStyle,
     standaloneMode,
     disableToastMessages,
     disableProgressBar,

@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material/styles'
+import type { SxProps, Theme } from '@mui/material/styles'
 
 export const DRAWER_WIDTH_CSS_VAR = '--widget-configurator-drawer-width'
 
@@ -29,26 +29,45 @@ export const DrawerStyled = (theme: Theme) => ({
     padding: '1.6rem',
     position: 'relative',
     overflow: 'hidden',
-    overflowY: 'auto',
+    overflowY: 'scroll',
   },
 })
 
-export const ContentStyled = {
-  width: 0,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  flexFlow: 'column',
-  flex: '1 1 auto',
-  minWidth: 0,
-  overflow: 'auto',
-  padding: '2rem 1.6rem',
+const TRANSPARENCY_CHECKER_PX = 8
+const CONTENT_PADDING_PX = 16
 
-  '& iframe': {
-    border: 0,
-    margin: '0 auto',
+export const ContentStyled: SxProps<Theme> = (theme) => {
+  const isDark = theme.palette.mode === 'dark'
+  const squareA = theme.palette.grey[isDark ? 900 : 200]
+  const squareB = theme.palette.grey[isDark ? 800 : 300]
+  const base = theme.palette.grey[isDark ? 900 : 200]
+  const pattern = `repeating-conic-gradient(from 90deg, ${squareA} 0% 25%, ${squareB} 0% 50%)`
+
+  return {
+    width: 0,
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexFlow: 'column',
+    flex: '1 1 auto',
+    minWidth: 0,
     overflow: 'auto',
-  },
+    padding: `${CONTENT_PADDING_PX}px`,
+    backgroundImage: `${pattern}, linear-gradient(${base}, ${base})`,
+    backgroundSize: `${TRANSPARENCY_CHECKER_PX}px ${TRANSPARENCY_CHECKER_PX}px, 100% 100%`,
+    backgroundRepeat: 'repeat, no-repeat',
+    backgroundPosition: `right ${CONTENT_PADDING_PX}px top ${CONTENT_PADDING_PX}px, 0 0`,
+    backgroundClip: 'content-box, border-box',
+    backgroundOrigin: 'content-box, border-box',
+
+    '& iframe': {
+      display: 'block',
+      border: 0,
+      margin: '0 auto',
+      outline: '1px dashed cyan',
+      //overflow: 'auto',
+    },
+  }
 }
 
 export const WalletConnectionWrapper = {

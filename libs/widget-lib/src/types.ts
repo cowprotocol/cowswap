@@ -6,6 +6,8 @@ import {
   OnTradeParamsPayload,
 } from '@cowprotocol/events'
 
+import type * as CSS from 'csstype'
+
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 export type { OnTradeParamsPayload } from '@cowprotocol/events'
 
@@ -161,21 +163,6 @@ export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: st
 
 export type CowSwapWidgetPalette = {
   baseTheme: CowSwapTheme
-  /**
-   * Overrides the main widget card shadow.
-   * Accepts any valid CSS box-shadow value, for example `none` or `0 12px 24px rgba(0, 0, 0, 0.12)`.
-   */
-  boxShadow?: string
-  /**
-   * Overrides the outer widget shell padding around the embedded card.
-   * Accepts any valid CSS padding value, for example `16px 16px 24px` or `0`.
-   */
-  widgetPadding?: string
-  /**
-   * Overrides the main widget card border radius.
-   * Accepts any valid CSS border-radius value, for example `24px`, `16px`, or `1.5rem`.
-   */
-  widgetBorderRadius?: string
 } & CowSwapWidgetPaletteParams
 
 export interface CowSwapWidgetSounds {
@@ -232,30 +219,45 @@ export interface CowSwapWidgetParams {
   /**
    * The width of the outer iframe element. Accepts CSS width values such as `450px` or `100%`.
    * Default: `450px`
+   *
+   * @deprecated Use iframeStyle.width instead.
    */
   width?: string
   /**
    * The height of the outer iframe element. Accepts CSS height values such as `640px`.
    * Default: `640px`
+   *
+   * @deprecated Use iframeStyle.height instead.
    */
   height?: string
 
   /**
-   * The background color of the outer iframe element.
-   * Default: `transparent`
-   */
-  iframeBackgroundColor?: string
-
-  /**
-   * The border radius of the outer iframe element.
-   * Accepts any valid CSS border-radius value, for example `1.6rem`, `24px`, or `0`.
-   */
-  iframeBorderRadius?: string
-
-  /**
    * The maximum height of the widget in pixels. Default: body.offsetHeight
+   *
+   * @deprecated Use iframeStyle.maxHeight instead.
    */
   maxHeight?: number
+
+  /**
+   * Extra inline styles for the outer iframe element (host page only; not sent into the iframe app).
+   * Applied after width/height attributes. Use e.g. `backgroundColor`, `borderRadius`, `boxShadow`, `border`.
+   */
+  iframeStyle?: CSS.Properties
+
+  /**
+   * Inline styles for the top-level app wrapper (inside the iframe).
+   */
+  appWrapperStyle?: CSS.Properties
+
+  /**
+   * Inline styles for the body wrapper (inside the iframe).
+   */
+  bodyWrapperStyle?: CSS.Properties
+
+  /**
+   * Inline styles for the main trade widget card (inside the iframe).
+   */
+  cardStyle?: CSS.Properties
 
   /**
    * Network ID.
@@ -482,7 +484,7 @@ export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethods
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
-export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks'>
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks' | 'iframeStyle'>
 
 export interface UpdateParamsPayload {
   urlParams: {

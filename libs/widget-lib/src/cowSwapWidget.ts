@@ -1,6 +1,9 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
+import { assignElementStyles } from './applyElementStyles'
+import { DEFAULT_WIDGET_PARAMS } from './cowSwapWidget.constants'
+import { deepMerge } from './deepMerge'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import {
@@ -17,9 +20,6 @@ import {
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
 import { widgetIframeTransport } from './widgetIframeTransport'
-
-const DEFAULT_HEIGHT = '640px'
-const DEFAULT_WIDTH = '450px'
 
 const noopHandler: CowSwapWidgetHandler = {
   updateParams: () => void 0,
@@ -52,13 +52,13 @@ export interface CowSwapWidgetHandler {
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
   const { params, provider: providerAux, listeners } = props
   let provider = providerAux
-  let currentParams = params
-  let iframeSizing = getIframeSizingConfig(params)
+  let currentParams = deepMerge(params, DEFAULT_WIDGET_PARAMS)
+  let prevHeight = currentParams.iframeStyle?.height
 
   if (typeof window === 'undefined') return noopHandler
 
   // 1. Create a brand new iframe
-  const iframe = createIframe(params)
+  const iframe = createIframe(currentParams)
 
   // 2. Clear the content (delete any previous iFrame if it exists)
   container.innerHTML = ''
@@ -72,10 +72,15 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
   const windowListeners: WindowListener[] = []
-  windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode))
+  windowListeners.push(sendAppCodeOnActivation(iframeWindow, currentParams.appCode))
 
   // 4. Handle widget height changes
-  windowListeners.push(...listenToHeightChanges(iframe, () => iframeSizing))
+  windowListeners.push(
+    ...listenToHeightChanges(iframe, () => ({
+      defaultHeight: currentParams.iframeStyle?.height || 'auto',
+      maxHeight: currentParams.maxHeight,
+    })),
+  )
 
   // 5. Intercept deeplinks navigation in the iframe
   windowListeners.push(interceptDeepLinks())
@@ -112,12 +117,14 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
     updateParams: (newParams: CowSwapWidgetParams) => {
-      const prevDefaultHeight = iframeSizing.defaultHeight
+      const nextHeight = newParams.iframeStyle?.height ?? prevHeight
+      currentParams = deepMerge(
+        { ...newParams, iframeStyle: { ...newParams.iframeStyle, height: nextHeight } },
+        DEFAULT_WIDGET_PARAMS,
+      )
+      prevHeight = currentParams.iframeStyle?.height
 
-      currentParams = newParams
-      iframeSizing = getIframeSizingConfig(newParams)
-
-      updateIframeElement(iframe, currentParams, prevDefaultHeight)
+      updateIframeElement(iframe, currentParams)
       updateParams(iframeWindow, currentParams, provider)
       updateWidgetHooks()
     },
@@ -182,45 +189,28 @@ function updateProvider(
  * @returns The generated HTMLIFrameElement.
  */
 function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
-  const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = params
-
   const iframe = document.createElement('iframe')
 
   iframe.src = buildWidgetUrl(params)
-  iframe.width = width
-  iframe.height = height
-  iframe.style.border = '0'
-  iframe.style.backgroundColor = params.iframeBackgroundColor || 'transparent'
-  iframe.style.borderRadius = params.iframeBorderRadius || ''
   iframe.allow = 'clipboard-read; clipboard-write'
+
+  updateIframeElement(iframe, params)
 
   return iframe
 }
 
-function updateIframeElement(
-  iframe: HTMLIFrameElement,
-  params: CowSwapWidgetParams,
-  previousDefaultHeight: string,
-): void {
-  const { width = DEFAULT_WIDTH } = params
-  const { defaultHeight } = getIframeSizingConfig(params)
-
-  iframe.width = width
-  iframe.height = defaultHeight
-  iframe.style.backgroundColor = params.iframeBackgroundColor || 'transparent'
-  iframe.style.borderRadius = params.iframeBorderRadius || ''
-
-  if (!iframe.style.height || iframe.style.height === previousDefaultHeight) {
-    iframe.style.height = defaultHeight
-  }
+function updateIframeElement(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): void {
+  assignElementStyles(iframe, params.iframeStyle)
 }
 
+/*
 function getIframeSizingConfig(params: CowSwapWidgetParams): IframeSizingConfig {
   return {
-    defaultHeight: params.height || DEFAULT_HEIGHT,
+    defaultHeight: params.iframeStyle?.height || DEFAULT_WIDGET_PARAMS.iframeStyle.height,
     maxHeight: params.maxHeight,
   }
 }
+*/
 
 /**
  * Updates the CoW Swap Widget based on the new settings provided.
@@ -239,8 +229,8 @@ function updateParams(
   const pathname = buildWidgetPath(params)
   const search = buildWidgetUrlQuery(params).toString()
 
-  // Omit theme from appParams
-  const { theme: _theme, hooks: _hooks, ...appParams } = params
+  // Omit theme, hooks, and host-only iframe styles from appParams
+  const { theme: _theme, hooks: _hooks, iframeStyle: _iframeStyle, ...appParams } = params
 
   widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {

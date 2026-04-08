@@ -9,6 +9,8 @@ import {
 
 import { PaletteMode } from '@mui/material'
 
+import type * as CSS from 'csstype'
+
 export type ColorPalette = {
   [key in CowSwapWidgetPaletteColors]: string
 }
@@ -24,12 +26,10 @@ export interface ConfiguratorState {
   chainId?: SupportedChainId
   locale?: string
   theme: PaletteMode
-  iframeWidth?: string
-  iframeBackgroundColor?: string
-  iframeBorderRadius?: string
-  boxShadow?: string
-  widgetPadding?: string
-  widgetBorderRadius?: string
+  iframeStyle: CSS.Properties
+  appWrapperStyle: CSS.Properties
+  bodyWrapperStyle: CSS.Properties
+  cardStyle: CSS.Properties
   currentTradeType: TradeType
   enabledTradeTypes: TradeType[]
   enabledWidgetHooks: WidgetHookEvents[]

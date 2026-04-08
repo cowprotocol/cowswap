@@ -1,4 +1,4 @@
-import { type CSSProperties, ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, CSSProperties, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK, SupportedLocale } from '@cowprotocol/common-const'
@@ -16,7 +16,6 @@ import LanguageIcon from '@mui/icons-material/Language'
 import { IconButton, Snackbar } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List'
@@ -28,8 +27,9 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
-import { COW_LISTENERS, DEFAULT_IFRAME_BORDER_RADIUS, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
+import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
 import { AccordionSection } from './controls/AccordionSection'
+import { AppearanceStyleControls } from './controls/AppearanceStyleControls'
 import { BooleanSwitchControl } from './controls/BooleanSwitchControl'
 import { ConfiguratorBrandHeader } from './controls/ConfiguratorBrandHeader'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
@@ -37,9 +37,6 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
 import { CustomSoundsControl } from './controls/CustomSoundsControl'
 import { DeadlineControl } from './controls/DeadlineControl'
-import { IframeBackgroundColorControl } from './controls/IframeBackgroundColorControl'
-import { IframeBorderRadiusControl } from './controls/IframeBorderRadiusControl'
-import { IframeWidthControl } from './controls/IframeWidthControl'
 import { LocaleControl } from './controls/LocaleControl'
 import { ModeControl } from './controls/ModeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
@@ -48,12 +45,10 @@ import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl'
 import { TradeModesControl } from './controls/TradeModesControl'
-import { WidgetBorderRadiusControl } from './controls/WidgetBorderRadiusControl'
 import { WidgetHooksControl } from './controls/WidgetHooksControl'
-import { WidgetPaddingControl } from './controls/WidgetPaddingControl'
-import { WidgetShadowControl } from './controls/WidgetShadowControl'
 import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
+import { EMPTY_JSON_STATE, useJsonState } from './hooks/useJsonState'
 import { useProvider } from './hooks/useProvider'
 import { useResizableDrawerWidth } from './hooks/useResizableDrawerWidth'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
@@ -74,6 +69,8 @@ import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { EmbedDialog } from '../embedDialog'
 
+import type * as CSS from 'csstype'
+
 declare global {
   interface Window {
     cowSwapWidgetParams?: Partial<CowSwapWidgetParams>
@@ -90,14 +87,6 @@ const DEFAULT_STATE = {
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
 export type WidgetMode = 'dapp' | 'standalone'
-
-function getOptionalTextValue(value: string): string | undefined {
-  return value || undefined
-}
-
-function getIframeDefaultBackgroundColor(paperColor: string, defaultPaperColor: string): string {
-  return paperColor || defaultPaperColor
-}
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
@@ -176,13 +165,11 @@ export function Configurator({ title }: { title: string }) {
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
-  const iframeDefaultBackgroundColor = getIframeDefaultBackgroundColor(colorPalette.paper, defaultPalette.paper)
-  const [iframeWidth, setIframeWidth] = useState<string>('')
-  const [iframeBackgroundColor, setIframeBackgroundColor] = useState<string>('')
-  const [iframeBorderRadius, setIframeBorderRadius] = useState<string>(DEFAULT_IFRAME_BORDER_RADIUS)
-  const [boxShadow, setBoxShadow] = useState<string>('')
-  const [widgetPadding, setWidgetPadding] = useState<string>('')
-  const [widgetBorderRadius, setWidgetBorderRadius] = useState<string>('')
+
+  const [iframeStyleJson, setIframeStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
+  const [cardStyleJson, setCardStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
+  const [appWrapperStyleJson, setAppWrapperStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
+  const [bodyWrapperStyleJson, setBodyWrapperStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
@@ -254,12 +241,10 @@ export function Configurator({ title }: { title: string }) {
     chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
     locale: locale || undefined,
     theme: mode,
-    iframeWidth: getOptionalTextValue(iframeWidth),
-    iframeBackgroundColor: getOptionalTextValue(iframeBackgroundColor),
-    iframeBorderRadius: getOptionalTextValue(iframeBorderRadius),
-    boxShadow: getOptionalTextValue(boxShadow),
-    widgetPadding: getOptionalTextValue(widgetPadding),
-    widgetBorderRadius: getOptionalTextValue(widgetBorderRadius),
+    iframeStyle: iframeStyleJson.mergedValue,
+    appWrapperStyle: appWrapperStyleJson.mergedValue,
+    bodyWrapperStyle: bodyWrapperStyleJson.mergedValue,
+    cardStyle: cardStyleJson.mergedValue,
     currentTradeType,
     enabledTradeTypes,
     enabledWidgetHooks,
@@ -412,25 +397,22 @@ export function Configurator({ title }: { title: string }) {
             <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
           </AccordionSection>
 
-          <AccordionSection title="Appearance">
+          <AccordionSection title="Theme Colors">
             <ThemeControl />
             <PaletteControl paletteManager={paletteManager} />
-            <Divider sx={{ my: 1.6 }} />
-            <Stack spacing={1.6}>
-              <IframeWidthControl value={iframeWidth} onChange={setIframeWidth} />
-              <IframeBackgroundColorControl
-                defaultCustomColor={iframeDefaultBackgroundColor}
-                value={iframeBackgroundColor}
-                onChange={setIframeBackgroundColor}
-              />
-              <IframeBorderRadiusControl value={iframeBorderRadius} onChange={setIframeBorderRadius} />
-            </Stack>
-            <Divider sx={{ my: 1.6 }} />
-            <Stack spacing={1.6}>
-              <WidgetShadowControl value={boxShadow} mode={mode} onChange={setBoxShadow} />
-              <WidgetPaddingControl value={widgetPadding} onChange={setWidgetPadding} />
-              <WidgetBorderRadiusControl value={widgetBorderRadius} onChange={setWidgetBorderRadius} />
-            </Stack>
+          </AccordionSection>
+
+          <AccordionSection title="Layout">
+            <AppearanceStyleControls
+              iframeStyleJson={iframeStyleJson}
+              onIframeStyleJson={setIframeStyleJson}
+              appWrapperStyleJson={appWrapperStyleJson}
+              onAppWrapperStyleJson={setAppWrapperStyleJson}
+              bodyWrapperStyleJson={bodyWrapperStyleJson}
+              onBodyWrapperStyleJson={setBodyWrapperStyleJson}
+              cardStyleJson={cardStyleJson}
+              onCardStyleJson={setCardStyleJson}
+            />
           </AccordionSection>
 
           <AccordionSection title="Behavior">

@@ -20,8 +20,7 @@ describe('createCowSwapWidget', () => {
         appCode: 'widget-test',
         width: '100%',
         height: '640px',
-        iframeBackgroundColor: 'red',
-        iframeBorderRadius: '1.6rem',
+        iframeStyle: { backgroundColor: 'red', borderRadius: '1.6rem' },
       },
     })
 
@@ -37,8 +36,7 @@ describe('createCowSwapWidget', () => {
       appCode: 'widget-test',
       width: '320px',
       height: '432px',
-      iframeBackgroundColor: 'transparent',
-      iframeBorderRadius: '0',
+      iframeStyle: { backgroundColor: 'transparent', borderRadius: '0' },
     })
 
     expect(iframe.width).toBe('320px')
@@ -46,6 +44,24 @@ describe('createCowSwapWidget', () => {
     expect(iframe.style.height).toBe('432px')
     expect(iframe.style.backgroundColor).toBe('transparent')
     expect(iframe.style.borderRadius).toBe('0')
+  })
+
+  it('applies iframeStyle to the iframe', () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    createCowSwapWidget(container, {
+      params: {
+        appCode: 'widget-test',
+        iframeStyle: { backgroundColor: 'blue', margin: '12px', border: '2px solid green' },
+      },
+    })
+
+    const iframe = getIframe(container)
+
+    expect(iframe.style.backgroundColor).toBe('blue')
+    expect(iframe.style.margin).toBe('12px')
+    expect(iframe.style.border).toBe('2px solid green')
   })
 
   it('uses the latest height config for resize events after params change', () => {
