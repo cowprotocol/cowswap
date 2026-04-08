@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { tradeButtonsMap } from './tradeButtonsMap.record'
+import { tradeButtonsMap } from './tradeButtonsMap'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
