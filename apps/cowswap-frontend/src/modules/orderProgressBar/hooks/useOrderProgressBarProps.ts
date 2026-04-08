@@ -291,6 +291,12 @@ export function getProgressBarStepName(
   }
 
   if (isTradedOrConfirmed && isBridgingTrade && !bridgingStatus) {
+    const persistedBridgingStepName = getPersistedBridgingStepName(currentStepName)
+
+    if (persistedBridgingStepName) {
+      return persistedBridgingStepName
+    }
+
     return OrderProgressBarStepName.EXECUTING
   }
 
@@ -419,6 +425,21 @@ function getBridgingStepName(bridgingStatus: SwapAndBridgeStatus | undefined): O
 
   if ([SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
     return OrderProgressBarStepName.BRIDGING_IN_PROGRESS
+  }
+
+  return undefined
+}
+
+function getPersistedBridgingStepName(
+  currentStepName: OrderProgressBarState['progressBarStepName'],
+): OrderProgressBarStepName | undefined {
+  if (
+    currentStepName === OrderProgressBarStepName.BRIDGING_IN_PROGRESS ||
+    currentStepName === OrderProgressBarStepName.BRIDGING_FAILED ||
+    currentStepName === OrderProgressBarStepName.REFUND_COMPLETED ||
+    currentStepName === OrderProgressBarStepName.BRIDGING_FINISHED
+  ) {
+    return currentStepName
   }
 
   return undefined

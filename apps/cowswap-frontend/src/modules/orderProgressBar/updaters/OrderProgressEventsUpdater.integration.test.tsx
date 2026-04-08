@@ -156,6 +156,34 @@ describe('OrderProgressEventsUpdater', () => {
     unmount()
   })
 
+  it('does not stage executing when a fulfilled event arrives before the bar leaves the initial step', () => {
+    const orderUid = '0xinitial-order'
+    const { store, TestComponent } = getWrapper()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderUid]: {
+        progressBarStepName: OrderProgressBarStepName.INITIAL,
+      },
+    })
+
+    const { unmount } = render(<OrderProgressEventsUpdater />, { wrapper: TestComponent })
+
+    act(() => emitFulfilledOrder(orderUid))
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]).toMatchObject({
+      previousStepName: OrderProgressBarStepName.INITIAL,
+      progressBarStepName: OrderProgressBarStepName.FINISHED,
+    })
+
+    act(() => {
+      jest.advanceTimersByTime(EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(OrderProgressBarStepName.FINISHED)
+
+    unmount()
+  })
+
   it('does not overwrite a newer step after the delayed completion timer fires', () => {
     const orderUid = '0xcancelled-order'
     const { store, TestComponent } = getWrapper()

@@ -68,7 +68,12 @@ export function shouldStageExecutingStep(
   previousStep: OrderProgressBarStepName | undefined,
   nextStep: OrderProgressBarStepName | undefined,
 ): boolean {
-  if (!currentStep || !isCompletionStep(nextStep) || isCompletionStep(currentStep)) {
+  if (
+    !currentStep ||
+    currentStep === OrderProgressBarStepName.INITIAL ||
+    !isCompletionStep(nextStep) ||
+    isCompletionStep(currentStep)
+  ) {
     return false
   }
 

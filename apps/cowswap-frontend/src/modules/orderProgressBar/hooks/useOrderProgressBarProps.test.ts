@@ -7,6 +7,7 @@ import { OrderProgressBarState } from '../types'
 
 const OPEN_STATUS = 'open' as OrderProgressBarState['backendApiStatus']
 const EXECUTING_STATUS = 'executing' as OrderProgressBarState['backendApiStatus']
+const TRADED_STATUS = 'traded' as OrderProgressBarState['backendApiStatus']
 
 describe('getProgressBarStepName', () => {
   function callGetProgressBarStepName({
@@ -133,6 +134,28 @@ describe('getProgressBarStepName', () => {
     })
 
     expect(result).toBe(OrderProgressBarStepName.EXECUTING)
+  })
+
+  it('keeps bridge progress when bridge context temporarily disappears after fill', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.BRIDGING_IN_PROGRESS,
+      previousStepName: OrderProgressBarStepName.EXECUTING,
+      backendApiStatus: TRADED_STATUS,
+      isBridgingTrade: true,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.BRIDGING_IN_PROGRESS)
+  })
+
+  it('keeps bridge completion when bridge context temporarily disappears after fill', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.BRIDGING_FINISHED,
+      previousStepName: OrderProgressBarStepName.BRIDGING_IN_PROGRESS,
+      backendApiStatus: TRADED_STATUS,
+      isBridgingTrade: true,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.BRIDGING_FINISHED)
   })
 })
 

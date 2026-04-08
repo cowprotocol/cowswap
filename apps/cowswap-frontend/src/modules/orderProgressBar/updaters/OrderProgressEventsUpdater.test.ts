@@ -122,6 +122,16 @@ describe('shouldStageExecutingStep', () => {
     expect(result).toBe(false)
   })
 
+  it('does not stage executing while the progress bar is still on the initial step', () => {
+    const result = shouldStageExecutingStep(
+      OrderProgressBarStepName.INITIAL,
+      undefined,
+      OrderProgressBarStepName.FINISHED,
+    )
+
+    expect(result).toBe(false)
+  })
+
   it('does not move backwards from a completion step', () => {
     const result = shouldStageExecutingStep(
       OrderProgressBarStepName.FINISHED,
