@@ -127,6 +127,29 @@ export function OrderProgressEventsUpdater(): null {
   const ordersProgressStateRef = useOrdersProgressStateRef(ordersProgressState)
   const completionTimersRef = useCompletionTimersRef()
 
+  const scheduleCompletionStep = useCallback(
+    (orderUid: string, step: OrderProgressBarStepName, delayMs: number) => {
+      const scheduledTimer = setTimeout(() => {
+        if (completionTimersRef.current[orderUid] !== scheduledTimer) {
+          return
+        }
+
+        delete completionTimersRef.current[orderUid]
+
+        const latestState = ordersProgressStateRef.current[orderUid]
+
+        if (!latestState || latestState.progressBarStepName !== OrderProgressBarStepName.EXECUTING) {
+          return
+        }
+
+        setStepName({ orderId: orderUid, value: step })
+      }, delayMs)
+
+      completionTimersRef.current[orderUid] = scheduledTimer
+    },
+    [completionTimersRef, ordersProgressStateRef, setStepName],
+  )
+
   const finalizeOrderStep = useCallback(
     (orderUid: string, step: OrderProgressBarStepName) => {
       const currentState = ordersProgressStateRef.current[orderUid]
@@ -151,10 +174,7 @@ export function OrderProgressEventsUpdater(): null {
 
       if (shouldStageExecutingStep(currentStep, currentState?.previousStepName, step)) {
         setStepName({ orderId: orderUid, value: OrderProgressBarStepName.EXECUTING })
-        completionTimersRef.current[orderUid] = setTimeout(() => {
-          setStepName({ orderId: orderUid, value: step })
-          delete completionTimersRef.current[orderUid]
-        }, EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
+        scheduleCompletionStep(orderUid, step, EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
 
         return
       }
@@ -162,17 +182,14 @@ export function OrderProgressEventsUpdater(): null {
       const completionDelayMs = getCompletionDelayMs(currentStep, step, currentState?.lastTimeChangedSteps)
 
       if (completionDelayMs > 0) {
-        completionTimersRef.current[orderUid] = setTimeout(() => {
-          setStepName({ orderId: orderUid, value: step })
-          delete completionTimersRef.current[orderUid]
-        }, completionDelayMs)
+        scheduleCompletionStep(orderUid, step, completionDelayMs)
 
         return
       }
 
       setStepName({ orderId: orderUid, value: step })
     },
-    [completionTimersRef, ordersProgressStateRef, setCountdown, setStepName],
+    [completionTimersRef, ordersProgressStateRef, scheduleCompletionStep, setCountdown, setStepName],
   )
 
   useEffect(() => {

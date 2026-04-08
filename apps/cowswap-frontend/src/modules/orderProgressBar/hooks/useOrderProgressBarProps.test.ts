@@ -1,6 +1,6 @@
 import { SwapAndBridgeStatus } from 'modules/bridge'
 
-import { getProgressBarStepName } from './useOrderProgressBarProps'
+import { getProgressBarStepName, shouldApplyCompletionDrivenExecutingImmediately } from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
@@ -133,5 +133,35 @@ describe('getProgressBarStepName', () => {
     })
 
     expect(result).toBe(OrderProgressBarStepName.EXECUTING)
+  })
+})
+
+describe('shouldApplyCompletionDrivenExecutingImmediately', () => {
+  it('bypasses the 5s hold when executing is only a staging step before completion', () => {
+    const result = shouldApplyCompletionDrivenExecutingImmediately(
+      OrderProgressBarStepName.EXECUTING,
+      OrderProgressBarStepName.SOLVING,
+      OrderProgressBarStepName.INITIAL,
+      true,
+      undefined,
+      undefined,
+      false,
+    )
+
+    expect(result).toBe(true)
+  })
+
+  it('keeps the normal delay for a regular backend executing transition', () => {
+    const result = shouldApplyCompletionDrivenExecutingImmediately(
+      OrderProgressBarStepName.EXECUTING,
+      OrderProgressBarStepName.SOLVING,
+      OrderProgressBarStepName.INITIAL,
+      false,
+      EXECUTING_STATUS,
+      undefined,
+      false,
+    )
+
+    expect(result).toBe(false)
   })
 })

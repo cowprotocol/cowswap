@@ -155,4 +155,66 @@ describe('OrderProgressEventsUpdater', () => {
 
     unmount()
   })
+
+  it('does not overwrite a newer step after the delayed completion timer fires', () => {
+    const orderUid = '0xcancelled-order'
+    const { store, TestComponent } = getWrapper()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderUid]: {
+        progressBarStepName: OrderProgressBarStepName.SOLVING,
+        previousStepName: OrderProgressBarStepName.INITIAL,
+      },
+    })
+
+    const { unmount } = render(<OrderProgressEventsUpdater />, { wrapper: TestComponent })
+
+    act(() => emitFulfilledOrder(orderUid))
+    act(() => {
+      store.set(ordersProgressBarStateAtom, {
+        [orderUid]: {
+          progressBarStepName: OrderProgressBarStepName.CANCELLATION_FAILED,
+          previousStepName: OrderProgressBarStepName.EXECUTING,
+        },
+      })
+    })
+
+    act(() => {
+      jest.advanceTimersByTime(EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]).toMatchObject({
+      previousStepName: OrderProgressBarStepName.EXECUTING,
+      progressBarStepName: OrderProgressBarStepName.CANCELLATION_FAILED,
+    })
+
+    unmount()
+  })
+
+  it('does not recreate pruned state after the delayed completion timer fires', () => {
+    const orderUid = '0xpruned-order'
+    const { store, TestComponent } = getWrapper()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderUid]: {
+        progressBarStepName: OrderProgressBarStepName.SOLVING,
+        previousStepName: OrderProgressBarStepName.INITIAL,
+      },
+    })
+
+    const { unmount } = render(<OrderProgressEventsUpdater />, { wrapper: TestComponent })
+
+    act(() => emitFulfilledOrder(orderUid))
+    act(() => {
+      store.set(ordersProgressBarStateAtom, {})
+    })
+
+    act(() => {
+      jest.advanceTimersByTime(EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]).toBeUndefined()
+
+    unmount()
+  })
 })
