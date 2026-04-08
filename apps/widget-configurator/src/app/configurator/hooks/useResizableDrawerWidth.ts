@@ -11,7 +11,7 @@ import {
 import { DRAWER_WIDTH_CSS_VAR } from '../styled'
 
 const DEFAULT_DRAWER_WIDTH = 320
-const MIN_DRAWER_WIDTH = 220
+const MIN_DRAWER_WIDTH = 380
 const MAX_DRAWER_WIDTH = 720
 const MIN_PREVIEW_WIDTH = 360
 
@@ -27,6 +27,7 @@ export function clampDrawerWidth(nextWidth: number, viewportWidth = getViewportW
 
 interface UseResizableDrawerWidthResult {
   drawerWidth: number
+  isResizing: boolean
   handleResizeStart: (event: ReactPointerEvent<HTMLDivElement>) => void
 }
 
@@ -36,14 +37,17 @@ function setDrawerWidthCssVar(container: HTMLElement | null, width: number): voi
   container.style.setProperty(DRAWER_WIDTH_CSS_VAR, `${width}px`)
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function useResizableDrawerWidth(containerRef: RefObject<HTMLElement | null>): UseResizableDrawerWidthResult {
   const resizeStateRef = useRef<{ startX: number; startWidth: number } | null>(null)
   const [drawerWidth, setDrawerWidth] = useState(() => clampDrawerWidth(DEFAULT_DRAWER_WIDTH))
+  const [isResizing, setIsResizing] = useState(false)
   const currentWidthRef = useRef(drawerWidth)
   const animationFrameRef = useRef<number | null>(null)
 
   const stopResizing = useCallback((): void => {
     resizeStateRef.current = null
+    setIsResizing(false)
     document.body.style.cursor = ''
     document.body.style.userSelect = ''
   }, [])
@@ -120,6 +124,7 @@ export function useResizableDrawerWidth(containerRef: RefObject<HTMLElement | nu
         startWidth: drawerWidth,
       }
 
+      setIsResizing(true)
       document.body.style.cursor = 'col-resize'
       document.body.style.userSelect = 'none'
       event.currentTarget.setPointerCapture(event.pointerId)
@@ -130,6 +135,7 @@ export function useResizableDrawerWidth(containerRef: RefObject<HTMLElement | nu
 
   return {
     drawerWidth,
+    isResizing,
     handleResizeStart,
   }
 }

@@ -56,10 +56,12 @@ import { useToastsManager } from './hooks/useToastsManager'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL, useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import {
   ContentStyled,
+  DRAWER_TRANSITION,
   DRAWER_WIDTH_CSS_VAR,
   DrawerToggleButtonStyled,
   DrawerStyled,
   ResizeHandleStyled,
+  ResizeHandleWrapperStyled,
   WalletConnectionWrapper,
   WrapperStyled,
 } from './styled'
@@ -110,7 +112,7 @@ export function Configurator({ title }: { title: string }) {
   }
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
-  const { drawerWidth, handleResizeStart } = useResizableDrawerWidth(configuratorRef)
+  const { drawerWidth, isResizing, handleResizeStart } = useResizableDrawerWidth(configuratorRef)
 
   const networkControlState = useState<NetworkOption>(NetworkOptions[0])
   const [{ chainId }, setNetworkControlState] = networkControlState
@@ -322,7 +324,7 @@ export function Configurator({ title }: { title: string }) {
   return (
     <Box
       ref={configuratorRef}
-      style={{ [DRAWER_WIDTH_CSS_VAR]: `${drawerWidth}px` } as CSSProperties}
+      style={{ [DRAWER_WIDTH_CSS_VAR]: `${isDrawerOpen ? drawerWidth : 0}px` } as CSSProperties}
       sx={WrapperStyled}
     >
       {!isDrawerOpen && (
@@ -343,7 +345,15 @@ export function Configurator({ title }: { title: string }) {
         </IconButton>
       )}
 
-      <Drawer sx={(theme) => DrawerStyled(theme)} variant="persistent" anchor="left" open={isDrawerOpen}>
+      <Drawer
+        sx={(theme) => ({
+          ...DrawerStyled(theme),
+          transition: isResizing ? 'none' : DRAWER_TRANSITION,
+        })}
+        variant="persistent"
+        anchor="left"
+        open={isDrawerOpen}
+      >
         <ConfiguratorBrandHeader title={title} themeMode={mode} />
 
         {!IS_IFRAME && (
@@ -560,9 +570,13 @@ export function Configurator({ title }: { title: string }) {
             </ListItemButton>
           ))}
         </List>
-
-        <Box aria-label="Resize sidebar" onPointerDown={handleResizeStart} role="separator" sx={ResizeHandleStyled} />
       </Drawer>
+
+      {isDrawerOpen && (
+        <Box sx={ResizeHandleWrapperStyled}>
+          <Box aria-label="Resize sidebar" onPointerDown={handleResizeStart} role="separator" sx={ResizeHandleStyled} />
+        </Box>
+      )}
 
       <Box sx={ContentStyled}>
         {params && (

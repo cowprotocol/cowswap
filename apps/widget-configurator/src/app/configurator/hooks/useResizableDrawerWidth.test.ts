@@ -2,7 +2,7 @@ import { clampDrawerWidth } from './useResizableDrawerWidth'
 
 describe('clampDrawerWidth', () => {
   it('does not allow widths below the minimum', () => {
-    expect(clampDrawerWidth(200, 1600)).toBe(220)
+    expect(clampDrawerWidth(200, 1600)).toBe(380)
   })
 
   it('does not allow widths above the configured maximum', () => {

@@ -10,7 +10,8 @@ export const WrapperStyled = {
   overflowX: 'hidden',
 }
 
-// TODO: Add proper return type annotation
+export const DRAWER_TRANSITION = 'width 225ms cubic-bezier(0, 0, 0.2, 1)'
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const DrawerStyled = (theme: Theme) => ({
   width: `var(${DRAWER_WIDTH_CSS_VAR})`,
@@ -28,8 +29,7 @@ export const DrawerStyled = (theme: Theme) => ({
     boxShadow: 'rgba(5, 43, 101, 0.06) 0 1.2rem 1.2rem',
     padding: '1.6rem',
     position: 'relative',
-    overflow: 'hidden',
-    overflowY: 'scroll',
+    overflowY: 'auto',
   },
 })
 
@@ -77,12 +77,18 @@ export const WalletConnectionWrapper = {
   width: '100%',
 }
 
+export const ResizeHandleWrapperStyled = {
+  position: 'relative',
+  width: 0,
+  height: '100%',
+  flexShrink: 0,
+}
+
 export const ResizeHandleStyled = {
   position: 'absolute',
-  top: 0,
-  right: 0,
-  bottom: 0,
+  inset: 0,
   width: '0.8rem',
+  marginLeft: '-0.4rem',
   cursor: 'col-resize',
   zIndex: 2,
 
