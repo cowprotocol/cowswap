@@ -112,6 +112,11 @@ export function Configurator({ title }: { title: string }) {
   }
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
+  const [expandedSection, setExpandedSection] = useState<string | null>('Basics')
+  const toggleSection = useCallback(
+    (title: string) => (isExpanded: boolean) => setExpandedSection(isExpanded ? title : null),
+    [],
+  )
   const { drawerWidth, isResizing, handleResizeStart } = useResizableDrawerWidth(configuratorRef)
 
   const networkControlState = useState<NetworkOption>(NetworkOptions[0])
@@ -371,12 +376,16 @@ export function Configurator({ title }: { title: string }) {
         )}
 
         <Stack spacing={0} sx={{ width: 'auto', mx: '-1.6rem' }}>
-          <AccordionSection title="Basics" defaultExpanded>
+          <AccordionSection title="Basics" expanded={expandedSection === 'Basics'} onChange={toggleSection('Basics')}>
             {!IS_IFRAME && <ModeControl value={widgetMode} onChange={selectWidgetMode} />}
             <LocaleControl state={localeState} />
           </AccordionSection>
 
-          <AccordionSection title="Trade setup">
+          <AccordionSection
+            title="Trade setup"
+            expanded={expandedSection === 'Trade setup'}
+            onChange={toggleSection('Trade setup')}
+          >
             <TradeModesControl state={tradeModesState} />
             <CurrentTradeTypeControl state={tradeTypeState} />
             {!IS_IFRAME && (
@@ -393,7 +402,7 @@ export function Configurator({ title }: { title: string }) {
             />
           </AccordionSection>
 
-          <AccordionSection title="Tokens">
+          <AccordionSection title="Tokens" expanded={expandedSection === 'Tokens'} onChange={toggleSection('Tokens')}>
             <CurrencyInputControl
               label="Sell token"
               tokenIdState={sellTokenState}
@@ -407,12 +416,16 @@ export function Configurator({ title }: { title: string }) {
             <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
           </AccordionSection>
 
-          <AccordionSection title="Theme Colors">
+          <AccordionSection
+            title="Theme Colors"
+            expanded={expandedSection === 'Theme Colors'}
+            onChange={toggleSection('Theme Colors')}
+          >
             <ThemeControl />
             <PaletteControl paletteManager={paletteManager} />
           </AccordionSection>
 
-          <AccordionSection title="Layout">
+          <AccordionSection title="Layout" expanded={expandedSection === 'Layout'} onChange={toggleSection('Layout')}>
             <AppearanceStyleControls
               iframeStyleJson={iframeStyleJson}
               onIframeStyleJson={setIframeStyleJson}
@@ -425,7 +438,11 @@ export function Configurator({ title }: { title: string }) {
             />
           </AccordionSection>
 
-          <AccordionSection title="Behavior">
+          <AccordionSection
+            title="Behavior"
+            expanded={expandedSection === 'Behavior'}
+            onChange={toggleSection('Behavior')}
+          >
             <BooleanSwitchControl
               checked={disableToastMessages}
               label="Use app toasts"
@@ -476,7 +493,11 @@ export function Configurator({ title }: { title: string }) {
             />
           </AccordionSection>
 
-          <AccordionSection title="Deadlines">
+          <AccordionSection
+            title="Deadlines"
+            expanded={expandedSection === 'Deadlines'}
+            onChange={toggleSection('Deadlines')}
+          >
             <Box>
               <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
                 Global deadline
@@ -495,16 +516,28 @@ export function Configurator({ title }: { title: string }) {
             </Box>
           </AccordionSection>
 
-          <AccordionSection title="Integrations">
+          <AccordionSection
+            title="Integrations"
+            expanded={expandedSection === 'Integrations'}
+            onChange={toggleSection('Integrations')}
+          >
             <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
           </AccordionSection>
 
-          <AccordionSection title="Customization">
+          <AccordionSection
+            title="Customization"
+            expanded={expandedSection === 'Customization'}
+            onChange={toggleSection('Customization')}
+          >
             <CustomImagesControl state={customImagesState} />
             <CustomSoundsControl state={customSoundsState} />
           </AccordionSection>
 
-          <AccordionSection title="Advanced">
+          <AccordionSection
+            title="Advanced"
+            expanded={expandedSection === 'Advanced'}
+            onChange={toggleSection('Advanced')}
+          >
             <WidgetHooksControl state={widgetHooksState} />
             <TextField
               fullWidth

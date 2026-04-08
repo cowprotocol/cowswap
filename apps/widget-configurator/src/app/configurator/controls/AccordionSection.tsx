@@ -9,15 +9,17 @@ import Typography from '@mui/material/Typography'
 
 interface AccordionSectionProps {
   title: string
-  defaultExpanded?: boolean
+  expanded: boolean
+  onChange: (expanded: boolean) => void
   children: ReactNode
 }
 
-export function AccordionSection({ title, defaultExpanded = false, children }: AccordionSectionProps): ReactNode {
+export function AccordionSection({ title, expanded, onChange, children }: AccordionSectionProps): ReactNode {
   return (
     <Accordion
       disableGutters
-      defaultExpanded={defaultExpanded}
+      expanded={expanded}
+      onChange={(_event, isExpanded) => onChange(isExpanded)}
       elevation={0}
       slotProps={{ transition: { unmountOnExit: true } }}
       sx={{
