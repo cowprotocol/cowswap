@@ -605,7 +605,7 @@ function shouldApplyStepNameNow(
   )
 }
 
-function shouldApplyStepNameImmediately(
+export function shouldApplyStepNameImmediately(
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
   timeSinceLastChange: number,
   stepName: OrderProgressBarStepName,
@@ -613,6 +613,7 @@ function shouldApplyStepNameImmediately(
   return (
     lastTimeChangedSteps === undefined ||
     timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+    stepName === OrderProgressBarStepName.SUBMISSION_FAILED ||
     stepName === OrderProgressBarStepName.FINISHED ||
     stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
     stepName === OrderProgressBarStepName.CANCELLED ||

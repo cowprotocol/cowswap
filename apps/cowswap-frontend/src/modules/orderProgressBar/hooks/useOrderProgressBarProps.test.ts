@@ -1,6 +1,10 @@
 import { SwapAndBridgeStatus } from 'modules/bridge'
 
-import { getProgressBarStepName, shouldApplyCompletionDrivenExecutingImmediately } from './useOrderProgressBarProps'
+import {
+  getProgressBarStepName,
+  shouldApplyCompletionDrivenExecutingImmediately,
+  shouldApplyStepNameImmediately,
+} from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
@@ -194,6 +198,20 @@ describe('shouldApplyCompletionDrivenExecutingImmediately', () => {
       undefined,
       false,
     )
+
+    expect(result).toBe(false)
+  })
+})
+
+describe('shouldApplyStepNameImmediately', () => {
+  it('shows the submission failed step immediately so the retry screen is not skipped', () => {
+    const result = shouldApplyStepNameImmediately(1000, 500, OrderProgressBarStepName.SUBMISSION_FAILED)
+
+    expect(result).toBe(true)
+  })
+
+  it('still delays regular transitional steps when they changed too recently', () => {
+    const result = shouldApplyStepNameImmediately(1000, 500, OrderProgressBarStepName.SOLVING)
 
     expect(result).toBe(false)
   })
