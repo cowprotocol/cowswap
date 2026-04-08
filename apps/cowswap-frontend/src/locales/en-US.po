@@ -477,6 +477,10 @@ msgstr "Refund completed!"
 msgid "When"
 msgstr "When"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}"
+msgstr "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "30 Minutes"
 msgstr "30 Minutes"
@@ -769,6 +773,10 @@ msgstr "Verify code"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Adding this app/hook grants it access to your wallet actions and trading information. Ensure you understand the implications."
 msgstr "Adding this app/hook grants it access to your wallet actions and trading information. Ensure you understand the implications."
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
+msgid "Updates every 24 hours"
+msgstr "Updates every 24 hours"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
 msgid "(View on Explorer)"
@@ -1495,6 +1503,10 @@ msgstr "Quote refresh in"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/constants.ts
 msgid "No route found for this token"
 msgstr "No route found for this token"
+
+#: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/index.tsx
+msgid "This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap."
+msgstr "This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap."
 
 #: apps/cowswap-frontend/src/modules/account/containers/OrdersPanel/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -3401,10 +3413,6 @@ msgstr "You could gain an extra <0><1/></0> compared to using a {swapOrderLink}"
 msgid "Native currency (e.g ETH)"
 msgstr "Native currency (e.g ETH)"
 
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
-msgid "<0><1/> Experimental:</0> Add DeFi interactions before and after your trade."
-msgstr "<0><1/> Experimental:</0> Add DeFi interactions before and after your trade."
-
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "This token list is not available in your region."
 msgstr "This token list is not available in your region."
@@ -4661,8 +4669,8 @@ msgid "Search network"
 msgstr "Search network"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
-msgid "Updates daily at 02:00 UTC"
-msgstr "Updates daily at 02:00 UTC"
+#~ msgid "Updates daily at 02:00 UTC"
+#~ msgstr "Updates daily at 02:00 UTC"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
@@ -5568,10 +5576,6 @@ msgstr "Favorite tokens"
 #~ msgid "Limit Orders"
 #~ msgstr "Limit Orders"
 
-#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-#~ msgid "{0} - {1}%: Recommended slippage tolerance."
-#~ msgstr "{0} - {1}%: Recommended slippage tolerance."
-
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.ts
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "{0} - {1}%: Recommended slippage tolerance."
@@ -6129,6 +6133,10 @@ msgstr "Successfully claimed"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Call any smart contract with your own parameters"
 #~ msgstr "Call any smart contract with your own parameters"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
+msgid "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD} per part"
+msgstr "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD} per part"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationSubtitle.tsx
 #~ msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn {rewardAmount} {AFFILIATE_REWARDS_CURRENCY} per ${triggerVolume} of eligible volume in {timeCapDays} days. Payouts happen on Ethereum mainnet."
