@@ -23,32 +23,16 @@ jobs:
 
         Requested reviewers:
         - @cowprotocol/frontend
-        - @cowprotocol/qa
     steps:
-      - name: Create GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+      - name: Setup release sync
+        id: setup
+        uses: ./.github/actions/setup-release-sync
         with:
           app-id: ${{ vars.COWSWAP_RELEASE_SYNC_APP_ID }}
           private-key: ${{ secrets.COWSWAP_RELEASE_SYNC_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-          repositories: ${{ github.event.repository.name }}
-          permission-contents: write
-          permission-pull-requests: write
-
-      - name: Get GitHub App user ID
-        id: app-user
-        run: echo "user-id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-          token: ${{ steps.app-token.outputs.token }}
+          repository: ${{ github.event.repository.name }}
+          pull-requests-write: 'true'
 
       - name: Prepare merge branch
         id: prepare
@@ -72,14 +56,14 @@ jobs:
 
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
         env:
-          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
-          APP_USER_ID: ${{ steps.app-user.outputs.user-id }}
+          APP_SLUG: ${{ steps.setup.outputs.app-slug }}
+          APP_USER_ID: ${{ steps.setup.outputs.app-user-id }}
 
       - name: Create or update pull request
         if: steps.prepare.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ steps.setup.outputs.token }}
           branch: ${{ env.SYNC_BRANCH }}
           base: ${{ env.TARGET_BRANCH }}
           title: ${{ env.PR_TITLE }}
@@ -99,22 +83,14 @@ jobs:
     env:
       RELEASE_TAG: ${{ github.ref_name }}
     steps:
-      - name: Create GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+      - name: Setup release sync
+        id: setup
+        uses: ./.github/actions/setup-release-sync
         with:
           app-id: ${{ vars.COWSWAP_RELEASE_SYNC_APP_ID }}
           private-key: ${{ secrets.COWSWAP_RELEASE_SYNC_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-          repositories: ${{ github.event.repository.name }}
-          permission-contents: write
-
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-          token: ${{ steps.app-token.outputs.token }}
+          repository: ${{ github.event.repository.name }}
 
       - name: Fast-forward staging
         run: |
@@ -134,30 +110,15 @@ jobs:
       TARGET_BRANCH: production
       SYNC_BRANCH: automation/sync-main-to-production
     steps:
-      - name: Create GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+      - name: Setup release sync
+        id: setup
+        uses: ./.github/actions/setup-release-sync
         with:
           app-id: ${{ vars.COWSWAP_RELEASE_SYNC_APP_ID }}
           private-key: ${{ secrets.COWSWAP_RELEASE_SYNC_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-          repositories: ${{ github.event.repository.name }}
-          permission-contents: write
-          permission-pull-requests: write
-
-      - name: Get GitHub App user ID
-        id: app-user
-        run: echo "user-id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-          token: ${{ steps.app-token.outputs.token }}
+          repository: ${{ github.event.repository.name }}
+          pull-requests-write: 'true'
 
       - name: Prepare merge branch
         id: prepare
@@ -185,14 +146,14 @@ jobs:
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
           echo "pr_title=${pr_title}" >> "$GITHUB_OUTPUT"
         env:
-          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
-          APP_USER_ID: ${{ steps.app-user.outputs.user-id }}
+          APP_SLUG: ${{ steps.setup.outputs.app-slug }}
+          APP_USER_ID: ${{ steps.setup.outputs.app-user-id }}
 
       - name: Create or update pull request
         if: steps.prepare.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ steps.setup.outputs.token }}
           branch: ${{ env.SYNC_BRANCH }}
           base: ${{ env.TARGET_BRANCH }}
           title: ${{ env.PR_TITLE }}

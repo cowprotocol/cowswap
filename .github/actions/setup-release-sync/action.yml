@@ -1,0 +1,65 @@
+name: Setup Release Sync
+description: Create a GitHub App token, resolve the app bot identity, and checkout the repository
+
+inputs:
+  app-id:
+    description: GitHub App ID
+    required: true
+  private-key:
+    description: GitHub App private key
+    required: true
+  owner:
+    description: Repository owner
+    required: true
+  repository:
+    description: Repository name
+    required: true
+  checkout-ref:
+    description: Optional git ref to checkout
+    required: false
+    default: ''
+  pull-requests-write:
+    description: Whether the app token should include pull request write permission
+    required: false
+    default: 'false'
+
+outputs:
+  token:
+    description: GitHub App installation token
+    value: ${{ steps.app-token.outputs.token }}
+  app-slug:
+    description: GitHub App slug
+    value: ${{ steps.app-token.outputs.app-slug }}
+  app-user-id:
+    description: Numeric GitHub App bot user id
+    value: ${{ steps.app-user.outputs.user-id }}
+
+runs:
+  using: composite
+  steps:
+    - name: Create GitHub App token
+      id: app-token
+      uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+      with:
+        app-id: ${{ inputs.app-id }}
+        private-key: ${{ inputs.private-key }}
+        owner: ${{ inputs.owner }}
+        repositories: ${{ inputs.repository }}
+        permission-contents: write
+        permission-pull-requests: ${{ inputs.pull-requests-write == 'true' && 'write' || '' }}
+
+    - name: Get GitHub App user ID
+      id: app-user
+      shell: bash
+      run: echo "user-id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+      env:
+        APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+    - name: Checkout code
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        fetch-depth: 0
+        persist-credentials: true
+        token: ${{ steps.app-token.outputs.token }}
+        ref: ${{ inputs.checkout-ref != '' && inputs.checkout-ref || github.ref }}
