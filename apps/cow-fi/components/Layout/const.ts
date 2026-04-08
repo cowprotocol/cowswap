@@ -86,7 +86,7 @@ function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
     children: [
       {
         label: 'Stats',
-        href: 'https://dune.com/cowprotocol/cowswap',
+        href: 'https://dune.com/cowprotocol/cow-swap-home',
         external: true,
       },
       {
