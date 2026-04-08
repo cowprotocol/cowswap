@@ -3,8 +3,9 @@ import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowp
 import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
+import { getIsXstockTradeBelowLimit } from './getIsXstockTradeBelowLimit'
+
 import { ApproveRequiredReason } from '../../erc20Approve'
-import { XSTOCK_MIN_TRADE_SIZE_USD } from '../consts'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
 // eslint-disable-next-line max-lines-per-function, complexity
@@ -32,8 +33,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isBundlingSupported,
     injectedWidgetParams,
     tradePriceImpact,
-    isInputCurrencyXstock,
-    isOutputCurrencyXstock,
   } = context
 
   const {
@@ -42,8 +41,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     inputCurrencyAmount,
     outputCurrencyAmount,
     inputCurrencyBalance,
-    inputCurrencyFiatAmount,
-    outputCurrencyFiatAmount,
     recipient,
     orderKind,
   } = derivedTradeState
@@ -61,12 +58,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
-  const inputAmountUsd = inputCurrencyFiatAmount ? Number(inputCurrencyFiatAmount.toExact()) : null
-  const outputAmountUsd = outputCurrencyFiatAmount ? Number(outputCurrencyFiatAmount.toExact()) : null
-  const hasXstockToken = isInputCurrencyXstock || isOutputCurrencyXstock
-  const xstockTradeUsdAmount = isSellOrder(orderKind) ? inputAmountUsd : outputAmountUsd
-  const isXstockTradeBelowLimit =
-    hasXstockToken && xstockTradeUsdAmount !== null && xstockTradeUsdAmount < XSTOCK_MIN_TRADE_SIZE_USD
+
+  const isXstockTradeBelowLimit = getIsXstockTradeBelowLimit(context)
 
   const validations: TradeFormValidation[] = []
 
