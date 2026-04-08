@@ -7,8 +7,6 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import { renderHook, waitFor } from '@testing-library/react'
 
-import { callWidgetHook } from 'modules/injectedWidget'
-
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
@@ -27,10 +25,6 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
 }))
 
-jest.mock('modules/injectedWidget', () => ({
-  callWidgetHook: jest.fn(),
-}))
-
 jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
 jest.mock('../../permit')
@@ -38,7 +32,6 @@ jest.mock('../state')
 
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockCallWidgetHook = callWidgetHook as jest.MockedFunction<typeof callWidgetHook>
 const mockUseApproveCurrency = useApproveCurrency as jest.MockedFunction<typeof useApproveCurrency>
 const mockUseGeneratePermitInAdvanceToTrade = useGeneratePermitInAdvanceToTrade as jest.MockedFunction<
   typeof useGeneratePermitInAdvanceToTrade
@@ -94,7 +87,6 @@ describe('useApproveAndSwap', () => {
 
     mockUseTradeSpenderAddress.mockReturnValue(mockSpenderAddress)
     mockUseWalletInfo.mockReturnValue({ account: mockAccount } as WalletInfo)
-    mockCallWidgetHook.mockResolvedValue(true)
     mockUseApproveCurrency.mockReturnValue(mockHandleApprove)
     mockUseGeneratePermitInAdvanceToTrade.mockReturnValue(mockGeneratePermitToTrade)
     mockUseTokenSupportsPermit.mockReturnValue(false)
@@ -200,31 +192,6 @@ describe('useApproveAndSwap', () => {
         expect(mockGeneratePermitToTrade).not.toHaveBeenCalled()
         expect(mockHandleApprove).toHaveBeenCalled()
         expect(mockOnApproveConfirm).toHaveBeenCalled()
-      })
-    })
-
-    it('should skip approval flow when widget hook blocks it', async () => {
-      mockCallWidgetHook.mockResolvedValue(false)
-
-      const { result } = renderHook(
-        () =>
-          useApproveAndSwap({
-            amountToApprove: mockAmountToApprove,
-            onApproveConfirm: mockOnApproveConfirm,
-            ignorePermit: false,
-            useModals: true,
-          }),
-        { wrapper: LinguiWrapper },
-      )
-
-      await result.current()
-
-      await waitFor(() => {
-        expect(mockCallWidgetHook).toHaveBeenCalled()
-        expect(mockGeneratePermitToTrade).not.toHaveBeenCalled()
-        expect(mockHandleApprove).not.toHaveBeenCalled()
-        expect(mockUpdateTradeApproveState).not.toHaveBeenCalled()
-        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
   })
