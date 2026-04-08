@@ -18,10 +18,71 @@ import { useTradeFlowType } from './useTradeFlowType'
 
 import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundleFlow'
 import { swapFlow } from '../services/swapFlow'
-import { acquireSwapFlowLock, releaseSwapFlowLock } from '../state/swapFlowLock'
 import { FlowType, SafeBundleFlowContext, TradeFlowContext } from '../types/TradeFlowContext'
 
 type ConfirmPriceImpactFn = (priceImpact: Percent | undefined) => Promise<boolean>
+
+export function useHandleSwap(
+  params: TradeFlowParams,
+  { onUserInput, onChangeRecipient }: TradeWidgetActions,
+): { callback(): Promise<false | void>; contextIsReady: boolean } {
+  const config = useConfig()
+  const { tradeFlowType, tradeFlowContext, safeBundleFlowContext } = useTradeFlow(params)
+  const isBridge = getAreBridgeCurrencies(
+    tradeFlowContext?.context.inputAmount.currency,
+    tradeFlowContext?.context.outputAmount.currency,
+  )
+  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee(isBridge)
+  const priceImpactParams = useTradePriceImpact()
+  const ethFlowContext = useEthFlowContext()
+  const analytics = useTradeFlowAnalytics()
+
+  const contextIsReady =
+    Boolean(
+      [FlowType.SAFE_BUNDLE_ETH, FlowType.SAFE_BUNDLE_APPROVAL].includes(tradeFlowType)
+        ? safeBundleFlowContext
+        : tradeFlowContext,
+    ) && !!tradeFlowContext
+
+  const flowInProgressRef = useRef(false)
+
+  const callback = useCallback(async () => {
+    if (!tradeFlowContext) return
+    if (flowInProgressRef.current) return
+    flowInProgressRef.current = true
+
+    try {
+      const result = await runFlowByType(tradeFlowType, tradeFlowContext, {
+        ethFlowContext,
+        safeBundleFlowContext,
+        priceImpactParams,
+        confirmPriceImpactWithoutFee,
+        analytics,
+        config,
+      })
+
+      if (result === true) {
+        onChangeRecipient(null)
+        onUserInput(Field.INPUT, '')
+      }
+    } finally {
+      flowInProgressRef.current = false
+    }
+  }, [
+    config,
+    tradeFlowContext,
+    tradeFlowType,
+    priceImpactParams,
+    confirmPriceImpactWithoutFee,
+    analytics,
+    ethFlowContext,
+    safeBundleFlowContext,
+    onChangeRecipient,
+    onUserInput,
+  ])
+
+  return { callback, contextIsReady }
+}
 
 async function runFlowByType(
   tradeFlowType: FlowType,
@@ -92,68 +153,4 @@ function useTradeFlow(params: TradeFlowParams): {
   const safeBundleFlowContext = useSafeBundleFlowContext()
 
   return { tradeFlowType, tradeFlowContext, safeBundleFlowContext }
-}
-
-export function useHandleSwap(
-  params: TradeFlowParams,
-  { onUserInput, onChangeRecipient }: TradeWidgetActions,
-): { callback(): Promise<false | void>; contextIsReady: boolean } {
-  const config = useConfig()
-  const { tradeFlowType, tradeFlowContext, safeBundleFlowContext } = useTradeFlow(params)
-  const isBridge = getAreBridgeCurrencies(
-    tradeFlowContext?.context.inputAmount.currency,
-    tradeFlowContext?.context.outputAmount.currency,
-  )
-  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee(isBridge)
-  const priceImpactParams = useTradePriceImpact()
-  const ethFlowContext = useEthFlowContext()
-  const analytics = useTradeFlowAnalytics()
-
-  const contextIsReady =
-    Boolean(
-      [FlowType.SAFE_BUNDLE_ETH, FlowType.SAFE_BUNDLE_APPROVAL].includes(tradeFlowType)
-        ? safeBundleFlowContext
-        : tradeFlowContext,
-    ) && !!tradeFlowContext
-
-  const flowInProgressRef = useRef(false)
-
-  const callback = useCallback(async () => {
-    if (!tradeFlowContext) return
-    if (flowInProgressRef.current) return
-    if (!acquireSwapFlowLock()) return
-    flowInProgressRef.current = true
-
-    try {
-      const result = await runFlowByType(tradeFlowType, tradeFlowContext, {
-        ethFlowContext,
-        safeBundleFlowContext,
-        priceImpactParams,
-        confirmPriceImpactWithoutFee,
-        analytics,
-        config,
-      })
-
-      if (result === true) {
-        onChangeRecipient(null)
-        onUserInput(Field.INPUT, '')
-      }
-    } finally {
-      flowInProgressRef.current = false
-      releaseSwapFlowLock()
-    }
-  }, [
-    config,
-    tradeFlowContext,
-    tradeFlowType,
-    priceImpactParams,
-    confirmPriceImpactWithoutFee,
-    analytics,
-    ethFlowContext,
-    safeBundleFlowContext,
-    onChangeRecipient,
-    onUserInput,
-  ])
-
-  return { callback, contextIsReady }
 }
