@@ -246,13 +246,13 @@ describe('OrderProgressEventsUpdater', () => {
     unmount()
   })
 
-  it('restages executing before finishing after a submission retry path', () => {
+  it('replays executing before finishing after a submission retry path', () => {
     const orderUid = '0xretry-order'
     const { store, TestComponent } = getWrapper()
 
     store.set(ordersProgressBarStateAtom, {
       [orderUid]: {
-        progressBarStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
+        progressBarStepName: OrderProgressBarStepName.SOLVING,
         previousStepName: OrderProgressBarStepName.EXECUTING,
       },
     })
@@ -262,8 +262,9 @@ describe('OrderProgressEventsUpdater', () => {
     act(() => emitFulfilledOrder(orderUid))
 
     expect(store.get(ordersProgressBarStateAtom)[orderUid]).toMatchObject({
-      previousStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
+      previousStepName: OrderProgressBarStepName.SOLVING,
       progressBarStepName: OrderProgressBarStepName.EXECUTING,
+      hasShownExecutingInCurrentAttempt: true,
     })
 
     act(() => {

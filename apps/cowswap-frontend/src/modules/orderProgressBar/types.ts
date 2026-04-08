@@ -21,6 +21,7 @@ export type OrderProgressBarState = {
   previousStepName?: OrderProgressBarStepName
   lastTimeChangedSteps?: number
   cancellationTriggered?: true
+  hasShownExecutingInCurrentAttempt?: true
 }
 
 export type OrdersProgressBarState = Record<string, OrderProgressBarState>

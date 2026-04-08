@@ -3,7 +3,7 @@ import type { PrimitiveAtom } from 'jotai'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
 import { useSurplusQueueOrderIds } from 'entities/surplusModal'
 
 import type { Order } from 'legacy/state/orders/actions'
@@ -14,6 +14,7 @@ import { useTradeConfirmState } from 'modules/trade'
 import { OrderProgressStateUpdater } from './OrderProgressStateUpdater'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
+import { OrderProgressBarStepName } from '../types'
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
@@ -37,28 +38,57 @@ jest.mock('modules/trade', () => ({
 
 const mockPruneOrders = jest.fn()
 const mockCancellationIds = jest.fn()
+const progressStateSubscribers = new Set<() => void>()
+let currentOrdersProgressState: Record<string, unknown> = {}
+
+function setOrdersProgressState(nextState: Record<string, unknown>, notify = true): void {
+  currentOrdersProgressState = nextState
+  if (!notify) {
+    return
+  }
+  progressStateSubscribers.forEach((listener) => listener())
+}
+
+const mockStore = {
+  get: jest.fn((atom: PrimitiveAtom<unknown>) => {
+    const { ordersProgressBarStateAtom } = jest.requireActual('../state/atoms')
+    if (atom === ordersProgressBarStateAtom) {
+      return currentOrdersProgressState
+    }
+    return undefined
+  }),
+  set: jest.fn((atom: PrimitiveAtom<unknown>, trackedOrderIds: string[]) => {
+    const { pruneOrdersProgressBarState } = jest.requireActual('../state/atoms')
+    if (atom === pruneOrdersProgressBarState) {
+      mockPruneOrders(trackedOrderIds)
+      setOrdersProgressState(
+        Object.fromEntries(
+          Object.entries(currentOrdersProgressState).filter(([orderId]) => trackedOrderIds.includes(orderId)),
+        ),
+        false,
+      )
+    }
+  }),
+  sub: jest.fn((atom: PrimitiveAtom<unknown>, listener: () => void) => {
+    const { ordersProgressBarStateAtom } = jest.requireActual('../state/atoms')
+    if (atom === ordersProgressBarStateAtom) {
+      progressStateSubscribers.add(listener)
+      return () => progressStateSubscribers.delete(listener)
+    }
+    return () => undefined
+  }),
+}
 
 jest.mock('jotai', () => {
   const actual = jest.requireActual('jotai')
-
   return {
     ...actual,
-    useSetAtom: jest.fn((atom: PrimitiveAtom<unknown>) => {
-      const { pruneOrdersProgressBarState } = jest.requireActual('../state/atoms')
-
-      if (atom === pruneOrdersProgressBarState) {
-        return mockPruneOrders
-      }
-
-      return actual.useSetAtom(atom)
-    }),
+    useStore: jest.fn(() => mockStore),
     useAtomValue: jest.fn((atom: PrimitiveAtom<unknown>) => {
       const { cancellationTrackedOrderIdsAtom } = jest.requireActual('../state/atoms')
-
       if (atom === cancellationTrackedOrderIdsAtom) {
         return mockCancellationIds()
       }
-
       return actual.useAtomValue(atom)
     }),
   }
@@ -83,11 +113,14 @@ describe('OrderProgressStateUpdater', () => {
     useSurplusQueueOrderIdsMock.mockReturnValue([])
     useTradeConfirmStateMock.mockReturnValue({ transactionHash: null } as never)
     mockCancellationIds.mockReturnValue([])
+    setOrdersProgressState({}, false)
   })
 
   afterEach(() => {
     jest.clearAllMocks()
     mockPruneOrders.mockReset()
+    progressStateSubscribers.clear()
+    jest.useRealTimers()
   })
 
   it('subscribes to pending market orders even when the progress bar UI is not mounted', () => {
@@ -95,15 +128,12 @@ describe('OrderProgressStateUpdater', () => {
       chainId: 1,
       account: '0xabc',
     } as unknown as WalletInfo)
-
     useOnlyPendingOrdersMock.mockReturnValue([
       stubOrder({ id: '1', class: OrderClass.MARKET }),
       stubOrder({ id: '2', class: OrderClass.LIMIT }),
       stubOrder({ id: '3', class: OrderClass.MARKET }),
     ])
-
     render(<OrderProgressStateUpdater />)
-
     expect(useOrderProgressBarPropsMock).toHaveBeenCalledTimes(2)
     expect(useOrderProgressBarPropsMock).toHaveBeenNthCalledWith(1, 1, expect.objectContaining({ id: '1' }))
     expect(useOrderProgressBarPropsMock).toHaveBeenNthCalledWith(2, 1, expect.objectContaining({ id: '3' }))
@@ -116,9 +146,7 @@ describe('OrderProgressStateUpdater', () => {
       account: undefined,
     } as unknown as WalletInfo)
     useOnlyPendingOrdersMock.mockReturnValue([])
-
     render(<OrderProgressStateUpdater />)
-
     expect(useOrderProgressBarPropsMock).not.toHaveBeenCalled()
     expect(mockPruneOrders).toHaveBeenLastCalledWith([])
   })
@@ -130,9 +158,7 @@ describe('OrderProgressStateUpdater', () => {
     } as unknown as WalletInfo)
     useOnlyPendingOrdersMock.mockReturnValue([])
     useSurplusQueueOrderIdsMock.mockReturnValue(['queued-order', 'next-order'])
-
     render(<OrderProgressStateUpdater />)
-
     expect(mockPruneOrders).toHaveBeenLastCalledWith(['queued-order', 'next-order'])
   })
 
@@ -143,9 +169,7 @@ describe('OrderProgressStateUpdater', () => {
     } as unknown as WalletInfo)
     useOnlyPendingOrdersMock.mockReturnValue([])
     useTradeConfirmStateMock.mockReturnValue({ transactionHash: '0xorder' } as never)
-
     render(<OrderProgressStateUpdater />)
-
     expect(mockPruneOrders).toHaveBeenLastCalledWith(['0xorder'])
   })
 
@@ -160,9 +184,7 @@ describe('OrderProgressStateUpdater', () => {
     ])
     useSurplusQueueOrderIdsMock.mockReturnValue(['2', '3'])
     useTradeConfirmStateMock.mockReturnValue({ transactionHash: '2' } as never)
-
     render(<OrderProgressStateUpdater />)
-
     expect(mockPruneOrders).toHaveBeenLastCalledWith(['1', '2', '3'])
   })
 
@@ -173,9 +195,47 @@ describe('OrderProgressStateUpdater', () => {
     } as unknown as WalletInfo)
     useOnlyPendingOrdersMock.mockReturnValue([])
     mockCancellationIds.mockReturnValue(['abc'])
-
     render(<OrderProgressStateUpdater />)
-
     expect(mockPruneOrders).toHaveBeenLastCalledWith(['abc'])
+  })
+
+  it('keeps recently untracked order state long enough for the completion sequence to finish', () => {
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date('2026-04-08T12:00:00Z'))
+
+    useWalletInfoMock.mockReturnValue({
+      chainId: 1,
+      account: '0xabc',
+    } as unknown as WalletInfo)
+    useOnlyPendingOrdersMock.mockReturnValue([stubOrder({ id: '1', class: OrderClass.MARKET })])
+    setOrdersProgressState({ '1': { progressBarStepName: OrderProgressBarStepName.DELAYED } }, false)
+    const { rerender } = render(<OrderProgressStateUpdater />)
+    expect(mockPruneOrders).toHaveBeenLastCalledWith(['1'])
+    useOnlyPendingOrdersMock.mockReturnValue([])
+    rerender(<OrderProgressStateUpdater />)
+    expect(mockPruneOrders).toHaveBeenLastCalledWith(['1'])
+    act(() => {
+      jest.advanceTimersByTime(10_000)
+    })
+    expect(mockPruneOrders).toHaveBeenLastCalledWith([])
+  })
+
+  it('does not rerender market order observers when pruning reacts to progress-state updates', () => {
+    useWalletInfoMock.mockReturnValue({
+      chainId: 1,
+      account: '0xabc',
+    } as unknown as WalletInfo)
+    useOnlyPendingOrdersMock.mockReturnValue([stubOrder({ id: '1', class: OrderClass.MARKET })])
+    setOrdersProgressState({ '1': { progressBarStepName: OrderProgressBarStepName.DELAYED } }, false)
+    render(<OrderProgressStateUpdater />)
+    expect(useOrderProgressBarPropsMock).toHaveBeenCalledTimes(1)
+    useOrderProgressBarPropsMock.mockClear()
+    act(() => {
+      setOrdersProgressState({
+        '1': { progressBarStepName: OrderProgressBarStepName.EXECUTING },
+      })
+    })
+    expect(mockPruneOrders).toHaveBeenLastCalledWith(['1'])
+    expect(useOrderProgressBarPropsMock).not.toHaveBeenCalled()
   })
 })

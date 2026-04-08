@@ -65,23 +65,23 @@ export function isCompletionStep(step: OrderProgressBarStepName | undefined): st
 
 export function shouldStageExecutingStep(
   currentStep: OrderProgressBarStepName | undefined,
-  previousStep: OrderProgressBarStepName | undefined,
   nextStep: OrderProgressBarStepName | undefined,
+  hasShownExecutingInCurrentAttempt?: boolean,
 ): boolean {
+  // Never synthesize `INITIAL -> EXECUTING`; fast fills should still pass through the
+  // competition/searching step. We only replay executing when the bar has already advanced
+  // within the current backend attempt and step 3 has not yet been shown for that attempt.
   if (
     !currentStep ||
     currentStep === OrderProgressBarStepName.INITIAL ||
+    currentStep === OrderProgressBarStepName.EXECUTING ||
     !isCompletionStep(nextStep) ||
     isCompletionStep(currentStep)
   ) {
     return false
   }
 
-  if (currentStep === OrderProgressBarStepName.SUBMISSION_FAILED) {
-    return true
-  }
-
-  return currentStep !== OrderProgressBarStepName.EXECUTING && previousStep !== OrderProgressBarStepName.EXECUTING
+  return !hasShownExecutingInCurrentAttempt
 }
 
 export function getCompletionDelayMs(

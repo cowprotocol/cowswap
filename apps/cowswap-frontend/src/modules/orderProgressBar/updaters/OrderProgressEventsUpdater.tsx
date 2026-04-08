@@ -172,7 +172,7 @@ export function OrderProgressEventsUpdater(): null {
         delete completionTimersRef.current[orderUid]
       }
 
-      if (shouldStageExecutingStep(currentStep, currentState?.previousStepName, step)) {
+      if (shouldStageExecutingStep(currentStep, step, currentState?.hasShownExecutingInCurrentAttempt)) {
         setStepName({ orderId: orderUid, value: OrderProgressBarStepName.EXECUTING })
         scheduleCompletionStep(orderUid, step, EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
 

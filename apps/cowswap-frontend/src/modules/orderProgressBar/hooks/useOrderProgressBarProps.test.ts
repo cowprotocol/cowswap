@@ -22,6 +22,7 @@ describe('getProgressBarStepName', () => {
     backendApiStatus,
     previousStepName = OrderProgressBarStepName.SOLVING,
     previousBackendApiStatus,
+    hasShownExecutingInCurrentAttempt,
     bridgingStatus,
     isBridgingTrade = false,
   }: {
@@ -32,6 +33,7 @@ describe('getProgressBarStepName', () => {
     backendApiStatus?: OrderProgressBarState['backendApiStatus']
     previousStepName?: OrderProgressBarStepName | undefined
     previousBackendApiStatus?: OrderProgressBarState['previousBackendApiStatus']
+    hasShownExecutingInCurrentAttempt?: true
     bridgingStatus?: SwapAndBridgeStatus | undefined
     isBridgingTrade?: boolean
   }): OrderProgressBarStepName {
@@ -47,6 +49,7 @@ describe('getProgressBarStepName', () => {
       backendApiStatus,
       previousBackendApiStatus,
       previousStepName,
+      hasShownExecutingInCurrentAttempt,
       bridgingStatus,
       isBridgingTrade,
     )
@@ -129,6 +132,16 @@ describe('getProgressBarStepName', () => {
     expect(result).toBe(OrderProgressBarStepName.EXECUTING)
   })
 
+  it('replays executing after a retry even when the bar already returned to solving', () => {
+    const result = callGetProgressBarStepName({
+      currentStepName: OrderProgressBarStepName.SOLVING,
+      previousStepName: OrderProgressBarStepName.EXECUTING,
+      backendApiStatus: TRADED_STATUS,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.EXECUTING)
+  })
+
   it('finishes after restaging executing for a submission retry path', () => {
     const result = callGetProgressBarStepName({
       currentStepName: OrderProgressBarStepName.EXECUTING,
@@ -178,7 +191,7 @@ describe('shouldApplyCompletionDrivenExecutingImmediately', () => {
     const result = shouldApplyCompletionDrivenExecutingImmediately(
       OrderProgressBarStepName.EXECUTING,
       OrderProgressBarStepName.SOLVING,
-      OrderProgressBarStepName.INITIAL,
+      undefined,
       true,
       undefined,
       undefined,
@@ -192,7 +205,7 @@ describe('shouldApplyCompletionDrivenExecutingImmediately', () => {
     const result = shouldApplyCompletionDrivenExecutingImmediately(
       OrderProgressBarStepName.EXECUTING,
       OrderProgressBarStepName.SOLVING,
-      OrderProgressBarStepName.INITIAL,
+      undefined,
       false,
       EXECUTING_STATUS,
       undefined,
@@ -200,6 +213,20 @@ describe('shouldApplyCompletionDrivenExecutingImmediately', () => {
     )
 
     expect(result).toBe(false)
+  })
+
+  it('applies the replayed executing step immediately after a submission retry', () => {
+    const result = shouldApplyCompletionDrivenExecutingImmediately(
+      OrderProgressBarStepName.EXECUTING,
+      OrderProgressBarStepName.SOLVING,
+      undefined,
+      false,
+      TRADED_STATUS,
+      undefined,
+      false,
+    )
+
+    expect(result).toBe(true)
   })
 })
 

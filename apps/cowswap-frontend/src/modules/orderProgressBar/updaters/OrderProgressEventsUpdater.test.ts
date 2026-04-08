@@ -103,11 +103,7 @@ describe('getNewlyFillableOrderIds', () => {
 
 describe('shouldStageExecutingStep', () => {
   it('requires executing before the final step when the order finishes from step 2', () => {
-    const result = shouldStageExecutingStep(
-      OrderProgressBarStepName.SOLVING,
-      OrderProgressBarStepName.INITIAL,
-      OrderProgressBarStepName.FINISHED,
-    )
+    const result = shouldStageExecutingStep(OrderProgressBarStepName.SOLVING, OrderProgressBarStepName.FINISHED)
 
     expect(result).toBe(true)
   })
@@ -115,29 +111,36 @@ describe('shouldStageExecutingStep', () => {
   it('restages executing after a submission retry path before finishing', () => {
     const result = shouldStageExecutingStep(
       OrderProgressBarStepName.SUBMISSION_FAILED,
-      OrderProgressBarStepName.EXECUTING,
       OrderProgressBarStepName.FINISHED,
     )
 
     expect(result).toBe(true)
   })
 
-  it('does not stage executing while the progress bar is still on the initial step', () => {
+  it('replays executing after a retry even if the UI already moved back to solving', () => {
     const result = shouldStageExecutingStep(
-      OrderProgressBarStepName.INITIAL,
-      undefined,
+      OrderProgressBarStepName.SOLVING,
       OrderProgressBarStepName.FINISHED,
+      undefined,
     )
+
+    expect(result).toBe(true)
+  })
+
+  it('does not replay executing after the current attempt already showed it', () => {
+    const result = shouldStageExecutingStep(OrderProgressBarStepName.SOLVING, OrderProgressBarStepName.FINISHED, true)
+
+    expect(result).toBe(false)
+  })
+
+  it('does not stage executing while the progress bar is still on the initial step', () => {
+    const result = shouldStageExecutingStep(OrderProgressBarStepName.INITIAL, OrderProgressBarStepName.FINISHED)
 
     expect(result).toBe(false)
   })
 
   it('does not move backwards from a completion step', () => {
-    const result = shouldStageExecutingStep(
-      OrderProgressBarStepName.FINISHED,
-      OrderProgressBarStepName.SOLVING,
-      OrderProgressBarStepName.FINISHED,
-    )
+    const result = shouldStageExecutingStep(OrderProgressBarStepName.FINISHED, OrderProgressBarStepName.FINISHED)
 
     expect(result).toBe(false)
   })

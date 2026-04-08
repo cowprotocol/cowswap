@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { deepEqual } from '@cowprotocol/common-utils'
+import { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 
 import {
   OrderProgressBarState,
@@ -8,6 +9,12 @@ import {
   OrdersProgressBarCountdown,
   OrdersProgressBarState,
 } from '../types'
+
+const EXECUTION_ATTEMPT_RESET_BACKEND_STATUSES = new Set<CompetitionOrderStatus.type>([
+  CompetitionOrderStatus.type.ACTIVE,
+  CompetitionOrderStatus.type.OPEN,
+  CompetitionOrderStatus.type.SCHEDULED,
+])
 
 /**
  * Base Atom for orders progress bar state
@@ -145,6 +152,12 @@ export const updateOrderProgressBarStepName = atom(
     // Keep track when state was changed
     singleOrderState.lastTimeChangedSteps = Date.now()
 
+    if (value === OrderProgressBarStepName.EXECUTING) {
+      // Track the UI step, not just the backend status. This lets completion paths replay
+      // `Executing` after a submission retry only when step 3 has actually been shown.
+      singleOrderState.hasShownExecutingInCurrentAttempt = true
+    }
+
     set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleOrderState })
   },
 )
@@ -181,6 +194,16 @@ export const updateOrderProgressBarBackendInfo = atom(
 
     singleOrderState.previousBackendApiStatus = currentBackendApiStatus
     singleOrderState.backendApiStatus = backendApiStatus
+
+    if (
+      currentBackendApiStatus === CompetitionOrderStatus.type.EXECUTING &&
+      backendApiStatus &&
+      EXECUTION_ATTEMPT_RESET_BACKEND_STATUSES.has(backendApiStatus)
+    ) {
+      // Backend fell back to a searching state, so the next successful completion belongs to
+      // a new attempt and should be allowed to show `Executing` again before finishing.
+      delete singleOrderState.hasShownExecutingInCurrentAttempt
+    }
 
     // Only update solver competition if changed and not falsy
     if (solverCompetitionChanged && solverCompetition) {
