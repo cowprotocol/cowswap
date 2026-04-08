@@ -4,11 +4,20 @@ import { CowSwapWidgetPaletteParams, TokenInfo, TradeType, WidgetHookEvents } fr
 
 import { TokenListItem } from './types'
 
+export const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi' as const
+
 // CoW DAO addresses
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
 
 export const WIDGET_HOOKS = Object.values(WidgetHookEvents)
+
+export const DEFAULT_STATE = {
+  sellToken: 'USDC',
+  buyToken: 'COW',
+  sellAmount: 100000,
+  buyAmount: 0,
+} as const /* satisfies Partial<ConfiguratorState> */
 
 // Sourced from https://tokenlists.org/
 export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [

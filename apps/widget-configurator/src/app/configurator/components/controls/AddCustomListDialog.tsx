@@ -15,9 +15,9 @@ import {
 } from '@mui/material'
 import Tabs from '@mui/material/Tabs'
 
-import { DEFAULT_CUSTOM_TOKENS } from '../consts'
-import { parseCustomTokensInput } from '../utils/parseCustomTokensInput'
-import { validateURL } from '../utils/validateURL'
+import { DEFAULT_CUSTOM_TOKENS } from '../../consts'
+import { parseCustomTokensInput } from '../../utils/parseCustomTokensInput'
+import { validateURL } from '../../utils/validateURL'
 
 const jsonTextAreaStyles = {
   fontFamily: 'monospace',

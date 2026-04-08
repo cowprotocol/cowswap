@@ -149,7 +149,10 @@ function getPartnerFeeParam(
   }
 }
 
-function buildWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
+// eslint-disable-next-line max-lines-per-function
+function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwapWidgetParams | null {
+  if (!configuratorState) return null
+
   const {
     chainId,
     locale,
@@ -186,7 +189,14 @@ function buildWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetP
     disableTradeWhenPriceImpactIsHigherThan,
     slippage,
     enabledWidgetHooks,
+    customImages,
+    customSounds,
+    customTokens,
+    rawParams,
   } = configuratorState
+
+  // TODO: Can we automatically trim all values and avoid adding those that are not needed? Would that be better or worse (as then those props that are not provided)
+  // rely on the widget app logic to use the default values, which potentially means more bugs / breaking changes?
 
   return {
     appCode: 'CoW Widget: Configurator',
@@ -222,9 +232,14 @@ function buildWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetP
       whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,
     },
     hooks: getWidgetHooks(enabledWidgetHooks),
+    images: customImages,
+    sounds: customSounds,
+    customTokens,
+    ...rawParams,
+    ...window.cowSwapWidgetParams,
   }
 }
 
-export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
+export function useWidgetParams(configuratorState: ConfiguratorState | null): CowSwapWidgetParams | null {
   return useMemo(() => buildWidgetParams(configuratorState), [configuratorState])
 }

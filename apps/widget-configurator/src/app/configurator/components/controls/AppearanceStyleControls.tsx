@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
-import type { JsonState, OnJsonStateChange } from '../hooks/useJsonState'
+import type { JsonState, OnJsonStateChange } from '../../hooks/useJsonState'
 import type * as CSS from 'csstype'
 
 export interface AppearanceStyleControlsProps {

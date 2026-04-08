@@ -9,10 +9,15 @@ import {
 
 import { COW_LISTENERS } from '../consts'
 
+export interface UseToastsManagerReturn {
+  disableToastMessages: boolean
+  setToastMessagesInDappMode: (enabled: boolean) => void
+  toasts: (ReactElement | string)[]
+  closeToast: () => void
+}
+
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useToastsManager(setListeners: (listeners: CowWidgetEventListeners) => void) {
+export function useToastsManager(setListeners: (listeners: CowWidgetEventListeners) => void): UseToastsManagerReturn {
   const isInitRef = useRef(false)
   const [disableToastMessages, setDisableToastMessages] = useState<boolean>(false)
   const [toasts, setToasts] = useState<(ReactElement | string)[]>([])
@@ -23,17 +28,13 @@ export function useToastsManager(setListeners: (listeners: CowWidgetEventListene
     setToasts((t) => [...t, message])
   }
 
-  const closeToast = useCallback((_: unknown, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
+  const closeToast = useCallback(() => {
     setToasts((t) => t.slice(1))
   }, [])
 
   const setToastMessagesInDappMode = useCallback(
     (enabled: boolean) => {
-      closeToast(undefined)
+      closeToast()
       setDisableToastMessages(enabled)
     },
     [closeToast],

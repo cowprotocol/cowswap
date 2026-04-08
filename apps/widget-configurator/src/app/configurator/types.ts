@@ -1,6 +1,7 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   CowSwapWidgetPaletteColors,
+  CowSwapWidgetParams,
   PartnerFee,
   SlippageConfig,
   TradeType,
@@ -21,6 +22,8 @@ export interface TokenListItem {
   enabledForSell: boolean
   enabledForBuy: boolean
 }
+
+export type WidgetMode = 'dapp' | 'standalone'
 
 export interface ConfiguratorState {
   chainId?: SupportedChainId
@@ -58,4 +61,8 @@ export interface ConfiguratorState {
   disableTradeWhenPriceImpactIsUnknown: boolean
   disableTradeWhenPriceImpactIsHigherThan: number | undefined
   slippage?: SlippageConfig
+  customImages: CowSwapWidgetParams['images']
+  customSounds: CowSwapWidgetParams['sounds']
+  customTokens: CowSwapWidgetParams['customTokens']
+  rawParams: Partial<CowSwapWidgetParams>
 }

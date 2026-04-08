@@ -16,7 +16,7 @@ export const darkPalette: PaletteOptions = {
     disabled: 'rgba(202,233,255,0.6)',
   },
   background: {
-    paper: 'rgb(12, 38, 75)',
+    paper: 'rgb(22, 23, 31)',
     default: 'rgb(12, 38, 75)',
   },
   cow: {

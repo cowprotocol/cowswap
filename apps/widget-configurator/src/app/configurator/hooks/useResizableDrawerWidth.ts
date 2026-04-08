@@ -1,14 +1,4 @@
-import {
-  PointerEvent as ReactPointerEvent,
-  RefObject,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
-
-import { DRAWER_WIDTH_CSS_VAR } from '../styled'
+import React, { RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 const DEFAULT_DRAWER_WIDTH = 320
 const MIN_DRAWER_WIDTH = 380
@@ -28,17 +18,20 @@ export function clampDrawerWidth(nextWidth: number, viewportWidth = getViewportW
 interface UseResizableDrawerWidthResult {
   drawerWidth: number
   isResizing: boolean
-  handleResizeStart: (event: ReactPointerEvent<HTMLDivElement>) => void
+  handleResizeStart: (event: React.PointerEvent<HTMLDivElement>) => void
 }
 
-function setDrawerWidthCssVar(container: HTMLElement | null, width: number): void {
+function setDrawerWidthCssVar(container: HTMLElement | null, cssVarName: string, width: number): void {
   if (!container) return
 
-  container.style.setProperty(DRAWER_WIDTH_CSS_VAR, `${width}px`)
+  container.style.setProperty(cssVarName, `${width}px`)
 }
 
 // eslint-disable-next-line max-lines-per-function
-export function useResizableDrawerWidth(containerRef: RefObject<HTMLElement | null>): UseResizableDrawerWidthResult {
+export function useResizableDrawerWidth(
+  containerRef: RefObject<HTMLElement | null>,
+  cssVarName: string,
+): UseResizableDrawerWidthResult {
   const resizeStateRef = useRef<{ startX: number; startWidth: number } | null>(null)
   const [drawerWidth, setDrawerWidth] = useState(() => clampDrawerWidth(DEFAULT_DRAWER_WIDTH))
   const [isResizing, setIsResizing] = useState(false)
@@ -57,15 +50,15 @@ export function useResizableDrawerWidth(containerRef: RefObject<HTMLElement | nu
       const clampedWidth = clampDrawerWidth(nextWidth)
 
       currentWidthRef.current = clampedWidth
-      setDrawerWidthCssVar(containerRef.current, clampedWidth)
+      setDrawerWidthCssVar(containerRef.current, cssVarName, clampedWidth)
     },
-    [containerRef],
+    [containerRef, cssVarName],
   )
 
   useLayoutEffect(() => {
     currentWidthRef.current = drawerWidth
-    setDrawerWidthCssVar(containerRef.current, drawerWidth)
-  }, [containerRef, drawerWidth])
+    setDrawerWidthCssVar(containerRef.current, cssVarName, drawerWidth)
+  }, [containerRef, cssVarName, drawerWidth])
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent): void => {
@@ -116,7 +109,7 @@ export function useResizableDrawerWidth(containerRef: RefObject<HTMLElement | nu
   }, [applyDrawerWidth, stopResizing])
 
   const handleResizeStart = useCallback(
-    (event: ReactPointerEvent<HTMLDivElement>): void => {
+    (event: React.PointerEvent<HTMLDivElement>): void => {
       if (event.button !== 0) return
 
       resizeStateRef.current = {

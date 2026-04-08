@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
-import { WIDGET_HOOKS } from '../consts'
+import { WIDGET_HOOKS } from '../../consts'
 
 const LABEL = 'Widget hooks'
 const EMPTY_VALUE_LABEL = 'No hooks selected'
