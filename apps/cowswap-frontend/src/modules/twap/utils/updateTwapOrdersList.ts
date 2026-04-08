@@ -25,7 +25,18 @@ export function updateTwapOrdersList(currentState: TwapOrdersList, nextState: Tw
         return acc
       }
 
-      if (currentOrder.status === TwapOrderStatus.Cancelling && newOrder.status !== TwapOrderStatus.Cancelled) {
+      // If current order is "Cancelling", only preserve that status if:
+      // - The new status is also "Cancelling" (transaction still pending)
+      // - We don't have a definitive new status yet
+      // Otherwise, allow the status to update (either to "Cancelled" if successful,
+      // or back to "Pending" if the cancellation transaction was rejected/replaced)
+      if (currentOrder.status === TwapOrderStatus.Cancelling) {
+        if (newOrder.status === TwapOrderStatus.Cancelled) {
+          acc[orderId] = newOrder
+        } else if (newOrder.status === TwapOrderStatus.Pending) {
+          // Order is still authorized on-chain - cancellation was rejected/failed
+          acc[orderId] = newOrder
+        }
         return acc
       }
     }
@@ -39,6 +50,16 @@ export function updateTwapOrdersList(currentState: TwapOrdersList, nextState: Tw
 
     return acc
   }, {})
+
+  // Handle stale "Cancelling" orders that are NOT in nextState
+  Object.keys(currentState).forEach((orderId) => {
+    const currentOrder = currentState[orderId]
+    const newOrder = nextState[orderId]
+
+    if (currentOrder.status === TwapOrderStatus.Cancelling && !newOrder && !newState[orderId]) {
+      newState[orderId] = { ...currentOrder, status: TwapOrderStatus.Pending }
+    }
+  })
 
   return { ...currentState, ...newState }
 }
