@@ -11,7 +11,7 @@ import {
 } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
@@ -33,6 +33,8 @@ import { HooksPage } from 'pages/Hooks'
 import { LimitOrdersPage } from 'pages/LimitOrders/LimitOrders.page'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
+
+import { isDebugProgressBarRouteEnabled } from './RoutesApp.utils'
 
 // Async routes
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
@@ -84,6 +86,8 @@ const lazyRoutes: LazyRouteProps[] = [
 
 export function RoutesApp(): ReactNode {
   const { isAffiliateProgramEnabled } = useFeatureFlags()
+  const { search } = useLocation()
+  const isDebugProgressBarEnabled = isDebugProgressBarRouteEnabled(search, process.env.NODE_ENV)
 
   return (
     <Routes>
@@ -115,7 +119,7 @@ export function RoutesApp(): ReactNode {
       <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
-      {process.env.NODE_ENV === 'development' && (
+      {isDebugProgressBarEnabled && (
         <Route path={RoutesEnum.DEBUG_PROGRESS_BAR} element={<OrderProgressBarPlaygroundPage />} />
       )}
 
