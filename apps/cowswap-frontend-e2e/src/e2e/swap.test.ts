@@ -12,12 +12,6 @@ import {
 const CHAIN_ID = 11155111
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
-const testOpts = {
-  retries: {
-    runMode: 1,
-    openMode: 0,
-  },
-}
 
 function waitForSwapAction(): Cypress.Chainable {
   return cy
@@ -40,7 +34,7 @@ function acceptFeesExceedWarning(): Cypress.Chainable {
 
 describe('Swap (custom)', () => {
   // uses WETH instead of ETH
-  it('can swap WETH for USDC', testOpts, () => {
+  it('can swap WETH for USDC', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/${WETH}/${USDC}`, {
       onBeforeLoad: async (win) => {
         mockSendCall(win.ethereum, [
@@ -69,7 +63,7 @@ describe('Swap (custom)', () => {
     cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 
-  it('can swap ETH for USDC', testOpts, () => {
+  it('can swap ETH for USDC', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`, {
       onBeforeLoad: async (win) => {
         const address = await win.ethereum.signer.getAddress()
@@ -94,7 +88,7 @@ describe('Swap (custom)', () => {
   })
 
   // ETH should be tradable but show Switch to Weth
-  it('Swap ETH for USDC - shows optional Switch to WETH', testOpts, () => {
+  it('Swap ETH for USDC - shows optional Switch to WETH', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`, {
       onBeforeLoad: async (win) => {
         const address = await win.ethereum.signer.getAddress()
