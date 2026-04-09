@@ -162,15 +162,10 @@ select
   trades.environment,
   trades.blockchain,
   trades.block_time as creation_date,
-  trades.tx_hash,
-  trades.order_uid,
   trades.trader_address,
-  trades.sell_token,
-  trades.buy_token,
-  trades.executed_sell_amount,
-  trades.executed_buy_amount,
   trades.usd_value,
   coalesce(capped_trades.eligible_volume_usd, cast(0 as double)) as eligible_volume_usd,
+  coalesce(capped_trades.eligible_volume_usd, cast(0 as double)) > 0 as is_eligible,
   trades.referrer_code,
   bound_ref.bound_code as bound_referrer_code,
   trades.order_uid = first_trade.first_trade_order_uid
@@ -187,7 +182,12 @@ select
     else 'eligible'
   end as eligibility_reason,
   coalesce(bound_ref.bound_code = trades.referrer_code, false) as is_bound_to_code,
-  coalesce(capped_trades.eligible_volume_usd, cast(0 as double)) > 0 as is_eligible
+  trades.tx_hash,
+  trades.order_uid,
+  trades.sell_token,
+  trades.buy_token,
+  trades.executed_sell_amount,
+  trades.executed_buy_amount
 from trades
 left join first_trade on first_trade.trader_address = trades.trader_address
 left join first_ref_trade on first_ref_trade.trader_address = trades.trader_address
