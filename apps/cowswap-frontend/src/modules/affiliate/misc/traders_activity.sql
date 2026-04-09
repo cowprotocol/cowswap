@@ -177,6 +177,7 @@ select
     when trades.is_excluded_integrators_source then 'integrator_ignored'
     when first_trade.first_trade_time <> first_ref_trade.first_ref_trade_time then 'ref_after_first_trade'
     when coalesce(bound_ref.bound_code, '') <> trades.referrer_code then 'code_mismatch_after_binding'
+    when trades.block_time > bound_ref.bound_time + affiliate_program_data.time_cap_days * interval '1' day then 'time_cap_exceeded'
     when trades.is_excluded_low_fee then 'low_fee_excluded'
     when capped_trades.order_uid is not null and capped_trades.eligible_volume_usd = 0 and capped_trades.volume_cap > 0 then 'volume_cap_reached'
     else 'eligible'
