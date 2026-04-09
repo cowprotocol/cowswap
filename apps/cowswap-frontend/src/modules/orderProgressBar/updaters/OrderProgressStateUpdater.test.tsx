@@ -9,11 +9,12 @@ import { useSurplusQueueOrderIds } from 'entities/surplusModal'
 import type { Order } from 'legacy/state/orders/actions'
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
+import { usePendingOrdersFillability } from 'modules/ordersTable'
 import { useTradeConfirmState } from 'modules/trade'
 
 import { OrderProgressStateUpdater } from './OrderProgressStateUpdater'
 
-import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
+import { useOrderProgressBarPropsWithFillability } from '../hooks/useOrderProgressBarProps'
 import { OrderProgressBarStepName } from '../types'
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -24,8 +25,12 @@ jest.mock('legacy/state/orders/hooks', () => ({
   useOnlyPendingOrders: jest.fn(),
 }))
 
+jest.mock('modules/ordersTable', () => ({
+  usePendingOrdersFillability: jest.fn(),
+}))
+
 jest.mock('../hooks/useOrderProgressBarProps', () => ({
-  useOrderProgressBarProps: jest.fn(),
+  useOrderProgressBarPropsWithFillability: jest.fn(),
 }))
 
 jest.mock('entities/surplusModal', () => ({
@@ -96,7 +101,12 @@ jest.mock('jotai', () => {
 
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const useOnlyPendingOrdersMock = useOnlyPendingOrders as jest.MockedFunction<typeof useOnlyPendingOrders>
-const useOrderProgressBarPropsMock = useOrderProgressBarProps as jest.MockedFunction<typeof useOrderProgressBarProps>
+const usePendingOrdersFillabilityMock = usePendingOrdersFillability as jest.MockedFunction<
+  typeof usePendingOrdersFillability
+>
+const useOrderProgressBarPropsMock = useOrderProgressBarPropsWithFillability as jest.MockedFunction<
+  typeof useOrderProgressBarPropsWithFillability
+>
 const useSurplusQueueOrderIdsMock = useSurplusQueueOrderIds as jest.MockedFunction<typeof useSurplusQueueOrderIds>
 const useTradeConfirmStateMock = useTradeConfirmState as jest.MockedFunction<typeof useTradeConfirmState>
 
@@ -106,10 +116,8 @@ const stubOrder = (overrides: Partial<Order>): Order => overrides as Order
 
 describe('OrderProgressStateUpdater', () => {
   beforeEach(() => {
-    useOrderProgressBarPropsMock.mockReturnValue({
-      props: {} as never,
-      activityDerivedState: null,
-    })
+    useOrderProgressBarPropsMock.mockReturnValue({ props: {} as never, activityDerivedState: null })
+    usePendingOrdersFillabilityMock.mockReturnValue({})
     useSurplusQueueOrderIdsMock.mockReturnValue([])
     useTradeConfirmStateMock.mockReturnValue({ transactionHash: null } as never)
     mockCancellationIds.mockReturnValue([])
@@ -124,27 +132,23 @@ describe('OrderProgressStateUpdater', () => {
   })
 
   it('subscribes to pending market orders even when the progress bar UI is not mounted', () => {
-    useWalletInfoMock.mockReturnValue({
-      chainId: 1,
-      account: '0xabc',
-    } as unknown as WalletInfo)
+    useWalletInfoMock.mockReturnValue({ chainId: 1, account: '0xabc' } as unknown as WalletInfo)
     useOnlyPendingOrdersMock.mockReturnValue([
       stubOrder({ id: '1', class: OrderClass.MARKET }),
       stubOrder({ id: '2', class: OrderClass.LIMIT }),
       stubOrder({ id: '3', class: OrderClass.MARKET }),
     ])
     render(<OrderProgressStateUpdater />)
+    expect(usePendingOrdersFillabilityMock).toHaveBeenCalledTimes(1)
+    expect(usePendingOrdersFillabilityMock).toHaveBeenCalledWith(OrderClass.MARKET)
     expect(useOrderProgressBarPropsMock).toHaveBeenCalledTimes(2)
-    expect(useOrderProgressBarPropsMock).toHaveBeenNthCalledWith(1, 1, expect.objectContaining({ id: '1' }))
-    expect(useOrderProgressBarPropsMock).toHaveBeenNthCalledWith(2, 1, expect.objectContaining({ id: '3' }))
+    expect(useOrderProgressBarPropsMock).toHaveBeenNthCalledWith(1, 1, expect.objectContaining({ id: '1' }), undefined)
+    expect(useOrderProgressBarPropsMock).toHaveBeenNthCalledWith(2, 1, expect.objectContaining({ id: '3' }), undefined)
     expect(mockPruneOrders).toHaveBeenLastCalledWith(['1', '3'])
   })
 
   it('does nothing when wallet information is missing', () => {
-    useWalletInfoMock.mockReturnValue({
-      chainId: undefined,
-      account: undefined,
-    } as unknown as WalletInfo)
+    useWalletInfoMock.mockReturnValue({ chainId: undefined, account: undefined } as unknown as WalletInfo)
     useOnlyPendingOrdersMock.mockReturnValue([])
     render(<OrderProgressStateUpdater />)
     expect(useOrderProgressBarPropsMock).not.toHaveBeenCalled()
@@ -152,10 +156,7 @@ describe('OrderProgressStateUpdater', () => {
   })
 
   it('keeps state for orders queued for the surplus modal', () => {
-    useWalletInfoMock.mockReturnValue({
-      chainId: undefined,
-      account: undefined,
-    } as unknown as WalletInfo)
+    useWalletInfoMock.mockReturnValue({ chainId: undefined, account: undefined } as unknown as WalletInfo)
     useOnlyPendingOrdersMock.mockReturnValue([])
     useSurplusQueueOrderIdsMock.mockReturnValue(['queued-order', 'next-order'])
     render(<OrderProgressStateUpdater />)

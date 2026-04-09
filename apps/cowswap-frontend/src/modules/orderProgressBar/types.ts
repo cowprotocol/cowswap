@@ -38,6 +38,7 @@ export type OrderProgressBarProps = {
   stepName?: OrderProgressBarStepName
   chainId: SupportedChainId
   countdown?: number | null | undefined
+  disableAnalytics?: boolean
   solverCompetition?: SolverCompetition[]
   totalSolvers?: number
   order?: Order

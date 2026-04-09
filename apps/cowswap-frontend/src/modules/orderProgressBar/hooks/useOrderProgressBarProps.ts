@@ -16,7 +16,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { usePendingOrdersFillability } from 'modules/ordersTable'
+import { type OrderFillability, usePendingOrdersFillability } from 'modules/ordersTable'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -55,6 +55,7 @@ export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'>
 type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
+  currentOrderFillability?: OrderFillability
   isBridgingTrade: boolean
 }
 
@@ -72,6 +73,20 @@ export function useOrderProgressBarProps(
   props: OrderProgressBarProps
   activityDerivedState: ActivityDerivedState | null
 } {
+  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
+  const currentOrderFillability = order?.id ? pendingOrdersFillability[order.id] : undefined
+
+  return useOrderProgressBarPropsWithFillability(chainId, order, currentOrderFillability)
+}
+
+export function useOrderProgressBarPropsWithFillability(
+  chainId: SupportedChainId,
+  order: Order | undefined,
+  currentOrderFillability: OrderFillability | undefined,
+): {
+  props: OrderProgressBarProps
+  activityDerivedState: ActivityDerivedState | null
+} {
   const orderId = order?.id
   const isBridgingTrade = !!order && order.inputToken.chainId !== order.outputToken.chainId
 
@@ -81,6 +96,7 @@ export function useOrderProgressBarProps(
   const progressBarProps = useOrderBaseProgressBarProps({
     chainId,
     activityDerivedState,
+    currentOrderFillability,
     isBridgingTrade,
   })
 
@@ -144,7 +160,7 @@ function getDoNotQueryStatusEndpoint(
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
 function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
-  const { activityDerivedState, chainId, isBridgingTrade } = params
+  const { activityDerivedState, chainId, currentOrderFillability, isBridgingTrade } = params
 
   const {
     order,
@@ -181,8 +197,6 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     cancellationTriggered,
     hasShownExecutingInCurrentAttempt,
   } = useGetExecutingOrderState(orderId)
-  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
-  const currentOrderFillability = orderId ? pendingOrdersFillability[orderId] : undefined
   const shouldShowUnfillableStep = shouldShowUnfillableProgressStep(isUnfillable, currentOrderFillability)
 
   const solversInfo = useSolversInfo(chainId)

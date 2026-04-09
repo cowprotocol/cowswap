@@ -9,9 +9,10 @@ import { useSurplusQueueOrderIds } from 'entities/surplusModal'
 import { Order } from 'legacy/state/orders/actions'
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
+import { type OrderFillability, usePendingOrdersFillability } from 'modules/ordersTable'
 import { useTradeConfirmState } from 'modules/trade'
 
-import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
+import { useOrderProgressBarPropsWithFillability } from '../hooks/useOrderProgressBarProps'
 import {
   cancellationTrackedOrderIdsAtom,
   ordersProgressBarStateAtom,
@@ -101,8 +102,16 @@ function getTrackedOrderIds({
   return trackedIdsSet
 }
 
-function OrderProgressStateObserver({ chainId, order }: { chainId: SupportedChainId; order: Order }): null {
-  useOrderProgressBarProps(chainId, order)
+function OrderProgressStateObserver({
+  chainId,
+  currentOrderFillability,
+  order,
+}: {
+  chainId: SupportedChainId
+  currentOrderFillability: OrderFillability | undefined
+  order: Order
+}): null {
+  useOrderProgressBarPropsWithFillability(chainId, order, currentOrderFillability)
   return null
 }
 
@@ -184,14 +193,21 @@ function OrderProgressStatePruner({
 function OrderProgressStateObservers({
   chainId,
   marketOrders,
+  pendingOrdersFillability,
 }: {
   chainId: SupportedChainId
   marketOrders: Order[]
+  pendingOrdersFillability: Record<string, OrderFillability | undefined>
 }): ReactNode {
   return (
     <>
       {marketOrders.map((order) => (
-        <OrderProgressStateObserver key={order.id} chainId={chainId} order={order} />
+        <OrderProgressStateObserver
+          key={order.id}
+          chainId={chainId}
+          currentOrderFillability={pendingOrdersFillability[order.id]}
+          order={order}
+        />
       ))}
     </>
   )
@@ -207,6 +223,7 @@ export function OrderProgressStateUpdater(): ReactNode {
     () => pendingOrders.filter((order) => order.class === OrderClass.MARKET),
     [pendingOrders],
   )
+  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
 
   if (!chainId || !account) {
     return (
@@ -229,7 +246,11 @@ export function OrderProgressStateUpdater(): ReactNode {
         surplusQueueOrderIds={surplusQueueOrderIds}
         transactionHash={transactionHash}
       />
-      <OrderProgressStateObservers chainId={chainId as SupportedChainId} marketOrders={marketOrders} />
+      <OrderProgressStateObservers
+        chainId={chainId as SupportedChainId}
+        marketOrders={marketOrders}
+        pendingOrdersFillability={pendingOrdersFillability}
+      />
     </>
   )
 }

@@ -7,8 +7,16 @@ jest.mock('modules/orderProgressBar', () => {
 
   return {
     ...actual,
-    OrderProgressBar: ({ countdown, stepName }: { countdown?: number | null; stepName?: string }) => (
-      <div data-testid="progress-bar-state">
+    OrderProgressBar: ({
+      countdown,
+      disableAnalytics,
+      stepName,
+    }: {
+      countdown?: number | null
+      disableAnalytics?: boolean
+      stepName?: string
+    }) => (
+      <div data-analytics={disableAnalytics ? 'off' : 'on'} data-testid="progress-bar-state">
         {stepName}:{countdown ?? 'none'}
       </div>
     ),
@@ -29,6 +37,8 @@ describe('OrderProgressBarPlaygroundPage', () => {
 
   it('replays the submission retry scenario from the dropdown', () => {
     render(<OrderProgressBarPlaygroundPage />)
+
+    expect(screen.getByTestId('progress-bar-state').getAttribute('data-analytics')).toBe('off')
 
     act(() => {
       fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'submissionRetry' } })

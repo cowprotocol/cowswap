@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom, useStore } from 'jotai'
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -24,6 +24,7 @@ import {
   getCompletionDelayMs,
   getNewlyFillableOrderIds,
   hasProgressBarLeftInitialStep,
+  isCompletionStep,
   shouldStageExecutingStep,
 } from './utils'
 
@@ -63,14 +64,20 @@ function useOrdersProgressStateRef(
   return ordersProgressStateRef
 }
 
-function useStepTimersRef(): MutableRefObject<Record<string, NodeJS.Timeout>> {
-  const stepTimersRef = useRef<Record<string, NodeJS.Timeout>>({})
+type ScheduledStepTimer = {
+  expectedCurrentStep: OrderProgressBarStepName | undefined
+  step: OrderProgressBarStepName
+  timer: NodeJS.Timeout
+}
+
+function useStepTimersRef(): MutableRefObject<Record<string, ScheduledStepTimer>> {
+  const stepTimersRef = useRef<Record<string, ScheduledStepTimer>>({})
 
   useEffect(() => {
     const stepTimers = stepTimersRef.current
 
     return () => {
-      Object.values(stepTimers).forEach((timer) => clearTimeout(timer))
+      Object.values(stepTimers).forEach(({ timer }) => clearTimeout(timer))
     }
   }, [])
 
@@ -120,14 +127,95 @@ function useOrderProgressEventListeners(
   }, [finalizeOrderStep])
 }
 
+function useUnfillableProgressTransitions(
+  ordersProgressState: OrdersProgressBarState,
+  unfillableIds: string[],
+  getCurrentProgressState: (orderUid: string) => OrdersProgressBarState[string] | undefined,
+  clearStepTimer: (
+    orderUid: string,
+    shouldClear?: (
+      scheduledStep: OrderProgressBarStepName,
+      expectedCurrentStep: OrderProgressBarStepName | undefined,
+    ) => boolean,
+  ) => void,
+  finalizeOrderStep: (orderUid: string, step: OrderProgressBarStepName) => void,
+): void {
+  const previousUnfillableRef = useRef<Set<string>>(new Set())
+
+  useEffect(() => {
+    const previousUnfillable = previousUnfillableRef.current
+    const currentUnfillable = new Set(unfillableIds)
+
+    const newlyFillable = getNewlyFillableOrderIds(previousUnfillable, currentUnfillable)
+
+    newlyFillable.forEach((orderId) => {
+      const currentStep = getCurrentProgressState(orderId)?.progressBarStepName
+
+      if (currentStep !== OrderProgressBarStepName.UNFILLABLE) {
+        clearStepTimer(orderId, (scheduledStep) => scheduledStep === OrderProgressBarStepName.UNFILLABLE)
+        return
+      }
+
+      finalizeOrderStep(orderId, OrderProgressBarStepName.SOLVING)
+    })
+
+    currentUnfillable.forEach((orderId) => {
+      const currentStep = getCurrentProgressState(orderId)?.progressBarStepName
+
+      if (!hasProgressBarLeftInitialStep(currentStep)) {
+        return
+      }
+
+      if (
+        currentStep === OrderProgressBarStepName.EXECUTING ||
+        currentStep === OrderProgressBarStepName.CANCELLING ||
+        currentStep === OrderProgressBarStepName.CANCELLED ||
+        currentStep === OrderProgressBarStepName.EXPIRED ||
+        currentStep === OrderProgressBarStepName.CANCELLATION_FAILED ||
+        isCompletionStep(currentStep)
+      ) {
+        return
+      }
+
+      finalizeOrderStep(orderId, OrderProgressBarStepName.UNFILLABLE)
+    })
+
+    // Persist for the next diff so we only reset orders that actually recovered.
+    previousUnfillableRef.current = currentUnfillable
+  }, [clearStepTimer, finalizeOrderStep, getCurrentProgressState, ordersProgressState, unfillableIds])
+}
+
 export function OrderProgressEventsUpdater(): null {
+  const store = useStore()
   const ordersProgressState = useAtomValue(ordersProgressBarStateAtom)
   const setCountdown = useSetAtom(updateOrderProgressBarCountdown)
   const setStepName = useSetAtom(updateOrderProgressBarStepName)
   const unfillableIds = useUnfillableOrderIds()
-  const previousUnfillableRef = useRef<Set<string>>(new Set())
   const ordersProgressStateRef = useOrdersProgressStateRef(ordersProgressState)
   const stepTimersRef = useStepTimersRef()
+  const getCurrentProgressState = useCallback(
+    (orderUid: string) => store.get(ordersProgressBarStateAtom)[orderUid],
+    [store],
+  )
+  const clearStepTimer = useCallback(
+    (
+      orderUid: string,
+      shouldClear: (
+        scheduledStep: OrderProgressBarStepName,
+        expectedCurrentStep: OrderProgressBarStepName | undefined,
+      ) => boolean = () => true,
+    ) => {
+      const existingTimer = stepTimersRef.current[orderUid]
+
+      if (!existingTimer || !shouldClear(existingTimer.step, existingTimer.expectedCurrentStep)) {
+        return
+      }
+
+      clearTimeout(existingTimer.timer)
+      delete stepTimersRef.current[orderUid]
+    },
+    [stepTimersRef],
+  )
 
   const scheduleStepUpdate = useCallback(
     (
@@ -136,8 +224,8 @@ export function OrderProgressEventsUpdater(): null {
       delayMs: number,
       expectedCurrentStep: OrderProgressBarStepName | undefined,
     ) => {
-      const scheduledTimer = setTimeout(() => {
-        if (stepTimersRef.current[orderUid] !== scheduledTimer) {
+      const timerRef = setTimeout(() => {
+        if (stepTimersRef.current[orderUid]?.timer !== timerRef) {
           return
         }
 
@@ -152,7 +240,11 @@ export function OrderProgressEventsUpdater(): null {
         setStepName({ orderId: orderUid, value: step })
       }, delayMs)
 
-      stepTimersRef.current[orderUid] = scheduledTimer
+      stepTimersRef.current[orderUid] = {
+        expectedCurrentStep,
+        step,
+        timer: timerRef,
+      }
     },
     [ordersProgressStateRef, setStepName, stepTimersRef],
   )
@@ -161,6 +253,7 @@ export function OrderProgressEventsUpdater(): null {
     (orderUid: string, step: OrderProgressBarStepName) => {
       const currentState = ordersProgressStateRef.current[orderUid]
       const currentStep = currentState?.progressBarStepName
+      clearStepTimer(orderUid)
 
       if (currentStep === step) {
         return
@@ -170,13 +263,6 @@ export function OrderProgressEventsUpdater(): null {
 
       if (typeof currentCountdown !== 'undefined' && currentCountdown !== null) {
         setCountdown({ orderId: orderUid, value: null })
-      }
-
-      const existingTimer = stepTimersRef.current[orderUid]
-
-      if (existingTimer) {
-        clearTimeout(existingTimer)
-        delete stepTimersRef.current[orderUid]
       }
 
       if (shouldStageExecutingStep(currentStep, step, currentState?.hasShownExecutingInCurrentAttempt)) {
@@ -206,39 +292,16 @@ export function OrderProgressEventsUpdater(): null {
 
       setStepName({ orderId: orderUid, value: step })
     },
-    [ordersProgressStateRef, scheduleStepUpdate, setCountdown, setStepName, stepTimersRef],
+    [clearStepTimer, ordersProgressStateRef, scheduleStepUpdate, setCountdown, setStepName],
   )
 
-  useEffect(() => {
-    const previousUnfillable = previousUnfillableRef.current
-    const currentUnfillable = new Set(unfillableIds)
-    const currentProgressState = ordersProgressState
-
-    const newlyFillable = getNewlyFillableOrderIds(previousUnfillable, currentUnfillable)
-
-    newlyFillable.forEach((orderId) => {
-      const currentStep = currentProgressState[orderId]?.progressBarStepName
-
-      if (currentStep !== OrderProgressBarStepName.UNFILLABLE) {
-        return
-      }
-
-      finalizeOrderStep(orderId, OrderProgressBarStepName.SOLVING)
-    })
-    currentUnfillable.forEach((orderId) => {
-      const currentStep = currentProgressState[orderId]?.progressBarStepName
-
-      if (!hasProgressBarLeftInitialStep(currentStep)) {
-        return
-      }
-
-      finalizeOrderStep(orderId, OrderProgressBarStepName.UNFILLABLE)
-    })
-
-    // Persist for the next diff so we only reset orders that actually recovered.
-    previousUnfillableRef.current = currentUnfillable
-  }, [unfillableIds, finalizeOrderStep, ordersProgressState])
-
+  useUnfillableProgressTransitions(
+    ordersProgressState,
+    unfillableIds,
+    getCurrentProgressState,
+    clearStepTimer,
+    finalizeOrderStep,
+  )
   useOrderProgressEventListeners(finalizeOrderStep)
 
   return null

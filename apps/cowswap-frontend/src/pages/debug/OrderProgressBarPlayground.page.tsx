@@ -205,7 +205,10 @@ export function OrderProgressBarPlaygroundPage(): ReactNode {
 
       <styledEl.Layout>
         <styledEl.PreviewCard>
-          <OrderProgressBar {...getProgressBarProps({ ...currentFrame, countdown: currentFrameCountdown })} />
+          <OrderProgressBar
+            {...getProgressBarProps({ ...currentFrame, countdown: currentFrameCountdown })}
+            disableAnalytics
+          />
         </styledEl.PreviewCard>
 
         <OrderProgressBarPlaygroundDetails
