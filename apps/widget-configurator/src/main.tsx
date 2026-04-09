@@ -9,7 +9,7 @@ import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles
 import 'inter-ui'
 import { createRoot } from 'react-dom/client'
 
-import { Configurator } from './app/configurator/components/configurator/configurator.component'
+import { Configurator } from './components/configurator/configurator.component'
 import { ColorModeContext, globalStyles } from './theme/ColorModeContext'
 import { commonTypography } from './theme/commonTypography'
 import { useColorMode } from './theme/hooks/useColorMode'
