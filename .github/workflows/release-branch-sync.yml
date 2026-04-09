@@ -2,8 +2,8 @@ name: Release Branch Sync
 
 on:
   push:
-    branches: [ main ]
-    tags: [ cowswap-*, explorer-* ]
+    branches: [main]
+    tags: [cowswap-*, explorer-*]
 
 permissions:
   contents: write
@@ -102,13 +102,13 @@ jobs:
           git push origin staging
 
   sync-production:
-    name: Sync main to production
+    name: Fast-forward production to main
     if: startsWith(github.ref, 'refs/tags/cowswap-') || startsWith(github.ref, 'refs/tags/explorer-')
+    needs: sync-staging
     runs-on: ubuntu-latest
+    environment: production
     env:
       RELEASE_TAG: ${{ github.ref_name }}
-      TARGET_BRANCH: production
-      SYNC_BRANCH: automation/sync-main-to-production
     steps:
       - name: Setup release sync
         id: setup
@@ -118,59 +118,12 @@ jobs:
           private-key: ${{ secrets.COWSWAP_RELEASE_SYNC_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
-          pull-requests-write: 'true'
 
-      - name: Prepare merge branch
-        id: prepare
+      - name: Fast-forward production
         run: |
           set -euo pipefail
 
-          git config user.name "${APP_SLUG}[bot]"
-          git config user.email "${APP_USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
-
-          pr_title="chore(release): merge main into production for ${RELEASE_TAG}"
-
-          git fetch origin main "${TARGET_BRANCH}"
-          git checkout -B "${SYNC_BRANCH}" "origin/${TARGET_BRANCH}"
-
-          before_sha="$(git rev-parse HEAD)"
-          git merge --no-ff --no-edit -m "${pr_title}" origin/main
-          after_sha="$(git rev-parse HEAD)"
-
-          if [ "${before_sha}" = "${after_sha}" ]; then
-            echo "has_changes=false" >> "$GITHUB_OUTPUT"
-            echo "pr_title=${pr_title}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "has_changes=true" >> "$GITHUB_OUTPUT"
-          echo "pr_title=${pr_title}" >> "$GITHUB_OUTPUT"
-        env:
-          APP_SLUG: ${{ steps.setup.outputs.app-slug }}
-          APP_USER_ID: ${{ steps.setup.outputs.app-user-id }}
-
-      - name: Create or update pull request
-        if: steps.prepare.outputs.has_changes == 'true'
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ steps.setup.outputs.token }}
-          branch: ${{ env.SYNC_BRANCH }}
-          base: ${{ env.TARGET_BRANCH }}
-          title: ${{ env.PR_TITLE }}
-          body: |
-            This PR contains an automated merge commit from `main` into `${{ env.TARGET_BRANCH }}`.
-
-            Release tag: `${{ env.RELEASE_TAG }}`
-
-            Requested reviewers:
-            - @alfetopito
-            - @anxolin
-          commit-message: ${{ env.PR_TITLE }}
-          delete-branch: false
-          draft: false
-          reviewers: |
-            alfetopito
-            anxolin
-        env:
-          PR_TITLE: ${{ steps.prepare.outputs.pr_title }}
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          git fetch origin main production
+          git checkout production origin/production
+          git merge --ff-only origin/main
+          git push origin production
