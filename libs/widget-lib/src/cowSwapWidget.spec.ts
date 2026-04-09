@@ -1,4 +1,5 @@
 import { createCowSwapWidget } from './cowSwapWidget'
+import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
 import { TradeType } from './types'
 
 describe('createCowSwapWidget', () => {
@@ -27,6 +28,25 @@ describe('createCowSwapWidget', () => {
     dispatchInterceptWindowOpen('javascript://%0Aalert(1)')
 
     expect(window.open).not.toHaveBeenCalled()
+  })
+
+  it('sets sandbox, referrer policy, and allow on the widget iframe', () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    createCowSwapWidget(container, {
+      params: {
+        appCode: 'test-app',
+        chainId: 1,
+        tradeType: TradeType.SWAP,
+      },
+    })
+
+    const iframe = container.querySelector('iframe')
+    expect(iframe).not.toBeNull()
+    expect(iframe?.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX)
+    expect(iframe?.referrerPolicy).toBe(WIDGET_IFRAME_REFERRER_POLICY)
+    expect(iframe?.allow).toBe(WIDGET_IFRAME_ALLOW)
   })
 
   it('opens relative links requested by the widget', () => {
