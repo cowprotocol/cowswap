@@ -38,11 +38,6 @@ function acceptFeesExceedWarning(): Cypress.Chainable {
   })
 }
 
-// mock test to pass CI until we fix the test
-it('should be true', () => {
-  expect(true).to.be.true
-})
-
 describe('Swap (custom)', () => {
   // uses WETH instead of ETH
   it('can swap WETH for USDC', testOpts, () => {
@@ -99,7 +94,7 @@ describe('Swap (custom)', () => {
   })
 
   // ETH should be tradable but show Switch to Weth
-  it('Swap ETH for USDC - shows optional Switch to WETH', () => {
+  it('Swap ETH for USDC - shows optional Switch to WETH', testOpts, () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`, {
       onBeforeLoad: async (win) => {
         const address = await win.ethereum.signer.getAddress()
