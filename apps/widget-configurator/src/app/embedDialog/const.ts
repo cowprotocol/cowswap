@@ -10,12 +10,17 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   width: 'Width in pixels (or 100% to use all available space)',
   chainId: '1 (Mainnet), 100 (Gnosis), 11155111 (Sepolia)',
   tokenLists: 'All default enabled token lists. Also see https://tokenlists.org',
-  theme: 'light/dark or provide your own color palette',
+  sellTokenLists: 'Token lists available only in the sell selector',
+  buyTokenLists: 'Token lists available only in the buy selector',
+  theme: 'light/dark or provide your own color palette, plus optional `boxShadow`',
   tradeType: 'swap, limit or advanced',
   sell: 'Sell token. Optionally add amount for sell orders',
   buy: 'Buy token. Optionally add amount for buy orders',
   enabledTradeTypes: 'swap, limit, advanced, yield',
   partnerFee: 'Partner fee, in Basis Points (BPS) and a receiver address',
+  hideRecentTokens: 'Hide the Recent section in the token selector',
+  hideFavoriteTokens: 'Hide the Favorites section in the token selector',
+  disablePostTradeTips: 'Hide CoW Swap educational tips shown after a completed trade when there is no surplus card',
 }
 
 export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {

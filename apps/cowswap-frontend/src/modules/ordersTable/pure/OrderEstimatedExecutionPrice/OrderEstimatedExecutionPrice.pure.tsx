@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
-import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
+import iconFilledAlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
+import iconAllowance from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
@@ -140,7 +140,7 @@ export function OrderEstimatedExecutionPrice({
             color={`var(${UI.COLOR_DANGER_TEXT})`}
           >
             <styledEl.WarningContent>
-              <SVG src={allowanceIcon} />
+              <SVG src={iconAllowance} />
               {internationalizedWarningText}
             </styledEl.WarningContent>
           </HoverTooltip>
@@ -257,7 +257,7 @@ function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
           </warningTooltopEl.WarningContent>
         }
       >
-        <SVG src={AlertTriangle} description={t`Alert`} width="14" height="13" />
+        <SVG src={iconFilledAlertTriangle} description={t`Alert`} width="14" height="13" />
       </HoverTooltip>
     </warningTooltopEl.WarningIndicator>
   )

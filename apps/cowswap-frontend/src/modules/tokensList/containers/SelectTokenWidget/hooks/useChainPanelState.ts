@@ -5,6 +5,9 @@ import { useMemo } from 'react'
 
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+
+import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade'
 
@@ -21,13 +24,20 @@ export interface ChainPanelState {
   onSelectChain: (chain: ChainInfo) => void
 }
 
-export function useChainPanelState(tradeType: TradeType | undefined): ChainPanelState {
+export function useChainPanelState(tradeType: TradeType | undefined, field?: Field): ChainPanelState {
   const chainsToSelect = useChainsToSelect()
   const onSelectChain = useOnSelectChain()
   const isBridgeFeatureEnabled = useIsBridgingEnabled()
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   const shouldDisableForYield = tradeType === TradeType.YIELD && !ENABLE_YIELD_CHAIN_PANEL
-  const isEnabled = isBridgeFeatureEnabled && Boolean(chainsToSelect?.chains?.length) && !shouldDisableForYield
+  const shouldDisableForSmartContractWallet = field === Field.INPUT && isSmartContractWallet
+
+  const isEnabled =
+    !shouldDisableForSmartContractWallet &&
+    isBridgeFeatureEnabled &&
+    Boolean(chainsToSelect?.chains?.length) &&
+    !shouldDisableForYield
 
   return useMemo(
     () => ({
