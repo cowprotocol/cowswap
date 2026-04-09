@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/assets-v2.2.0...assets-v2.2.1) (2026-04-08)
+
+
+### 🐛 Bug Fixes
+
+* always use AlertTriangle, not alertCircle ([#7206](https://github.com/cowprotocol/cowswap/issues/7206)) ([19378d4](https://github.com/cowprotocol/cowswap/commit/19378d4608378e9f65e267120476a9818a4b4e6c))
+
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.1.0...assets-v2.2.0) (2026-04-02)
 
 

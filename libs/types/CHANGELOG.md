@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.2](https://github.com/cowprotocol/cowswap/compare/types-v4.1.1...types-v4.1.2) (2026-04-08)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
 ## [4.1.1](https://github.com/cowprotocol/cowswap/compare/types-v4.1.0...types-v4.1.1) (2026-04-07)
 
 

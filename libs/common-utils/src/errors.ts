@@ -1,16 +1,33 @@
-export function normalizeError(err: unknown): Error {
+export type NormalizedError = Error & { code?: number }
+
+export function normalizeError(err: unknown): NormalizedError {
   if (err instanceof Error) {
-    return err
+    return err as NormalizedError
   }
 
-  if (typeof err !== 'object' || err === null) {
-    return new Error(String(err))
+  const error = new Error(extractErrorMessage(err)) as NormalizedError
+  const code = extractErrorCode(err)
+
+  if (typeof code === 'number') {
+    error.code = code
+  }
+
+  return error
+}
+
+function extractErrorMessage(error: unknown): string {
+  if (typeof error !== 'object' || error === null) {
+    return String(error)
+  }
+
+  if ('message' in error && typeof error.message === 'string') {
+    return error.message
   }
 
   try {
-    return new Error(JSON.stringify(err))
+    return JSON.stringify(error)
   } catch {
-    return new Error('Unknown error')
+    return 'Unknown error'
   }
 }
 
