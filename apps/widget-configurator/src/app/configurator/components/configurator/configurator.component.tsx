@@ -12,19 +12,19 @@ import { CircularProgress, IconButton, Snackbar } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
-import { ConfiguratorSidebar } from './components/configurator-sidebar/configurator-sidebar.component'
-import { DRAWER_WIDTH_CSS_VAR } from './components/configurator-sidebar/configurator-sidebar.styles'
-import { SidebarControls } from './components/configurator-sidebar/controls/sidebar-controls.component'
-import { COW_LISTENERS, IS_IFRAME } from './consts'
-import { useProvider } from './hooks/useProvider'
-import { useResizableDrawerWidth } from './hooks/useResizableDrawerWidth'
-import { useToastsManager } from './hooks/useToastsManager'
-import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
-import { configuratorCheckeredCanvasSx, configuradorRootSx } from './styled'
-import { ConfiguratorState } from './types'
+import { Sidebar } from '../sidebar/sidebar.component'
+import { DRAWER_WIDTH_CSS_VAR } from '../sidebar/sidebar.styles'
+import { SidebarControls } from '../sidebar/controls/sidebar-controls.component'
+import { COW_LISTENERS, IS_IFRAME } from '../../consts'
+import { useProvider } from '../../hooks/useProvider'
+import { useResizableDrawerWidth } from '../../hooks/useResizableDrawerWidth'
+import { useToastsManager } from '../../hooks/useToastsManager'
+import { useWidgetParams } from '../../hooks/useWidgetParamsAndSettings'
+import { configuratorCheckeredCanvasSx, configuradorRootSx } from './configurator.styles'
+import { ConfiguratorState } from '../../types'
 
-import { AnalyticsCategory } from '../../common/analytics/types'
-import { EmbedDialog } from '../embedDialog'
+import { AnalyticsCategory } from '../../../../common/analytics/types'
+import { Snippet } from '../snippet/snippet.component'
 
 declare global {
   interface Window {
@@ -92,7 +92,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
   if (!isWidgetReady || !params || !configuratorState) {
     configuratorContent = (
       <Box sx={configuratorCheckeredCanvasSx(showIframeOutline)}>
-        <div>
+        <div id="cowswap-widget">
           <CircularProgress />
         </div>
       </Box>
@@ -107,7 +107,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
         />
 
         { isSnippetOpen ? (
-          <EmbedDialog
+          <Snippet
             params={params}
             defaultPalette={configuratorState.defaultColors}
             open
@@ -124,7 +124,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
       style={{ [DRAWER_WIDTH_CSS_VAR]: `${isSidebarOpen ? drawerWidth : 0}px` } as CSSProperties}
       sx={configuradorRootSx}
     >
-      <ConfiguratorSidebar
+      <Sidebar
         title={title}
         isOpen={isSidebarOpen}
         isResizing={isResizing}

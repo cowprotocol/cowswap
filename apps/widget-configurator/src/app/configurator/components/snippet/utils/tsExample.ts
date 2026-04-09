@@ -2,8 +2,8 @@ import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { formatParameters } from './formatParameters'
 
-import { ColorPalette } from '../../configurator/types'
-import { COMMENTS_BEFORE_PARAMS, IMPORT_STATEMENT as TS_IMPORT_STATEMENT, PROVIDER_PARAM_COMMENT } from '../const'
+import { ColorPalette } from '../../../types'
+import { COMMENTS_BEFORE_PARAMS, IMPORT_STATEMENT as TS_IMPORT_STATEMENT, PROVIDER_PARAM_COMMENT } from '../snippet.const'
 
 export function tsExample(params: CowSwapWidgetParams, defaultPalette: ColorPalette): string {
   return `

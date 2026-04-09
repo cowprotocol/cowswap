@@ -27,7 +27,7 @@ export const configuratorCheckeredCanvasSx =
       padding: `${CONTENT_PADDING_PX}px`,
       backgroundColor: base,
 
-      '& > .checkered-canvas': {
+      '& > #cowswap-widget': {
         minWidth: '100%',
         minHeight: '100%',
         backgroundImage: `${pattern}`,
@@ -39,13 +39,13 @@ export const configuratorCheckeredCanvasSx =
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-      },
 
-      '& iframe': {
-        display: 'block',
-        border: 0,
-        margin: '0 auto',
-        outline: showIframeOutline ? '1px dashed cyan' : 'none',
+        '& > #cowswap-iframe': {
+          display: 'block',
+          border: 0,
+          margin: '0 auto',
+          outline: showIframeOutline ? '1px dashed cyan' : 'none',
+        },
       },
     }
   }

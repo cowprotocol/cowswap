@@ -26,8 +26,8 @@ import { jsExample } from './utils/jsExample'
 import { reactTsExample } from './utils/reactTsExample'
 import { tsExample } from './utils/tsExample'
 
-import { AnalyticsCategory } from '../../common/analytics/types'
-import { ColorPalette } from '../configurator/types'
+import { AnalyticsCategory } from '../../../../common/analytics/types'
+import { ColorPalette } from '../../types'
 
 interface TabInfo {
   id: number
@@ -81,7 +81,7 @@ function a11yProps(id: number) {
   }
 }
 
-export interface EmbedDialogProps {
+export interface SnippetProps {
   params: CowSwapWidgetProps['params']
   defaultPalette: ColorPalette
   open: boolean
@@ -90,7 +90,7 @@ export interface EmbedDialogProps {
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-export function EmbedDialog({ params, open, handleClose, defaultPalette }: EmbedDialogProps): ReactNode {
+export function Snippet({ params, open, handleClose, defaultPalette }: SnippetProps): ReactNode {
   const theme = useTheme()
   const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
   const { id, language, snippetFromParams } = tabInfo

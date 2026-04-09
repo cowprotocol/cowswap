@@ -1,7 +1,7 @@
 import { CowSwapWidgetPalette, CowSwapWidgetPaletteColors, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { ColorPalette } from '../../configurator/types'
-import { SANITIZE_PARAMS } from '../const'
+import { ColorPalette } from '../../../types'
+import { SANITIZE_PARAMS } from '../snippet.const'
 
 export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: ColorPalette): CowSwapWidgetParams {
   return {

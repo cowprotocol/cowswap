@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 import type { Theme } from '@mui/material/styles'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
-import { getDrawerSx } from './configurator-sidebar.styles'
+import { getDrawerSx } from './sidebar.styles'
 import { SidebarFooter } from './footer/sidebar-footer.component'
 
 import { ColorModeContext } from '../../../../theme/ColorModeContext'
@@ -44,7 +44,7 @@ import { WidgetHooksControl } from '../controls/WidgetHooksControl'
 
 import type * as CSS from 'csstype'
 
-export interface ConfiguratorSidebarProps {
+export interface SidebarProps {
   title: string
   isOpen: boolean
   isResizing: boolean
@@ -56,7 +56,7 @@ export interface ConfiguratorSidebarProps {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export function ConfiguratorSidebar({
+export function Sidebar({
   title,
   isOpen,
   isResizing,
@@ -65,7 +65,7 @@ export function ConfiguratorSidebar({
   onSnippetToggle,
   onStateChange,
   toastManager,
-}: ConfiguratorSidebarProps): ReactNode {
+}: SidebarProps): ReactNode {
   const availableChains = useAvailableChains()
 
   const [expandedSection, setExpandedSection] = useState<string | null>('Basics')

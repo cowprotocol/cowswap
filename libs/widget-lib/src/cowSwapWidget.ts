@@ -191,6 +191,8 @@ function updateProvider(
 function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
 
+  // TODO: Create constant for this and the other ID and export them.
+  iframe.id = 'cowswap-iframe'
   iframe.src = buildWidgetUrl(params)
   iframe.allow = 'clipboard-read; clipboard-write'
 

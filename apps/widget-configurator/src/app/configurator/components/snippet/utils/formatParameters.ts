@@ -2,12 +2,12 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { sanitizeParameters } from './sanitizeParameters'
 
-import { ColorPalette } from '../../configurator/types'
+import { ColorPalette } from '../../../types'
 import {
   COMMENTS_BY_PARAM_NAME,
   COMMENTS_BY_PARAM_NAME_TYPESCRIPT,
   WIDGET_CONFIGURATOR_DEFAULT_BASE_URL,
-} from '../const'
+} from '../snippet.const'
 
 export function formatParameters(
   params: CowSwapWidgetParams,
