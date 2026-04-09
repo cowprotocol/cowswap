@@ -5,6 +5,10 @@ on:
     branches: [main]
     tags: [cowswap-*, explorer-*]
 
+concurrency:
+  group: release-branch-sync
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
