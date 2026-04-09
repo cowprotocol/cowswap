@@ -1,14 +1,11 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 const COLORS = {
-  text: '#16356f',
-  muted: '#4f6794',
-  border: '#b8c8ef',
-  panel: '#ffffff',
   panelShadow: '0 14px 40px rgba(16, 43, 92, 0.12)',
   accent: '#234c9b',
   accentDark: '#173879',
-  accentSoft: 'linear-gradient(180deg, rgba(35, 76, 155, 0.10), rgba(35, 76, 155, 0.03))',
   backendBg: '#e8efff',
   backendText: '#234c9b',
   progressBg: '#e5f4eb',
@@ -19,7 +16,7 @@ export const Page = styled.div`
   max-width: 1120px;
   margin: 0 auto;
   padding: 32px 24px 64px;
-  color: ${COLORS.text};
+  color: var(${UI.COLOR_TEXT});
 `
 
 export const Header = styled.div`
@@ -29,12 +26,12 @@ export const Header = styled.div`
 export const Title = styled.h1`
   margin: 0 0 8px;
   font-size: 28px;
-  color: ${COLORS.text};
+  color: var(${UI.COLOR_TEXT});
 `
 
 export const Description = styled.p`
   margin: 0;
-  color: ${COLORS.muted};
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   line-height: 1.5;
 `
 
@@ -52,7 +49,7 @@ export const Field = styled.label`
   gap: 6px;
   min-width: 280px;
   font-weight: 600;
-  color: ${COLORS.text};
+  color: var(${UI.COLOR_TEXT});
 `
 
 export const Select = styled.select`
@@ -60,9 +57,9 @@ export const Select = styled.select`
   min-height: 44px;
   padding: 0 12px;
   border-radius: 12px;
-  border: 1px solid ${COLORS.accent};
-  background: ${COLORS.panel};
-  color: ${COLORS.text};
+  border: 1px solid var(${UI.COLOR_BORDER});
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT});
   box-shadow: 0 4px 12px rgba(35, 76, 155, 0.08);
 `
 
@@ -99,26 +96,28 @@ export const Layout = styled.div`
 export const PreviewCard = styled.div`
   padding: 24px;
   border-radius: 24px;
-  background: ${COLORS.panel};
+  background: var(${UI.COLOR_PAPER});
+  border: 1px solid var(${UI.COLOR_BORDER});
   box-shadow: ${COLORS.panelShadow};
 `
 
 export const MetaCard = styled.div`
   padding: 20px;
   border-radius: 20px;
-  background: ${COLORS.panel};
+  background: var(${UI.COLOR_PAPER});
+  border: 1px solid var(${UI.COLOR_BORDER});
   box-shadow: ${COLORS.panelShadow};
 `
 
 export const MetaTitle = styled.h2`
   margin: 0 0 12px;
   font-size: 18px;
-  color: ${COLORS.text};
+  color: var(${UI.COLOR_TEXT});
 `
 
 export const MetaRow = styled.div`
   margin-bottom: 12px;
-  color: ${COLORS.text};
+  color: var(${UI.COLOR_TEXT});
   line-height: 1.5;
 `
 
@@ -136,8 +135,8 @@ export const CurrentStatusGrid = styled.div`
 export const CurrentStatusCard = styled.div`
   padding: 14px 16px;
   border-radius: 16px;
-  background: ${COLORS.accentSoft};
-  border: 1px solid ${COLORS.border};
+  background: linear-gradient(180deg, rgba(35, 76, 155, 0.08), var(${UI.COLOR_PAPER}));
+  border: 1px solid var(${UI.COLOR_BORDER});
 `
 
 export const CurrentStatusLabel = styled.div`
@@ -146,7 +145,7 @@ export const CurrentStatusLabel = styled.div`
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: ${COLORS.muted};
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 export const CurrentStatusValue = styled.div`
@@ -172,9 +171,10 @@ export const Timeline = styled.ol`
 export const TimelineItem = styled.li<{ $active: boolean }>`
   padding: 14px 16px;
   border-radius: 16px;
-  border: 1px solid ${({ $active }) => ($active ? COLORS.accent : COLORS.border)};
-  background: ${({ $active }) => ($active ? COLORS.accentSoft : COLORS.panel)};
-  color: ${({ $active }) => ($active ? COLORS.text : COLORS.muted)};
+  border: 1px solid ${({ $active }) => ($active ? COLORS.accent : `var(${UI.COLOR_BORDER})`)};
+  background: ${({ $active }) =>
+    $active ? `linear-gradient(180deg, rgba(35, 76, 155, 0.08), var(${UI.COLOR_PAPER}))` : `var(${UI.COLOR_PAPER})`};
+  color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
   box-shadow: ${({ $active }) => ($active ? '0 12px 24px rgba(35, 76, 155, 0.16)' : 'none')};
 `
 
@@ -188,7 +188,7 @@ export const TimelineHeader = styled.div`
 
 export const TimelineTitle = styled.div`
   font-weight: 700;
-  color: ${COLORS.text};
+  color: var(${UI.COLOR_TEXT});
 `
 
 export const TimelineCurrentBadge = styled.span`
