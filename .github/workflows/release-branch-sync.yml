@@ -2,8 +2,8 @@ name: Release Branch Sync
 
 on:
   push:
-    branches: [main]
-    tags: [cowswap-*, explorer-*]
+    branches: [ main ]
+    tags: [ cowswap-*, explorer-* ]
 
 concurrency:
   group: release-branch-sync
@@ -14,6 +14,39 @@ permissions:
   pull-requests: write
 
 jobs:
+  collect-release-metadata:
+    name: Collect release metadata
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    outputs:
+      release-tags: ${{ steps.collect.outputs.release-tags }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Collect tags for release commit
+        id: collect
+        run: |
+          set -euo pipefail
+
+          git fetch --tags origin
+
+          release_commit="$(git rev-list -n 1 "${GITHUB_REF}")"
+          release_tags="$(
+            git tag --points-at "${release_commit}" \
+              | sort \
+              | paste -sd ', ' -
+          )"
+
+          if [ -z "${release_tags}" ]; then
+            release_tags="${GITHUB_REF_NAME}"
+          fi
+
+          echo "release-tags=${release_tags}" >> "$GITHUB_OUTPUT"
+
   sync-develop:
     name: Sync main to develop
     if: github.ref == 'refs/heads/main'
@@ -83,9 +116,8 @@ jobs:
   sync-staging:
     name: Fast-forward staging to main
     if: startsWith(github.ref, 'refs/tags/cowswap-') || startsWith(github.ref, 'refs/tags/explorer-')
+    needs: collect-release-metadata
     runs-on: ubuntu-latest
-    env:
-      RELEASE_TAG: ${{ github.ref_name }}
     steps:
       - name: Setup release sync
         id: setup
@@ -108,17 +140,17 @@ jobs:
   notify-production-approval:
     name: Notify Slack for production approval
     if: startsWith(github.ref, 'refs/tags/cowswap-') || startsWith(github.ref, 'refs/tags/explorer-')
-    needs: sync-staging
+    needs: [ collect-release-metadata, sync-staging ]
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack
         run: |
           curl -X POST -H "Content-type: application/json" \
-            --data "{\"text\": \"Production release for \`${RELEASE_TAG}\` is waiting for approval. <$SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID|Review the workflow run>.\"}" \
+            --data "{\"text\": \"⏳ Production release for tag(s) \`${RELEASE_TAGS}\` is waiting for approval. <$SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID|Review the workflow run>.\"}" \
             "$SLACK_WEBHOOK_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAGS: ${{ needs.collect-release-metadata.outputs.release-tags }}
           SERVER_URL: ${{ github.server_url }}
           REPOSITORY: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
@@ -126,11 +158,9 @@ jobs:
   sync-production:
     name: Fast-forward production to main
     if: startsWith(github.ref, 'refs/tags/cowswap-') || startsWith(github.ref, 'refs/tags/explorer-')
-    needs: notify-production-approval
+    needs: [ collect-release-metadata, notify-production-approval ]
     runs-on: ubuntu-latest
     environment: production
-    env:
-      RELEASE_TAG: ${{ github.ref_name }}
     steps:
       - name: Setup release sync
         id: setup
