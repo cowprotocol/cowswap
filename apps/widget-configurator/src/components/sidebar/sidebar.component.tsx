@@ -45,7 +45,7 @@ import { WidgetHooksControl } from '../ui/controls/Select/WidgetHooksControl'
 
 import type { Theme } from '@mui/material/styles'
 import type * as CSS from 'csstype'
-import { TextInput } from 'apps/widget-configurator/src/components/ui/controls/TextInput/TextInput.component'
+import { TextInput } from '../ui/controls/TextInput/TextInput.component'
 
 export interface SidebarProps {
   title: string

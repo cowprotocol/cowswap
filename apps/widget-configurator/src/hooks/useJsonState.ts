@@ -18,11 +18,12 @@ export interface JsonState<T extends object> {
   error: boolean
 }
 
-export type OnJsonStateChange<T extends object> = (name: string | null, value: string | null) => void
+// export type OnJsonStateChange<T extends object> = (name: string | null, value: string | null) => void
+export type OnJsonStateChange = (name: string | null, value: string | null) => void
 
 export function useJsonState<T extends object>(
   initialState: InitialJsonState<T>,
-): [JsonState<T>, OnJsonStateChange<T>] {
+): [JsonState<T>, OnJsonStateChange] {
   const { fields: initialFields, jsonValue: initialJsonValue } = initialState
 
   const [jsonState, setJsonState] = useState<JsonState<T>>({
