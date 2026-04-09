@@ -16,30 +16,30 @@ import { SidebarHeader } from './header/sidebar-header.component'
 import { getDrawerSx } from './sidebar.styles'
 
 import { DEFAULT_STATE, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from '../../configurator.constants'
+import { ConfiguratorState, TokenListItem, WidgetMode } from '../../configurator.types'
 import { useColorPaletteManager } from '../../hooks/useColorPaletteManager'
 import { useJsonState, EMPTY_JSON_STATE } from '../../hooks/useJsonState'
 import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../hooks/useWidgetParamsAndSettings'
 import { ColorModeContext } from '../../theme/ColorModeContext'
-import { ConfiguratorState, TokenListItem, WidgetMode } from '../../configurator.types'
-import { AccordionSection } from '../controls/AccordionSection'
 import { AppearanceStyleControls } from '../controls/AppearanceStyleControls'
-import { BooleanSwitchControl } from '../controls/BooleanSwitchControl'
-import { CurrencyInputControl } from '../controls/CurrencyInputControl'
-import { CurrentTradeTypeControl } from '../controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from '../controls/CustomImagesControl'
 import { CustomSoundsControl } from '../controls/CustomSoundsControl'
 import { DeadlineControl } from '../controls/DeadlineControl'
-import { LocaleControl } from '../controls/LocaleControl'
-import { ModeControl } from '../controls/ModeControl'
-import { NetworkControl, NetworkOption, NetworkOptions } from '../controls/NetworkControl'
 import { PaletteControl } from '../controls/PaletteControl'
 import { PartnerFeeControl } from '../controls/PartnerFeeControl'
 import { ThemeControl } from '../controls/ThemeControl'
 import { TokenListControl } from '../controls/TokenListControl'
-import { TradeModesControl } from '../controls/TradeModesControl'
-import { WidgetHooksControl } from '../controls/WidgetHooksControl'
+import { AccordionSection } from '../ui/Accordion/AccordionSection'
+import { BooleanSwitchControl } from '../ui/controls/BooleanSwitch/BooleanSwitchControl'
+import { CurrencyInputControl } from '../ui/controls/CurrencyInput/CurrencyInputControl'
+import { CurrentTradeTypeControl } from '../ui/controls/Select/CurrentTradeTypeControl'
+import { LocaleControl } from '../ui/controls/Select/LocaleControl'
+import { ModeControl } from '../ui/controls/Select/ModeControl'
+import { NetworkControl, NetworkOption, NetworkOptions } from '../ui/controls/Select/NetworkControl'
+import { TradeModesControl } from '../ui/controls/Select/TradeModesControl'
+import { WidgetHooksControl } from '../ui/controls/Select/WidgetHooksControl'
 
 import type { Theme } from '@mui/material/styles'
 import type * as CSS from 'csstype'
@@ -315,6 +315,18 @@ export function Sidebar({
   }, [configuratorState, onStateChange])
 
   useSyncWidgetNetwork(chainId, setNetworkControlState, standaloneMode)
+
+  /*
+
+  TODO:
+
+  - Classify state props into categories in type definition file.
+  - Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
+  - Create reusable TextInput, NumberInput and SelectInput components.
+  - Add name to all fields.
+  - Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
+
+  */
 
   return (
     <Drawer sx={(theme: Theme) => getDrawerSx(theme, isResizing)} variant="persistent" anchor="left" open={isOpen}>

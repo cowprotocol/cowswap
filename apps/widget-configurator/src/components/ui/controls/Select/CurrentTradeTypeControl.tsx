@@ -7,7 +7,7 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 
-import { TRADE_MODES } from '../../configurator.constants'
+import { TRADE_MODES } from '../../../../configurator.constants'
 
 const LABEL = 'Current trade type'
 

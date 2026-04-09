@@ -10,7 +10,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { HelpTooltipButton } from './HelpTooltipButton'
+import { HelpTooltipButton } from '../../HelpTooltipButton/HelpTooltipButton'
 
 type WidgetMode = 'dapp' | 'standalone'
 

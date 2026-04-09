@@ -4,7 +4,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useWeb3ModalAccount, useSwitchNetwork } from '@web3modal/ethers5/react'
 
-import { getNetworkOption, NetworkOption } from '../components/controls/NetworkControl'
+import { getNetworkOption, NetworkOption } from '../components/ui/controls/Select/NetworkControl'
 
 export function useSyncWidgetNetwork(
   chainId: SupportedChainId,
