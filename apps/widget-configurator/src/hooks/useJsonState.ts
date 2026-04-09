@@ -12,13 +12,13 @@ export interface InitialJsonState<T extends object> {
 
 export interface JsonState<T extends object> {
   fields: T
-  rawJsonValue: string
+  rawJsonValue: string | null
   parsedJsonValue: T
   mergedValue: T
   error: boolean
 }
 
-export type OnJsonStateChange<T extends object> = (name: keyof T | null, value: string) => void
+export type OnJsonStateChange<T extends object> = (name: string | null, value: string | null) => void
 
 export function useJsonState<T extends object>(
   initialState: InitialJsonState<T>,
@@ -34,8 +34,20 @@ export function useJsonState<T extends object>(
   })
 
   const onChange = useCallback(
-    (name: keyof T | null, value: string) => {
+    (name: string | null, value: string | null) => {
       if (name === null) {
+        if (value === null) {
+          setJsonState({
+            fields: initialFields,
+            rawJsonValue: JSON.stringify(initialJsonValue),
+            parsedJsonValue: initialJsonValue,
+            mergedValue: mergeJsonValues(initialFields, initialJsonValue),
+            error: false,
+          })
+
+          return
+        }
+
         let parsedValue: T = initialJsonValue
 
         try {
@@ -71,7 +83,7 @@ export function useJsonState<T extends object>(
         })
       }
     },
-    [initialJsonValue],
+    [initialFields, initialJsonValue],
   )
 
   return [jsonState, onChange]

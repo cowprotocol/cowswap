@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { jsonHelperText } from '../../utils/jsonFieldParsing'
 
 import type { JsonState, OnJsonStateChange } from '../../hooks/useJsonState'
 import type * as CSS from 'csstype'
@@ -17,10 +18,6 @@ export interface AppearanceStyleControlsProps {
   onBodyWrapperStyleJson: OnJsonStateChange<CSS.Properties>
   cardStyleJson: JsonState<CSS.Properties>
   onCardStyleJson: OnJsonStateChange<CSS.Properties>
-}
-
-function jsonHelperText(hasError: boolean): string {
-  return hasError ? 'Invalid JSON.' : 'Optional. CamelCase CSS properties as JSON, e.g. {"padding": "12px"}'
 }
 
 // eslint-disable-next-line max-lines-per-function

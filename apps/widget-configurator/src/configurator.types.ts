@@ -95,7 +95,7 @@ export interface ConfiguratorState {
 
   // Advanced:
 
-  baseUrl: string
+  baseUrl: string | null
   enabledWidgetHooks: WidgetHookEvents[]
   rawParams: Partial<CowSwapWidgetParams>
 }

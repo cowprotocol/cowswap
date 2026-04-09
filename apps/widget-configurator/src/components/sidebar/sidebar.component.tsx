@@ -10,6 +10,8 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { jsonHelperText } from '../../utils/jsonFieldParsing'
+import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
 import { SidebarHeader } from './header/sidebar-header.component'
@@ -43,6 +45,7 @@ import { WidgetHooksControl } from '../ui/controls/Select/WidgetHooksControl'
 
 import type { Theme } from '@mui/material/styles'
 import type * as CSS from 'csstype'
+import { TextInput } from 'apps/widget-configurator/src/components/ui/controls/TextInput/TextInput.component'
 
 export interface SidebarProps {
   title: string
@@ -197,12 +200,8 @@ export function Sidebar({
 
   const customImagesState = useState<CowSwapWidgetParams['images']>({})
   const customSoundsState = useState<CowSwapWidgetParams['sounds']>({})
-  const [baseUrl, setBaseUrl] = useState<string>('')
+  const [baseUrl, setBaseUrl] = useState<string | null>(null)
   const [rawParamsJson, setRawParamsJson] = useJsonState<Partial<CowSwapWidgetParams>>(EMPTY_JSON_STATE)
-
-  const handleRawParamsJsonChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    setRawParamsJson(null, e.target.value)
-  }
 
   // Advanced Section:
 
@@ -562,26 +561,21 @@ export function Sidebar({
           expanded={expandedSection === 'Advanced'}
           onChange={toggleSection('Advanced')}
         >
-          <WidgetHooksControl state={widgetHooksState} />
-          <TextField
-            fullWidth
-            margin="dense"
-            id="baseUrl"
+          <TextInput
+            name="baseUrl"
             label="Widget App URL"
             value={baseUrl}
-            onChange={(e) => setBaseUrl(e.target.value)}
-            size="medium"
+            onChange={(_, value) => setBaseUrl(value)}
             placeholder={CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
             helperText={`Optional. Sets baseUrl (overrides Raw JSON). Default preview URL: ${CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}`}
           />
-          <TextField
-            fullWidth
-            margin="dense"
-            id="rawParams"
+          <WidgetHooksControl state={widgetHooksState} />
+          <JsonInput
             label="Raw JSON params"
+            name="rawParams"
             value={rawParamsJson.rawJsonValue}
-            onChange={handleRawParamsJsonChange}
-            size="medium"
+            onChange={(_name, value) => setRawParamsJson(null, value)}
+            helperText={jsonHelperText(rawParamsJson.error)}
           />
         </AccordionSection>
       </Stack>
