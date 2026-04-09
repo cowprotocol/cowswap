@@ -50,6 +50,7 @@ type RpcCallback = (error: any, response: any) => void
 const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 
 const JSON_RPC_VERSION = '2.0'
+const DEFAULT_TARGET_ORIGIN = 'https://swap.cow.fi'
 
 /**
  * Export the type information about the different events that are emitted.
@@ -163,6 +164,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   private readonly timeoutMilliseconds: number
   private readonly eventSource: Window
   private readonly eventTarget: Window
+  private readonly targetOrigin: string
   private readonly completers: {
     // TODO: Replace any with proper type definitions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -172,6 +174,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   private providerMetaInfoCallback?: (data: ProviderMetaInfoPayload) => void
 
   public constructor({
+    targetOrigin,
     timeoutMilliseconds = DEFAULT_TIMEOUT_MILLISECONDS,
     eventSource = window,
     eventTarget = window.parent,
@@ -182,6 +185,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     this.timeoutMilliseconds = timeoutMilliseconds
     this.eventSource = eventSource
     this.eventTarget = eventTarget
+    this.targetOrigin = targetOrigin || getParentOrigin() || DEFAULT_TARGET_ORIGIN
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
@@ -189,6 +193,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
       (message) => {
         this.handleRpcRequests(message)
       },
+      this.targetOrigin,
     )
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
@@ -197,6 +202,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
       (message) => {
         this.handleOnEvent(message)
       },
+      this.targetOrigin,
     )
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
@@ -209,6 +215,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
           this.providerMetaInfoCallback(this.providerMetaInfo)
         }
       },
+      this.targetOrigin,
     )
   }
 
@@ -235,9 +242,14 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     )
 
     // Send the JSON RPC to the event source.
-    iframeRpcProviderTransport.postMessageToWindow(this.eventTarget, IframeRpcProviderEvents.PROVIDER_RPC_REQUEST, {
-      rpcRequest,
-    })
+    iframeRpcProviderTransport.postMessageToWindow(
+      this.eventTarget,
+      IframeRpcProviderEvents.PROVIDER_RPC_REQUEST,
+      {
+        rpcRequest,
+      },
+      this.targetOrigin,
+    )
 
     // Delete the completer within the timeout and reject the promise.
     setTimeout(() => {
@@ -335,6 +347,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
         this.eventTarget,
         IframeRpcProviderEvents.REQUEST_PROVIDER_META_INFO,
         null,
+        this.targetOrigin,
       )
     }
   }
@@ -475,6 +488,18 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private emitMessage(message: ProviderMessage) {
     this.emit('message', message)
+  }
+}
+
+function getParentOrigin(): string | undefined {
+  if (typeof document === 'undefined' || !document.referrer) {
+    return undefined
+  }
+
+  try {
+    return new URL(document.referrer).origin
+  } catch {
+    return undefined
   }
 }
 

@@ -1,10 +1,13 @@
-// Yes, this is a hack. For some reason I can't specify other types as a key
 import { WindowListener } from './types'
 
 // @ts-ignore
 type AbstractRecord = Record<unknown, unknown>
 
 const DEFAULT_ORIGIN = 'https://swap.cow.fi'
+
+function logWidget(...args: unknown[]): void {
+  console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
+}
 
 export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
   constructor(public readonly key: string) {}
@@ -13,6 +16,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
     contentWindow: Window,
     method: T,
     payload: MethodsEmitPayloadMap[T],
+    targetOrigin = DEFAULT_ORIGIN,
   ): void {
     const data = typeof payload === 'object' ? payload : {}
     const postPayload = {
@@ -20,21 +24,27 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
       method,
       ...data,
     }
-    contentWindow.postMessage(postPayload, DEFAULT_ORIGIN)
+    contentWindow.postMessage(postPayload, targetOrigin)
   }
 
   listenToMessageFromWindow<T extends keyof MethodsEmitPayloadMap>(
     contentWindow: Window,
     method: T,
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
+    trustedOrigin = DEFAULT_ORIGIN,
   ): (payload: MessageEvent<unknown>) => void {
     const listener = (event: MessageEvent<unknown>): void => {
-      if (
-        !isEventData(event.data) ||
-        event.data.key !== this.key ||
-        event.data.method !== method ||
-        event.origin !== DEFAULT_ORIGIN
-      ) {
+      if (!isEventData(event.data) || event.data.key !== this.key || event.data.method !== method) {
+        return
+      }
+
+      if (event.origin !== trustedOrigin) {
+        logWidget('Rejected message due to origin mismatch', {
+          key: this.key,
+          method,
+          actualOrigin: event.origin,
+          trustedOrigin,
+        })
         return
       }
 
