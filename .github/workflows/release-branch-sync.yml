@@ -98,6 +98,7 @@ jobs:
 
       - name: Create or update pull request
         if: steps.prepare.outputs.has_changes == 'true'
+        id: create-pr
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.setup.outputs.token }}
@@ -112,6 +113,16 @@ jobs:
           team-reviewers: |
             frontend
             qa
+
+      - name: Notify Slack for develop review
+        if: steps.prepare.outputs.has_changes == 'true'
+        run: |
+          curl -X POST -H "Content-type: application/json" \
+            --data "{\"text\": \"➡️ Develop sync PR is ready for review. <$PR_URL|Open pull request>.\"}" \
+            "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          PR_URL: ${{ steps.create-pr.outputs.pull-request-url }}
 
   sync-staging:
     name: Fast-forward staging to main
