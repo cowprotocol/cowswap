@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import ms from 'ms.macro'
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 
@@ -27,6 +28,9 @@ export function useTokenAllowances(tokenAddresses: string[]): {
     })),
     query: {
       enabled: !!account && !!spender && tokenAddresses.length > 0,
+      refetchInterval: ms`32s`,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
   })
 
@@ -34,7 +38,8 @@ export function useTokenAllowances(tokenAddresses: string[]): {
     if (!allowances?.length) return
 
     return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
-      acc[address.toLowerCase()] = BigInt(Number(allowances[index].result ?? 0))
+      const result = allowances[index]?.result
+      acc[address.toLowerCase()] = result !== undefined ? (result as bigint) : undefined
       return acc
     }, {})
   }, [tokenAddresses, allowances])
