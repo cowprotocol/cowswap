@@ -4,7 +4,6 @@ export enum ToastMessageType {
   SWAP_ETH_FLOW_SENT_TX = 'SWAP_ETH_FLOW_SENT_TX',
   ORDER_CREATED = 'ORDER_CREATED',
   SWAP_SIGNING_ERROR = 'SWAP_SIGNING_ERROR',
-  ORDER_PENDING = 'ORDER_PENDING',
   ORDER_FULFILLED = 'ORDER_FULFILLED',
   ORDER_CANCELLED = 'ORDER_CANCELLED',
   ORDER_EXPIRED = 'ORDER_EXPIRED',
@@ -31,11 +30,6 @@ export interface ToastMessagePayloads {
   }
 
   [ToastMessageType.ORDER_FULFILLED]: {
-    orderUid: string
-    orderType: UiOrderType
-  }
-
-  [ToastMessageType.ORDER_PENDING]: {
     orderUid: string
     orderType: UiOrderType
   }

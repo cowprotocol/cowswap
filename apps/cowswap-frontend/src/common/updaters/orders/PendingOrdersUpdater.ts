@@ -46,7 +46,6 @@ import {
   emitCancelledOrderEvent,
   emitExpiredOrderEvent,
   emitFulfilledOrderEvent,
-  emitPendingOrderEvent,
   emitPresignedOrderEvent,
 } from 'modules/orders'
 
@@ -316,7 +315,6 @@ async function _updateCreatingOrders(
             apiAdditionalInfo: orderData,
           }
           addOrUpdateOrders({ chainId, orders: [updatedOrder], isSafeWallet })
-          emitPendingOrderEvent(chainId, orderData)
         })
         .catch((error) => {
           // Nothing to do here, keep waiting until the order shows up
