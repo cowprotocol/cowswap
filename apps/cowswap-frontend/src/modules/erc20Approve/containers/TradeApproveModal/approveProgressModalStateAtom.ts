@@ -1,12 +1,13 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
+import { ReactElement } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 export interface ApproveProgressModalState {
   approveInProgress: boolean
   currency?: Currency
-  error?: string
+  error?: ReactElement | string
   isPendingInProgress?: boolean
   amountToApprove?: CurrencyAmount<Currency>
 }
