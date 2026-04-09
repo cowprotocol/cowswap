@@ -56,25 +56,43 @@ describe('createCowSwapWidget', () => {
 
     expect(window.open).toHaveBeenCalledWith('/faq', '_blank', 'noopener')
   })
+
+  it('accepts messages from a custom widget baseUrl origin', () => {
+    createWidget('https://barn.cow.fi')
+
+    dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.fi')
+
+    expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener')
+  })
+
+  it('accepts messages from a custom trustedOrigin override', () => {
+    createWidget('https://swap.cow.fi', 'https://staging.swap.cow.fi')
+
+    dispatchInterceptWindowOpen('https://example.com', 'https://staging.swap.cow.fi')
+
+    expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener')
+  })
 })
 
-function createWidget(): void {
+function createWidget(baseUrl?: string, trustedOrigin?: string): void {
   const container = document.createElement('div')
   document.body.appendChild(container)
 
   createCowSwapWidget(container, {
     params: {
       appCode: 'test-app',
+      baseUrl,
+      trustedOrigin,
       chainId: 1,
       tradeType: TradeType.SWAP,
     },
   })
 }
 
-function dispatchInterceptWindowOpen(href: string): void {
+function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi'): void {
   window.dispatchEvent(
     new MessageEvent('message', {
-      origin: 'https://swap.cow.fi',
+      origin,
       data: {
         key: 'cowSwapWidget',
         method: 'INTERCEPT_WINDOW_OPEN',

@@ -300,6 +300,12 @@ export interface CowSwapWidgetParams {
   baseUrl?: string
 
   /**
+   * Overrides the origin trusted for postMessage communication with the widget iframe.
+   * Defaults to the origin derived from `baseUrl` / iframe src.
+   */
+  trustedOrigin?: string
+
+  /**
    * Sell token, and optionally the amount.
    */
   sell?: TradeAsset
