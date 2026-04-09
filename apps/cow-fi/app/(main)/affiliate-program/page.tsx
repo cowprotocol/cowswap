@@ -45,16 +45,14 @@ import {
 } from '@/styles/styled'
 
 const FooterCtaLinkOuter = styled.div`
-  width: fit-content;
-  display: flex;
-  aligh-items: center;
-  justify-content: center;
-  margin: auto;
-
   ${Media.upToExtraSmall()} {
+    width: 100%;
+    box-sizing: border-box;
     align-self: stretch;
+    margin: 0;
 
     a {
+      display: block;
       width: 100%;
       box-sizing: border-box;
       line-height: 1.35;
