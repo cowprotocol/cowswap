@@ -1,3 +1,5 @@
+/* eslint-disable max-lines-per-function */
+
 import React, { CSSProperties, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -48,7 +50,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
     setThemeMode(widgetTheme)
   }, [setThemeMode, widgetTheme])
 
-  const [isWidgetReady, __] = useState(true) // TODO: To be implemented... Only if using latest production or localhost, sa older versions do not send events, so we do not know when they are ready.
+  const [isWidgetReady, __] = useState(true) // TODO: To be implemented... Only if using latest production or localhost, as older versions do not send events, so we do not know when they are ready.
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isSnippetOpen, setIsSnippetOpen] = useState(false)
   const { drawerWidth, isResizing, handleResizeStart } = useResizableDrawerWidth(configuratorRef, DRAWER_WIDTH_CSS_VAR)
@@ -95,25 +97,25 @@ export function Configurator({ title }: { title: string }): ReactNode {
         </div>
       </Box>
     )
-  } else if (isSnippetOpen) {
-    configuratorContent = (
-      <EmbedDialog
-        params={params}
-        defaultPalette={configuratorState.defaultColors}
-        open
-        handleClose={handleSnippetToggle}
-      />
-    )
   } else {
-    configuratorContent = (
-      <Box sx={configuratorCheckeredCanvasSx(showIframeOutline)}>
+    configuratorContent = (<>
+      <Box sx={configuratorCheckeredCanvasSx(showIframeOutline, isSnippetOpen)}>
         <CowSwapWidget
           params={params}
           provider={!IS_IFRAME && !configuratorState.standaloneMode ? provider : undefined}
           listeners={listeners}
         />
+
+        { isSnippetOpen ? (
+          <EmbedDialog
+            params={params}
+            defaultPalette={configuratorState.defaultColors}
+            open
+            handleClose={handleSnippetToggle}
+          />
+        ) : null }
       </Box>
-    )
+    </>)
   }
 
   return (
@@ -127,6 +129,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
         isOpen={isSidebarOpen}
         isResizing={isResizing}
         isSnippetOpen={isSnippetOpen}
+        onSidebarToggle={handleSidebarToggle}
         onSnippetToggle={handleSnippetToggle}
         onStateChange={setConfiguratorState}
         toastManager={toastManager}

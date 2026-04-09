@@ -43,6 +43,7 @@
     "mui-color-input": "^2.0.1",
     "react": "19.1.2",
     "react-dom": "19.1.2",
+    "react-feather": "^2.0.10",
     "react-inlinesvg": "^4.1.5",
     "react-syntax-highlighter": "^15.5.0"
   },

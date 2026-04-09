@@ -9,9 +9,10 @@ import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import type { Theme } from '@mui/material/styles'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
-import { DRAWER_TRANSITION, DrawerStyled, WalletConnectionWrapper } from './configurator-sidebar.styles'
+import { getDrawerSx } from './configurator-sidebar.styles'
 import { SidebarFooter } from './footer/sidebar-footer.component'
 
 import { ColorModeContext } from '../../../../theme/ColorModeContext'
@@ -25,7 +26,7 @@ import { ConfiguratorState, TokenListItem, WidgetMode } from '../../types'
 import { AccordionSection } from '../controls/AccordionSection'
 import { AppearanceStyleControls } from '../controls/AppearanceStyleControls'
 import { BooleanSwitchControl } from '../controls/BooleanSwitchControl'
-import { ConfiguratorBrandHeader } from '../controls/ConfiguratorBrandHeader'
+import { SidebarHeader } from './header/sidebar-header.component'
 import { CurrencyInputControl } from '../controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from '../controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from '../controls/CustomImagesControl'
@@ -48,6 +49,7 @@ export interface ConfiguratorSidebarProps {
   isOpen: boolean
   isResizing: boolean
   isSnippetOpen: boolean
+  onSidebarToggle: () => void
   onSnippetToggle: () => void
   onStateChange: (state: ConfiguratorState) => void
   toastManager: UseToastsManagerReturn
@@ -59,6 +61,7 @@ export function ConfiguratorSidebar({
   isOpen,
   isResizing,
   isSnippetOpen,
+  onSidebarToggle,
   onSnippetToggle,
   onStateChange,
   toastManager,
@@ -315,31 +318,14 @@ export function ConfiguratorSidebar({
 
   return (
     <Drawer
-      sx={(theme) => ({
-        ...DrawerStyled(theme),
-        transition: isResizing ? 'none' : DRAWER_TRANSITION,
-      })}
+      sx={(theme: Theme) => getDrawerSx(theme, isResizing)}
       variant="persistent"
       anchor="left"
       open={isOpen}
     >
-      <ConfiguratorBrandHeader title={title} themeMode={mode} />
+      <SidebarHeader title={title} themeMode={mode} standaloneMode={ standaloneMode } />
 
-      {!IS_IFRAME && (
-        <>
-          {!standaloneMode && (
-            <div style={WalletConnectionWrapper}>
-              {/* Attempt 2 at fixing issue on Vercel build (locally it builds fine) */}
-              {/* Error: apps/widget-configurator/src/app/configurator/index.tsx:272:17 - error TS2339: Property 'w3m-button' does not exist on type 'JSX.IntrinsicElements'.*/}
-              {/* Fix from https://github.com/reown-com/appkit/issues/3093 */}
-              {/* @ts-ignore */}
-              <w3m-button />
-            </div>
-          )}
-        </>
-      )}
-
-      <Stack spacing={0} sx={{ width: 'auto', mx: '-1.6rem' }}>
+      <Stack spacing={0}>
         <AccordionSection title="Basics" expanded={expandedSection === 'Basics'} onChange={toggleSection('Basics')}>
           {!IS_IFRAME && <ModeControl value={widgetMode} onChange={selectWidgetMode} />}
           <LocaleControl state={localeState} />
@@ -526,7 +512,12 @@ export function ConfiguratorSidebar({
         </AccordionSection>
       </Stack>
 
-      <SidebarFooter isSnippetOpen={isSnippetOpen} onSnippetToggle={onSnippetToggle} />
+      <SidebarFooter
+        isSidebarOpen={isOpen}
+        onSidebarToggle={onSidebarToggle}
+        isSnippetOpen={isSnippetOpen}
+        onSnippetToggle={onSnippetToggle}
+      />
     </Drawer>
   )
 }

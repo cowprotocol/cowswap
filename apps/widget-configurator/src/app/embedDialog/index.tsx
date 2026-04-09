@@ -12,12 +12,10 @@ import { Tab } from '@mui/material'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Dialog, { DialogProps } from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
 import Snackbar from '@mui/material/Snackbar'
+import { useTheme } from '@mui/material/styles'
 import Tabs from '@mui/material/Tabs'
+import Typography from '@mui/material/Typography'
 import SVG from 'react-inlinesvg'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -93,10 +91,10 @@ export interface EmbedDialogProps {
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function EmbedDialog({ params, open, handleClose, defaultPalette }: EmbedDialogProps): ReactNode {
-  const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
+  const theme = useTheme()
   const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
   const { id, language, snippetFromParams } = tabInfo
-  const descriptionElementRef = useRef<HTMLElement>(null)
+  const descriptionElementRef = useRef<HTMLDivElement | null>(null)
   const cowAnalytics = useCowAnalytics()
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -122,7 +120,6 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
 
   useEffect(() => {
     if (open) {
-      setScroll('paper')
       cowAnalytics.sendEvent({
         category: AnalyticsCategory.WIDGET_CONFIGURATOR,
         action: 'View code',
@@ -142,25 +139,67 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
   const onChangeTab = useCallback((_event: SyntheticEvent, newValue: TabInfo) => setCurrentTabInfo(newValue), [])
 
   return (
-    <div>
-      <Dialog
-        fullWidth
-        maxWidth="lg"
-        scroll={scroll}
+    <>
+      <Box
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
-        open={open}
-        onClose={handleClose}
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          minHeight: 0,
+          backgroundColor: (t) => t.palette.background.paper,
+        }}
       >
-        <DialogTitle id="scroll-dialog-title">Snippet for CoW Widget</DialogTitle>
+        <Box
+          ref={descriptionElementRef}
+          tabIndex={-1}
+          sx={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 2,
+            flexShrink: 0,
+            backgroundColor: (t) => t.palette.background.paper,
+            borderBottom: 1,
+            borderColor: 'divider',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 1.5,
+              px: 2,
+              pt: 2,
+              pb: 1.5,
+            }}
+          >
+            <Typography id="scroll-dialog-title" component="h2" variant="h6" sx={{ fontWeight: 600, m: 0 }}>
+              Snippet for CoW Widget
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1, ml: 'auto' }}>
+              <Button variant="outlined" color="inherit" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="contained" onClick={handleCopyClick}>
+                Copy
+              </Button>
+            </Box>
+          </Box>
 
-        <DialogContent dividers={scroll === 'paper'}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Box sx={{ borderTop: 1, borderColor: 'divider', px: 1 }}>
             <Tabs
               value={tabInfo}
               onChange={onChangeTab}
               aria-label="languages"
               sx={{
+                minHeight: 48,
                 '& .MuiTab-iconWrapper': {
                   height: '16px',
                   width: '16px',
@@ -184,28 +223,34 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
               })}
             </Tabs>
           </Box>
+        </Box>
 
+        <Box
+          id="scroll-dialog-description"
+          sx={{
+            flexShrink: 0,
+            px: 2,
+            pb: 2,
+            pt: 1,
+          }}
+        >
           <div role="tabpanel" id={`simple-tabpanel-${id}`} aria-labelledby={`simple-tab-${id}`}>
             <SyntaxHighlighter
               showLineNumbers={true}
               children={code}
               language={language}
               style={nightOwl}
-              customStyle={{ fontSize: '0.8em' }}
+              customStyle={{ fontSize: '0.8em', backgroundColor: theme.palette.background.paper }}
             />
           </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleCopyClick}>Copy</Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+      </Box>
 
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
           Successfully copied to clipboard!
         </Alert>
       </Snackbar>
-    </div>
+    </>
   )
 }

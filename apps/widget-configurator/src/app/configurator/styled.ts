@@ -12,7 +12,7 @@ const TRANSPARENCY_CHECKER_PX = 8
 const CONTENT_PADDING_PX = 16
 
 export const configuratorCheckeredCanvasSx =
-  (showIframeOutline: boolean): SxProps<Theme> =>
+  (showIframeOutline: boolean, blockScroll = false): SxProps<Theme> =>
   (theme) => {
     const isDark = theme.palette.mode === 'dark'
     const squareA = theme.palette.grey[isDark ? 900 : 200]
@@ -21,12 +21,13 @@ export const configuratorCheckeredCanvasSx =
     const pattern = `repeating-conic-gradient(from 90deg, ${squareA} 0% 25%, ${squareB} 0% 50%)`
 
     return {
+      position: 'relative',
       flex: '1 1 auto',
-      overflow: 'auto',
+      overflowY: blockScroll ? 'hidden' : 'scroll',
       padding: `${CONTENT_PADDING_PX}px`,
       backgroundColor: base,
 
-      '& > div': {
+      '& > .checkered-canvas': {
         minWidth: '100%',
         minHeight: '100%',
         backgroundImage: `${pattern}`,
@@ -40,7 +41,7 @@ export const configuratorCheckeredCanvasSx =
         alignItems: 'center',
       },
 
-      '& > div > iframe': {
+      '& iframe': {
         display: 'block',
         border: 0,
         margin: '0 auto',

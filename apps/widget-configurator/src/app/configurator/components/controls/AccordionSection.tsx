@@ -23,15 +23,11 @@ export function AccordionSection({ title, expanded, onChange, children }: Accord
       elevation={0}
       slotProps={{ transition: { unmountOnExit: true } }}
       sx={{
-        borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
         borderRadius: '0 !important',
         overflow: 'hidden',
 
         '&:before': { display: 'none' },
-
-        '&:last-child': {
-          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-        },
       }}
     >
       <AccordionSummary

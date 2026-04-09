@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { ChevronLeft, ChevronRight } from 'react-feather'
 
 import { Box, IconButton } from '@mui/material'
 
@@ -20,10 +21,12 @@ export function SidebarControls({ isSidebarOpen, toggleSidebarOpen, onResizeStar
       <IconButton
         title={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
         aria-label={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+        aria-hidden={isSidebarOpen}
+        tabIndex={isSidebarOpen ? -1 : 0}
         onClick={toggleSidebarOpen}
         sx={sidebarToggleOpenButton}
       >
-        {isSidebarOpen ? '<' : '>'}
+        {isSidebarOpen ? <ChevronLeft /> : <ChevronRight />}
       </IconButton>
 
       {isSidebarOpen ? (

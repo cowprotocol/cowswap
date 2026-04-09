@@ -65,7 +65,7 @@ export function useToastsManager(setListeners: (listeners: CowWidgetEventListene
         },
       })
     } else {
-      openToast('Disable, toast messages. Self-contained widget toasts.')
+      openToast('Toast messages are disabled. Self-contained widget toasts.')
     }
 
     setListeners(newListeners)

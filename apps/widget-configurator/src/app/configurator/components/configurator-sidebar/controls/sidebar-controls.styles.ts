@@ -3,28 +3,39 @@ import { Theme } from '@mui/material/styles'
 
 export const sidebarControlsZeroWidthColumnSx: SxProps<Theme> = {
   position: 'relative',
+  zIndex: 2000,
   width: 0,
   height: '100%',
   flexShrink: 0,
 }
 
 export const sidebarToggleOpenButton: SxProps<Theme> = (theme: Theme) => ({
-  position: 'fixed',
-  top: '1.6rem',
-  left: '1.6rem',
-
-  width: '3.6rem',
-  height: '3.6rem',
+  position: 'absolute',
+  top: "50%",
+  left: 0,
+  width: 48,
+  height: 48,
+  p: 0,
+  pl:"24px",
+  pr: "4px",
+  transform: 'translate(-50%, -50%)',
   borderRadius: '50%',
-  border: `1px solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.paper,
+  border: `none`,
+  backgroundColor: theme.palette.grey[theme.palette.mode === 'dark' ? 900 : 200],
   color: theme.palette.primary.main,
   boxShadow: 'none',
   zIndex: 3,
+  transition: 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out',
+
+  '&[aria-hidden="true"]': {
+    opacity: 0,
+    pointerEvents: 'none',
+  },
 
   '&:hover': {
-    backgroundColor: theme.palette.action.hover,
     boxShadow: 'none',
+    backgroundColor: theme.palette.grey[theme.palette.mode === 'dark' ? 900 : 200],
+    transform: 'translate(-50%, -50%) scale(2)',
   },
 })
 
@@ -39,11 +50,11 @@ export const sidebarResizeHandle: SxProps<Theme> = {
   '&::before': {
     content: '""',
     position: 'absolute',
-    top: '1.6rem',
-    bottom: '1.6rem',
+    top: 16,
+    bottom: 16,
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '0.2rem',
+    width: 4,
     borderRadius: '999px',
     backgroundColor: 'divider',
   },
