@@ -1,5 +1,59 @@
 # Changelog
 
+## [1.3.4](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.3.3...widget-react-v1.3.4) (2026-04-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.1.2
+    * @cowprotocol/types bumped to 4.1.2
+    * @cowprotocol/widget-lib bumped to 2.2.4
+
+## [1.3.3](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.3.2...widget-react-v1.3.3) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.3
+
+## [1.3.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.3.1...widget-react-v1.3.2) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.2
+
+## [1.3.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.3.0...widget-react-v1.3.1) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.1.1
+    * @cowprotocol/types bumped to 4.1.1
+    * @cowprotocol/widget-lib bumped to 2.2.1
+
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.2.1...widget-react-v1.3.0) (2026-04-06)
+
+
+### ✨ Features
+
+* **widget:** add onReady callback to widget initialization ([#7255](https://github.com/cowprotocol/cowswap/issues/7255)) ([0279aac](https://github.com/cowprotocol/cowswap/commit/0279aacbbe610bbe0cfe66597bd04ebc89bab55c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.0
+
 ## [1.2.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v1.2.0...widget-react-v1.2.1) (2026-04-03)
 
 

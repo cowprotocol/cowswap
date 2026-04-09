@@ -1,5 +1,136 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.3.3...cowswap-v3.4.0) (2026-04-08)
+
+
+### ✨ Features
+
+* handle xstock buy min amount ([#7199](https://github.com/cowprotocol/cowswap/issues/7199)) ([706fd63](https://github.com/cowprotocol/cowswap/commit/706fd63fbe016cc6a43faadac68160047cc50d8c))
+* improve error reporting on approve/swap ([#7176](https://github.com/cowprotocol/cowswap/issues/7176)) ([306ee92](https://github.com/cowprotocol/cowswap/commit/306ee9272))
+* NEAR btc/sol token list support ([#7180](https://github.com/cowprotocol/cowswap/issues/7180)) ([a8da98b](https://github.com/cowprotocol/cowswap/commit/a8da98bae))
+
+
+### 🐛 Bug Fixes
+
+* disable hover transform on swap arrow during quote loading ([#7132](https://github.com/cowprotocol/cowswap/issues/7132)) ([#7171](https://github.com/cowprotocol/cowswap/issues/7171)) ([091ceab](https://github.com/cowprotocol/cowswap/commit/091ceabf1))
+* preserve isCancelling flag when API re-fetches ([#7162](https://github.com/cowprotocol/cowswap/issues/7162)) ([5b8a5ea](https://github.com/cowprotocol/cowswap/commit/5b8a5ea06))
+* update sdk version with fixes for addresses ([#7166](https://github.com/cowprotocol/cowswap/issues/7166)) ([8192f79](https://github.com/cowprotocol/cowswap/commit/8192f795b))
+* **ui:** fix slippage not being editable while auto slippage is loading ([#7153](https://github.com/cowprotocol/cowswap/issues/7153)) ([f3049a9](https://github.com/cowprotocol/cowswap/commit/f3049a947))
+* **account:** open account proxy link in new tab when in widget mode ([#7182](https://github.com/cowprotocol/cowswap/issues/7182)) ([8a130a1](https://github.com/cowprotocol/cowswap/commit/8a130a17d))
+* display network selector for SC wallets ([#7144](https://github.com/cowprotocol/cowswap/issues/7144)) ([f17e9bc](https://github.com/cowprotocol/cowswap/commit/f17e9bc52))
+* remove some console errors due to SVG/HTML attributes ([#7203](https://github.com/cowprotocol/cowswap/issues/7203)) ([c423a10](https://github.com/cowprotocol/cowswap/commit/c423a10c5))
+* quick patch for 310 error (rendered more hooks than during...) ([#7208](https://github.com/cowprotocol/cowswap/issues/7208)) ([d47aa7f](https://github.com/cowprotocol/cowswap/commit/d47aa7f5b))
+* **affiliate:** replace useWalletInfo chainId usage with useWalletChainId ([#7230](https://github.com/cowprotocol/cowswap/issues/7230)) ([85a7d06](https://github.com/cowprotocol/cowswap/commit/85a7d0686))
+* always use AlertTriangle, not alertCircle ([#7206](https://github.com/cowprotocol/cowswap/issues/7206)) ([19378d4](https://github.com/cowprotocol/cowswap/commit/19378d460))
+* reset trade confirm state on unmount to allow surplus modal on account pages ([#7213](https://github.com/cowprotocol/cowswap/issues/7213)) ([b8d38ed](https://github.com/cowprotocol/cowswap/commit/b8d38ed16))
+* replace CompactIconTooltip with HoverTooltip for improved consistency ([#7264](https://github.com/cowprotocol/cowswap/issues/7264)) ([56e239b](https://github.com/cowprotocol/cowswap/commit/56e239b2a))
+* **widget:** hideRecentTokens causing tokens to disappear ([#7267](https://github.com/cowprotocol/cowswap/issues/7267)) ([0d67902](https://github.com/cowprotocol/cowswap/commit/0d6790289117c122fdb862ba0151da80837a8ede))
+* **widget:** preserve hooksEnabled flag after navigation ([#7260](https://github.com/cowprotocol/cowswap/issues/7260)) ([ab54b30](https://github.com/cowprotocol/cowswap/commit/ab54b3048))
+
+
+### 🔧 Miscellaneous
+
+* remove ink feature flag ([#7220](https://github.com/cowprotocol/cowswap/issues/7220)) ([0c8f326](https://github.com/cowprotocol/cowswap/commit/0c8f32658))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.5
+    * @cowprotocol/assets bumped to 2.2.1
+    * @cowprotocol/balances-and-allowances bumped to 3.0.7
+    * @cowprotocol/common-const bumped to 3.0.4
+    * @cowprotocol/common-hooks bumped to 3.0.4
+    * @cowprotocol/common-utils bumped to 3.0.4
+    * @cowprotocol/core bumped to 3.0.4
+    * @cowprotocol/ens bumped to 3.0.4
+    * @cowprotocol/events bumped to 4.1.2
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.12
+    * @cowprotocol/iframe-transport bumped to 2.0.12
+    * @cowprotocol/multicall bumped to 3.0.6
+    * @cowprotocol/permit-utils bumped to 3.0.4
+    * @cowprotocol/snackbars bumped to 2.0.16
+    * @cowprotocol/tokens bumped to 3.2.0
+    * @cowprotocol/types bumped to 4.1.2
+    * @cowprotocol/ui bumped to 3.1.3
+    * @cowprotocol/wallet bumped to 3.0.6
+    * @cowprotocol/wallet-provider bumped to 2.1.12
+    * @cowprotocol/widget-lib bumped to 2.2.4
+
+## [3.3.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.3.2...cowswap-v3.3.3) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.3
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.3.1...cowswap-v3.3.2) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.2
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.3.0...cowswap-v3.3.1) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.4
+    * @cowprotocol/balances-and-allowances bumped to 3.0.6
+    * @cowprotocol/common-const bumped to 3.0.3
+    * @cowprotocol/common-hooks bumped to 3.0.3
+    * @cowprotocol/common-utils bumped to 3.0.3
+    * @cowprotocol/core bumped to 3.0.3
+    * @cowprotocol/ens bumped to 3.0.3
+    * @cowprotocol/events bumped to 4.1.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.11
+    * @cowprotocol/iframe-transport bumped to 2.0.11
+    * @cowprotocol/multicall bumped to 3.0.5
+    * @cowprotocol/permit-utils bumped to 3.0.3
+    * @cowprotocol/snackbars bumped to 2.0.15
+    * @cowprotocol/tokens bumped to 3.1.2
+    * @cowprotocol/types bumped to 4.1.1
+    * @cowprotocol/ui bumped to 3.1.2
+    * @cowprotocol/wallet bumped to 3.0.5
+    * @cowprotocol/wallet-provider bumped to 2.1.11
+    * @cowprotocol/widget-lib bumped to 2.2.1
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.2.1...cowswap-v3.3.0) (2026-04-06)
+
+
+### ✨ Features
+
+* **affiliate:** show the exact updated at ([#7169](https://github.com/cowprotocol/cowswap/issues/7169)) ([48c452a](https://github.com/cowprotocol/cowswap/commit/48c452acbb42ca08ab769427a77910719dbc4107))
+* **widget:** add onReady callback to widget initialization ([#7255](https://github.com/cowprotocol/cowswap/issues/7255)) ([0279aac](https://github.com/cowprotocol/cowswap/commit/0279aacbbe610bbe0cfe66597bd04ebc89bab55c))
+* **widget:** allow hiding post trading tips ([#7256](https://github.com/cowprotocol/cowswap/issues/7256)) ([b484ad1](https://github.com/cowprotocol/cowswap/commit/b484ad162fb0834556dd14fcb99fd0cadbfcfaa3))
+
+
+### 🐛 Bug Fixes
+
+* **widget:** restrict token search to current token lists if set ([#7254](https://github.com/cowprotocol/cowswap/issues/7254)) ([3644dd0](https://github.com/cowprotocol/cowswap/commit/3644dd0548e8c4f2506b5566224c838923b34079))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/balances-and-allowances bumped to 3.0.5
+    * @cowprotocol/tokens bumped to 3.1.1
+    * @cowprotocol/widget-lib bumped to 2.2.0
+
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.2.0...cowswap-v3.2.1) (2026-04-03)
 
 
