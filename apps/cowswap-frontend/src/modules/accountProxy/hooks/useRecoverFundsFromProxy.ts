@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 
 import { delay } from '@cowprotocol/common-utils'
-import { CowShedContractAbi } from '@cowprotocol/cowswap-abis'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
@@ -9,16 +8,14 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import { stringToHex } from 'viem'
-
-import { useAppSigner } from 'common/hooks/useAppSigner'
-import { useContract } from 'common/hooks/useContract'
+import { useWalletClient } from 'wagmi'
 
 import { useCowShedHooks } from './useCowShedHooks'
 
 import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 
 const INFINITE_DEADLINE = 99999999999
-const DEFAULT_GAS_LIMIT = 600_000
+const DEFAULT_GAS_LIMIT = 600_000n
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
 export interface RecoverFundsContext {
@@ -41,20 +38,18 @@ export function useRecoverFundsFromProxy(
 ): RecoverFundsContext {
   const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
-  const signer = useAppSigner()
+  const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks(proxyVersion)
 
   const factoryAddress = cowShedHooks?.getFactoryAddress()
 
-  const { contract: cowShedContract } = useContract(factoryAddress, CowShedContractAbi, true)
-
   const callback = useCallback(async () => {
     if (
       !cowShedHooks ||
-      !signer ||
+      !walletClient ||
       !proxyAddress ||
-      !cowShedContract ||
+      !factoryAddress ||
       !selectedTokenAddress ||
       !account ||
       !tokenBalance
@@ -84,25 +79,43 @@ export function useRecoverFundsFromProxy(
         nonce,
         BigInt(validTo),
         ContractsSigningScheme.EIP712, // TODO: support other signing types
-        signer,
       )
 
       setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
 
       await delay(DELAY_BETWEEN_SIGNATURES)
 
-      const contract = cowShedContract as {
-        executeHooks(...args: unknown[]): Promise<{ hash: string }>
-      }
-      const transaction = await contract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
-        gasLimit: DEFAULT_GAS_LIMIT,
+      // Use the SDK's own encoder to build the calldata, matching how CowShedSdk.signCalls works internally
+      const callData = cowShedHooks.encodeExecuteHooksForFactory(
+        calls,
+        nonce,
+        BigInt(validTo),
+        account,
+        encodedSignature,
+      )
+
+      const hash = await walletClient.sendTransaction({
+        to: factoryAddress as `0x${string}`,
+        data: callData as `0x${string}`,
+        account: walletClient.account!,
+        chain: walletClient.chain,
+        gas: DEFAULT_GAS_LIMIT,
       })
 
-      return transaction.hash
+      return hash
     } finally {
       setTxSigningStep(null)
     }
-  }, [signer, proxyAddress, cowShedContract, selectedTokenAddress, account, tokenBalance, cowShedHooks, isNativeToken])
+  }, [
+    walletClient,
+    proxyAddress,
+    factoryAddress,
+    selectedTokenAddress,
+    account,
+    tokenBalance,
+    cowShedHooks,
+    isNativeToken,
+  ])
 
   return { callback, txSigningStep, proxyAddress }
 }
