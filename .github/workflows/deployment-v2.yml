@@ -144,7 +144,7 @@ jobs:
           set -euo pipefail
 
           git fetch origin main staging
-          git checkout staging origin/staging
+          git checkout -B staging origin/staging
           git merge --ff-only origin/main
           git push origin staging
 
@@ -187,6 +187,6 @@ jobs:
           set -euo pipefail
 
           git fetch origin main production
-          git checkout production origin/production
+          git checkout -B production origin/production
           git merge --ff-only origin/main
           git push origin production
