@@ -3,6 +3,8 @@ import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowp
 import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
+import { getIsXstockTradeBelowLimit } from './getIsXstockTradeBelowLimit'
+
 import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
@@ -57,6 +59,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
 
+  const isXstockTradeBelowLimit = getIsXstockTradeBelowLimit(context)
+
   const validations: TradeFormValidation[] = []
 
   // Always check if the browser is online before checking any other conditions
@@ -70,6 +74,17 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isRestrictedForCountry) {
     validations.push(TradeFormValidation.RestrictedForCountry)
+  }
+
+  // Return early as these take precedence
+  if (validations.length > 0) {
+    return validations
+  }
+
+  // If the xstock trade amount is below the minimum trade size, we want to show a specific error message,
+  // even if there are other issues with the trade (e.g. quote loading or wallet not connected)
+  if (!inputAmountIsNotSet && isXstockTradeBelowLimit) {
+    return [TradeFormValidation.XstockMinimumTradeSize]
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {
