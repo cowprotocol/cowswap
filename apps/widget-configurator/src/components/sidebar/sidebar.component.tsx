@@ -223,37 +223,53 @@ export function Sidebar({
   // Because useSyncWidgetNetwork() will send a request to change the network
   const effectiveChainId = IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId
 
+  // TODO: This probably needs a field per chain in the UI:
+  const partnerFeeRecipient = DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[chainId]
+
   const configuratorState: ConfiguratorState = useMemo(
     () => ({
-      deadline,
-      swapDeadline,
-      limitDeadline,
-      advancedDeadline,
-      chainId: effectiveChainId,
+      // Basics:
+
+      // widgetMode: WidgetMode
+      standaloneMode,
       locale: locale || undefined,
+
+      // Trade Setup:
+
+      enabledTradeTypes,
+      currentTradeType,
+      chainId: effectiveChainId,
+      disableCrossChainSwap,
+      // slippage, // TODO: Defined but no form.
+
+      // Tokens:
+
+      sellToken,
+      sellTokenAmount,
+      buyToken,
+      buyTokenAmount,
+      tokenListUrls,
+      customTokens,
+
+      // Theme Colors:
+
       theme: mode,
+      customColors: colorPalette,
+      defaultColors: defaultPalette,
+
+      // Layout:
+
+      autoResizeEnabled,
       showIframeOutline,
       iframeStyle: iframeStyleJson.mergedValue,
       appWrapperStyle: appWrapperStyleJson.mergedValue,
       bodyWrapperStyle: bodyWrapperStyleJson.mergedValue,
       cardStyle: cardStyleJson.mergedValue,
-      currentTradeType,
-      enabledTradeTypes,
-      enabledWidgetHooks,
-      sellToken,
-      sellTokenAmount,
-      buyToken,
-      buyTokenAmount,
-      tokenListUrls,
-      customColors: colorPalette,
-      defaultColors: defaultPalette,
-      partnerFeeBps,
-      partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[chainId],
-      standaloneMode,
-      autoResizeEnabled,
+
+      // Behavior:
+
       disableToastMessages: toastManager.disableToastMessages,
       disableProgressBar,
-      disableCrossChainSwap,
       disableTokenImport,
       hideRecentTokens,
       hideFavoriteTokens,
@@ -261,41 +277,73 @@ export function Sidebar({
       hideOrdersTable,
       disableTradeWhenPriceImpactIsUnknown,
       disableTradeWhenPriceImpactIsHigherThan,
-      customImages,
-      customSounds,
-      customTokens,
-      rawParams: rawParamsJson.mergedValue,
-    }),
-    [
+
+      // Deadlines:
+
       deadline,
       swapDeadline,
       limitDeadline,
       advancedDeadline,
-      effectiveChainId,
-      chainId,
+
+      // Integrations:
+
+      partnerFeeBps,
+      partnerFeeRecipient,
+
+      // Customization:
+
+      customImages,
+      customSounds,
+
+      // Advanced:
+
+      enabledWidgetHooks,
+      // widgetAppBaseUrl: string; // TODO: Not used for whatever reason.
+      rawParams: rawParamsJson.mergedValue,
+    }),
+    [
+      // Basics:
+
+      // widgetMode: WidgetMode
+      standaloneMode,
       locale,
+
+      // Trade Setup:
+
+      enabledTradeTypes,
+      currentTradeType,
+      effectiveChainId,
+      disableCrossChainSwap,
+      // slippage, // TODO: Defined but not in form.
+
+      // Tokens:
+
+      sellToken,
+      sellTokenAmount,
+      buyToken,
+      buyTokenAmount,
+      tokenListUrls,
+      customTokens,
+
+      // Theme Colors:
+
       mode,
+      colorPalette,
+      defaultPalette,
+
+      // Layout:
+
+      autoResizeEnabled,
       showIframeOutline,
       iframeStyleJson.mergedValue,
       appWrapperStyleJson.mergedValue,
       bodyWrapperStyleJson.mergedValue,
       cardStyleJson.mergedValue,
-      currentTradeType,
-      enabledTradeTypes,
-      enabledWidgetHooks,
-      sellToken,
-      sellTokenAmount,
-      buyToken,
-      buyTokenAmount,
-      tokenListUrls,
-      colorPalette,
-      defaultPalette,
-      partnerFeeBps,
-      standaloneMode,
-      autoResizeEnabled,
+
+      // Behavior:
+
       toastManager.disableToastMessages,
       disableProgressBar,
-      disableCrossChainSwap,
       disableTokenImport,
       hideRecentTokens,
       hideFavoriteTokens,
@@ -303,9 +351,28 @@ export function Sidebar({
       hideOrdersTable,
       disableTradeWhenPriceImpactIsUnknown,
       disableTradeWhenPriceImpactIsHigherThan,
+
+      // Deadlines:
+
+      deadline,
+      swapDeadline,
+      limitDeadline,
+      advancedDeadline,
+
+      // Integrations:
+
+      partnerFeeBps,
+      partnerFeeRecipient,
+
+      // Customization:
+
       customImages,
       customSounds,
-      customTokens,
+
+      // Advanced:
+
+      enabledWidgetHooks,
+      // widgetAppBaseUrl: string; // TODO: Not used for whatever reason.
       rawParamsJson.mergedValue,
     ],
   )
@@ -339,7 +406,7 @@ export function Sidebar({
         </AccordionSection>
 
         <AccordionSection
-          title="Trade setup"
+          title="Trade Setup"
           expanded={expandedSection === 'Trade setup'}
           onChange={toggleSection('Trade setup')}
         >

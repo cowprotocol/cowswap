@@ -154,33 +154,47 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
   if (!configuratorState) return null
 
   const {
-    chainId,
+    // Basics:
+
+    // widgetMode: WidgetMode
+    standaloneMode,
     locale,
-    theme,
-    iframeStyle,
-    appWrapperStyle,
-    bodyWrapperStyle,
-    cardStyle,
-    currentTradeType,
+
+    // Trade Setup:
+
     enabledTradeTypes,
+    currentTradeType,
+    chainId,
+    disableCrossChainSwap,
+    slippage, // TODO: Defined but not in form.
+
+    // Tokens:
+
     sellToken,
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    deadline,
-    swapDeadline,
-    limitDeadline,
-    advancedDeadline,
     tokenListUrls,
+    customTokens,
+
+    // Theme Colors:
+
+    theme,
     customColors,
     defaultColors,
-    partnerFeeBps,
-    partnerFeeRecipient,
-    standaloneMode,
+
+    // Layout:
+
     autoResizeEnabled,
+    iframeStyle,
+    appWrapperStyle,
+    bodyWrapperStyle,
+    cardStyle,
+
+    // Behavior:
+
     disableToastMessages,
     disableProgressBar,
-    disableCrossChainSwap,
     disableTokenImport,
     hideRecentTokens,
     hideFavoriteTokens,
@@ -188,11 +202,28 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     hideOrdersTable,
     disableTradeWhenPriceImpactIsUnknown,
     disableTradeWhenPriceImpactIsHigherThan,
-    slippage,
-    enabledWidgetHooks,
+
+    // Deadlines:
+
+    deadline,
+    swapDeadline,
+    limitDeadline,
+    advancedDeadline,
+
+    // Integrations:
+
+    partnerFeeBps,
+    partnerFeeRecipient,
+
+    // Customization:
+
     customImages,
     customSounds,
-    customTokens,
+
+    // Advanced:
+
+    enabledWidgetHooks,
+    // widgetAppBaseUrl: string; // TODO: Not used for whatever reason.
     rawParams,
   } = configuratorState
 

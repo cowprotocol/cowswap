@@ -26,35 +26,48 @@ export interface TokenListItem {
 export type WidgetMode = 'dapp' | 'standalone'
 
 export interface ConfiguratorState {
-  chainId?: SupportedChainId
+  // Basics:
+
+  // widgetMode: WidgetMode
+  standaloneMode: boolean // TODO: Replace with widgetMode.
   locale?: string
+
+  // Trade Setup:
+
+  enabledTradeTypes: TradeType[]
+  currentTradeType: TradeType
+  chainId?: SupportedChainId
+  disableCrossChainSwap: boolean
+  slippage?: SlippageConfig // TODO: Not used for whatever reason.
+
+  // Tokens:
+
+  sellToken: string
+  sellTokenAmount: number | undefined
+  buyToken: string
+  buyTokenAmount: number | undefined
+  tokenListUrls: TokenListItem[]
+  customTokens: CowSwapWidgetParams['customTokens']
+
+  // Theme Colors:
+
   theme: PaletteMode
+  customColors: ColorPalette
+  defaultColors: ColorPalette
+
+  // Layout:
+
+  autoResizeEnabled: boolean
   showIframeOutline: boolean
   iframeStyle: CSS.Properties
   appWrapperStyle: CSS.Properties
   bodyWrapperStyle: CSS.Properties
   cardStyle: CSS.Properties
-  currentTradeType: TradeType
-  enabledTradeTypes: TradeType[]
-  enabledWidgetHooks: WidgetHookEvents[]
-  sellToken: string
-  sellTokenAmount: number | undefined
-  buyToken: string
-  buyTokenAmount: number | undefined
-  deadline: number | undefined
-  swapDeadline: number | undefined
-  limitDeadline: number | undefined
-  advancedDeadline: number | undefined
-  tokenListUrls: TokenListItem[]
-  customColors: ColorPalette
-  defaultColors: ColorPalette
-  partnerFeeBps: number
-  partnerFeeRecipient: PartnerFee['recipient']
-  standaloneMode: boolean
-  autoResizeEnabled: boolean
+
+  // Behavior:
+
   disableToastMessages: boolean
   disableProgressBar: boolean
-  disableCrossChainSwap: boolean
   disableTokenImport: boolean
   hideRecentTokens: boolean
   hideFavoriteTokens: boolean
@@ -62,9 +75,27 @@ export interface ConfiguratorState {
   hideOrdersTable: boolean | undefined
   disableTradeWhenPriceImpactIsUnknown: boolean
   disableTradeWhenPriceImpactIsHigherThan: number | undefined
-  slippage?: SlippageConfig
+
+  // Deadlines:
+
+  deadline: number | undefined
+  swapDeadline: number | undefined
+  limitDeadline: number | undefined
+  advancedDeadline: number | undefined
+
+  // Integrations:
+
+  partnerFeeBps: number
+  partnerFeeRecipient: PartnerFee['recipient'] // TODO: Not used for whatever reason.
+
+  // Customization:
+
   customImages: CowSwapWidgetParams['images']
   customSounds: CowSwapWidgetParams['sounds']
-  customTokens: CowSwapWidgetParams['customTokens']
+
+  // Advanced:
+
+  enabledWidgetHooks: WidgetHookEvents[]
+  // widgetAppBaseUrl: string; // TODO: Not used for whatever reason.
   rawParams: Partial<CowSwapWidgetParams>
 }
