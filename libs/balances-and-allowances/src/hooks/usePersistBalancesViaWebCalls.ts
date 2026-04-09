@@ -7,12 +7,20 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 
+import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
+
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
+
+export interface BalancesQueryConfig {
+  refetchInterval: number
+  isPaused?(): boolean
+}
 
 export interface PersistBalancesAndAllowancesParams {
   account: string | undefined
   chainId: SupportedChainId
   tokenAddresses: string[]
+  balancesQueryConfig?: BalancesQueryConfig
   setLoadingState?: boolean
 
   onBalancesLoaded?(loaded: boolean): void
@@ -20,8 +28,17 @@ export interface PersistBalancesAndAllowancesParams {
   query?: { refetchInterval?: number | false; refetchOnMount?: boolean }
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowancesParams): void {
-  const { account, chainId, tokenAddresses, setLoadingState, onBalancesLoaded, query: queryOptions } = params
+  const {
+    account,
+    chainId,
+    tokenAddresses,
+    setLoadingState,
+    balancesQueryConfig,
+    onBalancesLoaded,
+    query: queryOptions,
+  } = params
 
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
@@ -30,6 +47,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     data: balances,
     isLoading: isBalancesLoading,
     error,
+    dataUpdatedAt,
   } = useReadContracts({
     contracts: tokenAddresses.map((address) => ({
       abi: erc20Abi,
@@ -40,9 +58,15 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     })),
     query: {
       ...queryOptions,
-      enabled: !!account && tokenAddresses.length > 0,
+      refetchInterval: balancesQueryConfig?.refetchInterval ?? queryOptions?.refetchInterval,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      enabled: !!account && tokenAddresses.length > 0 && !balancesQueryConfig?.isPaused?.(),
     },
   })
+
+  // Skip results from outdated fetches if there is a result from a newer one
+  const isNewData = useIsBlockNumberRelevant(chainId, dataUpdatedAt)
 
   // Set balances loading state
   useEffect(() => {
@@ -64,12 +88,15 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
   // Set balances to the store
   useEffect(() => {
-    if (!account || !balances?.length) return
+    if (!account || !balances?.length || !isNewData) return
 
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
       if (getIsNativeToken(chainId, address)) return acc
 
-      acc[address.toLowerCase()] = BigInt(Number(balances[index]?.result ?? 0))
+      const result = balances[index]?.result
+      if (result !== undefined) {
+        acc[address.toLowerCase()] = result as bigint
+      }
       return acc
     }, {})
 
@@ -96,5 +123,15 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
         },
       }))
     }
-  }, [chainId, account, balances, tokenAddresses, setBalances, setLoadingState, onBalancesLoaded, setBalancesUpdate])
+  }, [
+    chainId,
+    account,
+    balances,
+    isNewData,
+    tokenAddresses,
+    setBalances,
+    setLoadingState,
+    onBalancesLoaded,
+    setBalancesUpdate,
+  ])
 }

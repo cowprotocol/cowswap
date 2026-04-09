@@ -4,13 +4,20 @@ import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllActiveTokens, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
+import ms from 'ms.macro'
+
 import { BalancesBffUpdater } from './BalancesBffUpdater'
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
 import { BalancesRpcCallUpdater } from './BalancesRpcCallUpdater'
 
+import { BASIC_BALANCES_QUERY_CONFIG } from '../consts'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
+import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
 import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
+
+// A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
+const RPC_BALANCES_QUERY_CONFIG = { ...BASIC_BALANCES_QUERY_CONFIG, refetchInterval: ms`31s` }
 
 const EMPTY_TOKENS: string[] = []
 
@@ -56,6 +63,8 @@ export function BalancesAndAllowancesUpdater({
     }, [])
   }, [allTokens, chainId, targetChainTokensMap])
 
+  const rpcBalancesQueryConfig = useSwrConfigWithPauseForNetwork(chainId, account, RPC_BALANCES_QUERY_CONFIG)
+
   // Add native token balance to the store as well
   useEffect(() => {
     if (isBffSwitchedOn) return
@@ -80,7 +89,13 @@ export function BalancesAndAllowancesUpdater({
         />
       )}
       {enableRpcFallback && (
-        <BalancesRpcCallUpdater account={account} chainId={chainId} tokenAddresses={tokenAddresses} setLoadingState />
+        <BalancesRpcCallUpdater
+          account={account}
+          chainId={chainId}
+          tokenAddresses={tokenAddresses}
+          balancesQueryConfig={rpcBalancesQueryConfig}
+          setLoadingState
+        />
       )}
       <BalancesResetUpdater chainId={chainId} account={account} />
       <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
