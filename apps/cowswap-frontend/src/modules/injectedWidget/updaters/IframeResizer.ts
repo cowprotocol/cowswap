@@ -7,12 +7,28 @@ import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-li
 
 import { openModalState } from 'common/state/openModalState'
 
+import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
+
 export function IframeResizer(): null {
   const isModalOpen = useAtomValue(openModalState)
   const previousHeightRef = useRef(0)
+  const { autoResizeEnabled } = useInjectedWidgetParams()
 
   useLayoutEffect(() => {
-    if (!isIframe() || !isInjectedWidget()) return
+    // Checking for `autoResizeEnabled === undefined` here to preserve the old behavior of the widget, when `autoResizeEnabled` didn't exist:
+    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === undefined) return
+
+    if (autoResizeEnabled) {
+      document.documentElement.style.overflow = 'hidden'
+    } else {
+      document.documentElement.style.removeProperty('overflow')
+    }
+  }, [autoResizeEnabled])
+
+  // eslint-disable-next-line complexity
+  useLayoutEffect(() => {
+    // Checking for `autoResizeEnabled === false` here to preserve the old behavior of the widget, when `autoResizeEnabled` didn't exist:
+    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === false) return
 
     const contentElement = getContentElement(document)
 
@@ -71,7 +87,7 @@ export function IframeResizer(): null {
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
     }
-  }, [isModalOpen])
+  }, [isModalOpen, autoResizeEnabled])
 
   return null
 }

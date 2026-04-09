@@ -29,6 +29,7 @@ export interface ConfiguratorState {
   chainId?: SupportedChainId
   locale?: string
   theme: PaletteMode
+  showIframeOutline: boolean
   iframeStyle: CSS.Properties
   appWrapperStyle: CSS.Properties
   bodyWrapperStyle: CSS.Properties
@@ -50,6 +51,7 @@ export interface ConfiguratorState {
   partnerFeeBps: number
   partnerFeeRecipient: PartnerFee['recipient']
   standaloneMode: boolean
+  autoResizeEnabled: boolean
   disableToastMessages: boolean
   disableProgressBar: boolean
   disableCrossChainSwap: boolean

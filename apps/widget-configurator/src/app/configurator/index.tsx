@@ -65,6 +65,8 @@ export function Configurator({ title }: { title: string }): ReactNode {
 
   const [configuratorState, setConfiguratorState] = useState<ConfiguratorState | null>(null)
 
+  const showIframeOutline = configuratorState?.showIframeOutline ?? true
+
   const params = useWidgetParams(configuratorState)
 
   const [listeners, setListeners] = useState<CowWidgetEventListeners>(COW_LISTENERS)
@@ -87,8 +89,10 @@ export function Configurator({ title }: { title: string }): ReactNode {
 
   if (!isWidgetReady || !params || !configuratorState) {
     configuratorContent = (
-      <Box sx={configuratorCheckeredCanvasSx}>
-        <CircularProgress />
+      <Box sx={configuratorCheckeredCanvasSx(showIframeOutline)}>
+        <div>
+          <CircularProgress />
+        </div>
       </Box>
     )
   } else if (isSnippetOpen) {
@@ -102,7 +106,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
     )
   } else {
     configuratorContent = (
-      <Box sx={configuratorCheckeredCanvasSx}>
+      <Box sx={configuratorCheckeredCanvasSx(showIframeOutline)}>
         <CowSwapWidget
           params={params}
           provider={!IS_IFRAME && !configuratorState.standaloneMode ? provider : undefined}

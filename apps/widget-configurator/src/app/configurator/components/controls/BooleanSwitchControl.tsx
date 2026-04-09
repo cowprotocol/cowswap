@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 
 interface BooleanSwitchControlProps {
@@ -10,9 +11,24 @@ interface BooleanSwitchControlProps {
   label: string
   onChange: (checked: boolean) => void
   helperText?: ReactNode
+  tooltip?: string
 }
 
-export function BooleanSwitchControl({ checked, label, onChange, helperText }: BooleanSwitchControlProps): ReactNode {
+export function BooleanSwitchControl({
+  checked,
+  label,
+  onChange,
+  helperText,
+  tooltip,
+}: BooleanSwitchControlProps): ReactNode {
+  const labelContent = tooltip ? (
+    <Tooltip title={tooltip} arrow placement="top">
+      <span>{label}</span>
+    </Tooltip>
+  ) : (
+    label
+  )
+
   return (
     <Box>
       <FormControlLabel
@@ -23,7 +39,7 @@ export function BooleanSwitchControl({ checked, label, onChange, helperText }: B
           justifyContent: 'space-between',
           alignItems: 'center',
         }}
-        label={label}
+        label={labelContent}
         labelPlacement="start"
         control={<Switch size="small" checked={checked} onChange={(_, nextChecked) => onChange(nextChecked)} />}
       />

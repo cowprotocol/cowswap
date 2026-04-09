@@ -122,6 +122,9 @@ export function ConfiguratorSidebar({
 
   // Layout Section:
 
+  const [autoResizeEnabled, setAutoResizeEnabled] = useState<boolean>(true)
+  const [showIframeOutline, setShowIframeOutline] = useState<boolean>(true)
+
   const [iframeStyleJson, setIframeStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
   const [cardStyleJson, setCardStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
   const [appWrapperStyleJson, setAppWrapperStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
@@ -226,6 +229,7 @@ export function ConfiguratorSidebar({
       chainId: effectiveChainId,
       locale: locale || undefined,
       theme: mode,
+      showIframeOutline,
       iframeStyle: iframeStyleJson.mergedValue,
       appWrapperStyle: appWrapperStyleJson.mergedValue,
       bodyWrapperStyle: bodyWrapperStyleJson.mergedValue,
@@ -243,6 +247,7 @@ export function ConfiguratorSidebar({
       partnerFeeBps,
       partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[chainId],
       standaloneMode,
+      autoResizeEnabled,
       disableToastMessages: toastManager.disableToastMessages,
       disableProgressBar,
       disableCrossChainSwap,
@@ -267,6 +272,7 @@ export function ConfiguratorSidebar({
       chainId,
       locale,
       mode,
+      showIframeOutline,
       iframeStyleJson.mergedValue,
       appWrapperStyleJson.mergedValue,
       bodyWrapperStyleJson.mergedValue,
@@ -283,6 +289,7 @@ export function ConfiguratorSidebar({
       defaultPalette,
       partnerFeeBps,
       standaloneMode,
+      autoResizeEnabled,
       toastManager.disableToastMessages,
       disableProgressBar,
       disableCrossChainSwap,
@@ -379,6 +386,18 @@ export function ConfiguratorSidebar({
         </AccordionSection>
 
         <AccordionSection title="Layout" expanded={expandedSection === 'Layout'} onChange={toggleSection('Layout')}>
+          <BooleanSwitchControl
+            checked={autoResizeEnabled}
+            label="Auto-resize iframe"
+            onChange={setAutoResizeEnabled}
+            helperText="When enabled, the iframe height adjusts automatically to fit its content."
+          />
+          <BooleanSwitchControl
+            checked={showIframeOutline}
+            label="Show iframe outline"
+            onChange={setShowIframeOutline}
+            tooltip="Preview-only visual aid to see the iframe boundaries. This setting is not included in the exported widget code."
+          />
           <AppearanceStyleControls
             iframeStyleJson={iframeStyleJson}
             onIframeStyleJson={setIframeStyleJson}
