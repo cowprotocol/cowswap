@@ -40,10 +40,16 @@ describe('OrderProgressBarPlaygroundPage', () => {
       jest.advanceTimersByTime(1200)
     })
 
-    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:9')
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('initial:none')
 
     act(() => {
-      jest.advanceTimersByTime(1500)
+      jest.advanceTimersByTime(3800)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:15')
+
+    act(() => {
+      jest.advanceTimersByTime(5000)
     })
 
     expect(screen.getByTestId('progress-bar-state').textContent).toBe('executing:none')
@@ -55,7 +61,7 @@ describe('OrderProgressBarPlaygroundPage', () => {
     expect(screen.getByTestId('progress-bar-state').textContent).toBe('submissionFailed:none')
 
     act(() => {
-      jest.advanceTimersByTime(1800)
+      jest.advanceTimersByTime(5000)
     })
 
     expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:none')
@@ -81,7 +87,7 @@ describe('OrderProgressBarPlaygroundPage', () => {
       jest.advanceTimersByTime(5700)
     })
 
-    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:none')
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:15')
 
     act(() => {
       fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'fastFillFromInitial' } })
@@ -95,7 +101,7 @@ describe('OrderProgressBarPlaygroundPage', () => {
 
     act(() => {
       fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'reloadMissedFulfilledEvent' } })
-      jest.advanceTimersByTime(3000)
+      jest.advanceTimersByTime(6500)
     })
 
     expect(screen.getByTestId('progress-bar-state').textContent).toBe('executing:none')
@@ -105,5 +111,51 @@ describe('OrderProgressBarPlaygroundPage', () => {
     })
 
     expect(screen.getByTestId('progress-bar-state').textContent).toBe('initial:none')
+  })
+
+  it('replays the issue 6642 unfillable-start scenario', () => {
+    render(<OrderProgressBarPlaygroundPage />)
+
+    act(() => {
+      fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'issue6642StartsUnfillable' } })
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('initial:none')
+
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:15')
+
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('delayed:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1500)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('executing:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1200)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('finished:none')
+  })
+
+  it('pins a single static step without progressing when static mode is enabled', () => {
+    render(<OrderProgressBarPlaygroundPage />)
+
+    act(() => {
+      fireEvent.change(screen.getByLabelText('Mode'), { target: { value: 'static' } })
+      fireEvent.change(screen.getByLabelText('Static step'), { target: { value: 'executing' } })
+      jest.advanceTimersByTime(20000)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('executing:none')
   })
 })

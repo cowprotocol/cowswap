@@ -5,6 +5,7 @@ import {
   EXECUTING_STEP_MIN_DISPLAY_TIME_MS,
   getCompletionDelayMs,
   getNewlyFillableOrderIds,
+  shouldShowUnfillableProgressStep,
   shouldStageExecutingStep,
 } from './utils'
 
@@ -27,7 +28,6 @@ function createFillability(overrides: Omit<Partial<OrderFillability>, 'order'>):
   }
 }
 
-const FILLABILITY_OK = createFillability({})
 const FILLABILITY_LACKING_BALANCE = createFillability({ hasEnoughBalance: false })
 const FILLABILITY_LACKING_ALLOWANCE = createFillability({ hasEnoughAllowance: false })
 
@@ -40,35 +40,42 @@ describe('computeUnfillableOrderIds', () => {
     expect(result).toEqual(['1'])
   })
 
-  it('includes orders lacking balance or allowance', () => {
+  it('excludes orders when the only issue is allowance or balance lag', () => {
     const orders: TestOrder[] = [{ id: '2' }]
 
     const result = computeUnfillableOrderIds(orders, {
       '2': FILLABILITY_LACKING_BALANCE,
     })
 
-    expect(result).toEqual(['2'])
+    expect(result).toEqual([])
   })
 
-  it('deduplicates orders flagged by both sources', () => {
+  it('suppresses price change when a flagged order still has an allowance lag', () => {
     const orders: TestOrder[] = [{ id: '3', isUnfillable: true }]
 
     const result = computeUnfillableOrderIds(orders, {
       '3': FILLABILITY_LACKING_ALLOWANCE,
     })
 
-    expect(result).toEqual(['3'])
+    expect(result).toEqual([])
   })
 
   it('ignores orders that are fillable and not flagged', () => {
     const orders: TestOrder[] = [{ id: '4', isUnfillable: false }, { id: '5' }]
 
-    const result = computeUnfillableOrderIds(orders, {
-      '4': FILLABILITY_OK,
-      '5': FILLABILITY_OK,
-    })
+    const result = computeUnfillableOrderIds(orders, {})
 
     expect(result).toEqual([])
+  })
+})
+
+describe('shouldShowUnfillableProgressStep', () => {
+  it('keeps the price change screen for true price-derived unfillable states', () => {
+    expect(shouldShowUnfillableProgressStep(true, undefined)).toBe(true)
+  })
+
+  it('suppresses the price change screen when allowance data has not caught up yet', () => {
+    expect(shouldShowUnfillableProgressStep(true, FILLABILITY_LACKING_ALLOWANCE)).toBe(false)
   })
 })
 

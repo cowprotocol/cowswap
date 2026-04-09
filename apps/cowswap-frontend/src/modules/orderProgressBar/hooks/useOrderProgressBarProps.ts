@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
-import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
@@ -16,6 +16,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { usePendingOrdersFillability } from 'modules/ordersTable'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -36,7 +37,12 @@ import {
   updateOrderProgressBarStepName,
 } from '../state/atoms'
 import { OrderProgressBarProps, OrderProgressBarState } from '../types'
-import { getCompletionDelayMs, shouldStageExecutingStep } from '../updaters/utils'
+import {
+  getCompletionDelayMs,
+  hasProgressBarLeftInitialStep,
+  shouldShowUnfillableProgressStep,
+  shouldStageExecutingStep,
+} from '../updaters/utils'
 
 export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
@@ -52,7 +58,7 @@ type UseOrderProgressBarPropsParams = {
   isBridgingTrade: boolean
 }
 
-const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
+export const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
@@ -175,6 +181,9 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     cancellationTriggered,
     hasShownExecutingInCurrentAttempt,
   } = useGetExecutingOrderState(orderId)
+  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
+  const currentOrderFillability = orderId ? pendingOrdersFillability[orderId] : undefined
+  const shouldShowUnfillableStep = shouldShowUnfillableProgressStep(isUnfillable, currentOrderFillability)
 
   const solversInfo = useSolversInfo(chainId)
   const totalSolvers = Object.keys(solversInfo).length
@@ -212,7 +221,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
   useProgressBarStepNameUpdater(
     orderId,
-    isUnfillable,
+    shouldShowUnfillableStep,
     isCancelled,
     isExpired,
     isCancelling,
@@ -233,7 +242,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     orderId,
     countdown,
     backendApiStatus,
-    isUnfillable || isCancelled || isCancelling || isExpired,
+    shouldShowUnfillableStep || isCancelled || isCancelling || isExpired,
   )
 
   return useMemo(() => {
@@ -352,8 +361,11 @@ export function getProgressBarStepName(
     // if this attempt later completes, step 3 will be replayed before the final state.
     return OrderProgressBarStepName.SUBMISSION_FAILED
   } else if (isUnfillable) {
-    // out of market order
-    return OrderProgressBarStepName.UNFILLABLE
+    // A local unfillable flag can race immediately after approval / permit updates.
+    // Keep the first visible screen on step 1 until the bar has actually advanced.
+    return hasProgressBarLeftInitialStep(currentStepName)
+      ? OrderProgressBarStepName.UNFILLABLE
+      : OrderProgressBarStepName.INITIAL
   } else if (
     (backendApiStatus == null ||
       backendApiStatus === CompetitionOrderStatus.type.OPEN ||
@@ -663,6 +675,7 @@ export function shouldApplyStepNameImmediately(
   return (
     lastTimeChangedSteps === undefined ||
     timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+    stepName === OrderProgressBarStepName.CANCELLING ||
     stepName === OrderProgressBarStepName.SUBMISSION_FAILED ||
     stepName === OrderProgressBarStepName.FINISHED ||
     stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||

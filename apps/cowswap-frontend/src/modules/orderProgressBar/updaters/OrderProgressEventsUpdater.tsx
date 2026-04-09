@@ -23,10 +23,12 @@ import {
   EXECUTING_STEP_MIN_DISPLAY_TIME_MS,
   getCompletionDelayMs,
   getNewlyFillableOrderIds,
+  hasProgressBarLeftInitialStep,
   shouldStageExecutingStep,
 } from './utils'
 
 import { OrderProgressBarStepName } from '../constants'
+import { MINIMUM_STEP_DISPLAY_TIME, shouldApplyStepNameImmediately } from '../hooks/useOrderProgressBarProps'
 import {
   ordersProgressBarStateAtom,
   updateOrderProgressBarCountdown,
@@ -61,18 +63,18 @@ function useOrdersProgressStateRef(
   return ordersProgressStateRef
 }
 
-function useCompletionTimersRef(): MutableRefObject<Record<string, NodeJS.Timeout>> {
-  const completionTimersRef = useRef<Record<string, NodeJS.Timeout>>({})
+function useStepTimersRef(): MutableRefObject<Record<string, NodeJS.Timeout>> {
+  const stepTimersRef = useRef<Record<string, NodeJS.Timeout>>({})
 
   useEffect(() => {
-    const completionTimers = completionTimersRef.current
+    const stepTimers = stepTimersRef.current
 
     return () => {
-      Object.values(completionTimers).forEach((timer) => clearTimeout(timer))
+      Object.values(stepTimers).forEach((timer) => clearTimeout(timer))
     }
   }, [])
 
-  return completionTimersRef
+  return stepTimersRef
 }
 
 function useOrderProgressEventListeners(
@@ -125,29 +127,34 @@ export function OrderProgressEventsUpdater(): null {
   const unfillableIds = useUnfillableOrderIds()
   const previousUnfillableRef = useRef<Set<string>>(new Set())
   const ordersProgressStateRef = useOrdersProgressStateRef(ordersProgressState)
-  const completionTimersRef = useCompletionTimersRef()
+  const stepTimersRef = useStepTimersRef()
 
-  const scheduleCompletionStep = useCallback(
-    (orderUid: string, step: OrderProgressBarStepName, delayMs: number) => {
+  const scheduleStepUpdate = useCallback(
+    (
+      orderUid: string,
+      step: OrderProgressBarStepName,
+      delayMs: number,
+      expectedCurrentStep: OrderProgressBarStepName | undefined,
+    ) => {
       const scheduledTimer = setTimeout(() => {
-        if (completionTimersRef.current[orderUid] !== scheduledTimer) {
+        if (stepTimersRef.current[orderUid] !== scheduledTimer) {
           return
         }
 
-        delete completionTimersRef.current[orderUid]
+        delete stepTimersRef.current[orderUid]
 
         const latestState = ordersProgressStateRef.current[orderUid]
 
-        if (!latestState || latestState.progressBarStepName !== OrderProgressBarStepName.EXECUTING) {
+        if (!latestState || latestState.progressBarStepName !== expectedCurrentStep) {
           return
         }
 
         setStepName({ orderId: orderUid, value: step })
       }, delayMs)
 
-      completionTimersRef.current[orderUid] = scheduledTimer
+      stepTimersRef.current[orderUid] = scheduledTimer
     },
-    [completionTimersRef, ordersProgressStateRef, setStepName],
+    [ordersProgressStateRef, setStepName, stepTimersRef],
   )
 
   const finalizeOrderStep = useCallback(
@@ -165,16 +172,16 @@ export function OrderProgressEventsUpdater(): null {
         setCountdown({ orderId: orderUid, value: null })
       }
 
-      const existingTimer = completionTimersRef.current[orderUid]
+      const existingTimer = stepTimersRef.current[orderUid]
 
       if (existingTimer) {
         clearTimeout(existingTimer)
-        delete completionTimersRef.current[orderUid]
+        delete stepTimersRef.current[orderUid]
       }
 
       if (shouldStageExecutingStep(currentStep, step, currentState?.hasShownExecutingInCurrentAttempt)) {
         setStepName({ orderId: orderUid, value: OrderProgressBarStepName.EXECUTING })
-        scheduleCompletionStep(orderUid, step, EXECUTING_STEP_MIN_DISPLAY_TIME_MS)
+        scheduleStepUpdate(orderUid, step, EXECUTING_STEP_MIN_DISPLAY_TIME_MS, OrderProgressBarStepName.EXECUTING)
 
         return
       }
@@ -182,37 +189,55 @@ export function OrderProgressEventsUpdater(): null {
       const completionDelayMs = getCompletionDelayMs(currentStep, step, currentState?.lastTimeChangedSteps)
 
       if (completionDelayMs > 0) {
-        scheduleCompletionStep(orderUid, step, completionDelayMs)
+        scheduleStepUpdate(orderUid, step, completionDelayMs, OrderProgressBarStepName.EXECUTING)
+
+        return
+      }
+
+      const timeSinceLastChange = currentState?.lastTimeChangedSteps
+        ? Date.now() - currentState.lastTimeChangedSteps
+        : 0
+
+      if (!shouldApplyStepNameImmediately(currentState?.lastTimeChangedSteps, timeSinceLastChange, step)) {
+        scheduleStepUpdate(orderUid, step, MINIMUM_STEP_DISPLAY_TIME - timeSinceLastChange, currentStep)
 
         return
       }
 
       setStepName({ orderId: orderUid, value: step })
     },
-    [completionTimersRef, ordersProgressStateRef, scheduleCompletionStep, setCountdown, setStepName],
+    [ordersProgressStateRef, scheduleStepUpdate, setCountdown, setStepName, stepTimersRef],
   )
 
   useEffect(() => {
     const previousUnfillable = previousUnfillableRef.current
     const currentUnfillable = new Set(unfillableIds)
-    const currentProgressState = ordersProgressStateRef.current
+    const currentProgressState = ordersProgressState
 
     const newlyFillable = getNewlyFillableOrderIds(previousUnfillable, currentUnfillable)
 
     newlyFillable.forEach((orderId) => {
       const currentStep = currentProgressState[orderId]?.progressBarStepName
 
-      if (currentStep && currentStep !== OrderProgressBarStepName.UNFILLABLE) {
+      if (currentStep !== OrderProgressBarStepName.UNFILLABLE) {
         return
       }
 
       finalizeOrderStep(orderId, OrderProgressBarStepName.SOLVING)
     })
-    currentUnfillable.forEach((orderId) => finalizeOrderStep(orderId, OrderProgressBarStepName.UNFILLABLE))
+    currentUnfillable.forEach((orderId) => {
+      const currentStep = currentProgressState[orderId]?.progressBarStepName
+
+      if (!hasProgressBarLeftInitialStep(currentStep)) {
+        return
+      }
+
+      finalizeOrderStep(orderId, OrderProgressBarStepName.UNFILLABLE)
+    })
 
     // Persist for the next diff so we only reset orders that actually recovered.
     previousUnfillableRef.current = currentUnfillable
-  }, [unfillableIds, finalizeOrderStep, ordersProgressStateRef])
+  }, [unfillableIds, finalizeOrderStep, ordersProgressState])
 
   useOrderProgressEventListeners(finalizeOrderStep)
 

@@ -17,33 +17,33 @@ const COMPLETION_STEPS = new Set<OrderProgressBarStepName>([
 
 export const EXECUTING_STEP_MIN_DISPLAY_TIME_MS = 1000
 
+export function hasBlockingFillabilityIssue(fillability: OrderFillability | undefined): boolean {
+  if (!fillability) {
+    return false
+  }
+
+  const lacksBalance = fillability.hasEnoughBalance === false
+  const lacksAllowance = fillability.hasEnoughAllowance === false && !fillability.hasPermit
+
+  return lacksBalance || lacksAllowance
+}
+
+export function shouldShowUnfillableProgressStep(
+  isUnfillable: boolean,
+  fillability: OrderFillability | undefined,
+): boolean {
+  return isUnfillable && !hasBlockingFillabilityIssue(fillability)
+}
+
 export function computeUnfillableOrderIds(
   marketOrders: OrderLike[],
   pendingOrdersFillability: Record<string, OrderFillability | undefined>,
 ): string[] {
-  // `isUnfillable` is toggled on the client (see UnfillableOrdersUpdater and OrdersTableList) after comparing quotes and allowances.
-  const priceDerived = marketOrders.filter((order) => order.isUnfillable).map((order) => order.id)
-
-  const fillabilityDerived = Object.entries(pendingOrdersFillability).reduce<string[]>(
-    (acc, [orderId, fillability]) => {
-      if (!fillability) {
-        return acc
-      }
-
-      const lacksBalance = fillability.hasEnoughBalance === false
-      const lacksAllowance = fillability.hasEnoughAllowance === false && !fillability.hasPermit
-
-      if (lacksBalance || lacksAllowance) {
-        acc.push(orderId)
-      }
-
-      return acc
-    },
-    [],
-  )
-
-  // An order can be flagged by both mechanisms; the Set keeps the list unique.
-  return Array.from(new Set([...priceDerived, ...fillabilityDerived]))
+  // `Price change` should only reflect true price-derived unfillable states.
+  // Temporary balance / allowance lag must keep the normal batching/searching flow.
+  return marketOrders
+    .filter((order) => shouldShowUnfillableProgressStep(!!order.isUnfillable, pendingOrdersFillability[order.id]))
+    .map((order) => order.id)
 }
 
 export function getNewlyFillableOrderIds(previous: Iterable<string>, current: Iterable<string>): string[] {
@@ -61,6 +61,10 @@ export function getNewlyFillableOrderIds(previous: Iterable<string>, current: It
 
 export function isCompletionStep(step: OrderProgressBarStepName | undefined): step is OrderProgressBarStepName {
   return !!step && COMPLETION_STEPS.has(step)
+}
+
+export function hasProgressBarLeftInitialStep(currentStep: OrderProgressBarStepName | undefined): boolean {
+  return !!currentStep && currentStep !== OrderProgressBarStepName.INITIAL
 }
 
 export function shouldStageExecutingStep(

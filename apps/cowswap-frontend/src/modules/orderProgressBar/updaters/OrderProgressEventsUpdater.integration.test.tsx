@@ -2,7 +2,7 @@ import { Provider as JotaiProvider } from 'jotai'
 import { createStore } from 'jotai/vanilla'
 import { ReactNode } from 'react'
 
-import { type EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { type EnrichedOrder, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEvents, type OnFulfilledOrderPayload } from '@cowprotocol/events'
 import { type BridgeOrderDataSerialized } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -19,6 +19,7 @@ import { OrderProgressEventsUpdater } from './OrderProgressEventsUpdater'
 import { EXECUTING_STEP_MIN_DISPLAY_TIME_MS } from './utils'
 
 import { OrderProgressBarStepName } from '../constants'
+import { MINIMUM_STEP_DISPLAY_TIME } from '../hooks/useOrderProgressBarProps'
 import { ordersProgressBarStateAtom } from '../state/atoms'
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -275,6 +276,117 @@ describe('OrderProgressEventsUpdater', () => {
       previousStepName: OrderProgressBarStepName.EXECUTING,
       progressBarStepName: OrderProgressBarStepName.FINISHED,
     })
+
+    unmount()
+  })
+
+  it('does not show unfillable before the progress bar leaves the initial step', () => {
+    const orderUid = '0xinitial-unfillable'
+    const pendingOrder = { id: orderUid, class: OrderClass.MARKET, isUnfillable: true } as Order
+    const { store, TestComponent } = getWrapper()
+
+    useOnlyPendingOrdersMock.mockReturnValue([pendingOrder])
+    store.set(ordersProgressBarStateAtom, {
+      [orderUid]: {
+        progressBarStepName: OrderProgressBarStepName.INITIAL,
+      },
+    })
+
+    const { unmount } = render(<OrderProgressEventsUpdater />, { wrapper: TestComponent })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(OrderProgressBarStepName.INITIAL)
+
+    act(() => {
+      store.set(ordersProgressBarStateAtom, {
+        [orderUid]: {
+          progressBarStepName: OrderProgressBarStepName.SOLVING,
+          previousStepName: OrderProgressBarStepName.INITIAL,
+          lastTimeChangedSteps: Date.now(),
+        },
+      })
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(OrderProgressBarStepName.SOLVING)
+
+    act(() => {
+      jest.advanceTimersByTime(MINIMUM_STEP_DISPLAY_TIME - 1)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(OrderProgressBarStepName.SOLVING)
+
+    act(() => {
+      jest.advanceTimersByTime(1)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(
+      OrderProgressBarStepName.UNFILLABLE,
+    )
+
+    unmount()
+  })
+
+  it('does not create a solving step when a deferred unfillable order recovers before being shown', () => {
+    const orderUid = '0xrecovered-unfillable'
+    const pendingOrder = { id: orderUid, class: OrderClass.MARKET, isUnfillable: true } as Order
+    const { store, TestComponent } = getWrapper()
+
+    useOnlyPendingOrdersMock.mockReturnValue([pendingOrder])
+    store.set(ordersProgressBarStateAtom, {
+      [orderUid]: {
+        progressBarStepName: OrderProgressBarStepName.INITIAL,
+      },
+    })
+
+    const { rerender, unmount } = render(<OrderProgressEventsUpdater />, { wrapper: TestComponent })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(OrderProgressBarStepName.INITIAL)
+
+    useOnlyPendingOrdersMock.mockReturnValue([])
+
+    rerender(<OrderProgressEventsUpdater />)
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(OrderProgressBarStepName.INITIAL)
+
+    unmount()
+  })
+
+  it('keeps the unfillable screen for the minimum display time before recovering to solving', () => {
+    const orderUid = '0xunfillable-recovery'
+    const pendingOrder = { id: orderUid, class: OrderClass.MARKET, isUnfillable: true } as Order
+    const { store, TestComponent } = getWrapper()
+
+    useOnlyPendingOrdersMock.mockReturnValue([pendingOrder])
+    store.set(ordersProgressBarStateAtom, {
+      [orderUid]: {
+        progressBarStepName: OrderProgressBarStepName.UNFILLABLE,
+        previousStepName: OrderProgressBarStepName.SOLVING,
+        lastTimeChangedSteps: Date.now(),
+      },
+    })
+
+    const { rerender, unmount } = render(<OrderProgressEventsUpdater />, { wrapper: TestComponent })
+
+    useOnlyPendingOrdersMock.mockReturnValue([])
+
+    rerender(<OrderProgressEventsUpdater />)
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(
+      OrderProgressBarStepName.UNFILLABLE,
+    )
+
+    act(() => {
+      jest.advanceTimersByTime(MINIMUM_STEP_DISPLAY_TIME - 1)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(
+      OrderProgressBarStepName.UNFILLABLE,
+    )
+
+    act(() => {
+      jest.advanceTimersByTime(1)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(OrderProgressBarStepName.SOLVING)
 
     unmount()
   })

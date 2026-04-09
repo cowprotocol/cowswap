@@ -72,6 +72,28 @@ describe('getProgressBarStepName', () => {
     expect(result).toBe(OrderProgressBarStepName.SOLVING)
   })
 
+  it('keeps the first visible screen on step 1 when an order starts as locally unfillable', () => {
+    const result = callGetProgressBarStepName({
+      isUnfillable: true,
+      currentStepName: OrderProgressBarStepName.INITIAL,
+      backendApiStatus: OPEN_STATUS,
+      previousStepName: undefined,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.INITIAL)
+  })
+
+  it('shows price change once the progress bar has already moved past step 1', () => {
+    const result = callGetProgressBarStepName({
+      isUnfillable: true,
+      currentStepName: OrderProgressBarStepName.SOLVING,
+      backendApiStatus: OPEN_STATUS,
+      previousStepName: OrderProgressBarStepName.INITIAL,
+    })
+
+    expect(result).toBe(OrderProgressBarStepName.UNFILLABLE)
+  })
+
   it('still transitions to executing when the backend reports progress', () => {
     const result = callGetProgressBarStepName({
       backendApiStatus: EXECUTING_STATUS,
@@ -231,6 +253,12 @@ describe('shouldApplyCompletionDrivenExecutingImmediately', () => {
 })
 
 describe('shouldApplyStepNameImmediately', () => {
+  it('shows cancelling immediately because it is a high-priority state', () => {
+    const result = shouldApplyStepNameImmediately(1000, 500, OrderProgressBarStepName.CANCELLING)
+
+    expect(result).toBe(true)
+  })
+
   it('shows the submission failed step immediately so the retry screen is not skipped', () => {
     const result = shouldApplyStepNameImmediately(1000, 500, OrderProgressBarStepName.SUBMISSION_FAILED)
 
