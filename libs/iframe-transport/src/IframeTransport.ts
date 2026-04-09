@@ -4,6 +4,8 @@ import { WindowListener } from './types'
 // @ts-ignore
 type AbstractRecord = Record<unknown, unknown>
 
+const DEFAULT_ORIGIN = 'https://swap.cow.fi'
+
 export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
   constructor(public readonly key: string) {}
 
@@ -18,10 +20,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
       method,
       ...data,
     }
-    contentWindow.postMessage(
-      postPayload,
-      '*', // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
-    )
+    contentWindow.postMessage(postPayload, DEFAULT_ORIGIN)
   }
 
   listenToMessageFromWindow<T extends keyof MethodsEmitPayloadMap>(
@@ -30,7 +29,12 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
   ): (payload: MessageEvent<unknown>) => void {
     const listener = (event: MessageEvent<unknown>): void => {
-      if (!isEventData(event.data) || event.data.key !== this.key || event.data.method !== method) {
+      if (
+        !isEventData(event.data) ||
+        event.data.key !== this.key ||
+        event.data.method !== method ||
+        event.origin !== DEFAULT_ORIGIN
+      ) {
         return
       }
 
