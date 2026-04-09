@@ -5,7 +5,7 @@ import { OrderProgressBar } from 'modules/orderProgressBar'
 import { PLAYGROUND_SCENARIOS, STATIC_PLAYGROUND_PREVIEWS } from './OrderProgressBarPlayground.constants'
 import { getProgressBarProps } from './OrderProgressBarPlayground.demo.constants'
 import * as styledEl from './OrderProgressBarPlayground.styled'
-import { getScenarioFrameDelayMs } from './OrderProgressBarPlayground.utils'
+import { getScenarioFrameCountdown, getScenarioFrameDelayMs } from './OrderProgressBarPlayground.utils'
 import { OrderProgressBarPlaygroundDetails } from './OrderProgressBarPlaygroundDetails'
 
 type PlaygroundMode = 'scenario' | 'static'
@@ -86,12 +86,14 @@ function PlaygroundControls({
 function useScenarioPlayback(
   frameDelays: number[],
   isStaticMode: boolean,
-): { frameIndex: number; restartScenario: () => void } {
+): { frameElapsedMs: number; frameIndex: number; restartScenario: () => void } {
   const [playbackKey, setPlaybackKey] = useState(0)
+  const [playbackElapsedMs, setPlaybackElapsedMs] = useState(0)
   const [frameIndex, setFrameIndex] = useState(0)
 
   const restartScenario = useCallback((): void => {
     setFrameIndex(0)
+    setPlaybackElapsedMs(0)
     setPlaybackKey((value) => value + 1)
   }, [])
 
@@ -101,18 +103,27 @@ function useScenarioPlayback(
     }
 
     setFrameIndex(0)
+    setPlaybackElapsedMs(0)
 
+    const startedAt = Date.now()
     let elapsedMs = 0
     const timers = frameDelays.map((delayMs, index) => {
       elapsedMs += delayMs
 
-      return window.setTimeout(() => setFrameIndex(index + 1), elapsedMs)
+      return window.setTimeout(() => {
+        setPlaybackElapsedMs(Date.now() - startedAt)
+        setFrameIndex(index + 1)
+      }, elapsedMs)
     })
+    const playbackTimer = window.setInterval(() => setPlaybackElapsedMs(Date.now() - startedAt), 1000)
 
-    return () => timers.forEach((timer) => window.clearTimeout(timer))
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer))
+      window.clearInterval(playbackTimer)
+    }
   }, [frameDelays, isStaticMode, playbackKey])
 
-  return { frameIndex, restartScenario }
+  return { frameElapsedMs: playbackElapsedMs, frameIndex, restartScenario }
 }
 
 export function OrderProgressBarPlaygroundPage(): ReactNode {
@@ -133,13 +144,23 @@ export function OrderProgressBarPlaygroundPage(): ReactNode {
       scenario.frames.slice(0, -1).map((frame, index) => getScenarioFrameDelayMs(frame, scenario.frames[index + 1])),
     [scenario],
   )
-  const { frameIndex, restartScenario } = useScenarioPlayback(frameDelays, isStaticMode)
+  const frameStartOffsets = useMemo(
+    () => scenario.frames.map((_, index) => frameDelays.slice(0, index).reduce((acc, delayMs) => acc + delayMs, 0)),
+    [frameDelays, scenario.frames],
+  )
+  const { frameElapsedMs, frameIndex, restartScenario } = useScenarioPlayback(frameDelays, isStaticMode)
   const currentFrameIndex = isStaticMode
     ? 0
     : scenario.frames.length > 1
       ? Math.min(frameIndex, scenario.frames.length - 1)
       : 0
   const currentFrame = isStaticMode ? staticPreview.frame : (scenario.frames[currentFrameIndex] ?? scenario.frames[0])
+  const currentFrameElapsedMs = isStaticMode
+    ? 0
+    : Math.max(frameElapsedMs - (frameStartOffsets[currentFrameIndex] ?? 0), 0)
+  const currentFrameCountdown = isStaticMode
+    ? currentFrame.countdown
+    : getScenarioFrameCountdown(currentFrame, currentFrameElapsedMs)
   const displayedFrames = isStaticMode ? [staticPreview.frame] : scenario.frames
   const sequenceLabel = isStaticMode
     ? currentFrame.backendStatus
@@ -184,7 +205,7 @@ export function OrderProgressBarPlaygroundPage(): ReactNode {
 
       <styledEl.Layout>
         <styledEl.PreviewCard>
-          <OrderProgressBar {...getProgressBarProps(currentFrame)} />
+          <OrderProgressBar {...getProgressBarProps({ ...currentFrame, countdown: currentFrameCountdown })} />
         </styledEl.PreviewCard>
 
         <OrderProgressBarPlaygroundDetails

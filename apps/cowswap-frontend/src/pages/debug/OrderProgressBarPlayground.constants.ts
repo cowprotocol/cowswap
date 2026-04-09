@@ -115,6 +115,16 @@ export const PLAYGROUND_SCENARIOS: Scenario[] = [
     ],
   },
   {
+    id: 'issue6881UnfillableToCancelling',
+    label: 'Issue #6881: price change -> cancelling',
+    frames: [
+      getSearchingFrame(),
+      getScenarioFrame(OrderProgressBarStepName.UNFILLABLE, 'open + price out of market', DEFAULT_FRAME_HOLD_MS),
+      getScenarioFrame(OrderProgressBarStepName.CANCELLING, 'local cancelling', SEARCHING_FRAME_HOLD_MS),
+      getScenarioFrame(OrderProgressBarStepName.CANCELLED, 'cancelled', 0),
+    ],
+  },
+  {
     id: 'fastFillFromInitial',
     label: 'Fast fill from initial: scheduled -> traded',
     frames: [getInitialFrame(), getFinishedFrame()],

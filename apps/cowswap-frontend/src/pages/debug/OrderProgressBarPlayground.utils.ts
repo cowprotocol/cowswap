@@ -34,3 +34,11 @@ export function getScenarioFrameDelayMs(currentFrame: ScenarioFrame, nextFrame: 
 
   return Math.max(backendDelayMs, MINIMUM_STEP_DISPLAY_TIME)
 }
+
+export function getScenarioFrameCountdown(frame: ScenarioFrame, elapsedMs: number): number | null | undefined {
+  if (frame.countdown == null) {
+    return frame.countdown
+  }
+
+  return Math.max(frame.countdown - Math.floor(elapsedMs / 1000), 0)
+}

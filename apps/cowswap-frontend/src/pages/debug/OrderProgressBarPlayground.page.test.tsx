@@ -79,6 +79,22 @@ describe('OrderProgressBarPlaygroundPage', () => {
     expect(screen.getByTestId('progress-bar-state').textContent).toBe('finished:none')
   })
 
+  it('counts down during the solving frame instead of staying pinned at 15', () => {
+    render(<OrderProgressBarPlaygroundPage />)
+
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:15')
+
+    act(() => {
+      jest.advanceTimersByTime(2000)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:13')
+  })
+
   it('resets safely when switching from a longer scenario to a shorter one', () => {
     render(<OrderProgressBarPlaygroundPage />)
 
@@ -145,6 +161,34 @@ describe('OrderProgressBarPlaygroundPage', () => {
     })
 
     expect(screen.getByTestId('progress-bar-state').textContent).toBe('finished:none')
+  })
+
+  it('replays the issue 6881 unfillable-to-cancelling scenario', () => {
+    render(<OrderProgressBarPlaygroundPage />)
+
+    act(() => {
+      fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'issue6881UnfillableToCancelling' } })
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:15')
+
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('unfillable:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1200)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('cancelling:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1500)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('cancelled:none')
   })
 
   it('pins a single static step without progressing when static mode is enabled', () => {
