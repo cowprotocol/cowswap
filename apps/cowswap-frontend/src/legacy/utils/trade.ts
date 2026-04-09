@@ -210,7 +210,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     apiAdditionalInfo: undefined,
 
     // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
-    sellAmountBeforeFee: BigInt(sellAmountBeforeFee.quotient.toString()),
+    sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
   }
 }
 

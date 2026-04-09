@@ -32,7 +32,7 @@ export function mapPartOrderToStoreOrder(
       isTheLastPart: getIsLastPartOrder(item, parent),
       parentId: parent.id,
     },
-    sellAmountBeforeFee: BigInt(enrichedOrder.sellAmount),
+    sellAmountBeforeFee: enrichedOrder.sellAmount,
     inputToken,
     outputToken,
     creationTime: enrichedOrder.creationDate,

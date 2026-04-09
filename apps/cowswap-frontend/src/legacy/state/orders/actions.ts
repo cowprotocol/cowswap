@@ -73,7 +73,7 @@ export interface BaseOrder extends OrderCreation {
   presignGnosisSafeTx?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
 
   // Sell amount before the fee applied - necessary for later calculations (unfilled orders)
-  sellAmountBeforeFee: bigint
+  sellAmountBeforeFee: string
 
   // For tracking how long an order has been pending
   openSince?: number

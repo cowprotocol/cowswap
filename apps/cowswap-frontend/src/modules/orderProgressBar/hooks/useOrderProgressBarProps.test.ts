@@ -12,13 +12,11 @@ describe('getProgressBarStepName', () => {
     backendApiStatus,
     previousStepName = OrderProgressBarStepName.SOLVING,
     previousBackendApiStatus,
-    persistedProgressBarStepName,
   }: {
     isUnfillable?: boolean
     backendApiStatus?: OrderProgressBarState['backendApiStatus']
     previousStepName?: OrderProgressBarStepName | undefined
     previousBackendApiStatus?: OrderProgressBarState['previousBackendApiStatus']
-    persistedProgressBarStepName?: OrderProgressBarState['progressBarStepName']
   }): OrderProgressBarStepName {
     return getProgressBarStepName(
       isUnfillable,
@@ -31,7 +29,6 @@ describe('getProgressBarStepName', () => {
       backendApiStatus,
       previousBackendApiStatus,
       previousStepName,
-      persistedProgressBarStepName,
       undefined, // bridgingStatus
       false, // isBridgingTrade
     )
@@ -62,25 +59,5 @@ describe('getProgressBarStepName', () => {
     })
 
     expect(result).toBe(OrderProgressBarStepName.EXECUTING)
-  })
-
-  it('keeps the last progress step when backend status is temporarily missing', () => {
-    const result = callGetProgressBarStepName({
-      backendApiStatus: undefined,
-      previousStepName: OrderProgressBarStepName.INITIAL,
-      persistedProgressBarStepName: OrderProgressBarStepName.SOLVING,
-    })
-
-    expect(result).toBe(OrderProgressBarStepName.SOLVING)
-  })
-
-  it('does not regress from SOLVING back to INITIAL when backend returns OPEN', () => {
-    const result = callGetProgressBarStepName({
-      backendApiStatus: OPEN_STATUS,
-      previousStepName: OrderProgressBarStepName.INITIAL,
-      persistedProgressBarStepName: OrderProgressBarStepName.SOLVING,
-    })
-
-    expect(result).toBe(OrderProgressBarStepName.DELAYED)
   })
 })
