@@ -265,12 +265,27 @@ function interceptDeepLinks(): (payload: MessageEvent<unknown>) => void {
     ({ href, rel, target }) => {
       const url = href.toString()
 
-      if (!url.startsWith('http') && url.match(/^[a-zA-Z0-9]+:\/\//)) {
+      if (isAllowedWindowOpenUrl(url)) {
         window.open(url, target, rel)
-        return
       }
     },
   )
+}
+
+function isAllowedWindowOpenUrl(url: string): boolean {
+  const trimmedUrl = url.trim()
+
+  if (!trimmedUrl) {
+    return false
+  }
+
+  try {
+    const protocol = new URL(trimmedUrl, 'https://swap.cow.fi').protocol
+
+    return protocol === 'http:' || protocol === 'https:'
+  } catch {
+    return false
+  }
 }
 
 /**
