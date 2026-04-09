@@ -95,7 +95,7 @@ export interface ConfiguratorState {
 
   // Advanced:
 
+  baseUrl: string
   enabledWidgetHooks: WidgetHookEvents[]
-  // widgetAppBaseUrl: string; // TODO: Not used for whatever reason.
   rawParams: Partial<CowSwapWidgetParams>
 }

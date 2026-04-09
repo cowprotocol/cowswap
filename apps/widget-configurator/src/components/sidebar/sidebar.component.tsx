@@ -197,7 +197,7 @@ export function Sidebar({
 
   const customImagesState = useState<CowSwapWidgetParams['images']>({})
   const customSoundsState = useState<CowSwapWidgetParams['sounds']>({})
-  const [widgetAppBaseUrl, setWidgetAppBaseUrl] = useState<string>('')
+  const [baseUrl, setBaseUrl] = useState<string>('')
   const [rawParamsJson, setRawParamsJson] = useJsonState<Partial<CowSwapWidgetParams>>(EMPTY_JSON_STATE)
 
   const handleRawParamsJsonChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
@@ -240,7 +240,7 @@ export function Sidebar({
       currentTradeType,
       chainId: effectiveChainId,
       disableCrossChainSwap,
-      // slippage, // TODO: Defined but no form.
+      // slippage, // TODO: Defined but not in the form.
 
       // Tokens:
 
@@ -297,8 +297,8 @@ export function Sidebar({
 
       // Advanced:
 
+      baseUrl,
       enabledWidgetHooks,
-      // widgetAppBaseUrl: string; // TODO: Not used for whatever reason.
       rawParams: rawParamsJson.mergedValue,
     }),
     [
@@ -371,8 +371,8 @@ export function Sidebar({
 
       // Advanced:
 
+      baseUrl,
       enabledWidgetHooks,
-      // widgetAppBaseUrl: string; // TODO: Not used for whatever reason.
       rawParamsJson.mergedValue,
     ],
   )
@@ -387,11 +387,11 @@ export function Sidebar({
 
   TODO:
 
-  - Classify state props into categories in type definition file.
-  - Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
-  - Create reusable TextInput, NumberInput and SelectInput components.
-  - Add name to all fields.
-  - Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
+  - [x] Classify state props into categories in type definition file.
+  - [ ] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
+  - [ ] Create reusable TextInput, NumberInput and SelectInput components.
+  - [ ] Add name to all fields.
+  - [ ] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
 
   */
 
@@ -566,10 +566,10 @@ export function Sidebar({
           <TextField
             fullWidth
             margin="dense"
-            id="widgetAppBaseUrl"
+            id="baseUrl"
             label="Widget App URL"
-            value={widgetAppBaseUrl}
-            onChange={(e) => setWidgetAppBaseUrl(e.target.value)}
+            value={baseUrl}
+            onChange={(e) => setBaseUrl(e.target.value)}
             size="medium"
             placeholder={CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
             helperText={`Optional. Sets baseUrl (overrides Raw JSON). Default preview URL: ${CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}`}

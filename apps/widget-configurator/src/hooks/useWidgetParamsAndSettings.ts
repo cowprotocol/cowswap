@@ -222,52 +222,83 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     // Advanced:
 
+    baseUrl: rawBaseUrl,
     enabledWidgetHooks,
-    // widgetAppBaseUrl: string; // TODO: Not used for whatever reason.
     rawParams,
   } = configuratorState
+
+  const baseUrl = rawBaseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL
 
   // TODO: Can we automatically trim all values and avoid adding those that are not needed? Would that be better or worse (as then those props that are not provided)
   // rely on the widget app logic to use the default values, which potentially means more bugs / breaking changes?
 
   return {
+    // Basics:
+
     appCode: 'CoW Widget: Configurator',
-    chainId,
+    standaloneMode,
     locale,
-    tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
-    sellTokenLists: getTokenListsParam(tokenListUrls, 'enabledForSell'),
-    buyTokenLists: getTokenListsParam(tokenListUrls, 'enabledForBuy'),
-    baseUrl: CONFIGURATOR_DEFAULT_WIDGET_BASE_URL,
+
+    // Trade Setup:
+
+    enabledTradeTypes,
     tradeType: currentTradeType,
+    chainId,
+    disableCrossChainSwap,
+    slippage, // TODO: Defined but not in the form.
+
+    // Tokens:
+
     sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
     buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
-    forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
-    enabledTradeTypes,
+    sellTokenLists: getTokenListsParam(tokenListUrls, 'enabledForSell'),
+    buyTokenLists: getTokenListsParam(tokenListUrls, 'enabledForBuy'),
+    tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
+    customTokens,
+
+    // Theme Colors:
+
     theme: getThemeParam(theme, customColors, defaultColors),
+
+    // Layout:
+
+    autoResizeEnabled,
     iframeStyle,
     appWrapperStyle,
     bodyWrapperStyle,
     cardStyle,
-    standaloneMode,
-    autoResizeEnabled,
+
+    // Behavior:
+
     disableToastMessages,
     disableProgressBar,
-    disableCrossChainSwap,
     disableTokenImport,
     hideRecentTokens,
     hideFavoriteTokens,
-    partnerFee: getPartnerFeeParam(partnerFeeBps, partnerFeeRecipient),
     hideBridgeInfo,
     hideOrdersTable,
-    slippage,
     disableTrade: {
       whenPriceImpactIsUnknown: disableTradeWhenPriceImpactIsUnknown,
       whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,
     },
-    hooks: getWidgetHooks(enabledWidgetHooks),
+
+    // Deadlines:
+
+    forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
+
+    // Integrations:
+
+    partnerFee: getPartnerFeeParam(partnerFeeBps, partnerFeeRecipient),
+
+    // Customization:
+
     images: customImages,
     sounds: customSounds,
-    customTokens,
+
+    // Advanced:
+
+    baseUrl,
+    hooks: getWidgetHooks(enabledWidgetHooks),
     ...rawParams,
     ...window.cowSwapWidgetParams,
   }
