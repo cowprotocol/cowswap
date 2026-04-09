@@ -27,6 +27,7 @@ import {
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import { AdvancedOrdersPage } from 'pages/AdvancedOrders/AdvancedOrders.page'
+import { OrderProgressBarPlaygroundPage } from 'pages/debug/OrderProgressBarPlayground.page'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
 import { LimitOrdersPage } from 'pages/LimitOrders/LimitOrders.page'
@@ -114,6 +115,9 @@ export function RoutesApp(): ReactNode {
       <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
+      {process.env.NODE_ENV === 'development' && (
+        <Route path={RoutesEnum.DEBUG_PROGRESS_BAR} element={<OrderProgressBarPlaygroundPage />} />
+      )}
 
       {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
 

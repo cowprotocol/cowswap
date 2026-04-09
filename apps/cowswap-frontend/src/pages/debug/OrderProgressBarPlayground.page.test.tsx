@@ -1,0 +1,109 @@
+import { act, fireEvent, render, screen } from '@testing-library/react'
+
+import { OrderProgressBarPlaygroundPage } from './OrderProgressBarPlayground.page'
+
+jest.mock('modules/orderProgressBar', () => {
+  const actual = jest.requireActual('modules/orderProgressBar')
+
+  return {
+    ...actual,
+    OrderProgressBar: ({ countdown, stepName }: { countdown?: number | null; stepName?: string }) => (
+      <div data-testid="progress-bar-state">
+        {stepName}:{countdown ?? 'none'}
+      </div>
+    ),
+  }
+})
+
+describe('OrderProgressBarPlaygroundPage', () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+  })
+
+  afterEach(() => {
+    act(() => {
+      jest.runOnlyPendingTimers()
+    })
+    jest.useRealTimers()
+  })
+
+  it('replays the submission retry scenario from the dropdown', () => {
+    render(<OrderProgressBarPlaygroundPage />)
+
+    act(() => {
+      fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'submissionRetry' } })
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('initial:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1200)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:9')
+
+    act(() => {
+      jest.advanceTimersByTime(1500)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('executing:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1200)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('submissionFailed:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1800)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1500)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('executing:none')
+
+    act(() => {
+      jest.advanceTimersByTime(1200)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('finished:none')
+  })
+
+  it('resets safely when switching from a longer scenario to a shorter one', () => {
+    render(<OrderProgressBarPlaygroundPage />)
+
+    act(() => {
+      fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'submissionRetryWithNotFound' } })
+      jest.advanceTimersByTime(5700)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('solving:none')
+
+    act(() => {
+      fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'fastFillFromInitial' } })
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('initial:none')
+  })
+
+  it('restarts the current scenario from the first frame when replaying', () => {
+    render(<OrderProgressBarPlaygroundPage />)
+
+    act(() => {
+      fireEvent.change(screen.getByLabelText('Scenario'), { target: { value: 'reloadMissedFulfilledEvent' } })
+      jest.advanceTimersByTime(3000)
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('executing:none')
+
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Replay scenario' }))
+    })
+
+    expect(screen.getByTestId('progress-bar-state').textContent).toBe('initial:none')
+  })
+})

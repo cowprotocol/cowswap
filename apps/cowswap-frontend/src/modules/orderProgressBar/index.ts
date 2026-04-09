@@ -10,6 +10,9 @@ export { SurplusModalSetup } from './containers/SurplusModalSetup'
 // Hooks
 export { OrderSubmittedContent } from './containers/OrderSubmittedContent'
 
+// Pure components
+export { OrderProgressBar } from './pure/OrderProgressBar'
+
 export * from './types'
 
 // State atoms
