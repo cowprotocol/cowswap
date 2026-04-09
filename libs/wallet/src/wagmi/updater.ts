@@ -1,23 +1,26 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
 import { useConnection, useEnsName } from 'wagmi'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
+import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
-import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
+import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 const SAFE_INFO_SHORT_INTERVAL = ms`5s`
+// getSafeInfo call does network requests, so we use a longer interval to not spam the servers too much
+const SAFE_INFO_LONG_INTERVAL = ms`30s`
 
 function useBrowserUrlKey(): string {
   return useSyncExternalStore(
@@ -101,56 +104,9 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
 }
 
-function useSafeInfo(): GnosisSafeInfo | undefined {
-  const { connected: reactConnected, sdk } = useSafeAppsSDK()
-  const { isConnected, connector } = useConnection()
-
-  const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo | undefined>()
-
-  const shouldFetchSafeInfo =
-    !!sdk && (reactConnected || (isConnected && connector?.type === ConnectionType.GNOSIS_SAFE))
-
-  useEffect(() => {
-    if (!shouldFetchSafeInfo) {
-      setSafeInfo(undefined)
-      return
-    }
-
-    const fetchAndSet = async (): Promise<void> => {
-      try {
-        const fetchedInfo = await sdk.safe.getInfo()
-        setSafeInfo({ ...fetchedInfo, address: fetchedInfo.safeAddress })
-      } catch {
-        setSafeInfo(undefined)
-      }
-    }
-
-    void fetchAndSet()
-
-    const refetch = (): void => {
-      void fetchAndSet()
-    }
-
-    const onVisibilityChange = (): void => {
-      if (document.visibilityState === 'visible') {
-        refetch()
-      }
-    }
-
-    window.addEventListener('focus', refetch)
-    document.addEventListener('visibilitychange', onVisibilityChange)
-
-    const intervalId = window.setInterval(refetch, SAFE_INFO_SHORT_INTERVAL)
-
-    return () => {
-      window.clearInterval(intervalId)
-      window.removeEventListener('focus', refetch)
-      document.removeEventListener('visibilitychange', onVisibilityChange)
-    }
-  }, [shouldFetchSafeInfo, sdk])
-
-  return safeInfo
-}
+// used for on-chain calls
+let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
+let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
 interface WalletUpdaterProps {
   standaloneMode?: boolean
@@ -169,17 +125,103 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
+  // Use ref to break the circular dependency: walletDetails → setWalletDetails → walletDetails
+  const walletDetailsRef = useRef(walletDetails)
   useEffect(() => {
-    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
+    walletDetailsRef.current = walletDetails
+  }, [walletDetails])
+
+  useEffect(() => {
+    const current = walletDetailsRef.current
+    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: current.isSmartContractWallet })
     setWalletDetails({
-      ...walletDetails,
-      walletName: getWalletTypeLabel(walletType) || walletDetails.walletName,
+      ...current,
+      walletName: getWalletTypeLabel(walletType) || current.walletName,
     })
-  }, [walletDetails, setWalletDetails, gnosisSafeInfo])
+  }, [gnosisSafeInfo, setWalletDetails])
 
   useEffect(() => {
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 
   return null
+}
+
+function useSafeInfo(): GnosisSafeInfo | undefined {
+  const safeAppsSdk = useSafeAppsSdk()
+  const { account, chainId } = useWalletInfo()
+
+  const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo | undefined>()
+
+  useEffect(() => {
+    const updateSafeInfo: () => Promise<void> = async () => {
+      if (safeAppsSdk) {
+        try {
+          const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
+          setSafeInfo((prevSafeInfo) => {
+            const { safeAddress, threshold, owners, isReadOnly, nonce } = appsSdkSafeInfo
+            return {
+              ...prevSafeInfo,
+              address: safeAddress,
+              chainId,
+              threshold,
+              owners,
+              nonce: Number(nonce),
+              isReadOnly,
+            }
+          })
+        } catch {
+          console.debug(`[WalletUpdater] Error fetching safe info over iframe ${account}`)
+          setSafeInfo(undefined)
+        }
+      } else {
+        if (chainId && account) {
+          try {
+            const _safeInfo = await getSafeInfo(chainId, account)
+            const { address, threshold, owners, nonce } = _safeInfo
+            setSafeInfo((prevSafeInfo) => ({
+              ...prevSafeInfo,
+              chainId,
+              address,
+              threshold,
+              owners,
+              // Time to time Safe sends a string or a number
+              nonce: Number(nonce),
+              isReadOnly: false,
+            }))
+          } catch {
+            console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
+            setSafeInfo(undefined)
+          }
+        } else {
+          setSafeInfo(undefined)
+        }
+      }
+    }
+
+    if (safeAppsSdk) {
+      // If we are here, we are running as a safe app. The safe app getInfo call doesn't do network requests
+      // but uses the local data, so we can use a shorter interval
+      clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
+      longSafeInfoInterval = null
+      shortSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_SHORT_INTERVAL)
+    } else {
+      // If we don't have a safeAppsSdk, we are running maybe in walletconnect mode and protocol-kit's
+      // getSafeInfo call does network requests, so we use a longer interval to not spam the servers too much
+      clearInterval(shortSafeInfoInterval !== null ? shortSafeInfoInterval : undefined)
+      shortSafeInfoInterval = null
+      longSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_LONG_INTERVAL)
+    }
+
+    updateSafeInfo()
+
+    return () => {
+      clearInterval(shortSafeInfoInterval !== null ? shortSafeInfoInterval : undefined)
+      shortSafeInfoInterval = null
+      clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
+      longSafeInfoInterval = null
+    }
+  }, [chainId, account, safeAppsSdk])
+
+  return safeInfo
 }

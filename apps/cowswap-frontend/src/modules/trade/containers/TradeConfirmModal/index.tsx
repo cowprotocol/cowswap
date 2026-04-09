@@ -49,23 +49,19 @@ type InnerComponentProps = {
 export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { children, submittedContent, title } = props
 
-  const { account, chainId: effectiveChainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
   const signingStep = useSigningStep()
 
-  // When returning from MM after signing, account can be briefly undefined; keep success state visible
-  const showSuccessState = !!transactionHash
-  if (!account && !showSuccessState) return null
-
-  const effectiveAccount = account ?? ''
+  if (!account) return null
 
   return (
     <Container>
       <InnerComponent
-        chainId={effectiveChainId}
-        account={effectiveAccount}
+        chainId={chainId}
+        account={account}
         error={error}
         title={title}
         pendingTrade={pendingTrade}
