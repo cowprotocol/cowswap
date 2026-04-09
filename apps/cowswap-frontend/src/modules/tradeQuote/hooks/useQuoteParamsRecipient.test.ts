@@ -345,7 +345,6 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      // Bug: currently returns COW_QUOTE_BTC_BRIDGE_RECIPIENT silently replacing user input
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
     })
 
@@ -354,7 +353,6 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      // Bug: currently returns COW_QUOTE_SOL_BRIDGE_RECIPIENT silently replacing user input
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
     })
 
@@ -363,7 +361,6 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      // Bug: currently returns COW_QUOTE_BTC_BRIDGE_RECIPIENT silently replacing user input
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
     })
 
@@ -372,7 +369,6 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      // Bug: currently returns COW_QUOTE_SOL_BRIDGE_RECIPIENT silently replacing user input
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
     })
   })
