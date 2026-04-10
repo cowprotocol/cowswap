@@ -5,7 +5,7 @@
       "destination": "/index.html"
     }
   ],
-  "buildCommand": "cd ../.. && npx --yes pnpm@10.30.3 run build:explorer",
+  "buildCommand": "cd ../../ && pnpm run build:explorer",
   "outputDirectory": "../../build/explorer",
-  "installCommand": "cd ../.. && node tools/scripts/install-sdk-preview.js && npx --yes pnpm@10.30.3 install --frozen-lockfile"
+  "installCommand": "cd ../../ && pnpm run install:ci"
 }

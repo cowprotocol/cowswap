@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && npx --yes pnpm@10.30.3 run build:cowfi",
-  "installCommand": "cd ../.. && node tools/scripts/install-sdk-preview.js && npx --yes pnpm@10.30.3 install --frozen-lockfile",
+  "buildCommand": "cd ../../ && pnpm run build:cowfi",
+  "installCommand": "cd ../../ && pnpm run install:ci",
   "framework": "nextjs"
 }
