@@ -69,16 +69,21 @@ function createWidget(baseUrl?: string): void {
 }
 
 function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi'): void {
-  window.dispatchEvent(
-    new MessageEvent('message', {
-      origin,
-      data: {
-        key: 'cowSwapWidget',
-        method: 'INTERCEPT_WINDOW_OPEN',
-        href,
-        target: '_blank',
-        rel: 'noopener',
-      },
-    }),
-  )
+  const event = new MessageEvent('message', {
+    origin,
+    data: {
+      key: 'cowSwapWidget',
+      method: 'INTERCEPT_WINDOW_OPEN',
+      href,
+      target: '_blank',
+      rel: 'noopener',
+    },
+  })
+
+  Object.defineProperty(event, 'source', {
+    configurable: true,
+    value: window,
+  })
+
+  window.dispatchEvent(event)
 }

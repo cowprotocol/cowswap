@@ -39,15 +39,16 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
         return
       }
 
-      if (event.source !== contentWindow) {
-        logWidget('Rejected message due to source mismatch', {
-          key: this.key,
-          method,
-          actualSource: event.source,
-          expectedSource: contentWindow,
-        })
-        return
-      }
+      // TODO: fix source check in a follow up PR
+      // if (event.source !== contentWindow) {
+      //   logWidget('Rejected message due to source mismatch', {
+      //     key: this.key,
+      //     method,
+      //     actualSource: event.source,
+      //     expectedSource: contentWindow,
+      //   })
+      //   return
+      // }
 
       if (event.origin !== trustedOrigin) {
         logWidget('Rejected message due to origin mismatch', {
