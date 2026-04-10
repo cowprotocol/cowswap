@@ -32,59 +32,6 @@ const scriptSrc = [
   'https://cdn.id5-sync.com',
 ]
 
-const connectSrc = [
-  "'self'",
-
-  // Trusted
-  'https://*.sentry.io',
-  'https://*.appzi.io',
-  'https://*.cow.fi',
-  'https://*.alchemy.com',
-  'https://*.launchdarkly.com',
-  'https://*.safe.global',
-  'https://*.blockscout.com',
-  'https://*.blocknative.com',
-  'https://*.mevblocker.io',
-  'https://*.infura.io',
-  'https://api.country.is',
-  'https://oauth.telegram.org',
-  'https://raw.githubusercontent.com',
-  'https://curvefi.github.io',
-  'https://tokens.honeyswap.org',
-  'https://static.optimism.io',
-  'https://www.googletagmanager.com',
-
-  // Analytics
-  'https://t.co',
-  'https://www.google.com',
-  'https://*.google-analytics.com',
-  'https://analytics.twitter.com',
-
-  // GTM 1
-  'https://tag.safary.club',
-  'https://*.clarity.ms',
-  'https://spindl.link',
-  'https://pixel-config.reddit.com',
-  'https://alb.reddit.com',
-  'https://id5-sync.com',
-
-  // GTM 2
-  'https://tag.adrsbl.io',
-  'https://api.hypelab.com',
-  'https://cdn.spindl.xyz',
-  'https://cdn.id5-sync.com',
-  'https://api.adradv.io',
-  'https://googleads.g.doubleclick.net',
-  'https://lbs.eu-1-id5-sync.com',
-  'https://ingestion.prod.apiarydata.net',
-
-  // WalletConnect relay
-  'wss://*.walletconnect.com',
-  'https://*.walletconnect.com',
-  'wss://*.walletconnect.org',
-  'https://*.walletconnect.org',
-]
-
 // ---------------------------------------------------------------------------
 // CSP builder
 // ---------------------------------------------------------------------------
@@ -107,7 +54,9 @@ const csp = buildCsp([
   ['style-src', ["'self'", "'unsafe-inline'"]],
   ['img-src', ["'self'", 'data:', 'blob:', 'https:']],
   ['font-src', ["'self'", 'data:']],
-  ['connect-src', connectSrc],
+  // TODO: temporarily disabled, because it will break custom token lists functionality
+  // use git annotate to see what was defined here
+  // ['connect-src', connectSrc],
   ['media-src', ["'self'", 'blob:', 'https:']],
   ['frame-src', ["'self'", 'https://www.googletagmanager.com', 'https://oauth.telegram.org']],
   ['worker-src', ["'self'"]],
