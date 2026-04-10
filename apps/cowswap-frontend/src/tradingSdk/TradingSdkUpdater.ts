@@ -1,7 +1,10 @@
 import { useEffect } from 'react'
 
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { getGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { useWalletClient } from 'wagmi'
 
 import { tradingSdk } from './tradingSdk'
 
@@ -13,13 +16,20 @@ import { useAppCode } from '../modules/appData/hooks'
 export function TradingSdkUpdater() {
   const appCode = useAppCode()
   const { chainId } = useWalletInfo()
+  const { data: walletClient } = useWalletClient()
 
   useEffect(() => {
     if (appCode) {
-      tradingSdk.setTraderParams({ chainId, appCode, env: isBarnBackendEnv ? 'staging' : 'prod' })
+      const signer = walletClient ? getGlobalAdapter().signerOrNull() : undefined
+      tradingSdk.setTraderParams({
+        chainId,
+        appCode,
+        env: isBarnBackendEnv ? 'staging' : 'prod',
+        ...(signer ? { signer } : {}),
+      })
       orderBookApi.context.chainId = chainId
     }
-  }, [chainId, appCode])
+  }, [chainId, appCode, walletClient])
 
   return null
 }
