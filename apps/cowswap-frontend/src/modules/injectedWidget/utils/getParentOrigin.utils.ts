@@ -1,31 +1,8 @@
-function logIframeOriginResolution(message: string, details: Record<string, unknown>): void {
-  console.debug('[COW][Widget][Iframe]', message, details)
-}
-
 export function getParentOrigin(): string | undefined {
-  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : undefined
-  const referrer = typeof document !== 'undefined' ? document.referrer || null : null
-  const originDetails = { currentOrigin, referrer }
-  const ancestorOrigin = getAncestorOrigin(originDetails)
-
-  if (ancestorOrigin) {
-    return ancestorOrigin
-  }
-
-  const referrerOrigin = getReferrerOrigin(originDetails)
-
-  if (referrerOrigin) return referrerOrigin
-
-  const parentLocationOrigin = getParentLocationOrigin(originDetails)
-
-  if (parentLocationOrigin) return parentLocationOrigin
-
-  logIframeOriginResolution('Parent origin unavailable', originDetails)
-
-  return undefined
+  return getAncestorOrigin() || getReferrerOrigin() || getParentLocationOrigin()
 }
 
-function getAncestorOrigin(originDetails: Record<string, unknown>): string | undefined {
+function getAncestorOrigin(): string | undefined {
   if (typeof window === 'undefined') {
     return undefined
   }
@@ -36,43 +13,29 @@ function getAncestorOrigin(originDetails: Record<string, unknown>): string | und
     return undefined
   }
 
-  const ancestorOrigin = ancestorOrigins[0]
-  logIframeOriginResolution('Resolved parent origin from ancestorOrigins', { ancestorOrigin, ...originDetails })
-
-  return ancestorOrigin
+  return ancestorOrigins[0]
 }
 
-function getReferrerOrigin(originDetails: Record<string, unknown>): string | undefined {
+function getReferrerOrigin(): string | undefined {
   if (typeof document === 'undefined' || !document.referrer) {
     return undefined
   }
 
   try {
-    const referrerOrigin = new URL(document.referrer).origin
-    logIframeOriginResolution('Resolved parent origin from document.referrer', { referrerOrigin, ...originDetails })
-
-    return referrerOrigin
+    return new URL(document.referrer).origin
   } catch {
     return undefined
   }
 }
 
-function getParentLocationOrigin(originDetails: Record<string, unknown>): string | undefined {
+function getParentLocationOrigin(): string | undefined {
   if (typeof window === 'undefined' || !window.parent || window.parent === window) {
     return undefined
   }
 
   try {
-    const parentOrigin = window.parent.location.origin
-    logIframeOriginResolution('Resolved parent origin from window.parent.location.origin', {
-      parentOrigin,
-      ...originDetails,
-    })
-
-    return parentOrigin
+    return window.parent.location.origin
   } catch {
-    logIframeOriginResolution('Unable to read parent origin from window.parent.location.origin', originDetails)
-
     return undefined
   }
 }
