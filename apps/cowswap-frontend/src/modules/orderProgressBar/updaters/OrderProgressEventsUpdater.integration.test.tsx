@@ -3,7 +3,7 @@ import { createStore } from 'jotai/vanilla'
 import { ReactNode } from 'react'
 
 import { type EnrichedOrder, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowWidgetEvents, type OnFulfilledOrderPayload } from '@cowprotocol/events'
+import { CowWidgetEvents, type OnBridgingSuccessPayload, type OnFulfilledOrderPayload } from '@cowprotocol/events'
 import { type BridgeOrderDataSerialized } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -63,6 +63,15 @@ function emitFulfilledOrder(orderUid: string, bridgeOrder?: BridgeOrderDataSeria
   }
 
   WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_FULFILLED_ORDER, payload)
+}
+
+function emitBridgingSuccess(orderUid: string): void {
+  const payload = {
+    chainId: SupportedChainId.MAINNET,
+    order: { uid: orderUid } as EnrichedOrder,
+  } as unknown as OnBridgingSuccessPayload
+
+  WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_BRIDGING_SUCCESS, payload)
 }
 
 describe('OrderProgressEventsUpdater', () => {
@@ -153,6 +162,38 @@ describe('OrderProgressEventsUpdater', () => {
       previousStepName: OrderProgressBarStepName.EXECUTING,
       progressBarStepName: OrderProgressBarStepName.BRIDGING_IN_PROGRESS,
     })
+
+    unmount()
+  })
+
+  it('applies bridge completion immediately when the bridge success event arrives', () => {
+    const orderUid = '0xbridge-finished'
+    const { store, TestComponent } = getWrapper()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderUid]: {
+        lastTimeChangedSteps: Date.now(),
+        previousStepName: OrderProgressBarStepName.EXECUTING,
+        progressBarStepName: OrderProgressBarStepName.BRIDGING_IN_PROGRESS,
+      },
+    })
+
+    const { unmount } = render(<OrderProgressEventsUpdater />, { wrapper: TestComponent })
+
+    act(() => emitBridgingSuccess(orderUid))
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]).toMatchObject({
+      previousStepName: OrderProgressBarStepName.BRIDGING_IN_PROGRESS,
+      progressBarStepName: OrderProgressBarStepName.BRIDGING_FINISHED,
+    })
+
+    act(() => {
+      jest.advanceTimersByTime(MINIMUM_STEP_DISPLAY_TIME)
+    })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderUid]?.progressBarStepName).toBe(
+      OrderProgressBarStepName.BRIDGING_FINISHED,
+    )
 
     unmount()
   })
