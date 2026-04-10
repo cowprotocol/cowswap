@@ -770,6 +770,10 @@ msgstr "Verify code"
 msgid "Adding this app/hook grants it access to your wallet actions and trading information. Ensure you understand the implications."
 msgstr "Adding this app/hook grants it access to your wallet actions and trading information. Ensure you understand the implications."
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
+msgid "Updates every 24 hours"
+msgstr "Updates every 24 hours"
+
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
 msgid "(View on Explorer)"
 msgstr "(View on Explorer)"
@@ -4661,8 +4665,8 @@ msgid "Search network"
 msgstr "Search network"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
-msgid "Updates daily at 02:00 UTC"
-msgstr "Updates daily at 02:00 UTC"
+#~ msgid "Updates daily at 02:00 UTC"
+#~ msgstr "Updates daily at 02:00 UTC"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
@@ -5567,10 +5571,6 @@ msgstr "Favorite tokens"
 #: libs/common-const/src/common.ts
 #~ msgid "Limit Orders"
 #~ msgstr "Limit Orders"
-
-#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-#~ msgid "{0} - {1}%: Recommended slippage tolerance."
-#~ msgstr "{0} - {1}%: Recommended slippage tolerance."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.ts
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
