@@ -27,7 +27,6 @@ import {
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import { AdvancedOrdersPage } from 'pages/AdvancedOrders/AdvancedOrders.page'
-import { OrderProgressBarPlaygroundPage } from 'pages/debug/OrderProgressBarPlayground.page'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
 import { LimitOrdersPage } from 'pages/LimitOrders/LimitOrders.page'
@@ -40,6 +39,11 @@ import { isDebugProgressBarRouteEnabled } from './RoutesApp.utils'
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
+const OrderProgressBarPlaygroundRoute = lazy(() =>
+  import(/* webpackChunkName: "order_progress_bar_playground" */ 'pages/debug/OrderProgressBarPlayground.page').then(
+    ({ OrderProgressBarPlaygroundPage }) => ({ default: OrderProgressBarPlaygroundPage }),
+  ),
+)
 
 // External routes
 const LegalExternal = <ExternalRedirect url={COWDAO_LEGAL_LINK} />
@@ -120,7 +124,14 @@ export function RoutesApp(): ReactNode {
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
       {isDebugProgressBarEnabled && (
-        <Route path={RoutesEnum.DEBUG_PROGRESS_BAR} element={<OrderProgressBarPlaygroundPage />} />
+        <Route
+          path={RoutesEnum.DEBUG_PROGRESS_BAR}
+          element={
+            <Suspense fallback={<Loading />}>
+              <OrderProgressBarPlaygroundRoute />
+            </Suspense>
+          }
+        />
       )}
 
       {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}

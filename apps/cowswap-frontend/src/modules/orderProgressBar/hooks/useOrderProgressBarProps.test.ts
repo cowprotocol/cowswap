@@ -265,6 +265,12 @@ describe('shouldApplyStepNameImmediately', () => {
     expect(result).toBe(true)
   })
 
+  it('shows bridge completion immediately once the bridge succeeds', () => {
+    const result = shouldApplyStepNameImmediately(1000, 500, OrderProgressBarStepName.BRIDGING_FINISHED)
+
+    expect(result).toBe(true)
+  })
+
   it('still delays regular transitional steps when they changed too recently', () => {
     const result = shouldApplyStepNameImmediately(1000, 500, OrderProgressBarStepName.SOLVING)
 

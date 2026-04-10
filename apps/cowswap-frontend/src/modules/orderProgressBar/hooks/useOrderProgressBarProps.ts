@@ -691,6 +691,7 @@ export function shouldApplyStepNameImmediately(
     timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
     stepName === OrderProgressBarStepName.CANCELLING ||
     stepName === OrderProgressBarStepName.SUBMISSION_FAILED ||
+    stepName === OrderProgressBarStepName.BRIDGING_FINISHED ||
     stepName === OrderProgressBarStepName.FINISHED ||
     stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
     stepName === OrderProgressBarStepName.CANCELLED ||
