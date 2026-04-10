@@ -54,9 +54,6 @@ const csp = buildCsp([
   ['style-src', ['*', "'unsafe-inline'"]],
   ['img-src', ["'self'", 'data:', 'blob:', 'https:']],
   ['font-src', ['*', 'data:']],
-  // TODO: temporarily disabled, because it will break custom token lists functionality
-  // use git annotate to see what was defined here
-  // ['connect-src', connectSrc],
   ['connect-src', ['*']],
   ['media-src', ['*', 'data:', 'blob:']],
   ['frame-src', ['*']],
