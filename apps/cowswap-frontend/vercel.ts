@@ -93,7 +93,7 @@ const csp = buildCsp([
   ['default-src', ["'self'"]],
   // TODO: unsafe-eval is needed for ajv library, whis is used for token list validation
   // TODO: unsafe-inline is needed for google analytics
-  ['script-src', [...scriptSrc, "'unsafe-eval'", "'unsafe-inline"]],
+  ['script-src', [...scriptSrc, "'unsafe-eval'", "'unsafe-inline'"]],
   ['style-src', ["'self'", "'unsafe-inline'"]],
   ['img-src', ["'self'", 'data:', 'blob:', 'https:']],
   ['font-src', ["'self'", 'data:']],
