@@ -57,7 +57,7 @@ const connectSrc = [
   // Analytics
   'https://t.co',
   'https://www.google.com',
-  'https://www.google-analytics.com',
+  'https://*.google-analytics.com',
   'https://analytics.twitter.com',
 
   // GTM 1
