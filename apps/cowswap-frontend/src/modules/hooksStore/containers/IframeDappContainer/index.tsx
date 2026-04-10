@@ -64,6 +64,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(true)
+  const dappOrigin = getDappOrigin(dapp.url)
 
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
@@ -87,28 +88,43 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
 
-    if (!iframeWindow) return
+    if (!iframeWindow || !dappOrigin) return
 
     const listeners = [
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.ACTIVATE, () =>
-        setIsIframeActive(true),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.ACTIVATE,
+        () => setIsIframeActive(true),
+        dappOrigin,
       ),
     ]
 
-    bridgeRef.current = new IframeRpcProviderBridge(iframeWindow)
+    bridgeRef.current = new IframeRpcProviderBridge(iframeWindow, dappOrigin)
 
     listeners.push(
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.ADD_HOOK, (payload) =>
-        addHookRef.current(payload),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.ADD_HOOK,
+        (payload) => addHookRef.current(payload),
+        dappOrigin,
       ),
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.EDIT_HOOK, (payload) =>
-        editHookRef.current(payload),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.EDIT_HOOK,
+        (payload) => editHookRef.current(payload),
+        dappOrigin,
       ),
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.SET_SELL_TOKEN, (payload) =>
-        setSellTokenRef.current(payload.address),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.SET_SELL_TOKEN,
+        (payload) => setSellTokenRef.current(payload.address),
+        dappOrigin,
       ),
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.SET_BUY_TOKEN, (payload) =>
-        setBuyTokenRef.current(payload.address),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.SET_BUY_TOKEN,
+        (payload) => setBuyTokenRef.current(payload.address),
+        dappOrigin,
       ),
     )
 
@@ -116,7 +132,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       listeners.forEach((listener) => hookDappIframeTransport.stopListeningWindowListener(window, listener))
       bridgeRef.current?.disconnect()
     }
-  }, [])
+  }, [dappOrigin])
 
   useLayoutEffect(() => {
     if (!walletProvider || !walletProvider.provider || !bridgeRef.current) return
@@ -127,13 +143,18 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
 
-    if (!iframeWindow || !isIframeActive) return
+    if (!iframeWindow || !isIframeActive || !dappOrigin) return
 
     // Omit unnecessary parameter
     const { addHook: _, editHook: _1, signer: _2, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
 
-    hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, iframeContext)
-  }, [context, isIframeActive])
+    hookDappIframeTransport.postMessageToWindow(
+      iframeWindow,
+      CoWHookDappEvents.CONTEXT_UPDATE,
+      iframeContext,
+      dappOrigin,
+    )
+  }, [context, dappOrigin, isIframeActive])
 
   return (
     <>
@@ -154,4 +175,12 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       />
     </>
   )
+}
+
+function getDappOrigin(url: string): string | null {
+  try {
+    return new URL(url).origin
+  } catch {
+    return null
+  }
 }

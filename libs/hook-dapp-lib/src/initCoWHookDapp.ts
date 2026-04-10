@@ -14,29 +14,50 @@ export interface CoWHookDappHandler {
 
 export function initCoWHookDapp({ onContext }: CoWHookDappInit): CoWHookDappHandler {
   const parent = window.parent
-  const provider = new WidgetEthereumProvider()
-  const actions = getCoWHookDappActions()
+  const parentOrigin = getParentOrigin()
+  const provider = new WidgetEthereumProvider({ targetOrigin: parentOrigin })
+  const actions = getCoWHookDappActions(parent, parentOrigin)
 
-  hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.CONTEXT_UPDATE, onContext)
+  hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.CONTEXT_UPDATE, onContext, parentOrigin)
 
-  hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.ACTIVATE, void 0)
+  hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.ACTIVATE, void 0, parentOrigin)
 
   return { actions, provider }
 }
 
-function getCoWHookDappActions(): CoWHookDappActions {
+function getCoWHookDappActions(parent: Window, parentOrigin: string | undefined): CoWHookDappActions {
   return {
     addHook(payload: CowHookCreation) {
-      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.ADD_HOOK, payload)
+      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.ADD_HOOK, payload, parentOrigin)
     },
     editHook(payload: CowHookDetails) {
-      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.EDIT_HOOK, payload)
+      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.EDIT_HOOK, payload, parentOrigin)
     },
     setSellToken(token: TokenData) {
-      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.SET_SELL_TOKEN, token)
+      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.SET_SELL_TOKEN, token, parentOrigin)
     },
     setBuyToken(token: TokenData) {
-      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.SET_BUY_TOKEN, token)
+      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.SET_BUY_TOKEN, token, parentOrigin)
     },
+  }
+}
+
+function getParentOrigin(): string | undefined {
+  if (typeof window !== 'undefined') {
+    const ancestorOrigins = window.location.ancestorOrigins
+
+    if (ancestorOrigins && ancestorOrigins.length > 0) {
+      return ancestorOrigins[0]
+    }
+  }
+
+  if (typeof document === 'undefined' || !document.referrer) {
+    return undefined
+  }
+
+  try {
+    return new URL(document.referrer).origin
+  } catch {
+    return undefined
   }
 }
