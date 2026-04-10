@@ -22,29 +22,12 @@ import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 import { getParentOrigin } from '../utils/getParentOrigin.utils'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
-
-const messagesCache: { [method: string]: unknown } = {}
-
-const getEventMethod = (event: MessageEvent): string | null =>
-  (event.data.key === widgetIframeTransport.key && (event.data.method as string)) || null
-
-const cacheMessages = (event: MessageEvent): void => {
-  const method = getEventMethod(event)
-
-  if (!method) return
-
-  messagesCache[method] = event.data
-}
-
-function replayCachedMessage(method: string, origin: string): void {
-  window.dispatchEvent(
-    new MessageEvent('message', {
-      origin,
-      data: messagesCache[method],
-    }),
-  )
-}
-
+import {
+  cacheWidgetMessage,
+  clearCachedWidgetMessage,
+  getCachedWidgetMessageMethods,
+  replayCachedWidgetMessage,
+} from '../utils/widgetMessagesCache.utils'
 ;(function initInjectedWidget() {
   const isInIframe = window.parent !== window.self
 
@@ -56,7 +39,7 @@ function replayCachedMessage(method: string, origin: string): void {
   /**
    * To avoid delays, immediately send an activation message and start listening messages
    */
-  window.addEventListener('message', cacheMessages)
+  window.addEventListener('message', cacheWidgetMessage)
   widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0, parentOrigin)
 
   /**
@@ -110,7 +93,7 @@ export function InjectedWidgetUpdater(): ReactNode {
 
   useEffect(() => {
     // Stop listening of message outside of React
-    window.removeEventListener('message', cacheMessages)
+    window.removeEventListener('message', cacheWidgetMessage)
 
     const parentOrigin = getParentOrigin()
 
@@ -166,9 +149,9 @@ export function InjectedWidgetUpdater(): ReactNode {
     )
 
     // Process all cached messages
-    Object.keys(messagesCache).forEach((method) => {
-      replayCachedMessage(method, parentOrigin)
-      delete messagesCache[method]
+    getCachedWidgetMessageMethods().forEach((method) => {
+      replayCachedWidgetMessage(method)
+      clearCachedWidgetMessage(method)
     })
 
     const parent = window.parent !== window.self ? window.parent : null
