@@ -288,25 +288,33 @@ function interceptDeepLinks(iframeOrigin: string): (payload: MessageEvent<unknow
     window,
     WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
     ({ href, rel, target }) => {
-      const url = href.toString()
+      const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
 
-      if (isAllowedWindowOpenUrl(url)) {
-        window.open(url, target, rel)
+      if (resolvedUrl && isAllowedWindowOpenUrl(resolvedUrl)) {
+        window.open(resolvedUrl, target, rel)
       }
     },
     iframeOrigin,
   )
 }
 
-function isAllowedWindowOpenUrl(url: string): boolean {
+function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null {
   const trimmedUrl = url.trim()
 
   if (!trimmedUrl) {
-    return false
+    return null
   }
 
   try {
-    const protocol = new URL(trimmedUrl, 'https://swap.cow.fi').protocol
+    return new URL(trimmedUrl, iframeOrigin).toString()
+  } catch {
+    return null
+  }
+}
+
+function isAllowedWindowOpenUrl(url: string): boolean {
+  try {
+    const protocol = new URL(url).protocol
 
     return protocol === 'http:' || protocol === 'https:'
   } catch {

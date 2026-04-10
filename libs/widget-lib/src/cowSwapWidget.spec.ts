@@ -18,7 +18,7 @@ describe('createCowSwapWidget', () => {
 
     dispatchInterceptWindowOpen('https://example.com')
 
-    expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener')
+    expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
 
   it('blocks javascript urls requested by the widget', () => {
@@ -34,7 +34,7 @@ describe('createCowSwapWidget', () => {
 
     dispatchInterceptWindowOpen('/faq')
 
-    expect(window.open).toHaveBeenCalledWith('/faq', '_blank', 'noopener')
+    expect(window.open).toHaveBeenCalledWith('https://swap.cow.fi/faq', '_blank', 'noopener')
   })
 
   it('accepts messages from a custom widget baseUrl origin', () => {
@@ -42,7 +42,7 @@ describe('createCowSwapWidget', () => {
 
     dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.fi')
 
-    expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener')
+    expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
 
   it('accepts messages from a custom trustedOrigin override', () => {
@@ -50,7 +50,7 @@ describe('createCowSwapWidget', () => {
 
     dispatchInterceptWindowOpen('https://example.com', 'https://staging.swap.cow.fi')
 
-    expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener')
+    expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
 })
 
