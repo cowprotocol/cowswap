@@ -44,17 +44,9 @@ describe('createCowSwapWidget', () => {
 
     expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
-
-  it('accepts messages from a custom trustedOrigin override', () => {
-    createWidget('https://swap.cow.fi', 'https://staging.swap.cow.fi')
-
-    dispatchInterceptWindowOpen('https://example.com', 'https://staging.swap.cow.fi')
-
-    expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
-  })
 })
 
-function createWidget(baseUrl?: string, trustedOrigin?: string): void {
+function createWidget(baseUrl?: string): void {
   const container = document.createElement('div')
   document.body.appendChild(container)
 
@@ -62,7 +54,6 @@ function createWidget(baseUrl?: string, trustedOrigin?: string): void {
     params: {
       appCode: 'test-app',
       baseUrl,
-      trustedOrigin,
       chainId: 1,
       tradeType: TradeType.SWAP,
     },

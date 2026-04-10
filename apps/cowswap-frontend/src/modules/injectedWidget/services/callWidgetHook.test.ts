@@ -6,6 +6,7 @@ import type { WidgetMethodsEmitPayloadMap } from '@cowprotocol/widget-lib'
 import { callWidgetHook } from './callWidgetHook'
 
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
+import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   isInjectedWidget: jest.fn(),
@@ -15,6 +16,10 @@ jest.mock('@cowprotocol/core', () => ({
   jotaiStore: {
     get: jest.fn(),
   },
+}))
+
+jest.mock('../utils/getParentOrigin.utils', () => ({
+  getParentOrigin: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/widget-lib', () => ({
@@ -41,6 +46,7 @@ const mockListenToMessageFromWindow = widgetIframeTransport.listenToMessageFromW
 const mockPostMessageToWindow = widgetIframeTransport.postMessageToWindow as jest.MockedFunction<
   typeof widgetIframeTransport.postMessageToWindow
 >
+const mockGetParentOrigin = getParentOrigin as jest.MockedFunction<typeof getParentOrigin>
 const hookResultListener = mockListenToMessageFromWindow.mock.calls[0][2] as (payload: {
   id: string
   result: boolean
@@ -51,7 +57,9 @@ describe('callWidgetHook', () => {
     mockIsInjectedWidget.mockReset()
     mockJotaiGet.mockReset()
     mockPostMessageToWindow.mockClear()
+    mockGetParentOrigin.mockReset()
     mockIsInjectedWidget.mockReturnValue(true)
+    mockGetParentOrigin.mockReturnValue('http://localhost')
     mockJotaiGet.mockImplementation((atom) => (atom === injectedWidgetHooksEnabledAtom ? false : undefined))
   })
 
@@ -74,6 +82,7 @@ describe('callWidgetHook', () => {
         event: WidgetHookEvents.ON_BEFORE_TRADE,
         payload: {},
       }),
+      'http://localhost',
     )
 
     const [, , payload] = mockPostMessageToWindow.mock.calls[0] as [

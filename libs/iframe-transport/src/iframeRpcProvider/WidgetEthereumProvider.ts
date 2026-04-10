@@ -52,6 +52,10 @@ const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 const JSON_RPC_VERSION = '2.0'
 const DEFAULT_TARGET_ORIGIN = 'https://swap.cow.fi'
 
+function logWidgetRpc(...args: unknown[]): void {
+  console.debug('%c [COW][Widget][RPC]', 'font-weight: bold; color: #ff0000', ...args)
+}
+
 /**
  * Export the type information about the different events that are emitted.
  */
@@ -186,6 +190,12 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     this.eventSource = eventSource
     this.eventTarget = eventTarget
     this.targetOrigin = targetOrigin || getParentOrigin() || DEFAULT_TARGET_ORIGIN
+    logWidgetRpc('Resolved target origin', {
+      targetOrigin: this.targetOrigin,
+      usedDefaultTargetOrigin: this.targetOrigin === DEFAULT_TARGET_ORIGIN,
+      referrer: typeof document !== 'undefined' ? document.referrer || null : null,
+      currentOrigin: typeof window !== 'undefined' ? window.location.origin : null,
+    })
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
@@ -492,15 +502,23 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 }
 
 function getParentOrigin(): string | undefined {
-  if (typeof document === 'undefined' || !document.referrer) {
-    return undefined
+  if (typeof window !== 'undefined') {
+    const ancestorOrigins = window.location.ancestorOrigins
+
+    if (ancestorOrigins && ancestorOrigins.length > 0) {
+      return ancestorOrigins[0]
+    }
   }
 
-  try {
-    return new URL(document.referrer).origin
-  } catch {
-    return undefined
+  if (typeof document !== 'undefined' && document.referrer) {
+    try {
+      return new URL(document.referrer).origin
+    } catch {
+      return undefined
+    }
   }
+
+  return undefined
 }
 
 /**
