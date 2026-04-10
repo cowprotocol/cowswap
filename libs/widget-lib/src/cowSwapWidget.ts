@@ -206,10 +206,10 @@ function getIframeOrigin(iframe: HTMLIFrameElement): string {
 
 /**
  * Updates the CoW Swap Widget based on the new settings provided.
- * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
+ * @param iframeOrigin - The trusted origin of the widget's iframe.
+ * @param params - New params for the widget.
  * @param provider - EIP-1193 provider
- * @param windowListeners - array of WindowListener
  */
 function updateParams(
   contentWindow: Window,
@@ -237,6 +237,7 @@ function updateParams(
  * Sends appCode to the contentWindow of the widget once the widget is activated.
  *
  * @param contentWindow - Window object of the widget's iframe.
+ * @param iframeOrigin - The trusted origin of the widget's iframe.
  * @param appCode - A unique identifier for the app.
  */
 function sendAppCodeOnActivation(
