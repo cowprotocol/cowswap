@@ -63,6 +63,7 @@ const connectSrc = [
   'https://spindl.link',
   'https://pixel-config.reddit.com',
   'https://alb.reddit.com',
+  'https://id5-sync.com',
 
   // GTM 2
   'https://tag.adrsbl.io',
