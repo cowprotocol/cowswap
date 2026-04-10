@@ -24,6 +24,13 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
       method,
       ...data,
     }
+    logWidget('Posting message', {
+      key: this.key,
+      method,
+      targetOrigin,
+      usedDefaultOrigin: targetOrigin === DEFAULT_ORIGIN,
+      payload: postPayload,
+    })
     contentWindow.postMessage(postPayload, targetOrigin)
   }
 
@@ -33,6 +40,13 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
     trustedOrigin = DEFAULT_ORIGIN,
   ): (payload: MessageEvent<unknown>) => void {
+    logWidget('Registering message listener', {
+      key: this.key,
+      method,
+      trustedOrigin,
+      usedDefaultOrigin: trustedOrigin === DEFAULT_ORIGIN,
+    })
+
     const listener = (event: MessageEvent<unknown>): void => {
       if (!isEventData(event.data) || event.data.key !== this.key || event.data.method !== method) {
         return

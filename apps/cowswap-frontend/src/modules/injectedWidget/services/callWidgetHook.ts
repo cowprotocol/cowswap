@@ -11,18 +11,24 @@ import {
 import ms from 'ms.macro'
 
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
+import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 const callsRegistry = new Map<string, (result: boolean) => void>()
 const HOOK_RESPONSE_TIMEOUT_MS = ms`2m`
 
-widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsListen.HOOK_RESULT, (data) => {
-  const callback = callsRegistry.get(data.id)
+widgetIframeTransport.listenToMessageFromWindow(
+  window,
+  WidgetMethodsListen.HOOK_RESULT,
+  (data) => {
+    const callback = callsRegistry.get(data.id)
 
-  if (callback) {
-    callback(data.result)
-    callsRegistry.delete(data.id)
-  }
-})
+    if (callback) {
+      callback(data.result)
+      callsRegistry.delete(data.id)
+    }
+  },
+  getParentOrigin(),
+)
 
 export function callWidgetHook<T extends WidgetHookEvents>(
   event: T,
@@ -51,11 +57,25 @@ export function callWidgetHook<T extends WidgetHookEvents>(
       resolve(result)
     })
 
-    widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.PROCESS_HOOK, {
-      id,
-      event,
-      payload,
-    })
+    const parentOrigin = getParentOrigin()
+
+    if (!parentOrigin) {
+      callsRegistry.delete(id)
+      window.clearTimeout(timeoutId)
+      resolve(false)
+      return
+    }
+
+    widgetIframeTransport.postMessageToWindow(
+      window.parent,
+      WidgetMethodsEmit.PROCESS_HOOK,
+      {
+        id,
+        event,
+        payload,
+      },
+      parentOrigin,
+    )
   })
 }
 
