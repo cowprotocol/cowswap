@@ -20,6 +20,7 @@ import {
   ProviderRpcResponsePayload,
 } from './iframeRpcProviderEvents'
 
+import { getParentOrigin } from '../getParentOrigin'
 import {
   JsonRpcErrorResponseMessage,
   JsonRpcRequest,
@@ -489,26 +490,6 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   private emitMessage(message: ProviderMessage) {
     this.emit('message', message)
   }
-}
-
-function getParentOrigin(): string | undefined {
-  if (typeof window !== 'undefined') {
-    const ancestorOrigins = window.location.ancestorOrigins
-
-    if (ancestorOrigins && ancestorOrigins.length > 0) {
-      return ancestorOrigins[0]
-    }
-  }
-
-  if (typeof document !== 'undefined' && document.referrer) {
-    try {
-      return new URL(document.referrer).origin
-    } catch {
-      return undefined
-    }
-  }
-
-  return undefined
 }
 
 /**
