@@ -4,6 +4,7 @@ import {
   CowWidgetEvents,
   CowWidgetEventPayloadMap,
 } from '@cowprotocol/events'
+import { HttpsUrlString, assertHttpsUrlString } from '@cowprotocol/iframe-transport'
 
 import { WindowListener, WidgetMethodsEmit } from './types'
 import { widgetIframeTransport } from './widgetIframeTransport'
@@ -15,9 +16,11 @@ export class IframeCowEventEmitter {
 
   constructor(
     private contentWindow: Window,
-    iframeOrigin: string,
+    iframeOrigin: HttpsUrlString,
     listeners: CowWidgetEventListeners = [],
   ) {
+    assertHttpsUrlString(iframeOrigin)
+
     // Subscribe listeners to local event emitter
     this.updateListeners(listeners)
 

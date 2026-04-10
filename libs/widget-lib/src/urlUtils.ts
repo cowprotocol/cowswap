@@ -1,13 +1,19 @@
+import { HttpsUrlString, assertHttpsUrlString } from '@cowprotocol/iframe-transport'
+
 import { isCowSwapWidgetPalette } from './themeUtils'
 import { CowSwapWidgetParams, TradeType } from './types'
 
 const EMPTY_TOKEN = '_'
 
-export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
+export function buildWidgetHttpsUrlOrThrow(params: Partial<CowSwapWidgetParams>): HttpsUrlString {
   const host = typeof params.baseUrl === 'string' ? params.baseUrl : 'https://swap.cow.fi'
   const path = buildWidgetPath(params)
+  const url = new URL(`${host}/#${path}?${buildWidgetUrlQuery(params)}`)
+  const urlString = url.toString()
 
-  return host + '/#' + path + '?' + buildWidgetUrlQuery(params)
+  assertHttpsUrlString(urlString)
+
+  return urlString
 }
 
 export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {

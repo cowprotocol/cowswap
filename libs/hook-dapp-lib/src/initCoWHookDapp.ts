@@ -1,4 +1,9 @@
-import { getParentOrigin, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
+import {
+  getParentOriginOrThrow,
+  WidgetEthereumProvider,
+  UrlString,
+  assertHttpsUrlString,
+} from '@cowprotocol/iframe-transport'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from './hookDappIframeTransport'
 import { CowHookCreation, CoWHookDappActions, CowHookDetails, HookDappContext, TokenData } from './types'
@@ -14,7 +19,10 @@ export interface CoWHookDappHandler {
 
 export function initCoWHookDapp({ onContext }: CoWHookDappInit): CoWHookDappHandler {
   const parent = window.parent
-  const parentOrigin = getParentOrigin()
+  const parentOrigin = getParentOriginOrThrow()
+
+  assertHttpsUrlString(parentOrigin)
+
   const provider = new WidgetEthereumProvider({ targetOrigin: parentOrigin })
   const actions = getCoWHookDappActions(parent, parentOrigin)
 
@@ -25,7 +33,7 @@ export function initCoWHookDapp({ onContext }: CoWHookDappInit): CoWHookDappHand
   return { actions, provider }
 }
 
-function getCoWHookDappActions(parent: Window, parentOrigin: string | undefined): CoWHookDappActions {
+function getCoWHookDappActions(parent: Window, parentOrigin: UrlString): CoWHookDappActions {
   return {
     addHook(payload: CowHookCreation) {
       hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.ADD_HOOK, payload, parentOrigin)

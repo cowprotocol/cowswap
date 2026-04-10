@@ -1,5 +1,6 @@
 import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 
+import { isHttpsUrlString } from '@cowprotocol/common-utils'
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
@@ -50,10 +51,18 @@ const StyledProductLogo = styled(ProductLogo)`
   }
 `
 
+interface IframeState {
+  isLoading: boolean
+  isActive: boolean
+  hasError: boolean
+}
+
 interface IframeDappContainerProps {
   dapp: HookDappIframe
   context: HookDappContextType
 }
+
+// eslint-disable-next-line max-lines-per-function
 export function IframeDappContainer({ dapp, context }: IframeDappContainerProps): ReactNode {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const bridgeRef = useRef<IframeRpcProviderBridge | null>(null)
@@ -62,9 +71,17 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const setSellTokenRef = useRef(context.setSellToken)
   const setBuyTokenRef = useRef(context.setBuyToken)
 
-  const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [iframeState, setIframeState] = useState<IframeState>({
+    isLoading: true,
+    isActive: false,
+    hasError: false,
+  })
+
   const dappOrigin = getDappOrigin(dapp.url)
+  const isHttpsUrl = dappOrigin && isHttpsUrlString(dappOrigin)
+
+  const { isLoading, isActive } = iframeState
+  const hasError = iframeState.hasError || !dappOrigin || !isHttpsUrl
 
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
@@ -79,22 +96,37 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   // eslint-disable-next-line react-hooks/refs
   setBuyTokenRef.current = context.setBuyToken
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleIframeLoad = () => {
-    setIsLoading(false)
+  const handleIframeLoad = (): void => {
+    setIframeState({
+      isLoading: false,
+      isActive: false,
+      hasError: false,
+    })
+  }
+
+  const handleIframeError = (): void => {
+    setIframeState({
+      isLoading: false,
+      isActive: false,
+      hasError: true,
+    })
   }
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
 
-    if (!iframeWindow || !dappOrigin) return
+    if (!iframeWindow || !dappOrigin || !isHttpsUrlString(dappOrigin)) return
 
     const listeners = [
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
         CoWHookDappEvents.ACTIVATE,
-        () => setIsIframeActive(true),
+        () =>
+          setIframeState({
+            isLoading: false,
+            isActive: true,
+            hasError: false,
+          }),
         dappOrigin,
       ),
     ]
@@ -143,7 +175,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
 
-    if (!iframeWindow || !isIframeActive || !dappOrigin) return
+    if (!iframeWindow || !isActive || !dappOrigin || !isHttpsUrlString(dappOrigin)) return
 
     // Omit unnecessary parameter
     const { addHook: _, editHook: _1, signer: _2, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
@@ -154,23 +186,40 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       iframeContext,
       dappOrigin,
     )
-  }, [context, dappOrigin, isIframeActive])
+  }, [context, dappOrigin, isActive])
+
+  let overlayNode: ReactNode | null = null
+
+  if (hasError) {
+    overlayNode = (
+      <LoadingWrapper>
+        <StyledProductLogo variant={ProductVariant.CowSwap} logoIconOnly height={56} />
+        <LoadingText>
+          <Trans>An error occurred while loading the hook</Trans>
+        </LoadingText>
+      </LoadingWrapper>
+    )
+  } else if (isLoading) {
+    overlayNode = (
+      <LoadingWrapper>
+        <StyledProductLogo variant={ProductVariant.CowSwap} logoIconOnly height={56} />
+        <LoadingText>
+          <Trans>Loading hook...</Trans>
+        </LoadingText>
+      </LoadingWrapper>
+    )
+  }
 
   return (
     <>
-      {isLoading && (
-        <LoadingWrapper>
-          <StyledProductLogo variant={ProductVariant.CowSwap} logoIconOnly height={56} />
-          <LoadingText>
-            <Trans>Loading hook...</Trans>
-          </LoadingText>
-        </LoadingWrapper>
-      )}
+      {overlayNode}
       <Iframe
         ref={iframeRef}
         src={dapp.url}
         allow="clipboard-read; clipboard-write"
         onLoad={handleIframeLoad}
+        onAbort={handleIframeError}
+        onError={handleIframeError}
         $isLoading={isLoading}
       />
     </>
