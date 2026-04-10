@@ -7,6 +7,7 @@ const scriptSrc = [
   "'self'",
 
   // App integrations
+  'https://*.cow.fi',
   'https://telegram.org',
   'https://*.appzi.io',
   'https://www.googletagmanager.com',
@@ -15,11 +16,14 @@ const scriptSrc = [
   'https://s3.amazonaws.com',
   'https://www.redditstatic.com',
   'https://www.google-analytics.com',
+  'https://www.clarity.ms',
 
   // GTM 1
   'https://tag.safary.club',
   'https://static.ads-twitter.com',
   'https://scripts.clarity.ms',
+  'https://api.hypelab.com',
+  'https://googleads.g.doubleclick.net',
 
   // GTM 2
   'https://tag.adrsbl.io',
