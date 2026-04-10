@@ -60,6 +60,7 @@ const connectSrc = [
   // GTM 1
   'https://tag.safary.club',
   'https://www.clarity.ms',
+  'https://a.clarity.ms',
   'https://spindl.link',
   'https://pixel-config.reddit.com',
   'https://alb.reddit.com',
@@ -72,6 +73,8 @@ const connectSrc = [
   'https://cdn.id5-sync.com',
   'https://api.adradv.io',
   'https://googleads.g.doubleclick.net',
+  'https://lbs.eu-1-id5-sync.com',
+  'https://ingestion.prod.apiarydata.net',
 
   // WalletConnect relay
   'wss://*.walletconnect.com',
