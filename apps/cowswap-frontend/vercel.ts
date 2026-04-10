@@ -32,6 +32,13 @@ const scriptSrc = [
   'https://cdn.id5-sync.com',
 ]
 
+const stylesSrc = [
+  "'self'",
+
+  // App integrations
+  'https://*.appzi.io',
+]
+
 // ---------------------------------------------------------------------------
 // CSP builder
 // ---------------------------------------------------------------------------
@@ -51,7 +58,7 @@ const csp = buildCsp([
   // TODO: unsafe-eval is needed for ajv library, whis is used for token list validation
   // TODO: unsafe-inline is needed for google analytics
   ['script-src', [...scriptSrc, "'unsafe-eval'", "'unsafe-inline'"]],
-  ['style-src', ["'self'", "'unsafe-inline'"]],
+  ['style-src', [...stylesSrc, "'unsafe-inline'"]],
   ['img-src', ["'self'", 'data:', 'blob:', 'https:']],
   ['font-src', ["'self'", 'data:']],
   // TODO: temporarily disabled, because it will break custom token lists functionality
