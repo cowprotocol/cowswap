@@ -7,6 +7,7 @@ interface GetIsSmartContractWalletParams {
   capabilities: WalletCapabilities | undefined
   capabilitiesLoading: boolean
   isSafeWallet: boolean
+  shouldKeepEoaUnknownWhileCapabilitiesLoad: boolean
   shouldTreatAtomicCapabilitiesAsSmartWallet: boolean
 }
 
@@ -22,6 +23,7 @@ export function getIsSmartContractWallet({
   capabilities,
   capabilitiesLoading,
   isSafeWallet,
+  shouldKeepEoaUnknownWhileCapabilitiesLoad,
   shouldTreatAtomicCapabilitiesAsSmartWallet,
 }: GetIsSmartContractWalletParams): boolean | undefined {
   if (isSafeWallet || accountType === AccountType.SMART_CONTRACT) {
@@ -42,9 +44,14 @@ export function getIsSmartContractWallet({
     return true
   }
 
-  // Keep the result unknown until account-type probing settles, so callers don't
-  // briefly enable EOA-only flows from capability data alone.
-  if (accountType === undefined || capabilitiesLoading) {
+  if (accountType === undefined) {
+    return undefined
+  }
+
+  // Coinbase Smart Wallet can resolve to a plain EOA before wallet_getCapabilities
+  // reports atomic support. Keep that session unknown while capabilities are still
+  // loading so we don't briefly enable EOA-only signing and permit flows.
+  if (accountType === AccountType.EOA && capabilitiesLoading && shouldKeepEoaUnknownWhileCapabilitiesLoad) {
     return undefined
   }
 

@@ -15,7 +15,7 @@ describe('isActiveMetaMaskConnection', () => {
       isActiveMetaMaskConnection({
         ethereumProvider: { isMetaMask: true },
         isInjectedConnection: false,
-        rdns: 'io.metamask',
+        trustedRdns: 'io.metamask',
       }),
     ).toBe(false)
   })
@@ -24,7 +24,7 @@ describe('isActiveMetaMaskConnection', () => {
     expect(
       isActiveMetaMaskConnection({
         isInjectedConnection: false,
-        rdns: 'io.metamask.flask',
+        trustedRdns: 'io.metamask.flask',
       }),
     ).toBe(false)
   })
@@ -33,7 +33,7 @@ describe('isActiveMetaMaskConnection', () => {
     expect(
       isActiveMetaMaskConnection({
         isInjectedConnection: true,
-        rdns: 'io.metamask.flask',
+        trustedRdns: 'io.metamask.flask',
       }),
     ).toBe(true)
   })

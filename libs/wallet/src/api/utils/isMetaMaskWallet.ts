@@ -8,7 +8,7 @@ interface EthereumProviderLike {
 interface IsMetaMaskWalletParams {
   connectorName?: string
   ethereumProvider?: EthereumProviderLike
-  rdns?: string | null
+  trustedRdns?: string | null
 }
 
 function hasMetaMaskRdns(rdns: string | null | undefined): boolean {
@@ -19,8 +19,10 @@ function isMetaMaskProvider(ethereumProvider: EthereumProviderLike | undefined):
   return Boolean(ethereumProvider?.isMetaMask && !ethereumProvider?.isRabby)
 }
 
-export function isMetaMaskWallet({ connectorName, ethereumProvider, rdns }: IsMetaMaskWalletParams): boolean {
-  return (
-    connectorName?.trim().toLowerCase() === 'metamask' || hasMetaMaskRdns(rdns) || isMetaMaskProvider(ethereumProvider)
-  )
+export function isMetaMaskWallet({ connectorName, ethereumProvider, trustedRdns }: IsMetaMaskWalletParams): boolean {
+  if (typeof trustedRdns === 'string') {
+    return hasMetaMaskRdns(trustedRdns)
+  }
+
+  return connectorName?.trim().toLowerCase() === 'metamask' || isMetaMaskProvider(ethereumProvider)
 }

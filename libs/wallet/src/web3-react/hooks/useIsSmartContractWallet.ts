@@ -1,5 +1,5 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { AccountType } from '@cowprotocol/types'
+import { AccountType, type EIP1193Provider } from '@cowprotocol/types'
 import type { Web3Provider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 
@@ -10,9 +10,17 @@ import { useIsSafeWallet } from './useWalletMetadata'
 import { useSelectedEip6963ProviderInfo, useWalletInfo } from '../../api/hooks'
 import { useWalletCapabilities } from '../../api/hooks/useWalletCapabilities'
 import { getIsSmartContractWallet } from '../../api/utils/getIsSmartContractWallet'
+import { isActiveCoinbaseConnection } from '../../api/utils/isActiveCoinbaseConnection'
 import { isActiveMetaMaskConnection } from '../../api/utils/isActiveMetaMaskConnection'
+import { coinbaseWalletConnection } from '../connection/coinbase'
 import { injectedWalletConnection } from '../connection/injectedWallet'
 import { metaMaskSdkConnection } from '../connection/metaMaskSdk'
+
+type WalletProviderLike = EIP1193Provider & {
+  isCoinbaseWallet?: true
+  isMetaMask?: true
+  isRabby?: true
+}
 
 export function useIsSmartContractWallet(): boolean | undefined {
   const accountType = useAccountType()
@@ -20,15 +28,26 @@ export function useIsSmartContractWallet(): boolean | undefined {
   const { data: capabilities, isLoading: capabilitiesLoading } = useWalletCapabilities()
   const { connector, provider } = useWeb3React()
   const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
-  const ethereumProvider = (provider as Web3Provider | undefined)?.provider as
-    | { isMetaMask?: boolean; isRabby?: boolean }
-    | undefined
+  const ethereumProvider = (provider as Web3Provider | undefined)?.provider as WalletProviderLike | undefined
+  const isInjectedConnection = connector === injectedWalletConnection.connector
+  let trustedRdns: string | undefined
+
+  if (isInjectedConnection && selectedEip6963Provider && selectedEip6963Provider.provider === ethereumProvider) {
+    trustedRdns = selectedEip6963Provider.info.rdns
+  }
 
   const isMetaMaskConnection = isActiveMetaMaskConnection({
     ethereumProvider,
-    isInjectedConnection: connector === injectedWalletConnection.connector,
+    isInjectedConnection,
     isMetaMaskSdkConnection: connector === metaMaskSdkConnection.connector,
-    rdns: selectedEip6963Provider?.info.rdns,
+    trustedRdns,
+  })
+
+  const isCoinbaseConnection = isActiveCoinbaseConnection({
+    ethereumProvider,
+    isCoinbaseConnector: connector === coinbaseWalletConnection.connector,
+    isInjectedConnection,
+    trustedRdns,
   })
 
   return getIsSmartContractWallet({
@@ -36,6 +55,7 @@ export function useIsSmartContractWallet(): boolean | undefined {
     capabilities,
     capabilitiesLoading,
     isSafeWallet,
+    shouldKeepEoaUnknownWhileCapabilitiesLoad: isCoinbaseConnection,
     shouldTreatAtomicCapabilitiesAsSmartWallet: !isMetaMaskConnection,
   })
 }

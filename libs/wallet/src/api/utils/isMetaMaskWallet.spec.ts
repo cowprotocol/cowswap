@@ -6,15 +6,19 @@ describe('isMetaMaskWallet', () => {
   })
 
   it('detects MetaMask by exact rdns', () => {
-    expect(isMetaMaskWallet({ rdns: 'io.metamask' })).toBe(true)
+    expect(isMetaMaskWallet({ trustedRdns: 'io.metamask' })).toBe(true)
   })
 
   it('detects MetaMask by rdns prefix for variants such as Flask', () => {
-    expect(isMetaMaskWallet({ rdns: 'io.metamask.flask' })).toBe(true)
+    expect(isMetaMaskWallet({ trustedRdns: 'io.metamask.flask' })).toBe(true)
   })
 
   it('detects MetaMask by provider flags for generic injected connections', () => {
     expect(isMetaMaskWallet({ ethereumProvider: { isMetaMask: true } })).toBe(true)
+  })
+
+  it('lets an explicit non-MetaMask rdns override compatibility provider flags', () => {
+    expect(isMetaMaskWallet({ trustedRdns: 'com.coinbase.wallet', ethereumProvider: { isMetaMask: true } })).toBe(false)
   })
 
   it('does not treat Rabby as MetaMask when it exposes isMetaMask', () => {
@@ -22,6 +26,8 @@ describe('isMetaMaskWallet', () => {
   })
 
   it('returns false when no MetaMask signal is present', () => {
-    expect(isMetaMaskWallet({ rdns: 'com.coinbase.wallet', ethereumProvider: { isMetaMask: false } })).toBe(false)
+    expect(isMetaMaskWallet({ trustedRdns: 'com.coinbase.wallet', ethereumProvider: { isMetaMask: false } })).toBe(
+      false,
+    )
   })
 })

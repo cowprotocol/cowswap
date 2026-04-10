@@ -10,7 +10,7 @@ interface IsActiveMetaMaskConnectionParams {
   ethereumProvider?: EthereumProviderLike
   isInjectedConnection: boolean
   isMetaMaskSdkConnection?: boolean
-  rdns?: string | null
+  trustedRdns?: string | null
 }
 
 export function isActiveMetaMaskConnection({
@@ -18,7 +18,7 @@ export function isActiveMetaMaskConnection({
   ethereumProvider,
   isInjectedConnection,
   isMetaMaskSdkConnection = false,
-  rdns,
+  trustedRdns,
 }: IsActiveMetaMaskConnectionParams): boolean {
   if (isMetaMaskSdkConnection) {
     return true
@@ -28,5 +28,5 @@ export function isActiveMetaMaskConnection({
     return false
   }
 
-  return isMetaMaskWallet({ connectorName, ethereumProvider, rdns })
+  return isMetaMaskWallet({ connectorName, ethereumProvider, trustedRdns })
 }
