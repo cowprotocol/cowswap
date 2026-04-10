@@ -3,7 +3,6 @@ import { routes, type VercelConfig } from '@vercel/config/v1'
 // ---------------------------------------------------------------------------
 // CSP source lists
 // ---------------------------------------------------------------------------
-
 const scriptSrc = [
   "'self'",
 
@@ -92,7 +91,9 @@ function buildCsp(directives: CspDirective[]): string {
 
 const csp = buildCsp([
   ['default-src', ["'self'"]],
-  ['script-src', [...scriptSrc, "'unsafe-eval'"]],
+  // TODO: unsafe-eval is needed for ajv library, whis is used for token list validation
+  // TODO: unsafe-inline is needed for google analytics
+  ['script-src', [...scriptSrc, "'unsafe-eval'", "'unsafe-inline"]],
   ['style-src', ["'self'", "'unsafe-inline'"]],
   ['img-src', ["'self'", 'data:', 'blob:', 'https:']],
   ['font-src', ["'self'", 'data:']],
