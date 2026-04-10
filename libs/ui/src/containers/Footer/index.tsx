@@ -130,96 +130,124 @@ const PRODUCT_LOGO_LINKS: {
 const GLOBAL_FOOTER_DESCRIPTION =
   'CoW DAO is an open collective of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
 
-const GLOBAL_FOOTER_NAV_ITEMS: Array<NavItemProps> = [
-  {
-    label: 'About',
-    children: [
-      {
-        href: 'https://docs.cow.fi/governance',
-        label: 'Governance',
-        external: true,
-        utmContent: 'footer-about-governance',
-      },
-      {
-        href: 'https://dune.com/cowprotocol/cow-revenue',
-        label: 'Revenue',
-        external: true,
-        utmContent: 'footer-about-revenue',
-      },
-      { href: 'https://grants.cow.fi/', label: 'Grants', external: true, utmContent: 'footer-about-grants' },
-      { href: 'https://cow.fi/careers', label: 'Careers', external: true, utmContent: 'footer-about-careers' },
-      {
-        href: 'https://cownation.notion.site/CoW-DAO-Brand-Kit-dad6212f182f49d38683e8410bfb37d2',
-        label: 'Brand Kit',
-        external: true,
-        utmContent: 'footer-about-brand-kit',
-      },
-      { href: 'https://cow.fi/legal', label: 'Legal', external: true, utmContent: 'footer-about-legal' },
-      {
-        label: 'Bug Bounty',
-        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
-        external: true,
-        utmContent: 'footer-misc-bug-bounty',
-      },
-    ],
-  },
-  {
-    label: 'Products',
-    children: [
-      {
-        label: 'CoW Swap',
-        href: 'https://cow.fi/cow-swap',
-        external: true,
-        utmContent: 'footer-products-cow-swap',
-      },
-      {
-        label: 'CoW Protocol',
-        href: 'https://cow.fi/cow-protocol',
-        external: true,
-        utmContent: 'footer-products-cow-protocol',
-      },
-      { label: 'CoW AMM', href: 'https://cow.fi/cow-amm', external: true, utmContent: 'footer-products-cow-amm' },
-      {
-        label: 'MEV Blocker',
-        href: 'https://cow.fi/mev-blocker',
-        external: true,
-        utmContent: 'footer-products-mev-blocker',
-      },
-      {
-        label: 'CoW Explorer',
-        href: 'https://explorer.cow.fi/',
-        external: true,
-        utmContent: 'footer-products-cow-explorer',
-      },
-      { label: 'CoW Widget', href: 'https://cow.fi/widget', external: true, utmContent: 'footer-products-cow-widget' },
-    ],
-  },
-  {
-    label: 'Help',
-    children: [
-      { label: 'Docs', href: 'https://docs.cow.fi/', external: true, utmContent: 'footer-help-docs' },
-      {
-        label: 'Knowledge Base',
-        href: 'https://cow.fi/learn',
-        external: true,
-        utmContent: 'footer-help-knowledge-base',
-      },
-      {
-        label: 'Report Scams',
-        href: 'https://cow.fi/report-scam',
-        external: true,
-        utmContent: 'footer-help-report-scams',
-      },
-    ],
-  },
-  {
-    label: 'Misc.',
-    children: [
-      { label: 'For DAOs', href: 'https://cow.fi/daos', external: true, utmContent: 'footer-misc-for-daos' },
-      { label: 'Token Charts', href: 'https://cow.fi/tokens', external: true, utmContent: 'footer-misc-token-charts' },
-    ],
-  },
-]
+const FOOTER_NAV_GROUP_PRODUCTS: NavItemProps = {
+  label: 'Products',
+  children: [
+    {
+      label: 'CoW Swap',
+      href: 'https://cow.fi/cow-swap',
+      external: true,
+      utmContent: 'footer-products-cow-swap',
+    },
+    {
+      label: 'CoW Protocol',
+      href: 'https://cow.fi/cow-protocol',
+      external: true,
+      utmContent: 'footer-products-cow-protocol',
+    },
+    { label: 'CoW AMM', href: 'https://cow.fi/cow-amm', external: true, utmContent: 'footer-products-cow-amm' },
+    {
+      label: 'MEV Blocker',
+      href: 'https://cow.fi/mev-blocker',
+      external: true,
+      utmContent: 'footer-products-mev-blocker',
+    },
+    {
+      label: 'CoW Explorer',
+      href: 'https://explorer.cow.fi/',
+      external: true,
+      utmContent: 'footer-products-cow-explorer',
+    },
+    {
+      label: 'CoW Widget',
+      href: 'https://cow.fi/widget',
+      external: true,
+      utmContent: 'footer-products-cow-widget',
+    },
+  ],
+}
+
+const FOOTER_NAV_GROUP_HELP: NavItemProps = {
+  label: 'Help',
+  children: [
+    { label: 'Docs', href: 'https://docs.cow.fi/', external: true, utmContent: 'footer-help-docs' },
+    {
+      label: 'Knowledge Base',
+      href: 'https://cow.fi/learn',
+      external: true,
+      utmContent: 'footer-help-knowledge-base',
+    },
+    {
+      label: 'Report Scams',
+      href: 'https://cow.fi/report-scam',
+      external: true,
+      utmContent: 'footer-help-report-scams',
+    },
+  ],
+}
+
+const FOOTER_NAV_GROUP_MISC: NavItemProps = {
+  label: 'Misc.',
+  children: [
+    { label: 'For DAOs', href: 'https://cow.fi/daos', external: true, utmContent: 'footer-misc-for-daos' },
+    {
+      label: 'Token Charts',
+      href: 'https://cow.fi/tokens',
+      external: true,
+      utmContent: 'footer-misc-token-charts',
+    },
+  ],
+}
+
+function getAboutFooterNavChildren(isAffiliateProgramEnabled: boolean): NonNullable<MenuItem['children']> {
+  return [
+    {
+      href: 'https://docs.cow.fi/governance',
+      label: 'Governance',
+      external: true,
+      utmContent: 'footer-about-governance',
+    },
+    {
+      href: 'https://dune.com/cowprotocol/cow-revenue',
+      label: 'Revenue',
+      external: true,
+      utmContent: 'footer-about-revenue',
+    },
+    { href: 'https://grants.cow.fi/', label: 'Grants', external: true, utmContent: 'footer-about-grants' },
+    { href: 'https://cow.fi/careers', label: 'Careers', external: true, utmContent: 'footer-about-careers' },
+    {
+      href: 'https://cownation.notion.site/CoW-DAO-Brand-Kit-dad6212f182f49d38683e8410bfb37d2',
+      label: 'Brand Kit',
+      external: true,
+      utmContent: 'footer-about-brand-kit',
+    },
+    { href: 'https://cow.fi/legal', label: 'Legal', external: true, utmContent: 'footer-about-legal' },
+    {
+      label: 'Bug Bounty',
+      href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
+      external: true,
+      utmContent: 'footer-misc-bug-bounty',
+    },
+    ...(isAffiliateProgramEnabled
+      ? [
+          {
+            label: 'Affiliate Program',
+            href: '/affiliate-program',
+            utmContent: 'footer-about-affiliate-program',
+          },
+        ]
+      : []),
+  ]
+}
+
+export function getGlobalFooterNavItems(isAffiliateProgramEnabled: boolean): Array<NavItemProps> {
+  return [
+    { label: 'About', children: getAboutFooterNavChildren(isAffiliateProgramEnabled) },
+    FOOTER_NAV_GROUP_PRODUCTS,
+    FOOTER_NAV_GROUP_HELP,
+    FOOTER_NAV_GROUP_MISC,
+  ]
+}
 
 interface FooterLinkProps {
   href: string
@@ -261,8 +289,8 @@ const FooterLink = ({ href, external, label, utmSource: _utmSource, utmContent, 
   )
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+export const GLOBAL_FOOTER_NAV_ITEMS = getGlobalFooterNavItems(false)
+
 export const Footer = ({
   description = GLOBAL_FOOTER_DESCRIPTION,
   navItems = GLOBAL_FOOTER_NAV_ITEMS,
