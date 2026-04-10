@@ -23,7 +23,7 @@ import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 import { getParentOrigin } from '../utils/getParentOrigin.utils'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
 
-const messagesCache: { [method: string]: unknown } = {}
+const messagesCache: { [method: string]: { data: unknown; origin: string } } = {}
 
 const getEventMethod = (event: MessageEvent): string | null =>
   (event.data.key === widgetIframeTransport.key && (event.data.method as string)) || null
@@ -33,14 +33,17 @@ const cacheMessages = (event: MessageEvent): void => {
 
   if (!method) return
 
-  messagesCache[method] = event.data
+  messagesCache[method] = { data: event.data, origin: event.origin }
 }
 
-function replayCachedMessage(method: string, origin: string): void {
+function replayCachedMessage(method: string): void {
+  const cached = messagesCache[method]
+  if (!cached) return
+
   window.dispatchEvent(
     new MessageEvent('message', {
-      origin,
-      data: messagesCache[method],
+      origin: cached.origin,
+      data: cached.data,
     }),
   )
 }
@@ -167,7 +170,7 @@ export function InjectedWidgetUpdater(): ReactNode {
 
     // Process all cached messages
     Object.keys(messagesCache).forEach((method) => {
-      replayCachedMessage(method, parentOrigin)
+      replayCachedMessage(method)
       delete messagesCache[method]
     })
 

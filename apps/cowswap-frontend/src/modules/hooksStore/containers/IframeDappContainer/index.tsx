@@ -64,7 +64,17 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [hasOriginError, setHasOriginError] = useState(false)
   const dappOrigin = getDappOrigin(dapp.url)
+
+  // Detect and handle null dappOrigin
+  useLayoutEffect(() => {
+    if (!dappOrigin) {
+      console.error('[IframeDappContainer] Failed to derive origin from dapp URL:', dapp.url)
+      setHasOriginError(true)
+      setIsLoading(false)
+    }
+  }, [dappOrigin, dapp.url])
 
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
@@ -155,6 +165,16 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       dappOrigin,
     )
   }, [context, dappOrigin, isIframeActive])
+
+  if (hasOriginError) {
+    return (
+      <LoadingWrapper>
+        <LoadingText>
+          <Trans>Error: Unable to load hook. Invalid URL format.</Trans>
+        </LoadingText>
+      </LoadingWrapper>
+    )
+  }
 
   return (
     <>

@@ -906,6 +906,10 @@ msgstr "Maybe next time"
 msgid "Can't find the pool you're looking for?"
 msgstr "Can't find the pool you're looking for?"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/containers/IframeDappContainer/index.tsx
+msgid "Error: Unable to load hook. Invalid URL format."
+msgstr "Error: Unable to load hook. Invalid URL format."
+
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Custom slippage amount set{amountRange}."
 msgstr "Custom slippage amount set{amountRange}."
