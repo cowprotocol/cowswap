@@ -14,6 +14,7 @@ import SVG from 'react-inlinesvg'
 
 import CopyHelper from 'legacy/components/Copy'
 
+import { AffiliateEntrySource } from '../analytics/affiliateAnalytics.types'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
 import { useIsRefCodeExpired } from '../hooks/useIsRefCodeExpired'
@@ -34,7 +35,7 @@ import {
   ValidBadge,
   ExpiredBadge,
 } from '../pure/shared'
-import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { openTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 const TIME_AGO_UPDATE_INTERVAL_MS = ms`1m`
@@ -42,7 +43,7 @@ const TIME_AGO_UPDATE_INTERVAL_MS = ms`1m`
 export function AffiliateTraderCodeInfo(): ReactNode {
   const { account } = useWalletInfo()
   const { savedCode, isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
-  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
+  const openAffiliateModal = useSetAtom(openTraderModalAtom)
 
   const { data: stats, isLoading: statsLoading } = useAffiliateTraderStats(account)
   const { data: info, isLoading: codeLoading } = useAffiliateTraderInfo(savedCode)
@@ -119,7 +120,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
           </LinkedMetaList>
           {!isLinked && (
             <HeroActions>
-              <ButtonPrimary onClick={toggleAffiliateModal}>
+              <ButtonPrimary onClick={() => openAffiliateModal(AffiliateEntrySource.TRADER_PAGE_CODE_CARD)}>
                 <Trans>Edit code</Trans>
               </ButtonPrimary>
             </HeroActions>

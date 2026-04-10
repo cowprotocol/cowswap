@@ -13,6 +13,8 @@ import {
   AffiliateTraderOnboard,
   AffiliateTraderStats,
   TraderWalletStatus,
+  getAffiliateTraderPageState,
+  useAffiliateStateViewAnalytics,
   useAffiliateTraderWallet,
   AffiliateTraderIneligible,
   AffiliateTraderUnsupportedNetwork,
@@ -28,6 +30,18 @@ export default function AffiliateTrader(): ReactNode {
 
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
+  const hasSavedCode = Boolean(savedCode)
+  const pageState = getAffiliateTraderPageState(walletStatus, hasSavedCode)
+
+  useAffiliateStateViewAnalytics({
+    action: 'affiliate_trader_page_state_viewed',
+    viewKey: pageState,
+    eventParams: {
+      pageState,
+      walletStatus,
+      hasSavedCode,
+    },
+  })
 
   return (
     <>

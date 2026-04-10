@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -9,6 +10,8 @@ import { Trans } from '@lingui/react/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { AffiliateEntrySource } from '../analytics/affiliateAnalytics.types'
+import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import { PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'
 import {
   formatUsdcCompact,
@@ -17,15 +20,34 @@ import {
   getDefaultTriggerVolume,
 } from '../lib/affiliateProgramUtils'
 import { AffiliateTermsFaqLinks, HeroActions, HeroCard, HeroContent, HeroSubtitle, HeroTitle } from '../pure/shared'
-import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { openTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
 export function AffiliateTraderOnboard(): ReactNode {
   const { account } = useWalletInfo()
+  const analytics = useCowAnalytics()
   const toggleWalletModal = useToggleWalletModal()
-  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
+  const openAffiliateModal = useSetAtom(openTraderModalAtom)
   const traderRewardAmount = formatUsdcCompact(getDefaultTraderRewardAmount())
   const triggerVolumeLabel = formatUsdCompact(getDefaultTriggerVolume())
   const affiliateTimeCapDays = PROGRAM_DEFAULTS.AFFILIATE_TIME_CAP_DAYS
+
+  const onConnectWallet = useCallback((): void => {
+    trackAffiliateEvent({
+      analytics,
+      action: 'affiliate_trader_onboard_cta_clicked',
+      ctaType: 'connectWallet',
+    })
+    toggleWalletModal()
+  }, [analytics, toggleWalletModal])
+
+  const onAddCode = useCallback((): void => {
+    trackAffiliateEvent({
+      analytics,
+      action: 'affiliate_trader_onboard_cta_clicked',
+      ctaType: 'addCode',
+    })
+    openAffiliateModal(AffiliateEntrySource.TRADER_PAGE_ONBOARD)
+  }, [analytics, openAffiliateModal])
 
   return (
     <HeroCard>
@@ -45,11 +67,11 @@ export function AffiliateTraderOnboard(): ReactNode {
         </HeroSubtitle>
         <HeroActions>
           {account ? (
-            <ButtonPrimary onClick={toggleAffiliateModal}>
+            <ButtonPrimary onClick={onAddCode}>
               <Trans>Add code</Trans>
             </ButtonPrimary>
           ) : (
-            <ButtonPrimary onClick={toggleWalletModal}>
+            <ButtonPrimary onClick={onConnectWallet}>
               <Trans>Connect wallet</Trans>
             </ButtonPrimary>
           )}

@@ -1,9 +1,14 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
+import {
+  normalizeAffiliatePartnerCodeCreateFailureReason,
+  trackAffiliateEvent,
+} from '../analytics/affiliateAnalytics.utils'
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
 import {
@@ -30,11 +35,18 @@ export function useAffiliatePartnerCodeCreate({
   code,
   setError,
 }: UseAffiliatePartnerCodeCreateParams): UseAffiliatePartnerCodeCreateResult {
+  const analytics = useCowAnalytics()
   const [submitting, setSubmitting] = useState(false)
   const { mutate: mutatePartnerInfo } = useAffiliatePartnerInfo(account)
 
   const onCreate = useCallback(async (): Promise<void> => {
     if (!account || !provider) return
+
+    trackAffiliateEvent({
+      analytics,
+      action: 'affiliate_partner_code_create_started',
+      chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
+    })
 
     setSubmitting(true)
     setError(undefined)
@@ -54,13 +66,28 @@ export function useAffiliatePartnerCodeCreate({
         signedMessage,
       })
 
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_partner_code_create_completed',
+        chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
+        result: 'success',
+      })
       await mutatePartnerInfo().catch()
     } catch (error) {
-      setError(mapAffiliatePartnerCodeCreateError(error))
+      const mappedError = mapAffiliatePartnerCodeCreateError(error)
+
+      setError(mappedError)
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_partner_code_create_completed',
+        chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
+        result: 'failed',
+        failureReason: normalizeAffiliatePartnerCodeCreateFailureReason(mappedError),
+      })
     } finally {
       setSubmitting(false)
     }
-  }, [account, code, mutatePartnerInfo, provider, setError])
+  }, [account, analytics, code, mutatePartnerInfo, provider, setError])
 
   return useMemo(() => ({ submitting, onCreate }), [submitting, onCreate])
 }

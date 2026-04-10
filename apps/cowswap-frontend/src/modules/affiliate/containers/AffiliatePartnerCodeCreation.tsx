@@ -1,8 +1,10 @@
 import { FormEvent, ReactNode, useCallback, useState } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import {
   PartnerCodeAvailability,
   useAffiliatePartnerCodeAvailability,
@@ -13,6 +15,7 @@ import { formatRefCode, generateSuggestedCode, isSupportedPayoutsNetwork } from 
 import { AffiliatePartnerCodeForm } from '../pure/AffiliatePartner/AffiliatePartnerCodeForm'
 
 export function AffiliatePartnerCodeCreation(): ReactNode {
+  const analytics = useCowAnalytics()
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
   const provider = useWalletProvider()
@@ -20,7 +23,8 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
   const isCreateEnabled = !!account && !!provider && isSupportedPayoutsNetwork(chainId)
 
   const [error, setError] = useState<AffiliatePartnerCodeCreateError | undefined>()
-  const [inputCode, setInputCode] = useState(generateSuggestedCode())
+  const [generatedCode, setGeneratedCode] = useState(() => generateSuggestedCode())
+  const [inputCode, setInputCode] = useState(generatedCode)
   const isInputValid = Boolean(formatRefCode(inputCode))
 
   const availability = useAffiliatePartnerCodeAvailability(inputCode, isCreateEnabled && isInputValid, setError)
@@ -40,9 +44,16 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
   }, [])
 
   const onGenerate = useCallback((): void => {
-    setInputCode(generateSuggestedCode())
+    trackAffiliateEvent({
+      analytics,
+      action: 'affiliate_partner_code_suggestion_regenerated',
+      inputWasDirty: inputCode !== generatedCode,
+    })
+    const nextGeneratedCode = generateSuggestedCode()
+    setGeneratedCode(nextGeneratedCode)
+    setInputCode(nextGeneratedCode)
     setError(undefined)
-  }, [])
+  }, [analytics, generatedCode, inputCode])
 
   return (
     <AffiliatePartnerCodeForm

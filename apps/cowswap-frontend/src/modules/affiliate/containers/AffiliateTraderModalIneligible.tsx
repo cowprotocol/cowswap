@@ -1,5 +1,5 @@
-import { useSetAtom } from 'jotai'
-import { ReactNode, useCallback, useEffect } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { ReactNode, useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import SAD_COW_FACE_ILLUSTRATION from '@cowprotocol/assets/cow-swap/sad-cow-face.svg'
@@ -7,27 +7,29 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
+import { useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
 import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
 import { IneligibleImage } from '../pure/shared'
 import { TraderIneligible } from '../pure/TraderIneligible'
-import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { affiliateTraderModalAtom, closeTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
 export function AffiliateTraderModalIneligible(): ReactNode {
-  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
+  const { source: entrySource } = useAtomValue(affiliateTraderModalAtom)
+  const closeAffiliateModal = useSetAtom(closeTraderModalAtom)
   const analytics = useCowAnalytics()
-
-  useEffect(() => {
-    analytics.sendEvent({
-      category: 'affiliate',
-      action: 'view_ineligible',
-      label: 'modal',
-    })
-  }, [analytics])
+  const walletStatus = useAffiliateTraderWallet()
 
   const onGoBack = useCallback(() => {
-    analytics.sendEvent({ category: 'affiliate', action: 'cta_clicked', label: 'go_back' })
-    toggleAffiliateModal()
-  }, [analytics, toggleAffiliateModal])
+    trackAffiliateEvent({
+      analytics,
+      action: 'affiliate_trader_modal_primary_cta_clicked',
+      ctaType: 'goBack',
+      entrySource,
+      walletStatus,
+    })
+    closeAffiliateModal()
+  }, [analytics, closeAffiliateModal, entrySource, walletStatus])
 
   return (
     <>

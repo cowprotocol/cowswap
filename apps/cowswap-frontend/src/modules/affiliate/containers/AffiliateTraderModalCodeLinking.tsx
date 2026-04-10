@@ -9,12 +9,13 @@ import { t } from '@lingui/core/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import { useAffiliateTraderCodeInput } from '../hooks/useAffiliateTraderCodeInput'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
 import { formatRefCode, isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
 import { AffiliateTradeCodeForm } from '../pure/AffiliateTraderModal/AffiliateTradeCodeForm'
-import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { affiliateTraderModalAtom, closeTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import {
   affiliateTraderPayoutConfirmationAtom,
   setAffiliateTraderPayoutConfirmationAtom,
@@ -26,12 +27,18 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const chainId = useWalletChainId()
   const analytics = useCowAnalytics()
   const toggleWalletModal = useToggleWalletModal()
-  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
+  const closeAffiliateModal = useSetAtom(closeTraderModalAtom)
 
   const walletStatus = useAffiliateTraderWallet()
+  const requiresPayoutConfirmation = !!account && !isSupportedPayoutsNetwork(chainId)
   const payoutConfirmed = useAtomValue(affiliateTraderPayoutConfirmationAtom)
   const setPayoutConfirmed = useSetAtom(setAffiliateTraderPayoutConfirmationAtom)
-  const { codeInput, error, isVerifying, verifyCode, onChange, onEdit, onRemove } = useAffiliateTraderCodeInput()
+  const { source: entrySource } = useAtomValue(affiliateTraderModalAtom)
+  const { codeInput, codeSource, error, isVerifying, verifyCode, onChange, onEdit, onRemove } =
+    useAffiliateTraderCodeInput({
+      requiresPayoutConfirmation,
+      walletStatus,
+    })
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const { data: codeInfo } = useAffiliateTraderInfo(savedCode)
   const showInvalidFormat = !!codeInput && !formatRefCode(codeInput)
@@ -39,9 +46,14 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const onTogglePayoutConfirmed = useCallback(
     (checked: boolean): void => {
       if (isVerifying) return
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_trader_payout_confirmation_toggled',
+        checked,
+      })
       setPayoutConfirmed(checked)
     },
-    [setPayoutConfirmed, isVerifying],
+    [analytics, isVerifying, setPayoutConfirmed],
   )
 
   const submitButtonLabel = useMemo(() => {
@@ -54,23 +66,37 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const onSubmit = useCallback((): void => {
     if (isVerifying || walletStatus === TraderWalletStatus.UNSUPPORTED) return
     if (savedCode) {
-      analytics.sendEvent({ category: 'affiliate', action: 'cta_clicked', label: 'start_trading' })
-      toggleAffiliateModal()
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_trader_modal_primary_cta_clicked',
+        ctaType: 'startTrading',
+        entrySource,
+        walletStatus,
+      })
+      closeAffiliateModal()
       return
     }
     if (!account) {
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_trader_modal_primary_cta_clicked',
+        ctaType: 'connectToVerify',
+        entrySource,
+        walletStatus,
+      })
       toggleWalletModal()
-      analytics.sendEvent({ category: 'affiliate', action: 'cta_clicked', label: 'connect_to_verify' })
       return
     }
-    verifyCode(codeInput, account)
+    void verifyCode({ code: codeInput, account, codeSource })
   }, [
     account,
     analytics,
     codeInput,
+    codeSource,
+    closeAffiliateModal,
+    entrySource,
     isVerifying,
     savedCode,
-    toggleAffiliateModal,
     toggleWalletModal,
     verifyCode,
     walletStatus,
@@ -80,7 +106,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
     <AffiliateTradeCodeForm
       walletStatus={walletStatus}
       account={account}
-      requiresPayoutConfirmation={!!account && !savedCode && !isSupportedPayoutsNetwork(chainId)}
+      requiresPayoutConfirmation={!!account && !savedCode && requiresPayoutConfirmation}
       codeInfo={codeInfo}
       payoutConfirmed={payoutConfirmed}
       onTogglePayoutConfirmed={onTogglePayoutConfirmed}

@@ -6,13 +6,15 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { useLocation } from 'react-router'
 
+import { AffiliateEntrySource } from '../analytics/affiliateAnalytics.types'
+import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
-import { affiliateTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { openTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { logAffiliate } from '../utils/logger'
 
 export function useAffiliateTraderRefUrlSideEffect(): void {
   const { isAffiliateProgramEnabled } = useFeatureFlags()
-  const setAffiliateModalOpen = useSetAtom(affiliateTraderModalAtom)
+  const openAffiliateModal = useSetAtom(openTraderModalAtom)
   const location = useLocation()
   const analytics = useCowAnalytics()
 
@@ -29,12 +31,12 @@ export function useAffiliateTraderRefUrlSideEffect(): void {
     if (!refCode || !refCodeParam || !isAffiliateProgramEnabled) return
 
     logAffiliate('Ref code found in URL, opening affiliate modal', { refCode })
-    setAffiliateModalOpen(true)
+    openAffiliateModal(AffiliateEntrySource.DEEP_LINK)
 
-    analytics.sendEvent({
-      category: 'affiliate',
-      action: 'referral_url_opened',
-      label: refCode,
+    trackAffiliateEvent({
+      analytics,
+      action: 'affiliate_trader_referral_url_detected',
+      entrySource: AffiliateEntrySource.DEEP_LINK,
     })
-  }, [analytics, isAffiliateProgramEnabled, location.search, setAffiliateModalOpen])
+  }, [analytics, isAffiliateProgramEnabled, location.search, openAffiliateModal])
 }
