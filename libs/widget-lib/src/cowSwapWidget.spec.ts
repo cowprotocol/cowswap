@@ -44,6 +44,14 @@ describe('createCowSwapWidget', () => {
 
     expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
+
+  it('ignores messages from an untrusted origin', () => {
+    createWidget('https://swap.cow.fi')
+
+    dispatchInterceptWindowOpen('https://example.com', 'https://attacker.example')
+
+    expect(window.open).not.toHaveBeenCalled()
+  })
 })
 
 function createWidget(baseUrl?: string): void {
