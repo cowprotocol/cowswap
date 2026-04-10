@@ -94,39 +94,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
 
   const settlementChainId = settlementContract.chainId
 
-  type MemoDeps = [
-    typeof account,
-    typeof allowsOffchainSigning,
-    typeof appData,
-    typeof tradeQuote,
-    typeof tradeQuote.quote,
-    typeof buyToken,
-    typeof settlementChainId,
-    typeof closeModals,
-    typeof dispatch,
-    typeof enoughAllowance,
-    typeof generatePermitHook,
-    typeof permitAmountToSign,
-    typeof inputAmount,
-    typeof networkFee,
-    typeof outputAmount,
-    typeof permitInfo,
-    typeof recipient,
-    typeof recipientAddress,
-    typeof sellAmountBeforeFee,
-    typeof sellToken,
-    typeof settlementContract,
-    typeof tradeConfirmActions,
-    typeof typedHooks,
-    typeof validTo,
-    typeof orderKind,
-    typeof uiOrderType,
-    typeof bridgeQuoteAmounts,
-    typeof addBridgeOrder,
-    typeof setSigningStep,
-    typeof walletClient,
-    typeof config,
-  ]
   return (
     useSWR(
       inputAmount &&
@@ -144,7 +111,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         uiOrderType &&
         validTo > 0 &&
         walletClient
-        ? ([
+        ? [
             account,
             allowsOffchainSigning,
             appData,
@@ -176,7 +143,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             setSigningStep,
             walletClient,
             config,
-          ] as MemoDeps)
+          ]
         : null,
       // TODO: Break down this large function into smaller functions
       // eslint-disable-next-line max-lines-per-function, complexity
