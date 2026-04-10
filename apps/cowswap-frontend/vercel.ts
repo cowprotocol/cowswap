@@ -44,6 +44,8 @@ const connectSrc = [
   'https://*.safe.global',
   'https://*.blockscout.com',
   'https://*.blocknative.com',
+  'https://*.mevblocker.io',
+  'https://*.infura.io',
   'https://api.country.is',
   'https://oauth.telegram.org',
   'https://raw.githubusercontent.com',
