@@ -62,8 +62,7 @@ const connectSrc = [
 
   // GTM 1
   'https://tag.safary.club',
-  'https://www.clarity.ms',
-  'https://a.clarity.ms',
+  'https://*.clarity.ms',
   'https://spindl.link',
   'https://pixel-config.reddit.com',
   'https://alb.reddit.com',
