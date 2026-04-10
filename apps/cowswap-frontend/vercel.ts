@@ -52,13 +52,13 @@ const csp = buildCsp([
   // TODO: unsafe-inline is needed for google analytics
   ['script-src', [...scriptSrc, "'unsafe-eval'", "'unsafe-inline'"]],
   ['style-src', ['*', "'unsafe-inline'"]],
-  ['img-src', ['*', 'data:']],
+  ['img-src', ["'self'", 'data:', 'blob:', 'https:']],
   ['font-src', ['*', 'data:']],
   // TODO: temporarily disabled, because it will break custom token lists functionality
   // use git annotate to see what was defined here
   // ['connect-src', connectSrc],
   ['connect-src', ['*']],
-  ['media-src', ['*', 'data:']],
+  ['media-src', ['*', 'data:', 'blob:']],
   ['frame-src', ['*']],
   ['frame-ancestors', ['*']],
   ['worker-src', ["'self'"]],
