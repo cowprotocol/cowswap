@@ -62,7 +62,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   // 1. Create a brand new iframe
   const iframe = createIframe(params)
-  const iframeOrigin = getTrustedOrigin(iframe, params)
+  const iframeOrigin = getIframeOrigin(iframe)
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
   const windowListeners: WindowListener[] = []
 
@@ -202,10 +202,6 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
 
 function getIframeOrigin(iframe: HTMLIFrameElement): string {
   return new URL(iframe.src).origin
-}
-
-function getTrustedOrigin(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): string {
-  return params.trustedOrigin || getIframeOrigin(iframe)
 }
 
 /**
