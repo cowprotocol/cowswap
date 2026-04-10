@@ -52,10 +52,6 @@ const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 const JSON_RPC_VERSION = '2.0'
 const DEFAULT_TARGET_ORIGIN = 'https://swap.cow.fi'
 
-function logWidgetRpc(...args: unknown[]): void {
-  console.debug('%c [COW][Widget][RPC]', 'font-weight: bold; color: #ff0000', ...args)
-}
-
 /**
  * Export the type information about the different events that are emitted.
  */
@@ -190,12 +186,6 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     this.eventSource = eventSource
     this.eventTarget = eventTarget
     this.targetOrigin = targetOrigin || getParentOrigin() || DEFAULT_TARGET_ORIGIN
-    logWidgetRpc('Resolved target origin', {
-      targetOrigin: this.targetOrigin,
-      usedDefaultTargetOrigin: this.targetOrigin === DEFAULT_TARGET_ORIGIN,
-      referrer: typeof document !== 'undefined' ? document.referrer || null : null,
-      currentOrigin: typeof window !== 'undefined' ? window.location.origin : null,
-    })
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
