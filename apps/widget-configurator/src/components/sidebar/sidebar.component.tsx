@@ -4,14 +4,10 @@ import { SupportedLocale, DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cow
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
-import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
-import { jsonHelperText } from '../../utils/jsonFieldParsing'
-import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
 import { SidebarHeader } from './header/sidebar-header.component'
@@ -25,6 +21,7 @@ import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../hooks/useWidgetParamsAndSettings'
 import { ColorModeContext } from '../../theme/ColorModeContext'
+import { jsonHelperText } from '../../utils/jsonFieldParsing'
 import { AppearanceStyleControls } from '../controls/AppearanceStyleControls'
 import { CustomImagesControl } from '../controls/CustomImagesControl'
 import { CustomSoundsControl } from '../controls/CustomSoundsControl'
@@ -36,16 +33,17 @@ import { TokenListControl } from '../controls/TokenListControl'
 import { AccordionSection } from '../ui/Accordion/AccordionSection'
 import { BooleanSwitchControl } from '../ui/controls/BooleanSwitch/BooleanSwitchControl'
 import { CurrencyInputControl } from '../ui/controls/CurrencyInput/CurrencyInputControl'
+import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
 import { CurrentTradeTypeControl } from '../ui/controls/Select/CurrentTradeTypeControl'
 import { LocaleControl } from '../ui/controls/Select/LocaleControl'
 import { ModeControl } from '../ui/controls/Select/ModeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from '../ui/controls/Select/NetworkControl'
 import { TradeModesControl } from '../ui/controls/Select/TradeModesControl'
 import { WidgetHooksControl } from '../ui/controls/Select/WidgetHooksControl'
+import { TextInput } from '../ui/controls/TextInput/TextInput.component'
 
 import type { Theme } from '@mui/material/styles'
 import type * as CSS from 'csstype'
-import { TextInput } from '../ui/controls/TextInput/TextInput.component'
 
 export interface SidebarProps {
   title: string
@@ -521,22 +519,10 @@ export function Sidebar({
           expanded={expandedSection === 'Deadlines'}
           onChange={toggleSection('Deadlines')}
         >
-          <Box>
-            <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
-              Global deadline
-            </Typography>
-            <DeadlineControl label="Deadline" deadlineState={deadlineState} />
-          </Box>
-          <Box>
-            <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
-              Per-trade deadlines
-            </Typography>
-            <Stack spacing={1.2}>
-              <DeadlineControl label="Swap" deadlineState={swapDeadlineState} />
-              <DeadlineControl label="Limit" deadlineState={limitDeadlineState} />
-              <DeadlineControl label="Advanced" deadlineState={advancedDeadlineState} />
-            </Stack>
-          </Box>
+          <DeadlineControl label="Global Deadline" deadlineState={deadlineState} />
+          <DeadlineControl label="Swap Deadline" deadlineState={swapDeadlineState} />
+          <DeadlineControl label="Limit Deadline" deadlineState={limitDeadlineState} />
+          <DeadlineControl label="Advanced Deadline" deadlineState={advancedDeadlineState} />
         </AccordionSection>
 
         <AccordionSection

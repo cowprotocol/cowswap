@@ -1,9 +1,11 @@
 import type { ChangeEvent, ReactNode } from 'react'
 
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+
 import { jsonHelperText } from '../../utils/jsonFieldParsing'
 
 import type { JsonState, OnJsonStateChange } from '../../hooks/useJsonState'
@@ -11,13 +13,13 @@ import type * as CSS from 'csstype'
 
 export interface AppearanceStyleControlsProps {
   iframeStyleJson: JsonState<CSS.Properties>
-  onIframeStyleJson: OnJsonStateChange<CSS.Properties>
+  onIframeStyleJson: OnJsonStateChange
   appWrapperStyleJson: JsonState<CSS.Properties>
-  onAppWrapperStyleJson: OnJsonStateChange<CSS.Properties>
+  onAppWrapperStyleJson: OnJsonStateChange
   bodyWrapperStyleJson: JsonState<CSS.Properties>
-  onBodyWrapperStyleJson: OnJsonStateChange<CSS.Properties>
+  onBodyWrapperStyleJson: OnJsonStateChange
   cardStyleJson: JsonState<CSS.Properties>
-  onCardStyleJson: OnJsonStateChange<CSS.Properties>
+  onCardStyleJson: OnJsonStateChange
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -59,9 +61,126 @@ export function AppearanceStyleControls({
     onCardStyleJson(null, e.target.value)
   }
 
+  const handlePresentNone = (): void => {
+    onIframeStyleJson(null, JSON.stringify({}))
+  }
+  const handlePresentBottomRightPopup = (): void => {
+    onIframeStyleJson(
+      null,
+      JSON.stringify(
+        {
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          boxShadow: '0 0 32px 0 black',
+          borderRadius: '8px',
+          width: '420px',
+          maxHeight: 'calc(100lvh - 48px)',
+        },
+        null,
+        2,
+      ),
+    )
+
+    onBodyWrapperStyleJson(
+      null,
+      JSON.stringify(
+        {
+          padding: '0',
+        },
+        null,
+        2,
+      ),
+    )
+
+    onCardStyleJson(
+      null,
+      JSON.stringify(
+        {
+          borderRadius: '0',
+        },
+        null,
+        2,
+      ),
+    )
+  }
+  const handlePresentRightSidebar = (): void => {
+    onIframeStyleJson(
+      null,
+      JSON.stringify(
+        {
+          position: 'fixed',
+          top: '0',
+          bottom: '0',
+          right: '0',
+          boxShadow: '0 0 32px 0 black',
+          borderRadius: '0',
+          width: '420px',
+          height: '100dvh',
+        },
+        null,
+        2,
+      ),
+    )
+
+    onBodyWrapperStyleJson(
+      null,
+      JSON.stringify(
+        {
+          padding: '0',
+        },
+        null,
+        2,
+      ),
+    )
+
+    onCardStyleJson(
+      null,
+      JSON.stringify(
+        {
+          borderRadius: '0',
+        },
+        null,
+        2,
+      ),
+    )
+  }
+  const handlePresentModal = (): void => {
+    onIframeStyleJson(null, JSON.stringify({}))
+  }
+  const handlePresentFullScreen = (): void => {
+    onIframeStyleJson(null, JSON.stringify({}))
+  }
+  const handlePresentFullSizeBlock = (): void => {
+    onIframeStyleJson(null, JSON.stringify({}))
+  }
+
   return (
     <Stack spacing={2.4}>
       <Box>
+        <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
+          Presents
+        </Typography>
+
+        <Button variant="contained" color="primary" onClick={handlePresentNone}>
+          None
+        </Button>
+        <Button variant="contained" color="primary" onClick={handlePresentBottomRightPopup}>
+          Bottom right popup
+        </Button>
+        <Button variant="contained" color="primary" onClick={handlePresentRightSidebar}>
+          Right sidebar
+        </Button>
+        <Button variant="contained" color="primary" onClick={handlePresentModal}>
+          Modal
+        </Button>
+        <Button variant="contained" color="primary" onClick={handlePresentFullScreen}>
+          Full-screen
+        </Button>
+        <Button variant="contained" color="primary" onClick={handlePresentFullSizeBlock}>
+          Full-size block
+        </Button>
+
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
           Iframe (host)
         </Typography>
