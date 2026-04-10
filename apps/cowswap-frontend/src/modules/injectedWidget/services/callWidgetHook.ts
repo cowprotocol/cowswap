@@ -15,20 +15,29 @@ import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 const callsRegistry = new Map<string, (result: boolean) => void>()
 const HOOK_RESPONSE_TIMEOUT_MS = ms`2m`
+let isListenerRegistered = false
 
-widgetIframeTransport.listenToMessageFromWindow(
-  window,
-  WidgetMethodsListen.HOOK_RESULT,
-  (data) => {
-    const callback = callsRegistry.get(data.id)
+function ensureListenerRegistered(parentOrigin: string): void {
+  if (isListenerRegistered) {
+    return
+  }
 
-    if (callback) {
-      callback(data.result)
-      callsRegistry.delete(data.id)
-    }
-  },
-  getParentOrigin(),
-)
+  widgetIframeTransport.listenToMessageFromWindow(
+    window,
+    WidgetMethodsListen.HOOK_RESULT,
+    (data) => {
+      const callback = callsRegistry.get(data.id)
+
+      if (callback) {
+        callback(data.result)
+        callsRegistry.delete(data.id)
+      }
+    },
+    parentOrigin,
+  )
+
+  isListenerRegistered = true
+}
 
 export function callWidgetHook<T extends WidgetHookEvents>(
   event: T,
@@ -65,6 +74,8 @@ export function callWidgetHook<T extends WidgetHookEvents>(
       resolve(false)
       return
     }
+
+    ensureListenerRegistered(parentOrigin)
 
     widgetIframeTransport.postMessageToWindow(
       window.parent,
