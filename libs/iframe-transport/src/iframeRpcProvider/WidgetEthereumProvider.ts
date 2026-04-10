@@ -20,6 +20,7 @@ import {
   ProviderRpcResponsePayload,
 } from './iframeRpcProviderEvents'
 
+import { getParentOrigin } from '../getParentOrigin'
 import {
   JsonRpcErrorResponseMessage,
   JsonRpcRequest,

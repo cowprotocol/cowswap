@@ -1,4 +1,4 @@
-import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
+import { getParentOrigin, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from './hookDappIframeTransport'
 import { CowHookCreation, CoWHookDappActions, CowHookDetails, HookDappContext, TokenData } from './types'

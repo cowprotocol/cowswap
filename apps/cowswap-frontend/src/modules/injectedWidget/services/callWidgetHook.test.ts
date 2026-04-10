@@ -47,15 +47,12 @@ const mockPostMessageToWindow = widgetIframeTransport.postMessageToWindow as jes
   typeof widgetIframeTransport.postMessageToWindow
 >
 const mockGetParentOrigin = getParentOrigin as jest.MockedFunction<typeof getParentOrigin>
-const hookResultListener = mockListenToMessageFromWindow.mock.calls[0][2] as (payload: {
-  id: string
-  result: boolean
-}) => void
 
 describe('callWidgetHook', () => {
   beforeEach(() => {
     mockIsInjectedWidget.mockReset()
     mockJotaiGet.mockReset()
+    mockListenToMessageFromWindow.mockReset()
     mockPostMessageToWindow.mockClear()
     mockGetParentOrigin.mockReset()
     mockIsInjectedWidget.mockReturnValue(true)
@@ -75,6 +72,13 @@ describe('callWidgetHook', () => {
 
     const hookCall = callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, {} as never)
 
+    expect(mockListenToMessageFromWindow).toHaveBeenCalledWith(
+      window,
+      'HOOK_RESULT',
+      expect.any(Function),
+      'http://localhost',
+    )
+
     expect(mockPostMessageToWindow).toHaveBeenCalledWith(
       window.parent,
       WidgetMethodsEmit.PROCESS_HOOK,
@@ -85,6 +89,10 @@ describe('callWidgetHook', () => {
       'http://localhost',
     )
 
+    const hookResultListener = mockListenToMessageFromWindow.mock.calls[0][2] as (payload: {
+      id: string
+      result: boolean
+    }) => void
     const [, , payload] = mockPostMessageToWindow.mock.calls[0] as [
       WindowProxy,
       WidgetMethodsEmit.PROCESS_HOOK,
