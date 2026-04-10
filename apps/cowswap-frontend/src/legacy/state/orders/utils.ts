@@ -8,7 +8,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
-import { decodeAppData } from 'modules/appData/utils/decodeAppData'
+import { decodeAppData } from 'modules/appData'
 
 import { GenericOrder } from 'common/types'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
@@ -464,6 +464,7 @@ export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrder
     chainId,
     order: {
       ...order,
+      ...(order.bridgeOutputAmount && { bridgeOutputAmount: { amount: order.bridgeOutputAmount.quotient.toString() } }),
       ...(order.inputToken && { inputToken: serializeToken(order.inputToken) }),
       ...(order.outputToken && { outputToken: serializeToken(order.outputToken) }),
     } as UpdateOrderParamsAction['order'],
