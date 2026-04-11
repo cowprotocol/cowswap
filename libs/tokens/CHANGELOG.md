@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.1.2...tokens-v3.2.0) (2026-04-08)
+
+
+### ✨ Features
+
+* handle xstock buy min amount ([#7199](https://github.com/cowprotocol/cowswap/issues/7199)) ([706fd63](https://github.com/cowprotocol/cowswap/commit/706fd63fbe016cc6a43faadac68160047cc50d8c))
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.4
+    * @cowprotocol/common-hooks bumped to 3.0.4
+    * @cowprotocol/common-utils bumped to 3.0.4
+    * @cowprotocol/core bumped to 3.0.4
+    * @cowprotocol/types bumped to 4.1.2
+    * @cowprotocol/ui bumped to 3.1.3
+    * @cowprotocol/wallet-provider bumped to 2.1.12
+
 ## [3.1.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.1.1...tokens-v3.1.2) (2026-04-07)
 
 

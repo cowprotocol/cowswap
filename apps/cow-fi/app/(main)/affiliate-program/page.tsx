@@ -6,9 +6,10 @@ import IMG_ICON_COW_LENS from '@cowprotocol/assets/images/icon-cow-lens.svg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-affiliate-hero.svg'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+import { Media, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
+import styled from 'styled-components/macro'
 
 import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
@@ -42,6 +43,23 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
+
+const FooterCtaLinkOuter = styled.div`
+  ${Media.upToExtraSmall()} {
+    width: 100%;
+    box-sizing: border-box;
+    align-self: stretch;
+    margin: 0;
+
+    a {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      line-height: 1.35;
+      padding: 14px 16px;
+    }
+  }
+`
 
 type SendEvent = (action: string) => void
 function AffiliateHero({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
@@ -217,17 +235,19 @@ function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
           <SectionTitleDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_30})`}>
             Generate your link. Share it. Earn USDC - every week.
           </SectionTitleDescription>
-          <Link
-            bgColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
-            color={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
-            href={AFFILIATE_PROGRAM_CTA.href}
-            external
-            linkType={LinkType.SectionTitleButton}
-            utmContent="affiliate-program-footer-generate-link"
-            onClick={() => sendEvent('click-generate-referral-link')}
-          >
-            Generate your referral link &#8594;
-          </Link>
+          <FooterCtaLinkOuter>
+            <Link
+              bgColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
+              color={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
+              href={AFFILIATE_PROGRAM_CTA.href}
+              external
+              linkType={LinkType.SectionTitleButton}
+              utmContent="affiliate-program-footer-generate-link"
+              onClick={() => sendEvent('click-generate-referral-link')}
+            >
+              Generate your referral link &#8594;
+            </Link>
+          </FooterCtaLinkOuter>
         </SectionTitleWrapper>
       </ContainerCardSection>
     </ContainerCard>
