@@ -270,6 +270,7 @@ export function Sidebar({
 
       disableToastMessages: toastManager.disableToastMessages,
       disableProgressBar,
+      disablePostTradeTips,
       disableTokenImport,
       hideRecentTokens,
       hideFavoriteTokens,
@@ -344,6 +345,7 @@ export function Sidebar({
 
       toastManager.disableToastMessages,
       disableProgressBar,
+      disablePostTradeTips,
       disableTokenImport,
       hideRecentTokens,
       hideFavoriteTokens,
