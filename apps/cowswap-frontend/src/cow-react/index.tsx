@@ -3,8 +3,8 @@ import { Provider as AtomProvider } from 'jotai'
 import { ReactNode, StrictMode } from 'react'
 import './sentry'
 
-import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
-import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
+import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
+import { isInjectedWidget, nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { LegacyWeb3Provider, Web3Provider } from '@cowprotocol/wallet'
@@ -38,7 +38,7 @@ import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
-const cowAnalytics = initGtm()
+const cowAnalytics = isInjectedWidget() ? createNoopCowAnalytics() : initGtm()
 const helmetContext = {}
 
 // Node removeChild hackaround
