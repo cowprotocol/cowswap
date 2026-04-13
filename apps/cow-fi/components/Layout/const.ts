@@ -11,33 +11,6 @@ export const PAGE_MAX_WIDTH = 1760
 export const THEME_MODE = 'light'
 export const PRODUCT_VARIANT = ProductVariant.CowDao
 
-const ABOUT_NAV_ITEM: MenuItem = {
-  label: 'About',
-  children: [
-    {
-      label: 'Stats',
-      href: 'https://dune.com/cowprotocol/cowswap',
-      external: true,
-    },
-    {
-      label: 'Governance',
-      href: 'https://docs.cow.fi/governance',
-      external: true,
-    },
-    {
-      label: 'Grants',
-      href: 'https://grants.cow.fi/',
-      external: true,
-    },
-    {
-      label: 'Bug Bounty',
-      href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
-      external: true,
-    },
-    { label: 'Careers', href: '/careers' },
-  ],
-}
-
 const LEARN_NAV_ITEM: MenuItem = {
   label: 'Learn',
   children: [
@@ -54,8 +27,8 @@ const LEARN_NAV_ITEM: MenuItem = {
   ],
 }
 
-export function getNavItems(isSolversEnabled: boolean): MenuItem[] {
-  return [ABOUT_NAV_ITEM, getProductsNavItem(isSolversEnabled), LEARN_NAV_ITEM]
+export function getNavItems(isSolversEnabled: boolean, isAffiliateProgramEnabled: boolean): MenuItem[] {
+  return [getAboutNavItem(isAffiliateProgramEnabled), getProductsNavItem(isSolversEnabled), LEARN_NAV_ITEM]
 }
 
 function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
@@ -103,6 +76,36 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
             : []),
         ],
       },
+    ],
+  }
+}
+
+function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
+  return {
+    label: 'About',
+    children: [
+      {
+        label: 'Stats',
+        href: 'https://dune.com/cowprotocol/cow-swap-home',
+        external: true,
+      },
+      {
+        label: 'Governance',
+        href: 'https://docs.cow.fi/governance',
+        external: true,
+      },
+      {
+        label: 'Grants',
+        href: 'https://grants.cow.fi/',
+        external: true,
+      },
+      {
+        label: 'Bug Bounty',
+        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
+        external: true,
+      },
+      { label: 'Careers', href: '/careers' },
+      ...(isAffiliateProgramEnabled ? [{ label: 'Affiliate Program', href: '/affiliate-program' }] : []),
     ],
   }
 }

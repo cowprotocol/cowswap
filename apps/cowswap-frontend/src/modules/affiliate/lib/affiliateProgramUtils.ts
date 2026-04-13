@@ -246,12 +246,12 @@ function hasAmountExecuted(order: EnrichedOrder | SerializedOrder): boolean {
   return Number(executedBuyAmount) > 0 || Number(executedSellAmount) > 0
 }
 
-export function isSupportedPayoutsNetwork(chainId: number): boolean {
+export function isSupportedPayoutsNetwork(chainId?: number): boolean {
   return chainId === AFFILIATE_PAYOUTS_CHAIN_ID
 }
 
-export function isSupportedTradingNetwork(chainId: number): boolean {
-  return AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId)
+export function isSupportedTradingNetwork(chainId?: number): boolean {
+  return chainId !== undefined && AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId)
 }
 
 export function toValidDate(value: string | undefined): Date | null {

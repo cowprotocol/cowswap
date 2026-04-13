@@ -1,5 +1,5 @@
 import { TradeType } from './types'
-import { buildWidgetUrl } from './urlUtils'
+import { buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
 
 const chainId = 1
 const tradeType = TradeType.SWAP
@@ -84,5 +84,65 @@ describe.skip('buildWidgetUrl', () => {
       })
       expect(url).toEqual('https://swap.cow.fi/#/100/widget/swap/DAI/USDC?sellAmount=0.1&buyAmount=0.1&theme=light')
     })
+  })
+})
+
+describe('buildWidgetUrlQuery', () => {
+  it('serializes locale forcing as lng', () => {
+    const query = buildWidgetUrlQuery({ locale: 'es-ES' })
+
+    expect(query.get('lng')).toBe('es-ES')
+    expect(query.get('palette')).toBe('null')
+  })
+
+  it('serializes widget shadow inside the theme palette', () => {
+    const query = buildWidgetUrlQuery({
+      theme: {
+        baseTheme: 'light',
+        primary: '#052b65',
+        background: '#FFFFFF',
+        paper: '#FFFFFF',
+        text: '#052B65',
+        danger: '#D41300',
+        warning: '#F8D06B',
+        alert: '#DB971E',
+        info: '#0d5ed9',
+        success: '#007B28',
+        boxShadow: 'none',
+      },
+    })
+
+    expect(query.get('theme')).toBe('light')
+    expect(JSON.parse(decodeURIComponent(query.get('palette') || ''))).toMatchObject({ boxShadow: 'none' })
+  })
+
+  it('includes locale in the iframe URL', () => {
+    expect(buildWidgetUrl({ chainId, tradeType, locale: 'fr' })).toBe(
+      'https://swap.cow.fi/#/1/widget/swap/_/_?palette=null&lng=fr',
+    )
+  })
+
+  it('does not serialize hooksEnabled when hooks are not configured', () => {
+    const query = buildWidgetUrlQuery({})
+
+    expect(query.get('hooksEnabled')).toBeNull()
+  })
+
+  it('does not serialize hooksEnabled when hooks object is empty', () => {
+    const query = buildWidgetUrlQuery({ hooks: {} })
+
+    expect(query.get('hooksEnabled')).toBeNull()
+  })
+
+  it('serializes hooksEnabled when at least one hook callback is configured', () => {
+    const query = buildWidgetUrlQuery({
+      hooks: {
+        onBeforeTrade: () => true,
+        onBeforeApproval: () => true,
+        onBeforeOrderCancel: () => true,
+      },
+    })
+
+    expect(query.get('hooksEnabled')).toBe('true')
   })
 })

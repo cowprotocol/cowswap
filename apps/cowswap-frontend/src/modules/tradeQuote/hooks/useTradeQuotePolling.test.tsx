@@ -37,6 +37,11 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
   },
 }))
 
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useWalletClient: jest.fn().mockReturnValue({ data: {} }),
+}))
+
 const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock
 
 const bridgingSdkMock = bridgingSdk as unknown as { getQuote: jest.Mock }

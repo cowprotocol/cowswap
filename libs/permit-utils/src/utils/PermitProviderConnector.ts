@@ -25,8 +25,12 @@ export class PermitProviderConnector implements ProviderConnector {
     // and EthersJS complains when a type is not needed (see https://github.com/ethers-io/ethers.js/discussions/4000)
     const types = Object.fromEntries(Object.entries(typedData.types).filter(([type]) => type !== 'EIP712Domain'))
 
+    // Use the wallet client's account if available (LocalAccount signs in-memory),
+    // otherwise fall back to the address string (triggers RPC signing via the wallet).
+    const account = this.walletClient.account ?? walletAddress
+
     return this.walletClient.signTypedData({
-      account: walletAddress,
+      account,
       domain: typedData.domain,
       types,
       primaryType: typedData.primaryType,

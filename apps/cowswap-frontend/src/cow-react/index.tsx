@@ -1,10 +1,10 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
-import { Component, type ReactNode, StrictMode } from 'react'
+import { type ReactNode, StrictMode } from 'react'
 import './sentry'
 
-import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
-import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
+import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
+import { isInjectedWidget, nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
@@ -19,9 +19,16 @@ import { HashRouter } from 'react-router'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { ThemeProvider } from 'theme'
 
+import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { cowSwapStore } from 'legacy/state'
 
-import { App, Updaters, WithLDProvider } from 'modules/application'
+import {
+  App,
+  React310RecoveryErrorBoundary,
+  resetReact310RecoveryOnDocumentLoad,
+  Updaters,
+  WithLDProvider,
+} from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
@@ -30,34 +37,8 @@ import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
-const cowAnalytics = initGtm()
+const cowAnalytics = isInjectedWidget() ? createNoopCowAnalytics() : initGtm()
 const helmetContext = {}
-
-/** Catches render errors so the page shows a message instead of staying blank. */
-class RootErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
-  override state = { error: null as Error | null }
-
-  static getDerivedStateFromError(error: Error): { error: Error } {
-    return { error }
-  }
-
-  override componentDidCatch(error: Error): void {
-    console.error('Root error boundary:', error)
-  }
-
-  override render(): ReactNode {
-    if (this.state.error) {
-      return (
-        <div style={{ padding: 24, fontFamily: 'sans-serif', maxWidth: 560 }}>
-          <h1>Something went wrong</h1>
-          <p>{this.state.error.message}</p>
-          <pre style={{ overflow: 'auto', fontSize: 12 }}>{this.state.error.stack}</pre>
-        </div>
-      )
-    }
-    return this.props.children
-  }
-}
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -79,41 +60,45 @@ interface MainProps {
 export function Main({ localeMessages }: MainProps): ReactNode {
   return (
     <StrictMode>
-      <RootErrorBoundary>
-        <SvgCacheProvider>
-          <HelmetProvider context={helmetContext}>
-            <Provider store={cowSwapStore}>
-              <AtomProvider store={jotaiStore}>
-                <ThemeProvider>
-                  <WalletProvider>
-                    <HashRouter>
-                      <LanguageProvider messages={localeMessages}>
-                        <WithLDProvider>
-                          <Web3Provider>
-                            <BlockNumberProvider>
-                              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                                <WalletUnsupportedNetworkBanner />
-                                <Updaters />
-                                <Toasts />
-                                <App />
-                              </CowAnalyticsProvider>
-                            </BlockNumberProvider>
-                          </Web3Provider>
-                        </WithLDProvider>
-                      </LanguageProvider>
-                    </HashRouter>
-                  </WalletProvider>
-                </ThemeProvider>
-              </AtomProvider>
-            </Provider>
-          </HelmetProvider>
-        </SvgCacheProvider>
-      </RootErrorBoundary>
+      <SvgCacheProvider>
+        <HelmetProvider context={helmetContext}>
+          <Provider store={cowSwapStore}>
+            <AtomProvider store={jotaiStore}>
+              <ThemeProvider>
+                <WalletProvider>
+                  <HashRouter>
+                    <LanguageProvider messages={localeMessages}>
+                      <ErrorBoundary>
+                        <React310RecoveryErrorBoundary>
+                          <WithLDProvider>
+                            <Web3Provider>
+                              <BlockNumberProvider>
+                                <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                                  <WalletUnsupportedNetworkBanner />
+                                  <Updaters />
+                                  <Toasts />
+                                  <App />
+                                </CowAnalyticsProvider>
+                              </BlockNumberProvider>
+                            </Web3Provider>
+                          </WithLDProvider>
+                        </React310RecoveryErrorBoundary>
+                      </ErrorBoundary>
+                    </LanguageProvider>
+                  </HashRouter>
+                </WalletProvider>
+              </ThemeProvider>
+            </AtomProvider>
+          </Provider>
+        </HelmetProvider>
+      </SvgCacheProvider>
     </StrictMode>
   )
 }
 
 async function initApp(): Promise<void> {
+  resetReact310RecoveryOnDocumentLoad()
+
   const container = document.getElementById('root')
   if (container === null) {
     console.error('Failed to find the root element')

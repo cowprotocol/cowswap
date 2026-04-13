@@ -16,6 +16,7 @@ import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 
+import { XSTOCK_MIN_TRADE_SIZE_USD } from '../../consts'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
@@ -106,6 +107,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.InputAmountNotSet]: {
     text: <Trans>Enter an amount</Trans>,
+  },
+  [TradeFormValidation.XstockMinimumTradeSize]: {
+    text: <Trans>Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}</Trans>,
   },
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
@@ -266,6 +270,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
+  [TradeFormValidation.ImpactLoading]: {
+    text: (
+      <>
+        <Trans>Fetching price impact</Trans>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
   [TradeFormValidation.BalancesLoading]: {
     text: (
       <>
@@ -358,5 +370,31 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.RestrictedForCountry]: {
     text: <Trans>This token is not available in your region</Trans>,
+  },
+  [TradeFormValidation.DisableTradeWithUnknownPriceImpact]: () => {
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Unknown price impact</Trans>
+          <HelpTooltip
+            placement="top"
+            text={t`Not enough price data for one or both assets to calculate the price impact`}
+          />
+        </>
+      </TradeFormBlankButton>
+    )
+  },
+  [TradeFormValidation.DisableTradeWithHighPriceImpact]: ({ widgetPriceImpactThreshold = 0 }) => {
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Price impact is too high</Trans>
+          <HelpTooltip
+            placement="top"
+            text={t`Trading is not allowed with price impact higher than ${widgetPriceImpactThreshold}%`}
+          />
+        </>
+      </TradeFormBlankButton>
+    )
   },
 }

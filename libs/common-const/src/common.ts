@@ -129,7 +129,7 @@ export const COWDAO_LEGAL_LINK = 'https://cow.fi/legal'
 export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap'
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
-export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cowswap'
+export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cow-swap-home'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 
 // TODO: test gas prices for all networks

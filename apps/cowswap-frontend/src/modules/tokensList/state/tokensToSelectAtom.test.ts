@@ -15,7 +15,11 @@ var mockListsStatesMapAtom: ReturnType<
   typeof atom<Record<string, { source: string; list: { tokens: { address: string }[] } }>>
 >
 // eslint-disable-next-line no-var
-var mockEnvironmentAtom: ReturnType<typeof atom<{ sellSelectedLists?: string[]; buySelectedLists?: string[] }>>
+var mockFavoriteTokensListAtom: ReturnType<typeof atom<TokenWithLogo[]>>
+// eslint-disable-next-line no-var
+var mockEnvironmentAtom: ReturnType<
+  typeof atom<{ sellSelectedLists?: string[]; buySelectedLists?: string[]; hideFavoriteTokens?: boolean }>
+>
 // eslint-disable-next-line no-var
 var mockSelectTokenWidgetAtom: ReturnType<typeof atom<{ field?: Field }>>
 
@@ -23,9 +27,17 @@ jest.mock('@cowprotocol/tokens', () => {
   const { atom } = require('jotai')
   mockAllActiveTokensAtom = atom({ tokens: [] as TokenWithLogo[] })
   mockListsStatesMapAtom = atom({} as Record<string, never>)
-  mockEnvironmentAtom = atom({} as { sellSelectedLists?: string[]; buySelectedLists?: string[] })
+  mockFavoriteTokensListAtom = atom([] as TokenWithLogo[])
+  mockEnvironmentAtom = atom(
+    {} as {
+      sellSelectedLists?: string[]
+      buySelectedLists?: string[]
+      hideFavoriteTokens?: boolean
+    },
+  )
   return {
     allActiveTokensAtom: mockAllActiveTokensAtom,
+    favoriteTokensListAtom: mockFavoriteTokensListAtom,
     listsStatesMapAtom: mockListsStatesMapAtom,
     environmentAtom: mockEnvironmentAtom,
   }
@@ -57,6 +69,7 @@ describe('tokensToSelectAtom', () => {
   beforeEach(() => {
     store = createStore()
     store.set(mockAllActiveTokensAtom, { tokens: [token1, token2, token3] })
+    store.set(mockFavoriteTokensListAtom, [])
     store.set(mockListsStatesMapAtom, {})
     store.set(mockEnvironmentAtom, {})
     store.set(mockSelectTokenWidgetAtom, { field: Field.INPUT })

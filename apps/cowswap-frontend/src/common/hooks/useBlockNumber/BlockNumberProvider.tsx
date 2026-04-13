@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useWatchBlockNumber } from 'wagmi'
 
@@ -9,7 +9,7 @@ import { BlockNumberContext } from './context'
 
 export function BlockNumberProvider({ children }: { children: ReactNode }): ReactNode {
   const windowVisible = useIsWindowVisible()
-  const activeChainId = useWalletChainId()
+  const { chainId: activeChainId } = useWalletInfo()
 
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({ chainId: activeChainId })
 

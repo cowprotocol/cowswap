@@ -106,6 +106,16 @@ export function TradeWidgetModals({
   const error = tokenListAddingError || approveError || confirmError
 
   /**
+   * Reset trade confirm state on unmount so SurplusModalSetup
+   * doesn't see stale isOpen/transactionHash after navigation
+   */
+  useEffect(() => {
+    return () => {
+      closeTradeConfirm()
+    }
+  }, [closeTradeConfirm])
+
+  /**
    * Close all modals besides auto-import on account change
    */
   useEffect(() => {

@@ -7,10 +7,10 @@ import { getGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
+import { useWalletClient } from 'wagmi'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useIsWrapOrUnwrap, useDerivedTradeState } from 'modules/trade'
@@ -38,7 +38,7 @@ export interface QuoteParams {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
-  const _provider = useWalletProvider() // kept for memo dep – triggers re-quote on wallet change
+  const { data: _walletClient } = useWalletClient() // kept for memo dep – triggers re-quote on wallet change
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -58,7 +58,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
-    if (!inputCurrency || !outputCurrency || !orderKind || !_provider) return
+    if (!inputCurrency || !outputCurrency || !orderKind || !_walletClient) return
     return buildQuoteParams({
       amount,
       partiallyFillable,
@@ -73,7 +73,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       smartSlippageBpsRef,
     })
   }, [
-    _provider,
+    _walletClient,
     inputCurrency,
     outputCurrency,
     amount,

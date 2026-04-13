@@ -9,7 +9,7 @@ import { ConnectionType } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
-import { AlertCircle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -54,7 +54,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
             </Text>{' '}
             {showUnfillableOrdersAlert ? (
               <UnfillableWarning>
-                <AlertCircle size={18} />
+                <AlertTriangle size={18} />
               </UnfillableWarning>
             ) : (
               <Loader stroke="currentColor" />

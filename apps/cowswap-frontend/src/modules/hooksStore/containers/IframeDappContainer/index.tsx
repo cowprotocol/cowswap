@@ -3,10 +3,10 @@ import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+import { useWalletClient } from 'wagmi'
 
 import { HookDappContext as HookDappContextType, HookDappIframe } from '../../types/hooks'
 
@@ -64,8 +64,9 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(true)
+  const dappOrigin = getDappOrigin(dapp.url)
 
-  const walletProvider = useWalletProvider()
+  const { data: walletClient } = useWalletClient()
 
   // eslint-disable-next-line react-hooks/refs
   addHookRef.current = context.addHook
@@ -85,28 +86,43 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
 
-    if (!iframeWindow) return
+    if (!iframeWindow || !dappOrigin) return
 
     const listeners = [
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.ACTIVATE, () =>
-        setIsIframeActive(true),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.ACTIVATE,
+        () => setIsIframeActive(true),
+        dappOrigin,
       ),
     ]
 
-    bridgeRef.current = new IframeRpcProviderBridge(iframeWindow)
+    bridgeRef.current = new IframeRpcProviderBridge(iframeWindow, dappOrigin)
 
     listeners.push(
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.ADD_HOOK, (payload) =>
-        addHookRef.current(payload),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.ADD_HOOK,
+        (payload) => addHookRef.current(payload),
+        dappOrigin,
       ),
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.EDIT_HOOK, (payload) =>
-        editHookRef.current(payload),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.EDIT_HOOK,
+        (payload) => editHookRef.current(payload),
+        dappOrigin,
       ),
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.SET_SELL_TOKEN, (payload) =>
-        setSellTokenRef.current(payload.address),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.SET_SELL_TOKEN,
+        (payload) => setSellTokenRef.current(payload.address),
+        dappOrigin,
       ),
-      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.SET_BUY_TOKEN, (payload) =>
-        setBuyTokenRef.current(payload.address),
+      hookDappIframeTransport.listenToMessageFromWindow(
+        window,
+        CoWHookDappEvents.SET_BUY_TOKEN,
+        (payload) => setBuyTokenRef.current(payload.address),
+        dappOrigin,
       ),
     )
 
@@ -114,24 +130,29 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       listeners.forEach((listener) => hookDappIframeTransport.stopListeningWindowListener(window, listener))
       bridgeRef.current?.disconnect()
     }
-  }, [])
+  }, [dappOrigin])
 
   useLayoutEffect(() => {
-    if (!walletProvider || !bridgeRef.current) return
+    if (!walletClient || !bridgeRef.current) return
 
-    bridgeRef.current.onConnect(walletProvider as EthereumProvider)
-  }, [walletProvider])
+    bridgeRef.current.onConnect(walletClient as unknown as EthereumProvider)
+  }, [walletClient])
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
 
-    if (!iframeWindow || !isIframeActive) return
+    if (!iframeWindow || !isIframeActive || !dappOrigin) return
 
     // Omit unnecessary parameter
     const { addHook: _, editHook: _1, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
 
-    hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, iframeContext)
-  }, [context, isIframeActive])
+    hookDappIframeTransport.postMessageToWindow(
+      iframeWindow,
+      CoWHookDappEvents.CONTEXT_UPDATE,
+      iframeContext,
+      dappOrigin,
+    )
+  }, [context, dappOrigin, isIframeActive])
 
   return (
     <>
@@ -152,4 +173,12 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       />
     </>
   )
+}
+
+function getDappOrigin(url: string): string | null {
+  try {
+    return new URL(url).origin
+  } catch {
+    return null
+  }
 }

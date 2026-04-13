@@ -1,12 +1,14 @@
 import { useCallback, useRef } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useConfig } from 'wagmi'
 
 import { Field } from 'legacy/state/types'
 
 import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
+import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { TradeWidgetActions, logTradeFlow, useTradeFlowAnalytics, useTradePriceImpact } from 'modules/trade'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
@@ -50,6 +52,21 @@ export function useHandleSwap(
     if (!tradeFlowContext) return
     if (flowInProgressRef.current) return
     flowInProgressRef.current = true
+
+    const isWidgetHookPassed = await callWidgetHook(
+      WidgetHookEvents.ON_BEFORE_TRADE,
+      buildTradeWidgetHookPayload({
+        orderType: tradeFlowContext.swapFlowAnalyticsContext.orderType,
+        inputAmount: tradeFlowContext.context.inputAmount,
+        outputAmount: tradeFlowContext.context.outputAmount,
+        recipient: tradeFlowContext.swapFlowAnalyticsContext.recipient,
+        orderKind: tradeFlowContext.orderParams.kind,
+      }),
+    )
+
+    if (!isWidgetHookPassed) {
+      return
+    }
 
     try {
       const result = await runFlowByType(tradeFlowType, tradeFlowContext, {
