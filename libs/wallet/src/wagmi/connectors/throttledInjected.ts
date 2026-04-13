@@ -16,6 +16,30 @@ function sendTransactionKey(params: unknown): string {
   return `${tx.to ?? ''}:${tx.value ?? ''}:${tx.data ?? ''}`
 }
 
+/**
+ * Wraps wagmi's `injected()` connector with deduplication guards to prevent
+ * duplicate wallet popups caused by rapid or concurrent calls.
+ *
+ * Two layers of protection:
+ *
+ * 1. **connect() deduplication** — If `connect()` is called while a previous
+ *    connection attempt for the same connector is still in flight, the existing
+ *    promise is returned instead of triggering a second wallet prompt. After a
+ *    successful connection, a cooldown window (CONNECT_DEDUPE_MS) prevents
+ *    immediate re-triggers.
+ *
+ * 2. **eth_sendTransaction deduplication** — Intercepts the provider's `request()`
+ *    method to coalesce duplicate `eth_sendTransaction` calls. Two requests are
+ *    considered duplicates if they share the same (to, value, data) key OR arrive
+ *    within a short coalesce window (SEND_TX_COALESCE_MS) of each other. After a
+ *    transaction settles, a longer cooldown (SEND_TX_DEDUPE_MS) blocks identical
+ *    replays. Non-transaction RPC calls pass through untouched.
+ *
+ * This is necessary because React strict-mode double-renders, wagmi reconnect
+ * logic, and rapid user clicks can all cause the same wallet action to fire
+ * multiple times, leading to confusing duplicate popups in MetaMask and similar
+ * injected wallets.
+ */
 export function throttledInjected(): ReturnType<typeof createConnector> {
   const injectedFn = injected()
   return createConnector((config) => {
