@@ -1613,9 +1613,6 @@ importers:
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
-      viem:
-        specifier: 2.47.1
-        version: 2.47.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@4.1.12)
 
   libs/hook-dapp-lib:
     dependencies:
@@ -16667,6 +16664,10 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+
+  uuid@11.1.0:
+    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+    hasBin: true
 
   uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
@@ -37537,6 +37538,9 @@ snapshots:
     optional: true
 
   utils-merge@1.0.1: {}
+
+  uuid@11.1.0:
+    optional: true
 
   uuid@3.4.0: {}
 
