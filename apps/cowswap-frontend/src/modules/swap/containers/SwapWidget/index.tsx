@@ -20,10 +20,9 @@ import {
   useIsEoaEthFlow,
   useTradePriceImpact,
   useWrapNativeFlow,
-  useShouldHideQuoteAmounts,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
-import { useIsTradeFormValidationPassed } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
@@ -67,7 +66,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
   const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
-  const hideQuoteAmount = useShouldHideQuoteAmounts()
+  const hideQuoteAmount = useShouldHideTradeRateDetails()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -206,7 +205,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         return (
           <>
             {bottomContent}
-            {!isRateLoading && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
+            {!hideQuoteAmount && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
@@ -233,7 +232,6 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         intermediateBuyToken,
         isPrimaryValidationPassed,
         hideQuoteAmount,
-        isRateLoading,
       ],
     ),
   }

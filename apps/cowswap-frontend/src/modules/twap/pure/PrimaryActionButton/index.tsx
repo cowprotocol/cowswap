@@ -4,6 +4,8 @@ import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { XSTOCK_MIN_TRADE_SIZE_USD } from 'modules/tradeFormValidation'
+
 import { TwapFormState } from './getTwapFormState'
 
 export interface PrimaryActionButtonContext {
@@ -34,6 +36,13 @@ const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) =
   [TwapFormState.PART_TIME_INTERVAL_TOO_LONG]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       <Trans>Interval time too long</Trans>
+    </ButtonPrimary>
+  ),
+  [TwapFormState.X_STOCK_MIN_TRADE_SIZE]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <span style={{ fontSize: '15px' }}>
+        <Trans>Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD} per part</Trans>
+      </span>
     </ButtonPrimary>
   ),
 }
