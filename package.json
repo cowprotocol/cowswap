@@ -11,17 +11,17 @@
   },
   "scripts": {
     "start": "pnpm run start:cowswap",
-    "start:cowswap": "nx run cowswap-frontend:serve",
+    "start:cowswap": "cross-env NODE_ENV=development nx run cowswap-frontend:serve",
     "start:widget": "nx run widget-configurator:serve",
     "start:omnibridge-hook": "nx run hook-dapp-omnibridge:serve",
     "start:cosmos": "nx run cowswap-frontend:cosmos:run",
     "start:cosmos:explorer": "nx run explorer:cosmos:run",
-    "start:explorer": "nx run explorer:serve",
-    "start:cowfi": "nx run cow-fi:dev",
+    "start:explorer": "cross-env NODE_ENV=development nx run explorer:serve",
+    "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
     "build": "pnpm run build:cowswap",
     "build:all": "nx run-many -t build --no-cloud",
-    "build:cowswap": "nx build cowswap-frontend --no-cloud",
+    "build:cowswap": "cross-env NODE_ENV=production nx build cowswap-frontend --no-cloud",
     "build:explorer": "nx build explorer --no-cloud",
     "build:widget": "nx build widget-configurator --no-cloud",
     "build:cowfi": "nx build cow-fi --no-cloud && pnpm run postbuild:cowfi",
@@ -48,8 +48,9 @@
     "upgrade-sdk-preview": "node tools/scripts/update-sdk-preview.js",
     "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
     "prepare": "husky",
-    "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install",
-    "install:ci": "node tools/scripts/install-sdk-preview.js && npx --yes pnpm@10.30.3 install --frozen-lockfile"
+    "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
+    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install",
+    "install:ci": "pnpm run install:sdk-preview"
   },
   "browser": {
     "crypto": false
