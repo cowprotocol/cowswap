@@ -54,12 +54,12 @@ export function finalizeEthereumTransaction(
 
   emitOnchainTransactionEvent({
     receipt: {
-      to: receipt.to,
+      to: receipt.to || '',
       from: receipt.from,
-      contractAddress: receipt.contractAddress,
+      contractAddress: receipt.contractAddress || '',
       transactionHash: (safeTransactionHash as Hex) || receipt.transactionHash,
-      blockNumber: receipt.blockNumber,
-      status: receipt.status,
+      blockNumber: Number(receipt.blockNumber),
+      status: receipt.status === 'success' ? 1 : 0,
       replacementType: transaction.replacementType,
     },
     summary: transaction.summary || '',

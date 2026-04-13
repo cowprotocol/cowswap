@@ -59,12 +59,12 @@ export function finalizeOnChainCancellation(
     // 2. Show failure tx pop-up
     emitOnchainTransactionEvent({
       receipt: {
-        to: receipt.to,
+        to: receipt.to || '',
         from: receipt.from,
-        contractAddress: receipt.contractAddress,
+        contractAddress: receipt.contractAddress || '',
         transactionHash: receipt.transactionHash,
-        blockNumber: receipt.blockNumber,
-        status: receipt.status,
+        blockNumber: Number(receipt.blockNumber),
+        status: 0, // inside receipt.status !== 'success' block
         replacementType: transaction.replacementType,
       },
       summary: t`Failed to cancel order selling ${sellTokenSymbol}`,
