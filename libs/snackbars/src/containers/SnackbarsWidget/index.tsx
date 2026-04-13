@@ -6,7 +6,7 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media, UI } from '@cowprotocol/ui'
 
 import ms from 'ms.macro'
-import { AlertCircle, CheckCircle } from 'react-feather'
+import { AlertTriangle, CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useAnchorPosition } from '../../hooks/useAnchorPosition'
@@ -57,7 +57,7 @@ const SuccessIcon = styled(CheckCircle)`
   color: ${({ theme }) => theme.green1};
 `
 
-const AlertIcon = styled(AlertCircle)`
+const AlertIcon = styled(AlertTriangle)`
   color: ${({ theme }) => theme.danger};
 `
 

@@ -68,6 +68,7 @@ export interface ConfiguratorState {
 
   disableToastMessages: boolean
   disableProgressBar: boolean
+  disablePostTradeTips: boolean // TODO: Add field
   disableTokenImport: boolean
   hideRecentTokens: boolean
   hideFavoriteTokens: boolean

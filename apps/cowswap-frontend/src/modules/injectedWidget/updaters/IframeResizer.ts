@@ -3,11 +3,12 @@ import { useLayoutEffect, useRef } from 'react'
 
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
-import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
+import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
 import { openModalState } from 'common/state/openModalState'
 
 import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
+import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 export function IframeResizer(): null {
   const isModalOpen = useAtomValue(openModalState)
@@ -15,8 +16,10 @@ export function IframeResizer(): null {
   const { autoResizeEnabled } = useInjectedWidgetParams()
 
   useLayoutEffect(() => {
+    const parentOrigin = getParentOrigin()
+
     // Checking for `autoResizeEnabled === undefined` here to preserve the old behavior of the widget, when `autoResizeEnabled` didn't exist:
-    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === undefined) return
+    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === undefined || !parentOrigin) return
 
     if (autoResizeEnabled) {
       document.documentElement.style.overflow = 'hidden'
@@ -27,8 +30,10 @@ export function IframeResizer(): null {
 
   // eslint-disable-next-line complexity
   useLayoutEffect(() => {
+    const parentOrigin = getParentOrigin()
+
     // Checking for `autoResizeEnabled === false` here to preserve the old behavior of the widget, when `autoResizeEnabled` didn't exist:
-    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === false) return
+    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === false || !parentOrigin) return
 
     const contentElement = getContentElement(document)
 
@@ -38,16 +43,26 @@ export function IframeResizer(): null {
       if (isModalOpen) {
         const isUpToSmall = document.body.offsetWidth <= MEDIA_WIDTHS.upToSmall
 
-        widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall })
+        widgetIframeTransport.postMessageToWindow(
+          window.parent,
+          WidgetMethodsEmit.SET_FULL_HEIGHT,
+          { isUpToSmall },
+          parentOrigin,
+        )
 
         previousHeightRef.current = 0
         return
       }
 
       if (contentHeight !== previousHeightRef.current) {
-        widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, {
-          height: contentHeight,
-        })
+        widgetIframeTransport.postMessageToWindow(
+          window.parent,
+          WidgetMethodsEmit.UPDATE_HEIGHT,
+          {
+            height: contentHeight,
+          },
+          parentOrigin,
+        )
         previousHeightRef.current = contentHeight
       }
     }

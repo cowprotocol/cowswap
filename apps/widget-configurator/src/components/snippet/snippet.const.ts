@@ -24,6 +24,7 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   hideRecentTokens: 'Hide the Recent section in the token selector',
   hideFavoriteTokens: 'Hide the Favorites section in the token selector',
   baseUrl: 'URL of the CoW Swap app inside the widget iframe (defaults to production if omitted in embed code)',
+  disablePostTradeTips: 'Hide CoW Swap educational tips shown after a completed trade when there is no surplus card',
 }
 
 export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
