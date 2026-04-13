@@ -1,9 +1,10 @@
 import { WindowListener } from './types'
+import { HttpsUrlString, UrlString } from './url.utils'
 
 // @ts-ignore
 type AbstractRecord = Record<unknown, unknown>
 
-const DEFAULT_ORIGIN = 'https://swap.cow.fi'
+const DEFAULT_ORIGIN = 'https://swap.cow.fi' as const satisfies HttpsUrlString
 
 function logWidget(...args: unknown[]): void {
   console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
@@ -16,7 +17,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
     contentWindow: Window,
     method: T,
     payload: MethodsEmitPayloadMap[T],
-    targetOrigin = DEFAULT_ORIGIN,
+    targetOrigin: UrlString,
   ): void {
     const data = typeof payload === 'object' ? payload : {}
     const postPayload = {
@@ -25,14 +26,15 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
       ...data,
     }
 
-    contentWindow.postMessage(postPayload, targetOrigin)
+    // Old versions of the widget will still have '*' as target origin, so we fallback to the default origin. Integrations using a custom `baseUrl` will break.
+    contentWindow.postMessage(postPayload, targetOrigin || DEFAULT_ORIGIN)
   }
 
   listenToMessageFromWindow<T extends keyof MethodsEmitPayloadMap>(
     contentWindow: Window,
     method: T,
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
-    trustedOrigin = DEFAULT_ORIGIN,
+    trustedOrigin: UrlString,
   ): (payload: MessageEvent<unknown>) => void {
     const listener = (event: MessageEvent<unknown>): void => {
       if (!isEventData(event.data) || event.data.key !== this.key || event.data.method !== method) {
@@ -62,6 +64,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
 
       callback(event.data as MethodsEmitPayloadMap[T])
     }
+
     contentWindow.addEventListener('message', listener)
 
     return listener
@@ -72,9 +75,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
     _method: T,
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
   ): void {
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    contentWindow.removeEventListener('message', callback as any)
+    contentWindow.removeEventListener('message', callback as WindowListener)
   }
 
   stopListeningWindowListener(contentWindow: Window, callback: WindowListener): void {

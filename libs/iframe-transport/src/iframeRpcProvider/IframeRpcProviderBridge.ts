@@ -8,6 +8,8 @@ import {
 } from './iframeRpcProviderEvents'
 import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 
+import { UrlString } from '../url.utils'
+
 import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
@@ -43,7 +45,7 @@ export class IframeRpcProviderBridge {
    */
   constructor(
     private iframeWidow: Window,
-    private iframeOrigin?: string,
+    private iframeOrigin: UrlString,
   ) {}
 
   /**

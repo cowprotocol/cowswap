@@ -1,5 +1,5 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
+import { HttpsUrlString, IframeRpcProviderBridge, UrlString, assertHttpsUrlString } from '@cowprotocol/iframe-transport'
 
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
@@ -16,7 +16,7 @@ import {
   WidgetMethodsListen,
   WindowListener,
 } from './types'
-import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
+import { buildWidgetPath, buildWidgetHttpsUrlOrThrow, buildWidgetUrlQuery } from './urlUtils'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
 const DEFAULT_HEIGHT = '640px'
@@ -61,13 +61,19 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   if (typeof window === 'undefined') return noopHandler
 
   // 1. Create a brand new iframe
-  const iframe = createIframe(params)
+  const iframe = createIframeWithHttpsOriginOrThrow(params)
   const iframeOrigin = getIframeOrigin(iframe)
+
+  if (!iframeOrigin) throw new Error('Could not get iframe origin')
+
+  assertHttpsUrlString(iframeOrigin)
+
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
+
   const windowListeners: WindowListener[] = []
 
   if (onReady) {
-    windowListeners.push(listenToReady(iframe.contentWindow || window, iframeOrigin, onReady))
+    windowListeners.push(listenToReady(iframeOrigin, onReady))
   }
 
   // 2. Clear the content (delete any previous iFrame if it exists)
@@ -75,6 +81,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   container.appendChild(iframe)
 
   const { contentWindow: iframeWindow } = iframe
+
   if (!iframeWindow) {
     console.error('Iframe does not contain a window', iframe)
     throw new Error('Iframe does not contain a window!')
@@ -92,8 +99,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   // 6. Handle two-way communication of widget hooks
   let widgetHooksListener: WindowListener | null = null
 
-  function updateWidgetHooks(): void {
-    if (!iframeWindow) return
+  // Do not replace with `function` to avoid hoisting, as we want `iframeWindow` and `iframeOrigin` to have passed the checks above:
+  const updateWidgetHooks = (): void => {
     if (widgetHooksListener) {
       window.removeEventListener('message', widgetHooksListener)
     }
@@ -155,6 +162,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
  * It will disconnect from the previous provider and connect to the new one.
  *
  * @param iframe iframe window
+ * @param iframeOrigin iframe HTTPS origin
  * @param iframeRpcProviderBridge iframe RPC manager
  * @param newProvider new provider
  *
@@ -162,10 +170,12 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
  */
 function updateProvider(
   iframe: Window,
-  iframeOrigin: string,
+  iframeOrigin: HttpsUrlString,
   iframeRpcProviderBridge: IframeRpcProviderBridge | null,
   newProvider?: EthereumProvider,
 ): IframeRpcProviderBridge {
+  assertHttpsUrlString(iframeOrigin)
+
   // Disconnect from the previous provider bridge
   if (iframeRpcProviderBridge) {
     iframeRpcProviderBridge.disconnect()
@@ -186,12 +196,12 @@ function updateProvider(
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
  */
-function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
+function createIframeWithHttpsOriginOrThrow(params: CowSwapWidgetParams): HTMLIFrameElement {
   const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = params
 
   const iframe = document.createElement('iframe')
 
-  iframe.src = buildWidgetUrl(params)
+  iframe.src = buildWidgetHttpsUrlOrThrow(params)
   iframe.width = width
   iframe.height = height
   iframe.style.border = '0'
@@ -200,8 +210,8 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   return iframe
 }
 
-function getIframeOrigin(iframe: HTMLIFrameElement): string {
-  return new URL(iframe.src).origin
+function getIframeOrigin(iframe: HTMLIFrameElement): UrlString {
+  return new URL(iframe.src).origin as UrlString
 }
 
 /**
@@ -213,10 +223,12 @@ function getIframeOrigin(iframe: HTMLIFrameElement): string {
  */
 function updateParams(
   contentWindow: Window,
-  iframeOrigin: string,
+  iframeOrigin: HttpsUrlString,
   params: CowSwapWidgetParams,
   provider: EthereumProvider | undefined,
 ): void {
+  assertHttpsUrlString(iframeOrigin)
+
   const hasProvider = !!provider
 
   const pathname = buildWidgetPath(params)
@@ -242,9 +254,11 @@ function updateParams(
  */
 function sendAppCodeOnActivation(
   contentWindow: Window,
-  iframeOrigin: string,
+  iframeOrigin: HttpsUrlString,
   appCode: string | undefined,
 ): (payload: MessageEvent<unknown>) => void {
+  assertHttpsUrlString(iframeOrigin)
+
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
     WidgetMethodsEmit.ACTIVATE,
@@ -261,7 +275,9 @@ function sendAppCodeOnActivation(
   )
 }
 
-function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () => void): WindowListener {
+function listenToReady(iframeOrigin: HttpsUrlString, onReady: () => void): WindowListener {
+  assertHttpsUrlString(iframeOrigin)
+
   let isReady = false
 
   return widgetIframeTransport.listenToMessageFromWindow(
@@ -280,7 +296,9 @@ function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () 
 /**
  * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
  */
-function interceptDeepLinks(iframeOrigin: string): (payload: MessageEvent<unknown>) => void {
+function interceptDeepLinks(iframeOrigin: HttpsUrlString): (payload: MessageEvent<unknown>) => void {
+  assertHttpsUrlString(iframeOrigin)
+
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
     WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
@@ -295,7 +313,9 @@ function interceptDeepLinks(iframeOrigin: string): (payload: MessageEvent<unknow
   )
 }
 
-function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null {
+function resolveWindowOpenUrl(url: string, iframeOrigin: HttpsUrlString): string | null {
+  assertHttpsUrlString(iframeOrigin)
+
   const trimmedUrl = url.trim()
 
   if (!trimmedUrl) {
@@ -328,10 +348,12 @@ function isAllowedWindowOpenUrl(url: string): boolean {
  */
 function listenToHeightChanges(
   iframe: HTMLIFrameElement,
-  iframeOrigin: string,
+  iframeOrigin: HttpsUrlString,
   defaultHeight = DEFAULT_HEIGHT,
   maxHeight?: number,
 ): WindowListener[] {
+  assertHttpsUrlString(iframeOrigin)
+
   return [
     widgetIframeTransport.listenToMessageFromWindow(
       window,
@@ -379,9 +401,11 @@ function executeWidgetHook<T extends WidgetHookEvents>(
 
 function processWidgetHooks(
   contentWindow: Window,
-  iframeOrigin: string,
+  iframeOrigin: HttpsUrlString,
   hooks: CowSwapWidgetParams['hooks'],
 ): WindowListener {
+  assertHttpsUrlString(iframeOrigin)
+
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
     WidgetMethodsEmit.PROCESS_HOOK,

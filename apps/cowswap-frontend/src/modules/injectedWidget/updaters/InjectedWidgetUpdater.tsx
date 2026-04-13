@@ -2,7 +2,7 @@ import { useAtom, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { deepEqual } from '@cowprotocol/common-utils'
+import { deepEqual, getNullableParentOrigin } from '@cowprotocol/common-utils'
 import {
   UpdateParamsPayload,
   widgetIframeTransport,
@@ -20,7 +20,6 @@ import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
 import {
   cacheWidgetMessage,
@@ -32,7 +31,7 @@ import {
   const isInIframe = window.parent !== window.self
 
   const parent = window.parent
-  const parentOrigin = getParentOrigin()
+  const parentOrigin = getNullableParentOrigin()
 
   if (!parent || !isInIframe || !parentOrigin) return
 
@@ -102,7 +101,7 @@ export function InjectedWidgetUpdater(): ReactNode {
     // Stop listening of message outside of React
     window.removeEventListener('message', cacheWidgetMessage)
 
-    const parentOrigin = getParentOrigin()
+    const parentOrigin = getNullableParentOrigin()
 
     if (!parentOrigin) {
       return

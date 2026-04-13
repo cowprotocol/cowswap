@@ -20,13 +20,13 @@ import {
   ProviderRpcResponsePayload,
 } from './iframeRpcProviderEvents'
 
-import { getParentOrigin } from '../getParentOrigin'
 import {
   JsonRpcErrorResponseMessage,
   JsonRpcRequest,
   JsonRpcRequestMessage,
   JsonRpcSucessfulResponseMessage,
 } from '../types'
+import { getParentOriginOrThrow, HttpsUrlString, assertHttpsUrlString } from '../url.utils'
 
 interface ProviderConnectInfo {
   readonly chainId: string
@@ -51,7 +51,6 @@ type RpcCallback = (error: any, response: any) => void
 const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 
 const JSON_RPC_VERSION = '2.0'
-const DEFAULT_TARGET_ORIGIN = 'https://swap.cow.fi'
 
 /**
  * Export the type information about the different events that are emitted.
@@ -90,17 +89,22 @@ export type IFrameEthereumProviderEventTypes =
  * Options for constructing the iframe ethereum provider.
  */
 interface IFrameEthereumProviderOptions {
-  // The origin to communicate with. Default '*'
-  targetOrigin?: string
-  // How long to time out waiting for responses. Default 60 seconds.
+  /** The origin to communicate with. Default '*' */
+  targetOrigin?: HttpsUrlString
+
+  /** How long to time out waiting for responses. Default 60 seconds. */
   timeoutMilliseconds?: number
 
-  // The event source. By default we use the window. This can be mocked for tests, or it can wrap
-  // a different interface, e.g. workers.
+  /**
+   * The event source. By default we use the window. This can be mocked for tests, or it can wrap
+   * a different interface, e.g. workers.
+   */
   eventSource?: Window
 
-  // The event target. By default we use the window parent. This can be mocked for tests, or it can wrap
-  // a different interface, e.g. workers.
+  /**
+   * The event target. By default we use the window parent. This can be mocked for tests, or it can wrap
+   * a different interface, e.g. workers.
+   */
   eventTarget?: Window
 }
 
@@ -165,7 +169,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   private readonly timeoutMilliseconds: number
   private readonly eventSource: Window
   private readonly eventTarget: Window
-  private readonly targetOrigin: string
+  private readonly targetOrigin: HttpsUrlString
   private readonly completers: {
     // TODO: Replace any with proper type definitions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -175,7 +179,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   private providerMetaInfoCallback?: (data: ProviderMetaInfoPayload) => void
 
   public constructor({
-    targetOrigin,
+    targetOrigin: targetOriginParam,
     timeoutMilliseconds = DEFAULT_TIMEOUT_MILLISECONDS,
     eventSource = window,
     eventTarget = window.parent,
@@ -183,10 +187,14 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     // Call super for `this` to be defined
     super()
 
+    const targetOrigin = targetOriginParam || getParentOriginOrThrow()
+
+    assertHttpsUrlString(targetOrigin)
+
     this.timeoutMilliseconds = timeoutMilliseconds
     this.eventSource = eventSource
     this.eventTarget = eventTarget
-    this.targetOrigin = targetOrigin || getParentOrigin() || DEFAULT_TARGET_ORIGIN
+    this.targetOrigin = targetOrigin
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,

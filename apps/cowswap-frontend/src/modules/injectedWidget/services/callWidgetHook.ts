@@ -1,4 +1,4 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { isInjectedWidget, getNullableParentOrigin, UrlString } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import {
   WidgetHookEvents,
@@ -11,13 +11,12 @@ import {
 import ms from 'ms.macro'
 
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 const callsRegistry = new Map<string, (result: boolean) => void>()
 const HOOK_RESPONSE_TIMEOUT_MS = ms`2m`
 let isListenerRegistered = false
 
-function ensureListenerRegistered(parentOrigin: string): void {
+function ensureListenerRegistered(parentOrigin: UrlString): void {
   if (isListenerRegistered) {
     return
   }
@@ -66,7 +65,7 @@ export function callWidgetHook<T extends WidgetHookEvents>(
       resolve(result)
     })
 
-    const parentOrigin = getParentOrigin()
+    const parentOrigin = getNullableParentOrigin()
 
     if (!parentOrigin) {
       callsRegistry.delete(id)
