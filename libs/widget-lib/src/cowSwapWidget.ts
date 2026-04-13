@@ -63,7 +63,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   // 1. Create a brand new iframe
   const iframe = createIframe(params)
-  const iframeOrigin = getTrustedOrigin(iframe, params)
+  const iframeOrigin = getIframeOrigin(iframe)
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
   const windowListeners: WindowListener[] = []
 
@@ -207,16 +207,12 @@ function getIframeOrigin(iframe: HTMLIFrameElement): string {
   return new URL(iframe.src).origin
 }
 
-function getTrustedOrigin(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): string {
-  return params.trustedOrigin || getIframeOrigin(iframe)
-}
-
 /**
  * Updates the CoW Swap Widget based on the new settings provided.
- * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
+ * @param iframeOrigin - The trusted origin of the widget's iframe.
+ * @param params - New params for the widget.
  * @param provider - EIP-1193 provider
- * @param windowListeners - array of WindowListener
  */
 function updateParams(
   contentWindow: Window,
@@ -244,6 +240,7 @@ function updateParams(
  * Sends appCode to the contentWindow of the widget once the widget is activated.
  *
  * @param contentWindow - Window object of the widget's iframe.
+ * @param iframeOrigin - The trusted origin of the widget's iframe.
  * @param appCode - A unique identifier for the app.
  */
 function sendAppCodeOnActivation(
@@ -291,25 +288,33 @@ function interceptDeepLinks(iframeOrigin: string): (payload: MessageEvent<unknow
     window,
     WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
     ({ href, rel, target }) => {
-      const url = href.toString()
+      const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
 
-      if (isAllowedWindowOpenUrl(url)) {
-        window.open(url, target, rel)
+      if (resolvedUrl && isAllowedWindowOpenUrl(resolvedUrl)) {
+        window.open(resolvedUrl, target, rel)
       }
     },
     iframeOrigin,
   )
 }
 
-function isAllowedWindowOpenUrl(url: string): boolean {
+function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null {
   const trimmedUrl = url.trim()
 
   if (!trimmedUrl) {
-    return false
+    return null
   }
 
   try {
-    const protocol = new URL(trimmedUrl, 'https://swap.cow.fi').protocol
+    return new URL(trimmedUrl, iframeOrigin).toString()
+  } catch {
+    return null
+  }
+}
+
+function isAllowedWindowOpenUrl(url: string): boolean {
+  try {
+    const protocol = new URL(url).protocol
 
     return protocol === 'http:' || protocol === 'https:'
   } catch {
