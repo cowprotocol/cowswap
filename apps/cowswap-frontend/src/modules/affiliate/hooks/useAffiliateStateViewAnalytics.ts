@@ -5,10 +5,29 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { AffiliateAnalyticsAction } from '../analytics/affiliateAnalytics.types'
 import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 
+type AffiliateAnalyticsEventParams = Record<string, unknown> & {
+  action?: never
+  analytics?: never
+}
+
 interface UseAffiliateStateViewAnalyticsParams {
   action: AffiliateAnalyticsAction
-  eventParams?: Omit<Record<string, unknown>, 'action' | 'analytics'>
+  eventParams?: AffiliateAnalyticsEventParams
   viewKey?: string
+}
+
+function sanitizeEventParams(
+  eventParams: AffiliateAnalyticsEventParams | undefined,
+): Record<string, unknown> | undefined {
+  if (!eventParams) {
+    return undefined
+  }
+
+  const sanitizedParams = { ...eventParams } as Record<string, unknown>
+  delete sanitizedParams.action
+  delete sanitizedParams.analytics
+
+  return sanitizedParams
 }
 
 export function useAffiliateStateViewAnalytics({
@@ -18,6 +37,7 @@ export function useAffiliateStateViewAnalytics({
 }: UseAffiliateStateViewAnalyticsParams): void {
   const analytics = useCowAnalytics()
   const lastEventSignatureRef = useRef<string | undefined>(undefined)
+  const sanitizedEventParams = useMemo(() => sanitizeEventParams(eventParams), [eventParams])
   const eventSignature = useMemo(() => {
     if (!viewKey) {
       return undefined
@@ -26,11 +46,11 @@ export function useAffiliateStateViewAnalytics({
     return JSON.stringify([
       action,
       viewKey,
-      Object.entries(eventParams || {})
+      Object.entries(sanitizedEventParams || {})
         .filter(([, value]) => value !== undefined)
         .sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey)),
     ])
-  }, [action, eventParams, viewKey])
+  }, [action, sanitizedEventParams, viewKey])
 
   useEffect(() => {
     if (!eventSignature) {
@@ -47,7 +67,7 @@ export function useAffiliateStateViewAnalytics({
     trackAffiliateEvent({
       analytics,
       action,
-      ...(eventParams || {}),
+      ...(sanitizedEventParams || {}),
     })
-  }, [action, analytics, eventParams, eventSignature])
+  }, [action, analytics, eventSignature, sanitizedEventParams])
 }

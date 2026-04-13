@@ -23,6 +23,7 @@ export const affiliateTraderSavedCodeStorage = {
       return currentValue
     }
 
+    // TODO(2026-07): remove legacy saved-code storage migration for v0 key.
     const legacyValue = readSavedCodeState(AFFILIATE_TRADER_SAVED_CODES_LEGACY_STORAGE_KEY)
 
     if (!legacyValue) {

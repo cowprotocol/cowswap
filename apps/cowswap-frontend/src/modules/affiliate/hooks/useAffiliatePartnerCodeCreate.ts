@@ -43,18 +43,18 @@ export function useAffiliatePartnerCodeCreate({
   const onCreate = useCallback(async (): Promise<void> => {
     if (!account || !provider || isSubmittingRef.current) return
 
-    isSubmittingRef.current = true
-
-    trackAffiliateEvent({
-      analytics,
-      action: 'affiliate_partner_code_create_started',
-      chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
-    })
-
-    setSubmitting(true)
-    setError(undefined)
-
     try {
+      isSubmittingRef.current = true
+
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_partner_code_create_started',
+        chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
+      })
+
+      setSubmitting(true)
+      setError(undefined)
+
       const signer = provider.getSigner()
       const typedData = buildPartnerTypedData({
         walletAddress: account,

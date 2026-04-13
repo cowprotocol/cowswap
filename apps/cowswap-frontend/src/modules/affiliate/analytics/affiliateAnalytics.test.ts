@@ -195,4 +195,30 @@ describe('useAffiliateStateViewAnalytics', () => {
 
     expect(sendEvent).toHaveBeenCalledTimes(2)
   })
+
+  it('ignores reserved analytics keys from event params', () => {
+    const rogueAnalytics = { sendEvent: jest.fn() } as unknown as CowAnalytics
+
+    renderHook(() =>
+      useAffiliateStateViewAnalytics({
+        action: 'affiliate_trader_page_state_viewed',
+        viewKey: AffiliatePageState.LINKED,
+        eventParams: {
+          pageState: AffiliatePageState.LINKED,
+          ...({
+            action: 'affiliate_partner_page_state_viewed',
+            analytics: rogueAnalytics,
+          } as unknown as Record<string, unknown> & { action?: never; analytics?: never }),
+        },
+      }),
+    )
+
+    expect(sendEvent).toHaveBeenCalledTimes(1)
+    expect(sendEvent).toHaveBeenCalledWith({
+      category: CowSwapAnalyticsCategory.AFFILIATE,
+      action: 'affiliate_trader_page_state_viewed',
+      pageState: AffiliatePageState.LINKED,
+    })
+    expect(rogueAnalytics.sendEvent).not.toHaveBeenCalled()
+  })
 })

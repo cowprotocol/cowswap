@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { type ReactNode, useCallback, useMemo } from 'react'
+import { type ReactNode, useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -22,6 +22,12 @@ import {
   setAffiliateTraderPayoutConfirmationAtom,
 } from '../state/affiliateTraderPayoutConfirmationAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
+
+function getSubmitButtonLabel(hasAccount: boolean, isVerifying: boolean, hasSavedCode: boolean): string {
+  if (isVerifying) return t`Checking code...`
+  if (hasSavedCode) return t`Start trading`
+  return hasAccount ? t`Verify code` : t`Connect to verify code`
+}
 
 interface TrackPrimaryCtaClickParams {
   analytics: ReturnType<typeof useCowAnalytics>
@@ -46,7 +52,6 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const analytics = useCowAnalytics()
   const toggleWalletModal = useToggleWalletModal()
   const closeAffiliateModal = useSetAtom(closeTraderModalAtom)
-
   const walletStatus = useAffiliateTraderWallet()
   const requiresPayoutConfirmation = !!account && !isSupportedPayoutsNetwork(chainId)
   const payoutConfirmed = useAtomValue(affiliateTraderPayoutConfirmationAtom)
@@ -68,18 +73,15 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
         analytics,
         action: 'affiliate_trader_payout_confirmation_toggled',
         checked,
+        entrySource,
+        walletStatus,
       })
       setPayoutConfirmed(checked)
     },
-    [analytics, isVerifying, setPayoutConfirmed],
+    [analytics, entrySource, isVerifying, setPayoutConfirmed, walletStatus],
   )
 
-  const submitButtonLabel = useMemo(() => {
-    if (isVerifying) return t`Checking code...`
-    if (savedCode) return t`Start trading`
-    if (!account) return t`Connect to verify code`
-    return t`Verify code`
-  }, [account, isVerifying, savedCode])
+  const submitButtonLabel = getSubmitButtonLabel(!!account, isVerifying, !!savedCode)
 
   const onSubmit = useCallback((): void => {
     if (isVerifying || walletStatus === TraderWalletStatus.UNSUPPORTED) return

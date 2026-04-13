@@ -10,6 +10,7 @@ import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
+import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
 
 jest.mock('@cowprotocol/analytics', () => {
   const actualModule = jest.requireActual('@cowprotocol/analytics')
@@ -40,8 +41,12 @@ function createDeferred<T>(): {
   resolve: (value: T) => void
   reject: (error?: unknown) => void
 } {
-  let resolve!: (value: T) => void
-  let reject!: (error?: unknown) => void
+  let resolve: (value: T) => void = () => {
+    throw new Error('deferred not initialized')
+  }
+  let reject: (error?: unknown) => void = () => {
+    throw new Error('deferred not initialized')
+  }
   const promise = new Promise<T>((resolvePromise, rejectPromise) => {
     resolve = resolvePromise
     reject = rejectPromise
@@ -119,5 +124,40 @@ describe('useAffiliatePartnerCodeCreate', () => {
       chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
       result: 'success',
     })
+  })
+
+  it('releases the submission lock if the start event throws', async () => {
+    const signer = {
+      _signTypedData: jest.fn().mockResolvedValue('0xsigned-message'),
+    }
+    const provider = {
+      getSigner: jest.fn().mockReturnValue(signer),
+    }
+
+    sendEvent.mockImplementationOnce(() => {
+      throw new Error('analytics failed')
+    })
+    createCodeMock.mockResolvedValue({ code: 'COW-123' } as Awaited<ReturnType<typeof bffAffiliateApi.createCode>>)
+
+    const { result } = renderHook(() =>
+      useAffiliatePartnerCodeCreate({
+        account: '0x1111111111111111111111111111111111111111',
+        provider: provider as ReturnType<typeof useWalletProvider>,
+        code: 'COW-123',
+        setError,
+      }),
+    )
+
+    await act(async () => {
+      await result.current.onCreate()
+    })
+
+    await act(async () => {
+      await result.current.onCreate()
+    })
+
+    expect(provider.getSigner).toHaveBeenCalledTimes(1)
+    expect(createCodeMock).toHaveBeenCalledTimes(1)
+    expect(setError).toHaveBeenCalledWith(AffiliatePartnerCodeCreateError.NetworkError)
   })
 })
