@@ -28,6 +28,7 @@ export type WidgetMode = 'dapp' | 'standalone'
 export interface ConfiguratorState {
   // Basics:
 
+  appCode: string
   // widgetMode: WidgetMode
   standaloneMode: boolean // TODO: Replace with widgetMode.
   locale?: string

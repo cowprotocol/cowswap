@@ -12,6 +12,9 @@ export const isVercel = window.location.hostname.includes('vercel.app')
 
 export const isDev = ['dev.widget.cow.fi', 'dev.swap.cow.fi'].includes(window.location.hostname)
 
+/** Live preview `appCode` when Basics is blank; embed snippet treats this like unset and substitutes the snippet placeholder app code. */
+export const CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK = 'CoW Widget: Configurator' as const
+
 // UTM:
 
 export const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi' as const

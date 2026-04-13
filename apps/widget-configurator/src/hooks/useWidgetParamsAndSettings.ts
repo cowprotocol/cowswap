@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
-import { isDev, isLocalHost, isVercel } from '../configurator.constants'
+import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK, isDev, isLocalHost, isVercel } from '../configurator.constants'
 import { ConfiguratorState } from '../configurator.types'
 
 const vercelSuffix = '-cowswap-dev.vercel.app'
@@ -156,6 +156,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
   const {
     // Basics:
 
+    appCode,
     // widgetMode: WidgetMode
     standaloneMode,
     locale,
@@ -236,7 +237,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
   return {
     // Basics:
 
-    appCode: 'CoW Widget: Configurator',
+    appCode: appCode.trim() || CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK,
     standaloneMode,
     locale,
 

@@ -58,9 +58,8 @@ export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
   enabledTradeTypes: 'TradeType.SWAP, TradeType.LIMIT and/or TradeType.ADVANCED',
 }
 
-export const SANITIZE_PARAMS = {
-  appCode: 'My Cool App',
-} as const
+/** Shown in generated embed snippets when the Basics app code field is empty. */
+export const WIDGET_SNIPPET_APP_CODE_PLACEHOLDER = '<YOUR_APP_NAME>'
 
 export const WIDGET_CONFIGURATOR_DEFAULT_BASE_URL = 'https://swap.cow.fi'
 

@@ -3,11 +3,7 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 import { sanitizeParameters } from './sanitizeParameters'
 
 import { ColorPalette } from '../../../configurator.types'
-import {
-  COMMENTS_BY_PARAM_NAME,
-  COMMENTS_BY_PARAM_NAME_TYPESCRIPT,
-  WIDGET_CONFIGURATOR_DEFAULT_BASE_URL,
-} from '../snippet.const'
+import { COMMENTS_BY_PARAM_NAME, COMMENTS_BY_PARAM_NAME_TYPESCRIPT } from '../snippet.const'
 
 export function formatParameters(
   params: CowSwapWidgetParams,
@@ -16,13 +12,6 @@ export function formatParameters(
   defaultPalette: ColorPalette,
 ): string {
   const paramsSanitized = sanitizeParameters(params, defaultPalette)
-
-  // Do not show baseUrl if it's the default value:
-  if (!params.baseUrl || params.baseUrl === WIDGET_CONFIGURATOR_DEFAULT_BASE_URL) {
-    delete paramsSanitized.baseUrl
-  }
-
-  // Stringify params
   const formattedParams = JSON.stringify(paramsSanitized, null, 4)
 
   // Add comments

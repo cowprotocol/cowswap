@@ -30,6 +30,7 @@ import { PaletteControl } from '../controls/PaletteControl'
 import { PartnerFeeControl } from '../controls/PartnerFeeControl'
 import { ThemeControl } from '../controls/ThemeControl'
 import { TokenListControl } from '../controls/TokenListControl'
+import { COMMENTS_BY_PARAM_NAME } from '../snippet/snippet.const'
 import { AccordionSection } from '../ui/Accordion/AccordionSection'
 import { BooleanSwitchControl } from '../ui/controls/BooleanSwitch/BooleanSwitchControl'
 import { CurrencyInputControl } from '../ui/controls/CurrencyInput/CurrencyInputControl'
@@ -89,6 +90,8 @@ export function Sidebar({
 
   const localeState = useState<SupportedLocale | ''>('')
   const [locale] = localeState
+
+  const [appCode, setAppCode] = useState<string>('')
 
   // Trade Setup Section:
 
@@ -230,6 +233,7 @@ export function Sidebar({
     () => ({
       // Basics:
 
+      appCode,
       // widgetMode: WidgetMode
       standaloneMode,
       locale: locale || undefined,
@@ -305,6 +309,7 @@ export function Sidebar({
     [
       // Basics:
 
+      appCode,
       // widgetMode: WidgetMode
       standaloneMode,
       locale,
@@ -390,7 +395,9 @@ export function Sidebar({
   TODO:
 
   - [x] Classify state props into categories in type definition file.
-  - [ ] Add field for appCode.
+  - [x] Add field for appCode.
+  - [ ] Make widget theme selector work.
+  - [ ] Add loader to widget, also when reloading / updating.
   - [ ] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
   - [ ] Create reusable TextInput, NumberInput and SelectInput components.
   - [ ] Add name to all fields.
@@ -410,6 +417,14 @@ export function Sidebar({
 
       <Stack spacing={0}>
         <AccordionSection title="Basics" expanded={expandedSection === 'Basics'} onChange={toggleSection('Basics')}>
+          <TextInput
+            name="appCode"
+            label="App code"
+            value={appCode}
+            onChange={(_, value) => setAppCode(value ?? '')}
+            helperText={COMMENTS_BY_PARAM_NAME.appCode}
+            inputProps={{ maxLength: 50 }}
+          />
           {!IS_IFRAME && <ModeControl value={widgetMode} onChange={selectWidgetMode} />}
           <LocaleControl state={localeState} />
         </AccordionSection>
