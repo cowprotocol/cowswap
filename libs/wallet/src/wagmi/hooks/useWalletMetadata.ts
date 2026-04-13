@@ -71,7 +71,8 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
     return METADATA_DISCONNECTED
   }
 
-  if (connector.type === ConnectionType.INJECTED) {
+  // AppKit EIP-6963 connectors have type "announced" — treat them like injected
+  if (connector.type === ConnectionType.INJECTED || connector.type === 'announced') {
     if (standaloneMode === false) {
       return {
         walletName: 'CoW Swap widget',
@@ -83,6 +84,14 @@ export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
       return {
         icon: selectedEip6963Provider.info.icon,
         walletName: selectedEip6963Provider.info.name,
+      }
+    }
+
+    // Fallback for AppKit EIP-6963 connectors that provide name/icon directly
+    if (connector.name && connector.name !== 'Injected') {
+      return {
+        icon: connector.icon,
+        walletName: connector.name,
       }
     }
   }

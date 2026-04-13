@@ -1,5 +1,5 @@
-import { useSetAtom } from 'jotai'
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
@@ -13,8 +13,10 @@ import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
+import { useSetEip6963Provider } from '../api/hooks'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
-import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
+import { multiInjectedProvidersAtom } from '../api/state/multiInjectedProvidersAtom'
+import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
@@ -83,7 +85,7 @@ function checkIsSupportedWallet(walletName?: string): boolean {
 }
 
 function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
-  const { data: ensName } = useEnsName({ address: account })
+  const { data: ensName } = useEnsName({ address: account, chainId: 1 })
   const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData(standaloneMode)
   const isSafeApp = useIsSafeApp()
@@ -113,6 +115,7 @@ interface WalletUpdaterProps {
 }
 
 export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
+  const { connector } = useConnection()
   const walletInfo = useWalletInfo()
   const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
   const gnosisSafeInfo = useSafeInfo()
@@ -120,25 +123,44 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
+  const setEip6963Provider = useSetEip6963Provider()
+  const eip6963Providers = useAtomValue(multiInjectedProvidersAtom)
+
+  // Detect and set the EIP-6963 provider RDNS when an injected wallet connects
+  useEffect(() => {
+    if (
+      !connector ||
+      (connector.type !== ConnectionType.INJECTED && connector.type !== 'announced') ||
+      !eip6963Providers.length
+    ) {
+      return
+    }
+
+    const detect = async (): Promise<void> => {
+      try {
+        const connectorProvider = await connector.getProvider()
+        const match = eip6963Providers.find((p) => p.provider === connectorProvider)
+        if (match) {
+          setEip6963Provider(match.info.rdns)
+        }
+      } catch {
+        // ignore
+      }
+    }
+    detect()
+  }, [connector, eip6963Providers, setEip6963Provider])
 
   useEffect(() => {
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
-  // Use ref to break the circular dependency: walletDetails → setWalletDetails → walletDetails
-  const walletDetailsRef = useRef(walletDetails)
   useEffect(() => {
-    walletDetailsRef.current = walletDetails
-  }, [walletDetails])
-
-  useEffect(() => {
-    const current = walletDetailsRef.current
-    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: current.isSmartContractWallet })
+    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
-      ...current,
-      walletName: getWalletTypeLabel(walletType) || current.walletName,
+      walletName: getWalletTypeLabel(walletType),
+      ...walletDetails,
     })
-  }, [gnosisSafeInfo, setWalletDetails])
+  }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 
   useEffect(() => {
     setGnosisSafeInfo(gnosisSafeInfo)

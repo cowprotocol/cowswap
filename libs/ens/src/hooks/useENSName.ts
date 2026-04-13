@@ -9,7 +9,7 @@ import type { Address } from 'viem'
  * Note this is not the same as looking up an ENS name to find an address.
  */
 export function useENSName(address?: Address): { ENSName: string | null; loading: boolean } {
-  const request = useEnsName({ address })
+  const request = useEnsName({ address, chainId: 1 })
 
   return useMemo(
     () => ({ ENSName: request.data || null, loading: request.isLoading }),
