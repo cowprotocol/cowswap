@@ -43,7 +43,7 @@ export function BalancesAndAllowancesUpdater({
   const allTokens = useAllActiveTokens()
 
   const targetChainTokensMap = useTokensByAddressMapForChain(chainId)
-  const { data: nativeTokenBalance } = useNativeTokenBalance(account)
+  const { data: nativeTokenBalance } = useNativeTokenBalance(account, chainId)
 
   const tokenAddresses = useMemo(() => {
     if (allTokens.chainId !== chainId) {
