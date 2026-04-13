@@ -9,7 +9,8 @@ import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade'
 
-import { useOnSelectNetwork } from '../../../../application/hooks/useOnSelectNetwork'
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 import { TokenSelectionHandler } from '../../../types'
 

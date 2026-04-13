@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useCallback } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -11,9 +12,9 @@ import { Trans } from '@lingui/react/macro'
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { useLegacySetChainIdToUrl } from 'common/hooks/useLegacySetChainIdToUrl'
+import { useSetWalletConnectionError } from 'modules/wallet/hooks/useSetWalletConnectionError'
 
-import { useSetWalletConnectionError } from '../../wallet/hooks/useSetWalletConnectionError'
+import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const addSnackbar = useAddSnackbar()

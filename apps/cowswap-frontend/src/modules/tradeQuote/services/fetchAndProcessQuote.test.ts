@@ -72,7 +72,6 @@ const tradeQuotePollingParameters: TradeQuotePollingParameters = {
   isConfirmOpen: false,
   isQuoteUpdatePossible: true,
   useSuggestedSlippageApi: false,
-  hasPendingTrade: false,
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -394,7 +393,10 @@ describe('fetchAndProcessQuote', () => {
 
       // Should call onError for generic errors in swap quotes
       expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
-      expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', expect.any(Error))
+      expect(console.error).toHaveBeenCalledWith(
+        '[fetchAndProcessQuote]:: fetchSwapQuote error',
+        expect.any(QuoteApiError),
+      )
     })
   })
 
@@ -504,7 +506,10 @@ describe('fetchAndProcessQuote', () => {
         mockTradeQuoteManager,
       )
 
-      expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', expect.any(Error))
+      expect(console.error).toHaveBeenCalledWith(
+        '[fetchAndProcessQuote]:: fetchBridgingQuote error',
+        expect.any(BridgeProviderQuoteError),
+      )
     })
 
     it('should handle null result', async () => {
@@ -535,7 +540,10 @@ describe('fetchAndProcessQuote', () => {
         mockTradeQuoteManager,
       )
 
-      expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: unexpected bridge error', unexpectedError)
+      expect(console.error).toHaveBeenCalledWith(
+        '[fetchAndProcessQuote]:: fetchBridgingQuote error',
+        expect.any(BridgeProviderQuoteError),
+      )
     })
 
     it('should not call onResponse when quote is null in onQuoteResult callback', async () => {
@@ -645,7 +653,10 @@ describe('fetchAndProcessQuote', () => {
 
       expect(mockMapOperatorErrorToQuoteError).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
-      expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', expect.any(Error))
+      expect(console.error).toHaveBeenCalledWith(
+        '[fetchAndProcessQuote]:: fetchSwapQuote error',
+        expect.any(QuoteApiError),
+      )
     })
   })
 
