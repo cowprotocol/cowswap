@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.2.5](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.4...widget-configurator-v3.2.5) (2026-04-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.5
+    * @cowprotocol/widget-react bumped to 1.3.5
+
 ## [3.2.4](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.3...widget-configurator-v3.2.4) (2026-04-08)
 
 
