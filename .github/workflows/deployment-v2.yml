@@ -61,6 +61,12 @@ jobs:
         Requested reviewers:
         - @cowprotocol/frontend
     steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Setup release sync
         id: setup
         uses: ./.github/actions/setup-release-sync
@@ -130,6 +136,12 @@ jobs:
     needs: collect-release-metadata
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Setup release sync
         id: setup
         uses: ./.github/actions/setup-release-sync
@@ -173,6 +185,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: production # Env configured in GitHub UI. Requires manual approval before this job can run
     steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
       - name: Setup release sync
         id: setup
         uses: ./.github/actions/setup-release-sync
