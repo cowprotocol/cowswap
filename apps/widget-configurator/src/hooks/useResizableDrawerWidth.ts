@@ -1,18 +1,18 @@
 import React, { RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-const DEFAULT_DRAWER_WIDTH = 320
 const MIN_DRAWER_WIDTH = 380
-const MAX_DRAWER_WIDTH = 720
-const MIN_PREVIEW_WIDTH = 360
+const DEFAULT_DRAWER_WIDTH = MIN_DRAWER_WIDTH
+const MIN_PREVIEW_WIDTH = 240
 
 function getViewportWidth(): number {
   return typeof window === 'undefined' ? Number.POSITIVE_INFINITY : window.innerWidth
 }
 
 export function clampDrawerWidth(nextWidth: number, viewportWidth = getViewportWidth()): number {
-  const maxAllowedWidth = Math.max(MIN_DRAWER_WIDTH, Math.min(MAX_DRAWER_WIDTH, viewportWidth - MIN_PREVIEW_WIDTH))
+  const maxAllowedWidth = Math.max(0, viewportWidth - MIN_PREVIEW_WIDTH)
+  const minAllowedWidth = Math.min(MIN_DRAWER_WIDTH, maxAllowedWidth)
 
-  return Math.min(Math.max(nextWidth, MIN_DRAWER_WIDTH), maxAllowedWidth)
+  return Math.min(Math.max(nextWidth, minAllowedWidth), maxAllowedWidth)
 }
 
 interface UseResizableDrawerWidthResult {

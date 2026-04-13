@@ -1,3 +1,5 @@
+import { darken, lighten } from '@mui/material/styles'
+
 import type { SxProps, Theme } from '@mui/material/styles'
 
 export const configuradorRootSx: SxProps<Theme> = {
@@ -14,10 +16,11 @@ const CONTENT_PADDING_PX = 16
 export const configuratorCheckeredCanvasSx =
   (showIframeOutline: boolean, blockScroll = false): SxProps<Theme> =>
   (theme) => {
+    const paper = theme.palette.background.paper
     const isDark = theme.palette.mode === 'dark'
-    const squareA = theme.palette.grey[isDark ? 900 : 200]
-    const squareB = theme.palette.grey[isDark ? 800 : 300]
-    const base = theme.palette.grey[isDark ? 900 : 200]
+    const squareA = isDark ? lighten(paper, 0.06) : paper
+    const squareB = isDark ? paper : darken(paper, 0.11)
+    const base = paper
     const pattern = `repeating-conic-gradient(from 90deg, ${squareA} 0% 25%, ${squareB} 0% 50%)`
 
     return {

@@ -21,14 +21,16 @@ export function SidebarEnvBadge({ brandColor, baseUrl, configuratorOrigin }: Sid
       arrow
       title={
         <table>
-          <tr>
-            <td style={{ textAlign: 'right' }}>Configurator:</td>
-            <td>{configuratorLabel}</td>
-          </tr>
-          <tr>
-            <td style={{ textAlign: 'right' }}>App:</td>
-            <td>{widgetAppLabel}</td>
-          </tr>
+          <tbody>
+            <tr>
+              <td style={{ textAlign: 'right' }}>Configurator:</td>
+              <td>{configuratorLabel}</td>
+            </tr>
+            <tr>
+              <td style={{ textAlign: 'right' }}>App:</td>
+              <td>{widgetAppLabel}</td>
+            </tr>
+          </tbody>
         </table>
       }
       placement="bottom"

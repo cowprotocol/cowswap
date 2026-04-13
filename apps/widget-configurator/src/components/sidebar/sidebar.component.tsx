@@ -4,6 +4,7 @@ import { SupportedLocale, DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cow
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
+import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
@@ -11,7 +12,7 @@ import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
 import { SidebarHeader } from './header/sidebar-header.component'
-import { getDrawerSx } from './sidebar.styles'
+import { drawerContentColumnSx, drawerPaperRowSx, getDrawerPatternFillerSx, getDrawerSx } from './sidebar.styles'
 
 import { DEFAULT_STATE, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from '../../configurator.constants'
 import { ConfiguratorState, TokenListItem, WidgetMode } from '../../configurator.types'
@@ -396,6 +397,10 @@ export function Sidebar({
 
   - [x] Classify state props into categories in type definition file.
   - [x] Add field for appCode.
+  - [x] Automatically set baseUrl based on widget configurator env.
+  - [x] Add env indicator.
+  - [x] Allow wider sidebar to use it as mobile mode.
+
   - [ ] Fix sticky style issue.
   - [ ] Make widget theme selector work.
   - [ ] Add loader to widget, also when reloading / updating.
@@ -404,212 +409,231 @@ export function Sidebar({
   - [ ] Add name to all fields.
   - [ ] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
   - [ ] Add update/reload widget button if needed.
-  - [x] Add env indicator.
-  - [x] Automatically set baseUrl based on widget configurator env.
-  - [ ] Allow wider sidebar to use it as mobile mode.
-  - [ ] Does the widget configurator work on mobile?
+  - [ ] Add presets for baseUrl and layout.
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
 
   */
 
   return (
     <Drawer sx={(theme: Theme) => getDrawerSx(theme, isResizing)} variant="persistent" anchor="left" open={isOpen}>
-      <SidebarHeader
-        title={title}
-        themeMode={mode}
-        standaloneMode={standaloneMode}
-        baseUrl={baseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
-      />
+      <Box sx={drawerPaperRowSx}>
+        <Box sx={drawerContentColumnSx}>
+          <SidebarHeader
+            title={title}
+            themeMode={mode}
+            standaloneMode={standaloneMode}
+            baseUrl={baseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
+          />
 
-      <Stack spacing={0}>
-        <AccordionSection title="Basics" expanded={expandedSection === 'Basics'} onChange={toggleSection('Basics')}>
-          <TextInput
-            name="appCode"
-            label="App code"
-            value={appCode}
-            onChange={(_, value) => setAppCode(value ?? '')}
-            helperText={COMMENTS_BY_PARAM_NAME.appCode}
-            inputProps={{ maxLength: 50 }}
-          />
-          {!IS_IFRAME && <ModeControl value={widgetMode} onChange={selectWidgetMode} />}
-          <LocaleControl state={localeState} />
-        </AccordionSection>
+          <Stack spacing={0} sx={{ display: 'flex', flexDirection: 'column' }}>
+            <AccordionSection title="Basics" expanded={expandedSection === 'Basics'} onChange={toggleSection('Basics')}>
+              <TextInput
+                name="appCode"
+                label="App code"
+                value={appCode}
+                onChange={(_, value) => setAppCode(value ?? '')}
+                helperText={COMMENTS_BY_PARAM_NAME.appCode}
+                inputProps={{ maxLength: 50 }}
+              />
+              {!IS_IFRAME && <ModeControl value={widgetMode} onChange={selectWidgetMode} />}
+              <LocaleControl state={localeState} />
+            </AccordionSection>
 
-        <AccordionSection
-          title="Trade Setup"
-          expanded={expandedSection === 'Trade setup'}
-          onChange={toggleSection('Trade setup')}
-        >
-          <TradeModesControl state={tradeModesState} />
-          <CurrentTradeTypeControl state={tradeTypeState} />
-          {!IS_IFRAME && (
-            <NetworkControl
-              state={networkControlState}
-              standaloneMode={standaloneMode}
-              availableChains={availableChains}
-            />
-          )}
-          <BooleanSwitchControl
-            checked={!disableCrossChainSwap}
-            label="Allow cross-chain swaps"
-            onChange={setAllowCrossChainSwap}
-          />
-        </AccordionSection>
+            <AccordionSection
+              title="Trade Setup"
+              expanded={expandedSection === 'Trade setup'}
+              onChange={toggleSection('Trade setup')}
+            >
+              <TradeModesControl state={tradeModesState} />
+              <CurrentTradeTypeControl state={tradeTypeState} />
+              {!IS_IFRAME && (
+                <NetworkControl
+                  state={networkControlState}
+                  standaloneMode={standaloneMode}
+                  availableChains={availableChains}
+                />
+              )}
+              <BooleanSwitchControl
+                checked={!disableCrossChainSwap}
+                label="Allow cross-chain swaps"
+                onChange={setAllowCrossChainSwap}
+              />
+            </AccordionSection>
 
-        <AccordionSection title="Tokens" expanded={expandedSection === 'Tokens'} onChange={toggleSection('Tokens')}>
-          <CurrencyInputControl
-            label="Sell token"
-            tokenIdState={sellTokenState}
-            tokenAmountState={sellTokenAmountState}
-          />
-          <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
-          <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
-        </AccordionSection>
+            <AccordionSection title="Tokens" expanded={expandedSection === 'Tokens'} onChange={toggleSection('Tokens')}>
+              <CurrencyInputControl
+                label="Sell token"
+                tokenIdState={sellTokenState}
+                tokenAmountState={sellTokenAmountState}
+              />
+              <CurrencyInputControl
+                label="Buy token"
+                tokenIdState={buyTokenState}
+                tokenAmountState={buyTokenAmountState}
+              />
+              <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
+            </AccordionSection>
 
-        <AccordionSection
-          title="Theme Colors"
-          expanded={expandedSection === 'Theme Colors'}
-          onChange={toggleSection('Theme Colors')}
-        >
-          <ThemeControl />
-          <PaletteControl paletteManager={paletteManager} />
-        </AccordionSection>
+            <AccordionSection
+              title="Theme Colors"
+              expanded={expandedSection === 'Theme Colors'}
+              onChange={toggleSection('Theme Colors')}
+            >
+              <ThemeControl />
+              <PaletteControl paletteManager={paletteManager} />
+            </AccordionSection>
 
-        <AccordionSection title="Layout" expanded={expandedSection === 'Layout'} onChange={toggleSection('Layout')}>
-          <BooleanSwitchControl
-            checked={autoResizeEnabled}
-            label="Auto-resize iframe"
-            onChange={setAutoResizeEnabled}
-            helperText="When enabled, the iframe height adjusts automatically to fit its content."
-          />
-          <BooleanSwitchControl
-            checked={showIframeOutline}
-            label="Show iframe outline"
-            onChange={setShowIframeOutline}
-            tooltip="Preview-only visual aid to see the iframe boundaries. This setting is not included in the exported widget code."
-          />
-          <AppearanceStyleControls
-            iframeStyleJson={iframeStyleJson}
-            onIframeStyleJson={setIframeStyleJson}
-            appWrapperStyleJson={appWrapperStyleJson}
-            onAppWrapperStyleJson={setAppWrapperStyleJson}
-            bodyWrapperStyleJson={bodyWrapperStyleJson}
-            onBodyWrapperStyleJson={setBodyWrapperStyleJson}
-            cardStyleJson={cardStyleJson}
-            onCardStyleJson={setCardStyleJson}
-          />
-        </AccordionSection>
+            <AccordionSection title="Layout" expanded={expandedSection === 'Layout'} onChange={toggleSection('Layout')}>
+              <BooleanSwitchControl
+                checked={autoResizeEnabled}
+                label="Auto-resize iframe"
+                onChange={setAutoResizeEnabled}
+                helperText="When enabled, the iframe height adjusts automatically to fit its content."
+              />
+              <BooleanSwitchControl
+                checked={showIframeOutline}
+                label="Show iframe outline"
+                onChange={setShowIframeOutline}
+                tooltip="Preview-only visual aid to see the iframe boundaries. This setting is not included in the exported widget code."
+              />
+              <AppearanceStyleControls
+                iframeStyleJson={iframeStyleJson}
+                onIframeStyleJson={setIframeStyleJson}
+                appWrapperStyleJson={appWrapperStyleJson}
+                onAppWrapperStyleJson={setAppWrapperStyleJson}
+                bodyWrapperStyleJson={bodyWrapperStyleJson}
+                onBodyWrapperStyleJson={setBodyWrapperStyleJson}
+                cardStyleJson={cardStyleJson}
+                onCardStyleJson={setCardStyleJson}
+              />
+            </AccordionSection>
 
-        <AccordionSection
-          title="Behavior"
-          expanded={expandedSection === 'Behavior'}
-          onChange={toggleSection('Behavior')}
-        >
-          <BooleanSwitchControl
-            checked={toastManager.disableToastMessages}
-            label="Use app toasts"
-            helperText="When off, the widget keeps toast messages inside the iframe."
-            onChange={toastManager.setToastMessagesInDappMode}
-          />
-          <BooleanSwitchControl checked={!disableProgressBar} label="Show progress bar" onChange={setShowProgressBar} />
-          <BooleanSwitchControl
-            checked={!disablePostTradeTips}
-            label="Show post-trade tips"
-            onChange={setShowPostTradeTips}
-          />
-          <BooleanSwitchControl
-            checked={!disableTokenImport}
-            label="Allow custom token imports"
-            onChange={setAllowTokenImport}
-          />
-          <BooleanSwitchControl checked={!hideRecentTokens} label="Show recent tokens" onChange={setShowRecentTokens} />
-          <BooleanSwitchControl
-            checked={!hideFavoriteTokens}
-            label="Show favorite tokens"
-            onChange={setShowFavoriteTokens}
-          />
-          <BooleanSwitchControl checked={!hideBridgeInfo} label="Show bridge info" onChange={setShowBridgeInfo} />
-          <BooleanSwitchControl checked={!hideOrdersTable} label="Show orders table" onChange={setShowOrdersTable} />
-          <BooleanSwitchControl
-            checked={disableTradeWhenPriceImpactIsUnknown}
-            label="Block trade if price impact is unknown"
-            onChange={setBlockUnknownPriceImpact}
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            id="disableTradeWhenPriceImpactIsHigherThan"
-            label="Block trade above price impact (%)"
-            type="number"
-            value={disableTradeWhenPriceImpactIsHigherThan ?? ''}
-            onChange={setBlockPriceImpactAboveValue}
-            size="medium"
-            helperText="Leave empty to disable"
-            inputProps={{
-              min: 0,
-              step: 'any',
-            }}
-          />
-        </AccordionSection>
+            <AccordionSection
+              title="Behavior"
+              expanded={expandedSection === 'Behavior'}
+              onChange={toggleSection('Behavior')}
+            >
+              <BooleanSwitchControl
+                checked={toastManager.disableToastMessages}
+                label="Use app toasts"
+                helperText="When off, the widget keeps toast messages inside the iframe."
+                onChange={toastManager.setToastMessagesInDappMode}
+              />
+              <BooleanSwitchControl
+                checked={!disableProgressBar}
+                label="Show progress bar"
+                onChange={setShowProgressBar}
+              />
+              <BooleanSwitchControl
+                checked={!disablePostTradeTips}
+                label="Show post-trade tips"
+                onChange={setShowPostTradeTips}
+              />
+              <BooleanSwitchControl
+                checked={!disableTokenImport}
+                label="Allow custom token imports"
+                onChange={setAllowTokenImport}
+              />
+              <BooleanSwitchControl
+                checked={!hideRecentTokens}
+                label="Show recent tokens"
+                onChange={setShowRecentTokens}
+              />
+              <BooleanSwitchControl
+                checked={!hideFavoriteTokens}
+                label="Show favorite tokens"
+                onChange={setShowFavoriteTokens}
+              />
+              <BooleanSwitchControl checked={!hideBridgeInfo} label="Show bridge info" onChange={setShowBridgeInfo} />
+              <BooleanSwitchControl
+                checked={!hideOrdersTable}
+                label="Show orders table"
+                onChange={setShowOrdersTable}
+              />
+              <BooleanSwitchControl
+                checked={disableTradeWhenPriceImpactIsUnknown}
+                label="Block trade if price impact is unknown"
+                onChange={setBlockUnknownPriceImpact}
+              />
+              <TextField
+                fullWidth
+                margin="dense"
+                id="disableTradeWhenPriceImpactIsHigherThan"
+                label="Block trade above price impact (%)"
+                type="number"
+                value={disableTradeWhenPriceImpactIsHigherThan ?? ''}
+                onChange={setBlockPriceImpactAboveValue}
+                size="medium"
+                helperText="Leave empty to disable"
+                inputProps={{
+                  min: 0,
+                  step: 'any',
+                }}
+              />
+            </AccordionSection>
 
-        <AccordionSection
-          title="Deadlines"
-          expanded={expandedSection === 'Deadlines'}
-          onChange={toggleSection('Deadlines')}
-        >
-          <DeadlineControl label="Global Deadline" deadlineState={deadlineState} />
-          <DeadlineControl label="Swap Deadline" deadlineState={swapDeadlineState} />
-          <DeadlineControl label="Limit Deadline" deadlineState={limitDeadlineState} />
-          <DeadlineControl label="Advanced Deadline" deadlineState={advancedDeadlineState} />
-        </AccordionSection>
+            <AccordionSection
+              title="Deadlines"
+              expanded={expandedSection === 'Deadlines'}
+              onChange={toggleSection('Deadlines')}
+            >
+              <DeadlineControl label="Global Deadline" deadlineState={deadlineState} />
+              <DeadlineControl label="Swap Deadline" deadlineState={swapDeadlineState} />
+              <DeadlineControl label="Limit Deadline" deadlineState={limitDeadlineState} />
+              <DeadlineControl label="Advanced Deadline" deadlineState={advancedDeadlineState} />
+            </AccordionSection>
 
-        <AccordionSection
-          title="Integrations"
-          expanded={expandedSection === 'Integrations'}
-          onChange={toggleSection('Integrations')}
-        >
-          <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
-        </AccordionSection>
+            <AccordionSection
+              title="Integrations"
+              expanded={expandedSection === 'Integrations'}
+              onChange={toggleSection('Integrations')}
+            >
+              <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
+            </AccordionSection>
 
-        <AccordionSection
-          title="Customization"
-          expanded={expandedSection === 'Customization'}
-          onChange={toggleSection('Customization')}
-        >
-          <CustomImagesControl state={customImagesState} />
-          <CustomSoundsControl state={customSoundsState} />
-        </AccordionSection>
+            <AccordionSection
+              title="Customization"
+              expanded={expandedSection === 'Customization'}
+              onChange={toggleSection('Customization')}
+            >
+              <CustomImagesControl state={customImagesState} />
+              <CustomSoundsControl state={customSoundsState} />
+            </AccordionSection>
 
-        <AccordionSection
-          title="Advanced"
-          expanded={expandedSection === 'Advanced'}
-          onChange={toggleSection('Advanced')}
-        >
-          <TextInput
-            name="baseUrl"
-            label="Widget App URL"
-            value={baseUrl}
-            onChange={(_, value) => setBaseUrl(value)}
-            placeholder={CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
-            helperText={`Optional. Sets baseUrl (overrides Raw JSON). Default preview URL: ${CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}`}
+            <AccordionSection
+              title="Advanced"
+              expanded={expandedSection === 'Advanced'}
+              onChange={toggleSection('Advanced')}
+            >
+              <TextInput
+                name="baseUrl"
+                label="Widget App URL"
+                value={baseUrl}
+                onChange={(_, value) => setBaseUrl(value)}
+                placeholder={CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
+                helperText={`Optional. Sets baseUrl (overrides Raw JSON). Default preview URL: ${CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}`}
+              />
+              <WidgetHooksControl state={widgetHooksState} />
+              <JsonInput
+                label="Raw JSON params"
+                name="rawParams"
+                value={rawParamsJson.rawJsonValue}
+                onChange={(_name, value) => setRawParamsJson(null, value)}
+                helperText={jsonHelperText(rawParamsJson.error)}
+              />
+            </AccordionSection>
+          </Stack>
+
+          <SidebarFooter
+            isSidebarOpen={isOpen}
+            onSidebarToggle={onSidebarToggle}
+            isSnippetOpen={isSnippetOpen}
+            onSnippetToggle={onSnippetToggle}
           />
-          <WidgetHooksControl state={widgetHooksState} />
-          <JsonInput
-            label="Raw JSON params"
-            name="rawParams"
-            value={rawParamsJson.rawJsonValue}
-            onChange={(_name, value) => setRawParamsJson(null, value)}
-            helperText={jsonHelperText(rawParamsJson.error)}
-          />
-        </AccordionSection>
-      </Stack>
+        </Box>
 
-      <SidebarFooter
-        isSidebarOpen={isOpen}
-        onSidebarToggle={onSidebarToggle}
-        isSnippetOpen={isSnippetOpen}
-        onSnippetToggle={onSnippetToggle}
-      />
+        <Box sx={(theme: Theme) => getDrawerPatternFillerSx(theme)} aria-hidden />
+      </Box>
     </Drawer>
   )
 }
