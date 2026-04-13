@@ -19,8 +19,8 @@ import { useColorPaletteManager } from '../../hooks/useColorPaletteManager'
 import { useJsonState, EMPTY_JSON_STATE } from '../../hooks/useJsonState'
 import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
-import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../hooks/useWidgetParamsAndSettings'
 import { ColorModeContext } from '../../theme/ColorModeContext'
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../utils/baseUrl'
 import { jsonHelperText } from '../../utils/jsonFieldParsing'
 import { AppearanceStyleControls } from '../controls/AppearanceStyleControls'
 import { CustomImagesControl } from '../controls/CustomImagesControl'
@@ -396,6 +396,7 @@ export function Sidebar({
 
   - [x] Classify state props into categories in type definition file.
   - [x] Add field for appCode.
+  - [ ] Fix sticky style issue.
   - [ ] Make widget theme selector work.
   - [ ] Add loader to widget, also when reloading / updating.
   - [ ] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
@@ -403,8 +404,8 @@ export function Sidebar({
   - [ ] Add name to all fields.
   - [ ] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
   - [ ] Add update/reload widget button if needed.
-  - [ ] Add env indicator.
-  - [ ] Automatically set baseUrl based on widget configurator env.
+  - [x] Add env indicator.
+  - [x] Automatically set baseUrl based on widget configurator env.
   - [ ] Allow wider sidebar to use it as mobile mode.
   - [ ] Does the widget configurator work on mobile?
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
@@ -413,7 +414,12 @@ export function Sidebar({
 
   return (
     <Drawer sx={(theme: Theme) => getDrawerSx(theme, isResizing)} variant="persistent" anchor="left" open={isOpen}>
-      <SidebarHeader title={title} themeMode={mode} standaloneMode={standaloneMode} />
+      <SidebarHeader
+        title={title}
+        themeMode={mode}
+        standaloneMode={standaloneMode}
+        baseUrl={baseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
+      />
 
       <Stack spacing={0}>
         <AccordionSection title="Basics" expanded={expandedSection === 'Basics'} onChange={toggleSection('Basics')}>

@@ -2,29 +2,9 @@ import { useMemo } from 'react'
 
 import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
-import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK, isDev, isLocalHost, isVercel } from '../configurator.constants'
+import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK } from '../configurator.constants'
 import { ConfiguratorState } from '../configurator.types'
-
-const vercelSuffix = '-cowswap-dev.vercel.app'
-
-const getBaseUrl = (): string => {
-  if (typeof window === 'undefined' || !window) return ''
-
-  if (isLocalHost) return 'http://localhost:3000'
-
-  if (isDev) return 'https://dev.swap.cow.fi'
-
-  if (isVercel) {
-    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
-
-    return `https://swap-dev-git-${prKey}${vercelSuffix}`
-  }
-
-  return 'https://swap.cow.fi'
-}
-
-/** Resolved once at load; used by the configurator preview and as the default `baseUrl` in built params. */
-export const CONFIGURATOR_DEFAULT_WIDGET_BASE_URL = getBaseUrl()
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../utils/baseUrl'
 
 const getTokenListsParam = (
   tokenListUrls: ConfiguratorState['tokenListUrls'],

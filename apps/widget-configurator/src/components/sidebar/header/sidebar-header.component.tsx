@@ -4,7 +4,9 @@ import { Color, Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+
 import { IS_IFRAME } from '../../../configurator.constants'
+import { SidebarEnvBadge } from '../env-badge/sidebar-env-badge.component'
 
 const BRAND_COLOR: Record<ThemeMode, string> = {
   dark: Color.blue300Primary,
@@ -17,37 +19,37 @@ export interface SidebarHeaderProps {
   title: string
   themeMode: ThemeMode
   standaloneMode: boolean
+  baseUrl: string
 }
 
-export function SidebarHeader({
-  title,
-  themeMode,
-  standaloneMode
-}: SidebarHeaderProps): ReactNode {
+export function SidebarHeader({ title, themeMode, standaloneMode, baseUrl }: SidebarHeaderProps): ReactNode {
   const brandColor = BRAND_COLOR[themeMode]
 
   return (
     <Box
       component="header"
       sx={{
-        position: "sticky",
+        position: 'sticky',
         top: 0,
         zIndex: 10,
         width: '100%',
         minHeight: '64px',
         p: '16px',
         flex: '0 0 auto',
-        background: (theme) =>  theme.palette.background.paper,
+        background: (theme) => theme.palette.background.paper,
         borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
       }}
     >
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        gap: '8px',
-        width: '100%',
-      }}>
+      <Box
+        sx={{
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          gap: '8px',
+          width: '100%',
+        }}
+      >
         <ProductLogo
           variant={ProductVariant.CowSwap}
           theme={themeMode}
@@ -68,6 +70,7 @@ export function SidebarHeader({
         >
           {title}
         </Typography>
+        <SidebarEnvBadge brandColor={brandColor} baseUrl={baseUrl} configuratorOrigin={location.origin} />
       </Box>
 
       {!IS_IFRAME && (
