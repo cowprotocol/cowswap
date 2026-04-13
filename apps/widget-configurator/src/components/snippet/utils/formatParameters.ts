@@ -31,7 +31,10 @@ export function formatParameters(
     : COMMENTS_BY_PARAM_NAME
 
   const resultWithComments = Object.keys(commentsByParamName).reduce((acc, propName) => {
-    return acc.replace(new RegExp(`"${propName}".*$`, 'gm'), `$& // ${commentsByParamName[propName]}`)
+    return acc.replace(
+      new RegExp(`"${propName}".*$`, 'gm'),
+      `$& // ${commentsByParamName[propName as keyof CowSwapWidgetParams]}`,
+    )
   }, formattedParams)
 
   // Add values

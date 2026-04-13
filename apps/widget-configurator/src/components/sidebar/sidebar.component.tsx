@@ -390,11 +390,17 @@ export function Sidebar({
   TODO:
 
   - [x] Classify state props into categories in type definition file.
+  - [ ] Add field for appCode.
   - [ ] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
   - [ ] Create reusable TextInput, NumberInput and SelectInput components.
   - [ ] Add name to all fields.
   - [ ] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
-
+  - [ ] Add update/reload widget button if needed.
+  - [ ] Add env indicator.
+  - [ ] Automatically set baseUrl based on widget configurator env.
+  - [ ] Allow wider sidebar to use it as mobile mode.
+  - [ ] Does the widget configurator work on mobile?
+  - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
 
   */
 
