@@ -81,3 +81,4 @@ export type AffiliateAnalyticsAction =
   | 'affiliate_trader_payout_confirmation_toggled'
   | 'affiliate_trader_linked_code_recovered'
   | 'affiliate_trader_modal_primary_cta_clicked'
+  | 'affiliate_trader_expired_code_viewed'

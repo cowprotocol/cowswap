@@ -3,10 +3,13 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { act, renderHook } from '@testing-library/react'
 
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+
 import { useAffiliatePartnerCodeCreate } from './useAffiliatePartnerCodeCreate'
 import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
+import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
 
 jest.mock('@cowprotocol/analytics', () => {
   const actualModule = jest.requireActual('@cowprotocol/analytics')
@@ -103,5 +106,18 @@ describe('useAffiliatePartnerCodeCreate', () => {
     })
 
     expect(mutatePartnerInfo).toHaveBeenCalledTimes(1)
+
+    const trackedEvents = sendEvent.mock.calls.map(([event]) => event)
+    const startedEvents = trackedEvents.filter((event) => event.action === 'affiliate_partner_code_create_started')
+    const completedEvents = trackedEvents.filter((event) => event.action === 'affiliate_partner_code_create_completed')
+
+    expect(startedEvents).toHaveLength(1)
+    expect(completedEvents).toHaveLength(1)
+    expect(completedEvents[0]).toEqual({
+      category: CowSwapAnalyticsCategory.AFFILIATE,
+      action: 'affiliate_partner_code_create_completed',
+      chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
+      result: 'success',
+    })
   })
 })
