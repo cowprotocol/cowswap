@@ -1,6 +1,7 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
+import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import { logWidget } from './logger'
@@ -195,7 +196,9 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   iframe.width = width
   iframe.height = height
   iframe.style.border = '0'
-  iframe.allow = 'clipboard-read; clipboard-write'
+  iframe.setAttribute('sandbox', WIDGET_IFRAME_SANDBOX)
+  iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
+  iframe.allow = WIDGET_IFRAME_ALLOW
 
   return iframe
 }

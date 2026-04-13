@@ -24,7 +24,6 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
       method,
       ...data,
     }
-
     contentWindow.postMessage(postPayload, targetOrigin)
   }
 

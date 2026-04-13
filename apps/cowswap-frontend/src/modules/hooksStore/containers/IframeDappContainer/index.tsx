@@ -10,6 +10,20 @@ import styled from 'styled-components/macro'
 
 import { HookDappContext as HookDappContextType, HookDappIframe } from '../../types/hooks'
 
+/**
+ * Iframe sandbox allowlist for embedded hook dapps.
+ * - allow-scripts: required for interactive SPA logic.
+ * - allow-same-origin: preserves the hook dapp origin so storage/fetches work as expected.
+ * - allow-forms: allows form controls used by dapp UIs.
+ * - allow-popups + allow-popups-to-escape-sandbox: wallet popups / WalletConnect windows.
+ */
+const HOOK_DAPP_IFRAME_SANDBOX =
+  'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox'
+/** Limits referrer leakage when embedding third-party hook dapps. */
+const HOOK_DAPP_IFRAME_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+/** Permissions policy features delegated to the hook iframe (HTML `allow` attribute). */
+const HOOK_DAPP_IFRAME_ALLOW = 'clipboard-read; clipboard-write'
+
 const Iframe = styled.iframe`
   border: 0;
   min-height: 300px;
@@ -169,7 +183,9 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       <Iframe
         ref={iframeRef}
         src={dapp.url}
-        allow="clipboard-read; clipboard-write"
+        allow={HOOK_DAPP_IFRAME_ALLOW}
+        referrerPolicy={HOOK_DAPP_IFRAME_REFERRER_POLICY}
+        sandbox={HOOK_DAPP_IFRAME_SANDBOX}
         onLoad={handleIframeLoad}
         $isLoading={isLoading}
       />
