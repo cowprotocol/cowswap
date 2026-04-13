@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -37,7 +38,7 @@ export interface QuoteParams {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
-  const provider = useWalletProvider()
+  const _provider = useWalletProvider() // kept for memo dep – triggers re-quote on wallet change
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -57,7 +58,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
-    if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
+    if (!inputCurrency || !outputCurrency || !orderKind || !_provider) return
     return buildQuoteParams({
       amount,
       partiallyFillable,
@@ -67,13 +68,12 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       appDataDoc,
       receiver,
       account,
-      provider,
       volumeFee,
       userSlippageBps,
       smartSlippageBpsRef,
     })
   }, [
-    provider,
+    _provider,
     inputCurrency,
     outputCurrency,
     amount,
@@ -101,8 +101,6 @@ function buildQuoteParams(args: {
   appDataDoc: AppDataInfo['doc'] | undefined
   receiver: QuoteBridgeRequest['receiver']
   account: string | undefined
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  provider: any
   volumeFee: VolumeFee | undefined
   userSlippageBps: number | undefined
   smartSlippageBpsRef: { current: number | undefined }
@@ -116,7 +114,6 @@ function buildQuoteParams(args: {
     appDataDoc,
     receiver,
     account,
-    provider,
     volumeFee,
     userSlippageBps,
     smartSlippageBpsRef,
@@ -127,11 +124,8 @@ function buildQuoteParams(args: {
   if (!amount) {
     return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
   }
-  // Check if provider has getSigner method (wallet provider vs publicClient fallback)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const hasGetSigner = typeof (provider as any).getSigner === 'function'
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const signer = account && hasGetSigner ? (provider as any).getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
+  const adapterSigner = account ? getGlobalAdapter().signerOrNull() : null
+  const signer = adapterSigner || getBridgeQuoteSigner(inputCurrency.chainId)
   const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
   const quoteParams: QuoteBridgeRequest = {
     kind: orderKind,
