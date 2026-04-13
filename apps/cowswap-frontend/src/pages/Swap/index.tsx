@@ -7,8 +7,21 @@ import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application'
-import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
-import { parameterizeTradeRoute, getDefaultTradeRawState } from 'modules/trade'
+import { PriceChart } from 'modules/priceChart'
+import {
+  swapDerivedStateAtom,
+  SwapUpdaters,
+  SwapWidget,
+  useSwapDerivedState,
+  useSwapDerivedStateToFill,
+} from 'modules/swap'
+import {
+  getDefaultTradeRawState,
+  PageWrapper,
+  parameterizeTradeRoute,
+  PrimaryWrapper,
+  SecondaryWrapper,
+} from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
@@ -27,7 +40,7 @@ export function SwapPage(): ReactNode {
       <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
 
       <SwapUpdaters />
-      <SwapWidget />
+      <SwapPageContent />
     </HydrateAtom>
   )
 }
@@ -60,4 +73,23 @@ function SwapPageRedirect(): ReactNode {
   )
 
   return <Navigate to={{ ...location, pathname, search: searchParams.toString() }} />
+}
+
+function SwapPageContent(): ReactNode {
+  const { inputCurrency, isUnlocked, outputCurrency } = useSwapDerivedState()
+  const shouldShowChart = Boolean(inputCurrency && outputCurrency)
+
+  return (
+    <PageWrapper hideOrdersTable={!shouldShowChart} isUnlocked={isUnlocked || shouldShowChart}>
+      <PrimaryWrapper>
+        <SwapWidget />
+      </PrimaryWrapper>
+
+      {shouldShowChart ? (
+        <SecondaryWrapper className="trade-orders-table">
+          <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
+        </SecondaryWrapper>
+      ) : null}
+    </PageWrapper>
+  )
 }

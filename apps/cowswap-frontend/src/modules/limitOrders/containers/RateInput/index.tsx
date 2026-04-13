@@ -11,6 +11,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { MousePointer } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -18,6 +19,7 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
 import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
+import { isChartPriceSelectionModeAtom } from 'modules/limitOrders/state/isChartPriceSelectionModeAtom'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
@@ -40,7 +42,7 @@ import * as styledEl from './styled'
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RateInput() {
   const { chainId } = useWalletInfo()
   // Rate state
@@ -57,6 +59,7 @@ export function RateInput() {
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
+  const [isChartPriceSelectionMode, setIsChartPriceSelectionMode] = useAtom(isChartPriceSelectionModeAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -284,6 +287,15 @@ export function RateInput() {
               <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
                 <SVG src={UsdIcon} />
               </styledEl.UsdButton>
+
+              <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
+                <styledEl.IconButton
+                  onClick={() => setIsChartPriceSelectionMode((state) => !state)}
+                  $active={isChartPriceSelectionMode}
+                >
+                  <MousePointer size={14} />
+                </styledEl.IconButton>
+              </HoverTooltip>
             </styledEl.CurrencyToggleGroup>
           )}
         </styledEl.Body>

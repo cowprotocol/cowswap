@@ -1,5 +1,4 @@
-import { Loader, Media, TokenSymbol } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { Loader, Media, TokenSymbol, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -135,31 +134,42 @@ export const CurrencyToggleGroup = styled.div`
   background: transparent;
   overflow: hidden;
   margin: 0 0 0 8px;
+  gap: 6px;
+`
+
+const ToggleButtonBase = css<{ $active?: boolean }>`
+  --height: 25px;
+  --border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--height);
+  border: none;
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  background: ${({ $active }) => ($active ? 'var(' + UI.COLOR_PAPER + ')' : 'var(' + UI.COLOR_PAPER_DARKEST + ')')};
+  color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_50 + ')')};
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
 `
 
 export const ActiveCurrency = styled.button<{ $active?: boolean }>`
-  --height: 25px;
   --skew-width: 6px;
   --skew-offset: -3px;
   --skew-angle: -10deg;
   --padding: 10px;
   --gap: 6px;
   --font-size: 13px;
-  --border-radius: 8px;
 
-  display: flex;
-  align-items: center;
+  ${ToggleButtonBase}
   gap: var(--gap);
   font-size: var(--font-size);
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-  border: none;
-  cursor: pointer;
   position: relative;
-  height: var(--height);
-  border-radius: var(--border-radius);
-  transition: all 0.2s ease-in-out;
-  background: ${({ $active }) => ($active ? 'var(' + UI.COLOR_PAPER + ')' : 'var(' + UI.COLOR_PAPER_DARKEST + ')')};
-  color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_50 + ')')};
   padding: 0 10px;
 
   &:first-child {
@@ -205,10 +215,6 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
       }
     `}
   }
-
-  &:hover {
-    color: var(${UI.COLOR_TEXT});
-  }
 `
 
 export const UsdButton = styled(ActiveCurrency)`
@@ -220,6 +226,18 @@ export const UsdButton = styled(ActiveCurrency)`
     width: 10px;
     height: 16px;
     color: inherit;
+  }
+`
+
+export const IconButton = styled.button<{ $active?: boolean }>`
+  ${ToggleButtonBase}
+  min-width: 30px;
+  width: 30px;
+  padding: 0;
+
+  > svg {
+    color: inherit;
+    stroke-width: 2.2;
   }
 `
 
