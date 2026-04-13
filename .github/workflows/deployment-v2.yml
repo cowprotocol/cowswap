@@ -57,9 +57,6 @@ jobs:
       PR_TITLE: 'chore(sync): merge main-copy into develop'
       PR_BODY: |
         This PR contains an automated merge commit from `main-copy` into `develop`.
-
-        Requested reviewers:
-        - @cowprotocol/frontend
     steps:
       - name: Checkout workflow repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -115,10 +112,6 @@ jobs:
           commit-message: ${{ env.PR_TITLE }}
           delete-branch: false
           draft: false
-          reviewers: ''
-          team-reviewers: |
-            frontend
-            qa
 
       - name: Notify Slack for develop review
         if: steps.prepare.outputs.has_changes == 'true'
