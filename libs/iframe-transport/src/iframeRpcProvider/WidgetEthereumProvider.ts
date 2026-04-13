@@ -492,26 +492,6 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   }
 }
 
-function getParentOrigin(): string | undefined {
-  if (typeof window !== 'undefined') {
-    const ancestorOrigins = window.location.ancestorOrigins
-
-    if (ancestorOrigins && ancestorOrigins.length > 0) {
-      return ancestorOrigins[0]
-    }
-  }
-
-  if (typeof document !== 'undefined' && document.referrer) {
-    try {
-      return new URL(document.referrer).origin
-    } catch {
-      return undefined
-    }
-  }
-
-  return undefined
-}
-
 /**
  * We return a random number between the 0 and the maximum safe integer so that we always generate a unique identifier,
  * across all communication channels.

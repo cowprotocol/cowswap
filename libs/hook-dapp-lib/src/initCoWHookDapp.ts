@@ -41,23 +41,3 @@ function getCoWHookDappActions(parent: Window, parentOrigin: string | undefined)
     },
   }
 }
-
-function getParentOrigin(): string | undefined {
-  if (typeof window !== 'undefined') {
-    const ancestorOrigins = window.location.ancestorOrigins
-
-    if (ancestorOrigins && ancestorOrigins.length > 0) {
-      return ancestorOrigins[0]
-    }
-  }
-
-  if (typeof document === 'undefined' || !document.referrer) {
-    return undefined
-  }
-
-  try {
-    return new URL(document.referrer).origin
-  } catch {
-    return undefined
-  }
-}
