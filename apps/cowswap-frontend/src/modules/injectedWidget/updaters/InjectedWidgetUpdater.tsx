@@ -44,10 +44,11 @@ import {
 
   /**
    * Intercept window.open and anchor clicks to send a message to the parent window
-   * to handle the opening of deeplinks in the parent window
+   * to handle the opening of deeplinks in the parent window.
+   *
+   * IMPORTANT: Do not call the native window.open here: createCowSwapWidget registers interceptDeepLinks
+   * which opens in the parent; calling both would open two tabs / popups.
    */
-  const originalWinOpen = window.open
-
   window.open = function (...args) {
     const [href = '', target = '', rel = ''] = args
 
@@ -58,7 +59,7 @@ import {
       parentOrigin,
     )
 
-    return originalWinOpen.apply(this, args)
+    return window
   }
 
   document.body.addEventListener('click', (event) => {
