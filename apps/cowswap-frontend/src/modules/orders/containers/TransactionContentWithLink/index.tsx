@@ -32,21 +32,17 @@ export function TransactionContentWithLink(props: TransactionContentWithLinkProp
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
   const { transactionHash, orderUid, children, isEthFlow } = props
-  const { orderCreationHash, status } = useOrder({ id: orderUid, chainId }) || {}
+  const { status } = useOrder({ id: orderUid, chainId }) || {}
 
   const isOrder = isCowOrder('transaction', orderUid)
   const isSafeOrder = !!(isSafeWallet && orderUid && !isCowOrder('transaction', orderUid))
   const isSafeTx = !!(isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash))
 
   const isEthFlowCreating =
-    isEthFlow && orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED)
+    isEthFlow && transactionHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED || !status)
 
   const tx = {
-    hash: isEthFlowCreating
-      ? orderCreationHash
-      : isEthFlow && transactionHash && !status
-        ? transactionHash
-        : orderUid || '',
+    hash: (isOrder && !isEthFlow ? orderUid : isEthFlowCreating ? transactionHash : orderUid) || '',
     hashType: (isSafeOrder || isSafeTx) && !isOrder ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
       safeTxHash: transactionHash || '',
