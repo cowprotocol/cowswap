@@ -1,7 +1,4 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderClass, OrderKind, PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
-import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import type { UiOrderType } from '@cowprotocol/types'
+import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
@@ -32,8 +29,6 @@ import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSetSigningStep } from './useSetSigningStep'
 
 import { TradeFlowContext } from '../types/TradeFlowContext'
-
-import type { WalletClient } from 'viem'
 
 export interface TradeFlowParams {
   deadline: number
@@ -184,13 +179,13 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         void settlementContract // in deps for memo stability
         return {
           tradeQuoteState,
-          tradeQuote: tradeQuote as QuoteAndPost,
+          tradeQuote,
           bridgeQuoteAmounts,
           context: {
             chainId,
-            inputAmount: inputAmount as CurrencyAmount<Currency>,
-            outputAmount: outputAmount as CurrencyAmount<Currency>,
-            inputAmountWithSlippage: inputAmount as CurrencyAmount<Currency>,
+            inputAmount,
+            outputAmount,
+            inputAmountWithSlippage: inputAmount,
           },
           flags: {
             allowsOffchainSigning,
@@ -208,7 +203,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             recipient: recipient ?? null,
             recipientAddress: recipientAddress ?? null,
             marketLabel: [inputAmount?.currency.symbol, outputAmount?.currency.symbol].join(','),
-            orderType: uiOrderType as UiOrderType,
+            orderType: uiOrderType,
             isBridgeOrder: inputAmount?.currency.chainId !== outputAmount?.currency.chainId,
           },
           permitInfo: !enoughAllowance ? permitInfo : undefined,
@@ -216,22 +211,22 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           permitAmountToSign,
           typedHooks,
           orderParams: {
-            account: account as `0x${string}`,
+            account,
             chainId,
-            signer: walletClient as WalletClient,
-            kind: orderKind as OrderKind,
-            inputAmount: inputAmount as CurrencyAmount<Currency>,
-            outputAmount: outputAmount as CurrencyAmount<Currency>,
+            signer: walletClient,
+            kind: orderKind,
+            inputAmount,
+            outputAmount,
             bridgeOutputAmount,
-            sellAmountBeforeFee: sellAmountBeforeFee as CurrencyAmount<Currency>,
+            sellAmountBeforeFee,
             feeAmount: networkFee,
-            sellToken: sellToken as unknown as TokenWithLogo,
-            buyToken: buyToken as unknown as TokenWithLogo,
+            sellToken,
+            buyToken,
             validTo,
             recipient: (recipientAddress || recipient || account) ?? '',
             recipientAddressOrName: recipient ?? null,
             allowsOffchainSigning,
-            appData: appData as NonNullable<typeof appData>,
+            appData,
             class: OrderClass.MARKET,
             partiallyFillable: isHooksTradeType,
             quoteId: tradeQuote?.quoteResults?.quoteResponse?.id ?? undefined,

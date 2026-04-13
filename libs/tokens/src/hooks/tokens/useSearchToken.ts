@@ -138,20 +138,18 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
   const activeTokens = useAtomValue(allActiveTokensAtom).tokens
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
-  const swrKey = useMemo(
-    () => ['searchTokensInLists', chainId, input, activeTokens.length, inactiveTokens.length] as const,
-    [chainId, input, activeTokens.length, inactiveTokens.length],
+  const { data: inListsResult } = useSWR<FromListsResult>(
+    ['searchTokensInLists', chainId, input, activeTokens, inactiveTokens],
+    () => {
+      if (!input) return emptyFromListsResult
+
+      const filter = getTokenSearchFilter(input)
+      const tokensFromActiveLists = activeTokens.filter(filter)
+      const tokensFromInactiveLists = inactiveTokens.filter(filter)
+
+      return { tokensFromActiveLists, tokensFromInactiveLists }
+    },
   )
-
-  const { data: inListsResult } = useSWR<FromListsResult>(swrKey, () => {
-    if (!input) return emptyFromListsResult
-
-    const filter = getTokenSearchFilter(input)
-    const tokensFromActiveLists = activeTokens.filter(filter)
-    const tokensFromInactiveLists = inactiveTokens.filter(filter)
-
-    return { tokensFromActiveLists, tokensFromInactiveLists }
-  })
 
   return inListsResult ?? emptyFromListsResult
 }

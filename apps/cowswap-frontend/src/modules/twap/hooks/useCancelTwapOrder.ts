@@ -45,7 +45,7 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
       }
 
       const partOrder = twapPartOrders[twapOrderId]?.sort((a, b) => a.order.validTo - b.order.validTo)[0]
-      const partOrderId = partOrder?.uid as Hex
+      const partOrderId = partOrder?.uid
 
       const context = {
         composableCowAddress: composableCowContract.address as Hex,

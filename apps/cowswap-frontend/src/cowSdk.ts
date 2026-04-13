@@ -2,7 +2,7 @@ import { atom, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import {
   AbstractProviderAdapter,
   DEFAULT_BACKOFF_OPTIONS,
@@ -10,7 +10,6 @@ import {
   OrderBookApi,
   Signer,
   setGlobalAdapter,
-  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
@@ -26,8 +25,8 @@ export const appSignerAtom = atom<Signer | undefined>(undefined)
 setGlobalAdapter(
   new ViemAdapter({
     provider: createPublicClient({
-      chain: VIEM_CHAINS[SupportedChainId.MAINNET],
-      transport: http(RPC_URLS[SupportedChainId.MAINNET]),
+      chain: VIEM_CHAINS[getCurrentChainIdFromUrl()],
+      transport: http(RPC_URLS[getCurrentChainIdFromUrl()]),
     }),
   }) as AbstractProviderAdapter,
 )

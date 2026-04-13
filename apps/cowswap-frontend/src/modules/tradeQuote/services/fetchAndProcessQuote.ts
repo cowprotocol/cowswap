@@ -2,6 +2,7 @@ import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { PriceQuality, SwapAdvancedSettings, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
+  BridgeQuoteErrors,
   CrossChainQuoteAndPost,
   MultiQuoteRequest,
   MultiQuoteResult,
@@ -46,29 +47,16 @@ export async function fetchAndProcessQuote(
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
     getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
     getCorrelatedTokens,
-    // Bridge swap leg can be same token (e.g. WETH→WETH on source chain before bridging to ETH).
-    // Required for WETH Base → ETH Mainnet and similar wrap/unwrap bridge flows.
-    ...(isBridge ? { allowIntermediateEqSellToken: true as const } : {}),
+    // TODO: sell=buy feature. Set allowIntermediateEqSellToken: true once the feature is ready
+    // allowIntermediateEqSellToken: true
   }
 
-  const processQuoteError = (error: Error): void => {
-    const parsedError = parseError(error)
+  const processQuoteError = (errorLocation: string, error: unknown): void => {
+    const parsedError = parseError(errorLocation, error)
 
-    console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
+    console.error(`[fetchAndProcessQuote]:: ${errorLocation} error`, parsedError)
 
-    if (parsedError instanceof QuoteApiError) {
-      tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
-    } else {
-      tradeQuoteManager.onError(
-        new QuoteApiError({
-          errorType: QuoteApiErrorCodes.UNHANDLED_ERROR,
-          description: String(error),
-        }),
-        chainId,
-        quoteParams,
-        fetchParams,
-      )
-    }
+    tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
   }
 
   tradeQuoteManager.setLoading(hasParamsChanged, quoteParams)
@@ -85,7 +73,7 @@ async function fetchSwapQuote(
   quoteParams: QuoteBridgeRequest,
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
-  processQuoteError: (error: Error) => void,
+  processQuoteError: (errorLocation: string, error: unknown) => void,
 ): Promise<void> {
   const { priceQuality } = fetchParams
   const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
@@ -105,7 +93,7 @@ async function fetchSwapQuote(
 
     tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
   } catch (error) {
-    processQuoteError(error instanceof Error ? error : new Error(String(error)))
+    processQuoteError('fetchSwapQuote', error)
   }
 }
 
@@ -114,7 +102,7 @@ async function fetchBridgingQuote(
   quoteParams: QuoteBridgeRequest,
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
-  processQuoteError: (error: Error) => void,
+  processQuoteError: (errorLocation: string, error: unknown) => void,
 ): Promise<void> {
   let isRequestCancelled = false
 
@@ -146,26 +134,32 @@ async function fetchBridgingQuote(
     const error = data?.error
 
     if (error) {
-      if (error instanceof BridgeProviderQuoteError) {
-        tradeQuoteManager.onError(error, quoteParams.sellTokenChainId, quoteParams, fetchParams)
-        return
-      }
-
-      processQuoteError(error instanceof Error ? error : new Error(String(error)))
+      throw error
     }
+    // bridgingSdk.getBestQuote() is not supposed to throw any error
+    // we only expect error to be returned as promise result
   } catch (error) {
-    console.error('[fetchAndProcessQuote]:: unexpected bridge error', error)
-    const unexpectedError = error instanceof Error ? error : new Error(String(error))
-    processQuoteError(unexpectedError)
+    processQuoteError('fetchBridgingQuote', error)
   }
 }
 
-function parseError(error: Error): QuoteApiError | Error {
-  if (getIsOrderBookTypedError(error)) {
-    const errorObject = mapOperatorErrorToQuoteError(error.body)
-
-    return errorObject ? new QuoteApiError(errorObject) : error
+function parseError(errorLocation: string, error: unknown): QuoteApiError | BridgeProviderQuoteError {
+  if (error instanceof QuoteApiError || error instanceof BridgeProviderQuoteError) {
+    return error
   }
 
-  return error
+  if (error instanceof Error) {
+    if (getIsOrderBookTypedError(error)) {
+      const errorObject = mapOperatorErrorToQuoteError(error.body)
+
+      if (errorObject) return new QuoteApiError(errorObject)
+    }
+  }
+
+  return errorLocation === 'fetchSwapQuote'
+    ? new QuoteApiError({
+        errorType: QuoteApiErrorCodes.UNHANDLED_ERROR,
+        description: String(error),
+      })
+    : new BridgeProviderQuoteError(BridgeQuoteErrors.API_ERROR, { context: error })
 }
