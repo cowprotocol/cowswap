@@ -2,8 +2,8 @@ name: Deployment v2
 
 on:
   push:
-    branches: [main-copy]
-    tags: [cowswap-*, explorer-*]
+    branches: [ main-copy ]
+    tags: [ cowswap-*, explorer-* ]
 
 concurrency:
   group: release-branch-sync
@@ -99,7 +99,7 @@ jobs:
       - name: Create or update pull request
         if: steps.prepare.outputs.has_changes == 'true'
         id: create-pr
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         with:
           token: ${{ steps.setup.outputs.token }}
           branch: ${{ env.SYNC_BRANCH }}
@@ -151,7 +151,7 @@ jobs:
   notify-production-approval:
     name: Notify Slack for production approval
     if: startsWith(github.ref, 'refs/tags/cowswap-') || startsWith(github.ref, 'refs/tags/explorer-')
-    needs: [collect-release-metadata, sync-staging]
+    needs: [ collect-release-metadata, sync-staging ]
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack
@@ -169,7 +169,7 @@ jobs:
   sync-production:
     name: Fast-forward production to main-copy
     if: startsWith(github.ref, 'refs/tags/cowswap-') || startsWith(github.ref, 'refs/tags/explorer-')
-    needs: [collect-release-metadata, notify-production-approval]
+    needs: [ collect-release-metadata, notify-production-approval ]
     runs-on: ubuntu-latest
     environment: production # Env configured in GitHub UI. Requires manual approval before this job can run
     steps:
