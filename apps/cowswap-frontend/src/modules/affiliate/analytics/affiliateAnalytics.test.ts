@@ -1,4 +1,6 @@
-import type { CowAnalytics } from '@cowprotocol/analytics'
+import { useCowAnalytics, type CowAnalytics } from '@cowprotocol/analytics'
+
+import { renderHook } from '@testing-library/react'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
@@ -18,7 +20,20 @@ import {
   trackAffiliateEvent,
 } from './affiliateAnalytics.utils'
 
+import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
 import { TraderWalletStatus } from '../hooks/useAffiliateTraderWallet'
+
+jest.mock('@cowprotocol/analytics', () => {
+  const actualModule = jest.requireActual('@cowprotocol/analytics')
+
+  return {
+    ...actualModule,
+    __resetGtmInstance: jest.fn(),
+    useCowAnalytics: jest.fn(),
+  }
+})
+
+const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 
 describe('trackAffiliateEvent', () => {
   it('sends affiliate analytics payloads without undefined fields', () => {
@@ -126,5 +141,58 @@ describe('trader analytics helpers', () => {
   it('falls back to legacy or manual code sources based on linkage state', () => {
     expect(getAffiliateCodeSourceFallback(true)).toBe(AffiliateCodeSource.LEGACY_UNKNOWN)
     expect(getAffiliateCodeSourceFallback(false)).toBe(AffiliateCodeSource.MANUAL_INPUT)
+  })
+})
+
+describe('useAffiliateStateViewAnalytics', () => {
+  const sendEvent = jest.fn()
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+
+    useCowAnalyticsMock.mockReturnValue({
+      sendEvent,
+    } as unknown as ReturnType<typeof useCowAnalytics>)
+  })
+
+  it('re-tracks the view when payload fields change for the same view key', () => {
+    const { rerender } = renderHook(
+      ({ walletStatus }) =>
+        useAffiliateStateViewAnalytics({
+          action: 'affiliate_trader_page_state_viewed',
+          viewKey: AffiliatePageState.LINKED,
+          eventParams: {
+            pageState: AffiliatePageState.LINKED,
+            walletStatus,
+            hasSavedCode: true,
+          },
+        }),
+      {
+        initialProps: {
+          walletStatus: TraderWalletStatus.ELIGIBLE,
+        },
+      },
+    )
+
+    expect(sendEvent).toHaveBeenCalledTimes(1)
+
+    rerender({
+      walletStatus: TraderWalletStatus.LINKED,
+    })
+
+    expect(sendEvent).toHaveBeenCalledTimes(2)
+    expect(sendEvent).toHaveBeenLastCalledWith({
+      category: CowSwapAnalyticsCategory.AFFILIATE,
+      action: 'affiliate_trader_page_state_viewed',
+      pageState: AffiliatePageState.LINKED,
+      walletStatus: TraderWalletStatus.LINKED,
+      hasSavedCode: true,
+    })
+
+    rerender({
+      walletStatus: TraderWalletStatus.LINKED,
+    })
+
+    expect(sendEvent).toHaveBeenCalledTimes(2)
   })
 })

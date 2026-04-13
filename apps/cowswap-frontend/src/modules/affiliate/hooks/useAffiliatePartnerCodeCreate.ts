@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -37,10 +37,13 @@ export function useAffiliatePartnerCodeCreate({
 }: UseAffiliatePartnerCodeCreateParams): UseAffiliatePartnerCodeCreateResult {
   const analytics = useCowAnalytics()
   const [submitting, setSubmitting] = useState(false)
+  const isSubmittingRef = useRef(false)
   const { mutate: mutatePartnerInfo } = useAffiliatePartnerInfo(account)
 
   const onCreate = useCallback(async (): Promise<void> => {
-    if (!account || !provider) return
+    if (!account || !provider || isSubmittingRef.current) return
+
+    isSubmittingRef.current = true
 
     trackAffiliateEvent({
       analytics,
@@ -85,6 +88,7 @@ export function useAffiliatePartnerCodeCreate({
         failureReason: normalizeAffiliatePartnerCodeCreateFailureReason(mappedError),
       })
     } finally {
+      isSubmittingRef.current = false
       setSubmitting(false)
     }
   }, [account, analytics, code, mutatePartnerInfo, provider, setError])

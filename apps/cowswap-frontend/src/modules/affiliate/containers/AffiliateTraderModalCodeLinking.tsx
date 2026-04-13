@@ -9,6 +9,7 @@ import { t } from '@lingui/core/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { AffiliateEntrySource } from '../analytics/affiliateAnalytics.types'
 import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import { useAffiliateTraderCodeInput } from '../hooks/useAffiliateTraderCodeInput'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
@@ -21,6 +22,23 @@ import {
   setAffiliateTraderPayoutConfirmationAtom,
 } from '../state/affiliateTraderPayoutConfirmationAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
+
+interface TrackPrimaryCtaClickParams {
+  analytics: ReturnType<typeof useCowAnalytics>
+  ctaType: 'connectToVerify' | 'startTrading' | 'verifyCode'
+  entrySource: AffiliateEntrySource | undefined
+  walletStatus: TraderWalletStatus
+}
+
+function trackPrimaryCtaClick({ analytics, ctaType, entrySource, walletStatus }: TrackPrimaryCtaClickParams): void {
+  trackAffiliateEvent({
+    analytics,
+    action: 'affiliate_trader_modal_primary_cta_clicked',
+    ctaType,
+    entrySource,
+    walletStatus,
+  })
+}
 
 export function AffiliateTraderModalCodeLinking(): ReactNode {
   const { account } = useWalletInfo()
@@ -66,9 +84,8 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const onSubmit = useCallback((): void => {
     if (isVerifying || walletStatus === TraderWalletStatus.UNSUPPORTED) return
     if (savedCode) {
-      trackAffiliateEvent({
+      trackPrimaryCtaClick({
         analytics,
-        action: 'affiliate_trader_modal_primary_cta_clicked',
         ctaType: 'startTrading',
         entrySource,
         walletStatus,
@@ -77,9 +94,8 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
       return
     }
     if (!account) {
-      trackAffiliateEvent({
+      trackPrimaryCtaClick({
         analytics,
-        action: 'affiliate_trader_modal_primary_cta_clicked',
         ctaType: 'connectToVerify',
         entrySource,
         walletStatus,
@@ -87,6 +103,12 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
       toggleWalletModal()
       return
     }
+    trackPrimaryCtaClick({
+      analytics,
+      ctaType: 'verifyCode',
+      entrySource,
+      walletStatus,
+    })
     void verifyCode({ code: codeInput, account, codeSource })
   }, [
     account,

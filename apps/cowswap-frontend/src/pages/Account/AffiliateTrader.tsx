@@ -30,7 +30,7 @@ export default function AffiliateTrader(): ReactNode {
 
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
-  const hasSavedCode = Boolean(savedCode)
+  const hasSavedCode = !!savedCode
   const pageState = getAffiliateTraderPageState(walletStatus, hasSavedCode)
 
   useAffiliateStateViewAnalytics({

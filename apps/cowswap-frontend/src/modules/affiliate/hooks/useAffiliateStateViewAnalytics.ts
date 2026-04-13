@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
@@ -17,24 +17,37 @@ export function useAffiliateStateViewAnalytics({
   viewKey,
 }: UseAffiliateStateViewAnalyticsParams): void {
   const analytics = useCowAnalytics()
-  const lastViewKeyRef = useRef<string | undefined>(undefined)
+  const lastEventSignatureRef = useRef<string | undefined>(undefined)
+  const eventSignature = useMemo(() => {
+    if (!viewKey) {
+      return undefined
+    }
+
+    return JSON.stringify([
+      action,
+      viewKey,
+      Object.entries(eventParams || {})
+        .filter(([, value]) => value !== undefined)
+        .sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey)),
+    ])
+  }, [action, eventParams, viewKey])
 
   useEffect(() => {
-    if (!viewKey) {
-      lastViewKeyRef.current = undefined
+    if (!eventSignature) {
+      lastEventSignatureRef.current = undefined
       return
     }
 
-    if (lastViewKeyRef.current === viewKey) {
+    if (lastEventSignatureRef.current === eventSignature) {
       return
     }
 
-    lastViewKeyRef.current = viewKey
+    lastEventSignatureRef.current = eventSignature
 
     trackAffiliateEvent({
       analytics,
       action,
       ...(eventParams || {}),
     })
-  }, [action, analytics, eventParams, viewKey])
+  }, [action, analytics, eventParams, eventSignature])
 }
