@@ -139,6 +139,9 @@ export function Sidebar({
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
   const setShowProgressBar = useCallback((enabled: boolean) => setDisableProgressBar(!enabled), [])
 
+  const [disablePostTradeTips, setDisablePostTradeTips] = useState<boolean>(false)
+  const setShowPostTradeTips = useCallback((enabled: boolean) => setDisablePostTradeTips(!enabled), [])
+
   const [disableTokenImport, setDisableTokenImport] = useState<boolean>(false)
   const setAllowTokenImport = useCallback((enabled: boolean) => setDisableTokenImport(!enabled), [])
 
@@ -390,6 +393,7 @@ export function Sidebar({
   - [ ] Add name to all fields.
   - [ ] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
 
+
   */
 
   return (
@@ -479,6 +483,11 @@ export function Sidebar({
             onChange={toastManager.setToastMessagesInDappMode}
           />
           <BooleanSwitchControl checked={!disableProgressBar} label="Show progress bar" onChange={setShowProgressBar} />
+          <BooleanSwitchControl
+            checked={!disablePostTradeTips}
+            label="Show post-trade tips"
+            onChange={setShowPostTradeTips}
+          />
           <BooleanSwitchControl
             checked={!disableTokenImport}
             label="Allow custom token imports"

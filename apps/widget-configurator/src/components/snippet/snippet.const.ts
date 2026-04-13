@@ -1,9 +1,11 @@
+import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+
 export const COMMENTS_BEFORE_PARAMS = ` Fill this form https://cowprotocol.typeform.com/to/rONXaxHV once you pick your "appCode"`
 
 export const PROVIDER_PARAM_COMMENT =
   'Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com'
 
-export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
+export const COMMENTS_BY_PARAM_NAME: Partial<Record<keyof CowSwapWidgetParams, string>> = {
   appCode: 'Name of your app (max 50 characters)',
   width: 'Outer iFrame width (use 100% to fill the available container width)',
   chainId: '1 (Mainnet), 100 (Gnosis), 11155111 (Sepolia)',
