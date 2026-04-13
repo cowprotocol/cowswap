@@ -1,12 +1,12 @@
 import { getRpcProvider } from '@cowprotocol/common-const'
-import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { calculateGasMargin, delay } from '@cowprotocol/common-utils'
 import { GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
 
-import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES } from 'common/constants/common'
+import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES, RETRY_BASE_DELAY_MS } from 'common/constants/common'
 
 export async function presignOrderStep(
   orderId: string,
@@ -25,30 +25,28 @@ export async function presignOrderStep(
   return txReceipt
 }
 
-let presignWalletFailCount = 0
-
 async function estimatePresignGas(orderId: string, settlementContract: GPv2Settlement): Promise<BigNumber> {
-  if (presignWalletFailCount < MAX_WALLET_RETRIES) {
+  for (let attempt = 1; attempt <= MAX_WALLET_RETRIES; attempt++) {
     try {
-      const result = await settlementContract.estimateGas.setPreSignature(orderId, true)
-      presignWalletFailCount = 0
-      return result
+      return await settlementContract.estimateGas.setPreSignature(orderId, true)
     } catch (error) {
-      presignWalletFailCount++
-      logTradeFlowError(
-        'SWAP FLOW',
-        `Wallet estimateGas failed (${presignWalletFailCount}/${MAX_WALLET_RETRIES})`,
-        error,
-      )
+      logTradeFlowError('SWAP FLOW', `Wallet estimateGas attempt ${attempt}/${MAX_WALLET_RETRIES} failed`, error)
+      if (attempt < MAX_WALLET_RETRIES) {
+        await delay(RETRY_BASE_DELAY_MS * 2 ** (attempt - 1))
+      }
     }
   }
 
+  logTradeFlow('SWAP FLOW', 'Wallet retries exhausted, switching to fallback provider')
   const { chainId } = await settlementContract.provider.getNetwork()
   const fallbackProvider = getRpcProvider(chainId)
   if (fallbackProvider) {
     try {
+      const signerAddress = settlementContract.signer ? await settlementContract.signer.getAddress() : undefined
       const fallbackContract = settlementContract.connect(fallbackProvider) as GPv2Settlement
-      return await fallbackContract.estimateGas.setPreSignature(orderId, true)
+      return await fallbackContract.estimateGas.setPreSignature(orderId, true, {
+        ...(signerAddress ? { from: signerAddress } : {}),
+      })
     } catch (error) {
       logTradeFlowError('SWAP FLOW', 'Fallback RPC for setPreSignature failed', error)
     }

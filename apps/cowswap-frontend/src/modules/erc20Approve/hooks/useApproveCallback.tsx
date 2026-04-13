@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { getRpcProvider } from '@cowprotocol/common-const'
-import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
+import { calculateGasMargin, delay, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Erc20 } from '@cowprotocol/cowswap-abis'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -11,29 +11,31 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES } from 'common/constants/common'
+import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES, RETRY_BASE_DELAY_MS } from 'common/constants/common'
 import { useTokenContract } from 'common/hooks/useContract'
 
-let approveWalletFailCount = 3
-
 async function estimateApproveGas(tokenContract: Erc20, spender: string, approveAmount: string): Promise<BigNumber> {
-  if (approveWalletFailCount < MAX_WALLET_RETRIES) {
+  for (let attempt = 1; attempt <= MAX_WALLET_RETRIES; attempt++) {
     try {
-      const result = await tokenContract.estimateGas.approve(spender, approveAmount)
-      approveWalletFailCount = 0
-      return result
+      return await tokenContract.estimateGas.approve(spender, approveAmount)
     } catch (error) {
-      approveWalletFailCount++
-      console.warn(`[estimateApproveGas] Wallet failed (${approveWalletFailCount}/${MAX_WALLET_RETRIES})`, error)
+      console.warn(`[estimateApproveGas] Wallet attempt ${attempt}/${MAX_WALLET_RETRIES} failed`, error)
+      if (attempt < MAX_WALLET_RETRIES) {
+        await delay(RETRY_BASE_DELAY_MS * 2 ** (attempt - 1))
+      }
     }
   }
-  console.log('[estimateApproveGas] Wallet fail limit reached switching to fallback provider')
+
+  console.log('[estimateApproveGas] Wallet retries exhausted, switching to fallback provider')
   const { chainId } = await tokenContract.provider.getNetwork()
   const fallbackProvider = getRpcProvider(chainId)
   if (fallbackProvider) {
     try {
+      const signerAddress = tokenContract.signer ? await tokenContract.signer.getAddress() : undefined
       const fallbackContract = tokenContract.connect(fallbackProvider) as Erc20
-      return await fallbackContract.estimateGas.approve(spender, approveAmount)
+      return await fallbackContract.estimateGas.approve(spender, approveAmount, {
+        ...(signerAddress ? { from: signerAddress } : {}),
+      })
     } catch (error) {
       console.warn('[estimateApproveGas] Fallback RPC failed', error)
     }

@@ -18,6 +18,9 @@ export const GAS_LIMIT_DEFAULT = BigNumber.from('150000')
 // Number of times to retry via the wallet provider before falling back to a dedicated RPC
 export const MAX_WALLET_RETRIES = 3
 
+// Base delay in ms between retries (used with exponential backoff: 1s, 2s, 4s, …)
+export const RETRY_BASE_DELAY_MS = 1000
+
 export const APP_HEADER_ELEMENT_ID = 'cowswap-app-header'
 
 export const PROTOCOL_FEE_SCALE = 100_000
