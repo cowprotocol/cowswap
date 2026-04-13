@@ -13,8 +13,6 @@ overrides:
   '@wagmi/core': 3.3.2
   viem: 2.47.1
 
-packageExtensionsChecksum: sha256-ZFWGagFZefR/MJ/8u/lDEvrsCpgtbQyimzZjXZk/vhs=
-
 importers:
 
   .:
@@ -266,9 +264,6 @@ importers:
       prettier:
         specifier: ~3.6.2
         version: 3.6.2
-      prettier-linter-helpers:
-        specifier: 1.0.0
-        version: 1.0.0
       react-cosmos-plugin-vite:
         specifier: ^7.0.0
         version: 7.0.0(vite@7.3.1(@types/node@24.7.1)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(yaml@2.8.1))

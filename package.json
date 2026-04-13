@@ -84,13 +84,6 @@
       "@wagmi/core": "3.3.2",
       "viem": "2.47.1"
     },
-    "packageExtensions": {
-      "eslint-plugin-prettier": {
-        "dependencies": {
-          "prettier-linter-helpers": "1.0.0"
-        }
-      }
-    },
     "peerDependencyRules": {
       "allowedVersions": {
         "react": "19",
@@ -101,7 +94,6 @@
       },
       "ignoreMissing": ["utf-8-validate", "bufferutil"]
     },
-    "public-hoist-pattern": ["*prettier-linter-helpers*"],
     "onlyBuiltDependencies": ["nx"]
   },
   "dependencies": {
@@ -189,7 +181,6 @@
     "nx-cloud": "19.1.0",
     "patch-package": "^8.0.0",
     "prettier": "~3.6.2",
-    "prettier-linter-helpers": "1.0.0",
     "react-cosmos-plugin-vite": "^7.0.0",
     "rollup-plugin-visualizer": "^6.0.4",
     "ts-jest": "^29.1.1",
