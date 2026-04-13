@@ -14,7 +14,7 @@ providing MEV protection.
 | CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
 | Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
 | Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
-| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
+| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cow-swap-home)                                          |
 | X/Twitter             | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
 | Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
 | Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
