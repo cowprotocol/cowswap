@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { useEnsName } from 'wagmi'
 
 import type { Address } from 'viem'
@@ -9,7 +11,7 @@ import type { Address } from 'viem'
  * Note this is not the same as looking up an ENS name to find an address.
  */
 export function useENSName(address?: Address): { ENSName: string | null; loading: boolean } {
-  const request = useEnsName({ address, chainId: 1 })
+  const request = useEnsName({ address, chainId: SupportedChainId.MAINNET })
 
   return useMemo(
     () => ({ ENSName: request.data || null, loading: request.isLoading }),

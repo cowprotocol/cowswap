@@ -85,7 +85,7 @@ function checkIsSupportedWallet(walletName?: string): boolean {
 }
 
 function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
-  const { data: ensName } = useEnsName({ address: account, chainId: 1 })
+  const { data: ensName } = useEnsName({ address: account, chainId: SupportedChainId.MAINNET })
   const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData(standaloneMode)
   const isSafeApp = useIsSafeApp()
