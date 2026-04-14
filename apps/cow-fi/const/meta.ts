@@ -19,7 +19,7 @@ export const CONFIG = {
   url: {
     root: 'https://cow.finance',
     swap: 'https://swap.cow.finance/#/1/swap/DAI/COW?sellAmount=500',
-    docs: 'https://docs.cow.fi',
+    docs: 'https://docs.cow.finance',
     api: API_BASE_URL + '/mainnet',
     apiDocs: API_BASE_URL + '/docs',
     daos: '/daos',
@@ -27,11 +27,11 @@ export const CONFIG = {
     widget: '/widget',
     widgetTnC: '/widget/terms-and-conditions',
     careers: '/careers',
-    widgetConfigurator: 'widget.cow.fi',
+    widgetConfigurator: 'widget.cow.finance',
     analytics: 'https://dune.com/cowprotocol/cowswap',
     explorer: 'https://explorer.cow.fi',
     securityPortal: 'https://app.chainpatrol.io/cow',
-    grants: 'https://grants.cow.fi',
+    grants: 'https://grants.cow.finance',
   },
   ashbyHqApi: 'https://jobs.ashbyhq.com/api/non-user-graphql',
   social: {

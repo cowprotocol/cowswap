@@ -408,7 +408,7 @@ export const FAQ_DATA = [
       <>
         If you are a searcher that is interested in collaborating with MEV Blocker RPC, please check out the{' '}
         <Link
-          href="https://docs.cow.fi/mevblocker"
+          href="https://docs.cow.finance/mevblocker"
           external
           utmContent="mev-blocker-docs"
           data-click-event={toCowFiGtmEvent({
