@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>CoW Explorer</title>
-    <meta
-      name="description"
-      content="CoW Explorer is a blockchain explorer for the CoW Protocol."
-    />
-    <base href="/" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
 
-    <!-- Manifest, theme & colors  -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" href="/favicon-light-mode.png" media="(prefers-color-scheme: light)" />
-    <link rel="icon" type="image/png" href="/favicon-dark-mode.png" media="(prefers-color-scheme: dark)" />
-    <link rel="icon" type="image/png" href="/favicon-light-mode.png" media="(prefers-color-scheme: no-preference)" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cow.fi Maintenance</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+    }
 
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
-    <meta name="msapplication-TileColor" content="#000000" />
-    <meta name="theme-color" content="#ffffff" />
+    .notice {
+      max-width: 720px;
+      padding: 32px;
+      margin: 24px;
+      border: 1px solid #333;
+      border-radius: 12px;
+      background: #1a1a1a;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    }
 
-    <!-- Social media tags -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="CoW Explorer" />
-    <meta
-      property="og:description"
-      content="CoW Explorer is a blockchain explorer for the CoW Protocol."
-    />
+    h1 {
+      margin: 0 0 16px;
+      font-size: 2rem;
+      line-height: 1.2;
+    }
 
-    <meta property="og:image" content="https://explorer.cow.fi/og-meta.png" />
-    <meta property="og:url" content="https://explorer.cow.fi/" />
+    p {
+      margin: 0;
+      font-size: 1.125rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
 
-    <!-- Twitter media tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@CoWSwap" />
-    <meta name="twitter:title" content="CoW Explorer" />
-    <meta name="twitter:image" content="https://explorer.cow.fi/og-meta.png" />
-    
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<body>
+  <main class="notice">
+    <h1>Maintenance</h1>
+    <p>
+      The cow.fi domain is currently under maintenance. We'll be back shortly.
+    </p>
+  </main>
+</body>
+
 </html>
-
