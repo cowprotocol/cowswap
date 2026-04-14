@@ -26,7 +26,7 @@ const [web3MetaMask, web3MetaMaskHooks] = initializeConnector<MetaMaskSDK>(
       options: {
         dappMetadata: {
           name: 'CoW Swap',
-          url: 'https://swap.cow.fi',
+          url: 'https://swap.cow.finance',
         },
         readonlyRPCMap: Object.fromEntries(
           Object.entries(RPC_URLS).map(([chainId, url]) => [`0x${Number(chainId).toString(16)}`, url]),

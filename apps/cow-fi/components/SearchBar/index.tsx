@@ -26,7 +26,7 @@ import {
   SearchResultsInner,
 } from './styled'
 
-import { searchArticlesAction } from '../../_app/actions'
+import { searchArticlesAction } from '../../app/actions'
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
 
 import { highlightQuery } from '@/util/textHighlighting'
