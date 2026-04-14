@@ -60,7 +60,7 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
           },
           {
             label: 'CoW Explorer',
-            href: 'https://explorer.cow.fi/',
+            href: 'https://explorer.cow.finance/',
             external: true,
             utmContent: 'menubar-nav-item-cow-explorer',
           },
@@ -68,7 +68,7 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
             ? [
                 {
                   label: 'Solvers',
-                  href: 'https://explorer.cow.fi/solvers',
+                  href: 'https://explorer.cow.finance/solvers',
                   external: true,
                   utmContent: 'menubar-nav-item-solvers',
                 },
@@ -96,7 +96,7 @@ function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
       },
       {
         label: 'Grants',
-        href: 'https://grants.cow.finance/',
+        href: 'https://docs.cow.finance/',
         external: true,
       },
       {

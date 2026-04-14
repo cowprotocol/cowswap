@@ -356,7 +356,7 @@ export const FAQ_DATA = [
         <br />
         Forum:{' '}
         <Link
-          href="https://forum.cow.fi/"
+          href="https://forum.cow.finance/"
           external
           utmContent="cow-forum"
           onClick={() =>
@@ -366,7 +366,7 @@ export const FAQ_DATA = [
             })
           }
         >
-          https://forum.cow.fi/
+          https://forum.cow.finance/
         </Link>
         <br />
         Snapshot:{' '}

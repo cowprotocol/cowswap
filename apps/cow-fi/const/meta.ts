@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://api.cow.fi'
+const API_BASE_URL = 'https://api.cow.finance'
 export const IMAGE_PATH = 'images/'
 
 export const DATA_CACHE_TIME_SECONDS = 60 * 60 // 1 hour
@@ -29,16 +29,16 @@ export const CONFIG = {
     careers: '/careers',
     widgetConfigurator: 'widget.cow.finance',
     analytics: 'https://dune.com/cowprotocol/cowswap',
-    explorer: 'https://explorer.cow.fi',
+    explorer: 'https://explorer.cow.finance',
     securityPortal: 'https://app.chainpatrol.io/cow',
-    grants: 'https://grants.cow.finance',
+    grants: 'https://docs.cow.finance',
   },
   ashbyHqApi: 'https://jobs.ashbyhq.com/api/non-user-graphql',
   social: {
     twitter: { label: 'Twitter', account: '@CoWSwap', url: 'https://twitter.com/CoWSwap' },
     discord: { label: 'Discord', url: 'https://discord.com/invite/cowprotocol' },
     github: { label: 'GitHub', url: 'https://github.com/cowprotocol/' },
-    forum: { label: 'Forum', url: 'https://forum.cow.fi/' },
+    forum: { label: 'Forum', url: 'https://forum.cow.finance/' },
   },
   utm: {
     utmSource: 'cow.finance',

@@ -67,7 +67,7 @@ const getAllArticleSlugsWithDatesCached = cacheAsyncFunction(getAllArticleSlugsW
  * Implements pagination to fetch all pages of articles
  */
 async function getAllArticleSlugsWithDates() {
-  const cmsBaseUrl = process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api'
+  const cmsBaseUrl = process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.finance/api'
   const cmsApiUrl = `${cmsBaseUrl}/articles`
   let allArticles = []
   let page = 1
