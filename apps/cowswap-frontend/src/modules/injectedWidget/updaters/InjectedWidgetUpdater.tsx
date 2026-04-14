@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
   UpdateParamsPayload,
   widgetIframeTransport,
@@ -20,7 +21,6 @@ import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
 import {
   cacheWidgetMessage,
@@ -112,6 +112,7 @@ export function InjectedWidgetUpdater(): ReactNode {
     // Start listening for messages inside of React
     const updateParamsListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
+      window.parent,
       WidgetMethodsListen.UPDATE_PARAMS,
       (data) => {
         if (
@@ -147,6 +148,7 @@ export function InjectedWidgetUpdater(): ReactNode {
 
     const updateAppDataListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
+      window.parent,
       WidgetMethodsListen.UPDATE_APP_DATA,
       (data) => {
         if (data.metaData) {

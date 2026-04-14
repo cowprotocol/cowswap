@@ -29,6 +29,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
 
   listenToMessageFromWindow<T extends keyof MethodsEmitPayloadMap>(
     contentWindow: Window,
+    targetWindow: Window,
     method: T,
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
     trustedOrigin = DEFAULT_ORIGIN,
@@ -38,16 +39,15 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
         return
       }
 
-      // TODO: fix source check in a follow up PR
-      // if (event.source !== contentWindow) {
-      //   logWidget('Rejected message due to source mismatch', {
-      //     key: this.key,
-      //     method,
-      //     actualSource: event.source,
-      //     expectedSource: contentWindow,
-      //   })
-      //   return
-      // }
+      if (!event.source || event.source !== targetWindow) {
+        logWidget('Rejected message due to source mismatch', {
+          key: this.key,
+          method,
+          actualSource: event.source,
+          expectedSource: targetWindow,
+        })
+        return
+      }
 
       if (event.origin !== trustedOrigin) {
         logWidget('Rejected message due to origin mismatch', {
@@ -71,9 +71,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
     _method: T,
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
   ): void {
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    contentWindow.removeEventListener('message', callback as any)
+    contentWindow.removeEventListener('message', callback as never)
   }
 
   stopListeningWindowListener(contentWindow: Window, callback: WindowListener): void {

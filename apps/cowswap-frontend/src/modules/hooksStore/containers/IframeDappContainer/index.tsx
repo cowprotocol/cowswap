@@ -8,6 +8,8 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
+import { getDappOrigin } from './getDappOrigin'
+
 import { HookDappContext as HookDappContextType, HookDappIframe } from '../../types/hooks'
 
 /**
@@ -68,6 +70,7 @@ interface IframeDappContainerProps {
   dapp: HookDappIframe
   context: HookDappContextType
 }
+// eslint-disable-next-line max-lines-per-function
 export function IframeDappContainer({ dapp, context }: IframeDappContainerProps): ReactNode {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const bridgeRef = useRef<IframeRpcProviderBridge | null>(null)
@@ -107,6 +110,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     const listeners = [
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.ACTIVATE,
         () => setIsIframeActive(true),
         dappOrigin,
@@ -118,24 +122,28 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     listeners.push(
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.ADD_HOOK,
         (payload) => addHookRef.current(payload),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.EDIT_HOOK,
         (payload) => editHookRef.current(payload),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.SET_SELL_TOKEN,
         (payload) => setSellTokenRef.current(payload.address),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.SET_BUY_TOKEN,
         (payload) => setBuyTokenRef.current(payload.address),
         dappOrigin,
@@ -191,12 +199,4 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       />
     </>
   )
-}
-
-function getDappOrigin(url: string): string | null {
-  try {
-    return new URL(url).origin
-  } catch {
-    return null
-  }
 }
