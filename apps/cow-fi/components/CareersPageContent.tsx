@@ -226,7 +226,7 @@ export function CareersPageContent({
                     <li>Do not engage with suspicious messages claiming to offer you a job at CoW DAO.</li>
                     <li>Do not share personal information, crypto wallet data, or make payments.</li>
                     <li>
-                      Report impersonation attempts to us at <a href="mailto:people@cow.fi">people@cow.fi</a>.
+                      Report impersonation attempts to us at <a href="mailto:people@cow.finance">people@cow.finance</a>.
                     </li>
                     <li>
                       Report fake accounts directly on Telegram or to{' '}
@@ -250,8 +250,8 @@ export function CareersPageContent({
                   All our hiring communications come from:
                 </SectionTitleDescription>
                 <DisclaimerList>
-                  <li>Official emails are sent from the cow.fi domain.</li>
-                  <li>Telegram (we&apos;ll send confirmation email from the cow.fi domain).</li>
+                  <li>Official emails are sent from the cow.finance domain.</li>
+                  <li>Telegram (we&apos;ll send confirmation email from the cow.finance domain).</li>
                   <li>
                     Verified listings on{' '}
                     <a href="https://linkedin.com/company/cow-protocol" target="_blank" rel="noopener noreferrer">
