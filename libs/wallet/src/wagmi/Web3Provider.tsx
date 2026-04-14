@@ -15,7 +15,13 @@ const queryClient = new QueryClient()
 
 function ReconnectOnMount(): null {
   useEffect(() => {
-    void reconnect(config).catch(() => {})
+    void reconnect(config)
+      .then((res) => {
+        console.debug('[ReconnectOnMount] result', res)
+      })
+      .catch((error) => {
+        console.error('[ReconnectOnMount] error', error)
+      })
   }, [])
   return null
 }

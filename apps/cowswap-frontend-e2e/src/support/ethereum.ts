@@ -1,6 +1,7 @@
 /**
  * Updates cy.visit() to include an injected window.ethereum provider.
  */
+import EventEmitter from 'eventemitter3'
 import { Address, createPublicClient, createWalletClient, Hex, http, PublicClient, toHex, WalletClient } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
@@ -10,18 +11,17 @@ const CHAIN_NAME = 'sepolia'
 
 const RAW_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY') as string
 assert(RAW_PRIVATE_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
-// Ensure private key has 0x prefix for viem
+
 const INTEGRATION_TEST_PRIVATE_KEY: Hex = RAW_PRIVATE_KEY.startsWith('0x')
   ? (RAW_PRIVATE_KEY as Hex)
   : `0x${RAW_PRIVATE_KEY}`
 
-const INTEGRATION_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY')
-const INTEGRATION_TESTS_ALCHEMY_KEY = Cypress.env('INTEGRATION_TESTS_ALCHEMY_KEY')
-
-const NETWORK_URL = Cypress.env('REACT_APP_NETWORK_URL_' + CHAIN_ID)
+const INTEGRATION_TESTS_ALCHEMY_KEY = Cypress.env('INTEGRATION_TESTS_ALCHEMY_KEY') as string | undefined
+const INTEGRATION_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY') as string | undefined
+const NETWORK_URL = Cypress.env('REACT_APP_NETWORK_URL_' + CHAIN_ID) as string | undefined
 
 const PROVIDER_URL =
-  NETWORK_URL ||
+  NETWORK_URL ??
   (INTEGRATION_TESTS_ALCHEMY_KEY
     ? `https://eth-${CHAIN_NAME}.g.alchemy.com/v2/${INTEGRATION_TESTS_ALCHEMY_KEY}`
     : INTEGRATION_TESTS_INFURA_KEY
@@ -49,124 +49,120 @@ const walletClient = createWalletClient({
   transport: http(PROVIDER_URL),
 })
 
-// Custom EIP-1193 provider for e2e testing
-class CustomizedBridge {
-  autoConnect = true
-  chainId = CHAIN_ID
-  publicClient: PublicClient
-  walletClient: WalletClient
+interface EIP1193Request {
+  method: string
+  params?: unknown[]
+}
+
+type RpcCallback = (error: Error | null, result: { result: unknown } | null) => void
+
+interface TransactionRequest {
+  to: string
+  data?: string
+  value?: string
+  gas?: string
+  gasLimit?: string
+}
+
+interface CallRequest {
+  to?: string
+  data?: string
+}
+
+// Custom EIP-1193 provider for e2e testing.
+// Acts as window.ethereum — wagmi/reown calls request() to connect and sign transactions.
+class CustomizedBridge extends EventEmitter {
+  readonly chainId = CHAIN_ID
+  private readonly publicClient: PublicClient
+  private readonly walletClient: WalletClient
 
   constructor(walletClient: WalletClient, publicClient: PublicClient) {
+    super()
     this.walletClient = walletClient
     this.publicClient = publicClient
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-  async sendAsync(...args: any[]) {
-    console.debug('sendAsync called', ...args)
-    return this.send(...args)
-  }
+  // eslint-disable-next-line complexity
+  async request({ method, params = [] }: EIP1193Request): Promise<unknown> {
+    switch (method) {
+      case 'eth_requestAccounts':
+      case 'eth_accounts':
+        return [TEST_ADDRESS_NEVER_USE]
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any, max-lines-per-function
-  async send(...args: any[]) {
-    console.debug('send called', ...args)
-    const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'
-    let callback
-    let method
-    let params
-    if (isCallbackForm) {
-      callback = args[1]
-      method = args[0].method
-      params = args[0].params
-    } else {
-      method = args[0]
-      params = args[1]
-    }
+      case 'eth_chainId':
+        return toHex(CHAIN_ID)
 
-    // Mock out request accounts and chainId
-    if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
-      if (isCallbackForm) {
-        callback!({ result: [TEST_ADDRESS_NEVER_USE] })
-      } else {
-        return Promise.resolve([TEST_ADDRESS_NEVER_USE])
-      }
-    }
-    if (method === 'eth_chainId') {
-      if (isCallbackForm) {
-        callback!(null, { result: `0x${CHAIN_ID.toString(16)}` })
-      } else {
-        return Promise.resolve(`0x${CHAIN_ID.toString(16)}`)
-      }
-    }
-    try {
-      // If from is present on eth_call it errors, removing it makes the library set
-      // from as the connected wallet which works fine
-      if (params && params.length && params[0].from && method === 'eth_call') delete params[0].from
-      let result
-      // For sending a transaction if we call send it will error
-      // as it wants gasLimit in sendTransaction but hexlify sets the property gas
-      // to gasLimit which makes send transaction error.
-      if (params && params.length && params[0].from && method === 'eth_sendTransaction') {
-        const txParams = params[0]
-        // If from is present on eth_sendTransaction it errors
-        delete txParams.from
+      case 'net_version':
+        return String(CHAIN_ID)
 
-        const hash = await this.walletClient.sendTransaction({
-          account: this.walletClient.account!.address,
-          to: txParams.to as Address,
-          data: txParams.data as Hex,
-          value: txParams.value ? BigInt(txParams.value) : undefined,
-          gas: txParams.gas ? BigInt(txParams.gas) : txParams.gasLimit ? BigInt(txParams.gasLimit) : undefined,
+      case 'eth_sendTransaction': {
+        const tx = params[0] as TransactionRequest
+        return this.walletClient.sendTransaction({
+          account: account.address,
+          to: tx.to as Address,
+          data: tx.data as Hex | undefined,
+          value: tx.value !== undefined ? BigInt(tx.value) : undefined,
+          gas: tx.gas !== undefined ? BigInt(tx.gas) : tx.gasLimit !== undefined ? BigInt(tx.gasLimit) : undefined,
           chain: sepolia,
         })
-        result = hash
-      } else if (method === 'eth_call') {
-        result = await this.publicClient.call({
-          to: params[0]?.to as Address,
-          data: params[0]?.data as Hex,
+      }
+
+      case 'eth_call': {
+        const callParams = params[0] as CallRequest
+        const result = await this.publicClient.call({
+          to: callParams.to as Address,
+          data: callParams.data as Hex | undefined,
         })
-      } else if (method === 'eth_getBalance') {
+        return result.data ?? '0x'
+      }
+
+      case 'eth_getBalance': {
         const balance = await this.publicClient.getBalance({
           address: params[0] as Address,
-          blockTag: params[1] as 'latest' | 'pending' | 'earliest' | undefined,
+          blockTag: (params[1] as 'latest' | 'pending' | 'earliest') ?? 'latest',
         })
-        result = toHex(balance)
-      } else if (method === 'eth_blockNumber') {
+        return toHex(balance)
+      }
+
+      case 'eth_blockNumber': {
         const blockNumber = await this.publicClient.getBlockNumber()
-        result = toHex(blockNumber)
-      } else if (method === 'eth_getTransactionReceipt') {
-        const receipt = await this.publicClient.waitForTransactionReceipt({ hash: params[0] as Hex })
-        result = receipt
-      } else if (method === 'eth_estimateGas') {
+        return toHex(blockNumber)
+      }
+
+      case 'eth_getTransactionReceipt':
+        return this.publicClient.waitForTransactionReceipt({ hash: params[0] as Hex })
+
+      case 'eth_estimateGas': {
+        const txParams = params[0] as CallRequest & { value?: string }
         const gas = await this.publicClient.estimateGas({
-          to: params[0].to as Address,
-          data: params[0].data as Hex | undefined,
-          value: params[0].value ? BigInt(params[0].value) : undefined,
+          to: txParams.to as Address,
+          data: txParams.data as Hex | undefined,
+          value: txParams.value !== undefined ? BigInt(txParams.value) : undefined,
         })
-        result = toHex(gas)
-      } else {
-        // Fallback to raw request for other methods
-        result = await this.publicClient.request({
-          method: method as never,
-          params: params as never,
-        })
+        return toHex(gas)
       }
-      console.debug('result received', method, params, result)
-      if (isCallbackForm) {
-        callback!(null, { result })
-        return
-      } else {
-        return result
-      }
-    } catch (error) {
-      console.log(error)
-      if (isCallbackForm) {
-        callback!(error, null)
-        return
-      } else {
-        throw error
-      }
+
+      default:
+        return this.publicClient.request({ method: method as never, params: params as never })
     }
+  }
+
+  // Legacy Web3 1.x callback form: send({ method, params }, callback)
+  send(request: EIP1193Request, callback: RpcCallback): void
+  // Legacy Web3 1.x promise form: send(method, params?)
+  send(method: string, params?: unknown[]): Promise<unknown>
+  send(methodOrRequest: string | EIP1193Request, paramsOrCallback?: unknown[] | RpcCallback): Promise<unknown> | void {
+    if (typeof methodOrRequest === 'object' && typeof paramsOrCallback === 'function') {
+      const callback = paramsOrCallback as RpcCallback
+      this.request(methodOrRequest)
+        .then((result) => callback(null, { result }))
+        .catch((error: Error) => callback(error, null))
+      return
+    }
+    return this.request({
+      method: methodOrRequest as string,
+      params: paramsOrCallback as unknown[] | undefined,
+    })
   }
 }
 

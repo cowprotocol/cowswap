@@ -112,7 +112,12 @@ export function throttledInjected(): ReturnType<typeof createConnector> {
         return promise as ReturnType<typeof provider.request>
       }
 
-      return { ...provider, request } as typeof provider
+      // Use Object.create to preserve the prototype chain — spreading loses prototype
+      // methods (on, emit, removeListener) which wagmi requires to register EIP-1193
+      // event listeners. This matters for class-based providers like the e2e mock.
+      const wrapped = Object.create(provider)
+      wrapped.request = request
+      return wrapped
     }
 
     return base
