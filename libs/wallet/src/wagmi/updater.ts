@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -44,6 +44,7 @@ function useWalletInfo(): WalletInfo {
   const { address, chainId, isConnected } = useConnection()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
   const [lastStableChainId, setLastStableChainId] = useState<SupportedChainId | undefined>(undefined)
+  const [lastResolvedChainId, setLastResolvedChainId] = useState<SupportedChainId>(() => getCurrentChainIdFromUrl())
 
   useEffect(() => {
     if (!isConnected) {
@@ -55,12 +56,14 @@ function useWalletInfo(): WalletInfo {
     }
   }, [isConnected, chainId, isChainIdUnsupported])
 
-  return useMemo(() => {
+  const walletInfo = useMemo(() => {
     void urlKey
 
     let resolvedChainId: SupportedChainId
     if (!isConnected) {
-      resolvedChainId = getCurrentChainIdFromUrl()
+      // Use chain from URL if present; otherwise preserve the last resolved chainId
+      // (e.g. when navigating from a path-based route like /56/swap to /account which has no chain in URL)
+      resolvedChainId = getRawCurrentChainIdFromUrl() ?? lastResolvedChainId
     } else if (isChainIdUnsupported) {
       resolvedChainId = getCurrentChainIdFromUrl()
     } else if (chainId) {
@@ -74,7 +77,13 @@ function useWalletInfo(): WalletInfo {
       active: isConnected,
       account: address,
     }
-  }, [address, chainId, isConnected, isChainIdUnsupported, lastStableChainId, urlKey])
+  }, [address, chainId, isConnected, isChainIdUnsupported, lastStableChainId, lastResolvedChainId, urlKey])
+
+  useEffect(() => {
+    setLastResolvedChainId(walletInfo.chainId)
+  }, [walletInfo.chainId])
+
+  return walletInfo
 }
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
