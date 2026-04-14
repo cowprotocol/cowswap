@@ -112,6 +112,7 @@ export function InjectedWidgetUpdater(): ReactNode {
     // Start listening for messages inside of React
     const updateParamsListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
+      window.parent,
       WidgetMethodsListen.UPDATE_PARAMS,
       (data) => {
         if (
@@ -147,6 +148,7 @@ export function InjectedWidgetUpdater(): ReactNode {
 
     const updateAppDataListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
+      window.parent,
       WidgetMethodsListen.UPDATE_APP_DATA,
       (data) => {
         if (data.metaData) {

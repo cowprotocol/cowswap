@@ -81,6 +81,7 @@ export class IframeRpcProviderBridge {
       // Listen for messages coming to the main window (from the iFrame window)
       iframeRpcProviderTransport.listenToMessageFromWindow(
         window,
+        this.iframeWidow,
         IframeRpcProviderEvents.PROVIDER_RPC_REQUEST,
         this.processRpcCallFromWindow,
         this.iframeOrigin,
@@ -101,6 +102,7 @@ export class IframeRpcProviderBridge {
     // Listen for provider meta info request
     iframeRpcProviderTransport.listenToMessageFromWindow(
       window,
+      this.iframeWidow,
       IframeRpcProviderEvents.REQUEST_PROVIDER_META_INFO,
       this.processProviderMetaInfoRequest,
       this.iframeOrigin,

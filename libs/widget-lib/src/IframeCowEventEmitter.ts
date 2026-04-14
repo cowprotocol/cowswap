@@ -24,6 +24,7 @@ export class IframeCowEventEmitter {
     // Listen to iFrame, and forward to local event emitter
     this.widgetListener = widgetIframeTransport.listenToMessageFromWindow(
       this.contentWindow,
+      window,
       WidgetMethodsEmit.EMIT_COW_EVENT,
       (cowEvent) => this.eventEmitter.emit(cowEvent.event, cowEvent.payload),
       iframeOrigin,

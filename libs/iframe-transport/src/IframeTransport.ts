@@ -29,6 +29,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
 
   listenToMessageFromWindow<T extends keyof MethodsEmitPayloadMap>(
     contentWindow: Window,
+    targetWindow: Window,
     method: T,
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
     trustedOrigin = DEFAULT_ORIGIN,
@@ -38,12 +39,12 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
         return
       }
 
-      if (event.source !== contentWindow) {
+      if (!event.source || event.source !== targetWindow) {
         logWidget('Rejected message due to source mismatch', {
           key: this.key,
           method,
           actualSource: event.source,
-          expectedSource: contentWindow,
+          expectedSource: targetWindow,
         })
         return
       }

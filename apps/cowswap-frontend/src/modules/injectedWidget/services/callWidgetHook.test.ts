@@ -74,6 +74,7 @@ describe('callWidgetHook', () => {
 
     expect(mockListenToMessageFromWindow).toHaveBeenCalledWith(
       window,
+      expect.any(Window),
       'HOOK_RESULT',
       expect.any(Function),
       'http://localhost',
@@ -89,7 +90,7 @@ describe('callWidgetHook', () => {
       'http://localhost',
     )
 
-    const hookResultListener = mockListenToMessageFromWindow.mock.calls[0][2] as (payload: {
+    const hookResultListener = mockListenToMessageFromWindow.mock.calls[0][3] as (payload: {
       id: string
       result: boolean
     }) => void

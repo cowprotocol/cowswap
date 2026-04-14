@@ -88,7 +88,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   windowListeners.push(...listenToHeightChanges(iframe, iframeOrigin, params.height, params.maxHeight))
 
   // 5. Intercept deeplinks navigation in the iframe
-  windowListeners.push(interceptDeepLinks(iframeOrigin))
+  windowListeners.push(interceptDeepLinks(iframeOrigin, iframeWindow))
 
   // 6. Handle two-way communication of widget hooks
   let widgetHooksListener: WindowListener | null = null
@@ -250,6 +250,7 @@ function sendAppCodeOnActivation(
 ): (payload: MessageEvent<unknown>) => void {
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
+    contentWindow,
     WidgetMethodsEmit.ACTIVATE,
     () => {
       // Update the appData
@@ -269,6 +270,7 @@ function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () 
 
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
+    contentWindow,
     WidgetMethodsEmit.READY,
     () => {
       if (isReady) return
@@ -283,9 +285,10 @@ function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () 
 /**
  * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
  */
-function interceptDeepLinks(iframeOrigin: string): (payload: MessageEvent<unknown>) => void {
+function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): (payload: MessageEvent<unknown>) => void {
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
+    iframeWindow,
     WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
     ({ href, rel, target }) => {
       const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
@@ -335,9 +338,12 @@ function listenToHeightChanges(
   defaultHeight = DEFAULT_HEIGHT,
   maxHeight?: number,
 ): WindowListener[] {
+  if (!iframe.contentWindow) return []
+
   return [
     widgetIframeTransport.listenToMessageFromWindow(
       window,
+      iframe.contentWindow,
       WidgetMethodsEmit.UPDATE_HEIGHT,
       (data) => {
         const newHeight = data.height ? data.height + HEIGHT_THRESHOLD : undefined
@@ -348,6 +354,7 @@ function listenToHeightChanges(
     ),
     widgetIframeTransport.listenToMessageFromWindow(
       window,
+      iframe.contentWindow,
       WidgetMethodsEmit.SET_FULL_HEIGHT,
       ({ isUpToSmall }) => {
         iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
@@ -387,6 +394,7 @@ function processWidgetHooks(
 ): WindowListener {
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
+    contentWindow,
     WidgetMethodsEmit.PROCESS_HOOK,
     async (data) => {
       let isHookPassed = false

@@ -24,6 +24,7 @@ function ensureListenerRegistered(parentOrigin: string): void {
 
   widgetIframeTransport.listenToMessageFromWindow(
     window,
+    window.parent,
     WidgetMethodsListen.HOOK_RESULT,
     (data) => {
       const callback = callsRegistry.get(data.id)
