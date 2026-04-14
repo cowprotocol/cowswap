@@ -64,6 +64,7 @@ function createWidget(baseUrl?: string): CowSwapWidgetHandler {
       baseUrl,
       chainId: 1,
       tradeType: TradeType.SWAP,
+      standaloneMode: true,
     },
   })
 }
