@@ -34,7 +34,7 @@
     "ipfs": "nx run cowswap-frontend:ipfs",
     "i18n": "nx run-many -t i18n",
     "i18n:extract": "nx run-many -t i18n:extract",
-    "preview": "nx run cowswap-frontend:preview",
+    "preview": "NODE_OPTIONS=--max-old-space-size=8192 nx run cowswap-frontend:preview",
     "test": "pnpm run test:all",
     "test:all": "nx run-many -t test",
     "typecheck": "nx run cowswap-frontend:typecheck",
@@ -92,9 +92,14 @@
         "cross-fetch": "4",
         "@walletconnect/ethereum-provider": "2.18"
       },
-      "ignoreMissing": ["utf-8-validate", "bufferutil"]
+      "ignoreMissing": [
+        "utf-8-validate",
+        "bufferutil"
+      ]
     },
-    "onlyBuiltDependencies": ["nx"]
+    "onlyBuiltDependencies": [
+      "nx"
+    ]
   },
   "dependencies": {
     "@babel/runtime": "^7.27.0",
