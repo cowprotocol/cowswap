@@ -38,8 +38,6 @@ export const client = getCmsClient()
  * @returns Slugs
  */
 export async function getAllArticleSlugs(): Promise<string[]> {
-  return Promise.resolve([])
-
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
@@ -67,8 +65,6 @@ export async function getAllArticleSlugs(): Promise<string[]> {
  * @returns Categories with their associated images
  */
 export async function getCategories(): Promise<Category[]> {
-  return Promise.resolve([])
-
   try {
     const { data, error, response } = await client.GET('/categories?populate=*', {
       params: {
@@ -114,18 +110,6 @@ export async function getArticles({
   pageSize = DEFAULT_PAGE_SIZE,
   filters = {},
 }: PaginationParam & { filters?: Record<string, unknown> } = {}): Promise<ArticleListResponse> {
-  return Promise.resolve({
-    data: [],
-    meta: {
-      pagination: {
-        page,
-        pageSize,
-        pageCount: 0,
-        total: 0,
-      },
-    },
-  })
-
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
@@ -171,18 +155,6 @@ export async function searchArticles({
   page?: number
   pageSize?: number
 }): Promise<ArticleListResponse> {
-  return Promise.resolve({
-    data: [],
-    meta: {
-      pagination: {
-        page,
-        pageSize,
-        pageCount: 0,
-        total: 0,
-      },
-    },
-  })
-
   const trimmedSearchTerm = searchTerm.trim()
 
   if (!trimmedSearchTerm) {
@@ -284,8 +256,6 @@ async function getBySlugAux(slug: string, endpoint: '/categories'): Promise<Cate
 async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | null>
 
 async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
-  return Promise.resolve(null)
-
   if (!slug) throw new Error('Slug is required') // Fail fast - no silent failures per CMS architecture
 
   const entity = endpoint.slice(1, -1)
