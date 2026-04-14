@@ -6,19 +6,18 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import CloseIcon from '@mui/icons-material/Close'
-import { CircularProgress, IconButton, Snackbar } from '@mui/material'
-import Box from '@mui/material/Box'
+import { Box, IconButton, Snackbar } from '@mui/material'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
 import { configuratorCheckeredCanvasSx, configuradorRootSx } from './configurator.styles'
 
 import { AnalyticsCategory } from '../../common/analytics/types'
-import { COW_LISTENERS, IS_IFRAME } from '../../configurator.constants'
+import { COW_LISTENERS, IS_IFRAME, WIDGET_PREVIEW_READY_FALLBACK_MS } from '../../configurator.constants'
+import { ConfiguratorState } from '../../configurator.types'
 import { useProvider } from '../../hooks/useProvider'
 import { useResizableDrawerWidth } from '../../hooks/useResizableDrawerWidth'
 import { useToastsManager } from '../../hooks/useToastsManager'
 import { useWidgetParams } from '../../hooks/useWidgetParamsAndSettings'
-import { ConfiguratorState } from '../../configurator.types'
 import { SidebarControls } from '../sidebar/controls/sidebar-controls.component'
 import { Sidebar } from '../sidebar/sidebar.component'
 import { DRAWER_WIDTH_CSS_VAR } from '../sidebar/sidebar.styles'
@@ -30,6 +29,7 @@ declare global {
   }
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function Configurator({ title }: { title: string }): ReactNode {
   const configuratorRef = useRef<HTMLDivElement | null>(null)
   const { setThemeMode } = useWeb3ModalTheme()
@@ -48,7 +48,19 @@ export function Configurator({ title }: { title: string }): ReactNode {
     setThemeMode(widgetTheme)
   }, [setThemeMode, widgetTheme])
 
-  const [isWidgetReady, __] = useState(true) // TODO: To be implemented... Only if using latest production or localhost, as older versions do not send events, so we do not know when they are ready.
+  const [widgetKey, setWidgetKey] = useState(0)
+  const [isWidgetReady, setIsWidgetReadyState] = useState(false)
+  const widgetReadyRef = useRef(false)
+  const isWidgetReadyTimeoutId = useRef(0)
+
+  const setIsWidgetReady = useCallback((isReady: boolean): void => {
+    widgetReadyRef.current = isReady
+    window.clearTimeout(isWidgetReadyTimeoutId.current)
+    setIsWidgetReadyState(isReady)
+  }, [])
+
+  // Sidebar & Snippet Handling:
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isSnippetOpen, setIsSnippetOpen] = useState(false)
   const { drawerWidth, isResizing, handleResizeStart } = useResizableDrawerWidth(configuratorRef, DRAWER_WIDTH_CSS_VAR)
@@ -64,10 +76,38 @@ export function Configurator({ title }: { title: string }): ReactNode {
   // Widget Configurator State:
 
   const [configuratorState, setConfiguratorState] = useState<ConfiguratorState | null>(null)
+  const [params, isPending] = useWidgetParams(configuratorState)
+  const hasParams = params && configuratorState
 
-  const showIframeOutline = configuratorState?.showIframeOutline ?? true
+  const handlePreviewReady = useCallback((): void => {
+    console.log(`[WIDGET] READY`)
+    setIsWidgetReady(true)
+  }, [setIsWidgetReady])
 
-  const params = useWidgetParams(configuratorState)
+  const handleForceWidgetReload = useCallback((): void => {
+    if (widgetReadyRef.current) {
+      setIsWidgetReady(false)
+      setWidgetKey((k) => k + 1)
+    } else {
+      // If the widget is not ready yet but we click here, we just force the iframe to appear.
+      // This is useful for older Widget App versions that did not have the READY event.
+      setIsWidgetReady(true)
+    }
+  }, [setIsWidgetReady])
+
+  // Old Widget Apps won't have the ready event, so we need a timeout:
+
+  useEffect(() => {
+    if (isWidgetReady || !hasParams) return
+
+    isWidgetReadyTimeoutId.current = window.setTimeout(() => {
+      setIsWidgetReady(true)
+    }, WIDGET_PREVIEW_READY_FALLBACK_MS)
+
+    return () => {
+      window.clearTimeout(isWidgetReadyTimeoutId.current)
+    }
+  }, [isWidgetReady, hasParams, setIsWidgetReady])
 
   const [listeners, setListeners] = useState<CowWidgetEventListeners>(COW_LISTENERS)
   const toastManager = useToastsManager(setListeners)
@@ -85,27 +125,68 @@ export function Configurator({ title }: { title: string }): ReactNode {
     }
   }, [isConnected, cowAnalytics])
 
+  const showIframeOutline = configuratorState?.showIframeOutline ?? true
+
+  const shouldShowLoader = !params || !configuratorState || !isWidgetReady
+
+  const loaderElement = (
+    <Box
+      aria-hidden
+      sx={{
+        position: 'absolute',
+        top: 'calc(50% - 28px)',
+        left: 'calc(50% - 28px)',
+        width: 56,
+        height: 56,
+        background: (theme) => theme.palette.background.paper,
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 40,
+        opacity: shouldShowLoader ? 1 : 0,
+        visibility: shouldShowLoader ? 'visible' : 'hidden',
+        pointerEvents: 'none',
+        transition: 'opacity 300ms ease, visibility 300ms ease',
+        '@keyframes cowConfiguratorLoaderSpin': {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
+        animation: shouldShowLoader ? 'cowConfiguratorLoaderSpin 0.25s linear infinite' : 'none',
+        '&::before': {
+          content: (theme) => (theme.palette.mode === 'light' ? '"📀"' : '"💿"'),
+          display: 'block',
+          lineHeight: 1,
+        },
+      }}
+    />
+  )
+
   let configuratorContent: React.ReactNode = null
 
-  if (!isWidgetReady || !params || !configuratorState) {
+  if (!params || !configuratorState) {
     configuratorContent = (
-      <Box sx={configuratorCheckeredCanvasSx(showIframeOutline)}>
-        <div id="cowswap-widget">
-          <CircularProgress />
-        </div>
+      <Box sx={configuratorCheckeredCanvasSx(isWidgetReady, showIframeOutline)}>
+        {loaderElement}
+        <div id="cowswap-widget" />
       </Box>
     )
   } else {
+    const showIframeOutline = configuratorState?.showIframeOutline ?? true
     configuratorContent = (
       <>
-        <Box sx={configuratorCheckeredCanvasSx(showIframeOutline, isSnippetOpen)}>
+        <Box sx={configuratorCheckeredCanvasSx(isWidgetReady, showIframeOutline, isSnippetOpen)}>
+          {loaderElement}
+
           <CowSwapWidget
+            key={widgetKey}
             params={params}
             provider={!IS_IFRAME && !configuratorState.standaloneMode ? provider : undefined}
             listeners={listeners}
+            onReady={handlePreviewReady}
           />
 
-          {isSnippetOpen ? (
+          {isSnippetOpen && isWidgetReady ? (
             <Snippet
               params={params}
               defaultPalette={configuratorState.defaultColors}
@@ -133,6 +214,9 @@ export function Configurator({ title }: { title: string }): ReactNode {
         onSnippetToggle={handleSnippetToggle}
         onStateChange={setConfiguratorState}
         toastManager={toastManager}
+        isWidgetReady={isWidgetReady}
+        isWidgetSyncPending={isPending}
+        onForceWidgetReload={handleForceWidgetReload}
       />
 
       <SidebarControls

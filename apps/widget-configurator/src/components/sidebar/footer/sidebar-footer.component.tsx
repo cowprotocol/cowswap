@@ -1,12 +1,11 @@
 import React, { ReactNode } from 'react'
 
-import { ChevronLeft, ChevronRight, Code, Eye, Moon, Sun } from 'react-feather'
-
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Tooltip from '@mui/material/Tooltip'
+import { ChevronLeft, ChevronRight, Code, Eye, Moon, Sun, RefreshCw } from 'react-feather'
 
 import { UTM_PARAMS } from '../../../configurator.constants'
 
@@ -18,6 +17,9 @@ export interface SidebarFooterProps {
   onSidebarToggle: () => void
   isSnippetOpen: boolean
   onSnippetToggle: () => void
+  isWidgetReady: boolean
+  isWidgetSyncPending: boolean
+  onForceWidgetReload: () => void
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -26,10 +28,13 @@ export function SidebarFooter({
   onSidebarToggle,
   isSnippetOpen,
   onSnippetToggle,
+  isWidgetReady,
+  isWidgetSyncPending,
+  onForceWidgetReload,
 }: SidebarFooterProps): ReactNode {
   const theme: 'dark' | 'light' = 'dark'
 
-  const snippetLabel = isSnippetOpen ? 'View preview' : 'View code snippet'
+  const snippetLabel = isSnippetOpen ? 'See preview' : 'Get code'
   const SnippetIcon = isSnippetOpen ? Eye : Code
 
   const themeLabel = 'Switch theme'
@@ -60,118 +65,151 @@ export function SidebarFooter({
     width: 40,
   } as const
 
-  return (<>
-    <div style={{ marginTop: "-1px" }} />
+  let reloadPreviewLabel = ''
 
-    <Box
-      component="footer"
-      sx={{
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 10,
-        width: '100%',
-        flex: '0 0 auto',
-        background: (t) => t.palette.background.paper,
-        borderTop: (t) => `1px solid ${t.palette.divider}`,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        px: 2,
-        pt: 2,
-        mt: "auto",
-      }}
-    >
+  if (isWidgetSyncPending) {
+    reloadPreviewLabel = 'Syncing widget...'
+  } else if (!isWidgetReady) {
+    reloadPreviewLabel = 'Loading widget... Click to force load.'
+  } else {
+    reloadPreviewLabel = 'Reload widget'
+  }
+
+  return (
+    <>
+      <div style={{ marginTop: '-1px' }} />
+
       <Box
+        component="footer"
         sx={{
+          position: 'sticky',
+          bottom: 0,
+          zIndex: 10,
+          width: '100%',
+          flex: '0 0 auto',
+          background: (t) => t.palette.background.paper,
+          borderTop: (t) => `1px solid ${t.palette.divider}`,
           display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 1,
-          minHeight: 40,
+          flexDirection: 'column',
+          gap: 2,
+          px: 2,
+          pt: 2,
+          mt: 'auto',
         }}
       >
-        <Button
-          type="button"
-          variant="text"
-          size="medium"
-          onClick={onSnippetToggle}
-          aria-label={snippetLabel}
-          endIcon={<SnippetIcon size={20} strokeWidth={2} aria-hidden />}
+        <Box
           sx={{
-            borderRadius: 1,
-            border: '1px solid',
-            borderColor: 'divider',
-            pl: 1.5,
-            pr: 2,
-            py: 1,
-            fontSize: '12px',
-            fontWeight: "bold",
-            textTransform: 'uppercase',
-            color: 'text.primary',
-            height: 40,
-            mr: "auto",
-
-            '& .MuiButton-endIcon': { ml: 1.5 },
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 1,
+            minHeight: 40,
           }}
         >
-          {snippetLabel}
-        </Button>
-
-        <Tooltip title={themeLabel} arrow placement="top">
-          <IconButton
+          <Button
             type="button"
-            onClick={() => {}}
-            aria-label={themeLabel}
-            size="small"
-            sx={iconOnlyButtonSx}
-          >
-            <ThemeIcon size={20} strokeWidth={2} aria-hidden />
-          </IconButton>
-        </Tooltip>
+            variant="text"
+            size="medium"
+            onClick={onSnippetToggle}
+            aria-label={snippetLabel}
+            disabled={!isWidgetReady}
+            endIcon={<SnippetIcon size={20} strokeWidth={2} aria-hidden />}
+            sx={{
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'divider',
+              pl: 1.5,
+              pr: 2,
+              py: 1,
+              fontSize: '12px',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              color: 'text.primary',
+              height: 40,
+              mr: 'auto',
 
-        <Tooltip title={sidebarLabel} arrow placement="top">
-          <IconButton
-            type="button"
-            onClick={onSidebarToggle}
-            aria-label={sidebarLabel}
-            size="small"
-            sx={iconOnlyButtonSx}
+              '& .MuiButton-endIcon': { ml: 1.5 },
+            }}
           >
-            <SidebarIcon size={20} strokeWidth={2} aria-hidden />
-          </IconButton>
-        </Tooltip>
-      </Box>
+            {snippetLabel}
+          </Button>
 
-      <Box
-        component="nav"
-        aria-label="External resources"
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          columnGap: 1.5,
-          rowGap: 0.5,
-          borderTop: '1px solid',
-          borderColor: 'divider',
-          px: 2,
-          py: 1,
-          mx: -2,
-        }}
-      >
-        <Link href={WIDGET_WEB_URL} target="_blank" rel="noopener noreferrer" sx={externalLinkSx} variant="inherit">
-          Widget web
-        </Link>
-        <Link
-          href={DEVELOPER_DOCS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          sx={externalLinkSx}
-          variant="inherit"
+          <Tooltip title={reloadPreviewLabel} arrow placement="top">
+            <IconButton
+              type="button"
+              onClick={onForceWidgetReload}
+              aria-label={reloadPreviewLabel}
+              aria-busy={isWidgetSyncPending}
+              size="small"
+              sx={{
+                ...iconOnlyButtonSx,
+                '@keyframes cowConfiguratorRefreshSpin': {
+                  from: { transform: 'rotate(0deg)' },
+                  to: { transform: 'rotate(360deg)' },
+                },
+                ...(isWidgetSyncPending || !isWidgetReady
+                  ? {
+                      '& svg': {
+                        animation: 'cowConfiguratorRefreshSpin 1s linear infinite',
+                      },
+                    }
+                  : {}),
+              }}
+            >
+              <RefreshCw size={20} strokeWidth={2} aria-hidden />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title={themeLabel} arrow placement="top">
+            <IconButton type="button" onClick={() => {}} aria-label={themeLabel} size="small" sx={iconOnlyButtonSx}>
+              <ThemeIcon size={20} strokeWidth={2} aria-hidden />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title={sidebarLabel} arrow placement="top">
+            <IconButton
+              type="button"
+              onClick={onSidebarToggle}
+              aria-label={sidebarLabel}
+              size="small"
+              sx={iconOnlyButtonSx}
+            >
+              <SidebarIcon size={20} strokeWidth={2} aria-hidden />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        <Box
+          component="nav"
+          aria-label="External resources"
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            columnGap: 1.5,
+            rowGap: 0.5,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            px: 2,
+            py: 1,
+            mx: -2,
+          }}
         >
-          Developer docs
-        </Link>
+          <Link href={WIDGET_WEB_URL} target="_blank" rel="noopener noreferrer" sx={externalLinkSx} variant="inherit">
+            Widget web
+          </Link>
+          <Link
+            href={DEVELOPER_DOCS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={externalLinkSx}
+            variant="inherit"
+          >
+            Developer docs
+          </Link>
+        </Box>
       </Box>
-    </Box>
-  </>)
+    </>
+  )
 }

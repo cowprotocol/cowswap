@@ -14,7 +14,7 @@ const TRANSPARENCY_CHECKER_PX = 8
 const CONTENT_PADDING_PX = 16
 
 export const configuratorCheckeredCanvasSx =
-  (showIframeOutline: boolean, blockScroll = false): SxProps<Theme> =>
+  (isWidgetReady: boolean, showIframeOutline: boolean, blockScroll = false): SxProps<Theme> =>
   (theme) => {
     const paper = theme.palette.background.paper
     const isDark = theme.palette.mode === 'dark'
@@ -48,6 +48,9 @@ export const configuratorCheckeredCanvasSx =
           border: 0,
           margin: '0 auto',
           outline: showIframeOutline ? '1px dashed cyan' : 'none',
+          transition: 'opacity 0.3s ease-in-out',
+          opacity: isWidgetReady ? 1 : 0,
+          pointerEvents: isWidgetReady ? 'auto' : 'none',
         },
       },
     }

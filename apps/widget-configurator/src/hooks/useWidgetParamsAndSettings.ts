@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 
 import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
@@ -287,6 +287,17 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
   }
 }
 
-export function useWidgetParams(configuratorState: ConfiguratorState | null): CowSwapWidgetParams | null {
-  return useMemo(() => buildWidgetParams(configuratorState), [configuratorState])
+export function useWidgetParams(configuratorState: ConfiguratorState | null): [CowSwapWidgetParams | null, boolean] {
+  const [isPending, startTransition] = useTransition()
+  const [debouncedConfiguratorState, setDebouncedConfiguratorState] = useState<CowSwapWidgetParams | null>(() =>
+    buildWidgetParams(configuratorState),
+  )
+
+  useEffect(() => {
+    startTransition(() => {
+      setDebouncedConfiguratorState(buildWidgetParams(configuratorState))
+    })
+  }, [configuratorState])
+
+  return [debouncedConfiguratorState, isPending]
 }

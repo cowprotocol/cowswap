@@ -56,6 +56,9 @@ export interface SidebarProps {
   onSnippetToggle: () => void
   onStateChange: (state: ConfiguratorState) => void
   toastManager: UseToastsManagerReturn
+  isWidgetReady: boolean
+  isWidgetSyncPending: boolean
+  onForceWidgetReload: () => void
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -68,6 +71,9 @@ export function Sidebar({
   onSnippetToggle,
   onStateChange,
   toastManager,
+  isWidgetReady,
+  isWidgetSyncPending,
+  onForceWidgetReload,
 }: SidebarProps): ReactNode {
   const availableChains = useAvailableChains()
 
@@ -400,15 +406,15 @@ export function Sidebar({
   - [x] Automatically set baseUrl based on widget configurator env.
   - [x] Add env indicator.
   - [x] Allow wider sidebar to use it as mobile mode.
+  - [x] Add loader to widget, also when reloading / updating.
+  - [x] Add update/reload widget button if needed.
 
   - [ ] Fix sticky style issue.
   - [ ] Make widget theme selector work.
-  - [ ] Add loader to widget, also when reloading / updating.
   - [ ] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
   - [ ] Create reusable TextInput, NumberInput and SelectInput components.
   - [ ] Add name to all fields.
   - [ ] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
-  - [ ] Add update/reload widget button if needed.
   - [ ] Add presets for baseUrl and layout.
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
 
@@ -629,6 +635,9 @@ export function Sidebar({
             onSidebarToggle={onSidebarToggle}
             isSnippetOpen={isSnippetOpen}
             onSnippetToggle={onSnippetToggle}
+            isWidgetReady={isWidgetReady}
+            isWidgetSyncPending={isWidgetSyncPending}
+            onForceWidgetReload={onForceWidgetReload}
           />
         </Box>
 

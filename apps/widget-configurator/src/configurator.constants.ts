@@ -15,6 +15,9 @@ export const isDev = ['dev.widget.cow.fi', 'dev.swap.cow.fi'].includes(window.lo
 /** Live preview `appCode` when Basics is blank; embed snippet treats this like unset and substitutes the snippet placeholder app code. */
 export const CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK = 'CoW Widget: Configurator' as const
 
+/** Older widget apps (custom baseUrl) may not post READY; hide the preview loader after this timeout. */
+export const WIDGET_PREVIEW_READY_FALLBACK_MS = 60_000
+
 // UTM:
 
 export const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi' as const
