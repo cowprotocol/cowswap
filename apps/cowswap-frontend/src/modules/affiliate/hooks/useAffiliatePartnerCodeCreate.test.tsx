@@ -10,7 +10,6 @@ import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
-import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
 
 jest.mock('@cowprotocol/analytics', () => {
   const actualModule = jest.requireActual('@cowprotocol/analytics')
@@ -126,7 +125,7 @@ describe('useAffiliatePartnerCodeCreate', () => {
     })
   })
 
-  it('releases the submission lock if the start event throws', async () => {
+  it('continues code creation if the start event throws', async () => {
     const signer = {
       _signTypedData: jest.fn().mockResolvedValue('0xsigned-message'),
     }
@@ -152,12 +151,9 @@ describe('useAffiliatePartnerCodeCreate', () => {
       await result.current.onCreate()
     })
 
-    await act(async () => {
-      await result.current.onCreate()
-    })
-
     expect(provider.getSigner).toHaveBeenCalledTimes(1)
     expect(createCodeMock).toHaveBeenCalledTimes(1)
-    expect(setError).toHaveBeenCalledWith(AffiliatePartnerCodeCreateError.NetworkError)
+    expect(mutatePartnerInfo).toHaveBeenCalledTimes(1)
+    expect(setError.mock.calls).toEqual([[undefined]])
   })
 })

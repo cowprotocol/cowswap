@@ -14,6 +14,7 @@ import {
 
 import { TraderWalletStatus } from '../hooks/useAffiliateTraderWallet'
 import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
+import { logAffiliate } from '../utils/logger'
 
 interface TrackAffiliateEventParams {
   analytics: CowAnalytics
@@ -31,14 +32,18 @@ interface AffiliatePartnerPageStateParams {
 }
 
 export function trackAffiliateEvent({ analytics, action, chainId, ...customParams }: TrackAffiliateEventParams): void {
-  analytics.sendEvent(
-    compactRecord({
-      category: CowSwapAnalyticsCategory.AFFILIATE,
-      action,
-      chainId,
-      ...customParams,
-    }) as GtmEvent<CowSwapAnalyticsCategory.AFFILIATE>,
-  )
+  try {
+    analytics.sendEvent(
+      compactRecord({
+        category: CowSwapAnalyticsCategory.AFFILIATE,
+        action,
+        chainId,
+        ...customParams,
+      }) as GtmEvent<CowSwapAnalyticsCategory.AFFILIATE>,
+    )
+  } catch (error) {
+    logAffiliate('Failed to send analytics event', { action, error })
+  }
 }
 
 export function getAffiliatePartnerPageState({
@@ -48,12 +53,16 @@ export function getAffiliatePartnerPageState({
   isSupportedPayoutNetwork,
   isSupportedTradingNetwork,
 }: AffiliatePartnerPageStateParams): AffiliatePageState | undefined {
-  if (!hasAccount || !isSupportedTradingNetwork || !isSupportedPayoutNetwork) {
+  if (!hasAccount || !isSupportedTradingNetwork) {
     return AffiliatePageState.ONBOARD
   }
 
   if (isLoading) {
     return undefined
+  }
+
+  if (!isSupportedPayoutNetwork && !hasExistingCode) {
+    return AffiliatePageState.ONBOARD
   }
 
   return hasExistingCode ? AffiliatePageState.CODE_LIVE : AffiliatePageState.CODE_CREATION
@@ -63,10 +72,6 @@ export function getAffiliateTraderPageState(
   walletStatus: TraderWalletStatus,
   hasSavedCode: boolean,
 ): AffiliatePageState {
-  if (hasSavedCode && walletStatus !== TraderWalletStatus.DISCONNECTED) {
-    return AffiliatePageState.LINKED
-  }
-
   switch (walletStatus) {
     case TraderWalletStatus.PENDING:
       return AffiliatePageState.LOADING
@@ -74,10 +79,10 @@ export function getAffiliateTraderPageState(
       return AffiliatePageState.UNSUPPORTED
     case TraderWalletStatus.INELIGIBLE:
       return AffiliatePageState.INELIGIBLE
-    case TraderWalletStatus.ELIGIBILITY_UNKNOWN:
-      return AffiliatePageState.ELIGIBILITY_UNKNOWN
-    default:
+    case TraderWalletStatus.DISCONNECTED:
       return AffiliatePageState.ONBOARD
+    default:
+      return hasSavedCode ? AffiliatePageState.LINKED : AffiliatePageState.ONBOARD
   }
 }
 
