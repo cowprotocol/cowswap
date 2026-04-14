@@ -8,6 +8,10 @@ import { ConfiguratorState } from '../types'
 const vercelSuffix = '-cowswap-dev.vercel.app'
 
 const getBaseUrl = (): string => {
+  const widgetUrlFromSearch = new URLSearchParams(location.search).get('widgetUrl')
+
+  if (widgetUrlFromSearch) return widgetUrlFromSearch
+
   if (typeof window === 'undefined' || !window) return ''
 
   if (isLocalHost) return 'http://localhost:3000'
