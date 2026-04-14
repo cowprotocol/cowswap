@@ -70,7 +70,7 @@ export default async function Page({ params }: Props) {
 
   const articles =
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line complexity
+
     articlesResponse.data?.map((article: Article) => ({
       ...article,
       id: article.id || 0,
