@@ -32,7 +32,7 @@ const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 // eslint-disable-next-line max-lines-per-function
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isPreview }) => {
   const isProduction = mode === 'production'
 
   const plugins: PluginOption[] = [
@@ -167,7 +167,7 @@ export default defineConfig(({ mode }) => {
     build: {
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
-      sourcemap: true,
+      sourcemap: !isPreview,
       rollupOptions: {
         output: {
           // Remove hash for font files to enable preloading
