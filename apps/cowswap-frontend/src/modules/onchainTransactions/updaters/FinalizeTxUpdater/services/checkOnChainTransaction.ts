@@ -38,7 +38,9 @@ export function checkOnChainTransaction(transaction: EnhancedTransactionDetails,
         console.error(`[FinalizeTxUpdater] Failed to get transaction receipt for tx: ${hash}`, error)
       }
 
-      if (transaction.nonce === undefined || transaction.nonce < transactionsCount) {
+      // Only mark as replaced when this tx's nonce is behind the chain (another tx with this nonce was mined).
+      // Do not mark when nonce is undefined or when receipt fetch failed only because the tx is still pending.
+      if (transaction.nonce !== undefined && transaction.nonce < transactionsCount) {
         handleTransactionReplacement(transaction, params)
       }
     })

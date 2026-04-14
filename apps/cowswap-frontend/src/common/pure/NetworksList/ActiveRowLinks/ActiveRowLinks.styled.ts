@@ -1,6 +1,4 @@
-import { Media } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { Media, ExternalLink, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import { ArrowDownCircle } from 'react-feather'

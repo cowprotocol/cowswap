@@ -3,11 +3,10 @@ import { useEffect, useRef } from 'react'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { getGlobalAdapter, OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
@@ -15,8 +14,8 @@ import { Nullish } from 'types'
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
+import type { VolumeFee } from 'modules/volumeFee'
 import { useVolumeFee } from 'modules/volumeFee'
-import { VolumeFee } from 'modules/volumeFee/types'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -42,7 +41,6 @@ interface BuildQuoteParamsArgs {
   orderKind: OrderKind
   amount: string
   account: string | undefined
-  provider: ReturnType<typeof useWalletProvider>
   appDataDoc: AppDataInfo['doc'] | undefined
   receiver: Nullish<string>
   bridgeRecipient: Nullish<string>
@@ -54,16 +52,13 @@ interface BuildQuoteParamsArgs {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
-  const provider = useWalletProvider()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
-
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-
   const userSlippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
 
@@ -78,7 +73,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
-    if (!inputCurrency || !outputCurrency || !orderKind || !provider) return
+    if (!inputCurrency || !outputCurrency || !orderKind) return
 
     if (!amount) {
       return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
@@ -90,7 +85,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       orderKind,
       amount,
       account,
-      provider,
       appDataDoc,
       receiver,
       bridgeRecipient,
@@ -100,7 +94,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
     })
   }, [
-    provider,
     inputCurrency,
     outputCurrency,
     amount,
@@ -120,12 +113,12 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 }
 
 function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
-  const { inputCurrency, outputCurrency, orderKind, amount, account, provider } = args
+  const { inputCurrency, outputCurrency, orderKind, amount, account } = args
   const { appDataDoc, receiver, bridgeRecipient, volumeFee, userSlippageBps, partiallyFillable, hasSmartSlippage } =
     args
 
-  // BridgingSDK needs a wallet for route validation, use a hardcoded one when not connected
-  const signer = account ? provider!.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
+  const adapterSigner = account ? getGlobalAdapter().signerOrNull() : null
+  const signer = adapterSigner || getBridgeQuoteSigner(inputCurrency.chainId)
   const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
 
   const quoteParams: QuoteBridgeRequest = {

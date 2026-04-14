@@ -1,7 +1,8 @@
 import type { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
-import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+import type { Address, PublicClient } from 'viem'
+import type { Config } from 'wagmi'
 
 export type PermitType = 'dai-like' | 'eip-2612' | 'unsupported'
 
@@ -14,21 +15,21 @@ export type PermitInfo = {
 
 // Local TokenInfo definition to not depend on external libs just for this
 type TokenInfo = {
-  address: string
+  address: Address
   // TODO: remove from token info
   name: string | undefined
 }
 
 export type PermitHookParams = {
-  inputToken: TokenInfo
-  spender: string
   chainId: number
-  permitInfo: PermitInfo
-  provider: JsonRpcProvider
+  config: Config
   eip2612Utils: Eip2612PermitUtils
-  account?: string
-  nonce?: number
+  inputToken: TokenInfo
+  permitInfo: PermitInfo
+  spender: string
+  account?: Address
   amount?: bigint
+  nonce?: number
 }
 
 export type PermitHookData = cowAppDataLatestScheme.CoWHook
@@ -52,10 +53,11 @@ export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {
 }
 
 export type GetTokenPermitInfoParams = {
-  spender: string
-  tokenAddress: string
   chainId: number
-  provider: JsonRpcProvider
-  minGasLimit?: number | undefined
+  config: Config
+  publicClient: PublicClient
+  spender: string
+  tokenAddress: Address
   amount?: bigint
+  minGasLimit?: bigint | undefined
 }

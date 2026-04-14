@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { HookDappBase, HookDappType } from '@cowprotocol/hook-dapp-lib'

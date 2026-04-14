@@ -30,7 +30,7 @@ const cowSwapWidgetParams: CowSwapWidgetParams = {
 Render the component:
 
 ```jsx
-<CowSwapWidget params={cowSwapWidgetParams} />
+<CowSwapWidget params={cowSwapWidgetParams} onReady={() => console.log('Widget ready')} />
 ```
 
 ## Developers
