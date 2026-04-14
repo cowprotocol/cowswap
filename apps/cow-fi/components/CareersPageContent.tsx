@@ -226,7 +226,7 @@ export function CareersPageContent({
                     <li>Do not engage with suspicious messages claiming to offer you a job at CoW DAO.</li>
                     <li>Do not share personal information, crypto wallet data, or make payments.</li>
                     <li>
-                      Report impersonation attempts to us at <a href="mailto:people@cow.finance">people@cow.finance</a>.
+                      Report impersonation attempts to us at <a href="mailto:people@cow.fi">people@cow.fi</a>.
                     </li>
                     <li>
                       Report fake accounts directly on Telegram or to{' '}

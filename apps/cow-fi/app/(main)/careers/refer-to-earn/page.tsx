@@ -72,8 +72,8 @@ export default function Page() {
               <br />
               <b>
                 Have Questions? Ask us at{' '}
-                <a href="mailto:jobs@cow.finance" target="_blank" rel="noreferrer">
-                  jobs@cow.finance
+                <a href="mailto:jobs@cow.fi" target="_blank" rel="noreferrer">
+                  jobs@cow.fi
                 </a>
               </b>
             </p>
@@ -113,9 +113,9 @@ export default function Page() {
             <ul>
               <li>
                 The referrer should reach out to a CoW core team member or directly contact the People department via
-                email at <a href="mailto:jobs@cow.finance">jobs@cow.finance</a>, LinkedIn, or Telegram. When reaching
-                out, the Referrer must include the candidate&apos;s name, surname, and email or LinkedIn profile. The
-                Referrer is responsible for ensuring that the Candidate has given consent to share this information.
+                email at <a href="mailto:jobs@cow.fi">jobs@cow.fi</a>, LinkedIn, or Telegram. When reaching out, the
+                Referrer must include the candidate&apos;s name, surname, and email or LinkedIn profile. The Referrer is
+                responsible for ensuring that the Candidate has given consent to share this information.
               </li>
               <li>
                 To apply for a specific role at CoW, <b>Candidates</b> are required to submit their application through
