@@ -29,21 +29,17 @@ jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
   useIsWindowVisible: jest.fn().mockReturnValue(true),
 }))
-jest.mock('@cowprotocol/wallet-provider', () => ({
-  ...jest.requireActual('@cowprotocol/wallet-provider'),
-  useWalletProvider: jest.fn().mockReturnValue({
-    provider: {},
-    getSigner() {
-      return {}
-    },
-  }),
-}))
 
 jest.mock('tradingSdk/bridgingSdk', () => ({
   bridgingSdk: {
     getQuote: jest.fn(),
     getBestQuote: jest.fn(),
   },
+}))
+
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useWalletClient: jest.fn().mockReturnValue({ data: {} }),
 }))
 
 const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock
@@ -110,6 +106,7 @@ describe('useTradeQuotePolling()', () => {
             isConfirmOpen: false,
             isQuoteUpdatePossible: true,
             useSuggestedSlippageApi: false,
+            hasPendingTrade: false,
           })
         },
         { wrapper: Wrapper(mocks) },
@@ -141,6 +138,7 @@ describe('useTradeQuotePolling()', () => {
             isConfirmOpen: false,
             isQuoteUpdatePossible: true,
             useSuggestedSlippageApi: false,
+            hasPendingTrade: false,
           }),
         { wrapper: Wrapper(mocks) },
       )

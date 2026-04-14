@@ -33,17 +33,18 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
       const amount = field === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
 
       if (amount) {
-        const converted = convertAmountToCurrency(amount, currency)
+        const converted = FractionUtils.serializeFractionToJSON(convertAmountToCurrency(amount, currency))
 
-        return navigateOnCurrencySelection(field, currency, () => {
-          updateState?.({
-            [amountField]: FractionUtils.serializeFractionToJSON(converted),
-          })
+        return navigateOnCurrencySelection(field, currency, (nextState) => {
+          updateState?.({ ...nextState, [amountField]: converted })
           callback?.()
         })
       }
 
-      return navigateOnCurrencySelection(field, currency, callback)
+      return navigateOnCurrencySelection(field, currency, (nextState) => {
+        updateState?.(nextState)
+        callback?.()
+      })
     },
     [navigateOnCurrencySelection, updateState, inputCurrencyAmount, outputCurrencyAmount],
   )

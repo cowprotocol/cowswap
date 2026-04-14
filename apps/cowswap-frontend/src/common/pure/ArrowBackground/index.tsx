@@ -1,5 +1,4 @@
-import { forwardRef, useMemo } from 'react'
-import { memo } from 'react'
+import { forwardRef, useMemo, memo } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
