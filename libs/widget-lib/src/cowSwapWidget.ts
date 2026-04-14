@@ -32,6 +32,7 @@ const DEFAULT_WIDTH = '450px'
 const HEIGHT_THRESHOLD = 20
 
 const noopHandler: CowSwapWidgetHandler = {
+  iframe: document.createElement('iframe'),
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
@@ -42,6 +43,7 @@ const noopHandler: CowSwapWidgetHandler = {
  * Callback function signature for updating the CoW Swap Widget.
  */
 export interface CowSwapWidgetHandler {
+  iframe: HTMLIFrameElement
   updateParams: (params: CowSwapWidgetParams) => void
   updateListeners: (newListeners?: CowWidgetEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
@@ -121,6 +123,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
+    iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
       currentParams = newParams
       updateParams(iframeWindow, iframeOrigin, currentParams, provider)
