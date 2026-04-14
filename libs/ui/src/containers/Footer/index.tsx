@@ -75,7 +75,7 @@ const SOCIAL_LINKS: { href: string; label: string; icon: string; external: boole
     utmContent: 'social-github',
   },
   {
-    href: 'https://forum.cow.fi/',
+    href: 'https://forum.cow.finance/',
     label: 'Forum',
     icon: IMG_ICON_SOCIAL_FORUM,
     external: true,
@@ -98,28 +98,28 @@ const PRODUCT_LOGO_LINKS: {
   utmContent: string
 }[] = [
   {
-    href: 'https://swap.cow.fi/',
+    href: 'https://swap.cow.finance/',
     label: 'CoW Swap',
     productVariant: ProductVariant.CowSwap,
     external: true,
     utmContent: 'product-cow-swap',
   },
   {
-    href: 'https://cow.fi/',
+    href: 'https://cow.finance/',
     label: 'CoW Protocol',
     productVariant: ProductVariant.CowProtocol,
     external: true,
     utmContent: 'product-cow-protocol',
   },
   {
-    href: 'https://cow.fi/mev-blocker',
+    href: 'https://cow.finance/mev-blocker',
     label: 'MEV Blocker',
     productVariant: ProductVariant.MevBlocker,
     external: true,
     utmContent: 'product-mev-blocker',
   },
   {
-    href: 'https://cow.fi/cow-amm',
+    href: 'https://cow.finance/cow-amm',
     label: 'CoW AMM',
     productVariant: ProductVariant.CowAmm,
     external: true,
@@ -135,7 +135,7 @@ const GLOBAL_FOOTER_NAV_ITEMS: Array<NavItemProps> = [
     label: 'About',
     children: [
       {
-        href: 'https://docs.cow.fi/governance',
+        href: 'https://docs.cow.finance/governance',
         label: 'Governance',
         external: true,
         utmContent: 'footer-about-governance',
@@ -146,15 +146,15 @@ const GLOBAL_FOOTER_NAV_ITEMS: Array<NavItemProps> = [
         external: true,
         utmContent: 'footer-about-revenue',
       },
-      { href: 'https://grants.cow.fi/', label: 'Grants', external: true, utmContent: 'footer-about-grants' },
-      { href: 'https://cow.fi/careers', label: 'Careers', external: true, utmContent: 'footer-about-careers' },
+      { href: 'https://grants.cow.finance/', label: 'Grants', external: true, utmContent: 'footer-about-grants' },
+      { href: 'https://cow.finance/careers', label: 'Careers', external: true, utmContent: 'footer-about-careers' },
       {
         href: 'https://cownation.notion.site/CoW-DAO-Brand-Kit-dad6212f182f49d38683e8410bfb37d2',
         label: 'Brand Kit',
         external: true,
         utmContent: 'footer-about-brand-kit',
       },
-      { href: 'https://cow.fi/legal', label: 'Legal', external: true, utmContent: 'footer-about-legal' },
+      { href: 'https://cow.finance/legal', label: 'Legal', external: true, utmContent: 'footer-about-legal' },
       {
         label: 'Bug Bounty',
         href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
@@ -168,45 +168,50 @@ const GLOBAL_FOOTER_NAV_ITEMS: Array<NavItemProps> = [
     children: [
       {
         label: 'CoW Swap',
-        href: 'https://cow.fi/cow-swap',
+        href: 'https://cow.finance/cow-swap',
         external: true,
         utmContent: 'footer-products-cow-swap',
       },
       {
         label: 'CoW Protocol',
-        href: 'https://cow.fi/cow-protocol',
+        href: 'https://cow.finance/cow-protocol',
         external: true,
         utmContent: 'footer-products-cow-protocol',
       },
-      { label: 'CoW AMM', href: 'https://cow.fi/cow-amm', external: true, utmContent: 'footer-products-cow-amm' },
+      { label: 'CoW AMM', href: 'https://cow.finance/cow-amm', external: true, utmContent: 'footer-products-cow-amm' },
       {
         label: 'MEV Blocker',
-        href: 'https://cow.fi/mev-blocker',
+        href: 'https://cow.finance/mev-blocker',
         external: true,
         utmContent: 'footer-products-mev-blocker',
       },
       {
         label: 'CoW Explorer',
-        href: 'https://explorer.cow.fi/',
+        href: 'https://explorer.cow.finance/',
         external: true,
         utmContent: 'footer-products-cow-explorer',
       },
-      { label: 'CoW Widget', href: 'https://cow.fi/widget', external: true, utmContent: 'footer-products-cow-widget' },
+      {
+        label: 'CoW Widget',
+        href: 'https://cow.finance/widget',
+        external: true,
+        utmContent: 'footer-products-cow-widget',
+      },
     ],
   },
   {
     label: 'Help',
     children: [
-      { label: 'Docs', href: 'https://docs.cow.fi/', external: true, utmContent: 'footer-help-docs' },
+      { label: 'Docs', href: 'https://docs.cow.finance/', external: true, utmContent: 'footer-help-docs' },
       {
         label: 'Knowledge Base',
-        href: 'https://cow.fi/learn',
+        href: 'https://cow.finance/learn',
         external: true,
         utmContent: 'footer-help-knowledge-base',
       },
       {
         label: 'Report Scams',
-        href: 'https://cow.fi/report-scam',
+        href: 'https://cow.finance/report-scam',
         external: true,
         utmContent: 'footer-help-report-scams',
       },
@@ -215,8 +220,13 @@ const GLOBAL_FOOTER_NAV_ITEMS: Array<NavItemProps> = [
   {
     label: 'Misc.',
     children: [
-      { label: 'For DAOs', href: 'https://cow.fi/daos', external: true, utmContent: 'footer-misc-for-daos' },
-      { label: 'Token Charts', href: 'https://cow.fi/tokens', external: true, utmContent: 'footer-misc-token-charts' },
+      { label: 'For DAOs', href: 'https://cow.finance/daos', external: true, utmContent: 'footer-misc-for-daos' },
+      {
+        label: 'Token Charts',
+        href: 'https://cow.finance/tokens',
+        external: true,
+        utmContent: 'footer-misc-token-charts',
+      },
     ],
   },
 ]
@@ -262,7 +272,7 @@ const FooterLink = ({ href, external, label, utmSource: _utmSource, utmContent, 
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export const Footer = ({
   description = GLOBAL_FOOTER_DESCRIPTION,
   navItems = GLOBAL_FOOTER_NAV_ITEMS,

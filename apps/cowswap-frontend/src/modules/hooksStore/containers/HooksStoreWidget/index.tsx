@@ -24,7 +24,6 @@ import { PreHookButton } from '../PreHookButton'
 
 type HookPosition = 'pre' | 'post'
 
-// eslint-disable-next-line max-lines-per-function
 export function HooksStoreWidget(): ReactNode {
   const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
@@ -79,7 +78,7 @@ export function HooksStoreWidget(): ReactNode {
           <Trans>
             With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.
           </Trans>{' '}
-          <a href="https://cow.fi/learn/cow-hooks-you-are-in-control" target="_blank" rel="noopener noreferrer">
+          <a href="https://cow.finance/learn/cow-hooks-you-are-in-control" target="_blank" rel="noopener noreferrer">
             <Trans>Learn more.</Trans>
           </a>
         </p>

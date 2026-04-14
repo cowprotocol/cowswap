@@ -9,8 +9,7 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 
 import * as styledEl from './styled'
 
-import { STEPS } from '../../constants'
-import { OrderProgressBarStepName } from '../../constants'
+import { STEPS, OrderProgressBarStepName } from '../../constants'
 import { Description } from '../../sharedStyled'
 import { StepsWrapper } from '../StepsWrapper'
 
@@ -88,7 +87,7 @@ function SubmissionFailedDescription(): ReactNode {
     <Trans>
       Something went wrong. But don't worry!{' '}
       <styledEl.Link
-        href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+        href="https://docs.cow.finance/cow-protocol/concepts/introduction/solvers"
         target="_blank"
         data-click-event={toCowSwapGtmEvent({
           category: CowSwapAnalyticsCategory.PROGRESS_BAR,
@@ -116,7 +115,7 @@ function DefaultSolvingDescription(): ReactNode {
   return (
     <Trans>
       <styledEl.Link
-        href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+        href="https://docs.cow.finance/cow-protocol/concepts/introduction/solvers"
         target="_blank"
         data-click-event={toCowSwapGtmEvent({
           category: CowSwapAnalyticsCategory.PROGRESS_BAR,

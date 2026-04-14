@@ -16,8 +16,8 @@ const defaultChainId = getCurrentChainIdFromUrl()
 const trezorConfig: Parameters<TrezorConnect['init']>[0] = {
   env: 'web',
   manifest: {
-    email: 'dev@cow.fi',
-    appUrl: 'https://cow.fi',
+    email: 'dev@cow.finance',
+    appUrl: 'https://cow.finance',
   },
 }
 
