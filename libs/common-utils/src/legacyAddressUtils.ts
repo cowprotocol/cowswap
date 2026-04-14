@@ -8,12 +8,9 @@ import {
   SupportedChainId,
   TargetChainId,
 } from '@cowprotocol/cow-sdk'
-import { getAddress } from '@ethersproject/address'
-import { AddressZero } from '@ethersproject/constants'
-import { Contract, ContractInterface } from '@ethersproject/contracts'
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
 import { t } from '@lingui/core/macro'
+import { getAddress } from 'viem'
 
 import { getExplorerOrderLink } from './explorer'
 
@@ -27,34 +24,12 @@ export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
-// account is optional
-export function getContract(
-  address: string,
-  ABI: ContractInterface,
-  provider: JsonRpcProvider,
-  account?: string,
-): Contract {
-  if (!isAddress(address) || address === AddressZero) {
-    throw Error(`Invalid 'address' parameter '${address}'.`)
-  }
-
-  return new Contract(address, ABI, getProviderOrSigner(provider, account))
-}
-
-// account is optional
-export function getProviderOrSigner(provider: JsonRpcProvider, account?: string): JsonRpcProvider | JsonRpcSigner {
-  return account ? getSigner(provider, account) : provider
-}
-
-// account is not optional
-export function getSigner(provider: JsonRpcProvider, account: string): JsonRpcSigner {
-  return provider.getSigner(account).connectUnchecked()
-}
-
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
+  if (!value) return false
+  const prefixed = value.startsWith('0x') ? value : `0x${value}`
   try {
-    return getAddress(value as never)
+    return getAddress(prefixed)
   } catch {
     return false
   }
@@ -142,7 +117,7 @@ export function shortenOrderId(orderId: string): string {
   return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
 }
 
-function getEvmLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+function getEvmExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
   switch (type) {
     case 'transaction':
       return `${basePath}/tx/${data}`
@@ -162,7 +137,7 @@ function getEvmLegacyExplorerUrl(basePath: string, data: string, type: BlockExpl
   }
 }
 
-function getSolLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+function getSolExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
   switch (type) {
     case 'transaction':
     case 'event':
@@ -178,7 +153,7 @@ function getSolLegacyExplorerUrl(basePath: string, data: string, type: BlockExpl
   }
 }
 
-function getBtcLegacyExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+function getBtcExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
   switch (type) {
     case 'transaction':
     case 'event':
@@ -201,8 +176,8 @@ function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplor
 
   if (!basePath) return ''
 
-  if (isBtcChain(chainId)) return getBtcLegacyExplorerUrl(basePath, data, type)
+  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
   // a dedicated explorer URL builder must be added here before this fallback.
-  if (isSolanaChain(chainId)) return getSolLegacyExplorerUrl(basePath, data, type)
-  return getEvmLegacyExplorerUrl(basePath, data, type)
+  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
+  return getEvmExplorerUrl(basePath, data, type)
 }

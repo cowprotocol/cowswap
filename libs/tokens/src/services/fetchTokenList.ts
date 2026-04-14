@@ -7,13 +7,18 @@ import {
   uriToHttp,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { JsonRpcProvider } from '@ethersproject/providers'
 import { TokenList } from '@uniswap/token-lists'
+
+import { createConfig, http } from 'wagmi'
+import { mainnet } from 'wagmi/chains'
 
 import { ListSourceConfig, ListState } from '../types'
 import { validateTokenList } from '../utils/validateTokenList'
 
-const MAINNET_PROVIDER = new JsonRpcProvider(RPC_URLS[SupportedChainId.MAINNET])
+const MAINNET_CONFIG = createConfig({
+  chains: [mainnet],
+  transports: { [mainnet.id]: http(RPC_URLS[SupportedChainId.MAINNET]) },
+})
 
 /**
  * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts
@@ -30,7 +35,7 @@ async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
 }
 
 async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
-  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_PROVIDER)
+  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
   const translatedUri = contenthashToUri(contentHashUri)
   const urls = uriToHttp(translatedUri)
 

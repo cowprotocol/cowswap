@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from 'react'
 
 import { Media, UI } from '@cowprotocol/ui'
 
-import { AlertCircle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
@@ -31,7 +31,7 @@ const Wrapper = styled.div`
   }
 `
 
-const StyledAlertCircle = styled(AlertCircle)`
+const StyledAlertTriangle = styled(AlertTriangle)`
   color: var(${UI.COLOR_DANGER});
 `
 
@@ -43,7 +43,7 @@ export function UnsupportedNetworkBanner({ children }: UnsupportedNetworkBannerP
   return (
     <Wrapper role="alert" aria-live="polite">
       <div>
-        <StyledAlertCircle size={24} />
+        <StyledAlertTriangle size={24} />
       </div>
       <div>{children}</div>
     </Wrapper>

@@ -53,6 +53,8 @@ export interface TradeFormValidationCommonContext {
   isRestrictedForCountry: boolean
   isBalancesLoading: boolean
   balancesError: string | null
+  isInputCurrencyXstock: boolean
+  isOutputCurrencyXstock: boolean
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
   tradePriceImpact: PriceImpact
 }
@@ -109,6 +111,7 @@ export enum TradeFormValidation {
 
   // RWA/Geo restrictions
   RestrictedForCountry,
+  XstockMinimumTradeSize,
 
   // Widget controlled
   DisableTradeWithUnknownPriceImpact,

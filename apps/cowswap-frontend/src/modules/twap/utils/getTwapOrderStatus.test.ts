@@ -50,6 +50,38 @@ describe('getTwapOrderStatus()', () => {
     })
   })
 
+  describe('When on-chain auth is known but Safe UI snapshot is stale', () => {
+    it('Then Pending when auth is true even if isTransactionExecuted is false', () => {
+      const execution: TwapOrdersExecution = {
+        confirmedPartsCount: 0,
+        info: {
+          executedSellAmount: '0',
+          executedBuyAmount: '0',
+          executedFeeAmount: '0',
+        },
+      }
+
+      const status = getTwapOrderStatus(orderStruct, false, null, true, execution)
+
+      expect(status).toBe(TwapOrderStatus.Pending)
+    })
+
+    it('Then WaitSigning when auth is undefined and isTransactionExecuted is false', () => {
+      const execution: TwapOrdersExecution = {
+        confirmedPartsCount: 0,
+        info: {
+          executedSellAmount: '0',
+          executedBuyAmount: '0',
+          executedFeeAmount: '0',
+        },
+      }
+
+      const status = getTwapOrderStatus(orderStruct, false, null, undefined, execution)
+
+      expect(status).toBe(TwapOrderStatus.WaitSigning)
+    })
+  })
+
   describe('When count of confirmed parts equals to the total parts count', () => {
     it('Then an order status is Expired', () => {
       const execution: TwapOrdersExecution = {

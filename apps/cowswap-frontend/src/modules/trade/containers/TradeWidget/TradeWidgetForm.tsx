@@ -149,7 +149,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
   const isNonEvmBridging = isCurrentTradeBridging && !!buyToken && !isEvmChain(buyToken.chainId)
-  const withRecipient = !isWrapOrUnwrap && (isNonEvmBridging || showRecipient || hasRecipientInUrl)
+  const withRecipient = !isWrapOrUnwrap && (hasRecipientInUrl || (!!account && (isNonEvmBridging || showRecipient)))
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 

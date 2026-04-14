@@ -581,8 +581,9 @@ export const USDC: Record<TargetChainId, TokenWithLogo> = {
   [SupportedChainId.PLASMA]: USDT_PLASMA,
   [SupportedChainId.INK]: USDC_INK,
   [AdditionalTargetChainId.SOLANA]: USDC_SOLANA,
-  // TODO need to think how to resolve
-  [AdditionalTargetChainId.BITCOIN]: USDC_SOLANA,
+  // we need some stablecoin ref currency to calculate price impact in usd,
+  // due to btc chain specific - there is no other currency than btc
+  [AdditionalTargetChainId.BITCOIN]: USDC_MAINNET,
 }
 
 /**
