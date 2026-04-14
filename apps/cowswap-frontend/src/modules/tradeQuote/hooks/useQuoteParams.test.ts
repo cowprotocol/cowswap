@@ -1,4 +1,4 @@
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getGlobalAdapter, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -51,6 +51,10 @@ jest.mock('../utils/getBridgeQuoteSigner', () => ({
 jest.mock('common/hooks/useSafeMemo', () => ({
   useSafeMemo: (fn: () => unknown, _deps: unknown[]) => fn(),
 }))
+jest.mock('@cowprotocol/cow-sdk', () => ({
+  ...jest.requireActual('@cowprotocol/cow-sdk'),
+  getGlobalAdapter: jest.fn(),
+}))
 
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockedUseWalletProvider = useWalletProvider as jest.MockedFunction<typeof useWalletProvider>
@@ -95,6 +99,8 @@ const mockOutputCurrency = {
 function setupDefaults(): void {
   mockedUseWalletInfo.mockReturnValue({ account: ACCOUNT_ADDRESS } as unknown as WalletInfo)
   mockedUseWalletProvider.mockReturnValue(mockProvider as unknown as ReturnType<typeof useWalletProvider>)
+  const mockAdapter = { signerOrNull: jest.fn().mockReturnValue('user-signer') }
+  ;(getGlobalAdapter as jest.Mock).mockReturnValue(mockAdapter)
   mockedUseAppData.mockReturnValue({ doc: { appCode: 'CoW Swap' } } as unknown as ReturnType<typeof useAppData>)
   mockedUseDerivedTradeState.mockReturnValue({
     inputCurrency: mockInputCurrency,
@@ -158,14 +164,6 @@ describe('useQuoteParams', () => {
         outputCurrency: null,
         orderKind: OrderKind.SELL,
       } as unknown as TradeDerivedState)
-
-      const { result } = renderHook(() => useQuoteParams('1000000000000000000'))
-
-      expect(result.current).toBeUndefined()
-    })
-
-    it('should return undefined when provider is missing', () => {
-      mockedUseWalletProvider.mockReturnValue(null as unknown as ReturnType<typeof useWalletProvider>)
 
       const { result } = renderHook(() => useQuoteParams('1000000000000000000'))
 
