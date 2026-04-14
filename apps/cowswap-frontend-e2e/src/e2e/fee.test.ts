@@ -108,7 +108,7 @@ describe('Fee: Complex fetch and persist fee', () => {
       cy.wait('@feeRequest')
         .its('response.body')
         .then(($body) => {
-          const body = JSON.parse($body)
+          const body = typeof $body === 'string' ? JSON.parse($body) : $body
           // @ts-expect-error - cypress untyped method
           const mockedTime = new Date($clock.details().now)
 
