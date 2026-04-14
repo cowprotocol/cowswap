@@ -2,8 +2,7 @@ import { isValidElement } from 'react'
 
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
 import { Command } from '@cowprotocol/types'
-import { ButtonPrimary } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'

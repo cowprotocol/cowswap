@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.4.0...cowswap-v3.4.1) (2026-04-10)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** fix iframe issues ([#7298](https://github.com/cowprotocol/cowswap/issues/7298)) ([3f7094d](https://github.com/cowprotocol/cowswap/commit/3f7094df6389c01bdda515b645b58dcc0b292253))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/balances-and-allowances bumped to 3.0.8
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.13
+    * @cowprotocol/iframe-transport bumped to 2.0.13
+    * @cowprotocol/multicall bumped to 3.0.7
+    * @cowprotocol/permit-utils bumped to 3.0.5
+    * @cowprotocol/wallet bumped to 3.0.7
+    * @cowprotocol/widget-lib bumped to 2.2.5
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.3.3...cowswap-v3.4.0) (2026-04-08)
 
 

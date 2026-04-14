@@ -1,8 +1,13 @@
-// Yes, this is a hack. For some reason I can't specify other types as a key
 import { WindowListener } from './types'
 
 // @ts-ignore
 type AbstractRecord = Record<unknown, unknown>
+
+const DEFAULT_ORIGIN = 'https://swap.cow.fi'
+
+function logWidget(...args: unknown[]): void {
+  console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
+}
 
 export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
   constructor(public readonly key: string) {}
@@ -11,6 +16,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
     contentWindow: Window,
     method: T,
     payload: MethodsEmitPayloadMap[T],
+    targetOrigin = DEFAULT_ORIGIN,
   ): void {
     const data = typeof payload === 'object' ? payload : {}
     const postPayload = {
@@ -18,19 +24,39 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
       method,
       ...data,
     }
-    contentWindow.postMessage(
-      postPayload,
-      '*', // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
-    )
+
+    contentWindow.postMessage(postPayload, targetOrigin)
   }
 
   listenToMessageFromWindow<T extends keyof MethodsEmitPayloadMap>(
     contentWindow: Window,
     method: T,
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
+    trustedOrigin = DEFAULT_ORIGIN,
   ): (payload: MessageEvent<unknown>) => void {
     const listener = (event: MessageEvent<unknown>): void => {
       if (!isEventData(event.data) || event.data.key !== this.key || event.data.method !== method) {
+        return
+      }
+
+      // TODO: fix source check in a follow up PR
+      // if (event.source !== contentWindow) {
+      //   logWidget('Rejected message due to source mismatch', {
+      //     key: this.key,
+      //     method,
+      //     actualSource: event.source,
+      //     expectedSource: contentWindow,
+      //   })
+      //   return
+      // }
+
+      if (event.origin !== trustedOrigin) {
+        logWidget('Rejected message due to origin mismatch', {
+          key: this.key,
+          method,
+          actualOrigin: event.origin,
+          trustedOrigin,
+        })
         return
       }
 

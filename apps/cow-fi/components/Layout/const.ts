@@ -105,7 +105,7 @@ function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
         external: true,
       },
       { label: 'Careers', href: '/careers' },
-      ...(isAffiliateProgramEnabled ? [{ label: 'Affiliate program', href: '/affiliate-program' }] : []),
+      ...(isAffiliateProgramEnabled ? [{ label: 'Affiliate Program', href: '/affiliate-program' }] : []),
     ],
   }
 }

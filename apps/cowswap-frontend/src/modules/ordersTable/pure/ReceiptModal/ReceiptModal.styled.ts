@@ -1,5 +1,4 @@
-import { AutoRow, Media } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { AutoRow, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

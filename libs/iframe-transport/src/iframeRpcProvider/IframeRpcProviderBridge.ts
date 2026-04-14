@@ -41,7 +41,10 @@ export class IframeRpcProviderBridge {
    * @param iframeWidow - The iFrame window that will post up general RPC messages and to which the IframeRpcProviderBridge will forward the RPC result.
    *  Also it will receive some special RPC events coming from the wallet, like connect/chainChanged,accountChanged
    */
-  constructor(private iframeWidow: Window) {}
+  constructor(
+    private iframeWidow: Window,
+    private iframeOrigin?: string,
+  ) {}
 
   /**
    * Disconnects the JSON-RPC bridge from the Ethereum provider.
@@ -80,6 +83,7 @@ export class IframeRpcProviderBridge {
         window,
         IframeRpcProviderEvents.PROVIDER_RPC_REQUEST,
         this.processRpcCallFromWindow,
+        this.iframeOrigin,
       )
     }
 
@@ -99,6 +103,7 @@ export class IframeRpcProviderBridge {
       window,
       IframeRpcProviderEvents.REQUEST_PROVIDER_META_INFO,
       this.processProviderMetaInfoRequest,
+      this.iframeOrigin,
     )
   }
 
@@ -164,17 +169,21 @@ export class IframeRpcProviderBridge {
     const providerWcMetadata = getProviderWcMetadata(this.ethereumProvider)
 
     // Send the provider meta info to the iFrame window
-    iframeRpcProviderTransport.postMessageToWindow(this.iframeWidow, IframeRpcProviderEvents.SEND_PROVIDER_META_INFO, {
-      providerEip6963Info,
-      providerWcMetadata,
-    })
+    iframeRpcProviderTransport.postMessageToWindow(
+      this.iframeWidow,
+      IframeRpcProviderEvents.SEND_PROVIDER_META_INFO,
+      { providerEip6963Info, providerWcMetadata },
+      this.iframeOrigin,
+    )
   }
 
   private onProviderEvent(event: string, params: unknown): void {
-    iframeRpcProviderTransport.postMessageToWindow(this.iframeWidow, IframeRpcProviderEvents.PROVIDER_ON_EVENT, {
-      event,
-      params,
-    })
+    iframeRpcProviderTransport.postMessageToWindow(
+      this.iframeWidow,
+      IframeRpcProviderEvents.PROVIDER_ON_EVENT,
+      { event, params },
+      this.iframeOrigin,
+    )
   }
 
   /**
@@ -187,6 +196,7 @@ export class IframeRpcProviderBridge {
       this.iframeWidow,
       IframeRpcProviderEvents.PROVIDER_RPC_RESPONSE,
       params,
+      this.iframeOrigin,
     )
   }
 }
