@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.9](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.8...cow-fi-v2.4.9) (2026-04-14)
+
+
+### 🐛 Bug Fixes
+
+* add maintenance message for swap and explorer ([#7327](https://github.com/cowprotocol/cowswap/issues/7327)) ([c4c1a4a](https://github.com/cowprotocol/cowswap/commit/c4c1a4a1fe2bc30a5c6abbd0144c972924f25a7d))
+
 ## [2.4.8](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.7...cow-fi-v2.4.8) (2026-04-10)
 
 
