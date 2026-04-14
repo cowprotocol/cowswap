@@ -783,8 +783,8 @@ msgid "Updates every 24 hours"
 msgstr "Updates every 24 hours"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
-msgid "(View on Explorer)"
-msgstr "(View on Explorer)"
+#~ msgid "(View on Explorer)"
+#~ msgstr "(View on Explorer)"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
 msgid "View all {totalChains} networks"
@@ -2015,7 +2015,7 @@ msgstr "Unknown"
 msgid "Connect to verify code"
 msgstr "Connect to verify code"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.tsx
 msgid "Wallet Address or ENS name"
 msgstr "Wallet Address or ENS name"
 
@@ -3040,7 +3040,7 @@ msgstr "In case you want to give allowance only for the trade amount, use the ad
 msgid "Sell amount too small"
 msgstr "Sell amount too small"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.tsx
 msgid "Recipient address"
 msgstr "Recipient address"
 
