@@ -77,9 +77,4 @@ describe('Limit orders', () => {
   })
 })
 
-// mock test to pass CI until we fix the test
-it('should be true', () => {
-  expect(true).to.be.true
-})
-
 export {}
