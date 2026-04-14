@@ -88,7 +88,20 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   windowListeners.push(...listenToHeightChanges(iframe, iframeOrigin, params.height, params.maxHeight))
 
   // 5. Intercept deeplinks navigation in the iframe
-  windowListeners.push(interceptDeepLinks(iframeOrigin))
+  let interceptDeepLinksListener: WindowListener | null = null
+
+  function updateInterceptDeepLinks(): void {
+    if (interceptDeepLinksListener) {
+      window.removeEventListener('message', interceptDeepLinksListener)
+    }
+
+    // Enable deeplinks interceptor only in standalone mode
+    // because the mechanism is only needed when connecting wallet inside if the iframe
+    if (!currentParams.standaloneMode) return
+
+    interceptDeepLinksListener = interceptDeepLinks(iframeOrigin)
+    windowListeners.push(interceptDeepLinksListener)
+  }
 
   // 6. Handle two-way communication of widget hooks
   let widgetHooksListener: WindowListener | null = null
@@ -103,6 +116,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     windowListeners.push(widgetHooksListener)
   }
 
+  updateInterceptDeepLinks()
   updateWidgetHooks()
 
   // 7. Handle and forward widget events to the listeners
@@ -124,6 +138,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateParams: (newParams: CowSwapWidgetParams) => {
       currentParams = newParams
       updateParams(iframeWindow, iframeOrigin, currentParams, provider)
+      updateInterceptDeepLinks()
       updateWidgetHooks()
     },
     updateListeners: (newListeners?: CowWidgetEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
@@ -283,7 +298,7 @@ function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () 
 /**
  * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
  */
-function interceptDeepLinks(iframeOrigin: string): (payload: MessageEvent<unknown>) => void {
+function interceptDeepLinks(iframeOrigin: string): WindowListener {
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
     WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
