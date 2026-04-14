@@ -287,7 +287,7 @@ export function DaosPageComponent() {
           </TopicList>
 
           <Link
-            href="https://blog.cow.finance/list/advanced-order-types-b391bd4390cb"
+            href="https://docs.cow.finance/"
             linkType={LinkType.SectionTitleButton}
             utmContent="link-to-advanced-order-types"
             margin="24px auto 0"

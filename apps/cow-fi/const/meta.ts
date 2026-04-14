@@ -31,7 +31,7 @@ export const CONFIG = {
     analytics: 'https://dune.com/cowprotocol/cowswap',
     explorer: 'https://explorer.cow.finance',
     securityPortal: 'https://app.chainpatrol.io/cow',
-    grants: 'https://grants.cow.finance',
+    grants: 'https://docs.cow.finance',
   },
   ashbyHqApi: 'https://jobs.ashbyhq.com/api/non-user-graphql',
   social: {
