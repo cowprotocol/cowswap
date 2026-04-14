@@ -1,12 +1,12 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import { WidgetHookEvents, widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 import type { WidgetMethodsEmitPayloadMap } from '@cowprotocol/widget-lib'
 
 import { callWidgetHook } from './callWidgetHook'
 
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   isInjectedWidget: jest.fn(),
@@ -18,7 +18,7 @@ jest.mock('@cowprotocol/core', () => ({
   },
 }))
 
-jest.mock('../utils/getParentOrigin.utils', () => ({
+jest.mock('@cowprotocol/iframe-transport', () => ({
   getParentOrigin: jest.fn(),
 }))
 

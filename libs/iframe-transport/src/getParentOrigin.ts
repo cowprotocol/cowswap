@@ -1,5 +1,13 @@
 export function getParentOrigin(): string | undefined {
-  return getAncestorOrigin() || getReferrerOrigin() || getParentLocationOrigin()
+  return (
+    normalizeOrigin(getAncestorOrigin()) ||
+    normalizeOrigin(getReferrerOrigin()) ||
+    normalizeOrigin(getParentLocationOrigin())
+  )
+}
+
+function normalizeOrigin(origin: string | undefined): string | undefined {
+  return origin && origin !== 'null' ? origin : undefined
 }
 
 function getAncestorOrigin(): string | undefined {

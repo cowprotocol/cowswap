@@ -8,6 +8,8 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
+import { getDappOrigin } from './getDappOrigin'
+
 import { HookDappContext as HookDappContextType, HookDappIframe } from '../../types/hooks'
 
 /**
@@ -191,12 +193,4 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       />
     </>
   )
-}
-
-function getDappOrigin(url: string): string | null {
-  try {
-    return new URL(url).origin
-  } catch {
-    return null
-  }
 }
