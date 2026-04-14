@@ -1,4 +1,4 @@
-name: 'Deploy: files.cow.fi'
+name: 'Deploy: files.cow.finance'
 
 on:
   push:
