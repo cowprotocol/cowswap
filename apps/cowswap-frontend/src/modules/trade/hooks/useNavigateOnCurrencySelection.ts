@@ -5,7 +5,6 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
-import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
@@ -17,12 +16,15 @@ import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeNavigate } from './useTradeNavigate'
 
+import { ExtendedTradeRawState } from '../types/TradeRawState'
 import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
+
+export type StateUpdateCallback = (nextState: Partial<ExtendedTradeRawState>) => void
 
 export type CurrencySelectionCallback = (
   field: Field,
   currency: Currency | null,
-  stateUpdateCallback?: Command,
+  stateUpdateCallback?: StateUpdateCallback,
   searchParams?: TradeSearchParams,
 ) => void
 
@@ -45,7 +47,12 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   return useCallback(
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line complexity
-    (field: Field, currency: Currency | null, stateUpdateCallback?: Command, searchParams?: TradeSearchParams) => {
+    (
+      field: Field,
+      currency: Currency | null,
+      stateUpdateCallback?: StateUpdateCallback,
+      searchParams?: TradeSearchParams,
+    ) => {
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
       /**
@@ -97,35 +104,26 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
         }
       }
 
-      if (!isOutputCurrencyBridgeSupported) {
-        delete searchParams?.targetChainId
+      if (!isOutputCurrencyBridgeSupported) delete searchParams?.targetChainId
+      if (shouldResetBuyOrder) searchParams = { ...searchParams, kind: OrderKind.SELL, amount: '1' }
+
+      const currencyIds = areCurrenciesTheSame
+        ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
+        : {
+            inputCurrencyId: targetInputCurrencyId,
+            outputCurrencyId: isBridgeTrade && !isOutputCurrencyBridgeSupported ? null : targetOutputCurrencyId,
+          }
+      const nextChainId = isInputField ? targetChainId : chainId
+      const nextState: Partial<ExtendedTradeRawState> = {
+        chainId: nextChainId ?? null,
+        ...currencyIds,
+        targetChainId: searchParams?.targetChainId ?? null,
       }
 
-      /**
-       * Buy orders are not allowed in bridging mode
-       * Because of that, we reset order kind and amount to defaults
-       */
-      if (shouldResetBuyOrder) {
-        searchParams = { ...searchParams, kind: OrderKind.SELL, amount: '1' }
-      }
+      // Apply next state to callback so caller can merge amount and update once (avoids glitch from URL sync effect applying currencies in a second render).
+      stateUpdateCallback?.(nextState)
 
-      navigate(
-        isInputField ? targetChainId : chainId,
-        // Just invert tokens when user selected the same token
-        areCurrenciesTheSame
-          ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
-          : {
-              inputCurrencyId: targetInputCurrencyId,
-              outputCurrencyId: isBridgeTrade
-                ? isOutputCurrencyBridgeSupported
-                  ? targetOutputCurrencyId
-                  : null
-                : targetOutputCurrencyId,
-            },
-        searchParams,
-      )
-
-      stateUpdateCallback?.()
+      navigate(nextChainId, currencyIds, searchParams)
     },
     [
       navigate,

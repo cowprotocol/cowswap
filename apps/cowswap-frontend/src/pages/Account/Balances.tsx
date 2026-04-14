@@ -15,12 +15,12 @@ import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/commo
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
+import { useWalletClient } from 'wagmi'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -60,9 +60,7 @@ const BLOCKS_TO_WAIT = 2
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export default function Profile() {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const { data: walletClient } = useWalletClient()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
@@ -102,7 +100,7 @@ export default function Profile() {
   )
 
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || isLockedGnoLoading || !provider
+    let output = isVCowLoading || isLockedGnoLoading || !walletClient
 
     // remove loader after 5 sec in any case
     setTimeout(() => {
@@ -110,7 +108,7 @@ export default function Profile() {
     }, 5000)
 
     return output
-  }, [isLockedGnoLoading, isVCowLoading, provider])
+  }, [isLockedGnoLoading, isVCowLoading, walletClient])
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()

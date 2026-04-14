@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.0.7](https://github.com/cowprotocol/cowswap/compare/wallet-v3.0.6...wallet-v3.0.7) (2026-04-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.0.13
+
 ## [3.0.6](https://github.com/cowprotocol/cowswap/compare/wallet-v3.0.5...wallet-v3.0.6) (2026-04-08)
 
 

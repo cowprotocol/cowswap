@@ -4,21 +4,22 @@ import { useEffect, useMemo, useRef } from 'react'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
-import { SWRConfiguration } from 'swr'
+
+import { BalancesQueryConfig } from './usePersistBalancesViaWebCalls'
 
 import { balancesAtom, balancesUpdateAtom } from '../state/balancesAtom'
 
 const BALANCE_VALIDITY_PERIOD = ms`20s`
 
 /**
- * To avoid fetching balances too frequently, this hook allows to pause SWR fetching based on the last update timestamp.
+ * To avoid fetching balances too frequently, this hook allows to pause fetching based on the last update timestamp.
  */
 export function useSwrConfigWithPauseForNetwork(
   chainId: SupportedChainId,
   account: string | undefined,
-  config: SWRConfiguration,
+  config: BalancesQueryConfig,
   validityPeriod?: number,
-): SWRConfiguration {
+): BalancesQueryConfig {
   const effectiveValidityPeriod = validityPeriod || BALANCE_VALIDITY_PERIOD
   const balances = useAtomValue(balancesAtom)
   const balancesUpdate = useAtomValue(balancesUpdateAtom)
@@ -39,8 +40,6 @@ export function useSwrConfigWithPauseForNetwork(
     () => ({
       ...config,
       isPaused: () => {
-        if (config.isPaused?.()) return true
-
         const timestamp = lastUpdateTimestampRef.current
 
         return !!timestamp && Date.now() - timestamp < effectiveValidityPeriod

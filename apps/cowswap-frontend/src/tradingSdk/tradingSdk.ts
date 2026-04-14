@@ -1,4 +1,4 @@
-import { DEFAULT_APP_CODE, getRpcProvider } from '@cowprotocol/common-const'
+import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import {
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   getCurrentChainIdFromUrl,
@@ -14,7 +14,6 @@ export const tradingSdk = new TradingSdk(
   {
     chainId,
     appCode: DEFAULT_APP_CODE,
-    signer: getRpcProvider(chainId)!.getSigner(),
     env: isBarnBackendEnv ? 'staging' : 'prod',
     settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   },

@@ -128,7 +128,7 @@ function didTxFail(tx: EnhancedTransactionDetails | undefined): boolean | undefi
   if (tx?.receipt?.status === undefined) {
     return undefined
   }
-  return tx.receipt.status !== 1
+  return tx.receipt.status !== 'success'
 }
 
 function didCancellationFail(order: Order, tx: EnhancedTransactionDetails | undefined): boolean | undefined {
