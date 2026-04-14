@@ -93,6 +93,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   let interceptDeepLinksListener: WindowListener | null = null
 
   function updateInterceptDeepLinks(): void {
+    if (!iframeWindow) return
+
     if (interceptDeepLinksListener) {
       window.removeEventListener('message', interceptDeepLinksListener)
     }
