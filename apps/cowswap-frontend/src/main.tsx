@@ -1,4 +1,3 @@
-/// <reference types="vite-plugin-svgr/client" />
-import './polyfills'
-import './cow-react'
-import './styles/fonts.css'
+document.documentElement.innerHTML = `
+<h1 style="font-family: monospece;">⚠️ The cow.fi domain is currently under maintenance. We'll be back shortly.
+`
