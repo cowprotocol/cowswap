@@ -250,8 +250,8 @@ export function CareersPageContent({
                   All our hiring communications come from:
                 </SectionTitleDescription>
                 <DisclaimerList>
-                  <li>Official emails are sent from the cow.finance domain.</li>
-                  <li>Telegram (we&apos;ll send confirmation email from the cow.finance domain).</li>
+                  <li>Official emails are sent from the cow.fi domain.</li>
+                  <li>Telegram (we&apos;ll send confirmation email from the cow.fi domain).</li>
                   <li>
                     Verified listings on{' '}
                     <a href="https://linkedin.com/company/cow-protocol" target="_blank" rel="noopener noreferrer">
