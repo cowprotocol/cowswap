@@ -50,15 +50,15 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
       },
       sign(context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
-        sendTradeAnalytics('Sign', orderType, marketLabel)
+        sendTradeAnalytics('Sign', orderType, marketLabel, undefined, context.isBridgeOrder)
       },
       approveAndPresign(context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
-        sendTradeAnalytics('Bundle Approve and Swap', orderType, marketLabel)
+        sendTradeAnalytics('Bundle Approve and Swap', orderType, marketLabel, undefined, context.isBridgeOrder)
       },
       placeAdvancedOrder(context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
-        sendTradeAnalytics('Place Advanced Order', orderType, marketLabel)
+        sendTradeAnalytics('Place Advanced Order', orderType, marketLabel, undefined, context.isBridgeOrder)
       },
       wrapApproveAndPresign(context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
@@ -68,9 +68,9 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
         const { marketLabel, orderType } = context
 
         if (errorMessage === USER_SWAP_REJECTED_ERROR) {
-          sendTradeAnalytics('Reject', orderType, marketLabel)
+          sendTradeAnalytics('Reject', orderType, marketLabel, undefined, context.isBridgeOrder)
         } else {
-          sendTradeAnalytics('Error', orderType, marketLabel, error.code)
+          sendTradeAnalytics('Error', orderType, marketLabel, error.code, context.isBridgeOrder)
         }
       },
     }

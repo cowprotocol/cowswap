@@ -166,6 +166,7 @@ export async function safeBundleFlow(
       id: orderId,
       orderCreationHash: safeTxHash,
       kind: postOrderParams.kind,
+      quoteId: postOrderParams.quoteId,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount,

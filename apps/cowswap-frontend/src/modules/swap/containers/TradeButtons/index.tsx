@@ -72,11 +72,17 @@ export function TradeButtons({
 
   const swapBridgeClickEventData = useSwapBridgeClickEventData()
   const swapBridgeClickEvent = useMemo(
-    () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click' }),
+    () =>
+      buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click', surface: 'trade_button' }),
     [swapBridgeClickEventData],
   )
   const swapBridgeClickApproveEvent = useMemo(
-    () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click_approve' }),
+    () =>
+      buildSwapBridgeClickEvent({
+        ...swapBridgeClickEventData,
+        action: 'swap_bridge_click_approve',
+        surface: 'trade_button',
+      }),
     [swapBridgeClickEventData],
   )
 

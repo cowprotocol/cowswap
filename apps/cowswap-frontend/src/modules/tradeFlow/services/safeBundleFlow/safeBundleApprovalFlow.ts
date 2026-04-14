@@ -56,6 +56,7 @@ export async function safeBundleApprovalFlow(
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
   const tradeAmounts = { inputAmount, outputAmount }
+  const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
   analytics.approveAndPresign(swapFlowAnalyticsContext)
   tradeConfirmActions.onSign(tradeAmounts)
@@ -161,6 +162,9 @@ export async function safeBundleApprovalFlow(
       id: orderId,
       orderCreationHash: safeTxHash,
       kind,
+      quoteId: orderParams.quoteId,
+      isCrossChain: isBridgingOrder,
+      destinationChainId: outputAmount.currency.chainId,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,

@@ -172,6 +172,7 @@ export async function tradeFlow(
       chainId,
       id: orderId,
       kind: postOrderParams.kind,
+      quoteId: postOrderParams.quoteId,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount,
