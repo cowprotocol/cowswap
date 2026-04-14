@@ -61,6 +61,10 @@ jest.mock('common/pure/ChainPrefixWarning', () => ({
   default: () => <div data-testid="chain-prefix-warning" />,
 }))
 
+jest.mock('./QrScanModal', () => ({
+  QrScanModal: () => null,
+}))
+
 jest.mock('common/utils/addressValidation', () => {
   const actual = jest.requireActual('@cowprotocol/cow-sdk')
   return {
@@ -152,12 +156,12 @@ describe('AddressInputPanel', () => {
       name: null,
     })
     renderComponent({ value: '0x1234567890123456789012345678901234567890' })
-    expect(screen.getByText('(View on Explorer)')).not.toBeNull()
+    expect(screen.getByText('View ↗')).not.toBeNull()
   })
 
   it('does not show View on Explorer for BTC target', () => {
     renderComponent({ value: 'bc1qvalid', targetChainId: AdditionalTargetChainId.BITCOIN })
-    expect(screen.queryByText('(View on Explorer)')).toBeNull()
+    expect(screen.queryByText('View ↗')).toBeNull()
   })
 
   it('does not show View on Explorer for SOL target', () => {
@@ -165,7 +169,7 @@ describe('AddressInputPanel', () => {
       value: 'SolValid1111111111111111111111111111111111111',
       targetChainId: AdditionalTargetChainId.SOLANA,
     })
-    expect(screen.queryByText('(View on Explorer)')).toBeNull()
+    expect(screen.queryByText('View ↗')).toBeNull()
   })
 
   it('skips ENS resolution for BTC target', () => {
