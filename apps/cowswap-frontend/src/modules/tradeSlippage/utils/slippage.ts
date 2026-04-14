@@ -6,8 +6,7 @@ import {
 } from '@cowprotocol/common-const'
 import { clampValue } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { FlexibleSlippageConfig, resolveFlexibleConfig, SlippageConfig } from '@cowprotocol/widget-lib'
-import { TradeType } from '@cowprotocol/widget-lib'
+import { FlexibleSlippageConfig, resolveFlexibleConfig, SlippageConfig, TradeType } from '@cowprotocol/widget-lib'
 
 export function resolveSlippageConfig(
   config: FlexibleSlippageConfig | undefined,

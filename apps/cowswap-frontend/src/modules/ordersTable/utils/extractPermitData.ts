@@ -1,12 +1,41 @@
 import { oneInchPermitUtilsConsts, PermitType } from '@cowprotocol/permit-utils'
-import { Interface } from '@ethersproject/abi'
+
+import { decodeFunctionData, type Address, type Hex } from 'viem'
 
 import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
 
-const EIP_2612_SIGNATURE =
-  'function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)'
-const DAI_SIGNATURE =
-  'function permit(address holder, address spender, uint256 nonce, uint256 expiry, bool allowed, uint8 v, bytes32 r, bytes32 s)'
+const EIP_2612_ABI = [
+  {
+    type: 'function',
+    name: 'permit',
+    inputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' },
+      { name: 'v', type: 'uint8' },
+      { name: 'r', type: 'bytes32' },
+      { name: 's', type: 'bytes32' },
+    ],
+  },
+] as const
+
+const DAI_ABI = [
+  {
+    type: 'function',
+    name: 'permit',
+    inputs: [
+      { name: 'holder', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'expiry', type: 'uint256' },
+      { name: 'allowed', type: 'bool' },
+      { name: 'v', type: 'uint8' },
+      { name: 'r', type: 'bytes32' },
+      { name: 's', type: 'bytes32' },
+    ],
+  },
+] as const
 
 export interface PermitData {
   permitNonce: bigint | null
@@ -14,26 +43,28 @@ export interface PermitData {
   permitType: PermitType
 }
 
-export function extractPermitData(callData: string): PermitData {
+export function extractPermitData(callData: Hex): PermitData {
   try {
     if (callData.startsWith(oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR)) {
-      const erc20Interface = new Interface([EIP_2612_SIGNATURE])
+      const { args } = decodeFunctionData({ abi: EIP_2612_ABI, data: callData })
 
-      const decoded = erc20Interface.decodeFunctionData('permit', callData)
+      const [_owner, _spender, value] = args as [Address, Address, bigint]
+
       return {
         permitNonce: null, // EIP-2612 doesn't have nonce in call data, it's in the signature
-        permitAmount: decoded.value ? BigInt(decoded.value.toString()) : null,
+        permitAmount: value || null,
         permitType: 'eip-2612',
       }
     }
 
     if (callData.startsWith(oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR)) {
-      const daiInterface = new Interface([DAI_SIGNATURE])
+      const { args } = decodeFunctionData({ abi: DAI_ABI, data: callData })
 
-      const decoded = daiInterface.decodeFunctionData('permit', callData)
+      const [_holder, _spender, nonce, _expiry, allowed] = args as [Address, Address, bigint, bigint, boolean]
+
       return {
-        permitNonce: decoded.nonce ? BigInt(decoded.nonce.toString()) : null,
-        permitAmount: decoded.allowed ? MAX_APPROVE_AMOUNT : BigInt(0),
+        permitNonce: nonce || null,
+        permitAmount: allowed ? MAX_APPROVE_AMOUNT : 0n,
         permitType: 'dai-like',
       }
     }

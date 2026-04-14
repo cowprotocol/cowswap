@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.0.16](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.15...snackbars-v2.0.16) (2026-04-08)
+
+
+### 🐛 Bug Fixes
+
+* always use AlertTriangle, not alertCircle ([#7206](https://github.com/cowprotocol/cowswap/issues/7206)) ([19378d4](https://github.com/cowprotocol/cowswap/commit/19378d4608378e9f65e267120476a9818a4b4e6c))
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-hooks bumped to 3.0.4
+    * @cowprotocol/ui bumped to 3.1.3
+
+## [2.0.15](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.14...snackbars-v2.0.15) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-hooks bumped to 3.0.3
+    * @cowprotocol/ui bumped to 3.1.2
+
 ## [2.0.14](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.13...snackbars-v2.0.14) (2026-04-02)
 
 

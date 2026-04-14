@@ -8,6 +8,7 @@ import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useLingui } from '@lingui/react/macro'
+import { useConfig } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -56,6 +57,7 @@ export function useHandleOrderPlacement(
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions,
 ): () => Promise<void> {
+  const config = useConfig()
   const isBridge = getAreBridgeCurrencies(
     tradeContext.postOrderParams.inputAmount.currency,
     tradeContext.postOrderParams.outputAmount.currency,
@@ -119,8 +121,8 @@ export function useHandleOrderPlacement(
     if (isSafeBundle) {
       if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
 
-      return safeBundleFlow(
-        {
+      return safeBundleFlow({
+        params: {
           ...safeBundleFlowContext,
           postOrderParams: {
             ...safeBundleFlowContext.postOrderParams,
@@ -132,7 +134,8 @@ export function useHandleOrderPlacement(
         confirmPriceImpactWithoutFee,
         analytics,
         beforeTrade,
-      )
+        config,
+      })
     }
 
     return tradeFlow(
@@ -151,6 +154,7 @@ export function useHandleOrderPlacement(
       beforeTrade,
     )
   }, [
+    config,
     isSafeBundle,
     tradeContext,
     partiallyFillableOverride,
