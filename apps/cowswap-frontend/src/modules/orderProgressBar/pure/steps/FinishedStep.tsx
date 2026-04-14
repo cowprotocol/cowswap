@@ -19,6 +19,8 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { SolverCompetition } from 'common/types/soverCompetition'
@@ -60,6 +62,7 @@ export function FinishedStep({
   debugForceShowSurplus,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
+  const { disablePostTradeTips } = useInjectedWidgetParams()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const cancellationFailed = stepName === 'cancellationFailed'
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
@@ -192,19 +195,21 @@ export function FinishedStep({
       </styledEl.ConclusionContent>
 
       {children}
-      <styledEl.ShareButton
-        data-click-event={toCowSwapGtmEvent({
-          category: CowSwapAnalyticsCategory.PROGRESS_BAR,
-          action: 'Click Share Button',
-          label: shouldShowSurplus ? 'Surplus' : 'Tip',
-        })}
-        onClick={shareOnTwitter}
-      >
-        <SVG src={ICON_SOCIAL_X} />
-        <span>
-          <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
-        </span>
-      </styledEl.ShareButton>
+      {(!disablePostTradeTips || shouldShowSurplus) && (
+        <styledEl.ShareButton
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+            action: 'Click Share Button',
+            label: shouldShowSurplus ? 'Surplus' : 'Tip',
+          })}
+          onClick={shareOnTwitter}
+        >
+          <SVG src={ICON_SOCIAL_X} />
+          <span>
+            <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
+          </span>
+        </styledEl.ShareButton>
+      )}
     </styledEl.FinishedStepContainer>
   )
 }

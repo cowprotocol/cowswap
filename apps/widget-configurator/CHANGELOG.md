@@ -1,5 +1,89 @@
 # Changelog
 
+## [3.2.5](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.4...widget-configurator-v3.2.5) (2026-04-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.5
+    * @cowprotocol/widget-react bumped to 1.3.5
+
+## [3.2.4](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.3...widget-configurator-v3.2.4) (2026-04-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.5
+    * @cowprotocol/assets bumped to 2.2.1
+    * @cowprotocol/common-const bumped to 3.0.4
+    * @cowprotocol/common-hooks bumped to 3.0.4
+    * @cowprotocol/common-utils bumped to 3.0.4
+    * @cowprotocol/events bumped to 4.1.2
+    * @cowprotocol/types bumped to 4.1.2
+    * @cowprotocol/widget-lib bumped to 2.2.4
+    * @cowprotocol/widget-react bumped to 1.3.4
+
+## [3.2.3](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.2...widget-configurator-v3.2.3) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.3
+    * @cowprotocol/widget-react bumped to 1.3.3
+
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.1...widget-configurator-v3.2.2) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.2
+    * @cowprotocol/widget-react bumped to 1.3.2
+
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.0...widget-configurator-v3.2.1) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.4
+    * @cowprotocol/common-const bumped to 3.0.3
+    * @cowprotocol/common-hooks bumped to 3.0.3
+    * @cowprotocol/common-utils bumped to 3.0.3
+    * @cowprotocol/events bumped to 4.1.1
+    * @cowprotocol/types bumped to 4.1.1
+    * @cowprotocol/widget-lib bumped to 2.2.1
+    * @cowprotocol/widget-react bumped to 1.3.1
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.1.1...widget-configurator-v3.2.0) (2026-04-06)
+
+
+### ✨ Features
+
+* **widget:** add onReady callback to widget initialization ([#7255](https://github.com/cowprotocol/cowswap/issues/7255)) ([0279aac](https://github.com/cowprotocol/cowswap/commit/0279aacbbe610bbe0cfe66597bd04ebc89bab55c))
+* **widget:** allow hiding post trading tips ([#7256](https://github.com/cowprotocol/cowswap/issues/7256)) ([b484ad1](https://github.com/cowprotocol/cowswap/commit/b484ad162fb0834556dd14fcb99fd0cadbfcfaa3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 2.2.0
+    * @cowprotocol/widget-react bumped to 1.3.0
+
 ## [3.1.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.1.0...widget-configurator-v3.1.1) (2026-04-03)
 
 

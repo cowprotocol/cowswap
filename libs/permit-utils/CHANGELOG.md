@@ -1,5 +1,42 @@
 # Changelog
 
+## [3.0.5](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.4...permit-utils-v3.0.5) (2026-04-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.13
+
+## [3.0.4](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.3...permit-utils-v3.0.4) (2026-04-08)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.12
+
+## [3.0.3](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.2...permit-utils-v3.0.3) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.11
+
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.1...permit-utils-v3.0.2) (2026-03-19)
 
 

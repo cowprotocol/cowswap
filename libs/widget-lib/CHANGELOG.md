@@ -1,5 +1,67 @@
 # Changelog
 
+## [2.2.5](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.4...widget-lib-v2.2.5) (2026-04-10)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** fix iframe issues ([#7298](https://github.com/cowprotocol/cowswap/issues/7298)) ([3f7094d](https://github.com/cowprotocol/cowswap/commit/3f7094df6389c01bdda515b645b58dcc0b292253))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.0.13
+
+## [2.2.4](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.3...widget-lib-v2.2.4) (2026-04-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.1.2
+    * @cowprotocol/iframe-transport bumped to 2.0.12
+
+## [2.2.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.2...widget-lib-v2.2.3) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** trigger re-deployment 2 ([6df9c79](https://github.com/cowprotocol/cowswap/commit/6df9c79f407bcdf8a253db3dcf80f5ce41c59fa3))
+* **widget:** trigger re-deployment 2 ([a7b60b8](https://github.com/cowprotocol/cowswap/commit/a7b60b85193d9e2a5f7da6fe76e5a1ad590b6cbc))
+
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.1...widget-lib-v2.2.2) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** trigger a redeployment of widget ([#7270](https://github.com/cowprotocol/cowswap/issues/7270)) ([3abaa22](https://github.com/cowprotocol/cowswap/commit/3abaa222591d487ee62db32df800c6e533db754b))
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.0...widget-lib-v2.2.1) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.1.1
+    * @cowprotocol/iframe-transport bumped to 2.0.11
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.1.1...widget-lib-v2.2.0) (2026-04-06)
+
+
+### ✨ Features
+
+* **widget:** add onReady callback to widget initialization ([#7255](https://github.com/cowprotocol/cowswap/issues/7255)) ([0279aac](https://github.com/cowprotocol/cowswap/commit/0279aacbbe610bbe0cfe66597bd04ebc89bab55c))
+* **widget:** allow hiding post trading tips ([#7256](https://github.com/cowprotocol/cowswap/issues/7256)) ([b484ad1](https://github.com/cowprotocol/cowswap/commit/b484ad162fb0834556dd14fcb99fd0cadbfcfaa3))
+
 ## [2.1.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.1.0...widget-lib-v2.1.1) (2026-04-03)
 
 

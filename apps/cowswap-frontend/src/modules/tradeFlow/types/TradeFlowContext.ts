@@ -1,5 +1,4 @@
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
-import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/cowswap-abis'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { Command } from '@cowprotocol/types'
 import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
@@ -16,12 +15,16 @@ import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
+import type { WethContractData } from 'common/hooks/useContract'
+
+import type { Config } from 'wagmi'
+
 export interface SafeBundleFlowContext {
   spender: string
   sendBatchTransactions: SendBatchTxCallback
-  wrappedNativeContract: Weth
+  wrappedNativeContract: WethContractData
   needsApproval: boolean
-  erc20Contract: Erc20
+  tokenAddress: string
   amountToApprove: CurrencyAmount<Currency>
 }
 
@@ -47,7 +50,7 @@ export interface TradeFlowContext {
   tradeConfirmActions: TradeConfirmActions
   swapFlowAnalyticsContext: TradeFlowAnalyticsContext
   orderParams: PostOrderParams
-  contract: GPv2Settlement
+  config: Config
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   permitAmountToSign?: bigint
