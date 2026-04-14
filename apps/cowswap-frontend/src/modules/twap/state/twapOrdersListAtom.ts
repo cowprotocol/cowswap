@@ -31,13 +31,16 @@ export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[])
   const { chainId } = get(walletInfoAtom)
   const currentState = get(twapOrdersAtom)
 
+  if (ids.length === 0) return
+
+  const nextState = { ...currentState }
   ids.forEach((id) => {
-    delete currentState[id]
+    delete nextState[id]
   })
 
   cowSwapStore.dispatch(deleteOrders({ chainId, ids }))
 
-  set(twapOrdersAtom, currentState)
+  set(twapOrdersAtom, nextState)
 })
 
 export const setTwapOrderStatusAtom = atom(null, (get, set, orderId: string, status: TwapOrderStatus) => {

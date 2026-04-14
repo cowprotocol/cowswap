@@ -27,7 +27,7 @@ export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> =
         transaction.hash,
       )
 
-      if (status === 1 && transaction.replacementType !== 'cancel') {
+      if (status === 'success' && transaction.replacementType !== 'cancel') {
         cowSound = getCowSoundSuccess()
 
         if (transaction.swapVCow) {

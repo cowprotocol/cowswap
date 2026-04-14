@@ -17,7 +17,7 @@ const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['id', 'name', 'image'
 const isHex = (val: string) => Boolean(val.match(/^[0-9a-f]+$/i))
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+
 export function validateHookDappManifest(
   data: HookDappBase,
   chainId: SupportedChainId | undefined,
