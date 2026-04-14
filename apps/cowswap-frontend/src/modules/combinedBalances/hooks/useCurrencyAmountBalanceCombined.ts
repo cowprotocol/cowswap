@@ -4,6 +4,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
+import { toHex } from 'viem'
+
 import { useTokensBalancesCombined } from './useTokensBalancesCombined'
 
 export function useCurrencyAmountBalanceCombined(
@@ -18,8 +20,8 @@ export function useCurrencyAmountBalanceCombined(
 
     const balance = balances[getAddressKey(token.address)]
 
-    if (!balance) return undefined
+    if (!balance && balance !== 0n) return undefined
 
-    return CurrencyAmount.fromRawAmount(token, balance.toHexString())
+    return CurrencyAmount.fromRawAmount(token, toHex(balance))
   }, [token, balances, chainId])
 }

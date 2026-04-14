@@ -9,7 +9,6 @@ import {
   HookDappBase,
   HookDappType,
 } from '@cowprotocol/hook-dapp-lib'
-import type { Signer } from '@ethersproject/abstract-signer'
 
 export type { CowHook, CowHookCreation, HookDappOrderParams }
 
@@ -34,7 +33,6 @@ export interface HookDappContext extends GenericHookDappContext {
   editHook: EditHook
   setSellToken(tokenAddress: string): void
   setBuyToken(tokenAddress: string): void
-  signer?: Signer
 }
 
 export interface HookDappProps {

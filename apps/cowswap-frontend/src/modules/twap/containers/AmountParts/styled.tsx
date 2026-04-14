@@ -1,5 +1,4 @@
-import { FiatAmount, Media, QuestionTooltipIconWrapper, TokenAmount } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { FiatAmount, Media, QuestionTooltipIconWrapper, TokenAmount, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 

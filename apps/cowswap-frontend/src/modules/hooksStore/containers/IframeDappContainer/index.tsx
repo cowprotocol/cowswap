@@ -3,10 +3,10 @@ import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+import { useWalletClient } from 'wagmi'
 
 import { HookDappContext as HookDappContextType, HookDappIframe } from '../../types/hooks'
 
@@ -66,9 +66,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const [isLoading, setIsLoading] = useState(true)
   const dappOrigin = getDappOrigin(dapp.url)
 
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const walletProvider = useWalletProvider()
+  const { data: walletClient } = useWalletClient()
 
   // eslint-disable-next-line react-hooks/refs
   addHookRef.current = context.addHook
@@ -135,10 +133,10 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   }, [dappOrigin])
 
   useLayoutEffect(() => {
-    if (!walletProvider || !walletProvider.provider || !bridgeRef.current) return
+    if (!walletClient || !bridgeRef.current) return
 
-    bridgeRef.current.onConnect(walletProvider.provider as EthereumProvider)
-  }, [walletProvider])
+    bridgeRef.current.onConnect(walletClient as unknown as EthereumProvider)
+  }, [walletClient])
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
@@ -146,7 +144,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     if (!iframeWindow || !isIframeActive || !dappOrigin) return
 
     // Omit unnecessary parameter
-    const { addHook: _, editHook: _1, signer: _2, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
+    const { addHook: _, editHook: _1, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
 
     hookDappIframeTransport.postMessageToWindow(
       iframeWindow,

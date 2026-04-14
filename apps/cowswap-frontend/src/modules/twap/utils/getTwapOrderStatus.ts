@@ -10,7 +10,7 @@ export function getTwapOrderStatus(
   { confirmedPartsCount, info: executionInfo }: TwapOrdersExecution,
 ): TwapOrderStatus {
   const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
-  const isCancelled = auth === false
+  const isCancelled = auth === false && isTransactionExecuted
   const isExpired = confirmedPartsCount === order.n || isTwapOrderExpired(order, executionDate)
 
   if (isFulfilled) return TwapOrderStatus.Fulfilled
@@ -21,7 +21,9 @@ export function getTwapOrderStatus(
     return TwapOrderStatus.Expired
   }
 
-  if (!isTransactionExecuted) return TwapOrderStatus.WaitSigning
+  // Safe tx may already be gone from the pending queue while the composable order is not yet
+  // reflected in our snapshot; `singleOrders` (auth) is the on-chain source of truth.
+  if (!isTransactionExecuted && auth !== true) return TwapOrderStatus.WaitSigning
 
   return TwapOrderStatus.Pending
 }
