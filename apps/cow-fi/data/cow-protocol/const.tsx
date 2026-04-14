@@ -103,7 +103,7 @@ export function useFaqData(): FaqItem[] {
         <>
           CoW Protocol is the decentralized, permissionless DeFi protocol that powers{' '}
           <Link
-            href="https://swap.cow.fi/"
+            href="https://swap.cow.finance/"
             external
             utmContent="cow-protocol-cow-swap"
             data-click-event={toCowFiGtmEvent({

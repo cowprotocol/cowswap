@@ -308,7 +308,7 @@ export const FAQ_DATA = [
         Please beware of fake links and phishing scams. The official CoW DAO channels can be found at the footer of all
         our pages on{' '}
         <Link
-          href="https://www.cow.fi"
+          href="https://www.cow.finance"
           utmContent="cow-website"
           onClick={() =>
             analytics.sendEvent({
@@ -317,7 +317,7 @@ export const FAQ_DATA = [
             })
           }
         >
-          www.cow.fi
+          www.cow.finance
         </Link>
         .
         <br />
