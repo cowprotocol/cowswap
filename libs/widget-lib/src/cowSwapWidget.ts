@@ -123,7 +123,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   updateWidgetHooks()
 
   // 7. Handle and forward widget events to the listeners
-  const iFrameCowEventEmitter = new IframeCowEventEmitter(window, iframeOrigin, listeners)
+  const iFrameCowEventEmitter = new IframeCowEventEmitter(window, iframeOrigin, iframeWindow, listeners)
 
   // 8. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
   let iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, null, provider)
