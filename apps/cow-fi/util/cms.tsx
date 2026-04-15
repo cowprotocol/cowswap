@@ -18,7 +18,7 @@ export function extractRichTextContent(page: Page): string {
 
   // Find the rich text sections and combine their content
   const richTextSections = page.attributes.contentSections.filter(
-    (section): section is RichTextSection => section.__component === 'sections.rich-text'
+    (section): section is RichTextSection => section.__component === 'sections.rich-text',
   )
 
   return richTextSections.map((section) => section.content || '').join('\n\n')

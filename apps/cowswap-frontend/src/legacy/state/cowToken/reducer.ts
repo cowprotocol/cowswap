@@ -13,5 +13,5 @@ export const initialState: CowTokenState = {
 export default createReducer(initialState, (builder) =>
   builder.addCase(setSwapVCowStatus, (state, { payload }) => {
     state.swapVCowStatus = payload
-  })
+  }),
 )

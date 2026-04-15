@@ -1,5 +1,274 @@
 # Changelog
 
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.0.4...common-hooks-v3.1.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.0
+    * @cowprotocol/common-utils bumped to 3.1.0
+    * @cowprotocol/types bumped to 4.2.0
+
+## [3.0.4](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.0.3...common-hooks-v3.0.4) (2026-04-08)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.4
+    * @cowprotocol/common-utils bumped to 3.0.4
+    * @cowprotocol/types bumped to 4.1.2
+
+## [3.0.3](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.0.2...common-hooks-v3.0.3) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.3
+    * @cowprotocol/common-utils bumped to 3.0.3
+    * @cowprotocol/types bumped to 4.1.1
+
+## [3.0.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.0.1...common-hooks-v3.0.2) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.2
+    * @cowprotocol/common-utils bumped to 3.0.2
+    * @cowprotocol/types bumped to 4.1.0
+
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.0.0...common-hooks-v3.0.1) (2026-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.1
+    * @cowprotocol/common-utils bumped to 3.0.1
+    * @cowprotocol/types bumped to 4.0.1
+
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.4.0...common-hooks-v3.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.0
+    * @cowprotocol/common-utils bumped to 3.0.0
+    * @cowprotocol/types bumped to 4.0.0
+
+## [2.4.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.3.2...common-hooks-v2.4.0) (2026-03-10)
+
+
+### ✨ Features
+
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.4.0
+    * @cowprotocol/common-utils bumped to 2.4.0
+    * @cowprotocol/types bumped to 3.4.0
+
+## [2.3.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.3.1...common-hooks-v2.3.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.3.2
+    * @cowprotocol/common-utils bumped to 2.3.2
+    * @cowprotocol/types bumped to 3.3.2
+
+## [2.3.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.3.0...common-hooks-v2.3.1) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.3.1
+    * @cowprotocol/common-utils bumped to 2.3.1
+    * @cowprotocol/types bumped to 3.3.1
+
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.2.2...common-hooks-v2.3.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.3.0
+    * @cowprotocol/common-utils bumped to 2.3.0
+    * @cowprotocol/types bumped to 3.3.0
+
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.2.1...common-hooks-v2.2.2) (2026-02-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.2.0...common-hooks-v2.2.1) (2026-02-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.1
+    * @cowprotocol/common-utils bumped to 2.2.1
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.1.0...common-hooks-v2.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* add scroll to network selector when needed ([#6962](https://github.com/cowprotocol/cowswap/issues/6962)) ([9688722](https://github.com/cowprotocol/cowswap/commit/968872287030f604fc3ce5b6c11758a98f3334ed))
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### 🔧 Miscellaneous
+
+* Refactor incorrect use of components called as functions plus some other code smells ([#6940](https://github.com/cowprotocol/cowswap/issues/6940)) ([553c5f3](https://github.com/cowprotocol/cowswap/commit/553c5f3d557d5eecfeb317b3bdb1899f2b7c1275))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/types bumped to 3.2.0
+
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.0.1...common-hooks-v2.1.0) (2026-02-05)
+
+
+### ✨ Features
+
+* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
+
+
+### 🔧 Miscellaneous
+
+* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.1.0
+    * @cowprotocol/common-utils bumped to 2.1.0
+    * @cowprotocol/types bumped to 3.1.0
+
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v2.0.0...common-hooks-v2.0.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.1
+    * @cowprotocol/common-utils bumped to 2.0.1
+    * @cowprotocol/types bumped to 3.0.1
+
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.14.0...common-hooks-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.13.0...common-hooks-v1.14.0) (2026-01-09)
 
 

@@ -1,12 +1,9 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getTokenId, TokenId } from '@cowprotocol/common-utils'
 import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
+import { TokenId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
-
-export { getTokenId }
-export type { TokenId }
 
 export interface RestrictedTokenListState {
   tokensMap: Record<TokenId, TokenInfo>

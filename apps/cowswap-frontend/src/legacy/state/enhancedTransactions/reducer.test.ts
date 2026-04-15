@@ -4,7 +4,7 @@ import { addTransaction, checkedTransaction, clearAllTransactions, finalizeTrans
 import reducer, { HashType, initialState, EnhancedTransactionState } from './reducer'
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('transaction reducer', () => {
   let store: Store<EnhancedTransactionState>
 
@@ -25,7 +25,7 @@ describe('transaction reducer', () => {
           summary: 'hello world',
           approval,
           from: 'abc',
-        })
+        }),
       )
       const txs = store.getState()
       expect(txs[1]).toBeTruthy()
@@ -41,7 +41,7 @@ describe('transaction reducer', () => {
   })
 
   // TODO: Break down this large function into smaller functions
-   
+
   describe('finalizeTransaction', () => {
     it('no op if not valid transaction', () => {
       store.dispatch(
@@ -58,7 +58,7 @@ describe('transaction reducer', () => {
             blockHash: '0x0',
             blockNumber: 1,
           },
-        })
+        }),
       )
       expect(store.getState()).toEqual({})
     })
@@ -71,7 +71,7 @@ describe('transaction reducer', () => {
           approval: { spender: '0x0', tokenAddress: '0x0', amount: '0x1' },
           summary: 'hello world',
           from: '0x0',
-        })
+        }),
       )
       const beforeTime = new Date().getTime()
       store.dispatch(
@@ -88,7 +88,7 @@ describe('transaction reducer', () => {
             blockHash: '0x0',
             blockNumber: 1,
           },
-        })
+        }),
       )
       const tx = store.getState()[4]?.['0x0']
       expect(tx?.summary).toEqual('hello world')
@@ -107,7 +107,7 @@ describe('transaction reducer', () => {
   })
 
   // TODO: Break down this large function into smaller functions
-   
+
   describe('checkedTransaction', () => {
     it('no op if not valid transaction', () => {
       store.dispatch(
@@ -115,7 +115,7 @@ describe('transaction reducer', () => {
           chainId: 4,
           hash: '0x0',
           blockNumber: 1,
-        })
+        }),
       )
       expect(store.getState()).toEqual({})
     })
@@ -128,14 +128,14 @@ describe('transaction reducer', () => {
           approval: { spender: '0x0', tokenAddress: '0x0', amount: '0x1' },
           summary: 'hello world',
           from: '0x0',
-        })
+        }),
       )
       store.dispatch(
         checkedTransaction({
           chainId: 4,
           hash: '0x0',
           blockNumber: 1,
-        })
+        }),
       )
       const tx = store.getState()[4]?.['0x0']
       expect(tx?.lastCheckedBlockNumber).toEqual(1)
@@ -149,21 +149,21 @@ describe('transaction reducer', () => {
           approval: { spender: '0x0', tokenAddress: '0x0', amount: '0x1' },
           summary: 'hello world',
           from: '0x0',
-        })
+        }),
       )
       store.dispatch(
         checkedTransaction({
           chainId: 4,
           hash: '0x0',
           blockNumber: 3,
-        })
+        }),
       )
       store.dispatch(
         checkedTransaction({
           chainId: 4,
           hash: '0x0',
           blockNumber: 1,
-        })
+        }),
       )
       const tx = store.getState()[4]?.['0x0']
       expect(tx?.lastCheckedBlockNumber).toEqual(3)
@@ -180,7 +180,7 @@ describe('transaction reducer', () => {
           summary: 'hello world',
           approval: { tokenAddress: 'abc', spender: 'def', amount: '0x1' },
           from: 'abc',
-        })
+        }),
       )
       store.dispatch(
         addTransaction({
@@ -190,7 +190,7 @@ describe('transaction reducer', () => {
           summary: 'hello world',
           approval: { tokenAddress: 'abc', spender: 'def', amount: '0x1' },
           from: 'abc',
-        })
+        }),
       )
       expect(Object.keys(store.getState())).toHaveLength(2)
       expect(Object.keys(store.getState())).toEqual([String(1), String(4)])

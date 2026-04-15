@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useAllLpTokens, TokenListCategory } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -21,10 +22,10 @@ export function LpTokensWithBalancesUpdater() {
     if (!lpTokens.length) return
 
     const state = lpTokens.reduce((acc, token) => {
-      const addressLower = token.address.toLowerCase()
+      const addressLower = getAddressKey(token.address)
       const balance = balances[addressLower]
 
-      if (balance && !balance.isZero()) {
+      if (balance) {
         acc.count++
         acc.tokens[addressLower] = { token, balance }
       }

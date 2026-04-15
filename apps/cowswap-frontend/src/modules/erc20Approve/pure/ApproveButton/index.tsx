@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
+import { Currency } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, TokenSymbol } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 

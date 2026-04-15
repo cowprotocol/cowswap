@@ -17,6 +17,6 @@ export function useMapTwapCurrencyInfo(): (info: CurrencyInfo) => CurrencyInfo {
         receiveAmountInfo: calculateTwapReceivedAmountInfo(info.receiveAmountInfo, numOfParts),
       }
     },
-    [numOfParts]
+    [numOfParts],
   )
 }

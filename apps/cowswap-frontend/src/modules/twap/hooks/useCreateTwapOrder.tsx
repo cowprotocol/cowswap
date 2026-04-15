@@ -3,14 +3,16 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
-import { useAppData, useUploadAppData } from 'modules/appData'
+import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
+import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
@@ -71,7 +73,6 @@ export function useCreateTwapOrder() {
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
   const tradeConfirmActions = useTradeConfirmActions()
-  const uploadAppData = useUploadAppData()
 
   const { priceImpact } = useTradePriceImpact()
   const isBridge = getAreBridgeCurrencies(inputCurrencyAmount?.currency, outputCurrencyAmount?.currency)
@@ -132,6 +133,7 @@ export function useCreateTwapOrder() {
       }
 
       const orderType = UiOrderType.TWAP
+
       const twapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
         account,
         recipient: twapOrder.receiver,
@@ -141,6 +143,21 @@ export function useCreateTwapOrder() {
       }
 
       try {
+        const isWidgetHookPassed = await callWidgetHook(
+          WidgetHookEvents.ON_BEFORE_TRADE,
+          buildTradeWidgetHookPayload({
+            orderType,
+            inputAmount: inputCurrencyAmount,
+            outputAmount: outputCurrencyAmount,
+            recipient: twapOrder.receiver,
+            orderKind: OrderKind.SELL,
+          }),
+        )
+
+        if (!isWidgetHookPassed) {
+          return
+        }
+
         const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
         const orderId = getConditionalOrderId(paramsStruct)
 
@@ -152,8 +169,13 @@ export function useCreateTwapOrder() {
           ? await extensibleFallbackSetupTxs(extensibleFallbackContext)
           : []
 
-        // upload the app data here, as application might need it to decode the order info before it is being signed
-        uploadAppData({ chainId, orderId, appData: appDataInfo })
+        await uploadAppDataDocOrderbookApi({
+          appDataKeccak256: appDataInfo.appDataKeccak256,
+          fullAppData: appDataInfo.fullAppData,
+          chainId,
+          env: 'prod', // Since WatchTower creates orders only in PROD env, we should have `prod` here
+        })
+
         const createOrderTxs = createTwapOrderTxs(twapOrder, paramsStruct, twapOrderCreationContext)
         const safeTxHash = await sendSafeTransactions([...fallbackSetupTxs, ...createOrderTxs])
 
@@ -216,7 +238,6 @@ export function useCreateTwapOrder() {
       priceImpact,
       tradeConfirmActions,
       addTwapOrderToList,
-      uploadAppData,
       updateAdvancedOrdersState,
       sendOrderAnalytics,
       sendTwapConversionAnalytics,

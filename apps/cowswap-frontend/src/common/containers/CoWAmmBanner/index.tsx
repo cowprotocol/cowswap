@@ -4,17 +4,16 @@ import { useCallback } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { ClosableBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { useTradeNavigate } from 'modules/trade'
-import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
+import { useTradeNavigate, getDefaultTradeRawState } from 'modules/trade'
 import { useYieldRawState } from 'modules/yield/hooks/useYieldRawState'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 
@@ -75,28 +74,46 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     tradeNavigate(chainId, targetTrade, targetTradeParams, Routes.YIELD)
   }, [key, chainId, yieldState, vampireAttackFirstTarget, tradeNavigate, cowAnalytics])
 
-  if (isInjectedWidgetMode || !account || isChainIdUnsupported || !vampireAttackContext) return null
-
   const bannerId = `${BANNER_IDS.COW_AMM}_${key}${isTokenSelectorView ? account : ''}`
 
-  return ClosableBanner(bannerId, (close) => (
-    <CoWAmmBannerContent
-      id={bannerId}
-      isDarkMode={isDarkMode}
-      title={t`CoW AMM`}
-      ctaText={isSmartContractWallet ? t`Booooost APR!` : t`Booooost APR gas-free!`}
-      isTokenSelectorView={!!isTokenSelectorView}
-      vampireAttackContext={vampireAttackContext}
-      tokensByAddress={tokensByAddress}
-      onCtaClick={() => {
-        handleCTAClick()
-        close()
-      }}
-      onClose={close}
-      data-click-event={toCowSwapGtmEvent({
-        category: CowSwapAnalyticsCategory.COWSWAP,
-        action: `CoW AMM Banner [${key}] Close`,
-      })}
-    />
-  ))
+  const callback = useCallback(
+    (close: () => void) => {
+      return vampireAttackContext ? (
+        <CoWAmmBannerContent
+          id={bannerId}
+          isDarkMode={isDarkMode}
+          title={t`CoW AMM`}
+          ctaText={isSmartContractWallet ? t`Booooost APR!` : t`Booooost APR gas-free!`}
+          isTokenSelectorView={!!isTokenSelectorView}
+          vampireAttackContext={vampireAttackContext}
+          tokensByAddress={tokensByAddress}
+          onCtaClick={() => {
+            handleCTAClick()
+            close()
+          }}
+          onClose={close}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.COWSWAP,
+            action: `CoW AMM Banner [${key}] Close`,
+          })}
+        />
+      ) : (
+        <></>
+      )
+    },
+    [
+      bannerId,
+      isDarkMode,
+      isSmartContractWallet,
+      isTokenSelectorView,
+      vampireAttackContext,
+      tokensByAddress,
+      key,
+      handleCTAClick,
+    ],
+  )
+
+  if (isInjectedWidgetMode || !account || isChainIdUnsupported || !vampireAttackContext) return null
+
+  return <ClosableBanner storageKey={bannerId} callback={callback} />
 }

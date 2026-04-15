@@ -16,7 +16,7 @@ import styled from 'styled-components/macro'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { useTotalSurplus } from 'common/state/totalSurplusState'
+import { TotalSurplusUpdater, useTotalSurplus } from 'common/state/totalSurplusState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { InfoCard } from './styled'
@@ -26,10 +26,10 @@ const ARBITRUM_ONE_START_DATE = 'May 2024'
 const BASE_START_DATE = 'December 2024'
 const POLYGON_START_DATE = 'June 2025'
 const AVALANCHE_START_DATE = 'June 2025'
-const LENS_START_DATE = 'September 2025'
 const BNB_START_DATE = 'September 2025'
 const LINEA_START_DATE = 'November 2025'
 const PLASMA_START_DATE = 'January 2026'
+const INK_START_DATE = 'February 2026'
 
 const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: DEFAULT_START_DATE,
@@ -39,10 +39,10 @@ const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.SEPOLIA]: DEFAULT_START_DATE,
   [SupportedChainId.POLYGON]: POLYGON_START_DATE,
   [SupportedChainId.AVALANCHE]: AVALANCHE_START_DATE,
-  [SupportedChainId.LENS]: LENS_START_DATE,
   [SupportedChainId.BNB]: BNB_START_DATE,
   [SupportedChainId.LINEA]: LINEA_START_DATE,
   [SupportedChainId.PLASMA]: PLASMA_START_DATE,
+  [SupportedChainId.INK]: INK_START_DATE,
 }
 
 const Wrapper = styled.div`
@@ -181,6 +181,7 @@ export function SurplusCard() {
 
   return (
     <Wrapper>
+      <TotalSurplusUpdater />
       <InfoCard>
         <div>
           <span>
@@ -209,7 +210,7 @@ export function SurplusCard() {
           <small>{surplusUsdAmount && <FiatAmount amount={surplusUsdAmount} accurate={false} />}</small>
         </div>
         <div>
-          <ExternalLink href={'https://cow.fi/learn/announcing-cow-swap-surplus-notifications'}>
+          <ExternalLink href={'https://cow.finance/learn/announcing-cow-swap-surplus-notifications'}>
             <Trans>Learn about surplus on CoW Swap</Trans> ↗
           </ExternalLink>
         </div>

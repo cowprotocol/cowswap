@@ -1,5 +1,5 @@
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { getOrderTypeReceiveAmounts } from './getOrderTypeReceiveAmounts'
 

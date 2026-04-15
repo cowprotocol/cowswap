@@ -138,6 +138,12 @@ export const ActionBtn = styled.button<{ actionType?: 'remove' | 'edit' }>`
     padding: 5px;
     box-sizing: content-box;
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 `
 
 export const SimulateContainer = styled.div<{ isSuccessful: boolean }>`

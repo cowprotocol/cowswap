@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 import { useFavoriteTokens } from '@cowprotocol/tokens'
 
 import { recentTokensStorageAtom } from '../state/recentTokensStorageAtom'

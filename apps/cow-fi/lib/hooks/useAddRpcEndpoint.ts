@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 
+import { WalletClient, toHex } from 'viem'
+
 import { useConnect } from './useConnect'
-import { WalletClient } from 'viem'
 
 const CONFIG = {
   rpc: {
@@ -42,7 +43,7 @@ export function useAddRpcEndpoint(walletClient: WalletClient | undefined): UseAd
         method: 'wallet_addEthereumChain',
         params: [
           {
-            chainId: `0x${chainId.toString(16)}`,
+            chainId: toHex(chainId),
             rpcUrls: [rpcUrl],
             chainName,
             nativeCurrency: {

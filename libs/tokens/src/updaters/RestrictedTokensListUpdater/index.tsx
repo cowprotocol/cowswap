@@ -2,16 +2,12 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { getRestrictedTokenLists } from '@cowprotocol/core'
+import { getTokenId, TokenId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { useRestrictedTokensCache } from '../../hooks/useRestrictedTokensCache'
-import {
-  getTokenId,
-  restrictedListsAtom,
-  RestrictedTokenListState,
-  TokenId,
-} from '../../state/restrictedTokens/restrictedTokensAtom'
+import { restrictedListsAtom, RestrictedTokenListState } from '../../state/restrictedTokens/restrictedTokensAtom'
 
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_RETRIES = 1

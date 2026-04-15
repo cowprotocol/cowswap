@@ -2,15 +2,14 @@ import { useCallback } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { useTradeTypeInfo } from 'modules/trade/hooks/useTradeTypeInfo'
+import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
-import { TradeType } from 'modules/trade/types'
 
 import { useCloseTokenSelectWidget } from './useCloseTokenSelectWidget'
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'

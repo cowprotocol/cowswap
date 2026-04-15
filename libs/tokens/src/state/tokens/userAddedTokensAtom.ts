@@ -4,9 +4,10 @@ import { atomWithStorage } from 'jotai/utils'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { getAddress } from '@ethersproject/address'
-import { Token } from '@uniswap/sdk-core'
+
+import { getAddress } from 'viem'
 
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
@@ -55,7 +56,7 @@ export const removeUserTokensAtom = atom(null, (get, set, tokens: string[]) => {
     delete stateCopy[token]
     delete stateCopy[token.toLowerCase()]
     try {
-      delete stateCopy[getAddress(token)]
+      delete stateCopy[getAddress(token as `0x${string}`)]
     } catch {}
   })
 

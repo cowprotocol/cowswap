@@ -23,8 +23,8 @@ export class PixelAnalytics {
         pixel.events,
         sendPixelWithErrorHandling((event) => {
           pixel.send(event)
-        })
-      )
+        }),
+      ),
     )
   }
 
@@ -69,8 +69,8 @@ export function sendPixelWithErrorHandling(sendFn: SendPixel): SendPixel {
   return (event) => {
     try {
       sendFn(event)
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error('Error sending pixel event', e)
     }

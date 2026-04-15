@@ -1,8 +1,11 @@
 import React from 'react'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
-import { LinkItem, LinkColumn } from '@/styles/styled'
+
 import { Article } from 'services/cms'
+import { CowFiCategory } from 'src/common/analytics/types'
+
+import { LinkItem, LinkColumn } from '@/styles/styled'
 
 interface ArticlesListProps {
   articles: Article[]

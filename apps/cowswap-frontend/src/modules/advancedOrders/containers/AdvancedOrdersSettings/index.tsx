@@ -4,8 +4,11 @@ import { useCallback } from 'react'
 import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
-import { Settings } from 'modules/advancedOrders/pure/Settings'
+import { AdvancedOrdersSettingsDropdown } from 'modules/advancedOrders/pure/Settings/AdvancedOrdersSettings'
 import { SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
+
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { useUpdateAdvancedOrdersRawState } from '../../hooks/useAdvancedOrdersRawState'
 import {
@@ -29,6 +32,9 @@ export function AdvancedOrdersSettings() {
   const settingsState = useAtomValue(advancedOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateAdvancedOrdersSettingsAtom)
   const updateAdvancedOrdersRawState = useUpdateAdvancedOrdersRawState()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
+  const isSettingsDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
 
   const onStateChanged = useCallback(
     (state: Partial<AdvancedOrdersSettingsState>) => {
@@ -43,13 +49,13 @@ export function AdvancedOrdersSettings() {
   return (
     <MenuWrapper>
       <Menu>
-        <SettingsButton>
+        <SettingsButton disabled={isSettingsDisabled}>
           <SettingsIcon />
         </SettingsButton>
         <MenuPopover portal={false}>
           <MenuItems>
             <MenuItem disabled={true} onSelect={() => void 0}>
-              <Settings state={settingsState} onStateChanged={onStateChanged} />
+              <AdvancedOrdersSettingsDropdown state={settingsState} onStateChanged={onStateChanged} />
             </MenuItem>
           </MenuItems>
         </MenuPopover>

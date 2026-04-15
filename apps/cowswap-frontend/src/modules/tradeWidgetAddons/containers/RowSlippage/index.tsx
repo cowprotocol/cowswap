@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
 import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
-import { Percent } from '@uniswap/sdk-core'
+import { Percent } from '@cowprotocol/currency'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'

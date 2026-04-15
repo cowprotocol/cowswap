@@ -1,4 +1,4 @@
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from 'viem'
 
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
@@ -7,7 +7,7 @@ const DEFAULT_SELL_TOKEN = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14' // WETH
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const FEE_QUERY = `https://barn.api.cow.fi/sepolia/api/v1/quote`
+const FEE_QUERY = `https://barn.api.cow.finance/sepolia/api/v1/quote`
 
 const baseParams = {
   from: ZERO_ADDRESS,

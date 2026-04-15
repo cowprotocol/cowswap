@@ -12,6 +12,6 @@ export function useOnTokenListAddingError() {
     (error: Error) => {
       setTokenListAddingError(error.message)
     },
-    [setTokenListAddingError]
+    [setTokenListAddingError],
   )
 }

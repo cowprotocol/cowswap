@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { walletInfoAtom } from '@cowprotocol/wallet'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
@@ -13,7 +13,6 @@ import { useScaledReceiveAmountInfo } from './useScaledReceiveAmountInfo'
 import { twapTimeIntervalAtom } from '../state/twapOrderAtom'
 import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 import { TWAPOrder } from '../types'
-
 
 export function useTwapOrder(): TWAPOrder | null {
   const appDataInfo = useAtomValue(appDataInfoAtom)
@@ -26,7 +25,7 @@ export function useTwapOrder(): TWAPOrder | null {
   return useMemo(() => {
     if (!inputCurrencyAmount || !receiveAmountInfo) return null
 
-    const { sellAmount, buyAmount } = receiveAmountInfo.afterSlippage
+    const { sellAmount, buyAmount } = receiveAmountInfo.amountsToSign
 
     return {
       sellAmount: sellAmount as CurrencyAmount<Token>,
@@ -38,5 +37,14 @@ export function useTwapOrder(): TWAPOrder | null {
       span: 0,
       appData: appDataInfo?.appDataKeccak256 || getAppData().appDataKeccak256,
     }
-  }, [appDataInfo, account, inputCurrencyAmount, numberOfPartsValue, receiveAmountInfo, recipient, recipientAddress, timeInterval])
+  }, [
+    appDataInfo,
+    account,
+    inputCurrencyAmount,
+    numberOfPartsValue,
+    receiveAmountInfo,
+    recipient,
+    recipientAddress,
+    timeInterval,
+  ])
 }

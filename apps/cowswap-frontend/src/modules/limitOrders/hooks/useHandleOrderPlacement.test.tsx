@@ -2,8 +2,8 @@ import { useAtom } from 'jotai'
 import { PropsWithChildren } from 'react'
 
 import { USDC_BASE, USDT_BASE } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
 
@@ -313,18 +313,19 @@ describe('useHandleOrderPlacement', () => {
       })
 
       // Assert - safeBundleFlow should be called with partiallyFillable: true
-      expect(mockSafeBundleFlow).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(mockSafeBundleFlow).toHaveBeenCalledWith({
+        params: expect.objectContaining({
           postOrderParams: expect.objectContaining({
             partiallyFillable: true,
           }),
         }),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-      )
+        priceImpact: expect.anything(),
+        settingsState: expect.anything(),
+        confirmPriceImpactWithoutFee: expect.anything(),
+        analytics: expect.anything(),
+        beforeTrade: expect.anything(),
+        config: expect.anything(),
+      })
     })
 
     it('When using safeBundleFlow and partiallyFillableOverride is false, then it should be passed to safeBundleFlow', async () => {
@@ -354,18 +355,19 @@ describe('useHandleOrderPlacement', () => {
       })
 
       // Assert - safeBundleFlow should be called with partiallyFillable: false
-      expect(mockSafeBundleFlow).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(mockSafeBundleFlow).toHaveBeenCalledWith({
+        params: expect.objectContaining({
           postOrderParams: expect.objectContaining({
             partiallyFillable: false,
           }),
         }),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-      )
+        priceImpact: expect.anything(),
+        settingsState: expect.anything(),
+        confirmPriceImpactWithoutFee: expect.anything(),
+        analytics: expect.anything(),
+        beforeTrade: expect.anything(),
+        config: expect.anything(),
+      })
     })
 
     it('When using safeBundleFlow and partiallyFillableOverride is undefined, then no override should be passed', async () => {
@@ -395,18 +397,19 @@ describe('useHandleOrderPlacement', () => {
       })
 
       // Assert - safeBundleFlow should be called with original partiallyFillable value
-      expect(mockSafeBundleFlow).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(mockSafeBundleFlow).toHaveBeenCalledWith({
+        params: expect.objectContaining({
           postOrderParams: expect.objectContaining({
             partiallyFillable: true, // Original value from safeBundleContext
           }),
         }),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-      )
+        priceImpact: expect.anything(),
+        settingsState: expect.anything(),
+        confirmPriceImpactWithoutFee: expect.anything(),
+        analytics: expect.anything(),
+        beforeTrade: expect.anything(),
+        config: expect.anything(),
+      })
     })
 
     it('When order fails, then partiallyFillableOverride should NOT be reset', async () => {

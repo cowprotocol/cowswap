@@ -4,8 +4,8 @@ import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'rea
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { HoverTooltip, TokenAmount } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
@@ -26,16 +26,13 @@ import * as styledEl from './styled'
 import { useConvertUsdToTokenValue } from '../../hooks/useConvertUsdToTokenValue'
 import { ReceiveAmount } from '../ReceiveAmount'
 
-interface BuiltItProps {
-  className: string
-}
-
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   chainId: SupportedChainId | undefined
   areCurrenciesLoading: boolean
   bothCurrenciesSet: boolean
-  isChainIdUnsupported: boolean
+  isProviderNetworkUnsupported: boolean
+  isProviderNetworkDeprecated: boolean
   isBridging?: boolean
   disabled?: boolean
   inputDisabled?: boolean
@@ -64,6 +61,10 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   customSelectTokenButton?: ReactNode
 }
 
+interface BuiltItProps {
+  className: string
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
@@ -85,7 +86,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
-    isChainIdUnsupported,
+    isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
     openTokenSelectWidget,
     onCurrencySelection,
     subsidyAndBalance = {
@@ -110,7 +112,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     receiveAmountInfo,
     isUsdValuesMode = false,
   } = currencyInfo
-  const disabled = !!props.disabled || isChainIdUnsupported
+  const disabled = !!props.disabled || isProviderNetworkUnsupported || isProviderNetworkDeprecated
 
   const { value: usdAmount } = useUsdAmount(amount)
   const { value: maxBalanceUsdAmount } = useUsdAmount(maxBalance)
@@ -120,6 +122,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
 
   const convertUsdToTokenValue = useConvertUsdToTokenValue(currency)
 
+  // TODO: Numerical input rerenders because this function changes due to some dep change.
   const onUserInputDispatch = useCallback(
     (typedValue: string, currencyValue?: string) => {
       // Always pass through empty string to allow clearing
@@ -143,17 +146,23 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode, currency?.decimals],
   )
 
-  const handleMaxInput = useCallback(() => {
-    if (!maxBalance) {
-      return
-    }
+  const handleMaxInput = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
 
-    const value = isUsdValuesMode ? maxBalanceUsdAmount : maxBalance
+      if (!maxBalance) {
+        return
+      }
 
-    if (value) {
-      onUserInputDispatch(value.toExact(), isUsdValuesMode ? maxBalance.toExact() : undefined)
-    }
-  }, [maxBalance, onUserInputDispatch, isUsdValuesMode, maxBalanceUsdAmount])
+      const value = isUsdValuesMode ? maxBalanceUsdAmount : maxBalance
+
+      if (value) {
+        onUserInputDispatch(value.toExact(), isUsdValuesMode ? maxBalance.toExact() : undefined)
+      }
+    },
+    [maxBalance, onUserInputDispatch, isUsdValuesMode, maxBalanceUsdAmount],
+  )
 
   useEffect(() => {
     // Compare the actual string values to preserve trailing decimals
@@ -183,8 +192,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     <styledEl.NumericalInput
       className="token-amount-input"
       prependSymbol={isUsdValuesMode ? '$' : ''}
-      value={isChainIdUnsupported ? '' : typedValue}
-      readOnly={inputDisabled}
+      value={isProviderNetworkUnsupported || isProviderNetworkDeprecated ? '' : typedValue}
+      readOnly={inputDisabled || disabled}
       onUserInput={onUserInputDispatch}
       $loading={areCurrenciesLoading}
     />

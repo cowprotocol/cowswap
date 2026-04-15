@@ -1,29 +1,27 @@
 import { calculateGasMargin } from '@cowprotocol/common-utils'
-import type { TransactionRequest } from '@ethersproject/abstract-provider'
-import type { Deferrable } from '@ethersproject/properties'
-import type { Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
 
 import useSWR from 'swr'
+import { Address, Hex } from 'viem'
+import { useConfig } from 'wagmi'
+import { estimateGas } from 'wagmi/actions'
 
 import type { SWRConfiguration } from 'swr'
 
-type ITransactionData = Deferrable<TransactionRequest>
+type ITransactionData = {
+  to?: Address
+  data?: Hex
+}
 
 type IHookGasCalculator = (transactionData: ITransactionData) => Promise<string>
 
-export function useWalletProvider(): Web3Provider | undefined {
-  const { provider } = useWeb3React()
-
-  return provider
-}
-
 export const useHookGasLimitCalculator = (): IHookGasCalculator => {
-  const provider = useWalletProvider()
+  const config = useConfig()
 
   return async (transactionData) => {
-    if (!provider) throw new Error('Provider is not defined')
-    const gasEstimation = await provider.estimateGas(transactionData)
+    const gasEstimation = await estimateGas(config, {
+      to: transactionData.to,
+      data: transactionData.data,
+    })
     return calculateGasMargin(gasEstimation).toString()
   }
 }

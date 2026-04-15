@@ -3,11 +3,12 @@ import { registerOnWindow } from './misc'
 const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
   pr: '^((?:explorer|swap)-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
-  development: '^(dev.swap.cow.fi|dev.explorer.cow.fi|swap-develop.vercel.app|explorer-dev.vercel.app)',
-  staging: '^(staging.swap.cow.fi|staging.explorer.cow.fi|swap-staging.vercel.app|explorer-staging.vercel.app)',
+  development: '^(dev.swap.cow.finance|dev.explorer.cow.finance|swap-develop.vercel.app|explorer-dev.vercel.app)',
+  staging:
+    '^(staging.swap.cow.finance|staging.explorer.cow.finance|swap-staging.vercel.app|explorer-staging.vercel.app)',
   production:
-    '^(swap.cow.fi|explorer.cow.fi|swap-prod.vercel.app|explorer-prod-seven.vercel.app|cow.trade|cowswap.exchange)$',
-  barn: '^(barn.cow.fi|barn.explorer.cow.fi|swap-barn.vercel.app|explorer-barn.vercel.app|barn.cowswap.exchange)$',
+    '^(swap.cow.finance|explorer.cow.finance|swap-prod.vercel.app|explorer-prod-seven.vercel.app|cow.trade|cowswap.exchange)$',
+  barn: '^(barn.cow.finance|barn.explorer.cow.finance|swap-barn.vercel.app|explorer-barn.vercel.app|barn.cowswap.exchange)$',
   ens: '(:?^cowswap.eth|ipfs)',
 }
 
@@ -103,8 +104,6 @@ export const environmentName: EnvironmentName | undefined = (function () {
 const isProdLike = isProd || isEns || isStaging || isBarn
 const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || isBarn
 
-if (typeof window !== 'undefined') {
-  registerOnWindow({ environment: environmentName })
-}
+registerOnWindow({ environment: environmentName })
 
 export { isLocal, isDev, isPr, isBarn, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv }

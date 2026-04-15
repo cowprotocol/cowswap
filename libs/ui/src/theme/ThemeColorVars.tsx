@@ -113,7 +113,7 @@ function createChainAccent({
  * - Chain names and CSS variables are generated automatically from CHAIN_INFO
  *
  * CUSTOMIZATION:
- * - Override colors in CHAIN_ACCENT_OVERRIDES if CHAIN_INFO color differs from design (e.g., MAINNET, LENS)
+ * - Override colors in CHAIN_ACCENT_OVERRIDES if CHAIN_INFO color differs from design (e.g., MAINNET)
  */
 
 // Color overrides for chains where CHAIN_INFO color differs from original design
@@ -121,11 +121,6 @@ const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, ChainAccentOverri
   [SupportedChainId.MAINNET]: {
     // Override: Original color #627EEA differs from SDK's #62688F
     color: '#627EEA',
-  },
-  [SupportedChainId.LENS]: {
-    // Override: Original color #5A5A5A differs from SDK's #FFFFFF
-    color: '#5A5A5A',
-    darkColor: '#D7D7D7',
   },
 }
 
@@ -308,6 +303,9 @@ export const ThemeColorVars = css`
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.info};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.info, 0.2)}; // 80% opacity
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
+    ${UI.COLOR_YELLOW_300_PRIMARY}: ${({ theme }) => theme.yellow300Primary};
+    ${UI.COLOR_YELLOW_700_PRIMARY}: ${({ theme }) => theme.yellow700Primary};
+    ${UI.COLOR_YELLOW_800_PRIMARY}: ${({ theme }) => theme.yellow800Primary};
     ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.neutral100};
@@ -374,6 +372,7 @@ export const ThemeColorVars = css`
     ${UI.FONT_SIZE_LARGER}: 20px;
     ${UI.FONT_SIZE_LARGEST}: 24px;
     ${UI.FONT_FAMILY_PRIMARY}: 'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif;
+    ${UI.FONT_FAMILY_MONO}: 'studiofeixenmono', 'IBM Plex Mono', 'Roboto Mono', 'Courier New', monospace;
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;

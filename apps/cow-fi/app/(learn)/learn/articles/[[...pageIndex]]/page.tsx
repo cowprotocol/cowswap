@@ -5,7 +5,6 @@ import { Article, Category, getArticles, getCategories } from '../../../../../se
 import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { ARTICLES_PER_PAGE } from '@/const/pagination'
 
-
 type Props = {
   params: Promise<{ pageIndex?: string[] }>
 }

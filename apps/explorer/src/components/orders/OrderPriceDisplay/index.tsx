@@ -36,12 +36,13 @@ export function OrderPriceDisplay(props: Readonly<OrderPriceDisplayProps>): Reac
   const isPriceInverted = parentIsInvertedPrice ?? innerIsPriceInverted
   const invert = parentInvertPrice ?? ((): void => setInnerIsPriceInverted((curr) => !curr))
 
-  const limitPrice = getLimitPrice({
-    buyAmount,
-    buyToken,
-    sellAmount,
-    sellToken,
-  },
+  const limitPrice = getLimitPrice(
+    {
+      buyAmount,
+      buyToken,
+      sellAmount,
+      sellToken,
+    },
     isPriceInverted || false,
   )
 
@@ -52,8 +53,7 @@ export function OrderPriceDisplay(props: Readonly<OrderPriceDisplayProps>): Reac
 
   return (
     <>
-      {limitPrice} for {baseSymbol}{' '}
-      {showInvertButton && <Icon icon={faExchangeAlt} onClick={invert} />}
+      {limitPrice} for {baseSymbol} {showInvertButton && <Icon icon={faExchangeAlt} onClick={invert} />}
     </>
   )
 }

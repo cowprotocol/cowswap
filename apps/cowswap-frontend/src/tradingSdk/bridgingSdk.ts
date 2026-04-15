@@ -28,7 +28,7 @@ export const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey:
 
 export const bridgingSdk = new BridgingSdk({
   providers: [bungeeBridgeProvider, acrossBridgeProvider, nearIntentsBridgeProvider],
-  enableLogging: false,
+  enableLogging: !!localStorage.getItem('enableBridgingSdkLogs'),
   tradingSdk,
   orderBookApi,
 })
@@ -41,5 +41,5 @@ function getBungeeApiBase(): string | undefined {
     return 'https://backend.bungee.exchange'
   }
 
-  return 'https://bff.barn.cow.fi/proxies/socket'
+  return 'https://bff.barn.cow.finance/proxies/socket'
 }

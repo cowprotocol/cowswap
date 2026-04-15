@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'cow-fi',
   preset: '../../jest.preset.js',

@@ -14,13 +14,11 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { deadlineToView, getDeadlineRange } from '../utils'
 
-
 type TxSettingAction = 'Default' | 'Custom'
 
 enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
-
 
 interface DeadlineAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TRADE
@@ -28,12 +26,21 @@ interface DeadlineAnalyticsEvent {
   value: number
 }
 
+export interface DeadlineRangeParams {
+  minMinutes: number
+  maxMinutes: number
+  isEoaEthFlow: boolean
+  isSmartContractWallet: boolean
+}
+
+// eslint-disable-next-line max-lines-per-function
 export function useCustomDeadline(deadlineState: StatefulValue<number>): {
   isDisabled: boolean
   onBlur: () => void
   error: DeadlineError | false
   viewValue: string
   parseCustomDeadline: (value: string) => void
+  deadlineRangeParams: DeadlineRangeParams
 } {
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
@@ -58,10 +65,9 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
   )
 
   const [minDeadline, maxDeadline] = useMemo(
-    () => getDeadlineRange(isEoaEthFlow, !!isSmartContractWallet), [
-    isEoaEthFlow,
-    isSmartContractWallet,
-  ])
+    () => getDeadlineRange(isEoaEthFlow, !!isSmartContractWallet),
+    [isEoaEthFlow, isSmartContractWallet],
+  )
 
   useEffect(() => {
     if (widgetDeadline) {
@@ -78,7 +84,7 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
       // populate what the user typed and clear the error
       setDeadlineInput(value)
       setDeadlineError(false)
-      const isValidInput = isValidIntegerFactory(minDeadline, maxDeadline);
+      const isValidInput = isValidIntegerFactory(minDeadline, maxDeadline)
 
       if (value.length === 0) {
         sendDeadlineAnalytics('Default', DEFAULT_DEADLINE_FROM_NOW)
@@ -108,11 +114,22 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
 
   const viewValue = deadlineToView(deadlineInput, deadline)
 
+  const deadlineRangeParams: DeadlineRangeParams = useMemo(
+    () => ({
+      minMinutes: minDeadline / 60,
+      maxMinutes: maxDeadline / 60,
+      isEoaEthFlow,
+      isSmartContractWallet: !!isSmartContractWallet,
+    }),
+    [minDeadline, maxDeadline, isEoaEthFlow, isSmartContractWallet],
+  )
+
   return {
     isDisabled: isDeadlineDisabled,
     onBlur,
     error: deadlineError,
     viewValue,
     parseCustomDeadline,
+    deadlineRangeParams,
   }
 }

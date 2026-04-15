@@ -1,20 +1,25 @@
 'use server'
 
+import { COW_CDN } from '@cowprotocol/common-const'
+
 import { backOff } from 'exponential-backoff'
+import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
 
 import fs from 'fs'
 import path from 'path'
 
 import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { Network } from '@/const/networkMap'
-import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
-import { COW_CDN } from '@cowprotocol/common-const'
 
 const NETWORKS: Network[] = ['ethereum', 'base', 'arbitrum-one', 'avalanche', 'polygon-pos', 'xdai']
 const COW_TOKEN_ID = 'cow-protocol'
 
 const TOKEN_LISTS_URL = `${COW_CDN}/tokens/cowFi-tokens.json`
 const DESCRIPTIONS_DIR_PATH = path.join(process.cwd(), 'data', 'descriptions')
+
+function isTokenDetails(value: TokenDetails | undefined): value is TokenDetails {
+  return Boolean(value)
+}
 
 /**
  *
@@ -85,7 +90,14 @@ async function fetchWithBackoff(url: string) {
 }
 
 async function _getAllTokensData(): Promise<TokenDetails[]> {
-  const tokenRawData = await fetchWithBackoff(TOKEN_LISTS_URL)
+  let tokenRawData: TokenDetails[]
+
+  try {
+    tokenRawData = await fetchWithBackoff(TOKEN_LISTS_URL)
+  } catch (error) {
+    console.error('[cow-fi] Failed to fetch token list, skipping token data generation.', error)
+    return []
+  }
 
   // Get manual descriptions
   const descriptionFilePaths = _getDescriptionFilePaths()
@@ -104,7 +116,7 @@ async function _getAllTokensData(): Promise<TokenDetails[]> {
 
       return _toTokenDetails(tokenRaw, description)
     })
-    .filter(Boolean) // Not falsy
+    .filter(isTokenDetails)
 
   return tokens
 }

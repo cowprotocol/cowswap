@@ -2,10 +2,10 @@ import { JSX } from 'react'
 
 import Image from 'next/image'
 
+import { ItemWrapper } from './styles'
+
 import { CopyToClipboard } from '@/components/CopyToClipboard'
 import { Network, NETWORK_IMAGE_MAP, NETWORK_MAP, NETWORK_URL_MAP } from '@/const/networkMap'
-
-import { ItemWrapper } from './styles'
 
 type PlatformData = {
   address: string

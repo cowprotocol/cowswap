@@ -3,10 +3,9 @@ import { useCallback } from 'react'
 import { LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
-import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
@@ -17,29 +16,17 @@ import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeNavigate } from './useTradeNavigate'
 
+import { ExtendedTradeRawState } from '../types/TradeRawState'
 import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
+
+export type StateUpdateCallback = (nextState: Partial<ExtendedTradeRawState>) => void
 
 export type CurrencySelectionCallback = (
   field: Field,
   currency: Currency | null,
-  stateUpdateCallback?: Command,
+  stateUpdateCallback?: StateUpdateCallback,
   searchParams?: TradeSearchParams,
 ) => void
-
-function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
-  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-
-  return useCallback(
-    (currency: Currency | null): string | null => {
-      if (!currency) return null
-
-      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
-        ? (currency as Token).address
-        : currency.symbol || null
-    },
-    [areThereTokensWithSameSymbol],
-  )
-}
 
 /**
  * To avoid collisions of tokens with the same symbols we use a token address instead of token symbol
@@ -60,7 +47,12 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   return useCallback(
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line complexity
-    (field: Field, currency: Currency | null, stateUpdateCallback?: Command, searchParams?: TradeSearchParams) => {
+    (
+      field: Field,
+      currency: Currency | null,
+      stateUpdateCallback?: StateUpdateCallback,
+      searchParams?: TradeSearchParams,
+    ) => {
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
       /**
@@ -84,7 +76,13 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
           : resolveCurrencyAddressOrSymbol(outputCurrency)
         : null
 
-      const targetInputCurrencyId = isInputField ? tokenSymbolOrAddress : inputCurrencyId
+      // When switching SELL chain, persist token address for non-native tokens.
+      // Symbols from imported/non-canonical lists may not resolve reliably from URL (e.g. A3A).
+      const targetInputCurrencyId = isInputField
+        ? targetChainMismatch && currency instanceof Token
+          ? currency.address
+          : tokenSymbolOrAddress
+        : inputCurrencyId
       const targetOutputCurrencyId = isInputField
         ? outputCurrencyId
         : targetChainMismatch && currency
@@ -106,35 +104,26 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
         }
       }
 
-      if (!isOutputCurrencyBridgeSupported) {
-        delete searchParams?.targetChainId
+      if (!isOutputCurrencyBridgeSupported) delete searchParams?.targetChainId
+      if (shouldResetBuyOrder) searchParams = { ...searchParams, kind: OrderKind.SELL, amount: '1' }
+
+      const currencyIds = areCurrenciesTheSame
+        ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
+        : {
+            inputCurrencyId: targetInputCurrencyId,
+            outputCurrencyId: isBridgeTrade && !isOutputCurrencyBridgeSupported ? null : targetOutputCurrencyId,
+          }
+      const nextChainId = isInputField ? targetChainId : chainId
+      const nextState: Partial<ExtendedTradeRawState> = {
+        chainId: nextChainId ?? null,
+        ...currencyIds,
+        targetChainId: searchParams?.targetChainId ?? null,
       }
 
-      /**
-       * Buy orders are not allowed in bridging mode
-       * Because of that, we reset order kind and amount to defaults
-       */
-      if (shouldResetBuyOrder) {
-        searchParams = { ...searchParams, kind: OrderKind.SELL, amount: '1' }
-      }
+      // Apply next state to callback so caller can merge amount and update once (avoids glitch from URL sync effect applying currencies in a second render).
+      stateUpdateCallback?.(nextState)
 
-      navigate(
-        isInputField ? targetChainId : chainId,
-        // Just invert tokens when user selected the same token
-        areCurrenciesTheSame
-          ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
-          : {
-              inputCurrencyId: targetInputCurrencyId,
-              outputCurrencyId: isBridgeTrade
-                ? isOutputCurrencyBridgeSupported
-                  ? targetOutputCurrencyId
-                  : null
-                : targetOutputCurrencyId,
-            },
-        searchParams,
-      )
-
-      stateUpdateCallback?.()
+      navigate(nextChainId, currencyIds, searchParams)
     },
     [
       navigate,
@@ -145,5 +134,20 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
     ],
+  )
+}
+
+function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
+  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
+
+  return useCallback(
+    (currency: Currency | null): string | null => {
+      if (!currency) return null
+
+      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
+        ? (currency as Token).address
+        : currency.symbol || null
+    },
+    [areThereTokensWithSameSymbol],
   )
 }

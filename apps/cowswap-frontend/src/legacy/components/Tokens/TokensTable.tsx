@@ -4,9 +4,9 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { safeFromRawAmount } from '@cowprotocol/currency'
 import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
-import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -37,25 +37,24 @@ import {
 } from './styled'
 import { TokensTableRow } from './TokensTableRow'
 
-
 const MAX_ITEMS = 20
-
-enum SORT_FIELD {
-  NAME = 'name',
-  BALANCE = 'balance',
-}
 
 type TokenTableParams = {
   tokensData: TokenWithLogo[] | undefined
   maxItems?: number
   balances?: BalancesState['values']
-  allowances: Record<string, BigNumber | undefined> | undefined
+  allowances: Record<string, bigint | undefined> | undefined
   page: number
   setPage: (page: number) => void
   query: string
   prevQuery: string
   debouncedQuery: string
   children?: ReactNode
+}
+
+enum SORT_FIELD {
+  NAME = 'name',
+  BALANCE = 'balance',
 }
 
 // TODO: Break down this large function into smaller functions
@@ -130,8 +129,8 @@ export function TokenTable({
               // If the sort field is Balance
               if (!balances) return 0
 
-              const balanceA = balances[tokenA.address.toLowerCase()]
-              const balanceB = balances[tokenB.address.toLowerCase()]
+              const balanceA = balances[getAddressKey(tokenA.address)]
+              const balanceB = balances[getAddressKey(tokenB.address)]
               const balanceComp = balanceComparator(balanceA, balanceB)
 
               return applyDirection(balanceComp > 0, sortDirection)
@@ -227,13 +226,12 @@ export function TokenTable({
 
           {tokensData && sortedTokens.length !== 0 ? (
             sortedTokens.map((data, i) => {
-              const balanceRaw = balances && balances[data.address.toLowerCase()]
-              const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, balanceRaw.toHexString()) : undefined
+              const balanceRaw = balances?.[getAddressKey(data.address)]
+              const balance = balanceRaw !== undefined ? safeFromRawAmount(data, balanceRaw.toString()) : undefined
 
-              const allowancesRaw = allowances && allowances[data.address.toLowerCase()]
-              const allowance = allowancesRaw
-                ? CurrencyAmount.fromRawAmount(data, allowancesRaw.toHexString())
-                : undefined
+              const allowancesRaw = allowances?.[getAddressKey(data.address)]
+              const allowance =
+                allowancesRaw !== undefined ? safeFromRawAmount(data, allowancesRaw.toString()) : undefined
 
               if (data) {
                 return (

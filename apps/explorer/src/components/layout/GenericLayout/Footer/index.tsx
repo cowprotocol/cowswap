@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { Color, Media } from '@cowprotocol/ui'
 
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'

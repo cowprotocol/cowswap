@@ -14,6 +14,6 @@ export const removeInFlightOrderIdAtom = atom(null, (get, set, orderId: string) 
 
   set(
     ethFlowInFlightOrderIdsAtom,
-    orderIds.filter((order) => order !== orderId)
+    orderIds.filter((order) => order !== orderId),
   )
 })

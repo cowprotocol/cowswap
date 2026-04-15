@@ -1,10 +1,11 @@
+import { COWSWAP_ORIGIN } from './const'
 import { isCowSwapWidgetPalette } from './themeUtils'
 import { CowSwapWidgetParams, TradeType } from './types'
 
 const EMPTY_TOKEN = '_'
 
 export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
-  const host = typeof params.baseUrl === 'string' ? params.baseUrl : 'https://swap.cow.fi'
+  const host = typeof params.baseUrl === 'string' ? params.baseUrl : COWSWAP_ORIGIN
   const path = buildWidgetPath(params)
 
   return host + '/#' + path + '?' + buildWidgetUrlQuery(params)
@@ -21,7 +22,13 @@ export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
 export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
   const query = new URLSearchParams()
 
-  return addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params)
+  return addHooksEnabledToQuery(
+    addLocaleToQuery(
+      addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params),
+      params,
+    ),
+    params,
+  )
 }
 
 function addTradeAmountsToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
@@ -63,4 +70,26 @@ function addTargetChainIdToQuery(query: URLSearchParams, params: Partial<CowSwap
   }
 
   return query
+}
+
+function addLocaleToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  if (params.locale) {
+    query.append('lng', params.locale)
+  }
+
+  return query
+}
+
+function addHooksEnabledToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  if (hasHooks(params.hooks)) {
+    query.append('hooksEnabled', 'true')
+  } else {
+    query.delete('hooksEnabled')
+  }
+
+  return query
+}
+
+function hasHooks(hooks: CowSwapWidgetParams['hooks'] | undefined): boolean {
+  return !!hooks && Object.values(hooks).some(Boolean)
 }

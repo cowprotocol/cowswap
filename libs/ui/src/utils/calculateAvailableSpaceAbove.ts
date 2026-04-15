@@ -6,7 +6,7 @@
  */
 export function calculateAvailableSpaceAbove(rect: DOMRect | null, gap: number = 8): string {
   if (!rect) return '100vh'
-  
+
   const availableHeight = Math.max(0, rect.top - gap)
   return `${availableHeight}px`
 }

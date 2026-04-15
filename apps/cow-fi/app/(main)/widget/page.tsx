@@ -6,6 +6,8 @@ import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import { Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
 import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
@@ -31,7 +33,6 @@ import {
   WidgetContainer,
   HeroButtonWrapper,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 const FEATURE_ITEMS = [
   'Live styling configurator',
@@ -69,7 +70,7 @@ export default function Page() {
 
           <HeroButtonWrapper>
             <Link
-              href="https://widget.cow.fi/"
+              href="https://widget.cow.finance/"
               utmContent="widget-page-configure-widget-cta-hero"
               external
               linkType={LinkType.HeroButton}
@@ -87,7 +88,7 @@ export default function Page() {
             <Link
               bgColor="transparent"
               color={`var(${UI.COLOR_NEUTRAL_20})`}
-              href="https://docs.cow.fi/cow-protocol/tutorials/widget"
+              href="https://docs.cow.finance/cow-protocol/tutorials/widget"
               utmContent="widget-page-readdocs-cta-hero"
               external
               linkType={LinkType.HeroButton}
@@ -319,7 +320,7 @@ export default function Page() {
             <SectionTitleText>Integrate in 5 minutes or less</SectionTitleText>
             <HeroButtonWrapper width="auto">
               <Link
-                href="https://widget.cow.fi/"
+                href="https://widget.cow.finance/"
                 utmContent="widget-page-configure-widget-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
@@ -337,7 +338,7 @@ export default function Page() {
               <Link
                 bgColor="transparent"
                 color={`var(${UI.COLOR_NEUTRAL_20})`}
-                href="https://docs.cow.fi/cow-protocol/tutorials/widget"
+                href="https://docs.cow.finance/cow-protocol/tutorials/widget"
                 utmContent="widget-page-readdocs-cta-hero"
                 external
                 linkType={LinkType.HeroButton}

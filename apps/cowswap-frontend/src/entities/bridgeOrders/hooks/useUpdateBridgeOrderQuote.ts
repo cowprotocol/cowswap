@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -15,13 +16,13 @@ export function useUpdateBridgeOrderQuote(): (orderUid: string, statusResult: Br
       if (!account) return
 
       setBridgeOrders((state) => {
-        const orders = state[chainId]?.[account.toLowerCase()] || []
+        const orders = state[chainId]?.[getAddressKey(account)] || []
 
         return {
           ...state,
           [chainId]: {
             ...state[chainId],
-            [account.toLowerCase()]: orders.map((order) => {
+            [getAddressKey(account)]: orders.map((order) => {
               if (order.orderUid === orderUid) {
                 return {
                   ...order,

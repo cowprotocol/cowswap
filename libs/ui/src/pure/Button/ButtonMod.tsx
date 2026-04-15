@@ -14,6 +14,7 @@ export const BaseButton = styled(RebassButton)<
   {
     padding?: string
     width?: string
+    $gap?: string
     $borderRadius?: string
     altDisabledStyle?: boolean
     buttonSize?: ButtonSize // mod
@@ -33,13 +34,14 @@ export const BaseButton = styled(RebassButton)<
   justify-content: center;
   flex-wrap: nowrap;
   align-items: center;
+  gap: ${({ $gap }) => $gap ?? '0'};
   cursor: pointer;
   position: relative;
   z-index: 1;
+
   &:disabled {
     opacity: 50%;
-    cursor: auto;
-    pointer-events: none;
+    cursor: not-allowed;
   }
 
   will-change: transform;
@@ -57,16 +59,17 @@ export const BaseButton = styled(RebassButton)<
 
 export const ButtonPrimary = styled(BaseButton)`
   font-size: 16px;
+
   &:focus,
   &:hover,
   &:active {
     color: ${({ theme }) => theme.text1};
   }
+
   &:disabled {
     background-color: ${({ theme, altDisabledStyle, disabled }) =>
       altDisabledStyle ? (disabled ? theme.bg2 : theme.bg2) : theme.background};
     color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? 'white' : theme.info)};
-    cursor: auto;
     box-shadow: none;
     border: 1px solid transparent;
     outline: none;

@@ -1,14 +1,16 @@
 import { ReactNode, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { useAppData } from 'modules/appData'
 import {
   QuoteDetails,
@@ -23,12 +25,13 @@ import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
+  useGetConfirmButtonLabel,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
   useCommonTradeConfirmContext,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
+import { HighFeeWarning, RowDeadline, RowQuoteId } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -36,6 +39,7 @@ import { RateInfo } from 'common/pure/RateInfo'
 
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
+import { buildSwapBridgeClickEvent, useSwapBridgeClickEventData } from '../../hooks/useSwapBridgeClickEvent'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
@@ -63,18 +67,21 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { slippage } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
   const commonTradeConfirmContext = useCommonTradeConfirmContext()
+  const swapBridgeClickEventData = useSwapBridgeClickEventData()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
-  const { bridgeQuote } = useTradeQuote()
+  const { bridgeQuote, quote, error: quoteError } = useTradeQuote()
 
   const bridgeProvider = bridgeQuote?.providerInfo
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
+  const quoteResponse = quoteError ? undefined : quote?.quoteResults.quoteResponse
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
   const labelsAndTooltips = useLabelsAndTooltips()
+  const isRewardsRowEnabled = useIsRewardsRowEnabled()
 
   const { values: balances } = useTokensBalancesCombined()
 
@@ -87,7 +94,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     }
 
     if (current) {
-      const normalisedAddress = getCurrencyAddress(current).toLowerCase()
+      const normalisedAddress = getAddressKey(getCurrencyAddress(current))
       const balance = balances[normalisedAddress]
       const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
 
@@ -102,7 +109,12 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     return true
   }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
-  const confirmText = shouldDisplayBridgeDetails ? t`Confirm Swap and Bridge` : t`Confirm Swap`
+  const confirmText = useGetConfirmButtonLabel('swap', shouldDisplayBridgeDetails, true)
+
+  const swapBridgeClickEvent = useMemo(
+    () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click' }),
+    [swapBridgeClickEventData],
+  )
 
   const buttonText = useMemo(() => {
     const { amount } = inputCurrencyInfo
@@ -128,6 +140,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData}
+        confirmClickEvent={swapBridgeClickEvent}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
@@ -159,7 +172,13 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     hideUsdValues
                     withTimelineDot={false}
                   >
+                    {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
                     <RowDeadline deadline={deadline} />
+                    <RowQuoteId
+                      quoteId={quoteResponse?.id}
+                      isVerified={quoteResponse?.verified}
+                      expiration={quoteResponse?.expiration}
+                    />
                   </TradeBasicConfirmDetails>
                 )}
                 {restContent}

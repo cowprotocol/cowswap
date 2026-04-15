@@ -6,7 +6,7 @@
       "permanent": false
     }
   ],
-  "buildCommand": "cd ../../ && npx nx build cowswap-frontend --configuration=$NX_CONFIGURATION",
+  "buildCommand": "cd ../../ && pnpm build:cowswap",
   "outputDirectory": "../../build/cowswap",
   "installCommand": "cd ../../ && pnpm run install:ci"
 }

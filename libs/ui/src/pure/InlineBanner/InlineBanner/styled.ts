@@ -17,13 +17,27 @@ export const Wrapper = styled.span<{
   backDropBlur?: boolean
   fontSize?: number
   noBackground?: boolean
+  paperBackground?: boolean
   breakWord?: boolean
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  background: ${({ colorEnums, noBackground }) => (noBackground ? 'transparent' : `var(${colorEnums.bg})`)};
+  background-color: ${({ colorEnums, noBackground, paperBackground }) => {
+    if (noBackground) {
+      return 'transparent'
+    }
+
+    return paperBackground ? `var(${UI.COLOR_PAPER})` : `var(${colorEnums.bg})`
+  }};
+  background-image: ${({ colorEnums, noBackground, paperBackground }) => {
+    if (noBackground || !paperBackground) {
+      return 'none'
+    }
+
+    return `linear-gradient(var(${colorEnums.bg}), var(${colorEnums.bg}))`
+  }};
   color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   gap: 24px 10px;
   border-radius: ${({ borderRadius = '16px' }) => borderRadius};

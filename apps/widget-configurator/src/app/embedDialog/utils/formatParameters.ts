@@ -9,7 +9,7 @@ export function formatParameters(
   params: CowSwapWidgetParams,
   padLeft = 0,
   isTypescript: boolean,
-  defaultPalette: ColorPalette
+  defaultPalette: ColorPalette,
 ): string {
   const paramsSanitized = sanitizeParameters(params, defaultPalette)
   REMOVE_PARAMS.forEach((propName) => {
@@ -40,7 +40,7 @@ export function formatParameters(
   if (isTypescript) {
     resultWithValues = resultWithValues.replace(
       new RegExp(/^(\s*)"(\w*)"(,?)$/gm),
-      (_match, space, tradeType, comma) => space + 'TradeType.' + tradeType.toUpperCase() + comma
+      (_match, space, tradeType, comma) => space + 'TradeType.' + tradeType.toUpperCase() + comma,
     )
   }
 

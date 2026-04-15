@@ -4,7 +4,10 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { CmsImage, UI, Font, Media } from '@cowprotocol/ui'
 
 import Link from 'next/link'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
+
+import { Article } from '../services/cms'
 
 import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
@@ -19,9 +22,6 @@ import {
   LinkItem,
   LinkSection,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
-
-import { Article } from '../services/cms'
 
 const Wrapper = styled.div`
   display: flex;

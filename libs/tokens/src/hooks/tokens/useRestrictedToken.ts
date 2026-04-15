@@ -1,14 +1,11 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { getTokenId } from '@cowprotocol/cow-sdk'
+import { Token } from '@cowprotocol/currency'
 import { TokenInfo } from '@cowprotocol/types'
-import { Token } from '@uniswap/sdk-core'
 
-import {
-  getTokenId,
-  RestrictedTokenListState,
-  restrictedTokensAtom,
-} from '../../state/restrictedTokens/restrictedTokensAtom'
+import { RestrictedTokenListState, restrictedTokensAtom } from '../../state/restrictedTokens/restrictedTokensAtom'
 
 export interface RestrictedTokenInfo {
   token: TokenInfo
@@ -34,16 +31,6 @@ export function findRestrictedToken(
   }
 }
 
-export function useRestrictedToken(token: Token | undefined): RestrictedTokenInfo | undefined {
-  const restrictedList = useAtomValue(restrictedTokensAtom)
-
-  return useMemo(() => {
-    if (!restrictedList.isLoaded) return undefined
-
-    return findRestrictedToken(token, restrictedList)
-  }, [token, restrictedList])
-}
-
 export function useAnyRestrictedToken(
   inputToken: Token | undefined,
   outputToken: Token | undefined,
@@ -54,4 +41,14 @@ export function useAnyRestrictedToken(
   return useMemo(() => {
     return inputTokenInfo ?? outputTokenInfo
   }, [inputTokenInfo, outputTokenInfo])
+}
+
+export function useRestrictedToken(token: Token | undefined): RestrictedTokenInfo | undefined {
+  const restrictedList = useAtomValue(restrictedTokensAtom)
+
+  return useMemo(() => {
+    if (!restrictedList.isLoaded) return undefined
+
+    return findRestrictedToken(token, restrictedList)
+  }, [token, restrictedList])
 }

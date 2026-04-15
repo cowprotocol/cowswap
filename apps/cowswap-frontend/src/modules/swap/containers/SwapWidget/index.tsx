@@ -22,10 +22,11 @@ import {
   useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
-import { useIsTradeFormValidationPassed } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
@@ -45,7 +46,7 @@ import {
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
-import { BottomBanners } from '../BottomBanners'
+import { BottomBanners } from '../BottomBanners/BottomBanners.container'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
@@ -58,17 +59,14 @@ export interface SwapWidgetProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function,complexity
+// eslint-disable-next-line max-lines-per-function
 export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const { isLoading: isRateLoading, bridgeQuote, error: quoteError } = useTradeQuote()
-  /**
-   * When a quote is loading, or there is an error in the quote result, we should not display values
-   */
-  const hideQuoteAmount = Boolean(isRateLoading || quoteError)
+  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
+  const hideQuoteAmount = useShouldHideTradeRateDetails()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -130,34 +128,34 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
-    amount: !isSellTrade && hideQuoteAmount ? null : inputCurrencyAmount,
+    amount: inputCurrencyAmount,
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
-    receiveAmountInfo: !isSellTrade && !hideQuoteAmount ? receiveAmountInfo : null,
+    receiveAmountInfo: !isSellTrade ? receiveAmountInfo : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
-    amount: isSellTrade && hideQuoteAmount ? null : outputCurrencyAmount,
+    amount: outputCurrencyAmount,
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo: isSellTrade && !hideQuoteAmount ? receiveAmountInfo : null,
+    receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
 
   const inputCurrencyPreviewInfo = {
-    amount: inputCurrencyInfo.amount,
-    fiatAmount: inputCurrencyInfo.fiatAmount,
-    balance: inputCurrencyInfo.balance,
+    amount: inputCurrencyAmount,
+    fiatAmount: inputCurrencyFiatAmount,
+    balance: inputCurrencyBalance,
     label: isSellTrade ? t`Sell amount` : t`Expected sell amount`,
   }
 
   const outputCurrencyPreviewInfo = {
-    amount: outputCurrencyInfo.amount,
-    fiatAmount: outputCurrencyInfo.fiatAmount,
-    balance: outputCurrencyInfo.balance,
+    amount: outputCurrencyAmount,
+    fiatAmount: outputCurrencyFiatAmount,
+    balance: outputCurrencyBalance,
     label: isSellTrade ? t`Receive (before fees)` : t`Buy exactly`,
   }
 
@@ -180,12 +178,14 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const isConnected = Boolean(account)
   const isNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
   const shouldShowLockScreen =
     isHydrated &&
     !isUnlocked &&
     !isNetworkUnsupported &&
+    !isNetworkDeprecated &&
     !isInjectedWidget() &&
     ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
 
@@ -205,7 +205,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         return (
           <>
             {bottomContent}
-            {!isRateLoading && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
+            {!hideQuoteAmount && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
@@ -232,7 +232,6 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         intermediateBuyToken,
         isPrimaryValidationPassed,
         hideQuoteAmount,
-        isRateLoading,
       ],
     ),
   }

@@ -1,0 +1,103 @@
+import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
+import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { createAppKit } from '@reown/appkit/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { safe } from '@wagmi/connectors'
+import { http } from 'viem'
+import { createStorage, type Transport } from 'wagmi'
+
+import { throttledInjected } from './connectors/throttledInjected'
+
+import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
+
+type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof throttledInjected>
+
+function isEmbeddedInIframe(): boolean {
+  return typeof window !== 'undefined' && window.self !== window.top
+}
+
+function getConnectors(): ConnectorInstance[] {
+  const injected = throttledInjected()
+  if (isEmbeddedInIframe()) {
+    return [safe({ shimDisconnect: true }), injected]
+  }
+  return [injected]
+}
+
+const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
+  (acc, chain) => {
+    const chainId = chain.id as SupportedChainId
+    const url = RPC_URLS[chainId]
+    if (url) {
+      acc[chainId] = http(url)
+    }
+    return acc
+  },
+  {} as Record<SupportedChainId, Transport>,
+)
+
+/** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
+const customRpcUrls: Record<string, Array<{ url: string }>> = {}
+for (const chain of SUPPORTED_REOWN_NETWORKS) {
+  const url = RPC_URLS[chain.id as SupportedChainId]
+  if (url) {
+    customRpcUrls[`eip155:${chain.id}`] = [{ url }]
+  }
+}
+
+const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
+
+const WAGMI_STORAGE_KEY = 'cowswap-wallet'
+
+const storage =
+  typeof window === 'undefined'
+    ? createStorage({
+        storage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+      })
+    : createStorage({
+        storage: window.localStorage,
+        key: WAGMI_STORAGE_KEY,
+      })
+
+const metadata = {
+  name: 'CoW Swap',
+  description:
+    'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
+  url: 'https://swap.cow.fi',
+  icons: ['https://swap.cow.fi/favicon-light-mode.png'],
+}
+
+export const wagmiAdapter = new WagmiAdapter({
+  connectors: getConnectors() as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
+  customRpcUrls,
+  networks: SUPPORTED_REOWN_NETWORKS,
+  projectId,
+  storage,
+  transports: wagmiTransports,
+})
+
+export const config = wagmiAdapter.wagmiConfig
+
+export const reownAppKit = createAppKit({
+  adapters: [wagmiAdapter],
+  allowUnsupportedChain: false,
+  customRpcUrls,
+  defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
+  enableEIP6963: true,
+  enableReconnect: true,
+  enableWalletGuide: false,
+  featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
+  features: {
+    analytics: false,
+    email: false,
+    socials: false,
+    connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
+  },
+  metadata,
+  networks: SUPPORTED_REOWN_NETWORKS,
+  projectId,
+  termsConditionsUrl:
+    'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
+})

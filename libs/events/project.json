@@ -15,17 +15,10 @@
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/libs/events"
-      },
-      "configurations": {
-        "development": {
-          "mode": "development"
-        },
-        "production": {
-          "mode": "production"
-        }
+        "outputPath": "dist/libs/events",
+        "configFile": "libs/events/vite.config.mts",
+        "assets": ["libs/events/*.md"]
       }
     },
     "test": {

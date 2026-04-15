@@ -35,7 +35,7 @@ export function ContextMenuTooltip({
 
     const handleClickOutside = (event: Event): void => {
       const target = event.target as HTMLElement
-      
+
       // Only close if clicking outside the context menu
       if (!contextMenuRef.current?.contains(target)) {
         setOpenTooltip(false)
@@ -49,12 +49,12 @@ export function ContextMenuTooltip({
   // Custom click handler that allows anchor tags to work
   const handleTooltipClick = (event: MouseEvent<HTMLDivElement>): void => {
     const target = event.target as HTMLElement
-    
+
     // Don't prevent default for anchor tags - let them work naturally
     if (target.tagName === 'A' || target.closest('a')) {
       return
     }
-    
+
     // For other elements, toggle the tooltip
     event.preventDefault()
     setOpenTooltip((prev) => !prev)

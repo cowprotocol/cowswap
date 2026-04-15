@@ -1,5 +1,4 @@
-import { Identicon, ConnectionType } from '@cowprotocol/wallet'
-import { CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
+import { Identicon, ConnectionType, CoinbaseWalletIcon, WalletConnectIcon } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
@@ -17,7 +16,7 @@ const IconWrapper = styled.div<{ size?: number }>`
 `
 
 export interface StatusIconProps {
-  connectionType: ConnectionType
+  connectionType?: ConnectionType | string
   account?: string
   size?: number
 }
@@ -27,14 +26,14 @@ export interface StatusIconProps {
 export function StatusIcon({ connectionType, account, size = 16 }: StatusIconProps) {
   let image
   switch (connectionType) {
+    case ConnectionType.COINBASE_WALLET:
+      image = <img src={CoinbaseWalletIcon} alt={t`Coinbase Wallet`} />
+      break
     case ConnectionType.INJECTED:
       image = <Identicon account={account} />
       break
     case ConnectionType.WALLET_CONNECT_V2:
       image = <img src={WalletConnectIcon} alt={t`WalletConnect`} />
-      break
-    case ConnectionType.COINBASE_WALLET:
-      image = <img src={CoinbaseWalletIcon} alt={t`Coinbase Wallet`} />
       break
   }
 

@@ -114,6 +114,6 @@ export function useTransactionData(network: Network | undefined, txHash: string)
       contractsData.isLoading,
       traceData.error,
       contractsData.error,
-    ]
+    ],
   )
 }

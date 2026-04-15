@@ -1,5 +1,50 @@
 # Changelog
 
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/assets-v2.2.0...assets-v2.2.1) (2026-04-08)
+
+
+### 🐛 Bug Fixes
+
+* always use AlertTriangle, not alertCircle ([#7206](https://github.com/cowprotocol/cowswap/issues/7206)) ([19378d4](https://github.com/cowprotocol/cowswap/commit/19378d4608378e9f65e267120476a9818a4b4e6c))
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.1.0...assets-v2.2.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **affiliate:** add affiliate program page to cow-fi ([#7232](https://github.com/cowprotocol/cowswap/issues/7232)) ([fbf93d7](https://github.com/cowprotocol/cowswap/commit/fbf93d71b6c423d3378eb9b7d51ab09082f770a9))
+
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.0.1...assets-v2.1.0) (2026-03-10)
+
+
+### ✨ Features
+
+* affiliate program ([#6793](https://github.com/cowprotocol/cowswap/issues/6793)) ([7b93702](https://github.com/cowprotocol/cowswap/commit/7b937020ad4209ece2d3d38972e8aaf722e0dbcf))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/assets-v2.0.0...assets-v2.0.1) (2026-02-05)
+
+
+### 🔧 Miscellaneous
+
+* add missing eslint deps ([#6924](https://github.com/cowprotocol/cowswap/issues/6924)) ([afcfc18](https://github.com/cowprotocol/cowswap/commit/afcfc18ee80616629c7b0c0b7449e84db8400246))
+
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.17.1...assets-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* **limit:** update orders table tabs and filters [#6831](https://github.com/cowprotocol/cowswap/issues/6831) ([11b07b9](https://github.com/cowprotocol/cowswap/commit/11b07b901ad33dc19b8c37ab1769fb3fa7895222))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
 ## [1.17.1](https://github.com/cowprotocol/cowswap/compare/assets-v1.17.0...assets-v1.17.1) (2025-12-15)
 
 

@@ -33,7 +33,7 @@ export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
     (colorPalette: ColorPalette) => {
       localStorage.setItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`, JSON.stringify(colorPalette))
     },
-    [mode]
+    [mode],
   )
 
   const setColorPalette = useCallback(
@@ -43,7 +43,7 @@ export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
       updateColorPalette(newPalette)
       persistPalette(newPalette)
     },
-    [colorPalette, persistPalette]
+    [colorPalette, persistPalette],
   )
 
   const resetColorPalette = useCallback(() => {
@@ -59,6 +59,6 @@ export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
 
   return useMemo(
     () => ({ defaultPalette, colorPalette, setColorPalette, resetColorPalette }),
-    [defaultPalette, colorPalette, setColorPalette, resetColorPalette]
+    [defaultPalette, colorPalette, setColorPalette, resetColorPalette],
   )
 }

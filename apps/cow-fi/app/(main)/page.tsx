@@ -7,6 +7,8 @@ import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carto
 import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 import { Font, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
 import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
@@ -27,7 +29,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 export default function Page() {
   const cowAnalytics = useCowAnalytics()
@@ -94,7 +95,7 @@ export default function Page() {
             >
               Anyone can join CoW DAO by holding{' '}
               <Link
-                href="https://swap.cow.fi/#/1/swap/USDC/COW"
+                href="https://swap.cow.finance/#/1/swap/USDC/COW"
                 onClick={() => sendHomeEvent('click-cow-tokens')}
                 external
               >
@@ -145,7 +146,7 @@ export default function Page() {
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="home-page-apply-for-a-grant"
-              href="https://grants.cow.fi/"
+              href="https://docs.cow.finance/"
               onClick={() => sendHomeEvent('click-apply-for-a-grant')}
             >
               Explore grants

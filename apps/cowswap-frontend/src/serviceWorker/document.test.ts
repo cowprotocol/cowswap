@@ -3,7 +3,6 @@ import { getCacheKeyForURL as getCacheKeyForURLMock, matchPrecache as matchPreca
 
 import { CachedDocument, handleDocument, matchDocument } from './document'
 
-jest.mock('workbox-navigation-preload', () => ({ enable: jest.fn() }))
 jest.mock('workbox-precaching', () => ({
   getCacheKeyForURL: jest.fn(),
   matchPrecache: jest.fn(),
@@ -13,9 +12,9 @@ jest.mock('workbox-routing', () => ({ Route: class {} }))
 describe('document', () => {
   describe('matchDocument', () => {
     const TEST_DOCUMENTS = [
-      [{ request: { mode: 'navigate' }, url: { hostname: 'swap.cow.fi', pathname: '' } }, true],
-      [{ request: { mode: 'navigate' }, url: { hostname: 'swap.cow.fi', pathname: '/#/swap' } }, true],
-      [{ request: { mode: 'navigate' }, url: { hostname: 'swap.cow.fi', pathname: '/asset.gif' } }, false],
+      [{ request: { mode: 'navigate' }, url: { hostname: 'swap.cow.finance', pathname: '' } }, true],
+      [{ request: { mode: 'navigate' }, url: { hostname: 'swap.cow.finance', pathname: '/#/swap' } }, true],
+      [{ request: { mode: 'navigate' }, url: { hostname: 'swap.cow.finance', pathname: '/asset.gif' } }, false],
       [{ request: {}, url: { hostname: 'localhost', pathname: '' } }, false],
       [{ request: { mode: 'navigate' }, url: { hostname: 'localhost', pathname: '' } }, true],
       [{ request: { mode: 'navigate' }, url: { hostname: 'localhost', pathname: '/#/swap' } }, true],

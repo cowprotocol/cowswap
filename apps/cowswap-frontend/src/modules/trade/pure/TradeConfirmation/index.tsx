@@ -34,6 +34,7 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   recipient?: string | null
   buttonText?: ReactNode
   children?: (restContent: ReactElement) => ReactElement
+  confirmClickEvent?: string
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
@@ -49,7 +50,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const hasPendingTrade = !!pendingTrade
 
   const props = frozenProps || _props
-  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, children, isPriceStatic, appData } = props
+  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, children, isPriceStatic, appData, confirmClickEvent } =
+    props
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
@@ -117,6 +119,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           isButtonDisabled={isButtonDisabled}
           hasPendingTrade={hasPendingTrade}
           signingStep={signingStep}
+          clickEvent={confirmClickEvent}
         />
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>

@@ -1,12 +1,13 @@
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, getTokenId } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, ExternalLink, ModalHeader, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { AlertCircle, AlertTriangle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import * as styledEl from './styled'
@@ -75,7 +76,7 @@ export function ImportTokenModal(props: ImportTokenModalProps): ReactNode {
               {token.address}
             </ExternalLinkStyled>
             <styledEl.UnknownSourceWarning>
-              <AlertCircle size={14} />
+              <AlertTriangle size={14} />
               <span>
                 <Trans>Unknown Source</Trans>
               </span>

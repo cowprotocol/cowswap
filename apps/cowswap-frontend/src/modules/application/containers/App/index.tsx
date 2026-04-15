@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { TopLevelModals } from 'legacy/components/TopLevelModals'
 
 import { InvalidCoWShedSetup } from 'modules/accountProxy'
@@ -9,11 +8,11 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 
 import { RoutesApp } from './RoutesApp'
 
-import { AppContainer } from '../AppContainer'
+import { AppContainer } from '../AppContainer/AppContainer.container'
 
 export function App(): ReactNode {
   return (
-    <ErrorBoundary>
+    <>
       <RedirectAnySwapAffectedUsers />
       <InvalidCoWShedSetup />
 
@@ -21,6 +20,6 @@ export function App(): ReactNode {
         <TopLevelModals />
         <RoutesApp />
       </AppContainer>
-    </ErrorBoundary>
+    </>
   )
 }

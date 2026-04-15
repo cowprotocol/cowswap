@@ -1,14 +1,5 @@
 import { TelegramConnectionStatus } from './index'
 
-interface TelegramData {
-  auth_date: number
-  first_name: string
-  hash: string
-  id: number
-  photo_url: string
-  username: string
-}
-
 const subscribeAccount = (): void => {}
 const subscribeWithData = async (_data: TelegramData): Promise<void> => {}
 const authorize = (): Promise<TelegramData | null> => Promise.resolve(null)

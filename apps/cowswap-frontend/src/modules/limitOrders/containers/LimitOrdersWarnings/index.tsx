@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
@@ -45,7 +45,7 @@ const StyledRateImpactWarning = styled(RateImpactWarning)`
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const { feeAmount, isConfirmScreen = false, className } = props
 

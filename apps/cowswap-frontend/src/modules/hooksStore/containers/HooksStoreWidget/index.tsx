@@ -10,6 +10,7 @@ import { Trans } from '@lingui/react/macro'
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { TradeWidgetWrapper } from './styled'
@@ -23,8 +24,6 @@ import { PreHookButton } from '../PreHookButton'
 
 type HookPosition = 'pre' | 'post'
 
-console.log(ICON_HOOK)
-
 export function HooksStoreWidget(): ReactNode {
   const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
@@ -32,7 +31,10 @@ export function HooksStoreWidget(): ReactNode {
 
   const isNativeSell = useIsSellNative()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
+
+  const hooksDisabled = isChainIdUnsupported || isChainIdDeprecated
 
   const walletType = useIsSmartContractWallet()
     ? HookDappWalletCompatibility.SMART_CONTRACT
@@ -62,9 +64,9 @@ export function HooksStoreWidget(): ReactNode {
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
   const hideSwapWidget = isHookSelectionOpen
 
-  const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
+  const hideHooksContent = isNativeSell || isWrapOrUnwrap
 
-  const TopContent = shouldNotUseHooks ? undefined : isWrapOrUnwrap ? undefined : (
+  const TopContent = hideHooksContent ? undefined : (
     <>
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
@@ -76,12 +78,13 @@ export function HooksStoreWidget(): ReactNode {
           <Trans>
             With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.
           </Trans>{' '}
-          <a href="https://cow.fi/learn/cow-hooks-you-are-in-control" target="_blank" rel="noopener noreferrer">
+          <a href="https://cow.finance/learn/cow-hooks-you-are-in-control" target="_blank" rel="noopener noreferrer">
             <Trans>Learn more.</Trans>
           </a>
         </p>
       </DismissableInlineBanner>
       <PreHookButton
+        disabled={hooksDisabled}
         onOpen={() => setSelectedHookPosition('pre')}
         onEditHook={onPreHookEdit}
         hideTooltip={isHookSelectionOpen}
@@ -89,8 +92,9 @@ export function HooksStoreWidget(): ReactNode {
     </>
   )
 
-  const BottomContent = shouldNotUseHooks ? null : (
+  const BottomContent = isNativeSell ? null : (
     <PostHookButton
+      disabled={hooksDisabled}
       onOpen={() => setSelectedHookPosition('post')}
       onEditHook={onPostHookEdit}
       hideTooltip={isHookSelectionOpen}

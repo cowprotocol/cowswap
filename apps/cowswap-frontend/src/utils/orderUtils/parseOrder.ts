@@ -1,5 +1,5 @@
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price, Token } from '@cowprotocol/currency'
 
 import { msg } from '@lingui/core/macro'
 import BigNumber from 'bignumber.js'
@@ -16,25 +16,6 @@ import { isOrderFilled } from './isOrderFilled'
 import { isPartiallyFilled } from './isPartiallyFilled'
 
 import type { MessageDescriptor } from '@lingui/core'
-
-export interface ParsedOrderExecutionData {
-  executedBuyAmount: JSBI
-  executedSellAmount: JSBI
-  fullyFilled: boolean
-  partiallyFilled: boolean
-  filledAmount: BigNumber
-  filledPercentage: BigNumber
-  surplusAmount: BigNumber
-  surplusPercentage: BigNumber
-  executedFeeAmount: string | undefined
-  executedFee: string | null
-  executedFeeToken: string | null
-  totalFee: string | null
-  filledPercentDisplay: string
-  executedPrice: Price<Currency, Currency> | null
-  activityId: string | undefined
-  activityTitle: MessageDescriptor | string
-}
 
 export interface ParsedOrder {
   id: string
@@ -58,6 +39,25 @@ export interface ParsedOrder {
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
   executionData: ParsedOrderExecutionData
+}
+
+export interface ParsedOrderExecutionData {
+  executedBuyAmount: JSBI
+  executedSellAmount: JSBI
+  fullyFilled: boolean
+  partiallyFilled: boolean
+  filledAmount: BigNumber
+  filledPercentage: BigNumber
+  surplusAmount: BigNumber
+  surplusPercentage: BigNumber
+  executedFeeAmount: string | undefined
+  executedFee: string | null
+  executedFeeToken: string | null
+  totalFee: string | null
+  filledPercentDisplay: string
+  executedPrice: Price<Currency, Currency> | null
+  activityId: string | undefined
+  activityTitle: MessageDescriptor | string
 }
 
 // eslint-disable-next-line complexity
@@ -133,10 +133,10 @@ export const parseOrder = (order: Order): ParsedOrder => {
   }
 }
 
-export function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {
-  return !!(order as ParsedOrder).executionData
-}
-
 export function isOffchainOrder(order: Order | ParsedOrder): boolean {
   return order.signingScheme === SigningScheme.EIP712
+}
+
+export function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {
+  return !!(order as ParsedOrder).executionData
 }

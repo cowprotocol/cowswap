@@ -1,33 +1,30 @@
-import { USDC_LENS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { isZkSyncChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW, GPv2Settlement } from '@cowprotocol/cowswap-abis'
-import { ContractsOrder } from '@cowprotocol/sdk-contracts-ts'
-import { BigNumber } from '@ethersproject/bignumber'
+import { ComposableCoWAbi, GPv2SettlementAbi } from '@cowprotocol/cowswap-abis'
 import type { MetaTransactionData } from '@safe-global/types-kit'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { toKeccak256 } from 'common/utils/toKeccak256'
-
-import { computeOrderUid } from '../../../utils/orderUtils/computeOrderUid'
-import { TWAPOrder, TwapOrderItem } from '../types'
-import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
-import { createPartOrderFromParent } from '../utils/buildTwapParts'
-import { getConditionalOrderId } from '../utils/getConditionalOrderId'
-import { twapOrderToStruct } from '../utils/twapOrderToStruct'
+import { encodeFunctionData, type Address, type PublicClient } from 'viem'
 
 export interface CancelTwapOrderContext {
-  composableCowContract: ComposableCoW
-  settlementContract: GPv2Settlement
+  composableCowAddress: Address
+  composableCowAbi: typeof ComposableCoWAbi
+  settlementAddress: Address
+  settlementAbi: typeof GPv2SettlementAbi
   orderId: string
   chainId: SupportedChainId
   partOrderId?: string
+  publicClient?: PublicClient
+  account?: Address
 }
 
 export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransactionData[] {
-  const { composableCowContract, settlementContract, orderId, partOrderId } = context
+  const { composableCowAddress, composableCowAbi, settlementAddress, settlementAbi, orderId, partOrderId } = context
   const cancelTwapOrderTx = {
-    to: composableCowContract.address,
-    data: composableCowContract.interface.encodeFunctionData('remove', [orderId]),
+    to: composableCowAddress,
+    data: encodeFunctionData({
+      abi: composableCowAbi,
+      functionName: 'remove',
+      args: [orderId as `0x${string}`],
+    }),
     value: '0',
     operation: 0,
   }
@@ -35,8 +32,12 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
   if (!partOrderId) return [cancelTwapOrderTx]
 
   const cancelTwapPartOrderTx = {
-    to: settlementContract.address,
-    data: settlementContract.interface.encodeFunctionData('invalidateOrder', [partOrderId]),
+    to: settlementAddress,
+    data: encodeFunctionData({
+      abi: settlementAbi,
+      functionName: 'invalidateOrder',
+      args: [partOrderId as `0x${string}`],
+    }),
     value: '0',
     operation: 0,
   }
@@ -45,21 +46,46 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
 }
 
 // TODO: we might need a custom method for estimating gas on Linea
-export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<BigNumber> {
+export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<bigint> {
   if (isZkSyncChain(context.chainId)) {
-    // Lens is a zkSync chain, so we need to use a different estimation method
+    throw new Error('estimateCancelTwapOrderTxs: Please, re-enable zkSync chain estimation.')
+
+    // We need to use a different estimation method for zkSync chains (like we did for Lens).
     // See the function estimateZkSyncCancelTwapOrderTxs for details
-    return estimateZkSyncCancelTwapOrderTxs(context)
+    // return estimateZkSyncCancelTwapOrderTxs(context)
   }
 
-  const { composableCowContract, settlementContract, orderId, partOrderId } = context
-  const cancelComposableCowTxCost = await composableCowContract.estimateGas.remove(orderId)
+  const {
+    composableCowAddress,
+    composableCowAbi,
+    settlementAddress,
+    settlementAbi,
+    orderId,
+    partOrderId,
+    publicClient,
+    account,
+  } = context
+  if (!publicClient || !account) throw new Error('estimateCancelTwapOrderTxs: publicClient and account required')
+
+  const cancelComposableCowTxCost = await publicClient.estimateContractGas({
+    address: composableCowAddress,
+    abi: composableCowAbi,
+    functionName: 'remove',
+    args: [orderId as `0x${string}`],
+    account,
+  })
 
   if (!partOrderId) return cancelComposableCowTxCost
 
-  const cancelPartOrderTx = await settlementContract.estimateGas.invalidateOrder(partOrderId)
+  const cancelPartOrderTx = await publicClient.estimateContractGas({
+    address: settlementAddress,
+    abi: settlementAbi,
+    functionName: 'invalidateOrder',
+    args: [partOrderId as `0x${string}`],
+    account,
+  })
 
-  return cancelComposableCowTxCost.add(cancelPartOrderTx)
+  return cancelComposableCowTxCost + cancelPartOrderTx
 }
 
 /**
@@ -71,6 +97,7 @@ export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext
  *
  * Thus, this function estimates the gas cost by simulating the transaction as if it were sent by a fake EOA address.
  */
+/*
 async function estimateZkSyncCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<BigNumber> {
   const { composableCowContract, settlementContract, partOrderId: hasPartOrder, chainId } = context
 
@@ -100,8 +127,13 @@ const FAKE_OWNER = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
 
 const START_TIME = Math.floor(Date.now() / 1000)
 
+const zkSyncChain: ChainInfo =
+  ALL_SUPPORTED_CHAINS.find(({ id }) => isZkSyncChain(id)) || ALL_SUPPORTED_CHAINS_MAP[SupportedChainId.MAINNET]
+
+const zkSyncChainId = zkSyncChain.id as SupportedChainId
+
 const FAKE_TWAP_ORDER: TWAPOrder = {
-  sellAmount: CurrencyAmount.fromRawAmount(WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS], 100_000_000_000),
+  sellAmount: CurrencyAmount.fromRawAmount(WRAPPED_NATIVE_CURRENCIES[zkSyncChainId], 100_000_000_000),
   buyAmount: CurrencyAmount.fromRawAmount(USDC_LENS, 200_000_000_000),
   receiver: FAKE_OWNER,
   numOfParts: 2,
@@ -144,3 +176,4 @@ async function getFakeTwapPartOrderId(chainId: SupportedChainId): Promise<string
   FAKE_PART_ORDER_IDS_CACHE[chainId] = await computeOrderUid(chainId, FAKE_OWNER, part as ContractsOrder)
   return FAKE_PART_ORDER_IDS_CACHE[chainId]
 }
+*/

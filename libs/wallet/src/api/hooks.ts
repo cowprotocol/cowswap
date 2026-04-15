@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useConnection } from 'wagmi'
+
 import { useWalletCapabilities } from './hooks/useWalletCapabilities'
 import {
   gnosisSafeInfoAtom,
@@ -18,8 +20,8 @@ import {
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
-import { useConnectionType } from '../web3-react/hooks/useConnectionType'
-import { useIsSafeApp, useIsSafeViaWc } from '../web3-react/hooks/useWalletMetadata'
+import { useConnectionType } from '../wagmi/hooks/useConnectionType'
+import { useIsSafeApp, useIsSafeViaWc } from '../wagmi/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -52,18 +54,18 @@ export function useEndEagerConnect(): () => void {
 }
 
 export function useIsTxBundlingSupported(): boolean | null {
+  // TODO this will be fixed in M-3 COW-569
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
 
-  /**
-   * Safe app doesn't return WalletCapabilities, but it supports tx bundling
-   */
-  if (isSafeApp) return true
+  const result = (() => {
+    if (isSafeApp || isSafeViaWc) return true
+    if (isCapabilitiesLoading) return null
+    return capabilities?.atomic?.status === 'supported'
+  })()
 
-  if (isCapabilitiesLoading) return null
-
-  return isSafeViaWc && !!capabilities?.atomicBatch?.supported
+  return result
 }
 
 // TODO: Add proper return type annotation
@@ -94,7 +96,9 @@ export function useIsAssetWatchingSupported(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  if (!info || connectionType !== ConnectionType.INJECTED) return false
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
+
+  if (!info || !isInjectedConnection) return false
 
   // TODO: check other wallets and extend the array
   return WATCH_ASSET_SUPPORED_WALLETS.includes(info.info.rdns)
@@ -104,7 +108,9 @@ export function useIsRabbyWallet(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  if (!info || connectionType !== ConnectionType.INJECTED) return false
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
+
+  if (!info || !isInjectedConnection) return false
 
   return RABBY_RDNS === info.info.rdns
 }
@@ -113,18 +119,23 @@ export function useIsBraveWallet(): boolean {
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  if (!info || connectionType !== ConnectionType.INJECTED) return false
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
+
+  if (!info || !isInjectedConnection) return false
 
   return BRAVE_WALLET_RDNS === info.info.rdns
 }
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
-  const connectionType = useConnectionType()
+  const { connector } = useConnection()
   const info = useSelectedEip6963ProviderInfo()
 
-  if (connectionType === ConnectionType.METAMASK) return true
+  const isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
+  const isInjectedConnection = connector?.type === ConnectionType.INJECTED
 
-  if (!info || connectionType !== ConnectionType.INJECTED) return false
+  if (isMetamaskConnection) return true
+
+  if (!info || !isInjectedConnection) return false
 
   return METAMASK_RDNS === info.info.rdns
 }

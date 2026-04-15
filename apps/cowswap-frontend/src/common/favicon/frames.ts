@@ -3,38 +3,41 @@ import defaultBaseSvg from '../../assets/animated-favicon/shared/default-base.sv
 import defaultDarkBaseSvg from '../../assets/animated-favicon/shared/default-dark-base.svg?raw'
 
 const defaultFrameModules = import.meta.glob<string>('../../assets/animated-favicon/default/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
 const solvingFrameModules = import.meta.glob<string>('../../assets/animated-favicon/solving/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
 const completedFrameModules = import.meta.glob<string>('../../assets/animated-favicon/completed/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
-const completedDarkFrameModules = import.meta.glob<string>(
-  '../../assets/animated-favicon/completed-dark/*.svg',
-  {
-    as: 'raw',
-    eager: true,
-  },
-)
+const completedDarkFrameModules = import.meta.glob<string>('../../assets/animated-favicon/completed-dark/*.svg', {
+  eager: true,
+  import: 'default',
+  query: '?raw',
+})
 
 const backToDefaultFrameModules = import.meta.glob<string>('../../assets/animated-favicon/back-to-default/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
 const backToDefaultDarkFrameModules = import.meta.glob<string>(
   '../../assets/animated-favicon/back-to-default-dark/*.svg',
   {
-    as: 'raw',
     eager: true,
+    import: 'default',
+    query: '?raw',
   },
 )
 
@@ -53,16 +56,12 @@ function filterModules(
 
 const defaultBaseSource = defaultBaseSvg.trim()
 const defaultDarkBaseSource = defaultDarkBaseSvg.trim()
-const moduleDefaultLightSources = toSortedFrames(
-  filterModules(defaultFrameModules, (path) => !path.includes('-dark')),
-)
+const moduleDefaultLightSources = toSortedFrames(filterModules(defaultFrameModules, (path) => !path.includes('-dark')))
 const defaultLightSources = [
   defaultBaseSource,
   ...moduleDefaultLightSources.filter((source) => source.trim() !== defaultBaseSource),
 ]
-const moduleDefaultDarkSources = toSortedFrames(
-  filterModules(defaultFrameModules, (path) => path.includes('-dark')),
-)
+const moduleDefaultDarkSources = toSortedFrames(filterModules(defaultFrameModules, (path) => path.includes('-dark')))
 const defaultDarkSources = [
   defaultDarkBaseSource,
   ...moduleDefaultDarkSources.filter((source) => source.trim() !== defaultDarkBaseSource),
@@ -396,7 +395,8 @@ function scheduleWarmup(frames: string[]): void {
     return
   }
 
-  const requestIdleCallback = (window as Window & { requestIdleCallback?: (cb: IdleRequestCallback) => number }).requestIdleCallback
+  const requestIdleCallback = (window as Window & { requestIdleCallback?: (cb: IdleRequestCallback) => number })
+    .requestIdleCallback
 
   const runner = (): void => {
     uniqueFrames.forEach((frame) => {
@@ -443,7 +443,4 @@ function scheduleWarmup(frames: string[]): void {
   }
 }
 
-scheduleWarmup([
-  ...gatherFrameSetFrames(lightFrameSet),
-  ...gatherFrameSetFrames(darkFrameSet),
-])
+scheduleWarmup([...gatherFrameSetFrames(lightFrameSet), ...gatherFrameSetFrames(darkFrameSet)])

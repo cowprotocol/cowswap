@@ -1,11 +1,16 @@
 import { useCallback, useState } from 'react'
-import { useConnect } from './useConnect'
-import { useDisconnect, useWalletClient } from 'wagmi'
-import { handleRpcError } from '@/util/handleRpcError'
-import { useAddRpcWithTimeout } from './useAddRpcWithTimeout'
-import { AddToWalletState, AddToWalletStateValues } from '../../types/addToWalletState'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
+
 import { CowFiCategory } from 'src/common/analytics/types'
+import { useDisconnect, useWalletClient } from 'wagmi'
+
+import { useAddRpcWithTimeout } from './useAddRpcWithTimeout'
+import { useConnect } from './useConnect'
+
+import { AddToWalletState, AddToWalletStateValues } from '../../types/addToWalletState'
+
+import { handleRpcError } from '@/util/handleRpcError'
 
 const DEFAULT_STATE: AddToWalletState = { state: 'unknown', autoConnect: false }
 const ADDING_STATE: AddToWalletState = { state: 'adding', autoConnect: false }

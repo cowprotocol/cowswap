@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { areAddressesEqual, isAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'

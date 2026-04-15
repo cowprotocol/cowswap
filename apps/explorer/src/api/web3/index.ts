@@ -24,7 +24,7 @@ export function createWeb3Api(provider?: string): Web3 {
             onTimeout: false,
           },
         })
-      : _provider
+      : _provider,
   )
 
   // `handleRevert = true` makes `require` failures to throw

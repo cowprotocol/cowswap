@@ -15,17 +15,10 @@
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/libs/types"
-      },
-      "configurations": {
-        "development": {
-          "mode": "development"
-        },
-        "production": {
-          "mode": "production"
-        }
+        "outputPath": "dist/libs/types",
+        "configFile": "libs/types/vite.config.mts",
+        "assets": ["libs/types/*.md"]
       }
     },
     "test": {

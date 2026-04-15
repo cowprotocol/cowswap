@@ -2,13 +2,13 @@
 
 import { PropsWithChildren, ReactNode } from 'react'
 
-import { Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
-import { baseTheme } from '@cowprotocol/ui'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { Footer, GlobalCoWDAOStyles, Media, MenuBar, baseTheme, getGlobalFooterNavItems } from '@cowprotocol/ui'
 
 import Link from 'next/link'
 import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
 
-import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
+import { getNavItems, NAV_ADDITIONAL_BUTTONS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
 
 import { useSetupPage } from '../../hooks/useSetupPage'
 import { CowSaucerScene } from '../CowSaucerScene'
@@ -44,6 +44,7 @@ interface LayoutProps {
 
 export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeight }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
+  const { isSolversEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
 
   const GlobalStyles = GlobalCoWDAOStyles()
   const LocalStyles = createGlobalStyle(
@@ -61,7 +62,7 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
       {/* Override global light theme to force dark mode for MenuBar only */}
       <ThemeProvider theme={darkTheme}>
         <MenuBar
-          navItems={NAV_ITEMS}
+          navItems={getNavItems(!!isSolversEnabled, !!isAffiliateProgramEnabled)}
           productVariant={PRODUCT_VARIANT}
           additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
           padding="10px 60px"
@@ -76,6 +77,7 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
         <Footer
           maxWidth={PAGE_MAX_WIDTH}
           productVariant={PRODUCT_VARIANT}
+          navItems={getGlobalFooterNavItems(!!isAffiliateProgramEnabled)}
           host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
           expanded
           hasTouchFooter

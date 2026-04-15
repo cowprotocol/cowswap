@@ -2,10 +2,12 @@
 declare const self: ServiceWorkerGlobalScope & { __WB_DISABLE_DEV_LOGS?: boolean }
 self.__WB_DISABLE_DEV_LOGS = true
 
-import 'workbox-precaching' // defines __WB_MANIFEST
+// eslint-disable-next-line import/no-duplicates -- side-effect import for __WB_MANIFEST; named import below
+import 'workbox-precaching' // defines __WB_MANIFEST (build-injected)
 
 import { clientsClaim, setCacheNameDetails } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
+// eslint-disable-next-line import/no-duplicates -- workbox-precaching: side-effect + named import required
 import { precacheAndRoute } from 'workbox-precaching'
 import { PrecacheEntry } from 'workbox-precaching/_types'
 import { registerRoute, Route } from 'workbox-routing'
@@ -14,7 +16,6 @@ import { CacheFirst } from 'workbox-strategies'
 import { DocumentRoute } from './document'
 import { toURL } from './utils'
 
- 
 import pkg from '../../package.json'
 
 const WEB_VERSION = pkg.version

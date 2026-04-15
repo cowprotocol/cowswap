@@ -22,6 +22,7 @@ import {
   useTradePriceImpact,
 } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
+import { useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -34,7 +35,7 @@ import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedSta
 import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
-import { InfoBanner } from '../../pure/InfoBanner'
+import { BottomBanners } from '../../pure/BottomBanners/BottomBanners.pure'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { DeadlineInput } from '../DeadlineInput'
@@ -136,7 +137,8 @@ const UNLOCK_SCREEN = {
   subtitle: msg`Get started!`,
   orderType: msg`partially fillable`,
   buttonText: msg`Get started with limit orders`,
-  buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
+  buttonLink:
+    'https://cow.finance/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
 }
 
 // TODO: Break down this large function into smaller functions
@@ -164,6 +166,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
+  const hideTradeRateDetails = useShouldHideTradeRateDetails()
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -220,10 +223,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       return (
         <>
           {props.settingsState.limitPricePosition === 'bottom' && rateInput}
-          <styledEl.FooterBox>
-            <DeadlineInput />
-            <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} />
-          </styledEl.FooterBox>
+          {!hideTradeRateDetails && (
+            <styledEl.FooterBox>
+              <DeadlineInput />
+              <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} />
+            </styledEl.FooterBox>
+          )}
 
           <LimitOrdersWarnings feeAmount={feeAmount} />
           {warnings}
@@ -234,7 +239,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         </>
       )
     },
-    outerContent: <>{isUnlocked && <InfoBanner />}</>,
+    outerContent: isUnlocked ? <BottomBanners /> : null,
   }
 
   const params: TradeWidgetParams = {

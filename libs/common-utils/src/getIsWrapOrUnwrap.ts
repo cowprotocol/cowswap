@@ -1,7 +1,7 @@
 import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
-import { Currency } from '@uniswap/sdk-core'
 
 import { doesTokenMatchSymbolOrAddress } from './doesTokenMatchSymbolOrAddress'
 import { getCurrencyAddress } from './getCurrencyAddress'

@@ -21,7 +21,6 @@ import {
   USDC_AVALANCHE,
   USDC_BASE,
   USDC_BNB,
-  USDC_LENS,
   USDC_LINEA,
   USDC_MAINNET,
   USDC_POLYGON,
@@ -41,6 +40,8 @@ import {
   WETH_GNOSIS_CHAIN,
   WETH_PLASMA,
   WRAPPED_NATIVE_CURRENCIES,
+  USDT_INK,
+  USDC_INK,
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -114,7 +115,6 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDT_AVALANCHE,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
   ]),
-  [SupportedChainId.LENS]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS], USDC_LENS]), // TODO: Add Lens tokens when available
   [SupportedChainId.BNB]: tokensListToMap([
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.BNB],
     USDC_BNB,
@@ -134,4 +134,5 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDT_PLASMA,
     WETH_PLASMA,
   ]),
+  [SupportedChainId.INK]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.INK], USDT_INK, USDC_INK]),
 }

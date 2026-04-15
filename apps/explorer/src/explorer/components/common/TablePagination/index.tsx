@@ -124,7 +124,7 @@ type PaginationProps<T> = {
 
 // TODO: Replace any with proper type definitions
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, max-lines-per-function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResultsPerPage }) => {
   const {
     isLoading,

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/widget-configurator",
-  "version": "1.17.1",
+  "version": "3.3.1",
   "description": "CoW Swap widget configurator",
   "main": "src/main.tsx",
   "author": "",
@@ -22,11 +22,12 @@
     ]
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.2.13",
+    "@cowprotocol/cow-sdk": "8.1.0",
     "@cowprotocol/analytics": "workspace:*",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
+    "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/events": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/widget-lib": "workspace:*",

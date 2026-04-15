@@ -9,11 +9,12 @@ import { useIsHooksTradeType } from 'modules/trade'
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
 import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 
+import { InvalidBridgeOutputUpdater } from './InvalidBridgeOutputUpdater'
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { SetupSwapAmountsFromUrlUpdater } from './SetupSwapAmountsFromUrlUpdater'
 import { UnfillableSwapOrdersUpdater } from './UnfillableSwapOrdersUpdater'
 
-import { useFillSwapDerivedState, useSwapDerivedState } from '../hooks/useSwapDerivedState'
+import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapSettings } from '../hooks/useSwapSettings'
 
 export function SwapUpdaters(): ReactNode {
@@ -23,7 +24,6 @@ export function SwapUpdaters(): ReactNode {
   const partiallyFillable = useIsHooksTradeType()
   const { enablePartialApprovalBySettings } = useSwapSettings()
 
-  useFillSwapDerivedState()
   useSetTradeQuoteParams({
     amount: isSellOrder(orderKind) ? inputCurrencyAmount : outputCurrencyAmount,
     partiallyFillable,
@@ -35,6 +35,7 @@ export function SwapUpdaters(): ReactNode {
       <UnfillableSwapOrdersUpdater />
       <EthFlowDeadlineUpdater deadlineState={swapDeadlineState} />
       <SetupSwapAmountsFromUrlUpdater />
+      <InvalidBridgeOutputUpdater />
       <QuoteObserverUpdater />
       <Erc20ApproveWidget isPartialApprovalEnabled={enablePartialApprovalBySettings} />
       {slippage && (

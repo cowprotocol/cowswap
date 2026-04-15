@@ -1,7 +1,7 @@
 import { atom } from 'jotai/index'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 export interface UserApproveModalState {
   isModalOpen: boolean

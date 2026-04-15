@@ -8,13 +8,16 @@ export interface TokenSearchContentProps {
   searchResults: TokenSearchResponse
   selectTokenContext: SelectTokenContext
   importToken: (tokenToImport: TokenWithLogo) => void
+  disableTokenImport?: boolean
+  areTokensFromBridge?: boolean
+  bridgeSupportedTokensMap?: Record<string, boolean> | null
 }
 
 export type TokenImportSection = 'blockchain' | 'inactive' | 'external'
 
 export type TokenSearchRow =
   | { type: 'banner' }
-  | { type: 'token'; token: TokenWithLogo }
+  | { type: 'token'; token: TokenWithLogo; disabled?: boolean; disabledReason?: string }
   | { type: 'section-title'; text: string; tooltip?: string }
   | {
       type: 'import-token'
@@ -24,15 +27,20 @@ export type TokenSearchRow =
       isFirstInSection: boolean
       isLastInSection: boolean
       wrapperId?: string
+      hideImport?: boolean
+      disabledReason?: string
     }
 
 export interface UseSearchRowsParams {
   isLoading: boolean
   matchedTokens: TokenWithLogo[]
   activeList: TokenWithLogo[]
+  disableTokenImport?: boolean
   blockchainResult?: TokenWithLogo[]
   inactiveListsResult?: TokenWithLogo[]
   externalApiResult?: TokenWithLogo[]
+  bridgeSupportedTokensMap?: Record<string, boolean> | null
+  areTokensFromBridge?: boolean
 }
 
 export interface AppendImportSectionParams {
@@ -43,6 +51,8 @@ export interface AppendImportSectionParams {
   tooltip?: string
   shadowed?: boolean
   wrapperId?: string
+  bridgeSupportedTokensMap?: Record<string, boolean> | null
+  areTokensFromBridge?: boolean
 }
 
 export interface TokenSearchRowRendererProps {

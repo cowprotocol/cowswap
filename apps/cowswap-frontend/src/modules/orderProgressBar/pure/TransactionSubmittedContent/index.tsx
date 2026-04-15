@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
@@ -33,17 +33,6 @@ const activityStatusLabels: Partial<Record<ActivityStatus, MessageDescriptor>> =
   [ActivityStatus.CANCELLED]: msg`Cancelled`,
   [ActivityStatus.CANCELLING]: msg`Cancelling`,
   [ActivityStatus.FAILED]: msg`Failed`,
-}
-
-function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
-  if (!activityDerivedState) {
-    return ''
-  }
-
-  const prefix = activityDerivedState.isOrder ? t`Order` : t`Transaction`
-  const postfix = i18n._(activityStatusLabels[activityDerivedState.status] as MessageDescriptor) || t`Submitted`
-
-  return `${prefix} ${postfix}`
 }
 
 export interface TransactionSubmittedContentProps {
@@ -166,4 +155,15 @@ export function TransactionSubmittedContent({
       </styledEl.Section>
     </styledEl.Wrapper>
   )
+}
+
+function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
+  if (!activityDerivedState) {
+    return ''
+  }
+
+  const prefix = activityDerivedState.isOrder ? t`Order` : t`Transaction`
+  const postfix = i18n._(activityStatusLabels[activityDerivedState.status] as MessageDescriptor) || t`Submitted`
+
+  return `${prefix} ${postfix}`
 }

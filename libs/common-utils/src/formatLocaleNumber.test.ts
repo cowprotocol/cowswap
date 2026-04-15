@@ -5,7 +5,7 @@ import formatLocaleNumber from './formatLocaleNumber'
 const INPUT = 4000000.123 // 4 million
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+
 function expectedOutput(l: SupportedLocale): string {
   switch (l) {
     case 'en-US':
@@ -17,7 +17,6 @@ function expectedOutput(l: SupportedLocale): string {
     case 'zh-TW':
       return `4,000,000.123`
     case 'fr-FR':
-      // eslint-disable-next-line no-irregular-whitespace
       return `4 000 000,123`
     case 'ar-SA':
       return `٤٬٠٠٠٬٠٠٠٫١٢٣`
@@ -31,7 +30,6 @@ function expectedOutput(l: SupportedLocale): string {
     case 'ru-RU':
     case 'sv-SE':
     case 'uk-UA':
-      // eslint-disable-next-line no-irregular-whitespace
       return `4 000 000,123`
     case 'ca-ES':
     case 'da-DK':

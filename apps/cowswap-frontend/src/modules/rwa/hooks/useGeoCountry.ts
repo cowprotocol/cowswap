@@ -22,4 +22,3 @@ export function useGeoCountry(): string | null {
 
   return geoData.country
 }
-

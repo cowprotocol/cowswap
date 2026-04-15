@@ -3,13 +3,22 @@ import { ReactElement, ReactNode, useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { ChainInfo, OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenInfo } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
+import { OrderSummaryTemplateProps, BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
 
 import { TradeAmounts } from '../../types'
+
+type OrderSummaryProps = {
+  actionTitle?: string
+  kind: OrderKind
+  srcChainData?: ChainInfo
+  dstChainData?: ChainInfo
+  children?: ReactElement | string
+  customTemplate?: React.ComponentType<OrderSummaryTemplateProps>
+} & (TradeAmounts | TokensAndAmounts)
 
 interface TokensAndAmounts {
   inputToken: TokenInfo
@@ -18,17 +27,8 @@ interface TokensAndAmounts {
   buyAmount: string
 }
 
-type OrderSummaryProps = {
-  actionTitle?: string
-  kind: OrderKind
-  srcChainData?: ChainInfo
-  dstChainData?: ChainInfo
-  children?: ReactElement | string
-  customTemplate?: typeof SellForAtLeastTemplate
-} & (TradeAmounts | TokensAndAmounts)
-
 export function OrderSummary(props: OrderSummaryProps): ReactNode {
-  const { kind, children, customTemplate, actionTitle, srcChainData, dstChainData } = props
+  const { kind, children, customTemplate: CustomTemplateComponent, actionTitle, srcChainData, dstChainData } = props
   const isSell = isSellOrder(kind)
   const isBridgeOrder = srcChainData && dstChainData && srcChainData.id !== dstChainData.id
 
@@ -61,15 +61,11 @@ export function OrderSummary(props: OrderSummaryProps): ReactNode {
     }),
   }
 
-  const summary = customTemplate
-    ? customTemplate(templateProps)
-    : isSell
-      ? SellForAtLeastTemplate(templateProps)
-      : BuyForAtMostTemplate(templateProps)
+  const Template = CustomTemplateComponent ?? (isSell ? SellForAtLeastTemplate : BuyForAtMostTemplate)
 
   return (
     <div>
-      {summary}
+      <Template {...templateProps} />
       {children}
     </div>
   )

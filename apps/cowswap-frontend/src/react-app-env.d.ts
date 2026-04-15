@@ -3,7 +3,7 @@
 declare module '*.md'
 
 declare module '@metamask/jazzicon' {
-  export default function(diameter: number, seed: number): HTMLElement
+  export default function (diameter: number, seed: number): HTMLElement
 }
 
 interface TelegramData {
@@ -38,11 +38,14 @@ interface Window {
   web3?: Record<string, unknown>
   Telegram?: {
     Login: {
-      auth(options: {
-        bot_id: number,
-        lang?: string,
-        request_access?: string
-      }, callback: (data: TelegramData | false) => void): void
+      auth(
+        options: {
+          bot_id: number
+          lang?: string
+          request_access?: string
+        },
+        callback: (data: TelegramData | false) => void,
+      ): void
     }
   }
 }
@@ -61,4 +64,8 @@ declare module 'multihashes' {
   declare function decode(buff: Uint8Array): { code: number; name: string; length: number; digest: Uint8Array }
 
   declare function toB58String(hash: Uint8Array): string
+}
+
+declare module '*.po' {
+  export const messages: typeof import('@lingui/core').Messages
 }

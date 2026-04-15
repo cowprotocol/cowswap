@@ -32,6 +32,7 @@ const confirmationState: TradeConfirmationProps = {
   isConfirmDisabled: false,
   isSmartContractWallet: false,
   appData: null,
+  isCurrentTradeBridging: false,
   recipient: null,
   async onConfirm() {
     console.log('onConfirm')

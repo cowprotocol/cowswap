@@ -4,8 +4,6 @@ import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { Web3Provider } from '@cowprotocol/wallet'
-import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
-import { Connector } from '@web3-react/types'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
@@ -19,6 +17,7 @@ import { cowSwapStore } from 'legacy/state'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { LanguageProvider } from './i18n'
+import enMessages from './locales/en-US.po'
 
 type JotaiStore = ReturnType<typeof createStore>
 
@@ -37,10 +36,10 @@ const MockThemeProvider = ({ children }: { children: React.ReactNode }): ReactNo
 
 const WithProviders = ({ children }: { children?: ReactNode }): ReactNode => {
   return (
-    <LanguageProvider>
+    <LanguageProvider messages={enMessages}>
       <MockedI18nProvider>
         <Provider store={cowSwapStore}>
-          <Web3Provider selectedWallet={undefined}>
+          <Web3Provider>
             <MockThemeProvider>{children}</MockThemeProvider>
           </Web3Provider>
         </Provider>
@@ -56,29 +55,20 @@ const customRender = (ui: ReactElement) => render(ui, { wrapper: WithProviders }
 export * from '@testing-library/react'
 export { customRender as render }
 
-class MockedConnector extends Connector {
-  activate(): Promise<void> {
-    return Promise.resolve()
-  }
+/** Partial location for tests; matches what MemoryRouter's initialEntries accepts. */
+export type MockRouterLocation = string | { pathname: string; search?: string; hash?: string }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  getActions() {
-    return this.actions
-  }
-}
-
-export const [mockedConnector, mockedConnectorHooks] = initializeConnector<MockedConnector>(
-  (actions) => new MockedConnector(actions),
-)
-
-export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: Location }): ReactNode {
-  const connectors: [Connector, Web3ReactHooks][] = [[mockedConnector, mockedConnectorHooks]]
-
+export function WithMockedWeb3({
+  children,
+  location,
+}: {
+  children?: ReactNode
+  location?: MockRouterLocation
+}): ReactNode {
   return (
-    <MemoryRouter initialEntries={location ? [location] : undefined}>
+    <MemoryRouter initialEntries={location !== undefined ? [location] : undefined}>
       <Provider store={cowSwapStore}>
-        <Web3ReactProvider connectors={connectors}>{children}</Web3ReactProvider>
+        <Web3Provider>{children}</Web3Provider>
       </Provider>
     </MemoryRouter>
   )

@@ -1,12 +1,14 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@cowprotocol/currency'
+
+import { toHex } from 'viem'
 
 import { useTokensBalances } from './useTokensBalances'
 
 export function useCurrencyAmountBalance(
-  token: TokenWithLogo | undefined | null
+  token: TokenWithLogo | undefined | null,
 ): CurrencyAmount<TokenWithLogo> | undefined {
   const { values: balances } = useTokensBalances()
 
@@ -17,6 +19,6 @@ export function useCurrencyAmountBalance(
 
     if (!balance) return undefined
 
-    return CurrencyAmount.fromRawAmount(token, balance.toHexString())
+    return CurrencyAmount.fromRawAmount(token, toHex(balance))
   }, [token, balances])
 }

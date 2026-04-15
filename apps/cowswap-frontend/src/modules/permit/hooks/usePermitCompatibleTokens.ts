@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo, useRef } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -35,15 +36,15 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
     const permitCompatibleTokens: PermitCompatibleTokens = {}
 
     for (const address of Object.keys(preGeneratedPermitInfoRef.current)) {
-      const addressLowerCased = address.toLowerCase()
+      const addressLowerCased = getAddressKey(address)
 
       permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(
-        preGeneratedPermitInfoRef.current[addressLowerCased]
+        preGeneratedPermitInfoRef.current[addressLowerCased],
       )
     }
 
     for (const address of Object.keys(localPermitInfoRef.current)) {
-      const addressLowerCased = address.toLowerCase()
+      const addressLowerCased = getAddressKey(address)
 
       permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(localPermitInfoRef.current[addressLowerCased])
     }

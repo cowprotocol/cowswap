@@ -7,7 +7,7 @@ const WARNING_BANNER_VISIBILITY_KEY = 'warningBannerVisibility:v0'
 
 export const hiddenReceiverWalletBannersAtom = atomWithStorage<WarningBannerVisibility>(
   WARNING_BANNER_VISIBILITY_KEY,
-  []
+  [],
 )
 
 export const hideReceiverWalletBannerAtom = atom(null, (get, set, orderId: string) => {

@@ -1,13 +1,12 @@
 import { LpToken } from '@cowprotocol/common-const'
 import { LpTokenProvider } from '@cowprotocol/types'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { PoolInfo } from './state/poolsInfoAtom'
 
 export interface TokenWithAlternative {
   token: LpToken
   alternative: LpToken
-  tokenBalance: BigNumber
+  tokenBalance: bigint
 }
 
 export interface TokenWithSuperiorAlternative extends TokenWithAlternative {

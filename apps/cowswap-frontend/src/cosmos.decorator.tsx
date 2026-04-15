@@ -6,8 +6,7 @@ import { ReactNode, StrictMode, useCallback, useContext } from 'react'
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
-import { injectedWalletConnection, WalletUpdater } from '@cowprotocol/wallet'
-import { Web3ReactProvider } from '@web3-react/core'
+import { WalletUpdater, Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
@@ -22,6 +21,9 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 import { ThemeConfigUpdater } from './theme/ThemeConfigUpdater'
+
+/** No locale import in Cosmos: .po needs Lingui transform, .js is CJS and breaks in the iframe. Fixtures still render; some text may show as message IDs. */
+const COSMOS_MESSAGES = undefined
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -71,6 +73,7 @@ const WrapperInner = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  padding-top: 48px;
 `
 
 export const DemoContainer = styled.div`
@@ -87,11 +90,6 @@ export const DemoContainer = styled.div`
   padding: 10px;
 `
 
-const chainId = 5
-
-const { connector, hooks } = injectedWalletConnection
-connector.activate(chainId)
-
 // Initialize analytics for cosmos
 const cowAnalytics = initGtm()
 
@@ -104,8 +102,8 @@ const Fixture = ({ children }: { children: ReactNode }) => {
         <HashRouter>
           <ThemeProvider>
             <ThemedGlobalStyle />
-            <LanguageProvider>
-              <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
+            <LanguageProvider messages={COSMOS_MESSAGES}>
+              <Web3Provider>
                 <BlockNumberProvider>
                   <WalletUpdater />
                   <ThemeConfigUpdater />
@@ -117,7 +115,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
                     </CowAnalyticsProvider>
                   </Wrapper>
                 </BlockNumberProvider>
-              </Web3ReactProvider>
+              </Web3Provider>
             </LanguageProvider>
           </ThemeProvider>
         </HashRouter>

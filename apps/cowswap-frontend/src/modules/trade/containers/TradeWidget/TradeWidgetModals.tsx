@@ -35,11 +35,16 @@ import { WrapNativeModal } from '../WrapNativeModal'
 interface TradeWidgetModalsProps {
   confirmModal: ReactNode | undefined
   genericModal: ReactNode | undefined
+  renderFallback?: () => ReactNode
 }
 
 // todo refactor it
 // eslint-disable-next-line max-lines-per-function
-export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetModalsProps): ReactNode {
+export function TradeWidgetModals({
+  confirmModal,
+  genericModal,
+  renderFallback = () => null,
+}: TradeWidgetModalsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { state: rawState } = useTradeState()
   const importTokenCallback = useAddUserToken()
@@ -99,6 +104,16 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
   const isInitialRenderRef = useRef(true)
 
   const error = tokenListAddingError || approveError || confirmError
+
+  /**
+   * Reset trade confirm state on unmount so SurplusModalSetup
+   * doesn't see stale isOpen/transactionHash after navigation
+   */
+  useEffect(() => {
+    return () => {
+      closeTradeConfirm()
+    }
+  }, [closeTradeConfirm])
 
   /**
    * Close all modals besides auto-import on account change
@@ -169,5 +184,5 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
     return <ZeroApprovalModal onDismiss={closeZeroApprovalModal} />
   }
 
-  return null
+  return renderFallback()
 }

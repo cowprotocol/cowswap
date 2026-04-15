@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { safeShortenAddress } from 'utils/address'
 
@@ -21,7 +21,6 @@ interface AccountDataCardProps {
   margin?: string
   minHeight?: number | string
 }
-
 
 export function AccountDataCard({
   account,
@@ -47,12 +46,7 @@ export function AccountDataCard({
       showWatermark={showWatermark}
       ariaLabel={`Account ${safeShortenAddress(account)} overview`}
     >
-      <DefaultAccountContent
-        account={account}
-        chainId={chainId}
-        totalUsdAmount={totalUsdAmount}
-        loading={loading}
-      />
+      <DefaultAccountContent account={account} chainId={chainId} totalUsdAmount={totalUsdAmount} loading={loading} />
     </BaseAccountCard>
   )
 }

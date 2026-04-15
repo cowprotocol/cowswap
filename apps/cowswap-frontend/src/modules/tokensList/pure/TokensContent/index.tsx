@@ -1,7 +1,9 @@
 import { ReactNode, useMemo } from 'react'
 
-import { getTokenId } from '@cowprotocol/common-utils'
+import { getTokenId } from '@cowprotocol/cow-sdk'
 import { Loader } from '@cowprotocol/ui'
+
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { useTokenListContext } from '../../hooks/useTokenListContext'
@@ -12,12 +14,13 @@ import { TokensVirtualList } from '../TokensVirtualList'
 export function TokensContent(): ReactNode {
   // UI state (searchInput) from atom
   const { searchInput } = useTokenListViewState()
+  const { hideRecentTokens } = useInjectedWidgetParams()
 
   // Token data directly from source hooks
   const { favoriteTokens, recentTokens, areTokensLoading, allTokens, onClearRecentTokens } = useTokenListContext()
 
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
-  const shouldShowRecentsInline = !areTokensLoading && !searchInput && recentTokens.length > 0
+  const shouldShowRecentsInline = !areTokensLoading && !searchInput && !hideRecentTokens && recentTokens.length > 0
 
   const pinnedTokenKeys = useMemo(() => {
     // Only hide "Recent" tokens from the main list.

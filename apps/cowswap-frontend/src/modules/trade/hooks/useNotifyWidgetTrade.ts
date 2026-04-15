@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { AtomsAndUnits, CowWidgetEvents, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
@@ -13,14 +13,17 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 import { TradeTypeToUiOrderType } from '../const/common'
 import { TradeDerivedState, TradeType } from '../types'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useNotifyWidgetTrade() {
+const ZERO_AMOUNT: AtomsAndUnits = {
+  atoms: BigInt(0),
+  units: '0',
+}
+
+export function useNotifyWidgetTrade(): void {
   const state = useDerivedTradeState()
   const amountsToSign = useAmountsToSignFromQuote()
 
   useEffect(() => {
-    if (!state || !amountsToSign) return
+    if (!state) return
 
     /**
      * There is no way to select both empty sell and buy currencies in the widget UI.
@@ -42,25 +45,12 @@ export function useNotifyWidgetTrade() {
   }, [state, amountsToSign])
 }
 
-function getTradeParamsEventPayload(
-  tradeType: TradeType,
-  state: TradeDerivedState,
-  { maximumSendSellAmount, minimumReceiveBuyAmount }: AmountsToSign,
-): OnTradeParamsPayload {
+function currencyAmountToAtomsAndUnits(currency: CurrencyAmount<Currency> | null): AtomsAndUnits | undefined {
+  if (!currency) return undefined
+
   return {
-    orderType: TradeTypeToUiOrderType[tradeType],
-    sellToken: currencyToTokenInfo(state.inputCurrency),
-    buyToken: currencyToTokenInfo(state.outputCurrency),
-    sellTokenAmount: currencyAmountToAtomsAndUnits(state.inputCurrencyAmount),
-    buyTokenAmount: currencyAmountToAtomsAndUnits(state.outputCurrencyAmount),
-    sellTokenBalance: currencyAmountToAtomsAndUnits(state.inputCurrencyBalance),
-    buyTokenBalance: currencyAmountToAtomsAndUnits(state.outputCurrencyBalance),
-    sellTokenFiatAmount: state.inputCurrencyFiatAmount?.toExact(),
-    buyTokenFiatAmount: state.outputCurrencyFiatAmount?.toExact(),
-    maximumSendSellAmount: currencyAmountToAtomsAndUnits(maximumSendSellAmount),
-    minimumReceiveBuyAmount: currencyAmountToAtomsAndUnits(minimumReceiveBuyAmount),
-    recipient: state.recipient || undefined,
-    orderKind: state.orderKind,
+    atoms: BigInt(currency.quotient.toString()),
+    units: currency.toExact(),
   }
 }
 
@@ -76,11 +66,28 @@ function currencyToTokenInfo(currency: Currency | null): TokenInfo | undefined {
   }
 }
 
-function currencyAmountToAtomsAndUnits(currency: CurrencyAmount<Currency> | null): AtomsAndUnits | undefined {
-  if (!currency) return undefined
-
+function getTradeParamsEventPayload(
+  tradeType: TradeType,
+  state: TradeDerivedState,
+  amountsToSign: AmountsToSign | null,
+): OnTradeParamsPayload {
   return {
-    atoms: BigInt(currency.quotient.toString()),
-    units: currency.toExact(),
+    orderType: TradeTypeToUiOrderType[tradeType],
+    sellToken: currencyToTokenInfo(state.inputCurrency),
+    buyToken: currencyToTokenInfo(state.outputCurrency),
+    sellTokenAmount: currencyAmountToAtomsAndUnits(state.inputCurrencyAmount),
+    buyTokenAmount: currencyAmountToAtomsAndUnits(state.outputCurrencyAmount),
+    sellTokenBalance: currencyAmountToAtomsAndUnits(state.inputCurrencyBalance),
+    buyTokenBalance: currencyAmountToAtomsAndUnits(state.outputCurrencyBalance),
+    sellTokenFiatAmount: state.inputCurrencyFiatAmount?.toExact(),
+    buyTokenFiatAmount: state.outputCurrencyFiatAmount?.toExact(),
+    maximumSendSellAmount: amountsToSign
+      ? currencyAmountToAtomsAndUnits(amountsToSign?.maximumSendSellAmount)
+      : ZERO_AMOUNT,
+    minimumReceiveBuyAmount: amountsToSign
+      ? currencyAmountToAtomsAndUnits(amountsToSign?.minimumReceiveBuyAmount)
+      : ZERO_AMOUNT,
+    recipient: state.recipient || undefined,
+    orderKind: state.orderKind,
   }
 }

@@ -1,7 +1,7 @@
 import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { RowFeeContent, RowFeeContentProps } from './index'
 

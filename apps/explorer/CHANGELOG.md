@@ -1,5 +1,422 @@
 # Changelog
 
+## [4.1.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.9...explorer-v4.1.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.0
+    * @cowprotocol/common-const bumped to 3.1.0
+    * @cowprotocol/common-hooks bumped to 3.1.0
+    * @cowprotocol/common-utils bumped to 3.1.0
+    * @cowprotocol/core bumped to 3.1.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.1.0
+    * @cowprotocol/types bumped to 4.2.0
+    * @cowprotocol/ui bumped to 3.2.0
+
+## [4.0.9](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.8...explorer-v4.0.9) (2026-04-14)
+
+
+### 🐛 Bug Fixes
+
+* add maintenance message for swap and explorer ([#7327](https://github.com/cowprotocol/cowswap/issues/7327)) ([c4c1a4a](https://github.com/cowprotocol/cowswap/commit/c4c1a4a1fe2bc30a5c6abbd0144c972924f25a7d))
+
+## [4.0.8](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.7...explorer-v4.0.8) (2026-04-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.13
+
+## [4.0.7](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.6...explorer-v4.0.7) (2026-04-08)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.5
+    * @cowprotocol/common-const bumped to 3.0.4
+    * @cowprotocol/common-hooks bumped to 3.0.4
+    * @cowprotocol/common-utils bumped to 3.0.4
+    * @cowprotocol/core bumped to 3.0.4
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.12
+    * @cowprotocol/types bumped to 4.1.2
+    * @cowprotocol/ui bumped to 3.1.3
+
+## [4.0.6](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.5...explorer-v4.0.6) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.4
+    * @cowprotocol/common-const bumped to 3.0.3
+    * @cowprotocol/common-hooks bumped to 3.0.3
+    * @cowprotocol/common-utils bumped to 3.0.3
+    * @cowprotocol/core bumped to 3.0.3
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.11
+    * @cowprotocol/types bumped to 4.1.1
+    * @cowprotocol/ui bumped to 3.1.2
+
+## [4.0.5](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.4...explorer-v4.0.5) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.3
+    * @cowprotocol/ui bumped to 3.1.1
+
+## [4.0.4](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.3...explorer-v4.0.4) (2026-04-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/ui bumped to 3.1.0
+
+## [4.0.3](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.2...explorer-v4.0.3) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.2
+    * @cowprotocol/common-const bumped to 3.0.2
+    * @cowprotocol/common-hooks bumped to 3.0.2
+    * @cowprotocol/common-utils bumped to 3.0.2
+    * @cowprotocol/core bumped to 3.0.2
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.10
+    * @cowprotocol/types bumped to 4.1.0
+    * @cowprotocol/ui bumped to 3.0.2
+
+## [4.0.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.1...explorer-v4.0.2) (2026-03-19)
+
+### ✨ Features
+
+* remove xstocks list ff & add the same custom error for xstocks for weekend ([#7119](https://github.com/cowprotocol/cowswap/issues/7119)) ([4135404](https://github.com/cowprotocol/cowswap/commit/413540470a8b08a74d4e9077501493504fc74cd7))
+* update settlement and vault relayer contracts staging ([#7083](https://github.com/cowprotocol/cowswap/issues/7083)) ([3c449d3](https://github.com/cowprotocol/cowswap/commit/3c449d35952bb90cc5d26d8717e7f5da0c1a7f0d))
+
+
+### 🐛 Bug Fixes
+
+* bump explorer version ([#7185](https://github.com/cowprotocol/cowswap/issues/7185)) ([3219f65](https://github.com/cowprotocol/cowswap/commit/3219f65a0bd705c3dd2df3dbfcd6a652ec6df04a))
+
+## [4.0.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.0.0...explorer-v4.0.1) (2026-03-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.1
+    * @cowprotocol/common-const bumped to 3.0.1
+    * @cowprotocol/common-hooks bumped to 3.0.1
+    * @cowprotocol/common-utils bumped to 3.0.1
+    * @cowprotocol/core bumped to 3.0.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.9
+    * @cowprotocol/types bumped to 4.0.1
+    * @cowprotocol/ui bumped to 3.0.1
+
+## [4.0.0](https://github.com/cowprotocol/cowswap/compare/explorer-v3.4.0...explorer-v4.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* implement dynamic navigation items based on solvers feature flag ([#7126](https://github.com/cowprotocol/cowswap/issues/7126)) ([eba8bf9](https://github.com/cowprotocol/cowswap/commit/eba8bf938c07d70d0cea76cec6628fc5bd9c25f9))
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.0.0
+    * @cowprotocol/common-const bumped to 3.0.0
+    * @cowprotocol/common-hooks bumped to 3.0.0
+    * @cowprotocol/common-utils bumped to 3.0.0
+    * @cowprotocol/core bumped to 3.0.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.8
+    * @cowprotocol/types bumped to 4.0.0
+    * @cowprotocol/ui bumped to 3.0.0
+
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/explorer-v3.3.2...explorer-v3.4.0) (2026-03-10)
+
+
+### ✨ Features
+
+* enhance order details with solver information ([#7039](https://github.com/cowprotocol/cowswap/issues/7039)) ([5a97a9e](https://github.com/cowprotocol/cowswap/commit/5a97a9e06395cec61d2fb70a62631516fbb62f49))
+* enhance order solver functionality with new resolver methods and execution checks ([#7109](https://github.com/cowprotocol/cowswap/issues/7109)) ([8ce34f1](https://github.com/cowprotocol/cowswap/commit/8ce34f1f38ac13b609c2f8aaae12ffa7338d22d1))
+* **explorer:** add solvers page and integrate solvers info fetching ([#7037](https://github.com/cowprotocol/cowswap/issues/7037)) ([2d14185](https://github.com/cowprotocol/cowswap/commit/2d14185ce7e0742713afbd935729d652ee31b83c))
+* implement solver details feature across order components ([#7120](https://github.com/cowprotocol/cowswap/issues/7120)) ([8377cc7](https://github.com/cowprotocol/cowswap/commit/8377cc73272eda87c59e3dfa4049886df97b45c6))
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* **explorer:** improve scrollbar visibility at narrow width ([#7093](https://github.com/cowprotocol/cowswap/issues/7093)) ([6095de4](https://github.com/cowprotocol/cowswap/commit/6095de48fcd92bf51fe0f4ff154ec20d8fb375ae))
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.4.0
+    * @cowprotocol/common-const bumped to 2.4.0
+    * @cowprotocol/common-hooks bumped to 2.4.0
+    * @cowprotocol/common-utils bumped to 2.4.0
+    * @cowprotocol/core bumped to 2.5.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.7
+    * @cowprotocol/types bumped to 3.4.0
+    * @cowprotocol/ui bumped to 2.4.0
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/explorer-v3.3.1...explorer-v3.3.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.3.2
+    * @cowprotocol/common-const bumped to 2.3.2
+    * @cowprotocol/common-hooks bumped to 2.3.2
+    * @cowprotocol/common-utils bumped to 2.3.2
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.6
+    * @cowprotocol/types bumped to 3.3.2
+    * @cowprotocol/ui bumped to 2.3.2
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/explorer-v3.3.0...explorer-v3.3.1) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.3.1
+    * @cowprotocol/common-const bumped to 2.3.1
+    * @cowprotocol/common-hooks bumped to 2.3.1
+    * @cowprotocol/common-utils bumped to 2.3.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.5
+    * @cowprotocol/types bumped to 3.3.1
+    * @cowprotocol/ui bumped to 2.3.1
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/explorer-v3.2.2...explorer-v3.3.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.3.0
+    * @cowprotocol/common-const bumped to 2.3.0
+    * @cowprotocol/common-hooks bumped to 2.3.0
+    * @cowprotocol/common-utils bumped to 2.3.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.4
+    * @cowprotocol/types bumped to 3.3.0
+    * @cowprotocol/ui bumped to 2.3.0
+
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/explorer-v3.2.1...explorer-v3.2.2) (2026-02-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.2
+    * @cowprotocol/common-const bumped to 2.2.2
+    * @cowprotocol/common-hooks bumped to 2.2.2
+    * @cowprotocol/common-utils bumped to 2.2.2
+    * @cowprotocol/ui bumped to 2.2.2
+
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/explorer-v3.2.0...explorer-v3.2.1) (2026-02-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.1
+    * @cowprotocol/common-const bumped to 2.2.1
+    * @cowprotocol/common-hooks bumped to 2.2.1
+    * @cowprotocol/common-utils bumped to 2.2.1
+    * @cowprotocol/ui bumped to 2.2.1
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/explorer-v3.1.0...explorer-v3.2.0) (2026-02-13)
+
+
+### ✨ Features
+
+* add scroll to network selector when needed ([#6962](https://github.com/cowprotocol/cowswap/issues/6962)) ([9688722](https://github.com/cowprotocol/cowswap/commit/968872287030f604fc3ce5b6c11758a98f3334ed))
+* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+
+
+### 🐛 Bug Fixes
+
+* **#6976:** fix explorer order details not loading if prod request fails ([7e8a6d2](https://github.com/cowprotocol/cowswap/commit/7e8a6d2ce68fe0d93249e99f32aa26f3353270fe))
+* cancelled with double 'l' ([#6973](https://github.com/cowprotocol/cowswap/issues/6973)) ([4a5c09f](https://github.com/cowprotocol/cowswap/commit/4a5c09f27b81fcf9342268e4c16c04c1c5160564))
+
+
+### 🔧 Miscellaneous
+
+* fix some minor issues in the comments ([#6988](https://github.com/cowprotocol/cowswap/issues/6988)) ([9d547cc](https://github.com/cowprotocol/cowswap/commit/9d547cc16304b4d692b8daf7c5ab4219895fadce))
+* remove references to yarn ([#6990](https://github.com/cowprotocol/cowswap/issues/6990)) ([950ebc1](https://github.com/cowprotocol/cowswap/commit/950ebc1af65c0f9e75db13972479e398a462a1e3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.2.0
+    * @cowprotocol/common-const bumped to 2.2.0
+    * @cowprotocol/common-hooks bumped to 2.2.0
+    * @cowprotocol/common-utils bumped to 2.2.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.3
+    * @cowprotocol/types bumped to 3.2.0
+    * @cowprotocol/ui bumped to 2.2.0
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/explorer-v3.0.2...explorer-v3.1.0) (2026-02-05)
+
+
+### ✨ Features
+
+* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
+
+
+### 🐛 Bug Fixes
+
+* **bridge:** make failed bridge orders red ([#6911](https://github.com/cowprotocol/cowswap/issues/6911)) ([58f8abd](https://github.com/cowprotocol/cowswap/commit/58f8abd6ae74b594909d0444ffc31ae06d1b2c48))
+
+
+### 🔧 Miscellaneous
+
+* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.1.0
+    * @cowprotocol/common-const bumped to 2.1.0
+    * @cowprotocol/common-hooks bumped to 2.1.0
+    * @cowprotocol/common-utils bumped to 2.1.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.2
+    * @cowprotocol/types bumped to 3.1.0
+    * @cowprotocol/ui bumped to 2.1.0
+
+## [3.0.2](https://github.com/cowprotocol/cowswap/compare/explorer-v3.0.1...explorer-v3.0.2) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.1
+    * @cowprotocol/common-const bumped to 2.0.1
+    * @cowprotocol/common-hooks bumped to 2.0.1
+    * @cowprotocol/common-utils bumped to 2.0.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.1
+    * @cowprotocol/types bumped to 3.0.1
+    * @cowprotocol/ui bumped to 2.0.1
+
+## [3.0.1](https://github.com/cowprotocol/cowswap/compare/explorer-v3.0.0...explorer-v3.0.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* **explorer:** minor refactor to trigger the build ([72580d9](https://github.com/cowprotocol/cowswap/commit/72580d920d38f2a97bbb61451e5ffc160598620d))
+
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.62.0...explorer-v3.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* add repo-wide AGENTS.md with app-specific overlays ([#6865](https://github.com/cowprotocol/cowswap/issues/6865)) ([a2a4239](https://github.com/cowprotocol/cowswap/commit/a2a4239b11691585396f1959475cbbcf535e2853))
+* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Bug Fixes
+
+* **explorer:** fix app-data page scrolling ([#6876](https://github.com/cowprotocol/cowswap/issues/6876)) ([527cc66](https://github.com/cowprotocol/cowswap/commit/527cc666524d2484edce04079e31ebc2aa072dc1))
+* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 2.0.0
+    * @cowprotocol/common-const bumped to 2.0.0
+    * @cowprotocol/common-hooks bumped to 2.0.0
+    * @cowprotocol/common-utils bumped to 2.0.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.0.0
+    * @cowprotocol/types bumped to 3.0.0
+    * @cowprotocol/ui bumped to 2.0.0
+
 ## [2.62.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.61.0...explorer-v2.62.0) (2026-01-26)
 
 

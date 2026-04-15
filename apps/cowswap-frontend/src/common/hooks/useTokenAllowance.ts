@@ -3,8 +3,8 @@ import { useEffect, useMemo } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Token } from '@uniswap/sdk-core'
 
 import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
 import ms from 'ms.macro'
@@ -52,7 +52,7 @@ export function useTokenAllowance(
     ([targetOwner, targetSpender]) => {
       if (!erc20Contract) return undefined
 
-      return erc20Contract.allowance(targetOwner, targetSpender).then((result) => result.toBigInt())
+      return erc20Contract.allowance(targetOwner, targetSpender)
     },
     SWR_OPTIONS,
   )

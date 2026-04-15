@@ -6,35 +6,41 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
-import { SwapUpdaters, SwapWidget } from 'modules/swap'
-import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
-import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
+import { PageTitle } from 'modules/application'
+import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
+import { parameterizeTradeRoute, getDefaultTradeRawState, PageWrapper, PrimaryWrapper } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
+import { HydrateAtom } from 'common/state/HydrateAtom'
+
+const TRADE_PAGE_MAX_WIDTH = '1800px'
 
 export function SwapPage(): ReactNode {
   const params = useParams()
   const { i18n } = useLingui()
+  const swapDerivedStateToFill = useSwapDerivedStateToFill()
 
   if (!params.chainId) {
     return <SwapPageRedirect />
   }
 
   return (
-    <>
+    <HydrateAtom atom={swapDerivedStateAtom} state={swapDerivedStateToFill}>
       <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
+
       <SwapUpdaters />
-      <SwapWidget />
-    </>
+      <PageWrapper isUnlocked maxWidth={TRADE_PAGE_MAX_WIDTH} hideOrdersTable>
+        <PrimaryWrapper>
+          <SwapWidget />
+        </PrimaryWrapper>
+      </PageWrapper>
+    </HydrateAtom>
   )
 }
 
 function SwapPageRedirect(): ReactNode {
   const { chainId } = useWalletInfo()
   const location = useLocation()
-
-  if (!chainId) return null
 
   const defaultState = getDefaultTradeRawState(chainId)
   const searchParams = new URLSearchParams(location.search)

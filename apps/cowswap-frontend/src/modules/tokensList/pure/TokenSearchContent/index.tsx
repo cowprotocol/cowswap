@@ -7,6 +7,8 @@ import { Loader } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import { VirtualItem } from '@tanstack/react-virtual'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { VirtualList } from 'common/pure/VirtualList'
 
 import { TokenSearchRowRenderer } from './TokenSearchRowRenderer'
@@ -20,14 +22,17 @@ export function TokenSearchContent({
   searchResults,
   importToken,
   selectTokenContext,
+  areTokensFromBridge = false,
+  bridgeSupportedTokensMap,
 }: TokenSearchContentProps): ReactNode {
+  const { disableTokenImport } = useInjectedWidgetParams()
   const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
 
   const searchCount = [
     activeListsResult.length,
-    inactiveListsResult?.length ?? 0,
-    blockchainResult?.length ?? 0,
-    externalApiResult?.length ?? 0,
+    disableTokenImport ? 0 : (inactiveListsResult?.length ?? 0),
+    disableTokenImport ? 0 : (blockchainResult?.length ?? 0),
+    disableTokenImport ? 0 : (externalApiResult?.length ?? 0),
   ].reduce<number>((acc, cur) => acc + cur, 0)
 
   const isTokenNotFound = isLoading ? false : searchCount === 0
@@ -51,9 +56,12 @@ export function TokenSearchContent({
     isLoading,
     matchedTokens,
     activeList,
+    disableTokenImport,
     blockchainResult,
     inactiveListsResult,
     externalApiResult,
+    bridgeSupportedTokensMap,
+    areTokensFromBridge,
   })
 
   const getItemView = useCallback(
@@ -77,7 +85,7 @@ export function TokenSearchContent({
   if (isTokenNotFound)
     return (
       <styledEl.TokenNotFound>
-        <Trans>No tokens found</Trans>
+        {areTokensFromBridge ? <Trans>No available tokens found to bridge</Trans> : <Trans>No tokens found</Trans>}
       </styledEl.TokenNotFound>
     )
 

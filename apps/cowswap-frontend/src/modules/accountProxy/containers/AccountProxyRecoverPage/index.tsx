@@ -2,11 +2,11 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useUpdateTokenBalance } from '@cowprotocol/balances-and-allowances'
 import { useComponentDestroyedRef } from '@cowprotocol/common-hooks'
-import { areAddressesEqual, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonSize, CenteredDots, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -70,7 +70,7 @@ export function AccountProxyRecoverPage(): ReactNode {
         // When tx is successfully mined
         () => {
           navigateBack()
-          tokenAddress && updateTokenBalance(tokenAddress, BigNumber.from(0))
+          tokenAddress && updateTokenBalance(tokenAddress, 0n)
         },
       )
     })

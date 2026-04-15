@@ -14,10 +14,16 @@ import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormButtonContext } from '../types'
 
+interface TradeFormButtonAnalytics {
+  confirmClickEvent?: string
+  approveClickEvent?: string
+}
+
 export function useTradeFormButtonContext(
   defaultText: string,
   confirmTrade: () => void,
   supportsPartialApprove = false,
+  analytics?: TradeFormButtonAnalytics,
 ): TradeFormButtonContext | null {
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
@@ -26,6 +32,7 @@ export function useTradeFormButtonContext(
   const { standaloneMode } = useInjectedWidgetParams()
   const derivedState = useDerivedTradeState()
   const amountToApprove = useGetAmountToSignApprove()
+  const injectedWidgetParams = useInjectedWidgetParams()
   const { maximumSendSellAmount: minAmountToSignForSwap } = useAmountsToSignFromQuote() || {}
   const customTokenError = useTokenCustomTradeError(
     derivedState?.inputCurrency,
@@ -33,6 +40,7 @@ export function useTradeFormButtonContext(
     quote.error,
   )
   const { error: balancesError } = useTokensBalancesCombined()
+  const widgetPriceImpactThreshold = injectedWidgetParams?.disableTrade?.whenPriceImpactIsHigherThan
 
   return useMemo(() => {
     if (!derivedState) return null
@@ -51,6 +59,9 @@ export function useTradeFormButtonContext(
       customTokenError,
       minAmountToSignForSwap,
       balancesError,
+      confirmClickEvent: analytics?.confirmClickEvent,
+      approveClickEvent: analytics?.approveClickEvent,
+      widgetPriceImpactThreshold,
     } satisfies TradeFormButtonContext
   }, [
     defaultText,
@@ -66,5 +77,8 @@ export function useTradeFormButtonContext(
     customTokenError,
     minAmountToSignForSwap,
     balancesError,
+    analytics?.confirmClickEvent,
+    analytics?.approveClickEvent,
+    widgetPriceImpactThreshold,
   ])
 }

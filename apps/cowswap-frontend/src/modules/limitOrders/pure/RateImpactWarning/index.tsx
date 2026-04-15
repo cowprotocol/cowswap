@@ -1,6 +1,5 @@
-import { TokenSymbol } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency } from '@cowprotocol/currency'
+import { TokenSymbol, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
@@ -8,16 +7,16 @@ import styled from 'styled-components/macro'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
-interface RateImpactAcknowledge {
-  withAcknowledge: boolean
-  isAccepted: boolean
-  onAcknowledgeChange(checked: boolean): void
-}
-
 export interface RateImpactWarningProps extends Partial<RateImpactAcknowledge> {
   rateImpact: number
   inputCurrency: Currency
   className?: string
+}
+
+interface RateImpactAcknowledge {
+  withAcknowledge: boolean
+  isAccepted: boolean
+  onAcknowledgeChange(checked: boolean): void
 }
 
 const RateImpactWarningBox = styled.div<{ withAcknowledge: boolean }>`

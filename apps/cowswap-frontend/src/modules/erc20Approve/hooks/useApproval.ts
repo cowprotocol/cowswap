@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
 
@@ -23,10 +23,10 @@ export function useApprovalStateForSpender(
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
 
-  const currentAllowance = useTokenAllowance(token, account ?? undefined, spender).data
+  const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const { state: approvalState } = useApproveState(amountToApprove)
 
   return useMemo(() => {
-    return { approvalState, currentAllowance }
-  }, [currentAllowance, approvalState])
+    return { approvalState, currentAllowance: currentAllowance?.data }
+  }, [currentAllowance?.data, approvalState])
 }

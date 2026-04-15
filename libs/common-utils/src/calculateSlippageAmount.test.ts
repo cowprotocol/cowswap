@@ -1,13 +1,14 @@
-import { AddressZero } from '@ethersproject/constants'
-import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
+
+import { zeroAddress } from 'viem'
 
 import { calculateSlippageAmount } from './calculateSlippageAmount'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('#calculateSlippageAmount', () => {
   it('bounds are correct', () => {
-    const tokenAmount = CurrencyAmount.fromRawAmount(new Token(1, AddressZero, 0), '100')
+    const tokenAmount = CurrencyAmount.fromRawAmount(new Token(1, zeroAddress, 0), '100')
     expect(() => calculateSlippageAmount(tokenAmount, new Percent(-1, 10_000))).toThrow('Unexpected slippage')
     expect(() => calculateSlippageAmount(tokenAmount, new Percent(10_001, 10_000))).toThrow('Unexpected slippage')
     expect(calculateSlippageAmount(tokenAmount, new Percent(0, 10_000)).map((bound) => bound.toString())).toEqual([
@@ -32,7 +33,7 @@ describe('#calculateSlippageAmount', () => {
     ])
   })
   it('works for 18 decimals', () => {
-    const tokenAmount = CurrencyAmount.fromRawAmount(new Token(1, AddressZero, 18), '100')
+    const tokenAmount = CurrencyAmount.fromRawAmount(new Token(1, zeroAddress, 18), '100')
     expect(() => calculateSlippageAmount(tokenAmount, new Percent(-1, 10_000))).toThrow('Unexpected slippage')
     expect(() => calculateSlippageAmount(tokenAmount, new Percent(10_001, 10_000))).toThrow('Unexpected slippage')
     expect(calculateSlippageAmount(tokenAmount, new Percent(0, 10_000)).map((bound) => bound.toString())).toEqual([

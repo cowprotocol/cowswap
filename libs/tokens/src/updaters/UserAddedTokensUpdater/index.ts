@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { environmentAtom } from '../../state/environmentAtom'
 import { activeTokensMapAtom } from '../../state/tokens/allTokensAtom'
 import { removeUserTokensAtom, userAddedTokensAtom } from '../../state/tokens/userAddedTokensAtom'
@@ -15,7 +17,7 @@ export function UserAddedTokensUpdater() {
 
   const existingTokens = userAddedTokens
     ? Object.keys(userAddedTokens).filter((tokenAddress) => {
-        return !!activeTokensMap[tokenAddress.toLowerCase()]
+        return !!activeTokensMap[getAddressKey(tokenAddress)]
       })
     : undefined
 

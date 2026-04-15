@@ -4,13 +4,6 @@
   "sourceRoot": "libs/wallet-provider/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/wallet-provider"
-      }
-    },
     "serve": {
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
@@ -19,10 +12,6 @@
         "port": 3012
       },
       "configurations": {}
-    },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs wallet-provider {args.tag} {args.otp}",
-      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",

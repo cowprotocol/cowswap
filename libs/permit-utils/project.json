@@ -8,12 +8,10 @@
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/permit-utils"
+        "outputPath": "dist/libs/permit-utils",
+        "configFile": "libs/permit-utils/vite.config.mts",
+        "assets": ["libs/permit-utils/*.md"]
       }
-    },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs permit-utils {args.tag} {args.otp}",
-      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",

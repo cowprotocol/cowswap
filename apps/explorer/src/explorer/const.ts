@@ -22,18 +22,19 @@ export const TOKEN_SYMBOL_UNKNOWN = 'UNKNOWN'
 // Routes and Links
 export enum Routes {
   HOME = '/',
+  SOLVERS = '/solvers',
   APPDATA = '/appdata',
 }
 
 const GITHUB_REPOSITORY = 'cowprotocol/explorer'
 export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
 export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
-export const DOCS_LINK = 'https://docs.cow.fi'
-export const PROTOCOL_LINK = 'https://cow.fi/cow-protocol'
-export const COWSWAP_LINK = 'https://swap.cow.fi'
+export const DOCS_LINK = 'https://docs.cow.finance'
+export const PROTOCOL_LINK = 'https://cow.finance/cow-protocol'
+export const COWSWAP_LINK = 'https://swap.cow.finance'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.gg/cowprotocol'
-export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cowswap'
+export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cow-swap-home'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
 export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245'

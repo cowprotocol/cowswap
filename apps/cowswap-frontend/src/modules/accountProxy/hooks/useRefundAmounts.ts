@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 
-import { getTokenId } from '@cowprotocol/common-utils'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { getTokenId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
+
+import { toHex } from 'viem'
 
 import { getUsdPriceStateKey, useUsdPrices } from 'modules/usdAmount'
 
@@ -32,7 +34,7 @@ export function useRefundAmounts(): TokenUsdAmounts | null {
         token,
         balance,
         usdAmount: usdPrice?.price
-          ? usdPrice.price.quote(CurrencyAmount.fromRawAmount(token, balance.toHexString()))
+          ? usdPrice.price.quote(CurrencyAmount.fromRawAmount(token, toHex(balance)))
           : undefined,
         isLoading: !!usdPrice?.isLoading,
       }

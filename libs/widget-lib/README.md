@@ -6,11 +6,11 @@ look and much more!
 
 ## Live example
 
-See the widget in action in the [widget configurator](https://widget.cow.fi)
+See the widget in action in the [widget configurator](https://widget.cow.finance)
 
 ## Docs
 
-You can find a detailed description of all widget parameters in the [documentation](https://docs.cow.fi/cow-protocol/tutorials/widget)
+You can find a detailed description of all widget parameters in the [documentation](https://docs.cow.finance/cow-protocol/tutorials/widget)
 
 ## Quick start
 
@@ -44,7 +44,7 @@ const params: CowSwapWidgetParams = {
 const {updateParams} = createCowSwapWidget(
   widgetContainer,
   // Optionally, you can provide some additional params to customise your widget
-  {params, provider}
+  {params, provider, onReady: () => console.log('Widget ready')}
 )
 
 // You also can change widget configuration on the fly

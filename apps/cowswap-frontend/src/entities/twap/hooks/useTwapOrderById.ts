@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import type { TwapOrderItem } from 'modules/twap/types'
+import type { TwapOrderItem } from 'modules/twap'
 
 import { twapOrdersAtom } from '../state/twapOrdersAtom'
 

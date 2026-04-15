@@ -4,7 +4,10 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Font, Media, UI } from '@cowprotocol/ui'
 
 import Link from 'next/link'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
+
+import { Article } from '../services/cms'
 
 import { ArticlesList } from '@/components/ArticlesList'
 import { CategoryLinks } from '@/components/CategoryLinks'
@@ -20,9 +23,6 @@ import {
   Pagination,
 } from '@/styles/styled'
 import { calculateTotalPages, calculatePageRange, createPaginationArray } from '@/util/paginationUtils'
-import { CowFiCategory } from 'src/common/analytics/types'
-
-import { Article } from '../services/cms'
 
 const LEARN_PATH = '/learn'
 const ARTICLES_PATH = `${LEARN_PATH}/articles`

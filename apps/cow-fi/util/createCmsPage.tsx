@@ -4,7 +4,6 @@ import type { Metadata } from 'next'
 
 import { generateCmsPageMetadata, createCmsPageComponent as createCmsPageComponentUtil } from '@/util/cmsPageUtils'
 
-
 /**
  * Creates a complete CMS page with both component and metadata
  *

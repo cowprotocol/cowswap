@@ -12,6 +12,6 @@ export function useSetPartOrderCancelling() {
     (orderId: string) => {
       return updatePartOrders({ [orderId]: { isCancelling: true } })
     },
-    [updatePartOrders]
+    [updatePartOrders],
   )
 }

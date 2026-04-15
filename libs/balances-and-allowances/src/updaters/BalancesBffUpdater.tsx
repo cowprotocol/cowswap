@@ -19,6 +19,5 @@ export function BalancesBffUpdater({
     invalidateCacheTrigger,
     tokenAddresses,
   })
-
   return null
 }

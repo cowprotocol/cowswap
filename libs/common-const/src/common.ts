@@ -5,7 +5,7 @@ import {
   mapSupportedNetworks,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
-import { Fraction, Percent } from '@uniswap/sdk-core'
+import { Fraction, Percent } from '@cowprotocol/currency'
 
 import { msg } from '@lingui/core/macro'
 import JSBI from 'jsbi'
@@ -31,7 +31,7 @@ export const PERCENTAGE_PRECISION = 2
 
 export const LONG_LOAD_THRESHOLD = 2000
 
-export const AVG_APPROVE_COST_GWEI = '50000'
+export const AVG_APPROVE_COST_GWEI = 50000n
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
@@ -47,10 +47,27 @@ export const PAGE_TITLES = {
   COW_RUNNER: msg`CoW Runner`,
   MEV_SLICER: msg`Mev Slicer`,
   HOOKS: msg`Hooks`,
+  AFFILIATE: msg`Rewards hub - Affiliate`,
+  MY_REWARDS: msg`Rewards hub - My Rewards`,
 }
 
+/**
+ * Should be fully replaced with BARN_ETH_FLOW_ADDRESSES once backend migrated all the networks
+ */
+export const OLD_BARN_ETH_FLOW_ADDRESS = '0x04501b9b1d52e67f6862d157e00d13419d2d6e95'
+
+export const STAGING_MIGRATED_CONTRACT_NETWORKS = [SupportedChainId.MAINNET]
+
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
-  return env === 'prod' ? ETH_FLOW_ADDRESSES[chainId] : BARN_ETH_FLOW_ADDRESSES[chainId]
+  if (env === 'prod') {
+    return ETH_FLOW_ADDRESSES[chainId]
+  }
+
+  if (STAGING_MIGRATED_CONTRACT_NETWORKS.includes(chainId)) {
+    return BARN_ETH_FLOW_ADDRESSES[chainId]
+  }
+
+  return OLD_BARN_ETH_FLOW_ADDRESS
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
@@ -69,13 +86,13 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
   [SupportedChainId.AVALANCHE]: null,
-  [SupportedChainId.LENS]: null,
   [SupportedChainId.BNB]: '0x5bfdaa3f7c28b9994b56135403bf1acea02595b0',
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
+  [SupportedChainId.INK]: null,
 }
 
-// Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized
+// Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized)
 export const RECEIVED_LABEL_EXPLORER = 'Received'
 export const ACCOUNT_PROXY_LABEL_EXPLORER = 'Account Proxy'
 
@@ -106,17 +123,19 @@ const GITHUB_REPOSITORY = 'cowprotocol/cowswap'
 export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
 export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
 
-export const COW_PROTOCOL_LINK = 'https://cow.fi'
-export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.fi/learn'
-export const COWDAO_LEGAL_LINK = 'https://cow.fi/legal'
-export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap'
-export const DOCS_LINK = 'https://docs.cow.fi'
+export const COW_PROTOCOL_LINK = 'https://cow.finance'
+export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.finance/learn'
+export const COWDAO_LEGAL_LINK = 'https://cow.finance/legal'
+export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.finance/cow-swap'
+export const DOCS_LINK = 'https://docs.cow.finance'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
-export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cowswap'
+export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cow-swap-home'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 
 // TODO: test gas prices for all networks
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
+
+// See https://docs.blocknative.com/gas-prediction/gas-platform
 export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosis.blockscout.com/api/v1/gas-price-oracle',
@@ -124,27 +143,27 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.BASE]: 'https://base.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'https://polygon.blockscout.com/api/v1/gas-price-oracle',
-  [SupportedChainId.AVALANCHE]: 'https://api.blocknative.com/gasprices/blockprices?chainid=43114',
-  [SupportedChainId.LENS]: 'https://api.blocknative.com/gasprices/blockprices?chainid=232',
-  [SupportedChainId.BNB]: 'https://api.blocknative.com/gasprices/blockprices?chainid=56',
-  [SupportedChainId.LINEA]: 'https://api.blocknative.com/gasprices/blockprices?chainid=59144',
+  [SupportedChainId.AVALANCHE]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.AVALANCHE}`,
+  [SupportedChainId.BNB]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.BNB}`,
+  [SupportedChainId.LINEA]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LINEA}`,
   [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
+  [SupportedChainId.INK]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.INK}`,
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
-  [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.MAINNET]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.GNOSIS_CHAIN]: null,
   [SupportedChainId.ARBITRUM_ONE]: null,
   [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.LENS]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.BNB]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
-  [SupportedChainId.LINEA]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.AVALANCHE]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.BNB]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.LINEA]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.PLASMA]: null,
+  [SupportedChainId.INK]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
 }
 
-export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'
+export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.finance/cow-protocol/reference/core/tokens'
 
 // fee threshold - should be greater than percentage, show warning
 export const FEE_SIZE_THRESHOLD = 10 as const // 10%

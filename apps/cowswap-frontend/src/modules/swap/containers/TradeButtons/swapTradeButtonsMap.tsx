@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
 
+import { Currency, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { ButtonError, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -18,6 +18,8 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
+type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
+
 interface SwapTradeButtonsContext {
   wrappedToken: Token
   inputCurrency: Currency | null
@@ -28,9 +30,8 @@ interface SwapTradeButtonsContext {
   confirmText: string
   isSafeWallet: boolean
   isCurrentTradeBridging: boolean
+  swapBridgeClickEvent?: string
 }
-
-type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
 
 export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => {
@@ -38,7 +39,13 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     // So we should show "Wrap WETH and Swap" or "Wrap WETH and Swap and Bridge" instead of "Swap with WETH"
     if (props.isSafeWallet) {
       return (
-        <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow} disabled={isDisabled}>
+        <ButtonError
+          id="do-trade-button"
+          buttonSize={ButtonSize.BIG}
+          onClick={props.onEthFlow}
+          disabled={isDisabled}
+          data-click-event={props.swapBridgeClickEvent}
+        >
           <div>
             {props.isCurrentTradeBridging ? (
               <Trans>
@@ -55,7 +62,13 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     }
 
     return (
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow} disabled={isDisabled}>
+      <ButtonError
+        id="do-trade-button"
+        buttonSize={ButtonSize.BIG}
+        onClick={props.onEthFlow}
+        disabled={isDisabled}
+        data-click-event={props.swapBridgeClickEvent}
+      >
         <div>
           <Trans>Swap with</Trans> {props.wrappedToken.symbol}
         </div>
@@ -63,7 +76,13 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     )
   },
   [SwapFormState.WrapAndSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
+    <ButtonError
+      id="do-trade-button"
+      buttonSize={ButtonSize.BIG}
+      onClick={props.openSwapConfirm}
+      disabled={isDisabled}
+      data-click-event={props.swapBridgeClickEvent}
+    >
       <div>
         <Trans>
           Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap
@@ -72,7 +91,13 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     </ButtonError>
   ),
   [SwapFormState.WrapAndSwapAndBridge]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
+    <ButtonError
+      id="do-trade-button"
+      buttonSize={ButtonSize.BIG}
+      onClick={props.openSwapConfirm}
+      disabled={isDisabled}
+      data-click-event={props.swapBridgeClickEvent}
+    >
       <div>
         <Trans>
           Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap and Bridge
@@ -87,6 +112,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
         buttonSize={ButtonSize.BIG}
         onClick={props.openSwapConfirm}
         disabled={isDisabled}
+        data-click-event={props.swapBridgeClickEvent}
       >
         <div>{props.confirmText}</div>
       </ButtonError>
@@ -102,7 +128,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     const symbol = currency?.symbol
 
     return (
-      <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
+      <ButtonError id="do-trade-button" buttonSize={ButtonSize.BIG} disabled={true}>
         <div>
           <Trans>Selling {symbol} is not supported</Trans>
         </div>

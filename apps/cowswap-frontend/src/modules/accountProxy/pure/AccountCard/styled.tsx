@@ -100,7 +100,6 @@ export const AddressLinkWrapper = styled.span`
   }
 `
 
-
 interface CardProps {
   $width?: number | string
   $height?: number | string

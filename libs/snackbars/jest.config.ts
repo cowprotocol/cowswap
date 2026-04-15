@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'snackbars',
   preset: '../../jest.preset.js',

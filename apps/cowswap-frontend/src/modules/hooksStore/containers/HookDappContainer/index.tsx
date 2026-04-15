@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useOrderParams } from 'entities/orderHooks/useOrderParams'
 
@@ -37,7 +36,6 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const orderParams = useOrderParams()
   const isSmartContract = useIsSmartContractWallet()
-  const provider = useWalletProvider()
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()
   const isDarkMode = useIsDarkMode()
@@ -45,7 +43,6 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const stateDiff = useHookStateDiff(isPreHook, hookToEditDetails?.uuid)
 
   const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
-  const signer = useMemo(() => provider?.getSigner(), [provider])
 
   const context = useMemo<HookDappContextType>(() => {
     return {
@@ -53,7 +50,6 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       account,
       orderParams,
       hookToEdit: hookToEditDetails,
-      signer,
       isSmartContract,
       isPreHook,
       isDarkMode,
@@ -82,7 +78,6 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
     chainId,
     account,
     hookToEditDetails,
-    signer,
     isSmartContract,
     tradeNavigate,
     inputCurrencyId,

@@ -5,7 +5,7 @@ import { alternativeOrderReadWriteAtomFactory } from 'modules/trade/state/altern
 export type PartiallyFillableOverrideType = boolean | undefined
 export type PartiallyFillableOverrideDispatcherType = [
   PartiallyFillableOverrideType,
-  (update: PartiallyFillableOverrideType) => void
+  (update: PartiallyFillableOverrideType) => void,
 ]
 
 const regularPartiallyFillableOverrideAtom = atom<PartiallyFillableOverrideType>(undefined)
@@ -13,5 +13,5 @@ const alternativePartiallyFillableOverrideAtom = atom<PartiallyFillableOverrideT
 
 export const partiallyFillableOverrideAtom = alternativeOrderReadWriteAtomFactory(
   regularPartiallyFillableOverrideAtom,
-  alternativePartiallyFillableOverrideAtom
+  alternativePartiallyFillableOverrideAtom,
 )

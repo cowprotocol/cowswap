@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
-import { areAddressesEqual } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -55,9 +55,7 @@ export function ProxyRecipient({
     <Wrapper>
       {bridgeReceiverOverride ? (
         <InfoTooltip
-          content={
-            'This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap.'
-          }
+          content={t`This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap.`}
         />
       ) : (
         <Pocket size={size} />

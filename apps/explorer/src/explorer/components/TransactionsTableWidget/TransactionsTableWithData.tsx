@@ -34,5 +34,9 @@ export const TransactionsTableWithData: React.FC = () => {
     }
   }, [orders, orders?.length])
 
-  return isFirstRender || isFirstLoading ? <LoadingWrapper message="Loading transactions" /> : <TransactionTable orders={orders} />
+  return isFirstRender || isFirstLoading ? (
+    <LoadingWrapper message="Loading transactions" />
+  ) : (
+    <TransactionTable orders={orders} />
+  )
 }

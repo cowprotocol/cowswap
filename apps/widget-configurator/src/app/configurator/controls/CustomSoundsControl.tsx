@@ -27,7 +27,7 @@ export function CustomSoundsControl({ state }: CustomSoundsControlProps) {
         setCustomSounds((prevState) => ({ ...prevState, [type]: value === 'null' ? null : value || '' }))
       }
     },
-    [setCustomSounds]
+    [setCustomSounds],
   )
 
   return (

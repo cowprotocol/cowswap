@@ -1,5 +1,5 @@
+import { Currency } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 

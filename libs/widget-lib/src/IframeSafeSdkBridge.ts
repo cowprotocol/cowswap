@@ -24,15 +24,11 @@ export class IframeSafeSdkBridge {
     this.startListening()
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  private startListening() {
+  private startListening(): void {
     this.appWindow.addEventListener('message', this.forwardSdkMessage)
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public stopListening() {
+  public stopListening(): void {
     this.appWindow.removeEventListener('message', this.forwardSdkMessage)
   }
 }

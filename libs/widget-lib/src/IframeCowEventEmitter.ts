@@ -15,6 +15,7 @@ export class IframeCowEventEmitter {
 
   constructor(
     private contentWindow: Window,
+    iframeOrigin: string,
     listeners: CowWidgetEventListeners = [],
   ) {
     // Subscribe listeners to local event emitter
@@ -25,12 +26,11 @@ export class IframeCowEventEmitter {
       this.contentWindow,
       WidgetMethodsEmit.EMIT_COW_EVENT,
       (cowEvent) => this.eventEmitter.emit(cowEvent.event, cowEvent.payload),
+      iframeOrigin,
     )
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public stopListeningIframe() {
+  public stopListeningIframe(): void {
     widgetIframeTransport.stopListeningWindowListener(this.contentWindow, this.widgetListener)
   }
 

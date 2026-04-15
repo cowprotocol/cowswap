@@ -1,4 +1,5 @@
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../types'
 
@@ -8,7 +9,7 @@ import { TokensMap } from '../types'
 export function tokenMapToListWithLogo(tokenMaps: TokensMap[], chainId: number): TokenWithLogo[] {
   const mergedMap = tokenMaps.reduce((acc, tokenMap) => {
     Object.entries(tokenMap).forEach(([tokenAddress, token]) => {
-      const key = tokenAddress.toLowerCase()
+      const key = getAddressKey(tokenAddress)
       const existing = acc[key]
 
       if (existing) {

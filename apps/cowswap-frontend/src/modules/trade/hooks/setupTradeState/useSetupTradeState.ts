@@ -4,18 +4,18 @@ import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
-import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
-import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
-import { TradeType } from 'modules/trade/types/TradeType'
+import { useWalletClient } from 'wagmi'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
+import { useTradeNavigate } from '../../hooks/useTradeNavigate'
+import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
+import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
+import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
+import { TradeType } from '../../types/TradeType'
 import { useTradeState } from '../useTradeState'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
@@ -30,7 +30,9 @@ export function useSetupTradeState(): void {
 
   const isWindowVisible = useIsWindowVisible()
   const prevIsWindowVisible = usePrevious(isWindowVisible)
-  const provider = useWalletProvider()
+  // TODO M-6 COW-573
+  // This flow will be reviewed and updated later, to include a wagmi alternative
+  const { data: walletClient } = useWalletClient()
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
   const tradeStateFromUrl = useTradeStateFromUrl()
@@ -236,10 +238,10 @@ export function useSetupTradeState(): void {
     const targetChainId = urlChainId ?? rememberedUrlStateRef.current?.chainId ?? currentChainId
     switchNetworkInWallet(targetChainId, providerChainId)
 
-    console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
+    console.debug('[TRADE STATE]', 'Set chainId to provider', { walletClient, urlChainId })
     // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, urlChainId])
+  }, [walletClient, urlChainId])
 
   /**
    * On chainId in provider changes

@@ -7,7 +7,7 @@ const TradeTypes = Object.values(TradeType)
 export function resolveFlexibleConfig<T>(
   config: FlexibleConfig<T>,
   chainId: SupportedChainId,
-  tradeType: TradeType
+  tradeType: TradeType,
 ): T | undefined {
   if (isPerTradeTypeConfig(config)) {
     const value = config[tradeType]

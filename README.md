@@ -8,16 +8,16 @@ providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
 | --------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
+| 🐮 **CoW Swap** 🐮    | [swap.cow.finance](https://swap.cow.finance/)                                                                           |
 | CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
 | CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
-| CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
-| Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
+| CoW Protocol          | [cow.finance](https://cow.finance)                                                                                      |
+| Docs                  | [docs.cow.finance](https://docs.cow.finance)                                                                            |
 | Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
-| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
+| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cow-swap-home)                                          |
 | X/Twitter             | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
 | Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
-| Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
+| Forum                 | [forum.cow.finance](https://forum.cow.finance)                                                                          |
 
 # 🐮 Run CoW Swap
 
@@ -27,10 +27,17 @@ First install Dependencies:
 pnpm install
 ```
 
+To upgrade `@cowprotocol/cow-sdk` and all `@cowprotocol/sdk-*` packages to the latest published versions:
+
+```bash
+pnpm upgrade-sdk-latest
+pnpm install
+```
+
 Or, if you want to use `@cowprotocol/sdk` preview versions like `"@cowprotocol/cow-sdk": "7.0.4-pr-546-c04641f0.0"`, then:
 
-- set the versions in `package.json`
-- run `PACKAGE_READ_AUTH_TOKEN=XXX pnpm run install:sdk-preview` instead of just `yarn`
+- run `pnpm upgrade-sdk-preview https://github.com/cowprotocol/cow-sdk/pull/787` with a link to SDK PR with deployed previews
+- run `PACKAGE_READ_AUTH_TOKEN=XXX pnpm run install:sdk-preview` instead of just `pnpm install`
 - the token must be generated in GitHub with `read:packages` permissions
 
 ## Run
@@ -73,9 +80,9 @@ pnpm run start:explorer
 pnpm run build:explorer
 ```
 
-# 🐄 cow.fi
+# 🐄 cow.finance
 
-Start CoW.fi on <http://localhost:3001>
+Start cow.finance on <http://localhost:3001>
 
 ### Start
 
@@ -161,12 +168,16 @@ environment variables:
 
 ```ini
 REACT_APP_NETWORK_URL_1: https://...
-REACT_APP_NETWORK_URL_11155111: https://...
-REACT_APP_NETWORK_URL_100: https://...
+REACT_APP_NETWORK_URL_56: https://...
+REACT_APP_NETWORK_URL_100: https://rpc.gnosis.gateway.fm
 REACT_APP_NETWORK_URL_137: https://...
 REACT_APP_NETWORK_URL_8453: https://...
+REACT_APP_NETWORK_URL_9745: https://rpc.plasma.to
 REACT_APP_NETWORK_URL_42161: https://...
 REACT_APP_NETWORK_URL_43114: https://...
+REACT_APP_NETWORK_URL_57073: https://rpc-ten.inkonchain.com
+REACT_APP_NETWORK_URL_59144: https://rpc.linea.build
+REACT_APP_NETWORK_URL_11155111: https://...
 ```
 
 Additionally, if you plan to run the integration tests locally you must define:
@@ -206,7 +217,7 @@ The API endpoint is configured using the environment variable
 `REACT_APP_BFF_BASE_URL`:
 
 ```ini
-REACT_APP_BFF_BASE_URL=https://bff.cow.fi
+REACT_APP_BFF_BASE_URL=https://bff.cow.finance
 ```
 
 ## CMS API Endpoints (Content Management System)
@@ -224,7 +235,7 @@ The API endpoint is configured using the environment variable
 `REACT_APP_CMS_BASE_URL`:
 
 ```ini
-REACT_APP_CMS_BASE_URL=https://cms.cow.fi/api
+REACT_APP_CMS_BASE_URL=https://cms.cow.finance/api
 ```
 
 ## Price feeds
@@ -276,9 +287,21 @@ In case of problems with the service worker cache you force a reset using
 
 ## Vercel preview build
 
+Each app’s `vercel.json` uses `cd ../..` then **`npx pnpm@10.30.3`** so installs match root **`packageManager`** and avoid Vercel’s default **pnpm 9** (which can trigger `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH` with this lockfile).
+
+**Project settings that must line up (if deploys fail for unclear reasons):**
+
+1. **Root Directory** for that Vercel project should be the app folder (e.g. `apps/cow-fi`). If it is the monorepo root instead, `cd ../..` is wrong and install reads the wrong tree.
+2. **Build & Development →** no **Install Command** / **Build Command** override in the dashboard that replaces `vercel.json` (or align them with the repo).
+3. **Node.js version** on Vercel should be current LTS (Corepack / `npx` expect a recent Node).
+4. **`ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`:** run `pnpm install` locally with **pnpm 10.30.3**, commit any `pnpm-lock.yaml` change, and ensure root `package.json` `pnpm.*` config was not edited without reinstalling.
+5. **Ignored Build Step:** use `node tools/scripts/ignore-build-step.js --app=…` — do not use a broken one-line `[ … || … ]` `sh` test (see below).
+
 Since this repo includes multiple apps, we do not want to build all of them on each PR because it causes long build queues in Vercel.  
 Some apps (see the list below) are not required to be built on each PR so we run them only a PR is labeled with a specific label.
 This label is defined in the project settings on Vercel in `Settings`/`Git`/`Ignored Build Step` script.
+Use the Node script below (do **not** use a one-line `sh`/`bash` test with `[ ... || ... ]` inside a single `[` — POSIX `[` does not support `||` there, which breaks branch names like `feature/foo` and logs `[: missing \`]'`).
+
 For example, the label for the widget-configurator is `preview-widget-cfg`:
 
 ```

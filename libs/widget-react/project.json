@@ -15,22 +15,11 @@
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/libs/widget-react"
-      },
-      "configurations": {
-        "development": {
-          "mode": "development"
-        },
-        "production": {
-          "mode": "production"
-        }
+        "outputPath": "dist/libs/widget-react",
+        "configFile": "libs/widget-react/vite.config.mts",
+        "assets": ["libs/widget-react/*.md"]
       }
-    },
-    "publish": {
-      "command": "node tools/scripts/publish.mjs widget-react {args.tag} {args.otp}",
-      "dependsOn": ["build"]
     },
     "test": {
       "executor": "@nx/jest:jest",

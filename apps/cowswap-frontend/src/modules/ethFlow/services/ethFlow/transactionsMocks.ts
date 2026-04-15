@@ -1,3 +1,5 @@
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { cowSwapStore } from '../../../../legacy/state'
 import { addTransaction, finalizeTransaction } from '../../../../legacy/state/enhancedTransactions/actions'
 import { HashType } from '../../../../legacy/state/enhancedTransactions/reducer'
@@ -41,14 +43,14 @@ export function mockEthFlowPendingTxs() {
       hash: WrapSuccessfulTxHashMock,
       chainId: 5,
       receipt: {
-        to: '',
-        from: '',
-        contractAddress: '',
+        to: null,
+        from: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        contractAddress: null,
         transactionIndex: 1,
-        blockHash: '',
-        transactionHash: '',
+        blockHash: '0x',
+        transactionHash: '0x',
         blockNumber: 1,
-        status: 1,
+        status: 'success',
       },
     }),
   )
@@ -68,14 +70,14 @@ export function mockEthFlowPendingTxs() {
       hash: WrapErrorTxHashMock,
       chainId: 5,
       receipt: {
-        to: '',
-        from: '',
-        contractAddress: '',
+        to: null,
+        from: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        contractAddress: null,
         transactionIndex: 1,
-        blockHash: '',
-        transactionHash: '',
+        blockHash: '0x',
+        transactionHash: '0x',
         blockNumber: 1,
-        status: 3, // Error
+        status: 'reverted',
       },
     }),
   )
@@ -90,7 +92,7 @@ export function mockEthFlowPendingTxs() {
       chainId: 5,
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
-        spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
+        spender: COW_PROTOCOL_VAULT_RELAYER_ADDRESS[SupportedChainId.MAINNET],
         amount: '0x1',
       },
       summary: 'Approve GNO',
@@ -106,7 +108,7 @@ export function mockEthFlowPendingTxs() {
       chainId: 5,
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
-        spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
+        spender: COW_PROTOCOL_VAULT_RELAYER_ADDRESS[SupportedChainId.MAINNET],
         amount: '0x1',
       },
       summary: 'Approve GNO',
@@ -117,14 +119,14 @@ export function mockEthFlowPendingTxs() {
       hash: ApproveSuccessfulTxHashMock,
       chainId: 5,
       receipt: {
-        to: '',
-        from: '',
-        contractAddress: '',
+        to: null,
+        from: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        contractAddress: null,
         transactionIndex: 1,
-        blockHash: '',
-        transactionHash: '',
+        blockHash: '0x',
+        transactionHash: '0x',
         blockNumber: 1,
-        status: 1,
+        status: 'success',
       },
     }),
   )
@@ -138,7 +140,7 @@ export function mockEthFlowPendingTxs() {
       chainId: 5,
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
-        spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
+        spender: COW_PROTOCOL_VAULT_RELAYER_ADDRESS[SupportedChainId.MAINNET],
         amount: '0x1',
       },
       summary: 'Approve GNO',
@@ -149,14 +151,14 @@ export function mockEthFlowPendingTxs() {
       hash: ApproveErrorTxHashMock,
       chainId: 5,
       receipt: {
-        to: '',
-        from: '',
-        contractAddress: '',
+        to: null,
+        from: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        contractAddress: null,
         transactionIndex: 1,
-        blockHash: '',
-        transactionHash: '',
+        blockHash: '0x',
+        transactionHash: '0x',
         blockNumber: 1,
-        status: 3, // Error
+        status: 'reverted',
       },
     }),
   )

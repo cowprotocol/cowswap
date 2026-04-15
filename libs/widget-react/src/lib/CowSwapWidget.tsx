@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { JSX, useCallback, useEffect, useRef, useState } from 'react'
 
 import type { CowWidgetEventListeners } from '@cowprotocol/events'
 import type { Command } from '@cowprotocol/types'
@@ -10,11 +10,8 @@ import {
   createCowSwapWidget,
 } from '@cowprotocol/widget-lib'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function CowSwapWidget(props: CowSwapWidgetProps) {
-  const { params, provider, listeners } = props
+export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
+  const { params, provider, listeners, onReady } = props
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
@@ -27,8 +24,10 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     try {
       console.log(`[WIDGET] ${action}`)
       actionThatMightFail()
-    } catch (error) {
+    } catch (_error) {
       const errorMessage = `Error ${action.toLowerCase()}`
+      const error = _error instanceof Error ? _error : new Error('Unknown CowSwapWidget error', { cause: _error })
+
       console.error(`[WIDGET] ${errorMessage}`, error)
       setError({ message: errorMessage, error })
     }
@@ -54,7 +53,11 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
 
   // Create/Update the widget if the parameters change
   useEffect(() => {
-    if (!containerRef.current || JSON.stringify(paramsRef.current) === JSON.stringify(params)) {
+    const paramsHooksDifferent = !!paramsRef.current && areParamsHooksDifferent(paramsRef.current, params)
+    if (
+      !containerRef.current ||
+      (JSON.stringify(paramsRef.current) === JSON.stringify(params) && !paramsHooksDifferent)
+    ) {
       return
     }
 
@@ -64,7 +67,12 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
 
     if (handler === null) {
       tryOrHandleError('Creating a new widget', () => {
-        widgetHandlerRef.current = createCowSwapWidget(container, { params, provider: providerRef.current, listeners })
+        widgetHandlerRef.current = createCowSwapWidget(container, {
+          params,
+          provider: providerRef.current,
+          listeners,
+          onReady,
+        })
         listenersRef.current = listeners
       })
     } else {
@@ -98,12 +106,17 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
         widgetHandlerRef.current?.destroy()
 
         // Re-create the widget
-        widgetHandlerRef.current = createCowSwapWidget(container, { params, provider: providerRef.current, listeners })
+        widgetHandlerRef.current = createCowSwapWidget(container, {
+          params,
+          provider: providerRef.current,
+          listeners,
+          onReady,
+        })
       })
     }
     // Trigger only on provider changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, tryOrHandleError])
+  }, [onReady, provider, tryOrHandleError])
 
   // Update widget listeners (if they change)
   useEffect(() => {
@@ -125,4 +138,23 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
 
   // Render widget container
   return <div ref={containerRef} style={{ width: '100%' }}></div>
+}
+
+function areParamsHooksDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {
+  const nextHooks = next.hooks ?? {}
+  const nextKeys = Object.keys(nextHooks)
+
+  const prevHooks = prev.hooks ?? {}
+  const prevKeys = Object.keys(prevHooks)
+
+  return (
+    nextKeys.some((_key) => {
+      const key = _key as keyof CowSwapWidgetParams['hooks']
+      return nextHooks[key] !== prevHooks[key]
+    }) ||
+    prevKeys.some((_key) => {
+      const key = _key as keyof CowSwapWidgetParams['hooks']
+      return nextHooks[key] !== prevHooks[key]
+    })
+  )
 }

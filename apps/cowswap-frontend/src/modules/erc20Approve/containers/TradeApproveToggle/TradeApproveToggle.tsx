@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Toggle } from '../../pure/Toggle'
 import { useIsPartialApproveSelectedByUser, useSetIsPartialApproveSelectedByUser } from '../../state'

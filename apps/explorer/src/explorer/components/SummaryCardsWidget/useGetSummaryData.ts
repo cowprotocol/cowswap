@@ -68,7 +68,7 @@ function getTransactionsAndFees(data: Array<{ orders: string; feesUsd: string }>
       acc.fees += Number(curr.feesUsd)
       return acc
     },
-    { fees: 0, transactions: 0 }
+    { fees: 0, transactions: 0 },
   )
 }
 

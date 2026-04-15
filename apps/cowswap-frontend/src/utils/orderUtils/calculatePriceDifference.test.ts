@@ -1,7 +1,7 @@
 import { GNO, USDC_SEPOLIA, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { buildPriceFromCurrencyAmounts, FractionUtils, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@cowprotocol/currency'
 
 import { calculatePriceDifference, CalculatePriceDifferenceParams } from './calculatePriceDifference'
 
@@ -21,7 +21,7 @@ describe('Not enough parameters (returns null)', () => {
         referencePrice: undefined,
         targetPrice: buildPrice('1', '1'),
         isInverted: false,
-      })
+      }),
     ).toBe(null)
   })
   it('returns `null` when referencePrice is null', () => {
@@ -30,7 +30,7 @@ describe('Not enough parameters (returns null)', () => {
         referencePrice: null,
         targetPrice: buildPrice('1', '1'),
         isInverted: false,
-      })
+      }),
     ).toBe(null)
   })
 
@@ -40,7 +40,7 @@ describe('Not enough parameters (returns null)', () => {
         referencePrice: buildPrice('1', '1'),
         targetPrice: null,
         isInverted: false,
-      })
+      }),
     ).toBe(null)
   })
 })
@@ -68,7 +68,7 @@ describe('Prices are Negative or Zero', () => {
 })
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('Not Inverted Price', () => {
   const baseParams = {
     isInverted: false,
@@ -146,7 +146,7 @@ describe('Not Inverted Price', () => {
 })
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('Inverted Price', () => {
   const baseParams = {
     isInverted: true,

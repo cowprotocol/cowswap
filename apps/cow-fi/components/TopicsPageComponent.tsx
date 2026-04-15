@@ -3,7 +3,10 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { CmsImage, UI, Font, Media } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
+
+import { ArticleListResponse } from '../services/cms'
 
 import { ArrowButton } from '@/components/ArrowButton'
 import { SearchBar } from '@/components/SearchBar'
@@ -18,9 +21,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
-
-import { ArticleListResponse } from '../services/cms'
 
 interface PageProps {
   categories: {

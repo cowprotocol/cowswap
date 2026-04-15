@@ -28,7 +28,7 @@ export function useElementViewportTracking(
       if (rafId != null) cancelAnimationFrame(rafId)
       rafId = requestAnimationFrame(() => {
         rafId = null
-        setViewportVersion(prev => prev + 1)
+        setViewportVersion((prev) => prev + 1)
       })
     }
 

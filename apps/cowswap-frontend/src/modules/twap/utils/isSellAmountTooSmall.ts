@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
@@ -7,7 +7,7 @@ import { MINIMUM_PART_SELL_AMOUNT_FIAT } from '../const'
 
 export function isSellAmountTooSmall(
   sellAmount: Nullish<CurrencyAmount<Currency>>,
-  chainId: SupportedChainId | undefined
+  chainId: SupportedChainId | undefined,
 ): boolean {
   if (!chainId) {
     return false

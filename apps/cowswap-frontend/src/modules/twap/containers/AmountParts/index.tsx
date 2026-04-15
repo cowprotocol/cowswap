@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { ReactElement, ReactNode } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
@@ -22,28 +22,7 @@ interface TradeAmountPreviewProps {
   children?: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function TradeAmountPreview(props: TradeAmountPreviewProps) {
-  const { amount, usdAmount, label, tooltip, children } = props
-
-  return (
-    <styledEl.Part>
-      <styledEl.Label>
-        {label}
-        <HelpTooltip text={tooltip} />
-      </styledEl.Label>
-
-      <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />
-      <styledEl.Fiat amount={usdAmount} />
-      {children}
-    </styledEl.Part>
-  )
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function AmountParts() {
+export function AmountParts(): ReactNode {
   const {
     sellAmount: { label: sellLabel, tooltip: sellTooltip },
     buyAmount: { label: buyLabel, tooltip: buyTooltip },
@@ -53,7 +32,8 @@ export function AmountParts() {
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
 
-  const { sellAmount: inputPartAmount, buyAmount: outputPartAmount } = receiveAmountInfo?.afterPartnerFees || {}
+  const { sellAmount: inputPartAmount } = receiveAmountInfo?.beforeAllFees || {}
+  const { buyAmount: outputPartAmount } = receiveAmountInfo?.afterPartnerFees || {}
 
   const inputPartAmountUsd = useUsdAmount(inputPartAmount).value
   const outputPartAmountUsd = useUsdAmount(outputPartAmount).value
@@ -82,5 +62,22 @@ export function AmountParts() {
         usdAmount={outputPartAmountUsd}
       ></TradeAmountPreview>
     </styledEl.Wrapper>
+  )
+}
+
+function TradeAmountPreview(props: TradeAmountPreviewProps): ReactNode {
+  const { amount, usdAmount, label, tooltip, children } = props
+
+  return (
+    <styledEl.Part>
+      <styledEl.Label>
+        {label}
+        <HelpTooltip text={tooltip} />
+      </styledEl.Label>
+
+      <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />
+      <styledEl.Fiat amount={usdAmount} />
+      {children}
+    </styledEl.Part>
   )
 }

@@ -1,7 +1,7 @@
 export * from './containers/AdvancedOrdersWidget'
+export { useComposableCowContractData, type ComposableCowContractData } from './hooks/useComposableCowContract'
 export * from './hooks/useAdvancedOrdersRawState'
 export * from './hooks/useAdvancedOrdersDerivedState'
 export * from './state/advancedOrdersAtom'
-export * from './updaters/FillAdvancedOrdersDerivedStateUpdater'
 export * from './updaters/SetupAdvancedOrderAmountsFromUrlUpdater'
 export * from './const'

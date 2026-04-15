@@ -1,7 +1,7 @@
-import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 import JSBI from 'jsbi'
+import { parseUnits } from 'viem'
 
 /**
  * Parses a CurrencyAmount from the passed string.
@@ -28,8 +28,8 @@ export function tryParseCurrencyAmount<T extends Currency>(
     const typedValueParsed = parseUnits(fixedNumber, currency.decimals).toString()
 
     return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(typedValueParsed))
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // fails if the user specifies too many decimal places of precision (or maybe exceed max uint?)
     console.debug(`Failed to parse input amount: "${value}"`, error)

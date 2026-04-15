@@ -1,6 +1,6 @@
 import { FULL_PRICE_PRECISION } from '@cowprotocol/common-const'
+import { BigintIsh, Currency, CurrencyAmount, Fraction, Percent, Price, Rounding, Token } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
-import { BigintIsh, Currency, CurrencyAmount, Fraction, Percent, Price, Rounding, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'

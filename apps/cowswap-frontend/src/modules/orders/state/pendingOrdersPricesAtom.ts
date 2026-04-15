@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 
 export interface PendingOrderPrices {
   marketPrice: Price<Currency, Currency>
@@ -22,5 +22,5 @@ export const updatePendingOrderPricesAtom = atom(
 
       return { ...prevState, [orderId]: data }
     })
-  }
+  },
 )

@@ -5,6 +5,7 @@ import { renderHook } from '@testing-library/react'
 
 import { Field } from 'legacy/state/types'
 
+import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useSourceChainId } from './useSourceChainId'
 
@@ -19,8 +20,13 @@ jest.mock('./useSelectTokenWidgetState', () => ({
   useSelectTokenWidgetState: jest.fn(),
 }))
 
+jest.mock('./useChainsToSelect', () => ({
+  useChainsToSelect: jest.fn(),
+}))
+
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
+const mockUseChainsToSelect = useChainsToSelect as jest.MockedFunction<typeof useChainsToSelect>
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
 const createWidgetState = (override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState => {
@@ -35,6 +41,7 @@ describe('useSourceChainId', () => {
     jest.clearAllMocks()
     mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
     mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: false }))
+    mockUseChainsToSelect.mockReturnValue(undefined)
   })
 
   it('returns wallet chain when selector is closed', () => {
@@ -91,5 +98,24 @@ describe('useSourceChainId', () => {
     const { result } = renderHook(() => useSourceChainId())
 
     expect(result.current).toEqual({ chainId: SupportedChainId.MAINNET, source: 'wallet' })
+  })
+
+  it('uses resolved selector default chain when selectedTargetChainId is stale', () => {
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        open: true,
+        field: Field.OUTPUT,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+    mockUseChainsToSelect.mockReturnValue({
+      defaultChainId: SupportedChainId.LINEA,
+      chains: [],
+      isLoading: false,
+    })
+
+    const { result } = renderHook(() => useSourceChainId())
+
+    expect(result.current).toEqual({ chainId: SupportedChainId.LINEA, source: 'selector' })
   })
 })

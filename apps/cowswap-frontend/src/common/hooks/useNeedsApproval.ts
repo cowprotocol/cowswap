@@ -1,11 +1,10 @@
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken, isEnoughAmount } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
 import { useTokenAllowance } from './useTokenAllowance'
-
 
 /**
  * Hook to check if a token needs approval
@@ -23,7 +22,7 @@ import { useTokenAllowance } from './useTokenAllowance'
 export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boolean {
   const spender = useTradeSpenderAddress()
   const token = amount ? getWrappedToken(amount.currency) : undefined
-  const allowance = useTokenAllowance(token).data
+  const allowance = useTokenAllowance(token)
 
   if (typeof allowance === 'undefined') {
     return true
@@ -33,5 +32,5 @@ export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boo
     return false
   }
 
-  return isEnoughAmount(amount, allowance) === false
+  return isEnoughAmount(amount, allowance?.data) === false
 }

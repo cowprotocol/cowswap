@@ -13,6 +13,6 @@ export function useThrottleFn(fn: (...args: unknown[]) => unknown, timeout: numb
 
       return fn(args)
     },
-    [fn, lastCallTimestamp, timeout]
+    [fn, lastCallTimestamp, timeout],
   )
 }

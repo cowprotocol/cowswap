@@ -14,7 +14,7 @@ export function PaletteControl({ paletteManager }: { paletteManager: ColorPalett
   const { colorPalette, resetColorPalette } = paletteManager
 
   const otherColorKeys = Object.keys(colorPalette).filter(
-    (key): key is keyof ColorPalette => !visibleColorKeys.includes(key as keyof ColorPalette)
+    (key): key is keyof ColorPalette => !visibleColorKeys.includes(key as keyof ColorPalette),
   )
 
   const [expanded, setExpanded] = React.useState(false)

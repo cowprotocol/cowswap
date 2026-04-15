@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
 
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
@@ -11,8 +11,8 @@ import { useTradeNavigate } from '../useTradeNavigate'
 
 const alertMessage = (
   doubledSymbol: string,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 ) => t`There is more than one token in the list of tokens with the symbol: ${doubledSymbol}.
 Please select the token you need from the UI or use the address of the token instead of the symbol`
 

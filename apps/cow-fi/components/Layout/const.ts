@@ -11,34 +11,28 @@ export const PAGE_MAX_WIDTH = 1760
 export const THEME_MODE = 'light'
 export const PRODUCT_VARIANT = ProductVariant.CowDao
 
-export const NAV_ITEMS: MenuItem[] = [
-  {
-    label: 'About',
-    children: [
-      {
-        label: 'Stats',
-        href: 'https://dune.com/cowprotocol/cowswap',
-        external: true,
-      },
-      {
-        label: 'Governance',
-        href: 'https://docs.cow.fi/governance',
-        external: true,
-      },
-      {
-        label: 'Grants',
-        href: 'https://grants.cow.fi/',
-        external: true,
-      },
-      {
-        label: 'Bug Bounty',
-        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
-        external: true,
-      },
-      { label: 'Careers', href: '/careers' },
-    ],
-  },
-  {
+const LEARN_NAV_ITEM: MenuItem = {
+  label: 'Learn',
+  children: [
+    {
+      href: '/learn',
+      label: 'Knowledge Base',
+    },
+    {
+      href: 'https://docs.cow.finance/',
+      label: 'Docs',
+      external: true,
+      utmContent: 'menubar-nav-item-docs',
+    },
+  ],
+}
+
+export function getNavItems(isSolversEnabled: boolean, isAffiliateProgramEnabled: boolean): MenuItem[] {
+  return [getAboutNavItem(isAffiliateProgramEnabled), getProductsNavItem(isSolversEnabled), LEARN_NAV_ITEM]
+}
+
+function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
+  return {
     label: 'Products',
     children: [
       {
@@ -66,30 +60,55 @@ export const NAV_ITEMS: MenuItem[] = [
           },
           {
             label: 'CoW Explorer',
-            href: 'https://explorer.cow.fi/',
+            href: 'https://explorer.cow.finance/',
             external: true,
             utmContent: 'menubar-nav-item-cow-explorer',
           },
+          ...(isSolversEnabled
+            ? [
+                {
+                  label: 'Solvers',
+                  href: 'https://explorer.cow.finance/solvers',
+                  external: true,
+                  utmContent: 'menubar-nav-item-solvers',
+                },
+              ]
+            : []),
         ],
       },
     ],
-  },
-  {
-    label: 'Learn',
+  }
+}
+
+function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
+  return {
+    label: 'About',
     children: [
       {
-        href: '/learn',
-        label: 'Knowledge Base',
+        label: 'Stats',
+        href: 'https://dune.com/cowprotocol/cow-swap-home',
+        external: true,
       },
       {
-        href: 'https://docs.cow.fi/',
-        label: 'Docs',
+        label: 'Governance',
+        href: 'https://docs.cow.finance/governance',
         external: true,
-        utmContent: 'menubar-nav-item-docs',
       },
+      {
+        label: 'Grants',
+        href: 'https://docs.cow.finance/',
+        external: true,
+      },
+      {
+        label: 'Bug Bounty',
+        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
+        external: true,
+      },
+      { label: 'Careers', href: '/careers' },
+      ...(isAffiliateProgramEnabled ? [{ label: 'Affiliate Program', href: '/affiliate-program' }] : []),
     ],
-  },
-]
+  }
+}
 
 export const NAV_ADDITIONAL_BUTTONS = [
   {

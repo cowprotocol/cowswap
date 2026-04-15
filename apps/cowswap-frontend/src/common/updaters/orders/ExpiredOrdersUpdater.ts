@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react'
 
 import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { SetIsOrderRefundedBatch } from 'legacy/state/orders/actions'
@@ -23,8 +23,6 @@ export function ExpiredOrdersUpdater(): null {
 
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string) => {
-      const lowerCaseAccount = account.toLowerCase()
-
       if (isUpdating.current) {
         return
       }
@@ -39,7 +37,7 @@ export function ExpiredOrdersUpdater(): null {
         const orderWithoutRefund = expiredRef.current.filter(({ owner, refundHash, sellToken }) => {
           const isEthFlowOrder = sellToken === NATIVE_CURRENCY_ADDRESS
 
-          return isEthFlowOrder && owner.toLowerCase() === lowerCaseAccount && !refundHash
+          return isEthFlowOrder && areAddressesEqual(owner, account) && !refundHash
         })
 
         if (orderWithoutRefund.length === 0) {

@@ -2,18 +2,17 @@ import { useMemo } from 'react'
 
 import { AVG_APPROVE_COST_GWEI } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber } from '@ethersproject/bignumber'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { parseUnits } from 'ethers/lib/utils'
+import { parseGwei } from 'viem'
 
 import { useGasPrices } from 'legacy/state/gas/hooks'
 
 import { BalanceChecks } from '../../../pure/EthFlowModalContent/EthFlowModalTopContent'
 
-export const MINIMUM_TXS = '10'
-export const DEFAULT_GAS_FEE = parseUnits('50', 'gwei')
+export const MINIMUM_TXS = 10
+export const DEFAULT_GAS_FEE = parseGwei('50')
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -23,9 +22,9 @@ export function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, nativ
   }
   // TODO: should use DEFAULT_GAS_FEE from backup source
   // when/if implemented
-  const gas = gasPrice?.average || DEFAULT_GAS_FEE
+  const gas = gasPrice?.average ?? DEFAULT_GAS_FEE
 
-  const amount = BigNumber.from(gas).mul(MINIMUM_TXS).mul(AVG_APPROVE_COST_GWEI)
+  const amount = BigInt(gas) * BigInt(MINIMUM_TXS) * BigInt(AVG_APPROVE_COST_GWEI)
 
   return {
     multiTxCost: CurrencyAmount.fromRawAmount(native, amount.toString()),
@@ -41,8 +40,8 @@ export const _getAvailableTransactions = ({
   nativeBalance?: CurrencyAmount<Currency>
   nativeInput?: CurrencyAmount<Currency>
   singleTxCost?: CurrencyAmount<Currency>
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => {
   if (!nativeBalance || !nativeInput || !singleTxCost || nativeBalance.lessThan(nativeInput.add(singleTxCost))) {
     return null
@@ -51,6 +50,12 @@ export const _getAvailableTransactions = ({
   // USER_BALANCE - (USER_WRAP_AMT + 1_TX_CST) / 1_TX_COST = AVAILABLE_TXS
   const txsAvailable = nativeBalance.subtract(nativeInput.add(singleTxCost)).divide(singleTxCost)
   return txsAvailable.lessThan('1') ? null : txsAvailable.quotient.toString()
+}
+
+export type RemainingTxAndCostsParams = {
+  nativeBalance: CurrencyAmount<Currency> | undefined
+  nativeInput: CurrencyAmount<Currency> | undefined
+  native: Currency | undefined
 }
 
 // TODO: Add proper return type annotation
@@ -70,12 +75,6 @@ export function _isLowBalanceCheck({
   if (!nativeInput || !balance || nativeInput.add(txCost).greaterThan(balance)) return true
   // OK if: users_balance - (amt_input + 1_tx_cost) > low_balance_threshold
   return balance.subtract(nativeInput.add(txCost)).lessThan(threshold)
-}
-
-export type RemainingTxAndCostsParams = {
-  nativeBalance: CurrencyAmount<Currency> | undefined
-  nativeInput: CurrencyAmount<Currency> | undefined
-  native: Currency | undefined
 }
 
 // TODO: Add proper return type annotation

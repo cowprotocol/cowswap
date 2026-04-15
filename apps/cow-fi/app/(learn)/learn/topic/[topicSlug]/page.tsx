@@ -15,8 +15,6 @@ import type { Metadata } from 'next'
 import { TopicPageComponent } from '@/components/TopicPageComponent'
 import { getPageMetadata } from '@/util/getPageMetadata'
 
-
-
 type Props = {
   params: Promise<{ topicSlug: string }>
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>

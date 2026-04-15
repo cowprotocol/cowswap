@@ -1,5 +1,5 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 

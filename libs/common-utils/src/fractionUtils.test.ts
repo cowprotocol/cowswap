@@ -1,11 +1,11 @@
-import { Fraction } from '@uniswap/sdk-core'
+import { Fraction } from '@cowprotocol/currency'
 
 import JSBI from 'jsbi'
 
 import { FractionUtils } from './fractionUtils'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('Fraction utils', () => {
   describe('fromNumber', () => {
     it('should create a fraction from integer', () => {

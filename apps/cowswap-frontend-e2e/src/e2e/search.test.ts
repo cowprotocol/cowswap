@@ -4,11 +4,6 @@ function openTokenSelector(): void {
   cy.get('.open-currency-select-button').first({ timeout: LARGE_TIMEOUT }).should('be.enabled').click()
 }
 
-// mock test to pass CI until we fix the test
-it('should be true', () => {
-  expect(true).to.be.true
-})
-
 describe('Search', () => {
   beforeEach(() => {
     cy.visit('/#/11155111/swap/')

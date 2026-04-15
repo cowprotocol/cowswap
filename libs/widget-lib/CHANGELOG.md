@@ -1,5 +1,317 @@
 # Changelog
 
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.3.0...widget-lib-v3.0.0) (2026-04-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **widget:** migrate to swap.cow.finance domain ([#7340](https://github.com/cowprotocol/cowswap/issues/7340))
+
+### ✨ Features
+
+* **widget:** migrate to swap.cow.finance domain ([#7340](https://github.com/cowprotocol/cowswap/issues/7340)) ([5e4c2b8](https://github.com/cowprotocol/cowswap/commit/5e4c2b816b386040965c5070e2482449dbe56032))
+
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.5...widget-lib-v2.3.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.2.0
+    * @cowprotocol/iframe-transport bumped to 2.1.0
+
+## [2.2.5](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.4...widget-lib-v2.2.5) (2026-04-10)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** fix iframe issues ([#7298](https://github.com/cowprotocol/cowswap/issues/7298)) ([3f7094d](https://github.com/cowprotocol/cowswap/commit/3f7094df6389c01bdda515b645b58dcc0b292253))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.0.13
+
+## [2.2.4](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.3...widget-lib-v2.2.4) (2026-04-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.1.2
+    * @cowprotocol/iframe-transport bumped to 2.0.12
+
+## [2.2.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.2...widget-lib-v2.2.3) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** trigger re-deployment 2 ([6df9c79](https://github.com/cowprotocol/cowswap/commit/6df9c79f407bcdf8a253db3dcf80f5ce41c59fa3))
+* **widget:** trigger re-deployment 2 ([a7b60b8](https://github.com/cowprotocol/cowswap/commit/a7b60b85193d9e2a5f7da6fe76e5a1ad590b6cbc))
+
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.1...widget-lib-v2.2.2) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** trigger a redeployment of widget ([#7270](https://github.com/cowprotocol/cowswap/issues/7270)) ([3abaa22](https://github.com/cowprotocol/cowswap/commit/3abaa222591d487ee62db32df800c6e533db754b))
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.0...widget-lib-v2.2.1) (2026-04-07)
+
+
+### 🐛 Bug Fixes
+
+* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.1.1
+    * @cowprotocol/iframe-transport bumped to 2.0.11
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.1.1...widget-lib-v2.2.0) (2026-04-06)
+
+
+### ✨ Features
+
+* **widget:** add onReady callback to widget initialization ([#7255](https://github.com/cowprotocol/cowswap/issues/7255)) ([0279aac](https://github.com/cowprotocol/cowswap/commit/0279aacbbe610bbe0cfe66597bd04ebc89bab55c))
+* **widget:** allow hiding post trading tips ([#7256](https://github.com/cowprotocol/cowswap/issues/7256)) ([b484ad1](https://github.com/cowprotocol/cowswap/commit/b484ad162fb0834556dd14fcb99fd0cadbfcfaa3))
+
+## [2.1.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.1.0...widget-lib-v2.1.1) (2026-04-03)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** hooks preventing trading on older versions ([#7249](https://github.com/cowprotocol/cowswap/issues/7249)) ([120e840](https://github.com/cowprotocol/cowswap/commit/120e8402fcbdc95677aa32bc247b55bc12970257))
+
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.0.2...widget-lib-v2.1.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **tradeFormValidation:** add loading state for price impact and update validation logic ([681b1d7](https://github.com/cowprotocol/cowswap/commit/681b1d7e77a1fc7bc03063345f71a81169691c53))
+* **tradeFormValidation:** add loading state for price impact and update validation logic ([3af7bf1](https://github.com/cowprotocol/cowswap/commit/3af7bf125aa404ac4bb30b21950eab3ee5b68067))
+* **widget:** add options to disable trade based on price impact ([3af7bf1](https://github.com/cowprotocol/cowswap/commit/3af7bf125aa404ac4bb30b21950eab3ee5b68067))
+* **widget:** control available tokens to select to sell or buy ([3af7bf1](https://github.com/cowprotocol/cowswap/commit/3af7bf125aa404ac4bb30b21950eab3ee5b68067))
+* **widget:** control available tokens to select to sell or buy ([#7201](https://github.com/cowprotocol/cowswap/issues/7201)) ([7a74e24](https://github.com/cowprotocol/cowswap/commit/7a74e242deee18b47b36aaf5efefa0d4fb108973))
+* **widget:** control trading with price impact ([3af7bf1](https://github.com/cowprotocol/cowswap/commit/3af7bf125aa404ac4bb30b21950eab3ee5b68067))
+* **widget:** control trading with price impact [#7202](https://github.com/cowprotocol/cowswap/issues/7202) ([#7238](https://github.com/cowprotocol/cowswap/issues/7238)) ([3af7bf1](https://github.com/cowprotocol/cowswap/commit/3af7bf125aa404ac4bb30b21950eab3ee5b68067))
+* **widget:** hook wallet interactions ([#7228](https://github.com/cowprotocol/cowswap/issues/7228)) ([681b1d7](https://github.com/cowprotocol/cowswap/commit/681b1d7e77a1fc7bc03063345f71a81169691c53))
+
+
+### 🔧 Miscellaneous
+
+* fix test ([3af7bf1](https://github.com/cowprotocol/cowswap/commit/3af7bf125aa404ac4bb30b21950eab3ee5b68067))
+* run i18n extract ([3af7bf1](https://github.com/cowprotocol/cowswap/commit/3af7bf125aa404ac4bb30b21950eab3ee5b68067))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.1.0
+
+## [2.0.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.0.1...widget-lib-v2.0.2) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.2
+    * @cowprotocol/iframe-transport bumped to 2.0.10
+
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.0.0...widget-lib-v2.0.1) (2026-03-18)
+
+
+### 🐛 Bug Fixes
+
+* update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.1
+    * @cowprotocol/iframe-transport bumped to 2.0.9
+
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.3.0...widget-lib-v2.0.0) (2026-03-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+
+### ✨ Features
+
+* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
+
+
+### 🔧 Miscellaneous
+
+* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.0.0
+    * @cowprotocol/iframe-transport bumped to 2.0.8
+
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.2.2...widget-lib-v1.3.0) (2026-03-10)
+
+
+### ✨ Features
+
+* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
+
+
+### 🐛 Bug Fixes
+
+* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+
+### 🔧 Miscellaneous
+
+* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.4.0
+    * @cowprotocol/iframe-transport bumped to 2.0.7
+
+## [1.2.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.2.1...widget-lib-v1.2.2) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.3.2
+    * @cowprotocol/iframe-transport bumped to 2.0.6
+
+## [1.2.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.2.0...widget-lib-v1.2.1) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.3.1
+    * @cowprotocol/iframe-transport bumped to 2.0.5
+
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.1.2...widget-lib-v1.2.0) (2026-02-20)
+
+
+### ✨ Features
+
+* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.3.0
+    * @cowprotocol/iframe-transport bumped to 2.0.4
+
+## [1.1.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.1.1...widget-lib-v1.1.2) (2026-02-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.2.0
+    * @cowprotocol/iframe-transport bumped to 2.0.3
+
+## [1.1.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.1.0...widget-lib-v1.1.1) (2026-02-10)
+
+
+### 🐛 Bug Fixes
+
+* **widget-lib:** clean up code ([#6992](https://github.com/cowprotocol/cowswap/issues/6992)) ([39d9f97](https://github.com/cowprotocol/cowswap/commit/39d9f97966e0a80dbc6b1232676fd18333070e1a))
+
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.0.1...widget-lib-v1.1.0) (2026-02-05)
+
+
+### ✨ Features
+
+* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
+
+
+### 🔧 Miscellaneous
+
+* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.1.0
+    * @cowprotocol/iframe-transport bumped to 2.0.2
+
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v1.0.0...widget-lib-v1.0.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.1
+    * @cowprotocol/iframe-transport bumped to 2.0.1
+
+## [1.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.3...widget-lib-v1.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 3.0.0
+    * @cowprotocol/iframe-transport bumped to 2.0.0
+
 ## [0.22.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.2...widget-lib-v0.22.3) (2026-01-26)
 
 

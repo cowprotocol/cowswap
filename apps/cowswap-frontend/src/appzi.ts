@@ -72,9 +72,7 @@ type AppziSettings = {
   data?: Partial<AppziCustomSettings>
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function initialize() {
+function initialize(): void {
   if (isAppziEnabled) {
     ReactAppzi.initialize(APPZI_TOKEN)
 
@@ -84,17 +82,13 @@ function initialize() {
   }
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function updateAppziSettings({ data = {}, userId = '' }: AppziSettings) {
+function updateAppziSettings({ data = {}, userId = '' }: AppziSettings): void {
   if (typeof window !== 'undefined') {
     window.appziSettings = { ...(window.appziSettings || {}), data, userId }
   }
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function openFeedbackAppzi(params: { account?: string; walletName?: string; chainId: number }) {
+export function openFeedbackAppzi(params: { account?: string; walletName?: string; chainId: number }): void {
   const { account, chainId, walletName } = params
 
   if (typeof window !== 'undefined') {
@@ -130,12 +124,10 @@ type SurveyType = 'nps' | 'limit'
  * Opening of the modal is delegated to Appzi
  * It'll display only if the trigger rules are met
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function triggerAppziSurvey(
   data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>,
   surveyType: SurveyType = 'nps',
-) {
+): void {
   if (isInjectedWidget()) return
 
   const surveyData = surveyType === 'limit' ? LIMIT_SURVEY_DATA : NPS_DATA

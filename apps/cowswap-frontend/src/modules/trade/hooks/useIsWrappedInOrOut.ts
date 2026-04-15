@@ -20,7 +20,7 @@ export function useIsWrappedIn(): boolean {
 
   return useMemo(
     () => Boolean(chainId && inputCurrencyId && getIsWrappedNativeToken(chainId, inputCurrencyId)),
-    [chainId, inputCurrencyId]
+    [chainId, inputCurrencyId],
   )
 }
 export function useIsWrappedOut(): boolean {
@@ -30,6 +30,6 @@ export function useIsWrappedOut(): boolean {
 
   return useMemo(
     () => Boolean(chainId && outputCurrencyId && getIsWrappedNativeToken(chainId, outputCurrencyId)),
-    [chainId, outputCurrencyId]
+    [chainId, outputCurrencyId],
   )
 }

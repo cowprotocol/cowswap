@@ -1,9 +1,65 @@
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { ApprovalState, ApproveRequiredReason } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
+
+export interface TradeFormButtonContext {
+  defaultText: string
+  amountToApprove: CurrencyAmount<Currency> | null
+  derivedState: TradeDerivedState
+  quote: TradeQuoteState
+  isSupportedWallet: boolean
+  widgetStandaloneMode?: boolean
+  supportsPartialApprove?: boolean
+  customTokenError?: string
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
+  balancesError: string | null
+  confirmClickEvent?: string
+  approveClickEvent?: string
+  widgetPriceImpactThreshold: number | undefined
+
+  confirmTrade(): void
+
+  connectWallet: Command
+
+  wrapNativeFlow(): void
+}
+
+export interface TradeFormValidationCommonContext {
+  account: string | undefined
+  derivedTradeState: TradeDerivedState
+  approvalState: ApprovalState
+  tradeQuote: TradeQuoteState
+  recipientEnsAddress: string | null
+  isWrapUnwrap: boolean
+  isBundlingSupported: boolean | null
+  isSupportedWallet: boolean
+  isSwapUnsupported: boolean
+  isSafeReadonlyUser: boolean
+  isApproveRequired: ApproveRequiredReason
+  isInsufficientBalanceOrderAllowed: boolean
+  isProviderNetworkUnsupported: boolean
+  isProviderNetworkDeprecated: boolean
+  isOnline: boolean
+  intermediateTokenToBeImported: boolean
+  isAccountProxyLoading: boolean
+  isProxySetupValid: boolean | null | undefined
+  customTokenError?: string
+  isRestrictedForCountry: boolean
+  isBalancesLoading: boolean
+  balancesError: string | null
+  isInputCurrencyXstock: boolean
+  isOutputCurrencyXstock: boolean
+  injectedWidgetParams: Partial<CowSwapWidgetAppParams>
+  tradePriceImpact: PriceImpact
+}
+
+export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
 
 export enum TradeFormValidation {
   // Wrap/unwrap
@@ -24,10 +80,12 @@ export enum TradeFormValidation {
   InputAmountNotSet,
   RecipientInvalid,
   NetworkNotSupported,
+  NetworkDeprecated,
   BrowserOffline,
 
   // Quote loading indicator
   QuoteLoading,
+  ImpactLoading,
   QuoteExpired,
 
   // Balances
@@ -52,49 +110,9 @@ export enum TradeFormValidation {
 
   // RWA/Geo restrictions
   RestrictedForCountry,
-}
+  XstockMinimumTradeSize,
 
-export interface TradeFormValidationCommonContext {
-  account: string | undefined
-  derivedTradeState: TradeDerivedState
-  approvalState: ApprovalState
-  tradeQuote: TradeQuoteState
-  recipientEnsAddress: string | null
-  isWrapUnwrap: boolean
-  isBundlingSupported: boolean | null
-  isSupportedWallet: boolean
-  isSwapUnsupported: boolean
-  isSafeReadonlyUser: boolean
-  isApproveRequired: ApproveRequiredReason
-  isInsufficientBalanceOrderAllowed: boolean
-  isProviderNetworkUnsupported: boolean
-  isOnline: boolean
-  intermediateTokenToBeImported: boolean
-  isAccountProxyLoading: boolean
-  isProxySetupValid: boolean | null | undefined
-  customTokenError?: string
-  isRestrictedForCountry: boolean
-  isBalancesLoading: boolean
-  balancesError: string | null
-}
-
-export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
-
-export interface TradeFormButtonContext {
-  defaultText: string
-  amountToApprove: CurrencyAmount<Currency> | null
-  derivedState: TradeDerivedState
-  quote: TradeQuoteState
-  isSupportedWallet: boolean
-  widgetStandaloneMode?: boolean
-  supportsPartialApprove?: boolean
-  customTokenError?: string
-  minAmountToSignForSwap?: CurrencyAmount<Currency>
-  balancesError: string | null
-
-  confirmTrade(): void
-
-  connectWallet: Command
-
-  wrapNativeFlow(): void
+  // Widget controlled
+  DisableTradeWithUnknownPriceImpact,
+  DisableTradeWithHighPriceImpact,
 }

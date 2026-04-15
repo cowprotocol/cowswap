@@ -1,13 +1,12 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import { TokenAmount, UI } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@cowprotocol/currency'
+import { TokenAmount, UI, LinkStyledButton } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
-import { LinkStyledButton } from 'theme'
 
 import NotificationBanner from 'legacy/components/NotificationBanner'
 
@@ -98,7 +97,7 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
   const isOnChainType = type === 'onChain'
   const typeLabel = isOnChainType ? t`on-chain` : t`off-chain`
 
-  const txCostAmount = txCost && !txCost.isZero() ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
+  const txCostAmount = txCost ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
   return (
     <Wrapper>

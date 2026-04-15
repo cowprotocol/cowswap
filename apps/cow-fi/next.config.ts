@@ -1,10 +1,14 @@
 import { withNx } from '@nx/next'
 import { WithNxOptions } from '@nx/next/plugins/with-nx'
+import { NextConfig } from 'next'
 
-const nextConfig: WithNxOptions = {
+const nextConfig: WithNxOptions & NextConfig = {
   reactStrictMode: true,
-  nx: {
-    svgr: false,
+  nx: {},
+  // Type checking is handled by tsc in CI; skip here to avoid false positives
+  // from ox's raw .ts source files (skipLibCheck doesn't cover them).
+  typescript: {
+    ignoreBuildErrors: true,
   },
   compiler: {
     styledComponents: true,

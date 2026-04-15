@@ -1,7 +1,7 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 import { QuoteAmountsAndCosts } from '@cowprotocol/sdk-order-book'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfoParams } from './types'
 
@@ -28,8 +28,6 @@ export function getReceiveAmountInfo(
       ...orderParams,
       buyAmount: buyAmountOverride ? buyAmountOverride.quotient.toString() : orderParams.buyAmount,
     },
-    sellDecimals: inputCurrency.decimals,
-    buyDecimals: outputCurrency.decimals,
     slippagePercentBps: Number(slippagePercent.numerator),
     partnerFeeBps,
     protocolFeeBps,
@@ -54,6 +52,7 @@ export function getReceiveAmountInfo(
     afterNetworkCosts,
     afterPartnerFees: mapSellBuyAmounts(result.afterPartnerFees, currencies),
     afterSlippage: mapSellBuyAmounts(result.afterSlippage, currencies),
+    amountsToSign: mapSellBuyAmounts(result.amountsToSign, currencies),
   }
 }
 
@@ -70,19 +69,6 @@ function calculateNetworkFee(
       currencies.outputCurrency,
       networkFee.amountInBuyCurrency.toString(),
     ),
-  }
-}
-
-function mapSellBuyAmounts(
-  amounts: { sellAmount: bigint; buyAmount: bigint },
-  currencies: Currencies,
-): {
-  sellAmount: CurrencyAmount<Currency>
-  buyAmount: CurrencyAmount<Currency>
-} {
-  return {
-    sellAmount: CurrencyAmount.fromRawAmount(currencies.inputCurrency, amounts.sellAmount.toString()),
-    buyAmount: CurrencyAmount.fromRawAmount(currencies.outputCurrency, amounts.buyAmount.toString()),
   }
 }
 
@@ -103,5 +89,18 @@ function mapFeeAmounts(
       data.amount.toString(),
     ),
     bps: data.bps,
+  }
+}
+
+function mapSellBuyAmounts(
+  amounts: { sellAmount: bigint; buyAmount: bigint },
+  currencies: Currencies,
+): {
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
+} {
+  return {
+    sellAmount: CurrencyAmount.fromRawAmount(currencies.inputCurrency, amounts.sellAmount.toString()),
+    buyAmount: CurrencyAmount.fromRawAmount(currencies.outputCurrency, amounts.buyAmount.toString()),
   }
 }

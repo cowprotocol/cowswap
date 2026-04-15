@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
@@ -16,32 +16,17 @@ import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 
+import { XSTOCK_MIN_TRADE_SIZE_USD } from '../../consts'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
+
+type ButtonComponent = React.ComponentType<ButtonComponentProps>
+
+type ButtonComponentProps = TradeFormButtonContext & { isDisabled?: boolean }
 
 interface ButtonErrorConfig {
   text: ReactNode
   id?: string
-}
-
-interface ButtonCallback {
-  (context: TradeFormButtonContext, isDisabled?: boolean): ReactElement | null
-}
-
-function getDefaultQuoteError(): string {
-  return t`Error loading price. Try again later.`
-}
-
-function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
-  return {
-    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
-    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
-    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
-    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
-    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
-    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
-    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
-  }
 }
 
 function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
@@ -61,14 +46,27 @@ function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
   }
 }
 
+function getDefaultQuoteError(): string {
+  return t`Error loading price. Try again later.`
+}
+
+function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
+  return {
+    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
+    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
+    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
+    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
+    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
+    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
+    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
+  }
+}
+
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const unsupportedTokenButton = (context: TradeFormButtonContext) => {
-  const { derivedState, isSupportedWallet } = context
+const UnsupportedTokenButton = ({ derivedState, isSupportedWallet }: ButtonComponentProps): ReactNode => {
   const { inputCurrency, outputCurrency } = derivedState
 
   return inputCurrency && outputCurrency ? (
@@ -87,17 +85,17 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
   ) : null
 }
 
-export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
-  [TradeFormValidation.WrapUnwrapFlow]: (context) => {
-    const isNativeIn = !!context.derivedState.inputCurrency && getIsNativeToken(context.derivedState.inputCurrency)
+export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonComponent> = {
+  [TradeFormValidation.WrapUnwrapFlow]: (props: ButtonComponentProps) => {
+    const isNativeIn = !!props.derivedState.inputCurrency && getIsNativeToken(props.derivedState.inputCurrency)
 
     return (
-      <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>
+      <TradeFormBlankButton onClick={() => props.wrapNativeFlow()}>
         {isNativeIn ? t`Wrap` : t`Unwrap`}
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
+  [TradeFormValidation.CustomTokenError]: ({ customTokenError }: ButtonComponentProps) => {
     return (
       <TradeFormBlankButton disabled={true}>
         <span>{customTokenError}</span>
@@ -110,10 +108,15 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.InputAmountNotSet]: {
     text: <Trans>Enter an amount</Trans>,
   },
+  [TradeFormValidation.XstockMinimumTradeSize]: {
+    text: <Trans>Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}</Trans>,
+  },
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
-  [TradeFormValidation.RecipientInvalid]: ({ derivedState: { inputCurrency, outputCurrency, recipient } }) => {
+  [TradeFormValidation.RecipientInvalid]: ({
+    derivedState: { inputCurrency, outputCurrency, recipient },
+  }: ButtonComponentProps) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
 
     return (
@@ -130,10 +133,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.CurrencyNotSupported]: (context) => {
-    return unsupportedTokenButton(context)
+  [TradeFormValidation.CurrencyNotSupported]: (props: ButtonComponentProps) => {
+    return <UnsupportedTokenButton {...props} />
   },
-  [TradeFormValidation.QuoteErrors]: (context) => {
+  [TradeFormValidation.QuoteErrors]: (props: ButtonComponentProps) => {
     const DEFAULT_QUOTE_ERROR = t`Error loading price. Try again later.`
 
     const quoteErrorTexts = getQuoteErrorTexts()
@@ -151,13 +154,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Bridging without swapping is not yet supported. Let us know if you want this feature!`,
     }
 
-    const { quote } = context
+    const { quote } = props
 
     if (quote.error instanceof QuoteApiError) {
       const errorType = quote.error.type
 
       if (errorType === QuoteApiErrorCodes.UnsupportedToken) {
-        return unsupportedTokenButton(context)
+        return <UnsupportedTokenButton {...props} />
       }
 
       const isBridge = quote.isBridgeQuote
@@ -170,8 +173,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
           // Because user doesn't see intermediate token
           if (errorType === QuoteApiErrorCodes.SameBuyAndSellToken) {
             const areSwapAssetsDifferent =
-              context.derivedState.inputCurrency?.symbol?.toLowerCase() !==
-              context.derivedState.outputCurrency?.symbol?.toLowerCase()
+              props.derivedState.inputCurrency?.symbol?.toLowerCase() !==
+              props.derivedState.outputCurrency?.symbol?.toLowerCase()
 
             if (areSwapAssetsDifferent) {
               return bridgeQuoteErrorTexts[BridgeQuoteErrors.NO_ROUTES]
@@ -221,9 +224,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteExpired]: {
     text: <Trans>Quote expired. Refreshing...</Trans>,
   },
-  [TradeFormValidation.WalletNotConnected]: (context) => {
+  [TradeFormValidation.WalletNotConnected]: (props: ButtonComponentProps) => {
     return (
-      <TradeFormBlankButton onClick={context.connectWallet} disabled={context.widgetStandaloneMode === false}>
+      <TradeFormBlankButton onClick={props.connectWallet} disabled={props.widgetStandaloneMode === false}>
         <Trans>Connect Wallet</Trans>
       </TradeFormBlankButton>
     )
@@ -233,6 +236,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.NetworkNotSupported]: {
     text: <Trans>Unsupported Network</Trans>,
+  },
+  [TradeFormValidation.NetworkDeprecated]: {
+    text: <Trans>Deprecated Network</Trans>,
   },
   [TradeFormValidation.SafeReadonlyUser]: {
     text: (
@@ -264,6 +270,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
+  [TradeFormValidation.ImpactLoading]: {
+    text: (
+      <>
+        <Trans>Fetching price impact</Trans>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
   [TradeFormValidation.BalancesLoading]: {
     text: (
       <>
@@ -272,10 +286,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </>
     ),
   },
-  [TradeFormValidation.BalancesNotLoaded]: (context) => {
+  [TradeFormValidation.BalancesNotLoaded]: (props: ButtonComponentProps) => {
     let errorMessage: string | undefined = undefined
 
-    if (context.balancesError?.includes('rate limit')) {
+    if (props.balancesError?.includes('rate limit')) {
       errorMessage = t`Request is being rate limited`
     }
 
@@ -288,8 +302,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.BalanceInsufficient]: (context) => {
-    const inputCurrency = context.derivedState.inputCurrency
+  [TradeFormValidation.BalanceInsufficient]: (props: ButtonComponentProps) => {
+    const inputCurrency = props.derivedState.inputCurrency
 
     return (
       <TradeFormBlankButton disabled={true}>
@@ -299,13 +313,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveAndSwapInBundle]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveAndSwapInBundle]: ({ isDisabled = false, ...context }: ButtonComponentProps) => {
     const inputCurrency = context.derivedState.inputCurrency
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
     const contextDefaultText = context.defaultText
 
     return (
-      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade} clickEvent={context.approveClickEvent}>
         <span>
           <Trans>
             Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {contextDefaultText}
@@ -314,7 +328,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveRequired]: ({ isDisabled = false, ...context }: ButtonComponentProps) => {
     const { amountToApprove, supportsPartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
@@ -325,6 +339,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         supportsPartialApprove={supportsPartialApprove}
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
+        approveClickEvent={context.approveClickEvent}
+        swapClickEvent={context.confirmClickEvent}
       >
         <TradeFormBlankButton disabled={!supportsPartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>
@@ -354,5 +370,31 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.RestrictedForCountry]: {
     text: <Trans>This token is not available in your region</Trans>,
+  },
+  [TradeFormValidation.DisableTradeWithUnknownPriceImpact]: () => {
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Unknown price impact</Trans>
+          <HelpTooltip
+            placement="top"
+            text={t`Not enough price data for one or both assets to calculate the price impact`}
+          />
+        </>
+      </TradeFormBlankButton>
+    )
+  },
+  [TradeFormValidation.DisableTradeWithHighPriceImpact]: ({ widgetPriceImpactThreshold = 0 }) => {
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Price impact is too high</Trans>
+          <HelpTooltip
+            placement="top"
+            text={t`Trading is not allowed with price impact higher than ${widgetPriceImpactThreshold}%`}
+          />
+        </>
+      </TradeFormBlankButton>
+    )
   },
 }

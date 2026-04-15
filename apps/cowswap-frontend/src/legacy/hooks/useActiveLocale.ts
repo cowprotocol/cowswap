@@ -14,7 +14,8 @@ function parseLocale(maybeSupportedLocale: unknown): SupportedLocale | undefined
   if (typeof maybeSupportedLocale !== 'string') return undefined
   const lowerMaybeSupportedLocale = maybeSupportedLocale.toLowerCase()
   return SUPPORTED_LOCALES.find(
-    (locale) => locale.toLowerCase() === lowerMaybeSupportedLocale || locale.split('-')[0] === lowerMaybeSupportedLocale
+    (locale) =>
+      locale.toLowerCase() === lowerMaybeSupportedLocale || locale.split('-')[0] === lowerMaybeSupportedLocale,
   )
 }
 
@@ -37,9 +38,6 @@ function storeLocale(): SupportedLocale | undefined {
   return cowSwapStore.getState().user.userLocale ?? undefined
 }
 
-export const initialLocale =
-  parseLocale(parsedQueryString().lng) ?? storeLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
-
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useUrlLocale() {
@@ -55,4 +53,13 @@ export function useActiveLocale(): SupportedLocale {
   const urlLocale = useUrlLocale()
   const userLocale = useUserLocale()
   return useMemo(() => urlLocale ?? userLocale ?? navigatorLocale() ?? DEFAULT_LOCALE, [urlLocale, userLocale])
+}
+
+/**
+ * Returns the currently active locale, from a combination of user agent, query string, and user settings stored in redux (without react context)
+ * Required to preload "messages" before <Main> render
+ * @see useActiveLocale - should implement **the same** locale detection logic
+ */
+export function getActiveLocale(): SupportedLocale {
+  return parseLocale(parsedQueryString().lng) ?? storeLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
 }

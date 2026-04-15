@@ -16,6 +16,7 @@ export interface ChainButtonProps {
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
   isLoading: boolean
+  clickEvent?: string
 }
 
 export function ChainButton({
@@ -25,6 +26,7 @@ export function ChainButton({
   onSelectChain,
   isDisabled,
   isLoading,
+  clickEvent,
 }: ChainButtonProps): ReactNode {
   const { t } = useLingui()
   const logoSrc = isDarkMode ? chain.logo.dark : chain.logo.light
@@ -50,6 +52,7 @@ export function ChainButton({
       disabled$={isDisabled}
       loading$={isLoading}
       title={tooltip}
+      data-click-event={clickEvent}
     >
       <styledEl.ChainInfo>
         <styledEl.ChainLogo>

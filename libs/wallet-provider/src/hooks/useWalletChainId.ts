@@ -1,7 +1,5 @@
-import { useWeb3React } from '@web3-react/core'
+import { useChainId } from 'wagmi'
 
 export function useWalletChainId(): number | undefined {
-  const { chainId } = useWeb3React()
-
-  return chainId
+  return useChainId()
 }

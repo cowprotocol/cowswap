@@ -2,6 +2,7 @@ import { atom } from 'jotai'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 import { jotaiStore } from '@cowprotocol/core'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { observe } from 'jotai-effect'
@@ -28,12 +29,18 @@ export const ordersLimitAtom = atom<OrdersLimitState>(DEFAULT_ORDERS_LIMIT_STATE
 
 const walletKeyAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
-  return `${chainId}::${account ?? ''}`
+  return account ? `${chainId}::${getAddressKey(account)}` : ''
 })
 
 ordersLimitAtom.onMount = () => {
+  let prevWalletKey = ''
+
   return observe((get, set) => {
-    get(walletKeyAtom)
-    set(ordersLimitAtom, DEFAULT_ORDERS_LIMIT_STATE)
+    const walletKey = get(walletKeyAtom)
+
+    if (prevWalletKey !== walletKey) {
+      prevWalletKey = walletKey
+      set(ordersLimitAtom, DEFAULT_ORDERS_LIMIT_STATE)
+    }
   }, jotaiStore)
 }

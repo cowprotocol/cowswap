@@ -1,10 +1,10 @@
 import { USDC_GNOSIS_CHAIN, USDC_SEPOLIA, WETH_SEPOLIA } from '@cowprotocol/common-const'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('Amounts formatting', () => {
   const decimals = WETH_SEPOLIA.decimals
   // TODO: Add proper return type annotation
@@ -13,7 +13,7 @@ describe('Amounts formatting', () => {
     CurrencyAmount.fromRawAmount(token, value + '0'.repeat(token.decimals + decimalsShift))
 
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+
   describe('Amounts', () => {
     it('Zero amount', () => {
       const result = formatTokenAmount(getAmount('0', 0)) // 0 WETH

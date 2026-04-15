@@ -32,6 +32,7 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
 ): Promise<GetOrderResult<TypeOrderResult>> {
   // Get order
   let order: TypeOrderResult | null = null
+
   try {
     // TODO: fix type
     order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId } as never)

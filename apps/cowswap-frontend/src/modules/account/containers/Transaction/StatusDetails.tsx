@@ -160,7 +160,7 @@ export type StatusDetailsProps = {
 export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
   const { chainId, activityDerivedState, showCancellationModal, showProgressBar } = props
 
-  const { status, type, isCancelling, isConfirmed, isCancelled, isReplaced, isLoading, order } = activityDerivedState
+  const { isCancelling, isConfirmed, isCancelled, isReplaced, isLoading, order } = activityDerivedState
 
   const cancellationHash = activityDerivedState.order?.cancellationHash
   const isCancellable = order ? isOrderCancellable(order) : true
@@ -187,7 +187,7 @@ export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
 
   return (
     <StatusLabelWrapper>
-      <StatusLabel color={determinePillColour(status, type)} {..._getStatusLabelProps(activityDerivedState)}>
+      <StatusLabel color={determinePillColour(activityDerivedState)} {..._getStatusLabelProps(activityDerivedState)}>
         {_getStatusIcon(activityDerivedState)}
         {isReplaced ? t`Replaced` : _getStateLabel(activityDerivedState)}
       </StatusLabel>

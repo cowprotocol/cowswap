@@ -1,27 +1,55 @@
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { BadgeType, BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
+import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
 import AppziButton from 'legacy/components/AppziButton'
 import { Version } from 'legacy/components/Version'
 
-import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+import { FortuneWidget } from 'modules/fortune'
 
 import { Routes } from 'common/constants/routes'
 
+import { getSolversExplorerUrl } from './menuConsts.utils'
+
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ACCOUNT_ITEM = (chainId: SupportedChainId) => ({
+type UntranslatedMenuItem = {
+  label: MessageDescriptor
+  children: Array<{
+    href: string
+    label: MessageDescriptor
+    badge?: MessageDescriptor
+    badgeType?: BadgeType
+    external?: boolean
+  }>
+}
+
+const ACCOUNT_ITEM = (chainId: SupportedChainId, isAffiliateProgramEnabled: boolean): UntranslatedMenuItem => ({
   label: msg`Account`,
   children: [
     {
       href: '/account',
-      label: msg`Account`,
+      label: msg`Overview`,
     },
+    ...(isAffiliateProgramEnabled
+      ? [
+          {
+            href: Routes.ACCOUNT_AFFILIATE_PARTNER,
+            label: msg`Affiliate`,
+            badge: msg`New`,
+            badgeType: BadgeTypes.ALERT,
+          },
+          {
+            href: Routes.ACCOUNT_AFFILIATE_TRADER,
+            label: msg`My Rewards`,
+            badge: msg`New`,
+            badgeType: BadgeTypes.ALERT,
+          },
+        ]
+      : []),
     {
       href: '/account/tokens',
       label: msg`Tokens`,
@@ -37,17 +65,17 @@ const LEARN_ITEM = {
   label: msg`Learn`,
   children: [
     {
-      href: 'https://cow.fi/cow-swap',
+      href: 'https://cow.finance/cow-swap',
       label: msg`About CoW Swap`,
       external: true,
     },
     {
-      href: 'https://cow.fi/learn',
+      href: 'https://cow.finance/learn',
       label: msg`FAQs`,
       external: true,
     },
     {
-      href: 'https://docs.cow.fi/',
+      href: 'https://docs.cow.finance/',
       label: msg`Docs`,
       external: true,
     },
@@ -58,41 +86,50 @@ const LEARN_ITEM_SUBMENU = {
   label: msg`Legal`,
   children: [
     {
-      href: 'https://cow.fi/legal/cowswap-privacy-policy',
+      href: 'https://cow.finance/legal/cowswap-privacy-policy',
       label: msg`Privacy Policy`,
       external: true,
     },
     {
-      href: 'https://cow.fi/legal/cowswap-cookie-policy',
+      href: 'https://cow.finance/legal/cowswap-cookie-policy',
       label: msg`Cookie Policy`,
       external: true,
     },
     {
-      href: 'https://cow.fi/legal/cowswap-terms',
+      href: 'https://cow.finance/legal/cowswap-terms',
       label: msg`Terms and Conditions`,
       external: true,
     },
   ],
 }
 
-const MORE_ITEM = {
+const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
   label: msg`More`,
   children: [
     {
-      href: 'https://cow.fi/cow-protocol',
+      href: 'https://cow.finance/cow-protocol',
       label: msg`CoW Protocol`,
       external: true,
     },
     {
-      href: 'https://cow.fi/cow-amm',
+      href: 'https://cow.finance/cow-amm',
       label: msg`CoW AMM`,
       external: true,
     },
     {
-      href: 'https://cow.fi/careers',
+      href: 'https://cow.finance/careers',
       label: msg`Careers`,
       external: true,
     },
+    ...(isSolversEnabled
+      ? [
+          {
+            href: getSolversExplorerUrl(),
+            label: msg`Solvers`,
+            external: true,
+          },
+        ]
+      : []),
     {
       href: Routes.PLAY_COWRUNNER,
       label: msg`CoW Runner`,
@@ -104,15 +141,21 @@ const MORE_ITEM = {
       // icon: IMG_ICON_COW_SLICER,
     },
   ],
-}
+})
 
-export const NAV_ITEMS = (chainId: SupportedChainId): MenuItem[] => {
-  const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId)
+export const NAV_ITEMS = (
+  chainId: SupportedChainId,
+  isAffiliateProgramEnabled: boolean,
+  isSolversEnabled: boolean,
+): MenuItem[] => {
+  const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId, isAffiliateProgramEnabled)
   const accountItem: MenuItem = {
     label: i18n._(_ACCOUNT_ITEM.label),
-    children: _ACCOUNT_ITEM.children.map(({ href, label }) => ({
+    children: _ACCOUNT_ITEM.children.map(({ href, label, badge, badgeType }) => ({
       href,
       label: i18n._(label),
+      badge: badge ? i18n._(badge) : undefined,
+      badgeType,
     })),
   }
 
@@ -135,9 +178,10 @@ export const NAV_ITEMS = (chainId: SupportedChainId): MenuItem[] => {
     ],
   }
 
+  const moreItemConfig = MORE_ITEM(isSolversEnabled)
   const moreItem: MenuItem = {
-    label: i18n._(MORE_ITEM.label),
-    children: MORE_ITEM.children.map(({ href, label, external }) => ({
+    label: i18n._(moreItemConfig.label),
+    children: moreItemConfig.children.map(({ href, label, external }) => ({
       href,
       label: i18n._(label),
       external,

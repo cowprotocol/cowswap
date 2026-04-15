@@ -1,5 +1,172 @@
 # Changelog
 
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.13...iframe-transport-v2.1.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.2.0
+
+## [2.0.13](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.12...iframe-transport-v2.0.13) (2026-04-10)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** fix iframe issues ([#7298](https://github.com/cowprotocol/cowswap/issues/7298)) ([3f7094d](https://github.com/cowprotocol/cowswap/commit/3f7094df6389c01bdda515b645b58dcc0b292253))
+
+## [2.0.12](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.11...iframe-transport-v2.0.12) (2026-04-08)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.1.2
+
+## [2.0.11](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.10...iframe-transport-v2.0.11) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.1.1
+
+## [2.0.10](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.9...iframe-transport-v2.0.10) (2026-03-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.1.0
+
+## [2.0.9](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.8...iframe-transport-v2.0.9) (2026-03-18)
+
+
+### 🐛 Bug Fixes
+
+* update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.0.1
+
+## [2.0.8](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.7...iframe-transport-v2.0.8) (2026-03-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.0.0
+
+## [2.0.7](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.6...iframe-transport-v2.0.7) (2026-03-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.4.0
+
+## [2.0.6](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.5...iframe-transport-v2.0.6) (2026-02-25)
+
+
+### 🔧 Miscellaneous
+
+* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.3.2
+
+## [2.0.5](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.4...iframe-transport-v2.0.5) (2026-02-24)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.3.1
+
+## [2.0.4](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.3...iframe-transport-v2.0.4) (2026-02-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.3.0
+
+## [2.0.3](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.2...iframe-transport-v2.0.3) (2026-02-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.2.0
+
+## [2.0.2](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.1...iframe-transport-v2.0.2) (2026-02-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.1.0
+
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.0...iframe-transport-v2.0.1) (2026-02-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.0.1
+
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v1.2.0...iframe-transport-v2.0.0) (2026-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+
+### Features
+
+* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 3.0.0
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v1.1.1...iframe-transport-v1.2.0) (2026-01-26)
 
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'analytics',
   preset: '../../jest.preset.js',
@@ -6,6 +5,7 @@ export default {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
   },
+  setupFilesAfterEnv: ['../../jest.setup.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/analytics',
 }

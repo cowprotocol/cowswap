@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
-import { areAddressesEqual, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'

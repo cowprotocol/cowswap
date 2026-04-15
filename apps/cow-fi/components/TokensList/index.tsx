@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
-import { TokenLink } from '@/components/TokenDetails/index.styles'
-import { getPriceChangeColor } from 'util/getPriceChangeColor'
-import { formatUSDPrice } from 'util/formatUSDPrice'
-import { TokenInfo } from 'types'
+
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+import { useTheme } from 'styled-components/macro'
+import { TokenInfo } from 'types'
+
+import { formatUSDPrice } from 'util/formatUSDPrice'
+import { getPriceChangeColor } from 'util/getPriceChangeColor'
+
 import {
   HeaderItem,
   ListItem,
@@ -14,7 +17,8 @@ import {
   Wrapper,
   NoTokensText,
 } from './index.style'
-import { useTheme } from 'styled-components/macro'
+
+import { TokenLink } from '@/components/TokenDetails/index.styles'
 
 // Utility function for consistent value formatting
 const formatValue = <T,>(value: T | null | undefined, formatter: (val: T) => string): string => {

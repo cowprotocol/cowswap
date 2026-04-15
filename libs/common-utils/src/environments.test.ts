@@ -11,7 +11,7 @@ const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('Detect environments using host and path', () => {
   describe('Not a known environment', () => {
     it('Empty strings', () => {
@@ -25,8 +25,8 @@ describe('Detect environments using host and path', () => {
   describe('Is production', () => {
     const isProduction = { ...DEFAULT_ENVIRONMENTS_CHECKS, isProd: true }
 
-    it('swap.cow.fi', () => {
-      expect(checkEnvironment('swap.cow.fi', '')).toEqual(isProduction)
+    it('swap.cow.finance', () => {
+      expect(checkEnvironment('swap.cow.finance', '')).toEqual(isProduction)
     })
   })
 
@@ -61,16 +61,16 @@ describe('Detect environments using host and path', () => {
   describe('Is Barn', () => {
     const isBarn = { ...DEFAULT_ENVIRONMENTS_CHECKS, isBarn: true }
 
-    it('barn.cow.fi', () => {
-      expect(checkEnvironment('barn.cow.fi', '')).toEqual(isBarn)
+    it('barn.cow.finance', () => {
+      expect(checkEnvironment('barn.cow.finance', '')).toEqual(isBarn)
     })
   })
 
   describe('Is Staging', () => {
     const isStaging = { ...DEFAULT_ENVIRONMENTS_CHECKS, isStaging: true }
 
-    it('staging.swap.cow.fi', () => {
-      expect(checkEnvironment('staging.swap.cow.fi', '')).toEqual(isStaging)
+    it('staging.swap.cow.finance', () => {
+      expect(checkEnvironment('staging.swap.cow.finance', '')).toEqual(isStaging)
     })
   })
 
@@ -85,8 +85,8 @@ describe('Detect environments using host and path', () => {
   describe('Is Development', () => {
     const isDevelopment = { ...DEFAULT_ENVIRONMENTS_CHECKS, isDev: true }
 
-    it('dev.swap.cow.fi', () => {
-      expect(checkEnvironment('dev.swap.cow.fi', '')).toEqual(isDevelopment)
+    it('dev.swap.cow.finance', () => {
+      expect(checkEnvironment('dev.swap.cow.finance', '')).toEqual(isDevelopment)
     })
   })
 

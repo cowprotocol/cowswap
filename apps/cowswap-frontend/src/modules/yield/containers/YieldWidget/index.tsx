@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -97,13 +98,13 @@ export function YieldWidget() {
   const inputPoolState = useMemo(() => {
     if (!poolsInfo || !inputCurrency) return null
 
-    return poolsInfo[getCurrencyAddress(inputCurrency).toLowerCase()]
+    return poolsInfo[getAddressKey(getCurrencyAddress(inputCurrency))]
   }, [inputCurrency, poolsInfo])
 
   const outputPoolState = useMemo(() => {
     if (!poolsInfo || !outputCurrency) return null
 
-    return poolsInfo[getCurrencyAddress(outputCurrency).toLowerCase()]
+    return poolsInfo[getAddressKey(getCurrencyAddress(outputCurrency))]
   }, [outputCurrency, poolsInfo])
 
   const isOutputLpToken = Boolean(outputCurrency && outputCurrency instanceof LpToken)

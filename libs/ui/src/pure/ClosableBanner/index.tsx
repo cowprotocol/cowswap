@@ -28,7 +28,7 @@ export const closableBannersStateAtom = atomWithStorage<ClosableBannersState>(
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function ClosableBannerInner({ storageKey, callback }: ClosableBannerProps) {
+export function ClosableBanner({ storageKey, callback }: ClosableBannerProps) {
   const [state, setState] = useAtom(closableBannersStateAtom)
 
   const isStateLoading = state === DEFAULT_STATE
@@ -39,10 +39,4 @@ function ClosableBannerInner({ storageKey, callback }: ClosableBannerProps) {
   }, [setState, storageKey])
 
   return isBannerDisplayed ? callback(closeBanner) : null
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ClosableBanner(storageKey: string, callback: ClosableBannerCallback) {
-  return <ClosableBannerInner storageKey={storageKey} callback={callback}></ClosableBannerInner>
 }

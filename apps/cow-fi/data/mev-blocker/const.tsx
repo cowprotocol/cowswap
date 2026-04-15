@@ -17,8 +17,9 @@ import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
-import { Link } from '@/components/Link'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+
+import { Link } from '@/components/Link'
 
 export const MEV_BLOCKER_LIST = [
   {
@@ -58,7 +59,7 @@ export const TRUSTED_BY_CONTENT = [
     src: IMG_LOGO_CRYPTO_COM,
   },
   {
-    href: 'https://swap.cow.fi/',
+    href: 'https://swap.cow.finance/',
     component: <ProductLogo variant={ProductVariant.CowSwap} theme="dark" />,
   },
   {
@@ -208,7 +209,7 @@ export const FAQ_DATA = [
         <br />
         While some DEXs like{' '}
         <Link
-          href="https://swap.cow.fi/"
+          href="https://swap.cow.finance/"
           external
           data-click-event={toCowFiGtmEvent({
             category: CowFiCategory.MEVBLOCKER,
@@ -358,7 +359,7 @@ export const FAQ_DATA = [
       <>
         MEV Blocker is jointly formulated and maintained by{' '}
         <Link
-          href="https://cow.fi/"
+          href="https://cow.finance/"
           external
           utmContent="mev-blocker-cow-protocol"
           data-click-event={toCowFiGtmEvent({
@@ -407,7 +408,7 @@ export const FAQ_DATA = [
       <>
         If you are a searcher that is interested in collaborating with MEV Blocker RPC, please check out the{' '}
         <Link
-          href="https://docs.cow.fi/mevblocker"
+          href="https://docs.cow.finance/mevblocker"
           external
           utmContent="mev-blocker-docs"
           data-click-event={toCowFiGtmEvent({
