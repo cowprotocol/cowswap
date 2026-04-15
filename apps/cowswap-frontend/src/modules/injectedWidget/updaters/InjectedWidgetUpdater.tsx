@@ -61,26 +61,6 @@ import {
 
     return window
   }
-
-  document.body.addEventListener('click', (event) => {
-    // Skip clicks already handled by React Router (it calls preventDefault before bubbling)
-    if (event.defaultPrevented) return
-
-    const anchor = (event.target as Element).closest?.('a')
-    if (!(anchor instanceof HTMLAnchorElement)) return
-
-    const { href, target, rel } = anchor
-
-    // Prevent the browser from opening a new tab or navigating the iframe itself
-    event.preventDefault()
-
-    widgetIframeTransport.postMessageToWindow(
-      parent,
-      WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-      { href, target, rel },
-      parentOrigin,
-    )
-  })
 })()
 
 export function InjectedWidgetUpdater(): ReactNode {
