@@ -1,9 +1,8 @@
+import { COWSWAP_ORIGIN } from './const'
 import { isCowSwapWidgetPalette } from './themeUtils'
 import { CowSwapWidgetParams, TradeType } from './types'
 
 const EMPTY_TOKEN = '_'
-
-const DEFAULT_WIDGET_BASE_URL = 'https://swap.cow.fi'
 
 const INVALID_BASE_URL_PREFIX = 'CoW Swap widget: invalid baseUrl.'
 
@@ -25,11 +24,14 @@ function isLocalDevHostname(hostname: string): boolean {
 
 function handleInvalidWidgetBaseUrl(detail: string, throwIfInvalid: boolean): string {
   const message = `${INVALID_BASE_URL_PREFIX} ${detail}`
+
   if (throwIfInvalid) {
     throw new Error(message)
   }
+
   console.error('[CoW Widget]', message)
-  return DEFAULT_WIDGET_BASE_URL
+
+  return COWSWAP_ORIGIN
 }
 
 /**
@@ -46,11 +48,13 @@ export function sanitizeWidgetBaseUrl(
   throwIfInvalid: boolean = SHOULD_THROW_IF_INVALID_URL,
 ): string {
   const trimmed = typeof baseUrl === 'string' ? baseUrl.trim() : ''
+
   if (!trimmed) {
-    return DEFAULT_WIDGET_BASE_URL
+    return COWSWAP_ORIGIN
   }
 
   let parsed: URL
+
   try {
     parsed = new URL(trimmed)
   } catch {

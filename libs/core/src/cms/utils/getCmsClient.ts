@@ -1,7 +1,9 @@
 import { CmsClient } from '@cowprotocol/cms'
 
 export const CMS_BASE_URL =
-  process.env.REACT_APP_CMS_BASE_URL || process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api'
+  // process.env.REACT_APP_CMS_BASE_URL || process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.finance/api'
+  // TODO: COW.FINANCE
+  'https://cms.cow.finance/api'
 
 let cmsClient: ReturnType<typeof CmsClient> | undefined
 

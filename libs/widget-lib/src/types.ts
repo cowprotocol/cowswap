@@ -290,7 +290,7 @@ export interface CowSwapWidgetParams {
   /**
    * The base url of the widget implementation
    * The parameter can have the URL directly, or an object with the environment property,
-   * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
+   * The base URL will default to the production environment if not specified, so it will use https://swap.cow.finance by default.
    *
    * For security, values are validated before loading the iframe: only `https` origins are accepted,
    * except `http` on local dev hosts (localhost, 127.0.0.1, ::1, *.localhost). Invalid URLs

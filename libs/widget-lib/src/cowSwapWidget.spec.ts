@@ -34,19 +34,19 @@ describe('createCowSwapWidget', () => {
 
     dispatchInterceptWindowOpen('/faq', undefined, iframe)
 
-    expect(window.open).toHaveBeenCalledWith('https://swap.cow.fi/faq', '_blank', 'noopener')
+    expect(window.open).toHaveBeenCalledWith('https://swap.cow.finance/faq', '_blank', 'noopener')
   })
 
   it('accepts messages from a custom widget baseUrl origin', () => {
-    const { iframe } = createWidget('https://barn.cow.fi')
+    const { iframe } = createWidget('https://barn.cow.finance')
 
-    dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.fi', iframe)
+    dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.finance', iframe)
 
     expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
 
   it('ignores messages from an untrusted origin', () => {
-    const { iframe } = createWidget('https://swap.cow.fi')
+    const { iframe } = createWidget('https://swap.cow.finance')
 
     dispatchInterceptWindowOpen('https://example.com', 'https://attacker.example', iframe)
 
@@ -69,7 +69,11 @@ function createWidget(baseUrl?: string): CowSwapWidgetHandler {
   })
 }
 
-function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi', iframe: HTMLIFrameElement): void {
+function dispatchInterceptWindowOpen(
+  href: string,
+  origin = 'https://swap.cow.finance',
+  iframe: HTMLIFrameElement,
+): void {
   const event = new MessageEvent('message', {
     origin,
     source: iframe.contentWindow,

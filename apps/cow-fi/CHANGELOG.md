@@ -1,5 +1,45 @@
 # Changelog
 
+## [2.5.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.0...cow-fi-v2.5.1) (2026-04-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-react bumped to 2.0.0
+
+## [2.5.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.9...cow-fi-v2.5.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.0
+    * @cowprotocol/common-const bumped to 3.1.0
+    * @cowprotocol/common-hooks bumped to 3.1.0
+    * @cowprotocol/common-utils bumped to 3.1.0
+    * @cowprotocol/core bumped to 3.1.0
+    * @cowprotocol/events bumped to 4.2.0
+    * @cowprotocol/types bumped to 4.2.0
+    * @cowprotocol/ui bumped to 3.2.0
+    * @cowprotocol/wallet bumped to 3.1.0
+    * @cowprotocol/wallet-provider bumped to 2.1.13
+    * @cowprotocol/widget-react bumped to 1.3.6
+
+## [2.4.9](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.8...cow-fi-v2.4.9) (2026-04-14)
+
+
+### 🐛 Bug Fixes
+
+* add maintenance message for swap and explorer ([#7327](https://github.com/cowprotocol/cowswap/issues/7327)) ([c4c1a4a](https://github.com/cowprotocol/cowswap/commit/c4c1a4a1fe2bc30a5c6abbd0144c972924f25a7d))
+
 ## [2.4.8](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.7...cow-fi-v2.4.8) (2026-04-10)
 
 

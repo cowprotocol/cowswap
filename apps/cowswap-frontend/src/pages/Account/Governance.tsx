@@ -19,7 +19,7 @@ export default function Governance() {
           <ExtLink href={'https://snapshot.org/#/cow.eth'}>
             <Trans>View proposals</Trans> ↗
           </ExtLink>
-          <ExtLink href={'https://forum.cow.fi/'}>
+          <ExtLink href={'https://forum.cow.finance/'}>
             <Trans>CoW forum</Trans> ↗
           </ExtLink>
           <ExtLink href={DELEGATE_URL}>
