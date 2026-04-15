@@ -28,9 +28,32 @@ if (window.location.pathname !== '/') {
 
   // 3. Cookies
   try {
+    const cookiePaths = [
+      '/',
+      '/swap',
+      '/limit',
+      '/limit-orders',
+      '/advanced',
+      '/advanced-orders',
+      '/yield',
+      '/account',
+      '/account/tokens',
+      '/account/governance',
+      '/account/affiliate',
+      '/account/my-rewards',
+      '/account-proxy',
+      '/send',
+      '/faq',
+      '/about',
+      '/play',
+      '/widget',
+    ]
     document.cookie.split(';').forEach(function (cookie) {
       const name = cookie.split('=')[0].trim()
-      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'
+      const expires = ';expires=Thu, 01 Jan 1970 00:00:00 GMT;path='
+      cookiePaths.forEach(function (path) {
+        document.cookie = name + '=' + expires + path
+      })
     })
   } catch {}
 
