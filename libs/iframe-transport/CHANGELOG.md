@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.0...iframe-transport-v2.2.1) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* fix publish build issue ([#7356](https://github.com/cowprotocol/cowswap/issues/7356)) ([2092553](https://github.com/cowprotocol/cowswap/commit/2092553a8210b1fd48c162c71c7c1e44d1d5813a))
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.1.0...iframe-transport-v2.2.0) (2026-04-15)
 
 

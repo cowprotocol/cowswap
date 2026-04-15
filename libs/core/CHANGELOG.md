@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.1.2](https://github.com/cowprotocol/cowswap/compare/core-v3.1.1...core-v3.1.2) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.2
+
 ## [3.1.1](https://github.com/cowprotocol/cowswap/compare/core-v3.1.0...core-v3.1.1) (2026-04-15)
 
 

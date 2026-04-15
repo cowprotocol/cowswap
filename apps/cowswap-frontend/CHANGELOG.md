@@ -1,5 +1,38 @@
 # Changelog
 
+## [3.6.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.6.0...cowswap-v3.6.1) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* clear workers properly ([#7357](https://github.com/cowprotocol/cowswap/issues/7357)) ([7d979d4](https://github.com/cowprotocol/cowswap/commit/7d979d4560508aed1a7db1f340d67a99c4e68551))
+* full emergency clean up ([#7354](https://github.com/cowprotocol/cowswap/issues/7354)) ([fdd7569](https://github.com/cowprotocol/cowswap/commit/fdd7569c171364a785ac49a8715f1145b8db6d6b))
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.2
+    * @cowprotocol/balances-and-allowances bumped to 3.1.2
+    * @cowprotocol/common-const bumped to 3.1.2
+    * @cowprotocol/common-hooks bumped to 3.1.2
+    * @cowprotocol/common-utils bumped to 3.2.1
+    * @cowprotocol/core bumped to 3.1.2
+    * @cowprotocol/ens bumped to 3.1.2
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.1
+    * @cowprotocol/iframe-transport bumped to 2.2.1
+    * @cowprotocol/multicall bumped to 3.1.2
+    * @cowprotocol/permit-utils bumped to 3.1.2
+    * @cowprotocol/snackbars bumped to 2.0.19
+    * @cowprotocol/tokens bumped to 3.3.2
+    * @cowprotocol/ui bumped to 3.2.2
+    * @cowprotocol/wallet bumped to 3.1.2
+    * @cowprotocol/wallet-provider bumped to 2.1.15
+    * @cowprotocol/widget-lib bumped to 3.1.1
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.5.1...cowswap-v3.6.0) (2026-04-15)
 
 
