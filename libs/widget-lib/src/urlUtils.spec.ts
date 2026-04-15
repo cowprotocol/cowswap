@@ -1,8 +1,64 @@
 import { TradeType } from './types'
-import { buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
+import { buildWidgetUrl, buildWidgetUrlQuery, sanitizeWidgetBaseUrl } from './urlUtils'
 
 const chainId = 1
 const tradeType = TradeType.SWAP
+
+describe('sanitizeWidgetBaseUrl', () => {
+  it('returns production default when baseUrl is omitted or blank', () => {
+    expect(sanitizeWidgetBaseUrl(undefined)).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('   ')).toBe('https://swap.cow.finance')
+  })
+
+  it('when not throwing, logs and returns production default for invalid URL', () => {
+    const error = jest.spyOn(console, 'error').mockImplementation(() => void 0)
+
+    expect(sanitizeWidgetBaseUrl('not a url')).toBe('https://swap.cow.finance')
+    expect(error).toHaveBeenCalledWith('[CoW Widget]', expect.stringMatching(/Not a valid URL/))
+
+    error.mockRestore()
+  })
+
+  it('throws when baseUrl is not a valid URL and throwIfInvalid is true', () => {
+    expect(() => sanitizeWidgetBaseUrl('not a url', true)).toThrow(/Not a valid URL/)
+  })
+
+  it('allows https origins and preserves path prefix for subpath deployments', () => {
+    expect(sanitizeWidgetBaseUrl('https://swap.cow.finance')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('https://swap.cow.finance/')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('https://example.com/preview/app')).toBe('https://example.com/preview/app')
+  })
+
+  it('strips trailing slashes from non-root path', () => {
+    expect(sanitizeWidgetBaseUrl('https://swap.cow.finance/staging/')).toBe('https://swap.cow.finance/staging')
+  })
+
+  it('allows http only for local dev hosts', () => {
+    expect(sanitizeWidgetBaseUrl('http://localhost:3000')).toBe('http://localhost:3000')
+    expect(sanitizeWidgetBaseUrl('http://127.0.0.1:8080')).toBe('http://127.0.0.1:8080')
+    expect(sanitizeWidgetBaseUrl('http://app.localhost:3000')).toBe('http://app.localhost:3000')
+  })
+
+  it('when not throwing, logs and returns default for disallowed URLs', () => {
+    const error = jest.spyOn(console, 'error').mockImplementation(() => void 0)
+
+    expect(sanitizeWidgetBaseUrl('http://evil.com')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('https://user:pass@swap.cow.finance')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('javascript:alert(1)')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('data:text/html,<script>alert(1)</script>')).toBe('https://swap.cow.finance')
+    expect(error).toHaveBeenCalledTimes(4)
+
+    error.mockRestore()
+  })
+
+  it('throws for disallowed URLs when throwIfInvalid is true', () => {
+    expect(() => sanitizeWidgetBaseUrl('http://evil.com', true)).toThrow(/Use https/)
+    expect(() => sanitizeWidgetBaseUrl('https://user:pass@swap.cow.finance', true)).toThrow(/Userinfo/)
+    expect(() => sanitizeWidgetBaseUrl('javascript:alert(1)', true)).toThrow(/Use https/)
+    expect(() => sanitizeWidgetBaseUrl('data:text/html,<script>alert(1)</script>', true)).toThrow(/Use https/)
+  })
+})
 
 // TODO: fix these tests! uncommenting to unblock a hotfix
 // TODO: Break down this large function into smaller functions
