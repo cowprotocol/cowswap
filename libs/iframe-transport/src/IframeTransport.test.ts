@@ -62,6 +62,23 @@ describe('IframeTransport', () => {
     expect(callback).not.toHaveBeenCalled()
   })
 
+  it('accepts messages with an unexpected source in local dev origins', () => {
+    const transport = new IframeTransport<TestPayloadMap>('test-key')
+    const callback = jest.fn()
+    const localOrigin = 'http://localhost:3000'
+    const wrongSource = { closed: false } as unknown as Window
+
+    transport.listenToMessageFromWindow(window, window, method, callback, localOrigin)
+
+    dispatchMessage({
+      data: { key: 'test-key', method, value: 'ok' },
+      origin: localOrigin,
+      source: wrongSource,
+    })
+
+    expect(callback).toHaveBeenCalledWith({ key: 'test-key', method, value: 'ok' })
+  })
+
   it('rejects messages with a different transport key', () => {
     const transport = new IframeTransport<TestPayloadMap>('test-key')
     const callback = jest.fn()

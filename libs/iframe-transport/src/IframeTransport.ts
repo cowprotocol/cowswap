@@ -9,6 +9,16 @@ function logWidget(...args: unknown[]): void {
   console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
 }
 
+function isLocalEnvOrigin(origin: string): boolean {
+  try {
+    const { hostname } = new URL(origin)
+
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]'
+  } catch {
+    return false
+  }
+}
+
 export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
   constructor(public readonly key: string) {}
 
@@ -40,13 +50,26 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
       }
 
       if (!event.source || event.source !== targetWindow) {
-        logWidget('Rejected message due to source mismatch', {
+        const isLocalEnv = isLocalEnvOrigin(event.origin) || isLocalEnvOrigin(trustedOrigin)
+
+        if (!isLocalEnv) {
+          logWidget('Rejected message due to source mismatch', {
+            key: this.key,
+            method,
+            actualSource: event.source,
+            expectedSource: targetWindow,
+          })
+          return
+        }
+
+        // Some local dev setups can deliver MessageEvents with a null `source` or a WindowProxy that doesn't compare
+        // strictly equal, even though origin + payload match. Allow it locally to avoid breaking iframe transports.
+        logWidget('Non-matching or missing message source. Continuing due to local env.', {
           key: this.key,
           method,
           actualSource: event.source,
           expectedSource: targetWindow,
         })
-        return
       }
 
       if (event.origin !== trustedOrigin) {
@@ -61,6 +84,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
 
       callback(event.data as MethodsEmitPayloadMap[T])
     }
+
     contentWindow.addEventListener('message', listener)
 
     return listener
