@@ -43,11 +43,10 @@ import {
   widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0, parentOrigin)
 
   /**
-   * Intercept window.open and anchor clicks to send a message to the parent window
-   * to handle the opening of deeplinks in the parent window.
+   * Intercept window.open to send a message to the parent window to handle the opening of deeplinks in the parent window.
    *
    * IMPORTANT: Do not call the native window.open here: createCowSwapWidget registers interceptDeepLinks
-   * which opens in the parent; calling both would open two tabs / popups.
+   * which opens in the parent, so calling both would open two tabs / popups.
    */
   window.open = function (...args) {
     const [href = '', target = '', rel = ''] = args
