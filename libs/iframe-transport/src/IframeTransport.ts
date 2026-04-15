@@ -3,7 +3,7 @@ import { WindowListener } from './types'
 // @ts-ignore
 type AbstractRecord = Record<unknown, unknown>
 
-const DEFAULT_ORIGIN = 'https://swap.cow.fi'
+const DEFAULT_ORIGIN = 'https://swap.cow.finance'
 
 function logWidget(...args: unknown[]): void {
   console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)

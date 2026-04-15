@@ -51,7 +51,7 @@ type RpcCallback = (error: any, response: any) => void
 const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 
 const JSON_RPC_VERSION = '2.0'
-const DEFAULT_TARGET_ORIGIN = 'https://swap.cow.fi'
+const DEFAULT_TARGET_ORIGIN = 'https://swap.cow.finance'
 
 /**
  * Export the type information about the different events that are emitted.

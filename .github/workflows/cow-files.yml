@@ -1,4 +1,4 @@
-name: 'Deploy: files.cow.fi'
+name: 'Deploy: files.cow.finance'
 
 on:
   push:
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy to files.cow.fi
+    name: Deploy to files.cow.finance
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -32,7 +32,7 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 sync static-files/public/ s3://files.cow.fi/cow-files/ \
+          aws s3 sync static-files/public/ s3://files.cow.finance/cow-files/ \
             --delete \
             --exclude ".DS_Store" \
             --exclude "*.tmp" \

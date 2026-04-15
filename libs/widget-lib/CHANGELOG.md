@@ -1,5 +1,31 @@
 # Changelog
 
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.3.0...widget-lib-v3.0.0) (2026-04-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **widget:** migrate to swap.cow.finance domain ([#7340](https://github.com/cowprotocol/cowswap/issues/7340))
+
+### ✨ Features
+
+* **widget:** migrate to swap.cow.finance domain ([#7340](https://github.com/cowprotocol/cowswap/issues/7340)) ([5e4c2b8](https://github.com/cowprotocol/cowswap/commit/5e4c2b816b386040965c5070e2482449dbe56032))
+
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.5...widget-lib-v2.3.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.2.0
+    * @cowprotocol/iframe-transport bumped to 2.1.0
+
 ## [2.2.5](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.2.4...widget-lib-v2.2.5) (2026-04-10)
 
 
