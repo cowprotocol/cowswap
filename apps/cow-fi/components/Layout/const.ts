@@ -96,7 +96,7 @@ function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
       },
       {
         label: 'Grants',
-        href: 'https://docs.cow.finance/',
+        href: 'https://grants.cow.finance/',
         external: true,
       },
       {
