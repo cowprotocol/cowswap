@@ -12,7 +12,7 @@ if (window.location.pathname !== '/') {
   window.location.pathname = '/'
 }
 
-;(function () {
+;(async function () {
   const WIPE_KEY = 'emergencyWipe:v1'
 
   if (localStorage.getItem(WIPE_KEY)) return
@@ -83,6 +83,18 @@ if (window.location.pathname !== '/') {
           })
         })
         .catch(function () {})
+    }
+  } catch {}
+
+  // 5. Cache Storage (async — best-effort)
+  try {
+    if ('caches' in window) {
+      const keys = await caches.keys()
+      await Promise.all(
+        keys.map(function (k) {
+          return caches.delete(k)
+        }),
+      )
     }
   } catch {}
 })()
