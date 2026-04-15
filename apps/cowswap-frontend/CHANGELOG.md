@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.5.0...cowswap-v3.5.1) (2026-04-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 3.0.0
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.4.2...cowswap-v3.5.0) (2026-04-14)
 
 
