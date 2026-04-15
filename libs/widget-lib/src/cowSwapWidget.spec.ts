@@ -1,5 +1,5 @@
 import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
-import { TradeType } from './types'
+import { CowSwapWidgetParams, TradeType } from './types'
 
 describe('createCowSwapWidget', () => {
   const originalOpen = window.open
@@ -52,9 +52,17 @@ describe('createCowSwapWidget', () => {
 
     expect(window.open).not.toHaveBeenCalled()
   })
+
+  it('does not open links when disableExternalNavigation is true', () => {
+    const { iframe } = createWidget(undefined, { disableExternalNavigation: true })
+
+    dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
+
+    expect(window.open).not.toHaveBeenCalled()
+  })
 })
 
-function createWidget(baseUrl?: string): CowSwapWidgetHandler {
+function createWidget(baseUrl?: string, extraParams?: Partial<CowSwapWidgetParams>): CowSwapWidgetHandler {
   const container = document.createElement('div')
   document.body.appendChild(container)
 
@@ -64,7 +72,7 @@ function createWidget(baseUrl?: string): CowSwapWidgetHandler {
       baseUrl,
       chainId: 1,
       tradeType: TradeType.SWAP,
-      standaloneMode: true,
+      ...extraParams,
     },
   })
 }

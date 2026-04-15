@@ -99,9 +99,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       window.removeEventListener('message', interceptDeepLinksListener)
     }
 
-    // Enable deeplinks interceptor only in standalone mode
-    // because the mechanism is only needed when connecting wallet inside if the iframe
-    if (!currentParams.standaloneMode) return
+    // Unless explicitly disabled, links / `window.open` requests are forwarded from the iframe to the host via
+    // `postMessage`, and the host opens them.
+    if (currentParams.disableExternalNavigation) return
 
     interceptDeepLinksListener = interceptDeepLinks(iframeOrigin, iframeWindow)
     windowListeners.push(interceptDeepLinksListener)

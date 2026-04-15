@@ -376,6 +376,12 @@ export interface CowSwapWidgetParams {
   disableToastMessages?: boolean
 
   /**
+   * When `true`, the host page will not open links or `window.open` targets requested by the widget.
+   * Defaults to `false`.
+   */
+  disableExternalNavigation?: boolean
+
+  /**
    * Option to hide the logo in the widget.
    */
   hideLogo?: boolean
