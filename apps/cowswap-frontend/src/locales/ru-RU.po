@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-04-14 08:38\n"
+"PO-Revision-Date: 2026-04-15 11:42\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -104,12 +104,6 @@ msgstr "Сделка"
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
 #~ msgid "Order cannot be filled due to insufficient allowance on the current account."
 #~ msgstr "Order cannot be filled due to insufficient allowance on the current account."
-
-#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
-msgid "Did you know? {benefit}\n\n"
-"Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
-msgstr "Знаете ли вы? {benefit}\n\n"
-"Начать смену на swap.cow.fi #CoWSwap @CoWSwap 🐮"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction."
@@ -489,12 +483,6 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "30 Minutes"
 msgstr "30 минут"
-
-#: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
-msgid "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n\n"
-" Get yours at swap.cow.fi @CoWSwap"
-msgstr "Мой CoW печенье фортуны 🐮💬: \"{openFortuneText}\" \n\n"
-" Получите себе по адресу swap.cow.fi @CoWSwap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "amount per"
@@ -1629,6 +1617,13 @@ msgstr "Позволяет вам выбрать адрес назначения
 msgid "Your account is affected by the AnySwap Hack"
 msgstr "На Вашу учетную запись влияет AnySwap Hack"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
+msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
+"Start swapping on swap.cow.finance"
+msgstr "Эй, я просто {actionWord} еще {surplus} на @CoWSwap! 🐮💸\n\n"
+"Начать обмен swap.cow.finance"
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "COW vesting from locked GNO"
 msgstr "COW вестинг от заблокированного GNO"
@@ -1791,13 +1786,6 @@ msgstr "Отлично!"
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "View your private {accountProxyLabelString}"
 msgstr "Просмотреть вашу личную {accountProxyLabelString}"
-
-#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
-msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
-"Start swapping on swap.cow.fi"
-msgstr "Эй, я просто {actionWord} еще {surplus} на @CoWSwap! 🐮💸\n\n"
-"Начать обмен swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "See Terms"
@@ -2789,6 +2777,12 @@ msgstr "Чтобы использовать заказы {orderType}, подкл
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 msgstr "Когда включено, лимитная цена остается фиксированной при изменении суммы КУПЫ. При отключении, лимитная цена обновится на основе изменения суммы КУПЫ."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+msgid "Did you know? {benefit}\n\n"
+"Start swapping on swap.cow.finance #CoWSwap @CoWSwap 🐮"
+msgstr "Знаете ли вы? {benefit}\n\n"
+"Начните совершать свапы на swap.cow.finance #CoWSwap @CoWSwap 🐮"
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 msgid "vCOW token not present"
@@ -7805,4 +7799,10 @@ msgstr "Узнать больше"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
+
+#: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
+msgid "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n\n"
+" Get yours at swap.cow.finance @CoWSwap"
+msgstr "Мое печенье с предсказанием CoW 🐮💬: «{openFortuneText}» \n\n"
+" Получите свое по адресу swap.cow.finance @CoWSwap"
 
