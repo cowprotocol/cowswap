@@ -34,19 +34,19 @@ describe('createCowSwapWidget', () => {
 
     dispatchInterceptWindowOpen('/faq')
 
-    expect(window.open).toHaveBeenCalledWith('https://swap.cow.fi/faq', '_blank', 'noopener')
+    expect(window.open).toHaveBeenCalledWith('https://swap.cow.finance/faq', '_blank', 'noopener')
   })
 
   it('accepts messages from a custom widget baseUrl origin', () => {
-    createWidget('https://barn.cow.fi')
+    createWidget('https://barn.cow.finance')
 
-    dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.fi')
+    dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.finance')
 
     expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
 
   it('ignores messages from an untrusted origin', () => {
-    createWidget('https://swap.cow.fi')
+    createWidget('https://swap.cow.finance')
 
     dispatchInterceptWindowOpen('https://example.com', 'https://attacker.example')
 
@@ -68,7 +68,7 @@ function createWidget(baseUrl?: string): void {
   })
 }
 
-function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi'): void {
+function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.finance'): void {
   const event = new MessageEvent('message', {
     origin,
     data: {

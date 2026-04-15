@@ -13,20 +13,24 @@ const CHAIN_ID = 11155111
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 
-function acceptFeesExceedWarning(): void {
-  cy.get('#do-trade-button').should('contain.text', 'Swap')
-  cy.get('body').then(($body) => {
-    const feesExceedCheckbox = $body.find('#fees-exceed-checkbox')
-    if (feesExceedCheckbox.length > 0) {
-      feesExceedCheckbox.get(0).click()
-    }
-  })
+function waitForSwapAction(): Cypress.Chainable {
+  return cy
+    .get('#currency-arrow-separator', { timeout: 30_000 })
+    .should('not.have.attr', 'data-isLoading')
+    .get('#do-trade-button', { timeout: 30_000 })
+    .should('be.visible')
+    .and('contain.text', 'Swap')
 }
 
-// mock test to pass CI until we fix the test
-it('should be true', () => {
-  expect(true).to.be.true
-})
+function acceptFeesExceedWarning(): Cypress.Chainable {
+  return waitForSwapAction().then(() => {
+    cy.get('body').then(($body) => {
+      if ($body.find('#fees-exceed-checkbox').length > 0) {
+        cy.get('#fees-exceed-checkbox').check({ force: true })
+      }
+    })
+  })
+}
 
 describe('Swap (custom)', () => {
   // uses WETH instead of ETH
@@ -55,7 +59,7 @@ describe('Swap (custom)', () => {
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.have.value', '')
     acceptFeesExceedWarning()
-    cy.get('#do-trade-button').should('contain.text', 'Swap').should('be.enabled').click()
+    waitForSwapAction().should('be.enabled').click()
     cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 
@@ -78,7 +82,7 @@ describe('Swap (custom)', () => {
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.have.value', '')
     acceptFeesExceedWarning()
-    cy.get('#do-trade-button').should('contain.text', 'Swap').should('be.enabled').click()
+    waitForSwapAction().should('be.enabled').click()
     cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 
@@ -103,7 +107,7 @@ describe('Swap (custom)', () => {
 
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
-    cy.wait(1000)
+    waitForSwapAction()
     cy.get('#classic-eth-flow-banner')
       .should('contain', 'Switch to the classic')
       .and('contain', 'experience and benefit!')
