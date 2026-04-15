@@ -1,5 +1,53 @@
 # Changelog
 
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.5.0...cowswap-v3.5.1) (2026-04-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/widget-lib bumped to 3.0.0
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.4.2...cowswap-v3.5.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.0
+    * @cowprotocol/balances-and-allowances bumped to 3.1.0
+    * @cowprotocol/common-const bumped to 3.1.0
+    * @cowprotocol/common-hooks bumped to 3.1.0
+    * @cowprotocol/common-utils bumped to 3.1.0
+    * @cowprotocol/core bumped to 3.1.0
+    * @cowprotocol/ens bumped to 3.1.0
+    * @cowprotocol/events bumped to 4.2.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.1.0
+    * @cowprotocol/iframe-transport bumped to 2.1.0
+    * @cowprotocol/multicall bumped to 3.1.0
+    * @cowprotocol/permit-utils bumped to 3.1.0
+    * @cowprotocol/snackbars bumped to 2.0.17
+    * @cowprotocol/tokens bumped to 3.3.0
+    * @cowprotocol/types bumped to 4.2.0
+    * @cowprotocol/ui bumped to 3.2.0
+    * @cowprotocol/wallet bumped to 3.1.0
+    * @cowprotocol/wallet-provider bumped to 2.1.13
+    * @cowprotocol/widget-lib bumped to 2.3.0
+
+## [3.4.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.4.1...cowswap-v3.4.2) (2026-04-14)
+
+
+### 🐛 Bug Fixes
+
+* add maintenance message for swap and explorer ([#7327](https://github.com/cowprotocol/cowswap/issues/7327)) ([c4c1a4a](https://github.com/cowprotocol/cowswap/commit/c4c1a4a1fe2bc30a5c6abbd0144c972924f25a7d))
+
 ## [3.4.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.4.0...cowswap-v3.4.1) (2026-04-10)
 
 

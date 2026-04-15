@@ -18,7 +18,7 @@ export function getTwitterText(surplusAmount: string, surplusToken: string, orde
   const actionWord = isSellOrder(orderKind) ? t`got` : t`saved`
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
+    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.finance`,
   )
 }
 
@@ -32,7 +32,7 @@ export function getTwitterShareUrl(surplusData: SurplusData | undefined, order: 
 }
 
 export function getTwitterTextForBenefit(benefit: string): string {
-  return encodeURIComponent(t`Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`)
+  return encodeURIComponent(t`Did you know? ${benefit}\n\nStart swapping on swap.cow.finance #CoWSwap @CoWSwap 🐮`)
 }
 
 export function getTwitterShareUrlForBenefit(benefit: string): string {

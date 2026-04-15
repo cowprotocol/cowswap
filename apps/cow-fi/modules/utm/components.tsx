@@ -7,7 +7,7 @@ import Link, { LinkProps } from 'next/link'
 import { addUtmToUrl } from './utils'
 
 export const defaultUtm: UtmParams = {
-  utmSource: 'cow.fi',
+  utmSource: 'cow.finance',
   utmMedium: 'web',
   utmContent: 'link',
 }

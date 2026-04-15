@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.0](https://github.com/cowprotocol/cowswap/compare/types-v4.1.2...types-v4.2.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
 ## [4.1.2](https://github.com/cowprotocol/cowswap/compare/types-v4.1.1...types-v4.1.2) (2026-04-08)
 
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.0.4...common-hooks-v3.1.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.0
+    * @cowprotocol/common-utils bumped to 3.1.0
+    * @cowprotocol/types bumped to 4.2.0
+
 ## [3.0.4](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.0.3...common-hooks-v3.0.4) (2026-04-08)
 
 
