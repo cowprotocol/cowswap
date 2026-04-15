@@ -1,10 +1,11 @@
+import { COWSWAP_ORIGIN } from './const'
 import { isCowSwapWidgetPalette } from './themeUtils'
 import { CowSwapWidgetParams, TradeType } from './types'
 
 const EMPTY_TOKEN = '_'
 
 export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
-  const host = typeof params.baseUrl === 'string' ? params.baseUrl : 'https://swap.cow.finance'
+  const host = typeof params.baseUrl === 'string' ? params.baseUrl : COWSWAP_ORIGIN
   const path = buildWidgetPath(params)
 
   return host + '/#' + path + '?' + buildWidgetUrlQuery(params)
