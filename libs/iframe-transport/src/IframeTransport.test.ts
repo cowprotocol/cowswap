@@ -6,7 +6,7 @@ interface TestPayloadMap {
 
 describe('IframeTransport', () => {
   const method = 'PING' as const
-  const trustedOrigin = 'https://swap.cow.finance'
+  const trustedOrigin = 'https://swap.cow.fi'
 
   function dispatchMessage({
     data,
@@ -96,11 +96,11 @@ describe('IframeTransport', () => {
     const transport = new IframeTransport<TestPayloadMap>('test-key')
     const callback = jest.fn()
 
-    transport.listenToMessageFromWindow(window, window, method, callback, 'https://staging.swap.cow.finance')
+    transport.listenToMessageFromWindow(window, window, method, callback, 'https://staging.swap.cow.fi')
 
     dispatchMessage({
       data: { key: 'test-key', method, value: 'ok' },
-      origin: 'https://staging.swap.cow.finance',
+      origin: 'https://staging.swap.cow.fi',
     })
 
     expect(callback).toHaveBeenCalledWith({ key: 'test-key', method, value: 'ok' })

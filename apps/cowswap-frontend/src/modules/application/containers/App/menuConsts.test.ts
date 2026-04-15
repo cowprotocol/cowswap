@@ -35,7 +35,7 @@ jest.mock('modules/fortune', () => ({
 }))
 
 jest.mock('./menuConsts.utils', () => ({
-  getSolversExplorerUrl: () => 'https://explorer.cow.finance/solvers',
+  getSolversExplorerUrl: () => 'https://explorer.cow.fi/solvers',
 }))
 
 jest.mock('common/constants/routes', () => ({
@@ -60,10 +60,10 @@ function getMoreItemHrefs(isSolversEnabled: boolean): string[] {
 
 describe('NAV_ITEMS', () => {
   it('hides solvers menu item when the solvers flag is disabled', () => {
-    expect(getMoreItemHrefs(false)).not.toContain('https://explorer.cow.finance/solvers')
+    expect(getMoreItemHrefs(false)).not.toContain('https://explorer.cow.fi/solvers')
   })
 
   it('shows solvers menu item when the solvers flag is enabled', () => {
-    expect(getMoreItemHrefs(true)).toContain('https://explorer.cow.finance/solvers')
+    expect(getMoreItemHrefs(true)).toContain('https://explorer.cow.fi/solvers')
   })
 })

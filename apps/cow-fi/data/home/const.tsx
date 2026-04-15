@@ -100,7 +100,7 @@ export const CHANNEL_LIST = [
   },
   {
     title: 'Forum',
-    href: 'https://forum.cow.finance/',
+    href: 'https://forum.cow.fi/',
     linkEvent: 'click-forum',
     iconColor: Color.cowamm_dark_green,
     textColor: Color.neutral98,
