@@ -8,7 +8,7 @@ msgstr ""
 "Language: tr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-04-15 11:42\n"
+"PO-Revision-Date: 2026-04-15 14:42\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -767,7 +767,7 @@ msgstr ""
 msgid "Updates every 24 hours"
 msgstr ""
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 msgid "(View on Explorer)"
 msgstr ""
 
@@ -1995,7 +1995,7 @@ msgstr ""
 msgid "Connect to verify code"
 msgstr ""
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 msgid "Wallet Address or ENS name"
 msgstr ""
 
@@ -2478,7 +2478,7 @@ msgstr ""
 msgid "Sign the {operationLabel} with your wallet."
 msgstr ""
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
@@ -2584,6 +2584,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
+msgid "Receiver address (required)"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
@@ -3019,6 +3023,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Sell amount too small"
+msgstr ""
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
+msgid "Recipient address"
 msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
@@ -6395,6 +6403,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 msgid "Referral code"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Enter a receiver address"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
