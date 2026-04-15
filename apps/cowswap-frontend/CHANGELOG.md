@@ -1,5 +1,49 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.5.1...cowswap-v3.6.0) (2026-04-15)
+
+
+### ✨ Features
+
+* **widget:** refactor/improve window.open / deeplink widget logic ([1502fea](https://github.com/cowprotocol/cowswap/commit/1502feafa878d58d3936b427d66ecdd38de217d7))
+
+
+### 🐛 Bug Fixes
+
+* enable navigation from widget iframe ([#7344](https://github.com/cowprotocol/cowswap/issues/7344)) ([242347c](https://github.com/cowprotocol/cowswap/commit/242347c66c8590d1ce69bc96fc2f847ed647d92e))
+* turn twitter button into an actual link ([b760d8c](https://github.com/cowprotocol/cowswap/commit/b760d8cea1cdb137fda762feb08279acee35e26d))
+* update cow.fi =&gt; cow.finance CSP source list ([b849aaf](https://github.com/cowprotocol/cowswap/commit/b849aaf16c29db6ddf854fd77d5984320a39e0d2))
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.1
+    * @cowprotocol/balances-and-allowances bumped to 3.1.1
+    * @cowprotocol/common-const bumped to 3.1.1
+    * @cowprotocol/common-hooks bumped to 3.1.1
+    * @cowprotocol/common-utils bumped to 3.2.0
+    * @cowprotocol/core bumped to 3.1.1
+    * @cowprotocol/ens bumped to 3.1.1
+    * @cowprotocol/events bumped to 4.2.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.0
+    * @cowprotocol/iframe-transport bumped to 2.2.0
+    * @cowprotocol/multicall bumped to 3.1.1
+    * @cowprotocol/permit-utils bumped to 3.1.1
+    * @cowprotocol/snackbars bumped to 2.0.18
+    * @cowprotocol/tokens bumped to 3.3.1
+    * @cowprotocol/types bumped to 4.2.1
+    * @cowprotocol/ui bumped to 3.2.1
+    * @cowprotocol/wallet bumped to 3.1.1
+    * @cowprotocol/wallet-provider bumped to 2.1.14
+    * @cowprotocol/widget-lib bumped to 3.1.0
+
 ## [3.5.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.5.0...cowswap-v3.5.1) (2026-04-15)
 
 
