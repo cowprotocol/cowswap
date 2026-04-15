@@ -7,7 +7,7 @@ const scriptSrc = [
   "'self'",
 
   // App integrations
-  'https://*.cow.fi',
+  'https://*.cow.finance',
   'https://telegram.org',
   'https://*.appzi.io',
   'https://www.googletagmanager.com',
