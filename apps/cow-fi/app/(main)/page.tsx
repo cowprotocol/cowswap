@@ -146,7 +146,7 @@ export default function Page() {
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="home-page-apply-for-a-grant"
-              href="https://docs.cow.finance/"
+              href="https://grants.cow.finance/"
               onClick={() => sendHomeEvent('click-apply-for-a-grant')}
             >
               Explore grants
