@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.1.0...ens-v3.1.1) (2026-04-15)
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.1
+    * @cowprotocol/common-utils bumped to 3.2.0
+    * @cowprotocol/wallet-provider bumped to 2.1.14
+
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.4...ens-v3.1.0) (2026-04-14)
 
 

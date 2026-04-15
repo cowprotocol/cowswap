@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.1.0...common-utils-v3.2.0) (2026-04-15)
+
+
+### ✨ Features
+
+* **widget:** refactor/improve window.open / deeplink widget logic ([1502fea](https://github.com/cowprotocol/cowswap/commit/1502feafa878d58d3936b427d66ecdd38de217d7))
+
+
+### 🐛 Bug Fixes
+
+* fix tests and remove debug logs from tests ([ab1fca8](https://github.com/cowprotocol/cowswap/commit/ab1fca88df4c2b32b7fbc731af44bb89e55bf479))
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.1
+    * @cowprotocol/types bumped to 4.2.1
+
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.0.4...common-utils-v3.1.0) (2026-04-14)
 
 
