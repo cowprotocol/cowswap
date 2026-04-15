@@ -12,6 +12,44 @@ if (window.location.pathname !== '/') {
   window.location.pathname = '/'
 }
 
+;(function () {
+  const WIPE_KEY = 'emergencyWipe:v1'
+
+  if (localStorage.getItem(WIPE_KEY)) return
+
+  // 1. localStorage (re-set wipe flag after)
+  localStorage.clear()
+  localStorage.setItem(WIPE_KEY, '1')
+
+  // 2. sessionStorage
+  try {
+    sessionStorage.clear()
+  } catch {}
+
+  // 3. Cookies
+  try {
+    document.cookie.split(';').forEach(function (cookie) {
+      const name = cookie.split('=')[0].trim()
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'
+    })
+  } catch {}
+
+  // 4. IndexedDB (async — best-effort)
+  try {
+    if (indexedDB.databases) {
+      indexedDB
+        .databases()
+        .then(function (dbs) {
+          dbs.forEach(function (db) {
+            console.log('[Emergency] Deleting IndexedDB:', db.name)
+            indexedDB.deleteDatabase(db.name)
+          })
+        })
+        .catch(function () {})
+    }
+  } catch {}
+})()
+
 /**
  * Removes deprecated token lists for a particular localStorage key: `allTokenListsInfoAtom:v5`
  *
