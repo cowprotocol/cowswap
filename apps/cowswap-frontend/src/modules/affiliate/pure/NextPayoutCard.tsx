@@ -9,8 +9,7 @@ import { BottomMetaRow, CardTitle, ColumnThreeCard, InlineNote, PayoutValue, Tit
 
 import { formatUsdcCompact } from '../lib/affiliateProgramUtils'
 
-const USDC_LOGO_URL =
-  'https://files.cow.finance/token-lists/images/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png'
+const USDC_LOGO_URL = 'https://files.cow.fi/token-lists/images/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png'
 
 type NextPayoutCardProps = {
   payout?: number

@@ -7,9 +7,8 @@ import { Trans } from '@lingui/react/macro'
 import { BANNER_IDS } from 'common/constants/banners'
 
 const BANNER_ID = BANNER_IDS.LIMIT_ORDERS_PROTOCOL_FEE
-const CIP_74_URL =
-  'https://vote.cow.finance/#/proposal/0x0c70c8cd92accee872b52614b4fa10e3e3214f45c5b6857f7e88e910607a3c1d'
-const VOLUME_FEE_DOC_URL = 'https://docs.cow.finance/governance/fees#volume-fee'
+const CIP_74_URL = 'https://vote.cow.fi/#/proposal/0x0c70c8cd92accee872b52614b4fa10e3e3214f45c5b6857f7e88e910607a3c1d'
+const VOLUME_FEE_DOC_URL = 'https://docs.cow.fi/governance/fees#volume-fee'
 const PROTOCOL_FEE_START_DATETIME_UTC = 'November 26, 2025 at 00:00 (UTC)'
 
 export interface ProtocolFeeInfoBannerProps {

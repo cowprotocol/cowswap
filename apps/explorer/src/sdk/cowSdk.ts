@@ -36,7 +36,7 @@ function getBungeeApiBase(): string | undefined {
     return 'https://backend.bungee.exchange'
   }
 
-  return 'https://bff.barn.cow.finance/proxies/socket'
+  return 'https://bff.barn.cow.fi/proxies/socket'
 }
 
 setGlobalAdapter(cowSdkAdapter)

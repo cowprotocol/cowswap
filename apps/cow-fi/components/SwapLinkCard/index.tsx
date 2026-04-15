@@ -23,7 +23,7 @@ export const SwapLinkCard = ({
   return contractAddress ? (
     <SwapCard>
       <a
-        href={`https://swap.cow.finance/#/${networkId}/swap/${
+        href={`https://swap.cow.fi/#/${networkId}/swap/${
           networkId === 100 ? 'WXDAI' : 'WETH'
         }/${contractAddress}?sellAmount=1`}
         target="_blank"

@@ -137,8 +137,7 @@ const UNLOCK_SCREEN = {
   subtitle: msg`Get started!`,
   orderType: msg`partially fillable`,
   buttonText: msg`Get started with limit orders`,
-  buttonLink:
-    'https://cow.finance/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
+  buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
 }
 
 // TODO: Break down this large function into smaller functions

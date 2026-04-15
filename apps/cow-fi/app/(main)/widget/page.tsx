@@ -70,7 +70,7 @@ export default function Page() {
 
           <HeroButtonWrapper>
             <Link
-              href="https://widget.cow.finance/"
+              href="https://widget.cow.fi/"
               utmContent="widget-page-configure-widget-cta-hero"
               external
               linkType={LinkType.HeroButton}
@@ -88,7 +88,7 @@ export default function Page() {
             <Link
               bgColor="transparent"
               color={`var(${UI.COLOR_NEUTRAL_20})`}
-              href="https://docs.cow.finance/cow-protocol/tutorials/widget"
+              href="https://docs.cow.fi/cow-protocol/tutorials/widget"
               utmContent="widget-page-readdocs-cta-hero"
               external
               linkType={LinkType.HeroButton}
@@ -320,7 +320,7 @@ export default function Page() {
             <SectionTitleText>Integrate in 5 minutes or less</SectionTitleText>
             <HeroButtonWrapper width="auto">
               <Link
-                href="https://widget.cow.finance/"
+                href="https://widget.cow.fi/"
                 utmContent="widget-page-configure-widget-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
@@ -338,7 +338,7 @@ export default function Page() {
               <Link
                 bgColor="transparent"
                 color={`var(${UI.COLOR_NEUTRAL_20})`}
-                href="https://docs.cow.finance/cow-protocol/tutorials/widget"
+                href="https://docs.cow.fi/cow-protocol/tutorials/widget"
                 utmContent="widget-page-readdocs-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
