@@ -100,16 +100,6 @@ msgstr "Set to trade"
 #~ msgid "Order cannot be filled due to insufficient allowance on the current account."
 #~ msgstr "Order cannot be filled due to insufficient allowance on the current account."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
-msgid ""
-"Did you know? {benefit}\n"
-"\n"
-"Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
-msgstr ""
-"Did you know? {benefit}\n"
-"\n"
-"Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
-
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction."
 #~ msgstr "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction."
@@ -489,16 +479,6 @@ msgstr "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}"
 msgid "30 Minutes"
 msgstr "30 Minutes"
 
-#: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
-msgid ""
-"My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
-"\n"
-" Get yours at swap.cow.fi @CoWSwap"
-msgstr ""
-"My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
-"\n"
-" Get yours at swap.cow.fi @CoWSwap"
-
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "amount per"
 msgstr "amount per"
@@ -782,7 +762,7 @@ msgstr "Adding this app/hook grants it access to your wallet actions and trading
 msgid "Updates every 24 hours"
 msgstr "Updates every 24 hours"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 msgid "(View on Explorer)"
 msgstr "(View on Explorer)"
 
@@ -1632,6 +1612,17 @@ msgstr "Allows you to choose a destination address for the swap other than the c
 msgid "Your account is affected by the AnySwap Hack"
 msgstr "Your account is affected by the AnySwap Hack"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
+msgid ""
+"Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
+"\n"
+"Start swapping on swap.cow.finance"
+msgstr ""
+"Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
+"\n"
+"Start swapping on swap.cow.finance"
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "COW vesting from locked GNO"
 msgstr "COW vesting from locked GNO"
@@ -1794,17 +1785,6 @@ msgstr "Great!"
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "View your private {accountProxyLabelString}"
 msgstr "View your private {accountProxyLabelString}"
-
-#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
-msgid ""
-"Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
-"\n"
-"Start swapping on swap.cow.fi"
-msgstr ""
-"Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
-"\n"
-"Start swapping on swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "See Terms"
@@ -2015,7 +1995,7 @@ msgstr "Unknown"
 msgid "Connect to verify code"
 msgstr "Connect to verify code"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 msgid "Wallet Address or ENS name"
 msgstr "Wallet Address or ENS name"
 
@@ -2498,7 +2478,7 @@ msgstr "up"
 msgid "Sign the {operationLabel} with your wallet."
 msgstr "Sign the {operationLabel} with your wallet."
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
@@ -2605,6 +2585,10 @@ msgstr "At current gas prices, your remaining {nativeSymbol} balance after confi
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
 msgstr "The price of this pool is outside of your selected range. Your position is not currently earning fees."
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
+msgid "Receiver address (required)"
+msgstr "Receiver address (required)"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "days"
@@ -2796,6 +2780,16 @@ msgstr "To use {orderType} orders, please connect your wallet <0/>to one of our 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 msgstr "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+msgid ""
+"Did you know? {benefit}\n"
+"\n"
+"Start swapping on swap.cow.finance #CoWSwap @CoWSwap 🐮"
+msgstr ""
+"Did you know? {benefit}\n"
+"\n"
+"Start swapping on swap.cow.finance #CoWSwap @CoWSwap 🐮"
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 msgid "vCOW token not present"
@@ -3035,6 +3029,10 @@ msgstr "In case you want to give allowance only for the trade amount, use the ad
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Sell amount too small"
 msgstr "Sell amount too small"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
+msgid "Recipient address"
+msgstr "Recipient address"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Your position has 0 liquidity, and is not earning fees."
@@ -6415,6 +6413,10 @@ msgstr "Canceling your order"
 msgid "Referral code"
 msgstr "Referral code"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Enter a receiver address"
+msgstr "Enter a receiver address"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "{solversLength} out of {totalSolvers} solvers"
 msgstr "{solversLength} out of {totalSolvers} solvers"
@@ -7814,3 +7816,13 @@ msgstr "Learn more"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
+
+#: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
+msgid ""
+"My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
+"\n"
+" Get yours at swap.cow.finance @CoWSwap"
+msgstr ""
+"My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
+"\n"
+" Get yours at swap.cow.finance @CoWSwap"
