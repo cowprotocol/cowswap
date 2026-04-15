@@ -762,7 +762,7 @@ msgstr "Adding this app/hook grants it access to your wallet actions and trading
 msgid "Updates every 24 hours"
 msgstr "Updates every 24 hours"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 msgid "(View on Explorer)"
 msgstr "(View on Explorer)"
 
@@ -1995,7 +1995,7 @@ msgstr "Unknown"
 msgid "Connect to verify code"
 msgstr "Connect to verify code"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 msgid "Wallet Address or ENS name"
 msgstr "Wallet Address or ENS name"
 
@@ -2478,7 +2478,7 @@ msgstr "up"
 msgid "Sign the {operationLabel} with your wallet."
 msgstr "Sign the {operationLabel} with your wallet."
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
@@ -2585,6 +2585,10 @@ msgstr "At current gas prices, your remaining {nativeSymbol} balance after confi
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
 msgstr "The price of this pool is outside of your selected range. Your position is not currently earning fees."
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
+msgid "Receiver address (required)"
+msgstr "Receiver address (required)"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "days"
@@ -3025,6 +3029,10 @@ msgstr "In case you want to give allowance only for the trade amount, use the ad
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Sell amount too small"
 msgstr "Sell amount too small"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
+msgid "Recipient address"
+msgstr "Recipient address"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Your position has 0 liquidity, and is not earning fees."
@@ -6404,6 +6412,10 @@ msgstr "Canceling your order"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 msgid "Referral code"
 msgstr "Referral code"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Enter a receiver address"
+msgstr "Enter a receiver address"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "{solversLength} out of {totalSolvers} solvers"
