@@ -26,7 +26,7 @@ if (window.location.pathname !== '/') {
     sessionStorage.clear()
   } catch {}
 
-  // 3. Cookies
+  // 3. Cookies — expire each cookie across all known paths and domains
   try {
     const cookiePaths = [
       '/',
@@ -48,11 +48,25 @@ if (window.location.pathname !== '/') {
       '/play',
       '/widget',
     ]
+    const hostname = window.location.hostname
+    const hostParts = hostname.split('.')
+    // e.g. swap.cow.fi → [swap.cow.fi, .cow.fi, .swap.cow.fi]
+    const cookieDomains = [
+      hostname,
+      hostParts.length > 2 ? '.' + hostParts.slice(-2).join('.') : '',
+      '.' + hostname,
+    ].filter(Boolean)
+    const expired = ';expires=Thu, 01 Jan 1970 00:00:00 GMT'
     document.cookie.split(';').forEach(function (cookie) {
       const name = cookie.split('=')[0].trim()
-      const expires = ';expires=Thu, 01 Jan 1970 00:00:00 GMT;path='
+      if (!name) return
       cookiePaths.forEach(function (path) {
-        document.cookie = name + '=' + expires + path
+        // Without domain — catches cookies set without explicit domain
+        document.cookie = name + '=' + expired + ';path=' + path
+        // With each domain variant
+        cookieDomains.forEach(function (domain) {
+          document.cookie = name + '=' + expired + ';path=' + path + ';domain=' + domain
+        })
       })
     })
   } catch {}
