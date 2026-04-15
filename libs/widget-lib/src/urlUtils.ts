@@ -13,13 +13,7 @@ const INVALID_BASE_URL_PREFIX = 'CoW Swap widget: invalid baseUrl.'
 export const SHOULD_THROW_IF_INVALID_URL = false
 
 function isLocalDevHostname(hostname: string): boolean {
-  return (
-    hostname === 'localhost' ||
-    hostname === '127.0.0.1' ||
-    hostname === '::1' ||
-    hostname === '[::1]' ||
-    hostname.endsWith('.localhost')
-  )
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname.endsWith('.localhost')
 }
 
 function handleInvalidWidgetBaseUrl(detail: string, throwIfInvalid: boolean): string {

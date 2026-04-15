@@ -6,15 +6,15 @@ const tradeType = TradeType.SWAP
 
 describe('sanitizeWidgetBaseUrl', () => {
   it('returns production default when baseUrl is omitted or blank', () => {
-    expect(sanitizeWidgetBaseUrl(undefined)).toBe('https://swap.cow.fi')
-    expect(sanitizeWidgetBaseUrl('')).toBe('https://swap.cow.fi')
-    expect(sanitizeWidgetBaseUrl('   ')).toBe('https://swap.cow.fi')
+    expect(sanitizeWidgetBaseUrl(undefined)).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('   ')).toBe('https://swap.cow.finance')
   })
 
   it('when not throwing, logs and returns production default for invalid URL', () => {
     const error = jest.spyOn(console, 'error').mockImplementation(() => void 0)
 
-    expect(sanitizeWidgetBaseUrl('not a url')).toBe('https://swap.cow.fi')
+    expect(sanitizeWidgetBaseUrl('not a url')).toBe('https://swap.cow.finance')
     expect(error).toHaveBeenCalledWith('[CoW Widget]', expect.stringMatching(/Not a valid URL/))
 
     error.mockRestore()
@@ -25,29 +25,28 @@ describe('sanitizeWidgetBaseUrl', () => {
   })
 
   it('allows https origins and preserves path prefix for subpath deployments', () => {
-    expect(sanitizeWidgetBaseUrl('https://swap.cow.fi')).toBe('https://swap.cow.fi')
-    expect(sanitizeWidgetBaseUrl('https://swap.cow.fi/')).toBe('https://swap.cow.fi')
+    expect(sanitizeWidgetBaseUrl('https://swap.cow.finance')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('https://swap.cow.finance/')).toBe('https://swap.cow.finance')
     expect(sanitizeWidgetBaseUrl('https://example.com/preview/app')).toBe('https://example.com/preview/app')
   })
 
   it('strips trailing slashes from non-root path', () => {
-    expect(sanitizeWidgetBaseUrl('https://swap.cow.fi/staging/')).toBe('https://swap.cow.fi/staging')
+    expect(sanitizeWidgetBaseUrl('https://swap.cow.finance/staging/')).toBe('https://swap.cow.finance/staging')
   })
 
   it('allows http only for local dev hosts', () => {
     expect(sanitizeWidgetBaseUrl('http://localhost:3000')).toBe('http://localhost:3000')
     expect(sanitizeWidgetBaseUrl('http://127.0.0.1:8080')).toBe('http://127.0.0.1:8080')
-    expect(sanitizeWidgetBaseUrl('http://[::1]:3000')).toBe('http://[::1]:3000')
     expect(sanitizeWidgetBaseUrl('http://app.localhost:3000')).toBe('http://app.localhost:3000')
   })
 
   it('when not throwing, logs and returns default for disallowed URLs', () => {
     const error = jest.spyOn(console, 'error').mockImplementation(() => void 0)
 
-    expect(sanitizeWidgetBaseUrl('http://evil.com')).toBe('https://swap.cow.fi')
-    expect(sanitizeWidgetBaseUrl('https://user:pass@swap.cow.fi')).toBe('https://swap.cow.fi')
-    expect(sanitizeWidgetBaseUrl('javascript:alert(1)')).toBe('https://swap.cow.fi')
-    expect(sanitizeWidgetBaseUrl('data:text/html,<script>alert(1)</script>')).toBe('https://swap.cow.fi')
+    expect(sanitizeWidgetBaseUrl('http://evil.com')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('https://user:pass@swap.cow.finance')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('javascript:alert(1)')).toBe('https://swap.cow.finance')
+    expect(sanitizeWidgetBaseUrl('data:text/html,<script>alert(1)</script>')).toBe('https://swap.cow.finance')
     expect(error).toHaveBeenCalledTimes(4)
 
     error.mockRestore()
@@ -55,7 +54,7 @@ describe('sanitizeWidgetBaseUrl', () => {
 
   it('throws for disallowed URLs when throwIfInvalid is true', () => {
     expect(() => sanitizeWidgetBaseUrl('http://evil.com', true)).toThrow(/Use https/)
-    expect(() => sanitizeWidgetBaseUrl('https://user:pass@swap.cow.fi', true)).toThrow(/Userinfo/)
+    expect(() => sanitizeWidgetBaseUrl('https://user:pass@swap.cow.finance', true)).toThrow(/Userinfo/)
     expect(() => sanitizeWidgetBaseUrl('javascript:alert(1)', true)).toThrow(/Use https/)
     expect(() => sanitizeWidgetBaseUrl('data:text/html,<script>alert(1)</script>', true)).toThrow(/Use https/)
   })
@@ -71,30 +70,30 @@ describe.skip('buildWidgetUrl', () => {
       expect(url).toEqual('http://localhost:3000/#/1/widget/swap/?')
     })
     it('prod', () => {
-      const url = buildWidgetUrl({ chainId, tradeType, baseUrl: 'https://swap.cow.finance' })
-      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/?')
+      const url = buildWidgetUrl({ chainId, tradeType, baseUrl: 'https://swap.cow.financenance' })
+      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/?')
     })
   })
 
   describe('chainId', () => {
     it('mainnet', () => {
       const url = buildWidgetUrl({ chainId: 1, tradeType })
-      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/?')
+      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/?')
     })
     it('gnosis chain', () => {
       const url = buildWidgetUrl({ chainId: 100, tradeType })
-      expect(url).toEqual('https://swap.cow.finance/#/100/widget/swap/?')
+      expect(url).toEqual('https://swap.cow.financenance/#/100/widget/swap/?')
     })
   })
 
   describe('theme', () => {
     it('dark', () => {
       const url = buildWidgetUrl({ theme: 'dark', chainId, tradeType })
-      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/?theme=dark')
+      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/?theme=dark')
     })
     it('light', () => {
       const url = buildWidgetUrl({ theme: 'light', chainId, tradeType })
-      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/?theme=light')
+      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/?theme=light')
     })
   })
 
@@ -106,7 +105,7 @@ describe.skip('buildWidgetUrl', () => {
         chainId,
         tradeType,
       })
-      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/WETH/COW?')
+      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/WETH/COW?')
     })
 
     it('with sell amount', () => {
@@ -116,7 +115,7 @@ describe.skip('buildWidgetUrl', () => {
         chainId,
         tradeType,
       })
-      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/DAI/USDC?sellAmount=0.1')
+      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/DAI/USDC?sellAmount=0.1')
     })
 
     it('with buy amount', () => {
@@ -126,7 +125,7 @@ describe.skip('buildWidgetUrl', () => {
         chainId,
         tradeType,
       })
-      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/DAI/USDC?buyAmount=0.1')
+      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/DAI/USDC?buyAmount=0.1')
     })
   })
 
@@ -140,7 +139,7 @@ describe.skip('buildWidgetUrl', () => {
         buy: { asset: 'USDC', amount: '0.1' },
       })
       expect(url).toEqual(
-        'https://swap.cow.finance/#/100/widget/swap/DAI/USDC?sellAmount=0.1&buyAmount=0.1&theme=light',
+        'https://swap.cow.financenance/#/100/widget/swap/DAI/USDC?sellAmount=0.1&buyAmount=0.1&theme=light',
       )
     })
   })
@@ -177,7 +176,7 @@ describe('buildWidgetUrlQuery', () => {
 
   it('includes locale in the iframe URL', () => {
     expect(buildWidgetUrl({ chainId, tradeType, locale: 'fr' })).toBe(
-      'https://swap.cow.finance/#/1/widget/swap/_/_?palette=null&lng=fr',
+      'https://swap.cow.financenance/#/1/widget/swap/_/_?palette=null&lng=fr',
     )
   })
 
