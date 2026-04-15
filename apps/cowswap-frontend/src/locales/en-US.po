@@ -2478,7 +2478,7 @@ msgstr "up"
 msgid "Sign the {operationLabel} with your wallet."
 msgstr "Sign the {operationLabel} with your wallet."
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
