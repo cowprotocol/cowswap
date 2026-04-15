@@ -99,9 +99,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       window.removeEventListener('message', interceptDeepLinksListener)
     }
 
-    // Unless explicitly disabled, links / `window.open` requests are forwarded from the iframe to the host via
-    // `postMessage`, and the host opens them.
-    if (currentParams.disableExternalNavigation) return
+    // If `window.open` is disabled, do not intercept deep links.
+    if (currentParams.disableWindowOpen) return
 
     interceptDeepLinksListener = interceptDeepLinks(iframeOrigin, iframeWindow)
     windowListeners.push(interceptDeepLinksListener)

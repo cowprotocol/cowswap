@@ -53,8 +53,8 @@ describe('createCowSwapWidget', () => {
     expect(window.open).not.toHaveBeenCalled()
   })
 
-  it('does not open links when disableExternalNavigation is true', () => {
-    const { iframe } = createWidget(undefined, { disableExternalNavigation: true })
+  it('does not window.open when disableWindowOpen = true', () => {
+    const { iframe } = createWidget(undefined, { disableWindowOpen: true })
 
     dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
 
