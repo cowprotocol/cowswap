@@ -6,6 +6,8 @@ type AbstractRecord = Record<unknown, unknown>
 const DEFAULT_ORIGIN = 'https://swap.cow.finance'
 
 function logWidget(...args: unknown[]): void {
+  if (process.env.NODE_ENV === 'test') return
+
   console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
 }
 

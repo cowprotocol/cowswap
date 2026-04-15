@@ -70,30 +70,30 @@ describe.skip('buildWidgetUrl', () => {
       expect(url).toEqual('http://localhost:3000/#/1/widget/swap/?')
     })
     it('prod', () => {
-      const url = buildWidgetUrl({ chainId, tradeType, baseUrl: 'https://swap.cow.financenance' })
-      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/?')
+      const url = buildWidgetUrl({ chainId, tradeType, baseUrl: 'https://swap.cow.finance' })
+      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/?')
     })
   })
 
   describe('chainId', () => {
     it('mainnet', () => {
       const url = buildWidgetUrl({ chainId: 1, tradeType })
-      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/?')
+      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/?')
     })
     it('gnosis chain', () => {
       const url = buildWidgetUrl({ chainId: 100, tradeType })
-      expect(url).toEqual('https://swap.cow.financenance/#/100/widget/swap/?')
+      expect(url).toEqual('https://swap.cow.finance/#/100/widget/swap/?')
     })
   })
 
   describe('theme', () => {
     it('dark', () => {
       const url = buildWidgetUrl({ theme: 'dark', chainId, tradeType })
-      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/?theme=dark')
+      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/?theme=dark')
     })
     it('light', () => {
       const url = buildWidgetUrl({ theme: 'light', chainId, tradeType })
-      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/?theme=light')
+      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/?theme=light')
     })
   })
 
@@ -105,7 +105,7 @@ describe.skip('buildWidgetUrl', () => {
         chainId,
         tradeType,
       })
-      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/WETH/COW?')
+      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/WETH/COW?')
     })
 
     it('with sell amount', () => {
@@ -115,7 +115,7 @@ describe.skip('buildWidgetUrl', () => {
         chainId,
         tradeType,
       })
-      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/DAI/USDC?sellAmount=0.1')
+      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/DAI/USDC?sellAmount=0.1')
     })
 
     it('with buy amount', () => {
@@ -125,7 +125,7 @@ describe.skip('buildWidgetUrl', () => {
         chainId,
         tradeType,
       })
-      expect(url).toEqual('https://swap.cow.financenance/#/1/widget/swap/DAI/USDC?buyAmount=0.1')
+      expect(url).toEqual('https://swap.cow.finance/#/1/widget/swap/DAI/USDC?buyAmount=0.1')
     })
   })
 
@@ -139,7 +139,7 @@ describe.skip('buildWidgetUrl', () => {
         buy: { asset: 'USDC', amount: '0.1' },
       })
       expect(url).toEqual(
-        'https://swap.cow.financenance/#/100/widget/swap/DAI/USDC?sellAmount=0.1&buyAmount=0.1&theme=light',
+        'https://swap.cow.finance/#/100/widget/swap/DAI/USDC?sellAmount=0.1&buyAmount=0.1&theme=light',
       )
     })
   })
@@ -176,7 +176,7 @@ describe('buildWidgetUrlQuery', () => {
 
   it('includes locale in the iframe URL', () => {
     expect(buildWidgetUrl({ chainId, tradeType, locale: 'fr' })).toBe(
-      'https://swap.cow.financenance/#/1/widget/swap/_/_?palette=null&lng=fr',
+      'https://swap.cow.finance/#/1/widget/swap/_/_?palette=null&lng=fr',
     )
   })
 
