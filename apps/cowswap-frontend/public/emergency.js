@@ -97,6 +97,18 @@ if (window.location.pathname !== '/') {
       )
     }
   } catch {}
+
+  // 6. Service Workers (async — best-effort)
+  try {
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations()
+      await Promise.all(
+        registrations.map(function (r) {
+          return r.unregister()
+        }),
+      )
+    }
+  } catch {}
 })()
 
 /**
