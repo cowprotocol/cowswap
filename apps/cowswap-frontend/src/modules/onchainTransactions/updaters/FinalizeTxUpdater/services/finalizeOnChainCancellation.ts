@@ -1,5 +1,3 @@
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
 
@@ -10,6 +8,8 @@ import { emitCancelledOrderEvent } from 'modules/orders'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
+
+import type { TransactionReceipt } from 'viem'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -23,7 +23,7 @@ export function finalizeOnChainCancellation(
 ) {
   const { chainId, isSafeWallet, dispatch, cancelOrdersBatch, getTwapOrderById } = params
 
-  if (receipt.status === 1) {
+  if (receipt.status === 'success') {
     // If cancellation succeeded, mark order as cancelled
     cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
 
@@ -59,12 +59,12 @@ export function finalizeOnChainCancellation(
     // 2. Show failure tx pop-up
     emitOnchainTransactionEvent({
       receipt: {
-        to: receipt.to,
+        to: receipt.to || '',
         from: receipt.from,
-        contractAddress: receipt.contractAddress,
+        contractAddress: receipt.contractAddress || '',
         transactionHash: receipt.transactionHash,
-        blockNumber: receipt.blockNumber,
-        status: receipt.status,
+        blockNumber: Number(receipt.blockNumber),
+        status: 0, // inside receipt.status !== 'success' block
         replacementType: transaction.replacementType,
       },
       summary: t`Failed to cancel order selling ${sellTokenSymbol}`,

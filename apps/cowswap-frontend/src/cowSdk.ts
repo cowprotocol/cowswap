@@ -1,21 +1,22 @@
+import { atom, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { getRpcProvider, LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
+import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import {
+  AbstractProviderAdapter,
   DEFAULT_BACKOFF_OPTIONS,
   MetadataApi,
   OrderBookApi,
+  Signer,
   setGlobalAdapter,
-  AbstractProviderAdapter,
-  SupportedChainId,
   ApiBaseUrls,
+  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
-import { useWeb3React } from '@web3-react/core'
 
+import { createPublicClient, http } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 const PROD_BASE_URL = 'https://api.cow.finance'
@@ -38,16 +39,20 @@ export const ORDER_BOOK_PROD_CONFIG: ApiBaseUrls = {
   [SupportedChainId.INK]: `${PROD_BASE_URL}/ink`,
 }
 
-const chainId = getCurrentChainIdFromUrl()
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
   : ORDER_BOOK_PROD_CONFIG
 
-const legacyAdapter = new EthersV5Adapter({
-  provider: getRpcProvider(chainId)!,
-})
+export const appSignerAtom = atom<Signer | undefined>(undefined)
 
-setGlobalAdapter(legacyAdapter)
+setGlobalAdapter(
+  new ViemAdapter({
+    provider: createPublicClient({
+      chain: VIEM_CHAINS[getCurrentChainIdFromUrl()],
+      transport: http(RPC_URLS[getCurrentChainIdFromUrl()]),
+    }),
+  }) as AbstractProviderAdapter,
+)
 
 export const orderBookApi = new OrderBookApi({
   env: isBarnBackendEnv ? 'staging' : 'prod',
@@ -60,25 +65,19 @@ export const metadataApiSDK = new MetadataApi()
 export function CowSdkUpdater(): null {
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
-  const { chainId, provider, account } = useWeb3React()
+  const setAppSigner = useSetAtom(appSignerAtom)
 
   useEffect(() => {
-    if (!LAUNCH_DARKLY_VIEM_MIGRATION) return
     if (!publicClient) return
+    let adapter: ViemAdapter
     if (walletClient) {
-      // TODO: fix the type casting
-      setGlobalAdapter(new ViemAdapter({ provider: publicClient, walletClient }) as AbstractProviderAdapter)
+      adapter = new ViemAdapter({ provider: publicClient, walletClient })
     } else {
-      setGlobalAdapter(new ViemAdapter({ provider: publicClient, signer: PERMIT_ACCOUNT }) as AbstractProviderAdapter)
+      adapter = new ViemAdapter({ provider: publicClient, signer: PERMIT_ACCOUNT })
     }
-  }, [publicClient, walletClient])
-
-  useEffect(() => {
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) return
-    if (!provider) return
-    legacyAdapter.setProvider(provider)
-    legacyAdapter.setSigner(provider.getSigner())
-  }, [chainId, account, provider])
+    setGlobalAdapter(adapter as AbstractProviderAdapter)
+    setAppSigner(walletClient ? adapter.signer : undefined)
+  }, [publicClient, walletClient, setAppSigner])
 
   return null
 }

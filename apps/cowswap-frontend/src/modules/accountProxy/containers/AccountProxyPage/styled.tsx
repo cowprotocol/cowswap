@@ -3,7 +3,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { TokenListItem } from 'modules/tokensList'
+import { TokenListItem } from 'modules/tokensList/pure/TokenListItem'
 
 export const Wrapper = styled.div`
   padding-bottom: 10px;

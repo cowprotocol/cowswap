@@ -1,11 +1,10 @@
 import { atom } from 'jotai'
 
 import { LpToken } from '@cowprotocol/common-const'
-import { BigNumber } from '@ethersproject/bignumber'
 
 export type LpTokenWithBalance = {
   token: LpToken
-  balance: BigNumber
+  balance: bigint
 }
 
 type LpTokensWithBalancesState = { tokens: Record<string, LpTokenWithBalance>; count: 0 }

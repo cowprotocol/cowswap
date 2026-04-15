@@ -28,7 +28,7 @@ export const CONFIG = {
     widgetTnC: '/widget/terms-and-conditions',
     careers: '/careers',
     widgetConfigurator: 'widget.cow.finance',
-    analytics: 'https://dune.com/cowprotocol/cowswap',
+    analytics: 'https://dune.com/cowprotocol/cow-swap-home',
     explorer: 'https://explorer.cow.finance',
     securityPortal: 'https://app.chainpatrol.io/cow',
     grants: 'https://docs.cow.finance',

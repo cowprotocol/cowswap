@@ -30,10 +30,6 @@
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/wallet": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
-    "@ethersproject/abi": "5.7.0",
-    "@ethersproject/contracts": "5.7.0",
-    "@ethersproject/providers": "5.7.0",
-    "ethers": "5.7.2",
     "jotai": "2.16.2",
     "react": "19.1.2",
     "swr": "^2.3.3"

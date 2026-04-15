@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { useHooks } from 'entities/orderHooks/useHooks'
 import { useOrderParams } from 'entities/orderHooks/useOrderParams'
@@ -112,7 +111,7 @@ function mergeBalanceDiffs(first: BalancesDiff, second: BalancesDiff): BalancesD
         } else {
           // If token exists, sum up the balances
           try {
-            result[address][token] = BigNumber.from(result[address][token]).add(second[address][token]).toString()
+            result[address][token] = (BigInt(result[address][token]) + BigInt(second[address][token])).toString()
           } catch (error) {
             console.error(`Error adding balances for address ${address} and token ${token}:`, error)
             throw error
