@@ -109,7 +109,7 @@ describe('orderLifecycleAnalytics', () => {
         executedFeeAmount: '1234',
         inputToken: { ...defaultInputToken, symbol: '' },
         outputToken: { ...defaultOutputToken, symbol: '' },
-      }),
+      } as Partial<EnrichedOrder>),
       bridgeOrder: { id: 'bridge' } as unknown as OnFulfilledOrderPayload['bridgeOrder'],
     }
 

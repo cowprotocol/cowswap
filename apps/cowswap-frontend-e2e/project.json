@@ -3,7 +3,15 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/cowswap-frontend-e2e/src",
   "projectType": "application",
+  "tags": [],
+  "implicitDependencies": ["cowswap-frontend"],
   "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p apps/cowswap-frontend-e2e/tsconfig.json"
+      }
+    },
     "e2e": {
       "executor": "@nx/cypress:cypress",
       "options": {
@@ -28,7 +36,5 @@
         "lintFilePatterns": ["apps/cowswap-frontend-e2e/**/*.{js,ts}"]
       }
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["cowswap-frontend"]
+  }
 }

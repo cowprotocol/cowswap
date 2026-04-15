@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/cowswap-frontend/src",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
@@ -112,6 +113,5 @@
       "outputs": ["{projectRoot}/src/locales/en-US.po"],
       "cache": true
     }
-  },
-  "tags": []
+  }
 }

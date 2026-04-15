@@ -1,7 +1,10 @@
-import type { PreRenderedChunk } from 'rollup'
+/** Rollup chunk shape; defined locally so this helper does not depend on `rollup` types. */
+interface ChunkFacadeOnly {
+  readonly facadeModuleId: string | null
+}
 
 export function formatChunkFileName(
-  chunk: Pick<PreRenderedChunk, 'facadeModuleId'>,
+  chunk: Pick<ChunkFacadeOnly, 'facadeModuleId'>,
   chunkGroups: Record<string, string>,
 ): string | undefined {
   if (!chunk.facadeModuleId) return undefined
