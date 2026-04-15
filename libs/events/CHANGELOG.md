@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.2.1](https://github.com/cowprotocol/cowswap/compare/events-v4.2.0...events-v4.2.1) (2026-04-15)
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.2.1
+
 ## [4.2.0](https://github.com/cowprotocol/cowswap/compare/events-v4.1.2...events-v4.2.0) (2026-04-14)
 
 
