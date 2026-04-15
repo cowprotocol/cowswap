@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.5...widget-configurator-v3.3.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.0
+    * @cowprotocol/common-const bumped to 3.1.0
+    * @cowprotocol/common-hooks bumped to 3.1.0
+    * @cowprotocol/common-utils bumped to 3.1.0
+    * @cowprotocol/events bumped to 4.2.0
+    * @cowprotocol/types bumped to 4.2.0
+    * @cowprotocol/widget-lib bumped to 2.3.0
+    * @cowprotocol/widget-react bumped to 1.3.6
+
 ## [3.2.5](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.2.4...widget-configurator-v3.2.5) (2026-04-10)
 
 
