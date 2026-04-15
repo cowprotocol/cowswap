@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/wallet-provider",
-  "version": "2.1.14",
+  "version": "2.1.15",
   "type": "commonjs",
   "description": "Wallet provider",
   "main": "./src/index.ts",

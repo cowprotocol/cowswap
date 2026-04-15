@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.3.3](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.3.2...widget-configurator-v3.3.3) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.2
+    * @cowprotocol/common-const bumped to 3.1.2
+    * @cowprotocol/common-hooks bumped to 3.1.2
+    * @cowprotocol/common-utils bumped to 3.2.1
+    * @cowprotocol/widget-lib bumped to 3.1.1
+    * @cowprotocol/widget-react bumped to 2.0.2
+
 ## [3.3.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.3.1...widget-configurator-v3.3.2) (2026-04-15)
 
 
