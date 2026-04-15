@@ -1,10 +1,10 @@
 // Redirect from the outdated domain
 if (window.location.host === 'cowswap.exchange') {
-  window.location.href = 'https://swap.cow.fi'
+  window.location.href = 'https://swap.cow.finance'
 }
 
 if (window.location.host === 'barn.cowswap.exchange') {
-  window.location.href = 'https://barn.cow.fi'
+  window.location.href = 'https://barn.cow.finance'
 }
 
 // We use the HashRouter, thus the pathname should ALWAYS be a '/'

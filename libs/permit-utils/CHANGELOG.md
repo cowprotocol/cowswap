@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.5...permit-utils-v3.1.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.1.0
+
 ## [3.0.5](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.4...permit-utils-v3.0.5) (2026-04-10)
 
 

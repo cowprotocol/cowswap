@@ -61,7 +61,7 @@ import type { CowSwapTheme } from '../../types'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
   {
-    href: 'https://cow.fi/',
+    href: 'https://cow.finance/',
     productVariant: ProductVariant.CowDao,
     hasDivider: true,
     hoverColor: `var(${UI.COLOR_NEUTRAL_100})`,
@@ -70,7 +70,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-cowdao',
   },
   {
-    href: 'https://swap.cow.fi/',
+    href: 'https://swap.cow.finance/',
     productVariant: ProductVariant.CowSwap,
     hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
     hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
@@ -78,7 +78,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-cowswap',
   },
   {
-    href: 'https://cow.fi/cow-protocol',
+    href: 'https://cow.finance/cow-protocol',
     productVariant: ProductVariant.CowProtocol,
     hoverColor: '#FCCAF2',
     hoverBgColor: '#AD02C6',
@@ -86,7 +86,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-cowprotocol',
   },
   {
-    href: 'https://cow.fi/cow-amm',
+    href: 'https://cow.finance/cow-amm',
     productVariant: ProductVariant.CowAmm,
     hoverColor: '#007CDB',
     hoverBgColor: '#CCF8FF',
@@ -94,7 +94,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-cowamm',
   },
   {
-    href: 'https://cow.fi/mev-blocker',
+    href: 'https://cow.finance/mev-blocker',
     productVariant: ProductVariant.MevBlocker,
     hoverColor: '#F2CD16',
     hoverBgColor: '#EC4612',
@@ -245,7 +245,7 @@ const DropdownContentItem: React.FC<{
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line max-lines-per-function, complexity
+  // eslint-disable-next-line max-lines-per-function
 }> = ({ item, closeMenu, LinkComponent }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
@@ -490,7 +490,7 @@ interface DropdownContentWrapperProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
   content,
   isThirdLevel = false,
@@ -526,7 +526,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
     >
       {/* TODO: Break down this large function into smaller functions */}
       {/* TODO: Reduce function complexity by extracting logic */}
-      {/* eslint-disable-next-line complexity */}
+      {}
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
