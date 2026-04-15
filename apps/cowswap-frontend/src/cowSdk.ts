@@ -11,6 +11,7 @@ import {
   Signer,
   setGlobalAdapter,
   ApiBaseUrls,
+  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
