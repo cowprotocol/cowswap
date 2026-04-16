@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
-import { useLingui } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { CheckCircle } from 'react-feather'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
@@ -38,6 +38,7 @@ export function ReceiverPanelBody({
 
   const resolvedPlaceholder =
     placeholder ?? (strategy.placeholderKey === 'nonEvm' ? t`Recipient address` : t`Wallet Address or ENS name`)
+  const chainLabel = isNonEvm ? chainInfo?.label : ''
 
   return (
     <>
@@ -66,7 +67,11 @@ export function ReceiverPanelBody({
             onFocus={autofocus}
           />
         </ReceiverInputRow>
-        {isError && <ReceiverErrorText>Enter a valid {isNonEvm ? chainInfo?.label : ''} address</ReceiverErrorText>}
+        {isError && (
+          <ReceiverErrorText>
+            <Trans>Enter a valid {chainLabel} address</Trans>
+          </ReceiverErrorText>
+        )}
       </ReceiverInputWrapper>
     </>
   )

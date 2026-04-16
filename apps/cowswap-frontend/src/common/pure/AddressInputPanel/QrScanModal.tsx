@@ -1,4 +1,6 @@
-import { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactElement, RefObject, useCallback, useEffect, useRef, useState } from 'react'
+
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { CowModal } from 'common/pure/Modal'
 import { NewModal } from 'common/pure/NewModal'
@@ -20,7 +22,40 @@ interface QrScanModalProps {
   onScan(value: string): void
 }
 
+interface QrCameraViewProps {
+  videoRef: RefObject<HTMLVideoElement | null>
+  onSwitchCamera(): void
+}
+
+function QrCameraView({ videoRef, onSwitchCamera }: QrCameraViewProps): ReactElement {
+  const { t } = useLingui()
+  return (
+    <>
+      <VideoContainer>
+        <CameraVideo ref={videoRef} muted playsInline />
+        <CornerBracketOverlay>
+          <span className="tl" />
+          <span className="tr" />
+          <span className="bl" />
+          <span className="br" />
+        </CornerBracketOverlay>
+        <ScanLineAnimation />
+        <CameraSwitchBtn onClick={onSwitchCamera} aria-label={t`Switch camera`}>
+          ⇄
+        </CameraSwitchBtn>
+      </VideoContainer>
+      <QrInstructions>
+        <Trans>Align the QR code in the frame.</Trans>
+      </QrInstructions>
+      <QrSubText>
+        <Trans>Scans locally in your browser. Nothing is uploaded.</Trans>
+      </QrSubText>
+    </>
+  )
+}
+
 export function QrScanModal({ isOpen, onDismiss, onScan }: QrScanModalProps): ReactElement {
+  const { t } = useLingui()
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment')
   const [isSupported, setIsSupported] = useState(true)
   const [stream, setStream] = useState<MediaStream | null>(null)
@@ -109,28 +144,14 @@ export function QrScanModal({ isOpen, onDismiss, onScan }: QrScanModalProps): Re
 
   return (
     <CowModal isOpen={isOpen} onDismiss={handleDismiss} maxWidth={480}>
-      <NewModal title="Scan QR code" modalMode onDismiss={handleDismiss}>
+      <NewModal title={t`Scan QR code`} modalMode onDismiss={handleDismiss}>
         <QrModalWrapper>
           {!isSupported ? (
-            <p>QR scanning is not supported in this browser.</p>
+            <p>
+              <Trans>QR scanning is not supported in this browser.</Trans>
+            </p>
           ) : (
-            <>
-              <VideoContainer>
-                <CameraVideo ref={videoRef} muted playsInline />
-                <CornerBracketOverlay>
-                  <span className="tl" />
-                  <span className="tr" />
-                  <span className="bl" />
-                  <span className="br" />
-                </CornerBracketOverlay>
-                <ScanLineAnimation />
-                <CameraSwitchBtn onClick={switchCamera} aria-label="Switch camera">
-                  ⇄
-                </CameraSwitchBtn>
-              </VideoContainer>
-              <QrInstructions>Align the QR code in the frame.</QrInstructions>
-              <QrSubText>Scans locally in your browser. Nothing is uploaded.</QrSubText>
-            </>
+            <QrCameraView videoRef={videoRef} onSwitchCamera={switchCamera} />
           )}
         </QrModalWrapper>
       </NewModal>
