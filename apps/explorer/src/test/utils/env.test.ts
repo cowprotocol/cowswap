@@ -18,7 +18,7 @@ describe('explorer env detection', () => {
     const { environmentName, checkEnvironment } = await import('../../utils/env')
 
     expect(environmentName).toBe('production')
-    expect(checkEnvironment('localhost:3000')).toEqual({
+    expect(checkEnvironment()).toEqual({
       isLocal: false,
       isDev: false,
       isPr: false,
@@ -33,7 +33,7 @@ describe('explorer env detection', () => {
     const { environmentName, checkEnvironment } = await import('../../utils/env')
 
     expect(environmentName).toBe('pr')
-    expect(checkEnvironment('explorer.cow.fi')).toEqual({
+    expect(checkEnvironment()).toEqual({
       isLocal: false,
       isDev: false,
       isPr: true,
@@ -48,7 +48,7 @@ describe('explorer env detection', () => {
     const { environmentName, checkEnvironment } = await import('../../utils/env')
 
     expect(environmentName).toBeUndefined()
-    expect(checkEnvironment('explorer.cow.fi')).toEqual({
+    expect(checkEnvironment()).toEqual({
       isLocal: false,
       isDev: false,
       isPr: false,

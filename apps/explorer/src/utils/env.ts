@@ -11,8 +11,6 @@ export type Envs = 'local' | 'production' | 'staging' | 'development' | 'pr'
 const EXPLORER_ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
 const ALL_ENVIRONMENTS: Envs[] = ['local', 'development', 'pr', 'staging', 'production']
 
-const getRegex = (regex: string | undefined): RegExp | undefined => (regex ? new RegExp(regex) : undefined)
-
 function isEnvironmentName(value: string): value is Envs {
   return ALL_ENVIRONMENTS.includes(value as Envs)
 }
@@ -41,30 +39,27 @@ function getEnvironmentChecks(environmentName: Envs): EnvsFlags {
   }
 }
 
-export function checkEnvironment(host: string): EnvsFlags {
+function getDefaultEnvironmentChecks(): EnvsFlags {
+  return {
+    isLocal: false,
+    isDev: false,
+    isPr: false,
+    isStaging: false,
+    isProd: false,
+  }
+}
+
+export function checkEnvironment(): EnvsFlags {
   const configuredEnvironmentName = getConfiguredEnvironmentName()
 
   if (configuredEnvironmentName) {
     return getEnvironmentChecks(configuredEnvironmentName)
   }
 
-  // TODO: Remove regex checks and rely solely on the configured environment variable once all environments are updated
-  const domainDevRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_DEV)
-  const domainStagingRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_STAGING)
-  const domainProdRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_PROD)
-
-  return {
-    isLocal: false,
-    isDev: domainDevRegex?.test(host) || false,
-    isPr: false,
-    isStaging: domainStagingRegex?.test(host) || false,
-    isProd: domainProdRegex?.test(host) || false,
-  }
+  return getDefaultEnvironmentChecks()
 }
 
-const { isLocal, isDev, isPr, isStaging, isProd } = checkEnvironment(
-  typeof window !== 'undefined' ? window.location.host : '',
-)
+const { isLocal, isDev, isPr, isStaging, isProd } = checkEnvironment()
 
 function getEnvironmentName(): Envs | undefined {
   const configuredEnvironmentName = getConfiguredEnvironmentName()
