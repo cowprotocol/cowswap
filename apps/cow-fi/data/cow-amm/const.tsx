@@ -193,7 +193,7 @@ export const FAQ_DATA = [
         </Link>
         . Engineers may also{' '}
         <Link
-          href="https://docs.cow.finance/cow-amm/tutorials/cow-amm-deployer"
+          href="https://docs.cow.fi/cow-amm/tutorials/cow-amm-deployer"
           external
           utmContent="cow-amm-deployer"
           onClick={() =>

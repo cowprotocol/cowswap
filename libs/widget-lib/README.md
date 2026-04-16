@@ -6,11 +6,11 @@ look and much more!
 
 ## Live example
 
-See the widget in action in the [widget configurator](https://widget.cow.finance)
+See the widget in action in the [widget configurator](https://widget.cow.fi)
 
 ## Docs
 
-You can find a detailed description of all widget parameters in the [documentation](https://docs.cow.finance/cow-protocol/tutorials/widget)
+You can find a detailed description of all widget parameters in the [documentation](https://docs.cow.fi/cow-protocol/tutorials/widget)
 
 ## Quick start
 

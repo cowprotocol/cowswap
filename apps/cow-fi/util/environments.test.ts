@@ -16,16 +16,16 @@ describe('Detect environments using host and path', () => {
       expect(checkEnvironment('github.com', '')).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
     })
 
-    it('swap.cow.finance', () => {
-      expect(checkEnvironment('swap.cow.finance', '')).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
+    it('swap.cow.fi', () => {
+      expect(checkEnvironment('swap.cow.fi', '')).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
     })
   })
 
   describe('Is production', () => {
     const isProduction = { ...DEFAULT_ENVIRONMENTS_CHECKS, isProd: true }
 
-    it('cow.finance', () => {
-      expect(checkEnvironment('cow.finance', '')).toEqual(isProduction)
+    it('cow.fi', () => {
+      expect(checkEnvironment('cow.fi', '')).toEqual(isProduction)
     })
   })
 
@@ -44,8 +44,8 @@ describe('Detect environments using host and path', () => {
   describe('Is Development', () => {
     const isDevelopment = { ...DEFAULT_ENVIRONMENTS_CHECKS, isDev: true }
 
-    it('develop.cow.finance', () => {
-      expect(checkEnvironment('develop.cow.finance', '')).toEqual(isDevelopment)
+    it('develop.cow.fi', () => {
+      expect(checkEnvironment('develop.cow.fi', '')).toEqual(isDevelopment)
     })
   })
 

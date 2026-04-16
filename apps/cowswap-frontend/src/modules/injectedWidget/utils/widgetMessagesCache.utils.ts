@@ -48,5 +48,11 @@ export function clearCachedWidgetMessages(): void {
 }
 
 function getEventMethod(event: MessageEvent): string | null {
-  return (event.data.key === widgetIframeTransport.key && (event.data.method as string)) || null
+  const data = event.data
+
+  if (!data || typeof data !== 'object' || !('key' in data) || !('method' in data)) {
+    return null
+  }
+
+  return data.key === widgetIframeTransport.key && typeof data.method === 'string' ? data.method : null
 }
