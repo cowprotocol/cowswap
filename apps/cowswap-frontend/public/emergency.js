@@ -7,9 +7,9 @@ if (window.location.host === 'barn.cowswap.exchange') {
   window.location.href = 'https://barn.cow.fi'
 }
 
-// swap.cow.finance → swap.cow.fi when embedded (iframe / sandboxed); top-level stays on .finance until migrated
+// swap.cow.finance → swap.cow.fi when top-level (not embedded). iframes stay on .finance
 try {
-  if (window.location.host === 'swap.cow.finance' && window.top !== window.self) {
+  if (window.location.host === 'swap.cow.finance' && window.top === window.self) {
     const next = new URL(window.location.href)
     next.protocol = 'https:'
     next.hostname = 'swap.cow.fi'
