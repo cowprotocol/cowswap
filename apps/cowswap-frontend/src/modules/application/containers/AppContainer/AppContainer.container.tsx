@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo, useState } from 'react'
 
-import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
+import { useAnalyticsReporter } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { NotificationModel } from '@cowprotocol/core'
@@ -32,9 +32,6 @@ import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
 import { AppMenu } from '../AppMenu'
 import { NetworkAndAccountControls } from '../NetworkAndAccountControls/NetworkAndAccountControls.container'
 
-// Initialize static analytics instance
-const pixel = initPixelAnalytics()
-
 interface AppContainerProps {
   children: ReactNode | ReactNode[]
 }
@@ -60,17 +57,12 @@ interface FooterSectionProps {
 export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
-  const cowAnalytics = useCowAnalytics()
-  const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
   const { isYieldEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
     chainId,
     walletName,
-    cowAnalytics,
-    pixelAnalytics: pixel,
-    webVitalsAnalytics: webVitals,
     marketDimension: useGetMarketDimension() || undefined,
     injectedWidgetAppId: useInjectedWidgetMetaData()?.appCode,
   })

@@ -1,4 +1,4 @@
-import { getAddress } from '@ethersproject/address'
+import { getAddress } from 'viem'
 
 export const getChecksumAddressOrOriginal = (address: string): string => {
   try {
