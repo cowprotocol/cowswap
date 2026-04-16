@@ -7,7 +7,7 @@ fetchMock.enableMocks()
 // jest.spyOn(global, 'setTimeout')
 // jest.useFakeTimers()
 
-const URL = 'https://cow.finance'
+const URL = 'https://cow.fi'
 const ERROR_MESSAGE = '💣💥 Booom!'
 
 const OK_RESPONSE = {

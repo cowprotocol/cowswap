@@ -8,16 +8,16 @@ providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
 | --------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 🐮 **CoW Swap** 🐮    | [swap.cow.finance](https://swap.cow.finance/)                                                                           |
+| 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
 | CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
 | CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
-| CoW Protocol          | [cow.finance](https://cow.finance)                                                                                      |
-| Docs                  | [docs.cow.finance](https://docs.cow.finance)                                                                            |
+| CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
+| Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
 | Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
 | Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cow-swap-home)                                          |
 | X/Twitter             | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
 | Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
-| Forum                 | [forum.cow.finance](https://forum.cow.finance)                                                                          |
+| Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
 
 # 🐮 Run CoW Swap
 
@@ -80,9 +80,9 @@ pnpm run start:explorer
 pnpm run build:explorer
 ```
 
-# 🐄 cow.finance
+# 🐄 cow.fi
 
-Start cow.finance on <http://localhost:3001>
+Start cow.fi on <http://localhost:3001>
 
 ### Start
 
@@ -217,7 +217,7 @@ The API endpoint is configured using the environment variable
 `REACT_APP_BFF_BASE_URL`:
 
 ```ini
-REACT_APP_BFF_BASE_URL=https://bff.cow.finance
+REACT_APP_BFF_BASE_URL=https://bff.cow.fi
 ```
 
 ## CMS API Endpoints (Content Management System)
@@ -235,7 +235,7 @@ The API endpoint is configured using the environment variable
 `REACT_APP_CMS_BASE_URL`:
 
 ```ini
-REACT_APP_CMS_BASE_URL=https://cms.cow.finance/api
+REACT_APP_CMS_BASE_URL=https://cms.cow.fi/api
 ```
 
 ## Price feeds

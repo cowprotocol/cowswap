@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Host: https://swap.cow.finance
+Host: https://swap.cow.fi

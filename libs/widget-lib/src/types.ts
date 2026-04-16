@@ -290,9 +290,20 @@ export interface CowSwapWidgetParams {
   /**
    * The base url of the widget implementation
    * The parameter can have the URL directly, or an object with the environment property,
-   * The base URL will default to the production environment if not specified, so it will use https://swap.cow.finance by default.
+   * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
+   *
+   * For security, values are validated before loading the iframe: only `https` origins are accepted,
+   * except `http` on local dev hosts (localhost, 127.0.0.1, ::1, *.localhost). Invalid URLs
+   * (unparsable, credentials, or disallowed scheme/host) either throw or log and fall back to the
+   * production host, depending on `SHOULD_THROW_IF_INVALID_URL` exported from `@cowprotocol/widget-lib`.
    */
   baseUrl?: string
+
+  /**
+   * Overrides the origin trusted for postMessage communication with the widget iframe.
+   * Defaults to the origin derived from `baseUrl` / iframe src.
+   */
+  trustedOrigin?: string
 
   /**
    * Sell token, and optionally the amount.
@@ -363,6 +374,12 @@ export interface CowSwapWidgetParams {
    * Defaults to false.
    */
   disableToastMessages?: boolean
+
+  /**
+   * When `true`, the host page will not use `window.open` to open links requested by the widget.
+   * Defaults to `false`.
+   */
+  disableWindowOpen?: boolean
 
   /**
    * Option to hide the logo in the widget.
