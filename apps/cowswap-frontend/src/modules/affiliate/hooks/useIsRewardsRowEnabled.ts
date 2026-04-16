@@ -13,6 +13,10 @@ export function useIsRewardsRowEnabled(): boolean {
 
   if (isRefCodeExpired) return false
 
+  if (walletStatus === TraderWalletStatus.UNSUPPORTED) {
+    return false
+  }
+
   if (AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE && walletStatus === TraderWalletStatus.INELIGIBLE) {
     return false
   }

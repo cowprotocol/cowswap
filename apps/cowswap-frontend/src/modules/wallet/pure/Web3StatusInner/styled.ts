@@ -72,7 +72,7 @@ export const Text = styled.p`
   font-weight: 500;
 `
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ $joinedLeft?: boolean }>`
   color: inherit;
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   max-height: 100%;
@@ -80,11 +80,11 @@ export const Wrapper = styled.div`
   padding: 0;
   margin: 0;
   justify-content: center;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
 
   > button {
     height: auto;
-    border-radius: 28px;
+    border-radius: ${({ $joinedLeft }) => ($joinedLeft ? '3px 28px 28px 3px' : '28px')};
     padding: 8px 16px;
     width: max-content;
     gap: 6px;

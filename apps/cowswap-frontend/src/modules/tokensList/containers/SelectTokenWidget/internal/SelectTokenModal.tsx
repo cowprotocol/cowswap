@@ -41,7 +41,7 @@ export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
 
-  const chainPanel = useChainPanelState(widgetState.tradeType)
+  const chainPanel = useChainPanelState(widgetState.tradeType, widgetState.field)
   const isChainPanelVisible = chainPanel.isEnabled && !isCompactLayout
 
   useWidgetEffects(isOpen)

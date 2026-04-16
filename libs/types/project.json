@@ -13,15 +13,12 @@
       }
     },
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/types",
-        "main": "libs/types/src/index.ts",
-        "tsConfig": "libs/types/tsconfig.lib.json",
-        "assets": ["libs/types/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true,
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "configFile": "libs/types/vite.config.mts",
+        "assets": ["libs/types/*.md"]
       }
     },
     "test": {

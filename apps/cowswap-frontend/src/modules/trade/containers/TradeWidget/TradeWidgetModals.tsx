@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
@@ -105,6 +104,16 @@ export function TradeWidgetModals({
   const isInitialRenderRef = useRef(true)
 
   const error = tokenListAddingError || approveError || confirmError
+
+  /**
+   * Reset trade confirm state on unmount so SurplusModalSetup
+   * doesn't see stale isOpen/transactionHash after navigation
+   */
+  useEffect(() => {
+    return () => {
+      closeTradeConfirm()
+    }
+  }, [closeTradeConfirm])
 
   /**
    * Close all modals besides auto-import on account change

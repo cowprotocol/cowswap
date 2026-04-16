@@ -6,9 +6,9 @@ import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trad
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import { Link } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
-import { useNavigate } from 'common/hooks/useNavigate'
 
 import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
 import { HowItWorks } from '../pure/HowItWorks'
@@ -17,7 +17,6 @@ import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 export function AffiliateTraderModalCodeInfo(): ReactNode {
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
   const analytics = useCowAnalytics()
-  const navigate = useNavigate()
 
   useEffect(() => {
     analytics.sendEvent({
@@ -30,7 +29,6 @@ export function AffiliateTraderModalCodeInfo(): ReactNode {
   const onViewRewards = (): void => {
     analytics.sendEvent({ category: 'affiliate', action: 'cta_clicked', label: 'view_rewards' })
     toggleAffiliateModal()
-    navigate(Routes.ACCOUNT_AFFILIATE_TRADER)
   }
 
   return (
@@ -45,7 +43,14 @@ export function AffiliateTraderModalCodeInfo(): ReactNode {
         </Subtitle>
       </Body>
       <Footer>
-        <ButtonPrimary autoFocus disabled={false} onClick={onViewRewards} type="button">
+        <ButtonPrimary
+          as={Link}
+          autoFocus
+          disabled={false}
+          onClick={onViewRewards}
+          to={Routes.ACCOUNT_AFFILIATE_TRADER}
+          target="_blank"
+        >
           <Trans>View rewards</Trans>
         </ButtonPrimary>
       </Footer>

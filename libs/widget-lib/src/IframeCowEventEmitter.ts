@@ -15,6 +15,8 @@ export class IframeCowEventEmitter {
 
   constructor(
     private contentWindow: Window,
+    iframeOrigin: string,
+    iframeWindow: Window,
     listeners: CowWidgetEventListeners = [],
   ) {
     // Subscribe listeners to local event emitter
@@ -23,8 +25,10 @@ export class IframeCowEventEmitter {
     // Listen to iFrame, and forward to local event emitter
     this.widgetListener = widgetIframeTransport.listenToMessageFromWindow(
       this.contentWindow,
+      iframeWindow,
       WidgetMethodsEmit.EMIT_COW_EVENT,
       (cowEvent) => this.eventEmitter.emit(cowEvent.event, cowEvent.payload),
+      iframeOrigin,
     )
   }
 

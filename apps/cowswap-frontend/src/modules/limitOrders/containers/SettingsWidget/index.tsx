@@ -10,7 +10,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 
 import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
-import { Settings } from '../../pure/Settings'
+import { LimitOrdersSettingsDropdown } from '../../pure/Settings/LimitOrdersSettings.pure'
 import {
   limitOrdersSettingsAtom,
   LimitOrdersSettingsState,
@@ -50,7 +50,7 @@ export function SettingsWidget(): ReactNode {
                 onMouseDown={(e) => e.stopPropagation()}
                 onMouseUp={(e) => e.stopPropagation()}
               >
-                <Settings state={settingsState} onStateChanged={onSettingsChange} />
+                <LimitOrdersSettingsDropdown state={settingsState} onStateChanged={onSettingsChange} />
               </div>
             </MenuItem>
           </MenuItems>

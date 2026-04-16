@@ -3,7 +3,6 @@ import { checkEnvironment, EnvironmentChecks } from './environments'
 const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
   isProd: false,
   isEns: false,
-  isBarn: false,
   isStaging: false,
   isPr: false,
   isDev: false,
@@ -13,6 +12,36 @@ const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
 // TODO: Break down this large function into smaller functions
 
 describe('Detect environments using host and path', () => {
+  const ENV_REGEX_KEYS = [
+    'REACT_APP_DOMAIN_REGEX_LOCAL',
+    'REACT_APP_DOMAIN_REGEX_PR',
+    'REACT_APP_DOMAIN_REGEX_DEVELOPMENT',
+    'REACT_APP_DOMAIN_REGEX_STAGING',
+    'REACT_APP_DOMAIN_REGEX_PRODUCTION',
+    'REACT_APP_DOMAIN_REGEX_BARN',
+    'REACT_APP_DOMAIN_REGEX_ENS',
+  ] as const
+
+  const originalEnvRegexValues: Partial<Record<(typeof ENV_REGEX_KEYS)[number], string | undefined>> = {}
+
+  beforeAll(() => {
+    ENV_REGEX_KEYS.forEach((key) => {
+      originalEnvRegexValues[key] = process.env[key]
+      delete process.env[key]
+    })
+  })
+
+  afterAll(() => {
+    ENV_REGEX_KEYS.forEach((key) => {
+      const originalValue = originalEnvRegexValues[key]
+      if (typeof originalValue === 'undefined') {
+        delete process.env[key]
+      } else {
+        process.env[key] = originalValue
+      }
+    })
+  })
+
   describe('Not a known environment', () => {
     it('Empty strings', () => {
       expect(checkEnvironment('', '')).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
@@ -55,14 +84,6 @@ describe('Detect environments using host and path', () => {
       expect(checkEnvironment('gateway.pinata.cloud', '/ipfs/QmZW5abzempvhyPvSMbLhnmZ6d6SEGgGQd3paaHRK7CSfm')).toEqual(
         isEns,
       )
-    })
-  })
-
-  describe('Is Barn', () => {
-    const isBarn = { ...DEFAULT_ENVIRONMENTS_CHECKS, isBarn: true }
-
-    it('barn.cow.fi', () => {
-      expect(checkEnvironment('barn.cow.fi', '')).toEqual(isBarn)
     })
   })
 
