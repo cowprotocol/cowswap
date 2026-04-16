@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isSupportedAddress } from '@cowprotocol/cow-sdk'
 
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
@@ -15,7 +15,7 @@ interface ReceiverInfoProps {
 }
 
 export function ReceiverInfo({ receiver, owner, customPrefix }: ReceiverInfoProps): ReactNode {
-  const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
+  const toAddress = receiver && isSupportedAddress(receiver) ? shortenAddress(receiver) : receiver
 
   return (
     <>

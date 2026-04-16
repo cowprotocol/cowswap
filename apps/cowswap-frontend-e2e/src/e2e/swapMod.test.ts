@@ -5,11 +5,6 @@ import { mockNativeBalanceHttp } from '../support/mocks/mockRpcCall'
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
-// mock test to pass CI until we fix the test
-it('should be true', () => {
-  expect(true).to.be.true
-})
-
 describe('Swap (mod)', () => {
   it('starts with empty token selected', () => {
     cy.visit('/#/11155111/swap')
