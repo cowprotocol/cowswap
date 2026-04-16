@@ -12,6 +12,18 @@ describe('explorer env detection', () => {
     }
   })
 
+  it('throws when the env var is missing', async () => {
+    delete process.env[ENVIRONMENT_VAR_NAME]
+
+    await expect(import('../../utils/env')).rejects.toThrow(`Missing ${ENVIRONMENT_VAR_NAME}`)
+  })
+
+  it('throws when the env var is invalid', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'invalid-environment'
+
+    await expect(import('../../utils/env')).rejects.toThrow(`Invalid ${ENVIRONMENT_VAR_NAME}="invalid-environment"`)
+  })
+
   it('uses the configured environment name', async () => {
     process.env[ENVIRONMENT_VAR_NAME] = 'production'
 
@@ -37,21 +49,6 @@ describe('explorer env detection', () => {
       isLocal: false,
       isDev: false,
       isPr: true,
-      isStaging: false,
-      isProd: false,
-    })
-  })
-
-  it('falls back when the configured environment is invalid', async () => {
-    process.env[ENVIRONMENT_VAR_NAME] = 'invalid-environment'
-
-    const { environmentName, checkEnvironment } = await import('../../utils/env')
-
-    expect(environmentName).toBeUndefined()
-    expect(checkEnvironment()).toEqual({
-      isLocal: false,
-      isDev: false,
-      isPr: false,
       isStaging: false,
       isProd: false,
     })

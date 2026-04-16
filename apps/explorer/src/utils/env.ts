@@ -15,15 +15,17 @@ function isEnvironmentName(value: string): value is Envs {
   return ALL_ENVIRONMENTS.includes(value as Envs)
 }
 
-function getConfiguredEnvironmentName(): Envs | undefined {
+function getConfiguredEnvironmentName(): Envs {
   const env = process.env[EXPLORER_ENVIRONMENT_VAR_NAME]?.trim().toLowerCase()
 
   if (!env) {
-    return undefined
+    throw new Error(`Missing ${EXPLORER_ENVIRONMENT_VAR_NAME}. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
   }
 
   if (!isEnvironmentName(env)) {
-    return undefined
+    throw new Error(
+      `Invalid ${EXPLORER_ENVIRONMENT_VAR_NAME}="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`,
+    )
   }
 
   return env
@@ -39,34 +41,16 @@ function getEnvironmentChecks(environmentName: Envs): EnvsFlags {
   }
 }
 
-function getDefaultEnvironmentChecks(): EnvsFlags {
-  return {
-    isLocal: false,
-    isDev: false,
-    isPr: false,
-    isStaging: false,
-    isProd: false,
-  }
-}
+const configuredEnvironmentName = getConfiguredEnvironmentName()
 
 export function checkEnvironment(): EnvsFlags {
-  const configuredEnvironmentName = getConfiguredEnvironmentName()
-
-  if (configuredEnvironmentName) {
-    return getEnvironmentChecks(configuredEnvironmentName)
-  }
-
-  return getDefaultEnvironmentChecks()
+  return getEnvironmentChecks(configuredEnvironmentName)
 }
 
 const { isLocal, isDev, isPr, isStaging, isProd } = checkEnvironment()
 
-function getEnvironmentName(): Envs | undefined {
-  const configuredEnvironmentName = getConfiguredEnvironmentName()
-
-  if (configuredEnvironmentName) {
-    return configuredEnvironmentName
-  } else if (isProd) {
+function getEnvironmentName(): Envs {
+  if (isProd) {
     return 'production'
   } else if (isStaging) {
     return 'staging'
@@ -77,10 +61,10 @@ function getEnvironmentName(): Envs | undefined {
   } else if (isLocal) {
     return 'local'
   } else {
-    return undefined
+    return configuredEnvironmentName
   }
 }
 
-export const environmentName: Envs | undefined = getEnvironmentName()
+export const environmentName: Envs = getEnvironmentName()
 
 export { isLocal, isDev, isPr, isStaging, isProd }

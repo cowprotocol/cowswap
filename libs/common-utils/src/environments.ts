@@ -9,14 +9,18 @@ function isEnvironmentName(value: string): value is EnvironmentName {
   return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
 }
 
-function getConfiguredEnvironmentName(): EnvironmentName | undefined {
+function getConfiguredEnvironmentName(): EnvironmentName {
   const env = process.env[ENVIRONMENT_VAR_NAME]?.trim().toLowerCase()
 
   if (!env) {
-    return undefined
+    throw new Error(`Missing ${ENVIRONMENT_VAR_NAME}. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
   }
 
-  return isEnvironmentName(env) ? env : undefined
+  if (!isEnvironmentName(env)) {
+    throw new Error(`Invalid ${ENVIRONMENT_VAR_NAME}="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
+  }
+
+  return env
 }
 
 export interface EnvironmentChecks {
@@ -39,25 +43,26 @@ function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChec
   }
 }
 
-function getDefaultEnvironmentChecks(): EnvironmentChecks {
-  return {
-    isLocal: false,
-    isDev: false,
-    isPr: false,
-    isStaging: false,
-    isProd: false,
-    isEns: false,
-  }
-}
+const configuredEnvironmentName = getConfiguredEnvironmentName()
 
 export function checkEnvironment(): EnvironmentChecks {
-  const configuredEnvironmentName = getConfiguredEnvironmentName()
-  if (configuredEnvironmentName) {
-    return getEnvironmentChecks(configuredEnvironmentName)
-  }
-
-  return getDefaultEnvironmentChecks()
+  return getEnvironmentChecks(configuredEnvironmentName)
 }
+
+let isLocal = false
+let isDev = false
+let isPr = false
+let isStaging = false
+let isProd = false
+let isEns = false
+
+const envChecks = checkEnvironment()
+isLocal = envChecks.isLocal
+isDev = envChecks.isDev
+isPr = envChecks.isPr
+isStaging = envChecks.isStaging
+isProd = envChecks.isProd
+isEns = envChecks.isEns
 
 // A hack to test against prod API
 const forceProdApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceProdApi')
@@ -65,27 +70,11 @@ const forceStagingApi = typeof window !== 'undefined' && !!window.localStorage.g
 
 if (forceProdApi || forceStagingApi) {
   console.debug('[BackendApiOverwrite]', `forceProdApi: ${forceProdApi}, forceStagingApi: ${forceStagingApi}`)
+  isProd = forceProdApi
+  isStaging = forceStagingApi
 }
 
-// Default values for environments
-let isLocal = false
-let isDev = false
-let isPr = false
-let isStaging = forceStagingApi
-let isProd = forceProdApi
-let isEns = false
-
-if (typeof window !== 'undefined') {
-  const envChecks = checkEnvironment()
-  isLocal = envChecks.isLocal
-  isDev = envChecks.isDev
-  isPr = envChecks.isPr
-  isStaging = envChecks.isStaging
-  isProd = envChecks.isProd
-  isEns = envChecks.isEns
-}
-
-function getEnvironmentName(): EnvironmentName | undefined {
+function getEnvironmentName(): EnvironmentName {
   if (isProd) {
     return 'production'
   } else if (isEns) {
@@ -99,11 +88,11 @@ function getEnvironmentName(): EnvironmentName | undefined {
   } else if (isLocal) {
     return 'local'
   } else {
-    return undefined
+    return configuredEnvironmentName
   }
 }
 
-export const environmentName: EnvironmentName | undefined = getEnvironmentName()
+export const environmentName: EnvironmentName = getEnvironmentName()
 
 const isProdLike = isProd || isEns || isStaging
 const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || forceStagingApi

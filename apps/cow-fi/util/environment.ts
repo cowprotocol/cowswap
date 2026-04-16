@@ -7,15 +7,15 @@ function isEnvironmentName(value: string): value is EnvironmentName {
   return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
 }
 
-function getConfiguredEnvironmentName(): EnvironmentName | undefined {
+function getConfiguredEnvironmentName(): EnvironmentName {
   const env = process.env[ENVIRONMENT_VAR_NAME]?.trim().toLowerCase()
 
   if (!env) {
-    return undefined
+    throw new Error(`Missing ${ENVIRONMENT_VAR_NAME}. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
   }
 
   if (!isEnvironmentName(env)) {
-    return undefined
+    throw new Error(`Invalid ${ENVIRONMENT_VAR_NAME}="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
   }
 
   return env
@@ -37,23 +37,10 @@ function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChec
   }
 }
 
-function getDefaultEnvironmentChecks(): EnvironmentChecks {
-  return {
-    isLocal: false,
-    isDev: false,
-    isPr: false,
-    isProd: false,
-  }
-}
+const configuredEnvironmentName = getConfiguredEnvironmentName()
 
 export function checkEnvironment(): EnvironmentChecks {
-  const configuredEnvironmentName = getConfiguredEnvironmentName()
-
-  if (configuredEnvironmentName) {
-    return getEnvironmentChecks(configuredEnvironmentName)
-  }
-
-  return getDefaultEnvironmentChecks()
+  return getEnvironmentChecks(configuredEnvironmentName)
 }
 
 const { isLocal, isDev, isPr, isProd } = checkEnvironmentUsingWindow()
@@ -62,7 +49,7 @@ function checkEnvironmentUsingWindow(): EnvironmentChecks {
   return checkEnvironment()
 }
 
-function getEnvironmentName(): EnvironmentName | undefined {
+function getEnvironmentName(): EnvironmentName {
   if (isProd) {
     return 'production'
   } else if (isPr) {
@@ -72,10 +59,10 @@ function getEnvironmentName(): EnvironmentName | undefined {
   } else if (isLocal) {
     return 'local'
   } else {
-    return undefined
+    return configuredEnvironmentName
   }
 }
 
-export const environmentName: EnvironmentName | undefined = getEnvironmentName()
+export const environmentName: EnvironmentName = getEnvironmentName()
 
 export { isLocal, isDev, isPr, isProd }

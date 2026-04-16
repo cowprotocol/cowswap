@@ -1,6 +1,7 @@
-import { checkEnvironment, EnvironmentChecks } from './environments'
+const ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
+const originalEnvironment = process.env[ENVIRONMENT_VAR_NAME]
 
-const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
+const DEFAULT_ENVIRONMENTS_CHECKS = {
   isProd: false,
   isEns: false,
   isStaging: false,
@@ -9,21 +10,10 @@ const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
   isLocal: false,
 }
 
-// TODO: Break down this large function into smaller functions
-
 describe('Detect environments using configured env var', () => {
-  const ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
-  const originalEnvironment = process.env[ENVIRONMENT_VAR_NAME]
-
-  afterAll(() => {
-    if (typeof originalEnvironment === 'undefined') {
-      delete process.env[ENVIRONMENT_VAR_NAME]
-    } else {
-      process.env[ENVIRONMENT_VAR_NAME] = originalEnvironment
-    }
-  })
-
   afterEach(() => {
+    jest.resetModules()
+
     if (typeof originalEnvironment === 'undefined') {
       delete process.env[ENVIRONMENT_VAR_NAME]
     } else {
@@ -31,75 +21,69 @@ describe('Detect environments using configured env var', () => {
     }
   })
 
-  describe('No configured environment', () => {
-    it('returns no active envs', () => {
-      expect(checkEnvironment()).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
-    })
+  it('throws when the env var is missing', async () => {
+    delete process.env[ENVIRONMENT_VAR_NAME]
+
+    await expect(import('./environments')).rejects.toThrow(`Missing ${ENVIRONMENT_VAR_NAME}`)
   })
 
-  describe('Is production', () => {
-    const isProduction = { ...DEFAULT_ENVIRONMENTS_CHECKS, isProd: true }
+  it('throws when the env var is invalid', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'invalid-environment'
 
-    it('uses env var override', () => {
-      process.env[ENVIRONMENT_VAR_NAME] = 'production'
-
-      expect(checkEnvironment()).toEqual(isProduction)
-    })
+    await expect(import('./environments')).rejects.toThrow(`Invalid ${ENVIRONMENT_VAR_NAME}="invalid-environment"`)
   })
 
-  describe('Is ENS', () => {
-    const isEns = { ...DEFAULT_ENVIRONMENTS_CHECKS, isEns: true }
+  it('uses production env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'production'
 
-    it('uses env var override', () => {
-      process.env[ENVIRONMENT_VAR_NAME] = 'ens'
+    const { checkEnvironment, environmentName } = await import('./environments')
 
-      expect(checkEnvironment()).toEqual(isEns)
-    })
+    expect(environmentName).toBe('production')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isProd: true })
   })
 
-  describe('Is Staging', () => {
-    const isStaging = { ...DEFAULT_ENVIRONMENTS_CHECKS, isStaging: true }
+  it('uses ens env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'ens'
 
-    it('uses env var override', () => {
-      process.env[ENVIRONMENT_VAR_NAME] = 'staging'
+    const { checkEnvironment, environmentName } = await import('./environments')
 
-      expect(checkEnvironment()).toEqual(isStaging)
-    })
+    expect(environmentName).toBe('ens')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isEns: true })
   })
 
-  describe('Is PR', () => {
-    const isPr = { ...DEFAULT_ENVIRONMENTS_CHECKS, isPr: true }
+  it('uses staging env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'staging'
 
-    it('uses env var override', () => {
-      process.env[ENVIRONMENT_VAR_NAME] = 'pr'
+    const { checkEnvironment, environmentName } = await import('./environments')
 
-      expect(checkEnvironment()).toEqual(isPr)
-    })
+    expect(environmentName).toBe('staging')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isStaging: true })
   })
 
-  describe('Is Development', () => {
-    const isDevelopment = { ...DEFAULT_ENVIRONMENTS_CHECKS, isDev: true }
+  it('uses pr env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'pr'
 
-    it('uses env var override', () => {
-      process.env[ENVIRONMENT_VAR_NAME] = 'development'
+    const { checkEnvironment, environmentName } = await import('./environments')
 
-      expect(checkEnvironment()).toEqual(isDevelopment)
-    })
+    expect(environmentName).toBe('pr')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isPr: true })
   })
 
-  describe('Is Local', () => {
-    const isLocal = { ...DEFAULT_ENVIRONMENTS_CHECKS, isLocal: true }
+  it('uses development env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'development'
 
-    it('uses env var override', () => {
-      process.env[ENVIRONMENT_VAR_NAME] = 'local'
+    const { checkEnvironment, environmentName } = await import('./environments')
 
-      expect(checkEnvironment()).toEqual(isLocal)
-    })
+    expect(environmentName).toBe('development')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isDev: true })
+  })
 
-    it('returns no active envs when env var is invalid', () => {
-      process.env[ENVIRONMENT_VAR_NAME] = 'invalid-environment'
+  it('uses local env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'local'
 
-      expect(checkEnvironment()).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
-    })
+    const { checkEnvironment, environmentName } = await import('./environments')
+
+    expect(environmentName).toBe('local')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isLocal: true })
   })
 })
