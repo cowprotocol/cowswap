@@ -28,8 +28,20 @@ if (window.location.pathname !== '/') {
 
 ;(async function () {
   const WIPE_KEY = 'emergencyWipe:v1'
+  const RETURNING_USER_KEY = 'tokens:lastUpdateTimeAtom:v6'
+  const hasVisitedBefore = localStorage.getItem(RETURNING_USER_KEY) !== null
 
-  if (localStorage.getItem(WIPE_KEY)) return
+  if (localStorage.getItem(WIPE_KEY)) {
+    console.log('[COW] Storage already clean')
+    return
+  }
+
+  if (!hasVisitedBefore) {
+    console.log('[COW] New user, skipping storage wipe')
+    localStorage.setItem(WIPE_KEY, '1')
+    return
+  }
+  console.log('[COW] Performing emergency wipe')
 
   // 1. localStorage (re-set wipe flag after)
   localStorage.clear()
@@ -123,6 +135,8 @@ if (window.location.pathname !== '/') {
       )
     }
   } catch {}
+
+  window.location.reload()
 })()
 
 /**
