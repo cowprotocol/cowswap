@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 
@@ -14,10 +14,15 @@ import { ThemeProvider } from '../theme'
 
 import { WithLDProvider } from '@/components/WithLDProvider'
 import GlobalStyles from '@/styles/global.styles'
+import { environmentName } from '@/util/environment'
 
 const cowAnalytics = initGtm()
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: { children: React.ReactNode }): React.ReactNode {
+  useEffect(() => {
+    console.info('[cow-fi][environment]', environmentName ?? 'unknown')
+  }, [])
+
   return (
     <Suspense>
       <CacheProvider>
@@ -38,7 +43,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   )
 }
 
-function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
+function StyledComponentsRegistry({ children }: { children: React.ReactNode }): React.ReactNode {
   // Only create stylesheet once with lazy initial state
   // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet())
@@ -48,7 +53,7 @@ function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
 
     // Types are out of date, clearTag is not defined.
     // See: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/65021
-    ;(styledComponentsStyleSheet.instance as any).clearTag()
+    ;(styledComponentsStyleSheet.instance as { clearTag?: () => void }).clearTag?.()
 
     return <>{styles}</>
   })

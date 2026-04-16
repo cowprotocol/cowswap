@@ -28,7 +28,7 @@ export function middleware(request: NextRequest): NextResponse {
   const host = request.headers.get('host') || ''
 
   // Check if we're on develop.cow.fi or PR preview environments and add noindex header
-  const { isDev, isPr } = checkEnvironment(host, pathname)
+  const { isDev, isPr } = checkEnvironment(host)
   const response = NextResponse.next()
 
   if (isDev || isPr) {

@@ -21,7 +21,7 @@ const defaultMetadata = getPageMetadata({ description: CONFIG.description })
 export async function generateMetadata(): Promise<Metadata> {
   const headersList = await headers()
   const host = headersList.get('host') || ''
-  const { isDev, isPr } = checkEnvironment(host, '')
+  const { isDev, isPr } = checkEnvironment(host)
 
   return {
     ...defaultMetadata,

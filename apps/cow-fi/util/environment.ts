@@ -1,3 +1,11 @@
+export type EnvironmentName = 'local' | 'development' | 'pr' | 'production'
+export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'production']
+
+const ENVIRONMENT_VAR_NAME = 'NEXT_PUBLIC_ENVIRONMENT'
+
+// TODO: Remove. Replaced by the `NEXT_PUBLIC_ENVIRONMENT` envvar.
+//  Once the envvars are correctly set up, the regexes will no longer be
+//  needed to determine the environment
 const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
   pr: '^cowfi-git-[\\w\\d-]+cowswap\\.vercel\\.app',
@@ -5,7 +13,7 @@ const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   production: '^cow.fi$',
 }
 
-function getRegex(env: EnvironmentName) {
+function getRegex(env: EnvironmentName): RegExp {
   let regex
   switch (env) {
     case 'local':
@@ -25,6 +33,24 @@ function getRegex(env: EnvironmentName) {
   return new RegExp(regex || DEFAULT_ENVIRONMENTS_REGEX[env], 'i')
 }
 
+function isEnvironmentName(value: string): value is EnvironmentName {
+  return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
+}
+
+function getConfiguredEnvironmentName(): EnvironmentName | undefined {
+  const env = process.env[ENVIRONMENT_VAR_NAME]?.trim().toLowerCase()
+
+  if (!env) {
+    return undefined
+  }
+
+  if (!isEnvironmentName(env)) {
+    return undefined
+  }
+
+  return env
+}
+
 export interface EnvironmentChecks {
   isProd: boolean
   isPr: boolean
@@ -32,9 +58,23 @@ export interface EnvironmentChecks {
   isLocal: boolean
 }
 
-export function checkEnvironment(host: string, path: string): EnvironmentChecks {
+function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChecks {
   return {
-    // Project environments
+    isLocal: environmentName === 'local',
+    isDev: environmentName === 'development',
+    isPr: environmentName === 'pr',
+    isProd: environmentName === 'production',
+  }
+}
+
+export function checkEnvironment(host: string): EnvironmentChecks {
+  const configuredEnvironmentName = getConfiguredEnvironmentName()
+
+  if (configuredEnvironmentName) {
+    return getEnvironmentChecks(configuredEnvironmentName)
+  }
+
+  return {
     isLocal: getRegex('local').test(host),
     isDev: getRegex('development').test(host),
     isPr: getRegex('pr').test(host),
@@ -44,15 +84,12 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
 
 const { isLocal, isDev, isPr, isProd } = checkEnvironmentUsingWindow()
 
-function checkEnvironmentUsingWindow() {
-  const [host, pathname] = typeof window !== 'undefined' ? [window.location.host, window.location.pathname] : ['', '']
-  return checkEnvironment(host, pathname)
+function checkEnvironmentUsingWindow(): EnvironmentChecks {
+  const host = typeof window !== 'undefined' ? window.location.host : ''
+  return checkEnvironment(host)
 }
 
-export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'production']
-export type EnvironmentName = 'local' | 'development' | 'pr' | 'production'
-
-export const environmentName: EnvironmentName | undefined = (function () {
+function getEnvironmentName(): EnvironmentName | undefined {
   if (isProd) {
     return 'production'
   } else if (isPr) {
@@ -64,6 +101,8 @@ export const environmentName: EnvironmentName | undefined = (function () {
   } else {
     return undefined
   }
-})()
+}
+
+export const environmentName: EnvironmentName | undefined = getEnvironmentName()
 
 export { isLocal, isDev, isPr, isProd }
