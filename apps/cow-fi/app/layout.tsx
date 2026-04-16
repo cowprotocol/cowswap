@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 
 import { Metadata, Viewport } from 'next'
-import { headers } from 'next/headers'
 
 import { Providers } from './providers'
 
@@ -19,9 +18,7 @@ export const viewport: Viewport = {
 const defaultMetadata = getPageMetadata({ description: CONFIG.description })
 
 export async function generateMetadata(): Promise<Metadata> {
-  const headersList = await headers()
-  const host = headersList.get('host') || ''
-  const { isDev, isPr } = checkEnvironment(host)
+  const { isDev, isPr } = checkEnvironment()
 
   return {
     ...defaultMetadata,

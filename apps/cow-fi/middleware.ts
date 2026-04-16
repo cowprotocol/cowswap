@@ -25,10 +25,8 @@ const TRACKING_PARAMS = [
 
 export function middleware(request: NextRequest): NextResponse {
   const pathname = request.nextUrl.pathname
-  const host = request.headers.get('host') || ''
 
-  // Check if we're on develop.cow.fi or PR preview environments and add noindex header
-  const { isDev, isPr } = checkEnvironment(host)
+  const { isDev, isPr } = checkEnvironment()
   const response = NextResponse.next()
 
   if (isDev || isPr) {
