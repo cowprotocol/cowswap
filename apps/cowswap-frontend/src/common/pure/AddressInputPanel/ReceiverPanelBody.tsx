@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useCallback, useEffect, useState } from 'react'
 
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
@@ -10,6 +10,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
+import { ReceiverConfirmationRow } from './ReceiverConfirmationRow'
 import { ReceiverErrorText, ReceiverInput, ReceiverInputRow, ReceiverInputWrapper, ValidCheckmark } from './styled'
 
 import { autofocus } from '../../utils/autofocus'
@@ -21,6 +22,7 @@ export interface ReceiverPanelBodyProps {
   onChange(value: string): void
   targetChainId?: TargetChainId
   placeholder?: string
+  onNonEvmReceiverConfirmedChange?: (confirmed: boolean) => void
 }
 
 export function ReceiverPanelBody({
@@ -29,6 +31,7 @@ export function ReceiverPanelBody({
   onChange,
   targetChainId,
   placeholder,
+  onNonEvmReceiverConfirmedChange,
 }: ReceiverPanelBodyProps): ReactElement {
   const { t } = useLingui()
   const { strategy, isNonEvm, chainInfo } = useReceiverChainInfo(targetChainId)
@@ -36,9 +39,36 @@ export function ReceiverPanelBody({
   const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, chainInfo?.addressPrefix, strategy)
   const isDarkMode = useIsDarkMode()
 
+  const [isConfirmed, setIsConfirmed] = useState(false)
+
   const resolvedPlaceholder =
     placeholder ?? (strategy.placeholderKey === 'nonEvm' ? t`Recipient address` : t`Wallet Address or ENS name`)
   const chainLabel = isNonEvm ? chainInfo?.label : ''
+
+  // Reset confirmation when address or target chain changes
+  useEffect(() => {
+    setIsConfirmed(false)
+    onNonEvmReceiverConfirmedChange?.(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, targetChainId])
+
+  // Reset atom on unmount
+  useEffect(() => {
+    return () => {
+      onNonEvmReceiverConfirmedChange?.(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleConfirmChange = useCallback(
+    (confirmed: boolean) => {
+      setIsConfirmed(confirmed)
+      onNonEvmReceiverConfirmedChange?.(confirmed)
+    },
+    [onNonEvmReceiverConfirmedChange],
+  )
+
+  const showConfirmationRow = isNonEvm && isValid && !loading
 
   return (
     <>
@@ -73,6 +103,13 @@ export function ReceiverPanelBody({
           </ReceiverErrorText>
         )}
       </ReceiverInputWrapper>
+      {showConfirmationRow && (
+        <ReceiverConfirmationRow
+          chainName={chainInfo?.label ?? ''}
+          confirmed={isConfirmed}
+          onConfirmChange={handleConfirmChange}
+        />
+      )}
     </>
   )
 }

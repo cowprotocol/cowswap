@@ -7867,3 +7867,7 @@ msgstr ""
 "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
 "\n"
 " Get yours at swap.cow.finance @CoWSwap"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.tsx
+msgid "I confirm this {chainName} address is correct."
+msgstr "I confirm this {chainName} address is correct."

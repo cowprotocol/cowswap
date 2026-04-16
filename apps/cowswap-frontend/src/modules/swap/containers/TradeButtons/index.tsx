@@ -8,7 +8,9 @@ import {
   useConfirmTradeWithRwaCheck,
   useGetConfirmButtonLabel,
   useIsCurrentTradeBridging,
+  useIsNonEvmBridging,
   useIsNoImpactWarningAccepted,
+  useNonEvmReceiverConfirmed,
   useWrappedToken,
 } from 'modules/trade'
 import {
@@ -64,6 +66,8 @@ export function TradeButtons({
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
   const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
+  const isNonEvmBridging = useIsNonEvmBridging()
+  const nonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
   const isSafeWallet = useIsSafeWallet()
 
   const { confirmTrade } = useConfirmTradeWithRwaCheck()
@@ -110,7 +114,8 @@ export function TradeButtons({
     !isTradeContextReady ||
     !feeWarningAccepted ||
     !isNoImpactWarningAccepted ||
-    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false)
+    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false) ||
+    (isNonEvmBridging ? !nonEvmReceiverConfirmed : false)
 
   if (!tradeFormButtonContext) return null
 

@@ -14,6 +14,7 @@ export interface AddressInputPanelProps {
   value: string
   onChange: (value: string) => void
   targetChainId?: TargetChainId
+  onNonEvmReceiverConfirmedChange?: (confirmed: boolean) => void
 }
 
 export function AddressInputPanel({
@@ -24,6 +25,7 @@ export function AddressInputPanel({
   onChange,
   targetChainId,
   placeholder,
+  onNonEvmReceiverConfirmedChange,
 }: AddressInputPanelProps): ReactElement {
   return (
     <ReceiverPanel id={id}>
@@ -34,6 +36,7 @@ export function AddressInputPanel({
         onChange={onChange}
         targetChainId={targetChainId}
         placeholder={placeholder}
+        onNonEvmReceiverConfirmedChange={onNonEvmReceiverConfirmedChange}
       />
     </ReceiverPanel>
   )

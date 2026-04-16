@@ -139,6 +139,30 @@ export const ReceiverErrorText = styled.p`
   margin: 0;
 `
 
+export const ConfirmationRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(${UI.COLOR_PAPER_DARKEST});
+  border-radius: 0 0 16px 16px;
+  padding: 12px 16px;
+
+  input[type='checkbox'] {
+    accent-color: var(${UI.COLOR_SUCCESS});
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+`
+
+export const ConfirmationLabel = styled.label<{ $confirmed: boolean }>`
+  font-size: 14px;
+  color: ${({ $confirmed }) => ($confirmed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  cursor: pointer;
+  user-select: none;
+`
+
 // QR Modal
 
 export const QrModalWrapper = styled.div`

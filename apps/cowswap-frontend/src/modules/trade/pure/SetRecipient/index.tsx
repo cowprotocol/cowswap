@@ -15,10 +15,11 @@ export interface SetRecipientProps {
   // Target chain ID for recipient address validation. For cross-chain swaps, this should be the output token's chain.
   targetChainId?: TargetChainId
   isRequired?: boolean
+  onNonEvmReceiverConfirmedChange?: (confirmed: boolean) => void
 }
 
 export function SetRecipient(props: SetRecipientProps): ReactElement {
-  const { recipient, onChangeRecipient, className, targetChainId, isRequired } = props
+  const { recipient, onChangeRecipient, className, targetChainId, isRequired, onNonEvmReceiverConfirmedChange } = props
 
   return (
     <>
@@ -31,6 +32,7 @@ export function SetRecipient(props: SetRecipientProps): ReactElement {
         onChange={onChangeRecipient}
         targetChainId={targetChainId}
         label={isRequired ? <Trans>Receiver address (required)</Trans> : undefined}
+        onNonEvmReceiverConfirmedChange={onNonEvmReceiverConfirmedChange}
       />
     </>
   )

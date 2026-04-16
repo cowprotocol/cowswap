@@ -18,7 +18,7 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
-import { useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState, useSetNonEvmReceiverConfirmed } from 'modules/trade'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -141,6 +141,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
+  const setNonEvmReceiverConfirmed = useSetNonEvmReceiverConfirmed()
+  const handleNonEvmConfirm = useCallback((v: boolean) => setNonEvmReceiverConfirmed(v), [setNonEvmReceiverConfirmed])
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
@@ -313,6 +315,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     onChangeRecipient={onChangeRecipient}
                     targetChainId={buyToken?.chainId}
                     isRequired={isNonEvmBridging}
+                    onNonEvmReceiverConfirmedChange={handleNonEvmConfirm}
                   />
                 )}
 
