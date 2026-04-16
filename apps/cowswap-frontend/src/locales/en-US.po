@@ -734,6 +734,10 @@ msgstr "I received surplus on"
 msgid "Created on"
 msgstr "Created on"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.tsx
+msgid "Enter a valid {chainLabel} address"
+msgstr "Enter a valid {chainLabel} address"
+
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs"
 msgstr "View jobs"
@@ -819,6 +823,10 @@ msgstr "Cancelling order"
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
 msgstr "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+msgid "View ↗"
+msgstr "View ↗"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
 msgid "Quote verified by CoW Protocol simulation"
@@ -1861,6 +1869,10 @@ msgstr "Your limit price is {absoluteRateImpact}% lower than current market pric
 msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
 msgstr "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+msgid "QR scanning is not supported in this browser."
+msgstr "QR scanning is not supported in this browser."
+
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 msgid "Select custom token"
 msgstr "Select custom token"
@@ -2461,6 +2473,14 @@ msgstr "Error loading price. Try again later."
 msgid "Trying to claim without claim data"
 msgstr "Trying to claim without claim data"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+msgid "Paste"
+msgstr "Paste"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+msgid "Scan"
+msgstr "Scan"
+
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 #~ msgstr "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
@@ -2622,6 +2642,10 @@ msgstr "(v)COW token holders are eligible for a fee discount"
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Error connecting"
 msgstr "Error connecting"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+msgid "Align the QR code in the frame."
+msgstr "Align the QR code in the frame."
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Referral link"
@@ -4364,6 +4388,10 @@ msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> y
 msgid "This token is not available in your region."
 msgstr "This token is not available in your region."
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+msgid "Scan QR code"
+msgstr "Scan QR code"
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "No signatures yet"
 msgstr "No signatures yet"
@@ -5010,6 +5038,10 @@ msgstr "<0><1>Allows you to choose whether your limit orders will be <2>Partiall
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Mooove between <0/> any chain, hassle-free"
 msgstr "Mooove between <0/> any chain, hassle-free"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+msgid "Scans locally in your browser. Nothing is uploaded."
+msgstr "Scans locally in your browser. Nothing is uploaded."
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate payouts happen on Ethereum mainnet."
@@ -6220,6 +6252,10 @@ msgstr "Unknown hook dapp"
 msgid "Swap now"
 msgstr "Swap now"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+msgid "Send to {networkName} wallet"
+msgstr "Send to {networkName} wallet"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
@@ -6587,6 +6623,10 @@ msgstr "Wrapping"
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/index.tsx
 msgid "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
 msgstr "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+msgid "Switch camera"
+msgstr "Switch camera"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
@@ -7399,6 +7439,7 @@ msgstr "Simulate"
 msgid "Start time"
 msgstr "Start time"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 msgid "Clear"
 msgstr "Clear"
